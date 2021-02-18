@@ -7,8 +7,8 @@
     <ProjectGuid>{B25A1DC1-C41B-40C2-A769-636D5B13E7C0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SAM_UI</RootNamespace>
-    <AssemblyName>SAM_UI</AssemblyName>
+    <RootNamespace>SAM.Core.UI</RootNamespace>
+    <AssemblyName>SAM.Core.UI</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>False</Deterministic>
@@ -17,10 +17,11 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\build\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\build\SAM.Core.UI.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Classes\WindowHandle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\Controls.cs" />
     <Compile Include="Query\Size.cs" />
     <Compile Include="Query\DropDownWidth.cs" />
   </ItemGroup>
