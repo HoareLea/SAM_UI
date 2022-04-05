@@ -740,5 +740,10 @@ namespace SAM.Analytical.UI
                 //SAM.Weather.Convert.ToSAM();
             }
         }
+
+        private void RibbonButton_Edit_ModelCheck_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("To be implemented soon...");
+        }
     }
 }

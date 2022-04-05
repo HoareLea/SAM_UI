@@ -190,5 +190,8 @@
   <ItemGroup>
     <None Include="Resources\SAM_ApertureConstruction.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ModelCheck.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

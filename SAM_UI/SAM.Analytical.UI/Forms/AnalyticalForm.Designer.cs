@@ -44,15 +44,18 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Edit_Location = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Edit_Import = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Edit_SAMImport = new System.Windows.Forms.RibbonButton();
+            this.RibbonPanel_Check = new System.Windows.Forms.RibbonPanel();
+            this.RibbonButton_Edit_ModelCheck = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Library = new System.Windows.Forms.RibbonTab();
             this.RibbonPanel_Library_General = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Library_MaterialLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Library_ConstructionLibrary = new System.Windows.Forms.RibbonButton();
-            this.RibbonButton_Library_InternalConditionLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Library_ApertureConstruction = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_Library_InternalConditionLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Simulate = new System.Windows.Forms.RibbonTab();
             this.RibbonPanel_Simulate_WeatherData = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Simulate_WeatherData = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_Simulate_ImportWeatherData = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Simulate_Simulate = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_SolarSimulation = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Tools = new System.Windows.Forms.RibbonTab();
@@ -71,7 +74,6 @@ namespace SAM.Analytical.UI
             this.SplitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.TreeView_AnalyticalModel = new System.Windows.Forms.TreeView();
             this.PictureBox_Logo = new System.Windows.Forms.PictureBox();
-            this.RibbonButton_Simulate_ImportWeatherData = new System.Windows.Forms.RibbonButton();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer_Main)).BeginInit();
             this.SplitContainer_Main.Panel1.SuspendLayout();
             this.SplitContainer_Main.Panel2.SuspendLayout();
@@ -181,6 +183,7 @@ namespace SAM.Analytical.UI
             this.RibbonTab_Edit.Name = "RibbonTab_Edit";
             this.RibbonTab_Edit.Panels.Add(this.RibbonPanel_Edit_General);
             this.RibbonTab_Edit.Panels.Add(this.RibbonPanel_Edit_Import);
+            this.RibbonTab_Edit.Panels.Add(this.RibbonPanel_Check);
             this.RibbonTab_Edit.Text = "Edit";
             // 
             // RibbonPanel_Edit_General
@@ -214,6 +217,22 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Edit_SAMImport.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_SAMImport.SmallImage")));
             this.RibbonButton_Edit_SAMImport.Text = "SAM Import";
             this.RibbonButton_Edit_SAMImport.Click += new System.EventHandler(this.RibbonButton_Edit_SAMImport_Click);
+            // 
+            // RibbonPanel_Check
+            // 
+            this.RibbonPanel_Check.Enabled = false;
+            this.RibbonPanel_Check.Items.Add(this.RibbonButton_Edit_ModelCheck);
+            this.RibbonPanel_Check.Name = "RibbonPanel_Check";
+            this.RibbonPanel_Check.Text = "Check";
+            // 
+            // RibbonButton_Edit_ModelCheck
+            // 
+            this.RibbonButton_Edit_ModelCheck.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_ModelCheck;
+            this.RibbonButton_Edit_ModelCheck.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_ModelCheck;
+            this.RibbonButton_Edit_ModelCheck.Name = "RibbonButton_Edit_ModelCheck";
+            this.RibbonButton_Edit_ModelCheck.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_ModelCheck.SmallImage")));
+            this.RibbonButton_Edit_ModelCheck.Text = "Model Check";
+            this.RibbonButton_Edit_ModelCheck.Click += new System.EventHandler(this.RibbonButton_Edit_ModelCheck_Click);
             // 
             // RibbonTab_Library
             // 
@@ -252,16 +271,6 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Library_ConstructionLibrary.Text = "Constructions";
             this.RibbonButton_Library_ConstructionLibrary.Click += new System.EventHandler(this.RibbonButton_Library_ConstructionLibrary_Click);
             // 
-            // RibbonButton_Library_InternalConditionLibrary
-            // 
-            this.RibbonButton_Library_InternalConditionLibrary.Enabled = false;
-            this.RibbonButton_Library_InternalConditionLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_InternalCondition;
-            this.RibbonButton_Library_InternalConditionLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_InternalCondition;
-            this.RibbonButton_Library_InternalConditionLibrary.Name = "RibbonButton_Library_InternalConditionLibrary";
-            this.RibbonButton_Library_InternalConditionLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_InternalConditionLibrary.SmallImage")));
-            this.RibbonButton_Library_InternalConditionLibrary.Text = "Internal Conditions";
-            this.RibbonButton_Library_InternalConditionLibrary.Click += new System.EventHandler(this.RibbonButton_Library_InternalConditionLibrary_Click);
-            // 
             // RibbonButton_Library_ApertureConstruction
             // 
             this.RibbonButton_Library_ApertureConstruction.Enabled = false;
@@ -271,6 +280,16 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Library_ApertureConstruction.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_ApertureConstruction.SmallImage")));
             this.RibbonButton_Library_ApertureConstruction.Text = "Aperture Construction";
             this.RibbonButton_Library_ApertureConstruction.Click += new System.EventHandler(this.RibbonButton_Library_ApertureConstruction_Click);
+            // 
+            // RibbonButton_Library_InternalConditionLibrary
+            // 
+            this.RibbonButton_Library_InternalConditionLibrary.Enabled = false;
+            this.RibbonButton_Library_InternalConditionLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_InternalCondition;
+            this.RibbonButton_Library_InternalConditionLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_InternalCondition;
+            this.RibbonButton_Library_InternalConditionLibrary.Name = "RibbonButton_Library_InternalConditionLibrary";
+            this.RibbonButton_Library_InternalConditionLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_InternalConditionLibrary.SmallImage")));
+            this.RibbonButton_Library_InternalConditionLibrary.Text = "Internal Conditions";
+            this.RibbonButton_Library_InternalConditionLibrary.Click += new System.EventHandler(this.RibbonButton_Library_InternalConditionLibrary_Click);
             // 
             // RibbonTab_Simulate
             // 
@@ -295,6 +314,15 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Simulate_WeatherData.Name = "RibbonButton_Simulate_WeatherData";
             this.RibbonButton_Simulate_WeatherData.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Simulate_WeatherData.SmallImage")));
             this.RibbonButton_Simulate_WeatherData.Text = "Weather Data";
+            // 
+            // RibbonButton_Simulate_ImportWeatherData
+            // 
+            this.RibbonButton_Simulate_ImportWeatherData.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_Import;
+            this.RibbonButton_Simulate_ImportWeatherData.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_Import;
+            this.RibbonButton_Simulate_ImportWeatherData.Name = "RibbonButton_Simulate_ImportWeatherData";
+            this.RibbonButton_Simulate_ImportWeatherData.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Simulate_ImportWeatherData.SmallImage")));
+            this.RibbonButton_Simulate_ImportWeatherData.Text = "Import";
+            this.RibbonButton_Simulate_ImportWeatherData.Click += new System.EventHandler(this.RibbonButton_Simulate_ImportWeatherData_Click);
             // 
             // RibbonPanel_Simulate_Simulate
             // 
@@ -453,15 +481,6 @@ namespace SAM.Analytical.UI
             this.PictureBox_Logo.TabIndex = 0;
             this.PictureBox_Logo.TabStop = false;
             // 
-            // RibbonButton_Simulate_ImportWeatherData
-            // 
-            this.RibbonButton_Simulate_ImportWeatherData.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_Import;
-            this.RibbonButton_Simulate_ImportWeatherData.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_Import;
-            this.RibbonButton_Simulate_ImportWeatherData.Name = "RibbonButton_Simulate_ImportWeatherData";
-            this.RibbonButton_Simulate_ImportWeatherData.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Simulate_ImportWeatherData.SmallImage")));
-            this.RibbonButton_Simulate_ImportWeatherData.Text = "Import";
-            this.RibbonButton_Simulate_ImportWeatherData.Click += new System.EventHandler(this.RibbonButton_Simulate_ImportWeatherData_Click);
-            // 
             // AnalyticalForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -531,6 +550,8 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.TreeView TreeView_AnalyticalModel;
         private System.Windows.Forms.RibbonButton RibbonButton_Library_ApertureConstruction;
         private System.Windows.Forms.RibbonButton RibbonButton_Simulate_ImportWeatherData;
+        private System.Windows.Forms.RibbonPanel RibbonPanel_Check;
+        private System.Windows.Forms.RibbonButton RibbonButton_Edit_ModelCheck;
     }
 }
 
