@@ -397,7 +397,7 @@ namespace SAM.Analytical.UI
 
             MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
 
-            using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm(materialLibrary, SAM.Core.Query.Enums(typeof(OpaqueMaterialParameter), typeof(TransparentMaterialParameter))))
+            using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm(materialLibrary, Core.Query.Enums(typeof(IMaterial))))
             {
                 if(materialLibraryForm.ShowDialog(this) != DialogResult.OK)
                 {
@@ -542,8 +542,17 @@ namespace SAM.Analytical.UI
                         }
                     }
 
+                    List<Construction> constructions = analyticalModel_Temp.AdjacencyCluster.GetConstructions();
+                    if(constructions != null)
+                    {
+                        foreach(Construction construction in constructions)
+                        {
+                            tuples.Add(new Tuple<string, string, IJSAMObject>(typeof(Construction).Name, construction.Name, construction));
+                        }
+                    }
+
                 }
-                if (jSAMObject is MaterialLibrary)
+                else if (jSAMObject is MaterialLibrary)
                 {
                     List<IMaterial> materials = ((MaterialLibrary)jSAMObject).GetMaterials();
                     if (materials != null)
@@ -555,13 +564,25 @@ namespace SAM.Analytical.UI
                     }
 
                 }
+                else if (jSAMObject is ConstructionLibrary)
+                {
+                    List<Construction> constructions = ((ConstructionLibrary)jSAMObject).GetConstructions();
+                    if (constructions != null)
+                    {
+                        foreach (Construction construction in constructions)
+                        {
+                            tuples.Add(new Tuple<string, string, IJSAMObject>(typeof(Construction).Name, construction.Name, construction));
+                        }
+                    }
+
+                }
                 else if(jSAMObject is IMaterial)
                 {
                     tuples.Add(new Tuple<string, string, IJSAMObject>(typeof(Material).Name, ((IMaterial)jSAMObject).Name, jSAMObject));
                 }
-                else if(jSAMObject is SAMObject)
+                else if (jSAMObject is Construction)
                 {
-                    tuples.Add(new Tuple<string, string, IJSAMObject>(jSAMObject.GetType().Name, ((SAMObject)jSAMObject).Name, jSAMObject));
+                    tuples.Add(new Tuple<string, string, IJSAMObject>(typeof(Construction).Name, ((Construction)jSAMObject).Name, jSAMObject));
                 }
             }
 
@@ -578,6 +599,7 @@ namespace SAM.Analytical.UI
 
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+            AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             foreach(Tuple<string, string, IJSAMObject> tuple in tuples)
             {
                 IJSAMObject jSAMObject = tuple?.Item3;
@@ -591,9 +613,14 @@ namespace SAM.Analytical.UI
                 {
                     analyticalModel.AddMaterial((IMaterial)jSAMObject);
                 }
+                else if(jSAMObject is Construction)
+                {
+                    adjacencyCluster.AddObject(jSAMObject);
+                }
+
             }
 
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster);
         }
 
         private void RibbonButton_Edit_Location_Click(object sender, EventArgs e)
