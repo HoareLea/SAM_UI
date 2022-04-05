@@ -42,8 +42,19 @@
     <Reference Include="SAM.Core">
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Core.Tas">
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Core.Windows">
       <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry, Version=1.0.8129.21951, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather, Version=1.0.8130.17143, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\UIAnalyticalModel.cs" />
     <Compile Include="Forms\AnalyticalForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +89,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -90,6 +103,92 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="RibbonWinForms">
+      <Version>5.1.0-beta</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_MaterialLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ConstructionLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_EditLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_T3D.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TBD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TPD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TSD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Hydra.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{b25a1dc1-c41b-40c2-a769-636d5b13e7c0}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Wiki.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SaveAs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_InternalCondition.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_WeatherData.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_New.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Location.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SolarCalculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ApertureConstruction.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

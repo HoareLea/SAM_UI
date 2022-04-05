@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SAM_UI", "SAM_UI", "{7E74E0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Analytical.UI", "SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj", "{141D9925-A6E1-4390-89C7-251A428E2DF0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Weather.UI", "SAM_UI\SAM.Weather.UI\SAM.Weather.UI.csproj", "{76B5D171-3691-4113-AF33-C1B69199CAC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{141D9925-A6E1-4390-89C7-251A428E2DF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{141D9925-A6E1-4390-89C7-251A428E2DF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{141D9925-A6E1-4390-89C7-251A428E2DF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76B5D171-3691-4113-AF33-C1B69199CAC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76B5D171-3691-4113-AF33-C1B69199CAC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76B5D171-3691-4113-AF33-C1B69199CAC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76B5D171-3691-4113-AF33-C1B69199CAC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -30,6 +36,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B25A1DC1-C41B-40C2-A769-636D5B13E7C0} = {7E74E0F2-AB94-4AFF-8456-EB38F1023D86}
 		{141D9925-A6E1-4390-89C7-251A428E2DF0} = {7E74E0F2-AB94-4AFF-8456-EB38F1023D86}
+		{76B5D171-3691-4113-AF33-C1B69199CAC6} = {7E74E0F2-AB94-4AFF-8456-EB38F1023D86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BDA24D60-F69D-4880-BBD8-4F2C110FF3CD}
