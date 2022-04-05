@@ -710,7 +710,7 @@ namespace SAM.Analytical.UI
 
                 }
 
-                SAM.Weather.Convert.ToSAM();
+                //SAM.Weather.Convert.ToSAM();
             }
         }
     }
