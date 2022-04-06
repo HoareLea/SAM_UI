@@ -434,7 +434,7 @@ namespace SAM.Analytical.UI
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
                 saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.FilterIndex = 1;
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                 {
@@ -443,7 +443,7 @@ namespace SAM.Analytical.UI
                 path = saveFileDialog.FileName;
             }
 
-            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 return;
             }
