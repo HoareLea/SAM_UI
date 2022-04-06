@@ -61,8 +61,35 @@ namespace SAM.Analytical.UI
             Refresh_TreeView();
         }
 
+        private List<object> GetExpandedTags(TreeNodeCollection treeNodeCollection)
+        {
+            if (treeNodeCollection == null)
+            {
+                return null;
+            }
+
+            List<object> result = new List<object>();
+
+            foreach (TreeNode treeNode in treeNodeCollection)
+            {
+                if (treeNode.IsExpanded)
+                {
+                    result.Add(treeNode.Tag);
+                    List<object> expandedTags = GetExpandedTags(treeNode.Nodes);
+                    if (expandedTags != null)
+                    {
+                        result.AddRange(expandedTags);
+                    }
+                }
+            }
+
+            return result;
+        }
+        
         private void Refresh_TreeView()
         {
+            List<object> expandedTags = GetExpandedTags(TreeView_AnalyticalModel.Nodes);
+            
             TreeView_AnalyticalModel.Nodes.Clear();
 
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -115,9 +142,24 @@ namespace SAM.Analytical.UI
                                     {
                                         TreeNode treeNode_Aperture = treeNode_Panel.Nodes.Add(aperture.Name);
                                         treeNode_Aperture.Tag = aperture;
+
+                                        if (expandedTags.Find(x => x is Aperture && ((Aperture)x).Guid == aperture.Guid) != null)
+                                        {
+                                            treeNode_Aperture.Expand();
+                                        }
                                     }
                                 }
+
+                                if (expandedTags.Find(x => x is Panel && ((Panel)x).Guid == panel.Guid) != null)
+                                {
+                                    treeNode_Panel.Expand();
+                                }
                             }
+                        }
+
+                        if (expandedTags.Find(x => x is Space && ((Space)x).Guid == space.Guid) != null)
+                        {
+                            treeNode_Space.Expand();
                         }
                     }
                 }
@@ -132,6 +174,11 @@ namespace SAM.Analytical.UI
                         {
                             TreeNode treeNode_Shade = treeNode_Shades.Nodes.Add(panel.Name);
                             treeNode_Shade.Tag = panel;
+
+                            if (expandedTags.Find(x => x is Panel && ((Panel)x).Guid == panel.Guid) != null)
+                            {
+                                treeNode_Shade.Expand();
+                            }
                         }
                     }
                 }
@@ -159,6 +206,32 @@ namespace SAM.Analytical.UI
             }
 
             treeNode_AnalyticalModel.Expand();
+            if(expandedTags != null && expandedTags.Count != 0)
+            {
+                if (expandedTags.Contains(treeNode_Spaces.Tag))
+                {
+                    treeNode_Spaces.Expand();
+                }
+
+                if (expandedTags.Contains(treeNode_Shades.Tag))
+                {
+                    treeNode_Shades.Expand();
+                }
+
+                if (expandedTags.Contains(treeNode_Profiles.Tag))
+                {
+                    treeNode_Profiles.Expand();
+                }
+
+                if (expandedTags.Contains(treeNode_Materials.Tag))
+                {
+                    treeNode_Materials.Expand();
+                }
+
+
+            }
+
+
         }
 
         private void AnalyticalForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -829,7 +902,7 @@ namespace SAM.Analytical.UI
                 string uniqueId = materialLibrary.GetUniqueId(material);
 
 
-                using (Core.Windows.Forms.MaterialForm materialForm = new Core.Windows.Forms.MaterialForm(material, SAM.Core.Query.Enums(typeof(OpaqueMaterialParameter), typeof(TransparentMaterialParameter))))
+                using (Core.Windows.Forms.MaterialForm materialForm = new Core.Windows.Forms.MaterialForm(material, Core.Query.Enums(typeof(IMaterial))))
                 {
                     if(materialForm.ShowDialog(this) != DialogResult.OK)
                     {
