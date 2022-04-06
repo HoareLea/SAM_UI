@@ -518,6 +518,7 @@ namespace SAM.Analytical.UI
 
             using (Windows.Forms.ApertureConstructionLibraryForm apertureConstructionLibraryForm = new Windows.Forms.ApertureConstructionLibraryForm(materialLibrary, apertureConstructionLibrary))
             {
+                apertureConstructionLibraryForm.Text = "Aperture Constructions";
                 if (apertureConstructionLibraryForm.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
@@ -548,6 +549,7 @@ namespace SAM.Analytical.UI
 
             using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
             {
+                constructionLibraryForm.Text = "Constructions";
                 if (constructionLibraryForm.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
