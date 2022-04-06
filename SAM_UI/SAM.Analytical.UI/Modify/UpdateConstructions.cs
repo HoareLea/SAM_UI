@@ -12,10 +12,22 @@ namespace SAM.Analytical.UI
                 return;
             }
 
+            UpdateConstructions(adjacencyCluster, constructions);
+        }
+
+        public static void UpdateConstructions(this AdjacencyCluster adjacencyCluster, IEnumerable<Construction> constructions)
+        {
+            if(adjacencyCluster == null || constructions == null)
+            {
+                return;
+            }
+
+            List<Construction> constructions_Temp = new List<Construction>(constructions);
+            
             List<Panel> panels = adjacencyCluster.GetPanels();
             if (panels != null)
             {
-                for (int i = constructions.Count - 1; i >= 0; i--)
+                for (int i = constructions_Temp.Count - 1; i >= 0; i--)
                 {
                     bool exists = false;
                     foreach (Panel panel in panels)
@@ -23,9 +35,9 @@ namespace SAM.Analytical.UI
                         Construction construction = panel?.Construction;
                         if (construction != null)
                         {
-                            if (construction.Guid == constructions[i].Guid)
+                            if (construction.Guid == constructions_Temp[i].Guid)
                             {
-                                adjacencyCluster.AddObject(Create.Panel(panel, constructions[i]));
+                                adjacencyCluster.AddObject(Create.Panel(panel, constructions_Temp[i]));
                                 exists = true;
                             }
                         }
@@ -33,12 +45,12 @@ namespace SAM.Analytical.UI
 
                     if (exists)
                     {
-                        constructions.RemoveAt(i);
+                        constructions_Temp.RemoveAt(i);
                     }
                 }
             }
 
-            foreach (Construction construction_Temp in constructions)
+            foreach (Construction construction_Temp in constructions_Temp)
             {
                 adjacencyCluster.AddObject(construction_Temp);
             }
