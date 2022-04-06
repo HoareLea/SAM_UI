@@ -61,12 +61,12 @@ namespace SAM.Core.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Icon SAM {
+        internal static System.Drawing.Bitmap SAM {
             get {
                 object obj = ResourceManager.GetObject("SAM", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

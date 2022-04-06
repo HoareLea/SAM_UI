@@ -17,6 +17,8 @@ namespace SAM.Analytical.UI
 
         private void AnalyticalForm_Load(object sender, EventArgs e)
         {
+            RibbonPanel_Tools_Hydra.Visible = false;
+
             uIAnalyticalModel = new UIAnalyticalModel();
             uIAnalyticalModel.Opened += UIAnalyticalModel_Refresh;
             uIAnalyticalModel.Closed += UIAnalyticalModel_Refresh;
@@ -243,6 +245,12 @@ namespace SAM.Analytical.UI
             string path = null;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
+                string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
+                if(System.IO.Directory.Exists(directory))
+                {
+                    openFileDialog.InitialDirectory = directory;
+                }
+
                 openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
@@ -288,6 +296,12 @@ namespace SAM.Analytical.UI
                 {
                     using (OpenFileDialog openFileDialog = new OpenFileDialog())
                     {
+                        string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
+                        if (System.IO.Directory.Exists(directory))
+                        {
+                            openFileDialog.InitialDirectory = directory;
+                        }
+
                         openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                         openFileDialog.FilterIndex = 2;
                         openFileDialog.RestoreDirectory = true;
@@ -355,6 +369,11 @@ namespace SAM.Analytical.UI
             string path = null;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
+                string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
+                if (System.IO.Directory.Exists(directory))
+                {
+                    openFileDialog.InitialDirectory = directory;
+                }
                 openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
@@ -411,7 +430,7 @@ namespace SAM.Analytical.UI
             System.Diagnostics.Process.Start(path);
         }
 
-        private void RibbonButton_OpenTPD_Click(object sender, EventArgs e)
+        private void RibbonButton_Tools_OpenTPD_Click(object sender, EventArgs e)
         {
             string path = Core.Tas.Query.TPDPath();
 
@@ -608,6 +627,12 @@ namespace SAM.Analytical.UI
             string path = null;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
+                string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
+                if (System.IO.Directory.Exists(directory))
+                {
+                    openFileDialog.InitialDirectory = directory;
+                }
+
                 openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
@@ -1027,6 +1052,11 @@ namespace SAM.Analytical.UI
         private void RibbonButton_Edit_ModelCheck_Click(object sender, EventArgs e)
         {
             MessageBox.Show("To be implemented soon...");
+        }
+
+        private void RibbonPanel_Tools_Tas_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

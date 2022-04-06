@@ -62,10 +62,10 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Tools_Edit = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Tools_EditLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Tools_Tas = new System.Windows.Forms.RibbonPanel();
-            this.RibbonButton_Tools_OpenTSD = new System.Windows.Forms.RibbonButton();
-            this.RibbonButton_Tools_OpenTBD = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Tools_OpenT3D = new System.Windows.Forms.RibbonButton();
-            this.RibbonButton_OpenTPD = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_Tools_OpenTBD = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_Tools_OpenTSD = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_Tools_OpenTPD = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Tools_Hydra = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Tools_Hydra = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Help = new System.Windows.Forms.RibbonTab();
@@ -125,6 +125,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_File_General
             // 
+            this.RibbonPanel_File_General.ButtonMoreEnabled = false;
+            this.RibbonPanel_File_General.ButtonMoreVisible = false;
             this.RibbonPanel_File_General.Items.Add(this.RibbonButton_File_New);
             this.RibbonPanel_File_General.Items.Add(this.RibbonButton_File_Open);
             this.RibbonPanel_File_General.Items.Add(this.RibbonButton_File_Save);
@@ -140,6 +142,8 @@ namespace SAM.Analytical.UI
             this.RibbonButton_File_New.Name = "RibbonButton_File_New";
             this.RibbonButton_File_New.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_File_New.SmallImage")));
             this.RibbonButton_File_New.Text = "New";
+            this.RibbonButton_File_New.ToolTip = "Create new SAM analytical model";
+            this.RibbonButton_File_New.ToolTipTitle = "New Analytical Model";
             this.RibbonButton_File_New.Click += new System.EventHandler(this.RibbonButton_File_New_Click);
             // 
             // RibbonButton_File_Open
@@ -149,6 +153,8 @@ namespace SAM.Analytical.UI
             this.RibbonButton_File_Open.Name = "RibbonButton_File_Open";
             this.RibbonButton_File_Open.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_File_Open.SmallImage")));
             this.RibbonButton_File_Open.Text = "Open";
+            this.RibbonButton_File_Open.ToolTip = "Opens existing SAM analytical model";
+            this.RibbonButton_File_Open.ToolTipTitle = "Open Analytical Model";
             this.RibbonButton_File_Open.Click += new System.EventHandler(this.RibbonButton_File_Open_Click);
             // 
             // RibbonButton_File_Save
@@ -188,6 +194,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Edit_General
             // 
+            this.RibbonPanel_Edit_General.ButtonMoreEnabled = false;
+            this.RibbonPanel_Edit_General.ButtonMoreVisible = false;
             this.RibbonPanel_Edit_General.Enabled = false;
             this.RibbonPanel_Edit_General.Items.Add(this.RibbonButton_Edit_Location);
             this.RibbonPanel_Edit_General.Name = "RibbonPanel_Edit_General";
@@ -204,6 +212,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Edit_Import
             // 
+            this.RibbonPanel_Edit_Import.ButtonMoreEnabled = false;
+            this.RibbonPanel_Edit_Import.ButtonMoreVisible = false;
             this.RibbonPanel_Edit_Import.Enabled = false;
             this.RibbonPanel_Edit_Import.Items.Add(this.RibbonButton_Edit_SAMImport);
             this.RibbonPanel_Edit_Import.Name = "RibbonPanel_Edit_Import";
@@ -220,6 +230,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Check
             // 
+            this.RibbonPanel_Check.ButtonMoreEnabled = false;
+            this.RibbonPanel_Check.ButtonMoreVisible = false;
             this.RibbonPanel_Check.Enabled = false;
             this.RibbonPanel_Check.Items.Add(this.RibbonButton_Edit_ModelCheck);
             this.RibbonPanel_Check.Name = "RibbonPanel_Check";
@@ -243,6 +255,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Library_General
             // 
+            this.RibbonPanel_Library_General.ButtonMoreEnabled = false;
+            this.RibbonPanel_Library_General.ButtonMoreVisible = false;
             this.RibbonPanel_Library_General.Enabled = false;
             this.RibbonPanel_Library_General.Items.Add(this.RibbonButton_Library_MaterialLibrary);
             this.RibbonPanel_Library_General.Items.Add(this.RibbonButton_Library_ConstructionLibrary);
@@ -301,6 +315,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Simulate_WeatherData
             // 
+            this.RibbonPanel_Simulate_WeatherData.ButtonMoreEnabled = false;
+            this.RibbonPanel_Simulate_WeatherData.ButtonMoreVisible = false;
             this.RibbonPanel_Simulate_WeatherData.Enabled = false;
             this.RibbonPanel_Simulate_WeatherData.Items.Add(this.RibbonButton_Simulate_WeatherData);
             this.RibbonPanel_Simulate_WeatherData.Items.Add(this.RibbonButton_Simulate_ImportWeatherData);
@@ -326,6 +342,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Simulate_Simulate
             // 
+            this.RibbonPanel_Simulate_Simulate.ButtonMoreEnabled = false;
+            this.RibbonPanel_Simulate_Simulate.ButtonMoreVisible = false;
             this.RibbonPanel_Simulate_Simulate.Enabled = false;
             this.RibbonPanel_Simulate_Simulate.Items.Add(this.RibbonButton_SolarSimulation);
             this.RibbonPanel_Simulate_Simulate.Name = "RibbonPanel_Simulate_Simulate";
@@ -349,6 +367,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Tools_Edit
             // 
+            this.RibbonPanel_Tools_Edit.ButtonMoreEnabled = false;
+            this.RibbonPanel_Tools_Edit.ButtonMoreVisible = false;
             this.RibbonPanel_Tools_Edit.Items.Add(this.RibbonButton_Tools_EditLibrary);
             this.RibbonPanel_Tools_Edit.Name = "RibbonPanel_Tools_Edit";
             this.RibbonPanel_Tools_Edit.Text = "Edit";
@@ -364,30 +384,15 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Tools_Tas
             // 
-            this.RibbonPanel_Tools_Tas.Items.Add(this.RibbonButton_Tools_OpenTSD);
-            this.RibbonPanel_Tools_Tas.Items.Add(this.RibbonButton_Tools_OpenTBD);
+            this.RibbonPanel_Tools_Tas.ButtonMoreEnabled = false;
+            this.RibbonPanel_Tools_Tas.ButtonMoreVisible = false;
             this.RibbonPanel_Tools_Tas.Items.Add(this.RibbonButton_Tools_OpenT3D);
-            this.RibbonPanel_Tools_Tas.Items.Add(this.RibbonButton_OpenTPD);
+            this.RibbonPanel_Tools_Tas.Items.Add(this.RibbonButton_Tools_OpenTBD);
+            this.RibbonPanel_Tools_Tas.Items.Add(this.RibbonButton_Tools_OpenTSD);
+            this.RibbonPanel_Tools_Tas.Items.Add(this.RibbonButton_Tools_OpenTPD);
             this.RibbonPanel_Tools_Tas.Name = "RibbonPanel_Tools_Tas";
             this.RibbonPanel_Tools_Tas.Text = "Tas";
-            // 
-            // RibbonButton_Tools_OpenTSD
-            // 
-            this.RibbonButton_Tools_OpenTSD.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_TSD;
-            this.RibbonButton_Tools_OpenTSD.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_TSD;
-            this.RibbonButton_Tools_OpenTSD.Name = "RibbonButton_Tools_OpenTSD";
-            this.RibbonButton_Tools_OpenTSD.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_OpenTSD.SmallImage")));
-            this.RibbonButton_Tools_OpenTSD.Text = "Open TSD";
-            this.RibbonButton_Tools_OpenTSD.Click += new System.EventHandler(this.RibbonButton_Tools_OpenTSD_Click);
-            // 
-            // RibbonButton_Tools_OpenTBD
-            // 
-            this.RibbonButton_Tools_OpenTBD.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_TBD;
-            this.RibbonButton_Tools_OpenTBD.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_TBD;
-            this.RibbonButton_Tools_OpenTBD.Name = "RibbonButton_Tools_OpenTBD";
-            this.RibbonButton_Tools_OpenTBD.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_OpenTBD.SmallImage")));
-            this.RibbonButton_Tools_OpenTBD.Text = "Open TBD";
-            this.RibbonButton_Tools_OpenTBD.Click += new System.EventHandler(this.RibbonButton_Tools_OpenTBD_Click);
+            this.RibbonPanel_Tools_Tas.Click += new System.EventHandler(this.RibbonPanel_Tools_Tas_Click);
             // 
             // RibbonButton_Tools_OpenT3D
             // 
@@ -398,17 +403,37 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Tools_OpenT3D.Text = "Open T3D";
             this.RibbonButton_Tools_OpenT3D.Click += new System.EventHandler(this.RibbonButton_Tools_OpenT3D_Click);
             // 
-            // RibbonButton_OpenTPD
+            // RibbonButton_Tools_OpenTBD
             // 
-            this.RibbonButton_OpenTPD.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_TPD;
-            this.RibbonButton_OpenTPD.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_TPD;
-            this.RibbonButton_OpenTPD.Name = "RibbonButton_OpenTPD";
-            this.RibbonButton_OpenTPD.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_OpenTPD.SmallImage")));
-            this.RibbonButton_OpenTPD.Text = "Open TPD";
-            this.RibbonButton_OpenTPD.Click += new System.EventHandler(this.RibbonButton_OpenTPD_Click);
+            this.RibbonButton_Tools_OpenTBD.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_TBD;
+            this.RibbonButton_Tools_OpenTBD.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_TBD;
+            this.RibbonButton_Tools_OpenTBD.Name = "RibbonButton_Tools_OpenTBD";
+            this.RibbonButton_Tools_OpenTBD.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_OpenTBD.SmallImage")));
+            this.RibbonButton_Tools_OpenTBD.Text = "Open TBD";
+            this.RibbonButton_Tools_OpenTBD.Click += new System.EventHandler(this.RibbonButton_Tools_OpenTBD_Click);
+            // 
+            // RibbonButton_Tools_OpenTSD
+            // 
+            this.RibbonButton_Tools_OpenTSD.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_TSD;
+            this.RibbonButton_Tools_OpenTSD.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_TSD;
+            this.RibbonButton_Tools_OpenTSD.Name = "RibbonButton_Tools_OpenTSD";
+            this.RibbonButton_Tools_OpenTSD.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_OpenTSD.SmallImage")));
+            this.RibbonButton_Tools_OpenTSD.Text = "Open TSD";
+            this.RibbonButton_Tools_OpenTSD.Click += new System.EventHandler(this.RibbonButton_Tools_OpenTSD_Click);
+            // 
+            // RibbonButton_Tools_OpenTPD
+            // 
+            this.RibbonButton_Tools_OpenTPD.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_TPD;
+            this.RibbonButton_Tools_OpenTPD.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_TPD;
+            this.RibbonButton_Tools_OpenTPD.Name = "RibbonButton_Tools_OpenTPD";
+            this.RibbonButton_Tools_OpenTPD.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_OpenTPD.SmallImage")));
+            this.RibbonButton_Tools_OpenTPD.Text = "Open TPD";
+            this.RibbonButton_Tools_OpenTPD.Click += new System.EventHandler(this.RibbonButton_Tools_OpenTPD_Click);
             // 
             // RibbonPanel_Tools_Hydra
             // 
+            this.RibbonPanel_Tools_Hydra.ButtonMoreEnabled = false;
+            this.RibbonPanel_Tools_Hydra.ButtonMoreVisible = false;
             this.RibbonPanel_Tools_Hydra.Items.Add(this.RibbonButton_Tools_Hydra);
             this.RibbonPanel_Tools_Hydra.Name = "RibbonPanel_Tools_Hydra";
             this.RibbonPanel_Tools_Hydra.Text = "Hydra";
@@ -430,6 +455,8 @@ namespace SAM.Analytical.UI
             // 
             // RibbonPanel_Help_General
             // 
+            this.RibbonPanel_Help_General.ButtonMoreEnabled = false;
+            this.RibbonPanel_Help_General.ButtonMoreVisible = false;
             this.RibbonPanel_Help_General.Items.Add(this.RibbonButton_Help_Wiki);
             this.RibbonPanel_Help_General.Name = "RibbonPanel_Help_General";
             this.RibbonPanel_Help_General.Text = "General";
@@ -529,7 +556,7 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonButton RibbonButton_Tools_OpenTSD;
         private System.Windows.Forms.RibbonButton RibbonButton_Tools_OpenTBD;
         private System.Windows.Forms.RibbonButton RibbonButton_Tools_OpenT3D;
-        private System.Windows.Forms.RibbonButton RibbonButton_OpenTPD;
+        private System.Windows.Forms.RibbonButton RibbonButton_Tools_OpenTPD;
         private System.Windows.Forms.RibbonButton RibbonButton_File_Close;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Tools_Hydra;
         private System.Windows.Forms.RibbonButton RibbonButton_Tools_Hydra;
