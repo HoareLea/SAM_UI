@@ -507,7 +507,7 @@ namespace SAM.Analytical.UI
                 apertureConstructionLibrary = apertureConstructionLibraryForm.ApertureConstructionLibrary;
             }
 
-            adjacencyCluster.UpdateApertureConstructions(apertureConstructionLibrary);
+            adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
 
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
         }
@@ -537,7 +537,7 @@ namespace SAM.Analytical.UI
                 constructionLibrary = constructionLibraryForm.ConstructionLibrary;
             }
 
-            adjacencyCluster.UpdateConstructions(constructionLibrary);
+            adjacencyCluster.ReplaceConstructions(constructionLibrary);
 
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
 
@@ -792,7 +792,7 @@ namespace SAM.Analytical.UI
 
                 adjacencyCluster.AddObject(panel);
 
-                adjacencyCluster.UpdateConstructions(constructionLibrary);
+                adjacencyCluster.ReplaceConstructions(constructionLibrary);
 
                 uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster);
             }
@@ -829,6 +829,57 @@ namespace SAM.Analytical.UI
                 materialLibrary.Replace(uniqueId, material);
 
                 uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
+            }
+
+            if (jSAMObject is Aperture)
+            {
+                AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+                if (analyticalModel == null)
+                {
+                    return;
+                }
+
+                AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
+                if (adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
+
+                ApertureConstructionLibrary apertureConstructionLibrary = null;
+
+                List<ApertureConstruction> apertureConstructions = adjacencyCluster?.GetApertureConstructions();
+                if (apertureConstructions != null)
+                {
+                    apertureConstructionLibrary = new ApertureConstructionLibrary(analyticalModel.Name);
+                    apertureConstructions.ForEach(x => apertureConstructionLibrary.Add(x));
+                }
+
+                Aperture aperture = (Aperture)jSAMObject;
+
+                using (Windows.Forms.ApertureForm apertureForm = new Windows.Forms.ApertureForm(aperture, materialLibrary, apertureConstructionLibrary, Core.Query.Enums(typeof(Aperture))))
+                {
+                    if (apertureForm.ShowDialog(this) != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    aperture = apertureForm.Aperture;
+                    apertureConstructionLibrary = apertureForm.ApertureConstructionLibrary;
+                }
+
+                Panel panel = adjacencyCluster.GetPanel(aperture);
+                if(panel != null)
+                {
+                    panel.RemoveAperture(aperture.Guid);
+                    panel.AddAperture(aperture);
+                    adjacencyCluster.AddObject(aperture);
+                }
+
+                adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
+
+                uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster);
             }
         }
 

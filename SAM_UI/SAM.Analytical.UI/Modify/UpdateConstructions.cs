@@ -38,9 +38,6 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            List<Construction> constructions_Temp = adjacencyCluster.GetObjects<Construction>();
-            adjacencyCluster.Remove(constructions_Temp);
-
             foreach (Construction construction_Temp in constructions)
             {
                 adjacencyCluster.AddObject(construction_Temp);

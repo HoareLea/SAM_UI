@@ -51,9 +51,6 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            List<ApertureConstruction> apertureConstructions_Temp = adjacencyCluster.GetObjects<ApertureConstruction>();
-            adjacencyCluster.Remove(apertureConstructions_Temp);
-
             foreach (ApertureConstruction apertureConstruction_Temp in apertureConstructions)
             {
                 adjacencyCluster.AddObject(apertureConstruction_Temp);
