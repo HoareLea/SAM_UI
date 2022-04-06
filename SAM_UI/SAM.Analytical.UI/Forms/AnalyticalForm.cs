@@ -358,16 +358,16 @@ namespace SAM.Analytical.UI
         private void RibbonButton_File_SaveAs_Click(object sender, EventArgs e)
         {
             string path = null;
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+                saveFileDialog.FilterIndex = 2;
+                saveFileDialog.RestoreDirectory = true;
+                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
                 }
-                path = openFileDialog.FileName;
+                path = saveFileDialog.FileName;
             }
 
             if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
@@ -410,9 +410,96 @@ namespace SAM.Analytical.UI
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, uIAnalyticalModel.JSAMObject.AdjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
         }
 
+        private void RibbonButton_Library_ApertureConstruction_Click(object sender, EventArgs e)
+        {
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if(adjacencyCluster == null)
+            {
+                return;
+            }
+
+            List<ApertureConstruction> apertureConstructions = adjacencyCluster.GetApertureConstructions();
+            ApertureConstructionLibrary apertureConstructionLibrary = new ApertureConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
+            apertureConstructions?.ForEach(x => apertureConstructionLibrary.Add(x));
+
+            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
+
+            using (Windows.Forms.ApertureConstructionLibraryForm apertureConstructionLibraryForm = new Windows.Forms.ApertureConstructionLibraryForm(materialLibrary, apertureConstructionLibrary))
+            {
+                if (apertureConstructionLibraryForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                apertureConstructionLibrary = apertureConstructionLibraryForm.ApertureConstructionLibrary;
+            }
+
+            apertureConstructions = apertureConstructionLibrary?.GetApertureConstructions();
+            if (apertureConstructions == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = adjacencyCluster.GetPanels();
+            if(panels != null)
+            {
+                for (int i = apertureConstructions.Count - 1; i >= 0; i--)
+                {
+                    bool exists = false;
+                    foreach (Panel panel in panels)
+                    {
+                        List<Aperture> apertures = panel.Apertures;
+                        if (apertures == null || apertures.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        foreach(Aperture aperture in apertures)
+                        {
+                            ApertureConstruction apertureConstruction = aperture?.ApertureConstruction;
+                            if(apertureConstruction == null)
+                            {
+                                continue;
+                            }
+
+                            if(apertureConstruction.Guid == apertureConstructions[i].Guid)
+                            {
+                                panel.RemoveAperture(aperture.Guid);
+                                panel.AddAperture(new Aperture(aperture, apertureConstructions[i]));
+                                adjacencyCluster.AddObject(panel);
+                                exists = true;
+                            }
+                        }
+                    }
+
+                    if(exists)
+                    {
+                        apertureConstructions.RemoveAt(i);
+                    }
+                }
+            }
+
+            List<ApertureConstruction> apertureConstructions_Temp = adjacencyCluster.GetObjects<ApertureConstruction>();
+            adjacencyCluster.Remove(apertureConstructions_Temp);
+
+            foreach (ApertureConstruction apertureConstruction_Temp in apertureConstructions)
+            {
+                adjacencyCluster.AddObject(apertureConstruction_Temp);
+            }
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
+        }
+
         private void RibbonButton_Library_ConstructionLibrary_Click(object sender, EventArgs e)
         {
-            List<Construction> constructions = uIAnalyticalModel.JSAMObject.AdjacencyCluster?.GetConstructions();
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel.JSAMObject.AdjacencyCluster;
+            if(adjacencyCluster == null)
+            {
+                return;
+            }
+
+            List<Construction> constructions = adjacencyCluster.GetConstructions();
+
             ConstructionLibrary constructionLibrary = new ConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
             constructions?.ForEach(x => constructionLibrary.Add(x));
 
@@ -420,13 +507,56 @@ namespace SAM.Analytical.UI
 
             using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
             {
-                constructionLibraryForm.Enabled = false;
                 if (constructionLibraryForm.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
                 }
 
+                constructionLibrary = constructionLibraryForm.ConstructionLibrary;
             }
+
+            constructions = constructionLibrary?.GetConstructions();
+            if (constructions == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = adjacencyCluster.GetPanels();
+            if(panels != null)
+            {
+                for (int i = constructions.Count - 1; i >= 0; i--)
+                {
+                    bool exists = false;
+                    foreach (Panel panel in panels)
+                    {
+                        Construction construction = panel?.Construction;
+                        if(construction != null)
+                        {
+                            if(construction.Guid == constructions[i].Guid)
+                            {
+                                adjacencyCluster.AddObject(Create.Panel(panel, constructions[i]));
+                                exists = true;
+                            }
+                        }
+                    }
+
+                    if(exists)
+                    {
+                        constructions.RemoveAt(i);
+                    }
+                }
+            }
+
+            List<Construction> constructions_Temp = adjacencyCluster.GetObjects<Construction>();
+            adjacencyCluster.Remove(constructions_Temp);
+
+            foreach(Construction construction_Temp in constructions)
+            {
+                adjacencyCluster.AddObject(construction_Temp);
+            }
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
+
         }
 
         private void RibbonButton_Help_Wiki_Click(object sender, EventArgs e)
@@ -665,7 +795,7 @@ namespace SAM.Analytical.UI
 
                 Panel panel = (Panel)jSAMObject;
 
-                using (Windows.Forms.PanelForm panelForm = new Windows.Forms.PanelForm(panel, materialLibrary, constructionLibrary, Core.Query.Enums(typeof(PanelParameter))))
+                using (Windows.Forms.PanelForm panelForm = new Windows.Forms.PanelForm(panel, materialLibrary, constructionLibrary, Core.Query.Enums(typeof(Panel))))
                 {
                     if(panelForm.ShowDialog(this) != DialogResult.OK)
                     {
@@ -713,11 +843,6 @@ namespace SAM.Analytical.UI
 
                 uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
             }
-        }
-
-        private void RibbonButton_Library_ApertureConstruction_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("To be implemented soon...");
         }
 
         private void RibbonButton_Simulate_ImportWeatherData_Click(object sender, EventArgs e)
