@@ -80,6 +80,8 @@
       <DependentUpon>AnalyticalForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\Program.cs" />
+    <Compile Include="Modify\UpdateApertureConstructions.cs" />
+    <Compile Include="Modify\UpdateConstructions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\AnalyticalForm.resx">
       <DependentUpon>AnalyticalForm.cs</DependentUpon>

@@ -507,58 +507,7 @@ namespace SAM.Analytical.UI
                 apertureConstructionLibrary = apertureConstructionLibraryForm.ApertureConstructionLibrary;
             }
 
-            apertureConstructions = apertureConstructionLibrary?.GetApertureConstructions();
-            if (apertureConstructions == null)
-            {
-                return;
-            }
-
-            List<Panel> panels = adjacencyCluster.GetPanels();
-            if(panels != null)
-            {
-                for (int i = apertureConstructions.Count - 1; i >= 0; i--)
-                {
-                    bool exists = false;
-                    foreach (Panel panel in panels)
-                    {
-                        List<Aperture> apertures = panel.Apertures;
-                        if (apertures == null || apertures.Count == 0)
-                        {
-                            continue;
-                        }
-
-                        foreach(Aperture aperture in apertures)
-                        {
-                            ApertureConstruction apertureConstruction = aperture?.ApertureConstruction;
-                            if(apertureConstruction == null)
-                            {
-                                continue;
-                            }
-
-                            if(apertureConstruction.Guid == apertureConstructions[i].Guid)
-                            {
-                                panel.RemoveAperture(aperture.Guid);
-                                panel.AddAperture(new Aperture(aperture, apertureConstructions[i]));
-                                adjacencyCluster.AddObject(panel);
-                                exists = true;
-                            }
-                        }
-                    }
-
-                    if(exists)
-                    {
-                        apertureConstructions.RemoveAt(i);
-                    }
-                }
-            }
-
-            List<ApertureConstruction> apertureConstructions_Temp = adjacencyCluster.GetObjects<ApertureConstruction>();
-            adjacencyCluster.Remove(apertureConstructions_Temp);
-
-            foreach (ApertureConstruction apertureConstruction_Temp in apertureConstructions)
-            {
-                adjacencyCluster.AddObject(apertureConstruction_Temp);
-            }
+            adjacencyCluster.UpdateApertureConstructions(apertureConstructionLibrary);
 
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
         }
@@ -588,45 +537,7 @@ namespace SAM.Analytical.UI
                 constructionLibrary = constructionLibraryForm.ConstructionLibrary;
             }
 
-            constructions = constructionLibrary?.GetConstructions();
-            if (constructions == null)
-            {
-                return;
-            }
-
-            List<Panel> panels = adjacencyCluster.GetPanels();
-            if(panels != null)
-            {
-                for (int i = constructions.Count - 1; i >= 0; i--)
-                {
-                    bool exists = false;
-                    foreach (Panel panel in panels)
-                    {
-                        Construction construction = panel?.Construction;
-                        if(construction != null)
-                        {
-                            if(construction.Guid == constructions[i].Guid)
-                            {
-                                adjacencyCluster.AddObject(Create.Panel(panel, constructions[i]));
-                                exists = true;
-                            }
-                        }
-                    }
-
-                    if(exists)
-                    {
-                        constructions.RemoveAt(i);
-                    }
-                }
-            }
-
-            List<Construction> constructions_Temp = adjacencyCluster.GetObjects<Construction>();
-            adjacencyCluster.Remove(constructions_Temp);
-
-            foreach(Construction construction_Temp in constructions)
-            {
-                adjacencyCluster.AddObject(construction_Temp);
-            }
+            adjacencyCluster.UpdateConstructions(constructionLibrary);
 
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
 
@@ -876,9 +787,12 @@ namespace SAM.Analytical.UI
                     }
 
                     panel = panelForm.Panel;
+                    constructionLibrary = panelForm.ConstructionLibrary;
                 }
 
                 adjacencyCluster.AddObject(panel);
+
+                adjacencyCluster.UpdateConstructions(constructionLibrary);
 
                 uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster);
             }
