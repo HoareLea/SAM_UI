@@ -118,8 +118,6 @@ namespace SAM.Analytical.UI
             TreeNode treeNode_Materials = treeNode_AnalyticalModel.Nodes.Add("Materials");
             treeNode_Materials.Tag = typeof(IMaterial);
 
-
-
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             if(adjacencyCluster != null)
             {
@@ -1059,7 +1057,7 @@ namespace SAM.Analytical.UI
             }
             else if (library is MaterialLibrary)
             {
-                using (MaterialLibraryForm materialLibraryForm = new MaterialLibraryForm((MaterialLibrary)library, SAM.Core.Query.Enums(typeof(OpaqueMaterialParameter), typeof(TransparentMaterialParameter))))
+                using (MaterialLibraryForm materialLibraryForm = new MaterialLibraryForm((MaterialLibrary)library, Core.Query.Enums(typeof(IMaterial))))
                 {
                     if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
                     {
