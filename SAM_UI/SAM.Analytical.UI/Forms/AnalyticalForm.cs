@@ -118,6 +118,9 @@ namespace SAM.Analytical.UI
             TreeNode treeNode_Materials = treeNode_AnalyticalModel.Nodes.Add("Materials");
             treeNode_Materials.Tag = typeof(IMaterial);
 
+            ContextMenuStrip contextMenuStrip_Material = new ContextMenuStrip();
+            ToolStripMenuItem toolStripMenuItem_Edit = new ToolStripMenuItem() { Text = "Edit"};
+
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             if(adjacencyCluster != null)
             {
@@ -679,6 +682,13 @@ namespace SAM.Analytical.UI
         {
             TreeNode treeNode = e.Node;
 
+            if(treeNode.Tag == typeof(IMaterial))
+            {
+                EditMaterialLibrary();
+                return;
+            }
+
+
             IJSAMObject jSAMObject = treeNode.Tag as IJSAMObject;
             if(jSAMObject == null)
             {
@@ -849,24 +859,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Edit_MaterialLibrary_Click(object sender, EventArgs e)
         {
-            if (uIAnalyticalModel?.JSAMObject == null)
-            {
-                return;
-            }
-
-            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
-
-            using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm(materialLibrary, Core.Query.Enums(typeof(IMaterial))))
-            {
-                if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                materialLibrary = materialLibraryForm.MaterialLibrary;
-            }
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, uIAnalyticalModel.JSAMObject.AdjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
+            EditMaterialLibrary();
         }
 
         private void RibbonButton_Edit_InternalConditionLibrary_Click(object sender, EventArgs e)
@@ -1058,6 +1051,28 @@ namespace SAM.Analytical.UI
             }
 
             Core.Convert.ToFile(new IJSAMObject[] { library }, path);
+        }
+
+        private void EditMaterialLibrary()
+        {
+            if (uIAnalyticalModel?.JSAMObject == null)
+            {
+                return;
+            }
+
+            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
+
+            using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm(materialLibrary, Core.Query.Enums(typeof(IMaterial))))
+            {
+                if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                materialLibrary = materialLibraryForm.MaterialLibrary;
+            }
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, uIAnalyticalModel.JSAMObject.AdjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
         }
     }
 }
