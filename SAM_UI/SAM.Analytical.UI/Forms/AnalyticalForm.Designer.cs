@@ -257,7 +257,7 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_MaterialLibrary);
             this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_InternalConditionLibrary);
             this.RibbonPanel_Edit_Library.Name = "RibbonPanel_Edit_Library";
-            this.RibbonPanel_Edit_Library.Text = "Library";
+            this.RibbonPanel_Edit_Library.Text = "Model Library";
             // 
             // RibbonButton_Edit_MaterialLibrary
             // 

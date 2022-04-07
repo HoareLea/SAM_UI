@@ -1162,7 +1162,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            material = Core.Windows.Modify.Duplicate(materialLibrary, material);
+            material = Core.Windows.Modify.Duplicate(materialLibrary, material, Core.Query.Enums(typeof(IMaterial)));
             if(material == null)
             {
                 return;
