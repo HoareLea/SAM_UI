@@ -216,6 +216,7 @@
     <None Include="Resources\SAM_ModelCheck.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\SAM_ProfileLibrary.png" />
     <Content Include="SAM.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

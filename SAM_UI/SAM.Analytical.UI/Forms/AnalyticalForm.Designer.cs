@@ -75,6 +75,7 @@ namespace SAM.Analytical.UI
             this.SplitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.TreeView_AnalyticalModel = new System.Windows.Forms.TreeView();
             this.PictureBox_Logo = new System.Windows.Forms.PictureBox();
+            this.RibbonButton_ProfileLibrary = new System.Windows.Forms.RibbonButton();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer_Main)).BeginInit();
             this.SplitContainer_Main.Panel1.SuspendLayout();
             this.SplitContainer_Main.Panel2.SuspendLayout();
@@ -256,6 +257,7 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Edit_Library.Enabled = false;
             this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_MaterialLibrary);
             this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_InternalConditionLibrary);
+            this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_ProfileLibrary);
             this.RibbonPanel_Edit_Library.Name = "RibbonPanel_Edit_Library";
             this.RibbonPanel_Edit_Library.Text = "Model Library";
             // 
@@ -513,6 +515,14 @@ namespace SAM.Analytical.UI
             this.PictureBox_Logo.TabIndex = 0;
             this.PictureBox_Logo.TabStop = false;
             // 
+            // RibbonButton_ProfileLibrary
+            // 
+            this.RibbonButton_ProfileLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_ProfileLibrary;
+            this.RibbonButton_ProfileLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_ProfileLibrary;
+            this.RibbonButton_ProfileLibrary.Name = "RibbonButton_ProfileLibrary";
+            this.RibbonButton_ProfileLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_ProfileLibrary.SmallImage")));
+            this.RibbonButton_ProfileLibrary.Text = "Profiles";
+            // 
             // AnalyticalForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -587,6 +597,7 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonButton RibbonButton_Edit_ApertureConstructions;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Library_EditLibrary;
         private System.Windows.Forms.RibbonButton RibbonButton_Library_EditLibrary;
+        private System.Windows.Forms.RibbonButton RibbonButton_ProfileLibrary;
     }
 }
 
