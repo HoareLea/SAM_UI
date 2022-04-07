@@ -24,7 +24,7 @@ namespace SAM.Analytical.UI
             uIAnalyticalModel.Closed += UIAnalyticalModel_Refresh;
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
 
-            Refresh();
+            Refresh_AnalyticalModel();
         }
 
         private void UIAnalyticalModel_Modified(object sender, EventArgs e)
@@ -34,10 +34,10 @@ namespace SAM.Analytical.UI
 
         private void UIAnalyticalModel_Refresh(object sender, EventArgs e)
         {
-            Refresh();
+            Refresh_AnalyticalModel();
         }
 
-        private void Refresh()
+        private void Refresh_AnalyticalModel()
         {
             RibbonTab_Edit.Enabled = true;
             RibbonTab_File.Enabled = true;
@@ -615,7 +615,7 @@ namespace SAM.Analytical.UI
 
             uIAnalyticalModel.JSAMObject = analyticalModel;
 
-            Refresh();
+            Refresh_AnalyticalModel();
         }
 
         private void RibbonButton_Edit_SAMImport_Click(object sender, EventArgs e)
