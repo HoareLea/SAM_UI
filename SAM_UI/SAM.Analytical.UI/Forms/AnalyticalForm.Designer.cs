@@ -52,18 +52,16 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Edit_Constructions = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Edit_Constructions = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Edit_ApertureConstructions = new System.Windows.Forms.RibbonButton();
-            this.RibbonTab_Library = new System.Windows.Forms.RibbonTab();
-            this.RibbonPanel_Library_EditLibrary = new System.Windows.Forms.RibbonPanel();
-            this.RibbonButton_Library_EditLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Simulate = new System.Windows.Forms.RibbonTab();
             this.RibbonPanel_Simulate_WeatherData = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Simulate_WeatherData = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Simulate_ImportWeatherData = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Simulate_Simulate = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_SolarSimulation = new System.Windows.Forms.RibbonButton();
+            this.RibbonTab_Library = new System.Windows.Forms.RibbonTab();
+            this.RibbonPanel_Library_EditLibrary = new System.Windows.Forms.RibbonPanel();
+            this.RibbonButton_Library_EditLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Tools = new System.Windows.Forms.RibbonTab();
-            this.RibbonPanel_Tools_Edit = new System.Windows.Forms.RibbonPanel();
-            this.RibbonButton_Tools_EditLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Tools_Tas = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Tools_OpenT3D = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Tools_OpenTBD = new System.Windows.Forms.RibbonButton();
@@ -307,29 +305,6 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Edit_ApertureConstructions.Text = "Aperture Constructions";
             this.RibbonButton_Edit_ApertureConstructions.Click += new System.EventHandler(this.RibbonButton_Edit_ApertureConstructions_Click);
             // 
-            // RibbonTab_Library
-            // 
-            this.RibbonTab_Library.Name = "RibbonTab_Library";
-            this.RibbonTab_Library.Panels.Add(this.RibbonPanel_Library_EditLibrary);
-            this.RibbonTab_Library.Text = "Library";
-            // 
-            // RibbonPanel_Library_EditLibrary
-            // 
-            this.RibbonPanel_Library_EditLibrary.ButtonMoreEnabled = false;
-            this.RibbonPanel_Library_EditLibrary.ButtonMoreVisible = false;
-            this.RibbonPanel_Library_EditLibrary.Items.Add(this.RibbonButton_Library_EditLibrary);
-            this.RibbonPanel_Library_EditLibrary.Name = "RibbonPanel_Library_EditLibrary";
-            this.RibbonPanel_Library_EditLibrary.Text = "General";
-            // 
-            // RibbonButton_Library_EditLibrary
-            // 
-            this.RibbonButton_Library_EditLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_EditLibrary;
-            this.RibbonButton_Library_EditLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_EditLibrary;
-            this.RibbonButton_Library_EditLibrary.Name = "RibbonButton_Library_EditLibrary";
-            this.RibbonButton_Library_EditLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_EditLibrary.SmallImage")));
-            this.RibbonButton_Library_EditLibrary.Text = "Edit Library";
-            this.RibbonButton_Library_EditLibrary.Click += new System.EventHandler(this.RibbonButton_Library_EditLibrary_Click);
-            // 
             // RibbonTab_Simulate
             // 
             this.RibbonTab_Simulate.Enabled = false;
@@ -382,29 +357,35 @@ namespace SAM.Analytical.UI
             this.RibbonButton_SolarSimulation.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_SolarSimulation.SmallImage")));
             this.RibbonButton_SolarSimulation.Text = "Solar Simulation";
             // 
+            // RibbonTab_Library
+            // 
+            this.RibbonTab_Library.Name = "RibbonTab_Library";
+            this.RibbonTab_Library.Panels.Add(this.RibbonPanel_Library_EditLibrary);
+            this.RibbonTab_Library.Text = "Library";
+            // 
+            // RibbonPanel_Library_EditLibrary
+            // 
+            this.RibbonPanel_Library_EditLibrary.ButtonMoreEnabled = false;
+            this.RibbonPanel_Library_EditLibrary.ButtonMoreVisible = false;
+            this.RibbonPanel_Library_EditLibrary.Items.Add(this.RibbonButton_Library_EditLibrary);
+            this.RibbonPanel_Library_EditLibrary.Name = "RibbonPanel_Library_EditLibrary";
+            this.RibbonPanel_Library_EditLibrary.Text = "General";
+            // 
+            // RibbonButton_Library_EditLibrary
+            // 
+            this.RibbonButton_Library_EditLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_EditLibrary;
+            this.RibbonButton_Library_EditLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_EditLibrary;
+            this.RibbonButton_Library_EditLibrary.Name = "RibbonButton_Library_EditLibrary";
+            this.RibbonButton_Library_EditLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_EditLibrary.SmallImage")));
+            this.RibbonButton_Library_EditLibrary.Text = "Edit Library";
+            this.RibbonButton_Library_EditLibrary.Click += new System.EventHandler(this.RibbonButton_Library_EditLibrary_Click);
+            // 
             // RibbonTab_Tools
             // 
             this.RibbonTab_Tools.Name = "RibbonTab_Tools";
-            this.RibbonTab_Tools.Panels.Add(this.RibbonPanel_Tools_Edit);
             this.RibbonTab_Tools.Panels.Add(this.RibbonPanel_Tools_Tas);
             this.RibbonTab_Tools.Panels.Add(this.RibbonPanel_Tools_Hydra);
             this.RibbonTab_Tools.Text = "Tools";
-            // 
-            // RibbonPanel_Tools_Edit
-            // 
-            this.RibbonPanel_Tools_Edit.ButtonMoreEnabled = false;
-            this.RibbonPanel_Tools_Edit.ButtonMoreVisible = false;
-            this.RibbonPanel_Tools_Edit.Items.Add(this.RibbonButton_Tools_EditLibrary);
-            this.RibbonPanel_Tools_Edit.Name = "RibbonPanel_Tools_Edit";
-            this.RibbonPanel_Tools_Edit.Text = "Edit";
-            // 
-            // RibbonButton_Tools_EditLibrary
-            // 
-            this.RibbonButton_Tools_EditLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_EditLibrary;
-            this.RibbonButton_Tools_EditLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_EditLibrary;
-            this.RibbonButton_Tools_EditLibrary.Name = "RibbonButton_Tools_EditLibrary";
-            this.RibbonButton_Tools_EditLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_EditLibrary.SmallImage")));
-            this.RibbonButton_Tools_EditLibrary.Text = "Edit Library";
             // 
             // RibbonPanel_Tools_Tas
             // 
@@ -571,7 +552,6 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonTab RibbonTab_Library;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Library_General;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Tools_Edit;
-        private System.Windows.Forms.RibbonButton RibbonButton_Tools_EditLibrary;
         private System.Windows.Forms.SplitContainer SplitContainer_Main;
         private System.Windows.Forms.PictureBox PictureBox_Logo;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Tools_Tas;

@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Core.Windows.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,7 +100,6 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-
             string name = analyticalModel.Name;
             if(string.IsNullOrWhiteSpace(name))
             {
@@ -118,8 +118,7 @@ namespace SAM.Analytical.UI
             TreeNode treeNode_Materials = treeNode_AnalyticalModel.Nodes.Add("Materials");
             treeNode_Materials.Tag = typeof(IMaterial);
 
-            ContextMenuStrip contextMenuStrip_Material = new ContextMenuStrip();
-            ToolStripMenuItem toolStripMenuItem_Edit = new ToolStripMenuItem() { Text = "Edit"};
+
 
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             if(adjacencyCluster != null)
@@ -206,6 +205,23 @@ namespace SAM.Analytical.UI
                 {
                     TreeNode treeNode_Material = treeNode_Materials.Nodes.Add(material.Name);
                     treeNode_Material.Tag = material;
+
+                    ContextMenuStrip contextMenuStrip_Material = new ContextMenuStrip();
+                    contextMenuStrip_Material.Tag = material;
+
+                    ToolStripMenuItem toolStripMenuItem_Edit = new ToolStripMenuItem() { Text = "Edit" };
+                    toolStripMenuItem_Edit.Click += ToolStripMenuItem_Material_Edit_Click;
+                    contextMenuStrip_Material.Items.Add(toolStripMenuItem_Edit);
+
+                    ToolStripMenuItem toolStripMenuItem_Remove = new ToolStripMenuItem() { Text = "Remove" };
+                    toolStripMenuItem_Remove.Click += ToolStripMenuItem_Material_Remove_Click;
+                    contextMenuStrip_Material.Items.Add(toolStripMenuItem_Remove);
+
+                    ToolStripMenuItem toolStripMenuItem_Duplicate = new ToolStripMenuItem() { Text = "Duplicate" };
+                    toolStripMenuItem_Duplicate.Click += ToolStripMenuItem_Material_Duplicate_Click;
+                    contextMenuStrip_Material.Items.Add(toolStripMenuItem_Duplicate);
+
+                    treeNode_Material.ContextMenuStrip = contextMenuStrip_Material;
                 }
             }
 
@@ -231,11 +247,49 @@ namespace SAM.Analytical.UI
                 {
                     treeNode_Materials.Expand();
                 }
+            }
+        }
 
-
+        private void ToolStripMenuItem_Material_Edit_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
+            IMaterial material = toolStripMenuItem.Owner.Tag as IMaterial;
+            if(material == null)
+            {
+                return;
             }
 
+            EditMaterial(material);
+        }
 
+        private void ToolStripMenuItem_Material_Remove_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
+            IMaterial material = toolStripMenuItem.Owner.Tag as IMaterial;
+            if (material == null)
+            {
+                return;
+            }
+
+            DialogResult dialogResult = MessageBox.Show(string.Format("Are you sure you want to remove {0} material?", material.Name), "Remove Material", MessageBoxButtons.YesNo);
+            if(dialogResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            RemoveMaterial(material);
+        }
+
+        private void ToolStripMenuItem_Material_Duplicate_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
+            IMaterial material = toolStripMenuItem.Owner.Tag as IMaterial;
+            if (material == null)
+            {
+                return;
+            }
+
+            DuplicateMaterial(material);
         }
 
         private void AnalyticalForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -389,7 +443,7 @@ namespace SAM.Analytical.UI
             }
 
             string name = null;
-            using (Core.Windows.Forms.TextBoxForm<string> textBoxForm = new Core.Windows.Forms.TextBoxForm<string>("Analytical Model", "Project Name"))
+            using (TextBoxForm<string> textBoxForm = new TextBoxForm<string>("Analytical Model", "Project Name"))
             {
                 textBoxForm.Value = "New Project";
                 if (textBoxForm.ShowDialog(this) != DialogResult.OK)
@@ -539,7 +593,7 @@ namespace SAM.Analytical.UI
             }
 
             List<Tuple<string, string, IJSAMObject>> tuples_Selected = null;
-            using (Core.Windows.Forms.TreeViewForm<Tuple<string, string, IJSAMObject>> treeViewForm = new Core.Windows.Forms.TreeViewForm<Tuple<string, string, IJSAMObject>>("Select Objects", tuples_All, (Tuple<string, string, IJSAMObject> x) => x.Item2, (Tuple<string, string, IJSAMObject> x) => x.Item1))
+            using (TreeViewForm<Tuple<string, string, IJSAMObject>> treeViewForm = new TreeViewForm<Tuple<string, string, IJSAMObject>>("Select Objects", tuples_All, (Tuple<string, string, IJSAMObject> x) => x.Item2, (Tuple<string, string, IJSAMObject> x) => x.Item1))
             {
                 if (treeViewForm.ShowDialog(this) != DialogResult.OK)
                 {
@@ -742,36 +796,7 @@ namespace SAM.Analytical.UI
 
             if(jSAMObject is IMaterial)
             {
-                IMaterial material = (IMaterial)jSAMObject;
-
-                AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-                if (analyticalModel == null)
-                {
-                    return;
-                }
-
-                MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
-                if(materialLibrary == null)
-                {
-                    return;
-                }
-
-                string uniqueId = materialLibrary.GetUniqueId(material);
-
-
-                using (Core.Windows.Forms.MaterialForm materialForm = new Core.Windows.Forms.MaterialForm(material, Core.Query.Enums(typeof(IMaterial))))
-                {
-                    if(materialForm.ShowDialog(this) != DialogResult.OK)
-                    {
-                        return;
-                    }
-
-                    material = materialForm.Material;
-                }
-
-                materialLibrary.Replace(uniqueId, material);
-
-                uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
+                EditMaterial((IMaterial)jSAMObject);
             }
 
             if (jSAMObject is Aperture)
@@ -1034,7 +1059,7 @@ namespace SAM.Analytical.UI
             }
             else if (library is MaterialLibrary)
             {
-                using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm((MaterialLibrary)library, SAM.Core.Query.Enums(typeof(OpaqueMaterialParameter), typeof(TransparentMaterialParameter))))
+                using (MaterialLibraryForm materialLibraryForm = new MaterialLibraryForm((MaterialLibrary)library, SAM.Core.Query.Enums(typeof(OpaqueMaterialParameter), typeof(TransparentMaterialParameter))))
                 {
                     if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
                     {
@@ -1062,7 +1087,7 @@ namespace SAM.Analytical.UI
 
             MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
 
-            using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm(materialLibrary, Core.Query.Enums(typeof(IMaterial))))
+            using (MaterialLibraryForm materialLibraryForm = new MaterialLibraryForm(materialLibrary, Core.Query.Enums(typeof(IMaterial))))
             {
                 if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
                 {
@@ -1073,6 +1098,79 @@ namespace SAM.Analytical.UI
             }
 
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, uIAnalyticalModel.JSAMObject.AdjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
+        }
+
+        private void EditMaterial(IMaterial material)
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
+            if (materialLibrary == null)
+            {
+                return;
+            }
+
+            string uniqueId = materialLibrary.GetUniqueId(material);
+
+
+            using (MaterialForm materialForm = new MaterialForm(material, Core.Query.Enums(typeof(IMaterial))))
+            {
+                if (materialForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                material = materialForm.Material;
+            }
+
+            materialLibrary.Replace(uniqueId, material);
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
+        }
+
+        private void RemoveMaterial(IMaterial material)
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
+            if (materialLibrary == null)
+            {
+                return;
+            }
+
+            materialLibrary.Remove(material);
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
+        }
+
+        private void DuplicateMaterial(IMaterial material)
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
+            if (materialLibrary == null)
+            {
+                return;
+            }
+
+            material = Core.Windows.Modify.Duplicate(materialLibrary, material);
+            if(material == null)
+            {
+                return;
+            }
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
         }
     }
 }
