@@ -46,12 +46,15 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Edit_SAMImport = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Check = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Edit_ModelCheck = new System.Windows.Forms.RibbonButton();
+            this.RibbonPanel_Edit_Library = new System.Windows.Forms.RibbonPanel();
+            this.RibbonButton_Edit_MaterialLibrary = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_Edit_InternalConditionLibrary = new System.Windows.Forms.RibbonButton();
+            this.RibbonPanel_Edit_Constructions = new System.Windows.Forms.RibbonPanel();
+            this.RibbonButton_Edit_Constructions = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_Edit_ApertureConstructions = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Library = new System.Windows.Forms.RibbonTab();
-            this.RibbonPanel_Library_General = new System.Windows.Forms.RibbonPanel();
-            this.RibbonButton_Library_MaterialLibrary = new System.Windows.Forms.RibbonButton();
-            this.RibbonButton_Library_ConstructionLibrary = new System.Windows.Forms.RibbonButton();
-            this.RibbonButton_Library_ApertureConstruction = new System.Windows.Forms.RibbonButton();
-            this.RibbonButton_Library_InternalConditionLibrary = new System.Windows.Forms.RibbonButton();
+            this.RibbonPanel_Library_EditLibrary = new System.Windows.Forms.RibbonPanel();
+            this.RibbonButton_Library_EditLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Simulate = new System.Windows.Forms.RibbonTab();
             this.RibbonPanel_Simulate_WeatherData = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Simulate_WeatherData = new System.Windows.Forms.RibbonButton();
@@ -111,8 +114,8 @@ namespace SAM.Analytical.UI
             this.Ribbon_Main.TabIndex = 2;
             this.Ribbon_Main.Tabs.Add(this.RibbonTab_File);
             this.Ribbon_Main.Tabs.Add(this.RibbonTab_Edit);
-            this.Ribbon_Main.Tabs.Add(this.RibbonTab_Library);
             this.Ribbon_Main.Tabs.Add(this.RibbonTab_Simulate);
+            this.Ribbon_Main.Tabs.Add(this.RibbonTab_Library);
             this.Ribbon_Main.Tabs.Add(this.RibbonTab_Tools);
             this.Ribbon_Main.Tabs.Add(this.RibbonTab_Help);
             this.Ribbon_Main.Text = "Main";
@@ -190,6 +193,8 @@ namespace SAM.Analytical.UI
             this.RibbonTab_Edit.Panels.Add(this.RibbonPanel_Edit_General);
             this.RibbonTab_Edit.Panels.Add(this.RibbonPanel_Edit_Import);
             this.RibbonTab_Edit.Panels.Add(this.RibbonPanel_Check);
+            this.RibbonTab_Edit.Panels.Add(this.RibbonPanel_Edit_Library);
+            this.RibbonTab_Edit.Panels.Add(this.RibbonPanel_Edit_Constructions);
             this.RibbonTab_Edit.Text = "Edit";
             // 
             // RibbonPanel_Edit_General
@@ -246,64 +251,84 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Edit_ModelCheck.Text = "Model Check";
             this.RibbonButton_Edit_ModelCheck.Click += new System.EventHandler(this.RibbonButton_Edit_ModelCheck_Click);
             // 
+            // RibbonPanel_Edit_Library
+            // 
+            this.RibbonPanel_Edit_Library.ButtonMoreEnabled = false;
+            this.RibbonPanel_Edit_Library.ButtonMoreVisible = false;
+            this.RibbonPanel_Edit_Library.Enabled = false;
+            this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_MaterialLibrary);
+            this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_InternalConditionLibrary);
+            this.RibbonPanel_Edit_Library.Name = "RibbonPanel_Edit_Library";
+            this.RibbonPanel_Edit_Library.Text = "Library";
+            // 
+            // RibbonButton_Edit_MaterialLibrary
+            // 
+            this.RibbonButton_Edit_MaterialLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_MaterialLibrary;
+            this.RibbonButton_Edit_MaterialLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_MaterialLibrary;
+            this.RibbonButton_Edit_MaterialLibrary.Name = "RibbonButton_Edit_MaterialLibrary";
+            this.RibbonButton_Edit_MaterialLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_MaterialLibrary.SmallImage")));
+            this.RibbonButton_Edit_MaterialLibrary.Text = "Materials";
+            this.RibbonButton_Edit_MaterialLibrary.Click += new System.EventHandler(this.RibbonButton_Edit_MaterialLibrary_Click);
+            // 
+            // RibbonButton_Edit_InternalConditionLibrary
+            // 
+            this.RibbonButton_Edit_InternalConditionLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_InternalCondition;
+            this.RibbonButton_Edit_InternalConditionLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_InternalCondition;
+            this.RibbonButton_Edit_InternalConditionLibrary.Name = "RibbonButton_Edit_InternalConditionLibrary";
+            this.RibbonButton_Edit_InternalConditionLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_InternalConditionLibrary.SmallImage")));
+            this.RibbonButton_Edit_InternalConditionLibrary.Text = "Internal Conditions";
+            this.RibbonButton_Edit_InternalConditionLibrary.Click += new System.EventHandler(this.RibbonButton_Edit_InternalConditionLibrary_Click);
+            // 
+            // RibbonPanel_Edit_Constructions
+            // 
+            this.RibbonPanel_Edit_Constructions.ButtonMoreEnabled = false;
+            this.RibbonPanel_Edit_Constructions.ButtonMoreVisible = false;
+            this.RibbonPanel_Edit_Constructions.Enabled = false;
+            this.RibbonPanel_Edit_Constructions.Items.Add(this.RibbonButton_Edit_Constructions);
+            this.RibbonPanel_Edit_Constructions.Items.Add(this.RibbonButton_Edit_ApertureConstructions);
+            this.RibbonPanel_Edit_Constructions.Name = "RibbonPanel_Edit_Constructions";
+            this.RibbonPanel_Edit_Constructions.Text = "Constructions";
+            // 
+            // RibbonButton_Edit_Constructions
+            // 
+            this.RibbonButton_Edit_Constructions.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_ConstructionLibrary;
+            this.RibbonButton_Edit_Constructions.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_ConstructionLibrary;
+            this.RibbonButton_Edit_Constructions.Name = "RibbonButton_Edit_Constructions";
+            this.RibbonButton_Edit_Constructions.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_Constructions.SmallImage")));
+            this.RibbonButton_Edit_Constructions.Text = "Constructions";
+            this.RibbonButton_Edit_Constructions.Click += new System.EventHandler(this.RibbonButton_Edit_Constructions_Click);
+            // 
+            // RibbonButton_Edit_ApertureConstructions
+            // 
+            this.RibbonButton_Edit_ApertureConstructions.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_ApertureConstruction;
+            this.RibbonButton_Edit_ApertureConstructions.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_ApertureConstruction;
+            this.RibbonButton_Edit_ApertureConstructions.Name = "RibbonButton_Edit_ApertureConstructions";
+            this.RibbonButton_Edit_ApertureConstructions.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_ApertureConstructions.SmallImage")));
+            this.RibbonButton_Edit_ApertureConstructions.Text = "Aperture Constructions";
+            this.RibbonButton_Edit_ApertureConstructions.Click += new System.EventHandler(this.RibbonButton_Edit_ApertureConstructions_Click);
+            // 
             // RibbonTab_Library
             // 
-            this.RibbonTab_Library.Enabled = false;
             this.RibbonTab_Library.Name = "RibbonTab_Library";
-            this.RibbonTab_Library.Panels.Add(this.RibbonPanel_Library_General);
+            this.RibbonTab_Library.Panels.Add(this.RibbonPanel_Library_EditLibrary);
             this.RibbonTab_Library.Text = "Library";
             // 
-            // RibbonPanel_Library_General
+            // RibbonPanel_Library_EditLibrary
             // 
-            this.RibbonPanel_Library_General.ButtonMoreEnabled = false;
-            this.RibbonPanel_Library_General.ButtonMoreVisible = false;
-            this.RibbonPanel_Library_General.Enabled = false;
-            this.RibbonPanel_Library_General.Items.Add(this.RibbonButton_Library_MaterialLibrary);
-            this.RibbonPanel_Library_General.Items.Add(this.RibbonButton_Library_ConstructionLibrary);
-            this.RibbonPanel_Library_General.Items.Add(this.RibbonButton_Library_ApertureConstruction);
-            this.RibbonPanel_Library_General.Items.Add(this.RibbonButton_Library_InternalConditionLibrary);
-            this.RibbonPanel_Library_General.Name = "RibbonPanel_Library_General";
-            this.RibbonPanel_Library_General.Text = "General";
+            this.RibbonPanel_Library_EditLibrary.ButtonMoreEnabled = false;
+            this.RibbonPanel_Library_EditLibrary.ButtonMoreVisible = false;
+            this.RibbonPanel_Library_EditLibrary.Items.Add(this.RibbonButton_Library_EditLibrary);
+            this.RibbonPanel_Library_EditLibrary.Name = "RibbonPanel_Library_EditLibrary";
+            this.RibbonPanel_Library_EditLibrary.Text = "General";
             // 
-            // RibbonButton_Library_MaterialLibrary
+            // RibbonButton_Library_EditLibrary
             // 
-            this.RibbonButton_Library_MaterialLibrary.Enabled = false;
-            this.RibbonButton_Library_MaterialLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_MaterialLibrary;
-            this.RibbonButton_Library_MaterialLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_MaterialLibrary;
-            this.RibbonButton_Library_MaterialLibrary.Name = "RibbonButton_Library_MaterialLibrary";
-            this.RibbonButton_Library_MaterialLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_MaterialLibrary.SmallImage")));
-            this.RibbonButton_Library_MaterialLibrary.Text = "Materials";
-            this.RibbonButton_Library_MaterialLibrary.Click += new System.EventHandler(this.RibbonButton_Library_MaterialLibrary_Click);
-            // 
-            // RibbonButton_Library_ConstructionLibrary
-            // 
-            this.RibbonButton_Library_ConstructionLibrary.Enabled = false;
-            this.RibbonButton_Library_ConstructionLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_ConstructionLibrary;
-            this.RibbonButton_Library_ConstructionLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_ConstructionLibrary;
-            this.RibbonButton_Library_ConstructionLibrary.Name = "RibbonButton_Library_ConstructionLibrary";
-            this.RibbonButton_Library_ConstructionLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_ConstructionLibrary.SmallImage")));
-            this.RibbonButton_Library_ConstructionLibrary.Text = "Constructions";
-            this.RibbonButton_Library_ConstructionLibrary.Click += new System.EventHandler(this.RibbonButton_Library_ConstructionLibrary_Click);
-            // 
-            // RibbonButton_Library_ApertureConstruction
-            // 
-            this.RibbonButton_Library_ApertureConstruction.Enabled = false;
-            this.RibbonButton_Library_ApertureConstruction.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_ApertureConstruction;
-            this.RibbonButton_Library_ApertureConstruction.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_ApertureConstruction;
-            this.RibbonButton_Library_ApertureConstruction.Name = "RibbonButton_Library_ApertureConstruction";
-            this.RibbonButton_Library_ApertureConstruction.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_ApertureConstruction.SmallImage")));
-            this.RibbonButton_Library_ApertureConstruction.Text = "Aperture Construction";
-            this.RibbonButton_Library_ApertureConstruction.Click += new System.EventHandler(this.RibbonButton_Library_ApertureConstruction_Click);
-            // 
-            // RibbonButton_Library_InternalConditionLibrary
-            // 
-            this.RibbonButton_Library_InternalConditionLibrary.Enabled = false;
-            this.RibbonButton_Library_InternalConditionLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_InternalCondition;
-            this.RibbonButton_Library_InternalConditionLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_InternalCondition;
-            this.RibbonButton_Library_InternalConditionLibrary.Name = "RibbonButton_Library_InternalConditionLibrary";
-            this.RibbonButton_Library_InternalConditionLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_InternalConditionLibrary.SmallImage")));
-            this.RibbonButton_Library_InternalConditionLibrary.Text = "Internal Conditions";
-            this.RibbonButton_Library_InternalConditionLibrary.Click += new System.EventHandler(this.RibbonButton_Library_InternalConditionLibrary_Click);
+            this.RibbonButton_Library_EditLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_EditLibrary;
+            this.RibbonButton_Library_EditLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_EditLibrary;
+            this.RibbonButton_Library_EditLibrary.Name = "RibbonButton_Library_EditLibrary";
+            this.RibbonButton_Library_EditLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Library_EditLibrary.SmallImage")));
+            this.RibbonButton_Library_EditLibrary.Text = "Edit Library";
+            this.RibbonButton_Library_EditLibrary.Click += new System.EventHandler(this.RibbonButton_Library_EditLibrary_Click);
             // 
             // RibbonTab_Simulate
             // 
@@ -380,7 +405,6 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Tools_EditLibrary.Name = "RibbonButton_Tools_EditLibrary";
             this.RibbonButton_Tools_EditLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_EditLibrary.SmallImage")));
             this.RibbonButton_Tools_EditLibrary.Text = "Edit Library";
-            this.RibbonButton_Tools_EditLibrary.Click += new System.EventHandler(this.RibbonButton_Tools_EditLibrary_Click);
             // 
             // RibbonPanel_Tools_Tas
             // 
@@ -546,8 +570,6 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonTab RibbonTab_Help;
         private System.Windows.Forms.RibbonTab RibbonTab_Library;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Library_General;
-        private System.Windows.Forms.RibbonButton RibbonButton_Library_MaterialLibrary;
-        private System.Windows.Forms.RibbonButton RibbonButton_Library_ConstructionLibrary;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Tools_Edit;
         private System.Windows.Forms.RibbonButton RibbonButton_Tools_EditLibrary;
         private System.Windows.Forms.SplitContainer SplitContainer_Main;
@@ -563,7 +585,6 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonPanel RibbonPanel_Help_General;
         private System.Windows.Forms.RibbonButton RibbonButton_Help_Wiki;
         private System.Windows.Forms.RibbonButton RibbonButton_File_SaveAs;
-        private System.Windows.Forms.RibbonButton RibbonButton_Library_InternalConditionLibrary;
         private System.Windows.Forms.RibbonButton RibbonButton_File_New;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Edit_Import;
         private System.Windows.Forms.RibbonButton RibbonButton_Edit_SAMImport;
@@ -575,10 +596,17 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonPanel RibbonPanel_Simulate_Simulate;
         private System.Windows.Forms.RibbonButton RibbonButton_SolarSimulation;
         private System.Windows.Forms.TreeView TreeView_AnalyticalModel;
-        private System.Windows.Forms.RibbonButton RibbonButton_Library_ApertureConstruction;
         private System.Windows.Forms.RibbonButton RibbonButton_Simulate_ImportWeatherData;
         private System.Windows.Forms.RibbonPanel RibbonPanel_Check;
         private System.Windows.Forms.RibbonButton RibbonButton_Edit_ModelCheck;
+        private System.Windows.Forms.RibbonPanel RibbonPanel_Edit_Library;
+        private System.Windows.Forms.RibbonButton RibbonButton_Edit_MaterialLibrary;
+        private System.Windows.Forms.RibbonButton RibbonButton_Edit_InternalConditionLibrary;
+        private System.Windows.Forms.RibbonPanel RibbonPanel_Edit_Constructions;
+        private System.Windows.Forms.RibbonButton RibbonButton_Edit_Constructions;
+        private System.Windows.Forms.RibbonButton RibbonButton_Edit_ApertureConstructions;
+        private System.Windows.Forms.RibbonPanel RibbonPanel_Library_EditLibrary;
+        private System.Windows.Forms.RibbonButton RibbonButton_Library_EditLibrary;
     }
 }
 

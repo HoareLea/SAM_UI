@@ -53,7 +53,6 @@ namespace SAM.Analytical.UI
             if (uIAnalyticalModel?.JSAMObject == null)
             {
                 RibbonTab_Edit.Enabled = false;
-                RibbonTab_Library.Enabled = false;
                 RibbonButton_File_SaveAs.Enabled = false;
                 RibbonButton_File_Save.Enabled = false;
                 RibbonButton_File_Close.Enabled = false;
@@ -240,130 +239,6 @@ namespace SAM.Analytical.UI
         {
         }
 
-        private void RibbonButton_Tools_EditLibrary_Click(object sender, EventArgs e)
-        {
-            string path = null;
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM", "resources", "Analytical");
-                if(System.IO.Directory.Exists(directory))
-                {
-                    openFileDialog.InitialDirectory = directory;
-                }
-
-                openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-                path = openFileDialog.FileName;
-            }
-
-            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
-            {
-                return;
-            }
-
-            List<ISAMLibrary> libraries = null;
-            try
-            {
-                libraries = Core.Convert.ToSAM<ISAMLibrary>(path);
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show("Could not load file");
-            }
-
-            if (libraries == null || libraries.Count == 0)
-            {
-                return;
-            }
-
-            ISAMLibrary library = libraries.FirstOrDefault();
-
-            if (library is ConstructionLibrary)
-            {
-                DialogResult dialogResult = MessageBox.Show(this, "Use default Material Library?", "Material Library", MessageBoxButtons.YesNo);
-
-                MaterialLibrary materialLibrary = null;
-                if (dialogResult == DialogResult.Yes)
-                {
-                    materialLibrary = Query.DefaultMaterialLibrary();
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                    {
-                        string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
-                        if (System.IO.Directory.Exists(directory))
-                        {
-                            openFileDialog.InitialDirectory = directory;
-                        }
-
-                        openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                        openFileDialog.FilterIndex = 2;
-                        openFileDialog.RestoreDirectory = true;
-                        if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                        {
-                            return;
-                        }
-
-                        List<MaterialLibrary> materialLibraries = null;
-                        try
-                        {
-                            materialLibraries = Core.Convert.ToSAM<MaterialLibrary>(openFileDialog.FileName);
-                        }
-                        catch (Exception exception)
-                        {
-                            MessageBox.Show("Could not load file");
-                        }
-
-                        if (materialLibraries == null || materialLibraries.Count == 0)
-                        {
-                            return;
-                        }
-
-                        materialLibrary = materialLibraries.FirstOrDefault();
-                    }
-                }
-                else
-                {
-                    return;
-                }
-
-                using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, (ConstructionLibrary)library))
-                {
-                    if (constructionLibraryForm.ShowDialog(this) != DialogResult.OK)
-                    {
-                        return;
-                    }
-
-                    library = constructionLibraryForm.ConstructionLibrary;
-                }
-            }
-            else if (library is MaterialLibrary)
-            {
-                using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm((MaterialLibrary)library, SAM.Core.Query.Enums(typeof(OpaqueMaterialParameter), typeof(TransparentMaterialParameter))))
-                {
-                    if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
-                    {
-                        return;
-                    }
-
-                    library = materialLibraryForm.MaterialLibrary;
-                }
-            }
-
-            if (library == null)
-            {
-                return;
-            }
-
-            Core.Convert.ToFile(new IJSAMObject[] { library }, path);
-        }
-
         private void RibbonButton_File_Open_Click(object sender, EventArgs e)
         {
             string path = null;
@@ -480,98 +355,9 @@ namespace SAM.Analytical.UI
             }
         }
 
-        private void RibbonButton_Library_MaterialLibrary_Click(object sender, EventArgs e)
-        {
-            if(uIAnalyticalModel?.JSAMObject == null)
-            {
-                return;
-            }
-
-            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
-
-            using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm(materialLibrary, Core.Query.Enums(typeof(IMaterial))))
-            {
-                if(materialLibraryForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                materialLibrary = materialLibraryForm.MaterialLibrary;
-            }
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, uIAnalyticalModel.JSAMObject.AdjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
-        }
-
-        private void RibbonButton_Library_ApertureConstruction_Click(object sender, EventArgs e)
-        {
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-            if(adjacencyCluster == null)
-            {
-                return;
-            }
-
-            List<ApertureConstruction> apertureConstructions = adjacencyCluster.GetApertureConstructions();
-            ApertureConstructionLibrary apertureConstructionLibrary = new ApertureConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
-            apertureConstructions?.ForEach(x => apertureConstructionLibrary.Add(x));
-
-            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
-
-            using (Windows.Forms.ApertureConstructionLibraryForm apertureConstructionLibraryForm = new Windows.Forms.ApertureConstructionLibraryForm(materialLibrary, apertureConstructionLibrary))
-            {
-                apertureConstructionLibraryForm.Text = "Aperture Constructions";
-                if (apertureConstructionLibraryForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                apertureConstructionLibrary = apertureConstructionLibraryForm.ApertureConstructionLibrary;
-            }
-
-            adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
-        }
-
-        private void RibbonButton_Library_ConstructionLibrary_Click(object sender, EventArgs e)
-        {
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel.JSAMObject.AdjacencyCluster;
-            if(adjacencyCluster == null)
-            {
-                return;
-            }
-
-            List<Construction> constructions = adjacencyCluster.GetConstructions();
-
-            ConstructionLibrary constructionLibrary = new ConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
-            constructions?.ForEach(x => constructionLibrary.Add(x));
-
-            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
-
-            using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
-            {
-                constructionLibraryForm.Text = "Constructions";
-                if (constructionLibraryForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                constructionLibrary = constructionLibraryForm.ConstructionLibrary;
-            }
-
-            adjacencyCluster.ReplaceConstructions(constructionLibrary);
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
-
-        }
-
         private void RibbonButton_Help_Wiki_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM/wiki/00-Home");
-        }
-
-        private void RibbonButton_Library_InternalConditionLibrary_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("To be implemented soon...");
         }
 
         private void RibbonButton_Tools_Hydra_Click(object sender, EventArgs e)
@@ -1059,6 +845,219 @@ namespace SAM.Analytical.UI
         private void RibbonPanel_Tools_Tas_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void RibbonButton_Edit_MaterialLibrary_Click(object sender, EventArgs e)
+        {
+            if (uIAnalyticalModel?.JSAMObject == null)
+            {
+                return;
+            }
+
+            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
+
+            using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm(materialLibrary, Core.Query.Enums(typeof(IMaterial))))
+            {
+                if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                materialLibrary = materialLibraryForm.MaterialLibrary;
+            }
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, uIAnalyticalModel.JSAMObject.AdjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
+        }
+
+        private void RibbonButton_Edit_InternalConditionLibrary_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("To be implemented soon...");
+        }
+
+        private void RibbonButton_Edit_Constructions_Click(object sender, EventArgs e)
+        {
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel.JSAMObject.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            List<Construction> constructions = adjacencyCluster.GetConstructions();
+
+            ConstructionLibrary constructionLibrary = new ConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
+            constructions?.ForEach(x => constructionLibrary.Add(x));
+
+            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
+
+            using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
+            {
+                constructionLibraryForm.Text = "Constructions";
+                if (constructionLibraryForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                constructionLibrary = constructionLibraryForm.ConstructionLibrary;
+            }
+
+            adjacencyCluster.ReplaceConstructions(constructionLibrary);
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
+
+        }
+
+        private void RibbonButton_Edit_ApertureConstructions_Click(object sender, EventArgs e)
+        {
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            List<ApertureConstruction> apertureConstructions = adjacencyCluster.GetApertureConstructions();
+            ApertureConstructionLibrary apertureConstructionLibrary = new ApertureConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
+            apertureConstructions?.ForEach(x => apertureConstructionLibrary.Add(x));
+
+            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
+
+            using (Windows.Forms.ApertureConstructionLibraryForm apertureConstructionLibraryForm = new Windows.Forms.ApertureConstructionLibraryForm(materialLibrary, apertureConstructionLibrary))
+            {
+                apertureConstructionLibraryForm.Text = "Aperture Constructions";
+                if (apertureConstructionLibraryForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                apertureConstructionLibrary = apertureConstructionLibraryForm.ApertureConstructionLibrary;
+            }
+
+            adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
+        }
+
+        private void RibbonButton_Library_EditLibrary_Click(object sender, EventArgs e)
+        {
+            string path = null;
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM", "resources", "Analytical");
+                if (System.IO.Directory.Exists(directory))
+                {
+                    openFileDialog.InitialDirectory = directory;
+                }
+
+                openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+                path = openFileDialog.FileName;
+            }
+
+            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
+            {
+                return;
+            }
+
+            List<ISAMLibrary> libraries = null;
+            try
+            {
+                libraries = Core.Convert.ToSAM<ISAMLibrary>(path);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("Could not load file");
+            }
+
+            if (libraries == null || libraries.Count == 0)
+            {
+                return;
+            }
+
+            ISAMLibrary library = libraries.FirstOrDefault();
+
+            if (library is ConstructionLibrary)
+            {
+                DialogResult dialogResult = MessageBox.Show(this, "Use default Material Library?", "Material Library", MessageBoxButtons.YesNo);
+
+                MaterialLibrary materialLibrary = null;
+                if (dialogResult == DialogResult.Yes)
+                {
+                    materialLibrary = Query.DefaultMaterialLibrary();
+                }
+                else if (dialogResult == DialogResult.No)
+                {
+                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                    {
+                        string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
+                        if (System.IO.Directory.Exists(directory))
+                        {
+                            openFileDialog.InitialDirectory = directory;
+                        }
+
+                        openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+                        openFileDialog.FilterIndex = 2;
+                        openFileDialog.RestoreDirectory = true;
+                        if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        {
+                            return;
+                        }
+
+                        List<MaterialLibrary> materialLibraries = null;
+                        try
+                        {
+                            materialLibraries = Core.Convert.ToSAM<MaterialLibrary>(openFileDialog.FileName);
+                        }
+                        catch (Exception exception)
+                        {
+                            MessageBox.Show("Could not load file");
+                        }
+
+                        if (materialLibraries == null || materialLibraries.Count == 0)
+                        {
+                            return;
+                        }
+
+                        materialLibrary = materialLibraries.FirstOrDefault();
+                    }
+                }
+                else
+                {
+                    return;
+                }
+
+                using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, (ConstructionLibrary)library))
+                {
+                    if (constructionLibraryForm.ShowDialog(this) != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    library = constructionLibraryForm.ConstructionLibrary;
+                }
+            }
+            else if (library is MaterialLibrary)
+            {
+                using (Core.Windows.Forms.MaterialLibraryForm materialLibraryForm = new Core.Windows.Forms.MaterialLibraryForm((MaterialLibrary)library, SAM.Core.Query.Enums(typeof(OpaqueMaterialParameter), typeof(TransparentMaterialParameter))))
+                {
+                    if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    library = materialLibraryForm.MaterialLibrary;
+                }
+            }
+
+            if (library == null)
+            {
+                return;
+            }
+
+            Core.Convert.ToFile(new IJSAMObject[] { library }, path);
         }
     }
 }
