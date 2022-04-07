@@ -15,6 +15,19 @@ namespace SAM.Analytical.UI
             UpdateConstructions(adjacencyCluster, constructions);
         }
 
+        public static void UpdateConstructions(this UIAnalyticalModel uIAnalyticalModel, ConstructionLibrary constructionLibrary)
+        {
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            UpdateConstructions(adjacencyCluster, constructionLibrary);
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
+        }
+
         public static void UpdateConstructions(this AdjacencyCluster adjacencyCluster, IEnumerable<Construction> constructions)
         {
             if(adjacencyCluster == null || constructions == null)
@@ -54,6 +67,19 @@ namespace SAM.Analytical.UI
             {
                 adjacencyCluster.AddObject(construction_Temp);
             }
+        }
+
+        public static void UpdateConstructions(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<Construction> constructions)
+        {
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            UpdateConstructions(adjacencyCluster, constructions);
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
         }
     }
 }

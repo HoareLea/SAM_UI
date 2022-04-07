@@ -78,6 +78,15 @@
       <DependentUpon>AnalyticalForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\Program.cs" />
+    <Compile Include="Modify\Import.cs" />
+    <Compile Include="Modify\SaveAs.cs" />
+    <Compile Include="Modify\DuplicateMaterial.cs" />
+    <Compile Include="Modify\EditConstructions.cs" />
+    <Compile Include="Modify\RemoveMaterial.cs" />
+    <Compile Include="Modify\EditMaterial.cs" />
+    <Compile Include="Modify\EditMaterialLibrary.cs" />
+    <Compile Include="Modify\EditLibrary.cs" />
+    <Compile Include="Modify\EditApertureConstructions.cs" />
     <Compile Include="Modify\ReplaceApertureConstructions.cs" />
     <Compile Include="Modify\UpdateApertureConstructions.cs" />
     <Compile Include="Modify\ReplaceConstructions.cs" />

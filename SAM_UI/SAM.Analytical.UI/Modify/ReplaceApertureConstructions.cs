@@ -16,5 +16,18 @@ namespace SAM.Analytical.UI
 
             UpdateApertureConstructions(adjacencyCluster, apertureConstructionLibrary);
         }
+
+        public static void ReplaceApertureConstructions(this UIAnalyticalModel uIAnalyticalModel, ApertureConstructionLibrary apertureConstructionLibrary)
+        {
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
+
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
+        }
     }
 }

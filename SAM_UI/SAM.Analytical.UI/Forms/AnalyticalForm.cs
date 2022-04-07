@@ -2,7 +2,6 @@
 using SAM.Core.Windows.Forms;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI
@@ -257,7 +256,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            EditMaterial(material);
+            uIAnalyticalModel.EditMaterial(material, this);
         }
 
         private void ToolStripMenuItem_Material_Remove_Click(object sender, EventArgs e)
@@ -275,7 +274,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            RemoveMaterial(material);
+            uIAnalyticalModel.RemoveMaterial(material);
         }
 
         private void ToolStripMenuItem_Material_Duplicate_Click(object sender, EventArgs e)
@@ -287,7 +286,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            DuplicateMaterial(material);
+            uIAnalyticalModel.DuplicateMaterial(material, this);
         }
 
         private void AnalyticalForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -379,27 +378,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_File_SaveAs_Click(object sender, EventArgs e)
         {
-            string path = null;
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                saveFileDialog.FilterIndex = 1;
-                saveFileDialog.RestoreDirectory = true;
-                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-                path = saveFileDialog.FileName;
-            }
-
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                return;
-            }
-
-            uIAnalyticalModel.Path = path;
-
-            uIAnalyticalModel.Save();
+            uIAnalyticalModel.SaveAs(this);
         }
 
         private void AnalyticalForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -461,268 +440,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Edit_SAMImport_Click(object sender, EventArgs e)
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if(analyticalModel == null)
-            {
-                return;
-            }
-
-            string path = null;
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
-                if (System.IO.Directory.Exists(directory))
-                {
-                    openFileDialog.InitialDirectory = directory;
-                }
-
-                openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-                path = openFileDialog.FileName;
-            }
-
-            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
-            {
-                return;
-            }
-
-            List<IJSAMObject> jSAMObjects = null;
-            try
-            {
-                jSAMObjects = Core.Convert.ToSAM<IJSAMObject>(path);
-            }
-            catch(Exception exception)
-            {
-                MessageBox.Show("Cannot open file specified");
-                return;
-            }
-
-            if(jSAMObjects == null || jSAMObjects.Count == 0)
-            {
-                MessageBox.Show("No objects to import");
-                return;
-            }
-
-
-            List<Tuple<string, string, IJSAMObject>> tuples_All = new List<Tuple<string, string, IJSAMObject>>();
-            foreach(IJSAMObject jSAMObject in jSAMObjects)
-            {
-                if(jSAMObject == null)
-                {
-                    continue;
-                }
-
-                if(jSAMObject is AnalyticalModel)
-                {
-                    AnalyticalModel analyticalModel_Temp = (AnalyticalModel)jSAMObject;
-
-                    List<IMaterial> materials = analyticalModel_Temp.MaterialLibrary?.GetMaterials();
-                    if(materials != null)
-                    {
-                        foreach(IMaterial material in materials)
-                        {
-                            tuples_All.Add(new Tuple<string, string, IJSAMObject>(typeof(Material).Name, material.Name, material));
-                        }
-                    }
-
-                    List<Construction> constructions_Temp = analyticalModel_Temp.AdjacencyCluster.GetConstructions();
-                    if(constructions_Temp != null)
-                    {
-                        foreach(Construction construction in constructions_Temp)
-                        {
-                            tuples_All.Add(new Tuple<string, string, IJSAMObject>(typeof(Construction).Name, construction.Name, construction));
-                        }
-                    }
-
-                }
-                else if (jSAMObject is MaterialLibrary)
-                {
-                    List<IMaterial> materials = ((MaterialLibrary)jSAMObject).GetMaterials();
-                    if (materials != null)
-                    {
-                        foreach (IMaterial material in materials)
-                        {
-                            tuples_All.Add(new Tuple<string, string, IJSAMObject>(typeof(Material).Name, material.Name, material));
-                        }
-                    }
-
-                }
-                else if (jSAMObject is ConstructionLibrary)
-                {
-                    List<Construction> constructions_Temp = ((ConstructionLibrary)jSAMObject).GetConstructions();
-                    if (constructions_Temp != null)
-                    {
-                        foreach (Construction construction in constructions_Temp)
-                        {
-                            tuples_All.Add(new Tuple<string, string, IJSAMObject>(typeof(Construction).Name, construction.Name, construction));
-                        }
-                    }
-
-                }
-                else if (jSAMObject is ApertureConstructionLibrary)
-                {
-                    List<ApertureConstruction> apertureConstructions_Temp = ((ApertureConstructionLibrary)jSAMObject).GetApertureConstructions();
-                    if (apertureConstructions_Temp != null)
-                    {
-                        foreach (ApertureConstruction apertureConstruction in apertureConstructions_Temp)
-                        {
-                            tuples_All.Add(new Tuple<string, string, IJSAMObject>(typeof(ApertureConstruction).Name, apertureConstruction.Name, apertureConstruction));
-                        }
-                    }
-
-                }
-                else if(jSAMObject is IMaterial)
-                {
-                    tuples_All.Add(new Tuple<string, string, IJSAMObject>(typeof(Material).Name, ((IMaterial)jSAMObject).Name, jSAMObject));
-                }
-                else if (jSAMObject is Construction)
-                {
-                    tuples_All.Add(new Tuple<string, string, IJSAMObject>(typeof(Construction).Name, ((Construction)jSAMObject).Name, jSAMObject));
-                }
-                else if(jSAMObject is ApertureConstruction)
-                {
-                    tuples_All.Add(new Tuple<string, string, IJSAMObject>(typeof(ApertureConstruction).Name, ((ApertureConstruction)jSAMObject).Name, jSAMObject));
-                }
-            }
-
-            List<Tuple<string, string, IJSAMObject>> tuples_Selected = null;
-            using (TreeViewForm<Tuple<string, string, IJSAMObject>> treeViewForm = new TreeViewForm<Tuple<string, string, IJSAMObject>>("Select Objects", tuples_All, (Tuple<string, string, IJSAMObject> x) => x.Item2, (Tuple<string, string, IJSAMObject> x) => x.Item1))
-            {
-                if (treeViewForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                tuples_Selected = treeViewForm?.SelectedItems;
-            }
-
-            if(tuples_Selected == null || tuples_Selected.Count == 0)
-            {
-                return;
-            }
-
-            AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
-
-            List<Construction> constructions = new List<Construction>();
-            List<ApertureConstruction> apertureConstructions = new List<ApertureConstruction>();
-            foreach (Tuple<string, string, IJSAMObject> tuple in tuples_Selected)
-            {
-                IJSAMObject jSAMObject = tuple?.Item3;
-
-                if(jSAMObject == null)
-                {
-                    continue;
-                }
-
-                if(jSAMObject is IMaterial)
-                {
-                    analyticalModel.AddMaterial((IMaterial)jSAMObject);
-                }
-                else if(jSAMObject is Construction)
-                {
-                    constructions.Add((Construction)jSAMObject);
-                }
-                else if (jSAMObject is ApertureConstruction)
-                {
-                    apertureConstructions.Add((ApertureConstruction)jSAMObject);
-                }
-            }
-
-            if(constructions != null && constructions.Count != 0)
-            {
-                adjacencyCluster.UpdateConstructions(constructions);
-            }
-
-            if (apertureConstructions != null && apertureConstructions.Count != 0)
-            {
-                adjacencyCluster.UpdateConstructions(constructions);
-            }
-
-            if(apertureConstructions != null || constructions != null)
-            {
-                HashSet<string> names = new HashSet<string>();
-
-                if(constructions != null)
-                {
-                    foreach (Construction construction in constructions)
-                    {
-                        List<ConstructionLayer> constructionLayers = construction?.ConstructionLayers;
-                        if(constructionLayers != null)
-                        {
-                            foreach(ConstructionLayer constructionLayer in constructionLayers)
-                            {
-                                names.Add(constructionLayer.Name);
-                            }
-                        }
-                    }
-                }
-
-                if (apertureConstructions != null)
-                {
-                    foreach (ApertureConstruction apertureConstruction in apertureConstructions)
-                    {
-                        List<ConstructionLayer> constructionLayers = null;
-
-                        constructionLayers = apertureConstruction?.PaneConstructionLayers;
-                        if (constructionLayers != null)
-                        {
-                            foreach (ConstructionLayer constructionLayer in constructionLayers)
-                            {
-                                names.Add(constructionLayer.Name);
-                            }
-                        }
-
-                        constructionLayers = apertureConstruction?.FrameConstructionLayers;
-                        if (constructionLayers != null)
-                        {
-                            foreach (ConstructionLayer constructionLayer in constructionLayers)
-                            {
-                                names.Add(constructionLayer.Name);
-                            }
-                        }
-                    }
-                }
-
-                List<IMaterial> materials = tuples_All.FindAll(x => x.Item3 is IMaterial).ConvertAll(x => (IMaterial)x.Item3);
-                if(materials != null && materials.Count != 0)
-                {
-                    MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
-
-                    HashSet<string> names_Missing = new HashSet<string>();
-                    foreach(string name in names)
-                    {
-                        if(materialLibrary.GetMaterial(name) == null)
-                        {
-                            names_Missing.Add(name);
-                        }
-                    }
-
-                    if(names_Missing != null && names_Missing.Count != 0)
-                    {
-                        DialogResult dialogResult = MessageBox.Show(this, "Try to import missing materials?", "Materials", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            foreach(string name in names_Missing)
-                            {
-                                IMaterial material = materials.Find(x => x.Name == name);
-                                if(material != null)
-                                {
-                                    analyticalModel.AddMaterial(material);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            analyticalModel = new AnalyticalModel(analyticalModel);
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster);
+            uIAnalyticalModel.Import(this);
         }
 
         private void RibbonButton_Edit_Location_Click(object sender, EventArgs e)
@@ -736,7 +454,7 @@ namespace SAM.Analytical.UI
 
             if(treeNode.Tag == typeof(IMaterial))
             {
-                EditMaterialLibrary();
+                uIAnalyticalModel.EditMaterialLibrary(this);
                 return;
             }
 
@@ -794,7 +512,7 @@ namespace SAM.Analytical.UI
 
             if(jSAMObject is IMaterial)
             {
-                EditMaterial((IMaterial)jSAMObject);
+                uIAnalyticalModel.EditMaterial((IMaterial)jSAMObject, this);
             }
 
             if (jSAMObject is Aperture)
@@ -882,7 +600,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Edit_MaterialLibrary_Click(object sender, EventArgs e)
         {
-            EditMaterialLibrary();
+            uIAnalyticalModel.EditMaterialLibrary(this);
         }
 
         private void RibbonButton_Edit_InternalConditionLibrary_Click(object sender, EventArgs e)
@@ -892,283 +610,17 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Edit_Constructions_Click(object sender, EventArgs e)
         {
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel.JSAMObject.AdjacencyCluster;
-            if (adjacencyCluster == null)
-            {
-                return;
-            }
-
-            List<Construction> constructions = adjacencyCluster.GetConstructions();
-
-            ConstructionLibrary constructionLibrary = new ConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
-            constructions?.ForEach(x => constructionLibrary.Add(x));
-
-            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
-
-            using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
-            {
-                constructionLibraryForm.Text = "Constructions";
-                if (constructionLibraryForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                constructionLibrary = constructionLibraryForm.ConstructionLibrary;
-            }
-
-            adjacencyCluster.ReplaceConstructions(constructionLibrary);
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
-
+            uIAnalyticalModel.EditConstructions(this);
         }
 
         private void RibbonButton_Edit_ApertureConstructions_Click(object sender, EventArgs e)
         {
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-            if (adjacencyCluster == null)
-            {
-                return;
-            }
-
-            List<ApertureConstruction> apertureConstructions = adjacencyCluster.GetApertureConstructions();
-            ApertureConstructionLibrary apertureConstructionLibrary = new ApertureConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
-            apertureConstructions?.ForEach(x => apertureConstructionLibrary.Add(x));
-
-            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
-
-            using (Windows.Forms.ApertureConstructionLibraryForm apertureConstructionLibraryForm = new Windows.Forms.ApertureConstructionLibraryForm(materialLibrary, apertureConstructionLibrary))
-            {
-                apertureConstructionLibraryForm.Text = "Aperture Constructions";
-                if (apertureConstructionLibraryForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                apertureConstructionLibrary = apertureConstructionLibraryForm.ApertureConstructionLibrary;
-            }
-
-            adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
+            uIAnalyticalModel.EditApertureConstructions(this);
         }
 
         private void RibbonButton_Library_EditLibrary_Click(object sender, EventArgs e)
         {
-            string path = null;
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM", "resources", "Analytical");
-                if (System.IO.Directory.Exists(directory))
-                {
-                    openFileDialog.InitialDirectory = directory;
-                }
-
-                openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-                path = openFileDialog.FileName;
-            }
-
-            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
-            {
-                return;
-            }
-
-            List<ISAMLibrary> libraries = null;
-            try
-            {
-                libraries = Core.Convert.ToSAM<ISAMLibrary>(path);
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show("Could not load file");
-            }
-
-            if (libraries == null || libraries.Count == 0)
-            {
-                return;
-            }
-
-            ISAMLibrary library = libraries.FirstOrDefault();
-
-            if (library is ConstructionLibrary)
-            {
-                DialogResult dialogResult = MessageBox.Show(this, "Use default Material Library?", "Material Library", MessageBoxButtons.YesNo);
-
-                MaterialLibrary materialLibrary = null;
-                if (dialogResult == DialogResult.Yes)
-                {
-                    materialLibrary = Query.DefaultMaterialLibrary();
-                }
-                else if (dialogResult == DialogResult.No)
-                {
-                    using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                    {
-                        string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
-                        if (System.IO.Directory.Exists(directory))
-                        {
-                            openFileDialog.InitialDirectory = directory;
-                        }
-
-                        openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                        openFileDialog.FilterIndex = 2;
-                        openFileDialog.RestoreDirectory = true;
-                        if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                        {
-                            return;
-                        }
-
-                        List<MaterialLibrary> materialLibraries = null;
-                        try
-                        {
-                            materialLibraries = Core.Convert.ToSAM<MaterialLibrary>(openFileDialog.FileName);
-                        }
-                        catch (Exception exception)
-                        {
-                            MessageBox.Show("Could not load file");
-                        }
-
-                        if (materialLibraries == null || materialLibraries.Count == 0)
-                        {
-                            return;
-                        }
-
-                        materialLibrary = materialLibraries.FirstOrDefault();
-                    }
-                }
-                else
-                {
-                    return;
-                }
-
-                using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, (ConstructionLibrary)library))
-                {
-                    if (constructionLibraryForm.ShowDialog(this) != DialogResult.OK)
-                    {
-                        return;
-                    }
-
-                    library = constructionLibraryForm.ConstructionLibrary;
-                }
-            }
-            else if (library is MaterialLibrary)
-            {
-                using (MaterialLibraryForm materialLibraryForm = new MaterialLibraryForm((MaterialLibrary)library, Core.Query.Enums(typeof(IMaterial))))
-                {
-                    if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
-                    {
-                        return;
-                    }
-
-                    library = materialLibraryForm.MaterialLibrary;
-                }
-            }
-
-            if (library == null)
-            {
-                return;
-            }
-
-            Core.Convert.ToFile(new IJSAMObject[] { library }, path);
-        }
-
-        private void EditMaterialLibrary()
-        {
-            if (uIAnalyticalModel?.JSAMObject == null)
-            {
-                return;
-            }
-
-            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
-
-            using (MaterialLibraryForm materialLibraryForm = new MaterialLibraryForm(materialLibrary, Core.Query.Enums(typeof(IMaterial))))
-            {
-                if (materialLibraryForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                materialLibrary = materialLibraryForm.MaterialLibrary;
-            }
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, uIAnalyticalModel.JSAMObject.AdjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
-        }
-
-        private void EditMaterial(IMaterial material)
-        {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
-            if (materialLibrary == null)
-            {
-                return;
-            }
-
-            string uniqueId = materialLibrary.GetUniqueId(material);
-
-
-            using (MaterialForm materialForm = new MaterialForm(material, Core.Query.Enums(typeof(IMaterial))))
-            {
-                if (materialForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                material = materialForm.Material;
-            }
-
-            materialLibrary.Replace(uniqueId, material);
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
-        }
-
-        private void RemoveMaterial(IMaterial material)
-        {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
-            if (materialLibrary == null)
-            {
-                return;
-            }
-
-            materialLibrary.Remove(material);
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
-        }
-
-        private void DuplicateMaterial(IMaterial material)
-        {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
-            if (materialLibrary == null)
-            {
-                return;
-            }
-
-            material = Core.Windows.Modify.Duplicate(materialLibrary, material, Core.Query.Enums(typeof(IMaterial)));
-            if(material == null)
-            {
-                return;
-            }
-
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, analyticalModel.AdjacencyCluster, materialLibrary, analyticalModel.ProfileLibrary);
+            Modify.EditLibrary(this);
         }
     }
 }
