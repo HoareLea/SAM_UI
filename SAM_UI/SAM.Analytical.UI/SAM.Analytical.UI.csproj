@@ -39,6 +39,10 @@
     <Reference Include="SAM.Analytical">
       <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Analytical.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Architectural, Version=1.0.8131.16760, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Architectural.dll</HintPath>
@@ -48,6 +52,10 @@
     </Reference>
     <Reference Include="SAM.Core.Tas">
       <HintPath>..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry, Version=1.0.8129.21951, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -169,14 +177,6 @@
     <None Include="Resources\SAM_Hydra.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\SAM_Windows\SAM_Windows\SAM.Analytical.Windows\SAM.Analytical.Windows.csproj">
-      <Project>{f15c5d91-bc85-45cb-a79e-8a6b46495701}</Project>
-      <Name>SAM.Analytical.Windows</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\SAM_Windows\SAM_Windows\SAM.Core.Windows\SAM.Core.Windows.csproj">
-      <Project>{1f33e540-da46-411d-a1bc-6a3e554a1e63}</Project>
-      <Name>SAM.Core.Windows</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
       <Project>{b25a1dc1-c41b-40c2-a769-636d5b13e7c0}</Project>
       <Name>SAM.Core.UI</Name>

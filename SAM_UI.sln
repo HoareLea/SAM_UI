@@ -11,12 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Analytical.UI", "SAM_UI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Weather.UI", "SAM_UI\SAM.Weather.UI\SAM.Weather.UI.csproj", "{76B5D171-3691-4113-AF33-C1B69199CAC6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Core.Windows", "..\SAM_Windows\SAM_Windows\SAM.Core.Windows\SAM.Core.Windows.csproj", "{1F33E540-DA46-411D-A1BC-6A3E554A1E63}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Architectural.Windows", "..\SAM_Windows\SAM_Windows\SAM.Architectural.Windows\SAM.Architectural.Windows.csproj", "{5A1B6423-F181-400A-A27F-1B5A73C2704D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Analytical.Windows", "..\SAM_Windows\SAM_Windows\SAM.Analytical.Windows\SAM.Analytical.Windows.csproj", "{F15C5D91-BC85-45CB-A79E-8A6B46495701}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,18 +29,6 @@ Global
 		{76B5D171-3691-4113-AF33-C1B69199CAC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76B5D171-3691-4113-AF33-C1B69199CAC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76B5D171-3691-4113-AF33-C1B69199CAC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F33E540-DA46-411D-A1BC-6A3E554A1E63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F33E540-DA46-411D-A1BC-6A3E554A1E63}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F33E540-DA46-411D-A1BC-6A3E554A1E63}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F33E540-DA46-411D-A1BC-6A3E554A1E63}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5A1B6423-F181-400A-A27F-1B5A73C2704D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A1B6423-F181-400A-A27F-1B5A73C2704D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A1B6423-F181-400A-A27F-1B5A73C2704D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A1B6423-F181-400A-A27F-1B5A73C2704D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F15C5D91-BC85-45CB-A79E-8A6B46495701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F15C5D91-BC85-45CB-A79E-8A6B46495701}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F15C5D91-BC85-45CB-A79E-8A6B46495701}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F15C5D91-BC85-45CB-A79E-8A6B46495701}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
