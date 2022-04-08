@@ -88,16 +88,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
-      <Project>{b25a1dc1-c41b-40c2-a769-636d5b13e7c0}</Project>
-      <Name>SAM.Core.UI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\SAM.ico" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SAM.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{64ebdb08-f7e3-414b-9420-b67ed263b223}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
