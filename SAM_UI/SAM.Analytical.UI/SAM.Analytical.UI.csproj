@@ -86,6 +86,7 @@
       <DependentUpon>AnalyticalForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\Program.cs" />
+    <Compile Include="Modify\EditAddressAndLocation.cs" />
     <Compile Include="Modify\Import.cs" />
     <Compile Include="Modify\SaveAs.cs" />
     <Compile Include="Modify\DuplicateMaterial.cs" />

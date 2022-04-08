@@ -445,7 +445,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Edit_Location_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("To be implemented soon...");
+            uIAnalyticalModel.EditAddressAndLocation(this);
         }
 
         private void TreeView_AnalyticalModel_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)

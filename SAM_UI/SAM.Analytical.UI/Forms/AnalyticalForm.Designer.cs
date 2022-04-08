@@ -49,6 +49,7 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Edit_Library = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Edit_MaterialLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Edit_InternalConditionLibrary = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_ProfileLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Edit_Constructions = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Edit_Constructions = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Edit_ApertureConstructions = new System.Windows.Forms.RibbonButton();
@@ -75,7 +76,6 @@ namespace SAM.Analytical.UI
             this.SplitContainer_Main = new System.Windows.Forms.SplitContainer();
             this.TreeView_AnalyticalModel = new System.Windows.Forms.TreeView();
             this.PictureBox_Logo = new System.Windows.Forms.PictureBox();
-            this.RibbonButton_ProfileLibrary = new System.Windows.Forms.RibbonButton();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer_Main)).BeginInit();
             this.SplitContainer_Main.Panel1.SuspendLayout();
             this.SplitContainer_Main.Panel2.SuspendLayout();
@@ -278,6 +278,14 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Edit_InternalConditionLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_InternalConditionLibrary.SmallImage")));
             this.RibbonButton_Edit_InternalConditionLibrary.Text = "Internal Conditions";
             this.RibbonButton_Edit_InternalConditionLibrary.Click += new System.EventHandler(this.RibbonButton_Edit_InternalConditionLibrary_Click);
+            // 
+            // RibbonButton_ProfileLibrary
+            // 
+            this.RibbonButton_ProfileLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_ProfileLibrary;
+            this.RibbonButton_ProfileLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_ProfileLibrary;
+            this.RibbonButton_ProfileLibrary.Name = "RibbonButton_ProfileLibrary";
+            this.RibbonButton_ProfileLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_ProfileLibrary.SmallImage")));
+            this.RibbonButton_ProfileLibrary.Text = "Profiles";
             // 
             // RibbonPanel_Edit_Constructions
             // 
@@ -514,14 +522,6 @@ namespace SAM.Analytical.UI
             this.PictureBox_Logo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureBox_Logo.TabIndex = 0;
             this.PictureBox_Logo.TabStop = false;
-            // 
-            // RibbonButton_ProfileLibrary
-            // 
-            this.RibbonButton_ProfileLibrary.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_ProfileLibrary;
-            this.RibbonButton_ProfileLibrary.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_ProfileLibrary;
-            this.RibbonButton_ProfileLibrary.Name = "RibbonButton_ProfileLibrary";
-            this.RibbonButton_ProfileLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_ProfileLibrary.SmallImage")));
-            this.RibbonButton_ProfileLibrary.Text = "Profiles";
             // 
             // AnalyticalForm
             // 
