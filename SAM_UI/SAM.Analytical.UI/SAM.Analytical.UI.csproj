@@ -87,6 +87,12 @@
     </Compile>
     <Compile Include="Classes\Program.cs" />
     <Compile Include="Modify\EditAddressAndLocation.cs" />
+    <Compile Include="Modify\EditAperture.cs" />
+    <Compile Include="Modify\EditInternalConditions.cs" />
+    <Compile Include="Modify\EditInternalCondition.cs" />
+    <Compile Include="Modify\EditPanel.cs" />
+    <Compile Include="Modify\EditSpace.cs" />
+    <Compile Include="Modify\EditProfileLibrary.cs" />
     <Compile Include="Modify\Import.cs" />
     <Compile Include="Modify\SaveAs.cs" />
     <Compile Include="Modify\DuplicateMaterial.cs" />

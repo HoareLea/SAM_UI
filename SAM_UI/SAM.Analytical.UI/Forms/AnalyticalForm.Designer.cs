@@ -286,6 +286,7 @@ namespace SAM.Analytical.UI
             this.RibbonButton_ProfileLibrary.Name = "RibbonButton_ProfileLibrary";
             this.RibbonButton_ProfileLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_ProfileLibrary.SmallImage")));
             this.RibbonButton_ProfileLibrary.Text = "Profiles";
+            this.RibbonButton_ProfileLibrary.Click += new System.EventHandler(this.RibbonButton_ProfileLibrary_Click);
             // 
             // RibbonPanel_Edit_Constructions
             // 
@@ -536,7 +537,6 @@ namespace SAM.Analytical.UI
             this.Text = "SAM Analytical";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AnalyticalForm_FormClosing);
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AnalyticalForm_FormClosed);
             this.Load += new System.EventHandler(this.AnalyticalForm_Load);
             this.SplitContainer_Main.Panel1.ResumeLayout(false);
             this.SplitContainer_Main.Panel2.ResumeLayout(false);

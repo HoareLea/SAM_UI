@@ -27,6 +27,7 @@ namespace SAM.Analytical.UI
             Refresh_AnalyticalModel();
         }
 
+        
         private void UIAnalyticalModel_Modified(object sender, EventArgs e)
         {
             Refresh_TreeView();
@@ -37,6 +38,7 @@ namespace SAM.Analytical.UI
             Refresh_AnalyticalModel();
         }
 
+        
         private void Refresh_AnalyticalModel()
         {
             RibbonTab_Edit.Enabled = true;
@@ -62,35 +64,10 @@ namespace SAM.Analytical.UI
             Refresh_TreeView();
         }
 
-        private List<object> GetExpandedTags(TreeNodeCollection treeNodeCollection)
-        {
-            if (treeNodeCollection == null)
-            {
-                return null;
-            }
-
-            List<object> result = new List<object>();
-
-            foreach (TreeNode treeNode in treeNodeCollection)
-            {
-                if (treeNode.IsExpanded)
-                {
-                    result.Add(treeNode.Tag);
-                    List<object> expandedTags = GetExpandedTags(treeNode.Nodes);
-                    if (expandedTags != null)
-                    {
-                        result.AddRange(expandedTags);
-                    }
-                }
-            }
-
-            return result;
-        }
-        
         private void Refresh_TreeView()
         {
             List<object> expandedTags = GetExpandedTags(TreeView_AnalyticalModel.Nodes);
-            
+
             TreeView_AnalyticalModel.Nodes.Clear();
 
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -100,7 +77,7 @@ namespace SAM.Analytical.UI
             }
 
             string name = analyticalModel.Name;
-            if(string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 name = "???";
             }
@@ -116,29 +93,31 @@ namespace SAM.Analytical.UI
             treeNode_Profiles.Tag = typeof(Profile);
             TreeNode treeNode_Materials = treeNode_AnalyticalModel.Nodes.Add("Materials");
             treeNode_Materials.Tag = typeof(IMaterial);
+            TreeNode treeNode_InternalConditions = treeNode_AnalyticalModel.Nodes.Add("Internal Conditions");
+            treeNode_InternalConditions.Tag = typeof(InternalCondition);
 
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
-            if(adjacencyCluster != null)
+            if (adjacencyCluster != null)
             {
                 List<Space> spaces = adjacencyCluster.GetSpaces();
-                if(spaces != null)
+                if (spaces != null)
                 {
-                    foreach(Space space in spaces)
+                    foreach (Space space in spaces)
                     {
                         TreeNode treeNode_Space = treeNode_Spaces.Nodes.Add(space.Name);
                         treeNode_Space.Tag = space;
                         List<Panel> panels_Space = adjacencyCluster.GetPanels(space);
-                        if(panels_Space != null)
+                        if (panels_Space != null)
                         {
-                            foreach(Panel panel in panels_Space)
+                            foreach (Panel panel in panels_Space)
                             {
                                 TreeNode treeNode_Panel = treeNode_Space.Nodes.Add(panel.Name);
                                 treeNode_Panel.Tag = panel;
 
                                 List<Aperture> apertures = panel.Apertures;
-                                if(apertures != null)
+                                if (apertures != null)
                                 {
-                                    foreach(Aperture aperture in apertures)
+                                    foreach (Aperture aperture in apertures)
                                     {
                                         TreeNode treeNode_Aperture = treeNode_Panel.Nodes.Add(aperture.Name);
                                         treeNode_Aperture.Tag = aperture;
@@ -165,12 +144,12 @@ namespace SAM.Analytical.UI
                 }
 
                 List<Panel> panels = adjacencyCluster.GetPanels();
-                if(panels != null)
+                if (panels != null)
                 {
-                    foreach(Panel panel in panels)
+                    foreach (Panel panel in panels)
                     {
                         List<Space> spaces_Panel = adjacencyCluster.GetSpaces(panel);
-                        if(spaces_Panel == null || spaces_Panel.Count == 0)
+                        if (spaces_Panel == null || spaces_Panel.Count == 0)
                         {
                             TreeNode treeNode_Shade = treeNode_Shades.Nodes.Add(panel.Name);
                             treeNode_Shade.Tag = panel;
@@ -183,12 +162,27 @@ namespace SAM.Analytical.UI
                     }
                 }
 
+                IEnumerable<InternalCondition> internalConditions = adjacencyCluster.GetInternalConditions(false, true);
+                if (internalConditions != null)
+                {
+                    foreach (InternalCondition internalCondition in internalConditions)
+                    {
+                        TreeNode treeNode_InternalCondition = treeNode_InternalConditions.Nodes.Add(internalCondition.Name);
+                        treeNode_InternalCondition.Tag = internalCondition;
+
+                        if (expandedTags.Find(x => x is InternalCondition && ((InternalCondition)x).Guid == internalCondition.Guid) != null)
+                        {
+                            treeNode_InternalCondition.Expand();
+                        }
+                    }
+                }
+
             }
 
             List<Profile> profiles = analyticalModel.ProfileLibrary?.GetProfiles();
-            if(profiles != null)
+            if (profiles != null)
             {
-                foreach(Profile profile in profiles)
+                foreach (Profile profile in profiles)
                 {
                     TreeNode treeNode_Profile = treeNode_Profiles.Nodes.Add(profile.Name);
                     treeNode_Profile.Tag = profile;
@@ -223,7 +217,7 @@ namespace SAM.Analytical.UI
             }
 
             treeNode_AnalyticalModel.Expand();
-            if(expandedTags != null && expandedTags.Count != 0)
+            if (expandedTags != null && expandedTags.Count != 0)
             {
                 if (expandedTags.Contains(treeNode_Spaces.Tag))
                 {
@@ -246,6 +240,83 @@ namespace SAM.Analytical.UI
                 }
             }
         }
+
+        private List<object> GetExpandedTags(TreeNodeCollection treeNodeCollection)
+        {
+            if (treeNodeCollection == null)
+            {
+                return null;
+            }
+
+            List<object> result = new List<object>();
+
+            foreach (TreeNode treeNode in treeNodeCollection)
+            {
+                if (treeNode.IsExpanded)
+                {
+                    result.Add(treeNode.Tag);
+                    List<object> expandedTags = GetExpandedTags(treeNode.Nodes);
+                    if (expandedTags != null)
+                    {
+                        result.AddRange(expandedTags);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private void TreeView_AnalyticalModel_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            TreeNode treeNode = e.Node;
+
+            if (treeNode.Tag == typeof(IMaterial))
+            {
+                uIAnalyticalModel.EditMaterialLibrary(this);
+                return;
+            }
+
+            if (treeNode.Tag == typeof(Profile))
+            {
+                uIAnalyticalModel.EditProfileLibrary(this);
+                return;
+            }
+
+            if (treeNode.Tag == typeof(InternalCondition))
+            {
+                uIAnalyticalModel.EditInternalConditions(this);
+                return;
+            }
+
+
+            IJSAMObject jSAMObject = treeNode.Tag as IJSAMObject;
+            if (jSAMObject == null)
+            {
+                return;
+            }
+
+            if (jSAMObject is Panel)
+            {
+                uIAnalyticalModel.EditPanel((Panel)jSAMObject, this);
+            }
+            else if (jSAMObject is IMaterial)
+            {
+                uIAnalyticalModel.EditMaterial((IMaterial)jSAMObject, this);
+            }
+            else if (jSAMObject is Aperture)
+            {
+                uIAnalyticalModel.EditAperture((Aperture)jSAMObject, this);
+            }
+            else if (jSAMObject is Space)
+            {
+                uIAnalyticalModel.EditSpace((Space)jSAMObject, this);
+            }
+            else if (jSAMObject is InternalCondition)
+            {
+                uIAnalyticalModel.EditInternalCondition((InternalCondition)jSAMObject, this);
+            }
+        }
+
 
         private void ToolStripMenuItem_Material_Edit_Click(object sender, EventArgs e)
         {
@@ -289,10 +360,7 @@ namespace SAM.Analytical.UI
             uIAnalyticalModel.DuplicateMaterial(material, this);
         }
 
-        private void AnalyticalForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-        }
-
+        
         private void RibbonButton_File_Open_Click(object sender, EventArgs e)
         {
             string path = null;
@@ -448,125 +516,6 @@ namespace SAM.Analytical.UI
             uIAnalyticalModel.EditAddressAndLocation(this);
         }
 
-        private void TreeView_AnalyticalModel_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            TreeNode treeNode = e.Node;
-
-            if(treeNode.Tag == typeof(IMaterial))
-            {
-                uIAnalyticalModel.EditMaterialLibrary(this);
-                return;
-            }
-
-
-            IJSAMObject jSAMObject = treeNode.Tag as IJSAMObject;
-            if(jSAMObject == null)
-            {
-                return;
-            }
-
-            if(jSAMObject is Panel)
-            {
-                AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-                if(analyticalModel == null)
-                {
-                    return;
-                }
-
-                AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
-                if(adjacencyCluster == null)
-                {
-                    return;
-                }
-
-                MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
-
-                ConstructionLibrary constructionLibrary = null;
-
-                List<Construction> constructions = adjacencyCluster?.GetConstructions();
-                if(constructions != null)
-                {
-                    constructionLibrary = new ConstructionLibrary(analyticalModel.Name);
-                    constructions.ForEach(x => constructionLibrary.Add(x));
-                }
-
-                Panel panel = (Panel)jSAMObject;
-
-                using (Windows.Forms.PanelForm panelForm = new Windows.Forms.PanelForm(panel, materialLibrary, constructionLibrary, Core.Query.Enums(typeof(Panel))))
-                {
-                    if(panelForm.ShowDialog(this) != DialogResult.OK)
-                    {
-                        return;
-                    }
-
-                    panel = panelForm.Panel;
-                    constructionLibrary = panelForm.ConstructionLibrary;
-                }
-
-                adjacencyCluster.AddObject(panel);
-
-                adjacencyCluster.ReplaceConstructions(constructionLibrary);
-
-                uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster);
-            }
-
-            if(jSAMObject is IMaterial)
-            {
-                uIAnalyticalModel.EditMaterial((IMaterial)jSAMObject, this);
-            }
-
-            if (jSAMObject is Aperture)
-            {
-                AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-                if (analyticalModel == null)
-                {
-                    return;
-                }
-
-                AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
-                if (adjacencyCluster == null)
-                {
-                    return;
-                }
-
-                MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary;
-
-                ApertureConstructionLibrary apertureConstructionLibrary = null;
-
-                List<ApertureConstruction> apertureConstructions = adjacencyCluster?.GetApertureConstructions();
-                if (apertureConstructions != null)
-                {
-                    apertureConstructionLibrary = new ApertureConstructionLibrary(analyticalModel.Name);
-                    apertureConstructions.ForEach(x => apertureConstructionLibrary.Add(x));
-                }
-
-                Aperture aperture = (Aperture)jSAMObject;
-
-                using (Windows.Forms.ApertureForm apertureForm = new Windows.Forms.ApertureForm(aperture, materialLibrary, apertureConstructionLibrary, Core.Query.Enums(typeof(Aperture))))
-                {
-                    if (apertureForm.ShowDialog(this) != DialogResult.OK)
-                    {
-                        return;
-                    }
-
-                    aperture = apertureForm.Aperture;
-                    apertureConstructionLibrary = apertureForm.ApertureConstructionLibrary;
-                }
-
-                Panel panel = adjacencyCluster.GetPanel(aperture);
-                if(panel != null)
-                {
-                    panel.RemoveAperture(aperture.Guid);
-                    panel.AddAperture(aperture);
-                    adjacencyCluster.AddObject(aperture);
-                }
-
-                adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
-
-                uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster);
-            }
-        }
-
         private void RibbonButton_Simulate_ImportWeatherData_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -605,7 +554,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Edit_InternalConditionLibrary_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("To be implemented soon...");
+            uIAnalyticalModel.EditInternalConditions(this);
         }
 
         private void RibbonButton_Edit_Constructions_Click(object sender, EventArgs e)
@@ -621,6 +570,11 @@ namespace SAM.Analytical.UI
         private void RibbonButton_Library_EditLibrary_Click(object sender, EventArgs e)
         {
             Modify.EditLibrary(this);
+        }
+
+        private void RibbonButton_ProfileLibrary_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel?.EditProfileLibrary(this);
         }
     }
 }

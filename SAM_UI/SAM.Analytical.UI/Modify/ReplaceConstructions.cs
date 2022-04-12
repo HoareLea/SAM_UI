@@ -14,7 +14,7 @@ namespace SAM.Analytical.UI
             List<Construction> constructions_Temp = adjacencyCluster.GetObjects<Construction>();
             adjacencyCluster.Remove(constructions_Temp);
 
-            UpdateConstructions(adjacencyCluster, constructionLibrary);
+            Windows.Modify.UpdateConstructions(adjacencyCluster, constructionLibrary);
         }
 
         public static void ReplaceConstructions(this UIAnalyticalModel uIAnalyticalModel, ConstructionLibrary constructionLibrary)
@@ -28,7 +28,7 @@ namespace SAM.Analytical.UI
             List<Construction> constructions_Temp = adjacencyCluster.GetObjects<Construction>();
             adjacencyCluster.Remove(constructions_Temp);
 
-            UpdateConstructions(adjacencyCluster, constructionLibrary);
+            Windows.Modify.UpdateConstructions(adjacencyCluster, constructionLibrary);
 
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
         }

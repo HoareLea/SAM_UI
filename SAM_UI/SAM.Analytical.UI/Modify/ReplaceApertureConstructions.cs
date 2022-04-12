@@ -14,7 +14,7 @@ namespace SAM.Analytical.UI
             List<ApertureConstruction> apertureConstructions_Temp = adjacencyCluster.GetObjects<ApertureConstruction>();
             adjacencyCluster.Remove(apertureConstructions_Temp);
 
-            UpdateApertureConstructions(adjacencyCluster, apertureConstructionLibrary);
+            Windows.Modify.UpdateApertureConstructions(adjacencyCluster, apertureConstructionLibrary);
         }
 
         public static void ReplaceApertureConstructions(this UIAnalyticalModel uIAnalyticalModel, ApertureConstructionLibrary apertureConstructionLibrary)
