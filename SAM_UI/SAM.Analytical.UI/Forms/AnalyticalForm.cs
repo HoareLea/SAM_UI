@@ -366,11 +366,11 @@ namespace SAM.Analytical.UI
             string path = null;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
-                if (System.IO.Directory.Exists(directory))
-                {
-                    openFileDialog.InitialDirectory = directory;
-                }
+                //string directory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SAM");
+                //if (System.IO.Directory.Exists(directory))
+                //{
+                //    openFileDialog.InitialDirectory = directory;
+                //}
                 openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 openFileDialog.FilterIndex = 2;
                 openFileDialog.RestoreDirectory = true;
