@@ -243,6 +243,16 @@ namespace SAM.Analytical.UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SAM_Space {
+            get {
+                object obj = ResourceManager.GetObject("SAM_Space", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SAM_T3D {
             get {
                 object obj = ResourceManager.GetObject("SAM_T3D", resourceCulture);

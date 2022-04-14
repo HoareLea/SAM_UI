@@ -50,6 +50,7 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Edit_MaterialLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Edit_InternalConditionLibrary = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_ProfileLibrary = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_Edit_Spaces = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Edit_Constructions = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Edit_Constructions = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_Edit_ApertureConstructions = new System.Windows.Forms.RibbonButton();
@@ -258,6 +259,7 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_MaterialLibrary);
             this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_InternalConditionLibrary);
             this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_ProfileLibrary);
+            this.RibbonPanel_Edit_Library.Items.Add(this.RibbonButton_Edit_Spaces);
             this.RibbonPanel_Edit_Library.Name = "RibbonPanel_Edit_Library";
             this.RibbonPanel_Edit_Library.Text = "Model Library";
             // 
@@ -287,6 +289,15 @@ namespace SAM.Analytical.UI
             this.RibbonButton_ProfileLibrary.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_ProfileLibrary.SmallImage")));
             this.RibbonButton_ProfileLibrary.Text = "Profiles";
             this.RibbonButton_ProfileLibrary.Click += new System.EventHandler(this.RibbonButton_ProfileLibrary_Click);
+            // 
+            // RibbonButton_Edit_Spaces
+            // 
+            this.RibbonButton_Edit_Spaces.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_Space;
+            this.RibbonButton_Edit_Spaces.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_Space;
+            this.RibbonButton_Edit_Spaces.Name = "RibbonButton_Edit_Spaces";
+            this.RibbonButton_Edit_Spaces.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_Spaces.SmallImage")));
+            this.RibbonButton_Edit_Spaces.Text = "Spaces";
+            this.RibbonButton_Edit_Spaces.Click += new System.EventHandler(this.RibbonButton_Edit_Spaces_Click);
             // 
             // RibbonPanel_Edit_Constructions
             // 
@@ -598,6 +609,7 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonPanel RibbonPanel_Library_EditLibrary;
         private System.Windows.Forms.RibbonButton RibbonButton_Library_EditLibrary;
         private System.Windows.Forms.RibbonButton RibbonButton_ProfileLibrary;
+        private System.Windows.Forms.RibbonButton RibbonButton_Edit_Spaces;
     }
 }
 

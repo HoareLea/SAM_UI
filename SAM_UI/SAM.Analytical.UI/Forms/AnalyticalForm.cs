@@ -576,5 +576,10 @@ namespace SAM.Analytical.UI
         {
             uIAnalyticalModel?.EditProfileLibrary(this);
         }
+
+        private void RibbonButton_Edit_Spaces_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel?.EditSpaces(this);
+        }
     }
 }

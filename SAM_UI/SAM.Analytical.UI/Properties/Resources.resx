@@ -124,23 +124,26 @@
   <data name="SAM_Save" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_Save.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SAM_TSD" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_TSD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SAM_ModelCheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_ModelCheck.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SAM_ApertureConstruction" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_ApertureConstruction.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SAM_SolarCalculator" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SAM_SolarCalculator.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SAM_New" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_New.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SAM_Export" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SAM_Export.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SAM_ProfileLibrary" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_ProfileLibrary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SAM1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SAM_Import" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SAM_Import.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SAM_Wiki" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_Wiki.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SAM_EditLibrary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_EditLibrary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -160,14 +163,14 @@
   <data name="SAM_Hydra" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_Hydra.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SAM_New" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SAM_New.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SAM_SolarCalculator" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_SolarCalculator.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SAM" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SAM_Wiki" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SAM_Wiki.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SAM_Import" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_Import.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SAM_ConstructionLibrary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_ConstructionLibrary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -184,13 +187,13 @@
   <data name="SAM_TPD" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_TPD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SAM_TSD" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SAM_TSD.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SAM_Export" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_Export.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SAM_SaveAs" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_SaveAs.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SAM_ProfileLibrary" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SAM_ProfileLibrary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SAM_Space" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_Space.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

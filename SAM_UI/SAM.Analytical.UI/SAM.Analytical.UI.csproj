@@ -91,6 +91,7 @@
     <Compile Include="Modify\EditInternalConditions.cs" />
     <Compile Include="Modify\EditInternalCondition.cs" />
     <Compile Include="Modify\EditPanel.cs" />
+    <Compile Include="Modify\EditSpaces.cs" />
     <Compile Include="Modify\EditSpace.cs" />
     <Compile Include="Modify\EditProfileLibrary.cs" />
     <Compile Include="Modify\Import.cs" />
@@ -218,6 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SAM_ProfileLibrary.png" />
+    <None Include="Resources\SAM_Space.png" />
     <Content Include="SAM.ico" />
   </ItemGroup>
   <ItemGroup>
