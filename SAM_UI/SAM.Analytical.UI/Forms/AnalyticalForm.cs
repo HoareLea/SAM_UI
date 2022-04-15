@@ -474,36 +474,10 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_File_New_Click(object sender, EventArgs e)
         {
-            if (uIAnalyticalModel == null)
+            if(uIAnalyticalModel.New(this))
             {
-                uIAnalyticalModel = new UIAnalyticalModel();
+                Refresh_AnalyticalModel();
             }
-
-            if (uIAnalyticalModel.JSAMObject != null)
-            {
-                if (!uIAnalyticalModel.Close())
-                {
-                    return;
-                }
-            }
-
-            string name = null;
-            using (TextBoxForm<string> textBoxForm = new TextBoxForm<string>("Analytical Model", "Project Name"))
-            {
-                textBoxForm.Value = "New Project";
-                if (textBoxForm.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                name = textBoxForm.Value;
-            }
-
-            AnalyticalModel analyticalModel = new AnalyticalModel(Guid.NewGuid(), name);
-
-            uIAnalyticalModel.JSAMObject = analyticalModel;
-
-            Refresh_AnalyticalModel();
         }
 
         private void RibbonButton_Edit_SAMImport_Click(object sender, EventArgs e)

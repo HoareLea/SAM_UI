@@ -94,6 +94,7 @@
     <Compile Include="Modify\EditSpaces.cs" />
     <Compile Include="Modify\EditSpace.cs" />
     <Compile Include="Modify\EditProfileLibrary.cs" />
+    <Compile Include="Modify\New.cs" />
     <Compile Include="Modify\Import.cs" />
     <Compile Include="Modify\SaveAs.cs" />
     <Compile Include="Modify\DuplicateMaterial.cs" />
