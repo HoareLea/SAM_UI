@@ -95,6 +95,8 @@ namespace SAM.Analytical.UI
             treeNode_Materials.Tag = typeof(IMaterial);
             TreeNode treeNode_InternalConditions = treeNode_AnalyticalModel.Nodes.Add("Internal Conditions");
             treeNode_InternalConditions.Tag = typeof(InternalCondition);
+            TreeNode treeNode_MechanicalSystems = treeNode_AnalyticalModel.Nodes.Add("Mechanical Systems");
+            treeNode_MechanicalSystems.Tag = typeof(MechanicalSystemType);
 
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             if (adjacencyCluster != null)
@@ -173,6 +175,21 @@ namespace SAM.Analytical.UI
                         if (expandedTags.Find(x => x is InternalCondition && ((InternalCondition)x).Guid == internalCondition.Guid) != null)
                         {
                             treeNode_InternalCondition.Expand();
+                        }
+                    }
+                }
+
+                List<MechanicalSystemType> mechanicalSystemTypes = adjacencyCluster.GetMechanicalSystemTypes<MechanicalSystemType>();
+                if(mechanicalSystemTypes != null)
+                {
+                    foreach (MechanicalSystemType mechanicalSystemType in mechanicalSystemTypes)
+                    {
+                        TreeNode treeNode_MechanicalSystemType = treeNode_MechanicalSystems.Nodes.Add(mechanicalSystemType.Name);
+                        treeNode_MechanicalSystemType.Tag = mechanicalSystemType;
+
+                        if (expandedTags.Find(x => x is MechanicalSystemType && ((MechanicalSystemType)x).Guid == mechanicalSystemType.Guid) != null)
+                        {
+                            treeNode_MechanicalSystemType.Expand();
                         }
                     }
                 }
