@@ -184,6 +184,13 @@ namespace SAM.Analytical.UI
                 {
                     foreach (MechanicalSystemType mechanicalSystemType in mechanicalSystemTypes)
                     {
+                        ContextMenuStrip contextMenuStrip_MechanicalSystemType = new ContextMenuStrip();
+                        contextMenuStrip_MechanicalSystemType.Tag = mechanicalSystemType;
+
+                        //ToolStripMenuItem toolStripMenuItem_Edit = new ToolStripMenuItem() { Text = "Add" };
+                        //toolStripMenuItem_Edit.Click += ToolStripMenuItem_Material_Edit_Click;
+                        //contextMenuStrip_MechanicalSystemType.Items.Add(toolStripMenuItem_Edit);
+
                         TreeNode treeNode_MechanicalSystemType = treeNode_MechanicalSystems.Nodes.Add(mechanicalSystemType.Name);
                         treeNode_MechanicalSystemType.Tag = mechanicalSystemType;
 
