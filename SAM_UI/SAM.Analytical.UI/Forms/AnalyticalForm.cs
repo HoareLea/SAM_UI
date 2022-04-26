@@ -1,5 +1,4 @@
 ﻿using SAM.Core;
-using SAM.Core.Windows.Forms;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -187,12 +186,13 @@ namespace SAM.Analytical.UI
                         ContextMenuStrip contextMenuStrip_MechanicalSystemType = new ContextMenuStrip();
                         contextMenuStrip_MechanicalSystemType.Tag = mechanicalSystemType;
 
-                        //ToolStripMenuItem toolStripMenuItem_Edit = new ToolStripMenuItem() { Text = "Add" };
-                        //toolStripMenuItem_Edit.Click += ToolStripMenuItem_Material_Edit_Click;
-                        //contextMenuStrip_MechanicalSystemType.Items.Add(toolStripMenuItem_Edit);
+                        ToolStripMenuItem toolStripMenuItem_CreateMechanicalSystem = new ToolStripMenuItem() { Text = "Create System" };
+                        toolStripMenuItem_CreateMechanicalSystem.Click += ToolStripMenuItem_CreateMechanicalSystem_Click;
+                        contextMenuStrip_MechanicalSystemType.Items.Add(toolStripMenuItem_CreateMechanicalSystem);
 
                         TreeNode treeNode_MechanicalSystemType = treeNode_MechanicalSystems.Nodes.Add(mechanicalSystemType.Name);
                         treeNode_MechanicalSystemType.Tag = mechanicalSystemType;
+                        treeNode_MechanicalSystemType.ContextMenuStrip = contextMenuStrip_MechanicalSystemType;
 
                         if (expandedTags.Find(x => x is MechanicalSystemType && ((MechanicalSystemType)x).Guid == mechanicalSystemType.Guid) != null)
                         {
@@ -261,6 +261,33 @@ namespace SAM.Analytical.UI
                 if (expandedTags.Contains(treeNode_Materials.Tag))
                 {
                     treeNode_Materials.Expand();
+                }
+            }
+        }
+
+        private void ToolStripMenuItem_CreateMechanicalSystem_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem toolStripMenuItem = sender as ToolStripMenuItem;
+            if(toolStripMenuItem == null)
+            {
+                return;
+            }
+
+            ContextMenuStrip contextMenuStrip = toolStripMenuItem.Owner as ContextMenuStrip;
+
+            MechanicalSystemType mechanicalSystemType = contextMenuStrip?.Tag as MechanicalSystemType;
+            if(mechanicalSystemType == null)
+            {
+                return;
+            }
+
+            MechanicalSystem mechanicalSystem = Create.MechanicalSystem(mechanicalSystemType);
+
+            using (Windows.Forms.MechanicalSystemForm mechanicalSystemForm = new Windows.Forms.MechanicalSystemForm(mechanicalSystem, uIAnalyticalModel.JSAMObject.AdjacencyCluster))
+            {
+                if(mechanicalSystemForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
                 }
             }
         }
