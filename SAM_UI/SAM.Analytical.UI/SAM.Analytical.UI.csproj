@@ -107,6 +107,7 @@
     <Compile Include="Modify\ReplaceApertureConstructions.cs" />
     <Compile Include="Modify\UpdateApertureConstructions.cs" />
     <Compile Include="Modify\ReplaceConstructions.cs" />
+    <Compile Include="Modify\CreateMechanicalSystem.cs" />
     <Compile Include="Modify\UpdateConstructions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Forms\AnalyticalForm.resx">
