@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Weather;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -529,23 +530,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Simulate_ImportWeatherData_Click(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "EPW files (*.epw)|*.epw|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 1;
-                openFileDialog.RestoreDirectory = true;
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-
-                if(openFileDialog.FileName.ToLower().EndsWith("epw"))
-                {
-
-                }
-
-                //SAM.Weather.Convert.ToSAM();
-            }
+            uIAnalyticalModel?.ImportWeatherData(this);
         }
 
         private void RibbonButton_Edit_ModelCheck_Click(object sender, EventArgs e)
@@ -591,6 +576,11 @@ namespace SAM.Analytical.UI
         private void RibbonButton_Edit_Spaces_Click(object sender, EventArgs e)
         {
             uIAnalyticalModel?.EditSpaces(this);
+        }
+
+        private void RibbonButton_SolarSimulation_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel?.Simulate(this);
         }
     }
 }

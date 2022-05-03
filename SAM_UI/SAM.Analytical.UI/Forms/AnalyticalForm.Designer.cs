@@ -378,6 +378,7 @@ namespace SAM.Analytical.UI
             this.RibbonButton_SolarSimulation.Name = "RibbonButton_SolarSimulation";
             this.RibbonButton_SolarSimulation.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_SolarSimulation.SmallImage")));
             this.RibbonButton_SolarSimulation.Text = "Solar Simulation";
+            this.RibbonButton_SolarSimulation.Click += new System.EventHandler(this.RibbonButton_SolarSimulation_Click);
             // 
             // RibbonTab_Library
             // 
