@@ -30,6 +30,7 @@ namespace SAM.Analytical.UI
             using (Windows.Forms.InternalConditionLibraryForm internalConditionLibraryForm = new Windows.Forms.InternalConditionLibraryForm(internalConditionLibrary, profileLibrary, adjacencyCluster))
             {
                 internalConditionLibraryForm.Text = "Internal Conditions";
+                internalConditionLibraryForm.MultiSelect = true;
                 if (internalConditionLibraryForm.ShowDialog(owner) != DialogResult.OK)
                 {
                     return;
@@ -43,10 +44,27 @@ namespace SAM.Analytical.UI
             internalConditions = internalConditionLibrary?.GetInternalConditions();
             if(internalConditions == null || internalConditions.Count == 0)
             {
-                return;
+                adjacencyCluster.RemoveAll<InternalCondition>();
+            }
+            else
+            {
+                IEnumerable<InternalCondition> internalConditions_AdjacencyCluster = adjacencyCluster.GetInternalConditions(false, true);
+                if(internalConditions_AdjacencyCluster != null && internalConditions_AdjacencyCluster.Count() != 0)
+                {
+                    foreach(InternalCondition internalCondition_AdjacencyCluster in internalConditions_AdjacencyCluster)
+                    {
+                        if(internalConditions.Find(x => x.Guid == internalCondition_AdjacencyCluster.Guid) == null)
+                        {
+                            adjacencyCluster.RemoveObject<InternalCondition>(internalCondition_AdjacencyCluster.Guid);
+                        }
+                    }
+                }
+
+                internalConditions.ForEach(x => adjacencyCluster.AddObject(x));
             }
 
-            internalConditions.ForEach(x => adjacencyCluster.AddObject(x));
+
+
 
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary);
         }
