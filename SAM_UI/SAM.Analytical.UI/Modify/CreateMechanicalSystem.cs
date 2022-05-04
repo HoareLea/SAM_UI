@@ -25,7 +25,7 @@ namespace SAM.Analytical.UI
                 List<MechanicalSystemType> mechanicalSystemTypes = adjacencyCluster.GetMechanicalSystemTypes<MechanicalSystemType>();
                 if(mechanicalSystemTypes == null || mechanicalSystemTypes.Count == 0)
                 {
-                    mechanicalSystemTypes = Query.DefaultSystemTypeLibrary().GetSystemTypes<MechanicalSystemType>();
+                    mechanicalSystemTypes = Analytical.Query.DefaultSystemTypeLibrary().GetSystemTypes<MechanicalSystemType>();
                 }
 
                 if(mechanicalSystemTypes == null || mechanicalSystemTypes.Count == 0)

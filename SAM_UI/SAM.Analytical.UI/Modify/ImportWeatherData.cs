@@ -12,7 +12,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            if (!Windows.Query.TryGetWeatherData(out WeatherData weatherData, owner) || weatherData == null)
+            if (!Query.TryGetWeatherData(out WeatherData weatherData, owner) || weatherData == null)
             {
                 return;
             }

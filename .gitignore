@@ -331,3 +331,9 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
+#Include build only references
+!references_buildonly/**.*
+
+#Include build only references
+!references/**.*

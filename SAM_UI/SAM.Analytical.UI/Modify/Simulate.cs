@@ -12,7 +12,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            AnalyticalModel analyticalModel_Temp = Windows.Query.Simulate(analyticalModel, uIAnalyticalModel.Path);
+            AnalyticalModel analyticalModel_Temp = Query.Simulate(analyticalModel, uIAnalyticalModel.Path);
             if (analyticalModel_Temp == null)
             {
                 return;

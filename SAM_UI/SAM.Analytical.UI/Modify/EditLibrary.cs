@@ -59,7 +59,7 @@ namespace SAM.Analytical.UI
                 MaterialLibrary materialLibrary = null;
                 if (dialogResult == DialogResult.Yes)
                 {
-                    materialLibrary = Query.DefaultMaterialLibrary();
+                    materialLibrary = Analytical.Query.DefaultMaterialLibrary();
                 }
                 else if (dialogResult == DialogResult.No)
                 {
