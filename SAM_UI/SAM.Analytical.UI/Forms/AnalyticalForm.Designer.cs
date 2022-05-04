@@ -60,6 +60,7 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Simulate_ImportWeatherData = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Simulate_Simulate = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_SolarSimulation = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_EnergySimulation = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Library = new System.Windows.Forms.RibbonTab();
             this.RibbonPanel_Library_EditLibrary = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Library_EditLibrary = new System.Windows.Forms.RibbonButton();
@@ -368,6 +369,7 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Simulate_Simulate.ButtonMoreVisible = false;
             this.RibbonPanel_Simulate_Simulate.Enabled = false;
             this.RibbonPanel_Simulate_Simulate.Items.Add(this.RibbonButton_SolarSimulation);
+            this.RibbonPanel_Simulate_Simulate.Items.Add(this.RibbonButton_EnergySimulation);
             this.RibbonPanel_Simulate_Simulate.Name = "RibbonPanel_Simulate_Simulate";
             this.RibbonPanel_Simulate_Simulate.Text = "Simulate";
             // 
@@ -379,6 +381,15 @@ namespace SAM.Analytical.UI
             this.RibbonButton_SolarSimulation.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_SolarSimulation.SmallImage")));
             this.RibbonButton_SolarSimulation.Text = "Solar Simulation";
             this.RibbonButton_SolarSimulation.Click += new System.EventHandler(this.RibbonButton_SolarSimulation_Click);
+            // 
+            // RibbonButton_EnergySimulation
+            // 
+            this.RibbonButton_EnergySimulation.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_EnergySimulation;
+            this.RibbonButton_EnergySimulation.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_EnergySimulation;
+            this.RibbonButton_EnergySimulation.Name = "RibbonButton_EnergySimulation";
+            this.RibbonButton_EnergySimulation.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_EnergySimulation.SmallImage")));
+            this.RibbonButton_EnergySimulation.Text = "Energy Simulation";
+            this.RibbonButton_EnergySimulation.Click += new System.EventHandler(this.RibbonButton_EnergySimulation_Click);
             // 
             // RibbonTab_Library
             // 
@@ -611,6 +622,7 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonButton RibbonButton_Library_EditLibrary;
         private System.Windows.Forms.RibbonButton RibbonButton_ProfileLibrary;
         private System.Windows.Forms.RibbonButton RibbonButton_Edit_Spaces;
+        private System.Windows.Forms.RibbonButton RibbonButton_EnergySimulation;
     }
 }
 

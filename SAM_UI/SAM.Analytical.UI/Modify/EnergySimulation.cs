@@ -4,7 +4,7 @@ namespace SAM.Analytical.UI
 {
     public static partial class Modify
     {
-        public static void Simulate(this UIAnalyticalModel uIAnalyticalModel, IWin32Window owner = null)
+        public static void EnergySimulation(this UIAnalyticalModel uIAnalyticalModel, IWin32Window owner = null)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if(analyticalModel == null)

@@ -580,7 +580,12 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_SolarSimulation_Click(object sender, EventArgs e)
         {
-            uIAnalyticalModel?.Simulate(this);
+            uIAnalyticalModel?.SolarSimulation(this);
+        }
+
+        private void RibbonButton_EnergySimulation_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel?.EnergySimulation(this);
         }
     }
 }
