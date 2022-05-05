@@ -83,6 +83,16 @@ namespace SAM.Analytical.UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SAM_Clean {
+            get {
+                object obj = ResourceManager.GetObject("SAM_Clean", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SAM_Close {
             get {
                 object obj = ResourceManager.GetObject("SAM_Close", resourceCulture);

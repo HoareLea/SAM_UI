@@ -123,6 +123,7 @@
     <Compile Include="Modify\EditAperture.cs" />
     <Compile Include="Modify\EditInternalConditions.cs" />
     <Compile Include="Modify\EditInternalCondition.cs" />
+    <Compile Include="Modify\Clean.cs" />
     <Compile Include="Modify\EditPanel.cs" />
     <Compile Include="Modify\EditSpaces.cs" />
     <Compile Include="Modify\EditSpace.cs" />
@@ -268,6 +269,7 @@
     <None Include="Resources\SAM_ProfileLibrary.png" />
     <None Include="Resources\SAM_Space.png" />
     <None Include="Resources\SAM_EnergySimulation.png" />
+    <None Include="Resources\SAM_Clean.png" />
     <Content Include="SAM.ico" />
   </ItemGroup>
   <ItemGroup>

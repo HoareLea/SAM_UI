@@ -355,7 +355,6 @@ namespace SAM.Analytical.UI
             }
         }
 
-
         private void ToolStripMenuItem_Material_Edit_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem toolStripMenuItem = (ToolStripMenuItem)sender;
@@ -398,7 +397,6 @@ namespace SAM.Analytical.UI
             uIAnalyticalModel.DuplicateMaterial(material, this);
         }
 
-        
         private void RibbonButton_File_Open_Click(object sender, EventArgs e)
         {
             string path = null;
@@ -586,6 +584,11 @@ namespace SAM.Analytical.UI
         private void RibbonButton_EnergySimulation_Click(object sender, EventArgs e)
         {
             uIAnalyticalModel?.EnergySimulation(this);
+        }
+
+        private void RibbonButton_Tools_Clean_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel?.Clean(this);
         }
     }
 }

@@ -72,6 +72,8 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Tools_OpenTPD = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Tools_Hydra = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Tools_Hydra = new System.Windows.Forms.RibbonButton();
+            this.RibbonPanel_Tools_Project = new System.Windows.Forms.RibbonPanel();
+            this.RibbonButton_Tools_Clean = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Help = new System.Windows.Forms.RibbonTab();
             this.RibbonPanel_Help_General = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Help_Wiki = new System.Windows.Forms.RibbonButton();
@@ -419,6 +421,7 @@ namespace SAM.Analytical.UI
             this.RibbonTab_Tools.Name = "RibbonTab_Tools";
             this.RibbonTab_Tools.Panels.Add(this.RibbonPanel_Tools_Tas);
             this.RibbonTab_Tools.Panels.Add(this.RibbonPanel_Tools_Hydra);
+            this.RibbonTab_Tools.Panels.Add(this.RibbonPanel_Tools_Project);
             this.RibbonTab_Tools.Text = "Tools";
             // 
             // RibbonPanel_Tools_Tas
@@ -485,6 +488,23 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Tools_Hydra.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_Hydra.SmallImage")));
             this.RibbonButton_Tools_Hydra.Text = "Hydra";
             this.RibbonButton_Tools_Hydra.Click += new System.EventHandler(this.RibbonButton_Tools_Hydra_Click);
+            // 
+            // RibbonPanel_Tools_Project
+            // 
+            this.RibbonPanel_Tools_Project.ButtonMoreEnabled = false;
+            this.RibbonPanel_Tools_Project.ButtonMoreVisible = false;
+            this.RibbonPanel_Tools_Project.Items.Add(this.RibbonButton_Tools_Clean);
+            this.RibbonPanel_Tools_Project.Name = "RibbonPanel_Tools_Project";
+            this.RibbonPanel_Tools_Project.Text = "Project";
+            // 
+            // RibbonButton_Tools_Clean
+            // 
+            this.RibbonButton_Tools_Clean.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_Clean;
+            this.RibbonButton_Tools_Clean.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_Clean;
+            this.RibbonButton_Tools_Clean.Name = "RibbonButton_Tools_Clean";
+            this.RibbonButton_Tools_Clean.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Tools_Clean.SmallImage")));
+            this.RibbonButton_Tools_Clean.Text = "Clean";
+            this.RibbonButton_Tools_Clean.Click += new System.EventHandler(this.RibbonButton_Tools_Clean_Click);
             // 
             // RibbonTab_Help
             // 
@@ -623,6 +643,8 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonButton RibbonButton_ProfileLibrary;
         private System.Windows.Forms.RibbonButton RibbonButton_Edit_Spaces;
         private System.Windows.Forms.RibbonButton RibbonButton_EnergySimulation;
+        private System.Windows.Forms.RibbonPanel RibbonPanel_Tools_Project;
+        private System.Windows.Forms.RibbonButton RibbonButton_Tools_Clean;
     }
 }
 
