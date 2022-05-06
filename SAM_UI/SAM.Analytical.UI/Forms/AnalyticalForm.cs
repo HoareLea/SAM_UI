@@ -590,5 +590,10 @@ namespace SAM.Analytical.UI
         {
             uIAnalyticalModel?.Clean(this);
         }
+
+        private void RibbonButton_AddMissingElements_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel?.AddMissingObjects(this);
+        }
     }
 }

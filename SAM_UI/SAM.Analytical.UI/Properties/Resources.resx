@@ -175,6 +175,9 @@
   <data name="SAM_SolarCalculator" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_SolarCalculator.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SAM_Clean" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_Clean.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SAM_Location" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_Location.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -199,7 +202,7 @@
   <data name="SAM_New" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_New.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="SAM_Clean" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\SAM_Clean.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="SAM_AddMissingObjects" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_AddMissingObjects.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
