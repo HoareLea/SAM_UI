@@ -25,6 +25,8 @@ namespace SAM.Analytical.UI
                     return;
                 }
 
+                adjacencyCluster = spaceForm.AdjacencyCluster;
+                profileLibrary = spaceForm.ProfileLibrary;
                 space_Temp = spaceForm.Space;
             }
 
