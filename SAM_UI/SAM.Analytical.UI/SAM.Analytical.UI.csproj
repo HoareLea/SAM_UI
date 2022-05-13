@@ -119,6 +119,7 @@
     <Compile Include="Forms\SimulateForm.designer.cs">
       <DependentUpon>SimulateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modify\EditProperties.cs" />
     <Compile Include="Modify\AddMissingObjects.cs" />
     <Compile Include="Modify\EditAddressAndLocation.cs" />
     <Compile Include="Modify\EditAperture.cs" />
@@ -272,6 +273,7 @@
     <None Include="Resources\SAM_EnergySimulation.png" />
     <None Include="Resources\SAM_Clean.png" />
     <None Include="Resources\SAM_AddMissingObjects.png" />
+    <None Include="Resources\SAM_AnalyticalModelProperties.png" />
     <Content Include="SAM.ico" />
   </ItemGroup>
   <ItemGroup>

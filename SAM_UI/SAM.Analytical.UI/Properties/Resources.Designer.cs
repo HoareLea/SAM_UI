@@ -83,6 +83,16 @@ namespace SAM.Analytical.UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SAM_AnalyticalModelProperties {
+            get {
+                object obj = ResourceManager.GetObject("SAM_AnalyticalModelProperties", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SAM_ApertureConstruction {
             get {
                 object obj = ResourceManager.GetObject("SAM_ApertureConstruction", resourceCulture);

@@ -595,5 +595,10 @@ namespace SAM.Analytical.UI
         {
             uIAnalyticalModel?.AddMissingObjects(this);
         }
+
+        private void RibbonButton_AnalyticalModelProperies_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel.EditProperties(this);
+        }
     }
 }

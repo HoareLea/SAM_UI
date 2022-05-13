@@ -42,6 +42,7 @@ namespace SAM.Analytical.UI
             this.RibbonTab_Edit = new System.Windows.Forms.RibbonTab();
             this.RibbonPanel_Edit_General = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Edit_Location = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_AnalyticalModelProperies = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Edit_Import = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Edit_SAMImport = new System.Windows.Forms.RibbonButton();
             this.RibbonPanel_Check = new System.Windows.Forms.RibbonPanel();
@@ -207,6 +208,7 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Edit_General.ButtonMoreVisible = false;
             this.RibbonPanel_Edit_General.Enabled = false;
             this.RibbonPanel_Edit_General.Items.Add(this.RibbonButton_Edit_Location);
+            this.RibbonPanel_Edit_General.Items.Add(this.RibbonButton_AnalyticalModelProperies);
             this.RibbonPanel_Edit_General.Name = "RibbonPanel_Edit_General";
             this.RibbonPanel_Edit_General.Text = "General";
             // 
@@ -218,6 +220,15 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Edit_Location.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Edit_Location.SmallImage")));
             this.RibbonButton_Edit_Location.Text = "Location";
             this.RibbonButton_Edit_Location.Click += new System.EventHandler(this.RibbonButton_Edit_Location_Click);
+            // 
+            // RibbonButton_AnalyticalModelProperies
+            // 
+            this.RibbonButton_AnalyticalModelProperies.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_AnalyticalModelProperties;
+            this.RibbonButton_AnalyticalModelProperies.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_AnalyticalModelProperties;
+            this.RibbonButton_AnalyticalModelProperies.Name = "RibbonButton_AnalyticalModelProperies";
+            this.RibbonButton_AnalyticalModelProperies.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_AnalyticalModelProperies.SmallImage")));
+            this.RibbonButton_AnalyticalModelProperies.Text = "Properties";
+            this.RibbonButton_AnalyticalModelProperies.Click += new System.EventHandler(this.RibbonButton_AnalyticalModelProperies_Click);
             // 
             // RibbonPanel_Edit_Import
             // 
@@ -660,6 +671,7 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonPanel RibbonPanel_Tools_Project;
         private System.Windows.Forms.RibbonButton RibbonButton_Tools_Clean;
         private System.Windows.Forms.RibbonButton RibbonButton_AddMissingElements;
+        private System.Windows.Forms.RibbonButton RibbonButton_AnalyticalModelProperies;
     }
 }
 
