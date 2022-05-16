@@ -76,6 +76,7 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Tools_Project = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Tools_Clean = new System.Windows.Forms.RibbonButton();
             this.RibbonButton_AddMissingElements = new System.Windows.Forms.RibbonButton();
+            this.RibbonButton_PrintRDS = new System.Windows.Forms.RibbonButton();
             this.RibbonTab_Help = new System.Windows.Forms.RibbonTab();
             this.RibbonPanel_Help_General = new System.Windows.Forms.RibbonPanel();
             this.RibbonButton_Help_Wiki = new System.Windows.Forms.RibbonButton();
@@ -507,6 +508,7 @@ namespace SAM.Analytical.UI
             this.RibbonPanel_Tools_Project.ButtonMoreVisible = false;
             this.RibbonPanel_Tools_Project.Items.Add(this.RibbonButton_Tools_Clean);
             this.RibbonPanel_Tools_Project.Items.Add(this.RibbonButton_AddMissingElements);
+            this.RibbonPanel_Tools_Project.Items.Add(this.RibbonButton_PrintRDS);
             this.RibbonPanel_Tools_Project.Name = "RibbonPanel_Tools_Project";
             this.RibbonPanel_Tools_Project.Text = "Project";
             // 
@@ -530,6 +532,15 @@ namespace SAM.Analytical.UI
     "ific directory or file";
             this.RibbonButton_AddMissingElements.ToolTipTitle = "Add Missing Elements";
             this.RibbonButton_AddMissingElements.Click += new System.EventHandler(this.RibbonButton_AddMissingElements_Click);
+            // 
+            // RibbonButton_PrintRDS
+            // 
+            this.RibbonButton_PrintRDS.Image = global::SAM.Analytical.UI.Properties.Resources.SAM_PrintRDS;
+            this.RibbonButton_PrintRDS.LargeImage = global::SAM.Analytical.UI.Properties.Resources.SAM_PrintRDS;
+            this.RibbonButton_PrintRDS.Name = "RibbonButton_PrintRDS";
+            this.RibbonButton_PrintRDS.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_PrintRDS.SmallImage")));
+            this.RibbonButton_PrintRDS.Text = "Print RDS";
+            this.RibbonButton_PrintRDS.Click += new System.EventHandler(this.RibbonButton_PrintRDS_Click);
             // 
             // RibbonTab_Help
             // 
@@ -672,6 +683,7 @@ namespace SAM.Analytical.UI
         private System.Windows.Forms.RibbonButton RibbonButton_Tools_Clean;
         private System.Windows.Forms.RibbonButton RibbonButton_AddMissingElements;
         private System.Windows.Forms.RibbonButton RibbonButton_AnalyticalModelProperies;
+        private System.Windows.Forms.RibbonButton RibbonButton_PrintRDS;
     }
 }
 

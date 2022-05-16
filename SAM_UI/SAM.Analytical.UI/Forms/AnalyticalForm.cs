@@ -600,5 +600,10 @@ namespace SAM.Analytical.UI
         {
             uIAnalyticalModel.EditProperties(this);
         }
+
+        private void RibbonButton_PrintRDS_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel.PrintRoomDataSheets(this);
+        }
     }
 }
