@@ -90,7 +90,10 @@ namespace SAM.Analytical.UI
                     return false;
                 }
 
-                worksheet.Range("A3").End(NetOffice.ExcelApi.Enums.XlDirection.xlDown).Clear();
+                int lastRowIndex = worksheet.Cells.SpecialCells(NetOffice.ExcelApi.Enums.XlCellType.xlCellTypeLastCell, Type.Missing).Row;
+                int lastColumnIndex = worksheet.Cells.SpecialCells(NetOffice.ExcelApi.Enums.XlCellType.xlCellTypeLastCell, Type.Missing).Column;
+
+                worksheet.Range(worksheet.Range("A3"), worksheet.Cells[lastRowIndex, lastColumnIndex]).ClearContents();
 
                 max = 0;
 
