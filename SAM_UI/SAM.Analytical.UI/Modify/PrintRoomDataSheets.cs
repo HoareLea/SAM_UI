@@ -161,13 +161,13 @@ namespace SAM.Analytical.UI
                     }
 
                     double coolingDesignTemperature = Analytical.Query.CoolingDesignTemperature(space, analyticalModel);
-                    if(double.IsNaN(coolingDesignTemperature))
+                    if(!double.IsNaN(coolingDesignTemperature))
                     {
                         values[i, 67] = coolingDesignTemperature;
                     }
 
                     double heatingDesignTemperature = Analytical.Query.HeatingDesignTemperature(space, analyticalModel);
-                    if (double.IsNaN(heatingDesignTemperature))
+                    if (!double.IsNaN(heatingDesignTemperature))
                     {
                         values[i, 68] = heatingDesignTemperature;
                     }
@@ -351,7 +351,7 @@ namespace SAM.Analytical.UI
 
                             if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.RelativeHumidity, out double relativeHumidity))
                             {
-                                values[i, 23] = loadIndex;
+                                values[i, 23] = relativeHumidity;
                             }
 
                             if (loadIndex != -1)
