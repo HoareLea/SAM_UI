@@ -22,10 +22,10 @@ namespace SAM.Analytical.UI
                 directory = System.IO.Path.GetDirectoryName(directory);
             }
 
-            PrindRoomDataSheets(analyticalModel, directory, owner);
+            PrintRoomDataSheets(analyticalModel, directory, owner);
         }
 
-        public static void PrindRoomDataSheets(this AnalyticalModel analyticalModel, string directory = null, IWin32Window owner = null)
+        public static void PrintRoomDataSheets(this AnalyticalModel analyticalModel, string directory = null, IWin32Window owner = null)
         {
             if (analyticalModel == null)
             {
@@ -49,7 +49,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            path_Template = System.IO.Path.Combine(path_Template, "PDF_Print_RDS.xlsm");
+            path_Template = System.IO.Path.Combine(path_Template, "RDS","PDF_Print_RDS.xlsm");
             if (!System.IO.File.Exists(path_Template))
             {
                 return;
@@ -76,7 +76,7 @@ namespace SAM.Analytical.UI
 
             string path = System.IO.Path.Combine(directory, System.IO.Path.GetFileName(path_Template));
 
-            System.IO.File.Copy(path_Template, path);
+            System.IO.File.Copy(path_Template, path, true);
 
             int min = 1;
             int max = int.MinValue;
@@ -90,15 +90,18 @@ namespace SAM.Analytical.UI
 
                 worksheet.Range("A3").End(NetOffice.ExcelApi.Enums.XlDirection.xlDown).Clear();
 
+                max = 0;
+
                 object[,] values = new object[spaces.Count, 83];
                 for (int i = 0; i < spaces.Count; i++)
                 {
-
                     Space space = spaces[i];
                     if (space == null)
                     {
                         continue;
                     }
+
+                    max++;
 
                     InternalCondition internalCondition = space.InternalCondition;
 
@@ -255,7 +258,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            if(max == int.MinValue)
+            if(max == int.MinValue || max == 0)
             {
                 return;
             }
