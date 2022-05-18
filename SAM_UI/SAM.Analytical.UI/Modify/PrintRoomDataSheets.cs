@@ -474,7 +474,7 @@ namespace SAM.Analytical.UI
                 return Core.Excel.Modify.Write(worksheet, values, 3, 1, Core.Excel.ClearOption.None);
             });
 
-            bool written = Core.Excel.Modify.Write(path, "Data", func);
+            bool written = Core.Excel.Modify.Edit(path, "Data", func);
             if(!written)
             {
                 return;
