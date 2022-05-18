@@ -97,7 +97,7 @@ namespace SAM.Analytical.UI
 
                 max = 0;
 
-                object[,] values = new object[spaces.Count, 83];
+                object[,] values = new object[spaces.Count, 83 + Enum.GetValues(typeof(PanelType)).Length];
                 for (int i = 0; i < spaces.Count; i++)
                 {
                     Space space = spaces[i];
@@ -122,6 +122,61 @@ namespace SAM.Analytical.UI
                     values[i, 3] = i + 1;
                     values[i, 4] = space.Guid;
                     values[i, 5] = Analytical.Query.CalculatedOccupancy(space);
+
+                    if(panels != null && panels.Count != 0)
+                    {
+                        SortedDictionary<string, double> sortedDictionary = new SortedDictionary<string, double>();
+                        foreach(PanelType panelType in Enum.GetValues(typeof(PanelType)))
+                        {
+                            if(panelType == PanelType.Undefined)
+                            {
+                                continue;
+                            }
+
+                            string name = panelType.ToString();
+                            if (panelType == PanelType.CurtainWall)
+                            {
+                                sortedDictionary[name + " External"] = 0;
+                                sortedDictionary[name + " Internal"] = 0;
+                            }
+                            else
+                            {
+                                sortedDictionary[name] = 0;
+                            }
+                        }
+
+                        foreach (Panel panel in panels)
+                        {
+                            if(panel == null)
+                            {
+                                continue;
+                            }
+
+                            double area = panel.GetArea();
+                            if(double.IsNaN(area))
+                            {
+                                continue;
+                            }
+
+                            PanelType panelType = panel.PanelType;
+
+                            string name = panelType.ToString();
+                            if(panelType == PanelType.CurtainWall)
+                            {
+                                name += adjacencyCluster.External(panel) ? " External" : " Internal";
+                            }
+
+                            sortedDictionary[name] += area;
+                        }
+
+                        int index = 82;
+                        foreach(double value in sortedDictionary.Values)
+                        {
+                            index++;
+
+                            values[i, index] = value;
+                        }
+                    }
 
                     if (space.TryGetValue(SpaceParameter.CoolingRiserName, out string coolingRiserName) && !string.IsNullOrWhiteSpace(coolingRiserName))
                     {
