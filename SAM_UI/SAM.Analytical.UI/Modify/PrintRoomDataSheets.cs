@@ -102,7 +102,7 @@ namespace SAM.Analytical.UI
 
                     max = 0;
 
-                    object[,] values = new object[spaces.Count, 83 + Enum.GetValues(typeof(PanelType)).Length];
+                    object[,] values = new object[spaces.Count, 83 + Enum.GetValues(typeof(PanelType)).Length + 8];
                     for (int i = 0; i < spaces.Count; i++)
                     {
                         Space space = spaces[i];
@@ -150,6 +150,8 @@ namespace SAM.Analytical.UI
                                 }
                             }
 
+                            List<Aperture> apertures_External = new List<Aperture>();
+                            List<Aperture> apertures_Internal = new List<Aperture>();
                             foreach (Panel panel in panels)
                             {
                                 if (panel == null)
@@ -157,22 +159,118 @@ namespace SAM.Analytical.UI
                                     continue;
                                 }
 
-                                double area = panel.GetArea();
+                                double area = panel.GetAreaNet();
                                 if (double.IsNaN(area))
                                 {
                                     continue;
                                 }
+
+                                bool external = adjacencyCluster.External(panel);
 
                                 PanelType panelType = panel.PanelType;
 
                                 string name = panelType.ToString();
                                 if (panelType == PanelType.CurtainWall)
                                 {
-                                    name += adjacencyCluster.External(panel) ? " External" : " Internal";
+                                    name += external? " External" : " Internal";
                                 }
 
                                 sortedDictionary[name] += area;
+
+                                List<Aperture> apertures_Panel = panel.Apertures;
+                                if(apertures_Panel != null)
+                                {
+
+                                    List<Aperture> apertures_Temp = external ? apertures_External : apertures_Internal;
+                                    apertures_Temp.AddRange(apertures_Temp);
+                                }
                             }
+
+                            double area_WindowPane_External = 0;
+                            double area_WindowPane_Internal = 0;
+                            double area_DoorPane_External = 0;
+                            double area_DoorPane_Internal = 0;
+                            double area_WindowFrame_External = 0;
+                            double area_WindowFrame_Internal = 0;
+                            double area_DoorFrame_External = 0;
+                            double area_DoorFrame_Internal = 0;
+
+                            foreach(Aperture aperture in apertures_External)
+                            {
+                                ApertureType apertureType = aperture.ApertureType;
+                                if(apertureType == ApertureType.Undefined)
+                                {
+                                    continue;
+                                }
+
+                                double area = Analytical.Query.Area(aperture, out double paneArea, out double frameArea);
+                                if(!double.IsNaN(paneArea))
+                                {
+                                   if(apertureType == ApertureType.Door)
+                                    {
+                                        area_DoorPane_External += paneArea;
+                                    }
+                                    else
+                                    {
+                                        area_WindowPane_External += paneArea;
+                                    }
+                                }
+
+                                if (!double.IsNaN(frameArea))
+                                {
+                                    if (apertureType == ApertureType.Door)
+                                    {
+                                        area_DoorFrame_External += frameArea;
+                                    }
+                                    else
+                                    {
+                                        area_WindowFrame_External += frameArea;
+                                    }
+                                }
+                            }
+
+                            foreach (Aperture aperture in apertures_Internal)
+                            {
+                                ApertureType apertureType = aperture.ApertureType;
+                                if (apertureType == ApertureType.Undefined)
+                                {
+                                    continue;
+                                }
+
+                                double area = Analytical.Query.Area(aperture, out double paneArea, out double frameArea);
+                                if (!double.IsNaN(paneArea))
+                                {
+                                    if (apertureType == ApertureType.Door)
+                                    {
+                                        area_DoorPane_Internal += paneArea;
+                                    }
+                                    else
+                                    {
+                                        area_WindowPane_Internal += paneArea;
+                                    }
+                                }
+
+                                if (!double.IsNaN(frameArea))
+                                {
+                                    if (apertureType == ApertureType.Door)
+                                    {
+                                        area_DoorFrame_Internal += frameArea;
+                                    }
+                                    else
+                                    {
+                                        area_WindowFrame_Internal += frameArea;
+                                    }
+                                }
+                            }
+
+                            values[i, 101] = area_WindowPane_External;
+                            values[i, 102] = area_WindowPane_Internal;
+                            values[i, 103] = area_DoorPane_External;
+                            values[i, 104] = area_DoorPane_Internal;
+                            values[i, 105] = area_WindowFrame_External;
+                            values[i, 106] = area_WindowFrame_Internal;
+                            values[i, 107] = area_DoorFrame_External;
+                            values[i, 108] = area_DoorFrame_Internal;
 
                             int index = 82;
                             foreach (double value in sortedDictionary.Values)
@@ -533,7 +631,6 @@ namespace SAM.Analytical.UI
 
                     return Core.Excel.Modify.Write(worksheet, values, 3, 1, Core.Excel.ClearOption.None);
                 });
-
 
                 simpleProgressForm.Increment("Writing Data");
                 bool written = Core.Excel.Modify.Edit(path, "Data", func);
