@@ -126,7 +126,12 @@ namespace SAM.Analytical.UI
 
                         values[i, 3] = i + 1;
                         values[i, 4] = space.Guid;
-                        values[i, 5] = Analytical.Query.CalculatedOccupancy(space);
+
+                        double occupancy = Analytical.Query.CalculatedOccupancy(space);
+                        if(!double.IsNaN(occupancy))
+                        {
+                            values[i, 5] = occupancy;
+                        }
 
                         if (panels != null && panels.Count != 0)
                         {
