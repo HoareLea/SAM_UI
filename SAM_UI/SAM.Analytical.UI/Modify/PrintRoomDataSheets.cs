@@ -182,7 +182,7 @@ namespace SAM.Analytical.UI
                                 {
 
                                     List<Aperture> apertures_Temp = external ? apertures_External : apertures_Internal;
-                                    apertures_Temp.AddRange(apertures_Temp);
+                                    apertures_Temp.AddRange(apertures_Panel);
                                 }
                             }
 
