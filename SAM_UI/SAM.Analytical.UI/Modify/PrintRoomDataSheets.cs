@@ -535,6 +535,21 @@ namespace SAM.Analytical.UI
                                     values[i, 32] = sizingMethod;
                                 }
 
+                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.OccupiedHours25, out int occupiedHours_25) && int.MinValue != occupiedHours_25 && int.MaxValue != occupiedHours_25)
+                                {
+                                    values[i, 33] = occupiedHours_25;
+                                }
+
+                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.OccupiedHours28, out int occupiedHours_28) && int.MinValue != occupiedHours_28 && int.MaxValue != occupiedHours_28)
+                                {
+                                    values[i, 34] = occupiedHours_28;
+                                }
+
+                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.OccupiedHours, out int occupiedHours) && int.MinValue != occupiedHours && int.MaxValue != occupiedHours)
+                                {
+                                    values[i, 39] = occupiedHours;
+                                }
+
                                 double specificBuildingHeatTransferGain = spaceSimulationResult_Cooling.SpecificBuildingHeatTransferGain();
                                 if (!double.IsNaN(specificBuildingHeatTransferGain))
                                 {
