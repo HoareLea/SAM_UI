@@ -1,5 +1,6 @@
 ﻿using SAM.Weather;
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.Forms
@@ -71,6 +72,9 @@ namespace SAM.Analytical.UI.Forms
             }
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public WeatherData WeatherData
         {
             get
@@ -92,6 +96,9 @@ namespace SAM.Analytical.UI.Forms
             }
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public SolarCalculationMethod SolarCalculationMethod
         {
             get

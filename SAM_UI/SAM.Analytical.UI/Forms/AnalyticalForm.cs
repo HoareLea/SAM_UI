@@ -605,5 +605,10 @@ namespace SAM.Analytical.UI
         {
             uIAnalyticalModel.PrintRoomDataSheets(this);
         }
+
+        private void RibbonButton_Simulate_WeatherData_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

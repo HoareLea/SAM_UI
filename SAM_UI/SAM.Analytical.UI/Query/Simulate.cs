@@ -34,6 +34,7 @@ namespace SAM.Analytical.UI
 
             using (Forms.SimulateForm simulateForm = new Forms.SimulateForm(System.IO.Path.GetFileNameWithoutExtension(path), System.IO.Path.GetDirectoryName(path)))
             {
+                simulateForm.WeatherData = weatherData;
                 if (simulateForm.ShowDialog(owner) != DialogResult.OK)
                 {
                     return null;

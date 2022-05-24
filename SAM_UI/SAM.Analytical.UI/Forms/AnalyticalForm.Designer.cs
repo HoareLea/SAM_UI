@@ -368,6 +368,7 @@ namespace SAM.Analytical.UI
             this.RibbonButton_Simulate_WeatherData.Name = "RibbonButton_Simulate_WeatherData";
             this.RibbonButton_Simulate_WeatherData.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_Simulate_WeatherData.SmallImage")));
             this.RibbonButton_Simulate_WeatherData.Text = "Weather Data";
+            this.RibbonButton_Simulate_WeatherData.Click += new System.EventHandler(this.RibbonButton_Simulate_WeatherData_Click);
             // 
             // RibbonButton_Simulate_ImportWeatherData
             // 

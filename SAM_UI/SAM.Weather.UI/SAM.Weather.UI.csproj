@@ -42,6 +42,9 @@
     <Reference Include="SAM.Weather">
       <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Weather.Windows">
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Weather.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,12 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\UIWeatherData.cs" />
-    <Compile Include="Forms\WeatherForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\WeatherForm.Designer.cs">
-      <DependentUpon>WeatherForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Classes\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -98,6 +95,9 @@
       <Project>{64ebdb08-f7e3-414b-9420-b67ed263b223}</Project>
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Forms\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
