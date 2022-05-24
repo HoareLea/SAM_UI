@@ -57,9 +57,9 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            using (SimpleProgressForm simpleProgressForm = new SimpleProgressForm("Print RDS", string.Empty, 4))
+            using (Core.Windows.Forms.ProgressForm progressForm = new Core.Windows.Forms.ProgressForm("Print RDS", 4))
             {
-                simpleProgressForm.Increment("Collecting Data");
+                progressForm.Update("Collecting Data");
 
                 string path_Template = Core.Query.TemplatesDirectory(typeof(AnalyticalModel).Assembly);
                 if (!System.IO.Directory.Exists(path_Template))
@@ -652,7 +652,7 @@ namespace SAM.Analytical.UI
                     return Core.Excel.Modify.Write(worksheet, values, 3, 1, Core.Excel.ClearOption.None);
                 });
 
-                simpleProgressForm.Increment("Writing Data");
+                progressForm.Update("Writing Data");
                 bool written = Core.Excel.Modify.Edit(path, "Data", func);
                 if (!written)
                 {
@@ -664,10 +664,10 @@ namespace SAM.Analytical.UI
                     return;
                 }
 
-                simpleProgressForm.Increment("Printing Data");
+                progressForm.Update("Printing Data");
                 Core.Excel.Modify.TryRunMacro(path, true, "PrintRange", min, max);
 
-                simpleProgressForm.Increment("Finishing");
+                progressForm.Update("Finishing");
             }
 
 

@@ -57,9 +57,9 @@ namespace SAM.Analytical.UI
 
             bool simulate = false;
 
-            using (Core.Windows.SimpleProgressForm simpleProgressForm = new Core.Windows.SimpleProgressForm("Preparing Model", string.Empty, 7))
+            using (Core.Windows.Forms.ProgressForm progressForm = new Core.Windows.Forms.ProgressForm("Preparing Model", 7))
             {
-                simpleProgressForm.Increment("Update Materials");
+                progressForm.Update("Update Materials");
 
                 IEnumerable<Core.IMaterial> materials = Analytical.Query.Materials(analyticalModel.AdjacencyCluster, Analytical.Query.DefaultMaterialLibrary());
                 if (materials != null)
@@ -75,7 +75,7 @@ namespace SAM.Analytical.UI
                     }
                 }
 
-                simpleProgressForm.Increment("Update ConstructionLayers By PanelTypes");
+                progressForm.Update("Update ConstructionLayers By PanelTypes");
 
                 analyticalModel = updateConstructionLayersByPanelType ? analyticalModel.UpdateConstructionLayersByPanelType() : analyticalModel;
 
@@ -86,7 +86,7 @@ namespace SAM.Analytical.UI
 
                 List<int> hoursOfYear = Analytical.Query.DefaultHoursOfYear();
 
-                simpleProgressForm.Increment("Solar Calculations");
+                progressForm.Update("Solar Calculations");
                 if (solarCalculationMethod != SolarCalculationMethod.None)
                 {
                     SolarCalculator.Modify.Simulate(analyticalModel, hoursOfYear.ConvertAll(x => new DateTime(2018, 1, 1).AddHours(x)), Core.Tolerance.MacroDistance, Core.Tolerance.MacroDistance, 0.012, Core.Tolerance.Distance);
@@ -96,7 +96,7 @@ namespace SAM.Analytical.UI
                 {
                     TBD.TBDDocument tBDDocument = sAMTBDDocument.TBDDocument;
 
-                    simpleProgressForm.Increment("Updating WeatherData");
+                    progressForm.Update("Updating WeatherData");
                     Weather.Tas.Modify.UpdateWeatherData(tBDDocument, weatherData, analyticalModel == null ? 0 : analyticalModel.AdjacencyCluster.BuildingHeight());
 
                     TBD.Calendar calendar = tBDDocument.Building.GetCalendar();
@@ -114,13 +114,13 @@ namespace SAM.Analytical.UI
                         dayType.name = "CDD";
                     }
 
-                    simpleProgressForm.Increment("Converting to TBD");
+                    progressForm.Update("Converting to TBD");
                     Tas.Convert.ToTBD(analyticalModel, tBDDocument);
 
-                    simpleProgressForm.Increment("Updating Zones");
+                    progressForm.Update("Updating Zones");
                     Tas.Modify.UpdateZones(tBDDocument.Building, analyticalModel, true);
 
-                    simpleProgressForm.Increment("Updating Shading");
+                    progressForm.Update("Updating Shading");
                     simulate = Tas.Modify.UpdateShading(tBDDocument, analyticalModel);
 
                     sAMTBDDocument.Save();
