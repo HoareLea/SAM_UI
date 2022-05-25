@@ -14,9 +14,16 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            List<int> hoursOfYear = Analytical.Query.DefaultHoursOfYear();
+            Action action = new Action(() => 
+            {
+                List<int> hoursOfYear = Analytical.Query.DefaultHoursOfYear();
 
-            SolarCalculator.Modify.Simulate(analyticalModel, hoursOfYear.ConvertAll(x => new DateTime(2018, 1, 1).AddHours(x)), Core.Tolerance.MacroDistance, Core.Tolerance.MacroDistance, 0.012, Core.Tolerance.Distance);
+                SolarCalculator.Modify.Simulate(analyticalModel, hoursOfYear.ConvertAll(x => new DateTime(2018, 1, 1).AddHours(x)), Core.Tolerance.MacroDistance, Core.Tolerance.MacroDistance, 0.012, Core.Tolerance.Distance);
+
+            });
+
+            Core.Windows.Forms.MarqueeProgressForm.Show("Solar Simulation", action);
+
             if (analyticalModel == null)
             {
                 return;

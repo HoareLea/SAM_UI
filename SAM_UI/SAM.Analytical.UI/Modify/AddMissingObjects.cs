@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -15,7 +16,7 @@ namespace SAM.Analytical.UI
             }
 
             analyticalModel = Windows.Query.AddMissingObjects(analyticalModel, new string[] { Analytical.Query.ResourcesDirectory() }, out List<IJSAMObject> jSAMObjects, owner);
-            if(analyticalModel == null)
+            if (analyticalModel == null)
             {
                 return;
             }
