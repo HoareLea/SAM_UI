@@ -13,14 +13,22 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            analyticalModel.TryGetValue(AnalyticalModelParameter.WeatherData, out WeatherData weatherData);
+            WeatherData weatherData = null;
 
+            analyticalModel.TryGetValue(AnalyticalModelParameter.WeatherData, out weatherData);
             if(weatherData == null)
             {
-                Query.TryGetWeatherData(out weatherData, owner);
+                ImportWeatherData(uIAnalyticalModel, owner);
             }
 
-            if(weatherData == null)
+            analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            analyticalModel.TryGetValue(AnalyticalModelParameter.WeatherData, out weatherData);
+            if (weatherData == null)
             {
                 return;
             }
