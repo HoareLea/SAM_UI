@@ -608,7 +608,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Simulate_WeatherData_Click(object sender, EventArgs e)
         {
-
+            uIAnalyticalModel.EditWeatherData(this);
         }
     }
 }

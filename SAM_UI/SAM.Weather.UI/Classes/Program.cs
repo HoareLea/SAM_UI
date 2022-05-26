@@ -13,7 +13,7 @@ namespace SAM.Weather.UI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Windows.WeatherDataForm());
+            Application.Run(new Windows.Forms.WeatherDataForm());
         }
     }
 }
