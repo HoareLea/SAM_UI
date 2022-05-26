@@ -126,6 +126,7 @@
     <Compile Include="Forms\SimulateForm.designer.cs">
       <DependentUpon>SimulateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Modify\Check.cs" />
     <Compile Include="Modify\EditWeatherData.cs" />
     <Compile Include="Modify\PrintRoomDataSheets.cs" />
     <Compile Include="Modify\EditProperties.cs" />

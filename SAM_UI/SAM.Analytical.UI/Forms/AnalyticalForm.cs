@@ -503,11 +503,6 @@ namespace SAM.Analytical.UI
             System.Diagnostics.Process.Start("https://hlhydra.azurewebsites.net/index.html");
         }
 
-        private void RibbonButton_Library_WeatherData_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("To be implemented soon...");
-        }
-
         private void RibbonButton_File_New_Click(object sender, EventArgs e)
         {
             if(uIAnalyticalModel.New(this))
@@ -533,7 +528,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_Edit_ModelCheck_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("To be implemented soon...");
+            uIAnalyticalModel?.Check(this);
         }
 
         private void RibbonPanel_Tools_Tas_Click(object sender, EventArgs e)
