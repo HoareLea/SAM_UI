@@ -34,12 +34,12 @@ namespace SAM.Analytical.UI
 
             if(!updateLocation)
             {
-                if (!Core.Query.AlmostEqual(weatherData.Latitude, analyticalModel.Location.Latitude, 0.1))
+                if (!Core.Query.AlmostEqual(weatherData.Latitude, analyticalModel.Location.Latitude, 0.01))
                 {
                     updateLocation = true;
                 }
 
-                if (!Core.Query.AlmostEqual(weatherData.Longitude, analyticalModel.Location.Longitude, 0.1))
+                if (!Core.Query.AlmostEqual(weatherData.Longitude, analyticalModel.Location.Longitude, 0.01))
                 {
                     updateLocation = true;
                 }
