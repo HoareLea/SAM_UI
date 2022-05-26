@@ -96,6 +96,14 @@ namespace SAM.Analytical.UI.Forms
             }
         }
 
+        public bool PrintRoomDataSheets
+        {
+            get
+            {
+                return SimulateControl_Main.RoomDataSheets;
+            }
+        }
+
         [Browsable(false)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

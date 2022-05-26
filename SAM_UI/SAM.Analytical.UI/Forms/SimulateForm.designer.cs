@@ -37,7 +37,7 @@ namespace SAM.Analytical.UI.Forms
             // Button_Cancel
             // 
             this.Button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Cancel.Location = new System.Drawing.Point(413, 350);
+            this.Button_Cancel.Location = new System.Drawing.Point(413, 400);
             this.Button_Cancel.Name = "Button_Cancel";
             this.Button_Cancel.Size = new System.Drawing.Size(75, 28);
             this.Button_Cancel.TabIndex = 0;
@@ -48,7 +48,7 @@ namespace SAM.Analytical.UI.Forms
             // Button_OK
             // 
             this.Button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_OK.Location = new System.Drawing.Point(332, 350);
+            this.Button_OK.Location = new System.Drawing.Point(332, 400);
             this.Button_OK.Name = "Button_OK";
             this.Button_OK.Size = new System.Drawing.Size(75, 28);
             this.Button_OK.TabIndex = 1;
@@ -63,14 +63,18 @@ namespace SAM.Analytical.UI.Forms
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SimulateControl_Main.Location = new System.Drawing.Point(12, 12);
             this.SimulateControl_Main.Name = "SimulateControl_Main";
-            this.SimulateControl_Main.Size = new System.Drawing.Size(476, 332);
+            this.SimulateControl_Main.OutputDirectory = "";
+            this.SimulateControl_Main.RoomDataSheets = false;
+            this.SimulateControl_Main.ProjectName = "";
+            this.SimulateControl_Main.Size = new System.Drawing.Size(476, 382);
             this.SimulateControl_Main.TabIndex = 2;
-            this.SimulateControl_Main.WeatherData = null;
+            this.SimulateControl_Main.UnmetHours = false;
+            this.SimulateControl_Main.UpdateConstructionLayersByPanelType = true;
             // 
             // SimulateForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(500, 390);
+            this.ClientSize = new System.Drawing.Size(500, 440);
             this.Controls.Add(this.SimulateControl_Main);
             this.Controls.Add(this.Button_OK);
             this.Controls.Add(this.Button_Cancel);

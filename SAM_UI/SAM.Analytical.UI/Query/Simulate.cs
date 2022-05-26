@@ -28,6 +28,7 @@ namespace SAM.Analytical.UI
             string projectName = null;
             string outputDirectory = null;
             bool unmetHours = false;
+            bool printRoomDataSheets = false;
 
             SolarCalculationMethod solarCalculationMethod = SolarCalculationMethod.None;
             bool updateConstructionLayersByPanelType = false;
@@ -46,6 +47,7 @@ namespace SAM.Analytical.UI
                 weatherData = simulateForm.WeatherData;
                 solarCalculationMethod = simulateForm.SolarCalculationMethod;
                 updateConstructionLayersByPanelType = simulateForm.UpdateConstructionLayersByPanelType;
+                printRoomDataSheets = simulateForm.PrintRoomDataSheets;
             }
 
             if (weatherData == null)
@@ -57,7 +59,7 @@ namespace SAM.Analytical.UI
 
             bool simulate = false;
 
-            using (Core.Windows.Forms.ProgressForm progressForm = new Core.Windows.Forms.ProgressForm("Preparing Model", 7))
+            using (Core.Windows.Forms.ProgressForm progressForm = new Core.Windows.Forms.ProgressForm("Preparing Model", 8))
             {
                 progressForm.Update("Update Materials");
 
@@ -124,6 +126,17 @@ namespace SAM.Analytical.UI
                     simulate = Tas.Modify.UpdateShading(tBDDocument, analyticalModel);
 
                     sAMTBDDocument.Save();
+                }
+
+                progressForm.Update("Printing Room Data Sheets");
+                if (printRoomDataSheets && analyticalModel != null)
+                {
+                    if (!System.IO.Directory.Exists(outputDirectory))
+                    {
+                        System.IO.Directory.CreateDirectory(outputDirectory);
+                    }
+
+                    Modify.PrintRoomDataSheets(analyticalModel, outputDirectory);
                 }
             }
 

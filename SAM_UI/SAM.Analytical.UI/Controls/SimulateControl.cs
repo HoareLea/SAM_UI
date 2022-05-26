@@ -98,6 +98,19 @@ namespace SAM.Analytical.UI.Controls
             }
         }
 
+        public bool RoomDataSheets
+        {
+            get
+            {
+                return CheckBox_RoomDataSheets.Checked;
+            }
+
+            set
+            {
+                CheckBox_RoomDataSheets.Checked = value;
+            }
+        }
+
         [Browsable(false)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
