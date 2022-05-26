@@ -66,7 +66,7 @@ namespace SAM.Analytical.UI.Controls
             this.CheckBox_UpdateConstructionLayersByPanelType.AutoSize = true;
             this.CheckBox_UpdateConstructionLayersByPanelType.Checked = true;
             this.CheckBox_UpdateConstructionLayersByPanelType.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.CheckBox_UpdateConstructionLayersByPanelType.Location = new System.Drawing.Point(3, 331);
+            this.CheckBox_UpdateConstructionLayersByPanelType.Location = new System.Drawing.Point(3, 295);
             this.CheckBox_UpdateConstructionLayersByPanelType.Name = "CheckBox_UpdateConstructionLayersByPanelType";
             this.CheckBox_UpdateConstructionLayersByPanelType.Size = new System.Drawing.Size(353, 21);
             this.CheckBox_UpdateConstructionLayersByPanelType.TabIndex = 21;
@@ -152,11 +152,11 @@ namespace SAM.Analytical.UI.Controls
             this.ComboBoxControl_SolarCalculationMethod.Size = new System.Drawing.Size(386, 55);
             this.ComboBoxControl_SolarCalculationMethod.TabIndex = 14;
             // 
-            // CheckBox_PrintRoomDataSheets
+            // CheckBox_RoomDataSheets
             // 
             this.CheckBox_RoomDataSheets.AutoSize = true;
-            this.CheckBox_RoomDataSheets.Location = new System.Drawing.Point(3, 294);
-            this.CheckBox_RoomDataSheets.Name = "CheckBox_PrintRoomDataSheets";
+            this.CheckBox_RoomDataSheets.Location = new System.Drawing.Point(3, 335);
+            this.CheckBox_RoomDataSheets.Name = "CheckBox_RoomDataSheets";
             this.CheckBox_RoomDataSheets.Size = new System.Drawing.Size(225, 21);
             this.CheckBox_RoomDataSheets.TabIndex = 25;
             this.CheckBox_RoomDataSheets.Text = "Print Room Data Sheets (RDS)";
