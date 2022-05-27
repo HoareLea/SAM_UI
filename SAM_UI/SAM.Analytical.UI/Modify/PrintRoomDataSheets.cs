@@ -503,6 +503,16 @@ namespace SAM.Analytical.UI
                                 {
                                     values[i, 76] = resultantTemperature;
                                 }
+
+                                if (spaceSimulationResult_Heating.TryGetValue(SpaceSimulationResultParameter.DesignDayTemperature, out double designDayTemperature) && !double.IsNaN(designDayTemperature))
+                                {
+                                    values[i, 83] = designDayTemperature;
+                                }
+
+                                if (spaceSimulationResult_Heating.TryGetValue(SpaceSimulationResultParameter.DesignDayRelativeHumidity, out double designDayRelativeHumidity) && !double.IsNaN(designDayRelativeHumidity))
+                                {
+                                    values[i, 84] = designDayRelativeHumidity;
+                                }
                             }
 
                             values[i, 22] = spaceSimulationResults.ConvertAll(x => x.DateTime).Max();
@@ -644,6 +654,16 @@ namespace SAM.Analytical.UI
                                 if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.MinDryBulbTemperatureIndex, out int minDryBulbTemperatureIndex) && !double.IsNaN(minDryBulbTemperatureIndex))
                                 {
                                     values[i, 82] = Convert.ToDateTime(minDryBulbTemperatureIndex, year);
+                                }
+
+                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.DesignDayTemperature, out int designDayTemperature) && !double.IsNaN(designDayTemperature))
+                                {
+                                    values[i, 85] = designDayTemperature;
+                                }
+
+                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.DesignDayRelativeHumidity, out int designDayRelativeHumidity) && !double.IsNaN(designDayRelativeHumidity))
+                                {
+                                    values[i, 86] = designDayRelativeHumidity;
                                 }
                             }
                         }
