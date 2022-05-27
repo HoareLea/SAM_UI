@@ -102,7 +102,8 @@ namespace SAM.Analytical.UI
 
                     max = 0;
 
-                    object[,] values = new object[spaces.Count, 83 + Enum.GetValues(typeof(PanelType)).Length + 8];
+                    //adjust nr 112 to latest column in RDS excel..
+                    object[,] values = new object[spaces.Count, 113];
                     for (int i = 0; i < spaces.Count; i++)
                     {
                         Space space = spaces[i];
@@ -506,12 +507,12 @@ namespace SAM.Analytical.UI
 
                                 if (spaceSimulationResult_Heating.TryGetValue(SpaceSimulationResultParameter.DesignDayTemperature, out double designDayTemperature) && !double.IsNaN(designDayTemperature))
                                 {
-                                    values[i, 83] = designDayTemperature;
+                                    values[i, 109] = designDayTemperature;
                                 }
 
                                 if (spaceSimulationResult_Heating.TryGetValue(SpaceSimulationResultParameter.DesignDayRelativeHumidity, out double designDayRelativeHumidity) && !double.IsNaN(designDayRelativeHumidity))
                                 {
-                                    values[i, 84] = designDayRelativeHumidity;
+                                    values[i, 110] = designDayRelativeHumidity;
                                 }
                             }
 
@@ -656,14 +657,14 @@ namespace SAM.Analytical.UI
                                     values[i, 82] = Convert.ToDateTime(minDryBulbTemperatureIndex, year);
                                 }
 
-                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.DesignDayTemperature, out int designDayTemperature) && !double.IsNaN(designDayTemperature))
+                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.DesignDayTemperature, out double designDayTemperature) && !double.IsNaN(designDayTemperature))
                                 {
-                                    values[i, 85] = designDayTemperature;
+                                    values[i, 111] = designDayTemperature;
                                 }
 
-                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.DesignDayRelativeHumidity, out int designDayRelativeHumidity) && !double.IsNaN(designDayRelativeHumidity))
+                                if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.DesignDayRelativeHumidity, out double designDayRelativeHumidity) && !double.IsNaN(designDayRelativeHumidity))
                                 {
-                                    values[i, 86] = designDayRelativeHumidity;
+                                    values[i, 112] = designDayRelativeHumidity;
                                 }
                             }
                         }
