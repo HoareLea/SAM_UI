@@ -15,7 +15,7 @@ namespace SAM.Analytical.UI.WPF
             VisualPanel result = new VisualPanel(panel);
             result.Content = geometryModel3D;
 
-            result.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), 90));
+            result.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), 270));
 
             return result;
         }
