@@ -5,22 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             d:DesignHeight="450" d:DesignWidth="800" MouseWheel="View3DControl_MouseWeel">
+    <Grid Background="#00000000">
         <Viewport3D x:Name="Viewport" Margin="1,1,1,1">
             <Viewport3D.Camera>
-                <PerspectiveCamera x:Name = "camMain" Position = "6 5 4" LookDirection = "-6 -5 -4">
+                <PerspectiveCamera x:Name = "MainCamera" Position = "6 5 4" LookDirection = "-6 -5 -4">
                 </PerspectiveCamera>
             </Viewport3D.Camera>
-            
-            <ModelVisual3D>
+
+            <ModelVisual3D x:Name = "Light">
                 <ModelVisual3D.Content>
                     <DirectionalLight x:Name = "DirectionalLight" Direction = "-1,-1,-1">
                     </DirectionalLight>
                 </ModelVisual3D.Content>
             </ModelVisual3D>
 
-            <ModelVisual3D x:Name = "MyModel">
+            <ModelVisual3D x:Name = "SAMObject">
                 <ModelVisual3D.Content>
                     <GeometryModel3D>
 
@@ -42,15 +42,6 @@
 
                     </GeometryModel3D>
                 </ModelVisual3D.Content>
-
-                <ModelVisual3D.Transform>
-                    <RotateTransform3D>
-                        <RotateTransform3D.Rotation>
-                            <AxisAngleRotation3D x:Name = "rotate" Axis = "1 2 1"/>
-                        </RotateTransform3D.Rotation>
-                    </RotateTransform3D>
-                </ModelVisual3D.Transform>
-
             </ModelVisual3D>
         </Viewport3D>
 

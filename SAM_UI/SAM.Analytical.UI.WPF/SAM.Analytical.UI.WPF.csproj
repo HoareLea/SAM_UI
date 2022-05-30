@@ -35,8 +35,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SAM.Analytical">
+      <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core, Version=1.0.8181.22169, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Core.Windows">
       <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry">
+      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -68,6 +78,13 @@
     <Compile Include="Controls\View3DControl.xaml.cs">
       <DependentUpon>View3DControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Convert\ToDrawing\Color.cs" />
+    <Compile Include="Convert\ToMedia3D\GeometryModel3D.cs" />
+    <Compile Include="Convert\ToMedia3D\Point3D.cs" />
+    <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
+    <Compile Include="Convert\ToMedia\Color.cs" />
+    <Compile Include="Modify\Update.cs" />
+    <Compile Include="Query\Material.cs" />
     <Page Include="Controls\AnalyticalModelControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -208,6 +225,20 @@
   <ItemGroup>
     <None Include="Resources\SAM_Wiki.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
+      <Project>{141d9925-a6e1-4390-89c7-251a428e2df0}</Project>
+      <Name>SAM.Analytical.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{64ebdb08-f7e3-414b-9420-b67ed263b223}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
