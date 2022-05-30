@@ -4,7 +4,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Convert
     {
-        public static GeometryModel3D ToMedia3D(this Panel panel)
+        public static GeometryModel3D ToMedia3D_GeometryModel3D(this Panel panel)
         {
             MeshGeometry3D meshGeometry3D = ToMedia3D(panel?.Face3D);
             if(meshGeometry3D == null)

@@ -72,6 +72,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Test.cs" />
+    <Compile Include="Classes\VisualFace3DObject.cs" />
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
     </Compile>
@@ -79,11 +81,11 @@
       <DependentUpon>View3DControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToDrawing\Color.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualFace3DObject.cs" />
     <Compile Include="Convert\ToMedia3D\GeometryModel3D.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia\Color.cs" />
-    <Compile Include="Modify\Update.cs" />
     <Compile Include="Query\Material.cs" />
     <Page Include="Controls\AnalyticalModelControl.xaml">
       <SubType>Designer</SubType>
@@ -239,6 +241,9 @@
       <Project>{64ebdb08-f7e3-414b-9420-b67ed263b223}</Project>
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modify\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

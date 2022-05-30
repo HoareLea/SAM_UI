@@ -64,7 +64,7 @@ namespace SAM.Core.UI
                     return default;
                 }
 
-                return Core.Query.Clone(jSAMObject);
+                return Query.Clone(jSAMObject);
             }
 
             set
