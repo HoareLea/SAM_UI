@@ -195,7 +195,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            perspectiveCamera.MoveBy(e.Key).RotateBy(e.Key);
+            perspectiveCamera.Move(e.Key).Rotate(e.Key);
         }
     }
 }

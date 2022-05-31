@@ -72,7 +72,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Classes\Test.cs" />
     <Compile Include="Classes\VisualFace3DObject.cs" />
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
@@ -86,6 +85,11 @@
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia\Color.cs" />
+    <Compile Include="Modify\Rotate.cs" />
+    <Compile Include="Modify\Move.cs" />
+    <Compile Include="Query\PitchAxis.cs" />
+    <Compile Include="Query\RollAxis.cs" />
+    <Compile Include="Query\YawAxis.cs" />
     <Compile Include="Query\Material.cs" />
     <Page Include="Controls\AnalyticalModelControl.xaml">
       <SubType>Designer</SubType>
@@ -242,8 +246,6 @@
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modify\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
