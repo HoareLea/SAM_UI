@@ -42,7 +42,7 @@ namespace SAM.Analytical.UI.WPF
                 return false;
             }
 
-            double opacity = highlight ? 0.5 : 1;
+            double opacity = highlight ? 0.8 : 1;
 
             if (solidColorBrush.Opacity != opacity)
             {

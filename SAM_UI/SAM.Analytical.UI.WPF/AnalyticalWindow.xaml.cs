@@ -50,7 +50,7 @@ namespace SAM.Analytical.UI.WPF
 
             uIAnalyticalModel.Open();
 
-            View3DControl.AnalyticalModel = uIAnalyticalModel.JSAMObject;
+            View3DControl.UIAnalyticalModel = uIAnalyticalModel;
         }
     }
 }
