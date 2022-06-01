@@ -160,11 +160,10 @@ namespace SAM.Analytical.UI.WPF
         {
             Point point_Current = e.GetPosition(Viewport);
 
-            Information.Text = string.Format("Mouse: X={0}, Y={1}", point_Current.X, point_Current.Y);
+            Information.Text = string.Format("Mouse: X={0}, Y={1}", Core.Query.Round(point_Current.X, 0.1), Core.Query.Round(point_Current.Y, 0.1));
             RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
             if (rayMeshGeometry3DHitTestResult != null)
             {
-                Information.Text += string.Format("\nElement: X={0}, Y={1}, Z={2}", rayMeshGeometry3DHitTestResult.PointHit.X, rayMeshGeometry3DHitTestResult.PointHit.Y, rayMeshGeometry3DHitTestResult.PointHit.Z);
 
                 ModelVisual3D modelVisual3D_Selected_Current = rayMeshGeometry3DHitTestResult?.VisualHit as ModelVisual3D;
                 if (modelVisual3D_Selected_Current != modelVisual3D_Selected && modelVisual3D_Selected is VisualPanel)
@@ -176,11 +175,12 @@ namespace SAM.Analytical.UI.WPF
 
                 if (modelVisual3D_Selected is VisualPanel)
                 {
-                    (modelVisual3D_Selected as dynamic).SetHightinght(true);
+                    VisualPanel visualPanel = (VisualPanel)modelVisual3D_Selected;
+
+                    visualPanel.SetHightinght(true);
+                    Information.Text += string.Format("\n{0} Panel Guid: {1}\nPoint: X={2}, Y={3}, Z={4}", visualPanel?.Panel?.Name, visualPanel?.Panel?.Guid, Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.X, 0.01), Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.Y, 0.01), Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.Z, 0.01));
                 }
             }
-
-
 
             double dx = point_Current.X - from.X;
             double dy = point_Current.Y - from.Y;
@@ -209,9 +209,7 @@ namespace SAM.Analytical.UI.WPF
             }
             else if(e.MouseDevice.LeftButton is MouseButtonState.Pressed)
             {
-
-                perspectiveCamera.Move(Convert.ToMedia3D(vector3D), 1 / 360D);
-                //perspectiveCamera.Move(new Vector3D(0, -dy, dx), 1 / 360D);
+                perspectiveCamera.Move(Convert.ToMedia3D(vector3D), 0.005);
             }
         }
 

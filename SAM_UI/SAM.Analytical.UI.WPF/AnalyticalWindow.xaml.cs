@@ -14,6 +14,8 @@ namespace SAM.Analytical.UI.WPF
         {
             InitializeComponent();
 
+            Icon = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM);
+
             RibbonButton_General_NewAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_New);
             RibbonButton_General_OpenAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
             RibbonButton_General_SaveAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Save);
@@ -111,7 +113,12 @@ namespace SAM.Analytical.UI.WPF
 
             uIAnalyticalModel.Path = path;
 
-            uIAnalyticalModel.Open();
+            using (Core.Windows.Forms.MarqueeProgressForm marqueeProgressForm = new Core.Windows.Forms.MarqueeProgressForm("Opening AnalyticalModel"))
+            {
+                marqueeProgressForm.Show();
+
+                uIAnalyticalModel.Open();
+            }
         }
     }
 }
