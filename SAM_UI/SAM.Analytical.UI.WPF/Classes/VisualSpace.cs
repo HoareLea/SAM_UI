@@ -1,14 +1,14 @@
 ﻿namespace SAM.Analytical.UI.WPF
 {
-    public class VisualPanel : VisualSAMObject<Panel>
+    public class VisualSpace : VisualSAMObject<Space>
     {
-        public VisualPanel(Panel panel)
-            :base(panel)
+        public VisualSpace(Space space)
+            :base(space)
         {
 
         }
 
-        public Panel Panel
+        public Space Space
         {
             get
             {

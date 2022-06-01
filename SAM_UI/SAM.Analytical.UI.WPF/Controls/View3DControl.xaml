@@ -31,6 +31,7 @@
                 </ModelVisual3D.Content>
             </ModelVisual3D>
 
+            <!-- 
             <ModelVisual3D>
                 <ModelVisual3D.Content>
                     <GeometryModel3D>
@@ -61,6 +62,8 @@
 
                 </ModelVisual3D.Transform>
             </ModelVisual3D>
+            
+            -->
         </Viewport3D>
 
     </Grid>

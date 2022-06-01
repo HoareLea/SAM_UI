@@ -80,6 +80,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\VisualAperture.cs" />
+    <Compile Include="Classes\VisualEdges.cs" />
+    <Compile Include="Classes\VisualSpace.cs" />
+    <Compile Include="Classes\VisualSAMObject.cs" />
     <Compile Include="Classes\VisualPanel.cs" />
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
@@ -88,14 +92,19 @@
       <DependentUpon>View3DControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToDrawing\Color.cs" />
+    <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualFace3DObject.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualAperture.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualEdges.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualSpace.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualPanel.cs" />
     <Compile Include="Convert\ToMedia3D\GeometryModel3D.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia\Color.cs" />
     <Compile Include="Convert\ToSAM\Vector3D.cs" />
     <Compile Include="Convert\ToSAM\Point3D.cs" />
+    <Compile Include="Interfaces\IVisualSAMObject.cs" />
     <Compile Include="Modify\Zoom.cs" />
     <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Modify\Move.cs" />

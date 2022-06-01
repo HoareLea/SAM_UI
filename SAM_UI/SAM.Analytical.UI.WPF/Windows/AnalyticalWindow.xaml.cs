@@ -27,10 +27,17 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             RibbonButton_Edit_Location.Click += RibbonButton_Edit_Location_Click;
 
+            AnalyticalModelControl.TreeView_Main.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
+
             uIAnalyticalModel = new UIAnalyticalModel();
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
 
             View3DControl.UIAnalyticalModel = uIAnalyticalModel;
+        }
+
+        private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+
         }
 
         private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)

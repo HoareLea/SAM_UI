@@ -14,9 +14,10 @@ namespace SAM.Analytical.UI.WPF
     public partial class View3DControl : UserControl
     {
         private UIAnalyticalModel uIAnalyticalModel;
-        private ModelVisual3D modelVisual3D_Selected;
 
-        private Point from;
+        private IVisualSAMObject visualSAMObject_Highlight;
+
+        private Point point_Mouse;
 
         public View3DControl()
         {
@@ -32,15 +33,48 @@ namespace SAM.Analytical.UI.WPF
             {
                 foreach(Panel panel in panels)
                 {
-                    VisualPanel visualPanel = panel.ToMedia3D();
+                    VisualPanel visualPanel = panel?.ToMedia3D();
                     if(visualPanel == null)
                     {
                         continue;
                     }
 
                     Viewport.Children.Add(visualPanel);
+
+                    List<Aperture> apertures = panel.Apertures;
+                    if(apertures != null)
+                    {
+                        foreach(Aperture aperture in apertures)
+                        {
+                            VisualAperture visualAperture = aperture?.ToMedia3D();
+                            if (visualAperture == null)
+                            {
+                                continue;
+                            }
+
+                            Viewport.Children.Add(visualAperture);
+                        }
+                    }
                 }
             }
+
+            //AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
+
+            //List<Space> spaces = analyticalModel.GetSpaces();
+            //if (spaces != null)
+            //{
+            //    foreach(Space space in spaces)
+            //    {
+            //        VisualSpace visualSpace = space.ToMedia3D(adjacencyCluster);
+            //        if (visualSpace == null)
+            //        {
+            //            continue;
+            //        }
+
+            //        Viewport.Children.Add(visualSpace);
+            //    }
+            //}
+
         }
         
         private void Clear()
@@ -54,7 +88,7 @@ namespace SAM.Analytical.UI.WPF
             List<Visual3D> visual3Ds = new List<Visual3D>();
             foreach (Visual3D visual3D in visual3DCollection)
             {
-                if (visual3D is ModelVisual3D && ((ModelVisual3D)visual3D).Content is Light)
+                if (!(visual3D is IVisualSAMObject))
                 {
                     continue;
                 }
@@ -68,30 +102,26 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public List<VisualPanel> VisualPanels
+        public List<T> GetVisualSAMObjects<T>() where T : IVisualSAMObject
         {
-            get
+            Visual3DCollection visual3DCollection = Viewport.Children;
+            if (visual3DCollection == null)
             {
-                Visual3DCollection visual3DCollection = Viewport.Children;
-                if (visual3DCollection == null)
-                {
-                    return null;
-                }
-
-                List<VisualPanel> result = new List<VisualPanel>();
-                foreach (object @object in visual3DCollection)
-                {
-                    VisualPanel visualPanel = @object as VisualPanel;
-                    if (visualPanel == null)
-                    {
-                        continue;
-                    }
-
-                    result.Add(visualPanel);
-                }
-
-                return result;
+                return null;
             }
+
+            List<T> result = new List<T>();
+            foreach (object @object in visual3DCollection)
+            {
+                if (!(@object is T))
+                {
+                    continue;
+                }
+
+                result.Add((T)@object);
+            }
+
+            return result;
         }
 
         public UIAnalyticalModel UIAnalyticalModel
@@ -160,31 +190,30 @@ namespace SAM.Analytical.UI.WPF
         {
             Point point_Current = e.GetPosition(Viewport);
 
+            visualSAMObject_Highlight?.SetHighlight(false);
+            visualSAMObject_Highlight = null;
+
             Information.Text = string.Format("Mouse: X={0}, Y={1}", Core.Query.Round(point_Current.X, 0.1), Core.Query.Round(point_Current.Y, 0.1));
             RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
             if (rayMeshGeometry3DHitTestResult != null)
             {
-
-                ModelVisual3D modelVisual3D_Selected_Current = rayMeshGeometry3DHitTestResult?.VisualHit as ModelVisual3D;
-                if (modelVisual3D_Selected_Current != modelVisual3D_Selected && modelVisual3D_Selected is VisualPanel)
+                IVisualSAMObject visualSAMObject_Highlight_Current = rayMeshGeometry3DHitTestResult?.VisualHit as IVisualSAMObject;
+                if(visualSAMObject_Highlight_Current != null)
                 {
-                    (modelVisual3D_Selected as dynamic).SetHightinght(false);
-                }
+                    visualSAMObject_Highlight_Current.SetHighlight(true);
+                    visualSAMObject_Highlight = visualSAMObject_Highlight_Current;
 
-                modelVisual3D_Selected = modelVisual3D_Selected_Current;
-
-                if (modelVisual3D_Selected is VisualPanel)
-                {
-                    VisualPanel visualPanel = (VisualPanel)modelVisual3D_Selected;
-
-                    visualPanel.SetHightinght(true);
-                    Information.Text += string.Format("\n{0} Panel Guid: {1}\nPoint: X={2}, Y={3}, Z={4}", visualPanel?.Panel?.Name, visualPanel?.Panel?.Guid, Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.X, 0.01), Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.Y, 0.01), Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.Z, 0.01));
+                    if (visualSAMObject_Highlight_Current is VisualPanel)
+                    {
+                        VisualPanel visualPanel = (VisualPanel)visualSAMObject_Highlight_Current;
+                        Information.Text += string.Format("\n{0} Panel Guid: {1}\nPoint: X={2}, Y={3}, Z={4}", visualPanel?.Panel?.Name, visualPanel?.Panel?.Guid, Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.X, 0.01), Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.Y, 0.01), Core.Query.Round(rayMeshGeometry3DHitTestResult.PointHit.Z, 0.01));
+                    }
                 }
             }
 
-            double dx = point_Current.X - from.X;
-            double dy = point_Current.Y - from.Y;
-            from = point_Current;
+            double dx = point_Current.X - point_Mouse.X;
+            double dy = point_Current.Y - point_Mouse.Y;
+            point_Mouse = point_Current;
 
             var distance = dx * dx + dy * dy;
             if (distance <= 0)
@@ -289,16 +318,16 @@ namespace SAM.Analytical.UI.WPF
             }
             else
             {
-                List<VisualPanel> visualPanels = VisualPanels;
-                if(visualPanels == null)
+                List<IVisualSAMObject> visualSAMObjects = GetVisualSAMObjects<IVisualSAMObject>();
+                if(visualSAMObjects == null)
                 {
                     return;
                 }
 
                 Rect3D rect3D = Rect3D.Empty;
-                foreach(VisualPanel visualPanel in visualPanels)
+                foreach(IVisualSAMObject visualSAMObject in visualSAMObjects)
                 {
-                    Rect3D rect3D_VisualPanel = visualPanel.Content.Bounds;
+                    Rect3D rect3D_VisualPanel = visualSAMObject.GeometryModel3D.Bounds;
                     if(rect3D == Rect3D.Empty)
                     {
                         rect3D = rect3D_VisualPanel;
