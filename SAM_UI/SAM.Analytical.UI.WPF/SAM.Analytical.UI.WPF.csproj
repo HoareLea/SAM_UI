@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SAM.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="SAM.Analytical">
       <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
@@ -111,7 +114,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AnalyticalWindow.xaml">
+    <Page Include="Windows\AnalyticalWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -119,7 +122,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="AnalyticalWindow.xaml.cs">
+    <Compile Include="Windows\AnalyticalWindow.xaml.cs">
       <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -155,97 +158,97 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM.png" />
+    <Resource Include="Resources\SAM.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_AddMissingObjects.png" />
+    <Resource Include="Resources\SAM_AddMissingObjects.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_AnalyticalModelProperties.png" />
+    <Resource Include="Resources\SAM_AnalyticalModelProperties.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_ApertureConstruction.png" />
+    <Resource Include="Resources\SAM_ApertureConstruction.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Clean.png" />
+    <Resource Include="Resources\SAM_Clean.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Close.png" />
+    <Resource Include="Resources\SAM_Close.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_ConstructionLibrary.png" />
+    <Resource Include="Resources\SAM_ConstructionLibrary.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_EditLibrary.png" />
+    <Resource Include="Resources\SAM_EditLibrary.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_EnergySimulation.png" />
+    <Resource Include="Resources\SAM_EnergySimulation.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Export.png" />
+    <Resource Include="Resources\SAM_Export.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Hydra.png" />
+    <Resource Include="Resources\SAM_Hydra.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Import.png" />
+    <Resource Include="Resources\SAM_Import.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_InternalCondition.png" />
+    <Resource Include="Resources\SAM_InternalCondition.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Location.png" />
+    <Resource Include="Resources\SAM_Location.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_MaterialLibrary.png" />
+    <Resource Include="Resources\SAM_MaterialLibrary.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_ModelCheck.png" />
+    <Resource Include="Resources\SAM_ModelCheck.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_New.png" />
+    <Resource Include="Resources\SAM_New.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Open.png" />
+    <Resource Include="Resources\SAM_Open.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_PrintRDS.png" />
+    <Resource Include="Resources\SAM_PrintRDS.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_ProfileLibrary.png" />
+    <Resource Include="Resources\SAM_ProfileLibrary.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Save.png" />
+    <Resource Include="Resources\SAM_Save.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_SaveAs.png" />
+    <Resource Include="Resources\SAM_SaveAs.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Small.png" />
+    <Resource Include="Resources\SAM_Small.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_SolarCalculator.png" />
+    <Resource Include="Resources\SAM_SolarCalculator.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Space.png" />
+    <Resource Include="Resources\SAM_Space.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_T3D.png" />
+    <Resource Include="Resources\SAM_T3D.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_TBD.png" />
+    <Resource Include="Resources\SAM_TBD.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_TPD.png" />
+    <Resource Include="Resources\SAM_TPD.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_TSD.png" />
+    <Resource Include="Resources\SAM_TSD.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_WeatherData.png" />
+    <Resource Include="Resources\SAM_WeatherData.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\SAM_Wiki.png" />
+    <Resource Include="Resources\SAM_Wiki.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
@@ -262,6 +265,8 @@
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="SAM.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

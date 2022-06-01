@@ -1,4 +1,4 @@
-﻿<Window x:Class="SAM.Analytical.UI.WPF.AnalyticalWindow"
+﻿<Window x:Class="SAM.Analytical.UI.WPF.Windows.AnalyticalWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Analytical" 
         WindowState="Maximized"
-        WindowStyle="SingleBorderWindow">
+        WindowStyle="SingleBorderWindow" d:DesignWidth="800" d:DesignHeight="600">
     <Window.Resources>
         <Style TargetType="RibbonButton">
             <Setter Property="Template">
@@ -395,16 +395,16 @@
             </Ribbon.ApplicationMenu>
             <RibbonTab x:Name="RibbonTab_File" Header="File">
                 <RibbonGroup x:Name="RibbonGroup_File_General" Header="General">
-                    <RibbonButton x:Name="RibbonButton_General_NewAnalyticalModel" Label="New"/>
-                    <RibbonButton x:Name="RibbonButton_General_OpenAnalyticalModel" Label="Open"/>
-                    <RibbonButton x:Name="RibbonButton_General_SaveAnalyticalModel" Label="Save"/>
-                    <RibbonButton x:Name="RibbonButton_General_SaveAsAnalyticalModel" Label="Save As"/>
-                    <RibbonButton x:Name="RibbonButton_General_CloseAnalyticalModel" Label="Close"/>
+                    <RibbonButton x:Name="RibbonButton_General_NewAnalyticalModel" Label="New" LargeImageSource="../Resources/SAM_New.png"/>
+                    <RibbonButton x:Name="RibbonButton_General_OpenAnalyticalModel" Label="Open" LargeImageSource="../Resources/SAM_Open.png"/>
+                    <RibbonButton x:Name="RibbonButton_General_SaveAnalyticalModel" Label="Save" LargeImageSource="../Resources/SAM_Save.png"/>
+                    <RibbonButton x:Name="RibbonButton_General_SaveAsAnalyticalModel" Label="Save As" LargeImageSource="../Resources/SAM_SaveAs.png"/>
+                    <RibbonButton x:Name="RibbonButton_General_CloseAnalyticalModel" Label="Close" LargeImageSource="../Resources/SAM_Close.png"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Edit" Header="Edit">
                 <RibbonGroup x:Name="RibbonGroup_Edit_General" Header="General">
-                    <RibbonButton x:Name="RibbonButton_Edit_Location" Label="Location"/>
+                    <RibbonButton x:Name="RibbonButton_Edit_Location" Label="Location" LargeImageSource="../Resources/SAM_Location.png"/>
 
                 </RibbonGroup>
             </RibbonTab>

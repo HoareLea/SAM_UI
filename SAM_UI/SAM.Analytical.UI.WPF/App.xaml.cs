@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM.Analytical.UI.WPF.Windows
 {
     /// <summary>
     /// Interaction logic for App.xaml

@@ -8,11 +8,6 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <TreeView  Margin="0,0,0,0" Name="TreeView_Main">
-            <TreeViewItem Header="Analytical Model">
-                <TreeViewItem Header="Spaces"></TreeViewItem>
-                <TreeViewItem Header="Materials"></TreeViewItem>
-                <TreeViewItem Header="Internal Conditions"></TreeViewItem>
-            </TreeViewItem>
         </TreeView>
     </Grid>
 </UserControl>
