@@ -173,6 +173,7 @@ namespace SAM.Analytical.UI
             this.RibbonButton_File_Save.Name = "RibbonButton_File_Save";
             this.RibbonButton_File_Save.SmallImage = ((System.Drawing.Image)(resources.GetObject("RibbonButton_File_Save.SmallImage")));
             this.RibbonButton_File_Save.Text = "Save";
+            this.RibbonButton_File_Save.Click += new System.EventHandler(this.RibbonButton_File_Save_Click);
             // 
             // RibbonButton_File_SaveAs
             // 

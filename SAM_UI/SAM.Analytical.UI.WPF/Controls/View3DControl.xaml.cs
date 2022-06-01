@@ -23,16 +23,11 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
-        private void UIAnalyticalModel_Modified(object sender, EventArgs e)
-        {
-            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
-        }
-
         private void LoadAnalyticalModel(AnalyticalModel analyticalModel)
         {
             Clear();
 
-            List<Panel> panels = analyticalModel.GetPanels();
+            List<Panel> panels = analyticalModel?.GetPanels();
             if(panels != null)
             {
                 foreach(Panel panel in panels)
@@ -113,29 +108,29 @@ namespace SAM.Analytical.UI.WPF
                 {
                     uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
                     uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-                }
 
-                LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
+                    uIAnalyticalModel.Closed -= UIAnalyticalModel_Closed;
+                    uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
+
+                    uIAnalyticalModel.Opened -= UIAnalyticalModel_Opened;
+                    uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
+                }
             }
         }
 
-        private void UserControl_MouseMove(object sender, MouseEventArgs e)
+        private void UIAnalyticalModel_Opened(object sender, EventArgs e)
         {
-            Point point_Current = e.GetPosition(Viewport);
+            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
+        }
 
-            HitTestResult hitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current);
-            ModelVisual3D modelVisual3D_Selected_Current = hitTestResult?.VisualHit as ModelVisual3D;
-            if(modelVisual3D_Selected_Current != modelVisual3D_Selected && modelVisual3D_Selected is VisualPanel)
-            {
-                (modelVisual3D_Selected as dynamic).SetHightinght(false);
-            }
+        private void UIAnalyticalModel_Closed(object sender, EventArgs e)
+        {
+            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
+        }
 
-            modelVisual3D_Selected = modelVisual3D_Selected_Current;
-
-            if (modelVisual3D_Selected is VisualPanel)
-            {
-                (modelVisual3D_Selected as dynamic).SetHightinght(true);
-            }
+        private void UIAnalyticalModel_Modified(object sender, EventArgs e)
+        {
+            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
         }
 
         private void UserControl_MouseWeel(object sender, MouseWheelEventArgs e)
@@ -163,49 +158,54 @@ namespace SAM.Analytical.UI.WPF
 
         private void UserControl_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            PerspectiveCamera perspectiveCamera = Viewport.Camera as PerspectiveCamera;
-            if(perspectiveCamera == null)
+            Point point_Current = e.GetPosition(Viewport);
+
+            Information.Text = string.Format("Mouse: X={0}, Y={1}", point_Current.X, point_Current.Y);
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
+            if (rayMeshGeometry3DHitTestResult != null)
             {
-                return;
+                Information.Text += string.Format("\nElement: X={0}, Y={1}, Z={2}", rayMeshGeometry3DHitTestResult.PointHit.X, rayMeshGeometry3DHitTestResult.PointHit.Y, rayMeshGeometry3DHitTestResult.PointHit.Z);
+
+                ModelVisual3D modelVisual3D_Selected_Current = rayMeshGeometry3DHitTestResult?.VisualHit as ModelVisual3D;
+                if (modelVisual3D_Selected_Current != modelVisual3D_Selected && modelVisual3D_Selected is VisualPanel)
+                {
+                    (modelVisual3D_Selected as dynamic).SetHightinght(false);
+                }
+
+                modelVisual3D_Selected = modelVisual3D_Selected_Current;
+
+                if (modelVisual3D_Selected is VisualPanel)
+                {
+                    (modelVisual3D_Selected as dynamic).SetHightinght(true);
+                }
             }
 
-            Point point_Current = e.GetPosition(Viewport);
+
+
             double dx = point_Current.X - from.X;
             double dy = point_Current.Y - from.Y;
             from = point_Current;
-
-            Information.Text = string.Format("Mouse: X={0}, Y={1}", point_Current.X, point_Current.Y);
-
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
-            if(rayMeshGeometry3DHitTestResult != null)
-            {
-                Information.Text += string.Format("\nElement: X={0}, Y={1}, Z={2}", rayMeshGeometry3DHitTestResult.PointHit.X, rayMeshGeometry3DHitTestResult.PointHit.Y, rayMeshGeometry3DHitTestResult.PointHit.Z);
-            }
 
             var distance = dx * dx + dy * dy;
             if (distance <= 0)
                 return;
 
+            PerspectiveCamera perspectiveCamera = Viewport.Camera as PerspectiveCamera;
+            if (perspectiveCamera == null)
+            {
+                return;
+            }
+
+            distance = distance / 10;
+
             Geometry.Spatial.Plane plane = Query.Plane(MainCamera);
             Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, new Geometry.Planar.Vector2D(dx, dy));
-
 
             if (e.MouseDevice.MiddleButton is MouseButtonState.Pressed)
             {
                 vector3D = vector3D.CrossProduct(plane.Normal);
-
                 double angle = distance / perspectiveCamera.FieldOfView % 45;
-                if (rayMeshGeometry3DHitTestResult != null)
-                {
-                    //perspectiveCamera.Rotate(new Vector3D(0, -dy, dx), angle, rayMeshGeometry3DHitTestResult.PointHit);
-                    perspectiveCamera.Rotate(Convert.ToMedia3D(vector3D.GetNegated()), angle, rayMeshGeometry3DHitTestResult.PointHit);
-                }
-                else
-                {
-                    //perspectiveCamera.Rotate(new Vector3D(0, -dy, dx), angle);
-                    perspectiveCamera.Rotate(Convert.ToMedia3D(vector3D.GetNegated()), angle);
-                }
-
+                perspectiveCamera.Rotate(Convert.ToMedia3D(vector3D.GetNegated()), angle);
             }
             else if(e.MouseDevice.LeftButton is MouseButtonState.Pressed)
             {
@@ -321,6 +321,15 @@ namespace SAM.Analytical.UI.WPF
 
             Vector3D lookDirection = Query.LookDirection(point3D, MainCamera.Position, out Vector3D upDirection);
             MainCamera.LookDirection = lookDirection;
+        }
+
+        private void MainCamera_Changed(object sender, EventArgs e)
+        {
+            if(DirectionalLight != null)
+            {
+                DirectionalLight.Direction = MainCamera.LookDirection;
+            }
+
         }
     }
 }

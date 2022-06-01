@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" MouseWheel="UserControl_MouseWeel" MouseMove="UserControl_MouseMove" MouseDoubleClick="UserControl_MouseDoubleClick" PreviewMouseMove="UserControl_PreviewMouseMove" PreviewKeyDown="UserControl_PreviewKeyDown">
+             d:DesignHeight="450" d:DesignWidth="800" MouseWheel="UserControl_MouseWeel" MouseDoubleClick="UserControl_MouseDoubleClick" PreviewMouseMove="UserControl_PreviewMouseMove" PreviewKeyDown="UserControl_PreviewKeyDown">
     <Grid Background="#00000000" ContextMenuOpening="Grid_ContextMenuOpening">
         <Grid.ContextMenu>
             <ContextMenu x:Name="ContextMenu_Grid">
@@ -15,15 +15,19 @@
         <TextBlock x:Name ="Information"  Text="Information" HorizontalAlignment="Left" VerticalAlignment="Bottom"></TextBlock>
         <Viewport3D x:Name="Viewport" Margin="1,1,1,1">
             <Viewport3D.Camera>
-                <PerspectiveCamera x:Name = "MainCamera" Position = "10 5 9" LookDirection = "-10 -5 -9">
+                <PerspectiveCamera x:Name = "MainCamera" Position = "10 5 9" LookDirection = "-10 -5 -9" Changed="MainCamera_Changed">
                 </PerspectiveCamera>
             </Viewport3D.Camera>
 
-            <ModelVisual3D x:Name = "Light">
-
+            <ModelVisual3D x:Name = "ModelVisual3D_DirectionalLight">
                 <ModelVisual3D.Content>
-                    <DirectionalLight x:Name = "DirectionalLight" Direction = "-1,-1,-1">
-                    </DirectionalLight>
+                    <DirectionalLight x:Name = "DirectionalLight" Direction = "-1,-1,-1" Color="Gray"/>
+                </ModelVisual3D.Content>
+            </ModelVisual3D>
+
+            <ModelVisual3D x:Name = "ModelVisual3D_AmbientLight">
+                <ModelVisual3D.Content>
+                    <AmbientLight x:Name = "AmbientLight" Color="DimGray"/>
                 </ModelVisual3D.Content>
             </ModelVisual3D>
 

@@ -1,5 +1,4 @@
 ﻿using SAM.Core;
-using SAM.Weather;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -604,6 +603,11 @@ namespace SAM.Analytical.UI
         private void RibbonButton_Simulate_WeatherData_Click(object sender, EventArgs e)
         {
             uIAnalyticalModel.EditWeatherData(this);
+        }
+
+        private void RibbonButton_File_Save_Click(object sender, EventArgs e)
+        {
+            uIAnalyticalModel?.Save();
         }
     }
 }
