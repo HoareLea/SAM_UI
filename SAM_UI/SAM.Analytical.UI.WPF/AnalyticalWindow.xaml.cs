@@ -111,14 +111,14 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+
+            UIAnalyticalModel uIAnalyticalModel_Temp = new UIAnalyticalModel();
+            uIAnalyticalModel_Temp.Path = path;
+
+            Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => uIAnalyticalModel_Temp.Open());
+
             uIAnalyticalModel.Path = path;
-
-            using (Core.Windows.Forms.MarqueeProgressForm marqueeProgressForm = new Core.Windows.Forms.MarqueeProgressForm("Opening AnalyticalModel"))
-            {
-                marqueeProgressForm.Show();
-
-                uIAnalyticalModel.Open();
-            }
+            uIAnalyticalModel.JSAMObject = uIAnalyticalModel_Temp?.JSAMObject;
         }
     }
 }

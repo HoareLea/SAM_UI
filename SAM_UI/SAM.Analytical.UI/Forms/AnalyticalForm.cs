@@ -421,9 +421,14 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            uIAnalyticalModel.Path = path;
+            UIAnalyticalModel uIAnalyticalModel_Temp = new UIAnalyticalModel();
+            uIAnalyticalModel_Temp.Path = path;
 
-            uIAnalyticalModel.Open();
+            uIAnalyticalModel_Temp.Open();
+            //Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => uIAnalyticalModel_Temp.Open());
+
+            uIAnalyticalModel.Path = path;
+            uIAnalyticalModel.JSAMObject = uIAnalyticalModel_Temp?.JSAMObject;
         }
 
         private void RibbonButton_Tools_OpenTSD_Click(object sender, EventArgs e)
