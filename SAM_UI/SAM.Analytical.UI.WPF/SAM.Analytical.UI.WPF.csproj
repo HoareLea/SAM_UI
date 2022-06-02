@@ -49,6 +49,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Core.Tas, Version=1.0.8182.19636, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Core.Windows">
       <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
     </Reference>

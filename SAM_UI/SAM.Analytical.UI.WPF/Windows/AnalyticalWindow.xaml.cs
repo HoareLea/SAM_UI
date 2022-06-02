@@ -26,6 +26,32 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_General_CloseAnalyticalModel.Click += RibbonButton_General_CloseAnalyticalModel_Click;
 
             RibbonButton_Edit_Location.Click += RibbonButton_Edit_Location_Click;
+            RibbonButton_Edit_Properties.Click += RibbonButton_Edit_Properties_Click;
+            RibbonButton_Edit_Import.Click += RibbonButton_Edit_Import_Click;
+            RibbonButton_Edit_Check.Click += RibbonButton_Edit_Check_Click;
+            RibbonButton_Edit_Materials.Click += RibbonButton_Edit_Materials_Click;
+            RibbonButton_Edit_InternalConditions.Click += RibbonButton_Edit_InternalConditions_Click;
+            RibbonButton_Edit_Profiles.Click += RibbonButton_Edit_Profiles_Click;
+            RibbonButton_Edit_Spaces.Click += RibbonButton_Edit_Spaces_Click;
+            RibbonButton_Edit_Constructions.Click += RibbonButton_Edit_Constructions_Click;
+            RibbonButton_Edit_ApertureConstructions.Click += RibbonButton_Edit_ApertureConstructions_Click;
+
+            RibbonButton_Simulate_WeatherData.Click += RibbonButton_Simulate_WeatherData_Click;
+            RibbonButton_Simulate_Import.Click += RibbonButton_Simulate_Import_Click;
+            RibbonButton_Simulate_SolarSimulation.Click += RibbonButton_Simulate_SolarSimulation_Click;
+            RibbonButton_Simulate_EnergySimulation.Click += RibbonButton_Simulate_EnergySimulation_Click;
+
+            RibbonButton_Tools_EditLibrary.Click += RibbonButton_Tools_EditLibrary_Click;
+            RibbonButton_Tools_OpenT3D.Click += RibbonButton_Tools_OpenT3D_Click;
+            RibbonButton_Tools_OpenTBD.Click += RibbonButton_Tools_OpenTBD_Click;
+            RibbonButton_Tools_OpenTSD.Click += RibbonButton_Tools_OpenTSD_Click;
+            RibbonButton_Tools_OpenTPD.Click += RibbonButton_Tools_OpenTPD_Click;
+            RibbonButton_Tools_Hydra.Click += RibbonButton_Tools_Hydra_Click;
+            RibbonButton_Tools_Clean.Click += RibbonButton_Tools_Clean_Click;
+            RibbonButton_Tools_AddMissingObjects.Click += RibbonButton_Tools_AddMissingObjects_Click;
+            RibbonButton_Tools_PrintRoomDataSheets.Click += RibbonButton_Tools_PrintRoomDataSheets_Click;
+
+            RibbonButton_Help_Wiki.Click += RibbonButton_Help_Wiki_Click;
 
             AnalyticalModelControl.TreeView_Main.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
 
@@ -33,6 +59,149 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
 
             View3DControl.UIAnalyticalModel = uIAnalyticalModel;
+        }
+
+        private void RibbonButton_Help_Wiki_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM/wiki/00-Home");
+        }
+
+        private void RibbonButton_Tools_PrintRoomDataSheets_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.PrintRoomDataSheets();
+        }
+
+        private void RibbonButton_Tools_AddMissingObjects_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.AddMissingObjects();
+        }
+
+        private void RibbonButton_Tools_Clean_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.Clean();
+        }
+
+        private void RibbonButton_Tools_Hydra_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://hlhydra.azurewebsites.net/index.html");
+        }
+
+        private void RibbonButton_Tools_OpenTPD_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Core.Tas.Query.TPDPath();
+
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start(path);
+        }
+
+        private void RibbonButton_Tools_OpenTSD_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Core.Tas.Query.TSDPath();
+
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start(path);
+        }
+
+        private void RibbonButton_Tools_OpenTBD_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Core.Tas.Query.TBDPath();
+
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start(path);
+        }
+
+        private void RibbonButton_Tools_OpenT3D_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Core.Tas.Query.TAS3DPath();
+
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start(path);
+        }
+
+        private void RibbonButton_Tools_EditLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            UI.Modify.EditLibrary();
+        }
+
+        private void RibbonButton_Simulate_EnergySimulation_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EnergySimulation();
+        }
+
+        private void RibbonButton_Simulate_SolarSimulation_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.SolarSimulation();
+        }
+
+        private void RibbonButton_Simulate_Import_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.ImportWeatherData();
+        }
+
+        private void RibbonButton_Simulate_WeatherData_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EditWeatherData();
+        }
+
+        private void RibbonButton_Edit_ApertureConstructions_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EditApertureConstructions();
+        }
+
+        private void RibbonButton_Edit_Constructions_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EditConstructions();
+        }
+
+        private void RibbonButton_Edit_Spaces_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EditSpaces();
+        }
+
+        private void RibbonButton_Edit_Profiles_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EditProfileLibrary();
+        }
+
+        private void RibbonButton_Edit_InternalConditions_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EditInternalConditions();
+        }
+
+        private void RibbonButton_Edit_Materials_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EditMaterialLibrary();
+        }
+
+        private void RibbonButton_Edit_Check_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.Check();
+        }
+
+        private void RibbonButton_Edit_Import_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.Import();
+        }
+
+        private void RibbonButton_Edit_Properties_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.EditProperties();
         }
 
         private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

@@ -602,7 +602,7 @@ namespace SAM.Analytical.UI
 
         private void RibbonButton_PrintRDS_Click(object sender, EventArgs e)
         {
-            uIAnalyticalModel.PrintRoomDataSheets(this);
+            uIAnalyticalModel?.PrintRoomDataSheets(this);
         }
 
         private void RibbonButton_Simulate_WeatherData_Click(object sender, EventArgs e)

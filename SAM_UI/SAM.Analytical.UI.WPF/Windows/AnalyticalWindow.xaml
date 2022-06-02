@@ -405,7 +405,57 @@
             <RibbonTab x:Name="RibbonTab_Edit" Header="Edit">
                 <RibbonGroup x:Name="RibbonGroup_Edit_General" Header="General">
                     <RibbonButton x:Name="RibbonButton_Edit_Location" Label="Location" LargeImageSource="../Resources/SAM_Location.png"/>
-
+                    <RibbonButton x:Name="RibbonButton_Edit_Properties" Label="Properties" LargeImageSource="../Resources/SAM_AnalyticalModelProperties.png"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_Import" Header="Import">
+                    <RibbonButton x:Name="RibbonButton_Edit_Import" Label="Import" LargeImageSource="../Resources/SAM_Import.png"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_Check" Header="Check">
+                    <RibbonButton x:Name="RibbonButton_Edit_Check" Label="ModelCheck" LargeImageSource="../Resources/SAM_ModelCheck.png"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_ModelLibrary" Header="Model Library">
+                    <RibbonButton x:Name="RibbonButton_Edit_Materials" Label="Materials" LargeImageSource="../Resources/SAM_MaterialLibrary.png"/>
+                    <RibbonButton x:Name="RibbonButton_Edit_InternalConditions" Label="Internal Conditions" LargeImageSource="../Resources/SAM_InternalCondition.png"/>
+                    <RibbonButton x:Name="RibbonButton_Edit_Profiles" Label="Profiles" LargeImageSource="../Resources/SAM_ProfileLibrary.png"/>
+                    <RibbonButton x:Name="RibbonButton_Edit_Spaces" Label="Spaces" LargeImageSource="../Resources/SAM_Space.png"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_Constructions" Header="Constructions">
+                    <RibbonButton x:Name="RibbonButton_Edit_Constructions" Label="Constructions" LargeImageSource="../Resources/SAM_ConstructionLibrary.png"/>
+                    <RibbonButton x:Name="RibbonButton_Edit_ApertureConstructions" Label="Aperture Constructions" LargeImageSource="../Resources/SAM_ApertureConstruction.png"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Simulate" Header="Siumlate">
+                <RibbonGroup x:Name="RibbonGroup_Simulate_WeatherData" Header="Weather Data">
+                    <RibbonButton x:Name="RibbonButton_Simulate_WeatherData" Label="Weather Data" LargeImageSource="../Resources/SAM_WeatherData.png"/>
+                    <RibbonButton x:Name="RibbonButton_Simulate_Import" Label="Import" LargeImageSource="../Resources/SAM_Import.png"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Simulate_Simulate" Header="Simulate">
+                    <RibbonButton x:Name="RibbonButton_Simulate_SolarSimulation" Label="Solar Simulation" LargeImageSource="../Resources/SAM_SolarCalculator.png"/>
+                    <RibbonButton x:Name="RibbonButton_Simulate_EnergySimulation" Label="Energy Simulation" LargeImageSource="../Resources/SAM_EnergySimulation.png"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Tools" Header="Tools">
+                <RibbonGroup x:Name="RibbonGroup_Tools_Library" Header="Library">
+                    <RibbonButton x:Name="RibbonButton_Tools_EditLibrary" Label="Edit Library" LargeImageSource="../Resources/SAM_EditLibrary.png"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Tas" Header="Tas">
+                    <RibbonButton x:Name="RibbonButton_Tools_OpenT3D" Label="Open T3D" LargeImageSource="../Resources/SAM_T3D.png"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_OpenTBD" Label="Open TBD" LargeImageSource="../Resources/SAM_TBD.png"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_OpenTSD" Label="Open TSD" LargeImageSource="../Resources/SAM_TSD.png"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_OpenTPD" Label="Open TPD" LargeImageSource="../Resources/SAM_TPD.png"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Hydra" Header="Hydra">
+                    <RibbonButton x:Name="RibbonButton_Tools_Hydra" Label="Open Hydra" LargeImageSource="../Resources/SAM_Hydra.png"/>
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_AnalyticalModel" Header="Analytical Model">
+                    <RibbonButton x:Name="RibbonButton_Tools_Clean" Label="Clean" LargeImageSource="../Resources/SAM_Clean.png"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_AddMissingObjects" Label="Missing Elements" LargeImageSource="../Resources/SAM_AddMissingObjects.png"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_PrintRoomDataSheets" Label="Print RDS" LargeImageSource="../Resources/SAM_PrintRDS.png"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Help" Header="Help">
+                <RibbonGroup x:Name="RibbonGroup_Help_General" Header="General">
+                    <RibbonButton x:Name="RibbonButton_Help_Wiki" Label="Wiki" LargeImageSource="../Resources/SAM_Wiki.png"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
