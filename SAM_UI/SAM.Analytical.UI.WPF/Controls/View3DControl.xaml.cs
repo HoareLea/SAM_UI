@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SAM.Core;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,9 +21,79 @@ namespace SAM.Analytical.UI.WPF
 
         private Point point_Mouse;
 
+        private bool show = false;
+
         public View3DControl()
         {
             InitializeComponent();
+        }
+
+        public List<IJSAMObject> Show<T>(IEnumerable<T> jSAMObjects) where T: IJSAMObject
+        {
+            show = true;
+            
+            List<IVisualSAMObject> visualSAMObjects = GetVisualSAMObjects<IVisualSAMObject>();
+            if(visualSAMObjects == null || visualSAMObjects.Count == 0)
+            {
+                return null;
+            }
+
+            bool hightlight = jSAMObjects != null && jSAMObjects.Count() != 0;
+            foreach (IVisualSAMObject visualSAMObject in visualSAMObjects)
+            {
+                if(visualSAMObject == null)
+                {
+                    continue;
+                }
+
+                visualSAMObject.Opacity = 0.3;
+            }
+
+            if(!hightlight)
+            {
+                return null;
+            }
+
+            List<IJSAMObject> result = new List<IJSAMObject>();
+            foreach (T jSAMObject in jSAMObjects)
+            {
+                List<IJSAMObject> jSAMObjects_Temp = new List<IJSAMObject>();
+                if(jSAMObject is Space)
+                {
+                    List<Panel> panels = uIAnalyticalModel.JSAMObject.AdjacencyCluster?.GetPanels((Space)(object)jSAMObject);
+                    if(panels != null)
+                    {
+                        foreach(Panel panel in panels)
+                        {
+                            jSAMObjects_Temp.Add(panel);
+                            panel.Apertures?.ForEach(x => jSAMObjects_Temp.Add(x));
+                        }
+                    }
+                }
+                else if(jSAMObject is Panel)
+                {
+                    jSAMObjects_Temp.Add(jSAMObject);
+                    ((Panel)(object)jSAMObject).Apertures?.ForEach(x => jSAMObjects_Temp.Add(x));
+                }
+                else
+                {
+                    jSAMObjects_Temp.Add(jSAMObject);
+                }
+
+                foreach(IJSAMObject jSAMObject_Temp in jSAMObjects_Temp)
+                {
+                    IVisualSAMObject visualSAMObject = visualSAMObjects.Find(x => x.Similar(jSAMObject_Temp));
+                    if (visualSAMObject == null)
+                    {
+                        continue;
+                    }
+
+                    visualSAMObject.Opacity = 1;
+                    result.Add(jSAMObject_Temp);
+                }
+            }
+
+            return result;
         }
 
         private void LoadAnalyticalModel(AnalyticalModel analyticalModel)
@@ -192,6 +264,13 @@ namespace SAM.Analytical.UI.WPF
 
             visualSAMObject_Highlight?.SetHighlight(false);
             visualSAMObject_Highlight = null;
+
+            if(show)
+            {
+                List<IVisualSAMObject> visualSAMObjects = GetVisualSAMObjects<IVisualSAMObject>();
+                visualSAMObjects?.ForEach(x => x.Opacity = 1);
+                show = false;
+            }
 
             Information.Text = string.Format("Mouse: X={0}, Y={1}", Core.Query.Round(point_Current.X, 0.1), Core.Query.Round(point_Current.Y, 0.1));
             RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;

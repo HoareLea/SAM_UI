@@ -206,15 +206,27 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
+            TreeView treeView_AnalyticalModel = AnalyticalModelControl.TreeView_Main;
 
+            List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
+            TreeViewItem treeViewItem = treeView_AnalyticalModel.SelectedItem as TreeViewItem;
+            if(treeViewItem != null)
+            {
+                IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
+                if (jSAMObject != null)
+                {
+                    jSAMObjects.Add(jSAMObject);
+                }
+            }
+
+            View3DControl.Show(jSAMObjects);
         }
 
-        private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)
+        private void LoadAnalyticalModel(AnalyticalModel analyticalModel)
         {
             TreeView treeView_AnalyticalModel = AnalyticalModelControl.TreeView_Main;
             treeView_AnalyticalModel.Items.Clear();
 
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
             {
                 return;
@@ -294,6 +306,11 @@ namespace SAM.Analytical.UI.WPF.Windows
                     }
                 }
             }
+        }
+
+        private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)
+        {
+            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
         }
 
         private void RibbonButton_Edit_Location_Click(object sender, RoutedEventArgs e)

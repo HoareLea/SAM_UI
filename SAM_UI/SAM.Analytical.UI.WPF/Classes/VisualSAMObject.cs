@@ -1,5 +1,4 @@
 ﻿using SAM.Core;
-using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
@@ -22,6 +21,46 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public double Opacity
+        {
+            get
+            {
+                DiffuseMaterial diffuseMaterial = GeometryModel3D?.Material as DiffuseMaterial;
+                if (diffuseMaterial == null)
+                {
+                    return double.NaN;
+                }
+
+                SolidColorBrush solidColorBrush = diffuseMaterial.Brush as SolidColorBrush;
+                if (solidColorBrush == null)
+                {
+                    return double.NaN;
+                }
+
+                return solidColorBrush.Opacity;
+            }
+
+            set
+            {
+                DiffuseMaterial diffuseMaterial = GeometryModel3D?.Material as DiffuseMaterial;
+                if (diffuseMaterial == null)
+                {
+                    return;
+                }
+
+                SolidColorBrush solidColorBrush = diffuseMaterial.Brush as SolidColorBrush;
+                if (solidColorBrush == null)
+                {
+                    return;
+                }
+
+                if(solidColorBrush.Opacity != value)
+                {
+                    solidColorBrush.Opacity = value;
+                }
+            }
+        }
+
         public virtual bool SetHighlight(bool highlight)
         {
             if(Children.Count != 0)
@@ -40,27 +79,40 @@ namespace SAM.Analytical.UI.WPF
                 Children.Add(((Panel)(object)jSAMObject).GetFace3D(true).ToMedia3D_VisualEdges(Color.FromRgb(0, 0, 255), 0.01));
             }
 
-            DiffuseMaterial diffuseMaterial = GeometryModel3D?.Material as DiffuseMaterial;
-            if (diffuseMaterial == null)
+            double opacity = highlight ? 0.70 : 1;
+            if(Opacity != opacity)
             {
-                return false;
-            }
-
-            SolidColorBrush solidColorBrush = diffuseMaterial.Brush as SolidColorBrush;
-            if (solidColorBrush == null)
-            {
-                return false;
-            }
-
-            double opacity = highlight ? 0.90 : 1;
-
-            if (solidColorBrush.Opacity != opacity)
-            {
-                solidColorBrush.Opacity = opacity;
+                Opacity = opacity;
                 return true;
             }
 
             return false;
+        }
+
+        public virtual bool Similar(IJSAMObject jSAMObject)
+        {
+            if(jSAMObject == null)
+            {
+                return false;
+            }
+
+            System.Type type = this.jSAMObject?.GetType();
+            if(type == null)
+            {
+                return false;
+            }
+
+            if(!type.Equals(jSAMObject.GetType()))
+            {
+                return false;
+            }
+
+            if(!(jSAMObject is SAMObject))
+            {
+                return true;
+            }
+
+            return ((SAMObject)jSAMObject).Guid == ((SAMObject)(object)this.jSAMObject).Guid;
         }
     }
 }

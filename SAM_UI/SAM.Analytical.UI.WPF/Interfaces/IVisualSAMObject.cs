@@ -8,5 +8,9 @@ namespace SAM.Analytical.UI.WPF
         GeometryModel3D GeometryModel3D { get; }
 
         bool SetHighlight(bool highlight);
+
+        double Opacity { get; set; }
+
+        bool Similar(IJSAMObject jSAMObject);
     }
 }
