@@ -118,6 +118,7 @@
     <Compile Include="Modify\Zoom.cs" />
     <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Modify\Move.cs" />
+    <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
     <Compile Include="Query\TransparentMaterial.cs" />
     <Compile Include="Query\VisualSAMObjects.cs" />
     <Compile Include="Query\Plane.cs" />

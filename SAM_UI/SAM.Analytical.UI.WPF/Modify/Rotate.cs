@@ -66,7 +66,7 @@ namespace SAM.Analytical.UI.WPF
             return perspectiveCamera.Rotate(key, perspectiveCamera.FieldOfView / 45d);
         }
 
-        public static bool Rotate(this PerspectiveCamera perspectiveCamera, Geometry.Planar.Vector2D vector2D, Geometry.Spatial.Point3D center, double tolerance = Core.Tolerance.Distance)
+        public static bool Rotate(this PerspectiveCamera perspectiveCamera, Geometry.Planar.Vector2D vector2D, Geometry.Spatial.Point3D center)
         {
             if(perspectiveCamera == null || center == null || center.IsNaN())
             {
@@ -90,6 +90,25 @@ namespace SAM.Analytical.UI.WPF
             perspectiveCamera.Position = position_New.ToMedia3D();
             perspectiveCamera.LookDirection = new Geometry.Spatial.Vector3D(position_New, center).GetNormalized().ToMedia3D();
 
+            return true;
+        }
+
+        public static bool Rotate(this ModelVisual3D modelVisual3D, Geometry.Spatial.Vector3D axis, Geometry.Spatial.Point3D center, double angle)
+        {
+            if(modelVisual3D == null || axis == null || center == null || !center.IsValid())
+            {
+                return false;
+            }
+
+            RotateTransform3D rotateTransform3D = new RotateTransform3D();
+            rotateTransform3D.CenterX = center.X;
+            rotateTransform3D.CenterY = center.Y;
+            rotateTransform3D.CenterZ = center.Z;
+            rotateTransform3D.Rotation = new AxisAngleRotation3D(axis.ToMedia3D(), angle);
+
+            Transform3DGroup transform3DGroup = new Transform3DGroup();
+
+            modelVisual3D.Transform = rotateTransform3D;
             return true;
         }
     }

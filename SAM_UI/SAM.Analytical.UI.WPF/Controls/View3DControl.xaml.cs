@@ -225,7 +225,7 @@ namespace SAM.Analytical.UI.WPF
 
             Modify.Clear<VisualWidget>(Viewport);
 
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Query.RayMeshGeometry3DHitTestResult<IVisualSAMObject>(Viewport, point_Current_Temp);// VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
             if(rayMeshGeometry3DHitTestResult != null)
             {
                 vector3D = new Geometry.Spatial.Vector3D(MainCamera.Position.ToSAM(), rayMeshGeometry3DHitTestResult.PointHit.ToSAM());
@@ -255,7 +255,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 Point point_Current = e.GetPosition(Viewport);
 
-                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
+                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Query.RayMeshGeometry3DHitTestResult<IVisualSAMObject>(Viewport, point_Current);// VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
 
                 VisualPanel visualPanel = rayMeshGeometry3DHitTestResult?.VisualHit as VisualPanel;
                 if (visualPanel == null)
@@ -282,10 +282,9 @@ namespace SAM.Analytical.UI.WPF
             }
 
             Information.Text = string.Format("Mouse: X={0}, Y={1}", Core.Query.Round(point_Current_Temp.X, 0.1), Core.Query.Round(point_Current_Temp.Y, 0.1));
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
-            if (rayMeshGeometry3DHitTestResult != null)
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Query.RayMeshGeometry3DHitTestResult(Viewport, point_Current_Temp, out IVisualSAMObject visualSAMObject_Highlight_Current); //VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
+            if (rayMeshGeometry3DHitTestResult != null && visualSAMObject_Highlight_Current != null)
             {
-                IVisualSAMObject visualSAMObject_Highlight_Current = rayMeshGeometry3DHitTestResult?.VisualHit as IVisualSAMObject;
                 if(visualSAMObject_Highlight_Current != null)
                 {
                     visualSAMObject_Highlight_Current.SetHighlight(true);
@@ -317,16 +316,29 @@ namespace SAM.Analytical.UI.WPF
 
             if (e.MouseDevice.MiddleButton is MouseButtonState.Pressed)
             {
+                //Geometry.Spatial.Plane plane = Query.Plane(MainCamera);
+
+                //Point3D center = Query.Center(GetVisualSAMObjects<IVisualSAMObject>());
+                //double angle = distance / perspectiveCamera.FieldOfView % 45;
+
+                //Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, vector2D);
+
+                //GetVisualSAMObjects<IVisualSAMObject>().ForEach(x => (x as ModelVisual3D).Rotate(vector3D, center.ToSAM(), angle));
+
+
+                //Version 2
                 vector2D.Scale(0.1);
 
                 Point3D center = Query.Center(GetVisualSAMObjects<IVisualSAMObject>());
-                if(center == null || center.IsNaN())
+                if (center == null || center.IsNaN())
                 {
                     center = new Point3D(0, 0, 0);
                 }
 
                 perspectiveCamera.Rotate(vector2D, center.ToSAM());
 
+
+                //Version 1
                 //vector3D = vector3D.CrossProduct(plane.Normal);
                 //double angle = distance / perspectiveCamera.FieldOfView % 45;
                 //perspectiveCamera.Rotate(Convert.ToMedia3D(vector3D.GetNegated()), angle);

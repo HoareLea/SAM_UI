@@ -13,7 +13,11 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            Visual3DCollection visual3DCollection = viewport3D.Children;
+            return VisualSAMObjects<T>(viewport3D.Children);
+        }
+
+        public static List<T> VisualSAMObjects<T>(this Visual3DCollection visual3DCollection) where T : IVisualSAMObject
+        {
             if (visual3DCollection == null)
             {
                 return null;
@@ -24,6 +28,16 @@ namespace SAM.Analytical.UI.WPF
             {
                 if (!(@object is T))
                 {
+                    if(@object is ModelVisual3D)
+                    {
+                        ModelVisual3D modelVisual3D = (ModelVisual3D)@object;
+                        List<T> visualSAMObjects = VisualSAMObjects<T>(modelVisual3D.Children);
+                        if(visualSAMObjects != null)
+                        {
+                            result.AddRange(visualSAMObjects);
+                        }
+                    }
+                    
                     continue;
                 }
 
@@ -31,7 +45,6 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return result;
-
         }
     }
 }
