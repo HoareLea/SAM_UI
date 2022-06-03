@@ -1,6 +1,6 @@
 ﻿namespace SAM.Analytical.UI.WPF
 {
-    public class VisualSpace : VisualSAMObject<Space>
+    public class VisualSpace : VisualJSAMObject<Space>
     {
         public VisualSpace(Space space)
             :base(space)

@@ -102,80 +102,17 @@ namespace SAM.Analytical.UI.WPF
         {
             Modify.Clear<IVisualSAMObject>(Viewport);
 
-            List<Panel> panels = analyticalModel?.GetPanels();
-            if(panels != null)
+            VisualAnalyticalModel visualAnalyticalModel = Convert.ToMedia3D(analyticalModel);
+
+            if(visualAnalyticalModel != null)
             {
-                foreach(Panel panel in panels)
-                {
-                    VisualPanel visualPanel = panel?.ToMedia3D();
-                    if(visualPanel == null)
-                    {
-                        continue;
-                    }
-
-                    Viewport.Children.Add(visualPanel);
-
-                    List<Aperture> apertures = panel.Apertures;
-                    if(apertures != null)
-                    {
-                        foreach(Aperture aperture in apertures)
-                        {
-                            VisualAperture visualAperture = aperture?.ToMedia3D();
-                            if (visualAperture == null)
-                            {
-                                continue;
-                            }
-
-                            Viewport.Children.Add(visualAperture);
-                        }
-                    }
-                }
+                Viewport.Children.Add(visualAnalyticalModel);
             }
-
-            //AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
-
-            //List<Space> spaces = analyticalModel.GetSpaces();
-            //if (spaces != null)
-            //{
-            //    foreach(Space space in spaces)
-            //    {
-            //        VisualSpace visualSpace = space.ToMedia3D(adjacencyCluster);
-            //        if (visualSpace == null)
-            //        {
-            //            continue;
-            //        }
-
-            //        Viewport.Children.Add(visualSpace);
-            //    }
-            //}
-
         }
 
         public List<T> GetVisualSAMObjects<T>() where T : IVisualSAMObject
         {
             return Query.VisualSAMObjects<T>(Viewport);
-        }
-
-        public List<T> GetVisualWidgets<T>() where T: VisualWidget
-        {
-            Visual3DCollection visual3DCollection = Viewport.Children;
-            if (visual3DCollection == null)
-            {
-                return null;
-            }
-
-            List<T> result = new List<T>();
-            foreach (object @object in visual3DCollection)
-            {
-                if (!(@object is T))
-                {
-                    continue;
-                }
-
-                result.Add((T)@object);
-            }
-
-            return result;
         }
 
         public UIAnalyticalModel UIAnalyticalModel
@@ -223,9 +160,7 @@ namespace SAM.Analytical.UI.WPF
 
             Geometry.Spatial.Vector3D vector3D = null;
 
-            Modify.Clear<VisualWidget>(Viewport);
-
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Query.RayMeshGeometry3DHitTestResult<IVisualSAMObject>(Viewport, point_Current_Temp);// VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Query.RayMeshGeometry3DHitTestResult<ModelVisual3D>(Viewport, point_Current_Temp);// VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
             if(rayMeshGeometry3DHitTestResult != null)
             {
                 vector3D = new Geometry.Spatial.Vector3D(MainCamera.Position.ToSAM(), rayMeshGeometry3DHitTestResult.PointHit.ToSAM());
@@ -316,26 +251,27 @@ namespace SAM.Analytical.UI.WPF
 
             if (e.MouseDevice.MiddleButton is MouseButtonState.Pressed)
             {
-                //Geometry.Spatial.Plane plane = Query.Plane(MainCamera);
-
-                //Point3D center = Query.Center(GetVisualSAMObjects<IVisualSAMObject>());
-                //double angle = distance / perspectiveCamera.FieldOfView % 45;
-
-                //Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, vector2D);
-
-                //GetVisualSAMObjects<IVisualSAMObject>().ForEach(x => (x as ModelVisual3D).Rotate(vector3D, center.ToSAM(), angle));
-
-
                 //Version 2
+
                 vector2D.Scale(0.1);
 
-                Point3D center = Query.Center(GetVisualSAMObjects<IVisualSAMObject>());
+                List<VisualPanel> visualSAMObjects = GetVisualSAMObjects<VisualPanel>();
+                Point3D center = Query.Center(visualSAMObjects);
                 if (center == null || center.IsNaN())
                 {
                     center = new Point3D(0, 0, 0);
                 }
 
-                perspectiveCamera.Rotate(vector2D, center.ToSAM());
+                Geometry.Spatial.Plane plane = Query.Plane(MainCamera);
+
+                double angle = distance / perspectiveCamera.FieldOfView % 45;
+                Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, vector2D);
+                vector3D = vector3D.CrossProduct(plane.Normal).GetNegated();
+
+
+                GetVisualSAMObjects<VisualAnalyticalModel>()?.ForEach(x => Modify.Rotate(x, vector3D, center.ToSAM(), angle));
+
+                //perspectiveCamera.Rotate(vector2D, center.ToSAM());
 
 
                 //Version 1

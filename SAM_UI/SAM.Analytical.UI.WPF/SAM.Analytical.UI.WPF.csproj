@@ -86,10 +86,11 @@
     </ApplicationDefinition>
     <Compile Include="Classes\VisualAperture.cs" />
     <Compile Include="Classes\VisualBackground.cs" />
+    <Compile Include="Classes\VisualAnalyticalModel.cs" />
     <Compile Include="Classes\VisualWidget.cs" />
     <Compile Include="Classes\VisualEdges.cs" />
     <Compile Include="Classes\VisualSpace.cs" />
-    <Compile Include="Classes\VisualSAMObject.cs" />
+    <Compile Include="Classes\VisualJSAMObject.cs" />
     <Compile Include="Classes\VisualPanel.cs" />
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
@@ -101,6 +102,7 @@
     <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
     <Compile Include="Convert\ToMedia3D\VisualAperture.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualAnalyticalModel.cs" />
     <Compile Include="Convert\ToMedia3D\VisualWidget.cs" />
     <Compile Include="Convert\ToMedia3D\VisualEdges.cs" />
     <Compile Include="Convert\ToMedia3D\VisualSpace.cs" />

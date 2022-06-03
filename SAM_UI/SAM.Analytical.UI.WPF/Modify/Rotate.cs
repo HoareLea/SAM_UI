@@ -106,9 +106,15 @@ namespace SAM.Analytical.UI.WPF
             rotateTransform3D.CenterZ = center.Z;
             rotateTransform3D.Rotation = new AxisAngleRotation3D(axis.ToMedia3D(), angle);
 
-            Transform3DGroup transform3DGroup = new Transform3DGroup();
+            Transform3DGroup transform3DGroup = modelVisual3D.Transform as Transform3DGroup;
+            if(transform3DGroup == null)
+            {
+                transform3DGroup = new Transform3DGroup();
+            }
 
-            modelVisual3D.Transform = rotateTransform3D;
+            transform3DGroup.Children.Add(rotateTransform3D);
+
+            modelVisual3D.Transform = transform3DGroup;
             return true;
         }
     }
