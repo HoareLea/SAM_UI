@@ -85,6 +85,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\VisualAperture.cs" />
+    <Compile Include="Classes\VisualBackground.cs" />
+    <Compile Include="Classes\VisualWidget.cs" />
     <Compile Include="Classes\VisualEdges.cs" />
     <Compile Include="Classes\VisualSpace.cs" />
     <Compile Include="Classes\VisualSAMObject.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
     <Compile Include="Convert\ToMedia3D\VisualAperture.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualWidget.cs" />
     <Compile Include="Convert\ToMedia3D\VisualEdges.cs" />
     <Compile Include="Convert\ToMedia3D\VisualSpace.cs" />
     <Compile Include="Convert\ToMedia3D\VisualPanel.cs" />
@@ -106,14 +109,18 @@
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia\Color.cs" />
+    <Compile Include="Convert\ToSAM\Point2D.cs" />
     <Compile Include="Convert\ToSAM\Vector3D.cs" />
     <Compile Include="Convert\ToSAM\Point3D.cs" />
+    <Compile Include="Create\VisualBackground.cs" />
     <Compile Include="Interfaces\IVisualSAMObject.cs" />
+    <Compile Include="Modify\Clear.cs" />
     <Compile Include="Modify\Zoom.cs" />
     <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Modify\Move.cs" />
+    <Compile Include="Query\TransparentMaterial.cs" />
+    <Compile Include="Query\VisualSAMObjects.cs" />
     <Compile Include="Query\Plane.cs" />
-    <Compile Include="Query\Test.cs" />
     <Compile Include="Query\IsNaN.cs" />
     <Compile Include="Query\LookDirection.cs" />
     <Compile Include="Query\Center.cs" />

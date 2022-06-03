@@ -21,23 +21,31 @@ namespace SAM.Analytical.UI.WPF
 
         public override bool SetHighlight(bool highlight)
         {
-            DiffuseMaterial diffuseMaterial = GeometryModel3D?.Material as DiffuseMaterial;
-            if(diffuseMaterial == null)
+            if (Children.Count != 0)
             {
-                return false;
+                for (int i = Children.Count - 1; i >= 0; i--)
+                {
+                    if (Children[i] is VisualEdges)
+                    {
+                        Children.RemoveAt(i);
+                    }
+                }
             }
 
-            SolidColorBrush solidColorBrush = diffuseMaterial.Brush as SolidColorBrush;
-            if(solidColorBrush == null)
+            if (highlight)
             {
-                return false;
+                VisualEdges visualEdges = jSAMObject?.Face3D?.ToMedia3D_VisualEdges(Color.FromRgb(0, 0, 255), 0.01);
+
+                if (visualEdges != null)
+                {
+                    Children.Add(visualEdges);
+                }
             }
 
             double opacity = highlight ? 0.4 : 0.6;
-
-            if (solidColorBrush.Opacity != opacity)
+            if (Opacity != opacity)
             {
-                solidColorBrush.Opacity = opacity;
+                Opacity = opacity;
                 return true;
             }
 

@@ -5,52 +5,50 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static T Move<T>(this T projectionCamera, Vector3D axis, double step) where T : ProjectionCamera
+        public static bool Move(this ProjectionCamera projectionCamera, Vector3D axis, double step)
         {
             if(projectionCamera == null || axis == null)
             {
-                return null;
+                return false;
             }
 
             projectionCamera.Position += axis * step;
-            return projectionCamera;
+            return true;
         }
 
-        public static T Move<T>(this T projectionCamera, Key key, double step) where T : ProjectionCamera
+        public static bool Move(this ProjectionCamera projectionCamera, Key key, double step)
         {
             if (projectionCamera == null)
             {
-                return null;
+                return false;
             }
 
             switch (key)
             {
                 case Key.W:
-                    projectionCamera.Move(Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? projectionCamera.YawAxis() : projectionCamera.RollAxis(), +step);
-                    break;
+                    return projectionCamera.Move(Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? projectionCamera.YawAxis() : projectionCamera.RollAxis(), +step);
+                    
                 case Key.S:
-                    projectionCamera.Move(Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? projectionCamera.YawAxis() : projectionCamera.RollAxis(), -step);
-                    break;
+                    return projectionCamera.Move(Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? projectionCamera.YawAxis() : projectionCamera.RollAxis(), -step);
+
                 case Key.A:
-                    projectionCamera.Move(projectionCamera.PitchAxis(), +step);
-                    break;
+                    return projectionCamera.Move(projectionCamera.PitchAxis(), +step);
+
                 case Key.D:
-                    projectionCamera.Move(projectionCamera.PitchAxis(), -step);
-                    break;
+                    return projectionCamera.Move(projectionCamera.PitchAxis(), -step);
             }
 
-            return projectionCamera;
+            return false;
         }
 
-        public static PerspectiveCamera Move(this PerspectiveCamera perspectiveCamera, Key key) 
+        public static bool Move(this PerspectiveCamera perspectiveCamera, Key key) 
         {
             if(perspectiveCamera == null)
             {
-                return null;
+                return false;
             }
 
-            perspectiveCamera.Move(key, perspectiveCamera.FieldOfView / 180d);
-            return perspectiveCamera;
+            return perspectiveCamera.Move(key, perspectiveCamera.FieldOfView / 180d);
         } 
     }
 }

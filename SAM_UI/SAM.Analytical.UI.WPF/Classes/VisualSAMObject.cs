@@ -63,22 +63,6 @@ namespace SAM.Analytical.UI.WPF
 
         public virtual bool SetHighlight(bool highlight)
         {
-            if(Children.Count != 0)
-            {
-                for(int i = Children.Count - 1; i >= 0; i--)
-                {
-                    if(Children[i] is VisualEdges)
-                    {
-                        Children.RemoveAt(i);
-                    }
-                }
-            }
-
-            if(highlight && jSAMObject is Panel)
-            {
-                Children.Add(((Panel)(object)jSAMObject).GetFace3D(true).ToMedia3D_VisualEdges(Color.FromRgb(0, 0, 255), 0.01));
-            }
-
             double opacity = highlight ? 0.70 : 1;
             if(Opacity != opacity)
             {

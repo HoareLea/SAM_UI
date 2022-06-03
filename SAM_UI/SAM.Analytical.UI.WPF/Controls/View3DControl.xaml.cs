@@ -17,9 +17,11 @@ namespace SAM.Analytical.UI.WPF
     {
         private UIAnalyticalModel uIAnalyticalModel;
 
+        private VisualBackground visualBackground;
+
         private IVisualSAMObject visualSAMObject_Highlight;
 
-        private Point point_Mouse;
+        private Point point_Current;
 
         private bool show = false;
 
@@ -98,7 +100,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void LoadAnalyticalModel(AnalyticalModel analyticalModel)
         {
-            Clear();
+            Modify.Clear<IVisualSAMObject>(Viewport);
 
             List<Panel> panels = analyticalModel?.GetPanels();
             if(panels != null)
@@ -148,33 +150,13 @@ namespace SAM.Analytical.UI.WPF
             //}
 
         }
-        
-        private void Clear()
-        {
-            Visual3DCollection visual3DCollection = Viewport.Children;
-            if (visual3DCollection == null)
-            {
-                return;
-            }
-
-            List<Visual3D> visual3Ds = new List<Visual3D>();
-            foreach (Visual3D visual3D in visual3DCollection)
-            {
-                if (!(visual3D is IVisualSAMObject))
-                {
-                    continue;
-                }
-
-                visual3Ds.Add(visual3D);
-            }
-
-            foreach(Visual3D visual3D in visual3Ds)
-            {
-                Viewport.Children.Remove(visual3D);
-            }
-        }
 
         public List<T> GetVisualSAMObjects<T>() where T : IVisualSAMObject
+        {
+            return Query.VisualSAMObjects<T>(Viewport);
+        }
+
+        public List<T> GetVisualWidgets<T>() where T: VisualWidget
         {
             Visual3DCollection visual3DCollection = Viewport.Children;
             if (visual3DCollection == null)
@@ -237,7 +219,34 @@ namespace SAM.Analytical.UI.WPF
 
         private void UserControl_MouseWeel(object sender, MouseWheelEventArgs e)
         {
-            MainCamera.Position = new Point3D(MainCamera.Position.X - e.Delta / 360D, MainCamera.Position.Y - e.Delta / 360D, MainCamera.Position.Z - e.Delta / 360D);
+            Point point_Current_Temp = e.GetPosition(Viewport);
+
+            Geometry.Spatial.Vector3D vector3D = null;
+
+            Modify.Clear<VisualWidget>(Viewport);
+
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
+            if(rayMeshGeometry3DHitTestResult != null)
+            {
+                vector3D = new Geometry.Spatial.Vector3D(MainCamera.Position.ToSAM(), rayMeshGeometry3DHitTestResult.PointHit.ToSAM());
+            }
+            else
+            {
+                vector3D = new Geometry.Spatial.Vector3D(MainCamera.Position.X, MainCamera.Position.Y, MainCamera.Position.Z);
+                vector3D.Negate();
+            }
+
+            if(vector3D == null)
+            {
+                return;
+            }
+
+            double factor = e.Delta / 100.0;
+
+            vector3D.Normalize();
+            vector3D.Scale(factor);
+
+            MainCamera.Position = Convert.ToMedia3D(MainCamera.Position.ToSAM().GetMoved(vector3D) as Geometry.Spatial.Point3D);
         }
 
         private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -260,7 +269,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void UserControl_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            Point point_Current = e.GetPosition(Viewport);
+            Point point_Current_Temp = e.GetPosition(Viewport);
 
             visualSAMObject_Highlight?.SetHighlight(false);
             visualSAMObject_Highlight = null;
@@ -272,8 +281,8 @@ namespace SAM.Analytical.UI.WPF
                 show = false;
             }
 
-            Information.Text = string.Format("Mouse: X={0}, Y={1}", Core.Query.Round(point_Current.X, 0.1), Core.Query.Round(point_Current.Y, 0.1));
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
+            Information.Text = string.Format("Mouse: X={0}, Y={1}", Core.Query.Round(point_Current_Temp.X, 0.1), Core.Query.Round(point_Current_Temp.Y, 0.1));
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
             if (rayMeshGeometry3DHitTestResult != null)
             {
                 IVisualSAMObject visualSAMObject_Highlight_Current = rayMeshGeometry3DHitTestResult?.VisualHit as IVisualSAMObject;
@@ -290,11 +299,11 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            double dx = point_Current.X - point_Mouse.X;
-            double dy = point_Current.Y - point_Mouse.Y;
-            point_Mouse = point_Current;
+            double dx = point_Current_Temp.X - point_Current.X;
+            double dy = point_Current_Temp.Y - point_Current.Y;
+            point_Current = point_Current_Temp;
 
-            var distance = dx * dx + dy * dy;
+            double distance = dx * dx + dy * dy;
             if (distance <= 0)
                 return;
 
@@ -304,20 +313,30 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            distance = distance / 10;
-
-            Geometry.Spatial.Plane plane = Query.Plane(MainCamera);
-            Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, new Geometry.Planar.Vector2D(dx, dy));
+            Geometry.Planar.Vector2D vector2D = new Geometry.Planar.Vector2D(dx, dy);
 
             if (e.MouseDevice.MiddleButton is MouseButtonState.Pressed)
             {
-                vector3D = vector3D.CrossProduct(plane.Normal);
-                double angle = distance / perspectiveCamera.FieldOfView % 45;
-                perspectiveCamera.Rotate(Convert.ToMedia3D(vector3D.GetNegated()), angle);
+                vector2D.Scale(0.1);
+
+                Point3D center = Query.Center(GetVisualSAMObjects<IVisualSAMObject>());
+                if(center == null || center.IsNaN())
+                {
+                    center = new Point3D(0, 0, 0);
+                }
+
+                perspectiveCamera.Rotate(vector2D, center.ToSAM());
+
+                //vector3D = vector3D.CrossProduct(plane.Normal);
+                //double angle = distance / perspectiveCamera.FieldOfView % 45;
+                //perspectiveCamera.Rotate(Convert.ToMedia3D(vector3D.GetNegated()), angle);
             }
             else if(e.MouseDevice.LeftButton is MouseButtonState.Pressed)
             {
-                perspectiveCamera.Move(Convert.ToMedia3D(vector3D), 0.005);
+                Geometry.Spatial.Plane plane = Query.Plane(MainCamera);
+                Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, vector2D);
+
+                perspectiveCamera.Move(Convert.ToMedia3D(vector3D), 0.01);
             }
         }
 
@@ -329,7 +348,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            perspectiveCamera.Move(e.Key).Rotate(e.Key);
+            perspectiveCamera.Move(e.Key);
+            perspectiveCamera.Rotate(e.Key);
         }
 
         private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -436,6 +456,13 @@ namespace SAM.Analytical.UI.WPF
                 DirectionalLight.Direction = MainCamera.LookDirection;
             }
 
+            if(visualBackground != null)
+            {
+                Viewport.Children.Remove(visualBackground);
+            }
+
+            visualBackground = Create.VisualBackground(Viewport);
+            Viewport.Children.Add(visualBackground);
         }
     }
 }

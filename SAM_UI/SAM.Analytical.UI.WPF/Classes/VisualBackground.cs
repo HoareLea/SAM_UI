@@ -2,9 +2,9 @@
 
 namespace SAM.Analytical.UI.WPF
 {
-    public class VisualEdges : ModelVisual3D
+    public class VisualBackground : ModelVisual3D
     {
-        public VisualEdges()
+        public VisualBackground()
         {
 
         }

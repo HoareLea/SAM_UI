@@ -5,14 +5,30 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void Zoom(this UIElement uIElement, Point point, double delta)
+        public static bool Zoom(this UIElement uIElement, Point point, double delta)
         {
+            if(uIElement == null || point.IsNaN())
+            {
+                return false;
+            }
+
             ScaleTransform scaleTransform = Query.ScaleTransform(uIElement);
+            if(scaleTransform == null)
+            {
+                return false;
+            }
+
             TranslateTransform translateTransform = Query.TranslateTransform(uIElement);
+            if(translateTransform == null)
+            {
+                return false;
+            }
 
             double zoom = delta > 0 ? .2 : -.2;
             if (!(delta > 0) && (scaleTransform.ScaleX < .4 || scaleTransform.ScaleY < .4))
-                return;
+            {
+                return false;
+            }
 
             double absoluteX = point.X * scaleTransform.ScaleX + translateTransform.X;
             double absoluteY = point.Y * scaleTransform.ScaleY + translateTransform.Y;
@@ -22,6 +38,8 @@ namespace SAM.Analytical.UI.WPF
 
             translateTransform.X = absoluteX - point.X * scaleTransform.ScaleX;
             translateTransform.Y = absoluteY - point.Y * scaleTransform.ScaleY;
+
+            return true;
         }
     }
 }

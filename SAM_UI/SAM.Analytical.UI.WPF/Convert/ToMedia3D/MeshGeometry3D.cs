@@ -62,6 +62,22 @@ namespace SAM.Analytical.UI.WPF
             return result;
         }
 
+        public static MeshGeometry3D ToMedia3D(this Sphere sphere, bool doubleSided = false)
+        {
+            if(sphere == null)
+            {
+                return null;
+            }
+
+            Mesh3D mesh3D = Geometry.Spatial.Create.Mesh3D(sphere, 0.01);
+            if(mesh3D == null)
+            {
+                return null;
+            }
+
+            return ToMedia3D(mesh3D, doubleSided);
+        }
+
         public static MeshGeometry3D ToMedia3D(this ISegmentable3D segmentable3D, bool doubleSided = false, double thickness = Core.Tolerance.MacroDistance)
         {
             return ToMedia3D(new ISegmentable3D[] { segmentable3D }, doubleSided, thickness);
