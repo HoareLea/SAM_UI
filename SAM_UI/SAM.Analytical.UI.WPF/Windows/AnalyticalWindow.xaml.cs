@@ -11,11 +11,15 @@ namespace SAM.Analytical.UI.WPF.Windows
     /// </summary>
     public partial class AnalyticalWindow : System.Windows.Window
     {
+        private Core.Windows.WindowHandle windowHandle;
+        
         private UIAnalyticalModel uIAnalyticalModel;
 
         public AnalyticalWindow()
         {
             InitializeComponent();
+
+            windowHandle = new Core.Windows.WindowHandle(this);
 
             Icon = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM);
 
@@ -68,17 +72,17 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Tools_PrintRoomDataSheets_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.PrintRoomDataSheets();
+            uIAnalyticalModel?.PrintRoomDataSheets(windowHandle);
         }
 
         private void RibbonButton_Tools_AddMissingObjects_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.AddMissingObjects();
+            uIAnalyticalModel?.AddMissingObjects(windowHandle);
         }
 
         private void RibbonButton_Tools_Clean_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.Clean();
+            uIAnalyticalModel?.Clean(windowHandle);
         }
 
         private void RibbonButton_Tools_Hydra_Click(object sender, RoutedEventArgs e)
@@ -136,72 +140,72 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Tools_EditLibrary_Click(object sender, RoutedEventArgs e)
         {
-            UI.Modify.EditLibrary();
+            UI.Modify.EditLibrary(windowHandle);
         }
 
         private void RibbonButton_Simulate_EnergySimulation_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EnergySimulation();
+            uIAnalyticalModel?.EnergySimulation(windowHandle);
         }
 
         private void RibbonButton_Simulate_SolarSimulation_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.SolarSimulation();
+            uIAnalyticalModel?.SolarSimulation(windowHandle);
         }
 
         private void RibbonButton_Simulate_Import_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.ImportWeatherData();
+            uIAnalyticalModel?.ImportWeatherData(windowHandle);
         }
 
         private void RibbonButton_Simulate_WeatherData_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EditWeatherData();
+            uIAnalyticalModel?.EditWeatherData(windowHandle);
         }
 
         private void RibbonButton_Edit_ApertureConstructions_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EditApertureConstructions();
+            uIAnalyticalModel?.EditApertureConstructions(windowHandle);
         }
 
         private void RibbonButton_Edit_Constructions_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EditConstructions();
+            uIAnalyticalModel?.EditConstructions(windowHandle);
         }
 
         private void RibbonButton_Edit_Spaces_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EditSpaces();
+            uIAnalyticalModel?.EditSpaces(windowHandle);
         }
 
         private void RibbonButton_Edit_Profiles_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EditProfileLibrary();
+            uIAnalyticalModel?.EditProfileLibrary(windowHandle);
         }
 
         private void RibbonButton_Edit_InternalConditions_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EditInternalConditions();
+            uIAnalyticalModel?.EditInternalConditions(windowHandle);
         }
 
         private void RibbonButton_Edit_Materials_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EditMaterialLibrary();
+            uIAnalyticalModel?.EditMaterialLibrary(windowHandle);
         }
 
         private void RibbonButton_Edit_Check_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.Check();
+            uIAnalyticalModel?.Check(windowHandle);
         }
 
         private void RibbonButton_Edit_Import_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.Import();
+            uIAnalyticalModel?.Import(windowHandle);
         }
 
         private void RibbonButton_Edit_Properties_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EditProperties();
+            uIAnalyticalModel?.EditProperties(windowHandle);
         }
 
         private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
