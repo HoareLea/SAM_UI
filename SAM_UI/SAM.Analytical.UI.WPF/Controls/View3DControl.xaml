@@ -21,13 +21,13 @@
 
             <ModelVisual3D x:Name = "ModelVisual3D_DirectionalLight">
                 <ModelVisual3D.Content>
-                    <DirectionalLight x:Name = "DirectionalLight" Direction = "-1,-1,-1" Color="GhostWhite"/>
+                    <DirectionalLight x:Name = "DirectionalLight" Direction = "-1,-1,-1" Color="White"/>
                 </ModelVisual3D.Content>
             </ModelVisual3D>
 
             <ModelVisual3D x:Name = "ModelVisual3D_AmbientLight">
                 <ModelVisual3D.Content>
-                    <AmbientLight x:Name = "AmbientLight" Color="Gray"/>
+                    <AmbientLight x:Name = "AmbientLight" Color="LightGray"/>
                 </ModelVisual3D.Content>
             </ModelVisual3D>
 

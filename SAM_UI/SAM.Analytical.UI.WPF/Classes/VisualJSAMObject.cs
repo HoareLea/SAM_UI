@@ -4,7 +4,7 @@ using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF
 {
-    public class VisualJSAMObject<T> : ModelVisual3D, IVisualSAMObject where T : IJSAMObject
+    public class VisualJSAMObject<T> : ModelVisual3D, IVisualJSAMObject where T : IJSAMObject
     {
         protected T jSAMObject;
 

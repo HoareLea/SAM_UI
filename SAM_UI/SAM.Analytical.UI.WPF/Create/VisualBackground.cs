@@ -1,5 +1,6 @@
 ﻿using SAM.Geometry.Spatial;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF
@@ -36,6 +37,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             VisualBackground result = new VisualBackground();
+            //Query.Material(Color.FromRgb(0, 255, 0))
             result.Content = new GeometryModel3D(meshGeometry3D, Query.TransaprentMaterial());
 
             return result;

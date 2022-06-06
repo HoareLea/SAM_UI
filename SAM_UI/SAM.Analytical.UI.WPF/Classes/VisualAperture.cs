@@ -1,9 +1,8 @@
 ﻿using System.Windows.Media;
-using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF
 {
-    public class VisualAperture : VisualJSAMObject<Aperture>
+    public class VisualAperture : VisualJSAMObject<Aperture>, IVisualFace3DObject
     {
         public VisualAperture(Aperture aperture)
             :base(aperture)

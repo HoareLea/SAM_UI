@@ -6,7 +6,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Query
     {
-        public static List<T> VisualSAMObjects<T>(this Viewport3D viewport3D) where T: IVisualSAMObject
+        public static List<T> VisualSAMObjects<T>(this Viewport3D viewport3D) where T: IVisualJSAMObject
         {
             if(viewport3D == null)
             {
@@ -16,7 +16,7 @@ namespace SAM.Analytical.UI.WPF
             return VisualSAMObjects<T>(viewport3D.Children);
         }
 
-        public static List<T> VisualSAMObjects<T>(this Visual3DCollection visual3DCollection) where T : IVisualSAMObject
+        public static List<T> VisualSAMObjects<T>(this Visual3DCollection visual3DCollection) where T : IVisualJSAMObject
         {
             if (visual3DCollection == null)
             {

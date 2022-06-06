@@ -392,7 +392,6 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-
             UIAnalyticalModel uIAnalyticalModel_Temp = new UIAnalyticalModel();
             uIAnalyticalModel_Temp.Path = path;
 
@@ -400,6 +399,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             uIAnalyticalModel.Path = path;
             uIAnalyticalModel.JSAMObject = uIAnalyticalModel_Temp?.JSAMObject;
+
+            View3DControl.CenterView();
         }
     }
 }

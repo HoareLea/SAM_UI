@@ -3,7 +3,7 @@ using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF
 {
-    public interface IVisualSAMObject
+    public interface IVisualJSAMObject
     {
         GeometryModel3D GeometryModel3D { get; }
 

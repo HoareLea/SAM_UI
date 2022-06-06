@@ -16,7 +16,7 @@ namespace SAM.Analytical.UI.WPF
             return new Point3D((rect3D.Location.X + rect3D.SizeX) / 2, (rect3D.Location.Y + rect3D.SizeY) / 2, (rect3D.Location.Z + rect3D.SizeZ) / 2);
         }
 
-        public static Point3D Center<T>(IEnumerable<T> visualSAMObjects) where T: IVisualSAMObject
+        public static Point3D Center<T>(IEnumerable<T> visualSAMObjects) where T: IVisualJSAMObject
         {
             if(visualSAMObjects == null || visualSAMObjects.Count() == 0)
             {

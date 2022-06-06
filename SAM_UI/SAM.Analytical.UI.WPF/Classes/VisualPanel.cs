@@ -2,7 +2,7 @@
 
 namespace SAM.Analytical.UI.WPF
 {
-    public class VisualPanel : VisualJSAMObject<Panel>
+    public class VisualPanel : VisualJSAMObject<Panel>, IVisualFace3DObject
     {
         public VisualPanel(Panel panel)
             :base(panel)
