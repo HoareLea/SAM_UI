@@ -100,9 +100,18 @@ namespace SAM.Analytical.UI.WPF
 
         private void LoadAnalyticalModel(AnalyticalModel analyticalModel)
         {
+            Transform3D tranform3D = Transform3D.Identity;
+
+            VisualAnalyticalModel visualAnalyticalModel = Query.VisualSAMObjects<VisualAnalyticalModel>(Viewport)?.FirstOrDefault();
+            if(visualAnalyticalModel != null)
+            {
+                tranform3D = visualAnalyticalModel.Transform;
+            }
+
             Modify.Clear<IVisualJSAMObject>(Viewport);
 
-            VisualAnalyticalModel visualAnalyticalModel = Convert.ToMedia3D(analyticalModel);
+            visualAnalyticalModel = Convert.ToMedia3D(analyticalModel);
+            visualAnalyticalModel.Transform = tranform3D;
 
             if(visualAnalyticalModel != null)
             {
