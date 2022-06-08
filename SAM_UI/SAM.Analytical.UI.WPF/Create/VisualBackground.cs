@@ -1,6 +1,5 @@
 ﻿using SAM.Geometry.Spatial;
 using System.Windows.Controls;
-using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF
@@ -30,7 +29,7 @@ namespace SAM.Analytical.UI.WPF
 
             Rectangle3D rectangle3D = Geometry.Spatial.Query.Convert(plane, rectangle2D);
 
-            MeshGeometry3D meshGeometry3D = new Face3D(rectangle3D).ToMedia3D(true);
+            MeshGeometry3D meshGeometry3D = new Face3D(rectangle3D).ToMedia3D(false);
             if(meshGeometry3D == null)
             {
                 return null;

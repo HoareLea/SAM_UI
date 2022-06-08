@@ -9,7 +9,7 @@ namespace SAM.Analytical.UI.WPF
         {
             Face3D face3D = panel?.GetFace3D(true);
 
-            MeshGeometry3D meshGeometry3D = ToMedia3D(face3D, true);
+            MeshGeometry3D meshGeometry3D = ToMedia3D(face3D, false);
             if(meshGeometry3D == null)
             {
                 return null;
@@ -26,7 +26,7 @@ namespace SAM.Analytical.UI.WPF
         {
             Face3D face3D = aperture?.Face3D;
 
-            MeshGeometry3D meshGeometry3D = ToMedia3D(face3D, true);
+            MeshGeometry3D meshGeometry3D = ToMedia3D(face3D, false);
             if (meshGeometry3D == null)
             {
                 return null;
