@@ -19,51 +19,22 @@
                 </PerspectiveCamera>
             </Viewport3D.Camera>
 
-            <ModelVisual3D x:Name = "ModelVisual3D_DirectionalLight">
-                <ModelVisual3D.Content>
-                    <DirectionalLight x:Name = "DirectionalLight" Direction = "-1,-1,-1" Color="White"/>
-                </ModelVisual3D.Content>
-            </ModelVisual3D>
-
-            <ModelVisual3D x:Name = "ModelVisual3D_AmbientLight">
-                <ModelVisual3D.Content>
-                    <AmbientLight x:Name = "AmbientLight" Color="LightGray"/>
-                </ModelVisual3D.Content>
-            </ModelVisual3D>
-
-            <!-- 
-            <ModelVisual3D>
-                <ModelVisual3D.Content>
-                    <GeometryModel3D>
-
-                        <GeometryModel3D.Geometry>
-                            <MeshGeometry3D x:Name = "meshMain"
-                        Positions = "0 0 0  1 0 0  0 1 0"
-                        TriangleIndices = "2 1 0">
-                            </MeshGeometry3D>
-                        </GeometryModel3D.Geometry>
-
-                        <GeometryModel3D.Material>
-                            <DiffuseMaterial x:Name = "matDiffuseMain">
-                                <DiffuseMaterial.Brush>
-                                    <SolidColorBrush Color = "Bisque"/>
-                                </DiffuseMaterial.Brush>
-                            </DiffuseMaterial>
-                        </GeometryModel3D.Material>
-
-                    </GeometryModel3D>
-                </ModelVisual3D.Content>
-                <ModelVisual3D.Transform>
-                    <RotateTransform3D>
-                        <RotateTransform3D.Rotation>
-                            <AxisAngleRotation3D x:Name="Rotation" Axis="1 0 0" Angle="90"/>
-                        </RotateTransform3D.Rotation>
-                    </RotateTransform3D>
-
-                </ModelVisual3D.Transform>
-            </ModelVisual3D>
-            
-            -->
+            <Viewport3D.Children>
+                <ModelVisual3D x:Name="Lights">
+                    <ModelVisual3D.Children>
+                        <ModelVisual3D>
+                            <ModelVisual3D.Content>
+                                <AmbientLight x:Name = "AmbientLight" Color="LightGray"/>
+                            </ModelVisual3D.Content>
+                        </ModelVisual3D>
+                        <!--<ModelVisual3D>
+                            <ModelVisual3D.Content>
+                                <SpotLight x:Name = "SpotLight" Color="White" Direction="-1,-1,-1" Position="0,0,0"/>
+                            </ModelVisual3D.Content>
+                        </ModelVisual3D>-->
+                    </ModelVisual3D.Children>
+                </ModelVisual3D>
+            </Viewport3D.Children>
         </Viewport3D>
 
     </Grid>

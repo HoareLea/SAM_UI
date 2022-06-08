@@ -380,10 +380,16 @@ namespace SAM.Analytical.UI.WPF
 
         private void MainCamera_Changed(object sender, EventArgs e)
         {
-            if(DirectionalLight != null)
-            {
-                DirectionalLight.Direction = MainCamera.LookDirection;
-            }
+            //if (DirectionalLight != null)
+            //{
+            //    DirectionalLight.Direction = MainCamera.LookDirection;
+            //}
+
+            //if (SpotLight != null)
+            //{
+            //    SpotLight.Direction = MainCamera.LookDirection;
+            //    SpotLight.Position = MainCamera.Position;
+            //}
 
             if (visualBackground != null)
             {

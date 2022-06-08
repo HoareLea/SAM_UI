@@ -114,6 +114,7 @@
     <Compile Include="Convert\ToSAM\Point2D.cs" />
     <Compile Include="Convert\ToSAM\Vector3D.cs" />
     <Compile Include="Convert\ToSAM\Point3D.cs" />
+    <Compile Include="Create\Point3DCollection.cs" />
     <Compile Include="Create\VisualBackground.cs" />
     <Compile Include="Interfaces\IVisualFace3DObject.cs" />
     <Compile Include="Interfaces\IVisualJSAMObject.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Modify\Move.cs" />
     <Compile Include="Query\Bounds.cs" />
+    <Compile Include="Query\Viewport3DVisual.cs" />
     <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
     <Compile Include="Query\TransparentMaterial.cs" />
     <Compile Include="Query\VisualSAMObjects.cs" />
