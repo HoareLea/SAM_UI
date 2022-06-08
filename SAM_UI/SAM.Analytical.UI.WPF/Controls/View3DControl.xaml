@@ -27,11 +27,6 @@
                                 <AmbientLight x:Name = "AmbientLight" Color="DimGray"/>
                             </ModelVisual3D.Content>
                         </ModelVisual3D>
-                        <!--<ModelVisual3D>
-                            <ModelVisual3D.Content>
-                                <SpotLight x:Name = "SpotLight" Color="White" Direction="-1,-1,-1" Position="0,0,0"/>
-                            </ModelVisual3D.Content>
-                        </ModelVisual3D>-->
                         <ModelVisual3D>
                             <ModelVisual3D.Content>
                                 <DirectionalLight x:Name = "DirectionalLight" Color="LightGray" Direction="-1,-1,-1"/>

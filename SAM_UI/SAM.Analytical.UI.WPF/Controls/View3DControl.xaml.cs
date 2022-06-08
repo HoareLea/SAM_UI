@@ -385,12 +385,6 @@ namespace SAM.Analytical.UI.WPF
                 DirectionalLight.Direction = MainCamera.LookDirection;
             }
 
-            //if (SpotLight != null)
-            //{
-            //    SpotLight.Direction = MainCamera.LookDirection;
-            //    SpotLight.Position = MainCamera.Position;
-            //}
-
             if (visualBackground != null)
             {
                 Viewport.Children.Remove(visualBackground);
