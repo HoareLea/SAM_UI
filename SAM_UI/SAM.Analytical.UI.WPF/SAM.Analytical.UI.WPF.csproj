@@ -123,6 +123,7 @@
     <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Modify\Move.cs" />
     <Compile Include="Query\Bounds.cs" />
+    <Compile Include="Query\Window.cs" />
     <Compile Include="Query\Viewport3DVisual.cs" />
     <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
     <Compile Include="Query\TransparentMaterial.cs" />

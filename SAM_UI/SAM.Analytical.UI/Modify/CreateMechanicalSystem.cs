@@ -6,7 +6,7 @@ namespace SAM.Analytical.UI
 {
     public static partial class Modify
     {
-        public static MechanicalSystem CreateMechanicalSystem(this UIAnalyticalModel uIAnalyticalModel, MechanicalSystemType mechanicalSystemType, IWin32Window owner = null)
+        public static MechanicalSystem CreateMechanicalSystem(this UIAnalyticalModel uIAnalyticalModel, MechanicalSystemType mechanicalSystemType = null, IWin32Window owner = null)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
