@@ -78,7 +78,7 @@ namespace SAM.Analytical.UI
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterDesignRelativeHumidity, out @double) && !double.IsNaN(@double))
                     {
-                        workseet.Cells[19, 4].Value = @double;
+                        workseet.Cells[19, 4].Value = @double / 100;
                     }
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerDesignTemperature, out @double) && !double.IsNaN(@double))
@@ -88,7 +88,7 @@ namespace SAM.Analytical.UI
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerDesignRelativeHumidity, out @double) && !double.IsNaN(@double))
                     {
-                        workseet.Cells[19, 6].Value = @double;
+                        workseet.Cells[19, 6].Value = @double / 100;
                     }
                 }
 
