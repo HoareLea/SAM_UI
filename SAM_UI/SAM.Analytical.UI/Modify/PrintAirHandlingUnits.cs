@@ -46,7 +46,7 @@ namespace SAM.Analytical.UI
                     Worksheet workseet = Core.Excel.Query.Worksheet(workbook, name);
                     if(workseet != null)
                     {
-                        continue;
+                        workseet.Delete();
                     }
 
                     workseet = Core.Excel.Modify.Copy(workseet_Template, name);
@@ -71,24 +71,44 @@ namespace SAM.Analytical.UI
                         workseet.Cells[11, 4].Value = @double;
                     }
 
-                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterDesignTemperature, out @double) && !double.IsNaN(@double))
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSpaceTemperature, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[17, 4].Value = @double;
                     }
 
-                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterDesignRelativeHumidity, out @double) && !double.IsNaN(@double))
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSpaceRelativeHumidty, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[19, 4].Value = @double / 100;
                     }
 
-                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerDesignTemperature, out @double) && !double.IsNaN(@double))
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerSpaceTemperature, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[17, 6].Value = @double;
                     }
 
-                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerDesignRelativeHumidity, out @double) && !double.IsNaN(@double))
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerSpaceRelativeHumidty, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[19, 6].Value = @double / 100;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterDesignTemperature, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[25, 4].Value = @double;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterDesignRelativeHumidity, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[27, 4].Value = @double / 100;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerDesignTemperature, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[25, 6].Value = @double;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerDesignRelativeHumidity, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[27, 6].Value = @double / 100;
                     }
                 }
 
@@ -96,6 +116,8 @@ namespace SAM.Analytical.UI
             });
 
             Core.Excel.Modify.Edit(path_Excel, func);
+
+            Core.Excel.Modify.TryRunMacro(path_Excel, false, "AHU_Summary_Print.AHU_Summary_Print_AHU_Click");
         }
     }
 }
