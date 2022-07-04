@@ -9,7 +9,7 @@ namespace SAM.Analytical.UI
     {
         public static void PrintAirHandlingUnits(this AnalyticalModel analyticalModel, string path_Excel, string worksheetName)
         {
-            if(analyticalModel == null || string.IsNullOrWhiteSpace(path_Excel) || System.IO.File.Exists(path_Excel) || string.IsNullOrWhiteSpace(worksheetName))
+            if(analyticalModel == null || string.IsNullOrWhiteSpace(path_Excel) || !System.IO.File.Exists(path_Excel) || string.IsNullOrWhiteSpace(worksheetName))
             {
                 return;
             }
@@ -43,8 +43,13 @@ namespace SAM.Analytical.UI
                         continue;
                     }
 
+                    Worksheet workseet = Core.Excel.Query.Worksheet(workbook, name);
+                    if(workseet != null)
+                    {
+                        continue;
+                    }
 
-                    Worksheet workseet = Core.Excel.Modify.Copy(workseet_Template, name);
+                    workseet = Core.Excel.Modify.Copy(workseet_Template, name);
 
                     workseet.Cells[8, 4].Value = name;
 
@@ -87,7 +92,7 @@ namespace SAM.Analytical.UI
                     }
                 }
 
-                return false; 
+                return true;
             });
 
             Core.Excel.Modify.Edit(path_Excel, func);
