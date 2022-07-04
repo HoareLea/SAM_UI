@@ -1,4 +1,5 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using SAM.Analytical.Grasshopper;
 using SAM.Analytical.UI.Grasshopper.Properties;
 using SAM.Core.Grasshopper;
@@ -7,12 +8,12 @@ using System.Collections.Generic;
 
 namespace SAM.Analytical.UI.Grasshopper
 {
-    public class SAMAnalyticalPrintRDS : GH_SAMVariableOutputParameterComponent
+    public class SAMAnalyticalPrintAHU : GH_SAMVariableOutputParameterComponent
     {
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("ff7fb06d-dbff-4722-81c9-dad0475a6bfd");
+        public override Guid ComponentGuid => new Guid("412aab4a-51f1-4c4a-a2ad-b2eb8359bb54");
 
         /// <summary>
         /// The latest version of this component
@@ -29,8 +30,8 @@ namespace SAM.Analytical.UI.Grasshopper
         /// <summary>
         /// Initializes a new instance of the SAM_point3D class.
         /// </summary>
-        public SAMAnalyticalPrintRDS()
-          : base("SAMAnalytical.PrintRDS", "SAMAnalytical.PrintRDS",
+        public SAMAnalyticalPrintAHU()
+          : base("SAMAnalytical.PrintAHU", "SAMAnalytical.PrintAHU",
               "Print Room Data Sheets",
               "SAM", "Analytical")
         {
@@ -47,7 +48,7 @@ namespace SAM.Analytical.UI.Grasshopper
                 GooAnalyticalModelParam gooPanelParam = new GooAnalyticalModelParam() { Name = "_analyticalModel", NickName = "_analyticalModel", Description = "SAM Analytical Model", Access = GH_ParamAccess.item };
                 result.Add(new GH_SAMParam(gooPanelParam, ParamVisibility.Binding));
 
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "_directory", NickName = "_directory", Description = "Directory", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "_excelPath", NickName = "_excelPath", Description = "Excel Path", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = null;
 
@@ -97,9 +98,9 @@ namespace SAM.Analytical.UI.Grasshopper
             if (!run)
                 return;
 
-            string directory = null;
-            index = Params.IndexOfInputParam("_directory");
-            if (index == -1 || !dataAccess.GetData(index, ref directory) || string.IsNullOrWhiteSpace(directory))
+            string excelPath = null;
+            index = Params.IndexOfInputParam("_excelPath");
+            if (index == -1 || !dataAccess.GetData(index, ref excelPath) || string.IsNullOrWhiteSpace(excelPath))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
@@ -113,7 +114,7 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
-            Modify.PrintRoomDataSheets(analyticalModel, directory, null);
+            Modify.PrintAirHandlingUnits(analyticalModel, excelPath, "AHU-XX");
 
             index = Params.IndexOfOutputParam("analyticalModel");
             if (index != -1)
