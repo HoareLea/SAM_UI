@@ -91,21 +91,25 @@ namespace SAM.Analytical.UI
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerSpaceTemperature, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[17, 6].Value = @double;
+                        workseet.Cells[48, 6].Value = @double;
                     }
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerSpaceRelativeHumidty, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[19, 6].Value = @double / 100;
+                        workseet.Cells[49, 6].Value = @double / 100;
                     }
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterDesignTemperature, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[25, 4].Value = @double;
+                        workseet.Cells[48, 4].Value = @double;
                     }
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterDesignRelativeHumidity, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[27, 4].Value = @double / 100;
+                        workseet.Cells[49, 4].Value = @double / 100;
                     }
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerDesignTemperature, out @double) && !double.IsNaN(@double))
@@ -116,6 +120,33 @@ namespace SAM.Analytical.UI
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerDesignRelativeHumidity, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[27, 6].Value = @double / 100;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.FrostCoilOffTemperature, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[34, 4].Value = @double;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.HeatRecoverySensibleEfficiency, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[45, 4].Value = @double;
+                        workseet.Cells[45, 6].Value = @double;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.HeatRecoveryLatentEfficiency, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[46, 4].Value = @double;
+                        workseet.Cells[46, 6].Value = @double;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.CoolingCoilFluidSupplyTemperature, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[72, 6].Value = @double;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.CoolingCoilFluidReturnTemperature, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[73, 6].Value = @double;
                     }
                 }
 
