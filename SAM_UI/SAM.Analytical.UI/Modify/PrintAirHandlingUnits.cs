@@ -160,7 +160,7 @@ namespace SAM.Analytical.UI
 
             Core.Excel.Modify.Edit(path_Excel, func);
 
-            //Core.Excel.Modify.TryRunMacro(path_Excel, false, "AHU_Summary_Print.AHU_Summary_Print_AHU_Click");
+            Core.Excel.Modify.TryRunMacro(path_Excel, false, "AHU_Summary_Print.AHU_Summary_Print_AHU_Click");
         }
     }
 }
