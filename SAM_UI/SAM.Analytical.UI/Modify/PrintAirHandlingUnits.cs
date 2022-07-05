@@ -150,6 +150,11 @@ namespace SAM.Analytical.UI
                     {
                         workseet.Cells[73, 6].Value = @double;
                     }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterHeatingCoilSupplyTemperature, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[92, 4].Value = @double;
+                    }
                 }
 
                 if(workseet_Template.Visible != xlSheetVisibility)
