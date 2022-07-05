@@ -35,6 +35,13 @@ namespace SAM.Analytical.UI
                     return false;
                 }
 
+                NetOffice.ExcelApi.Enums.XlSheetVisibility xlSheetVisibility = workseet_Template.Visible;
+
+                if (workseet_Template.Visible != NetOffice.ExcelApi.Enums.XlSheetVisibility.xlSheetVisible)
+                {
+                    workseet_Template.Visible = NetOffice.ExcelApi.Enums.XlSheetVisibility.xlSheetVisible;
+                }
+
                 foreach (AirHandlingUnitResult airHandlingUnitResult in airHandlingUnitResults)
                 {
                     string name = airHandlingUnitResult?.Name;
@@ -112,12 +119,17 @@ namespace SAM.Analytical.UI
                     }
                 }
 
+                if(workseet_Template.Visible != xlSheetVisibility)
+                {
+                    workseet_Template.Visible = xlSheetVisibility;
+                }
+
                 return true;
             });
 
             Core.Excel.Modify.Edit(path_Excel, func);
 
-            Core.Excel.Modify.TryRunMacro(path_Excel, false, "AHU_Summary_Print.AHU_Summary_Print_AHU_Click");
+            //Core.Excel.Modify.TryRunMacro(path_Excel, false, "AHU_Summary_Print.AHU_Summary_Print_AHU_Click");
         }
     }
 }
