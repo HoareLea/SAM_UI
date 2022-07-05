@@ -141,7 +141,7 @@ namespace SAM.Analytical.UI
                         workseet.Cells[46, 6].Value = @double / 100;
                     }
 
-                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.CoolingCoilFluidSupplyTemperature, out @double) && !double.IsNaN(@double))
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.CoolingCoilFluidFlowTemperature, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[72, 6].Value = @double;
                     }
