@@ -129,14 +129,14 @@ namespace SAM.Analytical.UI
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.HeatRecoverySensibleEfficiency, out @double) && !double.IsNaN(@double))
                     {
-                        workseet.Cells[45, 4].Value = @double;
-                        workseet.Cells[45, 6].Value = @double;
+                        workseet.Cells[45, 4].Value = @double / 100;
+                        workseet.Cells[45, 6].Value = @double / 100;
                     }
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.HeatRecoveryLatentEfficiency, out @double) && !double.IsNaN(@double))
                     {
-                        workseet.Cells[46, 4].Value = @double;
-                        workseet.Cells[46, 6].Value = @double;
+                        workseet.Cells[46, 4].Value = @double / 100;
+                        workseet.Cells[46, 6].Value = @double / 100;
                     }
 
                     if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.CoolingCoilFluidSupplyTemperature, out @double) && !double.IsNaN(@double))
