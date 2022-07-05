@@ -16,5 +16,35 @@ namespace SAM.Core.Mollier.UI
         {
             InitializeComponent();
         }
+
+        private void MollierForm_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox_pressure_TextChanged(object sender, EventArgs e)
+        {
+            if (!Core.Query.TryConvert(textBox_pressure.Text, out double pressure))
+            {
+                return;
+            }
+
+            if (pressure < 90000 || pressure > 110000)
+            {
+                return;
+            }
+
+            MollierControl_Main.Pressure = pressure;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.ChartType = ChartType.Mollier;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.ChartType = ChartType.Psychrometric;
+        }
     }
 }
