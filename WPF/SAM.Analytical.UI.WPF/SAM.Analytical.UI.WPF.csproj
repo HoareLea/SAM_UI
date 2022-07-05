@@ -287,11 +287,11 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
+    <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
       <Project>{141d9925-a6e1-4390-89c7-251a428e2df0}</Project>
       <Name>SAM.Analytical.UI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
       <Project>{64ebdb08-f7e3-414b-9420-b67ed263b223}</Project>
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
