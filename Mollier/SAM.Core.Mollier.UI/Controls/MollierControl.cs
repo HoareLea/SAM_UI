@@ -20,13 +20,14 @@ namespace SAM.Core.Mollier.UI.Controls
         public MollierControl()
         {
             InitializeComponent();
+           // generate_graph_mollier();
         }
-        private void create_relative_humidity_line_1(int temperature_Min, int temperature_Max, double relative_humidity, double pressure)
+        private void create_relative_humidity_line_Mollier(int temperature_Min, int temperature_Max, double relative_humidity, double pressure)
         {
-            List<List<SAM.Geometry.Planar.Point2D>> humidity_ratio_points = new List<List<SAM.Geometry.Planar.Point2D>>();
+            List<List<Geometry.Planar.Point2D>> humidity_ratio_points = new List<List<Geometry.Planar.Point2D>>();
             for (int i = temperature_Min; i <= temperature_Max; i++)
             {
-                humidity_ratio_points.Add(new List<SAM.Geometry.Planar.Point2D>());
+                humidity_ratio_points.Add(new List<Geometry.Planar.Point2D>());
             }
             for (int i = 1; i <= 10; i++)
             {
@@ -35,18 +36,18 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.IsVisibleInLegend = false;
                 series.Color = Color.LightBlue;
                 series.ChartType = SeriesChartType.Spline;
-                List<SAM.Geometry.Planar.Point2D> relative_humidity_points = new List<SAM.Geometry.Planar.Point2D>();
+                List<Geometry.Planar.Point2D> relative_humidity_points = new List<Geometry.Planar.Point2D>();
                 for (int j = temperature_Min; j <= temperature_Max; j++)
                 {
                     double humidity_ratio = Query.HumidityRatio(j, relative_humidity, pressure);
                     double diagram_temperature = Query.DiagramTemperature(j, humidity_ratio);
                     double density = Query.Density(j, relative_humidity, pressure);
                     if (humidity_ratio_points[j - temperature_Min].Count == 0)
-                        humidity_ratio_points[j - temperature_Min].Add(new SAM.Geometry.Planar.Point2D(0, j));
-                    relative_humidity_points.Add(new SAM.Geometry.Planar.Point2D(humidity_ratio * 1000, diagram_temperature));
-                    humidity_ratio_points[j - temperature_Min].Add(new SAM.Geometry.Planar.Point2D(humidity_ratio * 1000, diagram_temperature));
+                        humidity_ratio_points[j - temperature_Min].Add(new Geometry.Planar.Point2D(0, j));
+                    relative_humidity_points.Add(new Geometry.Planar.Point2D(humidity_ratio * 1000, diagram_temperature));
+                    humidity_ratio_points[j - temperature_Min].Add(new Geometry.Planar.Point2D(humidity_ratio * 1000, diagram_temperature));
                 }
-                foreach (SAM.Geometry.Planar.Point2D point2D in relative_humidity_points)
+                foreach (Geometry.Planar.Point2D point2D in relative_humidity_points)
                 {
                     series.Points.AddXY(point2D.X, point2D.Y);
                     if (i == 10)
@@ -57,9 +58,9 @@ namespace SAM.Core.Mollier.UI.Controls
                 //rotate relative humidity label
                 int index_Point = 8;
                 int count = relative_humidity_points.Count;
-                SAM.Geometry.Planar.Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
-                SAM.Geometry.Planar.Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
-                SAM.Geometry.Planar.Vector2D vector2D = new SAM.Geometry.Planar.Vector2D(point2D_1, point2D_2);
+                Geometry.Planar.Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
+                Geometry.Planar.Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
+                Geometry.Planar.Vector2D vector2D = new Geometry.Planar.Vector2D(point2D_1, point2D_2);
                 double angle = vector2D.Angle(SAM.Geometry.Planar.Vector2D.WorldX.GetNegated());
                 series.SmartLabelStyle.Enabled = false;
                 if (i == 5)
@@ -78,7 +79,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 series_1.IsVisibleInLegend = false;
                 series_1.Color = Color.LightGray;
                 series_1.ChartType = SeriesChartType.Spline;
-                List<SAM.Geometry.Planar.Point2D> point2Ds_humidity = new List<SAM.Geometry.Planar.Point2D>();
+                List<Geometry.Planar.Point2D> point2Ds_humidity = new List<Geometry.Planar.Point2D>();
                 point2Ds_humidity = humidity_ratio_points[i];
                 for (int j = 0; j < point2Ds_humidity.Count; j++)
                 {
@@ -91,7 +92,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
-        private void create_density_line_1(double density_Min, double density_Max, double pressure)
+        private void create_density_line_Mollier(double density_Min, double density_Max, double pressure)
         {
             while (density_Min <= density_Max)
             {
@@ -113,8 +114,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 //creating labels for 
                 Series series_name = MollierChart.Series.Add(String.Format("label {0}{1}", density_Min, "kg/m³"));
-                SAM.Geometry.Planar.Point2D Point_1 = new SAM.Geometry.Planar.Point2D(humidity_ratio_1 * 1000 + 1.5, diagram_temperature_1);
-                SAM.Geometry.Planar.Point2D Point = new SAM.Geometry.Planar.Point2D(humidity_ratio_1 * 1000 + 0.4, diagram_temperature_1);
+                Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(humidity_ratio_1 * 1000 + 1.5, diagram_temperature_1);
+                Geometry.Planar.Point2D Point = new Geometry.Planar.Point2D(humidity_ratio_1 * 1000 + 0.4, diagram_temperature_1);
                 if (density_Min.ToString() == (1.2).ToString())
                     series_name.Points.AddXY(Point_1.X, Point_1.Y);
                 else
@@ -130,7 +131,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 density_Min += 0.02;
             }
         }
-        private void create_enthalpy_line_1(double enthalpy_Min, double enthalpy_Max, double pressure)
+        private void create_enthalpy_line_Mollier(double enthalpy_Min, double enthalpy_Max, double pressure)
         {
             while (enthalpy_Min <= enthalpy_Max)
             {
@@ -150,16 +151,16 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, humidityRatio_Max);
                     double diagram_temperature_2 = Query.DiagramTemperature(temperature_2, humidity_ratio_2);
-                    SAM.Geometry.Planar.Point2D Point_1 = new SAM.Geometry.Planar.Point2D(humidityRatio_Max * 1000, diagram_temperature_1);
-                    SAM.Geometry.Planar.Point2D Point_2 = new SAM.Geometry.Planar.Point2D(humidity_ratio_2 * 1000, diagram_temperature_2);
+                    Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(humidityRatio_Max * 1000, diagram_temperature_1);
+                    Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, diagram_temperature_2);
                     series_enthalpy.Points.AddXY(Point_1.X, Point_1.Y);
                     series_enthalpy.IsVisibleInLegend = false;
-                    SAM.Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new SAM.Geometry.Planar.Point2D[] { Point_2, Point_1 });
+                    Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_2, Point_1 });
                     double a = 1.5;
                     if (enthalpy_Min % 10 == 0)
                     {
                         double Y = polynomialEquation.Evaluate(Point_2.X + a);
-                        SAM.Geometry.Planar.Point2D Point = new SAM.Geometry.Planar.Point2D(Point_2.X + a, Y);
+                        Geometry.Planar.Point2D Point = new Geometry.Planar.Point2D(Point_2.X + a, Y);
                         series_enthalpy.Points.AddXY(Point.X, Point.Y);
                         Point_added = true;
                         int count = series_enthalpy.Points.Count;
@@ -173,7 +174,7 @@ namespace SAM.Core.Mollier.UI.Controls
                         Series series_name = MollierChart.Series.Add(String.Format("name"));
                         series_name.IsVisibleInLegend = false;
                         double Y = polynomialEquation.Evaluate(Point_2.X + a);
-                        SAM.Geometry.Planar.Point2D Point = new SAM.Geometry.Planar.Point2D(Point_2.X + a + 0.4, Y - 4.3);
+                        Geometry.Planar.Point2D Point = new Geometry.Planar.Point2D(Point_2.X + a + 0.4, Y - 4.3);
                         series_name.Points.AddXY(Point.X, Point.Y);
                         series_name.ChartType = SeriesChartType.Spline;
                         DataPoint data_point = series_name.Points[0];
@@ -185,7 +186,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 enthalpy_Min += 1;
             }
         }
-        private void create_specific_volume_line_1(double specific_volume_Min, double specific_volume_Max, double pressure)
+        private void create_specific_volume_line_Mollier(double specific_volume_Min, double specific_volume_Max, double pressure)
         {
             while (specific_volume_Min <= specific_volume_Max)
             {
@@ -195,16 +196,16 @@ namespace SAM.Core.Mollier.UI.Controls
                 series_specific_volume.Color = Color.LightSlateGray;
                 double temperature_1 = temperature_by_specific_volume(specific_volume_Min, 0, pressure);
                 double temperature_2 = temperature_by_specific_volume(specific_volume_Min, 0.05, pressure);
-                SAM.Geometry.Planar.Point2D Point_1 = new SAM.Geometry.Planar.Point2D(0, temperature_1);
-                SAM.Geometry.Planar.Point2D Point_2 = new SAM.Geometry.Planar.Point2D(50, temperature_2);
-                SAM.Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new SAM.Geometry.Planar.Point2D[] { Point_1, Point_2 });
+                Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(0, temperature_1);
+                Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(50, temperature_2);
+                Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_1, Point_2 });
                 double humidity_ratio_2 = humidity_ratio_for_100relativity(temperature_1, polynomialEquation, pressure);
                 double temperature_p2 = polynomialEquation.Evaluate(humidity_ratio_2 * 1000);
-                SAM.Geometry.Planar.Point2D Point_3 = new SAM.Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
+                Geometry.Planar.Point2D Point_3 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
                 double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, 0);
                 double diagram_temperature_2 = Query.DiagramTemperature(temperature_p2, humidity_ratio_2);
-                SAM.Geometry.Planar.Point2D Point_4 = new SAM.Geometry.Planar.Point2D(0, diagram_temperature_1);
-                SAM.Geometry.Planar.Point2D Point_5 = new SAM.Geometry.Planar.Point2D(humidity_ratio_2 * 1000, diagram_temperature_2);
+                Geometry.Planar.Point2D Point_4 = new Geometry.Planar.Point2D(0, diagram_temperature_1);
+                Geometry.Planar.Point2D Point_5 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, diagram_temperature_2);
                 series_specific_volume.Points.AddXY(Point_4.X, Point_4.Y);
                 series_specific_volume.Points.AddXY(Point_5.X, Point_5.Y);
                 DataPoint datapoint = series_specific_volume.Points[1];
@@ -224,7 +225,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 specific_volume_Min += 0.05;
             }
         }
-        private void create_wet_bulb_temperature_line_1(double wetBulbTemperature_Min, double wetBulbTemperature_Max, double pressure)
+        private void create_wet_bulb_temperature_line_Mollier(double wetBulbTemperature_Min, double wetBulbTemperature_Max, double pressure)
         {
             while (wetBulbTemperature_Min <= wetBulbTemperature_Max)
             {
@@ -238,8 +239,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 double humidity_ratio_2 = Query.HumidityRatio(temperature_2, 100, pressure);
                 double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, humidity_ratio_1);
                 double diagram_temperature_2 = Query.DiagramTemperature(temperature_2, humidity_ratio_2);
-                SAM.Geometry.Planar.Point2D Point_1 = new SAM.Geometry.Planar.Point2D(humidity_ratio_1 * 1000, diagram_temperature_1);
-                SAM.Geometry.Planar.Point2D Point_2 = new SAM.Geometry.Planar.Point2D(humidity_ratio_2 * 1000, diagram_temperature_2);
+                Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(humidity_ratio_1 * 1000, diagram_temperature_1);
+                Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, diagram_temperature_2);
                 series_WetBulbTemperature.Points.AddXY(Point_1.X, Point_1.Y);
                 series_WetBulbTemperature.Points.AddXY(Point_2.X, Point_2.Y);
                 DataPoint datapoint = series_WetBulbTemperature.Points[1];
@@ -254,14 +255,14 @@ namespace SAM.Core.Mollier.UI.Controls
                     series_name.SmartLabelStyle.Enabled = false;
                     series_name.Label = "Wet Bulb Temperature [ °C ]";
                     series_name.LabelForeColor = Color.LightSlateGray;
-                    SAM.Geometry.Planar.Point2D point2D_1 = new SAM.Geometry.Planar.Point2D(Point_2.X + 2, Point_2.Y + 2);
-                    SAM.Geometry.Planar.Vector2D vector2D = new SAM.Geometry.Planar.Vector2D(Point_2, point2D_1);
+                    Geometry.Planar.Point2D point2D_1 = new Geometry.Planar.Point2D(Point_2.X + 2, Point_2.Y + 2);
+                    Geometry.Planar.Vector2D vector2D = new Geometry.Planar.Vector2D(Point_2, point2D_1);
                     series_name.LabelAngle = 33;
                 }
                 wetBulbTemperature_Min += 5;
             }
         }
-        private void create_relative_humidity_line_2(int temperature_Min, int temperature_Max, double relative_humidity, double pressure)
+        private void create_relative_humidity_line_Psychrometric(int temperature_Min, int temperature_Max, double relative_humidity, double pressure)
         {
             for (int i = 1; i <= 10; i++)
             {
@@ -270,14 +271,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.IsVisibleInLegend = false;
                 series.Color = Color.LightBlue;
                 series.ChartType = SeriesChartType.Spline;
-                List<SAM.Geometry.Planar.Point2D> relative_humidity_points = new List<SAM.Geometry.Planar.Point2D>();
+                List<Geometry.Planar.Point2D> relative_humidity_points = new List<Geometry.Planar.Point2D>();
                 for (int j = temperature_Min; j <= temperature_Max; j++)
                 {
                     double humidity_ratio = Query.HumidityRatio(j, relative_humidity, pressure);
-                    relative_humidity_points.Add(new SAM.Geometry.Planar.Point2D(j, humidity_ratio));
+                    relative_humidity_points.Add(new Geometry.Planar.Point2D(j, humidity_ratio));
 
                 }
-                foreach (SAM.Geometry.Planar.Point2D point2D in relative_humidity_points)
+                foreach (Geometry.Planar.Point2D point2D in relative_humidity_points)
                 {
                     series.Points.AddXY(point2D.X, point2D.Y);
                     if (i == 10)
@@ -287,9 +288,9 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
                 int index_Point = 8;
                 int count = relative_humidity_points.Count;
-                SAM.Geometry.Planar.Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
-                SAM.Geometry.Planar.Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
-                SAM.Geometry.Planar.Vector2D vector2D = new SAM.Geometry.Planar.Vector2D(point2D_1, point2D_2);
+                Geometry.Planar.Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
+                Geometry.Planar.Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
+                Geometry.Planar.Vector2D vector2D = new Geometry.Planar.Vector2D(point2D_1, point2D_2);
                 double angle = vector2D.Angle(SAM.Geometry.Planar.Vector2D.WorldX.GetNegated());
                 series.SmartLabelStyle.Enabled = false;
                 if (i == 5)
@@ -301,7 +302,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 relative_humidity += 10;
             }
         }
-        private void create_density_line_2(double density_Min, double density_Max, double pressure)
+        private void create_density_line_Psychrometric(double density_Min, double density_Max, double pressure)
         {
             while (density_Min <= density_Max)
             {
@@ -322,7 +323,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 series_density.IsVisibleInLegend = false;
                 //creating labels for 
                 Series series_name = MollierChart.Series.Add(String.Format("label {0}{1}", density_Min, "kg/m³"));
-                SAM.Geometry.Planar.Point2D Point = new SAM.Geometry.Planar.Point2D(temperature_1, humidity_ratio_1 + 0.0015);
+                Geometry.Planar.Point2D Point = new Geometry.Planar.Point2D(temperature_1, humidity_ratio_1 + 0.0015);
                 if (density_Min.ToString() == (1.2).ToString())
                 {
                     Series serieslabel = MollierChart.Series.Add(String.Format("name"));
@@ -345,7 +346,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 density_Min += 0.02;
             }
         }
-        private void create_enthalpy_line_2(double enthalpy_Min, double enthalpy_Max, double pressure)
+        private void create_enthalpy_line_Psychrometric(double enthalpy_Min, double enthalpy_Max, double pressure)
         {
             while (enthalpy_Min <= enthalpy_Max)
             {
@@ -365,16 +366,16 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, humidityRatio_Max);
                     double diagram_temperature_2 = Query.DiagramTemperature(temperature_2, humidity_ratio_2);
-                    SAM.Geometry.Planar.Point2D Point_1 = new SAM.Geometry.Planar.Point2D(temperature_1, humidityRatio_Max);
-                    SAM.Geometry.Planar.Point2D Point_2 = new SAM.Geometry.Planar.Point2D(temperature_2, humidity_ratio_2);
+                    Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(temperature_1, humidityRatio_Max);
+                    Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(temperature_2, humidity_ratio_2);
                     series_enthalpy.Points.AddXY(Point_1.X, Point_1.Y);
                     series_enthalpy.IsVisibleInLegend = false;
-                    SAM.Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new SAM.Geometry.Planar.Point2D[] { Point_2, Point_1 });
+                    Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_2, Point_1 });
                     double a = 1.5;
                     if (enthalpy_Min % 10 == 0)
                     {
                         double Y = polynomialEquation.Evaluate(Point_2.X - a);
-                        SAM.Geometry.Planar.Point2D Point = new SAM.Geometry.Planar.Point2D(Point_2.X - a, Y);
+                        Geometry.Planar.Point2D Point = new Geometry.Planar.Point2D(Point_2.X - a, Y);
                         series_enthalpy.Points.AddXY(Point.X, Point.Y);
                         Point_added = true;
                         int count = series_enthalpy.Points.Count;
@@ -388,7 +389,7 @@ namespace SAM.Core.Mollier.UI.Controls
                         Series series_name = MollierChart.Series.Add(String.Format("name123"));
                         series_name.IsVisibleInLegend = false;
                         double Y = polynomialEquation.Evaluate(Point_2.X - a);
-                        SAM.Geometry.Planar.Point2D Point = new SAM.Geometry.Planar.Point2D(Point_2.X - a - 4, Y);
+                        Geometry.Planar.Point2D Point = new Geometry.Planar.Point2D(Point_2.X - a - 4, Y);
                         series_name.Points.AddXY(Point.X, Point.Y);
                         series_name.ChartType = SeriesChartType.Spline;
                         DataPoint data_point = series_name.Points[0];
@@ -400,7 +401,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 enthalpy_Min += 1;
             }
         }
-        private void create_specific_volume_line_2(double specific_volume_Min, double specific_volume_Max, double pressure)
+        private void create_specific_volume_line_Psychrometric(double specific_volume_Min, double specific_volume_Max, double pressure)
         {
             while (specific_volume_Min <= specific_volume_Max)
             {
@@ -411,16 +412,16 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 double temperature_1 = temperature_by_specific_volume(specific_volume_Min, 0, pressure);
                 double temperature_2 = temperature_by_specific_volume(specific_volume_Min, 0.05, pressure);
-                SAM.Geometry.Planar.Point2D Point_1 = new SAM.Geometry.Planar.Point2D(0, temperature_1);
-                SAM.Geometry.Planar.Point2D Point_2 = new SAM.Geometry.Planar.Point2D(50, temperature_2);
-                SAM.Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new SAM.Geometry.Planar.Point2D[] { Point_1, Point_2 });
+                Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(0, temperature_1);
+                Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(50, temperature_2);
+                Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_1, Point_2 });
                 double humidity_ratio_2 = humidity_ratio_for_100relativity(temperature_1, polynomialEquation, pressure);
                 double temperature_p2 = polynomialEquation.Evaluate(humidity_ratio_2 * 1000);
-                SAM.Geometry.Planar.Point2D Point_3 = new SAM.Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
+                Geometry.Planar.Point2D Point_3 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
                 double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, 0);
                 double diagram_temperature_2 = Query.DiagramTemperature(temperature_p2, humidity_ratio_2);
-                SAM.Geometry.Planar.Point2D Point_4 = new SAM.Geometry.Planar.Point2D(temperature_1, 0);
-                SAM.Geometry.Planar.Point2D Point_5 = new SAM.Geometry.Planar.Point2D(temperature_p2, humidity_ratio_2);
+                Geometry.Planar.Point2D Point_4 = new Geometry.Planar.Point2D(temperature_1, 0);
+                Geometry.Planar.Point2D Point_5 = new Geometry.Planar.Point2D(temperature_p2, humidity_ratio_2);
                 series_specific_volume.Points.AddXY(Point_4.X, Point_4.Y);
                 series_specific_volume.Points.AddXY(Point_5.X, Point_5.Y);
                 DataPoint datapoint = series_specific_volume.Points[1];
@@ -440,7 +441,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 specific_volume_Min += 0.05;
             }
         }
-        private void create_wet_bulb_temperature_line_2(double wetBulbTemperature_Min, double wetBulbTemperature_Max, double pressure)
+        private void create_wet_bulb_temperature_line_Psychrometric(double wetBulbTemperature_Min, double wetBulbTemperature_Max, double pressure)
         {
             while (wetBulbTemperature_Min <= wetBulbTemperature_Max)
             {
@@ -457,8 +458,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 double humidity_ratio_2 = Query.HumidityRatio(temperature_2, 100, pressure);
                 double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, humidity_ratio_1);
                 double diagram_temperature_2 = Query.DiagramTemperature(temperature_2, humidity_ratio_2);
-                SAM.Geometry.Planar.Point2D Point_1 = new SAM.Geometry.Planar.Point2D(temperature_1, humidity_ratio_1);
-                SAM.Geometry.Planar.Point2D Point_2 = new SAM.Geometry.Planar.Point2D(temperature_2, humidity_ratio_2);
+                Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(temperature_1, humidity_ratio_1);
+                Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(temperature_2, humidity_ratio_2);
                 series_WetBulbTemperature.Points.AddXY(Point_1.X, Point_1.Y);
                 series_WetBulbTemperature.Points.AddXY(Point_2.X, Point_2.Y);
                 DataPoint datapoint = series_WetBulbTemperature.Points[1];
@@ -473,8 +474,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     series_name.ChartType = SeriesChartType.Spline;
                     series_name.Label = "Wet Bulb Temperature [ °C ]";
                     series_name.LabelForeColor = Color.LightSlateGray;
-                    SAM.Geometry.Planar.Point2D point2D_1 = new SAM.Geometry.Planar.Point2D(Point_2.X + 2, Point_2.Y + 2);
-                    SAM.Geometry.Planar.Vector2D vector2D = new SAM.Geometry.Planar.Vector2D(Point_2, point2D_1);
+                    Geometry.Planar.Point2D point2D_1 = new Geometry.Planar.Point2D(Point_2.X + 2, Point_2.Y + 2);
+                    Geometry.Planar.Vector2D vector2D = new Geometry.Planar.Vector2D(Point_2, point2D_1);
                     double angle = vector2D.Angle(SAM.Geometry.Planar.Vector2D.WorldX.GetNegated());
                     angle = 180 - (angle * 180 / System.Math.PI);
                     series_name.LabelAngle = 23;
@@ -539,19 +540,19 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.Minimum = temperature_Min;
             axisY.Interval = 5;
             //CREATING RELATIVE HUMIDITY AND HUMIDITY RATIO LINES
-            create_relative_humidity_line_1(temperature_Min, temperature_Max, relative_humidity, pressure);
+            create_relative_humidity_line_Mollier(temperature_Min, temperature_Max, relative_humidity, pressure);
             //CREATING DENSITY LINE
             if (density_line)
-                create_density_line_1(density_Min, density_Max, pressure);
+                create_density_line_Mollier(density_Min, density_Max, pressure);
             //CREATING ENTHALPY LINE
             if (enthalpy_line)
-                create_enthalpy_line_1(enthalpy_Min, enthalpy_Max, pressure);
+                create_enthalpy_line_Mollier(enthalpy_Min, enthalpy_Max, pressure);
             //CREATETING WET BULB TEMPERATURE LINE
             if (wet_bulb_temperature_line)
-                create_wet_bulb_temperature_line_1(wetBulbTemperature_Min, wetBulbTemperature_Max, pressure);
+                create_wet_bulb_temperature_line_Mollier(wetBulbTemperature_Min, wetBulbTemperature_Max, pressure);
             //CREATING SPECIFIC VOLUME LINE
             if (specific_volume_line)
-                create_specific_volume_line_1(specific_volume_Min, specific_volume_Max, pressure);
+                create_specific_volume_line_Mollier(specific_volume_Min, specific_volume_Max, pressure);
         }
         private void generate_graph_psychrometric()
         {
@@ -599,19 +600,19 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.MinorGrid.Enabled = true;
             axisY.MinorGrid.LineColor = Color.LightGray;
             //CREATING RELATIVE HUMIDITY LINES
-            create_relative_humidity_line_2(temperature_Min, temperature_Max, relative_humidity, pressure);
+            create_relative_humidity_line_Psychrometric(temperature_Min, temperature_Max, relative_humidity, pressure);
             //CREATING DENSITY LINE
             if (density_line)
-                create_density_line_2(density_Min, density_Max, pressure);
+                create_density_line_Psychrometric(density_Min, density_Max, pressure);
             //CREATING ENTHALPY LINE
             if (enthalpy_line)
-                create_enthalpy_line_2(enthalpy_Min, enthalpy_Max, pressure);
+                create_enthalpy_line_Psychrometric(enthalpy_Min, enthalpy_Max, pressure);
             //CREATING WET BULB TEMPERATURE LINE
             if (wet_bulb_temperature_line)
-                create_wet_bulb_temperature_line_2(wetBulbTemperature_Min, wetBulbTemperature_Max, pressure);
+                create_wet_bulb_temperature_line_Psychrometric(wetBulbTemperature_Min, wetBulbTemperature_Max, pressure);
             //CREATING SPECIFIC VOLUME LINE
             if (specific_volume_line)
-                create_specific_volume_line_2(specific_volume_Min, specific_volume_Max, pressure);
+                create_specific_volume_line_Psychrometric(specific_volume_Min, specific_volume_Max, pressure);
         }
 
         public bool temperature_checking(double temperature_1, double temperature_2)
@@ -649,7 +650,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             return result;
         }
-        public double humidity_ratio_for_100relativity(double dryBulbTemperature, SAM.Math.PolynomialEquation polynomialEquation, double pressure)
+        public double humidity_ratio_for_100relativity(double dryBulbTemperature, Math.PolynomialEquation polynomialEquation, double pressure)
         {
             double result = 0;
             while (Query.RelativeHumidity(polynomialEquation.Evaluate(result * 1000), result, pressure) < 100)
@@ -663,7 +664,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void MollierControl_Load(object sender, EventArgs e)
         {
-            //create_relative_humidity_line_1();
+            chartType = ChartType.Mollier;
+            generate_graph();
         }
 
         public bool Density_line
@@ -675,9 +677,57 @@ namespace SAM.Core.Mollier.UI.Controls
             set
             {
        
-                if(density_line == value)
+                if(density_line != value)
                 {
                     density_line = value;
+                    generate_graph();
+                }
+            }
+        }
+        public bool Enthalpy_line
+        {
+            get
+            {
+                return enthalpy_line;
+            }
+
+            set
+            {
+                if (enthalpy_line != value)
+                {
+                    enthalpy_line = value;
+                    generate_graph();
+                }
+            }
+        }
+        public bool Specific_volume_line
+        {
+            get
+            {
+                return specific_volume_line;
+            }
+
+            set
+            {
+                if (specific_volume_line != value)
+                {
+                    specific_volume_line = value;
+                    generate_graph();
+                }
+            }
+        }
+        public bool Wet_bulb_temperature_line
+        {
+            get
+            {
+                return wet_bulb_temperature_line;
+            }
+
+            set
+            {
+                if (wet_bulb_temperature_line != value)
+                {
+                    wet_bulb_temperature_line = value;
                     generate_graph();
                 }
             }
@@ -700,12 +750,9 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        //public bool AddPoint(double humidityRatio, double dryBulbTemperature)
-        //{
+        
 
-        //}
-
-        public SAM.Core.Mollier.ChartType ChartType
+        public ChartType ChartType
         {
             get
             {
@@ -720,5 +767,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
+
     }
 }
