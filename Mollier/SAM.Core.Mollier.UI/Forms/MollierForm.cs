@@ -88,5 +88,15 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.Add_points(new MollierPoint[] { mollierPoint });
 
         }
+
+        private void ToolStripMenuItem_Save_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.Save();
+        }
+
+        private void ToolStripMenuItem_Density_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

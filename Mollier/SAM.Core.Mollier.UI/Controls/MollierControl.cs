@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,8 @@ namespace SAM.Core.Mollier.UI.Controls
         private double pressure = 101325;
         private bool default_graph = true;
         private bool density_line = true, enthalpy_line = true, specific_volume_line = true, wet_bulb_temperature_line = true;
-        private List<MollierPoint> Mollierpoints;
+        private List<MollierPoint> mollierPoints;
+        private List<IMollierProcess> mollierProcesses;
         public MollierControl()
         {
             InitializeComponent();
@@ -554,12 +556,12 @@ namespace SAM.Core.Mollier.UI.Controls
             //CREATING SPECIFIC VOLUME LINE
             if (specific_volume_line)
                 create_specific_volume_line_Mollier(specific_volume_Min, specific_volume_Max, pressure);
-            if (Mollierpoints != null)
+            if (mollierPoints != null)
             {
                 Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Point;
-                foreach (MollierPoint point in Mollierpoints)
+                foreach (MollierPoint point in mollierPoints)
                 {
                     double humidity_ratio = point.HumidityRatio;
                     double DryBulbTemperature = point.DryBulbTemperature;
@@ -629,12 +631,12 @@ namespace SAM.Core.Mollier.UI.Controls
             //CREATING SPECIFIC VOLUME LINE
             if (specific_volume_line)
                 create_specific_volume_line_Psychrometric(specific_volume_Min, specific_volume_Max, pressure);
-            if (Mollierpoints != null)
+            if (mollierPoints != null)
             {
                 Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Point;
-                foreach (MollierPoint point in Mollierpoints)
+                foreach (MollierPoint point in mollierPoints)
                 {
                     double humidity_ratio = point.HumidityRatio;
                     double DryBulbTemperature = point.DryBulbTemperature;
@@ -797,11 +799,11 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     pressure = value;
                     generate_graph();
-                    if(Mollierpoints != null)
+                    if(mollierPoints != null)
                     {
-                        for(int i=0; i<Mollierpoints.Count(); i++)
+                        for(int i=0; i<mollierPoints.Count(); i++)
                         {
-                            Mollierpoints[i] = new MollierPoint(Mollierpoints[i].DryBulbTemperature, Mollierpoints[i].HumidityRatio, pressure);
+                            mollierPoints[i] = new MollierPoint(mollierPoints[i].DryBulbTemperature, mollierPoints[i].HumidityRatio, pressure);
                         }
                     }
                 }
@@ -812,19 +814,47 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             if (mollierPoints == null)
                 return;
-            if(Mollierpoints == null)
+            if(this.mollierPoints == null)
             {
-                Mollierpoints = new List<MollierPoint> ();
+                this.mollierPoints = new List<MollierPoint>();
             }
-            Mollierpoints.AddRange(mollierPoints);
+            this.mollierPoints.AddRange(mollierPoints);
             generate_graph();
         }
 
         public void AddProcess(IMollierProcess mollierProcess)
         {
-            MollierPoint start = mollierProcess.Start;
+            if(mollierProcesses == null)
+            {
+                return;
+            }
 
-            MollierPoint end = mollierProcess.End;
+            if(mollierProcesses == null)
+            {
+                mollierProcesses = new List<IMollierProcess>();
+            }
+
+            mollierProcesses.Add(mollierProcess);
+        }
+
+        public bool Save()
+        {
+            string path = null;
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "emf files (*.emf)|*.emf|All files (*.*)|*.*";
+                saveFileDialog.FilterIndex = 1;
+                saveFileDialog.RestoreDirectory = true;
+
+                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    return false;
+                }
+                path = saveFileDialog.FileName;
+            }
+
+            MollierChart.SaveImage(path, ImageFormat.Emf);
+            return true;
         }
 
         public ChartType ChartType
