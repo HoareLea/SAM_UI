@@ -29,7 +29,6 @@ namespace SAM.Core.Mollier.UI
         /// </summary>
         private void InitializeComponent()
         {
-            this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.wet_bulb_temperature_box = new System.Windows.Forms.CheckBox();
@@ -38,15 +37,8 @@ namespace SAM.Core.Mollier.UI
             this.specific_volume_box = new System.Windows.Forms.CheckBox();
             this.textBox_pressure = new System.Windows.Forms.TextBox();
             this.label_pressure = new System.Windows.Forms.Label();
+            this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.SuspendLayout();
-            // 
-            // MollierControl_Main
-            // 
-            this.MollierControl_Main.Density_line = true;
-            this.MollierControl_Main.Location = new System.Drawing.Point(12, 55);
-            this.MollierControl_Main.Name = "MollierControl_Main";
-            this.MollierControl_Main.Size = new System.Drawing.Size(1047, 525);
-            this.MollierControl_Main.TabIndex = 0;
             // 
             // button2
             // 
@@ -55,7 +47,7 @@ namespace SAM.Core.Mollier.UI
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(138, 27);
             this.button2.TabIndex = 18;
-            this.button2.Text = "Second Graph";
+            this.button2.Text = "Pyschrometric Chart";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
@@ -66,7 +58,7 @@ namespace SAM.Core.Mollier.UI
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(108, 28);
             this.button1.TabIndex = 17;
-            this.button1.Text = "First Graph";
+            this.button1.Text = "Mollier Chart";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -82,6 +74,7 @@ namespace SAM.Core.Mollier.UI
             this.wet_bulb_temperature_box.TabIndex = 16;
             this.wet_bulb_temperature_box.Text = "wet bulb temperature";
             this.wet_bulb_temperature_box.UseVisualStyleBackColor = true;
+            this.wet_bulb_temperature_box.CheckedChanged += new System.EventHandler(this.wet_bulb_temperature_box_CheckedChanged);
             // 
             // density_box
             // 
@@ -95,6 +88,7 @@ namespace SAM.Core.Mollier.UI
             this.density_box.TabIndex = 15;
             this.density_box.Text = "density";
             this.density_box.UseVisualStyleBackColor = true;
+            this.density_box.CheckedChanged += new System.EventHandler(this.density_box_CheckedChanged);
             // 
             // enthalpy_box
             // 
@@ -108,6 +102,7 @@ namespace SAM.Core.Mollier.UI
             this.enthalpy_box.TabIndex = 14;
             this.enthalpy_box.Text = "enthalpy";
             this.enthalpy_box.UseVisualStyleBackColor = true;
+            this.enthalpy_box.CheckedChanged += new System.EventHandler(this.enthalpy_box_CheckedChanged);
             // 
             // specific_volume_box
             // 
@@ -121,6 +116,7 @@ namespace SAM.Core.Mollier.UI
             this.specific_volume_box.TabIndex = 13;
             this.specific_volume_box.Text = "specific volume";
             this.specific_volume_box.UseVisualStyleBackColor = true;
+            this.specific_volume_box.CheckedChanged += new System.EventHandler(this.specific_volume_box_CheckedChanged);
             // 
             // textBox_pressure
             // 
@@ -140,6 +136,19 @@ namespace SAM.Core.Mollier.UI
             this.label_pressure.Size = new System.Drawing.Size(60, 16);
             this.label_pressure.TabIndex = 11;
             this.label_pressure.Text = "pressure";
+            // 
+            // MollierControl_Main
+            // 
+            this.MollierControl_Main.ChartType = SAM.Core.Mollier.ChartType.Undefined;
+            this.MollierControl_Main.Density_line = true;
+            this.MollierControl_Main.Enthalpy_line = true;
+            this.MollierControl_Main.Location = new System.Drawing.Point(12, 55);
+            this.MollierControl_Main.Name = "MollierControl_Main";
+            this.MollierControl_Main.Pressure = 101325D;
+            this.MollierControl_Main.Size = new System.Drawing.Size(1047, 525);
+            this.MollierControl_Main.Specific_volume_line = true;
+            this.MollierControl_Main.TabIndex = 0;
+            this.MollierControl_Main.Wet_bulb_temperature_line = true;
             // 
             // MollierForm
             // 
