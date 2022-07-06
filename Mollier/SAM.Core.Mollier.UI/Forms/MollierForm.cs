@@ -19,7 +19,9 @@ namespace SAM.Core.Mollier.UI
 
         private void MollierForm_Load(object sender, EventArgs e)
         {
-
+            List<MollierPoint> mollierPoints = new List<MollierPoint>();
+            mollierPoints.Add(new MollierPoint(20, 0.01, 101325));
+            MollierControl_Main.Add_points(mollierPoints);
         }
 
         private void textBox_pressure_TextChanged(object sender, EventArgs e)
@@ -66,6 +68,25 @@ namespace SAM.Core.Mollier.UI
         private void wet_bulb_temperature_box_CheckedChanged(object sender, EventArgs e)
         {
             MollierControl_Main.Wet_bulb_temperature_line = wet_bulb_temperature_box.Checked;
+        }
+
+        private void Add_new_point_Click(object sender, EventArgs e)
+        {
+            MollierPoint mollierPoint = null;
+
+            using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
+            {
+                DialogResult dialogResult = mollierPointForm.ShowDialog();
+                if (dialogResult != DialogResult.OK)
+                {
+                    return;
+                }
+
+                mollierPoint = mollierPointForm.get_point(MollierControl_Main.Pressure);
+            }
+
+            MollierControl_Main.Add_points(new MollierPoint[] { mollierPoint });
+
         }
     }
 }

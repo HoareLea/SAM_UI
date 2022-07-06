@@ -38,10 +38,12 @@ namespace SAM.Core.Mollier.UI
             this.textBox_pressure = new System.Windows.Forms.TextBox();
             this.label_pressure = new System.Windows.Forms.Label();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
+            this.Add_new_point = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button2
             // 
+            this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.button2.Location = new System.Drawing.Point(921, 22);
             this.button2.Name = "button2";
@@ -53,6 +55,7 @@ namespace SAM.Core.Mollier.UI
             // 
             // button1
             // 
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.button1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.button1.Location = new System.Drawing.Point(807, 21);
             this.button1.Name = "button1";
@@ -139,7 +142,10 @@ namespace SAM.Core.Mollier.UI
             // 
             // MollierControl_Main
             // 
-            this.MollierControl_Main.ChartType = SAM.Core.Mollier.ChartType.Undefined;
+            this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MollierControl_Main.ChartType = SAM.Core.Mollier.ChartType.Mollier;
             this.MollierControl_Main.Density_line = true;
             this.MollierControl_Main.Enthalpy_line = true;
             this.MollierControl_Main.Location = new System.Drawing.Point(12, 55);
@@ -150,10 +156,21 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.TabIndex = 0;
             this.MollierControl_Main.Wet_bulb_temperature_line = true;
             // 
+            // Add_new_point
+            // 
+            this.Add_new_point.Location = new System.Drawing.Point(679, 21);
+            this.Add_new_point.Name = "Add_new_point";
+            this.Add_new_point.Size = new System.Drawing.Size(108, 28);
+            this.Add_new_point.TabIndex = 19;
+            this.Add_new_point.Text = "Add Point";
+            this.Add_new_point.UseVisualStyleBackColor = true;
+            this.Add_new_point.Click += new System.EventHandler(this.Add_new_point_Click);
+            // 
             // MollierForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1071, 592);
+            this.Controls.Add(this.Add_new_point);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.wet_bulb_temperature_box);
@@ -165,6 +182,7 @@ namespace SAM.Core.Mollier.UI
             this.Controls.Add(this.MollierControl_Main);
             this.Name = "MollierForm";
             this.Text = "Mollier";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MollierForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -182,6 +200,7 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.CheckBox specific_volume_box;
         private System.Windows.Forms.TextBox textBox_pressure;
         private System.Windows.Forms.Label label_pressure;
+        private System.Windows.Forms.Button Add_new_point;
     }
 }
 

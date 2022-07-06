@@ -17,6 +17,7 @@ namespace SAM.Core.Mollier.UI.Controls
         private double pressure = 101325;
         private bool default_graph = true;
         private bool density_line = true, enthalpy_line = true, specific_volume_line = true, wet_bulb_temperature_line = true;
+        private List<MollierPoint> Mollierpoints;
         public MollierControl()
         {
             InitializeComponent();
@@ -553,6 +554,21 @@ namespace SAM.Core.Mollier.UI.Controls
             //CREATING SPECIFIC VOLUME LINE
             if (specific_volume_line)
                 create_specific_volume_line_Mollier(specific_volume_Min, specific_volume_Max, pressure);
+            if (Mollierpoints != null)
+            {
+                Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
+                series.IsVisibleInLegend = false;
+                series.ChartType = SeriesChartType.Point;
+                foreach (MollierPoint point in Mollierpoints)
+                {
+                    double humidity_ratio = point.HumidityRatio;
+                    double DryBulbTemperature = point.DryBulbTemperature;
+                    double diagram_temperature = SAM.Core.Mollier.Query.DiagramTemperature(point);
+                    int index = series.Points.AddXY(humidity_ratio * 1000, diagram_temperature);
+                    series.Points[index].ToolTip = ToolTip(point, chartType); ;
+                }
+            }
+
         }
         private void generate_graph_psychrometric()
         {
@@ -613,6 +629,41 @@ namespace SAM.Core.Mollier.UI.Controls
             //CREATING SPECIFIC VOLUME LINE
             if (specific_volume_line)
                 create_specific_volume_line_Psychrometric(specific_volume_Min, specific_volume_Max, pressure);
+            if (Mollierpoints != null)
+            {
+                Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
+                series.IsVisibleInLegend = false;
+                series.ChartType = SeriesChartType.Point;
+                foreach (MollierPoint point in Mollierpoints)
+                {
+                    double humidity_ratio = point.HumidityRatio;
+                    double DryBulbTemperature = point.DryBulbTemperature;
+                    series.Points.AddXY(DryBulbTemperature, humidity_ratio);
+                    int index = series.Points.AddXY(DryBulbTemperature, humidity_ratio);
+                    series.Points[index].ToolTip = ToolTip(point, chartType);
+                }
+            }
+        }
+
+        private string ToolTip(MollierPoint mollierPoint, ChartType chartType)
+        {
+            if(mollierPoint == null)
+            {
+                return null;
+            }
+
+            string mask = "HR = {0}[{1}]\nT = {1}[C]\nP = {2}";
+
+            switch (chartType)
+            {
+                case ChartType.Psychrometric:
+                    return String.Format(mask, mollierPoint.HumidityRatio, "[kg/kg]", mollierPoint.DryBulbTemperature, mollierPoint.Pressure);
+
+                case ChartType.Mollier:
+                    return String.Format(mask, mollierPoint.HumidityRatio * 1000, "[g/kg]", SAM.Core.Mollier.Query.DiagramTemperature(mollierPoint), mollierPoint.Pressure);
+            }
+            return null;
+            
         }
 
         public bool temperature_checking(double temperature_1, double temperature_2)
@@ -746,11 +797,35 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     pressure = value;
                     generate_graph();
+                    if(Mollierpoints != null)
+                    {
+                        for(int i=0; i<Mollierpoints.Count(); i++)
+                        {
+                            Mollierpoints[i] = new MollierPoint(Mollierpoints[i].DryBulbTemperature, Mollierpoints[i].HumidityRatio, pressure);
+                        }
+                    }
                 }
             }
         }
 
-        
+        public void Add_points(IEnumerable<MollierPoint> mollierPoints)
+        {
+            if (mollierPoints == null)
+                return;
+            if(Mollierpoints == null)
+            {
+                Mollierpoints = new List<MollierPoint> ();
+            }
+            Mollierpoints.AddRange(mollierPoints);
+            generate_graph();
+        }
+
+        public void AddProcess(IMollierProcess mollierProcess)
+        {
+            MollierPoint start = mollierProcess.Start;
+
+            MollierPoint end = mollierProcess.End;
+        }
 
         public ChartType ChartType
         {
