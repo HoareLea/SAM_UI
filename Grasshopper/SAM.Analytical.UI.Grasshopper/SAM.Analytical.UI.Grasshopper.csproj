@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component\SAMAnalyticalShowAHU.cs" />
     <Compile Include="Component\SAMAnalyticalPrintAHU.cs" />
     <Compile Include="Component\SAMAnalyticalPrintRDS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -75,6 +76,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
+      <Project>{086fb5c2-488e-4355-91ce-a91a7c853a44}</Project>
+      <Name>SAM.Core.Mollier.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
       <Project>{141d9925-a6e1-4390-89c7-251a428e2df0}</Project>
       <Name>SAM.Analytical.UI</Name>

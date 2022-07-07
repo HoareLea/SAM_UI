@@ -810,7 +810,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        public void Add_points(IEnumerable<MollierPoint> mollierPoints)
+        public void AddPoints(IEnumerable<MollierPoint> mollierPoints)
         {
             if (mollierPoints == null)
                 return;
@@ -835,6 +835,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
 
             mollierProcesses.Add(mollierProcess);
+            generate_graph();
         }
 
         public bool Save()

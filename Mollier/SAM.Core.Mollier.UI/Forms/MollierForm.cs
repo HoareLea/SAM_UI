@@ -19,14 +19,12 @@ namespace SAM.Core.Mollier.UI
 
         private void MollierForm_Load(object sender, EventArgs e)
         {
-            List<MollierPoint> mollierPoints = new List<MollierPoint>();
-            mollierPoints.Add(new MollierPoint(20, 0.01, 101325));
-            MollierControl_Main.Add_points(mollierPoints);
+
         }
 
-        private void textBox_pressure_TextChanged(object sender, EventArgs e)
+        private void TextBox_Pressure_TextChanged(object sender, EventArgs e)
         {
-            if (!Core.Query.TryConvert(textBox_pressure.Text, out double pressure))
+            if (!Core.Query.TryConvert(TextBox_Pressure.Text, out double pressure))
             {
                 return;
             }
@@ -39,38 +37,7 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.Pressure = pressure;
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            MollierControl_Main.ChartType = ChartType.Mollier;
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            MollierControl_Main.ChartType = ChartType.Psychrometric;
-        }
-
-        private void density_box_CheckedChanged(object sender, EventArgs e)
-        {
-            MollierControl_Main.Density_line = density_box.Checked;
-        }
-
-
-        private void enthalpy_box_CheckedChanged(object sender, EventArgs e)
-        {
-            MollierControl_Main.Enthalpy_line = enthalpy_box.Checked;
-        }
-
-        private void specific_volume_box_CheckedChanged(object sender, EventArgs e)
-        {
-            MollierControl_Main.Specific_volume_line = specific_volume_box.Checked;
-        }
-
-        private void wet_bulb_temperature_box_CheckedChanged(object sender, EventArgs e)
-        {
-            MollierControl_Main.Wet_bulb_temperature_line = wet_bulb_temperature_box.Checked;
-        }
-
-        private void Add_new_point_Click(object sender, EventArgs e)
+        private void Button_AddPoint_Click(object sender, EventArgs e)
         {
             MollierPoint mollierPoint = null;
 
@@ -85,7 +52,7 @@ namespace SAM.Core.Mollier.UI
                 mollierPoint = mollierPointForm.get_point(MollierControl_Main.Pressure);
             }
 
-            MollierControl_Main.Add_points(new MollierPoint[] { mollierPoint });
+            MollierControl_Main.AddPoints(new MollierPoint[] { mollierPoint });
 
         }
 
@@ -94,9 +61,72 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.Save();
         }
 
+        private void ChartToolStripMenuItem_Mollier_Click(object sender, EventArgs e)
+        {
+            ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Mollier.Checked;
+            ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Mollier.Checked;
+
+            if (ChartToolStripMenuItem_Mollier.Checked)
+            {
+                MollierControl_Main.ChartType = ChartType.Mollier;
+            }
+            else if (ChartToolStripMenuItem_Psychrometric.Checked)
+            {
+                MollierControl_Main.ChartType = ChartType.Psychrometric;
+            }
+        }
+
+        private void ChartToolStripMenuItem_Psychrometric_Click(object sender, EventArgs e)
+        {
+            ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
+            ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
+
+            if (ChartToolStripMenuItem_Mollier.Checked)
+            {
+                MollierControl_Main.ChartType = ChartType.Mollier;
+            }
+            else if (ChartToolStripMenuItem_Psychrometric.Checked)
+            {
+                MollierControl_Main.ChartType = ChartType.Psychrometric;
+            }
+        }
+
         private void ToolStripMenuItem_Density_Click(object sender, EventArgs e)
         {
+            ToolStripMenuItem_Density.Checked = !ToolStripMenuItem_Density.Checked;
+            MollierControl_Main.Density_line = ToolStripMenuItem_Density.Checked;
+        }
 
+        private void ToolStripMenuItem_WetBulbTemperature_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem_WetBulbTemperature.Checked = !ToolStripMenuItem_WetBulbTemperature.Checked;
+            MollierControl_Main.Wet_bulb_temperature_line = ToolStripMenuItem_WetBulbTemperature.Checked;
+        }
+
+        private void ToolStripMenuItem_Enthalpy_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem_Enthalpy.Checked = !ToolStripMenuItem_Enthalpy.Checked;
+            MollierControl_Main.Enthalpy_line = ToolStripMenuItem_Enthalpy.Checked;
+        }
+
+        private void ToolStripMenuItem_SpecificVolume_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem_SpecificVolume.Checked = !ToolStripMenuItem_SpecificVolume.Checked;
+            MollierControl_Main.Specific_volume_line = ToolStripMenuItem_SpecificVolume.Checked;
+        }
+
+        private void ToolStripMenuItem_File_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        public bool ReadOnly
+        {
+            set
+            {
+                TextBox_Pressure.ReadOnly = value;
+                Button_AddPoint.Visible = !value;
+            }
         }
     }
 }
