@@ -872,7 +872,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         public void AddProcess(IMollierProcess mollierProcess)
         {
-            if(mollierProcesses == null)
+            if(mollierProcess == null)
             {
                 return;
             }
