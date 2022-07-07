@@ -16,7 +16,6 @@ namespace SAM.Core.Mollier.UI.Controls
     {
         private ChartType chartType;
         private double pressure = 101325;
-        private bool default_graph = true;
         private bool density_line = true, enthalpy_line = true, specific_volume_line = true, wet_bulb_temperature_line = true;
         private List<MollierPoint> mollierPoints;
         private List<IMollierProcess> mollierProcesses;
@@ -522,7 +521,6 @@ namespace SAM.Core.Mollier.UI.Controls
             //CHART
             MollierChart.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
             MollierChart.Series.Clear();
-            default_graph = true;
             ChartArea chartArea = MollierChart.ChartAreas[0];
             //AXIS X
             Axis axisX = chartArea.AxisX;
@@ -567,17 +565,20 @@ namespace SAM.Core.Mollier.UI.Controls
                     double DryBulbTemperature = point.DryBulbTemperature;
                     double diagram_temperature = SAM.Core.Mollier.Query.DiagramTemperature(point);
                     int index = series.Points.AddXY(humidity_ratio * 1000, diagram_temperature);
-                    series.Points[index].ToolTip = ToolTip(point, chartType); ;
+                    series.Points[index].ToolTip = ToolTip(point, chartType);
+                    series.Points[index].Tag = point;
                 }
             }
 
             if(mollierProcesses != null)
             {
-                Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
-                series.IsVisibleInLegend = false;
-                series.ChartType = SeriesChartType.Line;
+
                 foreach (IMollierProcess mollierProcess in mollierProcesses)
                 {
+                    Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
+                    series.IsVisibleInLegend = false;
+                    series.ChartType = SeriesChartType.Line;
+
                     MollierPoint start = mollierProcess?.Start;
                     MollierPoint end = mollierProcess?.End;
                     if(start == null || end == null)
@@ -589,9 +590,13 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     index = series.Points.AddXY(start.HumidityRatio * 1000, Query.DiagramTemperature(start));
                     series.Points[index].ToolTip = ToolTip(start, chartType);
+                    series.Points[index].Tag = start;
 
                     index = series.Points.AddXY(end.HumidityRatio * 1000, Query.DiagramTemperature(end));
                     series.Points[index].ToolTip = ToolTip(end, chartType);
+                    series.Points[index].Tag = end;
+
+                    series.Tag = mollierProcess;
                 }
             }
 
@@ -616,7 +621,6 @@ namespace SAM.Core.Mollier.UI.Controls
             double specific_volume_Min = 0.75;
             double specific_volume_Max = 0.95;
             double relative_humidity = 10;
-            default_graph = false;
             //MollierChart
             MollierChart.Series.Clear();
             ChartArea chartArea = MollierChart.ChartAreas[0];
@@ -657,7 +661,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 create_specific_volume_line_Psychrometric(specific_volume_Min, specific_volume_Max, pressure);
             if (mollierPoints != null)
             {
-                Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
+                Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Point;
                 foreach (MollierPoint point in mollierPoints)
@@ -667,16 +671,18 @@ namespace SAM.Core.Mollier.UI.Controls
                     series.Points.AddXY(DryBulbTemperature, humidity_ratio);
                     int index = series.Points.AddXY(DryBulbTemperature, humidity_ratio);
                     series.Points[index].ToolTip = ToolTip(point, chartType);
+                    series.Points[index].Tag = point;
                 }
             }
 
             if (mollierProcesses != null)
             {
-                Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
-                series.IsVisibleInLegend = false;
-                series.ChartType = SeriesChartType.Line;
                 foreach (IMollierProcess mollierProcess in mollierProcesses)
                 {
+                    Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
+                    series.IsVisibleInLegend = false;
+                    series.ChartType = SeriesChartType.Line;
+
                     MollierPoint start = mollierProcess?.Start;
                     MollierPoint end = mollierProcess?.End;
                     if (start == null || end == null)
@@ -688,9 +694,14 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     index = series.Points.AddXY(start.DryBulbTemperature, start.HumidityRatio);
                     series.Points[index].ToolTip = ToolTip(start, chartType);
+                    series.Points[index].Tag = start;
 
                     index = series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
                     series.Points[index].ToolTip = ToolTip(end, chartType);
+                    series.Points[index].Tag = end;
+
+                    series.Tag = mollierProcess;
+                    series.ToolTip = ToolTip(mollierProcess);
                 }
             }
         }
@@ -710,10 +721,40 @@ namespace SAM.Core.Mollier.UI.Controls
                     return String.Format(mask, mollierPoint.HumidityRatio, "[kg/kg]", mollierPoint.DryBulbTemperature, mollierPoint.Pressure);
 
                 case ChartType.Mollier:
-                    return String.Format(mask, mollierPoint.HumidityRatio * 1000, "[g/kg]", SAM.Core.Mollier.Query.DiagramTemperature(mollierPoint), mollierPoint.Pressure);
+                    return String.Format(mask, mollierPoint.HumidityRatio * 1000, "[g/kg]", Query.DiagramTemperature(mollierPoint), mollierPoint.Pressure);
             }
             return null;
             
+        }
+
+        private string ToolTip(IMollierProcess mollierProcess)
+        {
+            if(mollierProcess is HeatingProcess)
+            {
+                return "Heating";
+            }
+
+            if(mollierProcess is CoolingProcess)
+            {
+                return "Cooling";
+            }
+
+            if(mollierProcess is MixingProcess)
+            {
+                return "Mixing";
+            }
+
+            if (mollierProcess is HeatRecoveryProcess)
+            {
+                return "Heat Recovery";
+            }
+
+            if(mollierProcess is HumidificationProcess)
+            {
+                return "Humidification";
+            }
+
+            return null;
         }
 
         public bool temperature_checking(double temperature_1, double temperature_2)
