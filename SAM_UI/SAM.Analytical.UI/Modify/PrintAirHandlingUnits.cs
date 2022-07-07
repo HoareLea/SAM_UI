@@ -129,15 +129,23 @@ namespace SAM.Analytical.UI
                         workseet.Cells[34, 4].Value = @double;
                     }
 
-                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.HeatRecoverySensibleEfficiency, out @double) && !double.IsNaN(@double))
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterHeatRecoverySensibleEfficiency, out @double) && !double.IsNaN(@double))
                     {
                         workseet.Cells[45, 4].Value = @double / 100;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterHeatRecoveryLatentEfficiency, out @double) && !double.IsNaN(@double))
+                    {
+                        workseet.Cells[46, 4].Value = @double / 100;
+                    }
+
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerHeatRecoverySensibleEfficiency, out @double) && !double.IsNaN(@double))
+                    {
                         workseet.Cells[45, 6].Value = @double / 100;
                     }
 
-                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.HeatRecoveryLatentEfficiency, out @double) && !double.IsNaN(@double))
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SummerHeatRecoveryLatentEfficiency, out @double) && !double.IsNaN(@double))
                     {
-                        workseet.Cells[46, 4].Value = @double / 100;
                         workseet.Cells[46, 6].Value = @double / 100;
                     }
 
