@@ -128,5 +128,16 @@ namespace SAM.Core.Mollier.UI
                 Button_AddPoint.Visible = !value;
             }
         }
+
+        public bool AddProcess(IMollierProcess mollierProcess)
+        {
+            if(mollierProcess == null)
+            {
+                return false;
+            }
+
+            MollierControl_Main.AddProcess(mollierProcess);
+            return true;
+        }
     }
 }

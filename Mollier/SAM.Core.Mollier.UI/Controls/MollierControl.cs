@@ -571,6 +571,30 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
 
+            if(mollierProcesses != null)
+            {
+                Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
+                series.IsVisibleInLegend = false;
+                series.ChartType = SeriesChartType.Line;
+                foreach (IMollierProcess mollierProcess in mollierProcesses)
+                {
+                    MollierPoint start = mollierProcess?.Start;
+                    MollierPoint end = mollierProcess?.End;
+                    if(start == null || end == null)
+                    {
+                        continue;
+                    }
+
+                    int index;
+
+                    index = series.Points.AddXY(start.HumidityRatio * 1000, Query.DiagramTemperature(start));
+                    series.Points[index].ToolTip = ToolTip(start, chartType);
+
+                    index = series.Points.AddXY(end.HumidityRatio * 1000, Query.DiagramTemperature(end));
+                    series.Points[index].ToolTip = ToolTip(end, chartType);
+                }
+            }
+
         }
         private void generate_graph_psychrometric()
         {
@@ -643,6 +667,30 @@ namespace SAM.Core.Mollier.UI.Controls
                     series.Points.AddXY(DryBulbTemperature, humidity_ratio);
                     int index = series.Points.AddXY(DryBulbTemperature, humidity_ratio);
                     series.Points[index].ToolTip = ToolTip(point, chartType);
+                }
+            }
+
+            if (mollierProcesses != null)
+            {
+                Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
+                series.IsVisibleInLegend = false;
+                series.ChartType = SeriesChartType.Line;
+                foreach (IMollierProcess mollierProcess in mollierProcesses)
+                {
+                    MollierPoint start = mollierProcess?.Start;
+                    MollierPoint end = mollierProcess?.End;
+                    if (start == null || end == null)
+                    {
+                        continue;
+                    }
+
+                    int index;
+
+                    index = series.Points.AddXY(start.DryBulbTemperature, start.HumidityRatio);
+                    series.Points[index].ToolTip = ToolTip(start, chartType);
+
+                    index = series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
+                    series.Points[index].ToolTip = ToolTip(end, chartType);
                 }
             }
         }

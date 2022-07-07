@@ -1,9 +1,12 @@
 ﻿using Grasshopper.Kernel;
 using SAM.Analytical.Grasshopper;
+using SAM.Analytical.Mollier;
 using SAM.Analytical.UI.Grasshopper.Properties;
 using SAM.Core.Grasshopper;
+using SAM.Core.Mollier;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Analytical.UI.Grasshopper
 {
@@ -87,10 +90,33 @@ namespace SAM.Analytical.UI.Grasshopper
             if (!run)
                 return;
 
-            if(mollierForm == null  || mollierForm.IsDisposed)
+
+            AnalyticalModel analyticalModel = null;
+            index = Params.IndexOfInputParam("_analyticalModel");
+            if (index == -1 || !dataAccess.GetData(index, ref analyticalModel) || analyticalModel == null)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
+                return;
+            }
+
+            List<IMollierProcess> mollierProcesses = null;
+            string name = null;
+
+            AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.FirstOrDefault();
+            if(airHandlingUnitResult != null)
+            {
+                name = airHandlingUnitResult.Name;
+                mollierProcesses = Mollier.Query.MollierProcesses(airHandlingUnitResult);
+            }
+
+
+            if (mollierForm == null  || mollierForm.IsDisposed)
             {
                 mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
             }
+
+            mollierForm.Name = string.IsNullOrWhiteSpace(name) ? mollierForm.Name : name;
+            mollierProcesses?.ForEach(x => mollierForm.AddProcess(x));
 
             mollierForm.Show();
         }
