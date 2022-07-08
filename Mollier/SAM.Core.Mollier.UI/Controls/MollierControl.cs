@@ -613,7 +613,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     series.IsVisibleInLegend = false;
                     series.ChartType = SeriesChartType.Line;
                     series.BorderWidth = 5;
-                    series.Color = Color.Red;
+                    //series.Color = Color.Red;
 
                     MollierPoint start = mollierProcess?.Start;
                     MollierPoint end = mollierProcess?.End;
