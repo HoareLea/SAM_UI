@@ -196,14 +196,32 @@ namespace SAM.Core.Mollier.UI.Controls
                 series_specific_volume.ChartType = SeriesChartType.Spline;
                 series_specific_volume.IsVisibleInLegend = false;
                 series_specific_volume.Color = Color.LightSlateGray;
-                double temperature_1 = temperature_by_specific_volume(specific_volume_Min, 0, pressure);
-                double temperature_2 = temperature_by_specific_volume(specific_volume_Min, 0.05, pressure);
-                Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(0, temperature_1);
-                Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(50, temperature_2);
-                Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_1, Point_2 });
-                double humidity_ratio_2 = humidity_ratio_for_100relativity(temperature_1, polynomialEquation, pressure);
-                double temperature_p2 = polynomialEquation.Evaluate(humidity_ratio_2 * 1000);
-                Geometry.Planar.Point2D Point_3 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
+                
+                //OLD VERSION START
+                
+                //double temperature_1 = temperature_by_specific_volume(specific_volume_Min, 0, pressure);
+                //double temperature_2 = temperature_by_specific_volume(specific_volume_Min, 0.05, pressure);
+                //Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(0, temperature_1);
+                //Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(50, temperature_2);
+                //Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_1, Point_2 });
+                
+                //double humidity_ratio_2 = humidity_ratio_for_100relativity(temperature_1, polynomialEquation, pressure);
+                //double temperature_p2 = polynomialEquation.Evaluate(humidity_ratio_2 * 1000);
+
+                //OLD VERSION END
+
+                // NEW VERSION START
+
+                MollierPoint mollierPoint_1 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(0, specific_volume_Min, pressure);
+                double temperature_1 = mollierPoint_1.DryBulbTemperature;
+
+                MollierPoint mollierPoint_2 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(100, specific_volume_Min, pressure);
+                double humidity_ratio_2 = mollierPoint_2.HumidityRatio;
+                double temperature_p2 = mollierPoint_2.DryBulbTemperature;
+
+                //NEW VERSION END
+
+                //Geometry.Planar.Point2D Point_3 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
                 double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, 0);
                 double diagram_temperature_2 = Query.DiagramTemperature(temperature_p2, humidity_ratio_2);
                 Geometry.Planar.Point2D Point_4 = new Geometry.Planar.Point2D(0, diagram_temperature_1);
@@ -412,16 +430,32 @@ namespace SAM.Core.Mollier.UI.Controls
                 series_specific_volume.IsVisibleInLegend = false;
                 series_specific_volume.Color = Color.LightSlateGray;
 
-                double temperature_1 = temperature_by_specific_volume(specific_volume_Min, 0, pressure);
-                double temperature_2 = temperature_by_specific_volume(specific_volume_Min, 0.05, pressure);
-                Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(0, temperature_1);
-                Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(50, temperature_2);
-                Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_1, Point_2 });
-                double humidity_ratio_2 = humidity_ratio_for_100relativity(temperature_1, polynomialEquation, pressure);
-                double temperature_p2 = polynomialEquation.Evaluate(humidity_ratio_2 * 1000);
-                Geometry.Planar.Point2D Point_3 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
-                double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, 0);
-                double diagram_temperature_2 = Query.DiagramTemperature(temperature_p2, humidity_ratio_2);
+                //OLD VERSION START
+
+                //double temperature_1 = temperature_by_specific_volume(specific_volume_Min, 0, pressure);
+                //double temperature_2 = temperature_by_specific_volume(specific_volume_Min, 0.05, pressure);
+                //Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(0, temperature_1);
+                //Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(50, temperature_2);
+                //Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_1, Point_2 });
+                //double humidity_ratio_2 = humidity_ratio_for_100relativity(temperature_1, polynomialEquation, pressure);
+                //double temperature_p2 = polynomialEquation.Evaluate(humidity_ratio_2 * 1000);
+                //Geometry.Planar.Point2D Point_3 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
+                //double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, 0);
+                //double diagram_temperature_2 = Query.DiagramTemperature(temperature_p2, humidity_ratio_2);
+
+                //OLD VERSION END
+
+                //NEW VERSION START
+
+                MollierPoint mollierPoint_1 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(0, specific_volume_Min, pressure);
+                double temperature_1 = mollierPoint_1.DryBulbTemperature;
+
+                MollierPoint mollierPoint_2 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(100, specific_volume_Min, pressure);
+                double humidity_ratio_2 = mollierPoint_2.HumidityRatio;
+                double temperature_p2 = mollierPoint_2.DryBulbTemperature;
+
+                //NEW VERSION END
+
                 Geometry.Planar.Point2D Point_4 = new Geometry.Planar.Point2D(temperature_1, 0);
                 Geometry.Planar.Point2D Point_5 = new Geometry.Planar.Point2D(temperature_p2, humidity_ratio_2);
                 series_specific_volume.Points.AddXY(Point_4.X, Point_4.Y);
