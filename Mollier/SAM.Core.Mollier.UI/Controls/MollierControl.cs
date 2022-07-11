@@ -633,6 +633,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     series.Points[index].Tag = end;
 
                     series.Tag = mollierProcess;
+                    series.ToolTip = ToolTip(mollierProcess);
                 }
             }
 
