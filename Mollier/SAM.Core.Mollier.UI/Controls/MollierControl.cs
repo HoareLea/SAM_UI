@@ -750,15 +750,15 @@ namespace SAM.Core.Mollier.UI.Controls
                 return null;
             }
 
-            string mask = "HR = {0}[{1}]\nT = {1}[C]\nP = {2}";
+            string mask = "RH = {0}[%]\nHR = {1}[{2}]\nT = {3}[C]\nP = {4}[Pa]";
 
             switch (chartType)
             {
                 case ChartType.Psychrometric:
-                    return String.Format(mask, mollierPoint.HumidityRatio, "[kg/kg]", mollierPoint.DryBulbTemperature, mollierPoint.Pressure);
+                    return String.Format(mask, mollierPoint.RelativeHumidity, Core.Query.Round(mollierPoint.HumidityRatio, Tolerance.MacroDistance), "[kg/kg]", mollierPoint.DryBulbTemperature, mollierPoint.Pressure);
 
                 case ChartType.Mollier:
-                    return String.Format(mask, mollierPoint.HumidityRatio * 1000, "[g/kg]", Query.DiagramTemperature(mollierPoint), mollierPoint.Pressure);
+                    return String.Format(mask, mollierPoint.RelativeHumidity, Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.1), "[g/kg]", Query.DiagramTemperature(mollierPoint), mollierPoint.Pressure);
             }
             return null;
             
