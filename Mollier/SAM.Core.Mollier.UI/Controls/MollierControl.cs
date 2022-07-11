@@ -19,6 +19,8 @@ namespace SAM.Core.Mollier.UI.Controls
         private bool density_line = true, enthalpy_line = true, specific_volume_line = true, wet_bulb_temperature_line = true;
         private List<MollierPoint> mollierPoints;
         private List<IMollierProcess> mollierProcesses;
+        int count = 0;
+
         public MollierControl()
         {
             InitializeComponent();
@@ -196,21 +198,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 series_specific_volume.ChartType = SeriesChartType.Spline;
                 series_specific_volume.IsVisibleInLegend = false;
                 series_specific_volume.Color = Color.LightSlateGray;
-                
-                //OLD VERSION START
-                
-                //double temperature_1 = temperature_by_specific_volume(specific_volume_Min, 0, pressure);
-                //double temperature_2 = temperature_by_specific_volume(specific_volume_Min, 0.05, pressure);
-                //Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(0, temperature_1);
-                //Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(50, temperature_2);
-                //Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_1, Point_2 });
-                
-                //double humidity_ratio_2 = humidity_ratio_for_100relativity(temperature_1, polynomialEquation, pressure);
-                //double temperature_p2 = polynomialEquation.Evaluate(humidity_ratio_2 * 1000);
-
-                //OLD VERSION END
-
-                // NEW VERSION START
 
                 MollierPoint mollierPoint_1 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(0, specific_volume_Min, pressure);
                 double temperature_1 = mollierPoint_1.DryBulbTemperature;
@@ -218,8 +205,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 MollierPoint mollierPoint_2 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(100, specific_volume_Min, pressure);
                 double humidity_ratio_2 = mollierPoint_2.HumidityRatio;
                 double temperature_p2 = mollierPoint_2.DryBulbTemperature;
-
-                //NEW VERSION END
 
                 //Geometry.Planar.Point2D Point_3 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
                 double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, 0);
@@ -430,31 +415,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 series_specific_volume.IsVisibleInLegend = false;
                 series_specific_volume.Color = Color.LightSlateGray;
 
-                //OLD VERSION START
-
-                //double temperature_1 = temperature_by_specific_volume(specific_volume_Min, 0, pressure);
-                //double temperature_2 = temperature_by_specific_volume(specific_volume_Min, 0.05, pressure);
-                //Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(0, temperature_1);
-                //Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(50, temperature_2);
-                //Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_1, Point_2 });
-                //double humidity_ratio_2 = humidity_ratio_for_100relativity(temperature_1, polynomialEquation, pressure);
-                //double temperature_p2 = polynomialEquation.Evaluate(humidity_ratio_2 * 1000);
-                //Geometry.Planar.Point2D Point_3 = new Geometry.Planar.Point2D(humidity_ratio_2 * 1000, temperature_p2);
-                //double diagram_temperature_1 = Query.DiagramTemperature(temperature_1, 0);
-                //double diagram_temperature_2 = Query.DiagramTemperature(temperature_p2, humidity_ratio_2);
-
-                //OLD VERSION END
-
-                //NEW VERSION START
-
                 MollierPoint mollierPoint_1 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(0, specific_volume_Min, pressure);
                 double temperature_1 = mollierPoint_1.DryBulbTemperature;
 
                 MollierPoint mollierPoint_2 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(100, specific_volume_Min, pressure);
                 double humidity_ratio_2 = mollierPoint_2.HumidityRatio;
                 double temperature_p2 = mollierPoint_2.DryBulbTemperature;
-
-                //NEW VERSION END
 
                 Geometry.Planar.Point2D Point_4 = new Geometry.Planar.Point2D(temperature_1, 0);
                 Geometry.Planar.Point2D Point_5 = new Geometry.Planar.Point2D(temperature_p2, humidity_ratio_2);
@@ -738,7 +704,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     series.Points[index].Tag = end;
 
                     series.Tag = mollierProcess;
-                    series.ToolTip = ToolTip(mollierProcess);
+                    //series.ToolTip = ToolTip(mollierProcess);
                 }
             }
         }
@@ -750,15 +716,15 @@ namespace SAM.Core.Mollier.UI.Controls
                 return null;
             }
 
-            string mask = "RH = {0}[%]\nHR = {1}[{2}]\nT = {3}[C]\nP = {4}[Pa]";
+            string mask = "φ = {0} %\nx = {1}{2}\nt_d = {3} °C\np = {4} Pa\nh = {5} kJ/kg\nt_w = {6} °C\n𝜈 = {7} kg/m³";
 
             switch (chartType)
             {
                 case ChartType.Psychrometric:
-                    return String.Format(mask, mollierPoint.RelativeHumidity, Core.Query.Round(mollierPoint.HumidityRatio, Tolerance.MacroDistance), "[kg/kg]", mollierPoint.DryBulbTemperature, mollierPoint.Pressure);
+                    return String.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.01), Core.Query.Round(mollierPoint.HumidityRatio, Tolerance.MacroDistance), " kg/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, mollierPoint.Enthalpy, Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(),0.01));
 
                 case ChartType.Mollier:
-                    return String.Format(mask, mollierPoint.RelativeHumidity, Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.1), "[g/kg]", Query.DiagramTemperature(mollierPoint), mollierPoint.Pressure);
+                    return String.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.01), Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.1), " g/kg", Core.Query.Round(Query.DiagramTemperature(mollierPoint), 0.01), mollierPoint.Pressure, mollierPoint.Enthalpy, Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.01));
             }
             return null;
             
@@ -766,17 +732,17 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private string ToolTip(IMollierProcess mollierProcess)
         {
-            if(mollierProcess is HeatingProcess)
+            if (mollierProcess is HeatingProcess)
             {
                 return "Heating";
             }
 
-            if(mollierProcess is CoolingProcess)
+            if (mollierProcess is CoolingProcess)
             {
                 return "Cooling";
             }
 
-            if(mollierProcess is MixingProcess)
+            if (mollierProcess is MixingProcess)
             {
                 return "Mixing";
             }
@@ -786,7 +752,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 return "Heat Recovery";
             }
 
-            if(mollierProcess is HumidificationProcess)
+            if (mollierProcess is HumidificationProcess)
             {
                 return "Humidification";
             }
@@ -825,6 +791,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double result = 50;
             while (Query.SpecificVolume(result, humidity_ratio, pressure) > specific_volume)
             {
+                count++;
                 result -= 0.001;
             }
             return result;
@@ -834,6 +801,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double result = 0;
             while (Query.RelativeHumidity(polynomialEquation.Evaluate(result * 1000), result, pressure) < 100)
             {
+                count++;
                 double x = polynomialEquation.Evaluate(result * 1000);
                 double test = Query.RelativeHumidity(polynomialEquation.Evaluate(result * 1000), result, pressure);
                 result += 0.0001;
