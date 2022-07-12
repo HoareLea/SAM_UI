@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace SAM.Analytical.UI.Grasshopper
 {
-    public class SAMAnalyticalShowAHU : GH_SAMVariableOutputParameterComponent
+    public class SAMAnalyticalShowDiagramAHU : GH_SAMVariableOutputParameterComponent
     {
         private Core.Mollier.UI.MollierForm mollierForm;
 
@@ -34,9 +34,9 @@ namespace SAM.Analytical.UI.Grasshopper
         /// <summary>
         /// Initializes a new instance of the SAM_point3D class.
         /// </summary>
-        public SAMAnalyticalShowAHU()
-          : base("SAMAnalytical.ShowAHU", "SAMAnalytical.ShowAHU",
-              "Print Room Data Sheets",
+        public SAMAnalyticalShowDiagramAHU()
+          : base("SAMAnalytical.ShowDiagramAHU", "SAMAnalytical.ShowDiagramAHU",
+              "Show AHU Diagram",
               "SAM", "Analytical")
         {
         }
@@ -51,6 +51,9 @@ namespace SAM.Analytical.UI.Grasshopper
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
                 GooAnalyticalModelParam gooPanelParam = new GooAnalyticalModelParam() { Name = "_analyticalModel", NickName = "_analyticalModel", Description = "SAM Analytical Model", Access = GH_ParamAccess.item };
                 result.Add(new GH_SAMParam(gooPanelParam, ParamVisibility.Binding));
+
+                global::Grasshopper.Kernel.Parameters.Param_String @string = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "_name", NickName = "_name", Description = "AHU name", Access = GH_ParamAccess.item };
+                result.Add(new GH_SAMParam(@string, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_run", NickName = "_run", Description = "Connect a boolean toggle to run.", Access = GH_ParamAccess.item };
                 @boolean.SetPersistentData(false);
@@ -99,13 +102,19 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
-            List<IMollierProcess> mollierProcesses = null;
             string name = null;
+            index = Params.IndexOfInputParam("_name");
+            if (index == -1 || !dataAccess.GetData(index, ref name) || string.IsNullOrEmpty(name))
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
+                return;
+            }
 
-            AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.FirstOrDefault();
+            List<IMollierProcess> mollierProcesses = null;
+
+            AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == name);
             if(airHandlingUnitResult != null)
             {
-                name = airHandlingUnitResult.Name;
                 mollierProcesses = Mollier.Query.MollierProcesses(airHandlingUnitResult);
             }
 

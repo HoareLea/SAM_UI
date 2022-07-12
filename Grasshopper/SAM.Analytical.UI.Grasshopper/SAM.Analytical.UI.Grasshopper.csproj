@@ -73,7 +73,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Component\SAMAnalyticalShowAHU.cs" />
+    <Compile Include="Component\SAMAnalyticalShowDiagramSpace.cs" />
+    <Compile Include="Component\SAMAnalyticalShowDiagramAHU.cs" />
     <Compile Include="Component\SAMAnalyticalPrintAHU.cs" />
     <Compile Include="Component\SAMAnalyticalPrintRDS.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
