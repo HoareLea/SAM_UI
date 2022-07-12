@@ -115,7 +115,7 @@ namespace SAM.Analytical.UI.Grasshopper
             AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == name);
             if(airHandlingUnitResult != null)
             {
-                mollierProcesses = Mollier.Query.MollierProcesses(airHandlingUnitResult);
+                 Mollier.Modify.UpdateMollierProcesses(new AirHandlingUnitResult( airHandlingUnitResult), out mollierProcesses);
             }
 
 
