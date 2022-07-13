@@ -139,5 +139,53 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.AddProcess(mollierProcess);
             return true;
         }
+
+        private void blueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (defaultToolStripMenuItem.Checked)
+            {
+                defaultToolStripMenuItem.Checked = !defaultToolStripMenuItem.Checked;
+                blueToolStripMenuItem.Checked = !blueToolStripMenuItem.Checked;
+                MollierControl_Main.Blue_Color = "blue";
+            }
+            if (grayToolStripMenuItem.Checked)
+            {
+                grayToolStripMenuItem.Checked = !grayToolStripMenuItem.Checked;
+                blueToolStripMenuItem.Checked = !blueToolStripMenuItem.Checked;
+                MollierControl_Main.Blue_Color = "blue";
+            }
+        }
+
+        private void grayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (defaultToolStripMenuItem.Checked)
+            {
+                defaultToolStripMenuItem.Checked = !defaultToolStripMenuItem.Checked;
+                grayToolStripMenuItem.Checked = !grayToolStripMenuItem.Checked;
+                MollierControl_Main.Gray_Color = "gray";
+            }
+            if (blueToolStripMenuItem.Checked)
+            {
+                blueToolStripMenuItem.Checked = !blueToolStripMenuItem.Checked;
+                grayToolStripMenuItem.Checked = !grayToolStripMenuItem.Checked;
+                MollierControl_Main.Gray_Color = "gray";
+            }
+        }
+
+        private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (blueToolStripMenuItem.Checked)
+            {
+                blueToolStripMenuItem.Checked = !blueToolStripMenuItem.Checked;
+                defaultToolStripMenuItem.Checked = !defaultToolStripMenuItem.Checked;
+                MollierControl_Main.Default_Color = "default";
+            }
+            if (grayToolStripMenuItem.Checked)
+            {
+                grayToolStripMenuItem.Checked = !grayToolStripMenuItem.Checked;
+                defaultToolStripMenuItem.Checked = !defaultToolStripMenuItem.Checked;
+                MollierControl_Main.Gray_Color = "default";
+            }
+        }
     }
 }

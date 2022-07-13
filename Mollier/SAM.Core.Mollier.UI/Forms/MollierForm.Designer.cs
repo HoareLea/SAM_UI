@@ -43,6 +43,10 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_ChartType = new System.Windows.Forms.ToolStripMenuItem();
             this.ChartToolStripMenuItem_Mollier = new System.Windows.Forms.ToolStripMenuItem();
             this.ChartToolStripMenuItem_Psychrometric = new System.Windows.Forms.ToolStripMenuItem();
+            this.colorThemeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.defaultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.grayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
@@ -62,7 +66,7 @@ namespace SAM.Core.Mollier.UI
             this.Label_Pressure.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.Label_Pressure.Location = new System.Drawing.Point(6, 40);
             this.Label_Pressure.Name = "Label_Pressure";
-            this.Label_Pressure.Size = new System.Drawing.Size(98, 17);
+            this.Label_Pressure.Size = new System.Drawing.Size(92, 16);
             this.Label_Pressure.TabIndex = 11;
             this.Label_Pressure.Text = "Pressure [Pa]:";
             // 
@@ -112,7 +116,8 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Enthalpy,
             this.ToolStripMenuItem_SpecificVolume,
             this.ToolStripMenuItem_WetBulbTemperature,
-            this.ToolStripMenuItem_ChartType});
+            this.ToolStripMenuItem_ChartType,
+            this.colorThemeToolStripMenuItem});
             this.ToolStripMenuItem_View.Name = "ToolStripMenuItem_View";
             this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 24);
             this.ToolStripMenuItem_View.Text = "View";
@@ -178,6 +183,39 @@ namespace SAM.Core.Mollier.UI
             this.ChartToolStripMenuItem_Psychrometric.Text = "Psychrometric";
             this.ChartToolStripMenuItem_Psychrometric.Click += new System.EventHandler(this.ChartToolStripMenuItem_Psychrometric_Click);
             // 
+            // colorThemeToolStripMenuItem
+            // 
+            this.colorThemeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.defaultToolStripMenuItem,
+            this.blueToolStripMenuItem,
+            this.grayToolStripMenuItem});
+            this.colorThemeToolStripMenuItem.Name = "colorThemeToolStripMenuItem";
+            this.colorThemeToolStripMenuItem.Size = new System.Drawing.Size(240, 26);
+            this.colorThemeToolStripMenuItem.Text = "Color Theme";
+            // 
+            // defaultToolStripMenuItem
+            // 
+            this.defaultToolStripMenuItem.Checked = true;
+            this.defaultToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.defaultToolStripMenuItem.Name = "defaultToolStripMenuItem";
+            this.defaultToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.defaultToolStripMenuItem.Text = "Default";
+            this.defaultToolStripMenuItem.Click += new System.EventHandler(this.defaultToolStripMenuItem_Click);
+            // 
+            // blueToolStripMenuItem
+            // 
+            this.blueToolStripMenuItem.Name = "blueToolStripMenuItem";
+            this.blueToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.blueToolStripMenuItem.Text = "Blue";
+            this.blueToolStripMenuItem.Click += new System.EventHandler(this.blueToolStripMenuItem_Click);
+            // 
+            // grayToolStripMenuItem
+            // 
+            this.grayToolStripMenuItem.Name = "grayToolStripMenuItem";
+            this.grayToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.grayToolStripMenuItem.Text = "Gray";
+            this.grayToolStripMenuItem.Click += new System.EventHandler(this.grayToolStripMenuItem_Click);
+            // 
             // MollierControl_Main
             // 
             this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -233,6 +271,10 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_ChartType;
         private System.Windows.Forms.ToolStripMenuItem ChartToolStripMenuItem_Mollier;
         private System.Windows.Forms.ToolStripMenuItem ChartToolStripMenuItem_Psychrometric;
+        private System.Windows.Forms.ToolStripMenuItem colorThemeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem defaultToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blueToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem grayToolStripMenuItem;
     }
 }
 
