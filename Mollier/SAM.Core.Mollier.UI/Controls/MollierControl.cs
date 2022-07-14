@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Controls
         private double pressure = 101325;
         private bool density_line = true, enthalpy_line = true, specific_volume_line = true, wet_bulb_temperature_line = true;
         private string color = "default";
-        private int temperature_Min = -20, temperature_Max = 50, humidityRatio_Min = 0, humidityRatio_Max = 35, temperature_interval = 5, humidityRatio_interval = 5;
+        private double temperature_Min = -20, temperature_Max = 50, humidityRatio_Min = 0, humidityRatio_Max = 35, temperature_interval = 5, humidityRatio_interval = 5;
         private List<MollierPoint> mollierPoints;
         private List<IMollierProcess> mollierProcesses;
         int count = 0;
@@ -522,18 +522,17 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.ChartAreas[0].AxisY.MajorGrid.Enabled = false;
             MollierChart.Series.Clear();
             ChartArea chartArea = MollierChart.ChartAreas[0];
-            //yourChartArea.AxisX2.Enabled = AxisEnabled.True;
-            //MollierChart.ChartAreas[0].AxisX2.Enabled = AxisEnabled.True;
-            //MollierChart.ChartAreas[0].AxisX2.Title = "P_w  x [ kPa ]";
-            //MollierChart.ChartAreas[0].AxisX2.Maximum = 50;
-            //MollierChart.ChartAreas[0].AxisX2.Minimum = 0;
-            //MollierChart.ChartAreas[0].AxisX2.Interval = 5;
-            //MollierChart.ChartAreas[0].AxisX2.MajorGrid.LineColor = Color.Gray;
-            //MollierChart.ChartAreas[0].AxisX2.MinorGrid.Interval = 1;
-            //MollierChart.ChartAreas[0].AxisX2.MinorGrid.Enabled = true;
-            //MollierChart.ChartAreas[0].AxisX2.MinorGrid.LineColor = Color.LightGreen;
+            MollierChart.ChartAreas[0].AxisX2.Enabled = AxisEnabled.True;
+            MollierChart.ChartAreas[0].AxisX2.Title = "P_w  x [ kPa ]";
+            MollierChart.ChartAreas[0].AxisX2.Maximum = 25;
+            MollierChart.ChartAreas[0].AxisX2.Minimum = 0;
+            MollierChart.ChartAreas[0].AxisX2.Interval = 5;
+            MollierChart.ChartAreas[0].AxisX2.MajorGrid.LineColor = Color.Gray;
+            MollierChart.ChartAreas[0].AxisX2.MinorGrid.Interval = 1;
+            MollierChart.ChartAreas[0].AxisX2.MinorGrid.Enabled = true;
+            MollierChart.ChartAreas[0].AxisX2.MinorGrid.LineColor = Color.LightGreen;
 
-            
+        double pd = Query.PartialVapourPressure_ByHumidityRatio(35.0/1000.0, 101325) / 1000;
             //MollierChart.ChartAreas.AxisX2.Enabled = AxisEnabled.True;
             //AXIS X
 
@@ -555,7 +554,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.Minimum = temperature_Min;
             axisY.Interval = temperature_interval;
             //CREATING RELATIVE HUMIDITY AND HUMIDITY RATIO LINES
-            create_relative_humidity_line_Mollier(temperature_Min, temperature_Max, relative_humidity, pressure);
+            create_relative_humidity_line_Mollier(System.Convert.ToInt32(temperature_Min), System.Convert.ToInt32(temperature_Max), relative_humidity, pressure);
             //CREATING DENSITY LINE
             if (density_line)
                 create_density_line(ChartType.Mollier, density_Min, density_Max, pressure);
@@ -636,18 +635,18 @@ namespace SAM.Core.Mollier.UI.Controls
             //MollierChart
             MollierChart.Series.Clear();
             ChartArea chartArea = MollierChart.ChartAreas[0];
-            //MollierChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.True;
-            //MollierChart.ChartAreas[0].AxisY2.Title = "P_w  x [ kPa ]";
-            //MollierChart.ChartAreas[0].AxisY2.Maximum = 50;
-            //MollierChart.ChartAreas[0].AxisY2.Minimum = 0;
-            //MollierChart.ChartAreas[0].AxisY2.Interval = 5;
-            //MollierChart.ChartAreas[0].AxisY2.MajorGrid.LineColor = Color.Gray;
-            //MollierChart.ChartAreas[0].AxisY2.MinorGrid.Interval = 1;
-            //MollierChart.ChartAreas[0].AxisY2.MinorGrid.Enabled = true;
-            //MollierChart.ChartAreas[0].AxisY2.MinorGrid.LineColor = Color.LightGreen;
+            MollierChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.True;
+            MollierChart.ChartAreas[0].AxisY2.Title = "Humidity Ratio  x [kg/kg]";
+            MollierChart.ChartAreas[0].AxisY2.Maximum = humidityRatio_Max / 1000;
+            MollierChart.ChartAreas[0].AxisY2.Minimum = humidityRatio_Min / 1000;
+            MollierChart.ChartAreas[0].AxisY2.Interval = humidityRatio_interval / 1000;
+            MollierChart.ChartAreas[0].AxisY2.MajorGrid.LineColor = Color.Gray;
+            MollierChart.ChartAreas[0].AxisY2.MinorGrid.Interval = 0.001;
+            MollierChart.ChartAreas[0].AxisY2.MinorGrid.Enabled = true;
+            MollierChart.ChartAreas[0].AxisY2.MinorGrid.LineColor = Color.LightGray;
             //AXIS X
             Axis axisX = chartArea.AxisX;
-            axisX.Title = "Dry Bulb Temperature t [ °C ]";
+            axisX.Title = "Dry Bulb Temperature t [°C]";
             axisX.Maximum = temperature_Max;
             axisX.Minimum = temperature_Min;
             axisX.Interval = temperature_interval;
@@ -657,17 +656,17 @@ namespace SAM.Core.Mollier.UI.Controls
             axisX.MinorGrid.LineColor = Color.LightGray;
             //AXIS Y
             Axis axisY = chartArea.AxisY;
-            axisY.Title = "Humidity Ratio  x [ kg/kg ]";
+            axisY.Title = "P_w  x [ kPa ]";
             axisY.TextOrientation = TextOrientation.Rotated270;
-            axisY.Maximum = System.Convert.ToDouble(humidityRatio_Max)/1000;
-            axisY.Minimum = System.Convert.ToDouble(humidityRatio_Min)/ 1000;
-            axisY.Interval = System.Convert.ToDouble(humidityRatio_interval) / 1000;
+            axisY.Maximum = humidityRatio_Max/1000;
+            axisY.Minimum = humidityRatio_Min/ 1000;
+            axisY.Interval = humidityRatio_interval/1000;
             axisY.MajorGrid.LineColor = Color.Gray;
             axisY.MinorGrid.Interval = 0.001;
             axisY.MinorGrid.Enabled = true;
             axisY.MinorGrid.LineColor = Color.LightGray;
             //CREATING RELATIVE HUMIDITY LINES
-            create_relative_humidity_line_Psychrometric(temperature_Min, temperature_Max, relative_humidity, pressure);
+            create_relative_humidity_line_Psychrometric(System.Convert.ToInt32(temperature_Min), System.Convert.ToInt32(temperature_Max), relative_humidity, pressure);
             //CREATING DENSITY LINE
             if (density_line)
                 create_density_line(ChartType.Psychrometric, density_Min, density_Max, pressure);
@@ -922,7 +921,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
-        public int Temperature_Min
+        public double Temperature_Min
         {
             get
             {
@@ -937,7 +936,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
-        public int Temperature_Max
+        public double Temperature_Max
         {
             get
             {
@@ -952,7 +951,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
-        public int Temperature_Interval
+        public double Temperature_Interval
         {
             get
             {
@@ -967,7 +966,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
-        public int HumidityRatio_Min
+        public double HumidityRatio_Min
         {
             get
             {
@@ -982,7 +981,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
-        public int HumidityRatio_Max
+        public double HumidityRatio_Max
         {
             get
             {
@@ -997,7 +996,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
-        public int HumidityRatio_Interval
+        public double HumidityRatio_Interval
         {
             get
             {
