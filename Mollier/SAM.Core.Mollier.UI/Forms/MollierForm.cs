@@ -191,88 +191,16 @@ namespace SAM.Core.Mollier.UI
         {
 
         }
-
-        
-
-        //private void TemperatureMaximumValueTextbox_TextChanged(object sender, EventArgs e)
-        //{
-        //    if (!Core.Query.TryConvert(TemperatureMaximumValueTextbox.Text, out int temperature_Max))
-        //    {
-        //        return;
-        //    }
-        //    if (temperature_Max > 50 || temperature_Max < -20)
-        //    {
-        //        return;
-        //    }
-        //    MollierControl_Main.Temperature_Max = temperature_Max;
-        //}
-
-        //private void TemperatureMinimumValueTextbox_TextChanged(object sender, EventArgs e)
-        //{
-        //    if (!Core.Query.TryConvert(TemperatureMinimumValueTextbox.Text, out int temperature_Min))
-        //    {
-        //        return;
-        //    }
-        //   if (temperature_Min < -20 || temperature_Min > 50)
-        //    {
-        //       return;
-        //    }
-        //    MollierControl_Main.Temperature_Min = temperature_Min;
-        //}
-
-        //private void TemperatureIntervalTextbox_TextChanged(object sender, EventArgs e)
-        //{
-        //    if (!Core.Query.TryConvert(TemperatureIntervalTextbox.Text, out int temperature_interval))
-        //    {
-        //        return;
-        //    }
- 
-        //    MollierControl_Main.Temperature_Interval = temperature_interval;
-        //}
-
-        //private void HumidityRatioMinimumValueTextbox_TextChanged(object sender, EventArgs e)
-        //{
-        //    if (!Core.Query.TryConvert(HumidityRatioMinimumValueTextbox.Text, out int humidityRatio_Min))
-        //    {
-        //        return;
-        //    }
-        //    if (humidityRatio_Min < -20 || humidityRatio_Min > 50)
-        //    {
-        //        return;
-        //    }
-
-        //    MollierControl_Main.HumidityRatio_Min = humidityRatio_Min;
-        //}
-
-        //private void HumidityRatioMaximumValueTextbox_TextChanged(object sender, EventArgs e)
-        //{
-        //    if (!Core.Query.TryConvert(HumidityRatioMaximumValueTextbox.Text, out int humidityRatio_Max))
-        //    {
-        //        return;
-        //    }
-        //    if (humidityRatio_Max > 50 || humidityRatio_Max < -20)
-        //    {
-        //        return;
-        //    }
-        //    MollierControl_Main.HumidityRatio_Max = humidityRatio_Max;
-        //}
-
-        //private void HumidityRatioIntervalTextbox_TextChanged(object sender, EventArgs e)
-        //{
-        //    if (!Core.Query.TryConvert(HumidityRatioIntervalTextbox.Text, out int humidityRatio_Interval))
-        //    {
-        //        return;
-        //    }
-            
-        //    MollierControl_Main.HumidityRatio_Interval = humidityRatio_Interval;
-        //}
-
         private void ToolStripMenuItem_OpenSettings_Click(object sender, EventArgs e)
         {
             using (MollierSettingsForm mollierSettingsForm = new MollierSettingsForm(MollierControl_Main))
             {
                 mollierSettingsForm.HumidityRatio_Max = MollierControl_Main.HumidityRatio_Max;
-
+                mollierSettingsForm.HumidityRatio_Min = MollierControl_Main.HumidityRatio_Min;
+                mollierSettingsForm.HumidityRatio_Interval = MollierControl_Main.HumidityRatio_Interval;
+                mollierSettingsForm.Temperature_Max = MollierControl_Main.Temperature_Max;
+                mollierSettingsForm.Temperature_Min = MollierControl_Main.Temperature_Min;
+                mollierSettingsForm.Temperature_Interval = MollierControl_Main.Temperature_Interval;
 
                 if (mollierSettingsForm.ShowDialog(this) != DialogResult.OK)
                 {
