@@ -84,6 +84,12 @@
     <Compile Include="Forms\MollierPointForm.Designer.cs">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MollierSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MollierSettingsForm.Designer.cs">
+      <DependentUpon>MollierSettingsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Controls\MollierControl.resx">
@@ -94,6 +100,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierPointForm.resx">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MollierSettingsForm.resx">
+      <DependentUpon>MollierSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

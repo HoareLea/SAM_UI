@@ -1009,6 +1009,9 @@ namespace SAM.Core.Mollier.UI.Controls
             return true;
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ChartType ChartType
         {
             get

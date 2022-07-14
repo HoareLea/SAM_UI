@@ -187,5 +187,16 @@ namespace SAM.Core.Mollier.UI
                 MollierControl_Main.Gray_Color = "default";
             }
         }
+
+        private void ToolStripMenuItem_SettingsForm_Click(object sender, EventArgs e)
+        {
+            using (MollierSettingsForm mollierSettingsForm = new MollierSettingsForm())
+            {
+                if(mollierSettingsForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+            }
+        }
     }
 }
