@@ -22,7 +22,6 @@ namespace SAM.Core.Mollier.UI.Controls
         private List<MollierPoint> mollierPoints;
         private List<IMollierProcess> mollierProcesses;
         int count = 0;
-
         public MollierControl()
         {
             InitializeComponent();
@@ -61,7 +60,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
                 }
                 //rotate relative humidity label
-                int index_Point = 8;
+                int index_Point = 5;
                 int count = relative_humidity_points.Count;
                 if ((count - (index_Point + 1) - i < 0) || (count - (index_Point - 1) - i < 0))
                     continue;
@@ -129,7 +128,7 @@ namespace SAM.Core.Mollier.UI.Controls
                         series.BorderWidth = 3;
                     }
                 }
-                int index_Point = 8;
+                int index_Point = 5;
                 int count = relative_humidity_points.Count;
                 if ((count - (index_Point + 1) - i < 0) || (count - (index_Point - 1) - i < 0))
                     continue;
@@ -264,9 +263,15 @@ namespace SAM.Core.Mollier.UI.Controls
             while(wetBulbTemperature_Min <= wetBulbTemperature_Max)
             {
                 result[wetBulbTemperature_Min] = new List<MollierPoint>();
-
                 double temperature_1 = DryBulbTemp_by_wet(wetBulbTemperature_Min, 0, pressure);
                 double humidityRatio_1 = Query.HumidityRatio(temperature_1, 0, pressure);
+                if (wetBulbTemperature_Min == 30)
+                {
+                    temperature_1 = temperature_Max;
+                  
+                    double rh = Query.RelativeHumidity_ByWetBulbTemperature(temperature_1, wetBulbTemperature_Min, pressure);
+                    humidityRatio_1 = Query.HumidityRatio(temperature_1, rh, pressure);
+                }
                 MollierPoint mollierPoint_1 = new MollierPoint(temperature_1, humidityRatio_1, pressure);
                 result[wetBulbTemperature_Min].Add(mollierPoint_1);
 
@@ -654,9 +659,9 @@ namespace SAM.Core.Mollier.UI.Controls
             Axis axisY = chartArea.AxisY;
             axisY.Title = "Humidity Ratio  x [ kg/kg ]";
             axisY.TextOrientation = TextOrientation.Rotated270;
-            axisY.Maximum = humidityRatio_Max/1000;
-            axisY.Minimum = humidityRatio_Min/1000;
-            axisY.Interval = humidityRatio_interval/1000;
+            axisY.Maximum = System.Convert.ToDouble(humidityRatio_Max)/1000;
+            axisY.Minimum = System.Convert.ToDouble(humidityRatio_Min)/ 1000;
+            axisY.Interval = System.Convert.ToDouble(humidityRatio_interval) / 1000;
             axisY.MajorGrid.LineColor = Color.Gray;
             axisY.MinorGrid.Interval = 0.001;
             axisY.MinorGrid.Enabled = true;
@@ -793,7 +798,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         public double DryBulbTemp_by_wet(double WetBulbTemperature, double relative_humidity, double pressure)
         {
-            double result = 99.9;
+            double result = 80;
             while (Query.WetBulbTemperature(result, relative_humidity, pressure) > WetBulbTemperature)
             {
                 result -= 0.1;
