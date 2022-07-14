@@ -54,6 +54,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (humidityRatio_Max < -20 || humidityRatio_Max > 50)
                 {
+                    MessageBox.Show("Wrong range\n Maximal Humidity Ratio is 50!");
                     return double.NaN;
                 }
 
@@ -73,12 +74,17 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if (humidityRatio_Min < -20 || humidityRatio_Min > 50)
+                if (humidityRatio_Min < 0 || humidityRatio_Min > 50)
                 {
+                    MessageBox.Show("Wrong range\n Minimal Humidity Ratio is 0!");
                     return double.NaN;
                 }
 
                 return humidityRatio_Min;
+            }
+            set
+            {
+                HumidityRatioMinimumValueTextbox.Text = value.ToString();
             }
         }
         public double HumidityRatio_Interval
@@ -89,8 +95,16 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-
+                if(humidityRatio_Interval <= 0)
+                {
+                    MessageBox.Show("Wrong range\n Interval has to be positive!");
+                    return double.NaN;
+                }
                 return humidityRatio_Interval;
+            }
+            set
+            {
+                HumidityRatioIntervalTextbox.Text = value.ToString();
             }
         }
         public double Temperature_Max
@@ -103,10 +117,15 @@ namespace SAM.Core.Mollier.UI
                 }
                 if(temperature_Max < -20 || temperature_Max > 50)
                 {
+                    MessageBox.Show("Wrong range\n Maximal possibly temperature is 50!");
                     return double.NaN;
                 }
 
                 return temperature_Max;
+            }
+            set
+            {
+                TemperatureMaximumValueTextbox.Text = value.ToString();
             }
         }
         public double Temperature_Min
@@ -119,10 +138,15 @@ namespace SAM.Core.Mollier.UI
                 }
                 if(temperature_Min < -20 || temperature_Min > 50)
                 {
+                    MessageBox.Show("Wrong range\n Minimal possibly temperature is -20!");
                     return double.NaN;
                 }
 
                 return temperature_Min;
+            }
+            set
+            {
+                TemperatureMinimumValueTextbox.Text = value.ToString();
             }
         }
         public double Temperature_Interval
@@ -133,19 +157,33 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-
+                if(temperature_Interval <= 0)
+                {
+                    MessageBox.Show("Wrong range\n Interval has to be positive!");
+                    return double.NaN;
+                }
                 return temperature_Interval;
+            }
+            set
+            {
+                TemperatureIntervalTextbox.Text = value.ToString();
             }
         }
 
         private void Apply()
         {
-            mollierControl.HumidityRatio_Max = HumidityRatio_Max;
-            mollierControl.HumidityRatio_Min = HumidityRatio_Min;
-            mollierControl.HumidityRatio_Interval = HumidityRatio_Interval;
-            mollierControl.Temperature_Max = Temperature_Max;
-            mollierControl.Temperature_Min = Temperature_Min;
-            mollierControl.Temperature_Interval = Temperature_Interval;
+            if (HumidityRatio_Max.ToString() != double.NaN.ToString())
+                mollierControl.HumidityRatio_Max = HumidityRatio_Max;
+            if (HumidityRatio_Min.ToString() != double.NaN.ToString())   
+                mollierControl.HumidityRatio_Min = HumidityRatio_Min;
+            if(HumidityRatio_Interval.ToString() != double.NaN.ToString())
+                mollierControl.HumidityRatio_Interval = HumidityRatio_Interval;
+            if(Temperature_Min.ToString() != double.NaN.ToString())
+                mollierControl.Temperature_Min = Temperature_Min;
+            if(Temperature_Max.ToString() != double.NaN.ToString())
+                mollierControl.Temperature_Max = Temperature_Max;
+            if(Temperature_Interval.ToString() != double.NaN.ToString())
+                mollierControl.Temperature_Interval = Temperature_Interval;
         }
 
 
