@@ -50,6 +50,9 @@
     <Reference Include="SAM.Core.Grasshopper">
       <HintPath>..\..\..\SAM\build\SAM.Core.Grasshopper.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Core.Grasshopper.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Grasshopper.Mollier.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Core.Mollier, Version=1.0.8222.18988, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
@@ -73,6 +76,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Component\SAMAnalyticalShowDiagram.cs" />
     <Compile Include="Component\SAMAnalyticalShowDiagramSpace.cs" />
     <Compile Include="Component\SAMAnalyticalShowDiagramAHU.cs" />
     <Compile Include="Component\SAMAnalyticalPrintAHU.cs" />

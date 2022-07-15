@@ -140,6 +140,17 @@ namespace SAM.Core.Mollier.UI
             return true;
         }
 
+        public bool AddPoints(IEnumerable<MollierPoint> mollierPoints)
+        {
+            if (mollierPoints == null)
+            {
+                return false;
+            }
+
+            MollierControl_Main.AddPoints(mollierPoints);
+            return true;
+        }
+
         private void blueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (defaultToolStripMenuItem.Checked)
