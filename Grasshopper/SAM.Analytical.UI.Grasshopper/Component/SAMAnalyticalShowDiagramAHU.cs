@@ -1,4 +1,5 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using SAM.Analytical.Grasshopper;
 using SAM.Analytical.Mollier;
 using SAM.Analytical.UI.Grasshopper.Properties;
@@ -52,8 +53,8 @@ namespace SAM.Analytical.UI.Grasshopper
                 GooAnalyticalModelParam gooPanelParam = new GooAnalyticalModelParam() { Name = "_analyticalModel", NickName = "_analyticalModel", Description = "SAM Analytical Model", Access = GH_ParamAccess.item };
                 result.Add(new GH_SAMParam(gooPanelParam, ParamVisibility.Binding));
 
-                global::Grasshopper.Kernel.Parameters.Param_String @string = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "_name", NickName = "_name", Description = "AHU name", Access = GH_ParamAccess.item };
-                result.Add(new GH_SAMParam(@string, ParamVisibility.Binding));
+                global::Grasshopper.Kernel.Parameters.Param_GenericObject @genericObject = new global::Grasshopper.Kernel.Parameters.Param_GenericObject() { Name = "_airHandlingUnit", NickName = "_airHandlingUnit", Description = "SAM Analytical AirHandlingUnit or name", Access = GH_ParamAccess.item };
+                result.Add(new GH_SAMParam(@genericObject, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_run", NickName = "_run", Description = "Connect a boolean toggle to run.", Access = GH_ParamAccess.item };
                 @boolean.SetPersistentData(false);
@@ -102,17 +103,47 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
-            string name = null;
-            index = Params.IndexOfInputParam("_name");
-            if (index == -1 || !dataAccess.GetData(index, ref name) || string.IsNullOrEmpty(name))
+            index = Params.IndexOfInputParam("_airHandlingUnit");
+            if (index == -1)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
+            GH_ObjectWrapper objectWrapper = null;
+            if (!dataAccess.GetData(index, ref objectWrapper) || objectWrapper == null)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
+                return;
+            }
+
+            object @object = objectWrapper.Value;
+            if (@object is IGH_Goo)
+            {
+                @object = (@object as dynamic).Value;
+            }
+
+            AdjacencyCluster adjacencyCluster = analyticalModel?.AdjacencyCluster;
+
+            AirHandlingUnit airHandlingUnit = null;
+            if (@object is string)
+            {
+                airHandlingUnit = adjacencyCluster?.GetObjects((AirHandlingUnit x) => x.Name == (string)@object).FirstOrDefault();
+            }
+            else if (@object is AirHandlingUnit)
+            {
+                airHandlingUnit = adjacencyCluster?.GetObject<AirHandlingUnit>(((AirHandlingUnit)@object).Guid);
+            }
+
+            if (airHandlingUnit == null)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Could not find or create Air Handling Unit");
+                return;
+            }
+
             List<IMollierProcess> mollierProcesses = null;
 
-            AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == name);
+            AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == airHandlingUnit.Name);
             if(airHandlingUnitResult != null)
             {
                  Mollier.Modify.UpdateMollierProcesses(new AirHandlingUnitResult( airHandlingUnitResult), out mollierProcesses);
@@ -124,7 +155,7 @@ namespace SAM.Analytical.UI.Grasshopper
                 mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
             }
 
-            mollierForm.Name = string.IsNullOrWhiteSpace(name) ? mollierForm.Name : name;
+            mollierForm.Name = string.IsNullOrWhiteSpace(airHandlingUnit.Name) ? mollierForm.Name : airHandlingUnit.Name;
             mollierProcesses?.ForEach(x => mollierForm.AddProcess(x));
 
             mollierForm.Show();
