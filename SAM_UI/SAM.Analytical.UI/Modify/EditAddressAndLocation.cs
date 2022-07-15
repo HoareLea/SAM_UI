@@ -1,5 +1,4 @@
-﻿using SAM.Core;
-using SAM.Core.Windows.Forms;
+﻿using SAM.Core.Windows.Forms;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI

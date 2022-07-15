@@ -1,18 +1,18 @@
 ﻿using Grasshopper.Kernel;
-using SAM.Analytical.Grasshopper;
-using SAM.Analytical.UI.Grasshopper.Properties;
+using SAM.Weather.Grasshopper;
+using SAM.Weather.UI.Grasshopper.Properties;
 using SAM.Core.Grasshopper;
 using System;
 using System.Collections.Generic;
 
-namespace SAM.Analytical.UI.Grasshopper
+namespace SAM.Weather.UI.Grasshopper
 {
-    public class SAMAnalyticalPrintAHU : GH_SAMVariableOutputParameterComponent
+    public class SAMWeatherMollierPoints : GH_SAMVariableOutputParameterComponent
     {
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("412aab4a-51f1-4c4a-a2ad-b2eb8359bb54");
+        public override Guid ComponentGuid => new Guid("b80fc9e8-f940-4c53-b0dc-05127cf5941d");
 
         /// <summary>
         /// The latest version of this component
@@ -29,9 +29,9 @@ namespace SAM.Analytical.UI.Grasshopper
         /// <summary>
         /// Initializes a new instance of the SAM_point3D class.
         /// </summary>
-        public SAMAnalyticalPrintAHU()
-          : base("SAMAnalytical.PrintAHU", "SAMAnalytical.PrintAHU",
-              "Print Room Data Sheets",
+        public SAMWeatherMollierPoints()
+          : base("SAMWeather.MollierPoints", "SAMWeather.MollierPoints",
+              "Gets WeatherMollierPOints from WeatherData",
               "SAM", "Analytical")
         {
         }
@@ -44,13 +44,10 @@ namespace SAM.Analytical.UI.Grasshopper
             get
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
-                GooAnalyticalModelParam gooPanelParam = new GooAnalyticalModelParam() { Name = "_analyticalModel", NickName = "_analyticalModel", Description = "SAM Analytical Model", Access = GH_ParamAccess.item };
-                result.Add(new GH_SAMParam(gooPanelParam, ParamVisibility.Binding));
-
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "_excelPath", NickName = "_excelPath", Description = "Excel Path", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                GooWeatherObjectParam gooWeatherObjectParam = new GooWeatherObjectParam() { Name = "_weatherObject", NickName = "_weatherObject", Description = "SAM Weather IWeatherObject such as WeatherData, WeatherYear, WeatherDay", Access = GH_ParamAccess.item };
+                result.Add(new GH_SAMParam(gooWeatherObjectParam, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = null;
-
                 @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_run", NickName = "_run", Description = "Connect a boolean toggle to run.", Access = GH_ParamAccess.item };
                 @boolean.SetPersistentData(false);
                 result.Add(new GH_SAMParam(@boolean, ParamVisibility.Binding));
@@ -67,8 +64,7 @@ namespace SAM.Analytical.UI.Grasshopper
             get
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
-                result.Add(new GH_SAMParam(new GooAnalyticalModelParam() { Name = "analytcialModel", NickName = "analytcialModel", Description = "SAM Analytical Model", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "successful", NickName = "successful", Description = "Correctly imported?", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new Core.Grasshopper.Mollier.GooMollierPointParam() { Name = "mollierPoints", NickName = "mollierPoints", Description = "SAM Core MollierPoints", Access = GH_ParamAccess.list }, ParamVisibility.Binding));
                 return result.ToArray();
             }
         }
@@ -97,27 +93,31 @@ namespace SAM.Analytical.UI.Grasshopper
             if (!run)
                 return;
 
-            string excelPath = null;
-            index = Params.IndexOfInputParam("_excelPath");
-            if (index == -1 || !dataAccess.GetData(index, ref excelPath) || string.IsNullOrWhiteSpace(excelPath))
-            {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
-                return;
-            }
-
-            AnalyticalModel analyticalModel = null;
+            IWeatherObject weatherObject = null;
             index = Params.IndexOfInputParam("_analyticalModel");
-            if (index == -1 || !dataAccess.GetData(index, ref analyticalModel) || analyticalModel == null)
+            if (index == -1 || !dataAccess.GetData(index, ref weatherObject) || weatherObject == null)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            Modify.PrintAirHandlingUnits(analyticalModel, excelPath, "AHU-XX");
+            List<Core.Mollier.MollierPoint> mollierPoints = null;
+            if(weatherObject is WeatherData)
+            {
+                mollierPoints = Mollier.Query.WeatherMollierPoints((WeatherData)weatherObject)?.ConvertAll(x => x as Core.Mollier.MollierPoint);
+            }
+            else if(weatherObject is WeatherYear)
+            {
+                mollierPoints = Mollier.Query.WeatherMollierPoints((WeatherYear)weatherObject)?.ConvertAll(x => x as Core.Mollier.MollierPoint);
+            }
+            else if(weatherObject is WeatherDay)
+            {
+                mollierPoints = Mollier.Query.MollierPoints((WeatherDay)weatherObject);
+            }
 
             index = Params.IndexOfOutputParam("analyticalModel");
             if (index != -1)
-                dataAccess.SetData(index, analyticalModel);
+                dataAccess.SetData(index, mollierPoints?.ConvertAll(x => new Core.Grasshopper.Mollier.GooMollierPoint(x)));
 
             if (index_successful != -1)
             {

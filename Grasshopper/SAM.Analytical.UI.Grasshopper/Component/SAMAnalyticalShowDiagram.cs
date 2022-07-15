@@ -1,14 +1,10 @@
 ﻿using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using SAM.Analytical.Grasshopper;
-using SAM.Analytical.Mollier;
 using SAM.Analytical.UI.Grasshopper.Properties;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SAM.Analytical.UI.Grasshopper
 {

@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SAM.Core.UI")]
+[assembly: AssemblyTitle("SAM.Weather.UI.Grasshopper")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SAM.Core.UI")]
+[assembly: AssemblyProduct("SAM.Weather.UI.Grasshopper")]
 [assembly: AssemblyCopyright("Copyright ©  2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("64ebdb08-f7e3-414b-9420-b67ed263b223")]
+[assembly: Guid("23026288-b1a9-4a0e-b0c3-85df7067a103")]
 
 // Version information for an assembly consists of the following four values:
 //
