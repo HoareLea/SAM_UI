@@ -49,6 +49,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_OK = new System.Windows.Forms.Button();
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
+            this.Button_ResetChart = new System.Windows.Forms.Button();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
             this.SuspendLayout();
@@ -262,12 +263,24 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
             // 
+            // Button_ResetChart
+            // 
+            this.Button_ResetChart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_ResetChart.Location = new System.Drawing.Point(16, 413);
+            this.Button_ResetChart.Name = "Button_ResetChart";
+            this.Button_ResetChart.Size = new System.Drawing.Size(98, 28);
+            this.Button_ResetChart.TabIndex = 9;
+            this.Button_ResetChart.Text = "Reset Chart";
+            this.Button_ResetChart.UseVisualStyleBackColor = true;
+            this.Button_ResetChart.Click += new System.EventHandler(this.Button_ResetChart_Click);
+            // 
             // MollierSettingsForm
             // 
             this.AcceptButton = this.Button_OK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.Button_Cancel;
             this.ClientSize = new System.Drawing.Size(705, 453);
+            this.Controls.Add(this.Button_ResetChart);
             this.Controls.Add(this.Button_Apply);
             this.Controls.Add(this.Button_OK);
             this.Controls.Add(this.Button_Cancel);
@@ -308,5 +321,6 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.TextBox HumidityRatioMaximumValueTextbox;
         private System.Windows.Forms.TextBox HumidityRatioMinimumValueTextbox;
         private System.Windows.Forms.Button Button_Apply;
+        private System.Windows.Forms.Button Button_ResetChart;
     }
 }
