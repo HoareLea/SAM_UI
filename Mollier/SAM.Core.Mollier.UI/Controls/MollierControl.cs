@@ -487,7 +487,6 @@ namespace SAM.Core.Mollier.UI.Controls
             createLabels(chartType,unit, prefix, result, value);
             return result;
         }
-
         private void generate_graph()
         {
             if(chartType == ChartType.Mollier)
@@ -504,9 +503,10 @@ namespace SAM.Core.Mollier.UI.Controls
         {
 
             chart.ApplyPaletteColors();  // (*)
-
+            long x = System.DateTime.Now.Ticks;
+  
             // Create new chart area for original series
-            ChartArea areaSeries = chart.ChartAreas.Add("Psychrometric_P_w" + cint.ToString());
+            ChartArea areaSeries = chart.ChartAreas.Add("Psychrometric_P_w" + x.ToString());
             areaSeries.BackColor = Color.Transparent;
             areaSeries.BorderColor = Color.Transparent;
             areaSeries.Position.FromRectangleF(area.Position.ToRectangleF());
@@ -522,7 +522,7 @@ namespace SAM.Core.Mollier.UI.Controls
             series.ChartArea = areaSeries.Name;
 
             // Create new chart area for axis
-            ChartArea areaAxis = chart.ChartAreas.Add("Psychrometric_P_w_copy" + cint.ToString());
+            ChartArea areaAxis = chart.ChartAreas.Add("Psychrometric_P_w_copy" + x.ToString());
 
             areaAxis.BackColor = Color.Transparent;
             areaAxis.BorderColor = Color.Transparent;
@@ -532,7 +532,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     .FromRectangleF(areaSeries.InnerPlotPosition.ToRectangleF());
 
             // Create a copy of specified series
-            Series seriesCopy = chart.Series.Add("Psychrometric_P_w_copy" + cint.ToString());
+            Series seriesCopy = chart.Series.Add("Psychrometric_P_w_copy" + x.ToString());
             seriesCopy.ChartType = series.ChartType;
            seriesCopy.YAxisType = alignLeft ? AxisType.Primary : AxisType.Secondary;  // (**)
 
@@ -569,10 +569,11 @@ namespace SAM.Core.Mollier.UI.Controls
 
         public void CreateXAxis(Chart chart, ChartArea area, Series series, float axisY, float axisHeight, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
         {
+            long x = System.DateTime.Now.Ticks;
 
             chart.ApplyPaletteColors();  // (*)
             // Create new chart area for original series
-            ChartArea areaSeries = chart.ChartAreas.Add("Mollier P_w" + cint.ToString());
+            ChartArea areaSeries = chart.ChartAreas.Add("Mollier P_w" + x.ToString());
             areaSeries.BackColor = Color.Transparent;
             areaSeries.BorderColor = Color.Transparent;
             areaSeries.Position.FromRectangleF(area.Position.ToRectangleF());
@@ -588,7 +589,7 @@ namespace SAM.Core.Mollier.UI.Controls
             series.ChartArea = areaSeries.Name;
 
             // Create new chart area for axis
-            ChartArea areaAxis = chart.ChartAreas.Add("Mollier P_w_copy" + cint.ToString());
+            ChartArea areaAxis = chart.ChartAreas.Add("Mollier P_w_copy" + x.ToString());
 
             areaAxis.BackColor = Color.Transparent;
             areaAxis.BorderColor = Color.Transparent;
@@ -598,7 +599,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     .FromRectangleF(areaSeries.InnerPlotPosition.ToRectangleF());
 
             // Create a copy of specified series
-            Series seriesCopy = chart.Series.Add("Mollier P_w_copy" + cint.ToString());
+            Series seriesCopy = chart.Series.Add("Mollier P_w_copy" + x.ToString());
             seriesCopy.ChartType = series.ChartType;
             seriesCopy.XAxisType = alignLeft ? AxisType.Primary : AxisType.Secondary;  // (**)
 
@@ -1080,6 +1081,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
+        //public double Elevation
+        //{
+        //    get
+        //    {
+        //        return elevation;
+        //    }
+        //    if(elevation != value)
+        //}
         public double Temperature_Min
         {
             get
@@ -1280,6 +1289,34 @@ namespace SAM.Core.Mollier.UI.Controls
                     generate_graph();
                 }
             }
+        }
+
+        public MollierControlSettings GetMollierControlSettings()
+        {
+            MollierControlSettings result = new MollierControlSettings();
+            result.Pressure = Pressure;
+            result.HumidityRatio_Max = HumidityRatio_Max;
+            result.HumidityRatio_Min = HumidityRatio_Min;
+            result.HumidityRatio_Interval = HumidityRatio_Interval;
+            result.Temperature_Max = Temperature_Max;
+            result.Temperature_Min = Temperature_Min;
+            result.Temperature_Interval = Temperature_Interval;
+            return result;
+        }
+
+        public void SetMollierControlSettings(MollierControlSettings mollierControlSettings)
+        {
+            if(mollierControlSettings == null)
+            {
+                return;
+            }
+            Pressure = mollierControlSettings.Pressure;
+            HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
+            HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
+            HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval;
+            Temperature_Max = mollierControlSettings.Temperature_Max;
+            Temperature_Min = mollierControlSettings.Temperature_Min;
+            Temperature_Interval = mollierControlSettings.Temperature_Interval;
         }
 
     }

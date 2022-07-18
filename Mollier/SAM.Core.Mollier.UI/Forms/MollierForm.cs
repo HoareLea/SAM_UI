@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI
 {
     public partial class MollierForm : Form
     {
+        private static string mollierControlSettingsPath = System.IO.Path.Combine(SAM.Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
+
         public MollierForm()
         {
             InitializeComponent();
@@ -13,6 +16,15 @@ namespace SAM.Core.Mollier.UI
 
         private void MollierForm_Load(object sender, EventArgs e)
         {
+            if(System.IO.File.Exists(mollierControlSettingsPath))
+            {
+                MollierControlSettings mollierControlSettings = Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault();
+                if (mollierControlSettings != null)
+                {
+                    TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
+                    MollierControl_Main.SetMollierControlSettings(mollierControlSettings);
+                }
+            }
 
         }
 
@@ -27,7 +39,7 @@ namespace SAM.Core.Mollier.UI
             {
                 return;
             }
-
+           
             MollierControl_Main.Pressure = pressure;
         }
 
@@ -198,20 +210,43 @@ namespace SAM.Core.Mollier.UI
         }
         private void ToolStripMenuItem_OpenSettings_Click(object sender, EventArgs e)
         {
-            using (MollierSettingsForm mollierSettingsForm = new MollierSettingsForm(MollierControl_Main))
+            using (MollierControlSettingsForm mollierSettingsForm = new MollierControlSettingsForm(MollierControl_Main))
             {
-                mollierSettingsForm.HumidityRatio_Max = MollierControl_Main.HumidityRatio_Max;
-                mollierSettingsForm.HumidityRatio_Min = MollierControl_Main.HumidityRatio_Min;
-                mollierSettingsForm.HumidityRatio_Interval = MollierControl_Main.HumidityRatio_Interval;
-                mollierSettingsForm.Temperature_Max = MollierControl_Main.Temperature_Max;
-                mollierSettingsForm.Temperature_Min = MollierControl_Main.Temperature_Min;
-                mollierSettingsForm.Temperature_Interval = MollierControl_Main.Temperature_Interval;
-
                 if (mollierSettingsForm.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
                 }
+
+                SaveMollierControlSettings();
             }
+        }
+
+        private void SaveMollierControlSettings()
+        {
+            MollierControlSettings mollierControlSettings = MollierControl_Main.GetMollierControlSettings();
+            if (mollierControlSettings != null)
+            {
+                string directoryPath = System.IO.Path.GetDirectoryName(mollierControlSettingsPath);
+                if (!System.IO.Directory.Exists(directoryPath))
+                {
+                    System.IO.Directory.CreateDirectory(directoryPath);
+                }
+
+                if (Convert.ToFile(mollierControlSettings, mollierControlSettingsPath))
+                {
+
+                }
+            }
+        }
+
+        private void MollierForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveMollierControlSettings();
+        }
+
+        private void TextBox_Elevation_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
