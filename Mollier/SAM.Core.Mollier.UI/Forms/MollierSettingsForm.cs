@@ -179,6 +179,16 @@ namespace SAM.Core.Mollier.UI
                 mollierControl.Temperature_Interval = Temperature_Interval;
         }
 
-
+        private void Button_ResetChart_Click(object sender, EventArgs e)
+        {
+      
+            mollierControl.HumidityRatio_Max = 35;
+            mollierControl.HumidityRatio_Min = 0;
+            mollierControl.HumidityRatio_Interval = 5;
+            mollierControl.Temperature_Max = 50;
+            mollierControl.Temperature_Min = -20;
+            mollierControl.Temperature_Interval = 5;
+            Close();
+        }
     }
 }
