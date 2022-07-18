@@ -3,19 +3,26 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI
 {
-    public partial class MollierSettingsForm : Form
+    public partial class MollierControlSettingsForm : Form
     {
         private Controls.MollierControl mollierControl;
 
-        public MollierSettingsForm()
+        public MollierControlSettingsForm()
         {
             InitializeComponent();
         }
 
-        public MollierSettingsForm(Controls.MollierControl mollierControl)
+        public MollierControlSettingsForm(Controls.MollierControl mollierControl)
         {
             InitializeComponent();
-            this.mollierControl = mollierControl;
+           this.mollierControl = mollierControl;
+
+            HumidityRatio_Max = this.mollierControl.HumidityRatio_Max;
+            HumidityRatio_Min = this.mollierControl.HumidityRatio_Min;
+            HumidityRatio_Interval = this.mollierControl.HumidityRatio_Interval;
+            Temperature_Max = this.mollierControl.Temperature_Max;
+            Temperature_Min = this.mollierControl.Temperature_Min;
+            Temperature_Interval = this.mollierControl.Temperature_Interval;
         }
 
         private void Button_Cancel_Click(object sender, EventArgs e)
@@ -181,13 +188,16 @@ namespace SAM.Core.Mollier.UI
 
         private void Button_ResetChart_Click(object sender, EventArgs e)
         {
-      
-            mollierControl.HumidityRatio_Max = 35;
-            mollierControl.HumidityRatio_Min = 0;
-            mollierControl.HumidityRatio_Interval = 5;
-            mollierControl.Temperature_Max = 50;
-            mollierControl.Temperature_Min = -20;
-            mollierControl.Temperature_Interval = 5;
+            MollierControlSettings mollierControlSettings = new MollierControlSettings();
+            mollierControl.SetMollierControlSettings(mollierControlSettings);
+
+
+            //mollierControl.HumidityRatio_Max = 35;
+            //mollierControl.HumidityRatio_Min = 0;
+            //mollierControl.HumidityRatio_Interval = 5;
+            //mollierControl.Temperature_Max = 50;
+            //mollierControl.Temperature_Min = -20;
+            //mollierControl.Temperature_Interval = 5;
             Close();
         }
     }

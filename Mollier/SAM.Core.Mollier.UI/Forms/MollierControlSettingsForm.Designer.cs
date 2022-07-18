@@ -1,7 +1,7 @@
 ﻿
 namespace SAM.Core.Mollier.UI
 {
-    partial class MollierSettingsForm
+    partial class MollierControlSettingsForm
     {
         /// <summary>
         /// Required designer variable.

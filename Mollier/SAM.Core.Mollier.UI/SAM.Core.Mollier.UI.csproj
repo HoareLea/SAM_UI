@@ -36,6 +36,9 @@
     <ApplicationIcon>SAM.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Core, Version=1.0.8220.33040, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
@@ -66,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\MollierControlSettings.cs" />
     <Compile Include="Controls\MollierControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -84,11 +88,11 @@
     <Compile Include="Forms\MollierPointForm.Designer.cs">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MollierSettingsForm.cs">
+    <Compile Include="Forms\MollierControlSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MollierSettingsForm.Designer.cs">
-      <DependentUpon>MollierSettingsForm.cs</DependentUpon>
+    <Compile Include="Forms\MollierControlSettingsForm.Designer.cs">
+      <DependentUpon>MollierControlSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -101,8 +105,8 @@
     <EmbeddedResource Include="Forms\MollierPointForm.resx">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MollierSettingsForm.resx">
-      <DependentUpon>MollierSettingsForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\MollierControlSettingsForm.resx">
+      <DependentUpon>MollierControlSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -113,6 +117,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
