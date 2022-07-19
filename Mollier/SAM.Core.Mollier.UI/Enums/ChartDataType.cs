@@ -10,6 +10,7 @@ namespace SAM.Core.Mollier.UI
     {
         Undefined,
         RelativeHumidity,
+        DiagramTemperature,
         SpecificVolume,
         Density,
         Enthalpy,

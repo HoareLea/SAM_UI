@@ -20,8 +20,8 @@ namespace SAM.Core.Mollier.UI
         public bool enthalpy_line { get; set; } = true;
         public bool specificVolume_line { get; set; } = true;
         public bool wetBulbTemperature_line { get; set; } = true;
-
         public ChartType ChartType { get; set; } = ChartType.Mollier;
+        public string color { get; set; } = "default";
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
 
@@ -44,7 +44,7 @@ namespace SAM.Core.Mollier.UI
             specificVolume_line = mollierControlSettings.specificVolume_line;
             wetBulbTemperature_line = mollierControlSettings.wetBulbTemperature_line;
             ChartType = mollierControlSettings.ChartType;
-
+            color = mollierControlSettings.color;
             //TODO: Add missing parameters
         }
 
@@ -99,7 +99,10 @@ namespace SAM.Core.Mollier.UI
             {
                 wetBulbTemperature_line = jObject.Value<bool>("wetBulbTemperature_line");
             }
-
+            if (jObject.ContainsKey("color"))
+            {
+                color = jObject.Value<string>("color");
+            }
             if (jObject.ContainsKey("ChartType"))
             {
                 if(Enum.TryParse(jObject.Value<string>("ChartType"), out ChartType chartType))
@@ -146,7 +149,8 @@ namespace SAM.Core.Mollier.UI
             result.Add("density_line", density_line);
             result.Add("enthalpy_line", enthalpy_line);
             result.Add("specificVolume_line", specificVolume_line);
-            result.Add("wetBulbTemprature_line", wetBulbTemperature_line);
+            result.Add("wetBulbTemperature_line", wetBulbTemperature_line);
+            result.Add("color", color);
             result.Add("ChartType", ChartType.ToString());
 
 

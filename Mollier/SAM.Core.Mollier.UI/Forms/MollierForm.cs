@@ -13,7 +13,6 @@ namespace SAM.Core.Mollier.UI
         {
             InitializeComponent();
         }
-
         private void MollierForm_Load(object sender, EventArgs e)
         {
             if(System.IO.File.Exists(mollierControlSettingsPath))
@@ -22,7 +21,15 @@ namespace SAM.Core.Mollier.UI
                 if (mollierControlSettings != null)
                 {
                     TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
-                    //TODO: add checkboxes
+                    ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier ? true : false;
+                    ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric ? true : false;
+                    ToolStripMenuItem_Density.Checked = mollierControlSettings.density_line ? true : false;
+                    ToolStripMenuItem_Enthalpy.Checked = mollierControlSettings.enthalpy_line ? true : false;
+                    ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.specificVolume_line ? true : false;
+                    ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.wetBulbTemperature_line;
+                    defaultToolStripMenuItem.Checked = mollierControlSettings.color == "default" ? true : false;
+                    blueToolStripMenuItem.Checked = mollierControlSettings.color == "blue" ? true : false;
+                    grayToolStripMenuItem.Checked = mollierControlSettings.color == "gray" ? true : false;
                     MollierControl_Main.MollierControlSettings = mollierControlSettings;
                 }
             }
@@ -175,48 +182,48 @@ namespace SAM.Core.Mollier.UI
         {
             if (defaultToolStripMenuItem.Checked)
             {
-                defaultToolStripMenuItem.Checked = !defaultToolStripMenuItem.Checked;
-                blueToolStripMenuItem.Checked = !blueToolStripMenuItem.Checked;
-                MollierControl_Main.Blue_Color = "blue";
+                defaultToolStripMenuItem.Checked = false;
             }
             if (grayToolStripMenuItem.Checked)
             {
-                grayToolStripMenuItem.Checked = !grayToolStripMenuItem.Checked;
-                blueToolStripMenuItem.Checked = !blueToolStripMenuItem.Checked;
-                MollierControl_Main.Blue_Color = "blue";
+                grayToolStripMenuItem.Checked = false;
             }
+            blueToolStripMenuItem.Checked = true;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.color = "blue";
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void grayToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (defaultToolStripMenuItem.Checked)
             {
-                defaultToolStripMenuItem.Checked = !defaultToolStripMenuItem.Checked;
-                grayToolStripMenuItem.Checked = !grayToolStripMenuItem.Checked;
-                MollierControl_Main.Gray_Color = "gray";
+                defaultToolStripMenuItem.Checked = false;
             }
             if (blueToolStripMenuItem.Checked)
             {
-                blueToolStripMenuItem.Checked = !blueToolStripMenuItem.Checked;
-                grayToolStripMenuItem.Checked = !grayToolStripMenuItem.Checked;
-                MollierControl_Main.Gray_Color = "gray";
+                blueToolStripMenuItem.Checked = false;
             }
+            grayToolStripMenuItem.Checked = true;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.color = "gray";
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (blueToolStripMenuItem.Checked)
             {
-                blueToolStripMenuItem.Checked = !blueToolStripMenuItem.Checked;
-                defaultToolStripMenuItem.Checked = !defaultToolStripMenuItem.Checked;
-                MollierControl_Main.Default_Color = "default";
+                blueToolStripMenuItem.Checked = false;
             }
             if (grayToolStripMenuItem.Checked)
             {
-                grayToolStripMenuItem.Checked = !grayToolStripMenuItem.Checked;
-                defaultToolStripMenuItem.Checked = !defaultToolStripMenuItem.Checked;
-                MollierControl_Main.Gray_Color = "default";
+                grayToolStripMenuItem.Checked = false;
             }
+            defaultToolStripMenuItem.Checked = true;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.color = "default";
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         private void graphSettingToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -263,6 +270,23 @@ namespace SAM.Core.Mollier.UI
         private void ToolStripMenuItem_Settings_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ToolStripMenuItem_SetElevation_Click(object sender, EventArgs e)
+        {
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Set elevation", "Elevation [m]:"))
+            {
+                textBoxForm.Value = 0;
+                if(textBoxForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                double pressure = System.Math.Round(Mollier.Query.Pressure(textBoxForm.Value));
+
+
+                TextBox_Pressure.Text = pressure.ToString();
+            }
         }
     }
 }

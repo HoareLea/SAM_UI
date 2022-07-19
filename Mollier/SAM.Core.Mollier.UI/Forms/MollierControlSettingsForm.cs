@@ -171,6 +171,26 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
+        public double Elevation
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_Elevation.Text, out double elevation))
+                {
+                    return double.NaN;
+                }
+                if (elevation < 0)
+                {
+                    MessageBox.Show("Wrong value\n Elevation has to be positive!");
+                    return double.NaN;
+                }
+                return elevation;
+            }
+            set
+            {
+                TextBox_Elevation.Text = value.ToString();
+            }
+        }
         private void Apply()
         {
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -187,6 +207,12 @@ namespace SAM.Core.Mollier.UI
             if(Temperature_Interval.ToString() != double.NaN.ToString())
                 mollierControlSettings.Temperature_Interval = Temperature_Interval;
 
+            double elevation = Elevation;
+            if(!double.IsNaN(elevation))
+            {
+                mollierControlSettings.Pressure = Mollier.Query.Pressure(elevation);
+            }
+
             mollierControl.MollierControlSettings = mollierControlSettings;
         }
 
@@ -197,5 +223,7 @@ namespace SAM.Core.Mollier.UI
 
             Close();
         }
+
+     
     }
 }

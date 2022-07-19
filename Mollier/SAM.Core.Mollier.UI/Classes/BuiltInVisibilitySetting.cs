@@ -21,11 +21,40 @@ namespace SAM.Core.Mollier.UI
             ChartDataType = chartDataType;
         }
 
+        public BuiltInVisibilitySetting(JObject jObject)
+            : base(jObject)
+        {
+            FromJObject(jObject);
+        }
+
+        public BuiltInVisibilitySetting(BuiltInVisibilitySetting builtInVisibilitySetting)
+            : base(builtInVisibilitySetting)
+        {
+            ChartParameterType = builtInVisibilitySetting.ChartParameterType;
+            ChartDataType = builtInVisibilitySetting.ChartDataType;
+        }
+
         public bool FromJObject(JObject jObject)
         {
             if(!base.FromJObject(jObject))
             {
                 return false;
+            }
+
+            if (jObject.ContainsKey("ChartDataType"))
+            {
+                if (Enum.TryParse(jObject.Value<string>("ChartDataType"), out ChartDataType chartDataType))
+                {
+                    ChartDataType = chartDataType;
+                }
+            }
+
+            if (jObject.ContainsKey("ChartParameterType"))
+            {
+                if (Enum.TryParse(jObject.Value<string>("ChartParameterType"), out ChartParameterType chartParameterType))
+                {
+                    ChartParameterType = chartParameterType;
+                }
             }
 
             //TODO: Add ChartParameterType, ChartDataType
