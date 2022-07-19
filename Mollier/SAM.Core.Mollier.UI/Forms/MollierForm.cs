@@ -22,10 +22,10 @@ namespace SAM.Core.Mollier.UI
                 if (mollierControlSettings != null)
                 {
                     TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
-                    MollierControl_Main.SetMollierControlSettings(mollierControlSettings);
+                    //TODO: add checkboxes
+                    MollierControl_Main.MollierControlSettings = mollierControlSettings;
                 }
             }
-
         }
 
         private void TextBox_Pressure_TextChanged(object sender, EventArgs e)
@@ -39,14 +39,15 @@ namespace SAM.Core.Mollier.UI
             {
                 return;
             }
-           
-            MollierControl_Main.Pressure = pressure;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.Pressure = pressure;
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void Button_AddPoint_Click(object sender, EventArgs e)
         {
             MollierPoint mollierPoint = null;
-
+            
             using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
             {
                 DialogResult dialogResult = mollierPointForm.ShowDialog();
@@ -55,7 +56,7 @@ namespace SAM.Core.Mollier.UI
                     return;
                 }
 
-                mollierPoint = mollierPointForm.get_point(MollierControl_Main.Pressure);
+                mollierPoint = mollierPointForm.get_point(MollierControl_Main.MollierControlSettings.Pressure);
             }
 
             MollierControl_Main.AddPoints(new MollierPoint[] { mollierPoint });
@@ -72,14 +73,16 @@ namespace SAM.Core.Mollier.UI
             ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Mollier.Checked;
             ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Mollier.Checked;
 
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (ChartToolStripMenuItem_Mollier.Checked)
             {
-                MollierControl_Main.ChartType = ChartType.Mollier;
+                mollierControlSettings.ChartType = ChartType.Mollier; 
             }
             else if (ChartToolStripMenuItem_Psychrometric.Checked)
             {
-                MollierControl_Main.ChartType = ChartType.Psychrometric;
+                mollierControlSettings.ChartType = ChartType.Psychrometric;
             }
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void ChartToolStripMenuItem_Psychrometric_Click(object sender, EventArgs e)
@@ -87,38 +90,49 @@ namespace SAM.Core.Mollier.UI
             ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
             ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
 
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (ChartToolStripMenuItem_Mollier.Checked)
             {
-                MollierControl_Main.ChartType = ChartType.Mollier;
+                mollierControlSettings.ChartType = ChartType.Mollier;
             }
             else if (ChartToolStripMenuItem_Psychrometric.Checked)
             {
-                MollierControl_Main.ChartType = ChartType.Psychrometric;
+                mollierControlSettings.ChartType = ChartType.Psychrometric;
             }
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void ToolStripMenuItem_Density_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem_Density.Checked = !ToolStripMenuItem_Density.Checked;
-            MollierControl_Main.Density_line = ToolStripMenuItem_Density.Checked;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.density_line = ToolStripMenuItem_Density.Checked;
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void ToolStripMenuItem_WetBulbTemperature_Click(object sender, EventArgs e)
         {
+
             ToolStripMenuItem_WetBulbTemperature.Checked = !ToolStripMenuItem_WetBulbTemperature.Checked;
-            MollierControl_Main.Wet_bulb_temperature_line = ToolStripMenuItem_WetBulbTemperature.Checked;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.wetBulbTemperature_line = ToolStripMenuItem_WetBulbTemperature.Checked;
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void ToolStripMenuItem_Enthalpy_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem_Enthalpy.Checked = !ToolStripMenuItem_Enthalpy.Checked;
-            MollierControl_Main.Enthalpy_line = ToolStripMenuItem_Enthalpy.Checked;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.enthalpy_line = ToolStripMenuItem_Enthalpy.Checked;
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void ToolStripMenuItem_SpecificVolume_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem_SpecificVolume.Checked = !ToolStripMenuItem_SpecificVolume.Checked;
-            MollierControl_Main.Specific_volume_line = ToolStripMenuItem_SpecificVolume.Checked;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.specificVolume_line = ToolStripMenuItem_SpecificVolume.Checked;
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void ToolStripMenuItem_File_Click(object sender, EventArgs e)
@@ -223,7 +237,7 @@ namespace SAM.Core.Mollier.UI
 
         private void SaveMollierControlSettings()
         {
-            MollierControlSettings mollierControlSettings = MollierControl_Main.GetMollierControlSettings();
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (mollierControlSettings != null)
             {
                 string directoryPath = System.IO.Path.GetDirectoryName(mollierControlSettingsPath);
@@ -232,10 +246,7 @@ namespace SAM.Core.Mollier.UI
                     System.IO.Directory.CreateDirectory(directoryPath);
                 }
 
-                if (Convert.ToFile(mollierControlSettings, mollierControlSettingsPath))
-                {
-
-                }
+                Convert.ToFile(mollierControlSettings, mollierControlSettingsPath);
             }
         }
 
@@ -245,6 +256,11 @@ namespace SAM.Core.Mollier.UI
         }
 
         private void TextBox_Elevation_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ToolStripMenuItem_Settings_Click(object sender, EventArgs e)
         {
 
         }
