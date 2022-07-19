@@ -908,11 +908,25 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             return result;
         }
-
-        //private void MollierControl_Load(object sender, EventArgs e)
-        //{
-        //    generate_graph();
-        //}
+        private double Elevation_by_pressure(double pressure)
+        {
+            double elevationMin = 0, elevationMax = 800;
+            double mid = (elevationMax + elevationMin)/ 2;
+            while(elevationMin + 0.02 < elevationMax)
+            {
+                double value = Mollier.Query.Pressure(mid);
+                if(value > pressure)
+                {
+                    elevationMin = mid;
+                }
+                else
+                {
+                    elevationMax = mid;
+                }
+                mid = (elevationMin + elevationMax) / 2;
+            }
+            return mid;
+        }
         public void AddPoints(IEnumerable<MollierPoint> mollierPoints)
         {
             if (mollierPoints == null)
