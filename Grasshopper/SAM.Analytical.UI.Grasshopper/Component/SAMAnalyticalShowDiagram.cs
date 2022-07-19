@@ -99,9 +99,9 @@ namespace SAM.Analytical.UI.Grasshopper
                 dataAccess.GetDataList(index, mollierPoints);
             }
 
-            List<MollierProcess> mollierProcesses = new List<MollierProcess>();
+            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
             index = Params.IndexOfInputParam("_mollierProcesses");
-            if (index == -1)
+            if (index != -1)
             {
                 dataAccess.GetDataList(index, mollierProcesses);
             }
