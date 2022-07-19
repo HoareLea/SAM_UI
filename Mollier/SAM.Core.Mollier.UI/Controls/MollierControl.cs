@@ -19,7 +19,6 @@ namespace SAM.Core.Mollier.UI.Controls
             InitializeComponent();
 
             mollierControlSettings = new MollierControlSettings();
-           // generate_graph_mollier();
         }
         private void create_relative_humidity_line_Mollier(int temperature_Min, int temperature_Max, double relative_humidity, double pressure)
         {
@@ -62,7 +61,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 int index_Point = 5;
                 int count = relative_humidity_points.Count;
                 if ((count - (index_Point + 1) - i < 0) || (count - (index_Point - 1) - i < 0))
+                {
+                    if (adjust_RH == true)
+                        temperature_Min = -20;
+                    relative_humidity += 10;
                     continue;
+                }
                 Geometry.Planar.Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
                 Geometry.Planar.Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
                 Geometry.Planar.Vector2D vector2D = new Geometry.Planar.Vector2D(point2D_1, point2D_2);
@@ -905,10 +909,10 @@ namespace SAM.Core.Mollier.UI.Controls
             return result;
         }
 
-        private void MollierControl_Load(object sender, EventArgs e)
-        {
-            generate_graph();
-        }
+        //private void MollierControl_Load(object sender, EventArgs e)
+        //{
+        //    generate_graph();
+        //}
         public void AddPoints(IEnumerable<MollierPoint> mollierPoints)
         {
             if (mollierPoints == null)
