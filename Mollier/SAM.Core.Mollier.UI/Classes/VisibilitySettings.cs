@@ -10,12 +10,70 @@ namespace SAM.Core.Mollier.UI
 
         public bool FromJObject(JObject jObject)
         {
-            throw new NotImplementedException();
+            if(jObject == null)
+            {
+                return false;
+            }
+
+
+            if (jObject.ContainsKey("VisibilitySettings"))
+            {
+                dictionary = new Dictionary<string, List<IVisibilitySetting>>();
+                JArray jArray = jObject.Value<JArray>("Templates");
+                foreach(JObject jObject_Temp in jArray)
+                {
+                    if(!jObject_Temp.ContainsKey("TemplateName") || !jObject_Temp.ContainsKey("VisibilitySettings"))
+                    {
+                        continue;
+                    }
+
+                    string templateName = jObject_Temp.Value<string>("TemplateName");
+                    JArray jArray_VisibilitySettings = jObject_Temp.Value<JArray>("VisibilitySettings");
+
+                    foreach(JObject jObject_VisibilitySetting in jArray_VisibilitySettings)
+                    {
+                        if (!dictionary.TryGetValue(templateName, out List<IVisibilitySetting> visibilitySettings))
+                        {
+                            visibilitySettings = new List<IVisibilitySetting>();
+                            dictionary[templateName] = visibilitySettings;
+                        }
+
+                        visibilitySettings.Add(new JSAMObjectWrapper(jObject_VisibilitySetting).ToIJSAMObject() as IVisibilitySetting);
+                    }
+                }
+            }
+
+            return true;
         }
 
         public JObject ToJObject()
         {
-            throw new NotImplementedException();
+            JObject result = new JObject();
+
+            if(dictionary != null)
+            {
+                JArray jArray = new JArray();
+                foreach(KeyValuePair<string, List<IVisibilitySetting>> keyValuePair in dictionary)
+                {
+                    JObject jObject_Template = new JObject();
+
+
+                    string templateName = keyValuePair.Key;
+                    jObject_Template.Add("TemplateName", templateName);
+
+                    JArray jArray_VisibilitySettings = new JArray();
+                    foreach(IVisibilitySetting visibilitySetting in keyValuePair.Value)
+                    {
+                        jArray_VisibilitySettings.Add(visibilitySetting.ToJObject());
+                    }
+
+                    jObject_Template.Add("VisibilitySettings", jArray_VisibilitySettings);
+
+                }
+                result.Add("Templates", jArray);
+            }
+
+            return result;
         }
 
         public bool Add(IVisibilitySetting visibilitySetting)

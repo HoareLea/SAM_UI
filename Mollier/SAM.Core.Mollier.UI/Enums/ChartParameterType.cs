@@ -11,6 +11,7 @@ namespace SAM.Core.Mollier.UI
         Undefined,
         Unit,
         Line,
+        BoldLine,
         Label,
         Point
     }
