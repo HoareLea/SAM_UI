@@ -29,6 +29,7 @@ namespace SAM.Core.Mollier.UI
         /// </summary>
         private void InitializeComponent()
         {
+            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings1 = new SAM.Core.Mollier.UI.MollierControlSettings();
             this.TextBox_Pressure = new System.Windows.Forms.TextBox();
             this.Label_Pressure = new System.Windows.Forms.Label();
             this.Button_AddPoint = new System.Windows.Forms.Button();
@@ -228,11 +229,12 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Settings.Name = "ToolStripMenuItem_Settings";
             this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(61, 20);
             this.ToolStripMenuItem_Settings.Text = "Settings";
+            this.ToolStripMenuItem_Settings.Click += new System.EventHandler(this.ToolStripMenuItem_Settings_Click);
             // 
             // ToolStripMenuItem_OpenSettings
             // 
             this.ToolStripMenuItem_OpenSettings.Name = "ToolStripMenuItem_OpenSettings";
-            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(116, 22);
+            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItem_OpenSettings.Text = "Settings";
             this.ToolStripMenuItem_OpenSettings.Click += new System.EventHandler(this.ToolStripMenuItem_OpenSettings_Click);
             // 
@@ -252,25 +254,27 @@ namespace SAM.Core.Mollier.UI
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MollierControl_Main.Blue_Color = "default";
-            this.MollierControl_Main.ChartType = SAM.Core.Mollier.ChartType.Mollier;
             this.MollierControl_Main.Default_Color = "default";
-            this.MollierControl_Main.Density_line = true;
-            this.MollierControl_Main.Enthalpy_line = true;
             this.MollierControl_Main.Gray_Color = "default";
-            this.MollierControl_Main.HumidityRatio_Interval = 5D;
-            this.MollierControl_Main.HumidityRatio_Max = 35D;
-            this.MollierControl_Main.HumidityRatio_Min = 0D;
             this.MollierControl_Main.Location = new System.Drawing.Point(12, 65);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
+            mollierControlSettings1.density_line = true;
+            mollierControlSettings1.enthalpy_line = true;
+            mollierControlSettings1.HumidityRatio_Interval = 5D;
+            mollierControlSettings1.HumidityRatio_Max = 35D;
+            mollierControlSettings1.HumidityRatio_Min = 0D;
+            mollierControlSettings1.Pressure = 101325D;
+            mollierControlSettings1.specificVolume_line = true;
+            mollierControlSettings1.Temperature_Interval = 5D;
+            mollierControlSettings1.Temperature_Max = 50D;
+            mollierControlSettings1.Temperature_Min = -20D;
+            mollierControlSettings1.VisibilitySettings = null;
+            mollierControlSettings1.wetBulbTemperature_line = true;
+            this.MollierControl_Main.MollierControlSettings = mollierControlSettings1;
             this.MollierControl_Main.Name = "MollierControl_Main";
-            this.MollierControl_Main.Pressure = 101325D;
             this.MollierControl_Main.Size = new System.Drawing.Size(1350, 912);
-            this.MollierControl_Main.Specific_volume_line = true;
             this.MollierControl_Main.TabIndex = 0;
-            this.MollierControl_Main.Temperature_Interval = 5D;
-            this.MollierControl_Main.Temperature_Max = 50D;
-            this.MollierControl_Main.Temperature_Min = -20D;
-            this.MollierControl_Main.Wet_bulb_temperature_line = true;
             // 
             // TextBox_Elevation
             // 
@@ -278,7 +282,7 @@ namespace SAM.Core.Mollier.UI
             this.TextBox_Elevation.Name = "TextBox_Elevation";
             this.TextBox_Elevation.Size = new System.Drawing.Size(63, 20);
             this.TextBox_Elevation.TabIndex = 22;
-            this.TextBox_Elevation.Text = "101325";
+            this.TextBox_Elevation.Text = "0";
             this.TextBox_Elevation.TextChanged += new System.EventHandler(this.TextBox_Elevation_TextChanged);
             // 
             // MollierForm

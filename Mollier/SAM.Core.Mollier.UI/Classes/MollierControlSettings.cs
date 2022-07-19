@@ -16,6 +16,15 @@ namespace SAM.Core.Mollier.UI
         public double Temperature_Max { get; set; } = 50;
         public double Temperature_Min { get; set; } = -20;
         public double Temperature_Interval { get; set; } = 5;
+        public bool density_line { get; set; } = true;
+        public bool enthalpy_line { get; set; } = true;
+        public bool specificVolume_line { get; set; } = true;
+        public bool wetBulbTemperature_line { get; set; } = true;
+
+        public ChartType ChartType { get; set; } = ChartType.Mollier;
+
+        public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
+
         public MollierControlSettings()
         {
 
@@ -24,6 +33,19 @@ namespace SAM.Core.Mollier.UI
         public MollierControlSettings(MollierControlSettings mollierControlSettings)
         {
             Pressure = mollierControlSettings.Pressure;
+            HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
+            HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
+            HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval;
+            Temperature_Max = mollierControlSettings.Temperature_Max;
+            Temperature_Min = mollierControlSettings.Temperature_Min;
+            Temperature_Interval = mollierControlSettings.Temperature_Interval;
+            density_line = mollierControlSettings.density_line;
+            enthalpy_line = mollierControlSettings.enthalpy_line;
+            specificVolume_line = mollierControlSettings.specificVolume_line;
+            wetBulbTemperature_line = mollierControlSettings.wetBulbTemperature_line;
+            ChartType = mollierControlSettings.ChartType;
+
+            //TODO: Add missing parameters
         }
 
         public MollierControlSettings(JObject jObject)
@@ -61,6 +83,30 @@ namespace SAM.Core.Mollier.UI
             {
                 Temperature_Interval = jObject.Value<double>("Temperature_Interval");
             }
+            if (jObject.ContainsKey("density_line"))
+            {
+                density_line = jObject.Value<bool>("density_line");
+            }
+            if (jObject.ContainsKey("enthalpy_line"))
+            {
+                enthalpy_line = jObject.Value<bool>("enthalpy_line");
+            }
+            if (jObject.ContainsKey("specificVolume_line"))
+            {
+                specificVolume_line = jObject.Value<bool>("specificVolume_line");
+            }
+            if (jObject.ContainsKey("wetBulbTemperature_line"))
+            {
+                wetBulbTemperature_line = jObject.Value<bool>("wetBulbTemperature_line");
+            }
+
+            if (jObject.ContainsKey("ChartType"))
+            {
+                if(Enum.TryParse(jObject.Value<string>("ChartType"), out ChartType chartType))
+                {
+                    ChartType = chartType;
+                }
+            }
             return true;
         }
 
@@ -97,6 +143,12 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("Temperature_Interval", Temperature_Interval);
             }
+            result.Add("density_line", density_line);
+            result.Add("enthalpy_line", enthalpy_line);
+            result.Add("specificVolume_line", specificVolume_line);
+            result.Add("wetBulbTemprature_line", wetBulbTemperature_line);
+            result.Add("ChartType", ChartType.ToString());
+
 
             return result;
         }

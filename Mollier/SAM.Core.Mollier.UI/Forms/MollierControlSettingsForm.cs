@@ -15,14 +15,15 @@ namespace SAM.Core.Mollier.UI
         public MollierControlSettingsForm(Controls.MollierControl mollierControl)
         {
             InitializeComponent();
-           this.mollierControl = mollierControl;
+            this.mollierControl = mollierControl;
+            MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
 
-            HumidityRatio_Max = this.mollierControl.HumidityRatio_Max;
-            HumidityRatio_Min = this.mollierControl.HumidityRatio_Min;
-            HumidityRatio_Interval = this.mollierControl.HumidityRatio_Interval;
-            Temperature_Max = this.mollierControl.Temperature_Max;
-            Temperature_Min = this.mollierControl.Temperature_Min;
-            Temperature_Interval = this.mollierControl.Temperature_Interval;
+            HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
+            HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
+            HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval;
+            Temperature_Max = mollierControlSettings.Temperature_Max;
+            Temperature_Min = mollierControlSettings.Temperature_Min;
+            Temperature_Interval = mollierControlSettings.Temperature_Interval;
         }
 
         private void Button_Cancel_Click(object sender, EventArgs e)
@@ -172,32 +173,28 @@ namespace SAM.Core.Mollier.UI
 
         private void Apply()
         {
+            MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
             if (HumidityRatio_Max.ToString() != double.NaN.ToString())
-                mollierControl.HumidityRatio_Max = HumidityRatio_Max;
-            if (HumidityRatio_Min.ToString() != double.NaN.ToString())   
-                mollierControl.HumidityRatio_Min = HumidityRatio_Min;
+                mollierControlSettings.HumidityRatio_Max = HumidityRatio_Max;
+            if (HumidityRatio_Min.ToString() != double.NaN.ToString())
+                mollierControlSettings.HumidityRatio_Min = HumidityRatio_Min;
             if(HumidityRatio_Interval.ToString() != double.NaN.ToString())
-                mollierControl.HumidityRatio_Interval = HumidityRatio_Interval;
+                mollierControlSettings.HumidityRatio_Interval = HumidityRatio_Interval;
             if(Temperature_Min.ToString() != double.NaN.ToString())
-                mollierControl.Temperature_Min = Temperature_Min;
+                mollierControlSettings.Temperature_Min = Temperature_Min;
             if(Temperature_Max.ToString() != double.NaN.ToString())
-                mollierControl.Temperature_Max = Temperature_Max;
+                mollierControlSettings.Temperature_Max = Temperature_Max;
             if(Temperature_Interval.ToString() != double.NaN.ToString())
-                mollierControl.Temperature_Interval = Temperature_Interval;
+                mollierControlSettings.Temperature_Interval = Temperature_Interval;
+
+            mollierControl.MollierControlSettings = mollierControlSettings;
         }
 
         private void Button_ResetChart_Click(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings = new MollierControlSettings();
-            mollierControl.SetMollierControlSettings(mollierControlSettings);
+            mollierControl.MollierControlSettings = mollierControlSettings;
 
-
-            //mollierControl.HumidityRatio_Max = 35;
-            //mollierControl.HumidityRatio_Min = 0;
-            //mollierControl.HumidityRatio_Interval = 5;
-            //mollierControl.Temperature_Max = 50;
-            //mollierControl.Temperature_Min = -20;
-            //mollierControl.Temperature_Interval = 5;
             Close();
         }
     }
