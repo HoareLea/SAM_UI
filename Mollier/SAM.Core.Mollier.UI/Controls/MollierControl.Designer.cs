@@ -59,7 +59,7 @@
             this.Controls.Add(this.MollierChart);
             this.Name = "MollierControl";
             this.Size = new System.Drawing.Size(816, 588);
-            this.Load += new System.EventHandler(this.MollierControl_Load);
+            //this.Load += new System.EventHandler(this.MollierControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.MollierChart)).EndInit();
             this.ResumeLayout(false);
 
