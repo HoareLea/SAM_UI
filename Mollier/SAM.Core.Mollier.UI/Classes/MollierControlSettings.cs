@@ -10,18 +10,20 @@ namespace SAM.Core.Mollier.UI
     public class MollierControlSettings : IJSAMObject
     {
         public double Pressure { get; set; } = 101325;
+        public double Elevation { get; set; } = 0;
         public double HumidityRatio_Max { get; set; } = 35;
         public double HumidityRatio_Min { get; set; } = 0;
         public double HumidityRatio_Interval { get; set; } = 5;
         public double Temperature_Max { get; set; } = 50;
         public double Temperature_Min { get; set; } = -20;
         public double Temperature_Interval { get; set; } = 5;
-        public bool density_line { get; set; } = true;
-        public bool enthalpy_line { get; set; } = true;
-        public bool specificVolume_line { get; set; } = true;
-        public bool wetBulbTemperature_line { get; set; } = true;
+        public double P_w_Interval { get; set; } = 1;
+        public bool Density_line { get; set; } = true;
+        public bool Enthalpy_line { get; set; } = true;
+        public bool SpecificVolume_line { get; set; } = true;
+        public bool WetBulbTemperature_line { get; set; } = true;
         public ChartType ChartType { get; set; } = ChartType.Mollier;
-        public string color { get; set; } = "default";
+        public string Color { get; set; } = "default";
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
 
@@ -33,18 +35,20 @@ namespace SAM.Core.Mollier.UI
         public MollierControlSettings(MollierControlSettings mollierControlSettings)
         {
             Pressure = mollierControlSettings.Pressure;
+            Elevation = mollierControlSettings.Elevation;
             HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
             HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
             HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval;
             Temperature_Max = mollierControlSettings.Temperature_Max;
             Temperature_Min = mollierControlSettings.Temperature_Min;
             Temperature_Interval = mollierControlSettings.Temperature_Interval;
-            density_line = mollierControlSettings.density_line;
-            enthalpy_line = mollierControlSettings.enthalpy_line;
-            specificVolume_line = mollierControlSettings.specificVolume_line;
-            wetBulbTemperature_line = mollierControlSettings.wetBulbTemperature_line;
+            P_w_Interval = mollierControlSettings.P_w_Interval;
+            Density_line = mollierControlSettings.Density_line;
+            Enthalpy_line = mollierControlSettings.Enthalpy_line;
+            SpecificVolume_line = mollierControlSettings.SpecificVolume_line;
+            WetBulbTemperature_line = mollierControlSettings.WetBulbTemperature_line;
             ChartType = mollierControlSettings.ChartType;
-            color = mollierControlSettings.color;
+            Color = mollierControlSettings.Color;
             //TODO: Add missing parameters
         }
 
@@ -58,6 +62,10 @@ namespace SAM.Core.Mollier.UI
             if(jObject.ContainsKey("Pressure"))
             {
                 Pressure = jObject.Value<double>("Pressure");
+            }
+            if (jObject.ContainsKey("Elevation"))
+            {
+                Elevation = jObject.Value<double>("Elevation");
             }
             if (jObject.ContainsKey("HumidityRatio_Max"))
             {
@@ -83,25 +91,29 @@ namespace SAM.Core.Mollier.UI
             {
                 Temperature_Interval = jObject.Value<double>("Temperature_Interval");
             }
-            if (jObject.ContainsKey("density_line"))
+            if (jObject.ContainsKey("P_w_Interval"))
             {
-                density_line = jObject.Value<bool>("density_line");
+                P_w_Interval = jObject.Value<double>("P_w_Interval");
             }
-            if (jObject.ContainsKey("enthalpy_line"))
+            if (jObject.ContainsKey("Density_line"))
             {
-                enthalpy_line = jObject.Value<bool>("enthalpy_line");
+                Density_line = jObject.Value<bool>("Density_line");
             }
-            if (jObject.ContainsKey("specificVolume_line"))
+            if (jObject.ContainsKey("Enthalpy_line"))
             {
-                specificVolume_line = jObject.Value<bool>("specificVolume_line");
+                Enthalpy_line = jObject.Value<bool>("Enthalpy_line");
             }
-            if (jObject.ContainsKey("wetBulbTemperature_line"))
+            if (jObject.ContainsKey("SpecificVolume_line"))
             {
-                wetBulbTemperature_line = jObject.Value<bool>("wetBulbTemperature_line");
+                SpecificVolume_line = jObject.Value<bool>("SpecificVolume_line");
             }
-            if (jObject.ContainsKey("color"))
+            if (jObject.ContainsKey("WetBulbTemperature_line"))
             {
-                color = jObject.Value<string>("color");
+                WetBulbTemperature_line = jObject.Value<bool>("WetBulbTemperature_line");
+            }
+            if (jObject.ContainsKey("Color"))
+            {
+                Color = jObject.Value<string>("Color");
             }
             if (jObject.ContainsKey("ChartType"))
             {
@@ -121,6 +133,10 @@ namespace SAM.Core.Mollier.UI
             if(!double.IsNaN(Pressure))
             {
                 result.Add("Pressure", Pressure);
+            }
+            if (!double.IsNaN(Elevation))
+            {
+                result.Add("Elevation", Elevation);
             }
             if (!double.IsNaN(HumidityRatio_Max))
             {
@@ -146,11 +162,15 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("Temperature_Interval", Temperature_Interval);
             }
-            result.Add("density_line", density_line);
-            result.Add("enthalpy_line", enthalpy_line);
-            result.Add("specificVolume_line", specificVolume_line);
-            result.Add("wetBulbTemperature_line", wetBulbTemperature_line);
-            result.Add("color", color);
+            if (!double.IsNaN(P_w_Interval))
+            {
+                result.Add("P_w_Interval", P_w_Interval);
+            }
+            result.Add("Density_line", Density_line);
+            result.Add("Enthalpy_line", Enthalpy_line);
+            result.Add("SpecificVolume_line", SpecificVolume_line);
+            result.Add("WetBulbTemperature_line", WetBulbTemperature_line);
+            result.Add("Color", Color);
             result.Add("ChartType", ChartType.ToString());
 
 

@@ -41,7 +41,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Analytical.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core, Version=1.0.8221.28275, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SAM.Core, Version=1.0.8236.26892, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>

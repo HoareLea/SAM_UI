@@ -24,6 +24,7 @@ namespace SAM.Core.Mollier.UI
             Temperature_Max = mollierControlSettings.Temperature_Max;
             Temperature_Min = mollierControlSettings.Temperature_Min;
             Temperature_Interval = mollierControlSettings.Temperature_Interval;
+            P_w_Interval = mollierControlSettings.P_w_Interval;
         }
 
         private void Button_Cancel_Click(object sender, EventArgs e)
@@ -170,27 +171,27 @@ namespace SAM.Core.Mollier.UI
                 TemperatureIntervalTextbox.Text = value.ToString();
             }
         }
-
-        public double Elevation
+        public double P_w_Interval
         {
             get
             {
-                if (!Core.Query.TryConvert(TextBox_Elevation.Text, out double elevation))
+                if (!Core.Query.TryConvert(P_w_IntervalTextBox.Text, out double P_w_Interval))
                 {
                     return double.NaN;
                 }
-                if (elevation < 0)
+                if (P_w_Interval <= 0)
                 {
-                    MessageBox.Show("Wrong value\n Elevation has to be positive!");
+                    MessageBox.Show("Wrong range\n Interval has to be positive!");
                     return double.NaN;
                 }
-                return elevation;
+                return P_w_Interval;
             }
             set
             {
-                TextBox_Elevation.Text = value.ToString();
+                P_w_IntervalTextBox.Text = value.ToString();
             }
         }
+       
         private void Apply()
         {
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -206,13 +207,8 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings.Temperature_Max = Temperature_Max;
             if(Temperature_Interval.ToString() != double.NaN.ToString())
                 mollierControlSettings.Temperature_Interval = Temperature_Interval;
-
-            double elevation = Elevation;
-            if(!double.IsNaN(elevation))
-            {
-                mollierControlSettings.Pressure = Mollier.Query.Pressure(elevation);
-            }
-
+            if (P_w_Interval.ToString() != double.NaN.ToString())
+                mollierControlSettings.P_w_Interval = P_w_Interval;
             mollierControl.MollierControlSettings = mollierControlSettings;
         }
 
@@ -220,10 +216,8 @@ namespace SAM.Core.Mollier.UI
         {
             MollierControlSettings mollierControlSettings = new MollierControlSettings();
             mollierControl.MollierControlSettings = mollierControlSettings;
-
             Close();
         }
 
-     
     }
 }
