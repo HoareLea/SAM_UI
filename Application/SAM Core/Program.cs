@@ -13,7 +13,7 @@ namespace SAM.Core.UI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new WelcomeForm());
+            Application.Run(new global::SAM.Core.UI.WelcomeForm());
         }
     }
 }

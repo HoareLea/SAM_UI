@@ -13,7 +13,7 @@ namespace SAM.Analytical.Mollier.UI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MoilierForm());
+            Application.Run(new Core.Mollier.UI.MollierForm());
         }
     }
 }

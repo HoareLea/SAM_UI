@@ -71,16 +71,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
-      <Project>{64ebdb08-f7e3-414b-9420-b67ed263b223}</Project>
-      <Name>SAM.Core.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SAM_UI\SAM.Weather.UI\SAM.Weather.UI.csproj">
-      <Project>{76b5d171-3691-4113-af33-c1b69199cac6}</Project>
-      <Name>SAM.Weather.UI</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

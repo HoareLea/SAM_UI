@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{141D9925-A6E1-4390-89C7-251A428E2DF0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SAM.Analytical.UI</RootNamespace>
+    <AssemblyName>SAM Analytical</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SAM.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Interop.TBD">
+      <HintPath>..\..\references_buildonly\Interop.TBD.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="SAM.Analytical">
+      <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Analytical.Mollier.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.SolarCalculator, Version=1.0.8146.20478, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Analytical.SolarCalculator.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.Tas, Version=1.0.8158.27803, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Analytical.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Architectural, Version=1.0.8131.16760, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM\build\SAM.Architectural.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core">
+      <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Excel">
+      <HintPath>..\..\..\SAM_Excel\build\SAM.Core.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Tas">
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry, Version=1.0.8129.21951, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry.SolarCalculator, Version=1.0.8146.20478, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Geometry.SolarCalculator.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather, Version=1.0.8130.17143, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather.Tas, Version=1.0.8158.27802, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Weather.Tas.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Weather.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NetOfficeFw.Excel">
+      <Version>1.8.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="RibbonWinForms">
+      <Version>5.1.0-beta</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_MaterialLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ConstructionLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_EditLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_T3D.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TBD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TPD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TSD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Hydra.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Wiki.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SaveAs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_InternalCondition.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_WeatherData.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_New.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Location.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SolarCalculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ApertureConstruction.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ModelCheck.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ProfileLibrary.png" />
+    <None Include="Resources\SAM_Space.png" />
+    <None Include="Resources\SAM_EnergySimulation.png" />
+    <None Include="Resources\SAM_Clean.png" />
+    <None Include="Resources\SAM_AddMissingObjects.png" />
+    <None Include="Resources\SAM_AnalyticalModelProperties.png" />
+    <None Include="Resources\SAM_PrintRDS.png" />
+    <Content Include="SAM.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
+      <Project>{fb22aa02-a8b6-4e1a-9581-d660f6e322f8}</Project>
+      <Name>SAM.Analytical.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>set SAM_DIR=$(APPDATA)\SAM\
+if not exist "%25SAM_DIR%25" mkdir "%25SAM_DIR%25"
+
+xcopy "$(SolutionDir)\files\resources" "$(APPDATA)\SAM\resources" /Y/I/E/S
+xcopy "$(SolutionDir)\files\resources" "$(USERPROFILE)\Documents\SAM\resources" /Y/D/I/E/S
+
+copy "$(TargetDir)*.dll" "%25SAM_DIR%25"
+copy "$(TargetDir)*.exe" "%25SAM_DIR%25"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -154,6 +154,10 @@ namespace SAM.Analytical.UI.Grasshopper
             {
                 mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
             }
+            else
+            {
+                mollierForm.Clear();
+            }
 
             mollierForm.Name = string.IsNullOrWhiteSpace(airHandlingUnit.Name) ? mollierForm.Name : airHandlingUnit.Name;
             mollierProcesses?.ForEach(x => mollierForm.AddProcess(x));

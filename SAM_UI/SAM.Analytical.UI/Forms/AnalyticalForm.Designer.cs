@@ -597,7 +597,7 @@ namespace SAM.Analytical.UI
             // PictureBox_Logo
             // 
             this.PictureBox_Logo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.PictureBox_Logo.Image = global::SAM.Analytical.UI.Properties.Resources.SAM1;
+            this.PictureBox_Logo.Image = global::SAM.Analytical.UI.Properties.Resources.SAM;
             this.PictureBox_Logo.Location = new System.Drawing.Point(606, 419);
             this.PictureBox_Logo.Name = "PictureBox_Logo";
             this.PictureBox_Logo.Size = new System.Drawing.Size(103, 96);

@@ -110,6 +110,10 @@ namespace SAM.Analytical.UI.Grasshopper
             {
                 mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
             }
+            else
+            {
+                mollierForm.Clear();
+            }
 
             mollierForm.Name = "Mollier Diagram";
             mollierProcesses?.ForEach(x => mollierForm.AddProcess(x));

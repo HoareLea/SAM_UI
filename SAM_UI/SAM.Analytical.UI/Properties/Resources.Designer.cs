@@ -61,12 +61,12 @@ namespace SAM.Analytical.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Icon SAM {
+        internal static System.Drawing.Bitmap SAM {
             get {
                 object obj = ResourceManager.GetObject("SAM", resourceCulture);
-                return ((System.Drawing.Icon)(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -283,6 +283,16 @@ namespace SAM.Analytical.UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SAM_Small {
+            get {
+                object obj = ResourceManager.GetObject("SAM_Small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SAM_SolarCalculator {
             get {
                 object obj = ResourceManager.GetObject("SAM_SolarCalculator", resourceCulture);
@@ -356,16 +366,6 @@ namespace SAM.Analytical.UI.Properties {
         internal static System.Drawing.Bitmap SAM_Wiki {
             get {
                 object obj = ResourceManager.GetObject("SAM_Wiki", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap SAM1 {
-            get {
-                object obj = ResourceManager.GetObject("SAM1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

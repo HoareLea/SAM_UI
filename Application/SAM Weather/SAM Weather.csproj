@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3F350936-E620-4119-B26F-B60C9D0A77BA}</ProjectGuid>
+    <ProjectGuid>{76B5D171-3691-4113-AF33-C1B69199CAC6}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SAM.Analytical.Mollier.UI</RootNamespace>
-    <AssemblyName>SAM.Analytical.Mollier.UI</AssemblyName>
+    <RootNamespace>SAM.Weather.UI</RootNamespace>
+    <AssemblyName>SAM Weather</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -31,23 +31,19 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>SAM.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SAM.Analytical.Mollier, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SAM_Mollier\build\SAM.Analytical.Mollier.dll</HintPath>
-    </Reference>
-    <Reference Include="SAM.Core, Version=1.0.8236.26892, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SAM.Core">
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core.Mollier, Version=1.0.8222.18988, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
+    <Reference Include="SAM.Weather">
+      <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather.Windows">
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Weather.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -62,17 +58,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\MollierForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\MollierForm.Designer.cs">
-      <DependentUpon>MollierForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Program.cs" />
+    <Compile Include="Classes\Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Forms\MollierForm.resx">
-      <DependentUpon>MollierForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -81,6 +68,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -96,20 +84,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\SAM.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="SAM.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Query\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
-      <Project>{141d9925-a6e1-4390-89c7-251a428e2df0}</Project>
-      <Name>SAM.Analytical.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
-      <Project>{086fb5c2-488e-4355-91ce-a91a7c853a44}</Project>
-      <Name>SAM.Core.Mollier.UI</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>set SAM_DIR=$(APPDATA)\SAM\
+if not exist "%25SAM_DIR%25" mkdir "%25SAM_DIR%25"
+
+copy "$(TargetDir)*.dll" "%25SAM_DIR%25"
+copy "$(TargetDir)*.exe" "%25SAM_DIR%25"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -110,16 +110,12 @@
     <None Include="Resources\SAM_Small.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Mollier\SAM.Analytical.Mollier.UI\SAM.Analytical.Mollier.UI.csproj">
-      <Project>{3f350936-e620-4119-b26f-b60c9d0a77ba}</Project>
-      <Name>SAM.Analytical.Mollier.UI</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
-      <Project>{086fb5c2-488e-4355-91ce-a91a7c853a44}</Project>
+      <Project>{fd5079bc-621d-44ce-8eae-6e85510fe050}</Project>
       <Name>SAM.Core.Mollier.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
-      <Project>{141d9925-a6e1-4390-89c7-251a428e2df0}</Project>
+      <Project>{fb22aa02-a8b6-4e1a-9581-d660f6e322f8}</Project>
       <Name>SAM.Analytical.UI</Name>
     </ProjectReference>
   </ItemGroup>
