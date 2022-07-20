@@ -21,36 +21,67 @@ namespace SAM.Core.Mollier.UI
                 if (mollierControlSettings != null)
                 {
                     TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
-                    ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier ? true : false;
-                    ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric ? true : false;
-                    ToolStripMenuItem_Density.Checked = mollierControlSettings.density_line ? true : false;
-                    ToolStripMenuItem_Enthalpy.Checked = mollierControlSettings.enthalpy_line ? true : false;
-                    ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.specificVolume_line ? true : false;
-                    ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.wetBulbTemperature_line;
-                    defaultToolStripMenuItem.Checked = mollierControlSettings.color == "default" ? true : false;
-                    blueToolStripMenuItem.Checked = mollierControlSettings.color == "blue" ? true : false;
-                    grayToolStripMenuItem.Checked = mollierControlSettings.color == "gray" ? true : false;
-                    MollierControl_Main.MollierControlSettings = mollierControlSettings;
+                    TextBox_Elevation.Text = mollierControlSettings.Elevation.ToString();
+                    ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier;
+                    ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric;
+                    ToolStripMenuItem_Density.Checked = mollierControlSettings.Density_line;
+                    ToolStripMenuItem_Enthalpy.Checked = mollierControlSettings.Enthalpy_line;
+                    ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.SpecificVolume_line;
+                    ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.WetBulbTemperature_line;
+                    defaultToolStripMenuItem.Checked = mollierControlSettings.Color == "default";
+                    blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
+                    grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
+                    MollierControl_Main.MollierControlSettings = mollierControlSettings; 
                 }
             }
         }
 
         private void TextBox_Pressure_TextChanged(object sender, EventArgs e)
         {
-            if (!Core.Query.TryConvert(TextBox_Pressure.Text, out double pressure))
+           if (!Core.Query.TryConvert(TextBox_Pressure.Text, out double pressure))
             {
                 return;
             }
 
-            if (pressure < 90000 || pressure > 110000)
+            if (pressure < 50000 || pressure > 120000)
             {
                 return;
             }
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.Pressure = pressure;
+            mollierControlSettings.Elevation = System.Math.Round(Core.Query.Calculate_BinarySearch(x => Mollier.Query.Pressure(x), pressure, -1000, 5000));
+            TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
+            
+            TextBox_Elevation.TextChanged -= new EventHandler(this.TextBox_Elevation_TextChanged);
+            TextBox_Elevation.Text = mollierControlSettings.Elevation.ToString();
+            TextBox_Elevation.TextChanged += new EventHandler(this.TextBox_Elevation_TextChanged);
+            
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        private void TextBox_Elevation_TextChanged(object sender, EventArgs e)
+        {
+            if (!Core.Query.TryConvert(TextBox_Elevation.Text, out double elevation))
+            {
+                return;
+            }
 
+            if (elevation < -1000 || elevation > 5000)
+            {
+                return;
+            }
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.Elevation = elevation;
+            mollierControlSettings.Pressure = System.Math.Round(Mollier.Query.Pressure(elevation));
+            TextBox_Elevation.Text = mollierControlSettings.Elevation.ToString();
+
+            TextBox_Pressure.TextChanged -= new EventHandler(this.TextBox_Pressure_TextChanged);
+            TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
+            TextBox_Pressure.TextChanged += new EventHandler(this.TextBox_Pressure_TextChanged);
+            
+
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+        }
+      
         private void Button_AddPoint_Click(object sender, EventArgs e)
         {
             MollierPoint mollierPoint = null;
@@ -113,7 +144,7 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_Density.Checked = !ToolStripMenuItem_Density.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.density_line = ToolStripMenuItem_Density.Checked;
+            mollierControlSettings.Density_line = ToolStripMenuItem_Density.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
@@ -122,7 +153,7 @@ namespace SAM.Core.Mollier.UI
 
             ToolStripMenuItem_WetBulbTemperature.Checked = !ToolStripMenuItem_WetBulbTemperature.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.wetBulbTemperature_line = ToolStripMenuItem_WetBulbTemperature.Checked;
+            mollierControlSettings.WetBulbTemperature_line = ToolStripMenuItem_WetBulbTemperature.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
@@ -130,7 +161,7 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_Enthalpy.Checked = !ToolStripMenuItem_Enthalpy.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.enthalpy_line = ToolStripMenuItem_Enthalpy.Checked;
+            mollierControlSettings.Enthalpy_line = ToolStripMenuItem_Enthalpy.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
@@ -138,7 +169,7 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_SpecificVolume.Checked = !ToolStripMenuItem_SpecificVolume.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.specificVolume_line = ToolStripMenuItem_SpecificVolume.Checked;
+            mollierControlSettings.SpecificVolume_line = ToolStripMenuItem_SpecificVolume.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
@@ -190,7 +221,7 @@ namespace SAM.Core.Mollier.UI
             }
             blueToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.color = "blue";
+            mollierControlSettings.Color = "blue";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
@@ -206,7 +237,7 @@ namespace SAM.Core.Mollier.UI
             }
             grayToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.color = "gray";
+            mollierControlSettings.Color = "gray";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
@@ -222,7 +253,7 @@ namespace SAM.Core.Mollier.UI
             }
             defaultToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.color = "default";
+            mollierControlSettings.Color = "default";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         private void graphSettingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -235,9 +266,10 @@ namespace SAM.Core.Mollier.UI
             {
                 if (mollierSettingsForm.ShowDialog(this) != DialogResult.OK)
                 {
+                    TextBox_Pressure.Text = MollierControl_Main.MollierControlSettings.Pressure.ToString();
+                    TextBox_Elevation.Text = MollierControl_Main.MollierControlSettings.Elevation.ToString();
                     return;
                 }
-
                 SaveMollierControlSettings();
             }
         }
@@ -262,10 +294,6 @@ namespace SAM.Core.Mollier.UI
             SaveMollierControlSettings();
         }
 
-        private void TextBox_Elevation_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void ToolStripMenuItem_Settings_Click(object sender, EventArgs e)
         {
@@ -288,5 +316,6 @@ namespace SAM.Core.Mollier.UI
                 TextBox_Pressure.Text = pressure.ToString();
             }
         }
+
     }
 }

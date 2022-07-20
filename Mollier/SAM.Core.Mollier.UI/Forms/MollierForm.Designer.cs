@@ -53,14 +53,13 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_OpenSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.Label_Elevation = new System.Windows.Forms.Label();
             this.TextBox_Elevation = new System.Windows.Forms.TextBox();
-            this.ToolStripMenuItem_SetElevation = new System.Windows.Forms.ToolStripMenuItem();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
             // TextBox_Pressure
             // 
-            this.TextBox_Pressure.Location = new System.Drawing.Point(107, 33);
+            this.TextBox_Pressure.Location = new System.Drawing.Point(273, 30);
             this.TextBox_Pressure.Name = "TextBox_Pressure";
             this.TextBox_Pressure.Size = new System.Drawing.Size(63, 22);
             this.TextBox_Pressure.TabIndex = 12;
@@ -71,7 +70,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.Label_Pressure.AutoSize = true;
             this.Label_Pressure.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Label_Pressure.Location = new System.Drawing.Point(9, 36);
+            this.Label_Pressure.Location = new System.Drawing.Point(175, 33);
             this.Label_Pressure.Name = "Label_Pressure";
             this.Label_Pressure.Size = new System.Drawing.Size(92, 16);
             this.Label_Pressure.TabIndex = 11;
@@ -227,8 +226,7 @@ namespace SAM.Core.Mollier.UI
             // ToolStripMenuItem_Settings
             // 
             this.ToolStripMenuItem_Settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItem_OpenSettings,
-            this.ToolStripMenuItem_SetElevation});
+            this.ToolStripMenuItem_OpenSettings});
             this.ToolStripMenuItem_Settings.Name = "ToolStripMenuItem_Settings";
             this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(61, 20);
             this.ToolStripMenuItem_Settings.Text = "Settings";
@@ -237,7 +235,7 @@ namespace SAM.Core.Mollier.UI
             // ToolStripMenuItem_OpenSettings
             // 
             this.ToolStripMenuItem_OpenSettings.Name = "ToolStripMenuItem_OpenSettings";
-            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(141, 22);
+            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(180, 22);
             this.ToolStripMenuItem_OpenSettings.Text = "Settings";
             this.ToolStripMenuItem_OpenSettings.Click += new System.EventHandler(this.ToolStripMenuItem_OpenSettings_Click);
             // 
@@ -245,51 +243,43 @@ namespace SAM.Core.Mollier.UI
             // 
             this.Label_Elevation.AutoSize = true;
             this.Label_Elevation.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Label_Elevation.Location = new System.Drawing.Point(230, 36);
+            this.Label_Elevation.Location = new System.Drawing.Point(12, 33);
             this.Label_Elevation.Name = "Label_Elevation";
             this.Label_Elevation.Size = new System.Drawing.Size(88, 16);
             this.Label_Elevation.TabIndex = 21;
             this.Label_Elevation.Text = "Elevation [m]:";
-            this.Label_Elevation.Visible = false;
             // 
             // TextBox_Elevation
             // 
-            this.TextBox_Elevation.Location = new System.Drawing.Point(324, 33);
+            this.TextBox_Elevation.Location = new System.Drawing.Point(106, 30);
             this.TextBox_Elevation.Name = "TextBox_Elevation";
             this.TextBox_Elevation.Size = new System.Drawing.Size(63, 22);
             this.TextBox_Elevation.TabIndex = 22;
             this.TextBox_Elevation.Text = "0";
-            this.TextBox_Elevation.Visible = false;
             this.TextBox_Elevation.TextChanged += new System.EventHandler(this.TextBox_Elevation_TextChanged);
-            // 
-            // ToolStripMenuItem_SetElevation
-            // 
-            this.ToolStripMenuItem_SetElevation.Name = "ToolStripMenuItem_SetElevation";
-            this.ToolStripMenuItem_SetElevation.Size = new System.Drawing.Size(141, 22);
-            this.ToolStripMenuItem_SetElevation.Text = "Set elevation";
-            this.ToolStripMenuItem_SetElevation.Click += new System.EventHandler(this.ToolStripMenuItem_SetElevation_Click);
             // 
             // MollierControl_Main
             // 
             this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-
             this.MollierControl_Main.Location = new System.Drawing.Point(12, 65);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
             mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
-            mollierControlSettings1.density_line = true;
-            mollierControlSettings1.enthalpy_line = true;
+            mollierControlSettings1.Color = "default";
+            mollierControlSettings1.Density_line = true;
+            mollierControlSettings1.Elevation = 0D;
+            mollierControlSettings1.Enthalpy_line = true;
             mollierControlSettings1.HumidityRatio_Interval = 5D;
             mollierControlSettings1.HumidityRatio_Max = 35D;
             mollierControlSettings1.HumidityRatio_Min = 0D;
             mollierControlSettings1.Pressure = 101325D;
-            mollierControlSettings1.specificVolume_line = true;
+            mollierControlSettings1.SpecificVolume_line = true;
             mollierControlSettings1.Temperature_Interval = 5D;
             mollierControlSettings1.Temperature_Max = 50D;
             mollierControlSettings1.Temperature_Min = -20D;
             mollierControlSettings1.VisibilitySettings = visibilitySettings1;
-            mollierControlSettings1.wetBulbTemperature_line = true;
+            mollierControlSettings1.WetBulbTemperature_line = true;
             this.MollierControl_Main.MollierControlSettings = mollierControlSettings1;
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(1350, 912);
@@ -345,7 +335,6 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.Label Label_Elevation;
         private System.Windows.Forms.TextBox TextBox_Elevation;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_WetBulbTemperature;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_SetElevation;
     }
 }
 

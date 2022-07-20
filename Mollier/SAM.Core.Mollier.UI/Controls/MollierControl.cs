@@ -37,7 +37,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 Series series = MollierChart.Series.Add(unit);
                 series.IsVisibleInLegend = false;
                 //series.Color = add_color(color, "Relative Humidity", "line");
-                series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, ChartDataType.RelativeHumidity, ChartParameterType.Line);
+                series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartDataType.RelativeHumidity, ChartParameterType.Line);
                 series.ChartType = SeriesChartType.Spline;
                 List<Geometry.Planar.Point2D> relative_humidity_points = new List<Geometry.Planar.Point2D>();
                 for (int j = temperature_Min; j <= temperature_Max; j++)
@@ -76,7 +76,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     series.Points[count - index_Point - i].Label = unit + " Relative Humidity φ";
                 else
                     series.Points[count - index_Point - i].Label = unit;
-                series.Points[count - index_Point - i].LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, ChartDataType.RelativeHumidity, ChartParameterType.Unit);
+                series.Points[count - index_Point - i].LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartDataType.RelativeHumidity, ChartParameterType.Unit);
                 series.Points[count - index_Point - i].LabelAngle = -(System.Convert.ToInt32(angle * 180 / System.Math.PI) - 22);
                 if (adjust_RH == true)
                     temperature_Min = -20;
@@ -88,7 +88,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 string unit_1 = (i - 25).ToString();
                 Series series_1 = MollierChart.Series.Add(unit_1);
                 series_1.IsVisibleInLegend = false;
-                series_1.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, ChartDataType.DiagramTemperature, ChartParameterType.Line);
+                series_1.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartDataType.DiagramTemperature, ChartParameterType.Line);
                 series_1.ChartType = SeriesChartType.Spline;
                 List<Geometry.Planar.Point2D> point2Ds_humidity = new List<Geometry.Planar.Point2D>();
                 point2Ds_humidity = humidity_ratio_points[i];
@@ -99,7 +99,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 if (i % 5 == 0)//bolds every 5th line 
                 {
                     series_1.BorderWidth = 2;
-                    series_1.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, ChartDataType.DiagramTemperature, ChartParameterType.BoldLine);
+                    series_1.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartDataType.DiagramTemperature, ChartParameterType.BoldLine);
                 }
             }
         }
@@ -110,7 +110,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 string unit = (i * 10).ToString() + '%';
                 Series series = MollierChart.Series.Add(unit);
                 series.IsVisibleInLegend = false;
-                series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, ChartDataType.RelativeHumidity, ChartParameterType.Line);
+                series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartDataType.RelativeHumidity, ChartParameterType.Line);
                 series.ChartType = SeriesChartType.Spline;
                 List<Geometry.Planar.Point2D> relative_humidity_points = new List<Geometry.Planar.Point2D>();
                 for (int j = temperature_Min; j <= temperature_Max; j++)
@@ -140,7 +140,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     series.Points[count - index_Point - i].Label = unit + " Relative Humidity φ";
                 else
                     series.Points[count - index_Point - i].Label = unit;
-                series.Points[count - index_Point - i].LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, ChartDataType.RelativeHumidity, ChartParameterType.Unit);
+                series.Points[count - index_Point - i].LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartDataType.RelativeHumidity, ChartParameterType.Unit);
                 series.Points[count - index_Point - i].LabelAngle = (System.Convert.ToInt32(angle * 180 / System.Math.PI) - 50);
                 relative_humidity += 10;
             }
@@ -334,7 +334,7 @@ namespace SAM.Core.Mollier.UI.Controls
             new_label.Points.AddXY(X + x, Y + y);
             new_label.Label = LabelContent;
             new_label.LabelAngle = chartType == ChartType.Mollier ? Mollier_angle : Psychrometric_angle;
-            new_label.LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, chartDataType, chartParameterType);
+            new_label.LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, chartDataType, chartParameterType);
         }
         private void createLabels(ChartType chartType, string name, ChartDataType chartDataType, Series series, double value)
         {
@@ -345,26 +345,26 @@ namespace SAM.Core.Mollier.UI.Controls
                     X = series.Points[1].XValue;
                     Y = series.Points[1].YValues[0];
                     create_moved_label(chartType, X, Y, 0, 0, 0, 0, 0, 0, value.ToString(), chartDataType, ChartParameterType.Unit);
-                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, chartDataType, ChartParameterType.Line);
+                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, chartDataType, ChartParameterType.Line);
                     break;
 
                 case "Wet Bulb Temperature":
                     X = series.Points[1].XValue;
                     Y = series.Points[1].YValues[0];
                     create_moved_label(chartType, X, Y, 0, 0, 0, -3, -1, 0, value.ToString(), chartDataType, ChartParameterType.Unit);
-                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, chartDataType, ChartParameterType.Line);
+                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, chartDataType, ChartParameterType.Line);
                     break;
                 case "Density":
                     X = series.Points[0].XValue;
                     Y = series.Points[0].YValues[0];
                     create_moved_label(chartType, X, Y, 0, 80, 0.4, 0, 0.2, 0.0002, value.ToString(), chartDataType, ChartParameterType.Unit);
-                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, chartDataType, ChartParameterType.Line);
+                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, chartDataType, ChartParameterType.Line);
                     series.BorderDashStyle = ChartDashStyle.DashDotDot;
                     break;
                 case "Enthalpy":
                     X = series.Points[1].XValue;
                     Y = series.Points[1].YValues[0];
-                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, chartDataType, ChartParameterType.Line);
+                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, chartDataType, ChartParameterType.Line);
                     if (value % 10 == 0)
                     {
                         if (chartType == ChartType.Mollier)
@@ -372,7 +372,7 @@ namespace SAM.Core.Mollier.UI.Controls
                         else
                             create_moved_label(chartType, X, Y, 0, 0, 0, 0, 0, 0, value.ToString(), chartDataType, ChartParameterType.Unit);
 
-                         series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.color, chartDataType, ChartParameterType.BoldLine);
+                         series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, chartDataType, ChartParameterType.BoldLine);
                     }
                     break;
             }
@@ -487,7 +487,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisY.LabelStyle.Font = area.AxisY.LabelStyle.Font;
             areaAxisAxisY.Minimum = System.Math.Round(P_w_Min, 4);
             areaAxisAxisY.Maximum = System.Math.Round(P_w_Max, 4);
-            areaAxisAxisY.Interval = 0.001;
+            areaAxisAxisY.Interval = mollierControlSettings.P_w_Interval / 1000;
             areaAxisAxisY.Title = "P_w  x [kPa]";
 
             // Adjust area position
@@ -551,7 +551,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisX.Minimum = System.Math.Round(P_w_Min,2);
             areaAxisAxisX.Maximum = System.Math.Round(P_w_Max,2);
             areaAxisAxisX.LabelStyle.Font = area.AxisX.LabelStyle.Font;
-            areaAxisAxisX.Interval = 1;
+            areaAxisAxisX.Interval = mollierControlSettings.P_w_Interval;
 
 
             areaAxisAxisX.Title = series.Name;
@@ -565,30 +565,21 @@ namespace SAM.Core.Mollier.UI.Controls
         private void generate_graph_mollier()
         {
             double pressure = mollierControlSettings.Pressure;
-            double elevation = 0;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
             double humidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
             double humidityRatio_interval = mollierControlSettings.HumidityRatio_Interval;
             double temperature_Min = mollierControlSettings.Temperature_Min;
             double temperature_Max = mollierControlSettings.Temperature_Max;
             double temperature_interval = mollierControlSettings.Temperature_Interval;
-            bool density_line = mollierControlSettings.density_line;
-            bool enthalpy_line = mollierControlSettings.enthalpy_line;
-            bool specific_volume_line = mollierControlSettings.specificVolume_line;
-            bool wet_bulb_temperature_line = mollierControlSettings.wetBulbTemperature_line;
+            bool density_line = mollierControlSettings.Density_line;
+            bool enthalpy_line = mollierControlSettings.Enthalpy_line;
+            bool specific_volume_line = mollierControlSettings.SpecificVolume_line;
+            bool wet_bulb_temperature_line = mollierControlSettings.WetBulbTemperature_line;
             ChartType chartType = mollierControlSettings.ChartType;
             if (pressure < 90000 || pressure > 110000)
             {
                 return;
             }
-
-            while (Mollier.Query.Pressure(elevation) < pressure)
-            {
-                elevation -= 0.01;
-            }
-
-        
-
             //INITIAL SIZES
             int wetBulbTemperature_Min = -10;
             int wetBulbTemperature_Max = 30;
@@ -706,17 +697,16 @@ namespace SAM.Core.Mollier.UI.Controls
         private void generate_graph_psychrometric()
         {
             double pressure = mollierControlSettings.Pressure;
-            double elevation = 0;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
             double humidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
             double humidityRatio_interval = mollierControlSettings.HumidityRatio_Interval;
             double temperature_Min = mollierControlSettings.Temperature_Min;
             double temperature_Max = mollierControlSettings.Temperature_Max;
             double temperature_interval = mollierControlSettings.Temperature_Interval;
-            bool density_line = mollierControlSettings.density_line;
-            bool enthalpy_line = mollierControlSettings.enthalpy_line;
-            bool specific_volume_line = mollierControlSettings.specificVolume_line;
-            bool wet_bulb_temperature_line = mollierControlSettings.wetBulbTemperature_line;
+            bool density_line = mollierControlSettings.Density_line;
+            bool enthalpy_line = mollierControlSettings.Enthalpy_line;
+            bool specific_volume_line = mollierControlSettings.SpecificVolume_line;
+            bool wet_bulb_temperature_line = mollierControlSettings.WetBulbTemperature_line;
             ChartType chartType = mollierControlSettings.ChartType;
 
             if (pressure < 90000 || pressure > 110000)
@@ -907,25 +897,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 result -= 0.1;
             }
             return result;
-        }
-        private double Elevation_by_pressure(double pressure)
-        {
-            double elevationMin = 0, elevationMax = 800;
-            double mid = (elevationMax + elevationMin)/ 2;
-            while(elevationMin + 0.02 < elevationMax)
-            {
-                double value = Mollier.Query.Pressure(mid);
-                if(value > pressure)
-                {
-                    elevationMin = mid;
-                }
-                else
-                {
-                    elevationMax = mid;
-                }
-                mid = (elevationMin + elevationMax) / 2;
-            }
-            return mid;
         }
         public void AddPoints(IEnumerable<MollierPoint> mollierPoints)
         {
