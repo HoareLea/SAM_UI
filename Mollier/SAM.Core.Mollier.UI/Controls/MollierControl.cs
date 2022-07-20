@@ -10,6 +10,8 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierControl : UserControl
     {
+        public static double MaxPressure = 108400, MinPressure = 90000; 
+
         private MollierControlSettings mollierControlSettings;
         private List<MollierPoint> mollierPoints;
         private List<IMollierProcess> mollierProcesses;
@@ -576,7 +578,7 @@ namespace SAM.Core.Mollier.UI.Controls
             bool specific_volume_line = mollierControlSettings.SpecificVolume_line;
             bool wet_bulb_temperature_line = mollierControlSettings.WetBulbTemperature_line;
             ChartType chartType = mollierControlSettings.ChartType;
-            if (pressure < 90000 || pressure > 110000)
+            if (MinPressure > pressure  || pressure > MaxPressure)
             {
                 return;
             }
@@ -709,7 +711,7 @@ namespace SAM.Core.Mollier.UI.Controls
             bool wet_bulb_temperature_line = mollierControlSettings.WetBulbTemperature_line;
             ChartType chartType = mollierControlSettings.ChartType;
 
-            if (pressure < 90000 || pressure > 110000)
+            if (MinPressure > pressure || pressure > MaxPressure)
             {
                 return;
             }
@@ -926,6 +928,13 @@ namespace SAM.Core.Mollier.UI.Controls
             generate_graph();
         }
 
+        public bool Clear()
+        {
+            mollierPoints?.Clear();
+            mollierProcesses?.Clear();
+            generate_graph();
+            return true;
+        }
         public bool Save()
         {
             string path = null;

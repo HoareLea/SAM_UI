@@ -43,7 +43,7 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            if (pressure < 50000 || pressure > 120000)
+            if (UI.Controls.MollierControl.MinPressure > pressure || pressure > UI.Controls.MollierControl.MaxPressure)
             {
                 return;
             }
@@ -69,6 +69,7 @@ namespace SAM.Core.Mollier.UI
             {
                 return;
             }
+
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.Elevation = elevation;
             mollierControlSettings.Pressure = System.Math.Round(Mollier.Query.Pressure(elevation));
@@ -207,6 +208,11 @@ namespace SAM.Core.Mollier.UI
 
             MollierControl_Main.AddPoints(mollierPoints);
             return true;
+        }
+
+        public bool Clear()
+        {
+           return MollierControl_Main.Clear();
         }
 
         private void blueToolStripMenuItem_Click(object sender, EventArgs e)
