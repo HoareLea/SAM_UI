@@ -54,7 +54,7 @@ namespace SAM.Core.Mollier.UI
             JObject result = new JObject();
             result.Add("_type", Core.Query.FullTypeName(this));
 
-            if (Color == Color.Empty)
+            if (Color != Color.Empty)
             {
                 result.Add("Color", (new SAMColor(Color)).ToJObject());
             }

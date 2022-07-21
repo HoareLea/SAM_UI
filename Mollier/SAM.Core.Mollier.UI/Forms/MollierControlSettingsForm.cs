@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI
@@ -25,6 +27,20 @@ namespace SAM.Core.Mollier.UI
             Temperature_Min = mollierControlSettings.Temperature_Min;
             Temperature_Interval = mollierControlSettings.Temperature_Interval;
             P_w_Interval = mollierControlSettings.P_w_Interval;
+
+
+            VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
+            if(visibilitySettings != null)
+            {
+                List<BuiltInVisibilitySetting> builtInVisibilitySettings = visibilitySettings.GetVisibilitySettings<BuiltInVisibilitySetting>(mollierControlSettings.Color);
+                if(builtInVisibilitySettings != null)
+                {
+                    foreach(BuiltInVisibilitySetting builtInVisibilitySetting in builtInVisibilitySettings)
+                    {
+                        FlowLayoutPanel_BuiltInVisibilitySettings.Controls.Add(new Controls.BuiltInVisibilitySettingControl(builtInVisibilitySetting));
+                    }
+                }
+            }
         }
 
         private void Button_Cancel_Click(object sender, EventArgs e)
@@ -209,6 +225,30 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings.Temperature_Interval = Temperature_Interval;
             if (P_w_Interval.ToString() != double.NaN.ToString())
                 mollierControlSettings.P_w_Interval = P_w_Interval;
+
+            VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
+            if(visibilitySettings == null)
+            {
+                visibilitySettings = new VisibilitySettings();
+            }
+
+            List<BuiltInVisibilitySetting> builtInVisibilitySettings = new List<BuiltInVisibilitySetting>();
+            foreach(Control control in FlowLayoutPanel_BuiltInVisibilitySettings.Controls)
+            {
+                Controls.BuiltInVisibilitySettingControl builtInVisibilitySettingControl = control as Controls.BuiltInVisibilitySettingControl;
+                if(builtInVisibilitySettingControl  == null)
+                {
+                    continue;
+                }
+
+                builtInVisibilitySettings.Add(builtInVisibilitySettingControl.BuiltInVisibilitySetting);
+            }
+
+            visibilitySettings.SetVisibilitySettings("User", builtInVisibilitySettings);
+            mollierControlSettings.Color = "User";
+
+            mollierControlSettings.VisibilitySettings = visibilitySettings;
+
             mollierControl.MollierControlSettings = mollierControlSettings;
         }
 

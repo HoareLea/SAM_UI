@@ -17,6 +17,5 @@ namespace SAM.Core.Mollier.UI
         WetBulbTemperature,
         HeatingProcess,
         CoolingProcess,
-        Point
     }
 }

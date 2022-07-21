@@ -7,9 +7,9 @@ namespace SAM.Core.Mollier.UI
 {
     public partial class MollierForm : Form
     {
-        private static string mollierControlSettingsPath = System.IO.Path.Combine(SAM.Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
+        private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
 
-        public MollierForm()
+        public MollierForm()    
         {
             InitializeComponent();
 
@@ -27,7 +27,7 @@ namespace SAM.Core.Mollier.UI
                     ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.SpecificVolume_line;
                     ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.WetBulbTemperature_line;
                     defaultToolStripMenuItem.Checked = mollierControlSettings.Color == "default";
-                    blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
+                    blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue"; 
                     grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
                     MollierControl_Main.MollierControlSettings = mollierControlSettings;
                 }

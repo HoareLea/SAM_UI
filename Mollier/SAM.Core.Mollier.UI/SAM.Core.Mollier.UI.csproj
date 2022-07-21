@@ -70,6 +70,12 @@
     <Compile Include="Classes\UserVisibilitySetting.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
     <Compile Include="Classes\VisibilitySettings.cs" />
+    <Compile Include="Controls\BuiltInVisibilitySettingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BuiltInVisibilitySettingControl.Designer.cs">
+      <DependentUpon>BuiltInVisibilitySettingControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MollierControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -102,6 +108,9 @@
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\BuiltInVisibilitySettingControl.resx">
+      <DependentUpon>BuiltInVisibilitySettingControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\MollierControl.resx">
       <DependentUpon>MollierControl.cs</DependentUpon>
     </EmbeddedResource>

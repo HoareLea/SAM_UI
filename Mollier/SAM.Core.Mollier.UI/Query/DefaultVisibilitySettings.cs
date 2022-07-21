@@ -27,6 +27,7 @@
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.WetBulbTemperature, System.Drawing.Color.LightSalmon));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
 
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.DiagramTemperature, System.Drawing.Color.LightGray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.DiagramTemperature, System.Drawing.Color.DarkGray));
@@ -55,6 +56,7 @@
 
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
+            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
 
 
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
@@ -80,6 +82,7 @@
 
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.DiagramTemperature, System.Drawing.Color.Gray));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.DiagramTemperature, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
 
             return result;
         }

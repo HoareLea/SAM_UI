@@ -52,7 +52,9 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.Button_ResetChart = new System.Windows.Forms.Button();
+            this.FlowLayoutPanel_BuiltInVisibilitySettings = new System.Windows.Forms.FlowLayoutPanel();
             this.TabControl_Main.SuspendLayout();
+            this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,6 +73,7 @@ namespace SAM.Core.Mollier.UI
             // 
             // TabPage_View
             // 
+            this.TabPage_View.Controls.Add(this.FlowLayoutPanel_BuiltInVisibilitySettings);
             this.TabPage_View.Location = new System.Drawing.Point(4, 25);
             this.TabPage_View.Name = "TabPage_View";
             this.TabPage_View.Padding = new System.Windows.Forms.Padding(3);
@@ -296,6 +299,17 @@ namespace SAM.Core.Mollier.UI
             this.Button_ResetChart.UseVisualStyleBackColor = true;
             this.Button_ResetChart.Click += new System.EventHandler(this.Button_ResetChart_Click);
             // 
+            // FlowLayoutPanel_BuiltInVisibilitySettings
+            // 
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.AutoScroll = true;
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.Location = new System.Drawing.Point(3, 3);
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.Name = "FlowLayoutPanel_BuiltInVisibilitySettings";
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.Size = new System.Drawing.Size(667, 360);
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.TabIndex = 0;
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.WrapContents = false;
+            // 
             // MollierControlSettingsForm
             // 
             this.AcceptButton = this.Button_OK;
@@ -315,6 +329,7 @@ namespace SAM.Core.Mollier.UI
             this.ShowInTaskbar = false;
             this.Text = "Mollier Settings";
             this.TabControl_Main.ResumeLayout(false);
+            this.TabPage_View.ResumeLayout(false);
             this.TabPage_Ranges.ResumeLayout(false);
             this.TabPage_Ranges.PerformLayout();
             this.ResumeLayout(false);
@@ -346,5 +361,6 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox P_w_IntervalTextBox;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.FlowLayoutPanel FlowLayoutPanel_BuiltInVisibilitySettings;
     }
 }
