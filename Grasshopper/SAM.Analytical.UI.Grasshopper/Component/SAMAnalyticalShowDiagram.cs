@@ -117,42 +117,7 @@ namespace SAM.Analytical.UI.Grasshopper
                 mollierForm.Clear();
             }
 
-            List<double> pressures = new List<double>();
-            if(mollierProcesses != null)
-            {
-                foreach (MollierProcess process in mollierProcesses)
-                {
-                    pressures.Add(process.Pressure);
-                }
-            }
-            if (mollierPoints != null)
-            {
-                foreach(MollierPoint point in mollierPoints)
-                {
-                    pressures.Add(point.Pressure);
-                }
-            }
-
-            pressures.Sort();
-            int count = 1, number = 1;
-            double pressure = pressures[0];
-            for(int i=1; i<pressures.Count(); i++)
-            {
-                if (pressures[i] == pressures[i - 1])
-                {
-                    count++;
-                }
-                else
-                {
-                    if(count > number)
-                    {
-                        number = count;
-                        pressure = pressures[i - 1];
-                    }
-                    count = 1;
-                }
-            }
-
+            double pressure = Core.Mollier.UI.Query.DefaultPressure(mollierPoints, mollierProcesses);
             mollierForm.Name = "Mollier Diagram";
             mollierForm.Pressure = pressure;
             mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
