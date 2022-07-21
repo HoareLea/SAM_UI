@@ -1,12 +1,35 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Core.Mollier.UI
 {
     public class VisibilitySettings : IJSAMObject
     {
         Dictionary<string, List<IVisibilitySetting>> dictionary;
+
+        public VisibilitySettings()
+        {
+
+        }
+
+        public VisibilitySettings(VisibilitySettings visibilitySettings)
+        {
+            if (visibilitySettings?.dictionary != null)
+            {
+                dictionary = new Dictionary<string, List<IVisibilitySetting>>();
+                foreach(KeyValuePair<string, List<IVisibilitySetting>> keyValuePair in visibilitySettings.dictionary)
+                {
+                    dictionary[keyValuePair.Key] = keyValuePair.Value;
+                }
+            }
+        }
+
+        public VisibilitySettings(JObject jObject)
+        {
+            FromJObject(jObject);
+        }
 
         public bool FromJObject(JObject jObject)
         {
@@ -16,7 +39,7 @@ namespace SAM.Core.Mollier.UI
             }
 
 
-            if (jObject.ContainsKey("VisibilitySettings"))
+            if (jObject.ContainsKey("Templates"))
             {
                 dictionary = new Dictionary<string, List<IVisibilitySetting>>();
                 JArray jArray = jObject.Value<JArray>("Templates");
@@ -69,6 +92,8 @@ namespace SAM.Core.Mollier.UI
 
                     jObject_Template.Add("VisibilitySettings", jArray_VisibilitySettings);
 
+                    jArray.Add(jObject_Template);
+
                 }
                 result.Add("Templates", jArray);
             }
@@ -104,28 +129,33 @@ namespace SAM.Core.Mollier.UI
             return true;
         }
 
-        public IVisibilitySetting GetVisibilitySetting(ChartDataType chartDataType, ChartParameterType chartParameterType)
+        public IVisibilitySetting GetVisibilitySetting(ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined)
         {
-            return GetVisibilitySetting(String.Empty, chartDataType, chartParameterType);
+            return GetVisibilitySetting(String.Empty, chartParameterType, chartDataType);
         }
 
-        public IVisibilitySetting GetVisibilitySetting(string templateName, ChartDataType chartDataType, ChartParameterType chartParameterType)
+        public IVisibilitySetting GetVisibilitySetting(string templateName, ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined)
         {
+            if(dictionary == null)
+            {
+                return null;
+            }
+
             if (!dictionary.TryGetValue(templateName, out List<IVisibilitySetting> visibilitySettings) || visibilitySettings == null)
             {
                 return null;
             }
 
-            //foreach(IVisibilitySetting x in visibilitySettings)
+            //foreach (IVisibilitySetting x in visibilitySettings)
             //{
-            //    if(!(x is BuiltInVisibilitySetting))
+            //    if (!(x is BuiltInVisibilitySetting))
             //    {
             //        continue;
             //    }
 
             //    BuiltInVisibilitySetting BuiltInVisibilitySetting = (BuiltInVisibilitySetting)x;
 
-            //    if(BuiltInVisibilitySetting.ChartDataType != chartDataType)
+            //    if (BuiltInVisibilitySetting.ChartDataType != chartDataType)
             //    {
             //        continue;
             //    }
@@ -141,15 +171,45 @@ namespace SAM.Core.Mollier.UI
             return visibilitySettings.Find(x => x is BuiltInVisibilitySetting && ((BuiltInVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);
         }
 
-        public System.Drawing.Color GetColor(string templateName, ChartDataType chartDataType, ChartParameterType chartParameterType)
+        public System.Drawing.Color GetColor(string templateName,  ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined)
         {
-            IVisibilitySetting visibilitySetting = GetVisibilitySetting(templateName, chartDataType, chartParameterType);
+            IVisibilitySetting visibilitySetting = GetVisibilitySetting(templateName, chartParameterType, chartDataType);
             if(visibilitySetting == null)
             {
                 return System.Drawing.Color.Empty;
             }
 
             return visibilitySetting.Color;
+        }
+
+        public List<T> GetVisibilitySettings<T>(string templateName) where T:IVisibilitySetting
+        {
+            if(dictionary == null)
+            {
+                return null;
+            }
+
+            if (!dictionary.TryGetValue(templateName, out List<IVisibilitySetting> visibilitySettings) || visibilitySettings == null)
+            {
+                return null;
+            }
+
+            return visibilitySettings.FindAll(x => x is T).ConvertAll(x => (T)x);
+        }
+
+        public void SetVisibilitySettings<T>(string templateName, List<T> visibilitySettings) where T: IVisibilitySetting
+        {
+            if (visibilitySettings == null || string.IsNullOrWhiteSpace(templateName))
+            {
+                return;
+            }
+
+            if (dictionary == null)
+            {
+                dictionary = new Dictionary<string, List<IVisibilitySetting>>();
+            }
+
+            dictionary[templateName] = new List<IVisibilitySetting>(visibilitySettings.Cast<IVisibilitySetting>());
         }
     }
 }

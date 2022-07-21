@@ -179,10 +179,11 @@ namespace SAM.Analytical.UI.Grasshopper
                     {
                         mollierForm.Clear();
                     }
+                    pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
 
                     mollierForm.Name = string.IsNullOrWhiteSpace(space.Name) ? mollierForm.Name : space.Name;
-                    mollierProcesses?.ForEach(x => mollierForm.AddProcess(x));
-
+                    mollierForm.Pressure = pressure;
+                    mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
                     mollierForm.Show();
                 }
             }

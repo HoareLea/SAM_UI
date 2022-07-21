@@ -21,6 +21,13 @@ namespace SAM.Core.Mollier.UI
             ChartDataType = chartDataType;
         }
 
+        public BuiltInVisibilitySetting(ChartParameterType chartParameterType,  Color color)
+            : base(color)
+        {
+            ChartParameterType = chartParameterType;
+            ChartDataType = ChartDataType.Undefined;
+        }
+
         public BuiltInVisibilitySetting(JObject jObject)
             : base(jObject)
         {
@@ -34,7 +41,7 @@ namespace SAM.Core.Mollier.UI
             ChartDataType = builtInVisibilitySetting.ChartDataType;
         }
 
-        public bool FromJObject(JObject jObject)
+        public override bool FromJObject(JObject jObject)
         {
             if(!base.FromJObject(jObject))
             {
@@ -57,12 +64,10 @@ namespace SAM.Core.Mollier.UI
                 }
             }
 
-            //TODO: Add ChartParameterType, ChartDataType
-
-            throw new System.NotImplementedException();
+            return true;
         }
 
-        public JObject ToJObject()
+        public override JObject ToJObject()
         {
             JObject jObject = base.ToJObject();
             if(jObject == null)
@@ -70,7 +75,8 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            //TODO: Add ChartParameterType, ChartDataType
+            jObject.Add("ChartParameterType", ChartParameterType.ToString());
+            jObject.Add("ChartDataType", ChartDataType.ToString());
 
             return jObject;
         }

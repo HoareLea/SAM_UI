@@ -49,6 +49,7 @@ namespace SAM.Core.Mollier.UI
             WetBulbTemperature_line = mollierControlSettings.WetBulbTemperature_line;
             ChartType = mollierControlSettings.ChartType;
             Color = mollierControlSettings.Color;
+            VisibilitySettings = new VisibilitySettings(mollierControlSettings.VisibilitySettings);
             //TODO: Add missing parameters
         }
 
@@ -122,6 +123,14 @@ namespace SAM.Core.Mollier.UI
                     ChartType = chartType;
                 }
             }
+            if (jObject.ContainsKey("VisibilitySettings"))
+            {
+                JObject jObject_VisibilitySettings = jObject.Value<JObject>("VisibilitySettings");
+                if(jObject_VisibilitySettings != null)
+                {
+                    VisibilitySettings = new VisibilitySettings(jObject_VisibilitySettings);
+                }
+            }
             return true;
         }
 
@@ -172,6 +181,11 @@ namespace SAM.Core.Mollier.UI
             result.Add("WetBulbTemperature_line", WetBulbTemperature_line);
             result.Add("Color", Color);
             result.Add("ChartType", ChartType.ToString());
+
+            if(VisibilitySettings != null)
+            {
+                result.Add("VisibilitySettings", VisibilitySettings.ToJObject());
+            }
 
 
             return result;
