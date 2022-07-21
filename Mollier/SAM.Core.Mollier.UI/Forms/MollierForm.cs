@@ -12,10 +12,8 @@ namespace SAM.Core.Mollier.UI
         public MollierForm()
         {
             InitializeComponent();
-        }
-        private void MollierForm_Load(object sender, EventArgs e)
-        {
-            if(System.IO.File.Exists(mollierControlSettingsPath))
+
+            if (System.IO.File.Exists(mollierControlSettingsPath))
             {
                 MollierControlSettings mollierControlSettings = Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault();
                 if (mollierControlSettings != null)
@@ -31,9 +29,13 @@ namespace SAM.Core.Mollier.UI
                     defaultToolStripMenuItem.Checked = mollierControlSettings.Color == "default";
                     blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
                     grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
-                    MollierControl_Main.MollierControlSettings = mollierControlSettings; 
+                    MollierControl_Main.MollierControlSettings = mollierControlSettings;
                 }
             }
+        }
+        private void MollierForm_Load(object sender, EventArgs e)
+        {
+
         }
 
         private void TextBox_Pressure_TextChanged(object sender, EventArgs e)
@@ -184,29 +186,43 @@ namespace SAM.Core.Mollier.UI
             set
             {
                 TextBox_Pressure.ReadOnly = value;
+                TextBox_Elevation.ReadOnly = value;
                 Button_AddPoint.Visible = !value;
             }
         }
 
-        public bool AddProcess(IMollierProcess mollierProcess)
+        public double Pressure
+        {
+            get 
+            {
+                return MollierControl_Main.MollierControlSettings.Pressure;
+            }
+            set
+            {
+                MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+                mollierControlSettings.Pressure = value;
+                TextBox_Pressure.Text = value.ToString();
+                MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            }
+        }
+        public bool AddProcess(IMollierProcess mollierProcess, bool checkPressure = true)
         {
             if(mollierProcess == null)
             {
                 return false;
             }
-
-            MollierControl_Main.AddProcess(mollierProcess);
+            MollierControl_Main.AddProcess(mollierProcess, checkPressure);
             return true;
         }
 
-        public bool AddPoints(IEnumerable<MollierPoint> mollierPoints)
+        public bool AddPoints(IEnumerable<MollierPoint> mollierPoints, bool checkPressure = true)
         {
             if (mollierPoints == null)
             {
                 return false;
             }
 
-            MollierControl_Main.AddPoints(mollierPoints);
+            MollierControl_Main.AddPoints(mollierPoints, checkPressure);
             return true;
         }
 

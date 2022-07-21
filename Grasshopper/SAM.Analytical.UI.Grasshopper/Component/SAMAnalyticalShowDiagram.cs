@@ -5,6 +5,8 @@ using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.Grasshopper
 {
@@ -115,9 +117,46 @@ namespace SAM.Analytical.UI.Grasshopper
                 mollierForm.Clear();
             }
 
+            List<double> pressures = new List<double>();
+            if(mollierProcesses != null)
+            {
+                foreach (MollierProcess process in mollierProcesses)
+                {
+                    pressures.Add(process.Pressure);
+                }
+            }
+            if (mollierPoints != null)
+            {
+                foreach(MollierPoint point in mollierPoints)
+                {
+                    pressures.Add(point.Pressure);
+                }
+            }
+
+            pressures.Sort();
+            int count = 1, number = 1;
+            double pressure = pressures[0];
+            for(int i=1; i<pressures.Count(); i++)
+            {
+                if (pressures[i] == pressures[i - 1])
+                {
+                    count++;
+                }
+                else
+                {
+                    if(count > number)
+                    {
+                        number = count;
+                        pressure = pressures[i - 1];
+                    }
+                    count = 1;
+                }
+            }
+
             mollierForm.Name = "Mollier Diagram";
-            mollierProcesses?.ForEach(x => mollierForm.AddProcess(x));
-            mollierForm.AddPoints(mollierPoints);
+            mollierForm.Pressure = pressure;
+            mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
+            mollierForm.AddPoints(mollierPoints, false);
 
             mollierForm.Show();
         }
