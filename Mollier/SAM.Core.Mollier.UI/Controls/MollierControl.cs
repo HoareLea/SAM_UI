@@ -900,32 +900,44 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             return result;
         }
-        public void AddPoints(IEnumerable<MollierPoint> mollierPoints)
+        public List<MollierPoint> AddPoints(IEnumerable<MollierPoint> mollierPoints, bool checkPressure = true)
         {
             if (mollierPoints == null)
-                return;
+                return null;
             if(this.mollierPoints == null)
             {
                 this.mollierPoints = new List<MollierPoint>();
             }
-            this.mollierPoints.AddRange(mollierPoints);
+            List<MollierPoint> mollierPointsResult = new List<MollierPoint>();
+            foreach(MollierPoint point in mollierPoints)
+            {
+                if (!checkPressure || Core.Query.AlmostEqual(point.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
+                {
+                    mollierPointsResult.Add(point);
+                }
+            }
+            this.mollierPoints.AddRange(mollierPointsResult);
             generate_graph();
+            return mollierPointsResult;
         }
 
-        public void AddProcess(IMollierProcess mollierProcess)
+        public bool AddProcess(IMollierProcess mollierProcess, bool checkPressure = true)
         {
             if(mollierProcess == null)
             {
-                return;
+                return false;
             }
-
             if(mollierProcesses == null)
             {
                 mollierProcesses = new List<IMollierProcess>();
             }
-
+            if(checkPressure && !Core.Query.AlmostEqual(mollierProcess.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
+            {
+                return false;
+            }
             mollierProcesses.Add(mollierProcess);
-            generate_graph();
+            generate_graph();//TODO: optimalise
+            return true;
         }
 
         public bool Clear()
