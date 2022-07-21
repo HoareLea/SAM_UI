@@ -4,19 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E83588A3-BAAD-4B4F-B978-FEFCFF8C34C2}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <ProjectGuid>{12C02306-411F-4A08-A5B4-6446F4A4E6B8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SAM.Analytical.UI.WPF</RootNamespace>
     <AssemblyName>SAM.Analytical.UI.WPF</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,9 +21,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\build\SAM.Analytical.UI.WPF.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\build\</OutputPath>
@@ -34,64 +31,54 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>SAM.ico</ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SAM.Analytical">
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SAM.Analytical, Version=1.0.8236.30910, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\SAM_Windows\build\SAM.Analytical.Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="SAM.Core, Version=1.0.8181.22169, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SAM.Core, Version=1.0.8236.30908, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core.Tas, Version=1.0.8182.19636, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="SAM.Core.Tas, Version=1.0.8217.19574, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core.Windows">
+    <Reference Include="SAM.Core.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Geometry">
+    <Reference Include="SAM.Geometry, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="system.windows.controls.ribbon" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    <Compile Include="Classes\VisualAnalyticalModel.cs" />
     <Compile Include="Classes\VisualAperture.cs" />
     <Compile Include="Classes\VisualBackground.cs" />
-    <Compile Include="Classes\VisualAnalyticalModel.cs" />
-    <Compile Include="Classes\VisualWidget.cs" />
     <Compile Include="Classes\VisualEdges.cs" />
-    <Compile Include="Classes\VisualSpace.cs" />
     <Compile Include="Classes\VisualJSAMObject.cs" />
     <Compile Include="Classes\VisualPanel.cs" />
+    <Compile Include="Classes\VisualSpace.cs" />
+    <Compile Include="Classes\VisualWidget.cs" />
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
     </Compile>
@@ -99,192 +86,175 @@
       <DependentUpon>View3DControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToDrawing\Color.cs" />
-    <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
-    <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualAperture.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualAnalyticalModel.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualWidget.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualEdges.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualSpace.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualPanel.cs" />
     <Compile Include="Convert\ToMedia3D\GeometryModel3D.cs" />
-    <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
+    <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
+    <Compile Include="Convert\ToMedia3D\Point3D.cs" />
+    <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualAnalyticalModel.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualAperture.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualEdges.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualPanel.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualSpace.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualWidget.cs" />
     <Compile Include="Convert\ToMedia\Color.cs" />
     <Compile Include="Convert\ToSAM\Point2D.cs" />
-    <Compile Include="Convert\ToSAM\Vector3D.cs" />
     <Compile Include="Convert\ToSAM\Point3D.cs" />
+    <Compile Include="Convert\ToSAM\Vector3D.cs" />
     <Compile Include="Create\Point3DCollection.cs" />
     <Compile Include="Create\VisualBackground.cs" />
     <Compile Include="Interfaces\IVisualFace3DObject.cs" />
     <Compile Include="Interfaces\IVisualJSAMObject.cs" />
     <Compile Include="Modify\Clear.cs" />
-    <Compile Include="Modify\Zoom.cs" />
-    <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Modify\Move.cs" />
-    <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\Window.cs" />
-    <Compile Include="Query\Viewport3DVisual.cs" />
-    <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
-    <Compile Include="Query\TransparentMaterial.cs" />
-    <Compile Include="Query\VisualSAMObjects.cs" />
-    <Compile Include="Query\Plane.cs" />
-    <Compile Include="Query\IsNaN.cs" />
-    <Compile Include="Query\LookDirection.cs" />
-    <Compile Include="Query\Center.cs" />
-    <Compile Include="Query\ScaleTransform.cs" />
-    <Compile Include="Query\TranslateTransform.cs" />
-    <Compile Include="Query\PitchAxis.cs" />
-    <Compile Include="Query\RollAxis.cs" />
-    <Compile Include="Query\YawAxis.cs" />
-    <Compile Include="Query\Material.cs" />
-    <Page Include="Controls\AnalyticalModelControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\AnalyticalWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Windows\AnalyticalWindow.xaml.cs">
-      <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Controls\View3DControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="Modify\Rotate.cs" />
+    <Compile Include="Modify\Zoom.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    <Compile Include="Query\Bounds.cs" />
+    <Compile Include="Query\Center.cs" />
+    <Compile Include="Query\IsNaN.cs" />
+    <Compile Include="Query\LookDirection.cs" />
+    <Compile Include="Query\Material.cs" />
+    <Compile Include="Query\PitchAxis.cs" />
+    <Compile Include="Query\Plane.cs" />
+    <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
+    <Compile Include="Query\RollAxis.cs" />
+    <Compile Include="Query\ScaleTransform.cs" />
+    <Compile Include="Query\TranslateTransform.cs" />
+    <Compile Include="Query\TransparentMaterial.cs" />
+    <Compile Include="Query\Viewport3DVisual.cs" />
+    <Compile Include="Query\VisualSAMObjects.cs" />
+    <Compile Include="Query\Window.cs" />
+    <Compile Include="Query\YawAxis.cs" />
+    <Compile Include="Windows\AnalyticalWindow.xaml.cs">
+      <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_AddMissingObjects.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_AnalyticalModelProperties.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_ApertureConstruction.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Clean.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_ConstructionLibrary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_EditLibrary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_EnergySimulation.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Export.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Hydra.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Import.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_InternalCondition.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Location.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_MaterialLibrary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_ModelCheck.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_New.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_PrintRDS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_ProfileLibrary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Save.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_SaveAs.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Small.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_SolarCalculator.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Space.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_T3D.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_TBD.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_TPD.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_TSD.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_WeatherData.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\SAM_Wiki.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HelixToolkit.Wpf">
-      <Version>2.21.0</Version>
+      <Version>2.21.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\AnalyticalModelControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\View3DControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\AnalyticalWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_AddMissingObjects.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_AnalyticalModelProperties.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ApertureConstruction.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Clean.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ConstructionLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_EditLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_EnergySimulation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Hydra.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_InternalCondition.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Location.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_MaterialLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ModelCheck.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_New.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_PrintRDS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ProfileLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SaveAs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SolarCalculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Space.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_T3D.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TBD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TPD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TSD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_WeatherData.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Wiki.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
@@ -295,9 +265,6 @@
       <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="SAM.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
