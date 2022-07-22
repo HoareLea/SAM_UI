@@ -31,7 +31,7 @@ namespace SAM.Core.Mollier.UI
         public BuiltInVisibilitySetting(JObject jObject)
             : base(jObject)
         {
-            FromJObject(jObject);
+
         }
 
         public BuiltInVisibilitySetting(BuiltInVisibilitySetting builtInVisibilitySetting)

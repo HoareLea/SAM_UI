@@ -37,7 +37,7 @@ namespace SAM.Core.Mollier.UI
             {
                 return false;
             }
-
+           
 
             if (jObject.ContainsKey("Templates"))
             {
@@ -146,6 +146,15 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
+            IVisibilitySetting result = visibilitySettings.Find(x => x is IUserVisibilitySetting && ((IUserVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);
+            if(result == null)
+            {
+                result = visibilitySettings.Find(x => x is BuiltInVisibilitySetting && ((BuiltInVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);
+            }
+
+            return result;
+
+
             //foreach (IVisibilitySetting x in visibilitySettings)
             //{
             //    if (!(x is BuiltInVisibilitySetting))
@@ -168,7 +177,7 @@ namespace SAM.Core.Mollier.UI
             //    return BuiltInVisibilitySetting;
             //}
 
-            return visibilitySettings.Find(x => x is BuiltInVisibilitySetting && ((BuiltInVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);
+            
         }
 
         public System.Drawing.Color GetColor(string templateName,  ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined)
@@ -179,6 +188,18 @@ namespace SAM.Core.Mollier.UI
                 return System.Drawing.Color.Empty;
             }
 
+            return visibilitySetting.Color;
+        }
+
+        public System.Drawing.Color GetColor(string templateName, ChartParameterType chartParameterType, IMollierProcess mollierProcess)
+        {
+            ChartDataType process = mollierProcess.ChartDataType();
+
+            IVisibilitySetting visibilitySetting = GetVisibilitySetting(templateName, chartParameterType, process);
+            if(visibilitySetting == null)
+            {
+                return System.Drawing.Color.Empty;
+            }
             return visibilitySetting.Color;
         }
 

@@ -652,13 +652,32 @@ namespace SAM.Core.Mollier.UI.Controls
                 Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Point;
-                series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Point);
+                IVisibilitySetting visibilitySetting = mollierControlSettings.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.Color, ChartParameterType.Point);
+                if(visibilitySetting is PointGradientVisibilitySetting)
+                {
+                    //Add method to calculate neiberhood points
+
+                    //Dictionry<MollierPoint, int> dictionary = mollierPoints
+
+                    //series.Color = 
+                }
+                else if(visibilitySetting is BuiltInVisibilitySetting)
+                {
+                    series.Color = visibilitySetting.Color;
+                }
+
+                //series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Point);
                 foreach (MollierPoint point in mollierPoints)
                 {
                     double humidity_ratio = point.HumidityRatio;
                     double DryBulbTemperature = point.DryBulbTemperature;
                     double diagram_temperature = SAM.Core.Mollier.Query.DiagramTemperature(point);
                     int index = series.Points.AddXY(humidity_ratio * 1000, diagram_temperature);
+                    if(visibilitySetting is PointGradientVisibilitySetting)
+                    {
+                        //series.Points[index].Color = Color.Red;
+                    }
+
                     series.Points[index].ToolTip = ToolTip(point, chartType);
                     series.Points[index].Tag = point;
                 }
@@ -668,11 +687,12 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 foreach (IMollierProcess mollierProcess in mollierProcesses)
                 {
+
                     Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
                     series.IsVisibleInLegend = false;
                     series.ChartType = SeriesChartType.Line;
                     series.BorderWidth = 5;
-                    //series.Color = Color.Red;
+                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess);
 
                     MollierPoint start = mollierProcess?.Start;
                     MollierPoint end = mollierProcess?.End;
@@ -686,7 +706,6 @@ namespace SAM.Core.Mollier.UI.Controls
                     index = series.Points.AddXY(start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start));
                     series.Points[index].ToolTip = ToolTip(start, chartType);
                     series.Points[index].Tag = start;
-
                     index = series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end));
                     series.Points[index].ToolTip = ToolTip(end, chartType);
                     series.Points[index].Tag = end;
