@@ -31,6 +31,7 @@ namespace SAM.Core.Mollier.UI
         {
             this.TabControl_Main = new System.Windows.Forms.TabControl();
             this.TabPage_View = new System.Windows.Forms.TabPage();
+            this.FlowLayoutPanel_BuiltInVisibilitySettings = new System.Windows.Forms.FlowLayoutPanel();
             this.TabPage_Ranges = new System.Windows.Forms.TabPage();
             this.label9 = new System.Windows.Forms.Label();
             this.P_w_IntervalTextBox = new System.Windows.Forms.TextBox();
@@ -52,7 +53,10 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.Button_ResetChart = new System.Windows.Forms.Button();
-            this.FlowLayoutPanel_BuiltInVisibilitySettings = new System.Windows.Forms.FlowLayoutPanel();
+            this.CheckBoxGradientPoint = new System.Windows.Forms.CheckBox();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
@@ -73,6 +77,9 @@ namespace SAM.Core.Mollier.UI
             // 
             // TabPage_View
             // 
+            this.TabPage_View.Controls.Add(this.button2);
+            this.TabPage_View.Controls.Add(this.button1);
+            this.TabPage_View.Controls.Add(this.CheckBoxGradientPoint);
             this.TabPage_View.Controls.Add(this.FlowLayoutPanel_BuiltInVisibilitySettings);
             this.TabPage_View.Location = new System.Drawing.Point(4, 25);
             this.TabPage_View.Name = "TabPage_View";
@@ -81,6 +88,16 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_View.TabIndex = 0;
             this.TabPage_View.Text = "View";
             this.TabPage_View.UseVisualStyleBackColor = true;
+            // 
+            // FlowLayoutPanel_BuiltInVisibilitySettings
+            // 
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.AutoScroll = true;
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.Location = new System.Drawing.Point(3, 3);
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.Name = "FlowLayoutPanel_BuiltInVisibilitySettings";
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.Size = new System.Drawing.Size(589, 360);
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.TabIndex = 0;
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.WrapContents = false;
             // 
             // TabPage_Ranges
             // 
@@ -299,16 +316,33 @@ namespace SAM.Core.Mollier.UI
             this.Button_ResetChart.UseVisualStyleBackColor = true;
             this.Button_ResetChart.Click += new System.EventHandler(this.Button_ResetChart_Click);
             // 
-            // FlowLayoutPanel_BuiltInVisibilitySettings
+            // CheckBoxGradientPoint
             // 
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.AutoScroll = true;
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.Location = new System.Drawing.Point(3, 3);
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.Name = "FlowLayoutPanel_BuiltInVisibilitySettings";
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.Size = new System.Drawing.Size(667, 360);
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.TabIndex = 0;
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.WrapContents = false;
+            this.CheckBoxGradientPoint.AutoSize = true;
+            this.CheckBoxGradientPoint.Location = new System.Drawing.Point(598, 101);
+            this.CheckBoxGradientPoint.Name = "CheckBoxGradientPoint";
+            this.CheckBoxGradientPoint.Size = new System.Drawing.Size(110, 20);
+            this.CheckBoxGradientPoint.TabIndex = 1;
+            this.CheckBoxGradientPoint.Text = "Gradient Point";
+            this.CheckBoxGradientPoint.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(595, 127);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 10;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(595, 156);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 11;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
             // 
             // MollierControlSettingsForm
             // 
@@ -330,6 +364,7 @@ namespace SAM.Core.Mollier.UI
             this.Text = "Mollier Settings";
             this.TabControl_Main.ResumeLayout(false);
             this.TabPage_View.ResumeLayout(false);
+            this.TabPage_View.PerformLayout();
             this.TabPage_Ranges.ResumeLayout(false);
             this.TabPage_Ranges.PerformLayout();
             this.ResumeLayout(false);
@@ -362,5 +397,9 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.TextBox P_w_IntervalTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.FlowLayoutPanel FlowLayoutPanel_BuiltInVisibilitySettings;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckBox CheckBoxGradientPoint;
+        private System.Windows.Forms.ColorDialog colorDialog1;
     }
 }

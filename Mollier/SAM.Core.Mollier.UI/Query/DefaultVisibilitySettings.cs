@@ -28,7 +28,7 @@
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, UI.ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, UI.ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
-            result.Add("default", new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Green));
+            //result.Add("default", new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Green));
 
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.DiagramTemperature, System.Drawing.Color.LightGray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, UI.ChartDataType.DiagramTemperature, System.Drawing.Color.DarkGray));

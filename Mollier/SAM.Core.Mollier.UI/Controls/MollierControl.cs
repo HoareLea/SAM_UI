@@ -565,7 +565,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.InnerPlotPosition.Y += labelsSize;
         }
         private void generate_graph_mollier()
-        {
+        { 
             double pressure = mollierControlSettings.Pressure;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
             double humidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
@@ -652,32 +652,33 @@ namespace SAM.Core.Mollier.UI.Controls
                 Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Point;
+              
                 IVisibilitySetting visibilitySetting = mollierControlSettings.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.Color, ChartParameterType.Point);
+               
+                Dictionary<MollierPoint, int> dictionary = new Dictionary<MollierPoint, int>();
+                double MaxCount = 0;
+               
                 if(visibilitySetting is PointGradientVisibilitySetting)
                 {
-                    //Add method to calculate neiberhood points
-
-                    //Dictionry<MollierPoint, int> dictionary = mollierPoints
-
-                    //series.Color = 
+                    dictionary = Query.NeighborhoodCount(mollierPoints, out MaxCount);
                 }
                 else if(visibilitySetting is BuiltInVisibilitySetting)
                 {
-                    series.Color = visibilitySetting.Color;
+                    series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Point);
                 }
 
-                //series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Point);
                 foreach (MollierPoint point in mollierPoints)
                 {
                     double humidity_ratio = point.HumidityRatio;
                     double DryBulbTemperature = point.DryBulbTemperature;
-                    double diagram_temperature = SAM.Core.Mollier.Query.DiagramTemperature(point);
+                    double diagram_temperature = Mollier.Query.DiagramTemperature(point);
                     int index = series.Points.AddXY(humidity_ratio * 1000, diagram_temperature);
-                    if(visibilitySetting is PointGradientVisibilitySetting)
-                    {
-                        //series.Points[index].Color = Color.Red;
-                    }
 
+                    if (visibilitySetting is PointGradientVisibilitySetting)
+                    {
+                        double value = MaxCount == 0 ? 0: System.Convert.ToDouble(dictionary[point])/ MaxCount;
+                        series.Points[index].Color = Core.Query.Lerp(Color.Red, Color.Blue, value);
+                    }
                     series.Points[index].ToolTip = ToolTip(point, chartType);
                     series.Points[index].Tag = point;
                 }

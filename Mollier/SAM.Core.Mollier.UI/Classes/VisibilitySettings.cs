@@ -146,7 +146,7 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            IVisibilitySetting result = visibilitySettings.Find(x => x is IUserVisibilitySetting && ((IUserVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);
+            IVisibilitySetting result = visibilitySettings.Find(x => x is IUserVisibilitySetting && ((IUserVisibilitySetting)x).ChartParameterType == chartParameterType && ((IUserVisibilitySetting)x).ChartDataType == chartDataType);
             if(result == null)
             {
                 result = visibilitySettings.Find(x => x is BuiltInVisibilitySetting && ((BuiltInVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);

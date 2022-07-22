@@ -232,7 +232,7 @@ namespace SAM.Core.Mollier.UI
                 visibilitySettings = new VisibilitySettings();
             }
 
-            List<BuiltInVisibilitySetting> builtInVisibilitySettings = new List<BuiltInVisibilitySetting>();
+            List<IVisibilitySetting> visibilitySettingsList = new List<IVisibilitySetting>();
             foreach(Control control in FlowLayoutPanel_BuiltInVisibilitySettings.Controls)
             {
                 Controls.BuiltInVisibilitySettingControl builtInVisibilitySettingControl = control as Controls.BuiltInVisibilitySettingControl;
@@ -241,10 +241,14 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
 
-                builtInVisibilitySettings.Add(builtInVisibilitySettingControl.BuiltInVisibilitySetting);
+                visibilitySettingsList.Add(builtInVisibilitySettingControl.BuiltInVisibilitySetting);
+            }
+            if (CheckBoxGradientPoint.Checked)
+            {
+                visibilitySettingsList.Add(new PointGradientVisibilitySetting(System.Drawing.Color.Blue, System.Drawing.Color.Red));
             }
 
-            visibilitySettings.SetVisibilitySettings("User", builtInVisibilitySettings);
+            visibilitySettings.SetVisibilitySettings("User", visibilitySettingsList);
             mollierControlSettings.Color = "User";
 
             mollierControlSettings.VisibilitySettings = visibilitySettings;
