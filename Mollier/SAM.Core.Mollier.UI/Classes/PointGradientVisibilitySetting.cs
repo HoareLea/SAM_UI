@@ -36,12 +36,21 @@ namespace SAM.Core.Mollier.UI
 
         public bool FromJObject(JObject jObject)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException();    
         }
 
         public JObject ToJObject()
         {
-            throw new NotImplementedException();
+            JObject jObject = base.ToJObject();
+            if (jObject == null)
+            {
+                return null;
+            }
+
+            jObject.Add("ChartParameterType", ChartParameterType.ToString());
+            jObject.Add("ChartDataType", ChartDataType.ToString());
+
+            return jObject;
         }
     }
 }
