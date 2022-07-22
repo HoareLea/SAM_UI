@@ -17,5 +17,9 @@ namespace SAM.Core.Mollier.UI
         WetBulbTemperature,
         HeatingProcess,
         CoolingProcess,
+        HeatRecoveryProcess,
+        MixingProcess,
+        SteamHumidificationProcess,
+        UndefinedProcess,
     }
 }

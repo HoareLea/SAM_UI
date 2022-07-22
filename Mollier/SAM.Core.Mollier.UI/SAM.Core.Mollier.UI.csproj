@@ -67,7 +67,7 @@
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
-    <Compile Include="Classes\UserVisibilitySetting.cs" />
+    <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
     <Compile Include="Classes\VisibilitySettings.cs" />
     <Compile Include="Controls\BuiltInVisibilitySettingControl.cs">
@@ -102,8 +102,11 @@
     <Compile Include="Forms\MollierPointForm.Designer.cs">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\NeighborhoodCount.cs" />
+    <Compile Include="Query\ChartDataType.cs" />
     <Compile Include="Query\DefaultPressure.cs" />
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
   </ItemGroup>
