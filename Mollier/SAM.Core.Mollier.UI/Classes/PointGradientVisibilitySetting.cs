@@ -47,6 +47,21 @@ namespace SAM.Core.Mollier.UI
                     GradientColor = gradientColor;
                 }
             }
+
+            //if (jObject.ContainsKey("Color"))
+            //{
+            //    JObject jObject_Color = jObject.Value<JObject>("GradientColor");
+            //    if (jObject_Color != null)
+            //    {
+            //        SAMColor sAMColor = new SAMColor(jObject_Color);
+            //        if (sAMColor != null)
+            //        {
+            //            GradientColor = sAMColor.ToColor();
+            //        }
+            //    }
+            //}
+
+
             return true;
         }
 
@@ -57,6 +72,12 @@ namespace SAM.Core.Mollier.UI
             {
                 return null;
             }
+
+            //if (GradientColor != Color.Empty)
+            //{
+            //    jObject.Add("GradientColor", (new SAMColor(GradientColor)).ToJObject());
+            //}
+
             jObject.Add("GradientColor", GradientColor.ToString());//there is saves as "yellow" now alpha red etc, bad format
             jObject.Add("ChartParameterType", ChartParameterType.ToString());
             jObject.Add("ChartDataType", ChartDataType.ToString());

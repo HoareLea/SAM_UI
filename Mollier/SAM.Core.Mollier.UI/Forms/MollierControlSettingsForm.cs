@@ -84,7 +84,7 @@ namespace SAM.Core.Mollier.UI
 
             set
             {
-                HumidityRatioMaximumValueTextbox.Text = value.ToString();
+                HumidityRatioMaximumValueTextbox.Text = System.Math.Round(value, 2).ToString();
             }
         }
         public double HumidityRatio_Min
@@ -105,7 +105,7 @@ namespace SAM.Core.Mollier.UI
             }
             set
             {
-                HumidityRatioMinimumValueTextbox.Text = value.ToString();
+                HumidityRatioMinimumValueTextbox.Text = System.Math.Round(value, 2).ToString();
             }
         }
         public double HumidityRatio_Interval
@@ -146,7 +146,7 @@ namespace SAM.Core.Mollier.UI
             }
             set
             {
-                TemperatureMaximumValueTextbox.Text = value.ToString();
+                TemperatureMaximumValueTextbox.Text = System.Math.Round(value, 2).ToString();
             }
         }
         public double Temperature_Min
@@ -167,7 +167,7 @@ namespace SAM.Core.Mollier.UI
             }
             set
             {
-                TemperatureMinimumValueTextbox.Text = value.ToString();
+                TemperatureMinimumValueTextbox.Text = System.Math.Round(value, 2).ToString();
             }
         }
         public double Temperature_Interval
@@ -334,10 +334,9 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-
         private void CheckBox_GradientPoint_MouseHover(object sender, EventArgs e)
         {
-            toolTip.Show("Paints the points in two colors depending on their intensity", Button_ToHover);
+            toolTip.Show("Paints the points in two colors depending on their intensity", CheckBox_GradientPoint);
             toolTip.Active = true;
         }
 
@@ -345,12 +344,11 @@ namespace SAM.Core.Mollier.UI
         {
             toolTip.Active = false;
             toolTip.Active = true;
-
         }
 
         private void CheckBox_DisableUnits_MouseHover(object sender, EventArgs e)
         {
-            toolTip.Show("Turns off the visibility of all units", Button_ToHover2);
+            toolTip.Show("Turns off the visibility of all units", CheckBox_DisableUnits);
             toolTip.Active = true;
         }
 
@@ -358,12 +356,11 @@ namespace SAM.Core.Mollier.UI
         {
             toolTip.Active = false;
             toolTip.Active = true;
-
         }
 
         private void CheckBox_DisableLabels_MouseHover(object sender, EventArgs e)
         {
-            toolTip.Show("Turns off the visibility of all line names", Button_ToHover3);
+            toolTip.Show("Turns off the visibility of all line names", CheckBox_DisableLabels);
             toolTip.Active = true;
         }
 
@@ -371,7 +368,6 @@ namespace SAM.Core.Mollier.UI
         {
             toolTip.Active = false;
             toolTip.Active = true;
-
         }
 
         private void Button_LowIntensityColor_MouseHover(object sender, EventArgs e)
@@ -388,7 +384,7 @@ namespace SAM.Core.Mollier.UI
 
         private void Button_HighIntensityColor_MouseHover(object sender, EventArgs e)
         {
-            toolTip.Show("The color of the more intense points", Button_LowIntensityColor);
+            toolTip.Show("The color of the more intense points", Button_HighIntensityColor);
             toolTip.Active = true;
         }
 

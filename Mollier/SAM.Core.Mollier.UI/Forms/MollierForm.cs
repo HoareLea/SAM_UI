@@ -8,7 +8,6 @@ namespace SAM.Core.Mollier.UI
     public partial class MollierForm : Form
     {
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
-        private ToolTip toolTip = new ToolTip();
         private void MollierForm_Load(object sender, EventArgs e)
         {
         }
@@ -108,6 +107,7 @@ namespace SAM.Core.Mollier.UI
                 SaveMollierControlSettings();
             }
         }
+
         private void SaveMollierControlSettings()
         {
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
@@ -341,56 +341,17 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
-        //showing window with description of the tools
-        private void resetChartToolStripMenuItem_MouseHover(object sender, EventArgs e)
+        public MollierControlSettings MollierControlSettings
         {
-            toolTip.Show("Reset all chart data to the default values", Button_ToHover);
-            toolTip.Active = true;
-        }
-        private void resetChartToolStripMenuItem_MouseLeave(object sender, EventArgs e)
-        {
-            toolTip.Active = false;
-            toolTip.Active = true;
-        }
-        private void ToolStripMenuItem_Density_MouseHover(object sender, EventArgs e)
-        {
-            toolTip.Show("Turn Density Line on or off", Button_ToHover2);
-            toolTip.Active = true;
-        }
-        private void ToolStripMenuItem_Density_MouseLeave(object sender, EventArgs e)
-        {
-            toolTip.Active = false;
-            toolTip.Active = true;
-        }
-        private void ToolStripMenuItem_Enthalpy_MouseHover(object sender, EventArgs e)
-        {
-            toolTip.Show("Turn Enthalpy Line on or off", Button_ToHover3);
-            toolTip.Active = true;
-        }
-        private void ToolStripMenuItem_Enthalpy_MouseLeave(object sender, EventArgs e)
-        {
-            toolTip.Active = false;
-            toolTip.Active = true;
-        }
-        private void ToolStripMenuItem_SpecificVolume_MouseHover(object sender, EventArgs e)
-        {
-            toolTip.Show("Turn Specific Volume Line on or off", Button_ToHover4);
-            toolTip.Active = true;
-        }
-        private void ToolStripMenuItem_SpecificVolume_MouseLeave(object sender, EventArgs e)
-        {
-            toolTip.Active = false;
-            toolTip.Active = true;
-        }
-        private void ToolStripMenuItem_WetBulbTemperature_MouseHover(object sender, EventArgs e)
-        {
-            toolTip.Show("Turn Wet-Bulb Temperature Line on or off", Button_ToHover5);
-            toolTip.Active = true;
-        }
-        private void ToolStripMenuItem_WetBulbTemperature_MouseLeave(object sender, EventArgs e)
-        {
-            toolTip.Active = false;
-            toolTip.Active = true;
+            get
+            {
+                return MollierControl_Main.MollierControlSettings;
+            }
+
+            set
+            {
+                MollierControl_Main.MollierControlSettings = value;
+            }
         }
     }
 }
