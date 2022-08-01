@@ -489,6 +489,7 @@ namespace SAM.Core.Mollier.UI.Controls
             Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Point;
+            series.Tag = mollierPoints;
 
             Dictionary<MollierPoint, int> dictionary = new Dictionary<MollierPoint, int>();
             double MaxCount = 0;
@@ -1018,6 +1019,14 @@ namespace SAM.Core.Mollier.UI.Controls
             get
             {
                 return mollierProcesses;
+            }
+        }
+
+        public List<Series> Series
+        {
+            get
+            {
+                return MollierChart.Series?.ToList();
             }
         }
         public MollierControlSettings MollierControlSettings

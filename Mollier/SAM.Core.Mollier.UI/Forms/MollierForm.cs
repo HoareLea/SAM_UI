@@ -26,6 +26,7 @@ namespace SAM.Core.Mollier.UI
         private void resetChartToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings= new MollierControlSettings();
+            mollierControlSettings.Pressure = MollierControl_Main.MollierControlSettings.Pressure;
             default_chart(mollierControlSettings);
         }
       
@@ -100,10 +101,10 @@ namespace SAM.Core.Mollier.UI
             {
                 if (mollierSettingsForm.ShowDialog(this) != DialogResult.OK)
                 {
-                    TextBox_Pressure.Text = MollierControl_Main.MollierControlSettings.Pressure.ToString();
-                    TextBox_Elevation.Text = MollierControl_Main.MollierControlSettings.Elevation.ToString();
                     return;
                 }
+                //TextBox_Pressure.Text = MollierControl_Main.MollierControlSettings.Pressure.ToString();
+                //TextBox_Elevation.Text = MollierControl_Main.MollierControlSettings.Elevation.ToString();
                 SaveMollierControlSettings();
             }
         }
