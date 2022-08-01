@@ -59,6 +59,9 @@
             this.MollierChart.Size = new System.Drawing.Size(816, 588);
             this.MollierChart.TabIndex = 0;
             this.MollierChart.Text = "chart1";
+            this.MollierChart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseDown);
+            this.MollierChart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseMove);
+            this.MollierChart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseUp);
             // 
             // ContextMenuStrip_Chart
             // 
@@ -89,7 +92,6 @@
             this.ToolStripMenuItem_Selection.Name = "ToolStripMenuItem_Selection";
             this.ToolStripMenuItem_Selection.Size = new System.Drawing.Size(184, 22);
             this.ToolStripMenuItem_Selection.Text = "Selection";
-            this.ToolStripMenuItem_Selection.Visible = false;
             this.ToolStripMenuItem_Selection.Click += new System.EventHandler(this.ToolStripMenuItem_Selection_Click);
             // 
             // ToolStripMenuItem_Reset
