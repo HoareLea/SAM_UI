@@ -102,6 +102,12 @@
     <Compile Include="Forms\MollierPointForm.Designer.cs">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MollierProcessForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MollierProcessForm.Designer.cs">
+      <DependentUpon>MollierProcessForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -109,6 +115,7 @@
     <Compile Include="Query\ChartDataType.cs" />
     <Compile Include="Query\DefaultPressure.cs" />
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
+    <Compile Include="Query\ZoomParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\BuiltInVisibilitySettingControl.resx">
@@ -125,6 +132,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierPointForm.resx">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MollierProcessForm.resx">
+      <DependentUpon>MollierProcessForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

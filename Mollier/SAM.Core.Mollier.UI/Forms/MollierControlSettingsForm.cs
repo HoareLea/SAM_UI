@@ -8,7 +8,7 @@ namespace SAM.Core.Mollier.UI
     public partial class MollierControlSettingsForm : Form
     {
         private Controls.MollierControl mollierControl;
-
+        private ToolTip toolTip = new ToolTip();
         public MollierControlSettingsForm()
         {
             InitializeComponent();
@@ -27,7 +27,11 @@ namespace SAM.Core.Mollier.UI
             Temperature_Min = mollierControlSettings.Temperature_Min;
             Temperature_Interval = mollierControlSettings.Temperature_Interval;
             P_w_Interval = mollierControlSettings.P_w_Interval;
-
+            GradientPoint = mollierControlSettings.GradientPoint;
+            DisableUnits = mollierControlSettings.DisableUnits;
+            DisableLabels = mollierControlSettings.DisableLabels;
+            GradientColors = mollierControlSettings.GradientColors;
+            Zoom = mollierControlSettings.Zoom;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
@@ -43,13 +47,13 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
+
         private void Button_Cancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
 
             Close();
         }
-
         private void Button_OK_Click(object sender, EventArgs e)
         {
             Apply();
@@ -207,7 +211,67 @@ namespace SAM.Core.Mollier.UI
                 P_w_IntervalTextBox.Text = value.ToString();
             }
         }
-       
+        public bool GradientPoint
+        {
+            get
+            {
+                return CheckBox_GradientPoint.Checked;
+            }
+            set
+            {
+                CheckBox_GradientPoint.Checked = value;
+            }
+        }
+        public bool DisableUnits
+        {
+            get
+            {
+                return CheckBox_DisableUnits.Checked;
+            }
+            set
+            {
+                CheckBox_DisableUnits.Checked = value;
+            }
+        }
+        public bool DisableLabels
+        {
+            get
+            {
+                return CheckBox_DisableLabels.Checked;
+            }
+            set
+            {
+                CheckBox_DisableLabels.Checked = value;
+            }
+        }
+        public bool Zoom
+        {
+            get
+            {
+                return CheckBox_ProcessZoom.Checked;
+            }
+            set
+            {
+                CheckBox_ProcessZoom.Checked = value;
+            }
+        }
+        public PointGradientVisibilitySetting GradientColors
+        {
+            get
+            {
+                PointGradientVisibilitySetting pointGradientVisibilitySetting = new PointGradientVisibilitySetting(Button_LowIntensityColor.BackColor, Button_HighIntensityColor.BackColor); 
+                return pointGradientVisibilitySetting;
+            }
+            set
+            {
+                PointGradientVisibilitySetting pointGradientVisibilitySetting = value;
+                if(pointGradientVisibilitySetting != null)
+                {
+                    Button_LowIntensityColor.BackColor = pointGradientVisibilitySetting.Color;
+                    Button_HighIntensityColor.BackColor = pointGradientVisibilitySetting.GradientColor;
+                }
+            }
+        }
         private void Apply()
         {
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -226,6 +290,21 @@ namespace SAM.Core.Mollier.UI
             if (P_w_Interval.ToString() != double.NaN.ToString())
                 mollierControlSettings.P_w_Interval = P_w_Interval;
 
+            mollierControlSettings.GradientPoint = GradientPoint;
+            mollierControlSettings.DisableUnits = DisableUnits;
+            mollierControlSettings.DisableLabels = DisableLabels;
+            mollierControlSettings.GradientColors = GradientColors;
+            mollierControlSettings.Zoom = Zoom;
+            if (Zoom)
+            {
+                List<IMollierProcess> mollierProcesses = mollierControl.CopyProcesses;
+                double humidityRatio_Min, humidityRatio_Max, temperature_Min, temperature_Max;
+                Query.ZoomParameters(mollierProcesses, out humidityRatio_Min, out humidityRatio_Max, out temperature_Min, out temperature_Max);
+                mollierControlSettings.HumidityRatio_Min = humidityRatio_Min;
+                mollierControlSettings.HumidityRatio_Max = humidityRatio_Max;
+                mollierControlSettings.Temperature_Min = temperature_Min;
+                mollierControlSettings.Temperature_Max = temperature_Max;
+            }
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
             {
@@ -243,10 +322,6 @@ namespace SAM.Core.Mollier.UI
 
                 visibilitySettingsList.Add(builtInVisibilitySettingControl.BuiltInVisibilitySetting);
             }
-            if (CheckBoxGradientPoint.Checked)
-            {
-                visibilitySettingsList.Add(new PointGradientVisibilitySetting(System.Drawing.Color.Blue, System.Drawing.Color.Red));
-            }
 
             visibilitySettings.SetVisibilitySettings("User", visibilitySettingsList);
             mollierControlSettings.Color = "User";
@@ -256,12 +331,128 @@ namespace SAM.Core.Mollier.UI
             mollierControl.MollierControlSettings = mollierControlSettings;
         }
 
-        private void Button_ResetChart_Click(object sender, EventArgs e)
+        private void Button_LowIntensityColor_Click(object sender, EventArgs e)
         {
-            MollierControlSettings mollierControlSettings = new MollierControlSettings();
-            mollierControl.MollierControlSettings = mollierControlSettings;
-            Close();
+            using(ColorDialog colorDialog = new ColorDialog())
+            {
+                colorDialog.Color = mollierControl.MollierControlSettings.GradientColors.Color;
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                Button_LowIntensityColor.BackColor = colorDialog.Color;
+            }
+        }
+        private void Button_HighIntensityColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                colorDialog.Color = mollierControl.MollierControlSettings.GradientColors.GradientColor;
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                Button_HighIntensityColor.BackColor = colorDialog.Color;
+            }
+        }
+        private void CheckBox_ProcessZoom_CheckedChanged(object sender, EventArgs e)
+        {
+            List<IMollierProcess> mollierProcesses = mollierControl.CopyProcesses;
+            if (mollierProcesses == null && CheckBox_ProcessZoom.Checked == true)
+            {
+                CheckBox_ProcessZoom.Checked = false;
+                MessageBox.Show("There is no process to zoom to it");
+                return;
+            }
+            if (CheckBox_ProcessZoom.Checked == false)
+            {
+                MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
+                mollierControlSettings.HumidityRatio_Min = 0;
+                mollierControlSettings.HumidityRatio_Max = 35;
+                mollierControlSettings.Temperature_Min = -20;
+                mollierControlSettings.Temperature_Max = 50;
+                HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
+                HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
+                Temperature_Max = mollierControlSettings.Temperature_Max;
+                Temperature_Min = mollierControlSettings.Temperature_Min;
+            }
         }
 
+
+
+        private void CheckBox_GradientPoint_MouseHover(object sender, EventArgs e)
+        {
+            toolTip.Show("Paints the points in two colors depending on their intensity", Button_ToHover);
+            toolTip.Active = true;
+        }
+
+        private void CheckBox_GradientPoint_MouseLeave(object sender, EventArgs e)
+        {
+            toolTip.Active = false;
+            toolTip.Active = true;
+
+        }
+
+        private void CheckBox_DisableUnits_MouseHover(object sender, EventArgs e)
+        {
+            toolTip.Show("Turns off the visibility of all units", Button_ToHover2);
+            toolTip.Active = true;
+        }
+
+        private void CheckBox_DisableUnits_MouseLeave(object sender, EventArgs e)
+        {
+            toolTip.Active = false;
+            toolTip.Active = true;
+
+        }
+
+        private void CheckBox_DisableLabels_MouseHover(object sender, EventArgs e)
+        {
+            toolTip.Show("Turns off the visibility of all line names", Button_ToHover3);
+            toolTip.Active = true;
+        }
+
+        private void CheckBox_DisableLabels_MouseLeave(object sender, EventArgs e)
+        {
+            toolTip.Active = false;
+            toolTip.Active = true;
+
+        }
+
+        private void CheckBox_ProcessZoom_MouseHover(object sender, EventArgs e)
+        {
+            toolTip.Show("Brings the graph closer to the existing processes", Button_ToHover4);
+            toolTip.Active = true;
+        }
+
+        private void CheckBox_ProcessZoom_MouseLeave(object sender, EventArgs e)
+        {
+            toolTip.Active = false;
+            toolTip.Active = true;
+        }
+
+        private void Button_LowIntensityColor_MouseHover(object sender, EventArgs e)
+        {
+            toolTip.Show("The color of the less intense points", Button_LowIntensityColor);
+            toolTip.Active = true;
+        }
+
+        private void Button_LowIntensityColor_MouseLeave(object sender, EventArgs e)
+        {
+            toolTip.Active = false;
+            toolTip.Active = true;
+        }
+
+        private void Button_HighIntensityColor_MouseHover(object sender, EventArgs e)
+        {
+            toolTip.Show("The color of the more intense points", Button_LowIntensityColor);
+            toolTip.Active = true;
+        }
+
+        private void Button_HighIntensityColor_MouseLeave(object sender, EventArgs e)
+        {
+            toolTip.Active = false;
+            toolTip.Active = true;
+        }
     }
 }

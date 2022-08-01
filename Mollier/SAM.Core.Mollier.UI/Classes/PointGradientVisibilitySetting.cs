@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI
         public PointGradientVisibilitySetting(PointGradientVisibilitySetting pointGradientVisibilitySetting)
             :base(pointGradientVisibilitySetting)
         {
-
+            GradientColor = pointGradientVisibilitySetting.GradientColor;
         }
 
         public PointGradientVisibilitySetting(JObject jObject)
@@ -36,7 +36,18 @@ namespace SAM.Core.Mollier.UI
 
         public bool FromJObject(JObject jObject)
         {
-            throw new NotImplementedException();    
+            if (!base.FromJObject(jObject))
+            {
+                return false;
+            }
+            if (jObject.ContainsKey("GradientColor"))
+            {
+                if (Enum.TryParse(jObject.Value<string>("GradientColor"), out Color gradientColor))
+                {
+                    GradientColor = gradientColor;
+                }
+            }
+            return true;
         }
 
         public JObject ToJObject()
@@ -46,10 +57,9 @@ namespace SAM.Core.Mollier.UI
             {
                 return null;
             }
-
+            jObject.Add("GradientColor", GradientColor.ToString());//there is saves as "yellow" now alpha red etc, bad format
             jObject.Add("ChartParameterType", ChartParameterType.ToString());
             jObject.Add("ChartDataType", ChartDataType.ToString());
-
             return jObject;
         }
     }
