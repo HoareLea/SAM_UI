@@ -29,8 +29,8 @@ namespace SAM.Core.Mollier.UI
         /// </summary>
         private void InitializeComponent()
         {
-            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings1 = new SAM.Core.Mollier.UI.MollierControlSettings();
-            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings1 = new SAM.Core.Mollier.UI.VisibilitySettings();
+            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings2 = new SAM.Core.Mollier.UI.MollierControlSettings();
+            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings2 = new SAM.Core.Mollier.UI.VisibilitySettings();
             this.TextBox_Pressure = new System.Windows.Forms.TextBox();
             this.Label_Pressure = new System.Windows.Forms.Label();
             this.Button_AddPoint = new System.Windows.Forms.Button();
@@ -51,8 +51,15 @@ namespace SAM.Core.Mollier.UI
             this.grayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_Settings = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_OpenSettings = new System.Windows.Forms.ToolStripMenuItem();
+            this.resetChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Label_Elevation = new System.Windows.Forms.Label();
             this.TextBox_Elevation = new System.Windows.Forms.TextBox();
+            this.Button_AddProcess = new System.Windows.Forms.Button();
+            this.Button_ToHover = new System.Windows.Forms.Button();
+            this.Button_ToHover2 = new System.Windows.Forms.Button();
+            this.Button_ToHover3 = new System.Windows.Forms.Button();
+            this.Button_ToHover4 = new System.Windows.Forms.Button();
+            this.Button_ToHover5 = new System.Windows.Forms.Button();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
@@ -93,7 +100,8 @@ namespace SAM.Core.Mollier.UI
             this.MenuStrip_Main.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_File,
             this.ToolStripMenuItem_View,
-            this.ToolStripMenuItem_Settings});
+            this.ToolStripMenuItem_Settings,
+            this.resetChartToolStripMenuItem});
             this.MenuStrip_Main.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip_Main.Name = "MenuStrip_Main";
             this.MenuStrip_Main.Size = new System.Drawing.Size(1374, 24);
@@ -107,7 +115,6 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File";
             this.ToolStripMenuItem_File.Size = new System.Drawing.Size(37, 20);
             this.ToolStripMenuItem_File.Text = "File";
-            this.ToolStripMenuItem_File.Click += new System.EventHandler(this.ToolStripMenuItem_File_Click);
             // 
             // ToolStripMenuItem_Save
             // 
@@ -137,6 +144,8 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Density.Size = new System.Drawing.Size(191, 22);
             this.ToolStripMenuItem_Density.Text = "Density";
             this.ToolStripMenuItem_Density.Click += new System.EventHandler(this.ToolStripMenuItem_Density_Click);
+            this.ToolStripMenuItem_Density.MouseLeave += new System.EventHandler(this.ToolStripMenuItem_Density_MouseLeave);
+            this.ToolStripMenuItem_Density.MouseHover += new System.EventHandler(this.ToolStripMenuItem_Density_MouseHover);
             // 
             // ToolStripMenuItem_Enthalpy
             // 
@@ -146,6 +155,8 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Enthalpy.Size = new System.Drawing.Size(191, 22);
             this.ToolStripMenuItem_Enthalpy.Text = "Enthalpy";
             this.ToolStripMenuItem_Enthalpy.Click += new System.EventHandler(this.ToolStripMenuItem_Enthalpy_Click);
+            this.ToolStripMenuItem_Enthalpy.MouseLeave += new System.EventHandler(this.ToolStripMenuItem_Enthalpy_MouseLeave);
+            this.ToolStripMenuItem_Enthalpy.MouseHover += new System.EventHandler(this.ToolStripMenuItem_Enthalpy_MouseHover);
             // 
             // ToolStripMenuItem_SpecificVolume
             // 
@@ -155,6 +166,8 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_SpecificVolume.Size = new System.Drawing.Size(191, 22);
             this.ToolStripMenuItem_SpecificVolume.Text = "Specific Volume";
             this.ToolStripMenuItem_SpecificVolume.Click += new System.EventHandler(this.ToolStripMenuItem_SpecificVolume_Click);
+            this.ToolStripMenuItem_SpecificVolume.MouseLeave += new System.EventHandler(this.ToolStripMenuItem_SpecificVolume_MouseLeave);
+            this.ToolStripMenuItem_SpecificVolume.MouseHover += new System.EventHandler(this.ToolStripMenuItem_SpecificVolume_MouseHover);
             // 
             // ToolStripMenuItem_WetBulbTemperature
             // 
@@ -164,6 +177,8 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_WetBulbTemperature.Size = new System.Drawing.Size(191, 22);
             this.ToolStripMenuItem_WetBulbTemperature.Text = "Wet Bulb Temperature";
             this.ToolStripMenuItem_WetBulbTemperature.Click += new System.EventHandler(this.ToolStripMenuItem_WetBulbTemperature_Click);
+            this.ToolStripMenuItem_WetBulbTemperature.MouseLeave += new System.EventHandler(this.ToolStripMenuItem_WetBulbTemperature_MouseLeave);
+            this.ToolStripMenuItem_WetBulbTemperature.MouseHover += new System.EventHandler(this.ToolStripMenuItem_WetBulbTemperature_MouseHover);
             // 
             // ToolStripMenuItem_ChartType
             // 
@@ -235,9 +250,18 @@ namespace SAM.Core.Mollier.UI
             // ToolStripMenuItem_OpenSettings
             // 
             this.ToolStripMenuItem_OpenSettings.Name = "ToolStripMenuItem_OpenSettings";
-            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(116, 22);
             this.ToolStripMenuItem_OpenSettings.Text = "Settings";
             this.ToolStripMenuItem_OpenSettings.Click += new System.EventHandler(this.ToolStripMenuItem_OpenSettings_Click);
+            // 
+            // resetChartToolStripMenuItem
+            // 
+            this.resetChartToolStripMenuItem.Name = "resetChartToolStripMenuItem";
+            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
+            this.resetChartToolStripMenuItem.Text = "Reset Chart";
+            this.resetChartToolStripMenuItem.Click += new System.EventHandler(this.resetChartToolStripMenuItem_Click);
+            this.resetChartToolStripMenuItem.MouseLeave += new System.EventHandler(this.resetChartToolStripMenuItem_MouseLeave);
+            this.resetChartToolStripMenuItem.MouseHover += new System.EventHandler(this.resetChartToolStripMenuItem_MouseHover);
             // 
             // Label_Elevation
             // 
@@ -258,6 +282,68 @@ namespace SAM.Core.Mollier.UI
             this.TextBox_Elevation.Text = "0";
             this.TextBox_Elevation.TextChanged += new System.EventHandler(this.TextBox_Elevation_TextChanged);
             // 
+            // Button_AddProcess
+            // 
+            this.Button_AddProcess.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_AddProcess.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.Button_AddProcess.Location = new System.Drawing.Point(1132, 30);
+            this.Button_AddProcess.Name = "Button_AddProcess";
+            this.Button_AddProcess.Size = new System.Drawing.Size(116, 28);
+            this.Button_AddProcess.TabIndex = 23;
+            this.Button_AddProcess.Text = "Add Process";
+            this.Button_AddProcess.UseVisualStyleBackColor = true;
+            this.Button_AddProcess.Click += new System.EventHandler(this.Button_AddProcess_Click);
+            // 
+            // Button_ToHover
+            // 
+            this.Button_ToHover.Location = new System.Drawing.Point(228, 12);
+            this.Button_ToHover.Name = "Button_ToHover";
+            this.Button_ToHover.Size = new System.Drawing.Size(10, 10);
+            this.Button_ToHover.TabIndex = 24;
+            this.Button_ToHover.Text = "Button_ToHover1";
+            this.Button_ToHover.UseVisualStyleBackColor = true;
+            this.Button_ToHover.Visible = false;
+            // 
+            // Button_ToHover2
+            // 
+            this.Button_ToHover2.Location = new System.Drawing.Point(228, 27);
+            this.Button_ToHover2.Name = "Button_ToHover2";
+            this.Button_ToHover2.Size = new System.Drawing.Size(10, 10);
+            this.Button_ToHover2.TabIndex = 25;
+            this.Button_ToHover2.Text = "Button_ToHover1";
+            this.Button_ToHover2.UseVisualStyleBackColor = true;
+            this.Button_ToHover2.Visible = false;
+            // 
+            // Button_ToHover3
+            // 
+            this.Button_ToHover3.Location = new System.Drawing.Point(228, 52);
+            this.Button_ToHover3.Name = "Button_ToHover3";
+            this.Button_ToHover3.Size = new System.Drawing.Size(10, 10);
+            this.Button_ToHover3.TabIndex = 26;
+            this.Button_ToHover3.Text = "Button_ToHover1";
+            this.Button_ToHover3.UseVisualStyleBackColor = true;
+            this.Button_ToHover3.Visible = false;
+            // 
+            // Button_ToHover4
+            // 
+            this.Button_ToHover4.Location = new System.Drawing.Point(228, 76);
+            this.Button_ToHover4.Name = "Button_ToHover4";
+            this.Button_ToHover4.Size = new System.Drawing.Size(10, 10);
+            this.Button_ToHover4.TabIndex = 27;
+            this.Button_ToHover4.Text = "Button_ToHover1";
+            this.Button_ToHover4.UseVisualStyleBackColor = true;
+            this.Button_ToHover4.Visible = false;
+            // 
+            // Button_ToHover5
+            // 
+            this.Button_ToHover5.Location = new System.Drawing.Point(228, 101);
+            this.Button_ToHover5.Name = "Button_ToHover5";
+            this.Button_ToHover5.Size = new System.Drawing.Size(10, 10);
+            this.Button_ToHover5.TabIndex = 28;
+            this.Button_ToHover5.Text = "Button_ToHover1";
+            this.Button_ToHover5.UseVisualStyleBackColor = true;
+            this.Button_ToHover5.Visible = false;
+            // 
             // MollierControl_Main
             // 
             this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -265,22 +351,27 @@ namespace SAM.Core.Mollier.UI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MollierControl_Main.Location = new System.Drawing.Point(12, 65);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
-            mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
-            mollierControlSettings1.Color = "default";
-            mollierControlSettings1.Density_line = true;
-            mollierControlSettings1.Elevation = 0D;
-            mollierControlSettings1.Enthalpy_line = true;
-            mollierControlSettings1.HumidityRatio_Interval = 5D;
-            mollierControlSettings1.HumidityRatio_Max = 35D;
-            mollierControlSettings1.HumidityRatio_Min = 0D;
-            mollierControlSettings1.Pressure = 101325D;
-            mollierControlSettings1.SpecificVolume_line = true;
-            mollierControlSettings1.Temperature_Interval = 5D;
-            mollierControlSettings1.Temperature_Max = 50D;
-            mollierControlSettings1.Temperature_Min = -20D;
-            mollierControlSettings1.VisibilitySettings = visibilitySettings1;
-            mollierControlSettings1.WetBulbTemperature_line = true;
-            this.MollierControl_Main.MollierControlSettings = mollierControlSettings1;
+            mollierControlSettings2.ChartType = SAM.Core.Mollier.ChartType.Mollier;
+            mollierControlSettings2.Color = "default";
+            mollierControlSettings2.Density_line = true;
+            mollierControlSettings2.DisableLabels = false;
+            mollierControlSettings2.DisableUnits = false;
+            mollierControlSettings2.Elevation = 0D;
+            mollierControlSettings2.Enthalpy_line = true;
+            mollierControlSettings2.GradientPoint = false;
+            mollierControlSettings2.HumidityRatio_Interval = 5D;
+            mollierControlSettings2.HumidityRatio_Max = 35D;
+            mollierControlSettings2.HumidityRatio_Min = 0D;
+            mollierControlSettings2.P_w_Interval = 1D;
+            mollierControlSettings2.Pressure = 101325D;
+            mollierControlSettings2.SpecificVolume_line = true;
+            mollierControlSettings2.Temperature_Interval = 5D;
+            mollierControlSettings2.Temperature_Max = 50D;
+            mollierControlSettings2.Temperature_Min = -20D;
+            mollierControlSettings2.VisibilitySettings = visibilitySettings2;
+            mollierControlSettings2.WetBulbTemperature_line = true;
+            mollierControlSettings2.Zoom = false;
+            this.MollierControl_Main.MollierControlSettings = mollierControlSettings2;
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(1350, 912);
             this.MollierControl_Main.TabIndex = 0;
@@ -289,6 +380,12 @@ namespace SAM.Core.Mollier.UI
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1374, 977);
+            this.Controls.Add(this.Button_ToHover5);
+            this.Controls.Add(this.Button_ToHover4);
+            this.Controls.Add(this.Button_ToHover3);
+            this.Controls.Add(this.Button_ToHover2);
+            this.Controls.Add(this.Button_ToHover);
+            this.Controls.Add(this.Button_AddProcess);
             this.Controls.Add(this.TextBox_Elevation);
             this.Controls.Add(this.Label_Elevation);
             this.Controls.Add(this.Button_AddPoint);
@@ -335,6 +432,13 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.Label Label_Elevation;
         private System.Windows.Forms.TextBox TextBox_Elevation;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_WetBulbTemperature;
+        private System.Windows.Forms.ToolStripMenuItem resetChartToolStripMenuItem;
+        private System.Windows.Forms.Button Button_AddProcess;
+        private System.Windows.Forms.Button Button_ToHover;
+        private System.Windows.Forms.Button Button_ToHover2;
+        private System.Windows.Forms.Button Button_ToHover3;
+        private System.Windows.Forms.Button Button_ToHover4;
+        private System.Windows.Forms.Button Button_ToHover5;
     }
 }
 

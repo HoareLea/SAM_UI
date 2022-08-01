@@ -49,17 +49,25 @@ namespace SAM.Core.Mollier.UI
             this.label1 = new System.Windows.Forms.Label();
             this.TemperatureMaximumValueTextbox = new System.Windows.Forms.TextBox();
             this.TemperatureMinimumValueTextbox = new System.Windows.Forms.TextBox();
+            this.TabPage_Tools = new System.Windows.Forms.TabPage();
+            this.CheckBox_ProcessZoom = new System.Windows.Forms.CheckBox();
+            this.CheckBox_DisableUnits = new System.Windows.Forms.CheckBox();
+            this.CheckBox_DisableLabels = new System.Windows.Forms.CheckBox();
+            this.Button_HighIntensityColor = new System.Windows.Forms.Button();
+            this.Button_LowIntensityColor = new System.Windows.Forms.Button();
+            this.CheckBox_GradientPoint = new System.Windows.Forms.CheckBox();
             this.Button_OK = new System.Windows.Forms.Button();
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
-            this.Button_ResetChart = new System.Windows.Forms.Button();
-            this.CheckBoxGradientPoint = new System.Windows.Forms.CheckBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.Button_ToHover2 = new System.Windows.Forms.Button();
+            this.Button_ToHover3 = new System.Windows.Forms.Button();
+            this.Button_ToHover4 = new System.Windows.Forms.Button();
+            this.Button_ToHover = new System.Windows.Forms.Button();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
+            this.TabPage_Tools.SuspendLayout();
             this.SuspendLayout();
             // 
             // TabControl_Main
@@ -69,6 +77,7 @@ namespace SAM.Core.Mollier.UI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.TabControl_Main.Controls.Add(this.TabPage_View);
             this.TabControl_Main.Controls.Add(this.TabPage_Ranges);
+            this.TabControl_Main.Controls.Add(this.TabPage_Tools);
             this.TabControl_Main.Location = new System.Drawing.Point(12, 12);
             this.TabControl_Main.Name = "TabControl_Main";
             this.TabControl_Main.SelectedIndex = 0;
@@ -77,9 +86,6 @@ namespace SAM.Core.Mollier.UI
             // 
             // TabPage_View
             // 
-            this.TabPage_View.Controls.Add(this.button2);
-            this.TabPage_View.Controls.Add(this.button1);
-            this.TabPage_View.Controls.Add(this.CheckBoxGradientPoint);
             this.TabPage_View.Controls.Add(this.FlowLayoutPanel_BuiltInVisibilitySettings);
             this.TabPage_View.Location = new System.Drawing.Point(4, 25);
             this.TabPage_View.Name = "TabPage_View";
@@ -95,7 +101,7 @@ namespace SAM.Core.Mollier.UI
             this.FlowLayoutPanel_BuiltInVisibilitySettings.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.FlowLayoutPanel_BuiltInVisibilitySettings.Location = new System.Drawing.Point(3, 3);
             this.FlowLayoutPanel_BuiltInVisibilitySettings.Name = "FlowLayoutPanel_BuiltInVisibilitySettings";
-            this.FlowLayoutPanel_BuiltInVisibilitySettings.Size = new System.Drawing.Size(589, 360);
+            this.FlowLayoutPanel_BuiltInVisibilitySettings.Size = new System.Drawing.Size(670, 360);
             this.FlowLayoutPanel_BuiltInVisibilitySettings.TabIndex = 0;
             this.FlowLayoutPanel_BuiltInVisibilitySettings.WrapContents = false;
             // 
@@ -271,6 +277,96 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureMinimumValueTextbox.TabIndex = 34;
             this.TemperatureMinimumValueTextbox.Text = "-20";
             // 
+            // TabPage_Tools
+            // 
+            this.TabPage_Tools.Controls.Add(this.Button_ToHover);
+            this.TabPage_Tools.Controls.Add(this.Button_ToHover4);
+            this.TabPage_Tools.Controls.Add(this.Button_ToHover3);
+            this.TabPage_Tools.Controls.Add(this.Button_ToHover2);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_ProcessZoom);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_DisableUnits);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_DisableLabels);
+            this.TabPage_Tools.Controls.Add(this.Button_HighIntensityColor);
+            this.TabPage_Tools.Controls.Add(this.Button_LowIntensityColor);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_GradientPoint);
+            this.TabPage_Tools.Location = new System.Drawing.Point(4, 25);
+            this.TabPage_Tools.Name = "TabPage_Tools";
+            this.TabPage_Tools.Size = new System.Drawing.Size(673, 366);
+            this.TabPage_Tools.TabIndex = 2;
+            this.TabPage_Tools.Text = "Tools";
+            this.TabPage_Tools.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_ProcessZoom
+            // 
+            this.CheckBox_ProcessZoom.AutoSize = true;
+            this.CheckBox_ProcessZoom.Location = new System.Drawing.Point(38, 144);
+            this.CheckBox_ProcessZoom.Name = "CheckBox_ProcessZoom";
+            this.CheckBox_ProcessZoom.Size = new System.Drawing.Size(114, 20);
+            this.CheckBox_ProcessZoom.TabIndex = 15;
+            this.CheckBox_ProcessZoom.Text = "Process Zoom";
+            this.CheckBox_ProcessZoom.UseVisualStyleBackColor = true;
+            this.CheckBox_ProcessZoom.CheckedChanged += new System.EventHandler(this.CheckBox_ProcessZoom_CheckedChanged);
+            this.CheckBox_ProcessZoom.MouseLeave += new System.EventHandler(this.CheckBox_ProcessZoom_MouseLeave);
+            this.CheckBox_ProcessZoom.MouseHover += new System.EventHandler(this.CheckBox_ProcessZoom_MouseHover);
+            // 
+            // CheckBox_DisableUnits
+            // 
+            this.CheckBox_DisableUnits.AutoSize = true;
+            this.CheckBox_DisableUnits.Location = new System.Drawing.Point(38, 73);
+            this.CheckBox_DisableUnits.Name = "CheckBox_DisableUnits";
+            this.CheckBox_DisableUnits.Size = new System.Drawing.Size(106, 20);
+            this.CheckBox_DisableUnits.TabIndex = 14;
+            this.CheckBox_DisableUnits.Text = "Disable Units";
+            this.CheckBox_DisableUnits.UseVisualStyleBackColor = true;
+            this.CheckBox_DisableUnits.MouseLeave += new System.EventHandler(this.CheckBox_DisableUnits_MouseLeave);
+            this.CheckBox_DisableUnits.MouseHover += new System.EventHandler(this.CheckBox_DisableUnits_MouseHover);
+            // 
+            // CheckBox_DisableLabels
+            // 
+            this.CheckBox_DisableLabels.AutoSize = true;
+            this.CheckBox_DisableLabels.Location = new System.Drawing.Point(38, 109);
+            this.CheckBox_DisableLabels.Name = "CheckBox_DisableLabels";
+            this.CheckBox_DisableLabels.Size = new System.Drawing.Size(117, 20);
+            this.CheckBox_DisableLabels.TabIndex = 13;
+            this.CheckBox_DisableLabels.Text = "Disable Labels";
+            this.CheckBox_DisableLabels.UseVisualStyleBackColor = true;
+            this.CheckBox_DisableLabels.MouseLeave += new System.EventHandler(this.CheckBox_DisableLabels_MouseLeave);
+            this.CheckBox_DisableLabels.MouseHover += new System.EventHandler(this.CheckBox_DisableLabels_MouseHover);
+            // 
+            // Button_HighIntensityColor
+            // 
+            this.Button_HighIntensityColor.Location = new System.Drawing.Point(326, 33);
+            this.Button_HighIntensityColor.Name = "Button_HighIntensityColor";
+            this.Button_HighIntensityColor.Size = new System.Drawing.Size(146, 23);
+            this.Button_HighIntensityColor.TabIndex = 12;
+            this.Button_HighIntensityColor.UseVisualStyleBackColor = true;
+            this.Button_HighIntensityColor.Click += new System.EventHandler(this.Button_HighIntensityColor_Click);
+            this.Button_HighIntensityColor.MouseLeave += new System.EventHandler(this.Button_HighIntensityColor_MouseLeave);
+            this.Button_HighIntensityColor.MouseHover += new System.EventHandler(this.Button_HighIntensityColor_MouseHover);
+            // 
+            // Button_LowIntensityColor
+            // 
+            this.Button_LowIntensityColor.Location = new System.Drawing.Point(157, 33);
+            this.Button_LowIntensityColor.Name = "Button_LowIntensityColor";
+            this.Button_LowIntensityColor.Size = new System.Drawing.Size(163, 23);
+            this.Button_LowIntensityColor.TabIndex = 11;
+            this.Button_LowIntensityColor.UseVisualStyleBackColor = true;
+            this.Button_LowIntensityColor.Click += new System.EventHandler(this.Button_LowIntensityColor_Click);
+            this.Button_LowIntensityColor.MouseLeave += new System.EventHandler(this.Button_LowIntensityColor_MouseLeave);
+            this.Button_LowIntensityColor.MouseHover += new System.EventHandler(this.Button_LowIntensityColor_MouseHover);
+            // 
+            // CheckBox_GradientPoint
+            // 
+            this.CheckBox_GradientPoint.AutoSize = true;
+            this.CheckBox_GradientPoint.Location = new System.Drawing.Point(38, 36);
+            this.CheckBox_GradientPoint.Name = "CheckBox_GradientPoint";
+            this.CheckBox_GradientPoint.Size = new System.Drawing.Size(110, 20);
+            this.CheckBox_GradientPoint.TabIndex = 10;
+            this.CheckBox_GradientPoint.Text = "Gradient Point";
+            this.CheckBox_GradientPoint.UseVisualStyleBackColor = true;
+            this.CheckBox_GradientPoint.MouseLeave += new System.EventHandler(this.CheckBox_GradientPoint_MouseLeave);
+            this.CheckBox_GradientPoint.MouseHover += new System.EventHandler(this.CheckBox_GradientPoint_MouseHover);
+            // 
             // Button_OK
             // 
             this.Button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -305,44 +401,45 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
             // 
-            // Button_ResetChart
+            // Button_ToHover2
             // 
-            this.Button_ResetChart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_ResetChart.Location = new System.Drawing.Point(16, 413);
-            this.Button_ResetChart.Name = "Button_ResetChart";
-            this.Button_ResetChart.Size = new System.Drawing.Size(98, 28);
-            this.Button_ResetChart.TabIndex = 9;
-            this.Button_ResetChart.Text = "Reset Chart";
-            this.Button_ResetChart.UseVisualStyleBackColor = true;
-            this.Button_ResetChart.Click += new System.EventHandler(this.Button_ResetChart_Click);
+            this.Button_ToHover2.Location = new System.Drawing.Point(158, 70);
+            this.Button_ToHover2.Name = "Button_ToHover2";
+            this.Button_ToHover2.Size = new System.Drawing.Size(10, 23);
+            this.Button_ToHover2.TabIndex = 18;
+            this.Button_ToHover2.Text = "Disable";
+            this.Button_ToHover2.UseVisualStyleBackColor = true;
+            this.Button_ToHover2.Visible = false;
             // 
-            // CheckBoxGradientPoint
+            // Button_ToHover3
             // 
-            this.CheckBoxGradientPoint.AutoSize = true;
-            this.CheckBoxGradientPoint.Location = new System.Drawing.Point(598, 101);
-            this.CheckBoxGradientPoint.Name = "CheckBoxGradientPoint";
-            this.CheckBoxGradientPoint.Size = new System.Drawing.Size(110, 20);
-            this.CheckBoxGradientPoint.TabIndex = 1;
-            this.CheckBoxGradientPoint.Text = "Gradient Point";
-            this.CheckBoxGradientPoint.UseVisualStyleBackColor = true;
+            this.Button_ToHover3.Location = new System.Drawing.Point(158, 107);
+            this.Button_ToHover3.Name = "Button_ToHover3";
+            this.Button_ToHover3.Size = new System.Drawing.Size(10, 23);
+            this.Button_ToHover3.TabIndex = 19;
+            this.Button_ToHover3.Text = "Disable";
+            this.Button_ToHover3.UseVisualStyleBackColor = true;
+            this.Button_ToHover3.Visible = false;
             // 
-            // button1
+            // Button_ToHover4
             // 
-            this.button1.Location = new System.Drawing.Point(595, 127);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
+            this.Button_ToHover4.Location = new System.Drawing.Point(157, 142);
+            this.Button_ToHover4.Name = "Button_ToHover4";
+            this.Button_ToHover4.Size = new System.Drawing.Size(10, 23);
+            this.Button_ToHover4.TabIndex = 20;
+            this.Button_ToHover4.Text = "Disable";
+            this.Button_ToHover4.UseVisualStyleBackColor = true;
+            this.Button_ToHover4.Visible = false;
             // 
-            // button2
+            // Button_ToHover
             // 
-            this.button2.Location = new System.Drawing.Point(595, 156);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 11;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
+            this.Button_ToHover.Location = new System.Drawing.Point(154, 33);
+            this.Button_ToHover.Name = "Button_ToHover";
+            this.Button_ToHover.Size = new System.Drawing.Size(10, 23);
+            this.Button_ToHover.TabIndex = 21;
+            this.Button_ToHover.Text = "Disable";
+            this.Button_ToHover.UseVisualStyleBackColor = true;
+            this.Button_ToHover.Visible = false;
             // 
             // MollierControlSettingsForm
             // 
@@ -350,11 +447,10 @@ namespace SAM.Core.Mollier.UI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.Button_Cancel;
             this.ClientSize = new System.Drawing.Size(705, 453);
-            this.Controls.Add(this.Button_ResetChart);
+            this.Controls.Add(this.TabControl_Main);
             this.Controls.Add(this.Button_Apply);
             this.Controls.Add(this.Button_OK);
             this.Controls.Add(this.Button_Cancel);
-            this.Controls.Add(this.TabControl_Main);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -364,9 +460,10 @@ namespace SAM.Core.Mollier.UI
             this.Text = "Mollier Settings";
             this.TabControl_Main.ResumeLayout(false);
             this.TabPage_View.ResumeLayout(false);
-            this.TabPage_View.PerformLayout();
             this.TabPage_Ranges.ResumeLayout(false);
             this.TabPage_Ranges.PerformLayout();
+            this.TabPage_Tools.ResumeLayout(false);
+            this.TabPage_Tools.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -374,7 +471,6 @@ namespace SAM.Core.Mollier.UI
         #endregion
 
         private System.Windows.Forms.TabControl TabControl_Main;
-        private System.Windows.Forms.TabPage TabPage_View;
         private System.Windows.Forms.TabPage TabPage_Ranges;
         private System.Windows.Forms.Button Button_OK;
         private System.Windows.Forms.Button Button_Cancel;
@@ -392,14 +488,22 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.TextBox HumidityRatioMaximumValueTextbox;
         private System.Windows.Forms.TextBox HumidityRatioMinimumValueTextbox;
         private System.Windows.Forms.Button Button_Apply;
-        private System.Windows.Forms.Button Button_ResetChart;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox P_w_IntervalTextBox;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.FlowLayoutPanel FlowLayoutPanel_BuiltInVisibilitySettings;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.CheckBox CheckBoxGradientPoint;
         private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.TabPage TabPage_Tools;
+        private System.Windows.Forms.Button Button_HighIntensityColor;
+        private System.Windows.Forms.Button Button_LowIntensityColor;
+        private System.Windows.Forms.CheckBox CheckBox_GradientPoint;
+        private System.Windows.Forms.TabPage TabPage_View;
+        private System.Windows.Forms.FlowLayoutPanel FlowLayoutPanel_BuiltInVisibilitySettings;
+        private System.Windows.Forms.CheckBox CheckBox_DisableUnits;
+        private System.Windows.Forms.CheckBox CheckBox_DisableLabels;
+        private System.Windows.Forms.CheckBox CheckBox_ProcessZoom;
+        private System.Windows.Forms.Button Button_ToHover;
+        private System.Windows.Forms.Button Button_ToHover4;
+        private System.Windows.Forms.Button Button_ToHover3;
+        private System.Windows.Forms.Button Button_ToHover2;
     }
 }

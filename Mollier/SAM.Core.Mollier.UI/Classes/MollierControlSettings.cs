@@ -24,6 +24,11 @@ namespace SAM.Core.Mollier.UI
         public bool WetBulbTemperature_line { get; set; } = true;
         public ChartType ChartType { get; set; } = ChartType.Mollier;
         public string Color { get; set; } = "default";
+        public bool DisableUnits { get; set; } = false;
+        public bool DisableLabels { get; set; } = false;
+        public bool GradientPoint { get; set; } = false;
+        public bool Zoom { get; set; } = false;
+        public PointGradientVisibilitySetting GradientColors { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
 
@@ -50,6 +55,13 @@ namespace SAM.Core.Mollier.UI
             ChartType = mollierControlSettings.ChartType;
             Color = mollierControlSettings.Color;
             VisibilitySettings = new VisibilitySettings(mollierControlSettings.VisibilitySettings);
+
+            DisableUnits = mollierControlSettings.DisableUnits;
+            DisableLabels = mollierControlSettings.DisableLabels;
+            GradientColors = mollierControlSettings.GradientColors;
+            GradientPoint = mollierControlSettings.GradientPoint;
+            Zoom = mollierControlSettings.Zoom;
+
             //TODO: Add missing parameters
         }
 
@@ -58,9 +70,10 @@ namespace SAM.Core.Mollier.UI
             FromJObject(jObject);
         }
 
+        //loading from file
         public bool FromJObject(JObject jObject)
         {
-            if(jObject.ContainsKey("Pressure"))
+            if (jObject.ContainsKey("Pressure"))
             {
                 Pressure = jObject.Value<double>("Pressure");
             }
@@ -118,7 +131,7 @@ namespace SAM.Core.Mollier.UI
             }
             if (jObject.ContainsKey("ChartType"))
             {
-                if(Enum.TryParse(jObject.Value<string>("ChartType"), out ChartType chartType))
+                if (Enum.TryParse(jObject.Value<string>("ChartType"), out ChartType chartType))
                 {
                     ChartType = chartType;
                 }
@@ -126,14 +139,41 @@ namespace SAM.Core.Mollier.UI
             if (jObject.ContainsKey("VisibilitySettings"))
             {
                 JObject jObject_VisibilitySettings = jObject.Value<JObject>("VisibilitySettings");
-                if(jObject_VisibilitySettings != null)
+                if (jObject_VisibilitySettings != null)
                 {
                     VisibilitySettings = new VisibilitySettings(jObject_VisibilitySettings);
                 }
             }
+            if (jObject.ContainsKey("DisableUnits"))
+            {
+                DisableUnits = jObject.Value<bool>("DisableUnits");
+            }
+            if (jObject.ContainsKey("DisableLabels"))
+            {
+                DisableLabels = jObject.Value<bool>("DisableLabels");
+            }
+            //if (jObject.ContainsKey("GradientColors")) TODO after change saving GradientColor!!
+            //{
+            //    JObject jObject_GradientColors = jObject.Value<JObject>("GradientColors");
+            //    if(jObject_GradientColors != null)
+            //    {
+            //        GradientColors = new PointGradientVisibilitySetting(jObject_GradientColors);
+            //        //because after upload 
+            //        //if(GradientColors.Color == null)
+            //        //{
+            //        //    GradientColors.Color = System.Drawing.Color.Red;
+            //        //}
+            //        //if (GradientColors.GradientColor == null)
+            //        //{
+            //        //    GradientColors.GradientColor = System.Drawing.Color.Blue;
+            //        //}
+
+            //    }
+            //}
             return true;
         }
 
+        //saving to file
         public JObject ToJObject()
         {
             JObject result = new JObject();
@@ -180,13 +220,15 @@ namespace SAM.Core.Mollier.UI
             result.Add("SpecificVolume_line", SpecificVolume_line);
             result.Add("WetBulbTemperature_line", WetBulbTemperature_line);
             result.Add("Color", Color);
+            result.Add("DisableUnits", DisableUnits);
+            result.Add("DisableLabels", DisableLabels);
             result.Add("ChartType", ChartType.ToString());
-
             if(VisibilitySettings != null)
             {
                 result.Add("VisibilitySettings", VisibilitySettings.ToJObject());
             }
-
+            
+            //result.Add("GradientColors", GradientColors.ToJObject()); TODO after change saving GradientColor
 
             return result;
         }

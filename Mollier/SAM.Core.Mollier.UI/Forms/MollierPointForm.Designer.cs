@@ -39,36 +39,35 @@
             // Label_HumidityRatio
             // 
             this.Label_HumidityRatio.AutoSize = true;
-            this.Label_HumidityRatio.Location = new System.Drawing.Point(264, 68);
+            this.Label_HumidityRatio.Location = new System.Drawing.Point(219, 68);
             this.Label_HumidityRatio.Name = "Label_HumidityRatio";
-            this.Label_HumidityRatio.Size = new System.Drawing.Size(94, 16);
+            this.Label_HumidityRatio.Size = new System.Drawing.Size(132, 16);
             this.Label_HumidityRatio.TabIndex = 0;
-            this.Label_HumidityRatio.Text = "Humidity Ratio";
+            this.Label_HumidityRatio.Text = "Humidity Ratio [g/kg]";
             // 
             // Label_DryBulbTemperature
             // 
             this.Label_DryBulbTemperature.AutoSize = true;
-            this.Label_DryBulbTemperature.Location = new System.Drawing.Point(81, 68);
+            this.Label_DryBulbTemperature.Location = new System.Drawing.Point(27, 68);
             this.Label_DryBulbTemperature.Name = "Label_DryBulbTemperature";
-            this.Label_DryBulbTemperature.Size = new System.Drawing.Size(165, 16);
+            this.Label_DryBulbTemperature.Size = new System.Drawing.Size(163, 16);
             this.Label_DryBulbTemperature.TabIndex = 1;
-            this.Label_DryBulbTemperature.Text = "Dry Bulb Temperature [ C ]";
+            this.Label_DryBulbTemperature.Text = "Dry Bulb Temperature [°C]";
             // 
             // TextBox_HumidityRatio
             // 
-            this.TextBox_HumidityRatio.Location = new System.Drawing.Point(267, 102);
+            this.TextBox_HumidityRatio.Location = new System.Drawing.Point(242, 102);
             this.TextBox_HumidityRatio.Name = "TextBox_HumidityRatio";
-            this.TextBox_HumidityRatio.Size = new System.Drawing.Size(68, 22);
+            this.TextBox_HumidityRatio.Size = new System.Drawing.Size(75, 22);
             this.TextBox_HumidityRatio.TabIndex = 2;
             this.TextBox_HumidityRatio.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
             // 
             // TextBox_DryBulbTemperature
             // 
-            this.TextBox_DryBulbTemperature.Location = new System.Drawing.Point(126, 102);
+            this.TextBox_DryBulbTemperature.Location = new System.Drawing.Point(71, 102);
             this.TextBox_DryBulbTemperature.Name = "TextBox_DryBulbTemperature";
-            this.TextBox_DryBulbTemperature.Size = new System.Drawing.Size(72, 22);
+            this.TextBox_DryBulbTemperature.Size = new System.Drawing.Size(78, 22);
             this.TextBox_DryBulbTemperature.TabIndex = 3;
-            this.TextBox_DryBulbTemperature.TextChanged += new System.EventHandler(this.TextBox_DryBulbTemperature_TextChanged);
             this.TextBox_DryBulbTemperature.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
             // 
             // Button_OK

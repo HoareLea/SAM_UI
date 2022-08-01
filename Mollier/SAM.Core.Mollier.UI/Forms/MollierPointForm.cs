@@ -10,10 +10,6 @@ namespace SAM.Core.Mollier.UI.Forms
             InitializeComponent();
         }
 
-        private void TextBox_DryBulbTemperature_TextChanged(object sender, EventArgs e)
-        {
-
-        }
         public MollierPoint get_point(double pressure)
         {
             if(!Core.Query.TryConvert(TextBox_DryBulbTemperature.Text, out double dryBulbTemperature))
@@ -36,7 +32,6 @@ namespace SAM.Core.Mollier.UI.Forms
             Close();
 
         }
-
         private void Button_Cancel_Click(object sender, EventArgs e)
         {
 
