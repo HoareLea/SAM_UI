@@ -297,9 +297,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Zoom = Zoom;
             if (Zoom)
             {
-                List<IMollierProcess> mollierProcesses = mollierControl.CopyProcesses;
-                double humidityRatio_Min, humidityRatio_Max, temperature_Min, temperature_Max;
-                Query.ZoomParameters(mollierProcesses, out humidityRatio_Min, out humidityRatio_Max, out temperature_Min, out temperature_Max);
+                Query.ZoomParameters(mollierControl.Series, out double humidityRatio_Min, out double humidityRatio_Max, out double  temperature_Min, out double temperature_Max);
                 mollierControlSettings.HumidityRatio_Min = humidityRatio_Min;
                 mollierControlSettings.HumidityRatio_Max = humidityRatio_Max;
                 mollierControlSettings.Temperature_Min = temperature_Min;
@@ -357,13 +355,7 @@ namespace SAM.Core.Mollier.UI
         }
         private void CheckBox_ProcessZoom_CheckedChanged(object sender, EventArgs e)
         {
-            List<IMollierProcess> mollierProcesses = mollierControl.CopyProcesses;
-            if (mollierProcesses == null && CheckBox_ProcessZoom.Checked == true)
-            {
-                CheckBox_ProcessZoom.Checked = false;
-                MessageBox.Show("There is no process to zoom to it");
-                return;
-            }
+           
             if (CheckBox_ProcessZoom.Checked == false)
             {
                 MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
