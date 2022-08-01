@@ -11,8 +11,9 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierControl : UserControl
     {
-        public static double MaxPressure = 108400, MinPressure = 90000; 
-
+        public static double MaxPressure = 108400, MinPressure = 90000;
+        private Point mdown = Point.Empty;
+        private bool selection = false;
         private MollierControlSettings mollierControlSettings;
         private List<MollierPoint> mollierPoints;
         private List<IMollierProcess> mollierProcesses;
@@ -745,6 +746,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisX.MinorGrid.Enabled = true;
             axisX.MinorGrid.LineColor = Color.LightGray;
             axisX.IsReversed = false;
+            axisX.LabelStyle.Format = "0.##";
             //AXIS Y
             MollierChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
             Axis axisY = chartArea.AxisY;
@@ -754,6 +756,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.Maximum = temperature_Max;
             axisY.Minimum = temperature_Min;
             axisY.Interval = temperature_interval;
+            axisY.LabelStyle.Format = "0.##";
             //CREATING RELATIVE HUMIDITY AND HUMIDITY RATIO LINES
             create_relative_humidity_line_Mollier(System.Convert.ToInt32(temperature_Min), System.Convert.ToInt32(temperature_Max), relative_humidity, pressure);
             //CREATING DENSITY LINE
@@ -1042,6 +1045,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void ToolStripMenuItem_Selection_Click(object sender, EventArgs e)
         {
+            selection = true;
 
         }
 
@@ -1053,6 +1057,60 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierControlSettings.Temperature_Min = mollierControlSettings_1.Temperature_Min;
             mollierControlSettings.Temperature_Max = mollierControlSettings_1.Temperature_Max;
             generate_graph();
+        }
+
+        private void MollierChart_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (!selection)
+            {
+                return;
+            }
+            mdown = e.Location;
+        }
+
+        private void MollierChart_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (!selection)
+            {
+                return;
+            }
+            if (e.Button == MouseButtons.Left)
+            {
+                MollierChart.Refresh();
+                using (Graphics g = MollierChart.CreateGraphics())
+                    g.DrawRectangle(Pens.Red, GetRectangle(mdown, e.Location));
+            }
+        }
+
+        private void MollierChart_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (!selection)
+            {
+                return;
+            }
+            Axis ax = MollierChart.ChartAreas[0].AxisX;
+            Axis ay = MollierChart.ChartAreas[0].AxisY;
+            Point mup = e.Location;
+
+            double x_Min = System.Math.Min((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X));
+            double x_Max = System.Math.Max((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X));
+            double y_Min = System.Math.Min((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y));
+            double y_Max = System.Math.Max((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y));
+            if(x_Max - x_Min < 10 || y_Max - y_Min < 10) {
+                return;
+            }
+            mollierControlSettings.HumidityRatio_Min = x_Min;
+            mollierControlSettings.HumidityRatio_Max = x_Max;
+            mollierControlSettings.Temperature_Min = y_Min;
+            mollierControlSettings.Temperature_Max = y_Max;
+            generate_graph();
+
+            MollierChart.Refresh();
+            selection = false;
+        }
+        static public Rectangle GetRectangle(Point p1, Point p2)
+        {
+            return new Rectangle(System.Math.Min(p1.X, p2.X), System.Math.Min(p1.Y, p2.Y), System.Math.Abs(p1.X - p2.X), System.Math.Abs(p1.Y - p2.Y));
         }
 
         public MollierControlSettings MollierControlSettings
