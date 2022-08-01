@@ -31,7 +31,6 @@ namespace SAM.Core.Mollier.UI
             DisableUnits = mollierControlSettings.DisableUnits;
             DisableLabels = mollierControlSettings.DisableLabels;
             GradientColors = mollierControlSettings.GradientColors;
-            Zoom = mollierControlSettings.Zoom;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
@@ -244,17 +243,6 @@ namespace SAM.Core.Mollier.UI
                 CheckBox_DisableLabels.Checked = value;
             }
         }
-        public bool Zoom
-        {
-            get
-            {
-                return CheckBox_ProcessZoom.Checked;
-            }
-            set
-            {
-                CheckBox_ProcessZoom.Checked = value;
-            }
-        }
         public PointGradientVisibilitySetting GradientColors
         {
             get
@@ -294,15 +282,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.DisableUnits = DisableUnits;
             mollierControlSettings.DisableLabels = DisableLabels;
             mollierControlSettings.GradientColors = GradientColors;
-            mollierControlSettings.Zoom = Zoom;
-            if (Zoom)
-            {
-                Query.ZoomParameters(mollierControl.Series, out double humidityRatio_Min, out double humidityRatio_Max, out double  temperature_Min, out double temperature_Max);
-                mollierControlSettings.HumidityRatio_Min = humidityRatio_Min;
-                mollierControlSettings.HumidityRatio_Max = humidityRatio_Max;
-                mollierControlSettings.Temperature_Min = temperature_Min;
-                mollierControlSettings.Temperature_Max = temperature_Max;
-            }
+
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
             {
@@ -353,23 +333,6 @@ namespace SAM.Core.Mollier.UI
                 Button_HighIntensityColor.BackColor = colorDialog.Color;
             }
         }
-        private void CheckBox_ProcessZoom_CheckedChanged(object sender, EventArgs e)
-        {
-           
-            if (CheckBox_ProcessZoom.Checked == false)
-            {
-                MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
-                mollierControlSettings.HumidityRatio_Min = 0;
-                mollierControlSettings.HumidityRatio_Max = 35;
-                mollierControlSettings.Temperature_Min = -20;
-                mollierControlSettings.Temperature_Max = 50;
-                HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
-                HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
-                Temperature_Max = mollierControlSettings.Temperature_Max;
-                Temperature_Min = mollierControlSettings.Temperature_Min;
-            }
-        }
-
 
 
         private void CheckBox_GradientPoint_MouseHover(object sender, EventArgs e)
@@ -409,18 +372,6 @@ namespace SAM.Core.Mollier.UI
             toolTip.Active = false;
             toolTip.Active = true;
 
-        }
-
-        private void CheckBox_ProcessZoom_MouseHover(object sender, EventArgs e)
-        {
-            toolTip.Show("Brings the graph closer to the existing processes", Button_ToHover4);
-            toolTip.Active = true;
-        }
-
-        private void CheckBox_ProcessZoom_MouseLeave(object sender, EventArgs e)
-        {
-            toolTip.Active = false;
-            toolTip.Active = true;
         }
 
         private void Button_LowIntensityColor_MouseHover(object sender, EventArgs e)

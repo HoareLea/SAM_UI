@@ -1029,6 +1029,32 @@ namespace SAM.Core.Mollier.UI.Controls
                 return MollierChart.Series?.ToList();
             }
         }
+
+        private void ToolStripMenuItem_ProcessesAndPoints_Click(object sender, EventArgs e)
+        {
+            Query.ZoomParameters(MollierChart.Series, out double humidityRatio_Min, out double humidityRatio_Max, out double temperature_Min, out double temperature_Max);
+            mollierControlSettings.HumidityRatio_Min = humidityRatio_Min;
+            mollierControlSettings.HumidityRatio_Max = humidityRatio_Max;
+            mollierControlSettings.Temperature_Min = temperature_Min;
+            mollierControlSettings.Temperature_Max = temperature_Max;
+            generate_graph();
+        }
+
+        private void ToolStripMenuItem_Selection_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ToolStripMenuItem_Reset_Click(object sender, EventArgs e)
+        {
+            MollierControlSettings mollierControlSettings_1 = new MollierControlSettings();
+            mollierControlSettings.HumidityRatio_Min = mollierControlSettings_1.HumidityRatio_Min;
+            mollierControlSettings.HumidityRatio_Max = mollierControlSettings_1.HumidityRatio_Max;
+            mollierControlSettings.Temperature_Min = mollierControlSettings_1.Temperature_Min;
+            mollierControlSettings.Temperature_Max = mollierControlSettings_1.Temperature_Max;
+            generate_graph();
+        }
+
         public MollierControlSettings MollierControlSettings
         {
             get

@@ -370,7 +370,6 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.Temperature_Min = -20D;
             mollierControlSettings2.VisibilitySettings = visibilitySettings2;
             mollierControlSettings2.WetBulbTemperature_line = true;
-            mollierControlSettings2.Zoom = false;
             this.MollierControl_Main.MollierControlSettings = mollierControlSettings2;
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(1350, 912);

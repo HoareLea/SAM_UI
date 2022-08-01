@@ -50,7 +50,9 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureMaximumValueTextbox = new System.Windows.Forms.TextBox();
             this.TemperatureMinimumValueTextbox = new System.Windows.Forms.TextBox();
             this.TabPage_Tools = new System.Windows.Forms.TabPage();
-            this.CheckBox_ProcessZoom = new System.Windows.Forms.CheckBox();
+            this.Button_ToHover = new System.Windows.Forms.Button();
+            this.Button_ToHover3 = new System.Windows.Forms.Button();
+            this.Button_ToHover2 = new System.Windows.Forms.Button();
             this.CheckBox_DisableUnits = new System.Windows.Forms.CheckBox();
             this.CheckBox_DisableLabels = new System.Windows.Forms.CheckBox();
             this.Button_HighIntensityColor = new System.Windows.Forms.Button();
@@ -60,10 +62,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.Button_ToHover2 = new System.Windows.Forms.Button();
-            this.Button_ToHover3 = new System.Windows.Forms.Button();
-            this.Button_ToHover4 = new System.Windows.Forms.Button();
-            this.Button_ToHover = new System.Windows.Forms.Button();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
@@ -280,10 +278,8 @@ namespace SAM.Core.Mollier.UI
             // TabPage_Tools
             // 
             this.TabPage_Tools.Controls.Add(this.Button_ToHover);
-            this.TabPage_Tools.Controls.Add(this.Button_ToHover4);
             this.TabPage_Tools.Controls.Add(this.Button_ToHover3);
             this.TabPage_Tools.Controls.Add(this.Button_ToHover2);
-            this.TabPage_Tools.Controls.Add(this.CheckBox_ProcessZoom);
             this.TabPage_Tools.Controls.Add(this.CheckBox_DisableUnits);
             this.TabPage_Tools.Controls.Add(this.CheckBox_DisableLabels);
             this.TabPage_Tools.Controls.Add(this.Button_HighIntensityColor);
@@ -296,18 +292,35 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_Tools.Text = "Tools";
             this.TabPage_Tools.UseVisualStyleBackColor = true;
             // 
-            // CheckBox_ProcessZoom
+            // Button_ToHover
             // 
-            this.CheckBox_ProcessZoom.AutoSize = true;
-            this.CheckBox_ProcessZoom.Location = new System.Drawing.Point(38, 144);
-            this.CheckBox_ProcessZoom.Name = "CheckBox_ProcessZoom";
-            this.CheckBox_ProcessZoom.Size = new System.Drawing.Size(114, 20);
-            this.CheckBox_ProcessZoom.TabIndex = 15;
-            this.CheckBox_ProcessZoom.Text = "Process Zoom";
-            this.CheckBox_ProcessZoom.UseVisualStyleBackColor = true;
-            this.CheckBox_ProcessZoom.CheckedChanged += new System.EventHandler(this.CheckBox_ProcessZoom_CheckedChanged);
-            this.CheckBox_ProcessZoom.MouseLeave += new System.EventHandler(this.CheckBox_ProcessZoom_MouseLeave);
-            this.CheckBox_ProcessZoom.MouseHover += new System.EventHandler(this.CheckBox_ProcessZoom_MouseHover);
+            this.Button_ToHover.Location = new System.Drawing.Point(154, 33);
+            this.Button_ToHover.Name = "Button_ToHover";
+            this.Button_ToHover.Size = new System.Drawing.Size(10, 23);
+            this.Button_ToHover.TabIndex = 21;
+            this.Button_ToHover.Text = "Disable";
+            this.Button_ToHover.UseVisualStyleBackColor = true;
+            this.Button_ToHover.Visible = false;
+            // 
+            // Button_ToHover3
+            // 
+            this.Button_ToHover3.Location = new System.Drawing.Point(158, 107);
+            this.Button_ToHover3.Name = "Button_ToHover3";
+            this.Button_ToHover3.Size = new System.Drawing.Size(10, 23);
+            this.Button_ToHover3.TabIndex = 19;
+            this.Button_ToHover3.Text = "Disable";
+            this.Button_ToHover3.UseVisualStyleBackColor = true;
+            this.Button_ToHover3.Visible = false;
+            // 
+            // Button_ToHover2
+            // 
+            this.Button_ToHover2.Location = new System.Drawing.Point(158, 70);
+            this.Button_ToHover2.Name = "Button_ToHover2";
+            this.Button_ToHover2.Size = new System.Drawing.Size(10, 23);
+            this.Button_ToHover2.TabIndex = 18;
+            this.Button_ToHover2.Text = "Disable";
+            this.Button_ToHover2.UseVisualStyleBackColor = true;
+            this.Button_ToHover2.Visible = false;
             // 
             // CheckBox_DisableUnits
             // 
@@ -401,46 +414,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
             // 
-            // Button_ToHover2
-            // 
-            this.Button_ToHover2.Location = new System.Drawing.Point(158, 70);
-            this.Button_ToHover2.Name = "Button_ToHover2";
-            this.Button_ToHover2.Size = new System.Drawing.Size(10, 23);
-            this.Button_ToHover2.TabIndex = 18;
-            this.Button_ToHover2.Text = "Disable";
-            this.Button_ToHover2.UseVisualStyleBackColor = true;
-            this.Button_ToHover2.Visible = false;
-            // 
-            // Button_ToHover3
-            // 
-            this.Button_ToHover3.Location = new System.Drawing.Point(158, 107);
-            this.Button_ToHover3.Name = "Button_ToHover3";
-            this.Button_ToHover3.Size = new System.Drawing.Size(10, 23);
-            this.Button_ToHover3.TabIndex = 19;
-            this.Button_ToHover3.Text = "Disable";
-            this.Button_ToHover3.UseVisualStyleBackColor = true;
-            this.Button_ToHover3.Visible = false;
-            // 
-            // Button_ToHover4
-            // 
-            this.Button_ToHover4.Location = new System.Drawing.Point(157, 142);
-            this.Button_ToHover4.Name = "Button_ToHover4";
-            this.Button_ToHover4.Size = new System.Drawing.Size(10, 23);
-            this.Button_ToHover4.TabIndex = 20;
-            this.Button_ToHover4.Text = "Disable";
-            this.Button_ToHover4.UseVisualStyleBackColor = true;
-            this.Button_ToHover4.Visible = false;
-            // 
-            // Button_ToHover
-            // 
-            this.Button_ToHover.Location = new System.Drawing.Point(154, 33);
-            this.Button_ToHover.Name = "Button_ToHover";
-            this.Button_ToHover.Size = new System.Drawing.Size(10, 23);
-            this.Button_ToHover.TabIndex = 21;
-            this.Button_ToHover.Text = "Disable";
-            this.Button_ToHover.UseVisualStyleBackColor = true;
-            this.Button_ToHover.Visible = false;
-            // 
             // MollierControlSettingsForm
             // 
             this.AcceptButton = this.Button_OK;
@@ -500,9 +473,7 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.FlowLayoutPanel FlowLayoutPanel_BuiltInVisibilitySettings;
         private System.Windows.Forms.CheckBox CheckBox_DisableUnits;
         private System.Windows.Forms.CheckBox CheckBox_DisableLabels;
-        private System.Windows.Forms.CheckBox CheckBox_ProcessZoom;
         private System.Windows.Forms.Button Button_ToHover;
-        private System.Windows.Forms.Button Button_ToHover4;
         private System.Windows.Forms.Button Button_ToHover3;
         private System.Windows.Forms.Button Button_ToHover2;
     }

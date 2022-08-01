@@ -27,7 +27,6 @@ namespace SAM.Core.Mollier.UI
         public bool DisableUnits { get; set; } = false;
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
-        public bool Zoom { get; set; } = false;
         public PointGradientVisibilitySetting GradientColors { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
@@ -60,7 +59,6 @@ namespace SAM.Core.Mollier.UI
             DisableLabels = mollierControlSettings.DisableLabels;
             GradientColors = mollierControlSettings.GradientColors;
             GradientPoint = mollierControlSettings.GradientPoint;
-            Zoom = mollierControlSettings.Zoom;
 
             //TODO: Add missing parameters
         }
@@ -152,24 +150,7 @@ namespace SAM.Core.Mollier.UI
             {
                 DisableLabels = jObject.Value<bool>("DisableLabels");
             }
-            //if (jObject.ContainsKey("GradientColors")) TODO after change saving GradientColor!!
-            //{
-            //    JObject jObject_GradientColors = jObject.Value<JObject>("GradientColors");
-            //    if(jObject_GradientColors != null)
-            //    {
-            //        GradientColors = new PointGradientVisibilitySetting(jObject_GradientColors);
-            //        //because after upload 
-            //        //if(GradientColors.Color == null)
-            //        //{
-            //        //    GradientColors.Color = System.Drawing.Color.Red;
-            //        //}
-            //        //if (GradientColors.GradientColor == null)
-            //        //{
-            //        //    GradientColors.GradientColor = System.Drawing.Color.Blue;
-            //        //}
 
-            //    }
-            //}
             return true;
         }
 
