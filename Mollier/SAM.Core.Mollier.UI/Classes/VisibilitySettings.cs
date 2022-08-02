@@ -134,7 +134,7 @@ namespace SAM.Core.Mollier.UI
             return GetVisibilitySetting(String.Empty, chartParameterType, chartDataType);
         }
 
-        public IVisibilitySetting GetVisibilitySetting(string templateName, ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined, bool GradientPoint = false)//GradientPoint == true when this mode is on
+        public IVisibilitySetting GetVisibilitySetting(string templateName, ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined)//GradientPoint == true when this mode is on
         {
             if(dictionary == null)
             {
@@ -146,19 +146,13 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            if (GradientPoint)
-            {
-                IVisibilitySetting result = visibilitySettings.Find(x => x is IUserVisibilitySetting && ((IUserVisibilitySetting)x).ChartParameterType == chartParameterType && ((IUserVisibilitySetting)x).ChartDataType == chartDataType);
-                return result;
+            IVisibilitySetting result = visibilitySettings.Find(x => x is IUserVisibilitySetting && ((IUserVisibilitySetting)x).ChartParameterType == chartParameterType && ((IUserVisibilitySetting)x).ChartDataType == chartDataType);
+            
+            if(result == null) { 
+                result = visibilitySettings.Find(x => x is BuiltInVisibilitySetting && ((BuiltInVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);
             }
-            else
-            {
-                IVisibilitySetting result = visibilitySettings.Find(x => x is BuiltInVisibilitySetting && ((BuiltInVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);
-                return result;
-            }
+            return result;
 
-
-            return null;
             //foreach (IVisibilitySetting x in visibilitySettings)
             //{
             //    if (!(x is BuiltInVisibilitySetting))
@@ -184,9 +178,9 @@ namespace SAM.Core.Mollier.UI
             
         }
 
-        public System.Drawing.Color GetColor(string templateName,  ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined, bool GradientPoint = false)
+        public System.Drawing.Color GetColor(string templateName,  ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined)
         {
-            IVisibilitySetting visibilitySetting = GetVisibilitySetting(templateName, chartParameterType, chartDataType, GradientPoint);
+            IVisibilitySetting visibilitySetting = GetVisibilitySetting(templateName, chartParameterType, chartDataType);
             if(visibilitySetting == null)
             {
                 return System.Drawing.Color.Empty;

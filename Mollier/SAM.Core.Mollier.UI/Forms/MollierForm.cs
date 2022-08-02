@@ -16,11 +16,9 @@ namespace SAM.Core.Mollier.UI
         public MollierForm()    
         {
             InitializeComponent();
-            if (System.IO.File.Exists(mollierControlSettingsPath))
-            {
-                MollierControlSettings mollierControlSettings = Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault();
-                default_chart(mollierControlSettings);
-            }
+
+            MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null ;
+            default_chart(mollierControlSettings);
         }
         private void resetChartToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -208,21 +206,23 @@ namespace SAM.Core.Mollier.UI
         //function that sets all values from the control to the Form 
         private void default_chart(MollierControlSettings mollierControlSettings)
         {
-            if (mollierControlSettings != null)
+            if (mollierControlSettings == null)
             {
-                TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
-                TextBox_Elevation.Text = mollierControlSettings.Elevation.ToString();
-                ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier;
-                ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric;
-                ToolStripMenuItem_Density.Checked = mollierControlSettings.Density_line;
-                ToolStripMenuItem_Enthalpy.Checked = mollierControlSettings.Enthalpy_line;
-                ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.SpecificVolume_line;
-                ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.WetBulbTemperature_line;
-                defaultToolStripMenuItem.Checked = mollierControlSettings.Color == "default";
-                blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
-                grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
-                MollierControl_Main.MollierControlSettings = mollierControlSettings;
+                mollierControlSettings = new MollierControlSettings();
             }
+
+            TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
+            TextBox_Elevation.Text = mollierControlSettings.Elevation.ToString();
+            ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier;
+            ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric;
+            ToolStripMenuItem_Density.Checked = mollierControlSettings.Density_line;
+            ToolStripMenuItem_Enthalpy.Checked = mollierControlSettings.Enthalpy_line;
+            ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.SpecificVolume_line;
+            ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.WetBulbTemperature_line;
+            defaultToolStripMenuItem.Checked = mollierControlSettings.Color == "default";
+            blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
+            grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         //buttons which enable to change color, chart or disable line
