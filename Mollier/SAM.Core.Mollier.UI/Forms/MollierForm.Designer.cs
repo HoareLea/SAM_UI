@@ -61,6 +61,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_ToHover4 = new System.Windows.Forms.Button();
             this.Button_ToHover5 = new System.Windows.Forms.Button();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
+            this.CheckBox_Zone = new System.Windows.Forms.CheckBox();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -120,7 +121,7 @@ namespace SAM.Core.Mollier.UI
             // ToolStripMenuItem_Save
             // 
             this.ToolStripMenuItem_Save.Name = "ToolStripMenuItem_Save";
-            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(98, 22);
             this.ToolStripMenuItem_Save.Text = "Save";
             this.ToolStripMenuItem_Save.Click += new System.EventHandler(this.ToolStripMenuItem_Save_Click);
             // 
@@ -247,7 +248,7 @@ namespace SAM.Core.Mollier.UI
             // ToolStripMenuItem_OpenSettings
             // 
             this.ToolStripMenuItem_OpenSettings.Name = "ToolStripMenuItem_OpenSettings";
-            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(116, 22);
             this.ToolStripMenuItem_OpenSettings.Text = "Settings";
             this.ToolStripMenuItem_OpenSettings.Click += new System.EventHandler(this.ToolStripMenuItem_OpenSettings_Click);
             // 
@@ -371,10 +372,22 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Size = new System.Drawing.Size(1350, 912);
             this.MollierControl_Main.TabIndex = 0;
             // 
+            // CheckBox_Zone
+            // 
+            this.CheckBox_Zone.AutoSize = true;
+            this.CheckBox_Zone.Location = new System.Drawing.Point(357, 32);
+            this.CheckBox_Zone.Name = "CheckBox_Zone";
+            this.CheckBox_Zone.Size = new System.Drawing.Size(57, 20);
+            this.CheckBox_Zone.TabIndex = 29;
+            this.CheckBox_Zone.Text = "Zone";
+            this.CheckBox_Zone.UseVisualStyleBackColor = true;
+            this.CheckBox_Zone.CheckedChanged += new System.EventHandler(this.CheckBox_Zone_CheckedChanged);
+            // 
             // MollierForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1374, 977);
+            this.Controls.Add(this.CheckBox_Zone);
             this.Controls.Add(this.Button_ToHover5);
             this.Controls.Add(this.Button_ToHover4);
             this.Controls.Add(this.Button_ToHover3);
@@ -434,6 +447,7 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.Button Button_ToHover3;
         private System.Windows.Forms.Button Button_ToHover4;
         private System.Windows.Forms.Button Button_ToHover5;
+        private System.Windows.Forms.CheckBox CheckBox_Zone;
     }
 }
 

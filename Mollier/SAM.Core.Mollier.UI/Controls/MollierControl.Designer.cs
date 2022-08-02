@@ -59,6 +59,7 @@
             this.MollierChart.Size = new System.Drawing.Size(816, 588);
             this.MollierChart.TabIndex = 0;
             this.MollierChart.Text = "chart1";
+            this.MollierChart.Paint += new System.Windows.Forms.PaintEventHandler(this.MollierChart_Paint);
             this.MollierChart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseDown);
             this.MollierChart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseMove);
             this.MollierChart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseUp);
@@ -68,7 +69,7 @@
             this.ContextMenuStrip_Chart.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_Zoom});
             this.ContextMenuStrip_Chart.Name = "ContextMenuStrip_Chart";
-            this.ContextMenuStrip_Chart.Size = new System.Drawing.Size(181, 48);
+            this.ContextMenuStrip_Chart.Size = new System.Drawing.Size(107, 26);
             // 
             // ToolStripMenuItem_Zoom
             // 
@@ -77,7 +78,7 @@
             this.ToolStripMenuItem_Selection,
             this.ToolStripMenuItem_Reset});
             this.ToolStripMenuItem_Zoom.Name = "ToolStripMenuItem_Zoom";
-            this.ToolStripMenuItem_Zoom.Size = new System.Drawing.Size(180, 22);
+            this.ToolStripMenuItem_Zoom.Size = new System.Drawing.Size(106, 22);
             this.ToolStripMenuItem_Zoom.Text = "Zoom";
             // 
             // ToolStripMenuItem_ProcessesAndPoints
@@ -108,6 +109,7 @@
             this.Controls.Add(this.MollierChart);
             this.Name = "MollierControl";
             this.Size = new System.Drawing.Size(816, 588);
+            this.Load += new System.EventHandler(this.MollierControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.MollierChart)).EndInit();
             this.ContextMenuStrip_Chart.ResumeLayout(false);
             this.ResumeLayout(false);
