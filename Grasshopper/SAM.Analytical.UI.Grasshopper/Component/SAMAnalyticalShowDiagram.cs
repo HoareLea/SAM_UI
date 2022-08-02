@@ -117,8 +117,11 @@ namespace SAM.Analytical.UI.Grasshopper
                 mollierForm.Clear();
             }
 
+            //CreateDefault Grasshopper visibilitySettings
+
             double pressure = Core.Mollier.UI.Query.DefaultPressure(mollierPoints, mollierProcesses);
             mollierForm.Name = "Mollier Diagram";
+            mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
             mollierForm.Pressure = pressure;
             mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
             mollierForm.AddPoints(mollierPoints, false);

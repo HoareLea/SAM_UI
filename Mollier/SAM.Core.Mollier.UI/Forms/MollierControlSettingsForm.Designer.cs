@@ -79,6 +79,7 @@ namespace SAM.Core.Mollier.UI
             this.TabControl_Main.Location = new System.Drawing.Point(12, 12);
             this.TabControl_Main.Name = "TabControl_Main";
             this.TabControl_Main.SelectedIndex = 0;
+            this.TabControl_Main.ShowToolTips = true;
             this.TabControl_Main.Size = new System.Drawing.Size(681, 395);
             this.TabControl_Main.TabIndex = 0;
             // 
