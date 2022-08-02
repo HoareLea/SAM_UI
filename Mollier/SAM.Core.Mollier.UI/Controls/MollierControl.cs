@@ -495,14 +495,15 @@ namespace SAM.Core.Mollier.UI.Controls
 
             Dictionary<MollierPoint, int> dictionary = new Dictionary<MollierPoint, int>();
             double MaxCount = 0;
-            //if gradient point is on then color by their intensity, otherwise color with normal color saved in visibilitysettings
-            if (mollierControlSettings.GradientPoint)
+            PointGradientVisibilitySetting pointGradientVisibilitySetting = mollierControlSettings.VisibilitySettings.GetVisibilitySetting("User", ChartParameterType.Point) as PointGradientVisibilitySetting;
+
+            if (pointGradientVisibilitySetting != null)
             {
                 dictionary = Query.NeighborhoodCount(mollierPoints, out MaxCount);
             }
             else
             {
-                series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Point, ChartDataType.Undefined, mollierControlSettings.GradientPoint);
+                series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Point, ChartDataType.Undefined);
             }
             //add points to the chart
             foreach (MollierPoint point in mollierPoints)
@@ -512,10 +513,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 double diagram_temperature = Mollier.Query.DiagramTemperature(point);
                 int index = chartType == ChartType.Mollier ? series.Points.AddXY(humidity_ratio * 1000, diagram_temperature) : series.Points.AddXY(DryBulbTemperature, humidity_ratio);
                 //if gradient point is on then set a gradient point color with earlier counted intensity
-                if (mollierControlSettings.GradientPoint)
+                if (pointGradientVisibilitySetting != null)
                 {
                     double value = MaxCount == 0 ? 0 : System.Convert.ToDouble(dictionary[point]) / MaxCount;
-                    series.Points[index].Color = Core.Query.Lerp(mollierControlSettings.GradientColors.Color, mollierControlSettings.GradientColors.GradientColor, value);
+                    series.Points[index].Color = Core.Query.Lerp(pointGradientVisibilitySetting.Color, pointGradientVisibilitySetting.GradientColor, value);
                 }
                 series.Points[index].ToolTip = ToolTip(point, chartType);
                 series.Points[index].Tag = point;
@@ -724,8 +725,9 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private void generate_graph_mollier()
         {
-            
+
             //INITIAL SIZES
+
             double pressure = mollierControlSettings.Pressure;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
             double humidityRatio_Max = mollierControlSettings.HumidityRatio_Max;

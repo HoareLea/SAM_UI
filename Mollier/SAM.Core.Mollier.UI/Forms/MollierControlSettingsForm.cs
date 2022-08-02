@@ -19,7 +19,6 @@ namespace SAM.Core.Mollier.UI
             InitializeComponent();
             this.mollierControl = mollierControl;
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
-
             HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
             HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
             HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval;
@@ -30,7 +29,21 @@ namespace SAM.Core.Mollier.UI
             GradientPoint = mollierControlSettings.GradientPoint;
             DisableUnits = mollierControlSettings.DisableUnits;
             DisableLabels = mollierControlSettings.DisableLabels;
-            GradientColors = mollierControlSettings.GradientColors;
+            PointGradientVisibilitySetting pointGradientVisibilitySetting = mollierControl.MollierControlSettings.VisibilitySettings.GetVisibilitySetting("User", ChartParameterType.Point) as PointGradientVisibilitySetting;
+            if(pointGradientVisibilitySetting != null)
+            {
+                Button_LowIntensityColor.BackColor = pointGradientVisibilitySetting.Color;
+                Button_HighIntensityColor.BackColor = pointGradientVisibilitySetting.GradientColor;
+                CheckBox_GradientPoint.Checked = true;
+            }
+            else
+            {
+                PointGradientVisibilitySetting defaultPointGradientVisibilitySetting = Query.DefaultPointGradientVisibilitySetting();
+                Button_LowIntensityColor.BackColor = defaultPointGradientVisibilitySetting.Color;
+                Button_HighIntensityColor.BackColor = defaultPointGradientVisibilitySetting.GradientColor;
+                CheckBox_GradientPoint.Checked = false;
+            }
+
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
@@ -243,23 +256,6 @@ namespace SAM.Core.Mollier.UI
                 CheckBox_DisableLabels.Checked = value;
             }
         }
-        public PointGradientVisibilitySetting GradientColors
-        {
-            get
-            {
-                PointGradientVisibilitySetting pointGradientVisibilitySetting = new PointGradientVisibilitySetting(Button_LowIntensityColor.BackColor, Button_HighIntensityColor.BackColor); 
-                return pointGradientVisibilitySetting;
-            }
-            set
-            {
-                PointGradientVisibilitySetting pointGradientVisibilitySetting = value;
-                if(pointGradientVisibilitySetting != null)
-                {
-                    Button_LowIntensityColor.BackColor = pointGradientVisibilitySetting.Color;
-                    Button_HighIntensityColor.BackColor = pointGradientVisibilitySetting.GradientColor;
-                }
-            }
-        }
         private void Apply()
         {
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -278,10 +274,9 @@ namespace SAM.Core.Mollier.UI
             if (P_w_Interval.ToString() != double.NaN.ToString())
                 mollierControlSettings.P_w_Interval = P_w_Interval;
 
-            mollierControlSettings.GradientPoint = GradientPoint;
             mollierControlSettings.DisableUnits = DisableUnits;
             mollierControlSettings.DisableLabels = DisableLabels;
-            mollierControlSettings.GradientColors = GradientColors;
+
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
@@ -300,6 +295,11 @@ namespace SAM.Core.Mollier.UI
 
                 visibilitySettingsList.Add(builtInVisibilitySettingControl.BuiltInVisibilitySetting);
             }
+            if (CheckBox_GradientPoint.Checked)
+            {
+                PointGradientVisibilitySetting pointGradientVisibilitySetting = new PointGradientVisibilitySetting(Button_LowIntensityColor.BackColor, Button_HighIntensityColor.BackColor);
+                visibilitySettingsList.Add(pointGradientVisibilitySetting);
+            }
 
             visibilitySettings.SetVisibilitySettings("User", visibilitySettingsList);
             mollierControlSettings.Color = "User";
@@ -313,7 +313,6 @@ namespace SAM.Core.Mollier.UI
         {
             using(ColorDialog colorDialog = new ColorDialog())
             {
-                colorDialog.Color = mollierControl.MollierControlSettings.GradientColors.Color;
                 if (colorDialog.ShowDialog() != DialogResult.OK)
                 {
                     return;
@@ -325,7 +324,6 @@ namespace SAM.Core.Mollier.UI
         {
             using (ColorDialog colorDialog = new ColorDialog())
             {
-                colorDialog.Color = mollierControl.MollierControlSettings.GradientColors.GradientColor;
                 if (colorDialog.ShowDialog() != DialogResult.OK)
                 {
                     return;
