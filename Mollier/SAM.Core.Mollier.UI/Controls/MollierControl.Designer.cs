@@ -59,7 +59,6 @@
             this.MollierChart.Size = new System.Drawing.Size(816, 588);
             this.MollierChart.TabIndex = 0;
             this.MollierChart.Text = "chart1";
-            this.MollierChart.Paint += new System.Windows.Forms.PaintEventHandler(this.MollierChart_Paint);
             this.MollierChart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseDown);
             this.MollierChart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseMove);
             this.MollierChart.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseUp);
@@ -109,7 +108,6 @@
             this.Controls.Add(this.MollierChart);
             this.Name = "MollierControl";
             this.Size = new System.Drawing.Size(816, 588);
-            this.Load += new System.EventHandler(this.MollierControl_Load);
             ((System.ComponentModel.ISupportInitialize)(this.MollierChart)).EndInit();
             this.ContextMenuStrip_Chart.ResumeLayout(false);
             this.ResumeLayout(false);
