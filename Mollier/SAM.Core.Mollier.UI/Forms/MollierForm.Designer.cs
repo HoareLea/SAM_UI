@@ -60,8 +60,8 @@ namespace SAM.Core.Mollier.UI
             this.Button_ToHover3 = new System.Windows.Forms.Button();
             this.Button_ToHover4 = new System.Windows.Forms.Button();
             this.Button_ToHover5 = new System.Windows.Forms.Button();
-            this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.CheckBox_Zone = new System.Windows.Forms.CheckBox();
+            this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -341,6 +341,17 @@ namespace SAM.Core.Mollier.UI
             this.Button_ToHover5.UseVisualStyleBackColor = true;
             this.Button_ToHover5.Visible = false;
             // 
+            // CheckBox_Zone
+            // 
+            this.CheckBox_Zone.AutoSize = true;
+            this.CheckBox_Zone.Location = new System.Drawing.Point(357, 32);
+            this.CheckBox_Zone.Name = "CheckBox_Zone";
+            this.CheckBox_Zone.Size = new System.Drawing.Size(113, 20);
+            this.CheckBox_Zone.TabIndex = 29;
+            this.CheckBox_Zone.Text = "Comfort Zones";
+            this.CheckBox_Zone.UseVisualStyleBackColor = true;
+            this.CheckBox_Zone.CheckedChanged += new System.EventHandler(this.CheckBox_Zone_CheckedChanged);
+            // 
             // MollierControl_Main
             // 
             this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -371,17 +382,6 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(1350, 912);
             this.MollierControl_Main.TabIndex = 0;
-            // 
-            // CheckBox_Zone
-            // 
-            this.CheckBox_Zone.AutoSize = true;
-            this.CheckBox_Zone.Location = new System.Drawing.Point(357, 32);
-            this.CheckBox_Zone.Name = "CheckBox_Zone";
-            this.CheckBox_Zone.Size = new System.Drawing.Size(57, 20);
-            this.CheckBox_Zone.TabIndex = 29;
-            this.CheckBox_Zone.Text = "Zone";
-            this.CheckBox_Zone.UseVisualStyleBackColor = true;
-            this.CheckBox_Zone.CheckedChanged += new System.EventHandler(this.CheckBox_Zone_CheckedChanged);
             // 
             // MollierForm
             // 
