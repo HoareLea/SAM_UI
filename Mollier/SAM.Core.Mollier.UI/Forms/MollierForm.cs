@@ -353,5 +353,14 @@ namespace SAM.Core.Mollier.UI
                 MollierControl_Main.MollierControlSettings = value;
             }
         }
+
+        private void CheckBox_Zone_CheckedChanged(object sender, EventArgs e)
+        {
+            List<MollierZone> mollierZones = Query.MollierZones();
+            foreach(MollierZone zone in mollierZones)
+            {
+                MollierControl_Main.AddZone(zone);
+            }
+        }
     }
 }
