@@ -683,12 +683,31 @@ namespace SAM.Core.Mollier.UI.Controls
                     processName = "HR";
                 }
                 CreateLabel(tuples, mollierProcess, chartType, name, processName);
-
+         
                 name++;
             }
         }
 
+        private static bool Intersect(IMollierProcess mollierProcess, double dryBulbTemperature, double humidityRatio, double tolerance = Tolerance.MacroDistance)
+        {
+            if(mollierProcess == null || double.IsNaN(dryBulbTemperature) || double.IsNaN(humidityRatio))
+            {
+                return false;
+            }
 
+            Point2D origin = new Point2D(humidityRatio, dryBulbTemperature);
+
+            Rectangle2D rectangle2D = new Rectangle2D(origin, 10, 10);
+
+            Point2D start = new Point2D(mollierProcess.Start.HumidityRatio, mollierProcess.Start.DryBulbTemperature);
+            Point2D end = new Point2D(mollierProcess.End.HumidityRatio, mollierProcess.End.DryBulbTemperature);
+
+            start.X *= 1000;
+            end.X *= 1000;
+            Segment2D segment2D = new Segment2D(start, end);
+
+            return rectangle2D.Intersect(segment2D, tolerance) || (rectangle2D.Inside(segment2D.Start) && rectangle2D.Inside(segment2D.End));
+        }
 
         private void add_MollierZones(ChartType chartType)
         {
@@ -699,6 +718,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 2;
                 series.Color = Color.Blue;
+                if(mollierZone is MollierControlZone)
+                {
+                    MollierControlZone mollierControlZone = (MollierControlZone)mollierZone;
+                    series.Color = mollierControlZone.Color;
+
+                }
 
                 List<MollierPoint> mollierPoints = mollierZone.MollierPoints;
 
@@ -706,7 +731,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 for(int i=0; i<size; i++)
                 {
                     MollierPoint point = mollierPoints[i];
-                    series.Points.AddXY(point.HumidityRatio * 1000, point.DryBulbTemperature);
+                    if(chartType == ChartType.Mollier)
+                    {
+                        series.Points.AddXY(point.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(point));
+                    }
+                    else
+                    {
+                        series.Points.AddXY(point.DryBulbTemperature, point.HumidityRatio);
+                    }
                 }
 
             }
@@ -1166,6 +1198,9 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             if(mollierZone == null)
             {
+                //for now to create possibility to disable Zone
+                mollierZones = new List<MollierZone>();
+                generate_graph();
                 return false;
             }
             if(mollierZones == null)
