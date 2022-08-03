@@ -79,12 +79,6 @@
     <Compile Include="Classes\VisualPanel.cs" />
     <Compile Include="Classes\VisualSpace.cs" />
     <Compile Include="Classes\VisualWidget.cs" />
-    <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
-      <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\View3DControl.xaml.cs">
-      <DependentUpon>View3DControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Convert\ToDrawing\Color.cs" />
     <Compile Include="Convert\ToMedia3D\GeometryModel3D.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
@@ -131,9 +125,6 @@
     <Compile Include="Query\VisualSAMObjects.cs" />
     <Compile Include="Query\Window.cs" />
     <Compile Include="Query\YawAxis.cs" />
-    <Compile Include="Windows\AnalyticalWindow.xaml.cs">
-      <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HelixToolkit.Wpf">
@@ -142,20 +133,6 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Controls\AnalyticalModelControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\View3DControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\AnalyticalWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

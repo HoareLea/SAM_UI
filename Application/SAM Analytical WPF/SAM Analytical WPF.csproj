@@ -88,6 +88,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
+      <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\View3DControl.xaml.cs">
+      <DependentUpon>View3DControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AnalyticalWindow.xaml.cs">
+      <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -210,7 +219,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HelixToolkit.Wpf">
-      <Version>2.21.0</Version>
+      <Version>2.21.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
@@ -225,9 +234,27 @@
       <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\WPF\SAM.Analytical.UI.WPF\SAM.Analytical.UI.WPF.csproj">
+      <Project>{12c02306-411f-4a08-a5b4-6446f4a4e6b8}</Project>
+      <Name>SAM.Analytical.UI.WPF</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="SAM.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\AnalyticalModelControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\View3DControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\AnalyticalWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

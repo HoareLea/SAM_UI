@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace SAM.Analytical.UI.WPF.Windows
 {
@@ -7,5 +8,10 @@ namespace SAM.Analytical.UI.WPF.Windows
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            this.StartupUri = new Uri("Windows/AnalyticalWindow.xaml", UriKind.Relative);
+        }
     }
 }
