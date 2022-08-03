@@ -12,6 +12,7 @@ namespace SAM.Analytical.UI.Grasshopper
             mollierControlSettings.SpecificVolume_line = false;
             mollierControlSettings.WetBulbTemperature_line = false;
             mollierControlSettings.Color = "blue";
+            mollierControlSettings.ChartType = Core.Mollier.ChartType.Mollier;
             return mollierControlSettings;
         }
     }

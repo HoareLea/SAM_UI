@@ -54,7 +54,7 @@ namespace SAM.Core.Mollier.UI
                 }
             }
         }
-        public static void ZoomParameters(IEnumerable<Series> series_List, out double x_Min, out double x_Max, out double y_Min, out double y_Max, double x_Factor = 5, double y_Factor = 5)
+        public static void ZoomParameters(IEnumerable<Series> series_List, ChartType chartType, out double x_Min, out double x_Max, out double y_Min, out double y_Max, double x_Factor = 5, double y_Factor = 5)
         {
             List<DataPoint> dataPoints = new List<DataPoint>();
             foreach (Series series in series_List)
@@ -93,6 +93,11 @@ namespace SAM.Core.Mollier.UI
                 {
                     y_Min = dataPoint.YValues[0];
                 }
+            }
+            if(chartType == ChartType.Psychrometric)
+            {
+                y_Max *= 1000;
+                y_Min *= 1000;
             }
             x_Min = x_Min % x_Factor == 0 ? System.Math.Floor(x_Min / x_Factor) * x_Factor - x_Factor : System.Math.Floor(x_Min / x_Factor) * x_Factor;
             x_Max = x_Max % x_Factor == 0 ? System.Math.Ceiling(x_Max / x_Factor) * x_Factor + x_Factor : System.Math.Ceiling(x_Max / x_Factor) * x_Factor;
