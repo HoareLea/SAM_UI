@@ -452,6 +452,9 @@
                     <RibbonButton x:Name="RibbonButton_Tools_AddMissingObjects" Label="Missing Elements" LargeImageSource="../Resources/SAM_AddMissingObjects.png"/>
                     <RibbonButton x:Name="RibbonButton_Tools_PrintRoomDataSheets" Label="Print RDS" LargeImageSource="../Resources/SAM_PrintRDS.png"/>
                 </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_MollierChart" Header="Mollier Chart">
+                    <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Open Mollier Chart" LargeImageSource="../Resources/SAM_PrintRDS.png"/>
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">
                 <RibbonGroup x:Name="RibbonGroup_Help_General" Header="General">
@@ -463,13 +466,14 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="461*"/>
+                <ColumnDefinition Width="86*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
-            <local:View3DControl x:Name="View3DControl" Grid.Column="2" Grid.Row="0"/>
+            <local:View3DControl x:Name="View3DControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2"/>
             <local:AnalyticalModelControl x:Name="AnalyticalModelControl"  Grid.Column="0" Grid.Row="0"/>
         </Grid>
     </DockPanel>

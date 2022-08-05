@@ -139,6 +139,7 @@ namespace SAM.Core.Mollier.UI
             this.label9.Size = new System.Drawing.Size(78, 16);
             this.label9.TabIndex = 49;
             this.label9.Text = "P_w Interval";
+            this.label9.Click += new System.EventHandler(this.label9_Click);
             // 
             // P_w_IntervalTextBox
             // 
@@ -462,8 +463,6 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.TextBox HumidityRatioMaximumValueTextbox;
         private System.Windows.Forms.TextBox HumidityRatioMinimumValueTextbox;
         private System.Windows.Forms.Button Button_Apply;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.TextBox P_w_IntervalTextBox;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.TabPage TabPage_Tools;
@@ -477,5 +476,7 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.Button Button_ToHover;
         private System.Windows.Forms.Button Button_ToHover3;
         private System.Windows.Forms.Button Button_ToHover2;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox P_w_IntervalTextBox;
     }
 }

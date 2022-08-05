@@ -596,7 +596,7 @@ namespace SAM.Core.Mollier.UI.Controls
             foreach (Vector2D vector in vectors)
             {
                 double X = vector.X, Y = vector.Y;
-                if (CheckPoint(tuples, start, end, X, Y, chartType))
+                if (CheckPoint(tuples, start, end, X, Y, chartType, scaleVector2D))
                 {
                     Tuple<MollierPoint, double, double> tuple_Temp = new Tuple<MollierPoint, double, double>(start, X, Y);
                     tuples.Add(tuple_Temp);
@@ -620,9 +620,12 @@ namespace SAM.Core.Mollier.UI.Controls
 
         }
 
-        private bool CheckPoint(List<Tuple<MollierPoint, double, double>> tuples, MollierPoint start, MollierPoint end, double X, double Y, ChartType chartType, double toleranceHR = 0.25, double toleranceTemp = 2)
+        private bool CheckPoint(List<Tuple<MollierPoint, double, double>> tuples, MollierPoint start, MollierPoint end, double X, double Y, ChartType chartType, Vector2D scaleVector)
         {
-            for(int i=0; i<tuples.Count; i++)
+            double toleranceHR = 0.25;
+            double toleranceTemp = 2;
+            //think oabout it
+            for (int i=0; i<tuples.Count; i++)
             {
                 List<Tuple<MollierPoint, double, double>> tuples_Temps = new List<Tuple<MollierPoint, double, double>>();
                 if(chartType == ChartType.Mollier)
@@ -650,6 +653,19 @@ namespace SAM.Core.Mollier.UI.Controls
                     return false;
                 }
             }
+            //foreach (MollierProcess mollierProcess in mollierProcesses)
+            //{
+            //    double startDryBulbTemperature = chartType == ChartType.Mollier ? start.DryBulbTemperature + Y : start.DryBulbTemperature + X;
+            //    double startHumidityRatio = chartType == ChartType.Mollier ? start.HumidityRatio + X/1000 : start.HumidityRatio + Y;
+
+            //    double endDryBulbTemperature = chartType == ChartType.Mollier ? end.DryBulbTemperature + Y : end.DryBulbTemperature + X;
+            //    double endHumidityRatio = chartType == ChartType.Mollier ? end.HumidityRatio + X/1000 : end.HumidityRatio + Y;
+
+            //    if (Intersect(mollierProcess, chartType, startDryBulbTemperature, startHumidityRatio, scaleVector) || Intersect(mollierProcess, chartType, endDryBulbTemperature, endHumidityRatio, scaleVector))
+            //    {
+            //        return false;
+            //    }
+            //}
 
             return true;
         }
@@ -688,25 +704,26 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        private static bool Intersect(IMollierProcess mollierProcess, double dryBulbTemperature, double humidityRatio, double tolerance = Tolerance.MacroDistance)
+        private static bool Intersect(IMollierProcess mollierProcess, ChartType chartType, double dryBulbTemperature, double humidityRatio, Vector2D scaleVector, double tolerance = Tolerance.MacroDistance)
         {
             if(mollierProcess == null || double.IsNaN(dryBulbTemperature) || double.IsNaN(humidityRatio))
             {
                 return false;
             }
 
-            Point2D origin = new Point2D(humidityRatio, dryBulbTemperature);
+            double X = chartType == ChartType.Mollier ? 0.5 * scaleVector.X : 1 * scaleVector.X;
+            double Y = chartType == ChartType.Mollier ? 1 * scaleVector.Y : 0.0025 * scaleVector.Y;
+            Point2D origin = chartType == ChartType.Mollier ? new Point2D(humidityRatio * 1000 - X/2, Mollier.Query.DiagramTemperature(dryBulbTemperature, humidityRatio) - Y/2) : new Point2D(dryBulbTemperature - X/2, humidityRatio - Y/2);
 
-            Rectangle2D rectangle2D = new Rectangle2D(origin, 10, 10);
+            Rectangle2D rectangle2D = new Rectangle2D(origin, X, Y);
 
-            Point2D start = new Point2D(mollierProcess.Start.HumidityRatio, mollierProcess.Start.DryBulbTemperature);
-            Point2D end = new Point2D(mollierProcess.End.HumidityRatio, mollierProcess.End.DryBulbTemperature);
+            Point2D start = chartType == ChartType.Mollier ? new Point2D(mollierProcess.Start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierProcess.Start)) : new Point2D(mollierProcess.Start.DryBulbTemperature, mollierProcess.Start.HumidityRatio);
+            Point2D end = chartType == ChartType.Mollier ? new Point2D(mollierProcess.End.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierProcess.End)) : new Point2D(mollierProcess.End.DryBulbTemperature, mollierProcess.End.HumidityRatio);
 
-            start.X *= 1000;
-            end.X *= 1000;
             Segment2D segment2D = new Segment2D(start, end);
-
-            return rectangle2D.Intersect(segment2D, tolerance) || (rectangle2D.Inside(segment2D.Start) && rectangle2D.Inside(segment2D.End));
+            //|| (rectangle2D.Inside(segment2D.Start) && rectangle2D.Inside(segment2D.End));
+            return rectangle2D.Intersect(segment2D, tolerance);
+            
         }
 
         private void add_MollierZones(ChartType chartType)
@@ -718,11 +735,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 2;
                 series.Color = Color.Blue;
+                string zoneText = "";
                 if(mollierZone is MollierControlZone)
                 {
                     MollierControlZone mollierControlZone = (MollierControlZone)mollierZone;
                     series.Color = mollierControlZone.Color;
-
+                    zoneText = mollierControlZone.Text;
                 }
 
                 List<MollierPoint> mollierPoints = mollierZone.MollierPoints;
@@ -740,7 +758,10 @@ namespace SAM.Core.Mollier.UI.Controls
                         series.Points.AddXY(point.DryBulbTemperature, point.HumidityRatio);
                     }
                 }
-
+                MollierPoint label = mollierZone.GetCenter();
+                double labelX = chartType == ChartType.Mollier ? label.HumidityRatio * 1000 : label.DryBulbTemperature;
+                double labelY = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(label) : label.HumidityRatio;
+                create_moved_label(chartType, labelX, labelY, 0, 0, 0, 0, 0,0, zoneText, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black);
             }
         }
 

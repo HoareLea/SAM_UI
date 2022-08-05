@@ -204,7 +204,7 @@ namespace SAM.Core.Mollier.UI
         }
 
         //function that sets all values from the control to the Form 
-        private void default_chart(MollierControlSettings mollierControlSettings)
+        public void default_chart(MollierControlSettings mollierControlSettings)
         {
             if (mollierControlSettings == null)
             {

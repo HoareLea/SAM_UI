@@ -391,5 +391,10 @@ namespace SAM.Core.Mollier.UI
             toolTip.Active = false;
             toolTip.Active = true;
         }
+
+        private void label9_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

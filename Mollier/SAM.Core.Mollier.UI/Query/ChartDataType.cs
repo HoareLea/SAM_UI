@@ -2,6 +2,11 @@
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Checks what process is it
+        /// </summary>
+        /// <param name="mollierProcess">Mollier Process</param>
+        /// <returns>Returns type of process</returns>
         public static ChartDataType ChartDataType(this IMollierProcess mollierProcess)
         {
             ChartDataType process = UI.ChartDataType.Undefined;

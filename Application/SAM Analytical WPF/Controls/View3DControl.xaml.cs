@@ -123,7 +123,6 @@ namespace SAM.Analytical.UI.WPF
         {
             return Query.VisualSAMObjects<T>(Viewport);
         }
-
         public UIAnalyticalModel UIAnalyticalModel
         {
             get

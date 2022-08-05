@@ -54,6 +54,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_Clean.Click += RibbonButton_Tools_Clean_Click;
             RibbonButton_Tools_AddMissingObjects.Click += RibbonButton_Tools_AddMissingObjects_Click;
             RibbonButton_Tools_PrintRoomDataSheets.Click += RibbonButton_Tools_PrintRoomDataSheets_Click;
+            RibbonButton_Tools_OpenMollierChart.Click += RibbonButton_Tools_OpenMollierChart_Click;
 
             RibbonButton_Help_Wiki.Click += RibbonButton_Help_Wiki_Click;
 
@@ -66,6 +67,10 @@ namespace SAM.Analytical.UI.WPF.Windows
             AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
         }
 
+        private void RibbonButton_Tools_OpenMollierChart_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
         private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)
         {
 

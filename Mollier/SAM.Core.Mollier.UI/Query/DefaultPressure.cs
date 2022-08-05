@@ -3,8 +3,15 @@ using System.Linq;
 
 namespace SAM.Core.Mollier.UI
 {
+
     public static partial class Query
     {
+        /// <summary>
+        /// Count the most frequenly appearing value of pressure in both lists
+        /// </summary>
+        /// <param name="mollierPoints">List of Mollier Points</param>
+        /// <param name="mollierProcesses">List of Mollier Processes</param>
+        /// <returns>Returns the most frequenly appearing value of pressure in both lists</returns>
         public static double DefaultPressure(IEnumerable<MollierPoint> mollierPoints, IEnumerable<IMollierProcess> mollierProcesses)
         {
             List<double> pressures = new List<double>();
