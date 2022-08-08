@@ -69,7 +69,13 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Tools_OpenMollierChart_Click(object sender, RoutedEventArgs e)
         {
-            
+            using(Core.Mollier.UI.MollierForm mollierForm = new Core.Mollier.UI.MollierForm())
+            {
+                if(mollierForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+            }
         }
         private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)
         {
