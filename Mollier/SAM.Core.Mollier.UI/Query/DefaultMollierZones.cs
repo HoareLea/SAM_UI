@@ -4,6 +4,10 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Saves default values of mollier zones
+        /// </summary>
+        /// <returns>Returns default values of mollier zones</returns>
         public static List<MollierControlZone> MollierZones()
         {
             double pressure = 101235;

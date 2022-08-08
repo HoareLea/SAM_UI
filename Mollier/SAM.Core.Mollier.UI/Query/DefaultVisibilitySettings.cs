@@ -2,6 +2,10 @@
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Saves the default colors
+        /// </summary>
+        /// <returns>Returns default dictionary with color theme key and list of components with defualt colors</returns>
         public static VisibilitySettings DefaultVisibilitySettings()
         {
 

@@ -6,7 +6,8 @@ namespace SAM.Analytical.UI.WPF
 {
     public class VisualJSAMObject<T> : ModelVisual3D, IVisualJSAMObject where T : IJSAMObject
     {
-        protected T jSAMObject;
+        protected T jSAMObject
+            ;
 
         public VisualJSAMObject(T jSAMObject)
         {

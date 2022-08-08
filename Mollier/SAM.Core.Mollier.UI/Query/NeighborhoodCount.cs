@@ -7,6 +7,12 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Counts for every Point how many other points are in one area with it
+        /// </summary>
+        /// <param name="mollierPoints">List of Mollier Points</param>
+        /// <param name="maxCount">=Maximum number of points in one area</param>
+        /// <returns>Returns Dictionary of Points with their value of adjacent points</returns>
         public static Dictionary<MollierPoint, int> NeighborhoodCount(this IEnumerable<MollierPoint> mollierPoints, out double maxCount)
         { 
 

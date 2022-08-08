@@ -123,6 +123,7 @@ namespace SAM.Analytical.UI.Grasshopper
             mollierForm.Name = "Mollier Diagram";
             mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
             mollierForm.Pressure = pressure;
+            mollierForm.default_chart(mollierForm.MollierControlSettings);
             mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
             mollierForm.AddPoints(mollierPoints, false);
 
