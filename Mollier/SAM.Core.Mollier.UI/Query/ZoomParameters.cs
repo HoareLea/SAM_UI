@@ -29,7 +29,6 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
 
-
                 foreach (DataPoint dataPoint in series.Points)
                 {
                     dataPoints.Add(dataPoint);
