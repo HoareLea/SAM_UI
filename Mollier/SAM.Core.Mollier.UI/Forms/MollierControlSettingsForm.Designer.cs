@@ -50,9 +50,6 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureMaximumValueTextbox = new System.Windows.Forms.TextBox();
             this.TemperatureMinimumValueTextbox = new System.Windows.Forms.TextBox();
             this.TabPage_Tools = new System.Windows.Forms.TabPage();
-            this.Button_ToHover = new System.Windows.Forms.Button();
-            this.Button_ToHover3 = new System.Windows.Forms.Button();
-            this.Button_ToHover2 = new System.Windows.Forms.Button();
             this.CheckBox_DisableUnits = new System.Windows.Forms.CheckBox();
             this.CheckBox_DisableLabels = new System.Windows.Forms.CheckBox();
             this.Button_HighIntensityColor = new System.Windows.Forms.Button();
@@ -279,9 +276,6 @@ namespace SAM.Core.Mollier.UI
             // 
             // TabPage_Tools
             // 
-            this.TabPage_Tools.Controls.Add(this.Button_ToHover);
-            this.TabPage_Tools.Controls.Add(this.Button_ToHover3);
-            this.TabPage_Tools.Controls.Add(this.Button_ToHover2);
             this.TabPage_Tools.Controls.Add(this.CheckBox_DisableUnits);
             this.TabPage_Tools.Controls.Add(this.CheckBox_DisableLabels);
             this.TabPage_Tools.Controls.Add(this.Button_HighIntensityColor);
@@ -294,42 +288,12 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_Tools.Text = "Tools";
             this.TabPage_Tools.UseVisualStyleBackColor = true;
             // 
-            // Button_ToHover
-            // 
-            this.Button_ToHover.Location = new System.Drawing.Point(154, 33);
-            this.Button_ToHover.Name = "Button_ToHover";
-            this.Button_ToHover.Size = new System.Drawing.Size(10, 23);
-            this.Button_ToHover.TabIndex = 21;
-            this.Button_ToHover.Text = "Disable";
-            this.Button_ToHover.UseVisualStyleBackColor = true;
-            this.Button_ToHover.Visible = false;
-            // 
-            // Button_ToHover3
-            // 
-            this.Button_ToHover3.Location = new System.Drawing.Point(158, 107);
-            this.Button_ToHover3.Name = "Button_ToHover3";
-            this.Button_ToHover3.Size = new System.Drawing.Size(10, 23);
-            this.Button_ToHover3.TabIndex = 19;
-            this.Button_ToHover3.Text = "Disable";
-            this.Button_ToHover3.UseVisualStyleBackColor = true;
-            this.Button_ToHover3.Visible = false;
-            // 
-            // Button_ToHover2
-            // 
-            this.Button_ToHover2.Location = new System.Drawing.Point(158, 70);
-            this.Button_ToHover2.Name = "Button_ToHover2";
-            this.Button_ToHover2.Size = new System.Drawing.Size(10, 23);
-            this.Button_ToHover2.TabIndex = 18;
-            this.Button_ToHover2.Text = "Disable";
-            this.Button_ToHover2.UseVisualStyleBackColor = true;
-            this.Button_ToHover2.Visible = false;
-            // 
             // CheckBox_DisableUnits
             // 
             this.CheckBox_DisableUnits.AutoSize = true;
             this.CheckBox_DisableUnits.Location = new System.Drawing.Point(38, 73);
             this.CheckBox_DisableUnits.Name = "CheckBox_DisableUnits";
-            this.CheckBox_DisableUnits.Size = new System.Drawing.Size(106, 20);
+            this.CheckBox_DisableUnits.Size = new System.Drawing.Size(109, 20);
             this.CheckBox_DisableUnits.TabIndex = 14;
             this.CheckBox_DisableUnits.Text = "Disable Units";
             this.CheckBox_DisableUnits.UseVisualStyleBackColor = true;
@@ -341,7 +305,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_DisableLabels.AutoSize = true;
             this.CheckBox_DisableLabels.Location = new System.Drawing.Point(38, 109);
             this.CheckBox_DisableLabels.Name = "CheckBox_DisableLabels";
-            this.CheckBox_DisableLabels.Size = new System.Drawing.Size(117, 20);
+            this.CheckBox_DisableLabels.Size = new System.Drawing.Size(120, 20);
             this.CheckBox_DisableLabels.TabIndex = 13;
             this.CheckBox_DisableLabels.Text = "Disable Labels";
             this.CheckBox_DisableLabels.UseVisualStyleBackColor = true;
@@ -375,7 +339,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_GradientPoint.AutoSize = true;
             this.CheckBox_GradientPoint.Location = new System.Drawing.Point(38, 36);
             this.CheckBox_GradientPoint.Name = "CheckBox_GradientPoint";
-            this.CheckBox_GradientPoint.Size = new System.Drawing.Size(110, 20);
+            this.CheckBox_GradientPoint.Size = new System.Drawing.Size(113, 20);
             this.CheckBox_GradientPoint.TabIndex = 10;
             this.CheckBox_GradientPoint.Text = "Gradient Point";
             this.CheckBox_GradientPoint.UseVisualStyleBackColor = true;
@@ -473,9 +437,6 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.FlowLayoutPanel FlowLayoutPanel_BuiltInVisibilitySettings;
         private System.Windows.Forms.CheckBox CheckBox_DisableUnits;
         private System.Windows.Forms.CheckBox CheckBox_DisableLabels;
-        private System.Windows.Forms.Button Button_ToHover;
-        private System.Windows.Forms.Button Button_ToHover3;
-        private System.Windows.Forms.Button Button_ToHover2;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.TextBox P_w_IntervalTextBox;
     }
