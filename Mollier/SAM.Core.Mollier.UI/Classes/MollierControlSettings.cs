@@ -60,7 +60,6 @@ namespace SAM.Core.Mollier.UI
             GradientColors = mollierControlSettings.GradientColors;
             GradientPoint = mollierControlSettings.GradientPoint;
 
-            //TODO: Add missing parameters
         }
 
         public MollierControlSettings(JObject jObject)

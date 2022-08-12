@@ -12,7 +12,6 @@ using System.Windows.Forms.DataVisualization.Charting;
 using SAM.Geometry.Planar;
 
 
-
 namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierControl : UserControl
@@ -260,6 +259,7 @@ namespace SAM.Core.Mollier.UI.Controls
             while (enthalpy_Min <= enthalpy_Max)
             {
                 result[enthalpy_Min] = new List<MollierPoint>();
+                double humidityRatio_Min = Mollier.Query.HumidityRatio_ByEnthalpy(-20, enthalpy_Min * 1000);
 
                 double humidityRatio_1 = Mollier.Query.HumidityRatio_ByEnthalpy(100, enthalpy_Min * 1000);
                 double temperature_1 = Mollier.Query.DryBulbTemperature(enthalpy_Min * 1000, humidityRatio_1);
@@ -269,13 +269,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 MollierPoint mollierPoint_1 = new MollierPoint(temperature_1, humidityRatio_1, pressure);
                 result[enthalpy_Min].Add(mollierPoint_1);
 
-                if (enthalpy_Min % 10 == 0)
+                if (enthalpy_Min % 10 == 0 && chartType == ChartType.Psychrometric)
                 {
                     Point2D Point_1 = new Point2D(humidityRatio_1, temperature_1);
                     Point2D Point_2 = new Point2D(humidityRatio_2, temperature_2);
-                    Math.PolynomialEquation polynomialEquation = Geometry.Create.PolynomialEquation(new Point2D[] { Point_1, Point_2 });
-                    double a = chartType == ChartType.Mollier ? 0.0008 : 0.0006;
+                    Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_2, Point_1 });
+                    double a = 0.0006;
                     temperature_2 = polynomialEquation.Evaluate(Point_2.X + a);
+
                     MollierPoint mollierPoint_2 = new MollierPoint(temperature_2, Point_2.X + a, pressure);
                     result[enthalpy_Min].Add(mollierPoint_2);
                 }
@@ -480,6 +481,25 @@ namespace SAM.Core.Mollier.UI.Controls
             result.ChartType = SeriesChartType.Spline;
             result.IsVisibleInLegend = false;
 
+            if(prefix == "Enthalpy" && System.Math.Round(mollierPoints[0].Enthalpy, 2) % 10000 == 0 && chartType == ChartType.Mollier)
+            {
+                double temperature_1 = Mollier.Query.DiagramTemperature(mollierPoints[0]);
+                double humidityRatio_1 = mollierPoints[0].HumidityRatio * 1000;
+                result.Points.AddXY(humidityRatio_1, temperature_1);
+
+                double temperature_2 = Mollier.Query.DiagramTemperature(mollierPoints[1]);
+                double humidityRatio_2 = mollierPoints[1].HumidityRatio * 1000;
+                Point2D Point_1 = new Point2D(humidityRatio_1, temperature_1);
+                Point2D Point_2 = new Point2D(humidityRatio_2, temperature_2);
+                Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_2, Point_1 });
+                humidityRatio_2 += 0.8;
+                temperature_2 = polynomialEquation.Evaluate(humidityRatio_2);
+                result.Points.AddXY(humidityRatio_2, temperature_2);
+
+                createLabels(chartType, prefix, chartDataType, result, value);
+                return result;
+            }
+
             foreach (MollierPoint mollierPoint in mollierPoints)
             {
                 double temperature = mollierPoint.DryBulbTemperature;
@@ -544,7 +564,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             foreach (IMollierProcess mollierProcess in mollierProcesses)
             {
-                Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
+                Series series = MollierChart.Series.Add(System.Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 4;
@@ -612,8 +632,8 @@ namespace SAM.Core.Mollier.UI.Controls
             seriesDew.BorderDashStyle = ChartDashStyle.Dash;
             seriesDew.Tag = "dashLine";
         }
- 
-        public void createSeries_ProcessesPoints(MollierPoint mollierPoint, IMollierProcess mollierProcess, ChartType chartType, string pointType = "Default")  
+
+        public void createSeries_ProcessesPoints(MollierPoint mollierPoint, IMollierProcess mollierProcess, ChartType chartType, string pointType = "Default")
         {
             Series seriesDew = MollierChart.Series.Add(Guid.NewGuid().ToString());
             int index = chartType == ChartType.Mollier ? seriesDew.Points.AddXY(mollierPoint.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierPoint)) : seriesDew.Points.AddXY(mollierPoint.DryBulbTemperature, mollierPoint.HumidityRatio);
@@ -635,7 +655,7 @@ namespace SAM.Core.Mollier.UI.Controls
             seriesDew.IsVisibleInLegend = false;
             seriesDew.ChartType = SeriesChartType.Point;
             seriesDew.Tag = mollierProcess;
-            if(pointType == "SecondPoint")
+            if (pointType == "SecondPoint")
             {
                 seriesDew.Tag = "SecondPoint";
             }
@@ -894,7 +914,8 @@ namespace SAM.Core.Mollier.UI.Controls
             Series seriesCopy = chart.Series.Add("Psychrometric_P_w_copy" + x.ToString());
             seriesCopy.ChartType = series.ChartType;
             seriesCopy.YAxisType = alignLeft ? AxisType.Primary : AxisType.Secondary;  // (**)
-            
+
+
             foreach (DataPoint point in series.Points)
             {
                 seriesCopy.Points.AddXY(point.XValue, point.YValues[0]);
@@ -933,7 +954,7 @@ namespace SAM.Core.Mollier.UI.Controls
         public void CreateXAxis(Chart chart, ChartArea area, Series series, float axisY, float axisHeight, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
         {
             long x = System.DateTime.Now.Ticks;
-            double xx = MollierChart.ChartAreas.Count;
+
             chart.ApplyPaletteColors();  // (*)
             // Create new chart area for original series
             ChartArea areaSeries = new ChartArea();
@@ -972,7 +993,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 areaAxis = chart.ChartAreas[2];
                 areaAxis.Name = "Mollier P_w_Copy" + x.ToString();
             }
-           // areaAxis = chart.ChartAreas.Add("Mollier P_w_copy" + x.ToString());
+            // areaAxis = chart.ChartAreas.Add("Mollier P_w_copy" + x.ToString());
             areaAxis.BackColor = Color.Transparent;
             areaAxis.BorderColor = Color.Transparent;
             RectangleF oRect = area.Position.ToRectangleF();
@@ -1015,7 +1036,6 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.AxisY.Title = "";
 
             areaAxisAxisX.Title = series.Name;
-
             //areaAxisAxisX.LineColor = series.Color;    // (*)
             //areaAxisAxisX.TitleForeColor = Color.DarkCyan;  // (*)
 
@@ -1034,6 +1054,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 generate_graph_psychrometric();
             }
         }
+
         private void generate_graph_mollier()
         {
 
@@ -1368,13 +1389,12 @@ namespace SAM.Core.Mollier.UI.Controls
             generate_graph();
             return true;
         }
-        public bool Save()
+        public bool Save(string type, int fontSize, string size = "A4")
         {
             string path = null;
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                //saveFileDialog.Filter = "emf files (*.emf)|*.emf|All files (*.*)|*.*";
-                saveFileDialog.Filter = "PDF document (*.pdf)|*.pdf";
+                saveFileDialog.Filter = type == "PDF" ? "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*" : "JPG files (*.jpg)|*.jpg|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.RestoreDirectory = true;
 
@@ -1384,109 +1404,17 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
                 path = saveFileDialog.FileName;
             }
-
-
-            Document doc = new Document(PageSize.A3, 0, 0, 0, 0);
-            PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
-            Chart chartCopy = MollierChart;
-            chartCopy.Visible = false;
-
-            using (MemoryStream memoryStream = new MemoryStream())
+            if(type == "JPG")
             {
-                MollierChart.Serializer.Save(memoryStream);
-
-                Chart chart_new = new Chart();
-                chart_new.Serializer.Load(memoryStream);
+                MollierChart.SaveImage(path, ChartImageFormat.Jpeg);
+                return true;
             }
 
+            int newWidth = size == "A3" ? pdfDefaultSettings.A3Width : pdfDefaultSettings.A4Width;
+            int newHeight = size == "A3" ? pdfDefaultSettings.A3Height : pdfDefaultSettings.A4Height;
 
-            chartCopy.Width = pdfDefaultSettings.A4Width * 20;//a4 * 20 
-            chartCopy.Height = pdfDefaultSettings.A4Height * 20; //a4 * 20
+            Query.SaveAsPDF(MollierChart, path, fontSize, size, newWidth, newHeight, pdfDefaultSettings.ChartWidth, pdfDefaultSettings.ChartHeight);
 
-
-            int fontSize = 28;
-            //labels
-            MollierChart.ChartAreas[0].AxisX.LabelAutoFitMinFontSize = fontSize;
-            MollierChart.ChartAreas[0].AxisY.LabelAutoFitMinFontSize = fontSize;
-            MollierChart.ChartAreas[0].AxisX2.LabelAutoFitMinFontSize = fontSize;
-            MollierChart.ChartAreas[0].AxisY2.LabelAutoFitMinFontSize = fontSize;
-            MollierChart.ChartAreas[2].AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[2].AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", fontSize);
-            //titles
-            MollierChart.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[0].AxisY.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[2].AxisX2.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[2].AxisY.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[0].AxisY2.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            foreach (Series series in MollierChart.Series)
-            {
-                series.Font = new System.Drawing.Font("Arial", fontSize);//change font to make it more visibility
-                if (series.Tag is MollierProcess)
-                {
-                    series.BorderWidth = 15;
-                    series.MarkerSize = 28;
-                    series.MarkerBorderWidth = 8;
-                }
-                if (series.Tag == "dashLine")
-                {
-                    series.BorderWidth = 6;
-                }
-                if (series.Tag == "SecondPoint")
-                {
-                    series.MarkerSize = 15;
-                }
-            }
-            doc.Open();
-            var chartimagepath = new MemoryStream();
-
-            chartCopy.AntiAliasing = AntiAliasingStyles.All;
-            chartCopy.SaveImage(chartimagepath, ChartImageFormat.Tiff);
-            var Chart_Image = iTextSharp.text.Image.GetInstance(chartimagepath.GetBuffer());
-            //Chart_Image = iTextSharp.text.Image.GetInstance("C:/Users/macie/OneDrive/Pulpit/Picture3.tif"); SHOWS THAT CONVERT TO PDF WORKS WELL
-            //iTextSharp.text.ImgRaw Chart_Image = iTextSharp.text.ImgRaw.
-            Chart_Image.Rotation = (float)(System.Math.PI / 2);
-            Chart_Image.ScalePercent(21f);
-            //Chart_Image.ScaleToFit(600f, 1200f);
-            Chart_Image.SetAbsolutePosition(0, -10);//set the position of Image
-
-            //RETURN CHART TO DEFAULT VALUES 
-            chartCopy.Width = pdfDefaultSettings.chartWidth;
-            chartCopy.Height = pdfDefaultSettings.chartHeight;
-            foreach (Series series in MollierChart.Series)
-            {
-                series.Font = new System.Drawing.Font("Arial", 8);//change font to make it more visibility
-                if (series.Tag is MollierProcess)
-                {
-                    series.MarkerSize = 8;
-                    series.MarkerBorderWidth = 2;
-                    series.BorderWidth = 5;
-                }
-                if (series.Tag == "dashLine")
-                {
-                    series.BorderWidth = 3;
-                }
-                if (series.Tag == "SecondPoint")
-                {
-                    series.MarkerSize = 5;
-                }
-            }
-            //titles
-            MollierChart.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[0].AxisY.TitleFont = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[2].AxisX2.TitleFont = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[2].AxisY.TitleFont = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[0].AxisY2.TitleFont = new System.Drawing.Font("Arial", 8);
-            //labels
-            MollierChart.ChartAreas[0].AxisX.LabelAutoFitMinFontSize = 6;
-            MollierChart.ChartAreas[0].AxisY.LabelAutoFitMinFontSize = 6;
-            MollierChart.ChartAreas[0].AxisX2.LabelAutoFitMinFontSize = 6;
-            MollierChart.ChartAreas[0].AxisY2.LabelAutoFitMinFontSize = 6;
-            MollierChart.ChartAreas[2].AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[2].AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8);
-            chartCopy.Visible = true;
-            doc.Add(Chart_Image);
-
-            doc.Close();
             return true;
         }
 
@@ -1609,21 +1537,20 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             get
             {
-                if(PdfDefaultSettings == null)
-                {
-                    return null;
-                }
-                return new PdfDefaultSettings(PdfDefaultSettings);
+                return pdfDefaultSettings;
             }
             set
             {
-                if(value == null)
-                {
-                    pdfDefaultSettings = null;
-                }
                 pdfDefaultSettings = new PdfDefaultSettings(value);
             }
         }
 
+        public void ColorPoints(double percent)
+        {
+            List<MollierPoint> points = new List<MollierPoint>(mollierPoints);//copy of mollierPoints
+            points.Sort((x, y) => x.Enthalpy.CompareTo(y.Enthalpy));//od min do max x do y
+
+
+        }
     }
 }

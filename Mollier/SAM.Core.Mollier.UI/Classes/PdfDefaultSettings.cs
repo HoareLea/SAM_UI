@@ -9,25 +9,30 @@ namespace SAM.Core.Mollier.UI
 {
     public class PdfDefaultSettings : IJSAMObject
     {
-        public int A4Width { get; set; } = 297;
-        public int A4Height { get; set; } = 210;
-        public int A3Width { get; set; } = 420;
-        public int A3Height { get; set; } = 297;
-        public int chartWidth { get; set; } = 1512;
-        public int chartHeight { get; set; } = 728;
+        public int A4Width { get; set; } = 297 * 14;
+        public int A4Height { get; set; } = 210 * 14;
+        public int A3Width { get; set; } = 5940;
+        public int A3Height { get; set; } = 4200;
+        public int ChartWidth { get; set; } = 1512;
+        public int ChartHeight { get; set; } = 728;
 
         public PdfDefaultSettings()
         {
 
         }
-        public PdfDefaultSettings (PdfDefaultSettings pdfDefaultSettings)
+        public PdfDefaultSettings(PdfDefaultSettings pdfDefaultSettings)
         {
+            if (pdfDefaultSettings == null)
+            {
+                return;
+
+            }
             A4Width = pdfDefaultSettings.A4Width;
             A4Height = pdfDefaultSettings.A4Height;
             A3Width = pdfDefaultSettings.A3Width;
             A3Height = pdfDefaultSettings.A3Height;
-            chartWidth = pdfDefaultSettings.chartWidth;
-            chartHeight = pdfDefaultSettings.chartHeight;
+            ChartWidth = pdfDefaultSettings.ChartWidth;
+            ChartHeight = pdfDefaultSettings.ChartHeight;
         }
         public PdfDefaultSettings(JObject jObject)
         {
@@ -51,13 +56,13 @@ namespace SAM.Core.Mollier.UI
             {
                 A3Height = jObject.Value<int>("A3Height");
             }
-            if (jObject.ContainsKey("chartWidth"))
+            if (jObject.ContainsKey("ChartWidth"))
             {
-                chartWidth = jObject.Value<int>("chartWidth");
+                ChartWidth = jObject.Value<int>("ChartWidth");
             }
-            if (jObject.ContainsKey("chartHeight"))
+            if (jObject.ContainsKey("ChartHeight"))
             {
-                chartHeight = jObject.Value<int>("chartHeight");
+                ChartHeight = jObject.Value<int>("ChartHeight");
             }
             return true;
         }
@@ -82,13 +87,13 @@ namespace SAM.Core.Mollier.UI
             {
                 jObject.Add("A3Height", A3Height);
             }
-            if (!double.IsNaN(chartWidth))
+            if (!double.IsNaN(ChartWidth))
             {
-                jObject.Add("chartWidth", chartWidth);
+                jObject.Add("ChartWidth", ChartWidth);
             }
-            if (!double.IsNaN(chartHeight))
+            if (!double.IsNaN(ChartHeight))
             {
-                jObject.Add("chartHeight", chartHeight);
+                jObject.Add("ChartHeight", ChartHeight);
             }
 
             return jObject;
