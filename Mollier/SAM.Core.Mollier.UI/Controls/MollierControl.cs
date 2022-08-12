@@ -5,6 +5,10 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using iTextSharp.text.pdf;
+using iTextSharp.text;
+using System.IO;
+using System.Windows.Forms.DataVisualization.Charting;
 using SAM.Geometry.Planar;
 
 
@@ -16,6 +20,7 @@ namespace SAM.Core.Mollier.UI.Controls
         private Point mdown = Point.Empty;
         private bool selection = false;
         private MollierControlSettings mollierControlSettings;
+        private PdfDefaultSettings pdfDefaultSettings;
         private List<MollierPoint> mollierPoints;
         private List<IMollierProcess> mollierProcesses;
         private List<MollierZone> mollierZones;
@@ -264,12 +269,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 MollierPoint mollierPoint_1 = new MollierPoint(temperature_1, humidityRatio_1, pressure);
                 result[enthalpy_Min].Add(mollierPoint_1);
 
-                if (enthalpy_Min % 10 == 0)
+                if (enthalpy_Min % 10 == 0 && chartType == ChartType.Psychrometric)
                 {
-                    Geometry.Planar.Point2D Point_1 = new Geometry.Planar.Point2D(humidityRatio_1, temperature_1);
-                    Geometry.Planar.Point2D Point_2 = new Geometry.Planar.Point2D(humidityRatio_2, temperature_2);
+                    Point2D Point_1 = new Point2D(humidityRatio_1, temperature_1);
+                    Point2D Point_2 = new Point2D(humidityRatio_2, temperature_2);
                     Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_2, Point_1 });
-                    double a = chartType == ChartType.Mollier ? 0.0015 : 0.0006;
+                    double a = 0.0006;
                     temperature_2 = polynomialEquation.Evaluate(Point_2.X + a);
 
                     MollierPoint mollierPoint_2 = new MollierPoint(temperature_2, Point_2.X + a, pressure);
@@ -437,7 +442,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     X = series.Points[0].XValue;
                     Y = series.Points[0].YValues[0];
                     series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, chartDataType);
-                    series.BorderDashStyle = ChartDashStyle.DashDotDot;
+                    series.BorderDashStyle = ChartDashStyle.Dash;
                     angle = findAngle(series, chartType);
                     create_moved_label(chartType, X, Y, angle, angle, 0.3, -0.2, 0.2, 0.0002, value.ToString(), chartDataType, ChartParameterType.Unit, mollierControlSettings.DisableUnits);
                     break;
@@ -475,6 +480,25 @@ namespace SAM.Core.Mollier.UI.Controls
             Series result = MollierChart.Series.Add(String.Format("{0} {1} {2}", prefix, value, unit));
             result.ChartType = SeriesChartType.Spline;
             result.IsVisibleInLegend = false;
+
+            if(prefix == "Enthalpy" && System.Math.Round(mollierPoints[0].Enthalpy, 2) % 10000 == 0 && chartType == ChartType.Mollier)
+            {
+                double temperature_1 = Mollier.Query.DiagramTemperature(mollierPoints[0]);
+                double humidityRatio_1 = mollierPoints[0].HumidityRatio * 1000;
+                result.Points.AddXY(humidityRatio_1, temperature_1);
+
+                double temperature_2 = Mollier.Query.DiagramTemperature(mollierPoints[1]);
+                double humidityRatio_2 = mollierPoints[1].HumidityRatio * 1000;
+                Point2D Point_1 = new Point2D(humidityRatio_1, temperature_1);
+                Point2D Point_2 = new Point2D(humidityRatio_2, temperature_2);
+                Math.PolynomialEquation polynomialEquation = SAM.Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_2, Point_1 });
+                humidityRatio_2 += 0.8;
+                temperature_2 = polynomialEquation.Evaluate(humidityRatio_2);
+                result.Points.AddXY(humidityRatio_2, temperature_2);
+
+                createLabels(chartType, prefix, chartDataType, result, value);
+                return result;
+            }
 
             foreach (MollierPoint mollierPoint in mollierPoints)
             {
@@ -606,9 +630,9 @@ namespace SAM.Core.Mollier.UI.Controls
             seriesDew.BorderWidth = 3;
             seriesDew.ChartType = SeriesChartType.Spline;
             seriesDew.BorderDashStyle = ChartDashStyle.Dash;
-            seriesDew.Tag = mollierProcess;
+            seriesDew.Tag = "dashLine";
         }
- 
+
         public void createSeries_ProcessesPoints(MollierPoint mollierPoint, IMollierProcess mollierProcess, ChartType chartType, string pointType = "Default")
         {
             Series seriesDew = MollierChart.Series.Add(Guid.NewGuid().ToString());
@@ -631,6 +655,10 @@ namespace SAM.Core.Mollier.UI.Controls
             seriesDew.IsVisibleInLegend = false;
             seriesDew.ChartType = SeriesChartType.Point;
             seriesDew.Tag = mollierProcess;
+            if (pointType == "SecondPoint")
+            {
+                seriesDew.Tag = "SecondPoint";
+            }
             seriesDew.MarkerStyle = MarkerStyle.Circle;
         }
 
@@ -835,9 +863,19 @@ namespace SAM.Core.Mollier.UI.Controls
 
             chart.ApplyPaletteColors();  // (*)
             long x = System.DateTime.Now.Ticks;
-  
+
             // Create new chart area for original series
-            ChartArea areaSeries = chart.ChartAreas.Add("Psychrometric_P_w" + x.ToString());
+            ChartArea areaSeries = new ChartArea();
+            if (MollierChart.ChartAreas.Count != 3)
+            {
+                areaSeries = chart.ChartAreas.Add("Psychrometric_P_w" + x.ToString());
+            }
+            else
+            {
+                areaSeries = chart.ChartAreas[1];
+                areaSeries.Name = "Psychrometric_P_w" + x.ToString();
+            }
+            //ChartArea areaSeries = chart.ChartAreas.Add("Psychrometric_P_w" + x.ToString());
             areaSeries.BackColor = Color.Transparent;
             areaSeries.BorderColor = Color.Transparent;
             areaSeries.Position.FromRectangleF(area.Position.ToRectangleF());
@@ -853,7 +891,17 @@ namespace SAM.Core.Mollier.UI.Controls
             series.ChartArea = areaSeries.Name;
 
             // Create new chart area for axis
-            ChartArea areaAxis = chart.ChartAreas.Add("Psychrometric_P_w_copy" + x.ToString());
+            ChartArea areaAxis = new ChartArea();
+            if (MollierChart.ChartAreas.Count != 3)
+            {
+                areaAxis = chart.ChartAreas.Add("Psychrometric_P_w_copy" + x.ToString());
+            }
+            else
+            {
+                areaAxis = chart.ChartAreas[2];
+                areaAxis.Name = "Psychrometric_P_w_copy" + x.ToString();
+            }
+            //ChartArea areaAxis = chart.ChartAreas.Add("Psychrometric_P_w_copy" + x.ToString());
 
             areaAxis.BackColor = Color.Transparent;
             areaAxis.BorderColor = Color.Transparent;
@@ -865,7 +913,8 @@ namespace SAM.Core.Mollier.UI.Controls
             // Create a copy of specified series
             Series seriesCopy = chart.Series.Add("Psychrometric_P_w_copy" + x.ToString());
             seriesCopy.ChartType = series.ChartType;
-           seriesCopy.YAxisType = alignLeft ? AxisType.Primary : AxisType.Secondary;  // (**)
+            seriesCopy.YAxisType = alignLeft ? AxisType.Primary : AxisType.Secondary;  // (**)
+
 
             foreach (DataPoint point in series.Points)
             {
@@ -879,9 +928,13 @@ namespace SAM.Core.Mollier.UI.Controls
 
             // Disable grid lines & tickmarks
             areaAxis.AxisX.LineWidth = 0;
+            areaAxis.AxisY.LineWidth = 1;
             areaAxis.AxisX.MajorGrid.Enabled = false;
+            areaAxis.AxisY.MajorGrid.Enabled = true;
             areaAxis.AxisX.MajorTickMark.Enabled = false;
+            areaAxis.AxisY.MajorTickMark.Enabled = true;
             areaAxis.AxisX.LabelStyle.Enabled = false;
+            areaAxis.AxisY.LabelStyle.Enabled = true;
 
             Axis areaAxisAxisY = alignLeft ? areaAxis.AxisY : areaAxis.AxisY2;   // (**)
             areaAxisAxisY.MajorGrid.Enabled = false;
@@ -891,6 +944,8 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisY.Maximum = System.Math.Round(P_w_Max, 4);
             areaAxisAxisY.Interval = mollierControlSettings.P_w_Interval / 1000;
             areaAxisAxisY.Title = "P_w  x [kPa]";
+
+            areaAxis.AxisX2.Title = "";
 
             // Adjust area position
             areaAxis.Position.X = axisX;
@@ -902,7 +957,17 @@ namespace SAM.Core.Mollier.UI.Controls
 
             chart.ApplyPaletteColors();  // (*)
             // Create new chart area for original series
-            ChartArea areaSeries = chart.ChartAreas.Add("Mollier P_w" + x.ToString());
+            ChartArea areaSeries = new ChartArea();
+            if (MollierChart.ChartAreas.Count != 3)
+            {
+                areaSeries = chart.ChartAreas.Add("Mollier P_w" + x.ToString());
+            }
+            else
+            {
+                areaSeries = chart.ChartAreas[1];
+                areaSeries.Name = "Mollier P_w" + x.ToString();
+            }
+            //areaSeries = chart.ChartAreas.Add("Mollier P_w" + x.ToString());
             areaSeries.BackColor = Color.Transparent;
             areaSeries.BorderColor = Color.Transparent;
             areaSeries.Position.FromRectangleF(area.Position.ToRectangleF());
@@ -918,8 +983,17 @@ namespace SAM.Core.Mollier.UI.Controls
             series.ChartArea = areaSeries.Name;
 
             // Create new chart area for axis
-            ChartArea areaAxis = chart.ChartAreas.Add("Mollier P_w_copy" + x.ToString());
-
+            ChartArea areaAxis = new ChartArea();
+            if (MollierChart.ChartAreas.Count != 3)
+            {
+                areaAxis = chart.ChartAreas.Add("Mollier P_w_copy" + x.ToString());
+            }
+            else
+            {
+                areaAxis = chart.ChartAreas[2];
+                areaAxis.Name = "Mollier P_w_Copy" + x.ToString();
+            }
+            // areaAxis = chart.ChartAreas.Add("Mollier P_w_copy" + x.ToString());
             areaAxis.BackColor = Color.Transparent;
             areaAxis.BorderColor = Color.Transparent;
             RectangleF oRect = area.Position.ToRectangleF();
@@ -944,9 +1018,14 @@ namespace SAM.Core.Mollier.UI.Controls
 
             // Disable grid lines & tickmarks
             areaAxis.AxisY.LineWidth = 0;
+            areaAxis.AxisX.LineWidth = 1;
             areaAxis.AxisY.MajorGrid.Enabled = false;
+            areaAxis.AxisX.MajorGrid.Enabled = true;
             areaAxis.AxisY.MajorTickMark.Enabled = false;
+            areaAxis.AxisX.MajorTickMark.Enabled = true;
             areaAxis.AxisY.LabelStyle.Enabled = false;
+            areaAxis.AxisX.LabelStyle.Enabled = true;
+
             Axis areaAxisAxisX = alignLeft ? areaAxis.AxisX : areaAxis.AxisX2;   // (**)
             areaAxisAxisX.MajorGrid.Enabled = false;
             areaAxisAxisX.Minimum = System.Math.Round(P_w_Min,2);
@@ -954,6 +1033,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisX.LabelStyle.Font = area.AxisX.LabelStyle.Font;
             areaAxisAxisX.Interval = mollierControlSettings.P_w_Interval;
 
+            areaAxis.AxisY.Title = "";
 
             areaAxisAxisX.Title = series.Name;
             //areaAxisAxisX.LineColor = series.Color;    // (*)
@@ -974,6 +1054,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 generate_graph_psychrometric();
             }
         }
+
         private void generate_graph_mollier()
         {
 
@@ -1308,12 +1389,12 @@ namespace SAM.Core.Mollier.UI.Controls
             generate_graph();
             return true;
         }
-        public bool Save()
+        public bool Save(string type, int fontSize, string size = "A4")
         {
             string path = null;
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = "emf files (*.emf)|*.emf|All files (*.*)|*.*";
+                saveFileDialog.Filter = type == "PDF" ? "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*" : "JPG files (*.jpg)|*.jpg|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.RestoreDirectory = true;
 
@@ -1323,8 +1404,17 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
                 path = saveFileDialog.FileName;
             }
+            if(type == "JPG")
+            {
+                MollierChart.SaveImage(path, ChartImageFormat.Jpeg);
+                return true;
+            }
 
-            MollierChart.SaveImage(path, ImageFormat.Emf);
+            int newWidth = size == "A3" ? pdfDefaultSettings.A3Width : pdfDefaultSettings.A4Width;
+            int newHeight = size == "A3" ? pdfDefaultSettings.A3Height : pdfDefaultSettings.A4Height;
+
+            Query.SaveAsPDF(MollierChart, path, fontSize, size, newWidth, newHeight, pdfDefaultSettings.ChartWidth, pdfDefaultSettings.ChartHeight);
+
             return true;
         }
 
@@ -1415,9 +1505,9 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.Refresh();
             selection = false;
         }
-        static public Rectangle GetRectangle(Point p1, Point p2)
+        static public System.Drawing.Rectangle GetRectangle(Point p1, Point p2)
         {
-            return new Rectangle(System.Math.Min(p1.X, p2.X), System.Math.Min(p1.Y, p2.Y), System.Math.Abs(p1.X - p2.X), System.Math.Abs(p1.Y - p2.Y));
+            return new System.Drawing.Rectangle(System.Math.Min(p1.X, p2.X), System.Math.Min(p1.Y, p2.Y), System.Math.Abs(p1.X - p2.X), System.Math.Abs(p1.Y - p2.Y));
         }
 
         public MollierControlSettings MollierControlSettings
@@ -1443,6 +1533,24 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
+        public PdfDefaultSettings PdfDefaultSettings
+        {
+            get
+            {
+                return pdfDefaultSettings;
+            }
+            set
+            {
+                pdfDefaultSettings = new PdfDefaultSettings(value);
+            }
+        }
 
+        public void ColorPoints(double percent)
+        {
+            List<MollierPoint> points = new List<MollierPoint>(mollierPoints);//copy of mollierPoints
+            points.Sort((x, y) => x.Enthalpy.CompareTo(y.Enthalpy));//od min do max x do y
+
+
+        }
     }
 }

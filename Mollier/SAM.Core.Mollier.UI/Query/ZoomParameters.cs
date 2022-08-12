@@ -22,6 +22,7 @@ namespace SAM.Core.Mollier.UI
         public static void ZoomParameters(IEnumerable<Series> series_List, ChartType chartType, out double x_Min, out double x_Max, out double y_Min, out double y_Max, double x_Factor = 5, double y_Factor = 5)
         {
             List<DataPoint> dataPoints = new List<DataPoint>();
+
             foreach (Series series in series_List)
             {
                 if (!(series.Tag is IMollierProcess) && !(series.Tag is List<MollierPoint>))

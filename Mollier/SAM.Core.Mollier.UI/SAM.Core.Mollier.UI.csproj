@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
+    <Compile Include="Classes\PdfDefaultSettings.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
     <Compile Include="Classes\MollierControlZone.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
@@ -83,6 +84,8 @@
     <Compile Include="Controls\MollierControl.Designer.cs">
       <DependentUpon>MollierControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Enums\PageSize.cs" />
+    <Compile Include="Enums\ExportType.cs" />
     <Compile Include="Enums\ChartDataType.cs" />
     <Compile Include="Enums\ChartParameterType.cs" />
     <Compile Include="Forms\MollierControlSettingsForm.cs">
@@ -112,6 +115,7 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\SaveAsPDF.cs" />
     <Compile Include="Query\ScaleVector2D.cs" />
     <Compile Include="Query\DefaultMollierZones.cs" />
     <Compile Include="Query\DefaultPointGradientVisibilitySetting.cs" />
@@ -142,6 +146,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="itext7">
+      <Version>7.2.3</Version>
+    </PackageReference>
+    <PackageReference Include="iTextSharp">
+      <Version>5.5.13.3</Version>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
     </PackageReference>

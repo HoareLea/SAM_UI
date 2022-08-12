@@ -120,10 +120,6 @@ namespace SAM.Core.Mollier.UI
                 Convert.ToFile(mollierControlSettings, mollierControlSettingsPath);
             }
         }
-        private void ToolStripMenuItem_Save_Click(object sender, EventArgs e)
-        {
-            MollierControl_Main.Save();
-        }
         private void MollierForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveMollierControlSettings();
@@ -223,6 +219,7 @@ namespace SAM.Core.Mollier.UI
             blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
             grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            MollierControl_Main.PdfDefaultSettings = new PdfDefaultSettings();
         }
 
         //buttons which enable to change color, chart or disable line
@@ -367,6 +364,44 @@ namespace SAM.Core.Mollier.UI
             else
             {
                 MollierControl_Main.AddZone(null);
+            }
+        }
+
+        private void saveAsJPGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.Save("JPG", 18);
+        }
+
+        private void PdfA4ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.Save("PDF", 18, "A4");
+        }
+
+        private void PdfA3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.Save("PDF", 28, "A3");
+        }
+
+        private void PointsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (PointsCheckBox.Checked)
+            {
+                PercentPointsTextBox.Visible = true;
+                PointsLabel.Visible = true;
+                PercentPointsTextBox.Text = PercentPointsTextBox.Text;  
+            }
+            else
+            {
+                PercentPointsTextBox.Visible = false;
+                PointsLabel.Visible = false;
+            }
+        }
+
+        private void PercentPointsTextBox_TextChanged(object sender, EventArgs e)
+        {
+            if(PercentPointsTextBox.Text != String.Empty && System.Convert.ToDouble(PercentPointsTextBox.Text) != null)
+            {
+                MollierControl_Main.ColorPoints(System.Convert.ToDouble(PercentPointsTextBox.Text));
             }
         }
     }
