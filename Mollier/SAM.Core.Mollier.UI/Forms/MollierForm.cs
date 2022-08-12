@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -342,6 +343,9 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MollierControlSettings MollierControlSettings
         {
             get
