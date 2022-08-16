@@ -1057,7 +1057,6 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void generate_graph_mollier()
         {
-
             //INITIAL SIZES
             double pressure = mollierControlSettings.Pressure;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
@@ -1158,9 +1157,12 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 add_MollierZones(chartType);
             }
+           // grap.DrawLine(pen, 10, 10, 10, 10);
             //double y = test(axisY);
             //double x = test(axisX);
+
         }
+      
         private void generate_graph_psychrometric()
         {
             //INITIAL SIZES
@@ -1464,6 +1466,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void MollierChart_MouseMove(object sender, MouseEventArgs e)
         {
+            
             if (!selection)
             {
                 return;
@@ -1545,12 +1548,74 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        public void ColorPoints(double percent)
+ 
+
+        public void ColorPoints(bool generate, double percent, string chartDataType)
         {
+            foreach(Series series_Temp in MollierChart.Series)
+            {
+                if(series_Temp.Tag == "ColorPoint")
+                {
+                    series_Temp.Enabled = false;
+                }
+            }
+            generate_graph();
+            if (generate == false || mollierPoints == null || mollierPoints.Count < 4 || percent > 100 || percent < 0)//if too 
+            {
+                return;
+            }
+            int index = System.Convert.ToInt32((1 - percent / 100) * mollierPoints.Count) - 1;
+            if(index < 0)
+            {
+                index = 0;
+            }
+
             List<MollierPoint> points = new List<MollierPoint>(mollierPoints);//copy of mollierPoints
-            points.Sort((x, y) => x.Enthalpy.CompareTo(y.Enthalpy));//od min do max x do y
+            Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
+            series.IsVisibleInLegend = false;
+            series.ChartType = SeriesChartType.Point;
+            series.BorderWidth = 4;
+            series.MarkerColor = Color.LightGreen;
+            series.MarkerSize = 10;
+            series.MarkerStyle = MarkerStyle.Circle;
+            series.Tag = "ColorPoint";
+            Series series1 = MollierChart.Series.Add(Guid.NewGuid().ToString());
+            series1.IsVisibleInLegend = false;
+            series1.ChartType = SeriesChartType.Point;
+            series1.BorderWidth = 4;
+            series1.MarkerColor = Color.LightGreen;
+            series1.MarkerSize = 15;
+            series1.MarkerStyle = MarkerStyle.Square;
+            if(mollierControlSettings.ChartType == ChartType.Mollier)
+            {
+                series1.Points.AddXY(20, 10);
+            }
+            else
+            {
+                series1.Points.AddXY(0, 0.02);
+            }
+            switch (chartDataType)
+            {
+                case "Temperature":
+                    points.Sort((x, y) => x.DryBulbTemperature.CompareTo(y.DryBulbTemperature));
+                    MollierPoint mollierPoint_Temperature = points[index];
+                    double X_Temperature = mollierControlSettings.ChartType == ChartType.Mollier ? mollierPoint_Temperature.HumidityRatio * 1000 : mollierPoint_Temperature.DryBulbTemperature;
+                    double Y_Temperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(mollierPoint_Temperature) : mollierPoint_Temperature.HumidityRatio;
+                    series.Points.AddXY(X_Temperature, Y_Temperature);
+                    string name_Temperature = ToolTip(mollierPoint_Temperature, mollierControlSettings.ChartType) + "\nUnmed hours: " + System.Math.Ceiling(percent / 100 * points.Count).ToString();
+                    create_moved_label(mollierControlSettings.ChartType, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, -14, 0, -0.008, name_Temperature, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black);
+                    break;
+                case "Enthalpy":
+                    points.Sort((x, y) => x.Enthalpy.CompareTo(y.Enthalpy));
+                    MollierPoint mollierPoint_Enthalpy = points[index];
+                    double X_Enthalpy = mollierControlSettings.ChartType == ChartType.Mollier ? mollierPoint_Enthalpy.HumidityRatio * 1000 : mollierPoint_Enthalpy.DryBulbTemperature;
+                    double Y_Enthalpy = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(mollierPoint_Enthalpy) : mollierPoint_Enthalpy.HumidityRatio;
+                    series.Points.AddXY(X_Enthalpy, Y_Enthalpy);
 
-
-        }
+                    string name_Enthalpy = ToolTip(mollierPoint_Enthalpy, mollierControlSettings.ChartType) + "\nUnmed hours: " + System.Math.Ceiling(percent / 100 * points.Count).ToString();
+                    create_moved_label(mollierControlSettings.ChartType, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, -14, 0, -0.008, name_Enthalpy, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black);
+                    break;
+            }
+       }
     }
 }

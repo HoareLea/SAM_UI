@@ -35,9 +35,6 @@ namespace SAM.Core.Mollier.UI.Forms
             //mollierProcess.Start = new MollierPoint(temperature, humidtyRatio, pressure);
             return mollierProcess;
         }
-        private void MollierProcessForm_Load(object sender, EventArgs e)
-        {
 
-        }
     }
 }

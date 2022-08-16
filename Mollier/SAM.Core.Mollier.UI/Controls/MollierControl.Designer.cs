@@ -65,10 +65,11 @@
             // 
             // ContextMenuStrip_Chart
             // 
+            this.ContextMenuStrip_Chart.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ContextMenuStrip_Chart.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_Zoom});
             this.ContextMenuStrip_Chart.Name = "ContextMenuStrip_Chart";
-            this.ContextMenuStrip_Chart.Size = new System.Drawing.Size(107, 26);
+            this.ContextMenuStrip_Chart.Size = new System.Drawing.Size(119, 28);
             // 
             // ToolStripMenuItem_Zoom
             // 
@@ -77,27 +78,27 @@
             this.ToolStripMenuItem_Selection,
             this.ToolStripMenuItem_Reset});
             this.ToolStripMenuItem_Zoom.Name = "ToolStripMenuItem_Zoom";
-            this.ToolStripMenuItem_Zoom.Size = new System.Drawing.Size(106, 22);
+            this.ToolStripMenuItem_Zoom.Size = new System.Drawing.Size(118, 24);
             this.ToolStripMenuItem_Zoom.Text = "Zoom";
             // 
             // ToolStripMenuItem_ProcessesAndPoints
             // 
             this.ToolStripMenuItem_ProcessesAndPoints.Name = "ToolStripMenuItem_ProcessesAndPoints";
-            this.ToolStripMenuItem_ProcessesAndPoints.Size = new System.Drawing.Size(184, 22);
+            this.ToolStripMenuItem_ProcessesAndPoints.Size = new System.Drawing.Size(227, 26);
             this.ToolStripMenuItem_ProcessesAndPoints.Text = "Processes and Points";
             this.ToolStripMenuItem_ProcessesAndPoints.Click += new System.EventHandler(this.ToolStripMenuItem_ProcessesAndPoints_Click);
             // 
             // ToolStripMenuItem_Selection
             // 
             this.ToolStripMenuItem_Selection.Name = "ToolStripMenuItem_Selection";
-            this.ToolStripMenuItem_Selection.Size = new System.Drawing.Size(184, 22);
+            this.ToolStripMenuItem_Selection.Size = new System.Drawing.Size(227, 26);
             this.ToolStripMenuItem_Selection.Text = "Selection";
             this.ToolStripMenuItem_Selection.Click += new System.EventHandler(this.ToolStripMenuItem_Selection_Click);
             // 
             // ToolStripMenuItem_Reset
             // 
             this.ToolStripMenuItem_Reset.Name = "ToolStripMenuItem_Reset";
-            this.ToolStripMenuItem_Reset.Size = new System.Drawing.Size(184, 22);
+            this.ToolStripMenuItem_Reset.Size = new System.Drawing.Size(227, 26);
             this.ToolStripMenuItem_Reset.Text = "Reset";
             this.ToolStripMenuItem_Reset.Click += new System.EventHandler(this.ToolStripMenuItem_Reset_Click);
             // 

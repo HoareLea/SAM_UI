@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -10,6 +12,7 @@ namespace SAM.Core.Mollier.UI
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
         private void MollierForm_Load(object sender, EventArgs e)
         {
+            ColorPointComboBox.Text = "Enthalpy";
         }
 
         //Chart's initialization and reset to default values
@@ -154,8 +157,18 @@ namespace SAM.Core.Mollier.UI
         }
         private void Button_AddProcess_Click(object sender, EventArgs e)
         {
+            //using( Forms.TestForm testForm = new Forms.TestForm())
+            //{
+            //    DialogResult dialogResult = testForm.ShowDialog();
+            //    if (dialogResult != DialogResult.OK)
+            //    {
+            //        return;
+            //    }
+            //}
+
+
             MollierProcess mollierProcess = null;
-            using(Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm())
+            using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm())
             {
                 DialogResult dialogResult = mollierProcessForm.ShowDialog();
                 if (dialogResult != DialogResult.OK)
@@ -382,27 +395,70 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.Save("PDF", 28, "A3");
         }
 
+
         private void PointsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            PercentPointsTextBox.Visible = !PercentPointsTextBox.Visible;
+            PointsLabel.Visible = !PointsLabel.Visible;
+            ColorPointComboBox.Visible = !ColorPointComboBox.Visible;
+            foreach (Series series in MollierControl_Main.Series)
+            {
+                if (series.Tag == "ColorPoint")
+                {
+                    series.Enabled = false;
+                }
+            }
             if (PointsCheckBox.Checked)
             {
-                PercentPointsTextBox.Visible = true;
-                PointsLabel.Visible = true;
-                PercentPointsTextBox.Text = PercentPointsTextBox.Text;  
+                generateColorPoint(true);
             }
             else
             {
-                PercentPointsTextBox.Visible = false;
-                PointsLabel.Visible = false;
+                generateColorPoint(false);
+            }
+
+        }
+        private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
+                (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
+            // only allow one decimal point
+            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+            {
+                e.Handled = true;
             }
         }
-
+        private void generateColorPoint(bool generate)
+        {
+            if (ColorPointComboBox.Text != null && PercentPointsTextBox.Text != String.Empty && System.Convert.ToDouble(PercentPointsTextBox.Text) != null)
+            {
+                MollierControl_Main.ColorPoints(generate, System.Convert.ToDouble(PercentPointsTextBox.Text), ColorPointComboBox.Text);
+            }
+        }
         private void PercentPointsTextBox_TextChanged(object sender, EventArgs e)
         {
-            if(PercentPointsTextBox.Text != String.Empty && System.Convert.ToDouble(PercentPointsTextBox.Text) != null)
-            {
-                MollierControl_Main.ColorPoints(System.Convert.ToDouble(PercentPointsTextBox.Text));
-            }
+            generateColorPoint(true);
         }
+
+        private void ColorPointComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            generateColorPoint(true);
+        }
+
+        private void MollierControl_Main_Paint(object sender, PaintEventArgs e)
+        {
+            Graphics gObject = MollierControl_Main.CreateGraphics();
+
+            Brush red = new SolidBrush(Color.Red);
+            Rectangle rectangle = new Rectangle(10, 10, 100, 100);
+            gObject.FillRectangle(red, 10, 10, 100, 50);
+            Pen pen = new Pen(red, 2);
+            gObject.DrawLine(pen, 10, 10, 10, 10); 
+
+        }
+
     }
 }

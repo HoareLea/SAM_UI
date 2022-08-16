@@ -27,6 +27,7 @@ namespace SAM.Core.Mollier.UI
         public bool DisableUnits { get; set; } = false;
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
+        public bool FindPoint { get; set; } = false;
         public PointGradientVisibilitySetting GradientColors { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
@@ -59,6 +60,7 @@ namespace SAM.Core.Mollier.UI
             DisableLabels = mollierControlSettings.DisableLabels;
             GradientColors = mollierControlSettings.GradientColors;
             GradientPoint = mollierControlSettings.GradientPoint;
+            FindPoint = mollierControlSettings.FindPoint;
 
         }
 
