@@ -13,7 +13,7 @@ namespace SAM.Core.Mollier.UI
         /// <param name="mollierPoints">List of Mollier Points</param>
         /// <param name="maxCount">=Maximum number of points in one area</param>
         /// <returns>Returns Dictionary of Points with their value of adjacent points</returns>
-        public static Dictionary<MollierPoint, int> NeighborhoodCount(this IEnumerable<MollierPoint> mollierPoints, out double maxCount)
+        public static Dictionary<MollierPoint, int> NeighborhoodCount(this IEnumerable<MollierPoint> mollierPoints, out double maxCount, out List<MollierPoint>[,] rectangles_points)
         { 
 
             maxCount = 0;//maximum points in one area, in the end it takes logarithm of the number of points for greater graph clarity
@@ -27,7 +27,7 @@ namespace SAM.Core.Mollier.UI
             int Ent_size = 200 / System.Convert.ToInt32(deltaEnthalpy) + 7;
 
             //initialize arrays
-            List<MollierPoint>[,] rectangles_points = new List<MollierPoint>[RH_size, Ent_size];//for every rh interval and every enthalpy interval it stores the list of points that belong to this area 
+            rectangles_points = new List<MollierPoint>[RH_size, Ent_size];//for every rh interval and every enthalpy interval it stores the list of points that belong to this area 
             List<MollierPoint> Mollierpoints = mollierPoints.ToList();
 
             //adding points to appropriate areas example: if deltarh = 10 and delta enthalpy = 3 then rectangles_points[1][2].add(point) means add point to the area which is 10-20 rh and 6-9 enthalpy
@@ -36,11 +36,15 @@ namespace SAM.Core.Mollier.UI
                 MollierPoint point = Mollierpoints[i];
                 int RH = System.Convert.ToInt32(System.Math.Floor(point.RelativeHumidity / deltaRelativeHumidity));
                 RH = RH == 10 ? 9 : RH;
-                int enthalpy = System.Convert.ToInt32(System.Math.Floor(point.Enthalpy / deltaEnthalpy/1000)) + 10;//+ 10 because there might be negative enthalpy so shift by 10
+                int enthalpy = System.Convert.ToInt32(System.Math.Floor(point.Enthalpy / deltaEnthalpy/1000)) + 15;//+ 15 because there might be negative enthalpy so shift by 10
                 if (rectangles_points[RH, enthalpy] == null)
                     rectangles_points[RH, enthalpy] = new List<MollierPoint>();
                 rectangles_points[RH, enthalpy].Add(point);
             }
+
+
+
+
             //walk through all areas
             for(int i=0; i<=10; i++)
             {

@@ -84,6 +84,12 @@
     <Compile Include="Controls\MollierControl.Designer.cs">
       <DependentUpon>MollierControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TestControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TestControl.Designer.cs">
+      <DependentUpon>TestControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Enums\PageSize.cs" />
     <Compile Include="Enums\ExportType.cs" />
     <Compile Include="Enums\ChartDataType.cs" />
@@ -112,6 +118,12 @@
     <Compile Include="Forms\MollierProcessForm.Designer.cs">
       <DependentUpon>MollierProcessForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\TestForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TestForm.Designer.cs">
+      <DependentUpon>TestForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -132,6 +144,9 @@
     <EmbeddedResource Include="Controls\MollierControl.resx">
       <DependentUpon>MollierControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TestControl.resx">
+      <DependentUpon>TestControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierControlSettingsForm.resx">
       <DependentUpon>MollierControlSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -143,6 +158,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierProcessForm.resx">
       <DependentUpon>MollierProcessForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TestForm.resx">
+      <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

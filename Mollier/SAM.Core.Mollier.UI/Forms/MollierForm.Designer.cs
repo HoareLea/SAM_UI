@@ -29,9 +29,9 @@ namespace SAM.Core.Mollier.UI
         /// </summary>
         private void InitializeComponent()
         {
-            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings2 = new SAM.Core.Mollier.UI.MollierControlSettings();
-            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings2 = new SAM.Core.Mollier.UI.VisibilitySettings();
-            SAM.Core.Mollier.UI.PdfDefaultSettings pdfDefaultSettings2 = new SAM.Core.Mollier.UI.PdfDefaultSettings();
+            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings1 = new SAM.Core.Mollier.UI.MollierControlSettings();
+            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings1 = new SAM.Core.Mollier.UI.VisibilitySettings();
+            SAM.Core.Mollier.UI.PdfDefaultSettings pdfDefaultSettings1 = new SAM.Core.Mollier.UI.PdfDefaultSettings();
             this.TextBox_Pressure = new System.Windows.Forms.TextBox();
             this.Label_Pressure = new System.Windows.Forms.Label();
             this.Button_AddPoint = new System.Windows.Forms.Button();
@@ -63,6 +63,7 @@ namespace SAM.Core.Mollier.UI
             this.PointsCheckBox = new System.Windows.Forms.CheckBox();
             this.PercentPointsTextBox = new System.Windows.Forms.TextBox();
             this.PointsLabel = new System.Windows.Forms.Label();
+            this.ColorPointComboBox = new System.Windows.Forms.ComboBox();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
@@ -108,7 +109,7 @@ namespace SAM.Core.Mollier.UI
             this.MenuStrip_Main.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip_Main.Name = "MenuStrip_Main";
             this.MenuStrip_Main.ShowItemToolTips = true;
-            this.MenuStrip_Main.Size = new System.Drawing.Size(1374, 28);
+            this.MenuStrip_Main.Size = new System.Drawing.Size(1374, 30);
             this.MenuStrip_Main.TabIndex = 20;
             this.MenuStrip_Main.Text = "MenuStrip_Main";
             // 
@@ -118,7 +119,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Save,
             this.saveAsJPGToolStripMenuItem});
             this.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File";
-            this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 24);
+            this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 26);
             this.ToolStripMenuItem_File.Text = "File";
             // 
             // ToolStripMenuItem_Save
@@ -161,7 +162,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_ChartType,
             this.colorThemeToolStripMenuItem});
             this.ToolStripMenuItem_View.Name = "ToolStripMenuItem_View";
-            this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 24);
+            this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 26);
             this.ToolStripMenuItem_View.Text = "View";
             // 
             // ToolStripMenuItem_Density
@@ -267,21 +268,21 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_OpenSettings});
             this.ToolStripMenuItem_Settings.Name = "ToolStripMenuItem_Settings";
-            this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 24);
+            this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 26);
             this.ToolStripMenuItem_Settings.Text = "Settings";
             this.ToolStripMenuItem_Settings.Click += new System.EventHandler(this.ToolStripMenuItem_Settings_Click);
             // 
             // ToolStripMenuItem_OpenSettings
             // 
             this.ToolStripMenuItem_OpenSettings.Name = "ToolStripMenuItem_OpenSettings";
-            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(224, 26);
+            this.ToolStripMenuItem_OpenSettings.Size = new System.Drawing.Size(145, 26);
             this.ToolStripMenuItem_OpenSettings.Text = "Settings";
             this.ToolStripMenuItem_OpenSettings.Click += new System.EventHandler(this.ToolStripMenuItem_OpenSettings_Click);
             // 
             // resetChartToolStripMenuItem
             // 
             this.resetChartToolStripMenuItem.Name = "resetChartToolStripMenuItem";
-            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(98, 24);
+            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(98, 26);
             this.resetChartToolStripMenuItem.Text = "Reset Chart";
             this.resetChartToolStripMenuItem.ToolTipText = "Reset all chart data to the default values";
             this.resetChartToolStripMenuItem.Click += new System.EventHandler(this.resetChartToolStripMenuItem_Click);
@@ -341,66 +342,83 @@ namespace SAM.Core.Mollier.UI
             // 
             // PercentPointsTextBox
             // 
-            this.PercentPointsTextBox.Location = new System.Drawing.Point(627, 31);
+            this.PercentPointsTextBox.Location = new System.Drawing.Point(791, 30);
             this.PercentPointsTextBox.Name = "PercentPointsTextBox";
             this.PercentPointsTextBox.Size = new System.Drawing.Size(33, 22);
             this.PercentPointsTextBox.TabIndex = 31;
-            this.PercentPointsTextBox.Text = "1";
+            this.PercentPointsTextBox.Text = "0.4";
             this.PercentPointsTextBox.Visible = false;
             this.PercentPointsTextBox.TextChanged += new System.EventHandler(this.PercentPointsTextBox_TextChanged);
+            this.PercentPointsTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
             // 
             // PointsLabel
             // 
             this.PointsLabel.AutoSize = true;
-            this.PointsLabel.Location = new System.Drawing.Point(657, 34);
+            this.PointsLabel.Location = new System.Drawing.Point(830, 33);
             this.PointsLabel.Name = "PointsLabel";
             this.PointsLabel.Size = new System.Drawing.Size(19, 16);
             this.PointsLabel.TabIndex = 32;
             this.PointsLabel.Text = "%";
             this.PointsLabel.Visible = false;
             // 
+            // ColorPointComboBox
+            // 
+            this.ColorPointComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ColorPointComboBox.FormattingEnabled = true;
+            this.ColorPointComboBox.Items.AddRange(new object[] {
+            "Temperature",
+            "Enthalpy"});
+            this.ColorPointComboBox.Location = new System.Drawing.Point(627, 28);
+            this.ColorPointComboBox.Name = "ColorPointComboBox";
+            this.ColorPointComboBox.Size = new System.Drawing.Size(143, 24);
+            this.ColorPointComboBox.TabIndex = 38;
+            this.ColorPointComboBox.Visible = false;
+            this.ColorPointComboBox.SelectedIndexChanged += new System.EventHandler(this.ColorPointComboBox_SelectedIndexChanged);
+            // 
             // MollierControl_Main
             // 
             this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.MollierControl_Main.Location = new System.Drawing.Point(12, 65);
+            this.MollierControl_Main.Location = new System.Drawing.Point(23, 64);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
-            mollierControlSettings2.ChartType = SAM.Core.Mollier.ChartType.Mollier;
-            mollierControlSettings2.Color = "default";
-            mollierControlSettings2.Density_line = true;
-            mollierControlSettings2.DisableLabels = false;
-            mollierControlSettings2.DisableUnits = false;
-            mollierControlSettings2.Elevation = 0D;
-            mollierControlSettings2.Enthalpy_line = true;
-            mollierControlSettings2.GradientPoint = false;
-            mollierControlSettings2.HumidityRatio_Interval = 5D;
-            mollierControlSettings2.HumidityRatio_Max = 35D;
-            mollierControlSettings2.HumidityRatio_Min = 0D;
-            mollierControlSettings2.P_w_Interval = 1D;
-            mollierControlSettings2.Pressure = 101325D;
-            mollierControlSettings2.SpecificVolume_line = true;
-            mollierControlSettings2.Temperature_Interval = 5D;
-            mollierControlSettings2.Temperature_Max = 50D;
-            mollierControlSettings2.Temperature_Min = -20D;
-            mollierControlSettings2.VisibilitySettings = visibilitySettings2;
-            mollierControlSettings2.WetBulbTemperature_line = true;
-            this.MollierControl_Main.MollierControlSettings = mollierControlSettings2;
+            mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
+            mollierControlSettings1.Color = "default";
+            mollierControlSettings1.Density_line = true;
+            mollierControlSettings1.DisableLabels = false;
+            mollierControlSettings1.DisableUnits = false;
+            mollierControlSettings1.Elevation = 0D;
+            mollierControlSettings1.Enthalpy_line = true;
+            mollierControlSettings1.GradientPoint = false;
+            mollierControlSettings1.HumidityRatio_Interval = 5D;
+            mollierControlSettings1.HumidityRatio_Max = 35D;
+            mollierControlSettings1.HumidityRatio_Min = 0D;
+            mollierControlSettings1.P_w_Interval = 1D;
+            mollierControlSettings1.Pressure = 101325D;
+            mollierControlSettings1.SpecificVolume_line = true;
+            mollierControlSettings1.Temperature_Interval = 5D;
+            mollierControlSettings1.Temperature_Max = 50D;
+            mollierControlSettings1.Temperature_Min = -20D;
+            mollierControlSettings1.VisibilitySettings = visibilitySettings1;
+            mollierControlSettings1.WetBulbTemperature_line = true;
+            this.MollierControl_Main.MollierControlSettings = mollierControlSettings1;
             this.MollierControl_Main.Name = "MollierControl_Main";
-            pdfDefaultSettings2.A3Height = 297;
-            pdfDefaultSettings2.A3Width = 420;
-            pdfDefaultSettings2.A4Height = 210;
-            pdfDefaultSettings2.A4Width = 297;
-            pdfDefaultSettings2.ChartHeight = 728;
-            pdfDefaultSettings2.ChartWidth = 1512;
-            this.MollierControl_Main.PdfDefaultSettings = pdfDefaultSettings2;
-            this.MollierControl_Main.Size = new System.Drawing.Size(1350, 912);
+            pdfDefaultSettings1.A3Height = 297;
+            pdfDefaultSettings1.A3Width = 420;
+            pdfDefaultSettings1.A4Height = 210;
+            pdfDefaultSettings1.A4Width = 297;
+            pdfDefaultSettings1.ChartHeight = 728;
+            pdfDefaultSettings1.ChartWidth = 1512;
+            this.MollierControl_Main.PdfDefaultSettings = pdfDefaultSettings1;
+            this.MollierControl_Main.Size = new System.Drawing.Size(1339, 907);
             this.MollierControl_Main.TabIndex = 0;
+            this.MollierControl_Main.Paint += new System.Windows.Forms.PaintEventHandler(this.MollierControl_Main_Paint);
             // 
             // MollierForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1374, 977);
+            this.Controls.Add(this.ColorPointComboBox);
             this.Controls.Add(this.PointsLabel);
             this.Controls.Add(this.PercentPointsTextBox);
             this.Controls.Add(this.PointsCheckBox);
@@ -461,6 +479,7 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.CheckBox PointsCheckBox;
         private System.Windows.Forms.TextBox PercentPointsTextBox;
         private System.Windows.Forms.Label PointsLabel;
+        private System.Windows.Forms.ComboBox ColorPointComboBox;
     }
 }
 

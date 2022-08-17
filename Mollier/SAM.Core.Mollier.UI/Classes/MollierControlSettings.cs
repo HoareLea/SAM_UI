@@ -27,6 +27,10 @@ namespace SAM.Core.Mollier.UI
         public bool DisableUnits { get; set; } = false;
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
+        public bool FindPoint { get; set; } = false;
+        public double Percent { get; set; } = 0.4;
+        public string FindPointType { get; set; } = "Enthalpy";
+
         public PointGradientVisibilitySetting GradientColors { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
@@ -59,6 +63,10 @@ namespace SAM.Core.Mollier.UI
             DisableLabels = mollierControlSettings.DisableLabels;
             GradientColors = mollierControlSettings.GradientColors;
             GradientPoint = mollierControlSettings.GradientPoint;
+            FindPoint = mollierControlSettings.FindPoint;
+            Percent = mollierControlSettings.Percent;
+            FindPointType = mollierControlSettings.FindPointType;
+
 
         }
 
@@ -159,7 +167,7 @@ namespace SAM.Core.Mollier.UI
             JObject result = new JObject();
             result.Add("_type", Core.Query.FullTypeName(this));
 
-            if(!double.IsNaN(Pressure))
+            if (!double.IsNaN(Pressure))
             {
                 result.Add("Pressure", Pressure);
             }
@@ -203,11 +211,11 @@ namespace SAM.Core.Mollier.UI
             result.Add("DisableUnits", DisableUnits);
             result.Add("DisableLabels", DisableLabels);
             result.Add("ChartType", ChartType.ToString());
-            if(VisibilitySettings != null)
+            if (VisibilitySettings != null)
             {
                 result.Add("VisibilitySettings", VisibilitySettings.ToJObject());
             }
-            
+
             //result.Add("GradientColors", GradientColors.ToJObject()); TODO after change saving GradientColor
 
             return result;

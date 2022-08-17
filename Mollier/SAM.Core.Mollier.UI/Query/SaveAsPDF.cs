@@ -44,7 +44,7 @@ namespace SAM.Core.Mollier.UI
             foreach (Series series in MollierChart.Series)
             {
                 series.Font = new System.Drawing.Font("Arial", fontSize);//change font to make it more visibility
-                if (series.Tag is MollierProcess)
+                if (series.Tag is MollierProcess || series.Tag == "ColorPoint")
                 {
                     series.BorderWidth = size == "A3" ? 15 : 10;
                     series.MarkerSize = size == "A3" ? 28 : 22;
@@ -57,6 +57,14 @@ namespace SAM.Core.Mollier.UI
                 if (series.Tag == "SecondPoint")
                 {
                     series.MarkerSize = size == "A3" ? 15 : 10;
+                }
+                if (series.Tag == "ColorPointLabel")
+                {
+                    series.Points[0].YValues[0] = MollierChart.ChartAreas[0].AxisY.Maximum > 0.1 ? series.Points[0].YValues[0] + 5 : series.Points[0].YValues[0];
+                }
+                if (series.Tag == "ColorPointLabelSquare")
+                {
+                    series.MarkerSize = size == "A3" ? 40 : 30;
                 }
             }
             doc.Open();
@@ -77,7 +85,7 @@ namespace SAM.Core.Mollier.UI
             foreach (Series series in MollierChart.Series)
             {
                 series.Font = new System.Drawing.Font("Arial", 8);//change font to make it more visibility
-                if (series.Tag is MollierProcess)
+                if (series.Tag is MollierProcess || series.Tag == "ColorPoint")
                 {
                     series.MarkerSize = 8;
                     series.MarkerBorderWidth = 2;
@@ -91,6 +99,15 @@ namespace SAM.Core.Mollier.UI
                 {
                     series.MarkerSize = 5;
                 }
+                if (series.Tag == "ColorPointLabel")
+                {
+                    series.Points[0].YValues[0] = MollierChart.ChartAreas[0].AxisY.Maximum > 0.1 ? series.Points[0].YValues[0] - 5 : series.Points[0].YValues[0];
+                }
+                if (series.Tag == "ColorPointLabelSquare")
+                {
+                    series.MarkerSize = 15;
+                }
+
             }
             //titles
             MollierChart.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Arial", 8);
