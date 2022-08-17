@@ -1120,14 +1120,15 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (mollierPoints != null)
             {
-                add_MollierPoints(chartType);
+               // add_MollierPoints(chartType);
+                CreateGradientZones();
             }
             if (mollierProcesses != null)
             {
                 add_MollierProcesses(chartType);
             }
             if (mollierZones != null)
-            {
+            {   
                 add_MollierZones(chartType);
             }
             ColorPoints(mollierControlSettings.FindPoint, mollierControlSettings.Percent, mollierControlSettings.FindPointType);
@@ -1239,7 +1240,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (mollierPoints != null)
             {
-                add_MollierPoints(chartType);
+               // add_MollierPoints(chartType);
+                CreateGradientZones();
             }
 
             if (mollierProcesses != null)
@@ -1635,58 +1637,75 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.Points[index].Tag = point;
             }
         }
-        //public void CreateGradientZones()
-        //{
+        public void CreateGradientZones()
+        {
 
-        //    int deltaRelativeHumidity = 10;//RH interval
-        //    int deltaEnthalpy = 3;//enthalpy interval
+            int deltaRelativeHumidity = 10;//RH interval
+            int deltaEnthalpy = 3;//enthalpy interval
 
-        //    //base size
-        //    int RH_size = 100 / deltaRelativeHumidity + 7;
-        //    int Ent_size = 200 / deltaEnthalpy + 7;
+            //base size
+            int RH_size = 100 / deltaRelativeHumidity + 7;
+            int Ent_size = 200 / deltaEnthalpy + 7;
 
-        //    List<MollierPoint>[,] rectangles_points = new List<MollierPoint>[RH_size, Ent_size];//for every rh interval and every enthalpy interval it stores the list of points that belong to this area 
-        //    double maxCount;
-        //    Query.NeighborhoodCount(mollierPoints, out maxCount, out rectangles_points);
+            List<MollierPoint>[,] rectangles_points = new List<MollierPoint>[RH_size, Ent_size];//for every rh interval and every enthalpy interval it stores the list of points that belong to this area 
+            double maxCount;
+            Query.NeighborhoodCount(mollierPoints, out maxCount, out rectangles_points);
 
-        //    for (int rh = 0; rh <= 100 - deltaRelativeHumidity; rh += 10)
-        //    {
-        //        for (int e = -39; e <= 140 - deltaEnthalpy; e++)
-        //        {
-        //            int index_1 = rh / deltaRelativeHumidity;
-        //            int index_2 = e / deltaEnthalpy + 15;
-        //            if (rectangles_points[index_1, index_2] == null)
-        //            {
-        //                continue;
-        //            }
+            for (int rh = 0; rh <= 100 - deltaRelativeHumidity; rh += 10)
+            {
+                for (int e = -39; e <= 140 - deltaEnthalpy; e += 3)
+                {
+                    int index_1 = rh / deltaRelativeHumidity;
+                    int index_2 = e / deltaEnthalpy + 15;
+                    if (rectangles_points[index_1, index_2] == null)
+                    {
+                        continue;
+                    }
 
-        //            Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
-        //            series.IsVisibleInLegend = false;
-        //            series.Tag = "GradientZone";
-        //            series.Points.AddXY(findPoint(rh, e, "X"), findPoint(rh, e, "Y"));
-        //            series.Points.AddXY(findPoint(rh, e + deltaEnthalpy, "X"), findPoint(rh, e + deltaEnthalpy, "Y"));
-        //            series.Points.AddXY(findPoint(rh + deltaRelativeHumidity, e + deltaEnthalpy, "X"), findPoint(rh + deltaRelativeHumidity, e + deltaEnthalpy, "Y"));
-        //            series.Points.AddXY(findPoint(rh + deltaRelativeHumidity, e, "X"), findPoint(rh + deltaRelativeHumidity, e, "Y"));
-        //            double value = maxCount == 0 ? 0 : System.Convert.ToDouble(System.Convert.ToInt32(System.Math.Log(rectangles_points[index_1, index_2].Count)) / maxCount;
-        //            series.Color = Core.Query.Lerp(Color.Red, Color.Blue, value);
-        //            series.ChartType = SeriesChartType.Spline;
-        //            series.BorderWidth = 3;
+                    Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
+                    series.IsVisibleInLegend = false;
+                    series.Tag = "GradientZone";
 
-        //        }
-        //    }
-        //}
-        //private double findPoint(double relativeHumidity, double enthalpy, string orientation)
-        //{
-        //    double X = 0, Y = 0;
+                    series.Points.AddXY(findPoint(rh, e, "X"), findPoint(rh, e, "Y"));//first corner                
+                    series.Points.AddXY(findPoint(rh, e + deltaEnthalpy, "X"), findPoint(rh, e + deltaEnthalpy, "Y"));//second corner               
+                    series.Points.AddXY(findPoint(rh + deltaRelativeHumidity, e + deltaEnthalpy, "X"), findPoint(rh + deltaRelativeHumidity, e + deltaEnthalpy, "Y"));//third corner
+                    for(int i=deltaEnthalpy - 1; i>=1; i--)
+                    series.Points.AddXY(findPoint(rh + deltaRelativeHumidity, e, "X"), findPoint(rh + deltaRelativeHumidity, e, "Y"));//fourth corner
+                    series.Points.AddXY(findPoint(rh, e, "X"), findPoint(rh, e, "Y"));//first corner again to close the zone
 
-        //    double l = -50, r = 100;
-        //    double mid = (l + r) / 2;
-        //    while (r - l < 0.01)
-        //    {
-        //        double enthalpy_Temp = Mollier.Query.Enthalpy_ByRelativeHumidity(mid, relativeHumidity, mollierControlSettings.Pressure);
+                    double value = maxCount == 0 ? 0 : System.Convert.ToDouble(System.Convert.ToInt32(System.Math.Log(rectangles_points[index_1, index_2].Count))) / maxCount;
+                    series.Color = Core.Query.Lerp(Color.Red, Color.Blue, value);
+                    series.ChartType = SeriesChartType.Line;
+                    series.BorderWidth = 3;
 
-        //    }
-        //    return orientation == "X" ? X : Y;
-        //}
+                    Series label = MollierChart.Series.Add(Guid.NewGuid().ToString());
+                    label.IsVisibleInLegend = false;
+                    label.ChartType = SeriesChartType.Point;
+                    if(MollierControlSettings.ChartType == ChartType.Mollier)
+                    {
+                        label.Points.AddXY(findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "X"), findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "Y") - 0.5);
+                    }
+                    else
+                    {
+                        label.Points.AddXY(findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "X"), findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "Y"));
+                    }
+                    label.Color = Color.Transparent;
+                    label.Label = rectangles_points[index_1, index_2].Count.ToString();
+                    label.Tag = "GradientZoneLabel";
+                }
+            }
+        }
+        private double findPoint(double relativeHumidity, double enthalpy, string orientation)
+        {
+            double X = 0, Y = 0;
+
+            double dryBulbTemperature = Mollier.Query.DryBulbTemperature_ByEnthalpy(enthalpy * 1000, relativeHumidity, mollierControlSettings.Pressure);
+            double humidityRatio = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, mollierControlSettings.Pressure);
+
+            X = mollierControlSettings.ChartType == ChartType.Mollier ? humidityRatio * 1000 : dryBulbTemperature;
+            Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(dryBulbTemperature, humidityRatio) : humidityRatio;
+
+            return orientation == "X" ? X : Y;
+        }   
     }
 }
