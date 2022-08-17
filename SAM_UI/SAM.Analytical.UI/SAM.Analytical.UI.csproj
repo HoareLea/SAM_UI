@@ -138,6 +138,7 @@
     <Compile Include="Modify\Import.cs" />
     <Compile Include="Modify\ImportWeatherData.cs" />
     <Compile Include="Modify\New.cs" />
+    <Compile Include="Modify\PrintAirHandlingUnitsByTemplate.cs" />
     <Compile Include="Modify\PrintAirHandlingUnits.cs" />
     <Compile Include="Modify\PrintRoomDataSheets.cs" />
     <Compile Include="Modify\RemoveMaterial.cs" />
