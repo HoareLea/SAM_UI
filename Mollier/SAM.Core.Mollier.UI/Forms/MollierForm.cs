@@ -168,7 +168,7 @@ namespace SAM.Core.Mollier.UI
 
 
             MollierProcess mollierProcess = null;
-            using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm())
+            using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm())    
             {
                 DialogResult dialogResult = mollierProcessForm.ShowDialog();
                 if (dialogResult != DialogResult.OK)
@@ -398,24 +398,36 @@ namespace SAM.Core.Mollier.UI
 
         private void PointsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            PercentPointsTextBox.Visible = !PercentPointsTextBox.Visible;
-            PointsLabel.Visible = !PointsLabel.Visible;
-            ColorPointComboBox.Visible = !ColorPointComboBox.Visible;
-            foreach (Series series in MollierControl_Main.Series)
-            {
-                if (series.Tag == "ColorPoint")
-                {
-                    series.Enabled = false;
-                }
-            }
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (PointsCheckBox.Checked)
             {
-                generateColorPoint(true);
+                mollierControlSettings.FindPoint = true;
+                mollierControlSettings.Percent = 0.4;
+                mollierControlSettings.FindPointType = "Enthalpy";
             }
             else
             {
-                generateColorPoint(false);
+                mollierControlSettings.FindPoint = false;
             }
+            PercentPointsTextBox.Visible = !PercentPointsTextBox.Visible;
+            PointsLabel.Visible = !PointsLabel.Visible;
+            ColorPointComboBox.Visible = !ColorPointComboBox.Visible;
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            //foreach (Series series in MollierControl_Main.Series)
+            //{
+            //    if (series.Tag == "ColorPoint")
+            //    {
+            //        series.Enabled = false;
+            //    }
+            //}
+            //if (PointsCheckBox.Checked)
+            //{
+            //    generateColorPoint(true);
+            //}
+            //else
+            //{
+            //    generateColorPoint(false);
+            //}
 
         }
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -431,21 +443,22 @@ namespace SAM.Core.Mollier.UI
                 e.Handled = true;
             }
         }
-        private void generateColorPoint(bool generate)
-        {
-            if (ColorPointComboBox.Text != null && PercentPointsTextBox.Text != String.Empty && System.Convert.ToDouble(PercentPointsTextBox.Text) != null)
-            {
-                MollierControl_Main.ColorPoints(generate, System.Convert.ToDouble(PercentPointsTextBox.Text), ColorPointComboBox.Text);
-            }
-        }
         private void PercentPointsTextBox_TextChanged(object sender, EventArgs e)
         {
-            generateColorPoint(true);
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            if (SAM.Core.Query.TryConvert(PercentPointsTextBox.Text, out double value))
+            {
+                mollierControlSettings.Percent = value;
+            }
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            
         }
 
         private void ColorPointComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            generateColorPoint(true);
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.FindPointType = ColorPointComboBox.Text;
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
         private void MollierControl_Main_Paint(object sender, PaintEventArgs e)
