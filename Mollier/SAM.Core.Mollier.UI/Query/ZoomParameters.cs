@@ -25,7 +25,7 @@ namespace SAM.Core.Mollier.UI
 
             foreach (Series series in series_List)
             {
-                if (!(series.Tag is IMollierProcess) && !(series.Tag is List<MollierPoint>))
+                if (!(series.Tag is IMollierProcess) && !(series.Tag is List<MollierPoint>) && !(series.Tag == "GradientZone"))
                 {
                     continue;
                 }
@@ -33,7 +33,7 @@ namespace SAM.Core.Mollier.UI
                 foreach (DataPoint dataPoint in series.Points)
                 {
                     dataPoints.Add(dataPoint);
-                }
+                }   
             }
             x_Min = double.MaxValue;
             x_Max = double.MinValue;

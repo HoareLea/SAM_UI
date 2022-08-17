@@ -473,5 +473,35 @@ namespace SAM.Core.Mollier.UI
 
         }
 
+        private void DivisionAreaCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            if (DivisionAreaCheckBox.Checked)
+            {
+                mollierControlSettings.DivisionArea = true;
+                DivisionAreaLabels_CheckBox.Visible = true;
+            }
+            else
+            {
+
+                mollierControlSettings.DivisionArea = false;
+                DivisionAreaLabels_CheckBox.Visible = false;
+            }
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+        }
+
+        private void DivisionAreaLabels_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            if (DivisionAreaLabels_CheckBox.Checked)
+            {
+                mollierControlSettings.DivisionAreaLabels = false;
+            }
+            else
+            {
+                mollierControlSettings.DivisionAreaLabels = true;
+            }
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+        }
     }
 }
