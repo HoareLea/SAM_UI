@@ -135,6 +135,11 @@ namespace SAM.Core.Mollier.UI
         {
            return MollierControl_Main.Clear();
         }
+
+        public void SaveAs(string path)
+        {
+            MollierControl_Main.Save("EMF", 18, path: path);
+        }
         
         //operation of the add process and add point buttons
         private void Button_AddPoint_Click(object sender, EventArgs e)
@@ -461,17 +466,6 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
-        private void MollierControl_Main_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics gObject = MollierControl_Main.CreateGraphics();
-
-            Brush red = new SolidBrush(Color.Red);
-            Rectangle rectangle = new Rectangle(10, 10, 100, 100);
-            gObject.FillRectangle(red, 10, 10, 100, 50);
-            Pen pen = new Pen(red, 2);
-            gObject.DrawLine(pen, 10, 10, 10, 10); 
-
-        }
 
         private void DivisionAreaCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -502,6 +496,16 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings.DivisionAreaLabels = true;
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
+        }
+
+        private void saveAsEMFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartPosition = FormStartPosition.Manual;
+            WindowState = FormWindowState.Normal;
+            Location = new Point(0, 0);
+            Size = new Size(937, 984);
+            Refresh();
+            SaveAs(null);
         }
     }
 }

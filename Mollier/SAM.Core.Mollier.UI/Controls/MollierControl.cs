@@ -10,7 +10,7 @@ using iTextSharp.text;
 using System.IO;
 using System.Windows.Forms.DataVisualization.Charting;
 using SAM.Geometry.Planar;
-
+using iText.Kernel.Pdf.Canvas.Wmf;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
@@ -30,6 +30,8 @@ namespace SAM.Core.Mollier.UI.Controls
             InitializeComponent();
 
             mollierControlSettings = new MollierControlSettings();
+            
+
         }
         private void create_relative_humidity_line_Mollier(int temperature_Min, int temperature_Max, double relative_humidity, double pressure)
         {
@@ -565,11 +567,11 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.Points[index].Tag = point;
             }
         }
-        private void add_DivisionArea()
+        private void add_DivisionArea(ChartType chartType)
         {
 
-            int deltaRelativeHumidity = 10;//RH interval
-            int deltaEnthalpy = 3;//enthalpy interval
+            int deltaRelativeHumidity = 10;//RH interval from neighborhoodcount
+            int deltaEnthalpy = 3;//enthalpy interval from neighborhoodcount
 
             //base size
             int RH_size = 100 / deltaRelativeHumidity + 7;
@@ -594,12 +596,11 @@ namespace SAM.Core.Mollier.UI.Controls
                     series.IsVisibleInLegend = false;
                     series.Tag = "GradientZone";
 
-                    series.Points.AddXY(findPoint(rh, e, "X"), findPoint(rh, e, "Y"));//first corner                
-                    series.Points.AddXY(findPoint(rh, e + deltaEnthalpy, "X"), findPoint(rh, e + deltaEnthalpy, "Y"));//second corner               
-                    series.Points.AddXY(findPoint(rh + deltaRelativeHumidity, e + deltaEnthalpy, "X"), findPoint(rh + deltaRelativeHumidity, e + deltaEnthalpy, "Y"));//third corner
-                    for(int i=deltaEnthalpy - 1; i>=1; i--)
-                    series.Points.AddXY(findPoint(rh + deltaRelativeHumidity, e, "X"), findPoint(rh + deltaRelativeHumidity, e, "Y"));//fourth corner
-                    series.Points.AddXY(findPoint(rh, e, "X"), findPoint(rh, e, "Y"));//first corner again to close the zone
+                    series.Points.AddXY(findPoint(rh, e, "X", chartType), findPoint(rh, e, "Y", chartType));//first corner                
+                    series.Points.AddXY(findPoint(rh, e + deltaEnthalpy, "X", chartType), findPoint(rh, e + deltaEnthalpy, "Y", chartType));//second corner               
+                    series.Points.AddXY(findPoint(rh + deltaRelativeHumidity, e + deltaEnthalpy, "X", chartType), findPoint(rh + deltaRelativeHumidity, e + deltaEnthalpy, "Y", chartType));//third corner
+                    series.Points.AddXY(findPoint(rh + deltaRelativeHumidity, e, "X", chartType), findPoint(rh + deltaRelativeHumidity, e, "Y", chartType));//fourth corner
+                    series.Points.AddXY(findPoint(rh, e, "X", chartType), findPoint(rh, e, "Y", chartType));//first corner again to close the zone
 
                     double value = maxCount == 0 ? 0 : System.Convert.ToDouble(System.Convert.ToInt32(System.Math.Log(rectangles_points[index_1, index_2].Count))) / maxCount;
                     series.Color = Core.Query.Lerp(Color.Red, Color.Blue, value);
@@ -612,11 +613,11 @@ namespace SAM.Core.Mollier.UI.Controls
                         label.ChartType = SeriesChartType.Point;
                         if(MollierControlSettings.ChartType == ChartType.Mollier)
                         {
-                            label.Points.AddXY(findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "X"), findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "Y") - 0.5);
+                            label.Points.AddXY(findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "X", chartType), findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "Y", chartType) - 0.5);
                         }
                         else
                         {
-                            label.Points.AddXY(findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "X"), findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "Y"));
+                            label.Points.AddXY(findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "X", chartType), findPoint(rh + deltaRelativeHumidity / 2, e + deltaEnthalpy / 2, "Y", chartType));
                         }
                         label.Color = Color.Transparent;
                         label.Label = rectangles_points[index_1, index_2].Count.ToString();
@@ -682,7 +683,7 @@ namespace SAM.Core.Mollier.UI.Controls
             createProcessLabels(mollierProcesses_Temp, chartType);
 
 
-        }//only draw processes line
+        }
         public void createSeries_DewPoint(MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType)
         {
             Series seriesDew = MollierChart.Series.Add(Guid.NewGuid().ToString());
@@ -1230,7 +1231,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             if (mollierControlSettings.DivisionArea)
             {
-                add_DivisionArea();
+                add_DivisionArea(chartType);
             }
             ColorPoints(mollierControlSettings.FindPoint, mollierControlSettings.Percent, mollierControlSettings.FindPointType);
         }
@@ -1349,7 +1350,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             if (mollierControlSettings.DivisionArea)
             {
-                add_DivisionArea();
+                add_DivisionArea(chartType);
             }
             ColorPoints(mollierControlSettings.FindPoint, mollierControlSettings.Percent, mollierControlSettings.FindPointType);
         }
@@ -1468,31 +1469,41 @@ namespace SAM.Core.Mollier.UI.Controls
             generate_graph();
             return true;
         }
-        public bool Save(string type, int fontSize, string size = "A4")
+        public bool Save(string type, int fontSize, string windowSize = "A4", string path = null)
         {
-            string path = null;
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            if (string.IsNullOrEmpty(path))
             {
-                saveFileDialog.Filter = type == "PDF" ? "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*" : "JPG files (*.jpg)|*.jpg|All files (*.*)|*.*";
-                saveFileDialog.FilterIndex = 1;
-                saveFileDialog.RestoreDirectory = true;
-
-                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    return false;
+                    saveFileDialog.Filter = type == "PDF" ? "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*" : "EMF files (*.emf)|*.emf|All files (*.*)|*.*";
+                    saveFileDialog.FilterIndex = 1;
+                    saveFileDialog.RestoreDirectory = true;
+
+                    if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                    {
+                        return false;
+                    }
+                    path = saveFileDialog.FileName;
                 }
-                path = saveFileDialog.FileName;
             }
             if (type == "JPG")
             {
                 MollierChart.SaveImage(path, ChartImageFormat.Jpeg);
                 return true;
             }
+            if (type == "EMF")
+            {
+                //Parent.Size = new Size(System.Convert.ToInt32(748), System.Convert.ToInt32(3000));
+                //MollierChart.Size = new Size(System.Convert.ToInt32(748), System.Convert.ToInt32(3000));
+                MollierChart.SaveImage(path, ChartImageFormat.Emf);
+                return true;
+            }
 
-            int newWidth = size == "A3" ? pdfDefaultSettings.A3Width : pdfDefaultSettings.A4Width;
-            int newHeight = size == "A3" ? pdfDefaultSettings.A3Height : pdfDefaultSettings.A4Height;
 
-            Query.SaveAsPDF(MollierChart, path, fontSize, size, newWidth, newHeight, pdfDefaultSettings.ChartWidth, pdfDefaultSettings.ChartHeight);
+            int newWidth = windowSize == "A3" ? pdfDefaultSettings.A3Width : pdfDefaultSettings.A4Width;
+            int newHeight = windowSize == "A3" ? pdfDefaultSettings.A3Height : pdfDefaultSettings.A4Height;
+
+            Query.SaveAsPDF(MollierChart, path, fontSize, windowSize, newWidth, newHeight, pdfDefaultSettings.ChartWidth, pdfDefaultSettings.ChartHeight);
 
             return true;
         }
@@ -1694,15 +1705,15 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        private double findPoint(double relativeHumidity, double enthalpy, string orientation)
+        private double findPoint(double relativeHumidity, double enthalpy, string orientation, ChartType chartType)
         {
             double X = 0, Y = 0;
 
             double dryBulbTemperature = Mollier.Query.DryBulbTemperature_ByEnthalpy(enthalpy * 1000, relativeHumidity, mollierControlSettings.Pressure);
             double humidityRatio = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, mollierControlSettings.Pressure);
 
-            X = mollierControlSettings.ChartType == ChartType.Mollier ? humidityRatio * 1000 : dryBulbTemperature;
-            Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(dryBulbTemperature, humidityRatio) : humidityRatio;
+            X = chartType == ChartType.Mollier ? humidityRatio * 1000 : dryBulbTemperature;
+            Y = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(dryBulbTemperature, humidityRatio) : humidityRatio;
 
             return orientation == "X" ? X : Y;
         }   

@@ -29,9 +29,9 @@ namespace SAM.Core.Mollier.UI
         /// </summary>
         private void InitializeComponent()
         {
-            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings2 = new SAM.Core.Mollier.UI.MollierControlSettings();
-            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings2 = new SAM.Core.Mollier.UI.VisibilitySettings();
-            SAM.Core.Mollier.UI.PdfDefaultSettings pdfDefaultSettings2 = new SAM.Core.Mollier.UI.PdfDefaultSettings();
+            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings1 = new SAM.Core.Mollier.UI.MollierControlSettings();
+            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings1 = new SAM.Core.Mollier.UI.VisibilitySettings();
+            SAM.Core.Mollier.UI.PdfDefaultSettings pdfDefaultSettings1 = new SAM.Core.Mollier.UI.PdfDefaultSettings();
             this.TextBox_Pressure = new System.Windows.Forms.TextBox();
             this.Label_Pressure = new System.Windows.Forms.Label();
             this.Button_AddPoint = new System.Windows.Forms.Button();
@@ -65,8 +65,9 @@ namespace SAM.Core.Mollier.UI
             this.PointsLabel = new System.Windows.Forms.Label();
             this.ColorPointComboBox = new System.Windows.Forms.ComboBox();
             this.DivisionAreaCheckBox = new System.Windows.Forms.CheckBox();
-            this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.DivisionAreaLabels_CheckBox = new System.Windows.Forms.CheckBox();
+            this.saveAsEMFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -119,7 +120,8 @@ namespace SAM.Core.Mollier.UI
             // 
             this.ToolStripMenuItem_File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_Save,
-            this.saveAsJPGToolStripMenuItem});
+            this.saveAsJPGToolStripMenuItem,
+            this.saveAsEMFToolStripMenuItem});
             this.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File";
             this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 26);
             this.ToolStripMenuItem_File.Text = "File";
@@ -130,7 +132,7 @@ namespace SAM.Core.Mollier.UI
             this.PdfA4ToolStripMenuItem,
             this.PdfA3ToolStripMenuItem});
             this.ToolStripMenuItem_Save.Name = "ToolStripMenuItem_Save";
-            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(171, 26);
+            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(173, 26);
             this.ToolStripMenuItem_Save.Text = "Save as PDF";
             // 
             // PdfA4ToolStripMenuItem
@@ -150,7 +152,7 @@ namespace SAM.Core.Mollier.UI
             // saveAsJPGToolStripMenuItem
             // 
             this.saveAsJPGToolStripMenuItem.Name = "saveAsJPGToolStripMenuItem";
-            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
             this.saveAsJPGToolStripMenuItem.Text = "Save as JPG";
             this.saveAsJPGToolStripMenuItem.Click += new System.EventHandler(this.saveAsJPGToolStripMenuItem_Click);
             // 
@@ -388,49 +390,6 @@ namespace SAM.Core.Mollier.UI
             this.DivisionAreaCheckBox.UseVisualStyleBackColor = true;
             this.DivisionAreaCheckBox.CheckedChanged += new System.EventHandler(this.DivisionAreaCheckBox_CheckedChanged);
             // 
-            // MollierControl_Main
-            // 
-            this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.MollierControl_Main.Location = new System.Drawing.Point(23, 64);
-            this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
-            mollierControlSettings2.ChartType = SAM.Core.Mollier.ChartType.Mollier;
-            mollierControlSettings2.Color = "default";
-            mollierControlSettings2.Density_line = true;
-            mollierControlSettings2.DisableLabels = false;
-            mollierControlSettings2.DisableUnits = false;
-            mollierControlSettings2.DivisionArea = false;
-            mollierControlSettings2.Elevation = 0D;
-            mollierControlSettings2.Enthalpy_line = true;
-            mollierControlSettings2.FindPoint = false;
-            mollierControlSettings2.FindPointType = "Enthalpy";
-            mollierControlSettings2.GradientPoint = false;
-            mollierControlSettings2.HumidityRatio_Interval = 5D;
-            mollierControlSettings2.HumidityRatio_Max = 35D;
-            mollierControlSettings2.HumidityRatio_Min = 0D;
-            mollierControlSettings2.P_w_Interval = 1D;
-            mollierControlSettings2.Percent = 0.4D;
-            mollierControlSettings2.Pressure = 101325D;
-            mollierControlSettings2.SpecificVolume_line = true;
-            mollierControlSettings2.Temperature_Interval = 5D;
-            mollierControlSettings2.Temperature_Max = 50D;
-            mollierControlSettings2.Temperature_Min = -20D;
-            mollierControlSettings2.VisibilitySettings = visibilitySettings2;
-            mollierControlSettings2.WetBulbTemperature_line = true;
-            this.MollierControl_Main.MollierControlSettings = mollierControlSettings2;
-            this.MollierControl_Main.Name = "MollierControl_Main";
-            pdfDefaultSettings2.A3Height = 297;
-            pdfDefaultSettings2.A3Width = 420;
-            pdfDefaultSettings2.A4Height = 210;
-            pdfDefaultSettings2.A4Width = 297;
-            pdfDefaultSettings2.ChartHeight = 728;
-            pdfDefaultSettings2.ChartWidth = 1512;
-            this.MollierControl_Main.PdfDefaultSettings = pdfDefaultSettings2;
-            this.MollierControl_Main.Size = new System.Drawing.Size(1339, 907);
-            this.MollierControl_Main.TabIndex = 0;
-            this.MollierControl_Main.Paint += new System.Windows.Forms.PaintEventHandler(this.MollierControl_Main_Paint);
-            // 
             // DivisionAreaLabels_CheckBox
             // 
             this.DivisionAreaLabels_CheckBox.AutoSize = true;
@@ -443,9 +402,60 @@ namespace SAM.Core.Mollier.UI
             this.DivisionAreaLabels_CheckBox.Visible = false;
             this.DivisionAreaLabels_CheckBox.CheckedChanged += new System.EventHandler(this.DivisionAreaLabels_CheckBox_CheckedChanged);
             // 
+            // saveAsEMFToolStripMenuItem
+            // 
+            this.saveAsEMFToolStripMenuItem.Name = "saveAsEMFToolStripMenuItem";
+            this.saveAsEMFToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
+            this.saveAsEMFToolStripMenuItem.Text = "Save as EMF";
+            this.saveAsEMFToolStripMenuItem.Click += new System.EventHandler(this.saveAsEMFToolStripMenuItem_Click);
+            // 
+            // MollierControl_Main
+            // 
+            this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.MollierControl_Main.Location = new System.Drawing.Point(23, 64);
+            this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
+            mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
+            mollierControlSettings1.Color = "default";
+            mollierControlSettings1.Density_line = true;
+            mollierControlSettings1.DisableLabels = false;
+            mollierControlSettings1.DisableUnits = false;
+            mollierControlSettings1.DivisionArea = false;
+            mollierControlSettings1.DivisionAreaLabels = true;
+            mollierControlSettings1.Elevation = 0D;
+            mollierControlSettings1.Enthalpy_line = true;
+            mollierControlSettings1.FindPoint = false;
+            mollierControlSettings1.FindPointType = "Enthalpy";
+            mollierControlSettings1.GradientPoint = false;
+            mollierControlSettings1.HumidityRatio_Interval = 5D;
+            mollierControlSettings1.HumidityRatio_Max = 35D;
+            mollierControlSettings1.HumidityRatio_Min = 0D;
+            mollierControlSettings1.P_w_Interval = 1D;
+            mollierControlSettings1.Percent = 0.4D;
+            mollierControlSettings1.Pressure = 101325D;
+            mollierControlSettings1.SpecificVolume_line = true;
+            mollierControlSettings1.Temperature_Interval = 5D;
+            mollierControlSettings1.Temperature_Max = 50D;
+            mollierControlSettings1.Temperature_Min = -20D;
+            mollierControlSettings1.VisibilitySettings = visibilitySettings1;
+            mollierControlSettings1.WetBulbTemperature_line = true;
+            this.MollierControl_Main.MollierControlSettings = mollierControlSettings1;
+            this.MollierControl_Main.Name = "MollierControl_Main";
+            pdfDefaultSettings1.A3Height = 297;
+            pdfDefaultSettings1.A3Width = 420;
+            pdfDefaultSettings1.A4Height = 210;
+            pdfDefaultSettings1.A4Width = 297;
+            pdfDefaultSettings1.ChartHeight = 728;
+            pdfDefaultSettings1.ChartWidth = 1512;
+            this.MollierControl_Main.PdfDefaultSettings = pdfDefaultSettings1;
+            this.MollierControl_Main.Size = new System.Drawing.Size(1339, 907);
+            this.MollierControl_Main.TabIndex = 0;
+            // 
             // MollierForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1374, 977);
             this.Controls.Add(this.DivisionAreaLabels_CheckBox);
             this.Controls.Add(this.DivisionAreaCheckBox);
@@ -513,6 +523,7 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.ComboBox ColorPointComboBox;
         private System.Windows.Forms.CheckBox DivisionAreaCheckBox;
         private System.Windows.Forms.CheckBox DivisionAreaLabels_CheckBox;
+        private System.Windows.Forms.ToolStripMenuItem saveAsEMFToolStripMenuItem;
     }
 }
 
