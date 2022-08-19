@@ -169,14 +169,11 @@ namespace SAM.Analytical.UI
                         dictionary["[WinterHeatingCoilSupplyTemperature]"] = @double;
                     }
 
-                    //TODO: Insert Data
-
                     Insert(worksheet.UsedRange, dictionary);
 
-                    Range range = FindRange(worksheet.UsedRange, "[Mollier_Chart]");
-                    Range range_2 = FindRange(worksheet.UsedRange, "[Psychrometric_Chart]");
-
-                    if(range == null || range_2 == null)
+                    Range range = Query.Range(worksheet.UsedRange, "[Mollier_Chart]");
+                    Range range_2 = Query.Range(worksheet.UsedRange, "[Psychrometric_Chart]");
+                    if (range == null || range_2 == null)
                     {
                         continue;
                     }
@@ -208,41 +205,18 @@ namespace SAM.Analytical.UI
                         
                         mollierProcesses?.ForEach(x => mollierControl.AddProcess(x, false));
 
-
-                        //StartPosition = FormStartPosition.Manual;
-                        //mollierControl.WindowState = System.Windows.Forms.FormWindowState.Normal;
-                        //mollierControl.Location = new System.Drawing.Point(0, 0);
                         mollierControl.Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
                         mollierControl.Refresh();
                         mollierControl.Save("EMF", 18, path: path);
 
 
                         mollierControlSettings.HumidityRatio_Max = 30;
-                        //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Normal;
-                        //mollierForm.Location = new System.Drawing.Point(0, 0);
                         mollierControl.Size = new Size(System.Convert.ToInt32(width_2 * 2), System.Convert.ToInt32(height_2 * 2));
-                        //mollierForm.Refresh();
                         mollierControlSettings.ChartType = ChartType.Psychrometric; 
                         mollierControl.MollierControlSettings = mollierControlSettings;
                         
                         mollierControl.Save("EMF", 18, path: path_2);
                     }
-
-                    float width_Picture = float.NaN;
-                    float height_Picture = float.NaN;
-
-
-
-
-                    //using (Image image = Image.FromFile(path))
-                    //{
-                    //    width_Picture = image.Width;
-                    //    height_Picture = image.Height;
-                    //    image.Dispose();
-                    //}
-
-
-                        
 
                     worksheet.Shapes.AddPicture(path, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
 
@@ -279,94 +253,6 @@ namespace SAM.Analytical.UI
                     }
                 }
             }
-        }
-
-        private static Range FindRange(Range range, string value)
-        {
-            if (range == null || string.IsNullOrEmpty(value))
-            {
-                return null;
-            }
-
-            object[,] values = range.Value as object[,];
-            if (values == null || values.GetLength(0) == 0 || values.GetLength(1) == 0)
-            {
-                return null;
-            }
-
-
-            for (int i = values.GetLowerBound(0); i <= values.GetUpperBound(0); i++)
-            {
-                for (int j = values.GetLowerBound(1); j <= values.GetUpperBound(1); j++)
-                {
-                    object @object = values[i, j];
-                    if (@object is string)
-                    {
-                        if ((string)@object == value)
-                        {
-                            Range range_Temp = range.Cells[i, j];
-                            return range.Range(range_Temp, range_Temp.MergeArea);
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        private static void Insert(Range range, Dictionary<string, object> dictionary)
-        {
-            if (range == null || dictionary == null || dictionary.Count == 0)
-            {
-                return;
-            }
-
-            object[,] values = range.Value as object[,];
-            if (values == null || values.GetLength(0) == 0 || values.GetLength(1) == 0)
-            {
-                return;
-            }
-
-            for (int i = values.GetLowerBound(0); i <= values.GetUpperBound(0); i++)
-            {
-                for (int j = values.GetLowerBound(1); j <= values.GetUpperBound(1); j++)
-                {
-                    string value = (values[i, j] as string)?.Trim();
-                    if (string.IsNullOrEmpty(value))
-                    {
-                        continue;
-                    }
-
-                    if (!value.Contains("[") || !value.Contains("]"))
-                    {
-                        continue;
-                    }
-
-                    foreach (KeyValuePair<string, object> keyValuePair in dictionary)
-                    {
-                        string id = keyValuePair.Key;
-
-                        if (!value.Contains(id))
-                        {
-                            continue;
-                        }
-
-                        object value_New = keyValuePair.Value;
-
-                        object @object = values[i, j];
-                        if (@object is string)
-                        {
-                            values[i, j] = ((string)@object).Replace(string.Format("{0}", id), value_New?.ToString() == null ? string.Empty : value_New.ToString());
-                        }
-                        else
-                        {
-                            values[i, j] = value_New;
-                        }
-                    }
-                }
-            }
-
-            range.Value = values;
         }
     }
 }

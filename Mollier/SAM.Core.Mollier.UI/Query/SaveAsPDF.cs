@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms.DataVisualization.Charting;
+﻿using System.Windows.Forms.DataVisualization.Charting;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
 using System.IO;
-using System.Windows.Forms.DataVisualization.Charting;
 namespace SAM.Core.Mollier.UI
 {
     public static partial class Query

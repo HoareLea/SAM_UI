@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using iTextSharp.text.pdf;
-using iTextSharp.text;
-using System.IO;
-using System.Windows.Forms.DataVisualization.Charting;
 using SAM.Geometry.Planar;
-using iText.Kernel.Pdf.Canvas.Wmf;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
@@ -1498,7 +1492,13 @@ namespace SAM.Core.Mollier.UI.Controls
                 MollierChart.SaveImage(path, ChartImageFormat.Emf);
                 return true;
             }
+            if(type == "PDF")
+            {
 
+                //SAM.Analytical.UI.Modify.PrintAirHandlingUnitsByTemplate()
+
+                return true;
+            }
 
             int newWidth = windowSize == "A3" ? pdfDefaultSettings.A3Width : pdfDefaultSettings.A4Width;
             int newHeight = windowSize == "A3" ? pdfDefaultSettings.A3Height : pdfDefaultSettings.A4Height;

@@ -5,8 +5,6 @@ using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.Grasshopper
 {
