@@ -64,6 +64,9 @@ namespace SAM.Core.Mollier.UI
             this.PercentPointsTextBox = new System.Windows.Forms.TextBox();
             this.PointsLabel = new System.Windows.Forms.Label();
             this.ColorPointComboBox = new System.Windows.Forms.ComboBox();
+            this.DivisionAreaCheckBox = new System.Windows.Forms.CheckBox();
+            this.DivisionAreaLabels_CheckBox = new System.Windows.Forms.CheckBox();
+            this.saveAsEMFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
@@ -117,7 +120,8 @@ namespace SAM.Core.Mollier.UI
             // 
             this.ToolStripMenuItem_File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_Save,
-            this.saveAsJPGToolStripMenuItem});
+            this.saveAsJPGToolStripMenuItem,
+            this.saveAsEMFToolStripMenuItem});
             this.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File";
             this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 26);
             this.ToolStripMenuItem_File.Text = "File";
@@ -128,7 +132,7 @@ namespace SAM.Core.Mollier.UI
             this.PdfA4ToolStripMenuItem,
             this.PdfA3ToolStripMenuItem});
             this.ToolStripMenuItem_Save.Name = "ToolStripMenuItem_Save";
-            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(171, 26);
+            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(173, 26);
             this.ToolStripMenuItem_Save.Text = "Save as PDF";
             // 
             // PdfA4ToolStripMenuItem
@@ -148,7 +152,7 @@ namespace SAM.Core.Mollier.UI
             // saveAsJPGToolStripMenuItem
             // 
             this.saveAsJPGToolStripMenuItem.Name = "saveAsJPGToolStripMenuItem";
-            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(171, 26);
+            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
             this.saveAsJPGToolStripMenuItem.Text = "Save as JPG";
             this.saveAsJPGToolStripMenuItem.Click += new System.EventHandler(this.saveAsJPGToolStripMenuItem_Click);
             // 
@@ -332,7 +336,7 @@ namespace SAM.Core.Mollier.UI
             // PointsCheckBox
             // 
             this.PointsCheckBox.AutoSize = true;
-            this.PointsCheckBox.Location = new System.Drawing.Point(526, 32);
+            this.PointsCheckBox.Location = new System.Drawing.Point(594, 32);
             this.PointsCheckBox.Name = "PointsCheckBox";
             this.PointsCheckBox.Size = new System.Drawing.Size(95, 20);
             this.PointsCheckBox.TabIndex = 30;
@@ -342,7 +346,7 @@ namespace SAM.Core.Mollier.UI
             // 
             // PercentPointsTextBox
             // 
-            this.PercentPointsTextBox.Location = new System.Drawing.Point(791, 30);
+            this.PercentPointsTextBox.Location = new System.Drawing.Point(844, 30);
             this.PercentPointsTextBox.Name = "PercentPointsTextBox";
             this.PercentPointsTextBox.Size = new System.Drawing.Size(33, 22);
             this.PercentPointsTextBox.TabIndex = 31;
@@ -354,7 +358,7 @@ namespace SAM.Core.Mollier.UI
             // PointsLabel
             // 
             this.PointsLabel.AutoSize = true;
-            this.PointsLabel.Location = new System.Drawing.Point(830, 33);
+            this.PointsLabel.Location = new System.Drawing.Point(883, 33);
             this.PointsLabel.Name = "PointsLabel";
             this.PointsLabel.Size = new System.Drawing.Size(19, 16);
             this.PointsLabel.TabIndex = 32;
@@ -368,12 +372,42 @@ namespace SAM.Core.Mollier.UI
             this.ColorPointComboBox.Items.AddRange(new object[] {
             "Temperature",
             "Enthalpy"});
-            this.ColorPointComboBox.Location = new System.Drawing.Point(627, 28);
+            this.ColorPointComboBox.Location = new System.Drawing.Point(695, 29);
             this.ColorPointComboBox.Name = "ColorPointComboBox";
             this.ColorPointComboBox.Size = new System.Drawing.Size(143, 24);
             this.ColorPointComboBox.TabIndex = 38;
             this.ColorPointComboBox.Visible = false;
             this.ColorPointComboBox.SelectedIndexChanged += new System.EventHandler(this.ColorPointComboBox_SelectedIndexChanged);
+            // 
+            // DivisionAreaCheckBox
+            // 
+            this.DivisionAreaCheckBox.AutoSize = true;
+            this.DivisionAreaCheckBox.Location = new System.Drawing.Point(479, 32);
+            this.DivisionAreaCheckBox.Name = "DivisionAreaCheckBox";
+            this.DivisionAreaCheckBox.Size = new System.Drawing.Size(109, 20);
+            this.DivisionAreaCheckBox.TabIndex = 40;
+            this.DivisionAreaCheckBox.Text = "Division Area";
+            this.DivisionAreaCheckBox.UseVisualStyleBackColor = true;
+            this.DivisionAreaCheckBox.CheckedChanged += new System.EventHandler(this.DivisionAreaCheckBox_CheckedChanged);
+            // 
+            // DivisionAreaLabels_CheckBox
+            // 
+            this.DivisionAreaLabels_CheckBox.AutoSize = true;
+            this.DivisionAreaLabels_CheckBox.Location = new System.Drawing.Point(479, 8);
+            this.DivisionAreaLabels_CheckBox.Name = "DivisionAreaLabels_CheckBox";
+            this.DivisionAreaLabels_CheckBox.Size = new System.Drawing.Size(119, 20);
+            this.DivisionAreaLabels_CheckBox.TabIndex = 41;
+            this.DivisionAreaLabels_CheckBox.Text = "Turn Off Labels";
+            this.DivisionAreaLabels_CheckBox.UseVisualStyleBackColor = true;
+            this.DivisionAreaLabels_CheckBox.Visible = false;
+            this.DivisionAreaLabels_CheckBox.CheckedChanged += new System.EventHandler(this.DivisionAreaLabels_CheckBox_CheckedChanged);
+            // 
+            // saveAsEMFToolStripMenuItem
+            // 
+            this.saveAsEMFToolStripMenuItem.Name = "saveAsEMFToolStripMenuItem";
+            this.saveAsEMFToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
+            this.saveAsEMFToolStripMenuItem.Text = "Save as EMF";
+            this.saveAsEMFToolStripMenuItem.Click += new System.EventHandler(this.saveAsEMFToolStripMenuItem_Click);
             // 
             // MollierControl_Main
             // 
@@ -387,13 +421,18 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings1.Density_line = true;
             mollierControlSettings1.DisableLabels = false;
             mollierControlSettings1.DisableUnits = false;
+            mollierControlSettings1.DivisionArea = false;
+            mollierControlSettings1.DivisionAreaLabels = true;
             mollierControlSettings1.Elevation = 0D;
             mollierControlSettings1.Enthalpy_line = true;
+            mollierControlSettings1.FindPoint = false;
+            mollierControlSettings1.FindPointType = "Enthalpy";
             mollierControlSettings1.GradientPoint = false;
             mollierControlSettings1.HumidityRatio_Interval = 5D;
             mollierControlSettings1.HumidityRatio_Max = 35D;
             mollierControlSettings1.HumidityRatio_Min = 0D;
             mollierControlSettings1.P_w_Interval = 1D;
+            mollierControlSettings1.Percent = 0.4D;
             mollierControlSettings1.Pressure = 101325D;
             mollierControlSettings1.SpecificVolume_line = true;
             mollierControlSettings1.Temperature_Interval = 5D;
@@ -412,12 +451,14 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.PdfDefaultSettings = pdfDefaultSettings1;
             this.MollierControl_Main.Size = new System.Drawing.Size(1339, 907);
             this.MollierControl_Main.TabIndex = 0;
-            this.MollierControl_Main.Paint += new System.Windows.Forms.PaintEventHandler(this.MollierControl_Main_Paint);
             // 
             // MollierForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1374, 977);
+            this.Controls.Add(this.DivisionAreaLabels_CheckBox);
+            this.Controls.Add(this.DivisionAreaCheckBox);
             this.Controls.Add(this.ColorPointComboBox);
             this.Controls.Add(this.PointsLabel);
             this.Controls.Add(this.PercentPointsTextBox);
@@ -480,6 +521,9 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.TextBox PercentPointsTextBox;
         private System.Windows.Forms.Label PointsLabel;
         private System.Windows.Forms.ComboBox ColorPointComboBox;
+        private System.Windows.Forms.CheckBox DivisionAreaCheckBox;
+        private System.Windows.Forms.CheckBox DivisionAreaLabels_CheckBox;
+        private System.Windows.Forms.ToolStripMenuItem saveAsEMFToolStripMenuItem;
     }
 }
 

@@ -113,7 +113,9 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
-            Modify.PrintAirHandlingUnits(analyticalModel, excelPath, "AHU-XX");
+            //Modify.PrintAirHandlingUnits(analyticalModel, excelPath, "AHU-XX");
+
+            Modify.PrintAirHandlingUnitsByTemplate(analyticalModel, excelPath, System.IO.Path.GetDirectoryName(excelPath), "AHU1");
 
             index = Params.IndexOfOutputParam("analyticalModel");
             if (index != -1)

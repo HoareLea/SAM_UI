@@ -58,6 +58,10 @@
     <Reference Include="SAM.Core.Excel">
       <HintPath>..\..\..\SAM_Excel\build\SAM.Core.Excel.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Core.Mollier, Version=1.0.8265.16371, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Core.Tas">
       <HintPath>..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
     </Reference>
@@ -170,6 +174,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
+      <Project>{FD5079BC-621D-44CE-8EAE-6E85510FE050}</Project>
+      <Name>SAM.Core.Mollier.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
       <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
       <Name>SAM.Core.UI</Name>

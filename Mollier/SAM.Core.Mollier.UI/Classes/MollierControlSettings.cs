@@ -30,6 +30,8 @@ namespace SAM.Core.Mollier.UI
         public bool FindPoint { get; set; } = false;
         public double Percent { get; set; } = 0.4;
         public string FindPointType { get; set; } = "Enthalpy";
+        public bool DivisionArea { get; set; } = false;
+        public bool DivisionAreaLabels { get; set; } = true;
 
         public PointGradientVisibilitySetting GradientColors { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
@@ -66,6 +68,8 @@ namespace SAM.Core.Mollier.UI
             FindPoint = mollierControlSettings.FindPoint;
             Percent = mollierControlSettings.Percent;
             FindPointType = mollierControlSettings.FindPointType;
+            DivisionArea = mollierControlSettings.DivisionArea;
+            DivisionAreaLabels = mollierControlSettings.DivisionAreaLabels;
 
 
         }

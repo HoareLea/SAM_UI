@@ -4,6 +4,9 @@ using System.Drawing;
 using System.Linq;
 using NetOffice.ExcelApi;
 using SAM.Analytical.Mollier;
+using SAM.Core.Mollier;
+using SAM.Core.Mollier.UI;
+using SAM.Core.Mollier.UI.Controls;
 
 namespace SAM.Analytical.UI
 {
@@ -24,6 +27,8 @@ namespace SAM.Analytical.UI
                 return;
             }
 
+            List<string> paths = new List<string>();
+
             Func<Workbook, bool> func = new Func<Workbook, bool>((Workbook workbook) => 
             {
                 if(workbook == null)
@@ -39,13 +44,13 @@ namespace SAM.Analytical.UI
 
                 foreach (AirHandlingUnitResult airHandlingUnitResult in airHandlingUnitResults)
                 {
-                    string name = airHandlingUnitResult?.Name;
+                    string name = airHandlingUnitResult?.Name + "TEST";
                     if (string.IsNullOrWhiteSpace(name))
                     {
                         continue;
                     }
 
-                    if(aHUNames != null && aHUNames.Count() != 0)
+                    if (aHUNames != null && aHUNames.Count() != 0)
                     {
                         if (!aHUNames.Contains(name))
                         {
@@ -54,7 +59,7 @@ namespace SAM.Analytical.UI
                     }
 
                     Worksheet worksheet = Core.Excel.Query.Worksheet(workbook, name);
-                    if(worksheet != null)
+                    if (worksheet != null)
                     {
                         worksheet.Delete();
                     }
@@ -65,14 +70,14 @@ namespace SAM.Analytical.UI
                     dictionary["[Name]"] = name;
 
                     AirSupplyMethod airSupplyMethod = Analytical.Query.AirSupplyMethod(adjacencyCluster, name);
-                    if(airSupplyMethod != AirSupplyMethod.Undefined)
+                    if (airSupplyMethod != AirSupplyMethod.Undefined)
                     {
                         dictionary["[AirSupplyMethod]"] = airSupplyMethod == AirSupplyMethod.Total ? "TSA" : "OSA";
                     }
 
                     double @double;
 
-                    if(airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SupplyAirFlow, out @double) && !double.IsNaN(@double))
+                    if (airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SupplyAirFlow, out @double) && !double.IsNaN(@double))
                     {
                         dictionary["[SupplyAirFlow]"] = @double;
                     }
@@ -168,29 +173,112 @@ namespace SAM.Analytical.UI
 
                     Insert(worksheet.UsedRange, dictionary);
 
-                    Range range = FindRange(worksheet.UsedRange, "[MollierChart]");
+                    Range range = FindRange(worksheet.UsedRange, "[Mollier_Chart]");
+                    Range range_2 = FindRange(worksheet.UsedRange, "[Psychrometric_Chart]");
+
+                    if(range == null || range_2 == null)
+                    {
+                        continue;
+                    }
 
                     float left = (float)(double)range.Left;
+                    float left_2 = (float)(double)range_2.Left;
                     float top = (float)(double)range.Top;
+                    float top_2 = (float)(double)range_2.Top;
+
+                    float width = (float)(double)range.Width;
+                    float width_2 = (float)(double)range_2.Width;
+                    float height = (float)(double)range.Height;
+                    float height_2 = (float)(double)range_2.Height;
+
+                    string path = System.IO.Path.GetTempFileName();
+                    string path_2 = System.IO.Path.GetTempFileName();
+                    
+                    paths.Add(path);
+                    paths.Add(path_2);
+
+                    Mollier.Modify.UpdateMollierProcesses(new AirHandlingUnitResult(airHandlingUnitResult), out List<IMollierProcess> mollierProcesses);
+
+                    using (MollierControl mollierControl = new MollierControl() { Visible = false })
+                    {
+                        MollierControlSettings mollierControlSettings = new MollierControlSettings();
+                        mollierControlSettings.HumidityRatio_Max = 25;
+                        mollierControlSettings.ChartType = ChartType.Mollier;
+                        mollierControl.MollierControlSettings = mollierControlSettings;
+                        
+                        mollierProcesses?.ForEach(x => mollierControl.AddProcess(x, false));
 
 
-                    //float right = left + (float)(double)range.Width;
-                    //float bottom = top - left + (float)(double)range.Height;
+                        //StartPosition = FormStartPosition.Manual;
+                        //mollierControl.WindowState = System.Windows.Forms.FormWindowState.Normal;
+                        //mollierControl.Location = new System.Drawing.Point(0, 0);
+                        mollierControl.Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
+                        mollierControl.Refresh();
+                        mollierControl.Save("EMF", 18, path: path);
 
-                    string path = null;
 
-                    Image image = Image.FromFile(path);
+                        mollierControlSettings.HumidityRatio_Max = 30;
+                        //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Normal;
+                        //mollierForm.Location = new System.Drawing.Point(0, 0);
+                        mollierControl.Size = new Size(System.Convert.ToInt32(width_2 * 2), System.Convert.ToInt32(height_2 * 2));
+                        //mollierForm.Refresh();
+                        mollierControlSettings.ChartType = ChartType.Psychrometric; 
+                        mollierControl.MollierControlSettings = mollierControlSettings;
+                        
+                        mollierControl.Save("EMF", 18, path: path_2);
+                    }
 
-                    worksheet.Shapes.AddPicture(path, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, image.Width, image.Height);
+                    float width_Picture = float.NaN;
+                    float height_Picture = float.NaN;
+
+
+
+
+                    //using (Image image = Image.FromFile(path))
+                    //{
+                    //    width_Picture = image.Width;
+                    //    height_Picture = image.Height;
+                    //    image.Dispose();
+                    //}
+
+
+                        
+
+                    worksheet.Shapes.AddPicture(path, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
+
+                    worksheet.Shapes.AddPicture(path_2, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left_2, top_2, width_2, height_2);
+                    
                     range.Value = string.Empty;
 
-                    worksheet.ExportAsFixedFormat(NetOffice.ExcelApi.Enums.XlFixedFormatType.xlTypePDF, System.IO.Path.Combine(directory, name + ".pdf"));
+                    string path_Pdf = System.IO.Path.Combine(directory, name + ".pdf");
+                    if(System.IO.File.Exists(path_Pdf))
+                    {
+                        System.IO.File.Delete(path_Pdf);
+                    }
+
+                    worksheet.ExportAsFixedFormat(NetOffice.ExcelApi.Enums.XlFixedFormatType.xlTypePDF, path_Pdf);
                 }
 
-                return true;
+                return false;
             });
 
             Core.Excel.Modify.Edit(path_Excel, func);
+
+            System.Threading.Thread.Sleep(1000);
+
+            if(paths != null && paths.Count != 0)
+            {
+                foreach(string path in paths)
+                {
+                    if(System.IO.File.Exists(path))
+                    {
+                        if(Core.Query.WaitToUnlock(path))
+                        {
+                            System.IO.File.Delete(path);
+                        }
+                    }
+                }
+            }
         }
 
         private static Range FindRange(Range range, string value)
@@ -214,8 +302,11 @@ namespace SAM.Analytical.UI
                     object @object = values[i, j];
                     if (@object is string)
                     {
-                        //TODO: get Valid Range
-                        //return range.Range;
+                        if ((string)@object == value)
+                        {
+                            Range range_Temp = range.Cells[i, j];
+                            return range.Range(range_Temp, range_Temp.MergeArea);
+                        }
                     }
                 }
             }
