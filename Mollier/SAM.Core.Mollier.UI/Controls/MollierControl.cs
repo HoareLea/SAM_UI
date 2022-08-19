@@ -29,7 +29,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private void create_relative_humidity_line_Mollier(int temperature_Min, int temperature_Max, double relative_humidity, double pressure)
         {
-            List<List<Geometry.Planar.Point2D>> humidity_ratio_points = new List<List<Geometry.Planar.Point2D>>();
+            List<List<Point2D>> humidity_ratio_points = new List<List<Geometry.Planar.Point2D>>();
             for (int i = temperature_Min; i <= temperature_Max; i++)
             {
                 humidity_ratio_points.Add(new List<Geometry.Planar.Point2D>());
@@ -1487,16 +1487,85 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             if (type == "EMF")
             {
-                //Parent.Size = new Size(System.Convert.ToInt32(748), System.Convert.ToInt32(3000));
-                //MollierChart.Size = new Size(System.Convert.ToInt32(748), System.Convert.ToInt32(3000));
-                MollierChart.SaveImage(path, ChartImageFormat.Emf);
+                int x = MollierChart.Size.Width;
+
+                MollierChart.SaveImage(path, ChartImageFormat.Tiff);
+                Image image = new Bitmap(path);
+                
                 return true;
             }
             if(type == "PDF")
             {
+                string pathExcel = "C:/Users/macie/OneDrive/Pulpit/excelTest/test_AHU_1.xlsx";
+                string directory = System.IO.Path.GetDirectoryName(pathExcel);
+                string worksheetName = "AHU";
+                if (string.IsNullOrWhiteSpace(pathExcel) || !System.IO.File.Exists(pathExcel) || string.IsNullOrWhiteSpace(worksheetName))
+                {
+                    return false;
+                }
+                string path_temp = "";
+                Func<NetOffice.ExcelApi.Workbook, bool> func = new Func<NetOffice.ExcelApi.Workbook, bool>((NetOffice.ExcelApi.Workbook workbook) =>
+                {
+                    if (workbook == null)
+                    {
+                        return false;
+                    }
+                    string name = "TEST";
+                    NetOffice.ExcelApi.Worksheet workseet_Template = SAM.Core.Excel.Query.Worksheet(workbook, worksheetName);
+                    if (workseet_Template == null)
+                    {
+                        return false;
+                    }
 
-                //SAM.Analytical.UI.Modify.PrintAirHandlingUnitsByTemplate()
+                    NetOffice.ExcelApi.Worksheet worksheet = Excel.Query.Worksheet(workbook, name);
+                    if (worksheet != null)
+                    {
+                        worksheet.Delete();
+                    }
 
+                    worksheet = Excel.Modify.Copy(workseet_Template, name);
+                   
+                    NetOffice.ExcelApi.Range range = SAM.Analytical.UI.Query.Range(worksheet.UsedRange, "[Chart]");
+                    
+                    if (range == null)
+                    {
+                        return false;
+                    }
+                    float left = (float)(double)range.Left;
+                    float top = (float)(double)range.Top;
+
+                    float width = (float)(double)range.Width;
+                    float height = (float)(double)range.Height;
+
+                    path_temp = System.IO.Path.GetTempFileName();
+
+
+                    Size size_Temp = this.Size;
+                    this.Size = new Size(System.Convert.ToInt32(width), System.Convert.ToInt32(height));
+                    this.Save("EMF", 18, path: path_temp);
+                    this.Size = size_Temp;
+
+
+                    worksheet.Shapes.AddPicture(path_temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
+                    range.Value = string.Empty;
+
+
+                    worksheet.ExportAsFixedFormat(NetOffice.ExcelApi.Enums.XlFixedFormatType.xlTypePDF, path);
+                    worksheet.s
+                    return false;
+                });
+
+                Excel.Modify.Edit(pathExcel, func);
+
+                System.Threading.Thread.Sleep(1000);
+
+                if (System.IO.File.Exists(path_temp))
+                {
+                     if (Core.Query.WaitToUnlock(path_temp))
+                     {
+                        System.IO.File.Delete(path_temp);
+                     }
+                }
                 return true;
             }
 
@@ -1597,7 +1666,7 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.Refresh();
             selection = false;
         }
-        static public System.Drawing.Rectangle GetRectangle(Point p1, Point p2)
+        static public Rectangle GetRectangle(Point p1, Point p2)
         {
             return new System.Drawing.Rectangle(System.Math.Min(p1.X, p2.X), System.Math.Min(p1.Y, p2.Y), System.Math.Abs(p1.X - p2.X), System.Math.Abs(p1.Y - p2.Y));
         }
@@ -1635,6 +1704,15 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 pdfDefaultSettings = new PdfDefaultSettings(value);
             }
+        }
+
+        public bool MollierPoints()//checks if there exist any point
+        {
+            if(mollierPoints == null || mollierPoints.Count == 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         public void ColorPoints(bool generate, double percent, string chartDataType)

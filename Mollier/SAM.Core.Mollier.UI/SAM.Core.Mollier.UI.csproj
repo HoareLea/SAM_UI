@@ -40,6 +40,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Core.Excel, Version=1.0.8207.21490, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\build\SAM.Core.Excel.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Core.Mollier, Version=1.0.8236.24532, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
@@ -173,6 +177,9 @@
     </PackageReference>
     <PackageReference Include="iTextSharp">
       <Version>5.5.13.3</Version>
+    </PackageReference>
+    <PackageReference Include="NetOfficeFw.Excel">
+      <Version>1.8.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>

@@ -13,7 +13,12 @@ namespace SAM.Core.Mollier.UI
         /// <returns>Returns Dictionary of Points with their value of adjacent points</returns>
         public static Dictionary<MollierPoint, int> NeighborhoodCount(this IEnumerable<MollierPoint> mollierPoints, out double maxCount, out List<MollierPoint>[,] rectangles_points)
         { 
-
+            if(mollierPoints == null)
+            {
+                maxCount = 0;
+                rectangles_points = null;
+                return null;
+            }
             maxCount = 0;//maximum points in one area, in the end it takes logarithm of the number of points for greater graph clarity
             Dictionary<MollierPoint, int> result = new Dictionary<MollierPoint, int>();//dictionary: key - mollierpoint, value - number of points in its area
 
