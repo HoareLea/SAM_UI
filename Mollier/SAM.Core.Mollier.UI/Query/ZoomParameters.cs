@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
+﻿using System.Collections.Generic;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace SAM.Core.Mollier.UI

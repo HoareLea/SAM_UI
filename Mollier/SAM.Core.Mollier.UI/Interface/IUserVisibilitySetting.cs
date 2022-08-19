@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace SAM.Core.Mollier.UI
+﻿namespace SAM.Core.Mollier.UI
 {
     public interface IUserVisibilitySetting : IVisibilitySetting
     {

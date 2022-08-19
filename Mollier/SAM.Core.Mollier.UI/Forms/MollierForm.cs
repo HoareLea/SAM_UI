@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
 using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
@@ -500,10 +499,7 @@ namespace SAM.Core.Mollier.UI
 
         private void saveAsEMFToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StartPosition = FormStartPosition.Manual;
-            WindowState = FormWindowState.Normal;
-            Location = new Point(0, 0);
-            Size = new Size(937, 984);
+            MollierControl_Main.Size = new Size(2304, 3715);
             Refresh();
             SaveAs(null);
         }
