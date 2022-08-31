@@ -12,7 +12,7 @@ namespace SAM.Core.Mollier.UI
         /// <param name="mollierPoints">List of Mollier Points</param>
         /// <param name="mollierProcesses">List of Mollier Processes</param>
         /// <returns>Returns the most frequenly appearing value of pressure in both lists</returns>
-        public static double DefaultPressure(IEnumerable<MollierPoint> mollierPoints, IEnumerable<IMollierProcess> mollierProcesses)
+        public static double DefaultPressure(IEnumerable<MollierPoint> mollierPoints = null, IEnumerable<IMollierProcess> mollierProcesses = null)
         {
             List<double> pressures = new List<double>();
             if (mollierProcesses != null)
@@ -28,6 +28,11 @@ namespace SAM.Core.Mollier.UI
                 {
                     pressures.Add(point.Pressure);
                 }
+            }
+
+            if(pressures == null || pressures.Count == 0)
+            {
+                return Standard.Pressure;
             }
 
             pressures.Sort();
@@ -49,6 +54,12 @@ namespace SAM.Core.Mollier.UI
                     count = 1;
                 }
             }
+
+            if(double.IsNaN(pressure))
+            {
+                return Standard.Pressure;
+            }
+
             return pressure;
         }
     }
