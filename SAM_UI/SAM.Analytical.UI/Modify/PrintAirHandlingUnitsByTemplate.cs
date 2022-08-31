@@ -171,8 +171,8 @@ namespace SAM.Analytical.UI
 
                     Insert(worksheet.UsedRange, dictionary);
 
-                    Range range = Query.Range(worksheet.UsedRange, "[Mollier_Chart]");
-                    Range range_2 = Query.Range(worksheet.UsedRange, "[Psychrometric_Chart]");
+                    Range range = Core.Excel.Query.Range(worksheet.UsedRange, "[Mollier_Chart]");
+                    Range range_2 = Core.Excel.Query.Range(worksheet.UsedRange, "[Psychrometric_Chart]");
                     if (range == null || range_2 == null)
                     {
                         continue;

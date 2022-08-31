@@ -119,7 +119,6 @@
     </Compile>
     <Compile Include="Modify\Insert.cs" />
     <Compile Include="Modify\AddMissingObjects.cs" />
-    <Compile Include="Query\Range.cs" />
     <Compile Include="Modify\Check.cs" />
     <Compile Include="Modify\Clean.cs" />
     <Compile Include="Modify\CreateMechanicalSystem.cs" />

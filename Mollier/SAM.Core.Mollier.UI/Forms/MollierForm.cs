@@ -435,7 +435,7 @@ namespace SAM.Core.Mollier.UI
         private void PercentPointsTextBox_TextChanged(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            if (SAM.Core.Query.TryConvert(PercentPointsTextBox.Text, out double value))
+            if (Core.Query.TryConvert(PercentPointsTextBox.Text, out double value))
             {
                 mollierControlSettings.Percent = value;
             }
