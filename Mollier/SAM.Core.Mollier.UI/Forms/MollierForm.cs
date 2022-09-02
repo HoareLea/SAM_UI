@@ -417,21 +417,6 @@ namespace SAM.Core.Mollier.UI
             PointsLabel.Visible = !PointsLabel.Visible;
             ColorPointComboBox.Visible = !ColorPointComboBox.Visible;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            //foreach (Series series in MollierControl_Main.Series)
-            //{
-            //    if (series.Tag == "ColorPoint")
-            //    {
-            //        series.Enabled = false;
-            //    }
-            //}
-            //if (PointsCheckBox.Checked)
-            //{
-            //    generateColorPoint(true);
-            //}
-            //else
-            //{
-            //    generateColorPoint(false);
-            //}
 
         }
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -450,7 +435,7 @@ namespace SAM.Core.Mollier.UI
         private void PercentPointsTextBox_TextChanged(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            if (SAM.Core.Query.TryConvert(PercentPointsTextBox.Text, out double value))
+            if (Core.Query.TryConvert(PercentPointsTextBox.Text, out double value))
             {
                 mollierControlSettings.Percent = value;
             }
@@ -471,6 +456,12 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (DivisionAreaCheckBox.Checked)
             {
+                if (!MollierControl_Main.MollierPoints())
+                {
+                    MessageBox.Show("There are no points");
+                    DivisionAreaCheckBox.Checked = false;
+                    return;
+                }
                 mollierControlSettings.DivisionArea = true;
                 DivisionAreaLabels_CheckBox.Visible = true;
             }
@@ -499,8 +490,8 @@ namespace SAM.Core.Mollier.UI
 
         private void saveAsEMFToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Size = new Size(2304, 3715);
-            Refresh();
+            //MollierControl_Main.Size = new Size(100, 100);
+            //Refresh();
             SaveAs(null);
         }
     }
