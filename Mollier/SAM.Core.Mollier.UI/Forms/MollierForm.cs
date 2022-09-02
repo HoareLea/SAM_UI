@@ -490,8 +490,8 @@ namespace SAM.Core.Mollier.UI
 
         private void saveAsEMFToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Size = new Size(1500, 2010);
-            Refresh();
+            //MollierControl_Main.Size = new Size(100, 100);
+            //Refresh();
             SaveAs(null);
         }
     }

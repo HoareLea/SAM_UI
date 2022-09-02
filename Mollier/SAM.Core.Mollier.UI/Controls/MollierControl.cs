@@ -1486,20 +1486,29 @@ namespace SAM.Core.Mollier.UI.Controls
                 return true;
             }
             if (type == "EMF")
-            {
-                int x = MollierChart.Size.Width;
+            { 
 
-                MollierChart.SaveImage(path, ChartImageFormat.Tiff);
-                Image image = new Bitmap(path);
+                MollierChart.SaveImage(path, ChartImageFormat.Emf);
                 
                 return true;
             }
             if(type == "PDF")
             {
-                string pathExcel = "C:/Users/macie/OneDrive/Pulpit/excelTest/test_AHU_1.xlsx";
-                string directory = System.IO.Path.GetDirectoryName(pathExcel);
+                string path_Template = Core.Query.TemplatesDirectory(typeof(SAM.Core.Address).Assembly);
+                if (!System.IO.Directory.Exists(path_Template))
+                {
+                    return false;
+                }
+
+                path_Template = System.IO.Path.Combine(path_Template, "AHU", "PDF_Print_AHU.xlsx");
+                if (!System.IO.File.Exists(path_Template))
+                {
+                    return false;
+                }
+                //string path_Template = "C:/Users/macie/OneDrive/Pulpit/excelTest/test_AHU_1.xlsx";
+                string directory = System.IO.Path.GetDirectoryName(path_Template);
                 string worksheetName = "AHU";
-                if (string.IsNullOrWhiteSpace(pathExcel) || !System.IO.File.Exists(pathExcel) || string.IsNullOrWhiteSpace(worksheetName))
+                if (string.IsNullOrWhiteSpace(path_Template) || !System.IO.File.Exists(path_Template) || string.IsNullOrWhiteSpace(worksheetName))
                 {
                     return false;
                 }
@@ -1539,23 +1548,27 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     path_temp = System.IO.Path.GetTempFileName();
 
-
                     Size size_Temp = this.Size;
                     this.Size = new Size(System.Convert.ToInt32(width), System.Convert.ToInt32(height));
                     this.Save("EMF", 18, path: path_temp);
                     this.Size = size_Temp;
 
 
-                    worksheet.Shapes.AddPicture(path_temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
+                    NetOffice.ExcelApi.Shape shape = worksheet.Shapes.AddPicture(path_temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
+                    shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * 0.78);
+                    shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * 0.76);
+                    shape.Width = width;
+                    shape.Height = height;
                     range.Value = string.Empty;
 
+                    workbook.SaveCopyAs(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), "TEST.xlsx"));
 
                     worksheet.ExportAsFixedFormat(NetOffice.ExcelApi.Enums.XlFixedFormatType.xlTypePDF, path);
-                    //worksheet.s
+
                     return false;
                 });
 
-                Excel.Modify.Edit(pathExcel, func);
+                Excel.Modify.Edit(path_Template, func);
 
                 System.Threading.Thread.Sleep(1000);
 

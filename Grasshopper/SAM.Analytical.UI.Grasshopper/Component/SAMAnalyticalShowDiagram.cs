@@ -106,7 +106,7 @@ namespace SAM.Analytical.UI.Grasshopper
                 dataAccess.GetDataList(index, mollierProcesses);
             }
 
-            if (mollierForm == null  || mollierForm.IsDisposed)
+            if (mollierForm == null || mollierForm.IsDisposed)
             {
                 mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
             }
