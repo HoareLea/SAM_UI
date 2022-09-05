@@ -137,7 +137,7 @@ namespace SAM.Core.Mollier.UI
 
         public void SaveAs(string path)
         {
-            MollierControl_Main.Save("EMF", 18, path: path);
+            MollierControl_Main.Save("EMF", path: path);
         }
         
         //operation of the add process and add point buttons
@@ -235,6 +235,7 @@ namespace SAM.Core.Mollier.UI
             defaultToolStripMenuItem.Checked = mollierControlSettings.Color == "default";
             blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
             grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
+            blueBlackToolStripMenuItem.Checked = mollierControlSettings.Color == "blue-black";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
             MollierControl_Main.PdfDefaultSettings = new PdfDefaultSettings();
         }
@@ -249,6 +250,10 @@ namespace SAM.Core.Mollier.UI
             if (grayToolStripMenuItem.Checked)
             {
                 grayToolStripMenuItem.Checked = false;
+            }
+            if (blueBlackToolStripMenuItem.Checked)
+            {
+                blueBlackToolStripMenuItem.Checked = false;
             }
             blueToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
@@ -265,6 +270,10 @@ namespace SAM.Core.Mollier.UI
             {
                 blueToolStripMenuItem.Checked = false;
             }
+            if (blueBlackToolStripMenuItem.Checked)
+            {
+                blueBlackToolStripMenuItem.Checked = false;
+            }
             grayToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.Color = "gray";
@@ -280,9 +289,32 @@ namespace SAM.Core.Mollier.UI
             {
                 grayToolStripMenuItem.Checked = false;
             }
+            if (blueBlackToolStripMenuItem.Checked)
+            {
+                blueBlackToolStripMenuItem.Checked = false;
+            }
             defaultToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.Color = "default";
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+        }
+        private void blueBlackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (blueToolStripMenuItem.Checked)
+            {
+                blueToolStripMenuItem.Checked = false;
+            }
+            if (grayToolStripMenuItem.Checked)
+            {
+                grayToolStripMenuItem.Checked = false;
+            }
+            if (defaultToolStripMenuItem.Checked)
+            {
+                defaultToolStripMenuItem.Checked = false;
+            }
+            blueBlackToolStripMenuItem.Checked = true;
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.Color = "blue-black";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         private void ChartToolStripMenuItem_Mollier_Click(object sender, EventArgs e)
@@ -386,20 +418,28 @@ namespace SAM.Core.Mollier.UI
 
         private void saveAsJPGToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Save("JPG", 18);
+            MollierControl_Main.Save("JPG");
         }
 
-        private void PdfA4ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PdfA3_PortraitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Save("PDF", 18, "A4");
+            MollierControl_Main.Save("PDF", "A3_Portrait");
         }
 
-        private void PdfA3ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PdfA3_LandscapeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Save("PDF", 28, "A3");
+            MollierControl_Main.Save("PDF", "A3_Landscape");
         }
 
+        private void a4PortraitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.Save("PDF", "A4_Portrait");
+        }
 
+        private void a4LandscapeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.Save("PDF", "A4_Landscape");
+        }
         private void PointsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
@@ -494,5 +534,6 @@ namespace SAM.Core.Mollier.UI
             //Refresh();
             SaveAs(null);
         }
+
     }
 }

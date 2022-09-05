@@ -344,7 +344,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 double X = series_Temp.Points.Last().XValue;
                 double Y = series_Temp.Points.Last().YValues[0];
                 int angle = findAngle(series_Temp, chartType);
-                create_moved_label(chartType, X, Y, angle, angle, -2, 0.6, 2.5, -0.005, "Specific volume v [kg/m³]", ChartDataType.SpecificVolume, ChartParameterType.Label, mollierControlSettings.DisableLabels);
+                create_moved_label(chartType, X, Y, angle, angle, -3, 0.8, 2.5, -0.005, "Specific volume v [kg/m³]", ChartDataType.SpecificVolume, ChartParameterType.Label, mollierControlSettings.DisableLabels);
             }
         }
         private Dictionary<double, List<MollierPoint>> GetMollierPoints_SpecificVolume(double specific_volume_Min, double specific_volume_Max, double pressure)
@@ -1463,7 +1463,7 @@ namespace SAM.Core.Mollier.UI.Controls
             generate_graph();
             return true;
         }
-        public bool Save(string type, int fontSize, string windowSize = "A4", string path = null)
+        public bool Save(string type, string orientation = "A4", string path = null)
         {
             if (string.IsNullOrEmpty(path))
             {
@@ -1492,7 +1492,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 
                 return true;
             }
-            if(type == "PDF")
+            if (type == "PDF")
             {
                 string path_Template = Core.Query.TemplatesDirectory(typeof(SAM.Core.Address).Assembly);
                 if (!System.IO.Directory.Exists(path_Template))
@@ -1500,14 +1500,14 @@ namespace SAM.Core.Mollier.UI.Controls
                     return false;
                 }
 
-                path_Template = System.IO.Path.Combine(path_Template, "AHU", "PDF_Print_AHU.xlsx");
+                path_Template = System.IO.Path.Combine(path_Template, "AHU", "PDF_Print — kopia.xlsx");
                 if (!System.IO.File.Exists(path_Template))
                 {
                     return false;
                 }
-                //string path_Template = "C:/Users/macie/OneDrive/Pulpit/excelTest/test_AHU_1.xlsx";
+
                 string directory = System.IO.Path.GetDirectoryName(path_Template);
-                string worksheetName = "AHU";
+                string worksheetName = orientation;//this should be changed
                 if (string.IsNullOrWhiteSpace(path_Template) || !System.IO.File.Exists(path_Template) || string.IsNullOrWhiteSpace(worksheetName))
                 {
                     return false;
@@ -1527,15 +1527,16 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
 
                     NetOffice.ExcelApi.Worksheet worksheet = Excel.Query.Worksheet(workbook, name);
+                   
                     if (worksheet != null)
                     {
                         worksheet.Delete();
                     }
 
                     worksheet = Excel.Modify.Copy(workseet_Template, name);
-                   
-                    NetOffice.ExcelApi.Range range = Excel.Query.Range(worksheet.UsedRange, "[Chart]");
-                    
+                 
+                    NetOffice.ExcelApi.Range range = Excel.Query.Range(worksheet.UsedRange, orientation);
+
                     if (range == null)
                     {
                         return false;
@@ -1549,12 +1550,21 @@ namespace SAM.Core.Mollier.UI.Controls
                     path_temp = System.IO.Path.GetTempFileName();
 
                     Size size_Temp = this.Size;
-                    this.Size = new Size(System.Convert.ToInt32(width), System.Convert.ToInt32(height));
-                    this.Save("EMF", 18, path: path_temp);
+                    if (orientation == "A3_Portrait" || orientation == "A3_Landscape")//a3 pdf
+                    {
+                        this.Size = new Size(System.Convert.ToInt32(width * 1.4), System.Convert.ToInt32(height * 1.4));
+                    }
+                    else//a4 pdf
+                    {
+                        this.Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
+                    }
+                    this.Save("EMF", path: path_temp);
+                    
                     this.Size = size_Temp;
-
+                  
 
                     NetOffice.ExcelApi.Shape shape = worksheet.Shapes.AddPicture(path_temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
+                    
                     shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * 0.78);
                     shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * 0.76);
                     shape.Width = width;
@@ -1582,10 +1592,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 return true;
             }
 
-            int newWidth = windowSize == "A3" ? pdfDefaultSettings.A3Width : pdfDefaultSettings.A4Width;
-            int newHeight = windowSize == "A3" ? pdfDefaultSettings.A3Height : pdfDefaultSettings.A4Height;
+            //int newWidth = windowSize == "A3" ? pdfDefaultSettings.A3Width : pdfDefaultSettings.A4Width;
+            //int newHeight = windowSize == "A3" ? pdfDefaultSettings.A3Height : pdfDefaultSettings.A4Height;
 
-            Query.SaveAsPDF(MollierChart, path, fontSize, windowSize, newWidth, newHeight, pdfDefaultSettings.ChartWidth, pdfDefaultSettings.ChartHeight);
+            //Query.SaveAsPDF(MollierChart, path, fontSize, windowSize, newWidth, newHeight, pdfDefaultSettings.ChartWidth, pdfDefaultSettings.ChartHeight);
 
             return true;
         }
