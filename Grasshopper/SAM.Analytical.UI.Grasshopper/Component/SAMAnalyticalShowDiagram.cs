@@ -120,7 +120,7 @@ namespace SAM.Analytical.UI.Grasshopper
             double pressure = Core.Mollier.UI.Query.DefaultPressure(mollierPoints, mollierProcesses);
             mollierForm.Name = "Mollier Diagram";
             mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
-            mollierForm.Pressure = pressure;
+            mollierForm.Pressure = double.IsNaN(pressure) ? Standard.Pressure : pressure;
             mollierForm.default_chart(mollierForm.MollierControlSettings);
             mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
             mollierForm.AddPoints(mollierPoints, false);
