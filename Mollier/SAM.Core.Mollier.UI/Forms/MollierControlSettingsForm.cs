@@ -85,12 +85,16 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if (humidityRatio_Max < -20 || humidityRatio_Max > 50)
+                if (humidityRatio_Max > 50)
                 {
-                    MessageBox.Show("Wrong range\n Maximal Humidity Ratio is 50!");
+                    MessageBox.Show("Wrong range\nMaximal Humidity Ratio is 50!");
                     return double.NaN;
                 }
-
+                if (humidityRatio_Max <= System.Convert.ToDouble(HumidityRatioMinimumValueTextbox.Text))
+                {
+                    MessageBox.Show("Wrong range\nMaximal Humidity Ratio must be greater than minimal Humidity Ratio!");
+                    return double.NaN;
+                }
                 return humidityRatio_Max;
             }
 
@@ -107,9 +111,14 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if (humidityRatio_Min < 0 || humidityRatio_Min > 50)
+                if (humidityRatio_Min < 0)
                 {
-                    MessageBox.Show("Wrong range\n Minimal Humidity Ratio is 0!");
+                    MessageBox.Show("Wrong range\nMinimal Humidity Ratio is 0!");
+                    return double.NaN;
+                }
+                if(humidityRatio_Min >= System.Convert.ToDouble(HumidityRatioMaximumValueTextbox.Text))
+                {
+                    MessageBox.Show("Wrong range\nMinimal Humidity Ratio must be less than maximal Humidity Ratio!");
                     return double.NaN;
                 }
 
@@ -130,7 +139,12 @@ namespace SAM.Core.Mollier.UI
                 }
                 if(humidityRatio_Interval <= 0)
                 {
-                    MessageBox.Show("Wrong range\n Interval has to be positive!");
+                    MessageBox.Show("Wrong range\nInterval has to be positive!");
+                    return double.NaN;
+                }
+                if (humidityRatio_Interval > System.Convert.ToDouble(HumidityRatioMaximumValueTextbox.Text) - System.Convert.ToDouble(HumidityRatioMinimumValueTextbox.Text))
+                {
+                    MessageBox.Show("Wrong range\nInterval can not be greater than the axis lenght!");
                     return double.NaN;
                 }
                 return humidityRatio_Interval;
@@ -148,12 +162,16 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if(temperature_Max < -20 || temperature_Max > 50)
+                if(temperature_Max > 50)
                 {
-                    MessageBox.Show("Wrong range\n Maximal possibly temperature is 50!");
+                    MessageBox.Show("Wrong range\nMaximal possibly temperature is 50!");
                     return double.NaN;
                 }
-
+                if (System.Convert.ToDouble(TemperatureMinimumValueTextbox.Text) >= temperature_Max)
+                {
+                    MessageBox.Show("Wrong range\nMaximal Temperature must be greater than minimal Temperature!");
+                    return double.NaN;
+                }
                 return temperature_Max;
             }
             set
@@ -169,12 +187,16 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if(temperature_Min < -20 || temperature_Min > 50)
+                if(temperature_Min < -20)
                 {
-                    MessageBox.Show("Wrong range\n Minimal possibly temperature is -20!");
+                    MessageBox.Show("Wrong range\nMinimal possibly temperature is -20!");
                     return double.NaN;
                 }
-
+                if (temperature_Min >= System.Convert.ToDouble(TemperatureMaximumValueTextbox.Text))
+                {
+                    MessageBox.Show("Wrong range\nMinimal Temperature must be less than maximal Temperature!");
+                    return double.NaN;
+                }
                 return temperature_Min;
             }
             set
@@ -192,7 +214,12 @@ namespace SAM.Core.Mollier.UI
                 }
                 if(temperature_Interval <= 0)
                 {
-                    MessageBox.Show("Wrong range\n Interval has to be positive!");
+                    MessageBox.Show("Wrong range\nInterval has to be positive!");
+                    return double.NaN;
+                }
+                if(temperature_Interval > System.Convert.ToDouble(TemperatureMaximumValueTextbox.Text) - System.Convert.ToDouble(TemperatureMinimumValueTextbox.Text))
+                {
+                    MessageBox.Show("Wrong range\nInterval can not be greater than the axis lenght!");
                     return double.NaN;
                 }
                 return temperature_Interval;

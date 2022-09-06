@@ -223,9 +223,6 @@ namespace SAM.Core.Mollier.UI
             {
                 mollierControlSettings = new MollierControlSettings();
             }
-
-            TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
-            TextBox_Elevation.Text = mollierControlSettings.Elevation.ToString();
             ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier;
             ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric;
             ToolStripMenuItem_Density.Checked = mollierControlSettings.Density_line;

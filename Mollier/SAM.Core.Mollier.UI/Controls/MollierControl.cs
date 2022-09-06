@@ -309,12 +309,15 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             Dictionary<double, List<MollierPoint>> result = new Dictionary<double, List<MollierPoint>>();
             while (wetBulbTemperature_Min <= wetBulbTemperature_Max)
-
-
             {
                 result[wetBulbTemperature_Min] = new List<MollierPoint>();
                 double temperature_1 = Mollier.Query.DryBulbTemperature_ByWetBulbTemperature(wetBulbTemperature_Min, 0, pressure);
                 double humidityRatio_1 = Mollier.Query.HumidityRatio(temperature_1, 0, pressure);
+                if (wetBulbTemperature_Min == 30)
+                {
+                    temperature_1 = Mollier.Query.DryBulbTemperature_ByWetBulbTemperature(wetBulbTemperature_Min, 20, pressure);
+                    humidityRatio_1 = Mollier.Query.HumidityRatio(temperature_1, 20, pressure);
+                }
                 MollierPoint mollierPoint_1 = new MollierPoint(temperature_1, humidityRatio_1, pressure);
                 result[wetBulbTemperature_Min].Add(mollierPoint_1);
 
@@ -338,7 +341,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             List<Series> series = CreateSeries(dictionary, chartType, ChartDataType.SpecificVolume, "kg/m³", "specific volume");
 
-            Series series_Temp = series?.Find(x => x.Name.Contains((0.9).ToString()));
+            Series series_Temp = series?.Find(x => x.Name.Contains(0.9.ToString()));
             if (series_Temp != null)
             {
                 double X = series_Temp.Points.Last().XValue;
@@ -1469,7 +1472,18 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    saveFileDialog.Filter = type == "PDF" ? "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*" : "EMF files (*.emf)|*.emf|All files (*.*)|*.*";
+                    switch (type)
+                    {
+                        case "PDF":
+                            saveFileDialog.Filter = "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*";
+                            break;
+                        case "JPG":
+                            saveFileDialog.Filter = "JPG document (*.jpg)|*.jpg|All files (*.*)|*.*";
+                            break;
+                        case "EMF":
+                            saveFileDialog.Filter = "EMF document (*.emf)|*.emf|All files (*.*)|*.*";
+                            break;
+                    }
                     saveFileDialog.FilterIndex = 1;
                     saveFileDialog.RestoreDirectory = true;
 
@@ -1487,9 +1501,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             if (type == "EMF")
             { 
-
-                MollierChart.SaveImage(path, ChartImageFormat.Emf);
-                
+                MollierChart.SaveImage(path, ChartImageFormat.Emf);  
                 return true;
             }
             if (type == "PDF")
@@ -1610,6 +1622,11 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void ToolStripMenuItem_ProcessesAndPoints_Click(object sender, EventArgs e)
         {
+            if(mollierPoints == null && mollierProcesses == null)
+            {
+                MessageBox.Show("There is no process or point to zoom");
+                return;
+            }
             ChartType chartType = mollierControlSettings.ChartType;
             Query.ZoomParameters(MollierChart.Series, chartType, out double x_Min, out double x_Max, out double y_Min, out double y_Max);
             mollierControlSettings.HumidityRatio_Min = chartType == ChartType.Mollier ? x_Min : y_Min;
