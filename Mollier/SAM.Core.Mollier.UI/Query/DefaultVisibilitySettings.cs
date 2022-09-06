@@ -109,6 +109,38 @@
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.UndefinedProcess, System.Drawing.Color.Gray));
 
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, UI.ChartDataType.RelativeHumidity, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, UI.ChartDataType.RelativeHumidity, System.Drawing.Color.Black));
+
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.Density, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, UI.ChartDataType.Density, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, UI.ChartDataType.Density, System.Drawing.Color.Black));
+
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.Enthalpy, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, UI.ChartDataType.Enthalpy, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, UI.ChartDataType.Enthalpy, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, UI.ChartDataType.Enthalpy, System.Drawing.Color.Black));
+
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.SpecificVolume, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, UI.ChartDataType.SpecificVolume, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, UI.ChartDataType.SpecificVolume, System.Drawing.Color.Black));
+
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.WetBulbTemperature, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, UI.ChartDataType.WetBulbTemperature, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, UI.ChartDataType.WetBulbTemperature, System.Drawing.Color.Black));
+
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, UI.ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
+
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.CoolingProcess, System.Drawing.Color.Blue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.HeatingProcess, System.Drawing.Color.Red));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.HeatRecoveryProcess, System.Drawing.Color.IndianRed));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.MixingProcess, System.Drawing.Color.Green));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, UI.ChartDataType.UndefinedProcess, System.Drawing.Color.Gray));
+
             return result;
         }
     }
