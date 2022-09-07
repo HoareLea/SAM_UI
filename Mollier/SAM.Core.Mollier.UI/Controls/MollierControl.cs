@@ -628,18 +628,20 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             Dictionary<MollierPoint, string> points = new Dictionary<MollierPoint, string>();
             //processes sort
-            List<MollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<MollierProcess>(mollierProcesses.Cast<MollierProcess>());
+            List<IMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<IMollierProcess>(mollierProcesses.Cast<IMollierProcess>());
             mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
 
-            foreach (IMollierProcess mollierProcess in mollierProcesses)
+            for (int i = 0; i < mollierProcesses.Count; i++)
             {
+                IMollierProcess mollierProcess = mollierProcesses[i] is UIMollierProcess ? ((UIMollierProcess)mollierProcesses[i]).MollierProcess : mollierProcesses[i];
+
                 Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 4;
-                series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess);
+                series.Color = mollierProcess is UIMollierProcess ? ((UIMollierProcess)mollierProcess).Color : mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess);
                 series.Tag = mollierProcess;
-
+                
                 MollierPoint start = mollierProcess?.Start;
                 MollierPoint end = mollierProcess?.End;
                 if (start == null || end == null)
@@ -732,8 +734,12 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
             
-        private void CreateLabel(List<Tuple<MollierPoint, double, double>> tuples, MollierProcess mollierProcess, ChartType chartType, char name, string processName)
+        private void CreateLabel(List<Tuple<MollierPoint, double, double>> tuples, IMollierProcess mollierProcess, ChartType chartType, char name, string processName)
         {
+            if(mollierProcess == null)
+            {
+                return;
+            }
             MollierPoint start = mollierProcess.Start;
             MollierPoint end = mollierProcess.End;
             MollierPoint mid = new MollierPoint((start.DryBulbTemperature + end.DryBulbTemperature) / 2, (start.HumidityRatio + end.HumidityRatio) / 2, mollierControlSettings.Pressure);
@@ -832,13 +838,16 @@ namespace SAM.Core.Mollier.UI.Controls
             return true;
         }
 
-        private void createProcessLabels(List<MollierProcess> mollierProcesses, ChartType chartType)
+        private void createProcessLabels(List<IMollierProcess> mollierProcesses, ChartType chartType)
         {
             //Item1 - MollierPoint, Item2 - factor X, Item3 - factor Y
             List<Tuple<MollierPoint, double, double>> tuples = new List<Tuple<MollierPoint, double, double>>();
             char name = 'A';
-            foreach (MollierProcess mollierProcess in mollierProcesses)
+            //foreach (IMollierProcess mollierProcess in mollierProcesses)
+            for(int i =0; i < mollierProcesses.Count; i++)
             {
+                IMollierProcess mollierProcess = mollierProcesses[i] is UIMollierProcess ? ((UIMollierProcess)mollierProcesses[i]).MollierProcess : mollierProcesses[i];
+
                 string processName = "";
                 if (mollierProcess is HeatingProcess)
                 {

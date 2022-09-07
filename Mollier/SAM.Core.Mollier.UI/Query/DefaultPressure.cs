@@ -17,7 +17,7 @@ namespace SAM.Core.Mollier.UI
             List<double> pressures = new List<double>();
             if (mollierProcesses != null)
             {
-                foreach (MollierProcess process in mollierProcesses)
+                foreach (IMollierProcess process in mollierProcesses)
                 {
                     pressures.Add(process.Pressure);
                 }
