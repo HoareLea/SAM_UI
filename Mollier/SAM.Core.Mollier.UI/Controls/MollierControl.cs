@@ -639,7 +639,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 4;
-                series.Color = mollierProcess is UIMollierProcess ? ((UIMollierProcess)mollierProcess).Color : mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess);
+                series.Color = mollierProcesses[i] is UIMollierProcess ? ((UIMollierProcess)mollierProcesses[i]).Color : mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess);
                 series.Tag = mollierProcess;
                 
                 MollierPoint start = mollierProcess?.Start;
