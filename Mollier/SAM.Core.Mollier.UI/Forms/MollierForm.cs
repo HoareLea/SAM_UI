@@ -234,7 +234,6 @@ namespace SAM.Core.Mollier.UI
             grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
             blueBlackToolStripMenuItem.Checked = mollierControlSettings.Color == "blue-black";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.PdfDefaultSettings = new PdfDefaultSettings();
         }
 
         //buttons which enable to change color, chart or disable line
