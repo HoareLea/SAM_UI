@@ -137,7 +137,7 @@
     <Compile Include="Query\ChartDataType.cs" />
     <Compile Include="Query\DefaultPressure.cs" />
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
-    <Compile Include="Query\findDivisionAreaCornerPoints.cs" />
+    <Compile Include="Query\FindDivisionAreaCornerPoints.cs" />
     <Compile Include="Query\ZoomParameters.cs" />
   </ItemGroup>
   <ItemGroup>

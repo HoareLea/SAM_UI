@@ -5,7 +5,7 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
-        public static double findDivisionAreaCornerPoints(double relativeHumidity, double enthalpy, string orientation, ChartType chartType, double pressure)
+        public static double FindDivisionAreaCornerPoints(double relativeHumidity, double enthalpy, string orientation, ChartType chartType, double pressure)
         {
             double X, Y;
             double dryBulbTemperature = Mollier.Query.DryBulbTemperature_ByEnthalpy(enthalpy * 1000, relativeHumidity, pressure);
