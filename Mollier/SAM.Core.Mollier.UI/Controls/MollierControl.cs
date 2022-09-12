@@ -1727,7 +1727,6 @@ namespace SAM.Core.Mollier.UI.Controls
         private void ToolStripMenuItem_Selection_Click(object sender, EventArgs e)
         {
             selection = true;
-
         }
 
         private void ToolStripMenuItem_Reset_Click(object sender, EventArgs e)
@@ -1773,11 +1772,22 @@ namespace SAM.Core.Mollier.UI.Controls
             Axis ax = MollierChart.ChartAreas[0].AxisX;
             Axis ay = MollierChart.ChartAreas[0].AxisY;
             Point mup = e.Location;
+            //chart sizes(axis)
+            double X_Min = mollierControlSettings.ChartType == ChartType.Mollier ? mollierControlSettings.HumidityRatio_Min : mollierControlSettings.Temperature_Min;
+            double Y_Min = mollierControlSettings.ChartType == ChartType.Mollier ? mollierControlSettings.Temperature_Min : mollierControlSettings.HumidityRatio_Min;
+            double X_Max = mollierControlSettings.ChartType == ChartType.Mollier ? mollierControlSettings.HumidityRatio_Max : mollierControlSettings.Temperature_Max;
+            double Y_Max = mollierControlSettings.ChartType == ChartType.Mollier ? mollierControlSettings.Temperature_Max : mollierControlSettings.HumidityRatio_Max;
 
-            double x_Min = System.Math.Min((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X));
-            double x_Max = System.Math.Max((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X));
-            double y_Min = System.Math.Min((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y));
-            double y_Max = System.Math.Max((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y));
+            ////new selection area
+            if(mup.X < 0 || mup.Y < 0)
+            {
+                MollierChart.Refresh();
+                return;
+            }
+            double x_Min = System.Math.Round(System.Math.Min((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X)));
+            double x_Max = System.Math.Round(System.Math.Max((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X)));
+            double y_Min = System.Math.Round(System.Math.Min((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y)));
+            double y_Max = System.Math.Round(System.Math.Max((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y)));
             double x_Difference = x_Max - x_Min;
             double y_Difference = mollierControlSettings.ChartType == ChartType.Mollier ? y_Max - y_Min : (y_Max - y_Min) * 1000;
             if (x_Difference < 1 || y_Difference < 1)
@@ -1785,10 +1795,11 @@ namespace SAM.Core.Mollier.UI.Controls
                 MollierChart.Refresh();
                 return;
             }
-            mollierControlSettings.HumidityRatio_Min = mollierControlSettings.ChartType == ChartType.Mollier ? x_Min : y_Min * 1000;
-            mollierControlSettings.HumidityRatio_Max = mollierControlSettings.ChartType == ChartType.Mollier ? x_Max : y_Max * 1000;
-            mollierControlSettings.Temperature_Min = mollierControlSettings.ChartType == ChartType.Mollier ? y_Min : x_Min;
-            mollierControlSettings.Temperature_Max = mollierControlSettings.ChartType == ChartType.Mollier ? y_Max : x_Max;
+
+            mollierControlSettings.HumidityRatio_Min = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Max(x_Min, X_Min) : System.Math.Max(y_Min * 1000, Y_Min);
+            mollierControlSettings.HumidityRatio_Max = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Min(x_Max, X_Max) : System.Math.Min(y_Max * 1000, Y_Max);
+            mollierControlSettings.Temperature_Min = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Max(y_Min, Y_Min) : System.Math.Max(x_Min, X_Min);
+            mollierControlSettings.Temperature_Max = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Min(y_Max, Y_Max) : System.Math.Min(x_Max, X_Max);
             generate_graph();
 
             MollierChart.Refresh();
