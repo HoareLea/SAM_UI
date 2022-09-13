@@ -70,7 +70,6 @@
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
-    <Compile Include="Classes\PdfDefaultSettings.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
     <Compile Include="Classes\MollierControlZone.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
@@ -138,6 +137,7 @@
     <Compile Include="Query\ChartDataType.cs" />
     <Compile Include="Query\DefaultPressure.cs" />
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
+    <Compile Include="Query\FindDivisionAreaCornerPoints.cs" />
     <Compile Include="Query\ZoomParameters.cs" />
   </ItemGroup>
   <ItemGroup>

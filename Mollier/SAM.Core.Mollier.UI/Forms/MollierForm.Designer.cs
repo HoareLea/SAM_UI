@@ -30,9 +30,7 @@ namespace SAM.Core.Mollier.UI
         private void InitializeComponent()
         {
             SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings1 = new SAM.Core.Mollier.UI.MollierControlSettings();
-            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings1 = new SAM.Core.Mollier.UI.VisibilitySettings();
-            SAM.Core.Mollier.UI.PdfDefaultSettings pdfDefaultSettings1 = new SAM.Core.Mollier.UI.PdfDefaultSettings();
-            this.TextBox_Pressure = new System.Windows.Forms.TextBox();
+            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings1 = new SAM.Core.Mollier.UI.VisibilitySettings();            this.TextBox_Pressure = new System.Windows.Forms.TextBox();
             this.Label_Pressure = new System.Windows.Forms.Label();
             this.Button_AddPoint = new System.Windows.Forms.Button();
             this.MenuStrip_Main = new System.Windows.Forms.MenuStrip();
@@ -462,13 +460,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings1.WetBulbTemperature_line = true;
             this.MollierControl_Main.MollierControlSettings = mollierControlSettings1;
             this.MollierControl_Main.Name = "MollierControl_Main";
-            pdfDefaultSettings1.A3Height = 297;
-            pdfDefaultSettings1.A3Width = 420;
-            pdfDefaultSettings1.A4Height = 210;
-            pdfDefaultSettings1.A4Width = 297;
-            pdfDefaultSettings1.ChartHeight = 728;
-            pdfDefaultSettings1.ChartWidth = 1512;
-            this.MollierControl_Main.PdfDefaultSettings = pdfDefaultSettings1;
+
             this.MollierControl_Main.Size = new System.Drawing.Size(1339, 907);
             this.MollierControl_Main.TabIndex = 0;
             // 
