@@ -196,13 +196,22 @@ namespace SAM.Core.Mollier.UI
         }
 
         //adding processes or points to the chart
-        public bool AddProcess(IMollierProcess mollierProcess, bool checkPressure = true)
+        //public bool AddProcess(IMollierProcess mollierProcess, bool checkPressure = true)
+        //{
+        //    if(mollierProcess == null)
+        //    {
+        //        return false;
+        //    }
+        //    MollierControl_Main.AddProcess(mollierProcess, checkPressure);
+        //    return true;
+        //}
+        public bool AddProcesses(List<IMollierProcess> mollierProcesses, bool checkPressure = true)
         {
-            if(mollierProcess == null)
+            if(mollierProcesses == null)
             {
                 return false;
             }
-            MollierControl_Main.AddProcess(mollierProcess, checkPressure);
+            MollierControl_Main.AddProcesses(mollierProcesses, checkPressure);
             return true;
         }
         public bool AddPoints(IEnumerable<MollierPoint> mollierPoints, bool checkPressure = true)
@@ -531,5 +540,14 @@ namespace SAM.Core.Mollier.UI
             SaveAs(null);
         }
 
+        private void openFromJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void exportToJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

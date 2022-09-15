@@ -129,6 +129,9 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\FindDivisionAreaCornerPoint.cs" />
+    <Compile Include="Query\FullProcessName.cs" />
+    <Compile Include="Query\ProcessSortBySystem.cs" />
     <Compile Include="Query\SaveAsPDF.cs" />
     <Compile Include="Query\ScaleVector2D.cs" />
     <Compile Include="Query\DefaultMollierZones.cs" />
@@ -137,7 +140,7 @@
     <Compile Include="Query\ChartDataType.cs" />
     <Compile Include="Query\DefaultPressure.cs" />
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
-    <Compile Include="Query\FindDivisionAreaCornerPoints.cs" />
+    <Compile Include="Query\ProcessName.cs" />
     <Compile Include="Query\ZoomParameters.cs" />
   </ItemGroup>
   <ItemGroup>

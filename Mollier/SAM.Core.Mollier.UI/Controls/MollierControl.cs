@@ -15,9 +15,9 @@ namespace SAM.Core.Mollier.UI.Controls
         private bool selection = false;
         private MollierControlSettings mollierControlSettings;
         private List<MollierPoint> mollierPoints;
-        private List<IMollierProcess> mollierProcesses;
+        private List<UIMollierProcess> mollierProcesses;
         private List<MollierZone> mollierZones;
-
+        private List<List<UIMollierProcess>> systems;
         public MollierControl()
         {
             InitializeComponent();
@@ -846,26 +846,32 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.Points[index].Tag = point;
             }
         }
+        
+        
+        
+        
+        
+        
+        
+        
         private void add_MollierProcesses(ChartType chartType)
         {
-            Dictionary<MollierPoint, string> points = new Dictionary<MollierPoint, string>();
-            //processes sort
-            List<IMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<IMollierProcess>(mollierProcesses.Cast<IMollierProcess>());
-            mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
-
             for (int i = 0; i < mollierProcesses.Count; i++)
             {
-                IMollierProcess mollierProcess = mollierProcesses[i] is UIMollierProcess ? ((UIMollierProcess)mollierProcesses[i]).MollierProcess : mollierProcesses[i];
+                UIMollierProcess UI_MollierProcess = mollierProcesses[i];//contains all spcified data of the process like color, start label etc.
+                MollierProcess mollierProcess = (MollierProcess)(UI_MollierProcess.MollierProcess);//contains the most important data of the process: only start end point, and what type of process is it 
+
                 if(mollierProcess is RoomProcess)
                 {
-                    createSeries_RoomProcess(mollierProcesses[i]);
+                    createSeries_RoomProcess(UI_MollierProcess);
                     continue;
                 }
+                //process series
                 Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 4;
-                series.Color = (mollierProcesses[i] is UIMollierProcess && ((UIMollierProcess)mollierProcesses[i]).Color != Color.Empty) ? ((UIMollierProcess)mollierProcesses[i]).Color : mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess);
+                series.Color = (UI_MollierProcess.Color == Color.Empty) ? mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess) : UI_MollierProcess.Color;
                 series.Tag = mollierProcess;
                 
                 MollierPoint start = mollierProcess?.Start;
@@ -874,20 +880,19 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     continue;
                 }
+                //creating series - processes points pattern
                 createSeries_ProcessesPoints(start, mollierProcess, chartType);
                 createSeries_ProcessesPoints(end, mollierProcess, chartType);
+                //add start and end point to the process series
                 int index;
                 series.ToolTip = ToolTipProcess(start, end, chartType);
                 index = chartType == ChartType.Mollier ? series.Points.AddXY(start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start)) : series.Points.AddXY(start.DryBulbTemperature, start.HumidityRatio);
-                //series.Points[index].ToolTip = ToolTip(start, chartType);
-                ///createToolTip(start, chartType);
                 series.Points[index].Tag = start;
                 index = chartType == ChartType.Mollier ? series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end)) : series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
-                //series.Points[index].ToolTip = ToolTip(end, chartType);
-                //createToolTip(start, chartType);
                 series.Points[index].Tag = end;
 
-                MollierPoint mid = new MollierPoint((start.DryBulbTemperature + end.DryBulbTemperature) / 2, (start.HumidityRatio + end.HumidityRatio) / 2, mollierControlSettings.Pressure);
+                
+                //cooling process create one unique process with ADP point
                 if (mollierProcess is CoolingProcess)
                 {
                     CoolingProcess coolingProcess = (CoolingProcess)mollierProcess;
@@ -897,82 +902,82 @@ namespace SAM.Core.Mollier.UI.Controls
                     double Y = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(apparatusDewPoint) : apparatusDewPoint.HumidityRatio;
                     create_moved_label(chartType, X, Y, 0, 0, 0, -3 * Query.ScaleVector2D(this, MollierControlSettings).Y, -1 * Query.ScaleVector2D(this, MollierControlSettings).X, -0.0007 * Query.ScaleVector2D(this, MollierControlSettings).Y, "ADP", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Gray);
                     MollierPoint secondPoint = coolingProcess.DownPoint(apparatusDewPoint);
-
+                    //creating series - processes points pattern
                     createSeries_ProcessesPoints(apparatusDewPoint, mollierProcess, chartType, "DewPoint");
                     createSeries_ProcessesPoints(secondPoint, mollierProcess, chartType, "SecondPoint");
-
+                    //creating series - special with ADP process pattern
                     createSeries_DewPoint(start, secondPoint, mollierProcess, chartType);
                     createSeries_DewPoint(end, apparatusDewPoint, mollierProcess, chartType);
                     createSeries_DewPoint(apparatusDewPoint, secondPoint, mollierProcess, chartType);
                 }
 
             }
+            //sorts mollierprocesses list - prepars for the labeling
+            List<UIMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<UIMollierProcess>(mollierProcesses.Cast<UIMollierProcess>());
+            mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
+
             createProcessesLabels(mollierProcesses_Temp, chartType);
-
-
         }
 
         private void createSeries_DewPoint(MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType)
         {
-            Series seriesDew = MollierChart.Series.Add(Guid.NewGuid().ToString());
+            Series series= MollierChart.Series.Add(Guid.NewGuid().ToString());
             if (chartType == ChartType.Mollier)
             {
-                seriesDew.Points.AddXY(mollierPoint_1.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierPoint_1));
-                seriesDew.Points.AddXY(mollierPoint_2.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierPoint_2));
+                series.Points.AddXY(mollierPoint_1.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierPoint_1));
+                series.Points.AddXY(mollierPoint_2.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierPoint_2));
             }
             else
             {
-                seriesDew.Points.AddXY(mollierPoint_1.DryBulbTemperature, mollierPoint_1.HumidityRatio);
-                seriesDew.Points.AddXY(mollierPoint_2.DryBulbTemperature, mollierPoint_2.HumidityRatio);
+                series.Points.AddXY(mollierPoint_1.DryBulbTemperature, mollierPoint_1.HumidityRatio);
+                series.Points.AddXY(mollierPoint_2.DryBulbTemperature, mollierPoint_2.HumidityRatio);
             }
-            seriesDew.Color = Color.LightGray;
-            seriesDew.IsVisibleInLegend = false;
-            seriesDew.BorderWidth = 2;
-            seriesDew.ChartType = SeriesChartType.Spline;
-            seriesDew.BorderDashStyle = ChartDashStyle.Dash;
-            seriesDew.Tag = "dashLine";
+            series.Color = Color.LightGray;
+            series.IsVisibleInLegend = false;
+            series.BorderWidth = 2;
+            series.ChartType = SeriesChartType.Spline;
+            series.BorderDashStyle = ChartDashStyle.Dash;
+            series.Tag = "dashLine";
         }
-        private void createSeries_ProcessesPoints(MollierPoint mollierPoint, IMollierProcess mollierProcess, ChartType chartType, string pointType = "Default")
+        private void createSeries_ProcessesPoints(MollierPoint mollierPoint, MollierProcess mollierProcess, ChartType chartType, string pointType = "Default")
         {
-            Series seriesDew = MollierChart.Series.Add(Guid.NewGuid().ToString());
-            int index = chartType == ChartType.Mollier ? seriesDew.Points.AddXY(mollierPoint.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierPoint)) : seriesDew.Points.AddXY(mollierPoint.DryBulbTemperature, mollierPoint.HumidityRatio);
+            Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
+            int index = chartType == ChartType.Mollier ? series.Points.AddXY(mollierPoint.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierPoint)) : series.Points.AddXY(mollierPoint.DryBulbTemperature, mollierPoint.HumidityRatio);
             switch (pointType)
             {
                 case "Default":
-                    seriesDew.MarkerSize = 8;
-                    seriesDew.MarkerBorderWidth = 2;
-                    seriesDew.MarkerBorderColor = Color.Orange;
+                    series.MarkerSize = 8;
+                    series.MarkerBorderWidth = 2;
+                    series.MarkerBorderColor = Color.Orange;
                     break;
                 case "DewPoint":
-                    seriesDew.MarkerSize = 8;
+                    series.MarkerSize = 8;
                     break;
                 case "SecondPoint":
-                    seriesDew.MarkerSize = 5;
+                    series.MarkerSize = 5;
                     break;
             }
-            seriesDew.Color = Color.Gray;
-            seriesDew.IsVisibleInLegend = false;
-            seriesDew.ChartType = SeriesChartType.Point;
-            seriesDew.Tag = mollierProcess;
+            series.Color = Color.Gray;
+            series.IsVisibleInLegend = false;
+            series.ChartType = SeriesChartType.Point;
+            series.Tag = mollierProcess;
             if (pointType == "SecondPoint")
             {
-                seriesDew.Tag = "SecondPoint";
+                series.Tag = "SecondPoint";
             }
-            seriesDew.MarkerStyle = MarkerStyle.Circle;
-            seriesDew.Points[index].ToolTip = ToolTipPoint(mollierPoint, chartType);
+            series.MarkerStyle = MarkerStyle.Circle;
+            series.Points[index].ToolTip = ToolTipPoint(mollierPoint, chartType);
             //seriesDew.mark
         }
-        private void createSeries_RoomProcess(IMollierProcess iMollierProcess)
+        private void createSeries_RoomProcess(UIMollierProcess UI_MollierProcess)
         {
-            MollierProcess mollierProcess = iMollierProcess is UIMollierProcess ? (MollierProcess)((UIMollierProcess)iMollierProcess).MollierProcess : (MollierProcess)iMollierProcess;
+            //defines the end label of the process
+            UI_MollierProcess.End_Label = "ROOM";
+            MollierProcess mollierProcess = (MollierProcess)(UI_MollierProcess.MollierProcess);
+            //specified the color of the Room air condition point
             Color color = Color.Orange;
-            MollierPoint start = mollierProcess.Start;
-            MollierPoint end = mollierProcess.End;
-            if(iMollierProcess is UIMollierProcess)
-            {
-                UIMollierProcess uIMollierProcess = (UIMollierProcess)iMollierProcess;
-                color = uIMollierProcess.Color;
-            }
+            color = UI_MollierProcess.Color == Color.Empty ? color : UI_MollierProcess.Color;
+            //creating series for room process
             Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
@@ -980,15 +985,17 @@ namespace SAM.Core.Mollier.UI.Controls
             series.BorderDashStyle = ChartDashStyle.Dash;
             series.BorderWidth = 3;
             series.Tag = mollierProcess;
+            //add start and end point to the process series
+            MollierPoint start = mollierProcess.Start;
+            MollierPoint end = mollierProcess.End;
             int index;
-
             index = mollierControlSettings.ChartType == ChartType.Mollier ? series.Points.AddXY(start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start)) : series.Points.AddXY(start.DryBulbTemperature, start.HumidityRatio);
-            //series.Points[index].ToolTip = ToolTipProcess(start, mollierControlSettings.ChartType);
             series.Points[index].Tag = start;
             index = mollierControlSettings.ChartType == ChartType.Mollier ? series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end)) : series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
-            //series.Points[index].ToolTip = ToolTipProcess(end, mollierControlSettings.ChartType);
             series.Points[index].Tag = end;
             series.ToolTip = ToolTipProcess(start, end, mollierControlSettings.ChartType);
+
+            //creating series for Room air condition point 
             Series seriesRoomPoint = MollierChart.Series.Add(Guid.NewGuid().ToString());
             seriesRoomPoint.IsVisibleInLegend = false;
             seriesRoomPoint.ChartType = SeriesChartType.Point;
@@ -998,7 +1005,7 @@ namespace SAM.Core.Mollier.UI.Controls
             seriesRoomPoint.MarkerBorderColor = color;
             seriesRoomPoint.MarkerSize = 8;
             seriesRoomPoint.Tag = mollierProcess;
-
+            //add Room air condition point to the series and create label for it
             double X = mollierControlSettings.ChartType == ChartType.Mollier ? end.HumidityRatio * 1000 : end.DryBulbTemperature;
             double Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(end) : end.HumidityRatio;
             seriesRoomPoint.Points.AddXY(X, Y);
@@ -1006,55 +1013,71 @@ namespace SAM.Core.Mollier.UI.Controls
             Vector2D scaleVector2D = Query.ScaleVector2D(this, MollierControlSettings);
             create_moved_label(mollierControlSettings.ChartType, X, Y, 0, 0, 0.7 * scaleVector2D.X, -1.5 * scaleVector2D.Y, 0, 0, "ROOM", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black);
 
-
         }
 
-        private void createProcessesLabels(List<IMollierProcess> mollierProcesses, ChartType chartType)
+        private void createProcessesLabels(List<UIMollierProcess> mollierProcesses, ChartType chartType)
         {
+            if(systems == null)
+            {
+                return;
+            }
             //Item1 - MollierPoint, Item2 - factor X, Item3 - factor Y
             List<Tuple<MollierPoint, double, double>> tuples = new List<Tuple<MollierPoint, double, double>>();
             char name = 'A';
-            //foreach (IMollierProcess mollierProcess in mollierProcesses)
+            for(int i=0; i<systems.Count; i++)
+            {
+                for(int j=0; j < systems[i].Count; j++)
+                {
+                    UIMollierProcess UI_MollierProcess = systems[i][j];
+                    MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
+                    if (mollierProcess is RoomProcess)
+                    {
+                        continue;
+                    }
+                    if (systems[i].Count == 1)
+                    {
+                        UI_MollierProcess.Start_Label = name + "1";
+                    }
+                    else if(j == 0)
+                    {
+                        UI_MollierProcess.Start_Label = "OSA";
+                    }
+                    else
+                    {
+                        UI_MollierProcess.Start_Label = "";
+                    }
+                    if(systems[i].Count > 1 && j == systems[i].Count - 2 && systems[i][j+1].MollierProcess is RoomProcess)
+                    {
+                        UI_MollierProcess.End_Label = "SUP";
+                    }
+                    else if(systems[i].Count > 1 && j == systems[i].Count - 1)
+                    {
+                        UI_MollierProcess.End_Label = "SUP";
+                    }
+                    UI_MollierProcess.Start_Label = UI_MollierProcess.Start_Label == null ? name + "1" : UI_MollierProcess.Start_Label;
+                    UI_MollierProcess.Process_Label = UI_MollierProcess.Process_Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.Process_Label;
+                    UI_MollierProcess.End_Label = UI_MollierProcess.End_Label == null ? name + "2" : UI_MollierProcess.End_Label;
+
+                    name++;
+                }
+            }
             for (int i = 0; i < mollierProcesses.Count; i++)
             {
-                IMollierProcess mollierProcess = mollierProcesses[i] is UIMollierProcess ? ((UIMollierProcess)mollierProcesses[i]).MollierProcess : mollierProcesses[i];
-
-                string startLabel = mollierProcesses[i] is UIMollierProcess ? ((UIMollierProcess)mollierProcesses[i]).Start_Label : null;
-                string processLabel = mollierProcesses[i] is UIMollierProcess ? ((UIMollierProcess)mollierProcesses[i]).Process_Label : null;
-                string endLabel = mollierProcesses[i] is UIMollierProcess ? ((UIMollierProcess)mollierProcesses[i]).End_Label : null;
-
+                UIMollierProcess UI_MollierProcess = mollierProcesses[i];
+                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
                 if (mollierProcess is RoomProcess)
                 {
                     continue;
                 }
-                string processName = "";
-                if (mollierProcess is HeatingProcess)
-                {
-                    processName = "HTG";
-                }
-                if (mollierProcess is CoolingProcess)
-                {
-                    processName = "CLG";
-                }
-                if (mollierProcess is MixingProcess)
-                {
-                    processName = "MX";
-                }
-                if (mollierProcess is SteamHumidificationProcess || mollierProcess is AdiabaticHumidificationProcess || mollierProcess is IsotermicHumidificationProcess)
-                {
-                    processName = "HUM";
-                }
-                if (mollierProcess is HeatRecoveryProcess)
-                {
-                    processName = "HR";
-                }
-                createProcessLabels(tuples, mollierProcess, chartType, name, processName, startLabel, processLabel, endLabel); ;
+  
+                createProcessLabels(tuples, mollierProcess, chartType, UI_MollierProcess.Start_Label, UI_MollierProcess.Process_Label, UI_MollierProcess.End_Label);
 
-                name++;
             }
         }
-        private void createProcessLabels(List<Tuple<MollierPoint, double, double>> tuples, IMollierProcess mollierProcess, ChartType chartType, char name, string processName, string startLabel, string processLabel, string endLabel)
+        private void createProcessLabels(List<Tuple<MollierPoint, double, double>> tuples, MollierProcess mollierProcess, ChartType chartType, string startLabel, string processLabel, string endLabel)
         {
+            // if returns true it labeled if false it didn't
+
             if(mollierProcess == null)
             {
                 return;
@@ -1091,62 +1114,22 @@ namespace SAM.Core.Mollier.UI.Controls
                     tuples.Add(tuple_Temp);
                     if (chartType == ChartType.Mollier)
                     {
-                        if(startLabel != null)
-                        {
-                            create_moved_label(chartType, start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, startLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        }
-                        else
-                        {
-                            create_moved_label(chartType, start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, name + "1", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        }
-                        if(endLabel != null)
-                        {
-                            create_moved_label(chartType, end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, endLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        }
-                        else
-                        {
-                            create_moved_label(chartType, end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, name + "2", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        }
+                        create_moved_label(chartType, start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, startLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
+                        create_moved_label(chartType, end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, endLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
+
                         if (Mollier.Query.Distance(start, end) > 3 * scaleVector2D.Y)
-                        {
-                            if (processLabel != null)
-                            {
-                                create_moved_label(chartType, mid.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mid), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, processLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                            }
-                            else
-                            {
-                                create_moved_label(chartType, mid.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mid), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, processName, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                            }
+                        { 
+                            create_moved_label(chartType, mid.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mid), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, processLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
                         }
                     }
                     else
                     {
-                        if(startLabel != null)
-                        {
-                            create_moved_label(chartType, start.DryBulbTemperature, start.HumidityRatio, 0, 0, X, Y, X, Y, startLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        }
-                        else
-                        {
-                            create_moved_label(chartType, start.DryBulbTemperature, start.HumidityRatio, 0, 0, X, Y, X, Y, name + "1", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        }
-                        if(endLabel != null)
-                        {
-                            create_moved_label(chartType, end.DryBulbTemperature, end.HumidityRatio, 0, 0, X, Y, X, Y, endLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        }
-                        else
-                        {
-                            create_moved_label(chartType, end.DryBulbTemperature, end.HumidityRatio, 0, 0, X, Y, X, Y, name + "2", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        }
+                        create_moved_label(chartType, start.DryBulbTemperature, start.HumidityRatio, 0, 0, X, Y, X, Y, startLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
+                        create_moved_label(chartType, end.DryBulbTemperature, end.HumidityRatio, 0, 0, X, Y, X, Y, endLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
+
                         if (Mollier.Query.Distance(start, end) > 2 * scaleVector2D.X)
                         {
-                            if(processLabel != null)
-                            {
-                                create_moved_label(chartType, mid.DryBulbTemperature, mid.HumidityRatio, 0, 0, X, Y, X, Y, processLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                            }
-                            else
-                            {
-                                create_moved_label(chartType, mid.DryBulbTemperature, mid.HumidityRatio, 0, 0, X, Y, X, Y, processName, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                            }
+                            create_moved_label(chartType, mid.DryBulbTemperature, mid.HumidityRatio, 0, 0, X, Y, X, Y, processLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
                         }
                     }
                     return;
@@ -1158,7 +1141,7 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             double toleranceHR = 0.25;
             double toleranceTemp = 2;
-            //think oabout it
+           
             for (int i = 0; i < tuples.Count; i++)
             {
                 List<Tuple<MollierPoint, double, double>> tuples_Temps = new List<Tuple<MollierPoint, double, double>>();
@@ -1203,7 +1186,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             return true;
         }
-        private static bool Intersect(IMollierProcess mollierProcess, ChartType chartType, double dryBulbTemperature, double humidityRatio, Vector2D scaleVector, double tolerance = Tolerance.MacroDistance)
+        private static bool Intersect(UIMollierProcess mollierProcess, ChartType chartType, double dryBulbTemperature, double humidityRatio, Vector2D scaleVector, double tolerance = Tolerance.MacroDistance)
         {
             if (mollierProcess == null || double.IsNaN(dryBulbTemperature) || double.IsNaN(humidityRatio))
             {
@@ -1224,6 +1207,8 @@ namespace SAM.Core.Mollier.UI.Controls
             return rectangle2D.Intersect(segment2D, tolerance) || (rectangle2D.Inside(segment2D.Start) && rectangle2D.Inside(segment2D.End));
 
         }
+
+
 
 
         private void generate_graph()
@@ -1496,9 +1481,9 @@ namespace SAM.Core.Mollier.UI.Controls
             switch (chartType)
             {
                 case ChartType.Mollier:
-                    return String.Format(mask, Core.Query.Round(Mollier.Query.DiagramTemperature(end) - Mollier.Query.DiagramTemperature(start), 0.01), Core.Query.Round((end.HumidityRatio - start.HumidityRatio) * 1000, 0.01), Core.Query.Round((end.Enthalpy - start.Enthalpy) / 1000, 0.01), "g/kg");
+                    return String.Format(mask, Core.Query.Round(Mollier.Query.DiagramTemperature(end),2) - System.Math.Round(Mollier.Query.DiagramTemperature(start), 2), System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2), System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), "g/kg");
                 case ChartType.Psychrometric:
-                    return String.Format(mask, Core.Query.Round(end.DryBulbTemperature - start.DryBulbTemperature, 0.01), Core.Query.Round(end.HumidityRatio - start.HumidityRatio, 0.00001), Core.Query.Round((end.Enthalpy - start.Enthalpy)/1000, 0.01), "kg/kg");
+                    return String.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5), System.Math.Round(end.Enthalpy/1000, 2) - System.Math.Round(start.Enthalpy/1000, 2), "kg/kg");
             }
             return null;
         }
@@ -1524,23 +1509,37 @@ namespace SAM.Core.Mollier.UI.Controls
             generate_graph();
             return mollierPointsResult;
         }
-        public bool AddProcess(IMollierProcess mollierProcess, bool checkPressure = true)
+        public List<UIMollierProcess> AddProcesses(List<IMollierProcess> mollierProcesses, bool checkPressure = true)
         {
-            if (mollierProcess == null)
-            {
-                return false;
-            }
             if (mollierProcesses == null)
             {
-                mollierProcesses = new List<IMollierProcess>();
+                return null;
             }
-            if (checkPressure && !Core.Query.AlmostEqual(mollierProcess.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
+            if (this.mollierProcesses == null)
             {
-                return false;
+                this.mollierProcesses = new List<UIMollierProcess>();
             }
-            mollierProcesses.Add(mollierProcess);
-            generate_graph();//TODO: optimalise
-            return true;
+            List<UIMollierProcess> result = new List<UIMollierProcess>();
+            foreach (IMollierProcess mollierProcess_iteration in mollierProcesses)
+            {
+                IMollierProcess mollierProcess = mollierProcess_iteration;
+                if (checkPressure && !Core.Query.AlmostEqual(mollierProcess.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
+                {
+                    return null;
+                }
+                if (!(mollierProcess is UIMollierProcess))
+                {
+                    UIMollierProcess mollierProcess_Temp = new UIMollierProcess(mollierProcess, Color.Empty);
+                    mollierProcess = mollierProcess_Temp;
+                }
+                UIMollierProcess mollierProcess_UI = new UIMollierProcess(((UIMollierProcess)mollierProcess).MollierProcess, ((UIMollierProcess)mollierProcess).Color) { Start_Label = ((UIMollierProcess)mollierProcess).Start_Label, Process_Label = ((UIMollierProcess)mollierProcess).Process_Label, End_Label = ((UIMollierProcess)mollierProcess).End_Label };
+
+                this.mollierProcesses.Add(mollierProcess_UI);
+                result.Add(mollierProcess_UI);
+            }
+            systems = Query.ProcessSortBySystem(this.mollierProcesses);
+            generate_graph();
+            return result;
         }
         public bool AddZone(MollierZone mollierZone)
         {
@@ -1646,9 +1645,149 @@ namespace SAM.Core.Mollier.UI.Controls
                         worksheet.Delete();
                     }
 
+
                     worksheet = Excel.Modify.Copy(workseet_Template, name);
-                 
-                    NetOffice.ExcelApi.Range range = Excel.Query.Range(worksheet.UsedRange, orientation);
+
+                    NetOffice.ExcelApi.Range range = null;
+
+                    HashSet<string> uniqueNames = new HashSet<string>();
+                    uniqueNames.Add("[ProcessPointName]");
+                    uniqueNames.Add("[DryBulbTemperature]");
+                    uniqueNames.Add("[HumidityRatio]");
+                    uniqueNames.Add("[RelativeHumidity]");
+                    uniqueNames.Add("[WetBulbTemperature]");
+                    uniqueNames.Add("[Enthalpy]");
+                    uniqueNames.Add("[Density]");
+                    uniqueNames.Add("[AtmosphericPressure]");
+                    uniqueNames.Add("[SpecificVolume]");
+                    if (orientation == "A3_Portrait" || orientation == "A3_Landscape")
+                    {
+                        uniqueNames.Add("[ProcessName]");
+                        uniqueNames.Add("[deltaT]");
+                        uniqueNames.Add("[deltaX]");
+                        uniqueNames.Add("[deltaH]");
+                    }
+
+                    Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
+                    object[,] values = worksheet.Range(worksheet.Cells[1, 1], worksheet.Cells[100, 30]).Value as Object[,];
+                    for (int i = values.GetLowerBound(0); i <= values.GetUpperBound(0); i++)
+                    {
+                        for (int j = values.GetLowerBound(1); j <= values.GetUpperBound(1); j++)
+                        {
+                            if (!(values[i, j] is string))
+                            {
+                                continue;
+                            }
+
+                            string rangeValue = values[i, j] as string;
+                            if (string.IsNullOrWhiteSpace(rangeValue))
+                            {
+                                continue;
+                            }
+                            foreach (string name_Temp in uniqueNames)
+                            {
+                                if (rangeValue == name_Temp)
+                                {
+                                    dictionary.Add(name_Temp, worksheet.Cells[i, j]);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (string key_Temp in uniqueNames)
+                    {
+                        NetOffice.ExcelApi.Range range_Temp = dictionary[key_Temp];
+                        int columnIndex = range_Temp.Column;
+                        int rowIndex = range_Temp.Row;
+                        int id = 0;
+                        int numberOfShown = 9;
+                        for (int i = 0; i < systems.Count; i++)
+                        {
+                            worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
+                            for (int j=0; j < systems[i].Count; j++)
+                            {
+                                UIMollierProcess UI_MollierProcess = systems[i][j]; 
+                                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
+                                MollierPoint start = mollierProcess.Start;
+                                MollierPoint end = mollierProcess.End;
+                                string value_1 = string.Empty;
+                                string value_2 = string.Empty;
+                                switch (key_Temp)
+                                {
+                                    case "[ProcessPointName]":
+                                        value_1 = UI_MollierProcess.Start_Label;
+                                        value_2 = UI_MollierProcess.End_Label;
+                                        break;
+                                    case "[DryBulbTemperature]":
+                                        value_1 = System.Math.Round(start.DryBulbTemperature, 2).ToString();
+                                        value_2 = System.Math.Round(end.DryBulbTemperature, 2).ToString();
+                                        break;
+                                    case "[HumidityRatio]":
+                                        value_1 = System.Math.Round(start.HumidityRatio * 1000, 2).ToString();
+                                        value_2 = System.Math.Round(end.HumidityRatio * 1000, 2).ToString();
+                                        break;
+                                    case "[RelativeHumidity]":
+                                        value_1 = System.Math.Round(start.RelativeHumidity, 2).ToString();
+                                        value_2 = System.Math.Round(end.RelativeHumidity, 2).ToString();
+                                        break;
+                                    case "[WetBulbTemperature]":
+                                        value_1 = System.Math.Round(start.WetBulbTemperature(), 2).ToString();
+                                        value_2 = System.Math.Round(end.WetBulbTemperature(), 2).ToString();
+                                        break;
+                                    case "[Enthalpy]":
+                                        value_1 = System.Math.Round(start.Enthalpy / 1000, 2).ToString();
+                                        value_2 = System.Math.Round(end.Enthalpy / 1000, 2).ToString();
+                                        break;
+                                    case "[SpecificVolume]":
+                                        value_1 = System.Math.Round(start.SpecificVolume(), 2).ToString();
+                                        value_2 = System.Math.Round(end.SpecificVolume(), 2).ToString();
+                                        break;
+                                    case "[Density]":
+                                        value_1 = System.Math.Round(start.Density(), 2).ToString();
+                                        value_2 = System.Math.Round(end.Density(), 2).ToString();
+                                        break;
+                                    case "[AtmosphericPressure]":
+                                        value_1 = System.Math.Round(start.Pressure, 2).ToString();
+                                        value_2 = System.Math.Round(end.Pressure, 2).ToString();
+                                        break;
+                                    case "[ProcessName]":
+                                        value_2 = Query.FullProcessName(UI_MollierProcess);
+                                        break;
+                                    case "[deltaT]":
+                                        value_2 = (System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2)).ToString();
+                                        break;
+                                    case "[deltaX]":
+                                        value_2 = (System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2)).ToString();
+                                        break;
+                                    case "[deltaH]":
+                                        value_2 = (System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2)).ToString();
+                                        break;
+                                }
+
+                                if (!(mollierProcess is RoomProcess) && UI_MollierProcess.Start_Label != "")
+                                {
+                                    if(value_1 != string.Empty)
+                                    {
+                                        worksheet.Cells[rowIndex + id, columnIndex].Value = value_1; id++;
+                                    }
+                                    else if(key_Temp == "[ProcessName]" || key_Temp == "[deltaT]" || key_Temp == "[deltaX]" || key_Temp == "[deltaH]")
+                                    {
+                                        worksheet.Cells[rowIndex + id, columnIndex].Value = "-"; id++;
+                                    }
+                                }
+                                if (value_2 != string.Empty && UI_MollierProcess.End_Label != "")
+                                {
+                                    worksheet.Cells[rowIndex + id, columnIndex].Value = value_2; id++;
+                                }
+                            }
+                            worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
+                        }
+
+                    }
+
+
+                    range = Excel.Query.Range(worksheet.UsedRange, orientation);
 
                     if (range == null)
                     {

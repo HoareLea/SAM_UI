@@ -122,9 +122,10 @@ namespace SAM.Analytical.UI.Grasshopper
             mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
             mollierForm.default_chart(mollierForm.MollierControlSettings);
             mollierForm.Pressure = double.IsNaN(pressure) ? Standard.Pressure : pressure;
+            mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             //mollierForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             //mollierForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-            
+
             //mollierForm.ClientSize = new System.Drawing.Size(723, 1501);
 
             //mollierForm.AutoScaleDimensions = new System.Drawing.SizeF(6, 15);
@@ -136,7 +137,8 @@ namespace SAM.Analytical.UI.Grasshopper
 
 
 
-            mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
+            //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
+            mollierForm.AddProcesses(mollierProcesses, false);
             mollierForm.AddPoints(mollierPoints, false);
 
             mollierForm.Show();
