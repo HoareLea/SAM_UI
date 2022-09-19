@@ -1212,8 +1212,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     else
                     {
                         is_space = true;
-                        moveHumidityRatio = -0.0006 * vector2D.Y;
-                        moveTemperature = (0.3 + 0.5 * label.Length/2) * vector2D.X;
+                        moveHumidityRatio = -0.0007 * vector2D.Y;
+                        moveTemperature = (0.5 + 0.5 * label.Length/2) * vector2D.X;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
                     }
 
@@ -1255,8 +1255,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     else
                     {
                         is_space = true;
-                        moveHumidityRatio = -0.0006 * vector2D.Y;
-                        moveTemperature = -(0.3 + 0.5 * label.Length/2) * vector2D.X;
+                        moveHumidityRatio = -0.0007 * vector2D.Y;
+                        moveTemperature = -(0.5 + 0.5 * label.Length/2) * vector2D.X;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
                     }
                     //4th option left  
