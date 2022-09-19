@@ -202,8 +202,9 @@ namespace SAM.Analytical.UI
                         mollierControlSettings.HumidityRatio_Max = 25;
                         mollierControlSettings.ChartType = ChartType.Mollier;
                         mollierControl.MollierControlSettings = mollierControlSettings;
-                        
-                        mollierProcesses?.ForEach(x => mollierControl.AddProcess(x, false));
+
+                        //mollierProcesses?.ForEach(x => mollierControl.AddProcess(x, false));
+                        mollierControl.AddProcesses(mollierProcesses, false);
 
                         mollierControl.Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
                         mollierControl.Refresh();
