@@ -10,6 +10,7 @@ namespace SAM.Core.Mollier.UI
     {
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
         private static string mollierControlPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(Control).Name);
+        
         private void MollierForm_Load(object sender, EventArgs e)
         {
             ColorPointComboBox.Text = "Enthalpy";
@@ -567,13 +568,31 @@ namespace SAM.Core.Mollier.UI
             {
                 return;
             }
+            bool replace = false;
+            
+            using (Forms.OpenJSONForm openJSONForm = new Forms.OpenJSONForm())
+            {
+                DialogResult dialogResult = openJSONForm.ShowDialog();
+                
+                replace = openJSONForm.ReplaceOrMerge();
+            }
 
+            if (replace)
+            {
+                Clear();
+                MollierControlSettings mollierControlSettings = System.IO.File.Exists(path) ? Convert.ToSAM<MollierControlSettings>(path).Find(x => x != null) : null;
+                if(mollierControlSettings != null)
+                {
+                    MollierControl_Main.MollierControlSettings = mollierControlSettings;
+                }
+            }
             LoadMollierObjects(mollierObjects);
+    
         }
 
         private void exportToJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            List<IMollierObject> mollierObjects = new List<IMollierObject>();
+            List<IJSAMObject> mollierObjects = new List<IJSAMObject>();
 
             List<UIMollierProcess> uIMollierProcesses = MollierControl_Main.UIMollierProcesses;
             if(uIMollierProcesses != null)
@@ -585,11 +604,6 @@ namespace SAM.Core.Mollier.UI
             if (mollierPoints != null)
             {
                 mollierObjects.AddRange(mollierPoints.Cast<IMollierObject>());
-            }
-
-            if(mollierObjects == null || mollierObjects.Count == 0)
-            {
-                return;
             }
 
             string path = null;
@@ -608,15 +622,15 @@ namespace SAM.Core.Mollier.UI
 
             if(string.IsNullOrWhiteSpace(path))
             {
-                return;
+                return;    
             }
 
+            mollierObjects.Add(MollierControlSettings);
             Convert.ToFile(mollierObjects, path);
         }
 
         public void LoadMollierObjects(IEnumerable<IMollierObject> mollierObjects)
         {
-            Clear();
 
             if(mollierObjects == null || mollierObjects.Count() == 0)
             {
