@@ -164,6 +164,7 @@ namespace SAM.Analytical.UI.Grasshopper
             mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
             mollierForm.Pressure = pressure;
             mollierForm.AddProcesses(mollierProcesses, false);
+            mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
             mollierForm.Show();
         }

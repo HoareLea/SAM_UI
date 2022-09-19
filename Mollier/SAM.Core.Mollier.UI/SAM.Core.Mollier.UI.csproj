@@ -120,6 +120,12 @@
     <Compile Include="Forms\MollierProcessForm.Designer.cs">
       <DependentUpon>MollierProcessForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\OpenJSONForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OpenJSONForm.Designer.cs">
+      <DependentUpon>OpenJSONForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\TestForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -164,6 +170,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierProcessForm.resx">
       <DependentUpon>MollierProcessForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OpenJSONForm.resx">
+      <DependentUpon>OpenJSONForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TestForm.resx">
       <DependentUpon>TestForm.cs</DependentUpon>
