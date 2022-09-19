@@ -1662,7 +1662,7 @@ namespace SAM.Core.Mollier.UI.Controls
             generate_graph();
             return mollierPointsResult;
         }
-        public List<UIMollierProcess> AddProcesses(List<IMollierProcess> mollierProcesses, bool checkPressure = true)
+        public List<UIMollierProcess> AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
         {
             if (mollierProcesses == null)
             {
@@ -2127,13 +2127,41 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        public bool MollierPoints()//checks if there exist any point
+        /// <summary>
+        /// Checks if there exist any point
+        /// </summary>
+        public bool HasMollierPoints
         {
-            if(mollierPoints == null || mollierPoints.Count == 0)
+            get
             {
-                return false;
+                return mollierPoints != null && mollierPoints.Count != 0;
             }
-            return true;
+        }
+
+        public List<MollierPoint> MollierPoints
+        {
+            get
+            {
+                if(mollierPoints == null)
+                {
+                    return null;
+                }
+
+                return mollierPoints.ConvertAll(x => new MollierPoint(x));
+            }
+        }
+
+        public List<UIMollierProcess> UIMollierProcesses
+        {
+            get
+            {
+                if(mollierProcesses == null)
+                {
+                    return null;
+                }
+
+                return mollierProcesses.ConvertAll(x => x?.Clone());
+            }
         }
 
         public void ColorPoints(bool generate, double percent, string chartDataType)

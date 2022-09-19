@@ -16,7 +16,7 @@ namespace SAM.Core.Mollier.UI
         }
 
         //Chart's initialization and reset to default values
-        public MollierForm()    
+        public MollierForm()
         {
             InitializeComponent();
 
@@ -206,7 +206,7 @@ namespace SAM.Core.Mollier.UI
         //    MollierControl_Main.AddProcess(mollierProcess, checkPressure);
         //    return true;
         //}
-        public bool AddProcesses(List<IMollierProcess> mollierProcesses, bool checkPressure = true)
+        public bool AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
         {
             if(mollierProcesses == null)
             {
@@ -502,7 +502,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (DivisionAreaCheckBox.Checked)
             {
-                if (!MollierControl_Main.MollierPoints())
+                if (!MollierControl_Main.HasMollierPoints)
                 {
                     MessageBox.Show("There are no points");
                     DivisionAreaCheckBox.Checked = false;
@@ -543,22 +543,106 @@ namespace SAM.Core.Mollier.UI
 
         private void openFromJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            string path = null;
 
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+                path = openFileDialog.FileName;
+            }
+
+            if(string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
+            {
+                return;
+            }
+
+            List<IMollierObject> mollierObjects = Convert.ToSAM<IMollierObject>(path);
+            if(mollierObjects == null || mollierObjects.Count == 0)
+            {
+                return;
+            }
+
+            LoadMollierObjects(mollierObjects);
         }
 
         private void exportToJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Control control = MollierControl_Main;
-            if (control != null)
-            {
-                string directoryPath = System.IO.Path.GetDirectoryName(mollierControlPath);
-                if (!System.IO.Directory.Exists(directoryPath))
-                {
-                    System.IO.Directory.CreateDirectory(directoryPath);
-                }
+            List<IMollierObject> mollierObjects = new List<IMollierObject>();
 
-                //Convert.ToFile(this, mollierControlPath);
+            List<UIMollierProcess> uIMollierProcesses = MollierControl_Main.UIMollierProcesses;
+            if(uIMollierProcesses != null)
+            {
+                mollierObjects.AddRange(uIMollierProcesses.Cast<IMollierObject>());
             }
+
+            List<MollierPoint> mollierPoints = MollierControl_Main.MollierPoints;
+            if (mollierPoints != null)
+            {
+                mollierObjects.AddRange(mollierPoints.Cast<IMollierObject>());
+            }
+
+            if(mollierObjects == null || mollierObjects.Count == 0)
+            {
+                return;
+            }
+
+            string path = null;
+
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+                saveFileDialog.FilterIndex = 1;
+                saveFileDialog.RestoreDirectory = true;
+                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+                path = saveFileDialog.FileName;
+            }
+
+            if(string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            Convert.ToFile(mollierObjects, path);
+        }
+
+        public void LoadMollierObjects(IEnumerable<IMollierObject> mollierObjects)
+        {
+            Clear();
+
+            if(mollierObjects == null || mollierObjects.Count() == 0)
+            {
+                return;
+            }
+
+            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
+            List<MollierPoint> mollierPoints = new List<MollierPoint>();
+            foreach(IMollierObject mollierObject in mollierObjects)
+            {
+                if(mollierObject is IMollierProcess)
+                {
+                    mollierProcesses.Add((IMollierProcess)mollierObject);
+                }
+                else if(mollierObject is MollierPoint)
+                {
+                    mollierPoints.Add((MollierPoint)mollierObject);
+                }
+            }
+
+            double pressure = Query.DefaultPressure(mollierPoints, mollierProcesses);
+
+            Pressure = double.IsNaN(pressure) ? Standard.Pressure : pressure;
+
+            AddProcesses(mollierProcesses, false);
+            AddPoints(mollierPoints, false);
         }
     }
 }
