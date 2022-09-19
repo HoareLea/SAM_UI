@@ -844,16 +844,13 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
                 series.Points[index].ToolTip = ToolTipPoint(point, chartType);
                 series.Points[index].Tag = point;
+
+                //Series series1 = MollierChart.Series.Add(Guid.NewGuid().ToString());
+                //series1.Points.AddXY(point.DryBulbTemperature, point.HumidityRatio);
+                //series1.ChartType = SeriesChartType.Point;
+                //series1.Label = "A2";
             }
         }
-        
-        
-        
-        
-        
-        
-        
-        
         private void add_MollierProcesses(ChartType chartType)
         {
             for (int i = 0; i < mollierProcesses.Count; i++)
@@ -1010,12 +1007,9 @@ namespace SAM.Core.Mollier.UI.Controls
             double Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(end) : end.HumidityRatio;
             seriesRoomPoint.Points.AddXY(X, Y);
             seriesRoomPoint.Points[0].ToolTip = ToolTipPoint(end, mollierControlSettings.ChartType);
-            Vector2D scaleVector2D = Query.ScaleVector2D(this, MollierControlSettings);
-            create_moved_label(mollierControlSettings.ChartType, X, Y, 0, 0, 0.7 * scaleVector2D.X, -1.5 * scaleVector2D.Y, 0, 0, "ROOM", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black);
-
         }
 
-        private void createProcessesLabels(List<UIMollierProcess> mollierProcesses, ChartType chartType)
+        private void createProcessesLabels(List<UIMollierProcess> mollierProcesses, ChartType chartType)    
         {
             if(systems == null)
             {
@@ -1061,154 +1055,313 @@ namespace SAM.Core.Mollier.UI.Controls
                     name++;
                 }
             }
-            for (int i = 0; i < mollierProcesses.Count; i++)
-            {
-                UIMollierProcess UI_MollierProcess = mollierProcesses[i];
-                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
-                if (mollierProcess is RoomProcess)
-                {
-                    continue;
-                }
-  
-                createProcessLabels(tuples, mollierProcess, chartType, UI_MollierProcess.Start_Label, UI_MollierProcess.Process_Label, UI_MollierProcess.End_Label);
-
-            }
-        }
-        private void createProcessLabels(List<Tuple<MollierPoint, double, double>> tuples, MollierProcess mollierProcess, ChartType chartType, string startLabel, string processLabel, string endLabel)
+            createPorcessesLabels_New(mollierProcesses, chartType);
+        }      
+        private void createPorcessesLabels_New(List<UIMollierProcess> mollierProcesses, ChartType chartType)//creates sorted list of points that has to be labaled
         {
-            // if returns true it labeled if false it didn't
+            List<Tuple<MollierPoint, string>> points_list = new List<Tuple<MollierPoint, string>>();
 
-            if(mollierProcess == null)
+            foreach(UIMollierProcess UI_MollierProcess in mollierProcesses)
             {
-                return;
-            }
-            MollierPoint start = mollierProcess.Start;
-            MollierPoint end = mollierProcess.End;
-            MollierPoint mid = new MollierPoint((start.DryBulbTemperature + end.DryBulbTemperature) / 2, (start.HumidityRatio + end.HumidityRatio) / 2, mollierControlSettings.Pressure);
-
-            Vector2D scaleVector2D = Query.ScaleVector2D(this, MollierControlSettings);
-
-            List<Vector2D> vectors = new List<Vector2D>();
-            if (chartType == ChartType.Mollier)
-            {
-                vectors.Add(new Vector2D(0.6 * scaleVector2D.X, -0.8 * scaleVector2D.Y));
-                vectors.Add(new Vector2D(-0.6 * scaleVector2D.X, -1 * scaleVector2D.Y));
-                vectors.Add(new Vector2D(0, 0.2 * scaleVector2D.Y));
-                vectors.Add(new Vector2D(0, -2.2 * scaleVector2D.Y));
-            }
-            else
-            {
-                vectors.Add(new Vector2D(0, 0 * scaleVector2D.Y));
-                vectors.Add(new Vector2D(0, -0.0017 * scaleVector2D.Y));
-                vectors.Add(new Vector2D(0.6 * scaleVector2D.X, -0.001 * scaleVector2D.Y));
-                vectors.Add(new Vector2D(-0.6 * scaleVector2D.X, -0.001 * scaleVector2D.Y));
-            }
-            foreach (Vector2D vector in vectors)
-            {
-                double X = vector.X, Y = vector.Y;
-                if (checkPointProcessLabels(tuples, start, end, X, Y, chartType, scaleVector2D))
+                if(UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
                 {
-                    Tuple<MollierPoint, double, double> tuple_Temp = new Tuple<MollierPoint, double, double>(start, X, Y);
-                    tuples.Add(tuple_Temp);
-                    tuple_Temp = new Tuple<MollierPoint, double, double>(end, X, Y);
-                    tuples.Add(tuple_Temp);
-                    if (chartType == ChartType.Mollier)
-                    {
-                        create_moved_label(chartType, start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, startLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        create_moved_label(chartType, end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, endLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
+                    points_list.Add(new Tuple<MollierPoint, string>(UI_MollierProcess.Start, UI_MollierProcess.Start_Label));
+                }
+                if (UI_MollierProcess.End_Label != null && UI_MollierProcess.End_Label != "")
+                {
+                    points_list.Add(new Tuple<MollierPoint, string>(UI_MollierProcess.End, UI_MollierProcess.End_Label));
+                }
 
-                        if (Mollier.Query.Distance(start, end) > 3 * scaleVector2D.Y)
-                        { 
-                            create_moved_label(chartType, mid.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mid), 0, 0, X, Y - 0.8 * scaleVector2D.Y, X, Y, processLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
+            }
+            points_list?.Sort((x, y) => x.Item1.HumidityRatio.CompareTo(y.Item1.HumidityRatio));
+            foreach(UIMollierProcess UI_MollierProcess in mollierProcesses)
+            {
+                if (UI_MollierProcess.Process_Label != null && UI_MollierProcess.Process_Label != "")
+                {
+                    double dryBulbTemperature = (UI_MollierProcess.Start.DryBulbTemperature + UI_MollierProcess.End.DryBulbTemperature) / 2;
+                    double humdityRatio = (UI_MollierProcess.Start.HumidityRatio + UI_MollierProcess.End.HumidityRatio) / 2;
+                    MollierPoint mid = new MollierPoint(dryBulbTemperature, humdityRatio, mollierControlSettings.Pressure);
+                    points_list.Add(new Tuple<MollierPoint, string>(mid, UI_MollierProcess.Process_Label));
+                }
+            }
+            createPorcessesLabels_New_2(points_list);
+        }
+        
+        private void createPorcessesLabels_New_2(List<Tuple<MollierPoint, string>> points_list)
+        {
+            List<Tuple<MollierPoint, string>> created_points = new List<Tuple<MollierPoint, string>>();
+            if(mollierControlSettings.ChartType == ChartType.Mollier)
+            {
+                for (int i = 0; i < points_list.Count; i++)
+                {
+                    MollierPoint mollierPoint = points_list[i].Item1;
+                    string label = points_list[i].Item2;
+                    Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
+                    //1st option right
+                    bool is_space = true;
+                    //how much move the label 
+                    double moveHumidityRatio = (0.2 + 0.2 * label.Length / 2) * vector2D.X;
+                    double moveTemperature = -1.2 * vector2D.Y;
+                    //mollier point moved  riBght, top, left, down
+                    MollierPoint mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
+                    for (int j = 0; j < created_points.Count; j++)
+                    {
+                        if (overlaps(mollierPoint_Moved, created_points[j], label))
+                        {
+                            is_space = false;
+                            break;
                         }
+                    }
+                    if (is_space == true && !intersect(mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
+                    {
+                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                        continue;
                     }
                     else
                     {
-                        create_moved_label(chartType, start.DryBulbTemperature, start.HumidityRatio, 0, 0, X, Y, X, Y, startLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
-                        create_moved_label(chartType, end.DryBulbTemperature, end.HumidityRatio, 0, 0, X, Y, X, Y, endLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
+                        is_space = true;
+                        moveHumidityRatio = 0;
+                        moveTemperature = 0;
+                        mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
+                    }
 
-                        if (Mollier.Query.Distance(start, end) > 2 * scaleVector2D.X)
+                    //2nd option top
+                    for (int j = 0; j < created_points.Count; j++)
+                    {
+                        if (overlaps(mollierPoint_Moved, created_points[j], label))
                         {
-                            create_moved_label(chartType, mid.DryBulbTemperature, mid.HumidityRatio, 0, 0, X, Y, X, Y, processLabel, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, fontChange: true);
+                            is_space = false;
+                            break;
                         }
                     }
-                    return;
+                    if (is_space == true && !intersect(mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
+                    {
+                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                        continue;
+                    }
+                    else
+                    {
+                        is_space = true;
+                        moveHumidityRatio = -(0.2 + 0.2 * label.Length / 2) * vector2D.X;
+                        moveTemperature = -1.2 * vector2D.Y;
+                        mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
+                    }
+                    //3rd option left
+                    for (int j = 0; j < created_points.Count; j++)
+                    {
+                        if (overlaps(mollierPoint_Moved, created_points[j], label))
+                        {
+                            is_space = false;
+                            break;
+                        }
+                    }
+                    if (is_space == true && !intersect(mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
+                    {
+                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                        continue;
+                    }
+                    else
+                    {
+                        is_space = true;
+                        moveHumidityRatio = 0;
+                        moveTemperature = -2 * vector2D.X;
+                        mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
+                    }
+                    //4th option down   
+                    for (int j = 0; j < created_points.Count; j++)
+                    {
+                        if (overlaps(mollierPoint_Moved, created_points[j], label))
+                        {
+                            is_space = false;
+                            break;
+                        }
+                    }
+                    if (is_space == true && !intersect(mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
+                    {
+                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                    }
                 }
             }
-
-        }
-        private bool checkPointProcessLabels(List<Tuple<MollierPoint, double, double>> tuples, MollierPoint start, MollierPoint end, double X, double Y, ChartType chartType, Vector2D scaleVector)
-        {
-            double toleranceHR = 0.25;
-            double toleranceTemp = 2;
-           
-            for (int i = 0; i < tuples.Count; i++)
+            else
             {
-                List<Tuple<MollierPoint, double, double>> tuples_Temps = new List<Tuple<MollierPoint, double, double>>();
-                if (chartType == ChartType.Mollier)
+                for (int i = 0; i < points_list.Count; i++)
                 {
-                    tuples_Temps = tuples.FindAll(x => Core.Query.AlmostEqual(start.DryBulbTemperature + Y, x.Item1.DryBulbTemperature + x.Item3, toleranceTemp) && Core.Query.AlmostEqual(start.HumidityRatio * 1000 + X, x.Item1.HumidityRatio * 1000 + x.Item2, toleranceHR));
-                }
-                else
-                {
-                    tuples_Temps = tuples.FindAll(x => Core.Query.AlmostEqual(start.DryBulbTemperature + X, x.Item1.DryBulbTemperature + x.Item2, toleranceTemp) && Core.Query.AlmostEqual(start.HumidityRatio + Y, x.Item1.HumidityRatio + x.Item3, toleranceHR / 1000));
-                }
-                if (tuples_Temps.Count != 0)
-                {
-                    return false;
-                }
-                if (chartType == ChartType.Mollier)
-                {
-                    tuples_Temps = tuples.FindAll(x => Core.Query.AlmostEqual(end.DryBulbTemperature + Y, x.Item1.DryBulbTemperature + x.Item3, toleranceTemp) && Core.Query.AlmostEqual(end.HumidityRatio * 1000 + X, x.Item1.HumidityRatio * 1000 + x.Item2, toleranceHR));
-                }
-                else
-                {
-                    tuples_Temps = tuples.FindAll(x => Core.Query.AlmostEqual(end.DryBulbTemperature + X, x.Item1.DryBulbTemperature + x.Item2, toleranceTemp) && Core.Query.AlmostEqual(end.HumidityRatio + Y, x.Item1.HumidityRatio + x.Item3, toleranceHR / 1000));
-                }
-                if (tuples_Temps.Count != 0)
-                {
-                    return false;
+                    MollierPoint mollierPoint = points_list[i].Item1;
+                    string label = points_list[i].Item2;
+                    Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
+                    //1st option top
+                    bool is_space = true;
+                    //how much move the label 
+                    double moveHumidityRatio = 0;
+                    double moveTemperature = 0;
+                    //mollier point moved  right, top, left, down
+                    MollierPoint mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
+                    for (int j = 0; j < created_points.Count; j++)
+                    {
+                        if (overlaps(mollierPoint_Moved, created_points[j], label))
+                        {
+                            is_space = false;
+                            break;
+                        }
+                    }
+                    if (is_space == true && !intersect(mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
+                    {
+                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                        continue;
+                    }
+                    else
+                    {
+                        is_space = true;
+                        moveHumidityRatio = -0.0006 * vector2D.Y;
+                        moveTemperature = (0.3 + 0.5 * label.Length/2) * vector2D.X;
+                        mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
+                    }
+
+                    //2nd option right
+                    for (int j = 0; j < created_points.Count; j++)
+                    {
+                        if (overlaps(mollierPoint_Moved, created_points[j], label))
+                        {
+                            is_space = false;
+                            break;
+                        }
+                    }
+                    if (is_space == true && !intersect(mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
+                    {
+                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                        continue;
+                    }
+                    else
+                    {
+                        is_space = true;
+                        moveHumidityRatio = -0.0015 * vector2D.Y;
+                        moveTemperature = 0;
+                        mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
+                    }
+                    //3rd option down
+                    for (int j = 0; j < created_points.Count; j++)
+                    {
+                        if (overlaps(mollierPoint_Moved, created_points[j], label))
+                        {
+                            is_space = false;
+                            break;
+                        }
+                    }
+                    if (is_space == true && !intersect(mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
+                    {
+                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                        continue;
+                    }
+                    else
+                    {
+                        is_space = true;
+                        moveHumidityRatio = -0.0006 * vector2D.Y;
+                        moveTemperature = -(0.3 + 0.5 * label.Length/2) * vector2D.X;
+                        mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
+                    }
+                    //4th option left  
+                    for (int j = 0; j < created_points.Count; j++)
+                    {
+                        if (overlaps(mollierPoint_Moved, created_points[j], label))
+                        {
+                            is_space = false;
+                            break;
+                        }
+                    }
+                    if (is_space == true && !intersect(mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
+                    {
+                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                    }
                 }
             }
-            //foreach (MollierProcess mollierProcess in mollierProcesses)
-            //{
-            //    double startDryBulbTemperature = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(start) + Y : start.DryBulbTemperature + X;
-            //    double startHumidityRatio = chartType == ChartType.Mollier ? start.HumidityRatio * 1000 + X : start.HumidityRatio + Y;
-
-            //    double endDryBulbTemperature = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(end) + Y : end.DryBulbTemperature + X;
-            //    double endHumidityRatio = chartType == ChartType.Mollier ? end.HumidityRatio * 1000 + X : end.HumidityRatio + Y;
-
-            //    if (Intersect(mollierProcess, chartType, startDryBulbTemperature, startHumidityRatio, scaleVector) || Intersect(mollierProcess, chartType, endDryBulbTemperature, endHumidityRatio, scaleVector))
-            //    {
-            //        return false;
-            //    }
-            //}
-
-            return true;
-        }
-        private static bool Intersect(UIMollierProcess mollierProcess, ChartType chartType, double dryBulbTemperature, double humidityRatio, Vector2D scaleVector, double tolerance = Tolerance.MacroDistance)
-        {
-            if (mollierProcess == null || double.IsNaN(dryBulbTemperature) || double.IsNaN(humidityRatio))
+            
+            for(int i=0; i<created_points.Count; i++)
             {
-                return false;
+                double Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(created_points[i].Item1) : created_points[i].Item1.HumidityRatio;
+                double X = mollierControlSettings.ChartType == ChartType.Mollier ? created_points[i].Item1.HumidityRatio * 1000 : created_points[i].Item1.DryBulbTemperature;
+
+                create_moved_label(mollierControlSettings.ChartType, X, Y, 0, 0, 0, 0, 0, 0, created_points[i].Item2, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black);
             }
+        }
+        private bool overlaps(MollierPoint mollierPointNew, Tuple<MollierPoint, string> mollierPointLabeled, string label)
+        {
+            ChartType chartType = mollierControlSettings.ChartType;
+            double NewPoint_X = chartType == ChartType.Mollier ? mollierPointNew.HumidityRatio * 1000 : mollierPointNew.DryBulbTemperature;
+            double NewPoint_Y = chartType == ChartType.Mollier ? mollierPointNew.DryBulbTemperature : mollierPointNew.HumidityRatio;
+            double OldPoint_X = chartType == ChartType.Mollier ? mollierPointLabeled.Item1.HumidityRatio * 1000 : mollierPointLabeled.Item1.DryBulbTemperature;
+            double OldPoint_Y = chartType == ChartType.Mollier ? mollierPointLabeled.Item1.DryBulbTemperature : mollierPointLabeled.Item1.HumidityRatio;
+            string OldLabel = mollierPointLabeled.Item2;
+            Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
+            if(chartType == ChartType.Mollier)
+            { 
+                double y = 0.95 * vector2D.Y;
+                double x = 0.2 * vector2D.X;// 0.2 is one letter width in mollier
+                x *= label.Length;
 
-            double X = chartType == ChartType.Mollier ? 0.5 * scaleVector.X : 1 * scaleVector.X;
-            double Y = chartType == ChartType.Mollier ? 1 * scaleVector.Y : 0.0003 * scaleVector.Y;
-            Point2D origin = chartType == ChartType.Mollier ? new Point2D(humidityRatio - (X / 2), dryBulbTemperature - (Y / 2)) : new Point2D(dryBulbTemperature - X / 2, humidityRatio - Y / 2);
+                Point2D origin = new Point2D(NewPoint_X - x / 2, NewPoint_Y + y);
+                Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
 
-            Rectangle2D rectangle2D = new Rectangle2D(origin, X, Y);
 
-            Point2D start = chartType == ChartType.Mollier ? new Point2D(mollierProcess.Start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierProcess.Start)) : new Point2D(mollierProcess.Start.DryBulbTemperature, mollierProcess.Start.HumidityRatio);
-            Point2D end = chartType == ChartType.Mollier ? new Point2D(mollierProcess.End.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(mollierProcess.End)) : new Point2D(mollierProcess.End.DryBulbTemperature, mollierProcess.End.HumidityRatio);
+                x = 0.2 * vector2D.X;
+                x *= OldLabel.Length;
+                origin = new Point2D(OldPoint_X - x / 2, OldPoint_Y + y);
+                Rectangle2D rectangle2Dold = new Rectangle2D(origin, x, y);
 
-            Segment2D segment2D = new Segment2D(start, end);
-            //|| (rectangle2D.Inside(segment2D.Start) && rectangle2D.Inside(segment2D.End));
-            return rectangle2D.Intersect(segment2D, tolerance) || (rectangle2D.Inside(segment2D.Start) && rectangle2D.Inside(segment2D.End));
+                return rectangle2Dnew.Intersect(rectangle2Dold, 0.001);
+            }
+            else
+            {
+                double y = 0.00049 * vector2D.Y;
+                double x = 0.48 * vector2D.X;// 0.25 is one letter width in psychro
+                x *= label.Length;
 
+                Point2D origin = new Point2D(NewPoint_X - x / 2, NewPoint_Y + y);
+                Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
+
+
+                x = 0.48 * vector2D.X;
+                x *= OldLabel.Length;
+                origin = new Point2D(OldPoint_X - x / 2, OldPoint_Y + y);
+                Rectangle2D rectangle2Dold = new Rectangle2D(origin, x, y);
+
+                return rectangle2Dnew.Intersect(rectangle2Dold, 0.0000001);
+            }
+            return false;
         }
 
+        private bool intersect(MollierPoint mollierPointNew, string label, List<UIMollierProcess> mollierProcesses)
+        {
+            ChartType chartType = mollierControlSettings.ChartType;
+            double NewPoint_X = chartType == ChartType.Mollier ? mollierPointNew.HumidityRatio * 1000 : mollierPointNew.DryBulbTemperature;
+            double NewPoint_Y = chartType == ChartType.Mollier ? mollierPointNew.DryBulbTemperature : mollierPointNew.HumidityRatio;
+            Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
+            double y = 0.95 * vector2D.Y;
+            double x = 0.18 * vector2D.X;// 0.2 is one letter width in mollier
+            x *= label.Length;
+            if (chartType == ChartType.Psychrometric)
+            {
+                y = 0.00048 * vector2D.Y;
+                x = 0.48 * vector2D.X;// 0.25 is one letter width in psychro
+                x *= label.Length;
+            }
+            Point2D origin = new Point2D(NewPoint_X - x / 2, NewPoint_Y + y);
+                
+            Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
+                
+            for(int i=0; i<mollierProcesses.Count; i++)
+            {
+                IMollierProcess mollierProcess = mollierProcesses[i].MollierProcess;
+                Point2D start = chartType == ChartType.Mollier ? new Point2D(mollierProcess.Start.HumidityRatio * 1000, mollierProcess.Start.DryBulbTemperature) : new Point2D(mollierProcess.Start.DryBulbTemperature, mollierProcess.Start.HumidityRatio);
+                Point2D end = chartType == ChartType.Mollier ? new Point2D(mollierProcess.End.HumidityRatio * 1000, mollierProcess.End.DryBulbTemperature) : new Point2D(mollierProcess.End.DryBulbTemperature, mollierProcess.End.HumidityRatio);
 
+                Segment2D segment2D = new Segment2D(start, end);
+                if(rectangle2Dnew.Intersect(segment2D, 0.000001))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
 
         private void generate_graph()
@@ -1572,10 +1725,12 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
+                    string name = mollierControlSettings.ChartType == ChartType.Mollier ? "Mollier" : "Psychrometric";
                     switch (type)
                     {
                         case "PDF":
                             saveFileDialog.Filter = "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*";
+                            name += "_" + orientation;
                             break;
                         case "JPG":
                             saveFileDialog.Filter = "JPG document (*.jpg)|*.jpg|All files (*.*)|*.*";
@@ -1586,7 +1741,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
                     saveFileDialog.FilterIndex = 1;
                     saveFileDialog.RestoreDirectory = true;
-
+                    saveFileDialog.FileName = name;
                     if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                     {
                         return false;
@@ -1660,7 +1815,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     uniqueNames.Add("[Density]");
                     uniqueNames.Add("[AtmosphericPressure]");
                     uniqueNames.Add("[SpecificVolume]");
-                    if (orientation == "A3_Portrait" || orientation == "A3_Landscape")
+                    if (orientation != "A4_Portrait")
                     {
                         uniqueNames.Add("[ProcessName]");
                         uniqueNames.Add("[deltaT]");

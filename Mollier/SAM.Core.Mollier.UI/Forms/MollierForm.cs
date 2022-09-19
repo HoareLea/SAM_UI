@@ -9,6 +9,7 @@ namespace SAM.Core.Mollier.UI
     public partial class MollierForm : Form
     {
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
+        private static string mollierControlPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(Control).Name);
         private void MollierForm_Load(object sender, EventArgs e)
         {
             ColorPointComboBox.Text = "Enthalpy";
@@ -547,7 +548,17 @@ namespace SAM.Core.Mollier.UI
 
         private void exportToJSONToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Control control = MollierControl_Main;
+            if (control != null)
+            {
+                string directoryPath = System.IO.Path.GetDirectoryName(mollierControlPath);
+                if (!System.IO.Directory.Exists(directoryPath))
+                {
+                    System.IO.Directory.CreateDirectory(directoryPath);
+                }
 
+                //Convert.ToFile(this, mollierControlPath);
+            }
         }
     }
 }
