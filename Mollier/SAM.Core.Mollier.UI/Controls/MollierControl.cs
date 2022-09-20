@@ -1821,13 +1821,10 @@ namespace SAM.Core.Mollier.UI.Controls
                     uniqueNames.Add("[Density]");
                     uniqueNames.Add("[AtmosphericPressure]");
                     uniqueNames.Add("[SpecificVolume]");
-                    if (pageSize == PageSize.A4 && pageOrientation == PageOrientation.Portrait)
-                    {
-                        uniqueNames.Add("[ProcessName]");
-                        uniqueNames.Add("[deltaT]");
-                        uniqueNames.Add("[deltaX]");
-                        uniqueNames.Add("[deltaH]");
-                    }
+                    uniqueNames.Add("[ProcessName]");
+                    uniqueNames.Add("[deltaT]");
+                    uniqueNames.Add("[deltaX]");
+                    uniqueNames.Add("[deltaH]");
 
                     Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
                     object[,] values = worksheet.Range(worksheet.Cells[1, 1], worksheet.Cells[100, 30]).Value as object[,];
@@ -1858,6 +1855,11 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     foreach (string key_Temp in uniqueNames)
                     {
+                        if(!dictionary.ContainsKey(key_Temp))
+                        {
+                            continue;
+                        }
+
                         NetOffice.ExcelApi.Range range_Temp = dictionary[key_Temp];
                         int columnIndex = range_Temp.Column;
                         int rowIndex = range_Temp.Row;
@@ -1961,26 +1963,26 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     path_Temp = System.IO.Path.GetTempFileName();
 
-                    Size size_Temp = Size;
-                    if (pageSize == PageSize.A3)//a3 pdf
-                    {
-                        Size = new Size(System.Convert.ToInt32(width * 1.4), System.Convert.ToInt32(height * 1.4));
-                    }
-                    else//a4 pdf
-                    {
-                        Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
-                    }
+                    //Size size_Temp = Size;
+                    //if (pageSize == PageSize.A3)//a3 pdf
+                    //{
+                    //    Size = new Size(System.Convert.ToInt32(width * 1.4), System.Convert.ToInt32(height * 1.4));
+                    //}
+                    //else//a4 pdf
+                    //{
+                    //    Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
+                    //}
                     Save(ChartExportType.EMF, path: path_Temp);
                     
-                    Size = size_Temp;
+                    //Size = size_Temp;
                   
 
                     NetOffice.ExcelApi.Shape shape = worksheet.Shapes.AddPicture(path_Temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
 
-                    double shapeSizeFactor = Query.ShapeSizeFactor(DeviceDpi);
+                    //double shapeSizeFactor = Query.ShapeSizeFactor(DeviceDpi);
 
-                    shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * 0.78);
-                    shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * 0.76);
+                    shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * Query.ShapeSizeFactor(DeviceDpi , 0.78));
+                    shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * Query.ShapeSizeFactor(DeviceDpi, 0.76));
                     shape.Width = width;
                     shape.Height = height;
                     range.Value = string.Empty;
