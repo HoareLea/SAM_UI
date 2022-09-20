@@ -139,7 +139,7 @@ namespace SAM.Core.Mollier.UI
 
         public void SaveAs(string path)
         {
-            MollierControl_Main.Save(ChartExportType.EMF, path: path);
+            MollierControl_Main.Save("EMF", path: path);
         }
         
         //operation of the add process and add point buttons
@@ -425,27 +425,27 @@ namespace SAM.Core.Mollier.UI
 
         private void saveAsJPGToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Save(ChartExportType.JPG);
+            MollierControl_Main.Save("JPG");
         }
 
         private void PdfA3_PortraitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Save(ChartExportType.PDF, PageSize.A3, PageOrientation.Portrait);
+            MollierControl_Main.Save("PDF", "A3_Portrait");
         }
 
         private void PdfA3_LandscapeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Save(ChartExportType.PDF, PageSize.A3, PageOrientation.Landscape);
+            MollierControl_Main.Save("PDF", "A3_Landscape");
         }
 
         private void a4PortraitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Save(ChartExportType.PDF, PageSize.A4, PageOrientation.Portrait);
+            MollierControl_Main.Save("PDF", "A4_Portrait");
         }
 
         private void a4LandscapeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.Save(ChartExportType.PDF, PageSize.A4, PageOrientation.Landscape);
+            MollierControl_Main.Save("PDF", "A4_Landscape");
         }
         private void PointsCheckBox_CheckedChanged(object sender, EventArgs e)
         {

@@ -208,7 +208,7 @@ namespace SAM.Analytical.UI
 
                         mollierControl.Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
                         mollierControl.Refresh();
-                        mollierControl.Save(ChartExportType.EMF, path: path);
+                        mollierControl.Save("EMF", path: path);
 
 
                         mollierControlSettings.HumidityRatio_Max = 30;
@@ -216,7 +216,7 @@ namespace SAM.Analytical.UI
                         mollierControlSettings.ChartType = ChartType.Psychrometric; 
                         mollierControl.MollierControlSettings = mollierControlSettings;
                         
-                        mollierControl.Save(ChartExportType.EMF, path: path_2);
+                        mollierControl.Save("EMF", path: path_2);
                     }
 
                     worksheet.Shapes.AddPicture(path, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);

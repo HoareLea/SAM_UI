@@ -1723,25 +1723,23 @@ namespace SAM.Core.Mollier.UI.Controls
             return true;
         }
 
-        public bool Save(ChartExportType chartExportType, PageSize pageSize = PageSize.A4, PageOrientation pageOrientation = PageOrientation.Landscape, string path = null)
+        public bool Save(string type, string orientation = "A4", string path = null)
         {
-            string pageType = string.Format("{0}_{1}", pageSize, pageOrientation);
-
             if (string.IsNullOrEmpty(path))
             {
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
                     string name = mollierControlSettings.ChartType == ChartType.Mollier ? "Mollier" : "Psychrometric";
-                    switch (chartExportType)
+                    switch (type)
                     {
-                        case ChartExportType.PDF:
+                        case "PDF":
                             saveFileDialog.Filter = "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*";
-                            name = string.Format("{0}_{1}", name, pageType);
+                            name += "_" + orientation;
                             break;
-                        case ChartExportType.JPG:
+                        case "JPG":
                             saveFileDialog.Filter = "JPG document (*.jpg)|*.jpg|All files (*.*)|*.*";
                             break;
-                        case ChartExportType.EMF:
+                        case "EMF":
                             saveFileDialog.Filter = "EMF document (*.emf)|*.emf|All files (*.*)|*.*";
                             break;
                     }
@@ -1755,21 +1753,17 @@ namespace SAM.Core.Mollier.UI.Controls
                     path = saveFileDialog.FileName;
                 }
             }
-
-            if (chartExportType == ChartExportType.JPG)
+            if (type == "JPG")
             {
                 MollierChart.SaveImage(path, ChartImageFormat.Jpeg);
                 return true;
             }
-
-            if (chartExportType == ChartExportType.EMF)
+            if (type == "EMF")
             { 
-                MollierChart.SaveImage(path, ChartImageFormat.Emf);
+                MollierChart.SaveImage(path, ChartImageFormat.Emf);  
                 return true;
             }
-
-
-            if (chartExportType == ChartExportType.PDF)
+            if (type == "PDF")
             {
                 string path_Template = Core.Query.TemplatesDirectory(typeof(Address).Assembly);
                 if (!System.IO.Directory.Exists(path_Template))
@@ -1784,7 +1778,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
 
                 string directory = System.IO.Path.GetDirectoryName(path_Template);
-                string worksheetName = pageType; ;//this should be changed
+                string worksheetName = orientation;//this should be changed
                 if (string.IsNullOrWhiteSpace(path_Template) || !System.IO.File.Exists(path_Template) || string.IsNullOrWhiteSpace(worksheetName))
                 {
                     return false;
@@ -1815,145 +1809,143 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     NetOffice.ExcelApi.Range range = null;
 
-                    if(systems != null && systems.Count != 0)
+                    HashSet<string> uniqueNames = new HashSet<string>();
+                    uniqueNames.Add("[ProcessPointName]");
+                    uniqueNames.Add("[DryBulbTemperature]");
+                    uniqueNames.Add("[HumidityRatio]");
+                    uniqueNames.Add("[RelativeHumidity]");
+                    uniqueNames.Add("[WetBulbTemperature]");
+                    uniqueNames.Add("[Enthalpy]");
+                    uniqueNames.Add("[Density]");
+                    uniqueNames.Add("[AtmosphericPressure]");
+                    uniqueNames.Add("[SpecificVolume]");
+                    if (orientation != "A4_Portrait")
                     {
-                        HashSet<string> uniqueNames = new HashSet<string>();
-                        uniqueNames.Add("[ProcessPointName]");
-                        uniqueNames.Add("[DryBulbTemperature]");
-                        uniqueNames.Add("[HumidityRatio]");
-                        uniqueNames.Add("[RelativeHumidity]");
-                        uniqueNames.Add("[WetBulbTemperature]");
-                        uniqueNames.Add("[Enthalpy]");
-                        uniqueNames.Add("[Density]");
-                        uniqueNames.Add("[AtmosphericPressure]");
-                        uniqueNames.Add("[SpecificVolume]");
-                        if (pageSize == PageSize.A4 && pageOrientation == PageOrientation.Portrait)
-                        {
-                            uniqueNames.Add("[ProcessName]");
-                            uniqueNames.Add("[deltaT]");
-                            uniqueNames.Add("[deltaX]");
-                            uniqueNames.Add("[deltaH]");
-                        }
+                        uniqueNames.Add("[ProcessName]");
+                        uniqueNames.Add("[deltaT]");
+                        uniqueNames.Add("[deltaX]");
+                        uniqueNames.Add("[deltaH]");
+                    }
 
-                        Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
-                        object[,] values = worksheet.Range(worksheet.Cells[1, 1], worksheet.Cells[100, 30]).Value as object[,];
-                        for (int i = values.GetLowerBound(0); i <= values.GetUpperBound(0); i++)
+                    Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
+                    object[,] values = worksheet.Range(worksheet.Cells[1, 1], worksheet.Cells[100, 30]).Value as object[,];
+                    for (int i = values.GetLowerBound(0); i <= values.GetUpperBound(0); i++)
+                    {
+                        for (int j = values.GetLowerBound(1); j <= values.GetUpperBound(1); j++)
                         {
-                            for (int j = values.GetLowerBound(1); j <= values.GetUpperBound(1); j++)
+                            if (!(values[i, j] is string))
                             {
-                                if (!(values[i, j] is string))
-                                {
-                                    continue;
-                                }
-
-                                string rangeValue = values[i, j] as string;
-                                if (string.IsNullOrWhiteSpace(rangeValue))
-                                {
-                                    continue;
-                                }
-                                foreach (string name_Temp in uniqueNames)
-                                {
-                                    if (rangeValue == name_Temp)
-                                    {
-                                        dictionary.Add(name_Temp, worksheet.Cells[i, j]);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-
-                        foreach (string key_Temp in uniqueNames)
-                        {
-                            NetOffice.ExcelApi.Range range_Temp = dictionary[key_Temp];
-                            int columnIndex = range_Temp.Column;
-                            int rowIndex = range_Temp.Row;
-                            int id = 0;
-                            for (int i = 0; i < systems.Count; i++)
-                            {
-                                worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
-                                for (int j = 0; j < systems[i].Count; j++)
-                                {
-                                    UIMollierProcess UI_MollierProcess = systems[i][j];
-                                    MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
-                                    MollierPoint start = mollierProcess.Start;
-                                    MollierPoint end = mollierProcess.End;
-                                    string value_1 = string.Empty;
-                                    string value_2 = string.Empty;
-                                    switch (key_Temp)
-                                    {
-                                        case "[ProcessPointName]":
-                                            value_1 = UI_MollierProcess.Start_Label;
-                                            value_2 = UI_MollierProcess.End_Label;
-                                            break;
-                                        case "[DryBulbTemperature]":
-                                            value_1 = System.Math.Round(start.DryBulbTemperature, 2).ToString();
-                                            value_2 = System.Math.Round(end.DryBulbTemperature, 2).ToString();
-                                            break;
-                                        case "[HumidityRatio]":
-                                            value_1 = System.Math.Round(start.HumidityRatio * 1000, 2).ToString();
-                                            value_2 = System.Math.Round(end.HumidityRatio * 1000, 2).ToString();
-                                            break;
-                                        case "[RelativeHumidity]":
-                                            value_1 = System.Math.Round(start.RelativeHumidity, 2).ToString();
-                                            value_2 = System.Math.Round(end.RelativeHumidity, 2).ToString();
-                                            break;
-                                        case "[WetBulbTemperature]":
-                                            value_1 = System.Math.Round(start.WetBulbTemperature(), 2).ToString();
-                                            value_2 = System.Math.Round(end.WetBulbTemperature(), 2).ToString();
-                                            break;
-                                        case "[Enthalpy]":
-                                            value_1 = System.Math.Round(start.Enthalpy / 1000, 2).ToString();
-                                            value_2 = System.Math.Round(end.Enthalpy / 1000, 2).ToString();
-                                            break;
-                                        case "[SpecificVolume]":
-                                            value_1 = System.Math.Round(start.SpecificVolume(), 2).ToString();
-                                            value_2 = System.Math.Round(end.SpecificVolume(), 2).ToString();
-                                            break;
-                                        case "[Density]":
-                                            value_1 = System.Math.Round(start.Density(), 2).ToString();
-                                            value_2 = System.Math.Round(end.Density(), 2).ToString();
-                                            break;
-                                        case "[AtmosphericPressure]":
-                                            value_1 = System.Math.Round(start.Pressure, 2).ToString();
-                                            value_2 = System.Math.Round(end.Pressure, 2).ToString();
-                                            break;
-                                        case "[ProcessName]":
-                                            value_2 = Query.FullProcessName(UI_MollierProcess);
-                                            break;
-                                        case "[deltaT]":
-                                            value_2 = (System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2)).ToString();
-                                            break;
-                                        case "[deltaX]":
-                                            value_2 = (System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2)).ToString();
-                                            break;
-                                        case "[deltaH]":
-                                            value_2 = (System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2)).ToString();
-                                            break;
-                                    }
-
-                                    if (!(mollierProcess is RoomProcess) && UI_MollierProcess.Start_Label != "")
-                                    {
-                                        if (value_1 != string.Empty)
-                                        {
-                                            worksheet.Cells[rowIndex + id, columnIndex].Value = value_1; id++;
-                                        }
-                                        else if (key_Temp == "[ProcessName]" || key_Temp == "[deltaT]" || key_Temp == "[deltaX]" || key_Temp == "[deltaH]")
-                                        {
-                                            worksheet.Cells[rowIndex + id, columnIndex].Value = "-"; id++;
-                                        }
-                                    }
-                                    if (value_2 != string.Empty && UI_MollierProcess.End_Label != "")
-                                    {
-                                        worksheet.Cells[rowIndex + id, columnIndex].Value = value_2; id++;
-                                    }
-                                }
-                                worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
+                                continue;
                             }
 
+                            string rangeValue = values[i, j] as string;
+                            if (string.IsNullOrWhiteSpace(rangeValue))
+                            {
+                                continue;
+                            }
+                            foreach (string name_Temp in uniqueNames)
+                            {
+                                if (rangeValue == name_Temp)
+                                {
+                                    dictionary.Add(name_Temp, worksheet.Cells[i, j]);
+                                    break;
+                                }
+                            }
                         }
                     }
 
-                    range = Excel.Query.Range(worksheet.UsedRange, pageType);
+                    foreach (string key_Temp in uniqueNames)
+                    {
+                        NetOffice.ExcelApi.Range range_Temp = dictionary[key_Temp];
+                        int columnIndex = range_Temp.Column;
+                        int rowIndex = range_Temp.Row;
+                        int id = 0;
+                        for (int i = 0; i < systems.Count; i++)
+                        {
+                            worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
+                            for (int j=0; j < systems[i].Count; j++)
+                            {
+                                UIMollierProcess UI_MollierProcess = systems[i][j]; 
+                                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
+                                MollierPoint start = mollierProcess.Start;
+                                MollierPoint end = mollierProcess.End;
+                                string value_1 = string.Empty;
+                                string value_2 = string.Empty;
+                                switch (key_Temp)
+                                {
+                                    case "[ProcessPointName]":
+                                        value_1 = UI_MollierProcess.Start_Label;
+                                        value_2 = UI_MollierProcess.End_Label;
+                                        break;
+                                    case "[DryBulbTemperature]":
+                                        value_1 = System.Math.Round(start.DryBulbTemperature, 2).ToString();
+                                        value_2 = System.Math.Round(end.DryBulbTemperature, 2).ToString();
+                                        break;
+                                    case "[HumidityRatio]":
+                                        value_1 = System.Math.Round(start.HumidityRatio * 1000, 2).ToString();
+                                        value_2 = System.Math.Round(end.HumidityRatio * 1000, 2).ToString();
+                                        break;
+                                    case "[RelativeHumidity]":
+                                        value_1 = System.Math.Round(start.RelativeHumidity, 2).ToString();
+                                        value_2 = System.Math.Round(end.RelativeHumidity, 2).ToString();
+                                        break;
+                                    case "[WetBulbTemperature]":
+                                        value_1 = System.Math.Round(start.WetBulbTemperature(), 2).ToString();
+                                        value_2 = System.Math.Round(end.WetBulbTemperature(), 2).ToString();
+                                        break;
+                                    case "[Enthalpy]":
+                                        value_1 = System.Math.Round(start.Enthalpy / 1000, 2).ToString();
+                                        value_2 = System.Math.Round(end.Enthalpy / 1000, 2).ToString();
+                                        break;
+                                    case "[SpecificVolume]":
+                                        value_1 = System.Math.Round(start.SpecificVolume(), 2).ToString();
+                                        value_2 = System.Math.Round(end.SpecificVolume(), 2).ToString();
+                                        break;
+                                    case "[Density]":
+                                        value_1 = System.Math.Round(start.Density(), 2).ToString();
+                                        value_2 = System.Math.Round(end.Density(), 2).ToString();
+                                        break;
+                                    case "[AtmosphericPressure]":
+                                        value_1 = System.Math.Round(start.Pressure, 2).ToString();
+                                        value_2 = System.Math.Round(end.Pressure, 2).ToString();
+                                        break;
+                                    case "[ProcessName]":
+                                        value_2 = Query.FullProcessName(UI_MollierProcess);
+                                        break;
+                                    case "[deltaT]":
+                                        value_2 = (System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2)).ToString();
+                                        break;
+                                    case "[deltaX]":
+                                        value_2 = (System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2)).ToString();
+                                        break;
+                                    case "[deltaH]":
+                                        value_2 = (System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2)).ToString();
+                                        break;
+                                }
+
+                                if (!(mollierProcess is RoomProcess) && UI_MollierProcess.Start_Label != "")
+                                {
+                                    if(value_1 != string.Empty)
+                                    {
+                                        worksheet.Cells[rowIndex + id, columnIndex].Value = value_1; id++;
+                                    }
+                                    else if(key_Temp == "[ProcessName]" || key_Temp == "[deltaT]" || key_Temp == "[deltaX]" || key_Temp == "[deltaH]")
+                                    {
+                                        worksheet.Cells[rowIndex + id, columnIndex].Value = "-"; id++;
+                                    }
+                                }
+                                if (value_2 != string.Empty && UI_MollierProcess.End_Label != "")
+                                {
+                                    worksheet.Cells[rowIndex + id, columnIndex].Value = value_2; id++;
+                                }
+                            }
+                            worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
+                        }
+
+                    }
+
+
+                    range = Excel.Query.Range(worksheet.UsedRange, orientation);
 
                     if (range == null)
                     {
@@ -1968,35 +1960,28 @@ namespace SAM.Core.Mollier.UI.Controls
                     path_Temp = System.IO.Path.GetTempFileName();
 
                     Size size_Temp = Size;
-
-                    double sizeFactor = double.NaN;
-                    switch(pageSize)
+                    if (orientation == "A3_Portrait" || orientation == "A3_Landscape")//a3 pdf
                     {
-                        case PageSize.A3:
-                            sizeFactor = 1.4;
-                            break;
-
-                        case PageSize.A4:
-                            sizeFactor = 2;
-                            break;
+                        Size = new Size(System.Convert.ToInt32(width * 1.4), System.Convert.ToInt32(height * 1.4));
                     }
-
-                    Size = new Size(System.Convert.ToInt32(width * sizeFactor), System.Convert.ToInt32(height * sizeFactor));
-
-                    Save(ChartExportType.EMF, path: path_Temp);
+                    else//a4 pdf
+                    {
+                        Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
+                    }
+                    Save("EMF", path: path_Temp);
                     
                     Size = size_Temp;
+                  
 
                     NetOffice.ExcelApi.Shape shape = worksheet.Shapes.AddPicture(path_Temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
-
-                    sizeFactor = Query.ShapeSizeFactor(DeviceDpi);
-
-                    shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * sizeFactor);
-                    shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * sizeFactor);
-
+                    
+                    shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * 0.78);
+                    shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * 0.76);
                     shape.Width = width;
                     shape.Height = height;
                     range.Value = string.Empty;
+
+                    workbook.SaveCopyAs(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), "TEST.xlsx"));
 
                     worksheet.ExportAsFixedFormat(NetOffice.ExcelApi.Enums.XlFixedFormatType.xlTypePDF, path);
 
