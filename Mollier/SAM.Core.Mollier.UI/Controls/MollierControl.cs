@@ -1723,23 +1723,25 @@ namespace SAM.Core.Mollier.UI.Controls
             return true;
         }
 
-        public bool Save(string type, string orientation = "A4", string path = null)
+        public bool Save(ChartExportType chartExportType, PageSize pageSize = PageSize.A4, PageOrientation pageOrientation = PageOrientation.Landscape, string path = null)
         {
+            string pageType = string.Format("{0}_{1}", pageSize, pageOrientation);
+
             if (string.IsNullOrEmpty(path))
             {
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
                     string name = mollierControlSettings.ChartType == ChartType.Mollier ? "Mollier" : "Psychrometric";
-                    switch (type)
+                    switch (chartExportType)
                     {
-                        case "PDF":
+                        case ChartExportType.PDF:
                             saveFileDialog.Filter = "PDF document (*.pdf)|*.pdf|All files (*.*)|*.*";
-                            name += "_" + orientation;
+                            name += "_" + pageType;
                             break;
-                        case "JPG":
+                        case ChartExportType.JPG:
                             saveFileDialog.Filter = "JPG document (*.jpg)|*.jpg|All files (*.*)|*.*";
                             break;
-                        case "EMF":
+                        case ChartExportType.EMF:
                             saveFileDialog.Filter = "EMF document (*.emf)|*.emf|All files (*.*)|*.*";
                             break;
                     }
@@ -1753,17 +1755,17 @@ namespace SAM.Core.Mollier.UI.Controls
                     path = saveFileDialog.FileName;
                 }
             }
-            if (type == "JPG")
+            if (chartExportType == ChartExportType.JPG)
             {
                 MollierChart.SaveImage(path, ChartImageFormat.Jpeg);
                 return true;
             }
-            if (type == "EMF")
+            if (chartExportType == ChartExportType.EMF)
             { 
                 MollierChart.SaveImage(path, ChartImageFormat.Emf);  
                 return true;
             }
-            if (type == "PDF")
+            if (chartExportType == ChartExportType.PDF)
             {
                 string path_Template = Core.Query.TemplatesDirectory(typeof(Address).Assembly);
                 if (!System.IO.Directory.Exists(path_Template))
@@ -1778,7 +1780,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
 
                 string directory = System.IO.Path.GetDirectoryName(path_Template);
-                string worksheetName = orientation;//this should be changed
+                string worksheetName = pageType;//this should be changed
                 if (string.IsNullOrWhiteSpace(path_Template) || !System.IO.File.Exists(path_Template) || string.IsNullOrWhiteSpace(worksheetName))
                 {
                     return false;
@@ -1819,7 +1821,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     uniqueNames.Add("[Density]");
                     uniqueNames.Add("[AtmosphericPressure]");
                     uniqueNames.Add("[SpecificVolume]");
-                    if (orientation != "A4_Portrait")
+                    if (pageSize == PageSize.A4 && pageOrientation == PageOrientation.Portrait)
                     {
                         uniqueNames.Add("[ProcessName]");
                         uniqueNames.Add("[deltaT]");
@@ -1945,7 +1947,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
 
 
-                    range = Excel.Query.Range(worksheet.UsedRange, orientation);
+                    range = Excel.Query.Range(worksheet.UsedRange, pageType);
 
                     if (range == null)
                     {
@@ -1960,7 +1962,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     path_Temp = System.IO.Path.GetTempFileName();
 
                     Size size_Temp = Size;
-                    if (orientation == "A3_Portrait" || orientation == "A3_Landscape")//a3 pdf
+                    if (pageSize == PageSize.A3)//a3 pdf
                     {
                         Size = new Size(System.Convert.ToInt32(width * 1.4), System.Convert.ToInt32(height * 1.4));
                     }
@@ -1968,13 +1970,15 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
                     }
-                    Save("EMF", path: path_Temp);
+                    Save(ChartExportType.EMF, path: path_Temp);
                     
                     Size = size_Temp;
                   
 
                     NetOffice.ExcelApi.Shape shape = worksheet.Shapes.AddPicture(path_Temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
-                    
+
+                    double shapeSizeFactor = Query.ShapeSizeFactor(DeviceDpi);
+
                     shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * 0.78);
                     shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * 0.76);
                     shape.Width = width;
