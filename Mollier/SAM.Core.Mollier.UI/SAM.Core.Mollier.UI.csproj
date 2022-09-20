@@ -92,8 +92,7 @@
     <Compile Include="Controls\TestControl.Designer.cs">
       <DependentUpon>TestControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Enums\PageSize.cs" />
-    <Compile Include="Enums\ExportType.cs" />
+    <Compile Include="Enums\ChartExportType.cs" />
     <Compile Include="Enums\ChartDataType.cs" />
     <Compile Include="Enums\ChartParameterType.cs" />
     <Compile Include="Forms\MollierControlSettingsForm.cs">
@@ -135,6 +134,7 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\ShapeSizeFactor.cs" />
     <Compile Include="Query\FindDivisionAreaCornerPoint.cs" />
     <Compile Include="Query\FullProcessName.cs" />
     <Compile Include="Query\ProcessSortBySystem.cs" />

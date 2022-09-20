@@ -1,9 +1,10 @@
 ﻿namespace SAM.Core.Mollier.UI
 {
-    public enum ExportType
+    public enum ChartExportType
     {
         Undefined,
         PDF,
         JPG,
+        EMF,
     }
 }
