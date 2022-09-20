@@ -48,9 +48,9 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Elevation = System.Math.Round(Core.Query.Calculate_BinarySearch(x => Mollier.Query.Pressure(x), pressure, -1000, 5000));
             TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
             
-            TextBox_Elevation.TextChanged -= new EventHandler(this.TextBox_Elevation_TextChanged);
+            TextBox_Elevation.TextChanged -= new EventHandler(TextBox_Elevation_TextChanged);
             TextBox_Elevation.Text = mollierControlSettings.Elevation.ToString();
-            TextBox_Elevation.TextChanged += new EventHandler(this.TextBox_Elevation_TextChanged);
+            TextBox_Elevation.TextChanged += new EventHandler(TextBox_Elevation_TextChanged);
             
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
@@ -71,9 +71,9 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Pressure = System.Math.Round(Mollier.Query.Pressure(elevation));
             TextBox_Elevation.Text = mollierControlSettings.Elevation.ToString();
 
-            TextBox_Pressure.TextChanged -= new EventHandler(this.TextBox_Pressure_TextChanged);
+            TextBox_Pressure.TextChanged -= new EventHandler(TextBox_Pressure_TextChanged);
             TextBox_Pressure.Text = mollierControlSettings.Pressure.ToString();
-            TextBox_Pressure.TextChanged += new EventHandler(this.TextBox_Pressure_TextChanged);
+            TextBox_Pressure.TextChanged += new EventHandler(TextBox_Pressure_TextChanged);
             
 
             MollierControl_Main.MollierControlSettings = mollierControlSettings;

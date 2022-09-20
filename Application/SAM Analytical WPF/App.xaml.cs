@@ -11,7 +11,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-            this.StartupUri = new Uri("Windows/AnalyticalWindow.xaml", UriKind.Relative);
+            StartupUri = new Uri("Windows/AnalyticalWindow.xaml", UriKind.Relative);
         }
     }
 }

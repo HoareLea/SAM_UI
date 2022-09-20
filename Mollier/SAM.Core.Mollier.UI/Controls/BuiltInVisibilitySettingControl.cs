@@ -67,7 +67,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             set
             {
-                this.builtInVisibilitySetting = value;
+                builtInVisibilitySetting = value;
 
                 if (builtInVisibilitySetting != null)
                 {

@@ -28,10 +28,10 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private void create_relative_humidity_line_Mollier(int temperature_Min, int temperature_Max, double relative_humidity, double pressure)
         {
-            List<List<Point2D>> humidity_ratio_points = new List<List<Geometry.Planar.Point2D>>();
+            List<List<Point2D>> humidity_ratio_points = new List<List<Point2D>>();
             for (int i = temperature_Min; i <= temperature_Max; i++)
             {
-                humidity_ratio_points.Add(new List<Geometry.Planar.Point2D>());
+                humidity_ratio_points.Add(new List<Point2D>());
             }
             int index = temperature_Min;
             for (int i = 1; i <= 10; i++)
@@ -44,17 +44,17 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.IsVisibleInLegend = false;
                 series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, ChartDataType.RelativeHumidity);
                 series.ChartType = SeriesChartType.Spline;
-                List<Geometry.Planar.Point2D> relative_humidity_points = new List<Geometry.Planar.Point2D>();
+                List<Point2D> relative_humidity_points = new List<Point2D>();
                 for (int j = temperature_Min; j <= temperature_Max; j++)
                 {
                     double humidity_ratio = Mollier.Query.HumidityRatio(j, relative_humidity, pressure);
                     double diagram_temperature = Mollier.Query.DiagramTemperature(j, humidity_ratio);
                     if (humidity_ratio_points[j - index].Count == 0)
-                        humidity_ratio_points[j - index].Add(new Geometry.Planar.Point2D(0, j));
-                    relative_humidity_points.Add(new Geometry.Planar.Point2D(humidity_ratio * 1000, diagram_temperature));
-                    humidity_ratio_points[j - index].Add(new Geometry.Planar.Point2D(humidity_ratio * 1000, diagram_temperature));
+                        humidity_ratio_points[j - index].Add(new Point2D(0, j));
+                    relative_humidity_points.Add(new Point2D(humidity_ratio * 1000, diagram_temperature));
+                    humidity_ratio_points[j - index].Add(new Point2D(humidity_ratio * 1000, diagram_temperature));
                 }
-                foreach (Geometry.Planar.Point2D point2D in relative_humidity_points)
+                foreach (Point2D point2D in relative_humidity_points)
                 {
                     series.Points.AddXY(point2D.X, point2D.Y);
                     if (i == 10)
@@ -73,11 +73,11 @@ namespace SAM.Core.Mollier.UI.Controls
                     continue;
                 }
                 double range_difference = (mollierControlSettings.Temperature_Max - mollierControlSettings.Temperature_Min) / (mollierControlSettings.HumidityRatio_Max - mollierControlSettings.HumidityRatio_Min) * 2;
-                Geometry.Planar.Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
-                Geometry.Planar.Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
+                Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
+                Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
                 point2D_1.X *= range_difference;
                 point2D_2.X *= range_difference;
-                Geometry.Planar.Vector2D vector2D = new Geometry.Planar.Vector2D(point2D_2, point2D_1);
+                Vector2D vector2D = new Vector2D(point2D_2, point2D_1);
                 int angle = System.Convert.ToInt32((vector2D.Angle(Vector2D.WorldX)) * 180 / System.Math.PI);
                 string label = " Relative Humidity φ";
                 series.SmartLabelStyle.Enabled = false;
@@ -113,7 +113,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 series_1.IsVisibleInLegend = false;
                 series_1.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, ChartDataType.DiagramTemperature);
                 series_1.ChartType = SeriesChartType.Spline;
-                List<Geometry.Planar.Point2D> point2Ds_humidity = new List<Geometry.Planar.Point2D>();
+                List<Point2D> point2Ds_humidity = new List<Point2D>();
                 point2Ds_humidity = humidity_ratio_points[i];
                 for (int j = 0; j < point2Ds_humidity.Count; j++)
                 {
@@ -135,14 +135,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.IsVisibleInLegend = false;
                 series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, ChartDataType.RelativeHumidity);
                 series.ChartType = SeriesChartType.Spline;
-                List<Geometry.Planar.Point2D> relative_humidity_points = new List<Geometry.Planar.Point2D>();
+                List<Point2D> relative_humidity_points = new List<Point2D>();
                 for (int j = temperature_Min; j <= temperature_Max; j++)
                 {
                     double humidity_ratio = Mollier.Query.HumidityRatio(j, relative_humidity, pressure);
-                    relative_humidity_points.Add(new Geometry.Planar.Point2D(j, humidity_ratio));
+                    relative_humidity_points.Add(new Point2D(j, humidity_ratio));
 
                 }
-                foreach (Geometry.Planar.Point2D point2D in relative_humidity_points)
+                foreach (Point2D point2D in relative_humidity_points)
                 {
                     series.Points.AddXY(point2D.X, point2D.Y);
                     if (i == 10)
@@ -158,12 +158,12 @@ namespace SAM.Core.Mollier.UI.Controls
                     continue;
                 }
                 double range_difference = (mollierControlSettings.Temperature_Max - mollierControlSettings.Temperature_Min) / (mollierControlSettings.HumidityRatio_Max - mollierControlSettings.HumidityRatio_Min);
-                Geometry.Planar.Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
-                Geometry.Planar.Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
+                Point2D point2D_1 = relative_humidity_points[count - (index_Point - 1) - i];
+                Point2D point2D_2 = relative_humidity_points[count - (index_Point + 1) - i];
                 point2D_2.X = 2 * point2D_2.X - point2D_1.X;
                 point2D_2.Y *= 1000 * range_difference;
                 point2D_1.Y *= 1000 * range_difference;
-                Geometry.Planar.Vector2D vector2D = new Geometry.Planar.Vector2D(point2D_1, point2D_2);
+                Vector2D vector2D = new Vector2D(point2D_1, point2D_2);
 
                 int angle = System.Convert.ToInt32(vector2D.Angle(Vector2D.WorldX) * 180 / System.Math.PI);
                 string label = " Relative Humidity φ";
@@ -268,7 +268,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     Point2D Point_1 = new Point2D(humidityRatio_1, temperature_1);
                     Point2D Point_2 = new Point2D(humidityRatio_2, temperature_2);
-                    Math.PolynomialEquation polynomialEquation = Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_2, Point_1 });
+                    Math.PolynomialEquation polynomialEquation = Geometry.Create.PolynomialEquation(new Point2D[] { Point_2, Point_1 });
                     double a = 0.0006;
                     temperature_2 = polynomialEquation.Evaluate(Point_2.X + a);
 
@@ -374,15 +374,15 @@ namespace SAM.Core.Mollier.UI.Controls
             //takes series (line must be straight) and chartType and returns angle of label along the line
 
             double range_difference = (mollierControlSettings.Temperature_Max - mollierControlSettings.Temperature_Min) / (mollierControlSettings.HumidityRatio_Max - mollierControlSettings.HumidityRatio_Min);
-            Geometry.Planar.Point2D a = new Geometry.Planar.Point2D(); a.X = series.Points[0].XValue; a.Y = series.Points[0].YValues[0];
-            Geometry.Planar.Point2D b = new Geometry.Planar.Point2D(); b.X = series.Points[1].XValue * range_difference; b.Y = series.Points[1].YValues[0];
+            Point2D a = new Point2D(); a.X = series.Points[0].XValue; a.Y = series.Points[0].YValues[0];
+            Point2D b = new Point2D(); b.X = series.Points[1].XValue * range_difference; b.Y = series.Points[1].YValues[0];
 
             a.X = series.Points[0].XValue;
             a.Y = chartType == ChartType.Mollier ? series.Points[0].YValues[0] : series.Points[0].YValues[0] * 1000;
             b.X = chartType == ChartType.Mollier ? series.Points[1].XValue * range_difference * 2 : 2 * series.Points[1].XValue - a.X;
             b.Y = chartType == ChartType.Mollier ? series.Points[1].YValues[0] : series.Points[1].YValues[0] * 1000 * range_difference;
 
-            Geometry.Planar.Vector2D vector = chartType == ChartType.Mollier ? new Geometry.Planar.Vector2D(a, b) : new Geometry.Planar.Vector2D(a, b);
+            Vector2D vector = chartType == ChartType.Mollier ? new Vector2D(a, b) : new Vector2D(a, b);
             int result = System.Convert.ToInt32(vector.Angle(Vector2D.WorldX) * 180 / System.Math.PI);
 
             return chartType == ChartType.Mollier ? result : 180 - result;
@@ -497,7 +497,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 double humidityRatio_2 = mollierPoints[1].HumidityRatio * 1000;
                 Point2D Point_1 = new Point2D(humidityRatio_1, temperature_1);
                 Point2D Point_2 = new Point2D(humidityRatio_2, temperature_2);
-                Math.PolynomialEquation polynomialEquation = Geometry.Create.PolynomialEquation(new Geometry.Planar.Point2D[] { Point_2, Point_1 });
+                Math.PolynomialEquation polynomialEquation = Geometry.Create.PolynomialEquation(new Point2D[] { Point_2, Point_1 });
                 humidityRatio_2 += 0.8;
                 temperature_2 = polynomialEquation.Evaluate(humidityRatio_2);
                 result.Points.AddXY(humidityRatio_2, temperature_2);
@@ -1765,13 +1765,13 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             if (type == "PDF")
             {
-                string path_Template = Core.Query.TemplatesDirectory(typeof(SAM.Core.Address).Assembly);
+                string path_Template = Core.Query.TemplatesDirectory(typeof(Address).Assembly);
                 if (!System.IO.Directory.Exists(path_Template))
                 {
                     return false;
                 }
 
-                path_Template = System.IO.Path.Combine(path_Template, "AHU", "PDF_Print — kopia.xlsx");
+                path_Template = System.IO.Path.Combine(path_Template, "AHU", "PDF_Print_AHU.xlsx");
                 if (!System.IO.File.Exists(path_Template))
                 {
                     return false;
@@ -1783,14 +1783,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     return false;
                 }
-                string path_temp = "";
+                string path_Temp = "";
                 Func<NetOffice.ExcelApi.Workbook, bool> func = new Func<NetOffice.ExcelApi.Workbook, bool>((NetOffice.ExcelApi.Workbook workbook) =>
                 {
                     if (workbook == null)
                     {
                         return false;
                     }
-                    string name = "TEST";
+                    string name = "AHU";
                     NetOffice.ExcelApi.Worksheet workseet_Template = Excel.Query.Worksheet(workbook, worksheetName);
                     if (workseet_Template == null)
                     {
@@ -1828,7 +1828,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
 
                     Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
-                    object[,] values = worksheet.Range(worksheet.Cells[1, 1], worksheet.Cells[100, 30]).Value as Object[,];
+                    object[,] values = worksheet.Range(worksheet.Cells[1, 1], worksheet.Cells[100, 30]).Value as object[,];
                     for (int i = values.GetLowerBound(0); i <= values.GetUpperBound(0); i++)
                     {
                         for (int j = values.GetLowerBound(1); j <= values.GetUpperBound(1); j++)
@@ -1860,7 +1860,6 @@ namespace SAM.Core.Mollier.UI.Controls
                         int columnIndex = range_Temp.Column;
                         int rowIndex = range_Temp.Row;
                         int id = 0;
-                        int numberOfShown = 9;
                         for (int i = 0; i < systems.Count; i++)
                         {
                             worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
@@ -1958,23 +1957,23 @@ namespace SAM.Core.Mollier.UI.Controls
                     float width = (float)(double)range.Width;
                     float height = (float)(double)range.Height;
 
-                    path_temp = System.IO.Path.GetTempFileName();
+                    path_Temp = System.IO.Path.GetTempFileName();
 
-                    Size size_Temp = this.Size;
+                    Size size_Temp = Size;
                     if (orientation == "A3_Portrait" || orientation == "A3_Landscape")//a3 pdf
                     {
-                        this.Size = new Size(System.Convert.ToInt32(width * 1.4), System.Convert.ToInt32(height * 1.4));
+                        Size = new Size(System.Convert.ToInt32(width * 1.4), System.Convert.ToInt32(height * 1.4));
                     }
                     else//a4 pdf
                     {
-                        this.Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
+                        Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
                     }
-                    this.Save("EMF", path: path_temp);
+                    Save("EMF", path: path_Temp);
                     
-                    this.Size = size_Temp;
+                    Size = size_Temp;
                   
 
-                    NetOffice.ExcelApi.Shape shape = worksheet.Shapes.AddPicture(path_temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
+                    NetOffice.ExcelApi.Shape shape = worksheet.Shapes.AddPicture(path_Temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
                     
                     shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * 0.78);
                     shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * 0.76);
@@ -1993,11 +1992,11 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 System.Threading.Thread.Sleep(1000);
 
-                if (System.IO.File.Exists(path_temp))
+                if (System.IO.File.Exists(path_Temp))
                 {
-                     if (Core.Query.WaitToUnlock(path_temp))
+                     if (Core.Query.WaitToUnlock(path_Temp))
                      {
-                        System.IO.File.Delete(path_temp);
+                        System.IO.File.Delete(path_Temp);
                      }
                 }
                 return true;
@@ -2105,7 +2104,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         static public Rectangle GetRectangle(Point p1, Point p2)
         {
-            return new System.Drawing.Rectangle(System.Math.Min(p1.X, p2.X), System.Math.Min(p1.Y, p2.Y), System.Math.Abs(p1.X - p2.X), System.Math.Abs(p1.Y - p2.Y));
+            return new Rectangle(System.Math.Min(p1.X, p2.X), System.Math.Min(p1.Y, p2.Y), System.Math.Abs(p1.X - p2.X), System.Math.Abs(p1.Y - p2.Y));
         }
 
         public MollierControlSettings MollierControlSettings

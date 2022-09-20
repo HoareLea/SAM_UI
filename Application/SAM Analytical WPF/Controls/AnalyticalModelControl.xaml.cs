@@ -253,7 +253,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)
+        private void UIAnalyticalModel_Modified(object sender, EventArgs e)
         {
             LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
         }
