@@ -863,9 +863,9 @@ namespace SAM.Core.Mollier.UI.Controls
                 UIMollierProcess UI_MollierProcess = mollierProcesses[i];//contains all spcified data of the process like color, start label etc.
                 MollierProcess mollierProcess = (MollierProcess)(UI_MollierProcess.MollierProcess);//contains the most important data of the process: only start end point, and what type of process is it 
 
-                if(mollierProcess is RoomProcess)
+                if(mollierProcess is UndefinedProcess)
                 {
-                    createSeries_RoomProcess(UI_MollierProcess);
+                    createSeries_UndefinedProcess(UI_MollierProcess);
                     continue;
                 }
                 //process series
@@ -966,7 +966,7 @@ namespace SAM.Core.Mollier.UI.Controls
             series.Points[index].ToolTip = ToolTipPoint(mollierPoint, chartType, toolTipName);
             //seriesDew.mark
         }
-        private void createSeries_RoomProcess(UIMollierProcess UI_MollierProcess)
+        private void createSeries_UndefinedProcess(UIMollierProcess UI_MollierProcess)
         {
             //defines the end label of the process
             UI_MollierProcess.End_Label = "ROOM";
@@ -1024,7 +1024,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     UIMollierProcess UI_MollierProcess = systems[i][j];
                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
-                    if (mollierProcess is RoomProcess)
+                    if (mollierProcess is UndefinedProcess)
                     {
                         continue;
                     }
@@ -1036,7 +1036,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         UI_MollierProcess.Start_Label = "OSA";
                     }
-                    if(UI_MollierProcess.End_Label == null && systems[i].Count > 1 && j == systems[i].Count - 2 && systems[i][j+1].MollierProcess is RoomProcess)
+                    if(UI_MollierProcess.End_Label == null && systems[i].Count > 1 && j == systems[i].Count - 2 && systems[i][j+1].MollierProcess is UndefinedProcess)
                     {
                         UI_MollierProcess.End_Label = "SUP";
                     }
@@ -1935,7 +1935,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                             break;
                                     }
 
-                                    if (!(mollierProcess is RoomProcess) && UI_MollierProcess.Start_Label != "")
+                                    if (!(mollierProcess is UndefinedProcess) && UI_MollierProcess.Start_Label != "")
                                     {
                                         if (value_1 != string.Empty)
                                         {

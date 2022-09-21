@@ -40,7 +40,7 @@ namespace SAM.Core.Mollier.UI
             for(int i=0; i < mollierProcesses.Count; i++)
             {
                 MollierPoint end = mollierProcesses[i].End;
-                if (mollierProcesses[i].MollierProcess is RoomProcess)
+                if (mollierProcesses[i].MollierProcess is UndefinedProcess)
                 {
                     sonID.Add(-1);
                     continue;

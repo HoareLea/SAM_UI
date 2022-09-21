@@ -524,7 +524,6 @@ namespace SAM.Core.Mollier.UI
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MollierForm_FormClosing);
             this.Load += new System.EventHandler(this.MollierForm_Load);
-            this.SizeChanged += new System.EventHandler(this.MollierForm_SizeChanged);
             this.MenuStrip_Main.ResumeLayout(false);
             this.MenuStrip_Main.PerformLayout();
             this.ResumeLayout(false);

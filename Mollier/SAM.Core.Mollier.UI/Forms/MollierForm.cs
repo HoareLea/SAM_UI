@@ -613,6 +613,7 @@ namespace SAM.Core.Mollier.UI
                 saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.FileName = "processes.json";
                 if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
@@ -662,13 +663,6 @@ namespace SAM.Core.Mollier.UI
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MollierControl_Main.Print();
-        }
-
-
-        private void MollierForm_SizeChanged(object sender, EventArgs e)
-        {
- 
-
         }
     }
 }
