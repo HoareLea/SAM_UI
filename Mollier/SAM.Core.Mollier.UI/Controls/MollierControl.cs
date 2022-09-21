@@ -2016,6 +2016,18 @@ namespace SAM.Core.Mollier.UI.Controls
             return true;
         }
 
+        public bool Print()
+        {
+            PrintingManager printingManager = MollierChart?.Printing;
+            if(printingManager == null)
+            {
+                return false;
+            }
+
+            printingManager.Print(true);
+            return true;
+        }
+
         private void ToolStripMenuItem_ProcessesAndPoints_Click(object sender, EventArgs e)
         {
             if(mollierPoints == null && mollierProcesses == null)

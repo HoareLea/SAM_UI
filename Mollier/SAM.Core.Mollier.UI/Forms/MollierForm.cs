@@ -658,5 +658,10 @@ namespace SAM.Core.Mollier.UI
             AddProcesses(mollierProcesses, false);
             AddPoints(mollierPoints, false);
         }
+
+        private void printToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.Print();
+        }
     }
 }
