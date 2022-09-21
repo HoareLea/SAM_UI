@@ -66,6 +66,7 @@
             this.MinimizeBox = false;
             this.Name = "OpenJSONForm";
             this.ShowIcon = false;
+            this.Load += new System.EventHandler(this.OpenJSONForm_Load);
             this.ResumeLayout(false);
 
         }

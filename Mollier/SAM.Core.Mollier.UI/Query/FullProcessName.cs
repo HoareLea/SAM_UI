@@ -32,7 +32,7 @@ namespace SAM.Core.Mollier.UI
             {
                 processName = "Heat Recovery";
             }
-            if(mollierProcess is RoomProcess)
+            if(mollierProcess is UndefinedProcess)
             {
                 processName = "Room";
             }

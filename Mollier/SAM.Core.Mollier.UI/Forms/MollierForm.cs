@@ -10,7 +10,7 @@ namespace SAM.Core.Mollier.UI
     {
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
         private static string mollierControlPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(Control).Name);
-        
+        private ToolTip toolTip = new ToolTip();
         private void MollierForm_Load(object sender, EventArgs e)
         {
             ColorPointComboBox.Text = "Enthalpy";
@@ -572,8 +572,11 @@ namespace SAM.Core.Mollier.UI
             
             using (Forms.OpenJSONForm openJSONForm = new Forms.OpenJSONForm())
             {
-                DialogResult dialogResult = openJSONForm.ShowDialog();
-                
+                //DialogResult dialogResult = openJSONForm.ShowDialog();
+                if(openJSONForm.ShowDialog() == DialogResult.None)
+                {
+                    return;
+                }
                 replace = openJSONForm.ReplaceOrMerge();
             }
 
@@ -613,6 +616,7 @@ namespace SAM.Core.Mollier.UI
                 saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.FileName = MollierControl_Main.MollierControlSettings.ChartType == ChartType.Mollier ? "Mollier.json" : "Psychrometric.json";
                 if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
@@ -663,12 +667,20 @@ namespace SAM.Core.Mollier.UI
         {
             MollierControl_Main.Print();
         }
-
-
-        private void MollierForm_SizeChanged(object sender, EventArgs e)
+        private void PercentPointsTextBox_MouseHover(object sender, EventArgs e)
         {
- 
+            toolTip.Show("0 is the highest value, 100 is the lowest value", PercentPointsTextBox);
+            toolTip.Active = true;
+        }
 
+        private void PercentPointsTextBox_MouseLeave(object sender, EventArgs e)
+        {
+            toolTip.Active = false;
+        }
+
+        private void MollierForm_ResizeEnd(object sender, EventArgs e)
+        {
+            MollierControl_Main.generate_graph();
         }
     }
 }

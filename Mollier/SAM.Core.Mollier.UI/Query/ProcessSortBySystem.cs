@@ -14,14 +14,18 @@ namespace SAM.Core.Mollier.UI
             {
                 //if there is no end that has the same value as my start then my start is start of the new process
                 MollierPoint start = mollierProcesses[i].Start;
+                if(start == null)
+                {
+                    continue;
+                }
                 int count = 0;
                 for(int j=0; j<mollierProcesses.Count; j++)
                 {
-                    if(i == j)
+                    MollierPoint end = mollierProcesses[j].End;
+                    if (i == j || end == null)
                     {
                         continue;
                     }
-                    MollierPoint end = mollierProcesses[j].End;
                     if(System.Math.Round(start.HumidityRatio,6) == System.Math.Round(end.HumidityRatio, 6) && System.Math.Round(start.DryBulbTemperature, 2) == System.Math.Round(end.DryBulbTemperature, 2))
                     {
                         count++;
@@ -40,7 +44,7 @@ namespace SAM.Core.Mollier.UI
             for(int i=0; i < mollierProcesses.Count; i++)
             {
                 MollierPoint end = mollierProcesses[i].End;
-                if (mollierProcesses[i].MollierProcess is RoomProcess)
+                if (mollierProcesses[i].MollierProcess is UndefinedProcess || end == null)
                 {
                     sonID.Add(-1);
                     continue;
@@ -48,11 +52,11 @@ namespace SAM.Core.Mollier.UI
                 int count = 0;
                 for(int j=0; j < mollierProcesses.Count; j++)
                 {
-                    if(i == j)
+                    MollierPoint start = mollierProcesses[j].Start;
+                    if(i == j || start == null)
                     {
                         continue;
                     }
-                    MollierPoint start = mollierProcesses[j].Start;
                     if (System.Math.Round(start.HumidityRatio, 6) == System.Math.Round(end.HumidityRatio, 6) && System.Math.Round(start.DryBulbTemperature, 2) == System.Math.Round(end.DryBulbTemperature, 2))
                     {
                         sonID.Add(j);
