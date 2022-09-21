@@ -663,5 +663,12 @@ namespace SAM.Core.Mollier.UI
         {
             MollierControl_Main.Print();
         }
+
+
+        private void MollierForm_SizeChanged(object sender, EventArgs e)
+        {
+ 
+
+        }
     }
 }

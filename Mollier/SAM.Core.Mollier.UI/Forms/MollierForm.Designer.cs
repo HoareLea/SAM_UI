@@ -45,6 +45,7 @@ namespace SAM.Core.Mollier.UI
             this.a4LandscapeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsJPGToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveAsEMFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_View = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_Density = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_Enthalpy = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,7 +73,6 @@ namespace SAM.Core.Mollier.UI
             this.DivisionAreaCheckBox = new System.Windows.Forms.CheckBox();
             this.DivisionAreaLabels_CheckBox = new System.Windows.Forms.CheckBox();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
-            this.printToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -91,7 +91,7 @@ namespace SAM.Core.Mollier.UI
             this.Label_Pressure.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.Label_Pressure.Location = new System.Drawing.Point(175, 33);
             this.Label_Pressure.Name = "Label_Pressure";
-            this.Label_Pressure.Size = new System.Drawing.Size(98, 17);
+            this.Label_Pressure.Size = new System.Drawing.Size(92, 16);
             this.Label_Pressure.TabIndex = 11;
             this.Label_Pressure.Text = "Pressure [Pa]:";
             // 
@@ -117,7 +117,7 @@ namespace SAM.Core.Mollier.UI
             this.MenuStrip_Main.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip_Main.Name = "MenuStrip_Main";
             this.MenuStrip_Main.ShowItemToolTips = true;
-            this.MenuStrip_Main.Size = new System.Drawing.Size(1374, 28);
+            this.MenuStrip_Main.Size = new System.Drawing.Size(1374, 30);
             this.MenuStrip_Main.TabIndex = 20;
             this.MenuStrip_Main.Text = "MenuStrip_Main";
             // 
@@ -131,20 +131,20 @@ namespace SAM.Core.Mollier.UI
             this.saveAsEMFToolStripMenuItem,
             this.printToolStripMenuItem});
             this.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File";
-            this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 24);
+            this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 26);
             this.ToolStripMenuItem_File.Text = "File";
             // 
             // openFromJSONToolStripMenuItem
             // 
             this.openFromJSONToolStripMenuItem.Name = "openFromJSONToolStripMenuItem";
-            this.openFromJSONToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.openFromJSONToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
             this.openFromJSONToolStripMenuItem.Text = "Open from JSON";
             this.openFromJSONToolStripMenuItem.Click += new System.EventHandler(this.openFromJSONToolStripMenuItem_Click);
             // 
             // exportToJSONToolStripMenuItem
             // 
             this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
-            this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
             this.exportToJSONToolStripMenuItem.Text = "Export to JSON";
             this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.exportToJSONToolStripMenuItem_Click);
             // 
@@ -156,7 +156,7 @@ namespace SAM.Core.Mollier.UI
             this.a4PortraitToolStripMenuItem,
             this.a4LandscapeToolStripMenuItem});
             this.ToolStripMenuItem_Save.Name = "ToolStripMenuItem_Save";
-            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(224, 26);
+            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(203, 26);
             this.ToolStripMenuItem_Save.Text = "Save as PDF";
             // 
             // PdfA3_PortraitToolStripMenuItem
@@ -190,16 +190,23 @@ namespace SAM.Core.Mollier.UI
             // saveAsJPGToolStripMenuItem
             // 
             this.saveAsJPGToolStripMenuItem.Name = "saveAsJPGToolStripMenuItem";
-            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
             this.saveAsJPGToolStripMenuItem.Text = "Save as JPG";
             this.saveAsJPGToolStripMenuItem.Click += new System.EventHandler(this.saveAsJPGToolStripMenuItem_Click);
             // 
             // saveAsEMFToolStripMenuItem
             // 
             this.saveAsEMFToolStripMenuItem.Name = "saveAsEMFToolStripMenuItem";
-            this.saveAsEMFToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.saveAsEMFToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
             this.saveAsEMFToolStripMenuItem.Text = "Save as EMF";
             this.saveAsEMFToolStripMenuItem.Click += new System.EventHandler(this.saveAsEMFToolStripMenuItem_Click);
+            // 
+            // printToolStripMenuItem
+            // 
+            this.printToolStripMenuItem.Name = "printToolStripMenuItem";
+            this.printToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
+            this.printToolStripMenuItem.Text = "Print";
+            this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
             // 
             // ToolStripMenuItem_View
             // 
@@ -211,7 +218,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_ChartType,
             this.colorThemeToolStripMenuItem});
             this.ToolStripMenuItem_View.Name = "ToolStripMenuItem_View";
-            this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 24);
+            this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 26);
             this.ToolStripMenuItem_View.Text = "View";
             // 
             // ToolStripMenuItem_Density
@@ -325,7 +332,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_OpenSettings});
             this.ToolStripMenuItem_Settings.Name = "ToolStripMenuItem_Settings";
-            this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 24);
+            this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 26);
             this.ToolStripMenuItem_Settings.Text = "Settings";
             this.ToolStripMenuItem_Settings.Click += new System.EventHandler(this.ToolStripMenuItem_Settings_Click);
             // 
@@ -339,7 +346,7 @@ namespace SAM.Core.Mollier.UI
             // resetChartToolStripMenuItem
             // 
             this.resetChartToolStripMenuItem.Name = "resetChartToolStripMenuItem";
-            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(98, 24);
+            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(98, 26);
             this.resetChartToolStripMenuItem.Text = "Reset Chart";
             this.resetChartToolStripMenuItem.ToolTipText = "Reset all chart data to the default values";
             this.resetChartToolStripMenuItem.Click += new System.EventHandler(this.resetChartToolStripMenuItem_Click);
@@ -350,7 +357,7 @@ namespace SAM.Core.Mollier.UI
             this.Label_Elevation.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.Label_Elevation.Location = new System.Drawing.Point(12, 33);
             this.Label_Elevation.Name = "Label_Elevation";
-            this.Label_Elevation.Size = new System.Drawing.Size(93, 17);
+            this.Label_Elevation.Size = new System.Drawing.Size(88, 16);
             this.Label_Elevation.TabIndex = 21;
             this.Label_Elevation.Text = "Elevation [m]:";
             // 
@@ -380,7 +387,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_Zone.AutoSize = true;
             this.CheckBox_Zone.Location = new System.Drawing.Point(357, 32);
             this.CheckBox_Zone.Name = "CheckBox_Zone";
-            this.CheckBox_Zone.Size = new System.Drawing.Size(123, 21);
+            this.CheckBox_Zone.Size = new System.Drawing.Size(116, 20);
             this.CheckBox_Zone.TabIndex = 29;
             this.CheckBox_Zone.Text = "Comfort Zones";
             this.CheckBox_Zone.UseVisualStyleBackColor = true;
@@ -391,7 +398,7 @@ namespace SAM.Core.Mollier.UI
             this.PointsCheckBox.AutoSize = true;
             this.PointsCheckBox.Location = new System.Drawing.Point(594, 32);
             this.PointsCheckBox.Name = "PointsCheckBox";
-            this.PointsCheckBox.Size = new System.Drawing.Size(100, 21);
+            this.PointsCheckBox.Size = new System.Drawing.Size(95, 20);
             this.PointsCheckBox.TabIndex = 30;
             this.PointsCheckBox.Text = "Find Points";
             this.PointsCheckBox.UseVisualStyleBackColor = true;
@@ -413,7 +420,7 @@ namespace SAM.Core.Mollier.UI
             this.PointsLabel.AutoSize = true;
             this.PointsLabel.Location = new System.Drawing.Point(883, 33);
             this.PointsLabel.Name = "PointsLabel";
-            this.PointsLabel.Size = new System.Drawing.Size(20, 17);
+            this.PointsLabel.Size = new System.Drawing.Size(19, 16);
             this.PointsLabel.TabIndex = 32;
             this.PointsLabel.Text = "%";
             this.PointsLabel.Visible = false;
@@ -437,7 +444,7 @@ namespace SAM.Core.Mollier.UI
             this.DivisionAreaCheckBox.AutoSize = true;
             this.DivisionAreaCheckBox.Location = new System.Drawing.Point(479, 32);
             this.DivisionAreaCheckBox.Name = "DivisionAreaCheckBox";
-            this.DivisionAreaCheckBox.Size = new System.Drawing.Size(113, 21);
+            this.DivisionAreaCheckBox.Size = new System.Drawing.Size(109, 20);
             this.DivisionAreaCheckBox.TabIndex = 40;
             this.DivisionAreaCheckBox.Text = "Division Area";
             this.DivisionAreaCheckBox.UseVisualStyleBackColor = true;
@@ -448,7 +455,7 @@ namespace SAM.Core.Mollier.UI
             this.DivisionAreaLabels_CheckBox.AutoSize = true;
             this.DivisionAreaLabels_CheckBox.Location = new System.Drawing.Point(479, 8);
             this.DivisionAreaLabels_CheckBox.Name = "DivisionAreaLabels_CheckBox";
-            this.DivisionAreaLabels_CheckBox.Size = new System.Drawing.Size(129, 21);
+            this.DivisionAreaLabels_CheckBox.Size = new System.Drawing.Size(119, 20);
             this.DivisionAreaLabels_CheckBox.TabIndex = 41;
             this.DivisionAreaLabels_CheckBox.Text = "Turn Off Labels";
             this.DivisionAreaLabels_CheckBox.UseVisualStyleBackColor = true;
@@ -491,17 +498,9 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Size = new System.Drawing.Size(1339, 907);
             this.MollierControl_Main.TabIndex = 0;
             // 
-            // printToolStripMenuItem
-            // 
-            this.printToolStripMenuItem.Name = "printToolStripMenuItem";
-            this.printToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.printToolStripMenuItem.Text = "Print";
-            this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
-            // 
             // MollierForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1374, 977);
             this.Controls.Add(this.DivisionAreaLabels_CheckBox);
             this.Controls.Add(this.DivisionAreaCheckBox);
@@ -525,6 +524,7 @@ namespace SAM.Core.Mollier.UI
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MollierForm_FormClosing);
             this.Load += new System.EventHandler(this.MollierForm_Load);
+            this.SizeChanged += new System.EventHandler(this.MollierForm_SizeChanged);
             this.MenuStrip_Main.ResumeLayout(false);
             this.MenuStrip_Main.PerformLayout();
             this.ResumeLayout(false);

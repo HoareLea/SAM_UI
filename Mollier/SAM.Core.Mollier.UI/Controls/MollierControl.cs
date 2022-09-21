@@ -1096,7 +1096,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     //1st option right
                     bool is_space = true;
                     //how much move the label 
-                    double moveHumidityRatio = (0.2 + 0.2 * label.Length / 2) * vector2D.X;
+                    double moveHumidityRatio = (0.2 + 0.2 * (double)label.Length / 2.0) * vector2D.X;
                     double moveTemperature = -1.2 * vector2D.Y;
                     //mollier point moved  riBght, top, left, down
                     MollierPoint mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
@@ -1138,7 +1138,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     else
                     {
                         is_space = true;
-                        moveHumidityRatio = -(0.2 + 0.2 * label.Length / 2) * vector2D.X;
+                        moveHumidityRatio = -(0.2 + 0.2 * (double)label.Length / 2.0) * vector2D.X;
                         moveTemperature = -1.2 * vector2D.Y;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
                     }
@@ -1160,7 +1160,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         is_space = true;
                         moveHumidityRatio = 0;
-                        moveTemperature = -2 * vector2D.X;
+                        moveTemperature = -2 * vector2D.Y;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
                     }
                     //4th option down   
@@ -1292,15 +1292,15 @@ namespace SAM.Core.Mollier.UI.Controls
             { 
                 double y = 0.95 * vector2D.Y;
                 double x = 0.2 * vector2D.X;// 0.2 is one letter width in mollier
-                x *= label.Length;
+                x *= (double)label.Length;
 
-                Point2D origin = new Point2D(NewPoint_X - x / 2, NewPoint_Y + y);
+                Point2D origin = new Point2D(NewPoint_X - x / 2.0, NewPoint_Y + y);
                 Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
 
 
                 x = 0.2 * vector2D.X;
-                x *= OldLabel.Length;
-                origin = new Point2D(OldPoint_X - x / 2, OldPoint_Y + y);
+                x *= (double)OldLabel.Length;
+                origin = new Point2D(OldPoint_X - x / 2.0, OldPoint_Y + y);
                 Rectangle2D rectangle2Dold = new Rectangle2D(origin, x, y);
 
                 return rectangle2Dnew.Intersect(rectangle2Dold, 0.001);
@@ -1309,15 +1309,15 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 double y = 0.00049 * vector2D.Y;
                 double x = 0.48 * vector2D.X;// 0.25 is one letter width in psychro
-                x *= label.Length;
+                x *= (double)label.Length;
 
-                Point2D origin = new Point2D(NewPoint_X - x / 2, NewPoint_Y + y);
+                Point2D origin = new Point2D(NewPoint_X - x / 2.0, NewPoint_Y + y);
                 Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
 
 
                 x = 0.48 * vector2D.X;
-                x *= OldLabel.Length;
-                origin = new Point2D(OldPoint_X - x / 2, OldPoint_Y + y);
+                x *= (double)OldLabel.Length;
+                origin = new Point2D(OldPoint_X - x / 2.0, OldPoint_Y + y);
                 Rectangle2D rectangle2Dold = new Rectangle2D(origin, x, y);
 
                 return rectangle2Dnew.Intersect(rectangle2Dold, 0.0000001);
@@ -1333,14 +1333,14 @@ namespace SAM.Core.Mollier.UI.Controls
             Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
             double y = 0.95 * vector2D.Y;
             double x = 0.18 * vector2D.X;// 0.2 is one letter width in mollier
-            x *= label.Length;
+            x *= (double)label.Length;
             if (chartType == ChartType.Psychrometric)
             {
                 y = 0.00048 * vector2D.Y;
                 x = 0.48 * vector2D.X;// 0.25 is one letter width in psychro
-                x *= label.Length;
+                x *= (double)label.Length;
             }
-            Point2D origin = new Point2D(NewPoint_X - x / 2, NewPoint_Y + y);
+            Point2D origin = new Point2D(NewPoint_X - x / 2.0, NewPoint_Y + y);
                 
             Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
                 
@@ -1360,8 +1360,13 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
 
-        private void generate_graph()
+        public void generate_graph()
         {
+            if(mollierControlSettings == null)
+            {
+                return;
+            }
+
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
                 generate_graph_mollier();
@@ -2188,6 +2193,16 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 return mollierProcesses.ConvertAll(x => x?.Clone());
             }
+        }
+
+        private void MollierControl_SizeChanged(object sender, EventArgs e)
+        {
+            if (mollierControlSettings == null)
+            {
+                return;
+            }
+
+            generate_graph();
         }
 
         public void ColorPoints(bool generate, double percent, string chartDataType)
