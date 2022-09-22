@@ -1946,8 +1946,8 @@ namespace SAM.Core.Mollier.UI.Controls
                                             break;
                                     }
 
-                                    if (!(mollierProcess is UndefinedProcess) && UI_MollierProcess.Start_Label != "")
-                                    {
+                                    if (UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
+                                    {   
                                         if (value_1 != string.Empty)
                                         {
                                             worksheet.Cells[rowIndex + id, columnIndex].Value = value_1; id++;
@@ -1957,7 +1957,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                             worksheet.Cells[rowIndex + id, columnIndex].Value = "-"; id++;
                                         }
                                     }
-                                    if (value_2 != string.Empty && UI_MollierProcess.End_Label != "")
+                                    if (UI_MollierProcess.Start_Label != null && value_2 != string.Empty && UI_MollierProcess.End_Label != "")
                                     {
                                         worksheet.Cells[rowIndex + id, columnIndex].Value = value_2; id++;
                                     }
