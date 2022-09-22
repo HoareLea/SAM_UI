@@ -15,8 +15,8 @@ namespace SAM.Core.Mollier.UI
             //double widthFactor = 1500, heightFactor = 725;
             //double xFactor_2 = 1339 yFactor = 775
 
-            double widthFactor = (double)1500 / (double)control.Size.Width;
-            double heigthFactor = (double)725 / (double)control.Size.Height;
+            double widthFactor = (double)1501 / (double)control.Size.Width;
+            double heigthFactor = (double)723 / (double)control.Size.Height;
 
 
 

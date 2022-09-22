@@ -913,7 +913,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     //creating series - special with ADP process pattern
                     createSeries_DewPoint(start, secondPoint, mollierProcess, chartType);
                     createSeries_DewPoint(end, apparatusDewPoint, mollierProcess, chartType);
-                    createSeries_DewPoint(apparatusDewPoint, secondPoint, mollierProcess, chartType);
+                    createSeries_DewPoint(end, secondPoint, mollierProcess, chartType);
                 }
 
             }
@@ -972,7 +972,6 @@ namespace SAM.Core.Mollier.UI.Controls
         private void createSeries_RoomProcess(UIMollierProcess UI_MollierProcess)
         {
             //defines the end label of the process
-            UI_MollierProcess.End_Label = "ROOM";
             MollierProcess mollierProcess = (MollierProcess)(UI_MollierProcess.MollierProcess);
             //specified the color of the Room air condition point
             Color color = Color.Orange;
@@ -1651,9 +1650,9 @@ namespace SAM.Core.Mollier.UI.Controls
             switch (chartType)
             {
                 case ChartType.Mollier:
-                    return String.Format(mask, System.Math.Round(Mollier.Query.DiagramTemperature(end),2) - System.Math.Round(Mollier.Query.DiagramTemperature(start), 2), System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2), System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), "g/kg");
+                    return String.Format(mask, System.Math.Round(System.Math.Round(end.DryBulbTemperature,2) - System.Math.Round(start.DryBulbTemperature, 2), 2), System.Math.Round(System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2), 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg");
                 case ChartType.Psychrometric:
-                    return String.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5), System.Math.Round(end.Enthalpy/1000, 2) - System.Math.Round(start.Enthalpy/1000, 2), "kg/kg");
+                    return String.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round(System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5), 2), System.Math.Round(System.Math.Round(end.Enthalpy/1000, 2) - System.Math.Round(start.Enthalpy/1000, 2), 2), "kg/kg");
             }
             return null;
         }
