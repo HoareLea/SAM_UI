@@ -17,7 +17,6 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             InitializeComponent();
         }
-
         private void MergeButton_Click(object sender, EventArgs e)
         {
             replace = false;
@@ -36,6 +35,11 @@ namespace SAM.Core.Mollier.UI.Forms
         public bool ReplaceOrMerge()
         {
             return replace;
+        }
+
+        private void OpenJSONForm_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
