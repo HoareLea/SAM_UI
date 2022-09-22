@@ -1216,7 +1216,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         is_space = true;
                         moveHumidityRatio = -0.0007 * vector2D.Y;
-                        moveTemperature = (0.5 + 0.5 * (double)label.Length/2.0) * vector2D.X;
+                        moveTemperature = (0.5 + 0.4 * (double)label.Length/2.0) * vector2D.X;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
                     }
 
@@ -1259,7 +1259,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         is_space = true;
                         moveHumidityRatio = -0.0007 * vector2D.Y;
-                        moveTemperature = -(0.5 + 0.5 * (double)label.Length/2.0) * vector2D.X;
+                        moveTemperature = -(0.5 + 0.4 * (double)label.Length/2.0) * vector2D.X;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
                     }
                     //4th option left  
@@ -1315,14 +1315,14 @@ namespace SAM.Core.Mollier.UI.Controls
             else
             {
                 double y = 0.00049 * vector2D.Y;
-                double x = 0.48 * vector2D.X;// 0.25 is one letter width in psychro
+                double x = 0.49 * vector2D.X;// 0.25 is one letter width in psychro
                 x *= (double)label.Length;
 
                 Point2D origin = new Point2D(NewPoint_X - x / 2.0, NewPoint_Y + y);
                 Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
 
 
-                x = 0.48 * vector2D.X;
+                x = 0.49 * vector2D.X;
                 x *= (double)OldLabel.Length;
                 origin = new Point2D(OldPoint_X - x / 2.0, OldPoint_Y + y);
                 Rectangle2D rectangle2Dold = new Rectangle2D(origin, x, y);
@@ -1339,7 +1339,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double NewPoint_Y = chartType == ChartType.Mollier ? mollierPointNew.DryBulbTemperature : mollierPointNew.HumidityRatio;
             Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
             double y = 0.95 * vector2D.Y;
-            double x = 0.18 * vector2D.X;// 0.2 is one letter width in mollier
+            double x = 0.2 * vector2D.X;// 0.2 is one letter width in mollier
             x *= (double)label.Length;
             if (chartType == ChartType.Psychrometric)
             {
@@ -1632,7 +1632,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     return String.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.01), Core.Query.Round(mollierPoint.HumidityRatio, Tolerance.MacroDistance), " kg/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy/1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.01), Core.Query.Round(mollierPoint.Density(), 0.01));
 
                 case ChartType.Mollier:
-                    return String.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.01), Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.1), " g/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy/1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.01), Core.Query.Round(mollierPoint.Density(), 0.01));
+                    return String.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.01), Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.01), " g/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy/1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.01), Core.Query.Round(mollierPoint.Density(), 0.01));
             }
             return null;
 
