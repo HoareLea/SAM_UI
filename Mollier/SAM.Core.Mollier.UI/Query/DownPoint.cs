@@ -9,7 +9,7 @@
                 return null;
             }
 
-            return Mollier.Query.DewPointMollierPoint(coolingProcess.Start, coolingProcess.Efficiency);
+            return Mollier.Query.DewPoint(coolingProcess.Start, coolingProcess.Efficiency);
         }
     }
 }
