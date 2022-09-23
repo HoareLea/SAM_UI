@@ -587,6 +587,7 @@ namespace SAM.Core.Mollier.UI
                 if(mollierControlSettings != null)
                 {
                     MollierControl_Main.MollierControlSettings = mollierControlSettings;
+                    default_chart(mollierControlSettings);
                 }
             }
             LoadMollierObjects(mollierObjects);
