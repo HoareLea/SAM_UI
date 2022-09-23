@@ -4,6 +4,7 @@ namespace SAM.Core.Mollier.UI.Forms
 {
     public partial class MollierProcessForm : Form
     {
+        private ProcessType processType = ProcessType.Undefined;
         public MollierProcessForm()
         {
             InitializeComponent();
@@ -28,5 +29,30 @@ namespace SAM.Core.Mollier.UI.Forms
             return mollierProcess;
         }
 
+        private void ComboBox_ChooseProcess_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            processType = ProcessType.Undefined;
+            if(ComboBox_ChooseProcess.Text == "Heat")
+            {
+                processType = ProcessType.Heating;
+            }
+            if (ComboBox_ChooseProcess.Text == "Cool")
+            {
+                processType = ProcessType.Cooling;
+            }
+            if (ComboBox_ChooseProcess.Text == "Heat Recovery")
+            {
+                processType = ProcessType.HeatRecovery;
+            }
+            if (ComboBox_ChooseProcess.Text == "Mixing")
+            {
+                processType = ProcessType.Mixing;
+            }
+            if(ComboBox_ChooseProcess.Text == "Humidify")
+            {
+                processType = ProcessType.Humidification;
+            }
+            return;
+        }
     }
 }

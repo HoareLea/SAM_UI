@@ -73,7 +73,7 @@
             // Button_OK
             // 
             this.Button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_OK.Location = new System.Drawing.Point(242, 202);
+            this.Button_OK.Location = new System.Drawing.Point(298, 309);
             this.Button_OK.Name = "Button_OK";
             this.Button_OK.Size = new System.Drawing.Size(75, 23);
             this.Button_OK.TabIndex = 4;
@@ -85,7 +85,7 @@
             // 
             this.Button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Button_Cancel.Location = new System.Drawing.Point(323, 202);
+            this.Button_Cancel.Location = new System.Drawing.Point(379, 309);
             this.Button_Cancel.Name = "Button_Cancel";
             this.Button_Cancel.Size = new System.Drawing.Size(75, 23);
             this.Button_Cancel.TabIndex = 5;
@@ -100,7 +100,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.Button_Cancel;
-            this.ClientSize = new System.Drawing.Size(410, 237);
+            this.ClientSize = new System.Drawing.Size(466, 344);
             this.Controls.Add(this.Button_Cancel);
             this.Controls.Add(this.Button_OK);
             this.Controls.Add(this.TextBox_DryBulbTemperature);

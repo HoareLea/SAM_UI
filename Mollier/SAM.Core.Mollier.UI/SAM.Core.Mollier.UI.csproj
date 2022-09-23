@@ -94,6 +94,7 @@
     </Compile>
     <Compile Include="Enums\ChartExportType.cs" />
     <Compile Include="Enums\ChartDataType.cs" />
+    <Compile Include="Enums\ProcessType.cs" />
     <Compile Include="Enums\ChartParameterType.cs" />
     <Compile Include="Forms\MollierControlSettingsForm.cs">
       <SubType>Form</SubType>

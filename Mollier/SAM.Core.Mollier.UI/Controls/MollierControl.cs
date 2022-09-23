@@ -18,6 +18,7 @@ namespace SAM.Core.Mollier.UI.Controls
         private List<UIMollierProcess> mollierProcesses;
         private List<MollierZone> mollierZones;
         private List<List<UIMollierProcess>> systems;
+        private List<Tuple<MollierPoint, string>> created_points;
         public MollierControl()
         {
             InitializeComponent();
@@ -853,11 +854,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private void add_MollierProcesses(ChartType chartType)
         {
-            List<UIMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<UIMollierProcess>(mollierProcesses.Cast<UIMollierProcess>());
-            mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
-
-            createProcessesLabels(mollierProcesses_Temp, chartType);
-            
+            created_points = new List<Tuple<MollierPoint, string>>();
             for (int i = 0; i < mollierProcesses.Count; i++)
             {
                 UIMollierProcess UI_MollierProcess = mollierProcesses[i];//contains all spcified data of the process like color, start label etc.
@@ -906,6 +903,10 @@ namespace SAM.Core.Mollier.UI.Controls
                     double X = chartType == ChartType.Mollier ? apparatusDewPoint.HumidityRatio * 1000 : apparatusDewPoint.DryBulbTemperature;
                     double Y = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(apparatusDewPoint) : apparatusDewPoint.HumidityRatio;
                     create_moved_label(chartType, X, Y, 0, 0, 0, -3 * Query.ScaleVector2D(this, MollierControlSettings).Y, -1 * Query.ScaleVector2D(this, MollierControlSettings).X, -0.0007 * Query.ScaleVector2D(this, MollierControlSettings).Y, "ADP", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Gray);
+
+                    MollierPoint ADPPoint_Temp = chartType == ChartType.Mollier ? new MollierPoint(apparatusDewPoint.DryBulbTemperature - 3 * Query.ScaleVector2D(this, MollierControlSettings).Y, apparatusDewPoint.HumidityRatio, mollierControlSettings.Pressure) : new MollierPoint(apparatusDewPoint.DryBulbTemperature - 1 * Query.ScaleVector2D(this, MollierControlSettings).X, apparatusDewPoint.HumidityRatio - 0.0007 * Query.ScaleVector2D(this, MollierControlSettings).Y, mollierControlSettings.Pressure);
+                    created_points.Add(new Tuple<MollierPoint, string>(ADPPoint_Temp, "ADP"));
+
                     MollierPoint secondPoint = coolingProcess.DownPoint();
                     //creating series - processes points pattern
                     createSeries_ProcessesPoints(apparatusDewPoint, UI_MollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
@@ -917,6 +918,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
 
             }
+            List<UIMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<UIMollierProcess>(mollierProcesses.Cast<UIMollierProcess>());
+            mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
+
+            createProcessesLabels(mollierProcesses_Temp, chartType);
         }
 
         private void createSeries_DewPoint(MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType)
@@ -1086,8 +1091,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         
         private void createPorcessesLabels_New_2(List<Tuple<MollierPoint, string>> points_list)
-        {
-            List<Tuple<MollierPoint, string>> created_points = new List<Tuple<MollierPoint, string>>();
+        {           
             if(mollierControlSettings.ChartType == ChartType.Mollier)
             {
                 for (int i = 0; i < points_list.Count; i++)
@@ -1275,6 +1279,10 @@ namespace SAM.Core.Mollier.UI.Controls
             
             for(int i=0; i<created_points.Count; i++)
             {
+                if (created_points[i].Item2 == "ADP")
+                {
+                    continue;
+                }
                 double Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(created_points[i].Item1) : created_points[i].Item1.HumidityRatio;
                 double X = mollierControlSettings.ChartType == ChartType.Mollier ? created_points[i].Item1.HumidityRatio * 1000 : created_points[i].Item1.DryBulbTemperature;
 
@@ -1436,6 +1444,8 @@ namespace SAM.Core.Mollier.UI.Controls
             axisX.MinorGrid.LineColor = Color.LightGray;
             axisX.IsReversed = false;
             axisX.LabelStyle.Format = "0.##";
+            axisX.LabelStyle.Font = ca.AxisY.LabelStyle.Font;
+            //areaAxisAxisY.LabelStyle.Font = area.AxisY.LabelStyle.Font;
             //AXIS Y
             MollierChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
             Axis axisY = chartArea.AxisY;
@@ -1446,6 +1456,8 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.Minimum = temperature_Min;
             axisY.Interval = temperature_interval;
             axisY.LabelStyle.Format = "0.##";
+            axisY.LabelStyle.Font = ca.AxisY.LabelStyle.Font;
+
             //CREATING RELATIVE HUMIDITY AND HUMIDITY RATIO LINES
             create_relative_humidity_line_Mollier(System.Convert.ToInt32(temperature_Min), System.Convert.ToInt32(temperature_Max), relative_humidity, pressure);
             //CREATING DENSITY LINE
@@ -1522,6 +1534,9 @@ namespace SAM.Core.Mollier.UI.Controls
             //BASE CHART INITIALIZATION
             MollierChart.Series.Clear();
             ChartArea chartArea = MollierChart.ChartAreas[0];
+            ChartArea ca = MollierChart.ChartAreas[0];
+            ca.Position = new ElementPosition(2, 2, 95, 95);//define sizes of chart
+            ca.InnerPlotPosition = new ElementPosition(8, 6, 85, 85);
             MollierChart.ChartAreas[0].AxisX2.Enabled = AxisEnabled.False;
             MollierChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.True;
             MollierChart.ChartAreas[0].AxisY2.Title = "Humidity Ratio  x [kg/kg]";
@@ -1533,6 +1548,7 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.ChartAreas[0].AxisY2.MinorGrid.Enabled = true;
             MollierChart.ChartAreas[0].AxisY2.MinorGrid.LineColor = Color.LightGray;
             MollierChart.ChartAreas[0].AxisY2.LabelStyle.Format = "0.###";
+            MollierChart.ChartAreas[0].AxisY2.LabelStyle.Font = ca.AxisY.LabelStyle.Font;
             double P_w_Min = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Min / 1000, pressure) / 1000000;
             double P_w_Max = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Max / 1000, pressure) / 1000000;
             //AXIS X
@@ -1545,6 +1561,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisX.MinorGrid.Interval = 1;
             axisX.MinorGrid.Enabled = true;
             axisX.MinorGrid.LineColor = Color.LightGray;
+            axisX.LabelStyle.Font = ca.AxisY.LabelStyle.Font;
             //AXIS Y - P_w AXIS
             Axis axisY = chartArea.AxisY;
             axisY.Enabled = AxisEnabled.False;
@@ -1559,9 +1576,6 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.MinorGrid.Enabled = false;
             axisY.MinorGrid.LineColor = Color.LightGray;
 
-            ChartArea ca = MollierChart.ChartAreas[0];
-            ca.Position = new ElementPosition(2, 2, 95, 95);//define sizes of chart
-            ca.InnerPlotPosition = new ElementPosition(8, 6, 85, 85);
 
             Series series1 = MollierChart.Series.Add("P_w_Psychro x [kPa]");
             series1.Points.AddXY(0, P_w_Min);
@@ -1884,6 +1898,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                 worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
                                 for (int j = 0; j < systems[i].Count; j++)
                                 {
+                                    //
                                     UIMollierProcess UI_MollierProcess = systems[i][j];
                                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
                                     MollierPoint start = mollierProcess.Start;
@@ -1941,6 +1956,8 @@ namespace SAM.Core.Mollier.UI.Controls
                                             value_2 = (System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2)).ToString();
                                             break;
                                     }
+
+                                    range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
 
                                     if (UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
                                     {   

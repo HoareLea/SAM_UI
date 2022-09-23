@@ -127,6 +127,7 @@
             this.ComboBox_ChooseProcess.Size = new System.Drawing.Size(137, 24);
             this.ComboBox_ChooseProcess.TabIndex = 10;
             this.ComboBox_ChooseProcess.Text = "Choose process";
+            this.ComboBox_ChooseProcess.SelectedIndexChanged += new System.EventHandler(this.ComboBox_ChooseProcess_SelectedIndexChanged);
             // 
             // Label_DryBulbTemperature
             // 
