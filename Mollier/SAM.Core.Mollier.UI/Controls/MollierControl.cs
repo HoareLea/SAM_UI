@@ -854,7 +854,13 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private void add_MollierProcesses(ChartType chartType)
         {
-            created_points = new List<Tuple<MollierPoint, string>>();
+            created_points = new List<Tuple<MollierPoint, string>>();//used for labeling in label process new 2
+            
+            List<UIMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<UIMollierProcess>(mollierProcesses.Cast<UIMollierProcess>());
+            mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
+            createProcessesLabels(mollierProcesses_Temp, chartType);
+
+            //create series for all points and lines in processes(create circles, lines, tooltips, ADP etc.)
             for (int i = 0; i < mollierProcesses.Count; i++)
             {
                 UIMollierProcess UI_MollierProcess = mollierProcesses[i];//contains all spcified data of the process like color, start label etc.
@@ -918,10 +924,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
 
             }
-            List<UIMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<UIMollierProcess>(mollierProcesses.Cast<UIMollierProcess>());
-            mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
-
-            createProcessesLabels(mollierProcesses_Temp, chartType);
+            //labeling all the processes
+            createPorcessesLabels_New(mollierProcesses_Temp, chartType);
         }
 
         private void createSeries_DewPoint(MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType)
@@ -998,7 +1002,7 @@ namespace SAM.Core.Mollier.UI.Controls
             index = mollierControlSettings.ChartType == ChartType.Mollier ? series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end)) : series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
             series.Points[index].Tag = end;
             series.ToolTip = ToolTipProcess(start, end, mollierControlSettings.ChartType, Query.FullProcessName(UI_MollierProcess));
-
+            
             //creating series for Room air condition point 
             Series seriesRoomPoint = MollierChart.Series.Add(Guid.NewGuid().ToString());
             seriesRoomPoint.IsVisibleInLegend = false;
@@ -1014,6 +1018,11 @@ namespace SAM.Core.Mollier.UI.Controls
             double Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(end) : end.HumidityRatio;
             seriesRoomPoint.Points.AddXY(X, Y);
             seriesRoomPoint.Points[0].ToolTip = ToolTipPoint(end, mollierControlSettings.ChartType, "ROOM");
+            if(UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
+            {
+                createSeries_ProcessesPoints(start, UI_MollierProcess, MollierControlSettings.ChartType);
+            }
+
         }
 
         private void createProcessesLabels(List<UIMollierProcess> mollierProcesses, ChartType chartType)    
@@ -1031,10 +1040,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     UIMollierProcess UI_MollierProcess = systems[i][j];
                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
-                    if (mollierProcess is UndefinedProcess)
-                    {
-                        continue;
-                    }
                     if (UI_MollierProcess.Start_Label == null && systems[i].Count == 1)
                     {
                         UI_MollierProcess.Start_Label = name + "1";
@@ -1057,7 +1062,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     name++;
                 }
             }
-            createPorcessesLabels_New(mollierProcesses, chartType);
+
             this.mollierProcesses = mollierProcesses;//used only to remember point name to show it in tooltip
         }      
         private void createPorcessesLabels_New(List<UIMollierProcess> mollierProcesses, ChartType chartType)//creates sorted list of points that has to be labaled
@@ -1089,7 +1094,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             createPorcessesLabels_New_2(points_list);
         }
-        
+
         private void createPorcessesLabels_New_2(List<Tuple<MollierPoint, string>> points_list)
         {           
             if(mollierControlSettings.ChartType == ChartType.Mollier)
@@ -1716,7 +1721,10 @@ namespace SAM.Core.Mollier.UI.Controls
                     mollierProcess = mollierProcess_Temp;
                 }
                 UIMollierProcess mollierProcess_UI = new UIMollierProcess(((UIMollierProcess)mollierProcess).MollierProcess, ((UIMollierProcess)mollierProcess).Color) { Start_Label = ((UIMollierProcess)mollierProcess).Start_Label, Process_Label = ((UIMollierProcess)mollierProcess).Process_Label, End_Label = ((UIMollierProcess)mollierProcess).End_Label };
-
+                if(mollierProcess_UI.MollierProcess is UndefinedProcess && mollierProcess_UI.End_Label == null)
+                {
+                    mollierProcess_UI.End_Label = "ROOM";
+                }
                 this.mollierProcesses.Add(mollierProcess_UI);
                 result.Add(mollierProcess_UI);
             }
@@ -1895,6 +1903,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
                             for (int i = 0; i < systems.Count; i++)
                             {
+                               // range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                                 worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
                                 for (int j = 0; j < systems[i].Count; j++)
                                 {
@@ -1976,6 +1985,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                     }
                                 }
                                 worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
+                                //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                             }
 
                         }
