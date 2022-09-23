@@ -906,7 +906,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     double X = chartType == ChartType.Mollier ? apparatusDewPoint.HumidityRatio * 1000 : apparatusDewPoint.DryBulbTemperature;
                     double Y = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(apparatusDewPoint) : apparatusDewPoint.HumidityRatio;
                     create_moved_label(chartType, X, Y, 0, 0, 0, -3 * Query.ScaleVector2D(this, MollierControlSettings).Y, -1 * Query.ScaleVector2D(this, MollierControlSettings).X, -0.0007 * Query.ScaleVector2D(this, MollierControlSettings).Y, "ADP", ChartDataType.Undefined, ChartParameterType.Point, color: Color.Gray);
-                    MollierPoint secondPoint = coolingProcess.DownPoint(apparatusDewPoint);
+                    MollierPoint secondPoint = coolingProcess.DownPoint();
                     //creating series - processes points pattern
                     createSeries_ProcessesPoints(apparatusDewPoint, UI_MollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
                     createSeries_ProcessesPoints(secondPoint, UI_MollierProcess, chartType, pointType: "SecondPoint");

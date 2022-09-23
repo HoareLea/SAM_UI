@@ -134,6 +134,7 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\DownPoint.cs" />
     <Compile Include="Query\ShapeSizeFactor.cs" />
     <Compile Include="Query\FindDivisionAreaCornerPoint.cs" />
     <Compile Include="Query\FullProcessName.cs" />
