@@ -1094,10 +1094,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     MollierPoint mollierPoint = points_list[i].Item1;
                     string label = points_list[i].Item2;
-                    if(label == "ROOM")
-                    {
-                        int integer = 2;
-                    }
                     Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
                     //1st option right
                     bool is_space = true;
@@ -1166,7 +1162,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         is_space = true;
                         moveHumidityRatio = 0;
-                        moveTemperature = -2 * vector2D.Y;
+                        moveTemperature = -2.5 * vector2D.Y;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
                     }
                     //4th option down   
@@ -1339,7 +1335,7 @@ namespace SAM.Core.Mollier.UI.Controls
             Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
             double y = 0.95 * vector2D.Y;
             double x = 0.2 * vector2D.X;// 0.2 is one letter width in mollier
-            x *= (double)label.Length;
+            x *= (double)label.Length;  
             if (chartType == ChartType.Psychrometric)
             {
                 y = 0.00048 * vector2D.Y;
