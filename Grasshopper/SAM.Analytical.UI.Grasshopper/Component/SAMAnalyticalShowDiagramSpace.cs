@@ -133,13 +133,15 @@ namespace SAM.Analytical.UI.Grasshopper
                 AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == unitName);
                 if(airHandlingUnitResult != null)
                 {
-                    Mollier.Modify.UpdateMollierProcesses(new AirHandlingUnitResult(airHandlingUnitResult), out List<IMollierProcess> mollierProcesses);
+                    MollierGroup mollierGroup = Mollier.Modify.UpdateProcesses(new AirHandlingUnitResult(airHandlingUnitResult));
 
                     double sensibleLoad = double.NaN;
                     if(space.TryGetValue(SpaceParameter.DesignHeatingLoad, out double designHeatingLoad) && !double.IsNaN(designHeatingLoad))
                     {
                         sensibleLoad = designHeatingLoad;
                     }
+
+                    List<IMollierProcess> mollierProcesses = mollierGroup.GetMollierProcesses();
 
                     double latentLoad = space.CalculatedOccupancyLatentGain();
                     

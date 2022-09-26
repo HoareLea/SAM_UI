@@ -141,12 +141,12 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
-            List<IMollierProcess> mollierProcesses = null;
+            MollierGroup mollierGroup = null;
 
             AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == airHandlingUnit.Name);
             if(airHandlingUnitResult != null)
             {
-                 Mollier.Modify.UpdateMollierProcesses(new AirHandlingUnitResult( airHandlingUnitResult), out mollierProcesses);
+                 mollierGroup = Mollier.Modify.UpdateProcesses(new AirHandlingUnitResult( airHandlingUnitResult));
             }
 
 
@@ -158,6 +158,9 @@ namespace SAM.Analytical.UI.Grasshopper
             {
                 mollierForm.Clear();
             }
+
+            List<IMollierProcess> mollierProcesses = mollierGroup?.GetMollierProcesses();
+
             double pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
 
             mollierForm.Name = string.IsNullOrWhiteSpace(airHandlingUnit.Name) ? mollierForm.Name : airHandlingUnit.Name;
