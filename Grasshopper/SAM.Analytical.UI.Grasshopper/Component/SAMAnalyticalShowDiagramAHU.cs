@@ -23,7 +23,7 @@ namespace SAM.Analytical.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.0";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -56,7 +56,13 @@ namespace SAM.Analytical.UI.Grasshopper
                 global::Grasshopper.Kernel.Parameters.Param_GenericObject @genericObject = new global::Grasshopper.Kernel.Parameters.Param_GenericObject() { Name = "_airHandlingUnit", NickName = "_airHandlingUnit", Description = "SAM Analytical AirHandlingUnit or name", Access = GH_ParamAccess.item };
                 result.Add(new GH_SAMParam(@genericObject, ParamVisibility.Binding));
 
-                global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_run", NickName = "_run", Description = "Connect a boolean toggle to run.", Access = GH_ParamAccess.item };
+                global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = null;
+
+                @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_recalculate", NickName = "_recalculate", Description = "Recalculate Air Handling Unit.", Access = GH_ParamAccess.item, Optional = true };
+                @boolean.SetPersistentData(true);
+                result.Add(new GH_SAMParam(@boolean, ParamVisibility.Binding));
+
+                @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_run", NickName = "_run", Description = "Connect a boolean toggle to run.", Access = GH_ParamAccess.item };
                 @boolean.SetPersistentData(false);
                 result.Add(new GH_SAMParam(@boolean, ParamVisibility.Binding));
 
@@ -141,12 +147,31 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
+            index = Params.IndexOfInputParam("_recalculate");
+            bool recalculate = true;
+            if (index != -1)
+            {
+                dataAccess.GetData(index, ref recalculate);
+                return;
+            }
+
             MollierGroup mollierGroup = null;
 
-            AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == airHandlingUnit.Name);
+            AirHandlingUnitResult airHandlingUnitResult = null;
+            if (recalculate)
+            {
+                airHandlingUnitResult = Mollier.Create.AirHandlingUnitResult(analyticalModel, airHandlingUnit.Name);
+                if(airHandlingUnitResult != null)
+                {
+                    adjacencyCluster.AddObject(airHandlingUnitResult);
+                    adjacencyCluster.AddRelation(airHandlingUnit, airHandlingUnitResult);
+                }
+            }
+
+            airHandlingUnitResult = adjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == airHandlingUnit.Name);
             if(airHandlingUnitResult != null)
             {
-                 mollierGroup = Mollier.Modify.UpdateProcesses(new AirHandlingUnitResult( airHandlingUnitResult));
+                mollierGroup = airHandlingUnitResult.GetValue<MollierGroup>(AirHandlingUnitResultParameter.Processes);
             }
 
 
