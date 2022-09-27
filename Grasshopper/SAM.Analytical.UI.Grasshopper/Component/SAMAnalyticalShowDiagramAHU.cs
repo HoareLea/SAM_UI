@@ -152,7 +152,6 @@ namespace SAM.Analytical.UI.Grasshopper
             if (index != -1)
             {
                 dataAccess.GetData(index, ref recalculate);
-                return;
             }
 
             MollierGroup mollierGroup = null;
@@ -163,6 +162,7 @@ namespace SAM.Analytical.UI.Grasshopper
                 airHandlingUnitResult = Mollier.Create.AirHandlingUnitResult(analyticalModel, airHandlingUnit.Name);
                 if(airHandlingUnitResult != null)
                 {
+                    adjacencyCluster.GetObjects<AirHandlingUnitResult>()?.FindAll(x => x.Name == airHandlingUnit.Name).ForEach(x => adjacencyCluster.RemoveObject<AirHandlingUnitResult>(x.Guid));
                     adjacencyCluster.AddObject(airHandlingUnitResult);
                     adjacencyCluster.AddRelation(airHandlingUnit, airHandlingUnitResult);
                 }
