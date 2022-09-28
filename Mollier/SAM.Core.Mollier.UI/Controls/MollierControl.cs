@@ -240,12 +240,13 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             List<Series> series = CreateSeries(dictionary, chartType, ChartDataType.Enthalpy, "kJ / kg", "Enthalpy");
 
-            Series series_Temp = series?.Find(x => x.Name.Contains((50).ToString()));
+            Series series_Temp = series?.Find(x => x.Name.Contains((20).ToString()));
+
             if (series_Temp != null)
             {
                 double X = series_Temp.Points.Last().XValue;
                 double Y = series_Temp.Points.Last().YValues[0];
-                create_moved_label(chartType, X, Y, 0, 0, 1.75, -2.5, -2, 0.0007, "Enthalpy  h [kJ/kg]", ChartDataType.Enthalpy, ChartParameterType.Label, mollierControlSettings.DisableLabels);
+                create_moved_label(chartType, X, Y, 0, 0, 6, 26, -2, 0.0007, "Enthalpy  h [kJ/kg]", ChartDataType.Enthalpy, ChartParameterType.Label, mollierControlSettings.DisableLabels);
             }
         }
         private Dictionary<double, List<MollierPoint>> GetMollierPoints_Enthalpy(double enthalpy_Min, double enthalpy_Max, ChartType chartType, double pressure)
@@ -358,9 +359,9 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 result[specific_volume_Min] = new List<MollierPoint>();
 
-                MollierPoint mollierPoint_1 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(0, specific_volume_Min, pressure);
+                MollierPoint mollierPoint_1 = Mollier.Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(0, specific_volume_Min, pressure);
                 result[specific_volume_Min].Add(mollierPoint_1);
-                MollierPoint mollierPoint_2 = Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(100, specific_volume_Min, pressure);
+                MollierPoint mollierPoint_2 = Mollier.Create.MollierPoint_ByRelativeHumidityAndSpecificVolume(100, specific_volume_Min, pressure);
                 result[specific_volume_Min].Add(mollierPoint_2);
 
                 specific_volume_Min += 0.05;
@@ -1806,8 +1807,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     return false;
                 }
-
-                path_Template = System.IO.Path.Combine(path_Template, "AHU", "PDF_Print_AHU.xlsx");
+                string fileName = pageOrientation == PageOrientation.Portrait ? "PDF_Print_AHU_Portrait.xlsx" : "PDF_Print_AHU.xlsx";
+                path_Template = System.IO.Path.Combine(path_Template, "AHU", fileName);
                 if (!System.IO.File.Exists(path_Template))
                 {
                     return false;
@@ -1845,50 +1846,94 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     NetOffice.ExcelApi.Range range = null;
 
-                    if(systems != null && systems.Count != 0)
+
+                    HashSet<string> uniqueNames = new HashSet<string>();
+                    uniqueNames.Add("[ProcessPointName]");
+                    uniqueNames.Add("[DryBulbTemperature]");
+                    uniqueNames.Add("[HumidityRatio]");
+                    uniqueNames.Add("[RelativeHumidity]");
+                    uniqueNames.Add("[WetBulbTemperature]");
+                    uniqueNames.Add("[Enthalpy]");
+                    uniqueNames.Add("[Density]");
+                    uniqueNames.Add("[AtmosphericPressure]");
+                    uniqueNames.Add("[SpecificVolume]");
+                    uniqueNames.Add("[ProcessName]");
+                    uniqueNames.Add("[deltaT]");
+                    uniqueNames.Add("[deltaX]");
+                    uniqueNames.Add("[deltaH]");
+                    int numberOfData = 13;
+                    int columnIndex_Min = 100;
+                    int rowIndex_Min = 100;
+                    Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
+                    object[,] values = worksheet.Range(worksheet.Cells[1, 1], worksheet.Cells[100, 30]).Value as object[,];
+                    for (int i = values.GetLowerBound(0); i <= values.GetUpperBound(0); i++)
                     {
-                        HashSet<string> uniqueNames = new HashSet<string>();
-                        uniqueNames.Add("[ProcessPointName]");
-                        uniqueNames.Add("[DryBulbTemperature]");
-                        uniqueNames.Add("[HumidityRatio]");
-                        uniqueNames.Add("[RelativeHumidity]");
-                        uniqueNames.Add("[WetBulbTemperature]");
-                        uniqueNames.Add("[Enthalpy]");
-                        uniqueNames.Add("[Density]");
-                        uniqueNames.Add("[AtmosphericPressure]");
-                        uniqueNames.Add("[SpecificVolume]");
-                        uniqueNames.Add("[ProcessName]");
-                        uniqueNames.Add("[deltaT]");
-                        uniqueNames.Add("[deltaX]");
-                        uniqueNames.Add("[deltaH]");
-
-                        Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
-                        object[,] values = worksheet.Range(worksheet.Cells[1, 1], worksheet.Cells[100, 30]).Value as object[,];
-                        for (int i = values.GetLowerBound(0); i <= values.GetUpperBound(0); i++)
+                        for (int j = values.GetLowerBound(1); j <= values.GetUpperBound(1); j++)
                         {
-                            for (int j = values.GetLowerBound(1); j <= values.GetUpperBound(1); j++)
+                            if (!(values[i, j] is string))
                             {
-                                if (!(values[i, j] is string))
-                                {
-                                    continue;
-                                }
+                                continue;
+                            }
 
-                                string rangeValue = values[i, j] as string;
-                                if (string.IsNullOrWhiteSpace(rangeValue))
+                            string rangeValue = values[i, j] as string;
+                            if (string.IsNullOrWhiteSpace(rangeValue))
+                            {
+                                continue;
+                            }
+                            foreach (string name_Temp in uniqueNames)
+                            {
+                                if (rangeValue == name_Temp)
                                 {
-                                    continue;
-                                }
-                                foreach (string name_Temp in uniqueNames)
-                                {
-                                    if (rangeValue == name_Temp)
+                                    if (j < columnIndex_Min)
                                     {
-                                        dictionary.Add(name_Temp, worksheet.Cells[i, j]);
-                                        break;
+                                        columnIndex_Min = j;
+                                        rowIndex_Min = i;
                                     }
+                                    dictionary.Add(name_Temp, worksheet.Cells[i, j]);
+                                    break;
                                 }
                             }
                         }
+                    }
 
+                    if(systems == null || systems.Count == 0)
+                    {
+                        for(int i=0; i < numberOfData; i++)
+                        {
+                            worksheet.Cells[rowIndex_Min, columnIndex_Min + i].Value = string.Empty;
+                        }
+                    }
+                    else
+                    {
+                        NetOffice.ExcelApi.Range range_1 = worksheet.Range(worksheet.Cells[rowIndex_Min, columnIndex_Min], worksheet.Cells[rowIndex_Min, columnIndex_Min + numberOfData]);
+                        int move_Temp = 1;
+                        for (int i=0; i < systems.Count; i++)
+                        {
+                            range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
+                            move_Temp++;
+                            for (int j=0; j < systems[i].Count; j++)
+                            {
+                                UIMollierProcess UI_MollierProcess = systems[i][j];
+                                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
+                                if (UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
+                                {
+                                    range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
+                                    move_Temp++;
+                                }
+                                if (UI_MollierProcess.End_Label != null && UI_MollierProcess.End_Label != "")
+                                {
+                                    range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
+                                    move_Temp++;
+                                }
+                            }
+                            if(i != systems.Count - 1)
+                            {
+                                range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
+                            }
+                            move_Temp++;
+                        }
+
+                        //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                         foreach (string key_Temp in uniqueNames)
                         {
                             if (!dictionary.ContainsKey(key_Temp))
@@ -1903,11 +1948,11 @@ namespace SAM.Core.Mollier.UI.Controls
 
                             for (int i = 0; i < systems.Count; i++)
                             {
-                               // range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
-                                worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
+                                //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
+                                worksheet.Cells[rowIndex + id, columnIndex].Value = "----";
+                                id++;
                                 for (int j = 0; j < systems[i].Count; j++)
                                 {
-                                    //
                                     UIMollierProcess UI_MollierProcess = systems[i][j];
                                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
                                     MollierPoint start = mollierProcess.Start;
@@ -1966,32 +2011,51 @@ namespace SAM.Core.Mollier.UI.Controls
                                             break;
                                     }
 
-                                    range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
+                                   
 
                                     if (UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
                                     {   
                                         if (value_1 != string.Empty)
                                         {
-                                            worksheet.Cells[rowIndex + id, columnIndex].Value = value_1; id++;
+                                            //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
+                                            worksheet.Cells[rowIndex + id, columnIndex].Value = value_1;
+                                            id++;
                                         }
                                         else if (key_Temp == "[ProcessName]" || key_Temp == "[deltaT]" || key_Temp == "[deltaX]" || key_Temp == "[deltaH]")
                                         {
-                                            worksheet.Cells[rowIndex + id, columnIndex].Value = "-"; id++;
+                                            //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
+                                            worksheet.Cells[rowIndex + id, columnIndex].Value = "-";
+                                            id++;
                                         }
                                     }
-                                    if (UI_MollierProcess.Start_Label != null && value_2 != string.Empty && UI_MollierProcess.End_Label != "")
+                                    if (UI_MollierProcess.End_Label != null && UI_MollierProcess.End_Label != "")
                                     {
-                                        worksheet.Cells[rowIndex + id, columnIndex].Value = value_2; id++;
+                                        //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
+                                        if(value_2 != string.Empty)
+                                        {
+                                            worksheet.Cells[rowIndex + id, columnIndex].Value = value_2;
+                                            id++;
+                                        }
+                                        else
+                                        {
+                                            worksheet.Cells[rowIndex + id, columnIndex].Value = "-";
+                                            id++;
+                                        }
                                     }
                                 }
-                                worksheet.Cells[rowIndex + id, columnIndex].Value = "----"; id++;
                                 //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
+                                if (key_Temp == "[ProcessName]")
+                                {
+                                    int integer = 2;
+                                }
+                                worksheet.Cells[rowIndex + id, columnIndex].Value = "----";
+                                id++;
                             }
 
                         }
                     }
 
-                    range = Excel.Query.Range(worksheet.UsedRange, pageType);
+                     range = Excel.Query.Range(worksheet.UsedRange, pageType);
 
                     if (range == null)
                     {
@@ -2106,7 +2170,6 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             mdown = e.Location;
         }
-
         private void MollierChart_MouseMove(object sender, MouseEventArgs e)
         {
 
@@ -2306,6 +2369,24 @@ namespace SAM.Core.Mollier.UI.Controls
                     break;
             }
         }
-  
+
+        public void ClearObjects()
+        {
+            mollierPoints?.Clear();
+            mollierProcesses?.Clear();
+            mollierZones?.Clear();
+            generate_graph();
+        }
+        public MollierPoint SelectPoint()
+        {
+            MouseClick += MollierChart_MouseClick_SelectMollierPoint;
+            throw new System.NotImplementedException();
+        }
+
+        private void MollierChart_MouseClick_SelectMollierPoint(object sender, MouseEventArgs e)
+        {
+           
+            MouseClick -= MollierChart_MouseClick_SelectMollierPoint;
+        }
     }
 }
