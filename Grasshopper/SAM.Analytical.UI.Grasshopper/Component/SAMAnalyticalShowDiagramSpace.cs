@@ -22,7 +22,7 @@ namespace SAM.Analytical.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.0";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -55,7 +55,13 @@ namespace SAM.Analytical.UI.Grasshopper
                 GooSpaceParam gooSpaceParam = new GooSpaceParam() { Name = "_space", NickName = "_space", Description = "SAM Analytical Space", Access = GH_ParamAccess.item };
                 result.Add(new GH_SAMParam(gooSpaceParam, ParamVisibility.Binding));
 
-                global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_run", NickName = "_run", Description = "Connect a boolean toggle to run.", Access = GH_ParamAccess.item };
+                global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = null;
+
+                @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_recalculate", NickName = "_recalculate", Description = "Recalculate Air Handling Unit.", Access = GH_ParamAccess.item, Optional = true };
+                @boolean.SetPersistentData(true);
+                result.Add(new GH_SAMParam(@boolean, ParamVisibility.Binding));
+
+                @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_run", NickName = "_run", Description = "Connect a boolean toggle to run.", Access = GH_ParamAccess.item };
                 @boolean.SetPersistentData(false);
                 result.Add(new GH_SAMParam(@boolean, ParamVisibility.Binding));
 
@@ -112,17 +118,24 @@ namespace SAM.Analytical.UI.Grasshopper
 
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
 
-            space = adjacencyCluster.GetObject<Space>(space.Guid);
-            if(space == null)
+            space = adjacencyCluster?.GetObject<Space>(space.Guid);
+            if (space == null)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            List<VentilationSystem> ventilationSystems = analyticalModel.Systems<VentilationSystem>(space);
-            if(ventilationSystems != null && ventilationSystems.Count != 0)
+            index = Params.IndexOfInputParam("_recalculate");
+            bool recalculate = true;
+            if (index != -1)
             {
-                VentilationSystem ventilationSystem = ventilationSystems.FirstOrDefault();
+                dataAccess.GetData(index, ref recalculate);
+            }
+
+            List<VentilationSystem> ventilationSystems = analyticalModel.Systems<VentilationSystem>(space);
+            if (ventilationSystems != null && ventilationSystems.Count != 0)
+            {
+                VentilationSystem ventilationSystem = ventilationSystems.Find(x => x != null);
 
                 string unitName = null;
                 if (!ventilationSystem.TryGetValue(VentilationSystemParameter.SupplyUnitName, out unitName) || string.IsNullOrWhiteSpace(unitName))
@@ -130,67 +143,88 @@ namespace SAM.Analytical.UI.Grasshopper
                     unitName = null;
                 }
 
-                AirHandlingUnitResult airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == unitName);
-                if(airHandlingUnitResult != null)
+                if(!string.IsNullOrEmpty(unitName))
                 {
-                    MollierGroup mollierGroup = Mollier.Modify.UpdateProcesses(new AirHandlingUnitResult(airHandlingUnitResult));
-
-                    double sensibleLoad = double.NaN;
-                    if(space.TryGetValue(SpaceParameter.DesignHeatingLoad, out double designHeatingLoad) && !double.IsNaN(designHeatingLoad))
+                    AirHandlingUnit airHandlingUnit = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnit>()?.Find(x => x.Name == unitName);
+                    if (airHandlingUnit != null)
                     {
-                        sensibleLoad = designHeatingLoad;
-                    }
-
-                    List<IMollierProcess> mollierProcesses = mollierGroup.GetMollierProcesses();
-
-                    double latentLoad = space.CalculatedOccupancyLatentGain();
-                    
-                    AirSupplyMethod airSupplyMethod = adjacencyCluster.AirSupplyMethod(space, out VentilationSystemType ventilationSystemType);
-                    if(airSupplyMethod == AirSupplyMethod.Total)
-                    {
-                        latentLoad += space.CalculatedEquipmentLatentGain();
-                    }
-
-                    airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanTemperature, out double winterSupplyFanTemperature);
-                    airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanRelativeHumidty, out double winterSupplyFanRelativeHumidity);
-
-                    airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SupplyAirFlow, out double supplyAirFlow);
-
-                    double pressure = 101325;
-
-                    MollierPoint mollierPoint_SupplyFan = Core.Mollier.Create.MollierPoint_ByRelativeHumidity(winterSupplyFanTemperature, winterSupplyFanRelativeHumidity, pressure);
-
-                    double dryBulbTemperature = Core.Mollier.Query.DryBulbTemperature(mollierPoint_SupplyFan, sensibleLoad, supplyAirFlow);
-                    double humidityRatio = Core.Mollier.Query.HumidityRatio(mollierPoint_SupplyFan, latentLoad, supplyAirFlow);
-
-                    MollierPoint mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
-                    if(mollierPoint_SupplyFan != null && mollierPoint_Room != null)
-                    {
-                        UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(mollierPoint_SupplyFan, mollierPoint_Room);
-                        if(undefinedProcess != null)
+                        AirHandlingUnitResult airHandlingUnitResult = null;
+                        if (recalculate)
                         {
-                            mollierProcesses.Add(undefinedProcess);
+                            airHandlingUnitResult = Mollier.Create.AirHandlingUnitResult(analyticalModel, airHandlingUnit.Name);
+                            if (airHandlingUnitResult != null)
+                            {
+                                adjacencyCluster.GetObjects<AirHandlingUnitResult>()?.FindAll(x => x.Name == airHandlingUnit.Name).ForEach(x => adjacencyCluster.RemoveObject<AirHandlingUnitResult>(x.Guid));
+                                adjacencyCluster.AddObject(airHandlingUnitResult);
+                                adjacencyCluster.AddRelation(airHandlingUnit, airHandlingUnitResult);
+                            }
+                        }
+
+                        airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == unitName);
+                        if (airHandlingUnitResult != null)
+                        {
+                            MollierGroup  mollierGroup = airHandlingUnitResult.GetValue<MollierGroup>(AirHandlingUnitResultParameter.Processes);
+
+                            double sensibleLoad = double.NaN;
+                            if (space.TryGetValue(SpaceParameter.DesignHeatingLoad, out double designHeatingLoad) && !double.IsNaN(designHeatingLoad))
+                            {
+                                sensibleLoad = designHeatingLoad;
+                            }
+
+                            List<IMollierProcess> mollierProcesses = mollierGroup?.GetMollierProcesses();
+
+                            double latentLoad = space.CalculatedOccupancyLatentGain();
+
+                            AirSupplyMethod airSupplyMethod = adjacencyCluster.AirSupplyMethod(space, out VentilationSystemType ventilationSystemType);
+                            if (airSupplyMethod == AirSupplyMethod.Total)
+                            {
+                                latentLoad += space.CalculatedEquipmentLatentGain();
+                            }
+
+                            airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanTemperature, out double winterSupplyFanTemperature);
+                            airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanRelativeHumidty, out double winterSupplyFanRelativeHumidity);
+
+                            airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SupplyAirFlow, out double supplyAirFlow);
+
+                            double pressure = Standard.Pressure;
+
+                            MollierPoint mollierPoint_SupplyFan = Core.Mollier.Create.MollierPoint_ByRelativeHumidity(winterSupplyFanTemperature, winterSupplyFanRelativeHumidity, pressure);
+
+                            double dryBulbTemperature = Core.Mollier.Query.DryBulbTemperature(mollierPoint_SupplyFan, sensibleLoad, supplyAirFlow);
+                            double humidityRatio = Core.Mollier.Query.HumidityRatio(mollierPoint_SupplyFan, latentLoad, supplyAirFlow);
+
+                            MollierPoint mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
+                            if (mollierPoint_SupplyFan != null && mollierPoint_Room != null)
+                            {
+                                UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(mollierPoint_SupplyFan, mollierPoint_Room);
+                                if (undefinedProcess != null)
+                                {
+                                    mollierProcesses.Add(undefinedProcess);
+                                }
+                            }
+
+                            if (mollierForm == null || mollierForm.IsDisposed)
+                            {
+                                mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
+                            }
+                            else
+                            {
+                                mollierForm.Clear();
+                            }
+                            pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
+
+                            mollierForm.Name = string.IsNullOrWhiteSpace(space.Name) ? mollierForm.Name : space.Name;
+                            mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
+                            mollierForm.Pressure = pressure;
+                            mollierForm.AddProcesses(mollierProcesses, false);
+                            //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+                            //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
+                            mollierForm.Show();
                         }
                     }
-
-                    if (mollierForm == null || mollierForm.IsDisposed)
-                    {
-                        mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
-                    }
-                    else
-                    {
-                        mollierForm.Clear();
-                    }
-                    pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
-
-                    mollierForm.Name = string.IsNullOrWhiteSpace(space.Name) ? mollierForm.Name : space.Name;
-                    mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
-                    mollierForm.Pressure = pressure;
-                    mollierForm.AddProcesses(mollierProcesses, false);
-                    //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-                    //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
-                    mollierForm.Show();
                 }
+
+
             }
 
         }
