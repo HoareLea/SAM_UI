@@ -190,10 +190,26 @@ namespace SAM.Analytical.UI.Grasshopper
 
                             MollierPoint mollierPoint_SupplyFan = Core.Mollier.Create.MollierPoint_ByRelativeHumidity(winterSupplyFanTemperature, winterSupplyFanRelativeHumidity, pressure);
 
-                            double dryBulbTemperature = Core.Mollier.Query.DryBulbTemperature(mollierPoint_SupplyFan, sensibleLoad, supplyAirFlow);
-                            double humidityRatio = Core.Mollier.Query.HumidityRatio(mollierPoint_SupplyFan, latentLoad, supplyAirFlow);
+                            double dryBulbTemperature = double.NaN;
+                            if(double.IsNaN(sensibleLoad) || sensibleLoad < Core.Tolerance.Distance)
+                            {
+                                dryBulbTemperature = space.HeatingDesignTemperature(analyticalModel);
+                            }
+                            else
+                            {
+                                dryBulbTemperature = Core.Mollier.Query.DryBulbTemperature(mollierPoint_SupplyFan, sensibleLoad, supplyAirFlow);
+                            }
 
-                            MollierPoint mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
+                            MollierPoint mollierPoint_Room = null;
+                            if (!double.IsNaN(dryBulbTemperature))
+                            {
+                                double humidityRatio = Core.Mollier.Query.HumidityRatio(mollierPoint_SupplyFan, latentLoad, supplyAirFlow);
+                                if(!double.IsNaN(humidityRatio))
+                                {
+                                    mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure)
+                                }
+                            }
+
                             if (mollierPoint_SupplyFan != null && mollierPoint_Room != null)
                             {
                                 UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(mollierPoint_SupplyFan, mollierPoint_Room);
