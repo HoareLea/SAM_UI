@@ -149,40 +149,52 @@ namespace SAM.Core.Mollier.UI
             
             using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
             {
+                mollierPointForm.SelectPointClicked += MollierPointForm_SelectPointClicked;
                 DialogResult dialogResult = mollierPointForm.ShowDialog();
                 if (dialogResult != DialogResult.OK)
                 {
                     return;
                 }
-
-                mollierPoint = mollierPointForm.get_point(MollierControl_Main.MollierControlSettings.Pressure);
+                mollierPoint = mollierPointForm.get_point();
             }
-
+            if(mollierPoint == null)
+            {
+                return;
+            }
             MollierControl_Main.AddPoints(new MollierPoint[] { mollierPoint });
 
         }
+
+        private void MollierPointForm_SelectPointClicked(object sender, EventArgs e)
+        {
+            Forms.MollierPointForm mollierPointForm = (Forms.MollierPointForm)sender;
+            mollierPointForm.Visible = false;
+
+
+            MollierPoint mollierPoint = MollierControl_Main.SelectPoint();
+
+           // mollierPointForm.MollierPoint = mollierPoint;
+        }
+
         private void Button_AddProcess_Click(object sender, EventArgs e)
         {
-            //using( Forms.TestForm testForm = new Forms.TestForm())
-            //{
-            //    DialogResult dialogResult = testForm.ShowDialog();
-            //    if (dialogResult != DialogResult.OK)
-            //    {
-            //        return;
-            //    }
-            //}
-
-
-            MollierProcess mollierProcess = null;
-            using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm())    
+            UIMollierProcess UI_MollierProcess = null;
+            using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm(MollierControl_Main))    
             {
                 DialogResult dialogResult = mollierProcessForm.ShowDialog();
                 if (dialogResult != DialogResult.OK)
                 {
                     return;
                 }
-                mollierProcess = mollierProcessForm.GetMollierProcess(Pressure);
+                UI_MollierProcess = mollierProcessForm.UI_MollierProcess;
             }
+            if(UI_MollierProcess == null)
+            {
+                return;
+            }
+            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
+            mollierProcesses.Add(UI_MollierProcess);
+            AddProcesses(mollierProcesses);            
         }
 
         //disable some function for data reading only
@@ -682,6 +694,11 @@ namespace SAM.Core.Mollier.UI
         private void MollierForm_ResizeEnd(object sender, EventArgs e)
         {
             MollierControl_Main.generate_graph();
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.ClearObjects();
         }
     }
 }

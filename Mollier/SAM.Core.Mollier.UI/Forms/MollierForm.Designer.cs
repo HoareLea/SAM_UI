@@ -73,6 +73,7 @@ namespace SAM.Core.Mollier.UI
             this.DivisionAreaCheckBox = new System.Windows.Forms.CheckBox();
             this.DivisionAreaLabels_CheckBox = new System.Windows.Forms.CheckBox();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
+            this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -117,13 +118,14 @@ namespace SAM.Core.Mollier.UI
             this.MenuStrip_Main.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip_Main.Name = "MenuStrip_Main";
             this.MenuStrip_Main.ShowItemToolTips = true;
-            this.MenuStrip_Main.Size = new System.Drawing.Size(1374, 30);
+            this.MenuStrip_Main.Size = new System.Drawing.Size(1374, 28);
             this.MenuStrip_Main.TabIndex = 20;
             this.MenuStrip_Main.Text = "MenuStrip_Main";
             // 
             // ToolStripMenuItem_File
             // 
             this.ToolStripMenuItem_File.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.newToolStripMenuItem,
             this.openFromJSONToolStripMenuItem,
             this.exportToJSONToolStripMenuItem,
             this.ToolStripMenuItem_Save,
@@ -131,20 +133,20 @@ namespace SAM.Core.Mollier.UI
             this.saveAsEMFToolStripMenuItem,
             this.printToolStripMenuItem});
             this.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File";
-            this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 26);
+            this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 24);
             this.ToolStripMenuItem_File.Text = "File";
             // 
             // openFromJSONToolStripMenuItem
             // 
             this.openFromJSONToolStripMenuItem.Name = "openFromJSONToolStripMenuItem";
-            this.openFromJSONToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
+            this.openFromJSONToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.openFromJSONToolStripMenuItem.Text = "Open from JSON";
             this.openFromJSONToolStripMenuItem.Click += new System.EventHandler(this.openFromJSONToolStripMenuItem_Click);
             // 
             // exportToJSONToolStripMenuItem
             // 
             this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
-            this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
+            this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exportToJSONToolStripMenuItem.Text = "Export to JSON";
             this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.exportToJSONToolStripMenuItem_Click);
             // 
@@ -156,7 +158,7 @@ namespace SAM.Core.Mollier.UI
             this.a4PortraitToolStripMenuItem,
             this.a4LandscapeToolStripMenuItem});
             this.ToolStripMenuItem_Save.Name = "ToolStripMenuItem_Save";
-            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(203, 26);
+            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(224, 26);
             this.ToolStripMenuItem_Save.Text = "Save as PDF";
             // 
             // PdfA3_PortraitToolStripMenuItem
@@ -178,6 +180,7 @@ namespace SAM.Core.Mollier.UI
             this.a4PortraitToolStripMenuItem.Name = "a4PortraitToolStripMenuItem";
             this.a4PortraitToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
             this.a4PortraitToolStripMenuItem.Text = "A4_Portrait";
+            this.a4PortraitToolStripMenuItem.Visible = false;
             this.a4PortraitToolStripMenuItem.Click += new System.EventHandler(this.a4PortraitToolStripMenuItem_Click);
             // 
             // a4LandscapeToolStripMenuItem
@@ -185,26 +188,27 @@ namespace SAM.Core.Mollier.UI
             this.a4LandscapeToolStripMenuItem.Name = "a4LandscapeToolStripMenuItem";
             this.a4LandscapeToolStripMenuItem.Size = new System.Drawing.Size(186, 26);
             this.a4LandscapeToolStripMenuItem.Text = "A4_Landscape";
+            this.a4LandscapeToolStripMenuItem.Visible = false;
             this.a4LandscapeToolStripMenuItem.Click += new System.EventHandler(this.a4LandscapeToolStripMenuItem_Click);
             // 
             // saveAsJPGToolStripMenuItem
             // 
             this.saveAsJPGToolStripMenuItem.Name = "saveAsJPGToolStripMenuItem";
-            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
+            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.saveAsJPGToolStripMenuItem.Text = "Save as JPG";
             this.saveAsJPGToolStripMenuItem.Click += new System.EventHandler(this.saveAsJPGToolStripMenuItem_Click);
             // 
             // saveAsEMFToolStripMenuItem
             // 
             this.saveAsEMFToolStripMenuItem.Name = "saveAsEMFToolStripMenuItem";
-            this.saveAsEMFToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
+            this.saveAsEMFToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.saveAsEMFToolStripMenuItem.Text = "Save as EMF";
             this.saveAsEMFToolStripMenuItem.Click += new System.EventHandler(this.saveAsEMFToolStripMenuItem_Click);
             // 
             // printToolStripMenuItem
             // 
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
-            this.printToolStripMenuItem.Size = new System.Drawing.Size(203, 26);
+            this.printToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.printToolStripMenuItem.Text = "Print";
             this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
             // 
@@ -218,7 +222,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_ChartType,
             this.colorThemeToolStripMenuItem});
             this.ToolStripMenuItem_View.Name = "ToolStripMenuItem_View";
-            this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 26);
+            this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 24);
             this.ToolStripMenuItem_View.Text = "View";
             // 
             // ToolStripMenuItem_Density
@@ -332,7 +336,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_OpenSettings});
             this.ToolStripMenuItem_Settings.Name = "ToolStripMenuItem_Settings";
-            this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 26);
+            this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 24);
             this.ToolStripMenuItem_Settings.Text = "Settings";
             this.ToolStripMenuItem_Settings.Click += new System.EventHandler(this.ToolStripMenuItem_Settings_Click);
             // 
@@ -346,7 +350,7 @@ namespace SAM.Core.Mollier.UI
             // resetChartToolStripMenuItem
             // 
             this.resetChartToolStripMenuItem.Name = "resetChartToolStripMenuItem";
-            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(98, 26);
+            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(98, 24);
             this.resetChartToolStripMenuItem.Text = "Reset Chart";
             this.resetChartToolStripMenuItem.ToolTipText = "Reset all chart data to the default values";
             this.resetChartToolStripMenuItem.Click += new System.EventHandler(this.resetChartToolStripMenuItem_Click);
@@ -469,7 +473,7 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.MollierControl_Main.Location = new System.Drawing.Point(23, 64);
+            this.MollierControl_Main.Location = new System.Drawing.Point(10, 64);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
             mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
             mollierControlSettings1.Color = "default";
@@ -499,6 +503,13 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(1339, 907);
             this.MollierControl_Main.TabIndex = 0;
+            // 
+            // newToolStripMenuItem
+            // 
+            this.newToolStripMenuItem.Name = "newToolStripMenuItem";
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.newToolStripMenuItem.Text = "New";
+            this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // MollierForm
             // 
@@ -578,6 +589,7 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.ToolStripMenuItem openFromJSONToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportToJSONToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem printToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem newToolStripMenuItem;
     }
 }
 

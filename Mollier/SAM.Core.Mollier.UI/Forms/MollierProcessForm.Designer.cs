@@ -28,164 +28,119 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Button_OK = new System.Windows.Forms.Button();
-            this.Button_Cancel = new System.Windows.Forms.Button();
-            this.TextBox_HumidityRatio = new System.Windows.Forms.TextBox();
-            this.TextBox_Temperature = new System.Windows.Forms.TextBox();
-            this.BottomToolStripPanel = new System.Windows.Forms.ToolStripPanel();
-            this.TopToolStripPanel = new System.Windows.Forms.ToolStripPanel();
-            this.RightToolStripPanel = new System.Windows.Forms.ToolStripPanel();
-            this.LeftToolStripPanel = new System.Windows.Forms.ToolStripPanel();
-            this.ContentPanel = new System.Windows.Forms.ToolStripContentPanel();
-            this.ComboBox_ChooseProcess = new System.Windows.Forms.ComboBox();
-            this.Label_DryBulbTemperature = new System.Windows.Forms.Label();
-            this.Label_HumidityRatio = new System.Windows.Forms.Label();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.processTypeLabel = new System.Windows.Forms.Label();
+            this.MollierProcessType_ComboBox = new System.Windows.Forms.ComboBox();
+            this.Cancel_Button = new System.Windows.Forms.Button();
+            this.OK_Button = new System.Windows.Forms.Button();
+            this.Customize_Button = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // Button_OK
+            // splitContainer1
             // 
-            this.Button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_OK.Location = new System.Drawing.Point(242, 202);
-            this.Button_OK.Name = "Button_OK";
-            this.Button_OK.Size = new System.Drawing.Size(75, 23);
-            this.Button_OK.TabIndex = 5;
-            this.Button_OK.Text = "OK";
-            this.Button_OK.UseVisualStyleBackColor = true;
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // Button_Cancel
+            // splitContainer1.Panel1
             // 
-            this.Button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Button_Cancel.Location = new System.Drawing.Point(323, 202);
-            this.Button_Cancel.Name = "Button_Cancel";
-            this.Button_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.Button_Cancel.TabIndex = 6;
-            this.Button_Cancel.Text = "Cancel";
-            this.Button_Cancel.UseVisualStyleBackColor = true;
+            this.splitContainer1.Panel1.Controls.Add(this.processTypeLabel);
+            this.splitContainer1.Panel1.Controls.Add(this.MollierProcessType_ComboBox);
+            this.splitContainer1.Size = new System.Drawing.Size(628, 371);
+            this.splitContainer1.SplitterDistance = 73;
+            this.splitContainer1.TabIndex = 0;
             // 
-            // TextBox_HumidityRatio
+            // processTypeLabel
             // 
-            this.TextBox_HumidityRatio.Location = new System.Drawing.Point(196, 64);
-            this.TextBox_HumidityRatio.Name = "TextBox_HumidityRatio";
-            this.TextBox_HumidityRatio.Size = new System.Drawing.Size(137, 22);
-            this.TextBox_HumidityRatio.TabIndex = 7;
+            this.processTypeLabel.AutoSize = true;
+            this.processTypeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.processTypeLabel.Location = new System.Drawing.Point(173, 9);
+            this.processTypeLabel.Name = "processTypeLabel";
+            this.processTypeLabel.Size = new System.Drawing.Size(112, 20);
+            this.processTypeLabel.TabIndex = 4;
+            this.processTypeLabel.Text = "Process Type";
             // 
-            // TextBox_Temperature
+            // MollierProcessType_ComboBox
             // 
-            this.TextBox_Temperature.Location = new System.Drawing.Point(196, 32);
-            this.TextBox_Temperature.Name = "TextBox_Temperature";
-            this.TextBox_Temperature.Size = new System.Drawing.Size(137, 22);
-            this.TextBox_Temperature.TabIndex = 8;
+            this.MollierProcessType_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.MollierProcessType_ComboBox.FormattingEnabled = true;
+            this.MollierProcessType_ComboBox.Items.AddRange(new object[] {
+            "Heating",
+            "Cooling",
+            "Heat Recovery",
+            "Mixing",
+            "Adiabatic Humidification (by water spray)",
+            "Isotermic Humidification (by steam)"});
+            this.MollierProcessType_ComboBox.Location = new System.Drawing.Point(113, 32);
+            this.MollierProcessType_ComboBox.Name = "MollierProcessType_ComboBox";
+            this.MollierProcessType_ComboBox.Size = new System.Drawing.Size(234, 24);
+            this.MollierProcessType_ComboBox.TabIndex = 0;
+            this.MollierProcessType_ComboBox.SelectedIndexChanged += new System.EventHandler(this.MollierProcessType_ComboBox_SelectedIndexChanged);
             // 
-            // BottomToolStripPanel
+            // Cancel_Button
             // 
-            this.BottomToolStripPanel.Location = new System.Drawing.Point(0, 0);
-            this.BottomToolStripPanel.Name = "BottomToolStripPanel";
-            this.BottomToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.BottomToolStripPanel.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.BottomToolStripPanel.Size = new System.Drawing.Size(0, 0);
+            this.Cancel_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Cancel_Button.Location = new System.Drawing.Point(490, 377);
+            this.Cancel_Button.Name = "Cancel_Button";
+            this.Cancel_Button.Size = new System.Drawing.Size(108, 30);
+            this.Cancel_Button.TabIndex = 2;
+            this.Cancel_Button.Text = "Cancel";
+            this.Cancel_Button.UseVisualStyleBackColor = true;
+            this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
             // 
-            // TopToolStripPanel
+            // OK_Button
             // 
-            this.TopToolStripPanel.Location = new System.Drawing.Point(0, 0);
-            this.TopToolStripPanel.Name = "TopToolStripPanel";
-            this.TopToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.TopToolStripPanel.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.TopToolStripPanel.Size = new System.Drawing.Size(0, 0);
+            this.OK_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OK_Button.Location = new System.Drawing.Point(376, 377);
+            this.OK_Button.Name = "OK_Button";
+            this.OK_Button.Size = new System.Drawing.Size(108, 30);
+            this.OK_Button.TabIndex = 1;
+            this.OK_Button.Text = "OK";
+            this.OK_Button.UseVisualStyleBackColor = true;
+            this.OK_Button.Click += new System.EventHandler(this.OK_Button_Click);
             // 
-            // RightToolStripPanel
+            // Customize_Button
             // 
-            this.RightToolStripPanel.Location = new System.Drawing.Point(0, 0);
-            this.RightToolStripPanel.Name = "RightToolStripPanel";
-            this.RightToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.RightToolStripPanel.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.RightToolStripPanel.Size = new System.Drawing.Size(0, 0);
-            // 
-            // LeftToolStripPanel
-            // 
-            this.LeftToolStripPanel.Location = new System.Drawing.Point(0, 0);
-            this.LeftToolStripPanel.Name = "LeftToolStripPanel";
-            this.LeftToolStripPanel.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            this.LeftToolStripPanel.RowMargin = new System.Windows.Forms.Padding(3, 0, 0, 0);
-            this.LeftToolStripPanel.Size = new System.Drawing.Size(0, 0);
-            // 
-            // ContentPanel
-            // 
-            this.ContentPanel.Size = new System.Drawing.Size(150, 150);
-            // 
-            // ComboBox_ChooseProcess
-            // 
-            this.ComboBox_ChooseProcess.FormattingEnabled = true;
-            this.ComboBox_ChooseProcess.Items.AddRange(new object[] {
-            "Heat",
-            "Cool",
-            "Mix",
-            "Heat recovery",
-            "Humidify"});
-            this.ComboBox_ChooseProcess.Location = new System.Drawing.Point(196, 104);
-            this.ComboBox_ChooseProcess.Name = "ComboBox_ChooseProcess";
-            this.ComboBox_ChooseProcess.Size = new System.Drawing.Size(137, 24);
-            this.ComboBox_ChooseProcess.TabIndex = 10;
-            this.ComboBox_ChooseProcess.Text = "Choose process";
-            this.ComboBox_ChooseProcess.SelectedIndexChanged += new System.EventHandler(this.ComboBox_ChooseProcess_SelectedIndexChanged);
-            // 
-            // Label_DryBulbTemperature
-            // 
-            this.Label_DryBulbTemperature.AutoSize = true;
-            this.Label_DryBulbTemperature.Location = new System.Drawing.Point(12, 32);
-            this.Label_DryBulbTemperature.Name = "Label_DryBulbTemperature";
-            this.Label_DryBulbTemperature.Size = new System.Drawing.Size(163, 16);
-            this.Label_DryBulbTemperature.TabIndex = 11;
-            this.Label_DryBulbTemperature.Text = "Dry Bulb Temperature [°C]";
-            // 
-            // Label_HumidityRatio
-            // 
-            this.Label_HumidityRatio.AutoSize = true;
-            this.Label_HumidityRatio.Location = new System.Drawing.Point(43, 64);
-            this.Label_HumidityRatio.Name = "Label_HumidityRatio";
-            this.Label_HumidityRatio.Size = new System.Drawing.Size(132, 16);
-            this.Label_HumidityRatio.TabIndex = 12;
-            this.Label_HumidityRatio.Text = "Humidity Ratio [g/kg]";
+            this.Customize_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Customize_Button.Location = new System.Drawing.Point(262, 377);
+            this.Customize_Button.Name = "Customize_Button";
+            this.Customize_Button.Size = new System.Drawing.Size(108, 30);
+            this.Customize_Button.TabIndex = 3;
+            this.Customize_Button.Text = "Customize";
+            this.Customize_Button.UseVisualStyleBackColor = true;
+            this.Customize_Button.Click += new System.EventHandler(this.Customize_Button_Click);
             // 
             // MollierProcessForm
             // 
-            this.AcceptButton = this.Button_OK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.Button_Cancel;
-            this.ClientSize = new System.Drawing.Size(410, 237);
-            this.Controls.Add(this.Label_HumidityRatio);
-            this.Controls.Add(this.Label_DryBulbTemperature);
-            this.Controls.Add(this.ComboBox_ChooseProcess);
-            this.Controls.Add(this.TextBox_Temperature);
-            this.Controls.Add(this.TextBox_HumidityRatio);
-            this.Controls.Add(this.Button_Cancel);
-            this.Controls.Add(this.Button_OK);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.ClientSize = new System.Drawing.Size(628, 419);
+            this.Controls.Add(this.Customize_Button);
+            this.Controls.Add(this.Cancel_Button);
+            this.Controls.Add(this.OK_Button);
+            this.Controls.Add(this.splitContainer1);
             this.Name = "MollierProcessForm";
-            this.ShowIcon = false;
-            this.ShowInTaskbar = false;
-            this.Text = "Process";
+            this.Text = "MollierProcessForm";
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button Button_OK;
-        private System.Windows.Forms.Button Button_Cancel;
-        private System.Windows.Forms.TextBox TextBox_HumidityRatio;
-        private System.Windows.Forms.TextBox TextBox_Temperature;
-        private System.Windows.Forms.ToolStripPanel BottomToolStripPanel;
-        private System.Windows.Forms.ToolStripPanel TopToolStripPanel;
-        private System.Windows.Forms.ToolStripPanel RightToolStripPanel;
-        private System.Windows.Forms.ToolStripPanel LeftToolStripPanel;
-        private System.Windows.Forms.ToolStripContentPanel ContentPanel;
-        private System.Windows.Forms.ComboBox ComboBox_ChooseProcess;
-        private System.Windows.Forms.Label Label_DryBulbTemperature;
-        private System.Windows.Forms.Label Label_HumidityRatio;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.Button Cancel_Button;
+        private System.Windows.Forms.Button OK_Button;
+        private System.Windows.Forms.ComboBox MollierProcessType_ComboBox;
+        private System.Windows.Forms.Label processTypeLabel;
+        private System.Windows.Forms.Button Customize_Button;
     }
 }
