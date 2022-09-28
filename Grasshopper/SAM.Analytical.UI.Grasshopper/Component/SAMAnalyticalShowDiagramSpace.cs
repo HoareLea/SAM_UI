@@ -206,7 +206,7 @@ namespace SAM.Analytical.UI.Grasshopper
                                 double humidityRatio = Core.Mollier.Query.HumidityRatio(mollierPoint_SupplyFan, latentLoad, supplyAirFlow);
                                 if(!double.IsNaN(humidityRatio))
                                 {
-                                    mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure)
+                                    mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
                                 }
                             }
 
