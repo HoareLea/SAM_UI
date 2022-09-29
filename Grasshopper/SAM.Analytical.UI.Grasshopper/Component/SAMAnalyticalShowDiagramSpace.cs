@@ -137,64 +137,66 @@ namespace SAM.Analytical.UI.Grasshopper
                     AirHandlingUnit airHandlingUnit = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnit>()?.Find(x => x.Name == unitName);
                     if (airHandlingUnit != null)
                     {
-                        AirHandlingUnitResult airHandlingUnitResult = Mollier.Create.AirHandlingUnitResult(analyticalModel, airHandlingUnit.Name, space); ;
+                        AirHandlingUnitResult airHandlingUnitResult = Mollier.Create.AirHandlingUnitResult(analyticalModel, airHandlingUnit.Name, space);
                         if (airHandlingUnitResult != null)
                         {
                             MollierGroup  mollierGroup = airHandlingUnitResult.GetValue<MollierGroup>(AirHandlingUnitResultParameter.Processes);
 
-                            double sensibleLoad = double.NaN;
-                            if (space.TryGetValue(SpaceParameter.DesignHeatingLoad, out double designHeatingLoad) && !double.IsNaN(designHeatingLoad))
-                            {
-                                sensibleLoad = designHeatingLoad;
-                            }
-
                             List<IMollierProcess> mollierProcesses = mollierGroup?.GetMollierProcesses();
-
-                            double latentLoad = space.CalculatedOccupancyLatentGain();
-
-                            AirSupplyMethod airSupplyMethod = adjacencyCluster.AirSupplyMethod(space, out VentilationSystemType ventilationSystemType);
-                            if (airSupplyMethod == AirSupplyMethod.Total)
-                            {
-                                latentLoad += space.CalculatedEquipmentLatentGain();
-                            }
-
-                            airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanTemperature, out double winterSupplyFanTemperature);
-                            airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanRelativeHumidty, out double winterSupplyFanRelativeHumidity);
-
-                            airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SupplyAirFlow, out double supplyAirFlow);
 
                             double pressure = Standard.Pressure;
 
-                            MollierPoint mollierPoint_SupplyFan = Core.Mollier.Create.MollierPoint_ByRelativeHumidity(winterSupplyFanTemperature, winterSupplyFanRelativeHumidity, pressure);
+                            //double sensibleLoad = double.NaN;
+                            //if (space.TryGetValue(SpaceParameter.DesignHeatingLoad, out double designHeatingLoad) && !double.IsNaN(designHeatingLoad))
+                            //{
+                            //    sensibleLoad = designHeatingLoad;
+                            //}
 
-                            double dryBulbTemperature = double.NaN;
-                            if(double.IsNaN(sensibleLoad) || sensibleLoad < Core.Tolerance.Distance)
-                            {
-                                dryBulbTemperature = space.HeatingDesignTemperature(analyticalModel);
-                            }
-                            else
-                            {
-                                dryBulbTemperature = Core.Mollier.Query.DryBulbTemperature(mollierPoint_SupplyFan, sensibleLoad, supplyAirFlow);
-                            }
+                            //double latentLoad = space.CalculatedOccupancyLatentGain();
 
-                            MollierPoint mollierPoint_Room = null;
-                            if (!double.IsNaN(dryBulbTemperature))
-                            {
-                                double humidityRatio = Core.Mollier.Query.HumidityRatio(mollierPoint_SupplyFan, latentLoad, supplyAirFlow);
-                                if(!double.IsNaN(humidityRatio))
-                                {
-                                    mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
-                                }
-                            }
+                            //AirSupplyMethod airSupplyMethod = adjacencyCluster.AirSupplyMethod(space, out VentilationSystemType ventilationSystemType);
+                            //if (airSupplyMethod == AirSupplyMethod.Total)
+                            //{
+                            //    latentLoad += space.CalculatedEquipmentLatentGain();
+                            //}
 
-                            if (mollierPoint_SupplyFan != null && mollierPoint_Room != null)
-                            {
-                                UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(mollierPoint_SupplyFan, mollierPoint_Room);
-                                if (undefinedProcess != null)
-                                {
-                                    mollierProcesses.Add(undefinedProcess);
-                                }
-                            }
+                            //airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanTemperature, out double winterSupplyFanTemperature);
+                            //airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanRelativeHumidty, out double winterSupplyFanRelativeHumidity);
+
+                            //airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SupplyAirFlow, out double supplyAirFlow);
+
+
+
+                            //MollierPoint mollierPoint_SupplyFan = Core.Mollier.Create.MollierPoint_ByRelativeHumidity(winterSupplyFanTemperature, winterSupplyFanRelativeHumidity, pressure);
+
+                            //double dryBulbTemperature = double.NaN;
+                            //if(double.IsNaN(sensibleLoad) || sensibleLoad < Core.Tolerance.Distance)
+                            //{
+                            //    dryBulbTemperature = space.HeatingDesignTemperature(analyticalModel);
+                            //}
+                            //else
+                            //{
+                            //    dryBulbTemperature = Core.Mollier.Query.DryBulbTemperature(mollierPoint_SupplyFan, sensibleLoad, supplyAirFlow);
+                            //}
+
+                            //MollierPoint mollierPoint_Room = null;
+                            //if (!double.IsNaN(dryBulbTemperature))
+                            //{
+                            //    double humidityRatio = Core.Mollier.Query.HumidityRatio(mollierPoint_SupplyFan, latentLoad, supplyAirFlow);
+                            //    if(!double.IsNaN(humidityRatio))
+                            //    {
+                            //        mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
+                            //    }
+                            //}
+
+                            //if (mollierPoint_SupplyFan != null && mollierPoint_Room != null)
+                            //{
+                            //    UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(mollierPoint_SupplyFan, mollierPoint_Room);
+                            //    if (undefinedProcess != null)
+                            //    {
+                            //        mollierProcesses.Add(undefinedProcess);
+                            //    }
+                            //}
 
                             if (mollierForm == null || mollierForm.IsDisposed)
                             {
