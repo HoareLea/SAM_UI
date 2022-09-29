@@ -22,7 +22,7 @@ namespace SAM.Analytical.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.1";
+        public override string LatestComponentVersion => "1.0.2";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -56,10 +56,6 @@ namespace SAM.Analytical.UI.Grasshopper
                 result.Add(new GH_SAMParam(gooSpaceParam, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = null;
-
-                @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_recalculate", NickName = "_recalculate", Description = "Recalculate Air Handling Unit.", Access = GH_ParamAccess.item, Optional = true };
-                @boolean.SetPersistentData(true);
-                result.Add(new GH_SAMParam(@boolean, ParamVisibility.Binding));
 
                 @boolean = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_run", NickName = "_run", Description = "Connect a boolean toggle to run.", Access = GH_ParamAccess.item };
                 @boolean.SetPersistentData(false);
@@ -125,13 +121,6 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
-            index = Params.IndexOfInputParam("_recalculate");
-            bool recalculate = true;
-            if (index != -1)
-            {
-                dataAccess.GetData(index, ref recalculate);
-            }
-
             List<VentilationSystem> ventilationSystems = analyticalModel.Systems<VentilationSystem>(space);
             if (ventilationSystems != null && ventilationSystems.Count != 0)
             {
@@ -148,19 +137,7 @@ namespace SAM.Analytical.UI.Grasshopper
                     AirHandlingUnit airHandlingUnit = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnit>()?.Find(x => x.Name == unitName);
                     if (airHandlingUnit != null)
                     {
-                        AirHandlingUnitResult airHandlingUnitResult = null;
-                        if (recalculate)
-                        {
-                            airHandlingUnitResult = Mollier.Create.AirHandlingUnitResult(analyticalModel, airHandlingUnit.Name);
-                            if (airHandlingUnitResult != null)
-                            {
-                                adjacencyCluster.GetObjects<AirHandlingUnitResult>()?.FindAll(x => x.Name == airHandlingUnit.Name).ForEach(x => adjacencyCluster.RemoveObject<AirHandlingUnitResult>(x.Guid));
-                                adjacencyCluster.AddObject(airHandlingUnitResult);
-                                adjacencyCluster.AddRelation(airHandlingUnit, airHandlingUnitResult);
-                            }
-                        }
-
-                        airHandlingUnitResult = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnitResult>()?.Find(x => x.Name == unitName);
+                        AirHandlingUnitResult airHandlingUnitResult = Mollier.Create.AirHandlingUnitResult(analyticalModel, airHandlingUnit.Name, space); ;
                         if (airHandlingUnitResult != null)
                         {
                             MollierGroup  mollierGroup = airHandlingUnitResult.GetValue<MollierGroup>(AirHandlingUnitResultParameter.Processes);
