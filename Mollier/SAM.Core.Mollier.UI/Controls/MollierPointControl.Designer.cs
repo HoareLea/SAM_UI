@@ -114,8 +114,7 @@
             // firstUnitLabel
             // 
             this.firstUnitLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.firstUnitLabel.AutoSize = true;
-            this.firstUnitLabel.Location = new System.Drawing.Point(148, 99);
+            this.firstUnitLabel.Location = new System.Drawing.Point(143, 99);
             this.firstUnitLabel.Name = "firstUnitLabel";
             this.firstUnitLabel.Size = new System.Drawing.Size(41, 16);
             this.firstUnitLabel.TabIndex = 6;
@@ -124,8 +123,7 @@
             // secondUnitLabel
             // 
             this.secondUnitLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.secondUnitLabel.AutoSize = true;
-            this.secondUnitLabel.Location = new System.Drawing.Point(148, 167);
+            this.secondUnitLabel.Location = new System.Drawing.Point(143, 167);
             this.secondUnitLabel.Name = "secondUnitLabel";
             this.secondUnitLabel.Size = new System.Drawing.Size(41, 16);
             this.secondUnitLabel.TabIndex = 7;
@@ -134,8 +132,7 @@
             // pressureUnitLabel
             // 
             this.pressureUnitLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pressureUnitLabel.AutoSize = true;
-            this.pressureUnitLabel.Location = new System.Drawing.Point(151, 36);
+            this.pressureUnitLabel.Location = new System.Drawing.Point(147, 36);
             this.pressureUnitLabel.Name = "pressureUnitLabel";
             this.pressureUnitLabel.Size = new System.Drawing.Size(24, 16);
             this.pressureUnitLabel.TabIndex = 8;

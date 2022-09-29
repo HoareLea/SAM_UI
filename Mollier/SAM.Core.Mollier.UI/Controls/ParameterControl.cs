@@ -12,10 +12,6 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class ParameterControl : UserControl
     {
-        private void Initialize()
-        {
-
-        }
         public ParameterControl()
         {
             InitializeComponent();
@@ -23,12 +19,12 @@ namespace SAM.Core.Mollier.UI.Controls
         public ParameterControl(ProcessParameterType processParameterType)
         {
             InitializeComponent();
-            parameterNameLabel.Text = processParameterType.Description();
-            Initialize();
+            Refresh(processParameterType);
         }
         public void Refresh(ProcessParameterType processParameterType)
         {
             parameterNameLabel.Text = processParameterType.Description();
+            parameterUnitLabel.Text = Units.Query.Abbreviation(Query.DefaultUnitType(processParameterType));
         }
         public ProcessParameterType ProcessParameterType
         {

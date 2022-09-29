@@ -24,8 +24,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
             firstParameter_ComboBox.Text = ChartDataType.DryBulbTemperature.Description();
             secondParameter_ComboBox.Text = ChartDataType.RelativeHumidity.Description();
-            firstParameter_Value.Text = "40";
-            secondParameter_Value.Text = "20";
+            firstParameter_Value.Text = "35";
+            secondParameter_Value.Text = "50";
 
         }
 
@@ -256,7 +256,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
         private void firstParameter_Value_KeyPress(object sender, KeyPressEventArgs e)
-        {
+       {
             valueSecure(sender, e);
         }
 

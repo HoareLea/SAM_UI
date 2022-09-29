@@ -57,9 +57,9 @@
             // parameterUnitLabel
             // 
             this.parameterUnitLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.parameterUnitLabel.AutoSize = true;
-            this.parameterUnitLabel.Location = new System.Drawing.Point(156, 22);
+            this.parameterUnitLabel.Location = new System.Drawing.Point(153, 22);
             this.parameterUnitLabel.Name = "parameterUnitLabel";
+            this.parameterUnitLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.parameterUnitLabel.Size = new System.Drawing.Size(41, 16);
             this.parameterUnitLabel.TabIndex = 2;
             this.parameterUnitLabel.Text = "kg/kg";

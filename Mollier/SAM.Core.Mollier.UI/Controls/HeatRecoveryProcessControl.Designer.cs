@@ -38,16 +38,18 @@
             // 
             // MollierPointControl_Supply
             // 
-            this.MollierPointControl_Supply.Location = new System.Drawing.Point(0, 55);
+            this.MollierPointControl_Supply.Location = new System.Drawing.Point(0, 23);
             this.MollierPointControl_Supply.Name = "MollierPointControl_Supply";
+            this.MollierPointControl_Supply.Pressure = 101325D;
             this.MollierPointControl_Supply.Size = new System.Drawing.Size(199, 220);
             this.MollierPointControl_Supply.TabIndex = 0;
             this.MollierPointControl_Supply.Load += new System.EventHandler(this.MollierPointControl_Supply_Load);
             // 
             // MollierPointControl_Return
             // 
-            this.MollierPointControl_Return.Location = new System.Drawing.Point(205, 55);
+            this.MollierPointControl_Return.Location = new System.Drawing.Point(205, 23);
             this.MollierPointControl_Return.Name = "MollierPointControl_Return";
+            this.MollierPointControl_Return.Pressure = 101325D;
             this.MollierPointControl_Return.Size = new System.Drawing.Size(191, 220);
             this.MollierPointControl_Return.TabIndex = 1;
             // 
@@ -55,7 +57,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label2.Location = new System.Drawing.Point(56, 32);
+            this.label2.Location = new System.Drawing.Point(56, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 20);
             this.label2.TabIndex = 14;
@@ -65,7 +67,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.Location = new System.Drawing.Point(262, 32);
+            this.label1.Location = new System.Drawing.Point(262, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(59, 20);
             this.label1.TabIndex = 15;
@@ -73,7 +75,7 @@
             // 
             // SensibleHeatRecoveryEfficiencyControl
             // 
-            this.SensibleHeatRecoveryEfficiencyControl.Location = new System.Drawing.Point(402, 55);
+            this.SensibleHeatRecoveryEfficiencyControl.Location = new System.Drawing.Point(402, 23);
             this.SensibleHeatRecoveryEfficiencyControl.Name = "SensibleHeatRecoveryEfficiencyControl";
             this.SensibleHeatRecoveryEfficiencyControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.SensibleHeatRecoveryEfficiencyControl.Size = new System.Drawing.Size(200, 51);
@@ -82,7 +84,7 @@
             // 
             // LatentHeatRecoveryEfficiencyControl
             // 
-            this.LatentHeatRecoveryEfficiencyControl.Location = new System.Drawing.Point(402, 112);
+            this.LatentHeatRecoveryEfficiencyControl.Location = new System.Drawing.Point(402, 80);
             this.LatentHeatRecoveryEfficiencyControl.Name = "LatentHeatRecoveryEfficiencyControl";
             this.LatentHeatRecoveryEfficiencyControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.LatentHeatRecoveryEfficiencyControl.Size = new System.Drawing.Size(200, 51);
