@@ -1044,6 +1044,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     UIMollierProcess UI_MollierProcess = systems[i][j];
                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
+                    if(UI_MollierProcess.End_Label == "SUP")
+                    {
+                        UI_MollierProcess.End_Label = null;
+                    }
+
+
                     if (UI_MollierProcess.Start_Label == null && systems[i].Count == 1)
                     {
                         UI_MollierProcess.Start_Label = name + "1";

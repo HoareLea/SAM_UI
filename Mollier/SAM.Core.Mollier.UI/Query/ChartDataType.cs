@@ -31,6 +31,14 @@
             {
                 process = UI.ChartDataType.SteamHumidificationProcess;
             }
+            if(mollierProcess is AdiabaticHumidificationProcess)
+            {
+                process = UI.ChartDataType.AdiabaticHumidificationProcess;
+            }
+            if(mollierProcess is IsotermicHumidificationProcess)
+            {
+                process = UI.ChartDataType.IsotermicHumidificationProcess;
+            }
             return process;
         }
     }

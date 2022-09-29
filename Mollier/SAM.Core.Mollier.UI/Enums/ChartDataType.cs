@@ -19,6 +19,8 @@ namespace SAM.Core.Mollier.UI
         [Description("Heat Recovery Process")] HeatRecoveryProcess,
         [Description("Mixing Process")] MixingProcess,
         [Description("Steam Humidification Process")] SteamHumidificationProcess,
+        [Description("Adiabatic Humidification Process")] AdiabaticHumidificationProcess,
+        [Description("Isotermic Humidification Process")] IsotermicHumidificationProcess,
         [Description("Undefined Process")] UndefinedProcess,
     }
 }

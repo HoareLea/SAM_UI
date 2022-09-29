@@ -55,6 +55,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Math.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Units, Version=1.0.8278.16260, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM\build\SAM.Units.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -239,6 +243,8 @@
     <Compile Include="Query\DefaultPressure.cs" />
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
     <Compile Include="Query\ProcessName.cs" />
+    <Compile Include="Query\DefaultUnitType.cs" />
+    <Compile Include="Query\UnitCategory.cs" />
     <Compile Include="Query\ZoomParameters.cs" />
   </ItemGroup>
   <ItemGroup>

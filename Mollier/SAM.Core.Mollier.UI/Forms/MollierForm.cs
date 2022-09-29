@@ -10,6 +10,7 @@ namespace SAM.Core.Mollier.UI
     {
         Forms.MollierPointForm mollierPointForm = null;
         Forms.MollierProcessForm mollierProcessForm = null;
+        MollierPoint previousMollierPoint = null;
 
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
         private static string mollierControlPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(Control).Name);
@@ -162,7 +163,9 @@ namespace SAM.Core.Mollier.UI
             UIMollierProcess UI_MollierProcess = null;
             using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm(MollierControl_Main))    
             {
+                mollierProcessForm.PreviousMollierPoint = previousMollierPoint;
                 DialogResult dialogResult = mollierProcessForm.ShowDialog();
+
                 MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
                 this.mollierProcessForm = mollierProcessForm;
                 if (dialogResult != DialogResult.OK)
@@ -176,8 +179,10 @@ namespace SAM.Core.Mollier.UI
             {
                 return;
             }
+            previousMollierPoint = UI_MollierProcess.End;
             List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
             mollierProcesses.Add(UI_MollierProcess);
+
             AddProcesses(mollierProcesses);            
         }
 
