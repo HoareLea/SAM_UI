@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI
                         continue;
                     }
                     ProcessParameterType processParameterType_Temp = parameterControl.ProcessParameterType;
-                    if (parameterControl.ProcessParameterType == processParameterType_Temp)
+                    if (processParameterType == processParameterType_Temp)
                     {
                         return (T)(object)parameterControl.Value;
                     }

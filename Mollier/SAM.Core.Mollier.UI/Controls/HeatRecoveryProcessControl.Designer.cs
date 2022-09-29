@@ -42,6 +42,7 @@
             this.MollierPointControl_Supply.Name = "MollierPointControl_Supply";
             this.MollierPointControl_Supply.Size = new System.Drawing.Size(199, 220);
             this.MollierPointControl_Supply.TabIndex = 0;
+            this.MollierPointControl_Supply.Load += new System.EventHandler(this.MollierPointControl_Supply_Load);
             // 
             // MollierPointControl_Return
             // 

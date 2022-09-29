@@ -18,11 +18,18 @@ namespace SAM.Core.Mollier.UI.Forms
             SelectPointClicked?.Invoke(this, e);
         }
 
-        public MollierPoint get_point()
+        public MollierPoint MollierPoint
         {
-            return mollierPoint;
+            get
+            {
+                return mollierPoint;
+            }
+            set
+            {
+                mollierPoint = value;
+                mollierPointControl1.MollierPoint = value;
+            }
         }
-
         private void Button_OK_Click(object sender, EventArgs e)
         {
             mollierPoint = mollierPointControl1.MollierPoint;

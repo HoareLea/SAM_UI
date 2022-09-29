@@ -10,6 +10,8 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierControl : UserControl
     {
+        public event EventHandler<MollierPointEventArgs> MollierPointSelected;
+
         public static double MaxPressure = 108400, MinPressure = 90000;
         private Point mdown = Point.Empty;
         private bool selection = false;
@@ -713,6 +715,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.InnerPlotPosition.Y += labelsSize;
         }
       
+
         private void add_DivisionArea(ChartType chartType)
         {
 
@@ -1423,6 +1426,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double val = Mollier.Query.DryBulbTemperature_ByHumidityRatio(0.01, 100, pressure);
             double di = Mollier.Query.DiagramTemperature(val, 0.01);
             double RH = Mollier.Query.RelativeHumidity(val, 0.01, pressure);
+
             if (MinPressure > pressure || pressure > MaxPressure)
             {
                 return;
@@ -2370,23 +2374,30 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
+        private void MollierChart_MouseClick(object sender, MouseEventArgs e)
+        {
+            HitTestResult result = MollierChart.HitTest(e.X, e.Y, ChartElementType.DataPoint);
+            if (result == null || result.ChartElementType != ChartElementType.DataPoint)
+            {
+                return;
+            }
+            if(result.Series.Points == null || result.PointIndex == -1)
+            {
+                return;
+            }
+            double dryBulbTemperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DryBulbTemperature_ByDiagramTemperature(result.Series.Points[result.PointIndex].YValues[0], result.Series.Points[result.PointIndex].XValue) : result.Series.Points[result.PointIndex].XValue;
+            double humidityRatio = mollierControlSettings.ChartType == ChartType.Mollier ? result.Series.Points[result.PointIndex].XValue / 1000 : result.Series.Points[result.PointIndex].YValues[0];
+            MollierPoint mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio, mollierControlSettings.Pressure); //TODO: Maciek to extract MolierPoint from MolierControl
+
+            MollierPointSelected?.Invoke(this, new MollierPointEventArgs(mollierPoint));
+        }
+
         public void ClearObjects()
         {
             mollierPoints?.Clear();
             mollierProcesses?.Clear();
             mollierZones?.Clear();
             generate_graph();
-        }
-        public MollierPoint SelectPoint()
-        {
-            MouseClick += MollierChart_MouseClick_SelectMollierPoint;
-            throw new System.NotImplementedException();
-        }
-
-        private void MollierChart_MouseClick_SelectMollierPoint(object sender, MouseEventArgs e)
-        {
-           
-            MouseClick -= MollierChart_MouseClick_SelectMollierPoint;
         }
     }
 }

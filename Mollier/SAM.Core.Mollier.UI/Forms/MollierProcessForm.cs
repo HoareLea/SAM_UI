@@ -20,9 +20,12 @@ namespace SAM.Core.Mollier.UI.Forms
         private string process_Label;
         private string end_Label;
         private MollierControl mollierControl;
+        public event EventHandler SelectPointClicked;
+        private MollierPoint mollierPoint;
         public MollierProcessForm()
         {
             InitializeComponent();
+            
         }    
         public MollierProcessForm(MollierControl mollierControl)
         {
@@ -72,6 +75,17 @@ namespace SAM.Core.Mollier.UI.Forms
             }
 
         }
+        public MollierPoint MollierPoint
+        {
+            get
+            {
+                return mollierPoint;
+            }
+            set
+            {
+                mollierPoint = value;
+            }
+        }
         private void MollierProcessType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             MollierProcessType mollierProcessType = Core.Query.Enum<MollierProcessType>(MollierProcessType_ComboBox.Text);
@@ -80,6 +94,8 @@ namespace SAM.Core.Mollier.UI.Forms
             {
                 case MollierProcessType.Heating:
                     addControl(mollierProcessType);
+                    (control as HeatingProcessControl).SelectPointClicked += MollierProcessForm_SelectPointClicked;
+                    (control as HeatingProcessControl).Start = mollierPoint;
                     break;
                 case MollierProcessType.Cooling:
                     addControl(mollierProcessType);
@@ -99,6 +115,12 @@ namespace SAM.Core.Mollier.UI.Forms
             }
 
         }
+
+        private void MollierProcessForm_SelectPointClicked(object sender, EventArgs e)
+        {
+            SelectPointClicked?.Invoke(this, e);
+        }
+
         private void addControl(MollierProcessType mollierProcessType)
         {
             control?.Dispose();

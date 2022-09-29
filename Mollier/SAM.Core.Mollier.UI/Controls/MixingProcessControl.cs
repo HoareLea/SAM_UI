@@ -18,12 +18,15 @@ namespace SAM.Core.Mollier.UI.Controls
             InitializeComponent();
             FirstAirflowControl.Refresh(ProcessParameterType.Airflow);
             SecondAirflowControl.Refresh(ProcessParameterType.Airflow);
+            MollierPointControl_SecondPoint.UnvisiblePressure();
         }
 
 
         public UIMollierProcess CreateMixingProcess()
         {
             IMollierProcess mollierProcess = null;
+
+            MollierPointControl_SecondPoint.Pressure = MollierPointControl_FirstPoint.Pressure;
             MollierPoint firstPoint = FirstPoint;
             MollierPoint secondPoint = SecondPoint;
             double airflow_1 = FirstAirflowControl.Value;

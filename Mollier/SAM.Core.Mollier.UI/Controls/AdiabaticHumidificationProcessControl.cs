@@ -34,7 +34,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     break;
                 case ProcessCalculationType.RelativeHumidity:
                     double relativeHumidity = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.RelativeHumidity);
-                    mollierProcess = Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(start, relativeHumidity);
+                    mollierProcess = Mollier.Create.AdiabaticHumidificationProcess_ByRelativeHumidity(start, relativeHumidity);
 
                     break;
             }

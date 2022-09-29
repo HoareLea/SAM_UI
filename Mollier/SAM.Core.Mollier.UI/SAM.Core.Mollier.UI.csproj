@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
+    <Compile Include="Classes\MollierPointEventArgs.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
     <Compile Include="Classes\MollierControlZone.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />

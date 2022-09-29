@@ -8,6 +8,9 @@ namespace SAM.Core.Mollier.UI
 {
     public partial class MollierForm : Form
     {
+        Forms.MollierPointForm mollierPointForm = null;
+        Forms.MollierProcessForm mollierProcessForm = null;
+
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
         private static string mollierControlPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(Control).Name);
         private ToolTip toolTip = new ToolTip();
@@ -145,47 +148,28 @@ namespace SAM.Core.Mollier.UI
         //operation of the add process and add point buttons
         private void Button_AddPoint_Click(object sender, EventArgs e)
         {
-            MollierPoint mollierPoint = null;
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
+
+            mollierPointForm = new Forms.MollierPointForm();
+            mollierPointForm.TopMost = true;
+            mollierPointForm.SelectPointClicked += MollierPointForm_SelectPointClicked;
+            mollierPointForm.FormClosing += MollierPointForm_FormClosing;
             
-            using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
-            {
-                mollierPointForm.SelectPointClicked += MollierPointForm_SelectPointClicked;
-                DialogResult dialogResult = mollierPointForm.ShowDialog();
-                if (dialogResult != DialogResult.OK)
-                {
-                    return;
-                }
-                mollierPoint = mollierPointForm.get_point();
-            }
-            if(mollierPoint == null)
-            {
-                return;
-            }
-            MollierControl_Main.AddPoints(new MollierPoint[] { mollierPoint });
-
+            mollierPointForm.Show();
         }
-
-        private void MollierPointForm_SelectPointClicked(object sender, EventArgs e)
-        {
-            Forms.MollierPointForm mollierPointForm = (Forms.MollierPointForm)sender;
-            mollierPointForm.Visible = false;
-
-
-            MollierPoint mollierPoint = MollierControl_Main.SelectPoint();
-
-           // mollierPointForm.MollierPoint = mollierPoint;
-        }
-
         private void Button_AddProcess_Click(object sender, EventArgs e)
         {
             UIMollierProcess UI_MollierProcess = null;
             using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm(MollierControl_Main))    
             {
                 DialogResult dialogResult = mollierProcessForm.ShowDialog();
+                MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
+                this.mollierProcessForm = mollierProcessForm;
                 if (dialogResult != DialogResult.OK)
                 {
                     return;
                 }
+                mollierProcessForm.SelectPointClicked += MollierProcessForm_SelectPointClicked;
                 UI_MollierProcess = mollierProcessForm.UI_MollierProcess;
             }
             if(UI_MollierProcess == null)
@@ -196,6 +180,68 @@ namespace SAM.Core.Mollier.UI
             mollierProcesses.Add(UI_MollierProcess);
             AddProcesses(mollierProcesses);            
         }
+
+        private void MollierProcessForm_SelectPointClicked(object sender, EventArgs e)
+        {
+            MollierControl_Main.MollierPointSelected -= MollierProcessForm_SelectPointClicked;
+
+            if (mollierPointForm == null)
+            {
+                return;
+            }
+
+            mollierPointForm.Visible = false;
+
+            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected;
+        }
+
+        private void MollierPointForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(mollierPointForm == null || mollierPointForm.DialogResult != DialogResult.OK)
+            {
+                return;
+            }
+
+            MollierPoint mollierPoint = mollierPointForm.MollierPoint;
+            if(mollierPoint == null)
+            {
+                return;
+            }
+
+            MollierControl_Main.AddPoints(new MollierPoint[] { mollierPoint });
+        }
+
+        private void MollierControl_Main_MollierPointSelected(object sender, MollierPointEventArgs e)
+        {
+            if(mollierPointForm == null)
+            {
+
+                mollierPointForm.MollierPoint = e.MolierPoint; //TODO: Maciek to implement MollierPointForm.MollierPoint setter
+                mollierPointForm.Visible = true;
+            }
+            if(mollierProcessForm != null)
+            {
+                mollierProcessForm.MollierPoint = e.MolierPoint;
+            }
+
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
+        }
+
+        private void MollierPointForm_SelectPointClicked(object sender, EventArgs e)
+        {
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
+
+            if (mollierPointForm == null)
+            {
+                return;
+            }
+
+            mollierPointForm.Visible = false;
+
+            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected;
+
+        }
+
 
         //disable some function for data reading only
         public bool ReadOnly

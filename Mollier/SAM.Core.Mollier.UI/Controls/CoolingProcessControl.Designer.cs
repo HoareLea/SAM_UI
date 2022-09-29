@@ -94,6 +94,7 @@
             this.optionButton.TabIndex = 12;
             this.optionButton.Text = "...";
             this.optionButton.UseVisualStyleBackColor = true;
+            this.optionButton.Visible = false;
             this.optionButton.Click += new System.EventHandler(this.optionButton_Click);
             // 
             // CoolingProcessControl

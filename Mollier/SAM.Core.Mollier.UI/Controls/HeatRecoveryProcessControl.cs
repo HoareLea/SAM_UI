@@ -20,16 +20,20 @@ namespace SAM.Core.Mollier.UI.Controls
             SensibleHeatRecoveryEfficiencyControl.Value = 75;
             LatentHeatRecoveryEfficiencyControl.Refresh(ProcessParameterType.LatentHeatRecoveryEfficiency);
             LatentHeatRecoveryEfficiencyControl.Value = 0;
+
+            MollierPointControl_Return.UnvisiblePressure();
         }
 
 
         public UIMollierProcess CreateHeatRecoveryProcess()
         {
+            MollierPointControl_Return.Pressure = MollierPointControl_Supply.Pressure;
+
             IMollierProcess mollierProcess = null;
             MollierPoint supplyPoint = Supply;
             MollierPoint returnPoint = Return;
             double sensibleHeatRecoveryEfficiency = SensibleHeatRecoveryEfficiencyControl.Value;
-            double latentHeatRecoveryEfficiency = SensibleHeatRecoveryEfficiencyControl.Value;
+            double latentHeatRecoveryEfficiency = LatentHeatRecoveryEfficiencyControl.Value;
             mollierProcess = Mollier.Create.HeatRecoveryProcess(supplyPoint, returnPoint, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
             return new UIMollierProcess(mollierProcess, Color.Empty);
         }
@@ -58,6 +62,11 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
         private void HeatRecoveryProcessControl_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MollierPointControl_Supply_Load(object sender, EventArgs e)
         {
 
         }
