@@ -50,7 +50,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     double flowTemperature = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.FlowTemperature);
                     double returnTemperature = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.ReturnTemperature);
                     double efficiency = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.Efficiency);
-                    mollierProcess = Mollier.Create.CoolingProcess_ByMedium(Start, flowTemperature, returnTemperature, efficiency);
+                    mollierProcess = Mollier.Create.CoolingProcess_ByMedium(Start, flowTemperature, returnTemperature, efficiency/100);
                     break;
                 case ProcessCalculationType.MediumAndDryBulbTemperature:
                     flowTemperature = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.FlowTemperature);

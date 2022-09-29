@@ -12,14 +12,19 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class HeatingProcessControl : UserControl
     {
-        private string processCalculateType;
-
+        public event EventHandler SelectPointClicked;
         public HeatingProcessControl()
         {
             InitializeComponent();
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
+            MollierPointControl_Start.SelectPointClicked += MollierPointControl_Start_SelectPointClicked;
         }
 
+        private void MollierPointControl_Start_SelectPointClicked(object sender, EventArgs e)
+        {
+            SelectPointClicked?.Invoke(this, e);
+
+        }
 
         public UIMollierProcess CreateHeatingProcess()
         {

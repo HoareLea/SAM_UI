@@ -143,13 +143,13 @@
             // 
             // ChoosePoint_Button
             // 
-            this.ChoosePoint_Button.Location = new System.Drawing.Point(177, 3);
+            this.ChoosePoint_Button.Enabled = false;
+            this.ChoosePoint_Button.Location = new System.Drawing.Point(154, 0);
             this.ChoosePoint_Button.Name = "ChoosePoint_Button";
             this.ChoosePoint_Button.Size = new System.Drawing.Size(25, 23);
             this.ChoosePoint_Button.TabIndex = 9;
             this.ChoosePoint_Button.Text = "...";
             this.ChoosePoint_Button.UseVisualStyleBackColor = true;
-            this.ChoosePoint_Button.Visible = false;
             this.ChoosePoint_Button.Click += new System.EventHandler(this.ChoosePoint_Button_Click);
             // 
             // MollierPointControl

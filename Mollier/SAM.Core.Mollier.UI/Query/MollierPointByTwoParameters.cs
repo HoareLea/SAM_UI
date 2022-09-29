@@ -93,10 +93,10 @@ namespace SAM.Core.Mollier.UI
             }
 
 
-            if (double.IsNaN(dryBulbTemperature) || double.IsNaN(humidityRatio) || double.IsNaN(relativeHumidity) || double.IsNaN(wetBulbTemperature) || double.IsNaN(dewPointTemperature))
-            {
-                return null;
-            }
+            //if (double.IsNaN(dryBulbTemperature) || double.IsNaN(humidityRatio) || double.IsNaN(relativeHumidity) || double.IsNaN(wetBulbTemperature) || double.IsNaN(dewPointTemperature))
+            //{
+            //    return null;
+            //}
 
             MollierPoint result = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
 

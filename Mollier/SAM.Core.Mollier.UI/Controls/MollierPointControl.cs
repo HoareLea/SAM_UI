@@ -12,19 +12,18 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierPointControl : UserControl
     {
-        private List<string> parameterList = new List<string>() { "Dry Bulb Temperature", "Relative Humidity", "Humidity Ratio", "Wet Bulb Temperature", "Dew Point Temperature" };
-       
+        private List<ChartDataType> chartDataTypes = new List<ChartDataType>() { ChartDataType.DryBulbTemperature, ChartDataType.RelativeHumidity, ChartDataType.HumidityRatio, ChartDataType.WetBulbTemperature, ChartDataType.DewPointTemperature};
+
 
         public MollierPointControl()
         {
             InitializeComponent();
-            foreach (string parameter in parameterList)
-            {
-                firstParameter_ComboBox.Items.Add(parameter);
-                secondParameter_ComboBox.Items.Add(parameter);
-            }
-            firstParameter_ComboBox.Text = "Dry Bulb Temperature";
-            secondParameter_ComboBox.Text = "Relative Humidity";
+            
+            chartDataTypes.ForEach(x => firstParameter_ComboBox.Items.Add(x.Description()));
+            chartDataTypes.ForEach(x => secondParameter_ComboBox.Items.Add(x.Description()));
+
+            firstParameter_ComboBox.Text = ChartDataType.DryBulbTemperature.Description();
+            secondParameter_ComboBox.Text = ChartDataType.RelativeHumidity.Description();
             firstParameter_Value.Text = "40";
             secondParameter_Value.Text = "20";
 
@@ -33,13 +32,11 @@ namespace SAM.Core.Mollier.UI.Controls
         public MollierPointControl(MollierPoint mollierPoint, bool pressureEnabled = true)
         {
             InitializeComponent();
-            foreach (string parameter in parameterList)
-            {
-                firstParameter_ComboBox.Items.Add(parameter);
-                secondParameter_ComboBox.Items.Add(parameter);
-            }
-            firstParameter_ComboBox.Text = "Dry Bulb Temperature";
-            secondParameter_ComboBox.Text = "Relative Humidity";
+            chartDataTypes.ForEach(x => firstParameter_ComboBox.Items.Add(x.Description()));
+            chartDataTypes.ForEach(x => secondParameter_ComboBox.Items.Add(x.Description()));
+
+            firstParameter_ComboBox.Text = ChartDataType.DryBulbTemperature.Description();
+            secondParameter_ComboBox.Text = ChartDataType.HumidityRatio.Description();
             pressureTextBox.ReadOnly = pressureEnabled;
         }
 
@@ -71,8 +68,11 @@ namespace SAM.Core.Mollier.UI.Controls
             double dewPointTemperature = value.DewPointTemperature();
             double pressure = value.Pressure;
 
+            ChartDataType chartDataType = Core.Query.Enum<ChartDataType>(firstParameter_ComboBox.Text);
+            
             pressureTextBox.Text = pressure.ToString();
-            switch (firstParameter_ComboBox.SelectedItem)
+
+            switch (chartDataType)
             {
                 case ChartDataType.DryBulbTemperature:
                     firstParameter_Value.Text = dryBulbTemperature.ToString();
@@ -90,7 +90,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     firstParameter_Value.Text = wetBulbTemperature.ToString();
                     break;
             }
-            switch (secondParameter_ComboBox.SelectedItem)
+            chartDataType = Core.Query.Enum<ChartDataType>(secondParameter_ComboBox.Text);
+            switch (chartDataType)
             {
                 case ChartDataType.DryBulbTemperature:
                     secondParameter_Value.Text = dryBulbTemperature.ToString();
@@ -118,44 +119,46 @@ namespace SAM.Core.Mollier.UI.Controls
             double wetBulbTemperature = double.NaN;
             double dewPointTemperature = double.NaN;
             double pressure = Standard.Pressure;
+            ChartDataType chartDataType = Core.Query.Enum<ChartDataType>(firstParameter_ComboBox.Text);
             if (firstParameter_ComboBox.Visible)
             {
-                switch (firstParameter_ComboBox.Text)
+                switch (chartDataType)
                 {
-                    case "Dry Bulb Temperature":
+                    case ChartDataType.DryBulbTemperature:
                         Core.Query.TryConvert(firstParameter_Value.Text, out dryBulbTemperature);
                         break;
-                    case "Relative Humidity":
+                    case ChartDataType.RelativeHumidity:
                         Core.Query.TryConvert(firstParameter_Value.Text, out relativeHumidity);
                         break;
-                    case "Humidity Ratio":
+                    case ChartDataType.HumidityRatio:
                         Core.Query.TryConvert(firstParameter_Value.Text, out humidityRatio);
                         break;
-                    case "Dew Point Temperature":
+                    case ChartDataType.DewPointTemperature:
                         Core.Query.TryConvert(firstParameter_Value.Text, out dewPointTemperature);
                         break;
-                    case "Wet Bulb Temperature":
+                    case ChartDataType.WetBulbTemperature:
                         Core.Query.TryConvert(firstParameter_Value.Text, out wetBulbTemperature);
                         break;
                 }
             }
+            chartDataType = Core.Query.Enum<ChartDataType>(secondParameter_ComboBox.Text);
             if (secondParameter_ComboBox.Visible)
             {
-                switch (secondParameter_ComboBox.SelectedItem)
+                switch (chartDataType)
                 {
-                    case "Dry Bulb Temperature":
+                    case ChartDataType.DryBulbTemperature:
                         Core.Query.TryConvert(secondParameter_Value.Text, out dryBulbTemperature);
                         break;
-                    case "Relative Humidity":
+                    case ChartDataType.RelativeHumidity:
                         Core.Query.TryConvert(secondParameter_Value.Text, out relativeHumidity);
                         break;
-                    case "Humidity Ratio":
+                    case ChartDataType.HumidityRatio:
                         Core.Query.TryConvert(secondParameter_Value.Text, out humidityRatio);
                         break;
-                    case "Dew Point Temperature":
+                    case ChartDataType.DewPointTemperature:
                         Core.Query.TryConvert(secondParameter_Value.Text, out dewPointTemperature);
                         break;
-                    case "Wet Bulb Temperature":
+                    case ChartDataType.WetBulbTemperature:
                         Core.Query.TryConvert(secondParameter_Value.Text, out wetBulbTemperature);
                         break;
                 }
@@ -172,15 +175,15 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void firstParameter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            firstParameter_Value.Text = String.Empty;
+            //firstParameter_Value.Text = String.Empty;
             this.secondParameter_ComboBox.SelectedIndexChanged -= new EventHandler(secondParameter_ComboBox_SelectedIndexChanged);
             string text = secondParameter_ComboBox.Text;
             secondParameter_ComboBox.Items.Clear();
-            foreach (string parameter in parameterList)
+            foreach (ChartDataType chartDataType in chartDataTypes)
             {
-                if (firstParameter_ComboBox.Text != parameter)
+                if (Core.Query.Enum<ChartDataType>(firstParameter_ComboBox.Text) != chartDataType)
                 {
-                    secondParameter_ComboBox.Items.Add(parameter);
+                    secondParameter_ComboBox.Items.Add(chartDataType.Description());
                 }
             }
             secondParameter_ComboBox.Text = text;
@@ -205,7 +208,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void secondParameter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            secondParameter_Value.Text = String.Empty;
+            //secondParameter_Value.Text = String.Empty;
 
             if (secondParameter_ComboBox.Text == "Dew Point Temperature")
             {
@@ -215,13 +218,14 @@ namespace SAM.Core.Mollier.UI.Controls
             this.firstParameter_ComboBox.SelectedIndexChanged -= new EventHandler(firstParameter_ComboBox_SelectedIndexChanged);
             string text = firstParameter_ComboBox.Text;
             firstParameter_ComboBox.Items.Clear();
-            foreach(string parameter in parameterList)
+            foreach(ChartDataType chartDataType in chartDataTypes)
             {
-                if(secondParameter_ComboBox.Text != parameter)
+                if(Core.Query.Enum<ChartDataType>(secondParameter_ComboBox.Text) != chartDataType)
                 {
-                    firstParameter_ComboBox.Items.Add(parameter);
+                    firstParameter_ComboBox.Items.Add(chartDataType.Description());
                 }
             }
+
             firstParameter_ComboBox.Text = text;
             this.firstParameter_ComboBox.SelectedIndexChanged += new EventHandler(firstParameter_ComboBox_SelectedIndexChanged);
             updateLabel(secondParameter_ComboBox, secondUnitLabel);
@@ -240,16 +244,15 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void valueSecure(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
-                (e.KeyChar != '.'))
+            if(!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.') && (e.KeyChar != '-'))
             {
                 e.Handled = true;
             }
             // only allow one decimal point
-            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
-            {
-                e.Handled = true;
-            }
+            //if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+            //{
+            //    e.Handled = true;
+            //}
         }
 
         private void firstParameter_Value_KeyPress(object sender, KeyPressEventArgs e)
@@ -293,6 +296,25 @@ namespace SAM.Core.Mollier.UI.Controls
             SelectPointClicked?.Invoke(this, e);
         }
         public event EventHandler SelectPointClicked;
+
+        public void UnvisiblePressure()
+        {
+            pressureLabel.Visible = false;
+            pressureTextBox.Visible = false;
+            pressureUnitLabel.Visible = false;
+        }
+        public double Pressure
+        {
+            get
+            {
+                Core.Query.TryConvert(pressureTextBox.Text, out double result);
+                return result;
+            }
+            set
+            {
+                pressureTextBox.Text = value.ToString();
+            }
+        }
         
 
     }

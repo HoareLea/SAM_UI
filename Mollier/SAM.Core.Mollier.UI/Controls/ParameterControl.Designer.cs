@@ -48,8 +48,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Parameter_Value.Location = new System.Drawing.Point(0, 19);
             this.Parameter_Value.Name = "Parameter_Value";
+            this.Parameter_Value.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.Parameter_Value.Size = new System.Drawing.Size(150, 22);
             this.Parameter_Value.TabIndex = 1;
+            this.Parameter_Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.Parameter_Value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Parameter_Value_KeyPress);
             // 
             // parameterUnitLabel
