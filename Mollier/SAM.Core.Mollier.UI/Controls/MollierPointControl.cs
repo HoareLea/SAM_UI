@@ -256,7 +256,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
         private void firstParameter_Value_KeyPress(object sender, KeyPressEventArgs e)
-        {
+       {
             valueSecure(sender, e);
         }
 

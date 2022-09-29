@@ -1695,10 +1695,10 @@ namespace SAM.Core.Mollier.UI.Controls
             List<MollierPoint> mollierPointsResult = new List<MollierPoint>();
             foreach (MollierPoint point in mollierPoints)
             {
-                if (!checkPressure || Core.Query.AlmostEqual(point.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
-                {
+                //if (!checkPressure || Core.Query.AlmostEqual(point.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
+                //{
                     mollierPointsResult.Add(point);
-                }
+                //}
             }
             this.mollierPoints.AddRange(mollierPointsResult);
             generate_graph();
@@ -1722,10 +1722,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     continue;
                 }
-                if (checkPressure && !Core.Query.AlmostEqual(mollierProcess.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
-                {
-                    return null;
-                }
+                //if (checkPressure && !Core.Query.AlmostEqual(mollierProcess.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
+                //{
+                //    return null;
+                //}
                 if (!(mollierProcess is UIMollierProcess))
                 {
                     UIMollierProcess mollierProcess_Temp = new UIMollierProcess(mollierProcess, Color.Empty);

@@ -149,14 +149,28 @@ namespace SAM.Core.Mollier.UI
         //operation of the add process and add point buttons
         private void Button_AddPoint_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
+            //MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
 
-            mollierPointForm = new Forms.MollierPointForm();
-            mollierPointForm.TopMost = true;
-            mollierPointForm.SelectPointClicked += MollierPointForm_SelectPointClicked;
-            mollierPointForm.FormClosing += MollierPointForm_FormClosing;
-            
-            mollierPointForm.Show();
+            //mollierPointForm = new Forms.MollierPointForm();
+            //mollierPointForm.TopMost = true;
+            //mollierPointForm.SelectPointClicked += MollierPointForm_SelectPointClicked;
+            //mollierPointForm.FormClosing += MollierPointForm_FormClosing;
+
+            // mollierPointForm.Show();
+
+            using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
+            {
+                DialogResult dialogResult = mollierPointForm.ShowDialog();
+                if (dialogResult != DialogResult.OK)
+                {
+                    return;
+                }
+                MollierPoint mollierPoint = mollierPointForm.MollierPoint;
+                previousMollierPoint = mollierPoint;
+                List<MollierPoint> mollierPoints = new List<MollierPoint>();
+                mollierPoints.Add(mollierPoint);
+                MollierControl_Main.AddPoints(mollierPoints);
+            }
         }
         private void Button_AddProcess_Click(object sender, EventArgs e)
         {
@@ -253,10 +267,10 @@ namespace SAM.Core.Mollier.UI
         {
             set
             {
-                TextBox_Pressure.ReadOnly = value;
-                TextBox_Elevation.ReadOnly = value;
-                Button_AddPoint.Visible = !value;
-                Button_AddProcess.Visible = !value;
+                //TextBox_Pressure.ReadOnly = value;
+                //TextBox_Elevation.ReadOnly = value;
+                //Button_AddPoint.Visible = !value;
+                //Button_AddProcess.Visible = !value;
             }
         }
 
