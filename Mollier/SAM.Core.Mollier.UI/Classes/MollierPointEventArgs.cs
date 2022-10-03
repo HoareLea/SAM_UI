@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Drawing;
+﻿using System;
 
 namespace SAM.Core.Mollier.UI
 {

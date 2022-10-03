@@ -83,6 +83,16 @@ namespace SAM.Analytical.UI.WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SAM_AirHandlingUnitDiagram {
+            get {
+                object obj = ResourceManager.GetObject("SAM_AirHandlingUnitDiagram", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SAM_AnalyticalModelProperties {
             get {
                 object obj = ResourceManager.GetObject("SAM_AnalyticalModelProperties", resourceCulture);
@@ -223,6 +233,16 @@ namespace SAM.Analytical.UI.WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SAM_MollierDiagram {
+            get {
+                object obj = ResourceManager.GetObject("SAM_MollierDiagram", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SAM_New {
             get {
                 object obj = ResourceManager.GetObject("SAM_New", resourceCulture);
@@ -306,6 +326,16 @@ namespace SAM.Analytical.UI.WPF.Properties {
         internal static System.Drawing.Bitmap SAM_Space {
             get {
                 object obj = ResourceManager.GetObject("SAM_Space", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SAM_SpaceDiagram {
+            get {
+                object obj = ResourceManager.GetObject("SAM_SpaceDiagram", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

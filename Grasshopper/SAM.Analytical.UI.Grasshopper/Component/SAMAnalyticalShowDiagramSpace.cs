@@ -6,7 +6,6 @@ using SAM.Core.Grasshopper;
 using SAM.Core.Mollier;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SAM.Analytical.UI.Grasshopper
 {
@@ -22,7 +21,7 @@ namespace SAM.Analytical.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.2";
+        public override string LatestComponentVersion => "1.0.3";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -54,6 +53,12 @@ namespace SAM.Analytical.UI.Grasshopper
 
                 GooSpaceParam gooSpaceParam = new GooSpaceParam() { Name = "_space", NickName = "_space", Description = "SAM Analytical Space", Access = GH_ParamAccess.item };
                 result.Add(new GH_SAMParam(gooSpaceParam, ParamVisibility.Binding));
+
+                global::Grasshopper.Kernel.Parameters.Param_String @string = null;
+
+                @string = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "_calculationMethod_", NickName = "_calculationMethod_", Description = "Air Handling Unit Calculation Method", Access = GH_ParamAccess.item, Optional = true };
+                @string.SetPersistentData(AirHandlingUnitCalculationMethod.FixedSupplyTemperature);
+                result.Add(new GH_SAMParam(@string, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Boolean @boolean = null;
 
@@ -112,6 +117,18 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
+            AirHandlingUnitCalculationMethod airHandlingUnitCalculationMethod = AirHandlingUnitCalculationMethod.FixedSupplyTemperature;
+            index = Params.IndexOfInputParam("_calculationMethod_");
+            string airHandlingUnitCalculationMethodString = null;
+            dataAccess.GetData(index, ref airHandlingUnitCalculationMethodString);
+            if (index != -1 && !string.IsNullOrWhiteSpace(airHandlingUnitCalculationMethodString))
+            {
+                if (!Enum.TryParse(airHandlingUnitCalculationMethodString, out airHandlingUnitCalculationMethod))
+                {
+                    airHandlingUnitCalculationMethod = AirHandlingUnitCalculationMethod.FixedSupplyTemperature;
+                }
+            }
+
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
 
             space = adjacencyCluster?.GetObject<Space>(space.Guid);
@@ -121,7 +138,12 @@ namespace SAM.Analytical.UI.Grasshopper
                 return;
             }
 
-            List<VentilationSystem> ventilationSystems = analyticalModel.Systems<VentilationSystem>(space);
+            space.SetValue(Mollier.SpaceParameter.AirHandlingUnitCalculationMethod, airHandlingUnitCalculationMethod);
+            adjacencyCluster.AddObject(space);
+
+            analyticalModel = new AnalyticalModel(analyticalModel, adjacencyCluster);
+
+            List<VentilationSystem> ventilationSystems = adjacencyCluster.Systems<VentilationSystem>(space);
             if (ventilationSystems != null && ventilationSystems.Count != 0)
             {
                 VentilationSystem ventilationSystem = ventilationSystems.Find(x => x != null);
@@ -134,7 +156,7 @@ namespace SAM.Analytical.UI.Grasshopper
 
                 if(!string.IsNullOrEmpty(unitName))
                 {
-                    AirHandlingUnit airHandlingUnit = analyticalModel?.AdjacencyCluster?.GetObjects<AirHandlingUnit>()?.Find(x => x.Name == unitName);
+                    AirHandlingUnit airHandlingUnit = adjacencyCluster?.GetObjects<AirHandlingUnit>()?.Find(x => x.Name == unitName);
                     if (airHandlingUnit != null)
                     {
                         AirHandlingUnitResult airHandlingUnitResult = Mollier.Create.AirHandlingUnitResult(analyticalModel, airHandlingUnit.Name, space);
@@ -209,7 +231,7 @@ namespace SAM.Analytical.UI.Grasshopper
                             pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
 
                             mollierForm.Name = string.IsNullOrWhiteSpace(space.Name) ? mollierForm.Name : space.Name;
-                            mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
+                            mollierForm.MollierControlSettings = Core.Mollier.UI.Query.DefaultMollierControlSettings();
                             mollierForm.Pressure = pressure;
                             mollierForm.AddProcesses(mollierProcesses, false);
                             //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;

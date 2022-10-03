@@ -117,6 +117,8 @@
     <Compile Include="Forms\SimulateForm.designer.cs">
       <DependentUpon>SimulateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Query\SpaceDiagram.cs" />
+    <Compile Include="Query\AirHandlingUnitDiagram.cs" />
     <Compile Include="Modify\Insert.cs" />
     <Compile Include="Modify\AddMissingObjects.cs" />
     <Compile Include="Modify\Check.cs" />

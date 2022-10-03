@@ -189,7 +189,7 @@ namespace SAM.Analytical.UI.Grasshopper
             double pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
 
             mollierForm.Name = string.IsNullOrWhiteSpace(airHandlingUnit.Name) ? mollierForm.Name : airHandlingUnit.Name;
-            mollierForm.MollierControlSettings = Query.DefaultMollierControlSettings();
+            mollierForm.MollierControlSettings = Core.Mollier.UI.Query.DefaultMollierControlSettings();
             mollierForm.Pressure = pressure;
             mollierForm.AddProcesses(mollierProcesses, false);
             //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;

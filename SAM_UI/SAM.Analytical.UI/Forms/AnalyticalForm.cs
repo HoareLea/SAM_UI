@@ -40,24 +40,71 @@ namespace SAM.Analytical.UI
         
         private void Refresh_AnalyticalModel()
         {
-            RibbonTab_Edit.Enabled = true;
-            RibbonTab_File.Enabled = true;
-            RibbonTab_Help.Enabled = true;
-            RibbonTab_Library.Enabled = true;
-            RibbonTab_Tools.Enabled = true;
-            RibbonTab_Simulate.Enabled = true;
+            RibbonButton_AddMissingElements.Enabled = false;
+            RibbonButton_AnalyticalModelProperies.Enabled = false;
+            RibbonButton_Edit_ApertureConstructions.Enabled = false;
+            RibbonButton_Edit_Constructions.Enabled = false;
+            RibbonButton_Edit_InternalConditionLibrary.Enabled = false;
+            RibbonButton_Edit_Location.Enabled = false;
+            RibbonButton_Edit_MaterialLibrary.Enabled = false;
+            RibbonButton_Edit_ModelCheck.Enabled = false;
+            RibbonButton_Edit_SAMImport.Enabled = false;
+            RibbonButton_Edit_Spaces.Enabled = false;
+            RibbonButton_EnergySimulation.Enabled = false;
+            RibbonButton_File_Close.Enabled = false;
+            RibbonButton_File_New.Enabled = false;
+            RibbonButton_File_Open.Enabled = false;
+            RibbonButton_File_Save.Enabled = false;
+            RibbonButton_File_SaveAs.Enabled = false;
+            RibbonButton_Help_Wiki.Enabled = false;
+            RibbonButton_PrintRDS.Enabled = false;
+            RibbonButton_ProfileLibrary.Enabled = false;
+            RibbonButton_Results_AirHandlingUnitDiagram.Enabled = false;
+            RibbonButton_Simulate_ImportWeatherData.Enabled = false;
+            RibbonButton_Simulate_WeatherData.Enabled = false;
+            RibbonButton_SolarSimulation.Enabled = false;
+            RibbonButton_Tools_Clean.Enabled = false;
+            RibbonButton_Tools_EditLibrary.Enabled = false;
+            RibbonButton_Tools_Hydra.Enabled = false;
+            RibbonButton_Tools_OpenT3D.Enabled = false;
+            RibbonButton_Tools_OpenTBD.Enabled = false;
+            RibbonButton_Tools_OpenTPD.Enabled = false;
+            RibbonButton_Tools_OpenTSD.Enabled = false;
 
-            RibbonButton_File_SaveAs.Enabled = true;
-            RibbonButton_File_Save.Enabled = true;
-            RibbonButton_File_Close.Enabled = true;
+            RibbonButton_File_New.Enabled = true;
+            RibbonButton_File_Open.Enabled = true;
+            RibbonButton_Help_Wiki.Enabled = true;
+            RibbonButton_Tools_Hydra.Enabled = true;
+            RibbonButton_Tools_OpenT3D.Enabled = true;
+            RibbonButton_Tools_OpenTBD.Enabled = true;
+            RibbonButton_Tools_OpenTPD.Enabled = true;
+            RibbonButton_Tools_OpenTSD.Enabled = true;
+            RibbonButton_Tools_EditLibrary.Enabled = true;
 
-            if (uIAnalyticalModel?.JSAMObject == null)
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+            if (uIAnalyticalModel != null)
             {
-                RibbonTab_Edit.Enabled = false;
-                RibbonButton_File_SaveAs.Enabled = false;
-                RibbonButton_File_Save.Enabled = false;
-                RibbonButton_File_Close.Enabled = false;
-                RibbonTab_Simulate.Enabled = false;
+                RibbonButton_AddMissingElements.Enabled = true;
+                RibbonButton_AnalyticalModelProperies.Enabled = true;
+                RibbonButton_Edit_ApertureConstructions.Enabled = true;
+                RibbonButton_Edit_Constructions.Enabled = true;
+                RibbonButton_Edit_InternalConditionLibrary.Enabled = true;
+                RibbonButton_Edit_Location.Enabled = true;
+                RibbonButton_Edit_MaterialLibrary.Enabled = true;
+                RibbonButton_Edit_ModelCheck.Enabled = true;
+                RibbonButton_Edit_SAMImport.Enabled = true;
+                RibbonButton_Edit_Spaces.Enabled = true;
+                RibbonButton_EnergySimulation.Enabled = true;
+                RibbonButton_File_Close.Enabled = true;
+                RibbonButton_File_Save.Enabled = true;
+                RibbonButton_File_SaveAs.Enabled = true;
+                RibbonButton_PrintRDS.Enabled = true;
+                RibbonButton_ProfileLibrary.Enabled = true;
+                RibbonButton_Results_AirHandlingUnitDiagram.Enabled = true;
+                RibbonButton_Simulate_ImportWeatherData.Enabled = true;
+                RibbonButton_Simulate_WeatherData.Enabled = true;
+                RibbonButton_SolarSimulation.Enabled = true;
+                RibbonButton_Tools_Clean.Enabled = true;
             }
 
             Refresh_TreeView();
@@ -613,6 +660,11 @@ namespace SAM.Analytical.UI
         private void RibbonButton_File_Save_Click(object sender, EventArgs e)
         {
             uIAnalyticalModel?.Save();
+        }
+
+        private void RibbonButton_Results_AirHandlingUnitDiagram_Click(object sender, EventArgs e)
+        {
+            Query.AirHandlingUnitDiagram(uIAnalyticalModel, this);
         }
     }
 }

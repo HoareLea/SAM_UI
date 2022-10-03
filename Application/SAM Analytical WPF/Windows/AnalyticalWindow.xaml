@@ -434,6 +434,12 @@
                     <RibbonButton x:Name="RibbonButton_Simulate_EnergySimulation" Label="Energy Simulation" LargeImageSource="../Resources/SAM_EnergySimulation.png"/>
                 </RibbonGroup>
             </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Results" Header="Results">
+                <RibbonGroup x:Name="RibbonGroup_Results_Mollier" Header="Mollier Diagram">
+                    <RibbonButton x:Name="RibbonButton_Results_AirHandlingUnitDiagram" Label="AHU" LargeImageSource="../Resources/SAM_AirHandlingUnitDiagram.png"/>
+                    <RibbonButton x:Name="RibbonButton_Results_SpaceDiagram" Label="Space" LargeImageSource="../Resources/SAM_SpaceDiagram.png"/>
+                </RibbonGroup>
+            </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Tools" Header="Tools">
                 <RibbonGroup x:Name="RibbonGroup_Tools_Library" Header="Library">
                     <RibbonButton x:Name="RibbonButton_Tools_EditLibrary" Label="Edit Library" LargeImageSource="../Resources/SAM_EditLibrary.png"/>
@@ -452,8 +458,8 @@
                     <RibbonButton x:Name="RibbonButton_Tools_AddMissingObjects" Label="Missing Elements" LargeImageSource="../Resources/SAM_AddMissingObjects.png"/>
                     <RibbonButton x:Name="RibbonButton_Tools_PrintRoomDataSheets" Label="Print RDS" LargeImageSource="../Resources/SAM_PrintRDS.png"/>
                 </RibbonGroup>
-                <RibbonGroup x:Name="RibbonGroup_Tools_MollierChart" Header="Mollier Chart">
-                    <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Open Mollier Chart" LargeImageSource="../Resources/SAM_PrintRDS.png"/>
+                <RibbonGroup x:Name="RibbonGroup_Tools_MollierChart" Header="Mollier Diagram">
+                    <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Show" LargeImageSource="../Resources/SAM_MollierDiagram.png"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">

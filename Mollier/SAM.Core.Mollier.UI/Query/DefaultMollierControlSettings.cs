@@ -1,6 +1,4 @@
-﻿using SAM.Core.Mollier.UI;
-
-namespace SAM.Analytical.UI.Grasshopper
+﻿namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
@@ -12,7 +10,7 @@ namespace SAM.Analytical.UI.Grasshopper
             mollierControlSettings.SpecificVolume_line = false;
             mollierControlSettings.WetBulbTemperature_line = false;
             mollierControlSettings.Color = "blue";
-            mollierControlSettings.ChartType = Core.Mollier.ChartType.Mollier;
+            mollierControlSettings.ChartType = ChartType.Mollier;
             return mollierControlSettings;
         }
     }

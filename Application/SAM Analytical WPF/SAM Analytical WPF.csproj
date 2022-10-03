@@ -260,5 +260,14 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SAM_AirHandlingUnitDiagram.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SAM_SpaceDiagram.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\SAM_MollierDiagram.PNG" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -226,6 +226,7 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\DefaultMollierControlSettings.cs" />
     <Compile Include="Query\ParameterValue.cs" />
     <Compile Include="Query\ProcessParameterTypes.cs" />
     <Compile Include="Query\DownPoint.cs" />

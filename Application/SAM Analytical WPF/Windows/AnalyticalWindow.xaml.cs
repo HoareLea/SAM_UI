@@ -56,6 +56,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_PrintRoomDataSheets.Click += RibbonButton_Tools_PrintRoomDataSheets_Click;
             RibbonButton_Tools_OpenMollierChart.Click += RibbonButton_Tools_OpenMollierChart_Click;
 
+            RibbonButton_Results_AirHandlingUnitDiagram.Click += RibbonButton_Results_AirHandlingUnitDiagram_Click;
+            RibbonButton_Results_SpaceDiagram.Click += RibbonButton_Results_SpaceDiagram_Click;
+
             RibbonButton_Help_Wiki.Click += RibbonButton_Help_Wiki_Click;
 
             AnalyticalModelControl.TreeView_Main.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
@@ -65,6 +68,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             View3DControl.UIAnalyticalModel = uIAnalyticalModel;
             AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
+
+            SetEnabled();
         }
 
         private void RibbonButton_Tools_OpenMollierChart_Click(object sender, RoutedEventArgs e)
@@ -77,9 +82,15 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
         }
-        private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)
-        {
 
+        private void RibbonButton_Results_SpaceDiagram_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.SpaceDiagram(windowHandle);
+        }
+
+        private void RibbonButton_Results_AirHandlingUnitDiagram_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.AirHandlingUnitDiagram(windowHandle);
         }
 
         private void RibbonButton_Help_Wiki_Click(object sender, RoutedEventArgs e)
@@ -225,24 +236,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel?.EditProperties(windowHandle);
         }
 
-        private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            TreeView treeView_AnalyticalModel = AnalyticalModelControl.TreeView_Main;
-
-            List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
-            TreeViewItem treeViewItem = treeView_AnalyticalModel.SelectedItem as TreeViewItem;
-            if(treeViewItem != null)
-            {
-                IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
-                if (jSAMObject != null)
-                {
-                    jSAMObjects.Add(jSAMObject);
-                }
-            }
-
-            View3DControl.Show(jSAMObjects);
-        }
-
         private void RibbonButton_Edit_Location_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.EditAddressAndLocation();
@@ -327,6 +320,127 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.JSAMObject = uIAnalyticalModel_Temp?.JSAMObject;
 
             View3DControl.CenterView();
+        }
+
+        private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            TreeView treeView_AnalyticalModel = AnalyticalModelControl.TreeView_Main;
+
+            List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
+            TreeViewItem treeViewItem = treeView_AnalyticalModel.SelectedItem as TreeViewItem;
+            if (treeViewItem != null)
+            {
+                IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
+                if (jSAMObject != null)
+                {
+                    jSAMObjects.Add(jSAMObject);
+                }
+            }
+
+            View3DControl.Show(jSAMObjects);
+        }
+
+        private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)
+        {
+            SetEnabled();
+        }
+
+        private void SetEnabled()
+        {
+            RibbonButton_Tools_OpenMollierChart.IsEnabled = false;
+            RibbonButton_Results_SpaceDiagram.IsEnabled = false;
+            RibbonButton_Results_AirHandlingUnitDiagram.IsEnabled = false;
+            RibbonButton_Help_Wiki.IsEnabled = false;
+            RibbonButton_Tools_PrintRoomDataSheets.IsEnabled = false;
+            RibbonButton_Tools_AddMissingObjects.IsEnabled = false;
+            RibbonButton_Tools_Clean.IsEnabled = false;
+            RibbonButton_Tools_Hydra.IsEnabled = false;
+            RibbonButton_Tools_OpenTPD.IsEnabled = false;
+            RibbonButton_Tools_OpenTSD.IsEnabled = false;
+            RibbonButton_Tools_OpenTBD.IsEnabled = false;
+            RibbonButton_Tools_OpenT3D.IsEnabled = false;
+            RibbonButton_Tools_EditLibrary.IsEnabled = false;
+            RibbonButton_Simulate_EnergySimulation.IsEnabled = false;
+            RibbonButton_Simulate_SolarSimulation.IsEnabled = false;
+            RibbonButton_Simulate_Import.IsEnabled = false;
+            RibbonButton_Simulate_WeatherData.IsEnabled = false;
+            RibbonButton_Edit_ApertureConstructions.IsEnabled = false;
+            RibbonButton_Edit_Constructions.IsEnabled = false;
+            RibbonButton_Edit_Spaces.IsEnabled = false;
+            RibbonButton_Edit_Profiles.IsEnabled = false;
+            RibbonButton_Edit_InternalConditions.IsEnabled = false;
+            RibbonButton_Edit_Materials.IsEnabled = false;
+            RibbonButton_Edit_Check.IsEnabled = false;
+            RibbonButton_Edit_Import.IsEnabled = false;
+            RibbonButton_Tools_Hydra.IsEnabled = false;
+            RibbonButton_Tools_OpenT3D.IsEnabled = false;
+            RibbonButton_Tools_OpenTBD.IsEnabled = false;
+            RibbonButton_Tools_OpenTPD.IsEnabled = false;
+            RibbonButton_Tools_OpenTSD.IsEnabled = false;
+            RibbonButton_Tools_EditLibrary.IsEnabled = false;
+            RibbonButton_Simulate_EnergySimulation.IsEnabled = false;
+            RibbonButton_Simulate_SolarSimulation.IsEnabled = false;
+            RibbonButton_Simulate_Import.IsEnabled = false;
+            RibbonButton_Simulate_WeatherData.IsEnabled = false;
+            RibbonButton_Edit_ApertureConstructions.IsEnabled = false;
+            RibbonButton_Edit_Constructions.IsEnabled = false;
+            RibbonButton_Edit_Spaces.IsEnabled = false;
+            RibbonButton_Edit_Profiles.IsEnabled = false;
+            RibbonButton_Edit_InternalConditions.IsEnabled = false;
+            RibbonButton_Edit_Materials.IsEnabled = false;
+            RibbonButton_Edit_Check.IsEnabled = false;
+            RibbonButton_Edit_Import.IsEnabled = false;
+            RibbonButton_Edit_Properties.IsEnabled = false;
+            RibbonButton_Edit_Location.IsEnabled = false;
+            RibbonButton_General_CloseAnalyticalModel.IsEnabled = false;
+            RibbonButton_General_SaveAsAnalyticalModel.IsEnabled = false;
+            RibbonButton_General_SaveAnalyticalModel.IsEnabled = false;
+            RibbonButton_General_NewAnalyticalModel.IsEnabled = false;
+            RibbonButton_General_OpenAnalyticalModel.IsEnabled = false;
+
+            RibbonButton_Tools_OpenMollierChart.IsEnabled = true;
+            RibbonButton_Help_Wiki.IsEnabled = true;
+            RibbonButton_Tools_Hydra.IsEnabled = true;
+            RibbonButton_Tools_OpenTPD.IsEnabled = true;
+            RibbonButton_Tools_OpenTSD.IsEnabled = true;
+            RibbonButton_Tools_OpenTBD.IsEnabled = true;
+            RibbonButton_Tools_OpenT3D.IsEnabled = true;
+            RibbonButton_General_NewAnalyticalModel.IsEnabled = true;
+            RibbonButton_General_OpenAnalyticalModel.IsEnabled = true;
+            RibbonButton_Tools_EditLibrary.IsEnabled = true;
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+            if (analyticalModel != null)
+            {
+                RibbonButton_Tools_PrintRoomDataSheets.IsEnabled = true;
+                RibbonButton_Tools_AddMissingObjects.IsEnabled = true;
+                RibbonButton_Tools_Clean.IsEnabled = true;
+                RibbonButton_Simulate_EnergySimulation.IsEnabled = true;
+                RibbonButton_Simulate_SolarSimulation.IsEnabled = true;
+                RibbonButton_Simulate_Import.IsEnabled = true;
+                RibbonButton_Simulate_WeatherData.IsEnabled = true;
+                RibbonButton_Edit_ApertureConstructions.IsEnabled = true;
+                RibbonButton_Edit_Constructions.IsEnabled = true;
+                RibbonButton_Edit_Spaces.IsEnabled = true;
+                RibbonButton_Edit_Profiles.IsEnabled = true;
+                RibbonButton_Edit_InternalConditions.IsEnabled = true;
+                RibbonButton_Edit_Materials.IsEnabled = true;
+                RibbonButton_Edit_Check.IsEnabled = true;
+                RibbonButton_Edit_Import.IsEnabled = true;
+                RibbonButton_Edit_Properties.IsEnabled = true;
+                RibbonButton_Edit_Location.IsEnabled = true;
+                RibbonButton_General_CloseAnalyticalModel.IsEnabled = true;
+                RibbonButton_General_SaveAsAnalyticalModel.IsEnabled = true;
+                RibbonButton_General_SaveAnalyticalModel.IsEnabled = true;
+
+                List<AirHandlingUnit> airHandlingUnits = analyticalModel.AdjacencyCluster?.GetObjects<AirHandlingUnit>();
+                if(airHandlingUnits != null && airHandlingUnits.Count != 0)
+                {
+                    RibbonButton_Results_SpaceDiagram.IsEnabled = true;
+                    RibbonButton_Results_AirHandlingUnitDiagram.IsEnabled = true;
+                }
+
+            }
         }
     }
 }
