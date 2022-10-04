@@ -140,10 +140,76 @@ namespace SAM.Analytical.UI.Controls
             }
         }
 
+        public bool FullYearSimulation
+        {
+            get
+            {
+                return CheckBox_FullYearSimulation.Checked;
+            }
+
+            set
+            {
+                CheckBox_FullYearSimulation.Checked = value;
+            }
+        }
+
+        public int FullYearSimulation_From
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_From.Text, out int result))
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_From.Text = value.ToString();
+            }
+        }
+
+        public int FullYearSimulation_To
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_To.Text, out int result))
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_To.Text = value.ToString();
+            }
+        }
+
         private void SimulateControl_Load(object sender, EventArgs e)
         {
             ComboBoxControl_SolarCalculationMethod.AddRange(Enum.GetValues(typeof(SolarCalculationMethod)).Cast<Enum>(), (Enum x) => Core.Query.Description(x));
             ComboBoxControl_SolarCalculationMethod.SetSelectedItem(SolarCalculationMethod.SAM);
+
+            SetEnabled();
+        }
+
+        private void CheckBox_FullYearSimulation_CheckedChanged(object sender, EventArgs e)
+        {
+            SetEnabled();
+        }
+
+        private void SetEnabled()
+        {
+            bool fullYearSimulation = CheckBox_FullYearSimulation.Checked;
+
+            Label_From.Enabled = fullYearSimulation;
+            TextBox_From.Enabled = fullYearSimulation;
+            Label_To.Enabled = fullYearSimulation;
+            TextBox_To.Enabled = fullYearSimulation;
         }
     }
 }

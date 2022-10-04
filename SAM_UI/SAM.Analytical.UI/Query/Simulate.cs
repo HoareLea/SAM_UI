@@ -30,6 +30,10 @@ namespace SAM.Analytical.UI
             bool unmetHours = false;
             bool printRoomDataSheets = false;
 
+            bool fullYearSimulation = false;
+            int fullYearSimulation_From = -1;
+            int fullYearSimulation_To = -1;
+
             SolarCalculationMethod solarCalculationMethod = SolarCalculationMethod.None;
             bool updateConstructionLayersByPanelType = false;
 
@@ -48,6 +52,12 @@ namespace SAM.Analytical.UI
                 solarCalculationMethod = simulateForm.SolarCalculationMethod;
                 updateConstructionLayersByPanelType = simulateForm.UpdateConstructionLayersByPanelType;
                 printRoomDataSheets = simulateForm.PrintRoomDataSheets;
+                fullYearSimulation = simulateForm.FullYearSimulation;
+                if(fullYearSimulation)
+                {
+                    fullYearSimulation_From = simulateForm.FullYearSimulation_From;
+                    fullYearSimulation_To = simulateForm.FullYearSimulation_To;
+                }
             }
 
             if (weatherData == null)
@@ -57,7 +67,7 @@ namespace SAM.Analytical.UI
 
             string path_TBD = System.IO.Path.Combine(outputDirectory, projectName + ".tbd");
 
-            bool simulate = false;
+            bool shadingUpdated = false;
 
             using (Core.Windows.Forms.ProgressForm progressForm = new Core.Windows.Forms.ProgressForm("Preparing Model", 8))
             {
@@ -123,7 +133,7 @@ namespace SAM.Analytical.UI
                     Tas.Modify.UpdateZones(tBDDocument.Building, analyticalModel, true);
 
                     progressForm.Update("Updating Shading");
-                    simulate = Tas.Modify.UpdateShading(tBDDocument, analyticalModel);
+                    shadingUpdated = Tas.Modify.UpdateShading(tBDDocument, analyticalModel);
 
                     sAMTBDDocument.Save();
                 }
@@ -156,7 +166,28 @@ namespace SAM.Analytical.UI
 
             List<SurfaceOutputSpec> surfaceOutputSpecs = new List<SurfaceOutputSpec>() { surfaceOutputSpec };
 
-            analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, null, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, false);
+            int simulate_From = -1;
+            int simulate_To = -1;
+
+            bool simulate = fullYearSimulation;
+
+            if (simulate)
+            {
+                simulate_From = fullYearSimulation_From;
+                simulate_To = fullYearSimulation_To;
+            }
+
+            if (shadingUpdated)
+            {
+                if (!simulate)
+                {
+                    simulate_From = 1;
+                    simulate_To = 1;
+                    simulate = true;
+                }
+            }
+
+            analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, null, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, false, simulate_From, simulate_To);
 
             analyticalModel.SetValue(AnalyticalModelParameter.WeatherData, weatherData);
 

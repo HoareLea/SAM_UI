@@ -104,6 +104,30 @@ namespace SAM.Analytical.UI.Forms
             }
         }
 
+        public bool FullYearSimulation
+        {
+            get
+            {
+                return SimulateControl_Main.FullYearSimulation;
+            }
+        }
+
+        public int FullYearSimulation_From
+        {
+            get
+            {
+                return SimulateControl_Main.FullYearSimulation_From;
+            }
+        }
+
+        public int FullYearSimulation_To
+        {
+            get
+            {
+                return SimulateControl_Main.FullYearSimulation_To;
+            }
+        }
+
         [Browsable(false)]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]

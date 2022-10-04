@@ -127,6 +127,7 @@ namespace SAM.Analytical.UI
 
             if (library == null)
             {
+                MessageBox.Show("Library type is not supported. Please select different type of library.");
                 return;
             }
 
