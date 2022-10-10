@@ -100,6 +100,12 @@ namespace SAM.Analytical.UI.WPF
 
         private void LoadAnalyticalModel(AnalyticalModel analyticalModel)
         {
+            if(analyticalModel == null)
+            {
+                MessageBox.Show("Could not load Analytical Model.", "Load Analytical Model");
+                return;
+            }
+
             Transform3D tranform3D = Transform3D.Identity;
 
             VisualAnalyticalModel visualAnalyticalModel = Query.VisualSAMObjects<VisualAnalyticalModel>(Viewport)?.FirstOrDefault();

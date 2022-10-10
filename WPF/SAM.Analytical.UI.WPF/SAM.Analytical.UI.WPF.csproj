@@ -79,6 +79,12 @@
     <Compile Include="Classes\VisualPanel.cs" />
     <Compile Include="Classes\VisualSpace.cs" />
     <Compile Include="Classes\VisualWidget.cs" />
+    <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
+      <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\View3DControl.xaml.cs">
+      <DependentUpon>View3DControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Convert\ToDrawing\Color.cs" />
     <Compile Include="Convert\ToMedia3D\GeometryModel3D.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
@@ -125,6 +131,9 @@
     <Compile Include="Query\VisualSAMObjects.cs" />
     <Compile Include="Query\Window.cs" />
     <Compile Include="Query\YawAxis.cs" />
+    <Compile Include="Windows\AnalyticalWindow.xaml.cs">
+      <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HelixToolkit.Wpf">
@@ -234,6 +243,10 @@
     <None Include="Resources\SAM_Wiki.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
+      <Project>{fd5079bc-621d-44ce-8eae-6e85510fe050}</Project>
+      <Name>SAM.Core.Mollier.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
       <Project>{fb22aa02-a8b6-4e1a-9581-d660f6e322f8}</Project>
       <Name>SAM.Analytical.UI</Name>
@@ -242,6 +255,29 @@
       <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\AnalyticalModelControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\View3DControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\AnalyticalWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_AirHandlingUnitDiagram.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_MollierDiagram.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SpaceDiagram.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

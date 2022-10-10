@@ -19,6 +19,14 @@ namespace SAM.Analytical.UI.WPF
              InitializeComponent();
         }
 
+        public TreeView TreeView
+        {
+            get
+            {
+                return TreeView_Main;
+            }
+        }
+
         private void TreeView_Main_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             ContextMenu.Items.Clear();

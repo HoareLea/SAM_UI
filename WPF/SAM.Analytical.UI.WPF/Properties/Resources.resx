@@ -124,6 +124,9 @@
   <data name="SAM_AddMissingObjects" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_AddMissingObjects.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SAM_AirHandlingUnitDiagram" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_AirHandlingUnitDiagram.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SAM_AnalyticalModelProperties" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_AnalyticalModelProperties.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -166,6 +169,9 @@
   <data name="SAM_ModelCheck" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_ModelCheck.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SAM_MollierDiagram" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_MollierDiagram.PNG;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SAM_New" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_New.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -192,6 +198,9 @@
   </data>
   <data name="SAM_Space" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_Space.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SAM_SpaceDiagram" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_SpaceDiagram.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="SAM_T3D" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_T3D.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

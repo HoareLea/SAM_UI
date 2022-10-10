@@ -88,15 +88,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
-      <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\View3DControl.xaml.cs">
-      <DependentUpon>View3DControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\AnalyticalWindow.xaml.cs">
-      <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -247,20 +238,6 @@
     <Resource Include="SAM.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\AnalyticalModelControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\View3DControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Windows\AnalyticalWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\SAM_AirHandlingUnitDiagram.png" />
   </ItemGroup>
   <ItemGroup>
@@ -269,5 +246,6 @@
   <ItemGroup>
     <Resource Include="Resources\SAM_MollierDiagram.PNG" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
