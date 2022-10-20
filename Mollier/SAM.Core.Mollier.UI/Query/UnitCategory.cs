@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Forms.DataVisualization.Charting;
-
-namespace SAM.Core.Mollier.UI
+﻿namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {

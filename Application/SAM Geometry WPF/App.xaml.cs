@@ -1,7 +1,6 @@
-﻿using SAM.Analytical.UI.WPF.Windows;
-using System.Windows;
+﻿using System.Windows;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM_Geometry_WPF
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -11,8 +10,9 @@ namespace SAM.Analytical.UI.WPF
         void App_Startup(object sender, StartupEventArgs e)
         {
             // Create main application window, starting minimized if specified
-            AnalyticalWindow mainWindow = new AnalyticalWindow();
-            mainWindow.Show();
+            SAM.Geometry.UI.WPF.GeometryWindow geometryWindow = new SAM.Geometry.UI.WPF.GeometryWindow();
+
+            geometryWindow.Show();
         }
     }
 }
