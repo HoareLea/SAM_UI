@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using SAM.Geometry.UI.WPF;
+using System.Windows;
 using System.Windows.Media;
 
 namespace SAM.Analytical.UI.WPF

@@ -66,34 +66,34 @@ namespace SAM.Geometry.UI.WPF
             return perspectiveCamera.Rotate(key, perspectiveCamera.FieldOfView / 45d);
         }
 
-        public static bool Rotate(this PerspectiveCamera perspectiveCamera, Geometry.Planar.Vector2D vector2D, Geometry.Spatial.Point3D center)
+        public static bool Rotate(this PerspectiveCamera perspectiveCamera, Planar.Vector2D vector2D, Spatial.Point3D center)
         {
             if(perspectiveCamera == null || center == null || center.IsNaN())
             {
                 return false;
             }
 
-            Geometry.Spatial.Point3D position = perspectiveCamera.Position.ToSAM();
+            Spatial.Point3D position = perspectiveCamera.Position.ToSAM();
 
-            Geometry.Spatial.Plane plane = perspectiveCamera.Plane();
+            Spatial.Plane plane = perspectiveCamera.Plane();
 
-            Geometry.Spatial.Point3D position_New = Geometry.Spatial.Query.Convert(plane, Geometry.Spatial.Query.Convert(plane, position).GetMoved(vector2D));
+            Spatial.Point3D position_New = Geometry.Spatial.Query.Convert(plane, Geometry.Spatial.Query.Convert(plane, position).GetMoved(vector2D));
             if(position_New == null || !position_New.IsValid())
             {
                 return false;
             }
 
-            Geometry.Spatial.Sphere sphere = new Geometry.Spatial.Sphere(center, position.Distance(center));
+            Spatial.Sphere sphere = new Spatial.Sphere(center, position.Distance(center));
 
             position_New = Geometry.Spatial.Query.Project(sphere, position_New);
 
             perspectiveCamera.Position = position_New.ToMedia3D();
-            perspectiveCamera.LookDirection = SAM.Geometry.UI.WPF.Convert.ToMedia3D(new Geometry.Spatial.Vector3D(position_New, center).GetNormalized());
+            perspectiveCamera.LookDirection = SAM.Geometry.UI.WPF.Convert.ToMedia3D(new Spatial.Vector3D(position_New, center).GetNormalized());
 
             return true;
         }
 
-        public static bool Rotate(this ModelVisual3D modelVisual3D, Geometry.Spatial.Vector3D axis, Geometry.Spatial.Point3D center, double angle)
+        public static bool Rotate(this ModelVisual3D modelVisual3D, Spatial.Vector3D axis, Spatial.Point3D center, double angle)
         {
             if(modelVisual3D == null || axis == null || center == null || !center.IsValid())
             {

@@ -2,7 +2,7 @@
 {
     public static partial class Convert
     {
-        public static System.Windows.Media.Media3D.Vector3D ToMedia3D(this Geometry.Spatial.Vector3D point3D)
+        public static System.Windows.Media.Media3D.Vector3D ToMedia3D(this Spatial.Vector3D point3D)
         {
             if(point3D == null)
             {

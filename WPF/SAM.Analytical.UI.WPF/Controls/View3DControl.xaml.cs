@@ -115,7 +115,7 @@ namespace SAM.Analytical.UI.WPF
                 tranform3D = visualAnalyticalModel.Transform;
             }
 
-            Modify.Clear<IVisualJSAMObject>(Viewport);
+            Geometry.UI.WPF.Modify.Clear<IVisualJSAMObject>(Viewport);
 
             visualAnalyticalModel = Convert.ToMedia3D(analyticalModel);
             visualAnalyticalModel.Transform = tranform3D;
@@ -175,7 +175,7 @@ namespace SAM.Analytical.UI.WPF
 
             Geometry.Spatial.Vector3D vector3D = null;
 
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Query.RayMeshGeometry3DHitTestResult<ModelVisual3D>(Viewport, point_Current_Temp);// VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Geometry.UI.WPF.Query.RayMeshGeometry3DHitTestResult<ModelVisual3D>(Viewport, point_Current_Temp);// VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
             if(rayMeshGeometry3DHitTestResult != null)
             {
                 vector3D = new Geometry.Spatial.Vector3D(MainCamera.Position.ToSAM(), rayMeshGeometry3DHitTestResult.PointHit.ToSAM());
@@ -205,7 +205,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 Point point_Current = e.GetPosition(Viewport);
 
-                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Query.RayMeshGeometry3DHitTestResult<IVisualJSAMObject>(Viewport, point_Current);// VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
+                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Geometry.UI.WPF.Query.RayMeshGeometry3DHitTestResult<IVisualJSAMObject>(Viewport, point_Current);// VisualTreeHelper.HitTest(Viewport, point_Current) as RayMeshGeometry3DHitTestResult;
 
                 VisualPanel visualPanel = rayMeshGeometry3DHitTestResult?.VisualHit as VisualPanel;
                 if (visualPanel == null)
@@ -234,7 +234,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             Information.Text = string.Format("Mouse: X={0}, Y={1}", Core.Query.Round(point_Current_Temp.X, 0.1), Core.Query.Round(point_Current_Temp.Y, 0.1));
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Query.RayMeshGeometry3DHitTestResult(Viewport, point_Current_Temp, out IVisualJSAMObject visualSAMObject_Highlight_Current); //VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Geometry.UI.WPF.Query.RayMeshGeometry3DHitTestResult(Viewport, point_Current_Temp, out IVisualJSAMObject visualSAMObject_Highlight_Current); //VisualTreeHelper.HitTest(Viewport, point_Current_Temp) as RayMeshGeometry3DHitTestResult;
             if (rayMeshGeometry3DHitTestResult != null && visualSAMObject_Highlight_Current != null)
             {
                 if(visualSAMObject_Highlight_Current != null)
@@ -279,7 +279,7 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 Rect3D rect3D = Query.Bounds(GetVisualSAMObjects<VisualAnalyticalModel>());
-                Point3D center = Query.Center(rect3D);
+                Point3D center = Geometry.UI.WPF.Query.Center(rect3D);
                 //Point3D center = Query.Center(visualFace3DObjects);
                 if (center == null || center.IsNaN())
                 {

@@ -456,7 +456,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
-            System.Windows.Window window = Query.Window(this);
+            System.Windows.Window window = Geometry.UI.WPF.Query.Window(this);
             if(window != null)
             {
                 windowHandle = new Core.Windows.WindowHandle(window);

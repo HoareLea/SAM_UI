@@ -70,6 +70,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convert\ToDrawing\Color.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
@@ -78,10 +79,21 @@
     <Compile Include="Convert\ToSAM\Point2D.cs" />
     <Compile Include="Convert\ToSAM\Point3D.cs" />
     <Compile Include="Convert\ToSAM\Vector3D.cs" />
+    <Compile Include="Create\Point3DCollection.cs" />
     <Compile Include="Interfaces\IVisualGeometry.cs" />
+    <Compile Include="Modify\Clear.cs" />
     <Compile Include="Modify\Rotate.cs" />
+    <Compile Include="Modify\Zoom.cs" />
+    <Compile Include="Query\Center.cs" />
+    <Compile Include="Query\IsNaN.cs" />
+    <Compile Include="Query\LookDirection.cs" />
     <Compile Include="Query\Plane.cs" />
+    <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
     <Compile Include="Query\RollAxis.cs" />
+    <Compile Include="Query\ScaleTransform.cs" />
+    <Compile Include="Query\TranslateTransform.cs" />
+    <Compile Include="Query\TransparentMaterial.cs" />
+    <Compile Include="Query\Window.cs" />
     <Compile Include="Query\YawAxis.cs" />
     <Compile Include="Query\Material.cs" />
     <Compile Include="Query\PitchAxis.cs" />

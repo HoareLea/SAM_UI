@@ -37,7 +37,7 @@ namespace SAM.Analytical.UI.WPF
 
             VisualBackground result = new VisualBackground();
             //Query.Material(Color.FromRgb(0, 255, 0))
-            result.Content = new GeometryModel3D(meshGeometry3D, Query.TransaprentMaterial());
+            result.Content = new GeometryModel3D(meshGeometry3D, Geometry.UI.WPF.Query.TransaprentMaterial());
 
             return result;
         }
