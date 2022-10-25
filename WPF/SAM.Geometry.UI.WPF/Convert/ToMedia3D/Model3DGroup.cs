@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM.Geometry.UI.WPF
 {
     public static partial class Convert
     {
@@ -18,7 +18,7 @@ namespace SAM.Analytical.UI.WPF
             Model3DGroup result = new Model3DGroup();
             foreach (Face3D face3D in face3Ds)
             {
-                MeshGeometry3D meshGeometry3D = face3D?.ToMedia3D(doubleSided);
+                MeshGeometry3D meshGeometry3D = ToMedia3D(face3D, doubleSided);
                 if (meshGeometry3D == null)
                 {
                     continue;

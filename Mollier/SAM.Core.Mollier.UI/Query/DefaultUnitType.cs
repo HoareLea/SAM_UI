@@ -17,7 +17,7 @@
                 case ProcessParameterType.EnthalpyDifference:
                     return Units.UnitType.Kilojule;
             }
-            return Units.Query.UnitType(Units.UnitStyle.SI, Query.UnitCategory(processParameterType));
+            return Units.Query.UnitType(Units.UnitStyle.SI, UnitCategory(processParameterType));
 
         }
     }

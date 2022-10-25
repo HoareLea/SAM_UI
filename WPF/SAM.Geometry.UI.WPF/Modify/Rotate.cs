@@ -1,7 +1,7 @@
 ﻿using System.Windows.Input;
 using System.Windows.Media.Media3D;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM.Geometry.UI.WPF
 {
     public static partial class Modify
     {
@@ -88,7 +88,7 @@ namespace SAM.Analytical.UI.WPF
             position_New = Geometry.Spatial.Query.Project(sphere, position_New);
 
             perspectiveCamera.Position = position_New.ToMedia3D();
-            perspectiveCamera.LookDirection = new Geometry.Spatial.Vector3D(position_New, center).GetNormalized().ToMedia3D();
+            perspectiveCamera.LookDirection = SAM.Geometry.UI.WPF.Convert.ToMedia3D(new Geometry.Spatial.Vector3D(position_New, center).GetNormalized());
 
             return true;
         }

@@ -15,7 +15,7 @@ namespace SAM.Analytical.UI.WPF
             Sphere sphere = new Sphere(point3D, radious);
 
             VisualWidget result = new VisualWidget();
-            result.Content = new GeometryModel3D(sphere.ToMedia3D(false), Query.Material(color));
+            result.Content = new GeometryModel3D(Geometry.UI.WPF.Convert.ToMedia3D(sphere, false), Geometry.UI.WPF.Query.Material(color));
 
             return result;
         }

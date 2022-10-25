@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM.Geometry.UI.WPF
 {
     public static partial class Convert
     {
         public static MeshGeometry3D ToMedia3D(this Face3D face3D, bool doubleSided = false)
         {
-            return ToMedia3D(Geometry.Spatial.Create.Mesh3D(face3D), doubleSided);
+            return ToMedia3D(Spatial.Create.Mesh3D(face3D), doubleSided);
         }
 
         public static MeshGeometry3D ToMedia3D(this Mesh3D mesh3D, bool doubleSided = false)
@@ -21,10 +21,10 @@ namespace SAM.Analytical.UI.WPF
 
             MeshGeometry3D result = new MeshGeometry3D();
 
-            List<Geometry.Spatial.Point3D> point3Ds = mesh3D.GetPoints();
+            List<Spatial.Point3D> point3Ds = mesh3D.GetPoints();
             if(point3Ds != null)
             {
-                foreach(Geometry.Spatial.Point3D point3D in point3Ds)
+                foreach(Spatial.Point3D point3D in point3Ds)
                 {
                     if(point3D == null || !point3D.IsValid())
                     {
@@ -69,7 +69,7 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            Mesh3D mesh3D = Geometry.Spatial.Create.Mesh3D(sphere, 0.01);
+            Mesh3D mesh3D = Spatial.Create.Mesh3D(sphere, 0.01);
             if(mesh3D == null)
             {
                 return null;
@@ -113,24 +113,24 @@ namespace SAM.Analytical.UI.WPF
                         continue;
                     }
 
-                    Geometry.Spatial.Vector3D vector3D_X = plane.AxisX;
+                    Spatial.Vector3D vector3D_X = plane.AxisX;
                     vector3D_X.Scale(thickness);
 
-                    Geometry.Spatial.Vector3D vector3D_Y = plane.AxisY;
+                    Spatial.Vector3D vector3D_Y = plane.AxisY;
                     vector3D_Y.Scale(thickness);
 
-                    Geometry.Spatial.Point3D point_1 = segment3D.GetStart();
-                    Geometry.Spatial.Point3D point_2 = segment3D.GetEnd();
+                    Spatial.Point3D point_1 = segment3D.GetStart();
+                    Spatial.Point3D point_2 = segment3D.GetEnd();
 
-                    result.Positions.Add(ToMedia3D((Geometry.Spatial.Point3D)point_1.GetMoved(vector3D_X)));
-                    result.Positions.Add(ToMedia3D((Geometry.Spatial.Point3D)point_1.GetMoved(vector3D_X.GetNegated())));
-                    result.Positions.Add(ToMedia3D((Geometry.Spatial.Point3D)point_2.GetMoved(vector3D_X)));
-                    result.Positions.Add(ToMedia3D((Geometry.Spatial.Point3D)point_2.GetMoved(vector3D_X.GetNegated())));
+                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_X)));
+                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_X.GetNegated())));
+                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_X)));
+                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_X.GetNegated())));
 
-                    result.Positions.Add(ToMedia3D((Geometry.Spatial.Point3D)point_1.GetMoved(vector3D_Y)));
-                    result.Positions.Add(ToMedia3D((Geometry.Spatial.Point3D)point_1.GetMoved(vector3D_Y.GetNegated())));
-                    result.Positions.Add(ToMedia3D((Geometry.Spatial.Point3D)point_2.GetMoved(vector3D_Y)));
-                    result.Positions.Add(ToMedia3D((Geometry.Spatial.Point3D)point_2.GetMoved(vector3D_Y.GetNegated())));
+                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_Y)));
+                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_Y.GetNegated())));
+                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_Y)));
+                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_Y.GetNegated())));
 
                     result.TriangleIndices.Add(0);
                     result.TriangleIndices.Add(1);

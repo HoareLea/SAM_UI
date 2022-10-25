@@ -1456,7 +1456,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 Segment2D segment2D = new Segment2D(start, end);
                 
-                if(rectangle2Dnew.Intersect(segment2D, SAM.Core.Tolerance.MicroDistance))
+                if(rectangle2Dnew.Intersect(segment2D, Tolerance.MicroDistance))
                 {
                     return true;
                 }

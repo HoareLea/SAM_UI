@@ -1,4 +1,5 @@
 ﻿using SAM.Geometry.Spatial;
+using SAM.Geometry.UI.WPF;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF
@@ -15,7 +16,7 @@ namespace SAM.Analytical.UI.WPF
             VisualEdges result = new VisualEdges();
 
             Model3DGroup model3DGroup = new Model3DGroup();
-            (face3D.GetExternalEdge3D() as ISegmentable3D).GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, thickness), Query.Material(color))));
+            (face3D.GetExternalEdge3D() as ISegmentable3D).GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, thickness), Geometry.UI.WPF.Query.Material(color))));
 
             result.Content = model3DGroup;
 

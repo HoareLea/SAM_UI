@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -69,7 +70,21 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
+    <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
+    <Compile Include="Convert\ToMedia3D\Point3D.cs" />
+    <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
+    <Compile Include="Convert\ToMedia\Color.cs" />
+    <Compile Include="Convert\ToSAM\Point2D.cs" />
+    <Compile Include="Convert\ToSAM\Point3D.cs" />
+    <Compile Include="Convert\ToSAM\Vector3D.cs" />
     <Compile Include="Interfaces\IVisualGeometry.cs" />
+    <Compile Include="Modify\Rotate.cs" />
+    <Compile Include="Query\Plane.cs" />
+    <Compile Include="Query\RollAxis.cs" />
+    <Compile Include="Query\YawAxis.cs" />
+    <Compile Include="Query\Material.cs" />
+    <Compile Include="Query\PitchAxis.cs" />
     <Compile Include="Windows\GeometryWindow.xaml.cs">
       <DependentUpon>GeometryWindow.xaml</DependentUpon>
     </Compile>
@@ -95,6 +110,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="HelixToolkit.Wpf">
+      <Version>2.22.0</Version>
+    </PackageReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

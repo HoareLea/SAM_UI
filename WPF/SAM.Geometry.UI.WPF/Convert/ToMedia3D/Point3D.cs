@@ -1,8 +1,8 @@
-﻿namespace SAM.Analytical.UI.WPF
+﻿namespace SAM.Geometry.UI.WPF
 {
     public static partial class Convert
     {
-        public static System.Windows.Media.Media3D.Point3D ToMedia3D(this Geometry.Spatial.Point3D point3D)
+        public static System.Windows.Media.Media3D.Point3D ToMedia3D(this Spatial.Point3D point3D)
         {
             if(point3D == null)
             {

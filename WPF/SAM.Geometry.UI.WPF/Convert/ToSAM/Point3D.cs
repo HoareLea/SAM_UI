@@ -1,4 +1,4 @@
-﻿namespace SAM.Analytical.UI.WPF
+﻿namespace SAM.Geometry.UI.WPF
 {
     public static partial class Convert
     {

@@ -7,7 +7,7 @@ namespace SAM.Analytical.UI.WPF
     {
         public static VisualSpace ToMedia3D(this Space space, AdjacencyCluster adjacencyCluster)
         {
-            Model3DGroup model3DGroup = ToMedia3D_Model3DGroup(adjacencyCluster?.Shell(space), Color.FromRgb(100, 100, 100), true);
+            Model3DGroup model3DGroup = Geometry.UI.WPF.Convert.ToMedia3D_Model3DGroup(adjacencyCluster?.Shell(space), Color.FromRgb(100, 100, 100), true);
             if(model3DGroup == null)
             {
                 return null;

@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Geometry.UI.WPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -195,7 +196,7 @@ namespace SAM.Analytical.UI.WPF
             vector3D.Normalize();
             vector3D.Scale(factor);
 
-            MainCamera.Position = Convert.ToMedia3D(MainCamera.Position.ToSAM().GetMoved(vector3D) as Geometry.Spatial.Point3D);
+            MainCamera.Position = Geometry.UI.WPF.Convert.ToMedia3D(MainCamera.Position.ToSAM().GetMoved(vector3D) as Geometry.Spatial.Point3D);
         }
 
         private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -290,14 +291,14 @@ namespace SAM.Analytical.UI.WPF
                     vector2D.Scale(0.1);
 
                     //Version 3
-                    Geometry.Spatial.Plane plane = Query.Plane(MainCamera);
+                    Geometry.Spatial.Plane plane = Geometry.UI.WPF.Query.Plane(MainCamera);
 
                     double angle = distance / perspectiveCamera.FieldOfView % 45;
                     Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, vector2D);
                     vector3D = vector3D.CrossProduct(plane.Normal).GetNegated();
                     vector3D = new Geometry.Spatial.Vector3D(0, vector3D.Y, 0);
 
-                    GetVisualSAMObjects<VisualAnalyticalModel>()?.ForEach(x => Modify.Rotate(x, vector3D, center.ToSAM(), angle));
+                    GetVisualSAMObjects<VisualAnalyticalModel>()?.ForEach(x => Geometry.UI.WPF.Modify.Rotate(x, vector3D, center.ToSAM(), angle));
 
                     //Version 2
                     //perspectiveCamera.Rotate(vector2D, center.ToSAM());
@@ -312,10 +313,10 @@ namespace SAM.Analytical.UI.WPF
                     double factor = MainCamera.Position.ToSAM().Distance(center.ToSAM()) / 10;
                     vector2D.Scale(factor);
 
-                    Geometry.Spatial.Plane plane = Query.Plane(MainCamera);
+                    Geometry.Spatial.Plane plane = Geometry.UI.WPF.Query.Plane(MainCamera);
                     Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, vector2D);
 
-                    perspectiveCamera.Move(Convert.ToMedia3D(vector3D), 0.01);
+                    perspectiveCamera.Move(Geometry.UI.WPF.Convert.ToMedia3D(vector3D), 0.01);
                 }
             }
         }

@@ -11,7 +11,9 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            return Material(Analytical.Query.Color(panel).ToMedia());
+            System.Drawing.Color color = Analytical.Query.Color(panel);
+
+            return Geometry.UI.WPF.Query.Material(Geometry.UI.WPF.Convert.ToMedia(color));
         }
 
         public static System.Windows.Media.Media3D.Material Material(this Aperture aperture)
@@ -21,15 +23,10 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            return Material(Analytical.Query.Color(aperture.ApertureType).ToMedia());
+            System.Drawing.Color color = Analytical.Query.Color(aperture.ApertureType);
+
+            return Geometry.UI.WPF.Query.Material(Geometry.UI.WPF.Convert.ToMedia(color));
         }
 
-        public static System.Windows.Media.Media3D.Material Material(this Color color)
-        {
-            SolidColorBrush brush = new SolidColorBrush(color);
-
-            System.Windows.Media.Media3D.DiffuseMaterial result = new System.Windows.Media.Media3D.DiffuseMaterial(brush);
-            return result;
-        }
     }
 }
