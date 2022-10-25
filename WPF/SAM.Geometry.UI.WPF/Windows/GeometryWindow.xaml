@@ -7,6 +7,12 @@
         mc:Ignorable="d"
         Title="GeometryWindow" Height="450" Width="800">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <local:ViewControl x:Name="ViewControl" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Classes\UIGeometryObjectModel.cs" />
     <Compile Include="Classes\VisualGeometry.cs" />
     <Compile Include="Controls\ViewControl.xaml.cs">
       <DependentUpon>ViewControl.xaml</DependentUpon>
@@ -126,6 +127,12 @@
     <PackageReference Include="HelixToolkit.Wpf">
       <Version>2.22.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -97,6 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\PanelSection3D.cs" />
     <Compile Include="Classes\UIAnalyticalModel.cs" />
     <Compile Include="Controls\SimulateControl.cs">
       <SubType>UserControl</SubType>
@@ -117,6 +118,7 @@
     <Compile Include="Forms\SimulateForm.designer.cs">
       <DependentUpon>SimulateForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\ISection3DObject.cs" />
     <Compile Include="Query\SpaceDiagram.cs" />
     <Compile Include="Query\AirHandlingUnitDiagram.cs" />
     <Compile Include="Modify\Insert.cs" />
