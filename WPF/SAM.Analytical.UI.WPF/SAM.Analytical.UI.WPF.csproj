@@ -92,8 +92,6 @@
     <Compile Include="Convert\ToMedia3D\VisualSpace.cs" />
     <Compile Include="Convert\ToMedia3D\VisualWidget.cs" />
     <Compile Include="Create\VisualBackground.cs" />
-    <Compile Include="Interfaces\IVisualFace3DObject.cs" />
-    <Compile Include="Modify\Move.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -101,10 +99,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\Center.cs" />
     <Compile Include="Query\Material.cs" />
-    <Compile Include="Query\Viewport3DVisual.cs" />
-    <Compile Include="Query\VisualSAMObjects.cs" />
     <Compile Include="Windows\AnalyticalWindow.xaml.cs">
       <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
     </Compile>
@@ -260,6 +255,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SAM_SpaceDiagram.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Modify\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -54,6 +54,10 @@
   <ItemGroup>
     <Compile Include="Classes\VisualJSAMObject.cs" />
     <Compile Include="Interfaces\IVisualJSAMObject.cs" />
+    <Compile Include="Modify\Clear.cs" />
+    <Compile Include="Modify\Move.cs" />
+    <Compile Include="Modify\Rotate.cs" />
+    <Compile Include="Modify\Zoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -67,6 +71,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Query\Center.cs" />
+    <Compile Include="Query\IsNaN.cs" />
+    <Compile Include="Query\PitchAxis.cs" />
+    <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
+    <Compile Include="Query\RollAxis.cs" />
+    <Compile Include="Query\ScaleTransform.cs" />
+    <Compile Include="Query\TranslateTransform.cs" />
+    <Compile Include="Query\TransparentMaterial.cs" />
+    <Compile Include="Query\Viewport3DVisual.cs" />
+    <Compile Include="Query\VisualJSAMObjects.cs" />
+    <Compile Include="Query\YawAxis.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -75,6 +90,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="HelixToolkit.Wpf">
+      <Version>2.22.0</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

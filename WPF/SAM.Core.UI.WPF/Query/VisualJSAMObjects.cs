@@ -1,23 +1,22 @@
-﻿using SAM.Core.UI.WPF;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM.Core.UI.WPF
 {
     public static partial class Query
     {
-        public static List<T> VisualSAMObjects<T>(this Viewport3D viewport3D) where T: IVisualJSAMObject
+        public static List<T> VisualJSAMObjects<T>(this Viewport3D viewport3D) where T: IVisualJSAMObject
         {
             if(viewport3D == null)
             {
                 return null;
             }
 
-            return VisualSAMObjects<T>(viewport3D.Children);
+            return VisualJSAMObjects<T>(viewport3D.Children);
         }
 
-        public static List<T> VisualSAMObjects<T>(this Visual3DCollection visual3DCollection) where T : IVisualJSAMObject
+        public static List<T> VisualJSAMObjects<T>(this Visual3DCollection visual3DCollection) where T : IVisualJSAMObject
         {
             if (visual3DCollection == null)
             {
@@ -32,7 +31,7 @@ namespace SAM.Analytical.UI.WPF
                     if(@object is ModelVisual3D)
                     {
                         ModelVisual3D modelVisual3D = (ModelVisual3D)@object;
-                        List<T> visualSAMObjects = VisualSAMObjects<T>(modelVisual3D.Children);
+                        List<T> visualSAMObjects = VisualJSAMObjects<T>(modelVisual3D.Children);
                         if(visualSAMObjects != null)
                         {
                             result.AddRange(visualSAMObjects);

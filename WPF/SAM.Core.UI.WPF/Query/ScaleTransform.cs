@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace SAM.Geometry.UI.WPF
+namespace SAM.Core.UI.WPF
 {
     public static partial class Query
     {
