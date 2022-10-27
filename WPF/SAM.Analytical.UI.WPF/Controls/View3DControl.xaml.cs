@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Core.UI.WPF;
 using SAM.Geometry.UI.WPF;
 using System;
 using System.Collections.Generic;

@@ -2,11 +2,12 @@
 
 namespace SAM.Geometry.UI.WPF
 {
-    public class VisualGeometry<T> : ModelVisual3D, IVisualGeometry where T : ISAMGeometry
+    public class VisualGeometry<T> : Core.UI.WPF.VisualJSAMObject<T>, IVisualGeometry where T : ISAMGeometry
     {
         protected T sAMGeometry;
 
         public VisualGeometry(T sAMGeometry)
+            :base(sAMGeometry)
         {
             this.sAMGeometry = sAMGeometry;
         }

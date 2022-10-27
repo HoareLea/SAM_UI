@@ -1,7 +1,6 @@
-﻿using SAM.Core;
-using System.Windows.Media.Media3D;
+﻿using System.Windows.Media.Media3D;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM.Core.UI.WPF
 {
     public interface IVisualJSAMObject
     {

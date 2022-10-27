@@ -1,13 +1,11 @@
-﻿using SAM.Core;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM.Core.UI.WPF
 {
     public class VisualJSAMObject<T> : ModelVisual3D, IVisualJSAMObject where T : IJSAMObject
     {
-        protected T jSAMObject
-            ;
+        protected T jSAMObject;
 
         public VisualJSAMObject(T jSAMObject)
         {

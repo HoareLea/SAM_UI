@@ -1,4 +1,6 @@
-﻿namespace SAM.Analytical.UI.WPF
+﻿using SAM.Core.UI.WPF;
+
+namespace SAM.Analytical.UI.WPF
 {
     public class VisualSpace : VisualJSAMObject<Space>
     {

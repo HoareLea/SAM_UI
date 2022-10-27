@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SAM.Core.UI.WPF;
+using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF

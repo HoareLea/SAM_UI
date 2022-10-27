@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{64178E8A-35E7-430B-AE4E-46A6C50BDD5E}</ProjectGuid>
+    <ProjectGuid>{4ABD4416-11F4-46BE-98AB-37E5DCFE79E1}</ProjectGuid>
     <OutputType>library</OutputType>
-    <RootNamespace>SAM.Geometry.UI.WPF</RootNamespace>
-    <AssemblyName>SAM.Geometry.UI.WPF</AssemblyName>
+    <RootNamespace>SAM.Core.UI.WPF</RootNamespace>
+    <AssemblyName>SAM.Core.UI.WPF</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -32,18 +32,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SAM.Core">
+    <Reference Include="SAM.Core, Version=1.0.8333.29728, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SAM.Core.Windows">
-      <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
-    </Reference>
-    <Reference Include="SAM.Geometry">
-      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -58,52 +52,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\ViewControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="Classes\UIGeometryObjectModel.cs" />
-    <Compile Include="Classes\VisualGeometry.cs" />
-    <Compile Include="Controls\ViewControl.xaml.cs">
-      <DependentUpon>ViewControl.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Windows\GeometryWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Convert\ToDrawing\Color.cs" />
-    <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
-    <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
-    <Compile Include="Convert\ToMedia3D\Point3D.cs" />
-    <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
-    <Compile Include="Convert\ToMedia\Color.cs" />
-    <Compile Include="Convert\ToSAM\Point2D.cs" />
-    <Compile Include="Convert\ToSAM\Point3D.cs" />
-    <Compile Include="Convert\ToSAM\Vector3D.cs" />
-    <Compile Include="Create\Point3DCollection.cs" />
-    <Compile Include="Interfaces\IVisualGeometry.cs" />
-    <Compile Include="Modify\Clear.cs" />
-    <Compile Include="Modify\Rotate.cs" />
-    <Compile Include="Modify\Zoom.cs" />
-    <Compile Include="Query\Center.cs" />
-    <Compile Include="Query\IsNaN.cs" />
-    <Compile Include="Query\LookDirection.cs" />
-    <Compile Include="Query\Plane.cs" />
-    <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
-    <Compile Include="Query\RollAxis.cs" />
-    <Compile Include="Query\ScaleTransform.cs" />
-    <Compile Include="Query\TranslateTransform.cs" />
-    <Compile Include="Query\TransparentMaterial.cs" />
-    <Compile Include="Query\Window.cs" />
-    <Compile Include="Query\YawAxis.cs" />
-    <Compile Include="Query\Material.cs" />
-    <Compile Include="Query\PitchAxis.cs" />
-    <Compile Include="Windows\GeometryWindow.xaml.cs">
-      <DependentUpon>GeometryWindow.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Classes\VisualJSAMObject.cs" />
+    <Compile Include="Interfaces\IVisualJSAMObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -125,21 +75,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="HelixToolkit.Wpf">
-      <Version>2.22.0</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
-      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
-      <Name>SAM.Core.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SAM.Core.UI.WPF\SAM.Core.UI.WPF.csproj">
-      <Project>{4abd4416-11f4-46be-98ab-37e5dcfe79e1}</Project>
-      <Name>SAM.Core.UI.WPF</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
