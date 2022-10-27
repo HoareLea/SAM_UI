@@ -6,7 +6,35 @@
              xmlns:local="clr-namespace:SAM.Geometry.UI.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+    <Grid Background="#00000000" ContextMenuOpening="Grid_ContextMenuOpening">
+        <Grid.ContextMenu>
+            <ContextMenu x:Name="ContextMenu_Grid">
+                <MenuItem Header="Zoom"/>
+            </ContextMenu>
+        </Grid.ContextMenu>
+        <TextBlock x:Name ="Information"  Text="Information" HorizontalAlignment="Left" VerticalAlignment="Bottom"></TextBlock>
+        <Viewport3D x:Name="Viewport" Margin="1,1,1,1">
+            <Viewport3D.Camera>
+                <PerspectiveCamera x:Name = "MainCamera" Position = "10 5 9" LookDirection = "-10 -5 -9" Changed="MainCamera_Changed" NearPlaneDistance="1">
+                </PerspectiveCamera>
+            </Viewport3D.Camera>
+
+            <Viewport3D.Children>
+                <ModelVisual3D x:Name="Lights">
+                    <ModelVisual3D.Children>
+                        <ModelVisual3D>
+                            <ModelVisual3D.Content>
+                                <AmbientLight x:Name = "AmbientLight" Color="DimGray"/>
+                            </ModelVisual3D.Content>
+                        </ModelVisual3D>
+                        <ModelVisual3D>
+                            <ModelVisual3D.Content>
+                                <DirectionalLight x:Name = "DirectionalLight" Color="LightGray" Direction="-1,-1,-1"/>
+                            </ModelVisual3D.Content>
+                        </ModelVisual3D>
+                    </ModelVisual3D.Children>
+                </ModelVisual3D>
+            </Viewport3D.Children>
+        </Viewport3D>
     </Grid>
 </UserControl>

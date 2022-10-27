@@ -73,7 +73,6 @@
   <ItemGroup>
     <Compile Include="Classes\VisualAnalyticalModel.cs" />
     <Compile Include="Classes\VisualAperture.cs" />
-    <Compile Include="Classes\VisualBackground.cs" />
     <Compile Include="Classes\VisualEdges.cs" />
     <Compile Include="Classes\VisualPanel.cs" />
     <Compile Include="Classes\VisualSpace.cs" />
@@ -91,7 +90,6 @@
     <Compile Include="Convert\ToMedia3D\VisualPanel.cs" />
     <Compile Include="Convert\ToMedia3D\VisualSpace.cs" />
     <Compile Include="Convert\ToMedia3D\VisualWidget.cs" />
-    <Compile Include="Create\VisualBackground.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -257,6 +255,7 @@
     <None Include="Resources\SAM_SpaceDiagram.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Create\" />
     <Folder Include="Interfaces\" />
     <Folder Include="Modify\" />
   </ItemGroup>

@@ -397,7 +397,7 @@ namespace SAM.Analytical.UI.WPF
                 Viewport.Children.Remove(visualBackground);
             }
 
-            visualBackground = Create.VisualBackground(Viewport);
+            visualBackground = Geometry.UI.WPF.Create.VisualBackground(Viewport);
             Viewport.Children.Add(visualBackground);
         }
 
