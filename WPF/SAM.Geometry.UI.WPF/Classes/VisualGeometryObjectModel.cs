@@ -1,6 +1,6 @@
 ﻿using SAM.Core.UI.WPF;
 
-namespace SAM.Analytical.UI.WPF
+namespace SAM.Geometry.UI.WPF
 {
     public class VisualGeometryObjectModel : VisualJSAMObject<Geometry.GeometryObjectModel>
     {

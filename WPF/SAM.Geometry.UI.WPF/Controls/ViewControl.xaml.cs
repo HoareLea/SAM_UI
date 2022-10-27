@@ -1,9 +1,11 @@
 ﻿using SAM.Core.UI.WPF;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Media3D;
 
 namespace SAM.Geometry.UI.WPF
 {
@@ -62,7 +64,29 @@ namespace SAM.Geometry.UI.WPF
 
         private void Load(GeometryObjectModel geometryObjectModel)
         {
+            if(geometryObjectModel == null)
+            {
+                Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(Viewport);
+                return;
+            }
 
+            Transform3D tranform3D = Transform3D.Identity;
+
+            VisualGeometryObjectModel visualGeometryObjectModel = Core.UI.WPF.Query.VisualJSAMObjects<VisualGeometryObjectModel>(Viewport)?.FirstOrDefault();
+            if (visualGeometryObjectModel != null)
+            {
+                tranform3D = visualGeometryObjectModel.Transform;
+            }
+
+            Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(Viewport);
+
+            visualGeometryObjectModel = Convert.ToMedia3D(geometryObjectModel);
+            visualGeometryObjectModel.Transform = tranform3D;
+
+            if (visualGeometryObjectModel != null)
+            {
+                Viewport.Children.Add(visualGeometryObjectModel);
+            }
         }
 
         private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)

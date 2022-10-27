@@ -65,7 +65,7 @@
     <Compile Include="Classes\UIGeometryObjectModel.cs" />
     <Compile Include="Classes\VisualBackground.cs" />
     <Compile Include="Classes\VisualGeometryObjectModel.cs" />
-    <Compile Include="Classes\VisualGeometry.cs" />
+    <Compile Include="Classes\VisualGeometryObject.cs" />
     <Compile Include="Controls\ViewControl.xaml.cs">
       <DependentUpon>ViewControl.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -81,14 +81,17 @@
     <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
+    <Compile Include="Convert\ToMedia3D\VisualGeometryObjectModel.cs" />
     <Compile Include="Convert\ToMedia\Color.cs" />
     <Compile Include="Convert\ToSAM\Point2D.cs" />
     <Compile Include="Convert\ToSAM\Point3D.cs" />
     <Compile Include="Convert\ToSAM\Vector3D.cs" />
+    <Compile Include="Create\IVisualGeometryObject.cs" />
+    <Compile Include="Create\VisualGeometryObject.cs" />
     <Compile Include="Create\Point3DCollection.cs" />
     <Compile Include="Create\VisualBackground.cs" />
     <Compile Include="Interfaces\IVisualFace3DObject.cs" />
-    <Compile Include="Interfaces\IVisualGeometry.cs" />
+    <Compile Include="Interfaces\IVisualGeometryObject.cs" />
     <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Query\Center.cs" />
     <Compile Include="Query\LookDirection.cs" />

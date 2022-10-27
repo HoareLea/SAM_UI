@@ -2,7 +2,7 @@
 
 namespace SAM.Geometry.UI.WPF
 {
-    public class VisualGeometryObject<T> : Core.UI.WPF.VisualJSAMObject<T>, IVisualGeometry where T : ISAMGeometryObject
+    public class VisualGeometryObject<T> : Core.UI.WPF.VisualJSAMObject<T>, IVisualGeometryObject where T : ISAMGeometryObject
     {
         protected T sAMGeometryObject;
 
