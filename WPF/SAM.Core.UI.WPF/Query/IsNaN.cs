@@ -13,5 +13,10 @@ namespace SAM.Core.UI.WPF
         {
             return double.IsNaN(point.X) || double.IsNaN(point.Y);
         }
+
+        public static bool IsNaN(this Vector3D vector3D)
+        {
+            return double.IsNaN(vector3D.X) || double.IsNaN(vector3D.Y) || double.IsNaN(vector3D.Z);
+        }
     }
 }

@@ -93,6 +93,7 @@
     <Compile Include="Interfaces\IVisualFace3DObject.cs" />
     <Compile Include="Interfaces\IVisualGeometryObject.cs" />
     <Compile Include="Modify\Rotate.cs" />
+    <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Center.cs" />
     <Compile Include="Query\LookDirection.cs" />
     <Compile Include="Query\Plane.cs" />

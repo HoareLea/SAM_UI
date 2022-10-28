@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -93,16 +94,16 @@ namespace SAM.Geometry.UI.WPF
         {
             ContextMenu_Grid.Items.Clear();
 
-            //Point point_Current = Mouse.GetPosition(Viewport);
-            //HitTestResult hitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current);
-            //IVisualFace3DObject visualFace3DObject_Current = hitTestResult?.VisualHit as IVisualFace3DObject;
+            Point point_Current = Mouse.GetPosition(Viewport);
+            HitTestResult hitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current);
+            IVisualGeometryObject visualGeometryObjectt = hitTestResult?.VisualHit as IVisualGeometryObject;
 
-            //MenuItem menuItem = new MenuItem();
-            //menuItem.Name = "MenuItem_CenterView";
-            //menuItem.Header = "Center View";
-            //menuItem.Click += MenuItem_CenterView_Click;
-            //menuItem.Tag = hitTestResult;
-            //ContextMenu_Grid.Items.Add(menuItem);
+            MenuItem menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_CenterView";
+            menuItem.Header = "Center View";
+            menuItem.Click += MenuItem_CenterView_Click;
+            menuItem.Tag = hitTestResult;
+            ContextMenu_Grid.Items.Add(menuItem);
 
 
             //if (visualFace3DObject_Current != null)
@@ -114,6 +115,11 @@ namespace SAM.Geometry.UI.WPF
             //    menuItem.Tag = hitTestResult;
             //    ContextMenu_Grid.Items.Add(menuItem);
             //}
+        }
+
+        private void MenuItem_CenterView_Click(object sender, RoutedEventArgs e)
+        {
+            CenterView();
         }
 
         private void MainCamera_Changed(object sender, EventArgs e)
@@ -129,6 +135,11 @@ namespace SAM.Geometry.UI.WPF
             }
 
             visualBackground = Create.VisualBackground(Viewport);
+            if(visualBackground == null)
+            {
+                return;
+            }
+
             Viewport.Children.Add(visualBackground);
         }
 
@@ -136,5 +147,18 @@ namespace SAM.Geometry.UI.WPF
         {
             return Core.UI.WPF.Query.VisualJSAMObjects<T>(Viewport);
         }
+        public void CenterView()
+        {
+            List<VisualGeometryObjectModel> visualGeometryObjectModels = GetVisualSAMObjects<VisualGeometryObjectModel>();
+            if (visualGeometryObjectModels == null)
+            {
+                return;
+            }
+
+            Rect3D rect3D = Query.Bounds(visualGeometryObjectModels);
+
+            HelixToolkit.Wpf.CameraHelper.ZoomExtents(MainCamera, Viewport, rect3D);
+        }
+
     }
 }

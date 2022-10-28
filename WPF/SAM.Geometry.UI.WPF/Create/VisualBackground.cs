@@ -14,7 +14,12 @@ namespace SAM.Geometry.UI.WPF
             }
 
             PerspectiveCamera perspectiveCamera = viewport3D.Camera as PerspectiveCamera;
-            Plane plane = Geometry.UI.WPF.Query.Plane(perspectiveCamera);
+            if(perspectiveCamera == null)
+            {
+                return null;
+            }
+
+            Plane plane = Query.Plane(perspectiveCamera);
             if(plane == null)
             {
                 return null;
@@ -27,9 +32,9 @@ namespace SAM.Geometry.UI.WPF
 
             Geometry.Planar.Rectangle2D rectangle2D = new Geometry.Planar.Rectangle2D(new Geometry.Planar.Point2D(-(scale / 2), -(scale / 2)), scale, scale);
 
-            Rectangle3D rectangle3D = Geometry.Spatial.Query.Convert(plane, rectangle2D);
+            Rectangle3D rectangle3D = Spatial.Query.Convert(plane, rectangle2D);
 
-            MeshGeometry3D meshGeometry3D = Geometry.UI.WPF.Convert.ToMedia3D(new Face3D(rectangle3D), false);
+            MeshGeometry3D meshGeometry3D = Convert.ToMedia3D(new Face3D(rectangle3D), false);
             if(meshGeometry3D == null)
             {
                 return null;

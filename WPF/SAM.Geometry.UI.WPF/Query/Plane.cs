@@ -6,6 +6,16 @@ namespace SAM.Geometry.UI.WPF
     {
         public static Spatial.Plane Plane(this PerspectiveCamera perspectiveCamera)
         {
+            if(perspectiveCamera == null)
+            {
+                return null;
+            }
+
+            if (Core.UI.WPF.Query.IsNaN(perspectiveCamera.Position) || Core.UI.WPF.Query.IsNaN(perspectiveCamera.UpDirection) || Core.UI.WPF.Query.IsNaN(perspectiveCamera.LookDirection))
+            {
+                return null;
+            }
+
             Spatial.Vector3D upDirection = Convert.ToSAM(perspectiveCamera.UpDirection);
             Spatial.Vector3D lookDirection = Convert.ToSAM(perspectiveCamera.LookDirection);
 
@@ -13,7 +23,7 @@ namespace SAM.Geometry.UI.WPF
 
             Spatial.Plane result = new Spatial.Plane(Convert.ToSAM(perspectiveCamera.Position), lookDirection);
 
-            upDirection = Geometry.Spatial.Query.Project(result, upDirection);
+            upDirection = Spatial.Query.Project(result, upDirection);
 
             result = new Spatial.Plane(Convert.ToSAM(perspectiveCamera.Position), -lookDirection.CrossProduct(upDirection), upDirection);
 

@@ -15,7 +15,7 @@ namespace SAM.Geometry.UI.WPF
 
             Spatial.Plane plane = perspectiveCamera.Plane();
 
-            Spatial.Point3D position_New = Geometry.Spatial.Query.Convert(plane, Geometry.Spatial.Query.Convert(plane, position).GetMoved(vector2D));
+            Spatial.Point3D position_New = Spatial.Query.Convert(plane, Spatial.Query.Convert(plane, position).GetMoved(vector2D));
             if(position_New == null || !position_New.IsValid())
             {
                 return false;
@@ -23,10 +23,10 @@ namespace SAM.Geometry.UI.WPF
 
             Spatial.Sphere sphere = new Spatial.Sphere(center, position.Distance(center));
 
-            position_New = Geometry.Spatial.Query.Project(sphere, position_New);
+            position_New = Spatial.Query.Project(sphere, position_New);
 
             perspectiveCamera.Position = position_New.ToMedia3D();
-            perspectiveCamera.LookDirection = SAM.Geometry.UI.WPF.Convert.ToMedia3D(new Spatial.Vector3D(position_New, center).GetNormalized());
+            perspectiveCamera.LookDirection = Convert.ToMedia3D(new Spatial.Vector3D(position_New, center).GetNormalized());
 
             return true;
         }
