@@ -16,9 +16,13 @@ namespace SAM.Geometry.UI.WPF
             {
                 return VisualGeometryObject((IFace3DObject)sAMGeometryObject, material, thickness);
             }
-            else if(sAMGeometryObject is ISegmentable3DObject)
+            else if(sAMGeometryObject is ISegment3DObject)
             {
-                return VisualGeometryObject((ISegmentable3DObject)sAMGeometryObject, material, thickness);
+                return VisualGeometryObject((ISegment3DObject)sAMGeometryObject, material, thickness);
+            }
+            else if (sAMGeometryObject is IPolygon3DObject)
+            {
+                return VisualGeometryObject((IPolygon3DObject)sAMGeometryObject, material, thickness);
             }
 
             return null;

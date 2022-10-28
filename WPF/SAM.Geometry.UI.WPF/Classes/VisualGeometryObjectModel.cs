@@ -2,15 +2,15 @@
 
 namespace SAM.Geometry.UI.WPF
 {
-    public class VisualGeometryObjectModel : VisualJSAMObject<Geometry.GeometryObjectModel>
+    public class VisualGeometryObjectModel : VisualJSAMObject<GeometryObjectModel>
     {
-        public VisualGeometryObjectModel(Geometry.GeometryObjectModel analyticalModel)
+        public VisualGeometryObjectModel(GeometryObjectModel analyticalModel)
             :base(analyticalModel)
         {
 
         }
 
-        public Geometry.GeometryObjectModel GeometryObjectModel
+        public GeometryObjectModel GeometryObjectModel
         {
             get
             {

@@ -25,12 +25,12 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            Geometry.Spatial.Vector3D vector3D = plane.Normal;
+            Spatial.Vector3D vector3D = plane.Normal;
             vector3D.Scale(scale);
 
             plane = plane.GetMoved(vector3D) as Plane;
 
-            Geometry.Planar.Rectangle2D rectangle2D = new Geometry.Planar.Rectangle2D(new Geometry.Planar.Point2D(-(scale / 2), -(scale / 2)), scale, scale);
+            Planar.Rectangle2D rectangle2D = new Planar.Rectangle2D(new Planar.Point2D(-(scale / 2), -(scale / 2)), scale, scale);
 
             Rectangle3D rectangle3D = Spatial.Query.Convert(plane, rectangle2D);
 

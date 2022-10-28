@@ -5,27 +5,24 @@ namespace SAM.Geometry.UI.WPF
 {
     public static partial class Create
     {
-        public static VisualGeometryObject<T> VisualGeometryObject<T>(this T sAMGeometryObject, Material material, double thickness = 0.001) where T: ISAMGeometryObject
+        public static VisualGeometryObject<T> VisualGeometryObject<T>(this T sAMGeometry3DObject, Material material, double thickness = 0.001) where T: ISAMGeometry3DObject
         {
-            if(sAMGeometryObject == null || material == null)
+            if(sAMGeometry3DObject == null || material == null)
             {
                 return null;
             }
 
+            ISAMGeometry3D sAMGeometry3D = Spatial.Query.SAMGeometry3D<ISAMGeometry3D>(sAMGeometry3DObject);
+
             Model3D model3D = null;
-            if(sAMGeometryObject is IFace3DObject)
+            if(sAMGeometry3D is Face3D)
             {
-                Face3D face3D = ((IFace3DObject)sAMGeometryObject).Face3D;
-
-                model3D = new GeometryModel3D(face3D.ToMedia3D(), material);
+                model3D = new GeometryModel3D(((Face3D)sAMGeometry3D).ToMedia3D(), material);
             }
-            else if(sAMGeometryObject is ISegmentable3DObject)
+            else if(sAMGeometry3D is ISegmentable3D)
             {
-
-                ISegmentable3D segmentable3D = ((ISegmentable3DObject)sAMGeometryObject).Segmentable3D;
-
                 Model3DGroup model3DGroup = new Model3DGroup();
-                segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, thickness), material)));
+                ((ISegmentable3D)sAMGeometry3D).GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, thickness), material)));
 
                 model3D = model3DGroup;
             }
@@ -35,7 +32,7 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            VisualGeometryObject<T> result = new VisualGeometryObject<T>(sAMGeometryObject);
+            VisualGeometryObject<T> result = new VisualGeometryObject<T>(sAMGeometry3DObject);
             result.Content = model3D;
 
             return result;
