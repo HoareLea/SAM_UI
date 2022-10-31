@@ -222,6 +222,10 @@
       <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Geometry.UI\SAM.Geometry.UI.csproj">
+      <Project>{c43850cf-3e58-44ec-8baf-3a7339749104}</Project>
+      <Name>SAM.Geometry.UI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SAM.Core.UI.WPF\SAM.Core.UI.WPF.csproj">
       <Project>{4abd4416-11f4-46be-98ab-37e5dcfe79e1}</Project>
       <Name>SAM.Core.UI.WPF</Name>

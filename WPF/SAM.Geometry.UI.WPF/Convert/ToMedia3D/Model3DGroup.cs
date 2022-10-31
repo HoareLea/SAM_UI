@@ -26,7 +26,7 @@ namespace SAM.Geometry.UI.WPF
 
                 //new EmissiveMaterial(Brushes.Transparent)
 
-                result.Children.Add(new GeometryModel3D(meshGeometry3D, Query.Material(color)));
+                result.Children.Add(new GeometryModel3D(meshGeometry3D, UI.Create.Material(color)));
             }
 
             return result;

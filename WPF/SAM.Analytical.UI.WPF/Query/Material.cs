@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-
-namespace SAM.Analytical.UI.WPF
+﻿namespace SAM.Analytical.UI.WPF
 {
     public static partial class Query
     {
@@ -13,7 +11,7 @@ namespace SAM.Analytical.UI.WPF
 
             System.Drawing.Color color = Analytical.Query.Color(panel);
 
-            return Geometry.UI.WPF.Query.Material(Geometry.UI.WPF.Convert.ToMedia(color));
+            return Geometry.UI.Create.Material(Geometry.UI.WPF.Convert.ToMedia(color));
         }
 
         public static System.Windows.Media.Media3D.Material Material(this Aperture aperture)
@@ -25,7 +23,7 @@ namespace SAM.Analytical.UI.WPF
 
             System.Drawing.Color color = Analytical.Query.Color(aperture.ApertureType);
 
-            return Geometry.UI.WPF.Query.Material(Geometry.UI.WPF.Convert.ToMedia(color));
+            return Geometry.UI.Create.Material(Geometry.UI.WPF.Convert.ToMedia(color));
         }
 
     }

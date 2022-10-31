@@ -25,7 +25,7 @@ namespace SAM.Geometry.UI.WPF
                         continue;
                     }
 
-                    Material material = Query.Material(ToMedia(Color.Red));
+                    Material material = UI.Create.Material(ToMedia(Color.Red));
 
                     IVisualGeometryObject visualGeometryObject = Create.IVisualGeometryObject(sAMGeometryObject, material);
                     if (visualGeometryObject == null)

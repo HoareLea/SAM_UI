@@ -55,9 +55,11 @@
     <Compile Include="Classes\Appearance\CurveAppearance.cs" />
     <Compile Include="Classes\Appearance\SurfaceAppearance.cs" />
     <Compile Include="Classes\Appearance\PointAppearance.cs" />
+    <Compile Include="Classes\Point3DObject.cs" />
     <Compile Include="Classes\Face3DObject.cs" />
     <Compile Include="Classes\Polygon3DObject.cs" />
     <Compile Include="Classes\Segment3DObject.cs" />
+    <Compile Include="Create\Material.cs" />
     <Compile Include="Interfaces\IAppearance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

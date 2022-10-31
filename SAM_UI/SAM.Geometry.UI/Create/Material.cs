@@ -1,8 +1,8 @@
 ﻿using System.Windows.Media;
 
-namespace SAM.Geometry.UI.WPF
+namespace SAM.Geometry.UI
 {
-    public static partial class Query
+    public static partial class Create
     {
         public static System.Windows.Media.Media3D.Material Material(this Color color)
         {

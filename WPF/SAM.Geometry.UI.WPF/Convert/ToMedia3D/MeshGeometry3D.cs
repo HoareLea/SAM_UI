@@ -83,6 +83,23 @@ namespace SAM.Geometry.UI.WPF
             return ToMedia3D(new ISegmentable3D[] { segmentable3D }, doubleSided, thickness);
         }
 
+        public static MeshGeometry3D ToMedia3D(this Spatial.Point3D point3D, bool doubleSided = false, double thickness = Core.Tolerance.MacroDistance)
+        {
+            if(point3D == null)
+            {
+                return null;
+            }
+
+            Sphere sphere = new Sphere(point3D, thickness);
+            if (sphere == null)
+            {
+                return null;
+            }
+
+
+            return ToMedia3D(sphere, doubleSided);
+        }
+
         public static MeshGeometry3D ToMedia3D<T>(this IEnumerable<T> segmentable3Ds, bool doubleSided = false, double thickness = Core.Tolerance.MacroDistance) where T: ISegmentable3D
         {
             if(segmentable3Ds == null)
