@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Windows.Media.Media3D;
 
 namespace SAM.Geometry.UI.WPF
 {
@@ -25,9 +23,7 @@ namespace SAM.Geometry.UI.WPF
                         continue;
                     }
 
-                    Material material = UI.Create.Material(ToMedia(Color.Red));
-
-                    IVisualGeometryObject visualGeometryObject = Create.IVisualGeometryObject(sAMGeometryObject, material);
+                    IVisualGeometryObject visualGeometryObject = Create.IVisualGeometryObject(sAMGeometryObject);
                     if (visualGeometryObject == null)
                     {
                         continue;

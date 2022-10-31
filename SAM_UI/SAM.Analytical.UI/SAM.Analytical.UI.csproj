@@ -36,6 +36,7 @@
       <HintPath>..\..\references_buildonly\Interop.TBD.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="SAM.Analytical">
       <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
     </Reference>
@@ -97,7 +98,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\PanelSection3D.cs" />
+    <Compile Include="Classes\VisualAperture.cs" />
+    <Compile Include="Classes\VisualPanel.cs" />
     <Compile Include="Classes\UIAnalyticalModel.cs" />
     <Compile Include="Controls\SimulateControl.cs">
       <SubType>UserControl</SubType>
@@ -105,6 +107,7 @@
     <Compile Include="Controls\SimulateControl.designer.cs">
       <DependentUpon>SimulateControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Convert\ToSAM\GeometryObjectModel.cs" />
     <Compile Include="Enums\SolarCalculationMethod.cs" />
     <Compile Include="Forms\AnalyticalForm.cs">
       <SubType>Form</SubType>
@@ -119,6 +122,7 @@
       <DependentUpon>SimulateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\ISection3DObject.cs" />
+    <Compile Include="Query\SurfaceAppearance.cs" />
     <Compile Include="Query\SpaceDiagram.cs" />
     <Compile Include="Query\AirHandlingUnitDiagram.cs" />
     <Compile Include="Modify\Insert.cs" />
@@ -186,6 +190,10 @@
     <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
       <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
       <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SAM.Geometry.UI\SAM.Geometry.UI.csproj">
+      <Project>{c43850cf-3e58-44ec-8baf-3a7339749104}</Project>
+      <Name>SAM.Geometry.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -296,5 +304,6 @@
   <ItemGroup>
     <None Include="Resources\SAM_Wiki.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

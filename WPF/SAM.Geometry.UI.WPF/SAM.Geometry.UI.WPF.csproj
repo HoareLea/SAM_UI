@@ -76,13 +76,11 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Convert\ToDrawing\Color.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
     <Compile Include="Convert\ToMedia3D\VisualGeometryObjectModel.cs" />
-    <Compile Include="Convert\ToMedia\Color.cs" />
     <Compile Include="Convert\ToSAM\Point2D.cs" />
     <Compile Include="Convert\ToSAM\Point3D.cs" />
     <Compile Include="Convert\ToSAM\Vector3D.cs" />

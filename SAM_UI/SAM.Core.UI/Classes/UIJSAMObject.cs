@@ -86,7 +86,7 @@ namespace SAM.Core.UI
                 List<T> jSAMObjects = null;
                 try
                 {
-                    jSAMObjects = Convert.ToSAM<T>(path);
+                    jSAMObjects = Core.Convert.ToSAM<T>(path);
                 }
                 catch(Exception exception)
                 {
@@ -207,7 +207,7 @@ namespace SAM.Core.UI
                 }
             }
 
-            bool result = Convert.ToFile(new IJSAMObject[] { jSAMObject }, path);
+            bool result = Core.Convert.ToFile(new IJSAMObject[] { jSAMObject }, path);
             if(!result)
             {
                 return result;

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SAM.Geometry.Spatial;
+using System.Windows.Media;
 
 namespace SAM.Geometry.UI
 {
@@ -28,6 +29,12 @@ namespace SAM.Geometry.UI
             {
                 SurfaceAppearance = new SurfaceAppearance(surfaceAppearance);
             }
+        }
+
+        public Face3DObject(Face3D face3D, Color surfaceColor, Color curveColor, double curveThickness)
+            : base(face3D)
+        {
+            SurfaceAppearance = new SurfaceAppearance(surfaceColor, curveColor, curveThickness);
         }
 
         public override bool FromJObject(JObject jObject)

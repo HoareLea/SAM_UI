@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="SAM.Core">
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
@@ -48,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\UIJSAMObject.cs" />
+    <Compile Include="Convert\ToDrawing\Color.cs" />
+    <Compile Include="Convert\ToMedia\Color.cs" />
     <Compile Include="Forms\WelcomeForm.cs">
       <SubType>Form</SubType>
     </Compile>

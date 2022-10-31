@@ -11,7 +11,7 @@
 
             System.Drawing.Color color = Analytical.Query.Color(panel);
 
-            return Geometry.UI.Create.Material(Geometry.UI.WPF.Convert.ToMedia(color));
+            return Geometry.UI.Create.Material(Core.UI.Convert.ToMedia(color));
         }
 
         public static System.Windows.Media.Media3D.Material Material(this Aperture aperture)
@@ -23,7 +23,7 @@
 
             System.Drawing.Color color = Analytical.Query.Color(aperture.ApertureType);
 
-            return Geometry.UI.Create.Material(Geometry.UI.WPF.Convert.ToMedia(color));
+            return Geometry.UI.Create.Material(Core.UI.Convert.ToMedia(color));
         }
 
     }
