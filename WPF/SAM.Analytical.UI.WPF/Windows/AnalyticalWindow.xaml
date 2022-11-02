@@ -403,6 +403,11 @@
                     <RibbonButton x:Name="RibbonButton_General_CloseAnalyticalModel" Label="Close"/>
                 </RibbonGroup>
             </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_View" Header="View">
+                <RibbonGroup x:Name="RibbonGroup_View_General" Header="General">
+                    <RibbonButton x:Name="RibbonButton_View_Section" Label="Section"/>
+                </RibbonGroup>
+            </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Edit" Header="Edit">
                 <RibbonGroup x:Name="RibbonGroup_Edit_General" Header="General">
                     <RibbonButton x:Name="RibbonButton_Edit_Location" Label="Location"/>

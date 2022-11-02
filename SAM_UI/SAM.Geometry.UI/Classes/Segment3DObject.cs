@@ -30,6 +30,21 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public Segment3DObject(JObject jObject)
+            :base(jObject)
+        {
+
+        }
+
+        public Segment3DObject(Segment3DObject segment3DObject)
+            : base(segment3DObject)
+        {
+            if (segment3DObject.CurveAppearance != null)
+            {
+                CurveAppearance = new CurveAppearance(segment3DObject.CurveAppearance);
+            }
+        }
+
         public override bool FromJObject(JObject jObject)
         {
             if (!base.FromJObject(jObject))

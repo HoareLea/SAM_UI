@@ -14,16 +14,19 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            List<Panel> panels = analyticalModel.GetPanels();
+            AnalyticalModel analyticalModel_Temp = new AnalyticalModel(analyticalModel);
+            analyticalModel_Temp.Normalize();
+
+            List<Panel> panels = analyticalModel_Temp.GetPanels();
 
             GeometryObjectModel result = new GeometryObjectModel();
             foreach(Panel panel in panels)
             {
                 VisualPanel visualPanel = new VisualPanel(panel);
-                visualPanel.Add(new Face3DObject(panel.Face3D, Query.SurfaceAppearance(panel)));
+                visualPanel.Add(new Face3DObject(panel.GetFace3D(true), Query.SurfaceAppearance(panel)));
 
                 List<Aperture> apertures = panel.Apertures;
-                if(apertures != null && apertures.Count == 0)
+                if(apertures != null && apertures.Count != 0)
                 {
                     foreach(Aperture aperture in apertures)
                     {

@@ -15,6 +15,21 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public Point3DObject(JObject jObject)
+            : base(jObject)
+        {
+
+        }
+
+        public Point3DObject(Point3DObject point3DObject)
+            : base(point3DObject)
+        {
+            if (point3DObject?.PointAppearance != null)
+            {
+                PointAppearance = new PointAppearance(point3DObject?.PointAppearance);
+            }
+        }
+
         public Point3DObject(Point3D point3D)
             : base(point3D)
         {
@@ -26,7 +41,7 @@ namespace SAM.Geometry.UI
         {
             if(pointAppearance != null)
             {
-                pointAppearance = new PointAppearance(pointAppearance);
+                PointAppearance = new PointAppearance(pointAppearance);
             }
         }
 

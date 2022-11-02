@@ -398,6 +398,11 @@ namespace SAM.Analytical.UI.WPF
             }
 
             visualBackground = Geometry.UI.WPF.Create.VisualBackground(Viewport);
+            if(visualBackground == null)
+            {
+                return;
+            }
+
             Viewport.Children.Add(visualBackground);
         }
 

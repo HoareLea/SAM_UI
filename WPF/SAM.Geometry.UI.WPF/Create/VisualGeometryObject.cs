@@ -26,7 +26,7 @@ namespace SAM.Geometry.UI.WPF
             }
 
             VisualGeometryObject<Face3DObject> result = new VisualGeometryObject<Face3DObject>(face3DObject);
-            result.Content = new GeometryModel3D(face3D.ToMedia3D(), UI.Create.Material(surfaceAppearance.Color));
+            result.Content = new GeometryModel3D(face3D.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color));
 
             return result;
         }
@@ -54,7 +54,7 @@ namespace SAM.Geometry.UI.WPF
             Material material = UI.Create.Material(curveAppearance.Color);
 
             Model3DGroup model3DGroup = new Model3DGroup();
-            model3DGroup.Children.Add(new GeometryModel3D(segment3D.ToMedia3D(false, curveAppearance.Thickness), material));
+            model3DGroup.Children.Add(new GeometryModel3D(segment3D.ToMedia3D(true, curveAppearance.Thickness), material));
 
             VisualGeometryObject <Segment3DObject> result = new VisualGeometryObject<Segment3DObject>(segment3DObject);
             result.Content = model3DGroup;
@@ -85,7 +85,7 @@ namespace SAM.Geometry.UI.WPF
             Material material = UI.Create.Material(curveAppearance.Color);
 
             Model3DGroup model3DGroup = new Model3DGroup();
-            segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(false, curveAppearance.Thickness), material)));
+            segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, curveAppearance.Thickness), material)));
 
             VisualGeometryObject<Polygon3DObject> result = new VisualGeometryObject<Polygon3DObject>(polygon3DObject);
             result.Content = model3DGroup;
@@ -115,7 +115,7 @@ namespace SAM.Geometry.UI.WPF
             Material material = UI.Create.Material(pointAppearance.Color);
 
             VisualGeometryObject<Point3DObject> result = new VisualGeometryObject<Point3DObject>(point3DObject);
-            result.Content = new GeometryModel3D(Convert.ToMedia3D(point3D, false, pointAppearance.Thickness), material);
+            result.Content = new GeometryModel3D(Convert.ToMedia3D(point3D, true, pointAppearance.Thickness), material);
 
             return result;
         }

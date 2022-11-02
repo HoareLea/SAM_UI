@@ -22,6 +22,21 @@ namespace SAM.Geometry.UI
 
         }
 
+        public Face3DObject(JObject jObject)
+            : base(jObject)
+        {
+
+        }
+
+        public Face3DObject(Face3DObject face3DObject)
+            : base(face3DObject)
+        {
+            if (face3DObject?.SurfaceAppearance != null)
+            {
+                SurfaceAppearance = new SurfaceAppearance(face3DObject?.SurfaceAppearance);
+            }
+        }
+
         public Face3DObject(Face3D face3D, SurfaceAppearance surfaceAppearance)
             : base(face3D)
         {

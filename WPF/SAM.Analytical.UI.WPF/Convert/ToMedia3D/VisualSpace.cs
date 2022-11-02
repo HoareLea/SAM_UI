@@ -16,7 +16,7 @@ namespace SAM.Analytical.UI.WPF
             VisualSpace result = new VisualSpace(space);
             result.Content = model3DGroup;
 
-            result.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), 270));
+            //result.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), 270));
 
             return result;
         }

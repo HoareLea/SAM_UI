@@ -21,6 +21,21 @@ namespace SAM.Geometry.UI
 
         }
 
+        public Polygon3DObject(JObject jObject)
+            : base(jObject)
+        {
+
+        }
+
+        public Polygon3DObject(Polygon3DObject polygon3DObject)
+                : base(polygon3DObject)
+        {
+            if (polygon3DObject?.CurveAppearance != null)
+            {
+                CurveAppearance = new CurveAppearance(polygon3DObject?.CurveAppearance);
+            }
+        }
+
         public Polygon3DObject(Polygon3D polygon3D, CurveAppearance curveAppearance)
             : base(polygon3D)
         {

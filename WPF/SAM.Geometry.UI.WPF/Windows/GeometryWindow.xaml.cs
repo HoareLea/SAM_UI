@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace SAM.Geometry.UI.WPF
@@ -9,8 +10,6 @@ namespace SAM.Geometry.UI.WPF
     public partial class GeometryWindow : Window
     {
         private Core.Windows.WindowHandle windowHandle;
-
-        private UIGeometryObjectModel uIGeometryObjectModel;
 
         public GeometryWindow()
         {
@@ -27,7 +26,10 @@ namespace SAM.Geometry.UI.WPF
 
             if(geometryObjectModel != null)
             {
-                uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+                UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+                uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
+
+                ViewControl.UIGeometryObjectModel = uIGeometryObjectModel;
             }
         }
 
@@ -45,9 +47,30 @@ namespace SAM.Geometry.UI.WPF
                 {
                     geometryObjectModel.Add(sAMGeometryObject);
                 }
-                
-                uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+
+                UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+                uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
+
+                ViewControl.UIGeometryObjectModel = uIGeometryObjectModel;
             }
+        }
+
+        public Mode Mode
+        {
+            get
+            {
+                return ViewControl.Mode;
+            }
+
+            set
+            {
+                ViewControl.Mode = value;
+            }
+        }
+
+        private void UIGeometryObjectModel_Modified(object sender, EventArgs e)
+        {
+
         }
     }
 }

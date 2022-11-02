@@ -15,6 +15,8 @@ namespace SAM.Geometry.UI.WPF
     /// </summary>
     public partial class ViewControl : UserControl
     {
+        private Mode mode = Mode.ThreeDimensional;
+        
         private UIGeometryObjectModel uIGeometryObjectModel;
 
         private VisualBackground visualBackground;
@@ -22,6 +24,8 @@ namespace SAM.Geometry.UI.WPF
         public ViewControl()
         {
             InitializeComponent();
+
+            Viewport.Camera = null;
         }
 
         public UIGeometryObjectModel UIGeometryObjectModel
@@ -45,6 +49,8 @@ namespace SAM.Geometry.UI.WPF
                     uIGeometryObjectModel.Opened -= UIGeometryObjectModel_Opened;
                     uIGeometryObjectModel.Opened += UIGeometryObjectModel_Opened;
                 }
+
+                Load(uIGeometryObjectModel?.JSAMObject);
             }
         }
 
@@ -88,6 +94,8 @@ namespace SAM.Geometry.UI.WPF
             {
                 Viewport.Children.Add(visualGeometryObjectModel);
             }
+
+            UpdateCamera();
         }
 
         private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -122,11 +130,11 @@ namespace SAM.Geometry.UI.WPF
             CenterView();
         }
 
-        private void MainCamera_Changed(object sender, EventArgs e)
+        private void Camera_Changed(object sender, EventArgs e)
         {
             if (DirectionalLight != null)
             {
-                DirectionalLight.Direction = MainCamera.LookDirection;
+                DirectionalLight.Direction = ProjectionCamera.LookDirection;
             }
 
             if (visualBackground != null)
@@ -147,8 +155,15 @@ namespace SAM.Geometry.UI.WPF
         {
             return Core.UI.WPF.Query.VisualJSAMObjects<T>(Viewport);
         }
+        
         public void CenterView()
         {
+            ProjectionCamera projectionCamera = ProjectionCamera;
+            if(projectionCamera.IsFrozen)
+            {
+                return;
+            }
+            
             List<VisualGeometryObjectModel> visualGeometryObjectModels = GetVisualSAMObjects<VisualGeometryObjectModel>();
             if (visualGeometryObjectModels == null)
             {
@@ -157,8 +172,76 @@ namespace SAM.Geometry.UI.WPF
 
             Rect3D rect3D = Query.Bounds(visualGeometryObjectModels);
 
-            HelixToolkit.Wpf.CameraHelper.ZoomExtents(MainCamera, Viewport, rect3D);
+            HelixToolkit.Wpf.CameraHelper.ZoomExtents(projectionCamera, Viewport, rect3D);
         }
 
+        public Mode Mode
+        {
+            get
+            {
+                return mode;
+            }
+
+            set
+            {
+                mode = value;
+                UpdateCamera();
+            }
+        }
+
+        private void UpdateCamera()
+        {
+            switch(mode)
+            {
+                case Mode.TwoDimensional:
+                    if(Viewport.Camera is OrthographicCamera)
+                    {
+                        return;
+                    }
+
+                    OrthographicCamera orthographicCamera = new OrthographicCamera()
+                    {
+                        Position = new Point3D(0, 0, 9),
+                        LookDirection = (new Spatial.Vector3D(0, 0.0001, -0.9999)).ToMedia3D(),
+                        NearPlaneDistance = double.NegativeInfinity,
+                    };
+
+                    orthographicCamera.Changed += Camera_Changed;
+                    
+                    Viewport.Camera = orthographicCamera;
+                    break;
+
+                case Mode.ThreeDimensional:
+                    if (Viewport.Camera is PerspectiveCamera)
+                    {
+                        return;
+                    }
+
+                    PerspectiveCamera perspectiveCamera = new PerspectiveCamera()
+                    {
+                        Position = new Point3D(10, 5, 9),
+                        LookDirection = new Vector3D(-10, -5, -9),
+                        NearPlaneDistance = 1,
+                    };
+
+                    perspectiveCamera.Changed += Camera_Changed;
+
+                    Viewport.Camera = perspectiveCamera;
+                    break;
+            }
+        }
+
+        public ProjectionCamera ProjectionCamera
+        {
+            get
+            {
+                return Viewport.Camera as ProjectionCamera;
+            }
+        }
+
+        private void UserControl_Initialized(object sender, EventArgs e)
+        {
+
+        }
     }
 }

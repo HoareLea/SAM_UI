@@ -263,5 +263,8 @@
     <Folder Include="Interfaces\" />
     <Folder Include="Modify\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Section.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

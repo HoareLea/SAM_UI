@@ -88,6 +88,7 @@
     <Compile Include="Create\VisualGeometryObject.cs" />
     <Compile Include="Create\Point3DCollection.cs" />
     <Compile Include="Create\VisualBackground.cs" />
+    <Compile Include="Enums\Mode.cs" />
     <Compile Include="Interfaces\IVisualFace3DObject.cs" />
     <Compile Include="Interfaces\IVisualGeometryObject.cs" />
     <Compile Include="Modify\Rotate.cs" />

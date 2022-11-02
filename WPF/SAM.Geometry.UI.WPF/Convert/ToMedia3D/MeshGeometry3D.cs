@@ -46,15 +46,25 @@ namespace SAM.Geometry.UI.WPF
                         continue;
                     }
 
+                    Spatial.Vector3D vector3D = mesh3D.GetNormal(i);
+                    if (vector3D == null)
+                    {
+                        continue;
+                    }
+
+                    vector3D.Normalize();
+
                     result.TriangleIndices.Add(tuple.Item1);
                     result.TriangleIndices.Add(tuple.Item2);
                     result.TriangleIndices.Add(tuple.Item3);
+                    result.Normals.Add(vector3D.ToMedia3D());
 
                     if(doubleSided)
                     {
                         result.TriangleIndices.Add(tuple.Item3);
                         result.TriangleIndices.Add(tuple.Item2);
                         result.TriangleIndices.Add(tuple.Item1);
+                        result.Normals.Add(vector3D.ToMedia3D());
                     }
                 }
             }
@@ -153,17 +163,17 @@ namespace SAM.Geometry.UI.WPF
                     result.TriangleIndices.Add(1);
                     result.TriangleIndices.Add(2);
 
-                    result.TriangleIndices.Add(3);
-                    result.TriangleIndices.Add(0);
                     result.TriangleIndices.Add(2);
+                    result.TriangleIndices.Add(1);
+                    result.TriangleIndices.Add(3);
 
                     result.TriangleIndices.Add(4);
                     result.TriangleIndices.Add(5);
                     result.TriangleIndices.Add(6);
 
-                    result.TriangleIndices.Add(7);
-                    result.TriangleIndices.Add(4);
                     result.TriangleIndices.Add(6);
+                    result.TriangleIndices.Add(5);
+                    result.TriangleIndices.Add(7);
 
                     if (doubleSided)
                     {
@@ -171,17 +181,17 @@ namespace SAM.Geometry.UI.WPF
                         result.TriangleIndices.Add(1);
                         result.TriangleIndices.Add(0);
 
-                        result.TriangleIndices.Add(2);
-                        result.TriangleIndices.Add(0);
                         result.TriangleIndices.Add(3);
+                        result.TriangleIndices.Add(1);
+                        result.TriangleIndices.Add(2);
 
                         result.TriangleIndices.Add(6);
                         result.TriangleIndices.Add(5);
                         result.TriangleIndices.Add(4);
 
-                        result.TriangleIndices.Add(6);
-                        result.TriangleIndices.Add(4);
                         result.TriangleIndices.Add(7);
+                        result.TriangleIndices.Add(5);
+                        result.TriangleIndices.Add(6);
                     }
                 }
             }

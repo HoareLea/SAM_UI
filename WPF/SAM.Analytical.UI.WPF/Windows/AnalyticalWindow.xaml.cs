@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using SAM.Core;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,6 +38,10 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             RibbonButton_General_CloseAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
             RibbonButton_General_CloseAnalyticalModel.Click += RibbonButton_General_CloseAnalyticalModel_Click;
+
+
+            RibbonButton_View_Section.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_View_Section.Click += RibbonButton_View_Section_Click;
 
 
             RibbonButton_Edit_Location.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Location);
@@ -134,6 +139,23 @@ namespace SAM.Analytical.UI.WPF.Windows
             AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_View_Section_Click(object sender, RoutedEventArgs e)
+        {
+            Geometry.GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel();
+
+            Geometry.UI.WPF.GeometryWindow geometryWindow = new Geometry.UI.WPF.GeometryWindow(geometryObjectModel) 
+            {
+                Mode = Geometry.UI.Mode.ThreeDimensional
+            };
+
+            bool? showDialog = geometryWindow.ShowDialog();
+
+            if (showDialog == null || !showDialog.HasValue || !showDialog.Value)
+            {
+                return;
+            }
         }
 
         private void RibbonButton_Tools_OpenMollierChart_Click(object sender, RoutedEventArgs e)
