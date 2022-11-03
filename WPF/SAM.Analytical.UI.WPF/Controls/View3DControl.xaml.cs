@@ -131,6 +131,7 @@ namespace SAM.Analytical.UI.WPF
         {
             return Core.UI.WPF.Query.VisualJSAMObjects<T>(Viewport);
         }
+        
         public UIAnalyticalModel UIAnalyticalModel
         {
             get

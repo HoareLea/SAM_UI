@@ -1,11 +1,14 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Core;
 using SAM.Geometry.Spatial;
 
 namespace SAM.Geometry.UI
 {
-    public class Point3DObject : Point3D, IPoint3DObject
+    public class Point3DObject : Point3D, IPoint3DObject, ITaggable
     {
         public PointAppearance PointAppearance { get; set; }
+
+        public Tag Tag { get; set; }
 
         public Point3D Point3D
         {
@@ -28,6 +31,8 @@ namespace SAM.Geometry.UI
             {
                 PointAppearance = new PointAppearance(point3DObject?.PointAppearance);
             }
+
+            Tag = point3DObject?.Tag;
         }
 
         public Point3DObject(Point3D point3D)
@@ -57,6 +62,8 @@ namespace SAM.Geometry.UI
                 PointAppearance = new PointAppearance(jObject.Value<JObject>("PointAppearance"));
             }
 
+            Tag = Core.Query.Tag(jObject);
+
             return true;
         }
 
@@ -72,6 +79,8 @@ namespace SAM.Geometry.UI
             {
                 jObject.Add("PointAppearance", PointAppearance.ToJObject());
             }
+
+            Core.Modify.Add(jObject, Tag);
 
             return jObject;
         }

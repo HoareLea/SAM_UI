@@ -13,7 +13,7 @@
             </ContextMenu>
         </Grid.ContextMenu>
         <TextBlock x:Name ="Information"  Text="Information" HorizontalAlignment="Left" VerticalAlignment="Bottom"></TextBlock>
-        <Viewport3D x:Name="Viewport" Margin="1,1,1,1">
+        <Viewport3D x:Name="Viewport" Margin="1,1,1,1" PreviewMouseMove="Viewport_PreviewMouseMove">
             <Viewport3D.Children>
                 <ModelVisual3D x:Name="Lights">
                     <ModelVisual3D.Children>

@@ -11,6 +11,8 @@ namespace SAM.Geometry.UI.WPF
     {
         private Core.Windows.WindowHandle windowHandle;
 
+        public event ObjectHooveredEventHandler ObjectHoovered;
+
         public GeometryWindow()
         {
             InitializeComponent();
@@ -30,7 +32,13 @@ namespace SAM.Geometry.UI.WPF
                 uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
 
                 ViewControl.UIGeometryObjectModel = uIGeometryObjectModel;
+                ViewControl.ObjectHoovered += ViewControl_ObjectHoovered;
             }
+        }
+
+        private void ViewControl_ObjectHoovered(object sender, Core.UI.WPF.ObjectHooveredEventArgs e)
+        {
+            ObjectHoovered?.Invoke(this, e);
         }
 
         public GeometryWindow(IEnumerable<ISAMGeometryObject> geometryObjects)
@@ -66,6 +74,19 @@ namespace SAM.Geometry.UI.WPF
             {
                 ViewControl.Mode = value;
             }
+        }
+
+        //public ViewControl ViewControl_Temp
+        //{
+        //    get
+        //    {
+        //        return ViewControl;
+        //    }
+        //}
+
+        public void CenterView()
+        {
+            ViewControl.CenterView();
         }
 
         private void UIGeometryObjectModel_Modified(object sender, EventArgs e)

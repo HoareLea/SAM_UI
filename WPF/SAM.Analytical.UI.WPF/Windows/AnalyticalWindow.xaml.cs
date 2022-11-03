@@ -1,9 +1,12 @@
 ﻿using Microsoft.Win32;
 using SAM.Core;
+using SAM.Core.UI.WPF;
+using SAM.Geometry.UI.WPF;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF.Windows
 {
@@ -143,12 +146,35 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_View_Section_Click(object sender, RoutedEventArgs e)
         {
-            Geometry.GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel();
-
-            Geometry.UI.WPF.GeometryWindow geometryWindow = new Geometry.UI.WPF.GeometryWindow(geometryObjectModel) 
+            double elevation = new Geometry.Spatial.BoundingBox3D(uIAnalyticalModel.JSAMObject.GetPanels().ConvertAll(x => x.GetBoundingBox())).Min.Z;
+            elevation = Core.Query.Round(elevation, 0.1);
+            using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
             {
-                Mode = Geometry.UI.Mode.ThreeDimensional
+                textBoxForm.Value = elevation;
+                if(textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                elevation = textBoxForm.Value + 0.1;
+            }
+
+            if(double.IsNaN(elevation))
+            {
+                return;
+            }
+
+            Geometry.GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Geometry.UI.Mode.TwoDimensional, Geometry.Spatial.Create.Plane(elevation));
+
+            GeometryWindow geometryWindow = new GeometryWindow(geometryObjectModel)
+            {
+                Mode = Geometry.UI.Mode.TwoDimensional,
+                Title = "Section View",
             };
+
+            geometryWindow.ObjectHoovered += GeometryWindow_ObjectHoovered;
+
+            //geometryWindow.ViewControl_Temp.PreviewMouseMove += ViewControl_Temp_PreviewMouseMove;
 
             bool? showDialog = geometryWindow.ShowDialog();
 
@@ -157,6 +183,32 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
         }
+
+        private void GeometryWindow_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
+        {
+            IVisualJSAMObject visualJSAMObject = e.VisualJSAMObject;
+            if(visualJSAMObject is ITaggable)
+            {
+                Tag tag = ((ITaggable)visualJSAMObject).Tag;
+                Panel panel = tag.GetValue<Panel>();
+            }
+        }
+
+        //private void ViewControl_Temp_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        //{
+        //    ViewControl viewControl = (ViewControl)sender;
+
+        //    Point point_Current_Temp = e.GetPosition(viewControl.Viewport3D);
+
+        //    RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(viewControl.Viewport3D, point_Current_Temp, out VisualPanel visualJSAMObject);
+        //    if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
+        //    {
+        //        if (visualJSAMObject is VisualPanel)
+        //        {
+
+        //        }
+        //    }
+        //}
 
         private void RibbonButton_Tools_OpenMollierChart_Click(object sender, RoutedEventArgs e)
         {
@@ -426,7 +478,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             View3DControl.Show(jSAMObjects);
         }
 
-        private void UIAnalyticalModel_Modified(object sender, System.EventArgs e)
+        private void UIAnalyticalModel_Modified(object sender, EventArgs e)
         {
             SetEnabled();
         }

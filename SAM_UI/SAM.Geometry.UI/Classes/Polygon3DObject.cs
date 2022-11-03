@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Core;
 using SAM.Geometry.Spatial;
 
 namespace SAM.Geometry.UI
 {
-    public class Polygon3DObject : Polygon3D, IPolygon3DObject
+    public class Polygon3DObject : Polygon3D, IPolygon3DObject, ITaggable
     {
         public CurveAppearance CurveAppearance { get; set; }
 
@@ -14,6 +15,8 @@ namespace SAM.Geometry.UI
                 return new Polygon3D(this);
             }
         }
+
+        public Tag Tag { get; set; }
 
         public Polygon3DObject(Polygon3D polygon3D)
             : base(polygon3D)
@@ -34,6 +37,8 @@ namespace SAM.Geometry.UI
             {
                 CurveAppearance = new CurveAppearance(polygon3DObject?.CurveAppearance);
             }
+
+            Tag = polygon3DObject?.Tag;
         }
 
         public Polygon3DObject(Polygon3D polygon3D, CurveAppearance curveAppearance)
@@ -57,6 +62,8 @@ namespace SAM.Geometry.UI
                 CurveAppearance = new CurveAppearance(jObject.Value<JObject>("CurveAppearance"));
             }
 
+            Tag = Core.Query.Tag(jObject);
+
             return true;
         }
 
@@ -72,6 +79,8 @@ namespace SAM.Geometry.UI
             {
                 jObject.Add("CurveAppearance", CurveAppearance.ToJObject());
             }
+
+            Core.Modify.Add(jObject, Tag);
 
             return jObject;
         }

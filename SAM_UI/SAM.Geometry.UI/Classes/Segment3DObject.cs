@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Core;
 using SAM.Geometry.Spatial;
 
 namespace SAM.Geometry.UI
 {
-    public class Segment3DObject : Segment3D, ISegment3DObject
+    public class Segment3DObject : Segment3D, ISegment3DObject, ITaggable
     {
         public CurveAppearance CurveAppearance { get; set; }
 
@@ -14,6 +15,8 @@ namespace SAM.Geometry.UI
                 return new Segment3D(this);
             }
         }
+
+        public Tag Tag { get; set; }
 
         public Segment3DObject(Segment3D segment3D)
             : base(segment3D)
@@ -43,6 +46,8 @@ namespace SAM.Geometry.UI
             {
                 CurveAppearance = new CurveAppearance(segment3DObject.CurveAppearance);
             }
+
+            Tag = segment3DObject?.Tag;
         }
 
         public override bool FromJObject(JObject jObject)
@@ -56,6 +61,8 @@ namespace SAM.Geometry.UI
             {
                 CurveAppearance = new CurveAppearance(jObject.Value<JObject>("CurveAppearance"));
             }
+
+            Tag = Core.Query.Tag(jObject);
 
             return true;
         }
@@ -72,6 +79,8 @@ namespace SAM.Geometry.UI
             {
                 jObject.Add("CurveAppearance", CurveAppearance.ToJObject());
             }
+
+            Core.Modify.Add(jObject, Tag);
 
             return jObject;
         }

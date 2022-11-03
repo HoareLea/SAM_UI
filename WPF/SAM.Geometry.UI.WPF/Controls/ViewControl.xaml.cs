@@ -19,7 +19,7 @@ namespace SAM.Geometry.UI.WPF
         
         private UIGeometryObjectModel uIGeometryObjectModel;
 
-        private VisualBackground visualBackground;
+        public event ObjectHooveredEventHandler ObjectHoovered;
 
         public ViewControl()
         {
@@ -132,23 +132,15 @@ namespace SAM.Geometry.UI.WPF
 
         private void Camera_Changed(object sender, EventArgs e)
         {
+            ChangeCamera();
+        }
+
+        private void ChangeCamera()
+        {
             if (DirectionalLight != null)
             {
                 DirectionalLight.Direction = ProjectionCamera.LookDirection;
             }
-
-            if (visualBackground != null)
-            {
-                Viewport.Children.Remove(visualBackground);
-            }
-
-            visualBackground = Create.VisualBackground(Viewport);
-            if(visualBackground == null)
-            {
-                return;
-            }
-
-            Viewport.Children.Add(visualBackground);
         }
 
         public List<T> GetVisualSAMObjects<T>() where T : IVisualJSAMObject
@@ -189,8 +181,18 @@ namespace SAM.Geometry.UI.WPF
             }
         }
 
+        //public Viewport3D Viewport3D
+        //{
+        //    get
+        //    {
+        //        return Viewport;
+        //    }
+        //}
+
         private void UpdateCamera()
         {
+            ProjectionCamera projectionCamera = null;
+            
             switch(mode)
             {
                 case Mode.TwoDimensional:
@@ -206,9 +208,7 @@ namespace SAM.Geometry.UI.WPF
                         NearPlaneDistance = double.NegativeInfinity,
                     };
 
-                    orthographicCamera.Changed += Camera_Changed;
-                    
-                    Viewport.Camera = orthographicCamera;
+                    projectionCamera = orthographicCamera;
                     break;
 
                 case Mode.ThreeDimensional:
@@ -224,11 +224,18 @@ namespace SAM.Geometry.UI.WPF
                         NearPlaneDistance = 1,
                     };
 
-                    perspectiveCamera.Changed += Camera_Changed;
-
-                    Viewport.Camera = perspectiveCamera;
+                    projectionCamera = perspectiveCamera;
                     break;
             }
+
+            if(projectionCamera == null)
+            {
+                return;
+            }
+
+            projectionCamera.Changed += Camera_Changed;
+            Viewport.Camera = projectionCamera;
+            ChangeCamera();
         }
 
         public ProjectionCamera ProjectionCamera
@@ -242,6 +249,20 @@ namespace SAM.Geometry.UI.WPF
         private void UserControl_Initialized(object sender, EventArgs e)
         {
 
+        }
+
+        private void Viewport_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            Point point_Current_Temp = e.GetPosition(Viewport);
+
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(Viewport, point_Current_Temp, out IVisualJSAMObject visualJSAMObject);
+            if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
+            {
+                if (visualJSAMObject is IVisualJSAMObject)
+                {
+                    ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, visualJSAMObject));
+                }
+            }
         }
     }
 }
