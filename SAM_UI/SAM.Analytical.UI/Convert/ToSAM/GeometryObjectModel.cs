@@ -81,9 +81,9 @@ namespace SAM.Analytical.UI
             return result;
         }
 
-        private static GeometryObjectModel ToSAM_GeometryObjectModel_2D(this AnalyticalModel analyticalModel, Plane plane = null)
+        private static GeometryObjectModel ToSAM_GeometryObjectModel_2D(this AnalyticalModel analyticalModel, Plane plane)
         {
-            if (analyticalModel == null)
+            if (analyticalModel == null || plane == null)
             {
                 return null;
             }
@@ -126,7 +126,7 @@ namespace SAM.Analytical.UI
 
             }
 
-            Dictionary<System.Guid, System.Drawing.Color> dictionary_SpaceColor = Analytical.Modify.AssignSpaceColors(adjacencyCluster);
+            //Dictionary<System.Guid, System.Drawing.Color> dictionary_SpaceColor = Analytical.Modify.AssignSpaceColors(adjacencyCluster);
             List<Space> spaces = adjacencyCluster.GetSpaces();
 
             if(spaces != null)
@@ -155,13 +155,21 @@ namespace SAM.Analytical.UI
 
                     face3Ds = face3Ds_Offset;
 
-                    System.Drawing.Color color = dictionary_SpaceColor[space.Guid];
+                    //System.Drawing.Color color = dictionary_SpaceColor[space.Guid];
+
+                    System.Drawing.Color color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
+                    if(space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                    {
+                        color = color_Temp;
+                    }
 
                     VisualSpace visualSpace = new VisualSpace(space);
                     face3Ds.ForEach(x => visualSpace.Add(new Face3DObject(x, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(255, 255, 255), 0.01)) { Tag = space}));
                     result.Add(visualSpace);
                 }
             }
+
+            result.SetValue(GeometryObjectModelParameter.SectionPlane , plane);
 
             return result;
 

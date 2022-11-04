@@ -61,6 +61,7 @@
     <Compile Include="Classes\Segment3DObject.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Enums\Mode.cs" />
+    <Compile Include="Enums\Parameter\GeometryObjectModelParameter.cs" />
     <Compile Include="Interfaces\IAppearance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

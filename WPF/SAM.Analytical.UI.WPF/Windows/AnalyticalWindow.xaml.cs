@@ -147,7 +147,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_View_Section_Click(object sender, RoutedEventArgs e)
         {
             double elevation = new Geometry.Spatial.BoundingBox3D(uIAnalyticalModel.JSAMObject.GetPanels().ConvertAll(x => x.GetBoundingBox())).Min.Z;
-            elevation = Core.Query.Round(elevation, 0.1);
+            elevation = Core.Query.Round(elevation, 0.01);
             using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
             {
                 textBoxForm.Value = elevation;
@@ -163,15 +163,16 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 return;
             }
-
-            Geometry.GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Geometry.UI.Mode.TwoDimensional, Geometry.Spatial.Create.Plane(elevation));
-
-            GeometryWindow geometryWindow = new GeometryWindow(geometryObjectModel)
+            GeometryWindow geometryWindow = new GeometryWindow()
             {
                 Title = "Section View",
             };
 
             ViewControl viewControl = geometryWindow.ViewControl;
+
+            Geometry.GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Geometry.UI.Mode.TwoDimensional, Geometry.Spatial.Create.Plane(elevation));
+            
+            viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             viewControl.Mode = Geometry.UI.Mode.TwoDimensional;
             viewControl.Loaded += ViewControl_Loaded;
             viewControl.ObjectHoovered += ViewControl_ObjectHoovered;
@@ -188,6 +189,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void ViewControl_ObjectDoubleClicked(object sender, ObjectDoubleClickedEventArgs e)
         {
             ViewControl viewControl = sender as ViewControl;
+            Geometry.GeometryObjectModel geometryObjectModel = viewControl.UIGeometryObjectModel.JSAMObject;
 
             System.Windows.Window window =  viewControl.Window();
 
@@ -207,11 +209,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 Panel panel = (Panel)tag.Value;
                 uIAnalyticalModel.EditPanel(panel, new Core.Windows.WindowHandle(window));
+
+                geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Geometry.UI.Mode.TwoDimensional, geometryObjectModel.GetValue<Geometry.Spatial.Plane>(Geometry.UI.GeometryObjectModelParameter.SectionPlane));
+                viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             }
             else if (tag.Value is Space)
             {
                 Space space = (Space)tag.Value;
                 uIAnalyticalModel.EditSpace(space, new Core.Windows.WindowHandle(window));
+
+                geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Geometry.UI.Mode.TwoDimensional, geometryObjectModel.GetValue<Geometry.Spatial.Plane>(Geometry.UI.GeometryObjectModelParameter.SectionPlane));
+                viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             }
         }
 
