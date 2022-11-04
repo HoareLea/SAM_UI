@@ -1,4 +1,5 @@
 ﻿using SAM.Core.UI.WPF;
+using SAM.Geometry;
 using SAM.Geometry.UI.WPF;
 using System.Windows.Media;
 
@@ -17,6 +18,14 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 return jSAMObject;
+            }
+        }
+
+        public ISAMGeometryObject SAMGeometryObject
+        {
+            get
+            {
+                return null;
             }
         }
 

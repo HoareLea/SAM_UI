@@ -90,7 +90,9 @@ namespace SAM.Analytical.UI
 
             AnalyticalModel analyticalModel_Temp = new AnalyticalModel(analyticalModel);
 
-            Dictionary<Panel, List<ISegmentable3D>> dictionary = Analytical.Query.SectionDictionary<ISegmentable3D>(analyticalModel_Temp.GetPanels(), plane);
+            AdjacencyCluster adjacencyCluster = analyticalModel_Temp.AdjacencyCluster;
+
+            Dictionary<Panel, List<ISegmentable3D>> dictionary = Analytical.Query.SectionDictionary<ISegmentable3D>(adjacencyCluster.GetPanels(), plane);
             if(dictionary == null)
             {
                 return null;
@@ -118,10 +120,47 @@ namespace SAM.Analytical.UI
                         continue;
                     }
 
-                    segment3Ds.ForEach(x => visualPanel.Add(new Segment3DObject(x, new CurveAppearance(Color.FromRgb(255, 255, 255), 0.01)) { Tag = keyValuePair.Key }));
+                    segment3Ds.ForEach(x => visualPanel.Add(new Segment3DObject(x, new CurveAppearance(Color.FromRgb(255, 255, 255), 0.02)) { Tag = keyValuePair.Key }));
                 }
                 result.Add(visualPanel);
 
+            }
+
+            Dictionary<System.Guid, System.Drawing.Color> dictionary_SpaceColor = Analytical.Modify.AssignSpaceColors(adjacencyCluster);
+            List<Space> spaces = adjacencyCluster.GetSpaces();
+
+            if(spaces != null)
+            {
+                foreach(Space space in spaces)
+                {
+                    Shell shell = adjacencyCluster.Shell(space);
+                    List<Face3D> face3Ds = shell.Section(plane);
+
+                    if(face3Ds == null || face3Ds.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    List<Face3D> face3Ds_Offset = new List<Face3D>();
+                    foreach(Face3D face3D in face3Ds)
+                    {
+                        List<Face3D> face3Ds_Offset_Temp = face3D.Offset(-0.03);
+                        if(face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        face3Ds_Offset.AddRange(face3Ds_Offset_Temp);
+                    }
+
+                    face3Ds = face3Ds_Offset;
+
+                    System.Drawing.Color color = dictionary_SpaceColor[space.Guid];
+
+                    VisualSpace visualSpace = new VisualSpace(space);
+                    face3Ds.ForEach(x => visualSpace.Add(new Face3DObject(x, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(255, 255, 255), 0.01)) { Tag = space}));
+                    result.Add(visualSpace);
+                }
             }
 
             return result;

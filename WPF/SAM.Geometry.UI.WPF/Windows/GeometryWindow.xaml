@@ -13,6 +13,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <local:ViewControl x:Name="ViewControl" Grid.Column="0" Grid.Row="0"/>
+        <local:ViewControl x:Name="viewControl" Grid.Column="0" Grid.Row="0"/>
     </Grid>
 </Window>

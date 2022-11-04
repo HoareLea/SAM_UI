@@ -6,5 +6,7 @@ namespace SAM.Geometry.UI.WPF
     {
         GeometryModel3D GeometryModel3D { get; }
 
+        ISAMGeometryObject SAMGeometryObject { get; }
+
     }
 }

@@ -11,8 +11,6 @@ namespace SAM.Geometry.UI.WPF
     {
         private Core.Windows.WindowHandle windowHandle;
 
-        public event ObjectHooveredEventHandler ObjectHoovered;
-
         public GeometryWindow()
         {
             InitializeComponent();
@@ -31,14 +29,8 @@ namespace SAM.Geometry.UI.WPF
                 UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
                 uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
 
-                ViewControl.UIGeometryObjectModel = uIGeometryObjectModel;
-                ViewControl.ObjectHoovered += ViewControl_ObjectHoovered;
+                viewControl.UIGeometryObjectModel = uIGeometryObjectModel;
             }
-        }
-
-        private void ViewControl_ObjectHoovered(object sender, Core.UI.WPF.ObjectHooveredEventArgs e)
-        {
-            ObjectHoovered?.Invoke(this, e);
         }
 
         public GeometryWindow(IEnumerable<ISAMGeometryObject> geometryObjects)
@@ -59,34 +51,16 @@ namespace SAM.Geometry.UI.WPF
                 UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
                 uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
 
-                ViewControl.UIGeometryObjectModel = uIGeometryObjectModel;
+                viewControl.UIGeometryObjectModel = uIGeometryObjectModel;
             }
         }
 
-        public Mode Mode
+        public ViewControl ViewControl
         {
             get
             {
-                return ViewControl.Mode;
+                return viewControl;
             }
-
-            set
-            {
-                ViewControl.Mode = value;
-            }
-        }
-
-        //public ViewControl ViewControl_Temp
-        //{
-        //    get
-        //    {
-        //        return ViewControl;
-        //    }
-        //}
-
-        public void CenterView()
-        {
-            ViewControl.CenterView();
         }
 
         private void UIGeometryObjectModel_Modified(object sender, EventArgs e)

@@ -25,7 +25,7 @@ namespace SAM.Geometry.UI.WPF
         {
             InitializeComponent();
 
-            Viewport.Camera = null;
+            viewport3D.Camera = null;
         }
 
         public UIGeometryObjectModel UIGeometryObjectModel
@@ -73,26 +73,26 @@ namespace SAM.Geometry.UI.WPF
         {
             if(geometryObjectModel == null)
             {
-                Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(Viewport);
+                Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(viewport3D);
                 return;
             }
 
             Transform3D tranform3D = Transform3D.Identity;
 
-            VisualGeometryObjectModel visualGeometryObjectModel = Core.UI.WPF.Query.VisualJSAMObjects<VisualGeometryObjectModel>(Viewport)?.FirstOrDefault();
+            VisualGeometryObjectModel visualGeometryObjectModel = Core.UI.WPF.Query.VisualJSAMObjects<VisualGeometryObjectModel>(viewport3D)?.FirstOrDefault();
             if (visualGeometryObjectModel != null)
             {
                 tranform3D = visualGeometryObjectModel.Transform;
             }
 
-            Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(Viewport);
+            Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(viewport3D);
 
             visualGeometryObjectModel = Convert.ToMedia3D(geometryObjectModel);
             visualGeometryObjectModel.Transform = tranform3D;
 
             if (visualGeometryObjectModel != null)
             {
-                Viewport.Children.Add(visualGeometryObjectModel);
+                viewport3D.Children.Add(visualGeometryObjectModel);
             }
 
             UpdateCamera();
@@ -102,8 +102,8 @@ namespace SAM.Geometry.UI.WPF
         {
             ContextMenu_Grid.Items.Clear();
 
-            Point point_Current = Mouse.GetPosition(Viewport);
-            HitTestResult hitTestResult = VisualTreeHelper.HitTest(Viewport, point_Current);
+            Point point_Current = Mouse.GetPosition(viewport3D);
+            HitTestResult hitTestResult = VisualTreeHelper.HitTest(viewport3D, point_Current);
             IVisualGeometryObject visualGeometryObjectt = hitTestResult?.VisualHit as IVisualGeometryObject;
 
             MenuItem menuItem = new MenuItem();
@@ -145,7 +145,7 @@ namespace SAM.Geometry.UI.WPF
 
         public List<T> GetVisualSAMObjects<T>() where T : IVisualJSAMObject
         {
-            return Core.UI.WPF.Query.VisualJSAMObjects<T>(Viewport);
+            return Core.UI.WPF.Query.VisualJSAMObjects<T>(viewport3D);
         }
         
         public void CenterView()
@@ -164,7 +164,7 @@ namespace SAM.Geometry.UI.WPF
 
             Rect3D rect3D = Query.Bounds(visualGeometryObjectModels);
 
-            HelixToolkit.Wpf.CameraHelper.ZoomExtents(projectionCamera, Viewport, rect3D);
+            HelixToolkit.Wpf.CameraHelper.ZoomExtents(projectionCamera, viewport3D, rect3D);
         }
 
         public Mode Mode
@@ -196,7 +196,7 @@ namespace SAM.Geometry.UI.WPF
             switch(mode)
             {
                 case Mode.TwoDimensional:
-                    if(Viewport.Camera is OrthographicCamera)
+                    if(viewport3D.Camera is OrthographicCamera)
                     {
                         return;
                     }
@@ -212,7 +212,7 @@ namespace SAM.Geometry.UI.WPF
                     break;
 
                 case Mode.ThreeDimensional:
-                    if (Viewport.Camera is PerspectiveCamera)
+                    if (viewport3D.Camera is PerspectiveCamera)
                     {
                         return;
                     }
@@ -234,7 +234,7 @@ namespace SAM.Geometry.UI.WPF
             }
 
             projectionCamera.Changed += Camera_Changed;
-            Viewport.Camera = projectionCamera;
+            viewport3D.Camera = projectionCamera;
             ChangeCamera();
         }
 
@@ -242,7 +242,7 @@ namespace SAM.Geometry.UI.WPF
         {
             get
             {
-                return Viewport.Camera as ProjectionCamera;
+                return viewport3D.Camera as ProjectionCamera;
             }
         }
 
@@ -253,15 +253,34 @@ namespace SAM.Geometry.UI.WPF
 
         private void Viewport_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            Point point_Current_Temp = e.GetPosition(Viewport);
+            Point point_Current_Temp = e.GetPosition(viewport3D);
 
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(Viewport, point_Current_Temp, out IVisualJSAMObject visualJSAMObject);
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(viewport3D, point_Current_Temp, out IVisualJSAMObject visualJSAMObject);
             if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
             {
                 if (visualJSAMObject is IVisualJSAMObject)
                 {
                     ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, visualJSAMObject));
                 }
+            }
+        }
+
+        private void Viewport_Loaded(object sender, RoutedEventArgs e)
+        {
+            Information.Text = string.Empty;
+            //CenterView();
+        }
+
+        public string Hint
+        {
+            get
+            {
+                return Information.Text;
+            }
+
+            set
+            {
+                Information.Text = value;
             }
         }
     }

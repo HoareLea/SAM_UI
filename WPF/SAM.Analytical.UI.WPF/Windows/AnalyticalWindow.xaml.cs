@@ -19,6 +19,8 @@ namespace SAM.Analytical.UI.WPF.Windows
         
         private UIAnalyticalModel uIAnalyticalModel;
 
+        private IVisualJSAMObject visualSAMObject_Highlight;
+
         public AnalyticalWindow()
         {
             InitializeComponent();
@@ -168,13 +170,13 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             GeometryWindow geometryWindow = new GeometryWindow(geometryObjectModel)
             {
-                Mode = Geometry.UI.Mode.TwoDimensional,
                 Title = "Section View",
             };
 
-            geometryWindow.ObjectHoovered += GeometryWindow_ObjectHoovered;
-
-            //geometryWindow.ViewControl_Temp.PreviewMouseMove += ViewControl_Temp_PreviewMouseMove;
+            ViewControl viewControl = geometryWindow.ViewControl;
+            viewControl.Mode = Geometry.UI.Mode.TwoDimensional;
+            viewControl.Loaded += ViewControl_Loaded;
+            viewControl.ObjectHoovered += ViewControl_ObjectHoovered;
 
             bool? showDialog = geometryWindow.ShowDialog();
 
@@ -184,31 +186,46 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        private void GeometryWindow_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
+        private void ViewControl_Loaded(object sender, RoutedEventArgs e)
         {
-            IVisualJSAMObject visualJSAMObject = e.VisualJSAMObject;
-            if(visualJSAMObject is ITaggable)
+            ViewControl viewControl = sender as ViewControl;
+            if(viewControl == null)
             {
-                Tag tag = ((ITaggable)visualJSAMObject).Tag;
-                Panel panel = tag.GetValue<Panel>();
+                return;
             }
+
+            viewControl.CenterView();
         }
 
-        //private void ViewControl_Temp_PreviewMouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        //{
-        //    ViewControl viewControl = (ViewControl)sender;
+        private void ViewControl_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
+        {
+            visualSAMObject_Highlight?.SetHighlight(false);
+            visualSAMObject_Highlight = null;
 
-        //    Point point_Current_Temp = e.GetPosition(viewControl.Viewport3D);
+            IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
+            if (visualGeometryObject == null)
+            {
+                return;
+            }
 
-        //    RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(viewControl.Viewport3D, point_Current_Temp, out VisualPanel visualJSAMObject);
-        //    if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
-        //    {
-        //        if (visualJSAMObject is VisualPanel)
-        //        {
+            if (!(visualGeometryObject.SAMGeometryObject is ITaggable))
+            {
+                return;
+            }
 
-        //        }
-        //    }
-        //}
+            visualSAMObject_Highlight = visualGeometryObject;
+            visualGeometryObject.SetHighlight(true);
+
+            Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
+            if (tag.Value is Panel)
+            {
+                Panel panel = (Panel)tag.Value;
+            }
+            else if (tag.Value is Space)
+            {
+                Space space = (Space)tag.Value;
+            }
+        }
 
         private void RibbonButton_Tools_OpenMollierChart_Click(object sender, RoutedEventArgs e)
         {
