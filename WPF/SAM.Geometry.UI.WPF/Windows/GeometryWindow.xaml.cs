@@ -9,20 +9,14 @@ namespace SAM.Geometry.UI.WPF
     /// </summary>
     public partial class GeometryWindow : Window
     {
-        private Core.Windows.WindowHandle windowHandle;
-
         public GeometryWindow()
         {
             InitializeComponent();
-
-            windowHandle = new Core.Windows.WindowHandle(this);
         }
 
         public GeometryWindow(GeometryObjectModel geometryObjectModel)
         {
             InitializeComponent();
-
-            windowHandle = new Core.Windows.WindowHandle(this);
 
             if(geometryObjectModel != null)
             {
@@ -36,8 +30,6 @@ namespace SAM.Geometry.UI.WPF
         public GeometryWindow(IEnumerable<ISAMGeometryObject> geometryObjects)
         {
             InitializeComponent();
-
-            windowHandle = new Core.Windows.WindowHandle(this);
 
             if (geometryObjects != null)
             {

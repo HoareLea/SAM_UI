@@ -19,8 +19,6 @@ namespace SAM.Analytical.UI.WPF.Windows
         
         private UIAnalyticalModel uIAnalyticalModel;
 
-        private IVisualJSAMObject visualSAMObject_Highlight;
-
         public AnalyticalWindow()
         {
             InitializeComponent();
@@ -177,12 +175,43 @@ namespace SAM.Analytical.UI.WPF.Windows
             viewControl.Mode = Geometry.UI.Mode.TwoDimensional;
             viewControl.Loaded += ViewControl_Loaded;
             viewControl.ObjectHoovered += ViewControl_ObjectHoovered;
+            viewControl.ObjectDoubleClicked += ViewControl_ObjectDoubleClicked;
 
             bool? showDialog = geometryWindow.ShowDialog();
 
             if (showDialog == null || !showDialog.HasValue || !showDialog.Value)
             {
                 return;
+            }
+        }
+
+        private void ViewControl_ObjectDoubleClicked(object sender, ObjectDoubleClickedEventArgs e)
+        {
+            ViewControl viewControl = sender as ViewControl;
+
+            System.Windows.Window window =  viewControl.Window();
+
+            IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
+            if (visualGeometryObject == null)
+            {
+                return;
+            }
+
+            if (!(visualGeometryObject.SAMGeometryObject is ITaggable))
+            {
+                return;
+            }
+
+            Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
+            if (tag.Value is Panel)
+            {
+                Panel panel = (Panel)tag.Value;
+                uIAnalyticalModel.EditPanel(panel, new Core.Windows.WindowHandle(window));
+            }
+            else if (tag.Value is Space)
+            {
+                Space space = (Space)tag.Value;
+                uIAnalyticalModel.EditSpace(space, new Core.Windows.WindowHandle(window));
             }
         }
 
@@ -199,8 +228,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void ViewControl_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
         {
-            visualSAMObject_Highlight?.SetHighlight(false);
-            visualSAMObject_Highlight = null;
+            ViewControl viewControl = sender as ViewControl;
+            viewControl.Hint = string.Empty;
 
             IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
             if (visualGeometryObject == null)
@@ -213,17 +242,22 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            visualSAMObject_Highlight = visualGeometryObject;
-            visualGeometryObject.SetHighlight(true);
-
             Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
             if (tag.Value is Panel)
             {
                 Panel panel = (Panel)tag.Value;
+                viewControl.Hint = string.Format("Panel {0}, Guid: {1}", panel.Name, panel.Guid);
             }
             else if (tag.Value is Space)
             {
                 Space space = (Space)tag.Value;
+                viewControl.Hint = string.Format("Space {0}, Guid: {1}", space.Name, space.Guid);
+
+                InternalCondition internalCondition = space.InternalCondition;
+                if(internalCondition != null)
+                {
+                    viewControl.Hint += string.Format(", IC: {0}", internalCondition.Name);
+                }
             }
         }
 

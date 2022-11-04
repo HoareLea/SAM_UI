@@ -15,11 +15,14 @@ namespace SAM.Geometry.UI.WPF
     /// </summary>
     public partial class ViewControl : UserControl
     {
+        public event ObjectHooveredEventHandler ObjectHoovered;
+        public event ObjectDoubleClickedEventHandler ObjectDoubleClicked;
+
         private Mode mode = Mode.ThreeDimensional;
         
         private UIGeometryObjectModel uIGeometryObjectModel;
 
-        public event ObjectHooveredEventHandler ObjectHoovered;
+        private IVisualJSAMObject visualSAMObject_Highlight;
 
         public ViewControl()
         {
@@ -251,17 +254,34 @@ namespace SAM.Geometry.UI.WPF
 
         }
 
+        private void UserControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point point_Current = e.GetPosition(viewport3D);
+
+                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult<IVisualJSAMObject>(viewport3D, point_Current, out IVisualJSAMObject visualJSAMObject);
+                if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
+                {
+                    ObjectDoubleClicked?.Invoke(this, new ObjectDoubleClickedEventArgs(e, visualJSAMObject));
+                }
+            }
+        }
+
         private void Viewport_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            Point point_Current_Temp = e.GetPosition(viewport3D);
+            visualSAMObject_Highlight?.SetHighlight(false);
+            visualSAMObject_Highlight = null;
 
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(viewport3D, point_Current_Temp, out IVisualJSAMObject visualJSAMObject);
+            Point point = e.GetPosition(viewport3D);
+
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(viewport3D, point, out IVisualJSAMObject visualJSAMObject);
             if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
             {
-                if (visualJSAMObject is IVisualJSAMObject)
-                {
-                    ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, visualJSAMObject));
-                }
+                visualSAMObject_Highlight = visualJSAMObject;
+                visualJSAMObject.SetHighlight(true);
+
+                ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, visualJSAMObject));
             }
         }
 
@@ -283,5 +303,7 @@ namespace SAM.Geometry.UI.WPF
                 Information.Text = value;
             }
         }
+
+
     }
 }

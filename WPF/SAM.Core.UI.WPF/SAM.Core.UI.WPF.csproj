@@ -52,6 +52,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\ObjectHooveredEventArgs.cs" />
     <Compile Include="Classes\VisualJSAMObject.cs" />
     <Compile Include="Interfaces\IVisualJSAMObject.cs" />
