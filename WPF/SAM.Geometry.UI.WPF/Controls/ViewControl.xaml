@@ -7,13 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Initialized="UserControl_Initialized" MouseDoubleClick="UserControl_MouseDoubleClick">
     <Grid Background="#00000000" ContextMenuOpening="Grid_ContextMenuOpening">
-        <Grid.ContextMenu>
-            <ContextMenu x:Name="ContextMenu_Grid">
-                <MenuItem Header="Zoom"/>
-            </ContextMenu>
-        </Grid.ContextMenu>
         <TextBlock x:Name ="Information"  Text="Information" HorizontalAlignment="Left" VerticalAlignment="Bottom"></TextBlock>
-        <Viewport3D x:Name="viewport3D" Margin="1,1,1,1" PreviewMouseMove="Viewport_PreviewMouseMove" Loaded="Viewport_Loaded">
+        <Viewport3D x:Name="viewport3D" Margin="1,1,1,1" PreviewMouseMove="Viewport3D_PreviewMouseMove" Loaded="Viewport3D_Loaded" MouseWheel="Viewport3D_MouseWheel">
             <Viewport3D.Children>
                 <ModelVisual3D x:Name="Lights">
                     <ModelVisual3D.Children>

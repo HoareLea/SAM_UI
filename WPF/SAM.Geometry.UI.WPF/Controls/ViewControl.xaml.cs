@@ -17,6 +17,7 @@ namespace SAM.Geometry.UI.WPF
     {
         public event ObjectHooveredEventHandler ObjectHoovered;
         public event ObjectDoubleClickedEventHandler ObjectDoubleClicked;
+        public event ObjectContextMenuOpeningEventHandler ObjectContextMenuOpening;
 
         private Mode mode = Mode.ThreeDimensional;
         
@@ -54,6 +55,41 @@ namespace SAM.Geometry.UI.WPF
                 }
 
                 Load(uIGeometryObjectModel?.JSAMObject);
+            }
+        }
+
+        public string Hint
+        {
+            get
+            {
+                return Information.Text;
+            }
+
+            set
+            {
+                Information.Text = value;
+            }
+        }
+
+        public Mode Mode
+        {
+            get
+            {
+                return mode;
+            }
+
+            set
+            {
+                mode = value;
+                UpdateCamera();
+            }
+        }
+
+        public ProjectionCamera ProjectionCamera
+        {
+            get
+            {
+                return viewport3D.Camera as ProjectionCamera;
             }
         }
 
@@ -103,21 +139,28 @@ namespace SAM.Geometry.UI.WPF
 
         private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            ContextMenu_Grid.Items.Clear();
+            Grid grid = sender as Grid;
+            grid.ContextMenu = new ContextMenu();
 
             Point point_Current = Mouse.GetPosition(viewport3D);
             HitTestResult hitTestResult = VisualTreeHelper.HitTest(viewport3D, point_Current);
-            IVisualGeometryObject visualGeometryObjectt = hitTestResult?.VisualHit as IVisualGeometryObject;
+            IVisualGeometryObject visualGeometryObject = hitTestResult?.VisualHit as IVisualGeometryObject;
 
             MenuItem menuItem = new MenuItem();
             menuItem.Name = "MenuItem_CenterView";
             menuItem.Header = "Center View";
             menuItem.Click += MenuItem_CenterView_Click;
             menuItem.Tag = hitTestResult;
-            ContextMenu_Grid.Items.Add(menuItem);
+            grid.ContextMenu.Items.Add(menuItem);
+
+            if(visualGeometryObject != null)
+            {
+                ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(grid.ContextMenu, e, visualGeometryObject));
+            }
 
 
-            //if (visualFace3DObject_Current != null)
+
+            //if (visualGeometryObject != null)
             //{
             //    menuItem = new MenuItem();
             //    menuItem.Name = "MenuItem_Properties";
@@ -170,28 +213,6 @@ namespace SAM.Geometry.UI.WPF
             HelixToolkit.Wpf.CameraHelper.ZoomExtents(projectionCamera, viewport3D, rect3D);
         }
 
-        public Mode Mode
-        {
-            get
-            {
-                return mode;
-            }
-
-            set
-            {
-                mode = value;
-                UpdateCamera();
-            }
-        }
-
-        //public Viewport3D Viewport3D
-        //{
-        //    get
-        //    {
-        //        return Viewport;
-        //    }
-        //}
-
         private void UpdateCamera()
         {
             ProjectionCamera projectionCamera = null;
@@ -241,14 +262,6 @@ namespace SAM.Geometry.UI.WPF
             ChangeCamera();
         }
 
-        public ProjectionCamera ProjectionCamera
-        {
-            get
-            {
-                return viewport3D.Camera as ProjectionCamera;
-            }
-        }
-
         private void UserControl_Initialized(object sender, EventArgs e)
         {
 
@@ -260,7 +273,7 @@ namespace SAM.Geometry.UI.WPF
             {
                 Point point_Current = e.GetPosition(viewport3D);
 
-                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult<IVisualJSAMObject>(viewport3D, point_Current, out IVisualJSAMObject visualJSAMObject);
+                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(viewport3D, point_Current, out IVisualJSAMObject visualJSAMObject);
                 if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
                 {
                     ObjectDoubleClicked?.Invoke(this, new ObjectDoubleClickedEventArgs(e, visualJSAMObject));
@@ -268,7 +281,7 @@ namespace SAM.Geometry.UI.WPF
             }
         }
 
-        private void Viewport_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void Viewport3D_PreviewMouseMove(object sender, MouseEventArgs e)
         {
             visualSAMObject_Highlight?.SetHighlight(false);
             visualSAMObject_Highlight = null;
@@ -285,25 +298,46 @@ namespace SAM.Geometry.UI.WPF
             }
         }
 
-        private void Viewport_Loaded(object sender, RoutedEventArgs e)
+        private void Viewport3D_Loaded(object sender, RoutedEventArgs e)
         {
             Information.Text = string.Empty;
             //CenterView();
         }
 
-        public string Hint
+        private void Viewport3D_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            get
+            if (mode == Mode.ThreeDimensional)
             {
-                return Information.Text;
+                Point point = e.GetPosition(viewport3D);
+
+                Spatial.Vector3D vector3D = null;
+
+                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult<ModelVisual3D>(viewport3D, point);
+                if (rayMeshGeometry3DHitTestResult != null)
+                {
+                    vector3D = new Spatial.Vector3D(ProjectionCamera.Position.ToSAM(), rayMeshGeometry3DHitTestResult.PointHit.ToSAM());
+                }
+                else
+                {
+                    vector3D = new Spatial.Vector3D(ProjectionCamera.Position.X, ProjectionCamera.Position.Y, ProjectionCamera.Position.Z);
+                    vector3D.Negate();
+                }
+
+                if (vector3D == null)
+                {
+                    return;
+                }
+
+                double factor = e.Delta / 100;//* vector3D.Length;
+
+                vector3D.Normalize();
+                vector3D.Scale(factor);
+
+                ProjectionCamera.Position = Convert.ToMedia3D(ProjectionCamera.Position.ToSAM().GetMoved(vector3D) as Spatial.Point3D);
             }
 
-            set
-            {
-                Information.Text = value;
-            }
+
         }
-
 
     }
 }

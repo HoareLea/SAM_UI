@@ -215,7 +215,7 @@ namespace SAM.Analytical.UI.WPF
                     return;
                 }
 
-                UI.Modify.EditPanel(uIAnalyticalModel, visualPanel.Panel);
+                Modify.EditPanel(uIAnalyticalModel, visualPanel.Panel);
             }
         }
 
@@ -378,7 +378,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            UI.Modify.EditPanel(uIAnalyticalModel, visualPanel.Panel);
+            Modify.EditPanel(uIAnalyticalModel, visualPanel.Panel);
         }
 
         private void MenuItem_CenterView_Click(object sender, RoutedEventArgs e)

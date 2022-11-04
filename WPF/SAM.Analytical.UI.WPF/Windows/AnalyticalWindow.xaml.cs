@@ -1,12 +1,13 @@
 ﻿using Microsoft.Win32;
 using SAM.Core;
 using SAM.Core.UI.WPF;
+using SAM.Geometry;
+using SAM.Geometry.UI;
 using SAM.Geometry.UI.WPF;
 using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF.Windows
 {
@@ -147,7 +148,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_View_Section_Click(object sender, RoutedEventArgs e)
         {
             double elevation = new Geometry.Spatial.BoundingBox3D(uIAnalyticalModel.JSAMObject.GetPanels().ConvertAll(x => x.GetBoundingBox())).Min.Z;
-            elevation = Core.Query.Round(elevation, 0.01);
+            elevation = Core.Query.Round(elevation, 0.01) + 0.1;
             using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
             {
                 textBoxForm.Value = elevation;
@@ -156,42 +157,65 @@ namespace SAM.Analytical.UI.WPF.Windows
                     return;
                 }
 
-                elevation = textBoxForm.Value + 0.1;
+                elevation = textBoxForm.Value;
             }
 
             if(double.IsNaN(elevation))
             {
                 return;
             }
-            GeometryWindow geometryWindow = new GeometryWindow()
-            {
-                Title = "Section View",
-            };
 
-            ViewControl viewControl = geometryWindow.ViewControl;
-
-            Geometry.GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Geometry.UI.Mode.TwoDimensional, Geometry.Spatial.Create.Plane(elevation));
+            TabItem tabItem = new TabItem();
+            tabItem.Header = string.Format("Plan View ({0}m)", elevation);
             
+            tabControl.Items.Add(tabItem);
+
+            ViewControl viewControl = new ViewControl();
+
+            tabItem.Content = viewControl;
+
+            GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Mode.TwoDimensional, Geometry.Spatial.Create.Plane(elevation));
+
             viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-            viewControl.Mode = Geometry.UI.Mode.TwoDimensional;
+            viewControl.Mode = Mode.TwoDimensional;
             viewControl.Loaded += ViewControl_Loaded;
             viewControl.ObjectHoovered += ViewControl_ObjectHoovered;
             viewControl.ObjectDoubleClicked += ViewControl_ObjectDoubleClicked;
+            viewControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
 
-            bool? showDialog = geometryWindow.ShowDialog();
+            tabControl.SelectedItem = tabItem;
+        }
 
-            if (showDialog == null || !showDialog.HasValue || !showDialog.Value)
+        private void ViewControl_ObjectContextMenuOpening(object sender, ObjectContextMenuOpeningEventArgs e)
+        {
+            IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
+            if (visualGeometryObject == null)
             {
                 return;
             }
+
+            if (!(visualGeometryObject.SAMGeometryObject is ITaggable))
+            {
+                return;
+            }
+
+
+            ContextMenu contextMenu = e.ContextMenu;
+
+            //if (visualGeometryObject != null)
+            //{
+            //    menuItem = new MenuItem();
+            //    menuItem.Name = "MenuItem_Properties";
+            //    menuItem.Header = "Properties";
+            //    menuItem.Click += MenuItem_Properties_Click;
+            //    menuItem.Tag = hitTestResult;
+            //    ContextMenu_Grid.Items.Add(menuItem);
+            //}
         }
 
         private void ViewControl_ObjectDoubleClicked(object sender, ObjectDoubleClickedEventArgs e)
         {
-            ViewControl viewControl = sender as ViewControl;
-            Geometry.GeometryObjectModel geometryObjectModel = viewControl.UIGeometryObjectModel.JSAMObject;
-
-            System.Windows.Window window =  viewControl.Window();
+            System.Windows.Window window =  (sender as ViewControl).Window();
 
             IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
             if (visualGeometryObject == null)
@@ -209,17 +233,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 Panel panel = (Panel)tag.Value;
                 uIAnalyticalModel.EditPanel(panel, new Core.Windows.WindowHandle(window));
-
-                geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Geometry.UI.Mode.TwoDimensional, geometryObjectModel.GetValue<Geometry.Spatial.Plane>(Geometry.UI.GeometryObjectModelParameter.SectionPlane));
-                viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             }
             else if (tag.Value is Space)
             {
                 Space space = (Space)tag.Value;
                 uIAnalyticalModel.EditSpace(space, new Core.Windows.WindowHandle(window));
-
-                geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Geometry.UI.Mode.TwoDimensional, geometryObjectModel.GetValue<Geometry.Spatial.Plane>(Geometry.UI.GeometryObjectModelParameter.SectionPlane));
-                viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             }
         }
 
@@ -365,7 +383,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Tools_EditLibrary_Click(object sender, RoutedEventArgs e)
         {
-            UI.Modify.EditLibrary(windowHandle);
+            Modify.EditLibrary(windowHandle);
         }
 
         private void RibbonButton_Simulate_EnergySimulation_Click(object sender, RoutedEventArgs e)
@@ -540,6 +558,21 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void UIAnalyticalModel_Modified(object sender, EventArgs e)
         {
             SetEnabled();
+
+            foreach(TabItem tabItem in tabControl.Items)
+            {
+                ViewControl viewControl = tabItem?.Content as ViewControl;
+
+                if (viewControl != null)
+                {
+                    GeometryObjectModel geometryObjectModel = viewControl.UIGeometryObjectModel.JSAMObject;
+                    if(geometryObjectModel.TryGetValue(GeometryObjectModelParameter.SectionPlane, out Geometry.Spatial.Plane plane))
+                    {
+                        geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Mode.TwoDimensional, geometryObjectModel.GetValue<Geometry.Spatial.Plane>(GeometryObjectModelParameter.SectionPlane));
+                        viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+                    }
+                }
+            }
         }
 
         private void SetEnabled()

@@ -485,7 +485,12 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
-            <local:View3DControl x:Name="View3DControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2"/>
+            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2">
+                <TabItem Header="3D View">
+                    <local:View3DControl x:Name="View3DControl" />
+                </TabItem>
+            </TabControl>
+            
             <local:AnalyticalModelControl x:Name="AnalyticalModelControl"  Grid.Column="0" Grid.Row="0"/>
         </Grid>
     </DockPanel>
