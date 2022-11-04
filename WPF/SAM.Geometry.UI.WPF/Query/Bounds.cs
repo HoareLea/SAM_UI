@@ -17,8 +17,14 @@ namespace SAM.Geometry.UI.WPF
 
             Transform3D transform3D_VisualAnalyticalModel = visualGeometryObjectModel.Transform;
 
-            foreach (IVisualJSAMObject visualJSAMObject in visualGeometryObjectModel.Children)
+            foreach (Visual3D visual3D in visualGeometryObjectModel.Children)
             {
+                IVisualJSAMObject visualJSAMObject = visual3D as IVisualJSAMObject;
+                if(visualJSAMObject == null)
+                {
+                    continue;
+                }
+
                 Rect3D rect3D_VisualFace3DObject = Bounds(visualJSAMObject, transform3D_VisualAnalyticalModel);
 
                 //Rect3D rect3D_VisualFace3DObject = visualJSAMObject.GeometryModel3D.Bounds;
