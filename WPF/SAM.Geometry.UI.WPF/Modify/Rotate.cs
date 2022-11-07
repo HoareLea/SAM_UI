@@ -38,10 +38,12 @@ namespace SAM.Geometry.UI.WPF
                 return false;
             }
 
+            Point3D point3D = center.ToMedia3D();
+
             RotateTransform3D rotateTransform3D = new RotateTransform3D();
-            rotateTransform3D.CenterX = center.X;
-            rotateTransform3D.CenterY = center.Y;
-            rotateTransform3D.CenterZ = center.Z;
+            rotateTransform3D.CenterX = point3D.X;
+            rotateTransform3D.CenterY = point3D.Z;
+            rotateTransform3D.CenterZ = point3D.Y;
             rotateTransform3D.Rotation = new AxisAngleRotation3D(axis.ToMedia3D(), angle);
 
             modelVisual3D.Transform = HelixToolkit.Wpf.Transform3DHelper.CombineTransform(rotateTransform3D, modelVisual3D.Transform);

@@ -298,7 +298,7 @@ namespace SAM.Analytical.UI.WPF
                     double angle = distance / perspectiveCamera.FieldOfView % 45;
                     Geometry.Spatial.Vector3D vector3D = Geometry.Spatial.Query.Convert(plane, vector2D);
                     vector3D = vector3D.CrossProduct(plane.Normal).GetNegated();
-                    vector3D = new Geometry.Spatial.Vector3D(0, vector3D.Y, 0);
+                    vector3D = new Geometry.Spatial.Vector3D(0, 0, vector3D.Z);
 
                     GetVisualSAMObjects<VisualAnalyticalModel>()?.ForEach(x => Geometry.UI.WPF.Modify.Rotate(x, vector3D, center.ToSAM(), angle));
 
