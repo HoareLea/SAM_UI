@@ -200,23 +200,56 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
 
+
+            IJSAMObject jSAMObject = null;
+            Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
+            if (tag.Value is Panel)
+            {
+                jSAMObject = (Panel)tag.Value;
+            }
+            else if (tag.Value is Space)
+            {
+                jSAMObject = (Space)tag.Value;
+            }
+
+            if(jSAMObject == null)
+            {
+                return;
+            }
+
             ContextMenu contextMenu = e.ContextMenu;
 
-            //if (visualGeometryObject != null)
-            //{
-            //    menuItem = new MenuItem();
-            //    menuItem.Name = "MenuItem_Properties";
-            //    menuItem.Header = "Properties";
-            //    menuItem.Click += MenuItem_Properties_Click;
-            //    menuItem.Tag = hitTestResult;
-            //    ContextMenu_Grid.Items.Add(menuItem);
-            //}
+            MenuItem menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Properties";
+            menuItem.Header = "Properties";
+            menuItem.Click += MenuItem_Properties_Click;
+            menuItem.Tag = jSAMObject;
+            contextMenu.Items.Add(menuItem);
+        }
+
+        private void MenuItem_Properties_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
+            if (jSAMObject is Panel)
+            {
+                Panel panel = (Panel)jSAMObject;
+                uIAnalyticalModel.EditPanel(panel, new Core.Windows.WindowHandle(this));
+            }
+            else if (jSAMObject is Space)
+            {
+                Space space = (Space)jSAMObject;
+                uIAnalyticalModel.EditSpace(space, new Core.Windows.WindowHandle(this));
+            }
         }
 
         private void ViewControl_ObjectDoubleClicked(object sender, ObjectDoubleClickedEventArgs e)
         {
-            System.Windows.Window window =  (sender as ViewControl).Window();
-
             IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
             if (visualGeometryObject == null)
             {
@@ -232,12 +265,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             if (tag.Value is Panel)
             {
                 Panel panel = (Panel)tag.Value;
-                uIAnalyticalModel.EditPanel(panel, new Core.Windows.WindowHandle(window));
+                uIAnalyticalModel.EditPanel(panel, new Core.Windows.WindowHandle(this));
             }
             else if (tag.Value is Space)
             {
                 Space space = (Space)tag.Value;
-                uIAnalyticalModel.EditSpace(space, new Core.Windows.WindowHandle(window));
+                uIAnalyticalModel.EditSpace(space, new Core.Windows.WindowHandle(this));
             }
         }
 
