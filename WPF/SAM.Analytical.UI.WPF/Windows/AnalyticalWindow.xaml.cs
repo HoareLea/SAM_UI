@@ -2,6 +2,7 @@
 using SAM.Core;
 using SAM.Core.UI.WPF;
 using SAM.Geometry;
+using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using SAM.Geometry.UI.WPF;
 using System;
@@ -147,7 +148,25 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_View_Section_Click(object sender, RoutedEventArgs e)
         {
-            double elevation = new Geometry.Spatial.BoundingBox3D(uIAnalyticalModel.JSAMObject.GetPanels().ConvertAll(x => x.GetBoundingBox())).Min.Z;
+            if(uIAnalyticalModel == null)
+            {
+                return;
+            }
+
+            List<BoundingBox3D> boundingBox3Ds = uIAnalyticalModel.JSAMObject?.GetPanels()?.ConvertAll(x => x?.GetBoundingBox());
+            if(boundingBox3Ds == null || boundingBox3Ds.Count == 0)
+            {
+                return;
+            }
+
+            boundingBox3Ds.RemoveAll(x => x == null || !x.IsValid());
+
+            if(boundingBox3Ds == null || boundingBox3Ds.Count == 0)
+            {
+                return;
+            }
+
+            double elevation = new BoundingBox3D(boundingBox3Ds).Min.Z;
             elevation = Core.Query.Round(elevation, 0.01) + 0.1;
             using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
             {
@@ -174,14 +193,22 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             tabItem.Content = viewControl;
 
-            GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Mode.TwoDimensional, Geometry.Spatial.Create.Plane(elevation));
+            Mode mode = Mode.TwoDimensional;
 
-            viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-            viewControl.Mode = Mode.TwoDimensional;
+            GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode, Geometry.Spatial.Create.Plane(elevation));
+
+            UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+
+            viewControl.UIGeometryObjectModel = uIGeometryObjectModel;
+            viewControl.Mode = mode;
             viewControl.Loaded += ViewControl_Loaded;
             viewControl.ObjectHoovered += ViewControl_ObjectHoovered;
             viewControl.ObjectDoubleClicked += ViewControl_ObjectDoubleClicked;
             viewControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+
+            //List<UI.VisualPanel> visualPanels = uIGeometryObjectModel.JSAMObject.GetSAMGeometryObjects<UI.VisualPanel>();
+
+            //viewControl.Show(new UI.VisualPanel[] { visualPanels[0] });
 
             tabControl.SelectedItem = tabItem;
         }
@@ -262,6 +289,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
+            if(tag == null)
+            {
+                return;
+            }
+
             if (tag.Value is Panel)
             {
                 Panel panel = (Panel)tag.Value;
@@ -302,6 +334,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
+            if(tag == null)
+            {
+                return;
+            }
+
             if (tag.Value is Panel)
             {
                 Panel panel = (Panel)tag.Value;
@@ -599,9 +636,9 @@ namespace SAM.Analytical.UI.WPF.Windows
                 if (viewControl != null)
                 {
                     GeometryObjectModel geometryObjectModel = viewControl.UIGeometryObjectModel.JSAMObject;
-                    if(geometryObjectModel.TryGetValue(GeometryObjectModelParameter.SectionPlane, out Geometry.Spatial.Plane plane))
+                    if(geometryObjectModel.TryGetValue(GeometryObjectModelParameter.SectionPlane, out Plane plane))
                     {
-                        geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Mode.TwoDimensional, geometryObjectModel.GetValue<Geometry.Spatial.Plane>(GeometryObjectModelParameter.SectionPlane));
+                        geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Mode.TwoDimensional, geometryObjectModel.GetValue<Plane>(GeometryObjectModelParameter.SectionPlane));
                         viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
                     }
                 }

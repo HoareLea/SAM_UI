@@ -36,7 +36,7 @@ namespace SAM.Analytical.UI
             }
 
             AnalyticalModel analyticalModel_Temp = new AnalyticalModel(analyticalModel);
-            analyticalModel_Temp.Normalize();
+            //analyticalModel_Temp.Normalize();
 
             List<Panel> panels = analyticalModel_Temp.GetPanels();
 
@@ -44,7 +44,7 @@ namespace SAM.Analytical.UI
             foreach (Panel panel in panels)
             {
                 VisualPanel visualPanel = new VisualPanel(panel);
-                visualPanel.Add(new Face3DObject(panel.GetFace3D(true), Query.SurfaceAppearance(panel)));
+                visualPanel.Add(new Face3DObject(panel.GetFace3D(true), Query.SurfaceAppearance(panel)) { Tag = panel});
 
                 List<Aperture> apertures = panel.Apertures;
                 if (apertures != null && apertures.Count != 0)
@@ -60,14 +60,14 @@ namespace SAM.Analytical.UI
                         face3Ds = aperture.GetFace3Ds(aperturePart);
                         if (face3Ds != null && face3Ds.Count != 0)
                         {
-                            face3Ds.ForEach(x => visualAperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
+                            face3Ds.ForEach(x => visualAperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart)) { Tag = aperture }));
                         }
 
                         aperturePart = AperturePart.Pane;
                         face3Ds = aperture.GetFace3Ds(aperturePart);
                         if (face3Ds != null && face3Ds.Count != 0)
                         {
-                            face3Ds.ForEach(x => visualAperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
+                            face3Ds.ForEach(x => visualAperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart)) { Tag = aperture}));
                         }
 
                         visualPanel.Add(visualAperture);

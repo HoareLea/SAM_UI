@@ -1,4 +1,5 @@
-﻿using SAM.Core.UI.WPF;
+﻿using SAM.Core;
+using SAM.Core.UI.WPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,12 @@ namespace SAM.Geometry.UI.WPF
         private UIGeometryObjectModel uIGeometryObjectModel;
 
         private IVisualJSAMObject visualSAMObject_Highlight;
+
+        private VisualBackground visualBackground;
+
+        private Point point_Current;
+
+        private bool show = false;
 
         public ViewControl()
         {
@@ -176,7 +183,7 @@ namespace SAM.Geometry.UI.WPF
             CenterView();
         }
 
-        private void Camera_Changed(object sender, EventArgs e)
+        private void ProjectionCamera_Changed(object sender, EventArgs e)
         {
             ChangeCamera();
         }
@@ -186,6 +193,23 @@ namespace SAM.Geometry.UI.WPF
             if (DirectionalLight != null)
             {
                 DirectionalLight.Direction = ProjectionCamera.LookDirection;
+            }
+
+            if (visualBackground != null)
+            {
+                viewport3D?.Children?.Remove(visualBackground);
+                visualBackground = null;
+            }
+
+            if(Mode == Mode.ThreeDimensional)
+            {
+                visualBackground = Create.VisualBackground(viewport3D);
+                if (visualBackground == null)
+                {
+                    return;
+                }
+
+                viewport3D.Children.Add(visualBackground);
             }
         }
 
@@ -257,7 +281,7 @@ namespace SAM.Geometry.UI.WPF
                 return;
             }
 
-            projectionCamera.Changed += Camera_Changed;
+            projectionCamera.Changed += ProjectionCamera_Changed;
             viewport3D.Camera = projectionCamera;
             ChangeCamera();
         }
@@ -295,6 +319,92 @@ namespace SAM.Geometry.UI.WPF
                 visualJSAMObject.SetHighlight(true);
 
                 ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, visualJSAMObject));
+            }
+
+            List<IVisualFace3DObject> visualFace3DObjects = null;
+
+            if (show)
+            {
+                visualFace3DObjects = GetVisualSAMObjects<IVisualFace3DObject>();
+                visualFace3DObjects?.ForEach(x => x.Opacity = 1);
+                show = false;
+            }
+
+            double dx = point.X - point_Current.X;
+            double dy = point.Y - point_Current.Y;
+            point_Current = point;
+
+            if(Mode == Mode.TwoDimensional)
+            {
+                return;
+            }
+
+            if (e.MouseDevice.MiddleButton is MouseButtonState.Pressed || e.MouseDevice.LeftButton is MouseButtonState.Pressed)
+            {
+                double distance = dx * dx + dy * dy;
+                if (distance <= 0)
+                {
+                    return;
+                }
+
+                PerspectiveCamera perspectiveCamera = viewport3D.Camera as PerspectiveCamera;
+                if (perspectiveCamera == null)
+                {
+                    return;
+                }
+
+                Planar.Vector2D vector2D = new Planar.Vector2D(dx, dy);
+
+                if (visualFace3DObjects == null)
+                {
+                    visualFace3DObjects = GetVisualSAMObjects<IVisualFace3DObject>();
+                }
+
+                if (visualFace3DObjects == null)
+                {
+                    return;
+                }
+
+                Rect3D rect3D = Query.Bounds(GetVisualSAMObjects<VisualGeometryObjectModel>());
+                Point3D center = Core.UI.WPF.Query.Center(rect3D);
+                //Point3D center = Query.Center(visualFace3DObjects);
+                if (center == null || center.IsNaN())
+                {
+                    center = new Point3D(0, 0, 0);
+                }
+
+                if (e.MouseDevice.MiddleButton is MouseButtonState.Pressed)
+                {
+                    vector2D.Scale(0.1);
+
+                    //Version 3
+                    Spatial.Plane plane = Query.Plane(ProjectionCamera);
+
+                    double angle = distance / perspectiveCamera.FieldOfView % 45;
+                    Spatial.Vector3D vector3D = Spatial.Query.Convert(plane, vector2D);
+                    vector3D = vector3D.CrossProduct(plane.Normal).GetNegated();
+                    vector3D = new Spatial.Vector3D(0, 0, vector3D.Z);
+
+                    GetVisualSAMObjects<VisualGeometryObjectModel>()?.ForEach(x => Modify.Rotate(x, vector3D, center.ToSAM(), angle));
+
+                    //Version 2
+                    //perspectiveCamera.Rotate(vector2D, center.ToSAM());
+
+                    //Version 1
+                    //vector3D = vector3D.CrossProduct(plane.Normal);
+                    //double angle = distance / perspectiveCamera.FieldOfView % 45;
+                    //perspectiveCamera.Rotate(Convert.ToMedia3D(vector3D), angle);
+                }
+                else if (e.MouseDevice.LeftButton is MouseButtonState.Pressed)
+                {
+                    double factor = ProjectionCamera.Position.ToSAM().Distance(center.ToSAM()) / 10;
+                    vector2D.Scale(factor);
+
+                    Spatial.Plane plane = Query.Plane(ProjectionCamera);
+                    Spatial.Vector3D vector3D = Spatial.Query.Convert(plane, vector2D);
+
+                    perspectiveCamera.Move(Convert.ToMedia3D(vector3D), 0.01);
+                }
             }
         }
 
@@ -337,6 +447,57 @@ namespace SAM.Geometry.UI.WPF
             }
 
 
+        }
+
+        public List<IJSAMObject> Show<T>(IEnumerable<T> jSAMObjects) where T : IJSAMObject
+        {
+            show = true;
+
+            List<VisualGeometryObjectModel> VisualGeometryObjectModels = GetVisualSAMObjects<VisualGeometryObjectModel>();
+            if (VisualGeometryObjectModels == null || VisualGeometryObjectModels.Count == 0)
+            {
+                return null;
+            }
+
+            List<IJSAMObject> result = new List<IJSAMObject>();
+            foreach (VisualGeometryObjectModel visualGeometryObjectModel in VisualGeometryObjectModels)
+            {
+                if (visualGeometryObjectModel == null)
+                {
+                    continue;
+                }
+
+                Visual3DCollection visual3DCollection = visualGeometryObjectModel.Children;
+                if(visual3DCollection == null)
+                {
+                    continue;
+                }
+
+                foreach(Visual3D visual3D in visual3DCollection)
+                {
+                    if(!(visual3D is IVisualGeometryObject))
+                    {
+                        continue;
+                    }
+
+                    IVisualGeometryObject visualGeometryObject = (IVisualGeometryObject)visual3D;
+                    foreach(T t in jSAMObjects)
+                    {
+                        visualGeometryObject.Opacity = 0.1;
+
+                        if (visualGeometryObject.Similar(t))
+                        {
+                            visualGeometryObject.Opacity = 1;
+                        }
+                    }
+                }
+
+
+                //IJSAMObject jSAMObject = jSAMObjects.ToList().Find(x => visualJSAMObject.Similar(x));
+                //visualJSAMObject.Opacity = jSAMObject == null ? 1 : 0.1;
+            }
+
+            return result;
         }
 
     }

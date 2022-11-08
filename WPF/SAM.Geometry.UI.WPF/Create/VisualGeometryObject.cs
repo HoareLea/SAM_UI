@@ -26,7 +26,7 @@ namespace SAM.Geometry.UI.WPF
             }
 
             VisualGeometryObject result = new VisualGeometryObject(face3DObject);
-            result.Content = new GeometryModel3D(face3D.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color));
+            result.Content = new GeometryModel3D(face3D.ToMedia3D(false), UI.Create.Material(surfaceAppearance.Color));
 
             return result;
         }

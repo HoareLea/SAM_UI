@@ -29,6 +29,14 @@ namespace SAM.Core.UI.WPF
             }
         }
 
+        public T JSAMObject
+        {
+            get
+            {
+                return jSAMObject;
+            }
+        }
+
         public double Opacity
         {
             get
@@ -51,23 +59,23 @@ namespace SAM.Core.UI.WPF
             set
             {
                 List<DiffuseMaterial> diffuseMaterials = new List<DiffuseMaterial>();
-                if(Content is GeometryModel3D)
+                if (Content is GeometryModel3D)
                 {
                     DiffuseMaterial diffuseMaterial = GeometryModel3D.Material as DiffuseMaterial;
-                    if(diffuseMaterial != null)
+                    if (diffuseMaterial != null)
                     {
                         diffuseMaterials.Add(diffuseMaterial);
                     }
 
                 }
-                else if(Content is Model3DGroup)
+                else if (Content is Model3DGroup)
                 {
                     Model3DGroup model3DGroup = Model3DGroup;
-                    if(model3DGroup != null && model3DGroup.Children != null)
+                    if (model3DGroup != null && model3DGroup.Children != null)
                     {
                         foreach (Model3D model3D in model3DGroup.Children)
                         {
-                            if(!(model3D is IVisualJSAMObject))
+                            if (!(model3D is IVisualJSAMObject))
                             {
                                 DiffuseMaterial diffuseMaterial = (model3D as GeometryModel3D).Material as DiffuseMaterial;
                                 if (diffuseMaterial != null)
@@ -81,6 +89,18 @@ namespace SAM.Core.UI.WPF
                         }
                     }
 
+                }
+                else if (Children != null)
+                {
+                    foreach (Visual3D visual3D in Children)
+                    {
+                        if (!(visual3D is IVisualJSAMObject))
+                        {
+                            continue;
+                        }
+
+                        ((IVisualJSAMObject)visual3D).Opacity = value;
+                    }
                 }
 
                 if(diffuseMaterials == null || diffuseMaterials.Count == 0)
