@@ -9,9 +9,9 @@ namespace SAM.Core.UI
     {
         private string path;
 
-        private T jSAMObject;
+        protected T jSAMObject;
 
-        private bool modified;
+        protected bool modified;
 
         public event EventHandler Opening;
         public event EventHandler Opened;
@@ -76,7 +76,7 @@ namespace SAM.Core.UI
         }
 
 
-        public bool Open()
+        public virtual bool Open()
         {
             OnOpening();
 

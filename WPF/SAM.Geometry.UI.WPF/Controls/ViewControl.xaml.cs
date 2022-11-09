@@ -190,11 +190,6 @@ namespace SAM.Geometry.UI.WPF
 
         private void ChangeCamera()
         {
-            if (DirectionalLight != null)
-            {
-                DirectionalLight.Direction = ProjectionCamera.LookDirection;
-            }
-
             if (visualBackground != null)
             {
                 viewport3D?.Children?.Remove(visualBackground);
@@ -210,6 +205,17 @@ namespace SAM.Geometry.UI.WPF
                 }
 
                 viewport3D.Children.Add(visualBackground);
+
+                if(DirectionalLight == null)
+                {
+                    DirectionalLight = new DirectionalLight();
+                }
+
+                DirectionalLight.Direction = ProjectionCamera.LookDirection;
+            }
+            else
+            {
+                DirectionalLight = null;
             }
         }
 
@@ -227,12 +233,16 @@ namespace SAM.Geometry.UI.WPF
             }
             
             List<VisualGeometryObjectModel> visualGeometryObjectModels = GetVisualSAMObjects<VisualGeometryObjectModel>();
-            if (visualGeometryObjectModels == null)
+            if (visualGeometryObjectModels == null || visualGeometryObjectModels.Count == 0)
             {
                 return;
             }
 
             Rect3D rect3D = Query.Bounds(visualGeometryObjectModels);
+            if(rect3D == Rect3D.Empty)
+            {
+                return;
+            }
 
             HelixToolkit.Wpf.CameraHelper.ZoomExtents(projectionCamera, viewport3D, rect3D);
         }

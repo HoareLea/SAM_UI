@@ -35,6 +35,8 @@ namespace SAM.Geometry.UI.WPF
                 }
             }
 
+            //result.Children.Add()
+
             //Rect3D rext3D = Query.Bounds(result);
 
             //result.Children.Add(Core.UI.WPF.Create.ModelVisual3D_Text(

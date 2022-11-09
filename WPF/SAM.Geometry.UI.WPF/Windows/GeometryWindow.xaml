@@ -6,13 +6,29 @@
         xmlns:local="clr-namespace:SAM.Geometry.UI.WPF"
         mc:Ignorable="d"
         Title="GeometryWindow" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-        <local:ViewControl x:Name="viewControl" Grid.Column="0" Grid.Row="0"/>
-    </Grid>
+    <DockPanel>
+        <Ribbon DockPanel.Dock="Top" x:Name="ribbon">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed">
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab x:Name="RibbonTab_File" Header="File">
+                <RibbonGroup x:Name="RibbonGroup_File_General" Header="General">
+                    <RibbonButton x:Name="ribbonButton_General_OpenModel" Label="Open"/>
+                    <RibbonButton x:Name="ribbonButton_General_CloseModel" Label="Close"/>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+            <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <local:ViewControl x:Name="viewControl" Grid.Column="0" Grid.Row="0"/>
+
+        </Grid>
+    </DockPanel>
+
 </Window>

@@ -9,6 +9,8 @@ namespace SAM_Geometry_WPF
     {
         void App_Startup(object sender, StartupEventArgs e)
         {
+
+
             // Create main application window, starting minimized if specified
             SAM.Geometry.UI.WPF.GeometryWindow geometryWindow = new SAM.Geometry.UI.WPF.GeometryWindow();
 

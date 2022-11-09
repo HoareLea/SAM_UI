@@ -59,11 +59,15 @@
     <Compile Include="Classes\Face3DObject.cs" />
     <Compile Include="Classes\Polygon3DObject.cs" />
     <Compile Include="Classes\Segment3DObject.cs" />
+    <Compile Include="Convert\ToSAM\ISAMGeometryObject.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Parameter\GeometryObjectModelParameter.cs" />
     <Compile Include="Interfaces\IAppearance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\DefaultSurfaceAppearance.cs" />
+    <Compile Include="Query\DefaultCurveAppearance.cs" />
+    <Compile Include="Query\DefaultPointAppearance.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">

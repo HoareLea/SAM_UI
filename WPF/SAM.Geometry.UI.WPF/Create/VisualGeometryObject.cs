@@ -25,8 +25,40 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
+            Model3DGroup model3DGroup = null;
+
+            CurveAppearance curveAppearance = surfaceAppearance.CurveAppearance;
+            if(curveAppearance != null)
+            {
+                if(curveAppearance.Thickness != 0)
+                {
+                    model3DGroup = new Model3DGroup();
+
+                    Material material = UI.Create.Material(curveAppearance.Color);
+
+                    foreach(IClosedPlanar3D edge3D in face3D.GetEdge3Ds())
+                    {
+                        ISegmentable3D segmentable3D = edge3D as ISegmentable3D;
+                        if(segmentable3D != null)
+                        {
+                            segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, curveAppearance.Thickness), material)));
+                        }
+                    }
+                }
+            }
+
             VisualGeometryObject result = new VisualGeometryObject(face3DObject);
-            result.Content = new GeometryModel3D(face3D.ToMedia3D(false), UI.Create.Material(surfaceAppearance.Color));
+
+            GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(false), UI.Create.Material(surfaceAppearance.Color));
+            if(model3DGroup != null && model3DGroup.Children.Count != 0)
+            {
+                model3DGroup.Children.Add(geometryModel3D);
+                result.Content = model3DGroup;
+            }
+            else
+            {
+                result.Content = geometryModel3D;
+            }
 
             return result;
         }
