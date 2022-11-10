@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:s="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
-        xmlns:userControl="clr-namespace:SAM.Analytical.UI.WPF;assembly=SAM.Analytical.UI.WPF"
+        xmlns:geometry="clr-namespace:SAM.Geometry.UI.WPF;assembly=SAM.Geometry.UI.WPF"
         mc:Ignorable="d"
         Title="Analytical" 
         WindowState="Maximized"
@@ -487,7 +487,7 @@
             <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
             <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2">
                 <TabItem Header="3D View">
-                    <local:View3DControl x:Name="View3DControl" />
+                    <geometry:ViewportControl x:Name="viewportControl" />
                 </TabItem>
             </TabControl>
             

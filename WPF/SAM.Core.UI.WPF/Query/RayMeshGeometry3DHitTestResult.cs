@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using HelixToolkit.Wpf;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
@@ -17,6 +18,11 @@ namespace SAM.Core.UI.WPF
 
             HitTestResult hitTestResult = VisualTreeHelper.HitTest(visual, point);
             if (hitTestResult == null)
+            {
+                return null;
+            }
+
+            if(hitTestResult.VisualHit is CameraController)
             {
                 return null;
             }

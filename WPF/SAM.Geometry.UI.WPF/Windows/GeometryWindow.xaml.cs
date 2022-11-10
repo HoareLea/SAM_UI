@@ -1,7 +1,8 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media.Media3D;
 
 namespace SAM.Geometry.UI.WPF
 {
@@ -15,47 +16,18 @@ namespace SAM.Geometry.UI.WPF
             InitializeComponent();
 
             ribbonButton_General_OpenModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
-            ribbonButton_General_OpenModel.Click += RibbonButton_General_OpenModel_Click;
-
             ribbonButton_General_CloseModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
-            ribbonButton_General_CloseModel.Click += RibbonButton_General_CloseModel_Click;
-            
-            UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel();
-            uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
-            viewControl.UIGeometryObjectModel = uIGeometryObjectModel;
-            viewControl.Mode = Mode.ThreeDimensional;
-            viewControl.Loaded += ViewControl_Loaded;
-        }
 
-        private void UIGeometryObjectModel_Modified(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ViewControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            ViewControl viewControl = sender as ViewControl;
-            if (viewControl == null)
-            {
-                return;
-            }
-
-            viewControl.CenterView();
+            viewportControl.Mode = Mode.TwoDimensional;
         }
 
         private void RibbonButton_General_CloseModel_Click(object sender, RoutedEventArgs e)
         {
-
+            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel();
         }
 
         private void RibbonButton_General_OpenModel_Click(object sender, RoutedEventArgs e)
         {
-            UIGeometryObjectModel uIGeometryObjectModel = viewControl.UIGeometryObjectModel;
-            if (uIGeometryObjectModel == null)
-            {
-                return;
-            }
-
             string path = null;
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
@@ -73,23 +45,12 @@ namespace SAM.Geometry.UI.WPF
                 return;
             }
 
-            UIGeometryObjectModel uIGeometryObjectModel_Temp = new UIGeometryObjectModel();
-            uIGeometryObjectModel_Temp.Path = path;
+            UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel();
+            uIGeometryObjectModel.Path = path;
 
-            Core.Windows.Forms.MarqueeProgressForm.Show("Opening File", () => uIGeometryObjectModel_Temp.Open());
+            Core.Windows.Forms.MarqueeProgressForm.Show("Opening File", () => uIGeometryObjectModel.Open());
 
-            uIGeometryObjectModel_Temp.Path = path;
-            uIGeometryObjectModel.JSAMObject = uIGeometryObjectModel_Temp?.JSAMObject;
-
-            viewControl.CenterView();
-        }
-
-        public ViewControl ViewControl
-        {
-            get
-            {
-                return viewControl;
-            }
+            viewportControl.UIGeometryObjectModel = uIGeometryObjectModel;
         }
     }
 }

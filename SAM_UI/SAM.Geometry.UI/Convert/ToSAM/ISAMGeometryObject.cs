@@ -38,7 +38,7 @@ namespace SAM.Geometry.UI
             {
                 return new Polygon3DObject((Polygon3D)sAMGeometry3D, Query.DefaultCurveAppearance());
             }
-            else if (sAMGeometry3D is Polygon3D)
+            else if (sAMGeometry3D is Segment3D)
             {
                 return new Segment3DObject((Segment3D)sAMGeometry3D, Query.DefaultCurveAppearance());
             }

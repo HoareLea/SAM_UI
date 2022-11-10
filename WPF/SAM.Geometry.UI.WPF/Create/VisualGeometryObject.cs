@@ -49,7 +49,7 @@ namespace SAM.Geometry.UI.WPF
 
             VisualGeometryObject result = new VisualGeometryObject(face3DObject);
 
-            GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(false), UI.Create.Material(surfaceAppearance.Color));
+            GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color));
             if(model3DGroup != null && model3DGroup.Children.Count != 0)
             {
                 model3DGroup.Children.Add(geometryModel3D);

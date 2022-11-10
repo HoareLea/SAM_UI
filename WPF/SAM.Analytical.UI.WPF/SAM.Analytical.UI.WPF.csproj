@@ -80,9 +80,6 @@
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\View3DControl.xaml.cs">
-      <DependentUpon>View3DControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Convert\ToMedia3D\GeometryModel3D.cs" />
     <Compile Include="Convert\ToMedia3D\VisualAnalyticalModel.cs" />
     <Compile Include="Convert\ToMedia3D\VisualAperture.cs" />
@@ -237,10 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\AnalyticalModelControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\View3DControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

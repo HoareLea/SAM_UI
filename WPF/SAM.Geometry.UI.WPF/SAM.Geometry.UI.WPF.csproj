@@ -62,24 +62,23 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\ViewControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="Classes\UIGeometryObjectModel.cs" />
     <Compile Include="Classes\VisualBackground.cs" />
     <Compile Include="Classes\VisualGeometryObjectModel.cs" />
     <Compile Include="Classes\VisualGeometryObject.cs" />
-    <Compile Include="Controls\ViewControl.xaml.cs">
-      <DependentUpon>ViewControl.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <Page Include="Controls\ViewportControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\GeometryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\ViewportControl.xaml.cs">
+      <DependentUpon>ViewportControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />

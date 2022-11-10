@@ -3,6 +3,7 @@ using SAM.Geometry;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using System.Windows.Media;
 
 namespace SAM.Analytical.UI
@@ -120,7 +121,7 @@ namespace SAM.Analytical.UI
                         continue;
                     }
 
-                    segment3Ds.ForEach(x => visualPanel.Add(new Segment3DObject(x, new CurveAppearance(Color.FromRgb(255, 255, 255), 0.02)) { Tag = keyValuePair.Key }));
+                    segment3Ds.ForEach(x => visualPanel.Add(new Segment3DObject(x, new CurveAppearance(Color.FromRgb(105, 105, 105), 0.04)) { Tag = keyValuePair.Key }));
                 }
                 result.Add(visualPanel);
 
@@ -144,7 +145,7 @@ namespace SAM.Analytical.UI
                     List<Face3D> face3Ds_Offset = new List<Face3D>();
                     foreach(Face3D face3D in face3Ds)
                     {
-                        List<Face3D> face3Ds_Offset_Temp = face3D.Offset(-0.03);
+                        List<Face3D> face3Ds_Offset_Temp = face3D.Offset(-0.05);
                         if(face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
                         {
                             continue;
@@ -163,8 +164,10 @@ namespace SAM.Analytical.UI
                         color = color_Temp;
                     }
 
+                    System.Drawing.Color color_Darker = ControlPaint.Dark(color);
+
                     VisualSpace visualSpace = new VisualSpace(space);
-                    face3Ds.ForEach(x => visualSpace.Add(new Face3DObject(x, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(255, 255, 255), 0.01)) { Tag = space}));
+                    face3Ds.ForEach(x => visualSpace.Add(new Face3DObject(x, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02)) { Tag = space}));
                     result.Add(visualSpace);
                 }
             }

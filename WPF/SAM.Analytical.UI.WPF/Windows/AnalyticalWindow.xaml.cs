@@ -137,11 +137,22 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             AnalyticalModelControl.TreeView.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
 
+
+            Mode mode = Mode.ThreeDimensional;
+            GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode);
+
+            UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+            viewportControl.UIGeometryObjectModel = uIGeometryObjectModel;
+            viewportControl.Mode = mode;
+            viewportControl.Loaded += ViewportControl_Loaded;
+            viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
+            viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
+            viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+
             uIAnalyticalModel = new UIAnalyticalModel();
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-
-            View3DControl.UIAnalyticalModel = uIAnalyticalModel;
-            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
+            uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
+            uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
         }
@@ -189,9 +200,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             
             tabControl.Items.Add(tabItem);
 
-            ViewControl viewControl = new ViewControl();
+            ViewportControl viewportControl = new ViewportControl();
 
-            tabItem.Content = viewControl;
+            tabItem.Content = viewportControl;
 
             Mode mode = Mode.TwoDimensional;
 
@@ -199,12 +210,12 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
 
-            viewControl.UIGeometryObjectModel = uIGeometryObjectModel;
-            viewControl.Mode = mode;
-            viewControl.Loaded += ViewControl_Loaded;
-            viewControl.ObjectHoovered += ViewControl_ObjectHoovered;
-            viewControl.ObjectDoubleClicked += ViewControl_ObjectDoubleClicked;
-            viewControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+            viewportControl.UIGeometryObjectModel = uIGeometryObjectModel;
+            viewportControl.Mode = mode;
+            viewportControl.Loaded += ViewportControl_Loaded;
+            viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
+            viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
+            viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
 
             //List<UI.VisualPanel> visualPanels = uIGeometryObjectModel.JSAMObject.GetSAMGeometryObjects<UI.VisualPanel>();
 
@@ -275,7 +286,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        private void ViewControl_ObjectDoubleClicked(object sender, ObjectDoubleClickedEventArgs e)
+        private void ViewportControl_ObjectDoubleClicked(object sender, ObjectDoubleClickedEventArgs e)
         {
             IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
             if (visualGeometryObject == null)
@@ -306,21 +317,18 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        private void ViewControl_Loaded(object sender, RoutedEventArgs e)
+        private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
         {
-            ViewControl viewControl = sender as ViewControl;
-            if(viewControl == null)
+            ViewportControl viewportControl = sender as ViewportControl;
+            if(viewportControl == null)
             {
                 return;
             }
-
-            viewControl.CenterView();
         }
 
-        private void ViewControl_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
+        private void ViewportControl_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
         {
-            ViewControl viewControl = sender as ViewControl;
-            viewControl.Hint = string.Empty;
+            ViewportControl viewportControl = sender as ViewportControl;
 
             IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
             if (visualGeometryObject == null)
@@ -342,17 +350,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             if (tag.Value is Panel)
             {
                 Panel panel = (Panel)tag.Value;
-                viewControl.Hint = string.Format("Panel {0}, Guid: {1}", panel.Name, panel.Guid);
+                //viewportControl.Hint = string.Format("Panel {0}, Guid: {1}", panel.Name, panel.Guid);
             }
             else if (tag.Value is Space)
             {
                 Space space = (Space)tag.Value;
-                viewControl.Hint = string.Format("Space {0}, Guid: {1}", space.Name, space.Guid);
+                //viewportControl.Hint = string.Format("Space {0}, Guid: {1}", space.Name, space.Guid);
 
                 InternalCondition internalCondition = space.InternalCondition;
                 if(internalCondition != null)
                 {
-                    viewControl.Hint += string.Format(", IC: {0}", internalCondition.Name);
+                    //viewportControl.Hint += string.Format(", IC: {0}", internalCondition.Name);
                 }
             }
         }
@@ -603,8 +611,6 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             uIAnalyticalModel.Path = path;
             uIAnalyticalModel.JSAMObject = uIAnalyticalModel_Temp?.JSAMObject;
-
-            View3DControl.CenterView();
         }
 
         private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -621,26 +627,52 @@ namespace SAM.Analytical.UI.WPF.Windows
                     jSAMObjects.Add(jSAMObject);
                 }
             }
-
-            View3DControl.Show(jSAMObjects);
         }
 
         private void UIAnalyticalModel_Modified(object sender, EventArgs e)
         {
+            Load();
+        }
+        private void UIAnalyticalModel_Opened(object sender, EventArgs e)
+        {
+            Load();
+        }
+
+        private void UIAnalyticalModel_Closed(object sender, EventArgs e)
+        {
+            Load();
+        }
+
+        private void Load()
+        {
             SetEnabled();
 
-            foreach(TabItem tabItem in tabControl.Items)
+            foreach (TabItem tabItem in tabControl.Items)
             {
-                ViewControl viewControl = tabItem?.Content as ViewControl;
-
-                if (viewControl != null)
+                ViewportControl viewportControl = tabItem?.Content as ViewportControl;
+                if (viewportControl == null)
                 {
-                    GeometryObjectModel geometryObjectModel = viewControl.UIGeometryObjectModel.JSAMObject;
-                    if(geometryObjectModel.TryGetValue(GeometryObjectModelParameter.SectionPlane, out Plane plane))
-                    {
-                        geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(Mode.TwoDimensional, geometryObjectModel.GetValue<Plane>(GeometryObjectModelParameter.SectionPlane));
-                        viewControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-                    }
+                    continue;
+                }
+
+                GeometryObjectModel geometryObjectModel = viewportControl.UIGeometryObjectModel?.JSAMObject;
+
+                Mode mode = viewportControl.Mode;
+                switch (mode)
+                {
+                    case Mode.ThreeDimensional:
+                        geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode);
+                        viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+                        break;
+
+                    case Mode.TwoDimensional:
+                        if (geometryObjectModel != null && geometryObjectModel.TryGetValue(GeometryObjectModelParameter.SectionPlane, out Plane plane))
+                        {
+                            geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode, geometryObjectModel.GetValue<Plane>(GeometryObjectModelParameter.SectionPlane));
+                        }
+
+                        viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+                        break;
                 }
             }
         }

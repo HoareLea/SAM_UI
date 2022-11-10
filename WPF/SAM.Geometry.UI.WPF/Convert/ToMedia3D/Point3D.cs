@@ -9,7 +9,7 @@
                 return new System.Windows.Media.Media3D.Point3D(double.NaN, double.NaN, double.NaN);
             }
 
-            return new System.Windows.Media.Media3D.Point3D(-point3D.X, point3D.Z, point3D.Y);
+            return new System.Windows.Media.Media3D.Point3D(point3D.X, point3D.Y, point3D.Z);
         }
     }
 }

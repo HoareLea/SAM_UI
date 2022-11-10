@@ -4,7 +4,7 @@
     {
         public static CurveAppearance DefaultCurveAppearance()
         {
-            return new CurveAppearance(System.Windows.Media.Color.FromRgb(0, 0, 0), 0.01);
+            return new CurveAppearance(System.Windows.Media.Color.FromRgb(0, 0, 0), 0.04);
         }
 
     }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAM.Geometry.UI.WPF"
         mc:Ignorable="d"
-        Title="GeometryWindow" Height="450" Width="800">
+        Title="SAM Geometry" Height="450" Width="800" WindowState="Maximized">
     <DockPanel>
         <Ribbon DockPanel.Dock="Top" x:Name="ribbon">
             <Ribbon.ApplicationMenu>
@@ -14,8 +14,8 @@
             </Ribbon.ApplicationMenu>
             <RibbonTab x:Name="RibbonTab_File" Header="File">
                 <RibbonGroup x:Name="RibbonGroup_File_General" Header="General">
-                    <RibbonButton x:Name="ribbonButton_General_OpenModel" Label="Open"/>
-                    <RibbonButton x:Name="ribbonButton_General_CloseModel" Label="Close"/>
+                    <RibbonButton x:Name="ribbonButton_General_OpenModel" Label="Open" Click="RibbonButton_General_OpenModel_Click"/>
+                    <RibbonButton x:Name="ribbonButton_General_CloseModel" Label="Close" Click="RibbonButton_General_CloseModel_Click"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
@@ -26,7 +26,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <local:ViewControl x:Name="viewControl" Grid.Column="0" Grid.Row="0"/>
+            <local:ViewportControl x:Name="viewportControl" Grid.Column="0" Grid.Row="0" Margin="0,0,-0.4,-0.4"/>
 
         </Grid>
     </DockPanel>

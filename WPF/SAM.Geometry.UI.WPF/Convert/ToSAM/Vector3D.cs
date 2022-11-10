@@ -9,7 +9,7 @@
                 return new Spatial.Point3D(double.NaN, double.NaN, double.NaN);
             }
 
-            return new Spatial.Point3D(-vector3D.X, vector3D.Z, vector3D.Y);
+            return new Spatial.Point3D(vector3D.X, vector3D.Y, vector3D.Z);
         }
     }
 }
