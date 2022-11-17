@@ -63,6 +63,64 @@ namespace SAM.Geometry.UI.WPF
             return result;
         }
 
+        public static VisualGeometryObject VisualGeometryObject(this ShellObject shellObject)
+        {
+            if (shellObject == null)
+            {
+                return null;
+            }
+
+            SurfaceAppearance surfaceAppearance = shellObject.SurfaceAppearance;
+
+            if (surfaceAppearance == null)
+            {
+                return null;
+            }
+
+            Shell shell = shellObject.Shell;
+            if (shell == null)
+            {
+                return null;
+            }
+
+            Model3DGroup model3DGroup = null;
+
+            CurveAppearance curveAppearance = surfaceAppearance.CurveAppearance;
+            if (curveAppearance != null)
+            {
+                if (curveAppearance.Thickness != 0)
+                {
+                    model3DGroup = new Model3DGroup();
+
+                    Material material = UI.Create.Material(curveAppearance.Color);
+
+                    foreach (IClosedPlanar3D edge3D in shell.GetEdge3Ds())
+                    {
+                        ISegmentable3D segmentable3D = edge3D as ISegmentable3D;
+                        if (segmentable3D != null)
+                        {
+                            segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, curveAppearance.Thickness), material)));
+                        }
+                    }
+                }
+            }
+
+            VisualGeometryObject result = new VisualGeometryObject(shellObject);
+
+            GeometryModel3D geometryModel3D = new GeometryModel3D(shell.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color));
+            if (model3DGroup != null && model3DGroup.Children.Count != 0)
+            {
+                model3DGroup.Children.Add(geometryModel3D);
+                result.Content = model3DGroup;
+            }
+            else
+            {
+                result.Content = geometryModel3D;
+            }
+
+            return result;
+        }
+
         public static VisualGeometryObject VisualGeometryObject(this Segment3DObject segment3DObject)
         {
             if (segment3DObject == null)
@@ -180,6 +238,11 @@ namespace SAM.Geometry.UI.WPF
                 else if (sAMGeometry3DObject is Point3DObject)
                 {
                     VisualGeometryObject visualGeometryObject = VisualGeometryObject((Point3DObject)sAMGeometry3DObject);
+                    result.Children.Add(visualGeometryObject);
+                }
+                else if (sAMGeometry3DObject is ShellObject)
+                {
+                    VisualGeometryObject visualGeometryObject = VisualGeometryObject((ShellObject)sAMGeometry3DObject);
                     result.Children.Add(visualGeometryObject);
                 }
                 else if (sAMGeometry3DObject is SAMGeometry3DObjectCollection)

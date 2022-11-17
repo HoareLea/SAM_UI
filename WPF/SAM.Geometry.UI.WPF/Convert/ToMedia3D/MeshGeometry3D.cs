@@ -72,6 +72,11 @@ namespace SAM.Geometry.UI.WPF
             return result;
         }
 
+        public static MeshGeometry3D ToMedia3D(this Shell shell, bool doubleSided = false)
+        {
+            return ToMedia3D(shell.Mesh3D(), doubleSided);
+        }
+
         public static MeshGeometry3D ToMedia3D(this Sphere sphere, bool doubleSided = false)
         {
             if(sphere == null)

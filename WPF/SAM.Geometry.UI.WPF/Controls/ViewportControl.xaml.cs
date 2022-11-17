@@ -29,6 +29,7 @@ namespace SAM.Geometry.UI.WPF
 
             helixViewport3D.PanGesture = new MouseGesture(MouseAction.LeftClick, ModifierKeys.Shift);
             helixViewport3D.RotateGesture = new MouseGesture(MouseAction.RightClick, ModifierKeys.Shift);
+            uIGeometryObjectModel = new UIGeometryObjectModel();
 
             //helixViewport3D.ShowCameraInfo = true;
         }
@@ -51,6 +52,8 @@ namespace SAM.Geometry.UI.WPF
         {
             if(mode == Mode.ThreeDimensional)
             {
+                helixViewport3D.Camera = new PerspectiveCamera();
+
                 helixViewport3D.Orthographic = false;
                 helixViewport3D.ShowViewCube = true;
                 helixViewport3D.ShowCoordinateSystem = true;

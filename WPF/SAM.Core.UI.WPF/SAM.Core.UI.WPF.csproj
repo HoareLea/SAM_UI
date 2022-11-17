@@ -38,6 +38,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -54,10 +55,15 @@
   <ItemGroup>
     <Compile Include="Classes\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\ObjectContextMenuOpeningEventArgs.cs" />
+    <Compile Include="Classes\TextChangedEventArgs.cs" />
     <Compile Include="Classes\ObjectHooveredEventArgs.cs" />
     <Compile Include="Classes\VisualJSAMObject.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
+    <Compile Include="Delegates\TextChangedEventHandler.cs" />
     <Compile Include="Interfaces\IVisualJSAMObject.cs" />
+    <Compile Include="Controls\JsonControl.xaml.cs">
+      <DependentUpon>JsonControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\Clear.cs" />
     <Compile Include="Modify\Move.cs" />
     <Compile Include="Modify\Rotate.cs" />
@@ -99,6 +105,12 @@
     <PackageReference Include="HelixToolkit.Wpf">
       <Version>2.22.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\JsonControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

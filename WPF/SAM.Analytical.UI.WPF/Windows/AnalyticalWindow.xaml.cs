@@ -633,6 +633,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             Load();
         }
+        
         private void UIAnalyticalModel_Opened(object sender, EventArgs e)
         {
             Load();

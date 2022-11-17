@@ -42,6 +42,11 @@ namespace SAM.Geometry.UI
             {
                 return new Segment3DObject((Segment3D)sAMGeometry3D, Query.DefaultCurveAppearance());
             }
+            else if (sAMGeometry3D is Shell)
+            {
+                ShellObject result = new ShellObject((Shell)sAMGeometry3D, Query.DefaultSurfaceAppearance());
+                return result;
+            }
 
 
             return null;
