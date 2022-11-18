@@ -19,6 +19,7 @@ namespace SAM.Geometry.UI.WPF
 
             ribbonButton_General_OpenModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
             ribbonButton_General_CloseModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
+            ribbonButton_View_Json.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
 
             viewportControl.Mode = Mode.ThreeDimensional;
 
@@ -101,6 +102,18 @@ namespace SAM.Geometry.UI.WPF
                     ribbonButton_View_Mode.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
                     ribbonButton_View_Mode.Label = "2D";
                     break;
+            }
+        }
+
+        private void RibbonButton_View_Json_Click(object sender, RoutedEventArgs e)
+        {
+            if(grid.ColumnDefinitions[2].Width.Value > 0)
+            {
+                grid.ColumnDefinitions[2].Width = new GridLength(0);
+            }
+            else
+            {
+                grid.ColumnDefinitions[2].Width = new GridLength(400);
             }
         }
     }

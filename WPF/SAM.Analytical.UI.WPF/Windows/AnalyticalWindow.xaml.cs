@@ -123,6 +123,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_OpenMollierChart.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_MollierDiagram);
             RibbonButton_Tools_OpenMollierChart.Click += RibbonButton_Tools_OpenMollierChart_Click;
 
+            RibbonButton_Tools_ViewGeometry.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_Tools_ViewGeometry.Click += RibbonButton_Tools_ViewGeometry_Click;
+
 
             RibbonButton_Results_AirHandlingUnitDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AirHandlingUnitDiagram);
             RibbonButton_Results_AirHandlingUnitDiagram.Click += RibbonButton_Results_AirHandlingUnitDiagram_Click;
@@ -155,6 +158,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_Tools_ViewGeometry_Click(object sender, RoutedEventArgs e)
+        {
+            GeometryWindow geometryWindow = new GeometryWindow();
+            geometryWindow.Show();
         }
 
         private void RibbonButton_View_Section_Click(object sender, RoutedEventArgs e)

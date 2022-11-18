@@ -464,8 +464,9 @@
                     <RibbonButton x:Name="RibbonButton_Tools_AddMissingObjects" Label="Missing Elements"/>
                     <RibbonButton x:Name="RibbonButton_Tools_PrintRoomDataSheets" Label="Print RDS"/>
                 </RibbonGroup>
-                <RibbonGroup x:Name="RibbonGroup_Tools_MollierChart" Header="Mollier Diagram">
-                    <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Show"/>
+                <RibbonGroup x:Name="RibbonGroup_Tools_SAM" Header="SAM">
+                    <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Mollier Diagram"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_ViewGeometry" Label="View Geometry"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">
