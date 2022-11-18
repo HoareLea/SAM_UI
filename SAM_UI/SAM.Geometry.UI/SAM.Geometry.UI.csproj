@@ -53,8 +53,10 @@
   <ItemGroup>
     <Compile Include="Classes\Appearance\Appearance.cs" />
     <Compile Include="Classes\Appearance\CurveAppearance.cs" />
+    <Compile Include="Classes\Appearance\TextAppearance.cs" />
     <Compile Include="Classes\Appearance\SurfaceAppearance.cs" />
     <Compile Include="Classes\Appearance\PointAppearance.cs" />
+    <Compile Include="Classes\Text3DObject.cs" />
     <Compile Include="Classes\ShellObject.cs" />
     <Compile Include="Classes\Point3DObject.cs" />
     <Compile Include="Classes\Face3DObject.cs" />
@@ -64,8 +66,10 @@
     <Compile Include="Create\Material.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Parameter\GeometryObjectModelParameter.cs" />
+    <Compile Include="Interfaces\IText3DObject.cs" />
     <Compile Include="Interfaces\IAppearance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\DefaultTextAppearance.cs" />
     <Compile Include="Query\DefaultSurfaceAppearance.cs" />
     <Compile Include="Query\DefaultCurveAppearance.cs" />
     <Compile Include="Query\DefaultPointAppearance.cs" />

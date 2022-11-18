@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
 using System.Windows.Media;
 
 namespace SAM.Geometry.UI

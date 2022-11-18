@@ -30,9 +30,9 @@ namespace SAM.Geometry.UI
                 Face3DObject result = new Face3DObject((Face3D)sAMGeometry3D, Query.DefaultSurfaceAppearance());
                 return result;
             }
-            else if(sAMGeometry3D is Spatial.Point3D)
+            else if(sAMGeometry3D is Point3D)
             {
-                return new Point3DObject((Spatial.Point3D)sAMGeometry3D, Query.DefaultPointAppearance());
+                return new Point3DObject((Point3D)sAMGeometry3D, Query.DefaultPointAppearance());
             }
             else if (sAMGeometry3D is Polygon3D)
             {

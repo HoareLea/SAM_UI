@@ -238,7 +238,8 @@
                 Length="20"
                 MajorDistance="1"
                 MinorDistance="1"
-                Thickness="0.005" Fill="LightGray" />
+                Thickness="0.005" 
+                Fill="LightGray" Visible="True"/>
 
         </HelixToolkit:HelixViewport3D>
     </Grid>

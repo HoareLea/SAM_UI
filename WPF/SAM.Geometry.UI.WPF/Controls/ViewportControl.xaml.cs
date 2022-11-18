@@ -30,8 +30,6 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.PanGesture = new MouseGesture(MouseAction.LeftClick, ModifierKeys.Shift);
             helixViewport3D.RotateGesture = new MouseGesture(MouseAction.RightClick, ModifierKeys.Shift);
             uIGeometryObjectModel = new UIGeometryObjectModel();
-
-            //helixViewport3D.ShowCameraInfo = true;
         }
 
         public Mode Mode
@@ -144,19 +142,23 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.ZoomExtents();
         }
 
-        private void Load(GeometryObjectModel geometryObjectModel, bool zoomExtends = true)
+        private void Load(GeometryObjectModel geometryObjectModel)
         {
-            Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(helixViewport3D.Children);
+            int count = Core.UI.WPF.Query.VisualJSAMObjects<IVisualJSAMObject>(helixViewport3D.Children).Count;
+            if(count > 0)
+            {
+                Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(helixViewport3D.Children);
+            }
 
             VisualGeometryObjectModel visualGeometryObjectModel = Convert.ToMedia3D(geometryObjectModel);
             if (visualGeometryObjectModel != null)
             {
                 helixViewport3D.Children.Add(visualGeometryObjectModel);
+            }
 
-                if(zoomExtends)
-                {
-                    helixViewport3D.ZoomExtents();
-                }
+            if(count == 0)
+            {
+                helixViewport3D.ZoomExtents();
             }
         }
 
@@ -172,7 +174,7 @@ namespace SAM.Geometry.UI.WPF
 
         private void UIGeometryObjectModel_Modified(object sender, EventArgs e)
         {
-            Load(uIGeometryObjectModel?.JSAMObject, false);
+            Load(uIGeometryObjectModel?.JSAMObject);
         }
 
         private void helixViewport3D_MouseDoubleClick(object sender, MouseButtonEventArgs e)

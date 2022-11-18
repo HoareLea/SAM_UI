@@ -226,10 +226,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
             viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
 
-            //List<UI.VisualPanel> visualPanels = uIGeometryObjectModel.JSAMObject.GetSAMGeometryObjects<UI.VisualPanel>();
-
-            //viewControl.Show(new UI.VisualPanel[] { visualPanels[0] });
-
             tabControl.SelectedItem = tabItem;
         }
 

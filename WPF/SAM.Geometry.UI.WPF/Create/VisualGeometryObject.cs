@@ -1,4 +1,5 @@
 ﻿using SAM.Geometry.Spatial;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Geometry.UI.WPF
@@ -256,6 +257,32 @@ namespace SAM.Geometry.UI.WPF
                     result.Children.Add(visualGeometryObject as dynamic);
                 }
             }
+
+            return result;
+        }
+
+        public static VisualGeometryObject VisualGeometryObject(this Text3DObject text3DObject)
+        {
+            if (text3DObject == null)
+            {
+                return null;
+            }
+
+            TextAppearance textAppearance = text3DObject.TextAppearance;
+            if (textAppearance == null)
+            {
+                return null;
+            }
+
+
+            Plane plane = text3DObject.Plane;
+            if(plane == null)
+            {
+                return null;
+            }
+
+            VisualGeometryObject result = new VisualGeometryObject(text3DObject);
+            result.Content = Core.UI.WPF.Create.GeometryModel3D_Text(text3DObject.Text, new SolidColorBrush(textAppearance.Color), true, textAppearance.Height, plane.Origin.ToMedia3D(), true, plane.AxisX.ToMedia3D(), plane.AxisY.ToMedia3D(), textAppearance.FontFamilyName);
 
             return result;
         }

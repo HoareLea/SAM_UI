@@ -1,5 +1,4 @@
-﻿using SAM.Core;
-using SAM.Geometry;
+﻿using SAM.Geometry;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
@@ -168,6 +167,13 @@ namespace SAM.Analytical.UI
 
                     VisualSpace visualSpace = new VisualSpace(space);
                     face3Ds.ForEach(x => visualSpace.Add(new Face3DObject(x, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02)) { Tag = space}));
+
+                    Point3D point3D = plane.Project(space.Location);
+
+                    Plane plane_Temp = new Plane(plane, point3D.GetMoved(new Vector3D(0,0, 0.1)) as Point3D);
+
+                    visualSpace.Add(new Text3DObject(space.Name, plane_Temp, new TextAppearance(Color.FromRgb(0, 0, 0), 1, "Segoe UI")));
+                    
                     result.Add(visualSpace);
                 }
             }
