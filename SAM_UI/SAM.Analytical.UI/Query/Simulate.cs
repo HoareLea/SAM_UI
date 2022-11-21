@@ -20,7 +20,7 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            if(!analyticalModel.TryGetValue(AnalyticalModelParameter.WeatherData, out WeatherData weatherData))
+            if(!analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.WeatherData, out WeatherData weatherData))
             {
                 weatherData = null;
             }
@@ -189,7 +189,7 @@ namespace SAM.Analytical.UI
 
             analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, null, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, false, simulate_From, simulate_To);
 
-            analyticalModel.SetValue(AnalyticalModelParameter.WeatherData, weatherData);
+            analyticalModel.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weatherData);
 
             return analyticalModel;
 

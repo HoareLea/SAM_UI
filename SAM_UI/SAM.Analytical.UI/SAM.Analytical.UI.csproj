@@ -109,6 +109,7 @@
       <DependentUpon>SimulateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToSAM\GeometryObjectModel.cs" />
+    <Compile Include="Enums\Parameter\AnalyticalModelParameter.cs" />
     <Compile Include="Enums\SolarCalculationMethod.cs" />
     <Compile Include="Forms\AnalyticalForm.cs">
       <SubType>Form</SubType>

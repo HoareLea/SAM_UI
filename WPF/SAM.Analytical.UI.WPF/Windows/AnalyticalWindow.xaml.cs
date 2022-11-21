@@ -207,7 +207,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             TabItem tabItem = new TabItem();
             tabItem.Header = string.Format("Plan View ({0}m)", elevation);
             
-            tabControl.Items.Add(tabItem);
+            int id = tabControl.Items.Add(tabItem);
 
             ViewportControl viewportControl = new ViewportControl();
 
@@ -215,11 +215,11 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             Mode mode = Mode.TwoDimensional;
 
+            TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(id, Geometry.Spatial.Create.Plane(elevation), null, null);
+
             GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode, Geometry.Spatial.Create.Plane(elevation));
 
-            UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-
-            viewportControl.UIGeometryObjectModel = uIGeometryObjectModel;
+            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             viewportControl.Mode = mode;
             viewportControl.Loaded += ViewportControl_Loaded;
             viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;

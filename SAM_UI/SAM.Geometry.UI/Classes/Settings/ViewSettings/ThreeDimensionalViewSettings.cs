@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SAM.Geometry.UI
 {
-    public abstract class ThreeDimensionalViewSettings : ViewSettings
+    public class ThreeDimensionalViewSettings : ViewSettings
     {
         public ThreeDimensionalViewSettings(int id, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
             :base(id, appearanceSettings, types)

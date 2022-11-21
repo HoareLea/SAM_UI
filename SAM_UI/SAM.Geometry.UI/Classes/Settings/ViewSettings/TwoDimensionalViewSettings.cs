@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SAM.Geometry.UI
 {
-    public abstract class TwoDimensionalViewSettings : ViewSettings
+    public class TwoDimensionalViewSettings : ViewSettings
     {
         private Plane plane;
 
@@ -30,6 +30,14 @@ namespace SAM.Geometry.UI
                 {
                     plane = new Plane(twoDimensionalViewSettings.plane);
                 }
+            }
+        }
+
+        public Plane Plane
+        {
+            get
+            {
+                return plane == null ? null : new Plane(plane);
             }
         }
 

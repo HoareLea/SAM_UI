@@ -7,5 +7,6 @@ namespace SAM.Geometry.UI
     public enum GeometryObjectModelParameter
     {
         [ParameterProperties("Section Plane", "Section Plane"), SAMObjectParameterValue(typeof(Spatial.Plane))] SectionPlane,
+        [ParameterProperties("View Settings", "View Settings"), SAMObjectParameterValue(typeof(ViewSettings))] ViewSettings,
     }
 }

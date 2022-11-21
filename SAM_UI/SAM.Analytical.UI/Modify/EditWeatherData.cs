@@ -15,7 +15,7 @@ namespace SAM.Analytical.UI
 
             WeatherData weatherData = null;
 
-            analyticalModel.TryGetValue(AnalyticalModelParameter.WeatherData, out weatherData);
+            analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.WeatherData, out weatherData);
             if(weatherData == null)
             {
                 ImportWeatherData(uIAnalyticalModel, owner);
@@ -27,7 +27,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            analyticalModel.TryGetValue(AnalyticalModelParameter.WeatherData, out weatherData);
+            analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.WeatherData, out weatherData);
             if (weatherData == null)
             {
                 return;
@@ -49,7 +49,7 @@ namespace SAM.Analytical.UI
             }
 
             analyticalModel = new AnalyticalModel(analyticalModel);
-            analyticalModel.SetValue(AnalyticalModelParameter.WeatherData, weatherData);
+            analyticalModel.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weatherData);
 
             uIAnalyticalModel.JSAMObject = analyticalModel;
         }

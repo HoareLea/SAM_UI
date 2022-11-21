@@ -23,7 +23,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            analyticalModel.SetValue(AnalyticalModelParameter.WeatherData, weatherData);
+            analyticalModel.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weatherData);
             uIAnalyticalModel.JSAMObject = analyticalModel;
 
             bool updateLocation = false;
