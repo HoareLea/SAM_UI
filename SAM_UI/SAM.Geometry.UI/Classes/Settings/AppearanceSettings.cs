@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Geometry.UI
 {
@@ -31,6 +32,104 @@ namespace SAM.Geometry.UI
                     }
                 }
             }
+        }
+
+        public bool ContainsAppearances(Guid guid)
+        {
+            if(appearanceDictionary == null)
+            {
+                return false;
+            }
+
+            return appearanceDictionary.ContainsKey(guid);
+        }
+
+        public bool AddAppearances(Guid guid, IEnumerable<IAppearance> appearances)
+        {
+            if(appearances == null || appearances.Count() == 0)
+            {
+                return false;
+            }
+
+            if(appearanceDictionary == null)
+            {
+                appearanceDictionary = new Dictionary<Guid, List<IAppearance>>();
+            }
+
+            if(!appearanceDictionary.TryGetValue(guid, out List<IAppearance> appearances_Temp) || appearances_Temp == null)
+            {
+                appearances_Temp = new List<IAppearance>();
+                appearanceDictionary[guid] = appearances_Temp;
+            }
+
+
+            foreach(IAppearance appearance in appearances)
+            {
+                IAppearance appearance_Temp = SAM.Core.Query.Clone(appearance);
+                if(appearance_Temp == null)
+                {
+                    continue;
+                }
+
+                appearances_Temp.Add(appearance_Temp);
+            }
+
+            return true;
+        }
+
+        public bool SetAppearances(Guid guid, IEnumerable<IAppearance> appearances)
+        {
+            RemoveAppearances(guid);
+
+            return AddAppearances(guid, appearances);
+        }
+
+        public bool RemoveAppearances(Guid guid)
+        {
+            if(appearanceDictionary == null || appearanceDictionary.Count == 0)
+            {
+                return false;
+            }
+
+            return appearanceDictionary.Remove(guid);
+        }
+
+        public List<T> GetAppearances<T>(Guid guid) where T: IAppearance
+        {
+            if(appearanceDictionary == null || !appearanceDictionary.ContainsKey(guid))
+            {
+                return null;
+            }
+
+            if (!appearanceDictionary.TryGetValue(guid, out List<IAppearance> appearances) || appearances == null)
+            {
+                return null;
+            }
+
+            List<T> result = new List<T>();
+            for(int i =0; i < appearances.Count; i++)
+            {
+                IAppearance appearance = appearances[i];
+                if(!(appearance is T))
+                {
+                    continue;
+                }
+
+                appearance = SAM.Core.Query.Clone(appearance);
+                if(!(appearance is T))
+                {
+                    continue;
+                }
+
+                result.Add((T)(object)appearance);
+            }
+
+            return result;
+        }
+
+        public List<IAppearance> GetAppearances(Guid guid)
+        {
+            return GetAppearances<IAppearance>(guid);
         }
 
         public virtual bool FromJObject(JObject jObject)

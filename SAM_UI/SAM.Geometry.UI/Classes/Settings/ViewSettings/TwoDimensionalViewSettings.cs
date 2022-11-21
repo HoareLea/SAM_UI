@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SAM.Geometry.Spatial;
+using System;
+using System.Collections.Generic;
 
 namespace SAM.Geometry.UI
 {
@@ -7,8 +9,8 @@ namespace SAM.Geometry.UI
     {
         private Plane plane;
 
-        public TwoDimensionalViewSettings(int id, Plane plane, AppearanceSettings appearanceSettings)
-            :base(id, appearanceSettings)
+        public TwoDimensionalViewSettings(int id, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(id, appearanceSettings, types)
         {
             this.plane = plane;
         }
