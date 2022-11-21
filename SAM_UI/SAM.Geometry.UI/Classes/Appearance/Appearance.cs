@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace SAM.Geometry.UI
 {
-    public abstract class Appearance : Core.IJSAMObject
+    public abstract class Appearance :IAppearance
     {
         public Color Color { get; set; }
 
@@ -28,8 +28,6 @@ namespace SAM.Geometry.UI
             {
                 return false;
             }
-
-
 
             if (jObject.ContainsKey("Color"))
             {

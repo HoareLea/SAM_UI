@@ -1,6 +1,6 @@
 ﻿namespace SAM.Geometry.UI
 {
-    public interface IAppearance
+    public interface IAppearance : Core.IJSAMObject
     {
     }
 }

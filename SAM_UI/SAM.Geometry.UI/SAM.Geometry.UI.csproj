@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,10 +63,17 @@
     <Compile Include="Classes\Face3DObject.cs" />
     <Compile Include="Classes\Polygon3DObject.cs" />
     <Compile Include="Classes\Segment3DObject.cs" />
+    <Compile Include="Classes\Settings\UIGeometrySettings.cs" />
+    <Compile Include="Classes\Settings\ViewSettings\ThreeDimensionalViewSettings.cs" />
+    <Compile Include="Classes\Settings\ViewSettings\TwoDimensionalViewSettings.cs" />
+    <Compile Include="Classes\Settings\AppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\ViewSettings\ViewSettings.cs" />
     <Compile Include="Convert\ToSAM\ISAMGeometryObject.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Parameter\GeometryObjectModelParameter.cs" />
+    <Compile Include="Interfaces\IAppearanceSettings.cs" />
+    <Compile Include="Interfaces\IViewSettings.cs" />
     <Compile Include="Interfaces\IText3DObject.cs" />
     <Compile Include="Interfaces\IAppearance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +87,11 @@
       <Version>13.0.1</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
