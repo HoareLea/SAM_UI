@@ -41,7 +41,7 @@ namespace SAM.Geometry.UI
             }
         }
 
-        public virtual bool FromJObject(JObject jObject)
+        public override bool FromJObject(JObject jObject)
         {
             if(!base.FromJObject(jObject))
             {
@@ -56,10 +56,13 @@ namespace SAM.Geometry.UI
             return true;
         }
 
-        public virtual JObject ToJObject()
+        public override JObject ToJObject()
         {
-            JObject jObject = new JObject();
-            jObject.Add("_type", Core.Query.FullTypeName(this));
+            JObject jObject = base.ToJObject();
+            if(jObject == null)
+            {
+                return null;
+            }
 
             if(plane != null)
             {

@@ -2,7 +2,7 @@
 {
     public static partial class Query
     {
-        public static Mode Mode(this ViewSettings viewSettings)
+        public static Mode Mode(this IViewSettings viewSettings)
         {
             if(viewSettings == null)
             {

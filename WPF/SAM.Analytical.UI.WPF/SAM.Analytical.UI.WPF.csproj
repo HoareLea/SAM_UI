@@ -93,6 +93,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\Header.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Material.cs" />
     <Compile Include="Windows\AnalyticalWindow.xaml.cs">

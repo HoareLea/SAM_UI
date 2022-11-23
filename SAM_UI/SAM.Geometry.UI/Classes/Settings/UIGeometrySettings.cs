@@ -9,9 +9,11 @@ namespace SAM.Geometry.UI
     public class UIGeometrySettings : IUISettings
     {
         private Dictionary<int, IViewSettings> viewSettingsDictionary;
+        private int id;
         
         public UIGeometrySettings()
         {
+            id = -1;
         }
 
         public UIGeometrySettings(JObject jObject)
@@ -21,7 +23,9 @@ namespace SAM.Geometry.UI
 
         public UIGeometrySettings(UIGeometrySettings uIGeometrySettings)
         {
-            if(uIGeometrySettings != null)
+            id = -1;
+
+            if (uIGeometrySettings != null)
             {
                 if(uIGeometrySettings.viewSettingsDictionary != null)
                 {
@@ -31,10 +35,12 @@ namespace SAM.Geometry.UI
                         viewSettingsDictionary[keyValuePair.Key] = keyValuePair.Value?.Clone();
                     }
                 }
+
+                id = uIGeometrySettings.id;
             }
         }
 
-        public bool Add(IViewSettings viewSettings)
+        public bool AddViewSettings(IViewSettings viewSettings)
         {
             if(viewSettings == null)
             {
@@ -56,9 +62,29 @@ namespace SAM.Geometry.UI
             return true;
         }
 
+        public bool SetViewSettings(IEnumerable<IViewSettings> viewSettings)
+        {
+            ClearViewSettings();
+
+            if(viewSettings != null)
+            {
+                foreach(ViewSettings viewSettings_Temp in viewSettings)
+                {
+                    AddViewSettings(viewSettings_Temp);
+                }
+            }
+
+            if(viewSettingsDictionary?.Keys == null || !viewSettingsDictionary.Keys.Contains(id))
+            {
+                id = -1;
+            }
+
+            return true;
+        }
+
         public IViewSettings GetViewSettings(int id)
         {
-            if(id == -1)
+            if(id == -1 || viewSettingsDictionary == null)
             {
                 return null;
             }
@@ -71,6 +97,42 @@ namespace SAM.Geometry.UI
             return result.Clone();
         }
 
+        public List<T> GetViewSettings<T>() where T: IViewSettings
+        {
+            if(viewSettingsDictionary == null)
+            {
+                return null;
+            }
+
+            List<T> result = new List<T>();
+            foreach(IViewSettings viewSettings in viewSettingsDictionary.Values)
+            {
+                if(viewSettings is T)
+                {
+                    T t = (T)viewSettings.Clone();
+
+                    if(t != null)
+                    {
+                        result.Add(t);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public bool ClearViewSettings()
+        {
+            if(viewSettingsDictionary == null || viewSettingsDictionary.Count == 0)
+            {
+                return false;
+            }
+
+            viewSettingsDictionary.Clear();
+            id = -1;
+            return true;
+        }
+
         public HashSet<int> GetIds()
         {
             if(viewSettingsDictionary == null)
@@ -79,6 +141,28 @@ namespace SAM.Geometry.UI
             }
 
             return new HashSet<int>(viewSettingsDictionary.Keys);
+        }
+
+        public int Id
+        {
+            get
+            {
+                return id;
+            }
+            set
+            {
+                if(viewSettingsDictionary == null)
+                {
+                    return;
+                }
+
+                if(value < -1 || value >= viewSettingsDictionary.Count)
+                {
+                    return;
+                }
+
+                id = value;
+            }
         }
 
         public int NewId()
@@ -109,7 +193,7 @@ namespace SAM.Geometry.UI
             {
                 viewSettingsDictionary = new Dictionary<int, IViewSettings>();
 
-                JArray jArray = jObject.Value<JArray>();
+                JArray jArray = jObject.Value<JArray>("ViewSettings");
                 if(jArray != null)
                 {
                     foreach(JObject jObject_ViewSettings in jArray)
@@ -123,6 +207,11 @@ namespace SAM.Geometry.UI
                         viewSettingsDictionary[viewSettings.Id] = viewSettings;
                     }
                 }
+            }
+
+            if(jObject.ContainsKey("Id"))
+            {
+                id = jObject.Value<int>("Id");
             }
 
             return true;
@@ -139,7 +228,7 @@ namespace SAM.Geometry.UI
                 foreach(IViewSettings viewSettings in viewSettingsDictionary.Values)
                 {
                     JObject jObject_ViewSettings = viewSettings?.ToJObject();
-                    if(jObject_ViewSettings != null)
+                    if(jObject_ViewSettings == null)
                     {
                         continue;
                     }
@@ -148,6 +237,11 @@ namespace SAM.Geometry.UI
                 }
 
                 jObject.Add("ViewSettings", jArray);
+            }
+
+            if(id != -1)
+            {
+                jObject.Add("Id", id);
             }
 
             return jObject;

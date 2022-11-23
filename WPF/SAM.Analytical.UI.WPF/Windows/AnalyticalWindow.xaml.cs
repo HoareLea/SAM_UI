@@ -141,12 +141,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             AnalyticalModelControl.TreeView.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
 
 
-            Mode mode = Mode.ThreeDimensional;
-            GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode);
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings(0, null, null);
 
-            UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-            viewportControl.UIGeometryObjectModel = uIGeometryObjectModel;
-            viewportControl.Mode = mode;
+            GeometryObjectModel geometryObjectModel = UI.Convert.ToSAM_GeometryObjectModel(uIAnalyticalModel?.JSAMObject, threeDimensionalViewSettings);
+
+            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+            viewportControl.Mode = threeDimensionalViewSettings.Mode();
             viewportControl.Loaded += ViewportControl_Loaded;
             viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
             viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
@@ -173,7 +173,14 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            List<BoundingBox3D> boundingBox3Ds = uIAnalyticalModel.JSAMObject?.GetPanels()?.ConvertAll(x => x?.GetBoundingBox());
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+            if(analyticalModel == null)
+            {
+                return;
+            }
+
+
+            List<BoundingBox3D> boundingBox3Ds = analyticalModel.GetPanels()?.ConvertAll(x => x?.GetBoundingBox());
             if(boundingBox3Ds == null || boundingBox3Ds.Count == 0)
             {
                 return;
@@ -204,29 +211,39 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            TabItem tabItem = new TabItem();
-            tabItem.Header = string.Format("Plan View ({0}m)", elevation);
-            
-            int id = tabControl.Items.Add(tabItem);
+            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new TwoDimensionalViewSettings(tabControl.Items.Count, Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture)}));
+            if(tabItem != null)
+            {
+                tabControl.SelectedItem = tabItem;
+            }
 
-            ViewportControl viewportControl = new ViewportControl();
+            UpdateUIGeometrySettings(tabControl, analyticalModel);
 
-            tabItem.Content = viewportControl;
+            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
 
-            Mode mode = Mode.TwoDimensional;
+            //TabItem tabItem = new TabItem();
+            //tabItem.Header = string.Format("Plan View ({0}m)", elevation);
 
-            TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(id, Geometry.Spatial.Create.Plane(elevation), null, null);
+            //int id = tabControl.Items.Add(tabItem);
 
-            GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode, Geometry.Spatial.Create.Plane(elevation));
+            //ViewportControl viewportControl = new ViewportControl();
 
-            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-            viewportControl.Mode = mode;
-            viewportControl.Loaded += ViewportControl_Loaded;
-            viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
-            viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
-            viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+            //tabItem.Content = viewportControl;
 
-            tabControl.SelectedItem = tabItem;
+            //TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(id, Geometry.Spatial.Create.Plane(elevation), null, null);
+
+            //GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(twoDimensionalViewSettings);
+
+            //viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+            //viewportControl.Mode = twoDimensionalViewSettings.Mode();
+            //viewportControl.Loaded += ViewportControl_Loaded;
+            //viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
+            //viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
+            //viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+
+            //tabControl.SelectedItem = tabItem;
         }
 
         private void ViewControl_ObjectContextMenuOpening(object sender, ObjectContextMenuOpeningEventArgs e)
@@ -556,6 +573,14 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+
+            UpdateUIGeometrySettings(tabControl, analyticalModel);
+
+            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+
             uIAnalyticalModel.SaveAs();
         }
 
@@ -565,6 +590,14 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 return;
             }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+
+            UpdateUIGeometrySettings(tabControl, analyticalModel);
+
+            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
 
             if (uIAnalyticalModel.Save())
             {
@@ -609,13 +642,15 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            UIAnalyticalModel uIAnalyticalModel_Temp = new UIAnalyticalModel();
-            uIAnalyticalModel_Temp.Path = path;
-
-            Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => uIAnalyticalModel_Temp.Open());
-
+            uIAnalyticalModel = new UIAnalyticalModel();
             uIAnalyticalModel.Path = path;
-            uIAnalyticalModel.JSAMObject = uIAnalyticalModel_Temp?.JSAMObject;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
+            uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
+
+            uIAnalyticalModel.Open();
+
+            //Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => );
         }
 
         private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -636,25 +671,134 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void UIAnalyticalModel_Modified(object sender, EventArgs e)
         {
-            Load();
+            Reload();
         }
         
         private void UIAnalyticalModel_Opened(object sender, EventArgs e)
         {
-            Load();
+            SetViewSettings();
+            Reload();
         }
 
         private void UIAnalyticalModel_Closed(object sender, EventArgs e)
         {
-            Load();
+            Reload();
         }
 
-        private void Load()
+        private TabItem UpdateTabItem(TabControl tabControl, AnalyticalModel analyticalModel, IViewSettings viewSettings = null)
         {
-            SetEnabled();
-
-            foreach (TabItem tabItem in tabControl.Items)
+            if (tabControl == null || analyticalModel == null)
             {
+                return null;
+            }
+
+            int id = -1;
+            if (viewSettings == null)
+            {
+                id = tabControl.Items.Count;
+                viewSettings = UI.Query.DefaultViewSettings(id);
+            }
+
+            id = viewSettings.Id;
+
+            while (id > tabControl.Items.Count - 1)
+            {
+                tabControl.Items.Add(new TabItem() { Header = "???" });
+            }
+
+            TabItem tabItem = tabControl.Items[id] as TabItem;
+            if (tabItem == null)
+            {
+                return null;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                viewportControl = new ViewportControl();
+                viewportControl.Loaded += ViewportControl_Loaded;
+                viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
+                viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
+                viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+                tabItem.Content = viewportControl;
+            }
+
+            string header = viewSettings.Header();
+            if (tabItem.Header?.ToString() != header)
+            {
+                tabItem.Header = header;
+            }
+
+            GeometryObjectModel geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
+            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+            viewportControl.Mode = viewSettings.Mode();
+
+            return tabItem;
+        }
+
+        private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel)
+        {
+            if (tabControl == null)
+            {
+                return null;
+            }
+
+            List<TabItem> result = new List<TabItem>();
+
+            if (analyticalModel != null && analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) && uIGeometrySettings != null)
+            {
+                List<IViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<IViewSettings>();
+                if (viewSettingsList != null)
+                {
+                    foreach (IViewSettings viewSettings in viewSettingsList)
+                    {
+                        TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, viewSettings);
+                        if (tabItem != null)
+                        {
+                            result.Add(tabItem);
+                        }
+
+                        int id = tabControl.Items.IndexOf(tabItem);
+
+                        if (id != -1 && id == uIGeometrySettings.Id)
+                        {
+                            tabControl.SelectedItem = tabItem;
+                        }
+                    }
+                }
+            }
+
+            for (int i = tabControl.Items.Count - 1; i >= 0; i--)
+            {
+                if (result.Contains(tabControl.Items[i] as TabItem))
+                {
+                    continue;
+                }
+
+                tabControl.Items.RemoveAt(i);
+            }
+
+            return result;
+        }
+
+        private UIGeometrySettings UpdateUIGeometrySettings(TabControl tabControl, AnalyticalModel analyticalModel)
+        {
+            if (analyticalModel == null || tabControl == null)
+            {
+                return null;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings result) || result == null)
+            {
+                result = new UIGeometrySettings();
+            }
+
+            List<IViewSettings> viewSettingsList = new List<IViewSettings>();
+
+            for (int i = 0; i < tabControl.Items.Count; i++)
+            {
+                TabItem tabItem = tabControl.Items[i] as TabItem;
+
                 ViewportControl viewportControl = tabItem?.Content as ViewportControl;
                 if (viewportControl == null)
                 {
@@ -662,25 +806,114 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
 
                 GeometryObjectModel geometryObjectModel = viewportControl.UIGeometryObjectModel?.JSAMObject;
-
-                Mode mode = viewportControl.Mode;
-                switch (mode)
+                if (geometryObjectModel == null)
                 {
-                    case Mode.ThreeDimensional:
-                        geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode);
-                        viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-                        break;
+                    return null;
+                }
 
-                    case Mode.TwoDimensional:
-                        if (geometryObjectModel != null && geometryObjectModel.TryGetValue(GeometryObjectModelParameter.SectionPlane, out Plane plane))
-                        {
-                            geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(mode, geometryObjectModel.GetValue<Plane>(GeometryObjectModelParameter.SectionPlane));
-                        }
+                if (!geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out IViewSettings viewSettings) || viewSettings == null)
+                {
+                    continue;
+                }
 
-                        viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-                        break;
+                viewSettingsList.Add(viewSettings);
+
+                if(tabControl.SelectedItem == tabItem)
+                {
+                    result.Id = i;
                 }
             }
+
+            result.SetViewSettings(viewSettingsList);
+
+            return result;
+        }
+
+        private void SetViewSettings()
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if(analyticalModel == null)
+            {
+                return;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                uIGeometrySettings = new UIGeometrySettings();
+            }
+
+            List<IViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<IViewSettings>();
+            if(viewSettingsList == null || viewSettingsList.Count == 0)
+            {
+                uIGeometrySettings.AddViewSettings(UI.Query.DefaultViewSettings(tabControl.Items.Count));
+                analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
+                uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+                uIAnalyticalModel.JSAMObject = analyticalModel;
+                uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            }
+        }
+
+        private void Reload()
+        {
+            SetEnabled();
+
+            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+
+            UpdateTabItems(tabControl, analyticalModel);
+
+            UpdateUIGeometrySettings(tabControl, analyticalModel);
+
+            //if(!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            //{
+            //    uIGeometrySettings = new UIGeometrySettings();
+            //}
+
+            //List<IViewSettings> viewSettingsList = new List<IViewSettings>();
+            //for(int i =0; i < tabControl.Items.Count; i++)
+            //{
+            //    TabItem tabItem = tabControl.Items[i] as TabItem;
+
+            //    ViewportControl viewportControl = tabItem?.Content as ViewportControl;
+            //    if (viewportControl == null)
+            //    {
+            //        continue;
+            //    }
+
+            //    IViewSettings viewSettings = null;
+
+            //    GeometryObjectModel geometryObjectModel = viewportControl.UIGeometryObjectModel?.JSAMObject;
+            //    if(geometryObjectModel == null)
+            //    {
+            //        viewSettings = uIGeometrySettings.GetViewSettings(i);
+            //        if(viewSettings == null)
+            //        {
+            //            viewSettings = UI.Query.DefaultViewSettings(i);
+            //        }
+            //    }
+
+            //    if(viewSettings == null)
+            //    {
+            //        if (!geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out viewSettings) || viewSettings == null)
+            //        {
+            //            continue;
+            //        }
+            //    }
+
+            //    geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(viewSettings);
+            //    viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+
+            //    viewSettingsList.Add(viewSettings);
+            //}
+
+            //uIGeometrySettings.SetViewSettings(viewSettingsList);
+
+            //analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
+
+            uIAnalyticalModel.JSAMObject = analyticalModel;
+
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
         private void SetEnabled()

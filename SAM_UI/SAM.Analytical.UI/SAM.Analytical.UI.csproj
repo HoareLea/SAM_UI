@@ -124,6 +124,7 @@
       <DependentUpon>SimulateForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\ISection3DObject.cs" />
+    <Compile Include="Query\DefaultViewSettings.cs" />
     <Compile Include="Query\SurfaceAppearance.cs" />
     <Compile Include="Query\SpaceDiagram.cs" />
     <Compile Include="Query\AirHandlingUnitDiagram.cs" />

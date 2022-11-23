@@ -41,8 +41,11 @@ namespace SAM.Geometry.UI.WPF
 
             set
             {
-                mode = value;
-                UpdateMode();
+                if(mode != value)
+                {
+                    mode = value;
+                    UpdateMode();
+                }
             }
         }
 

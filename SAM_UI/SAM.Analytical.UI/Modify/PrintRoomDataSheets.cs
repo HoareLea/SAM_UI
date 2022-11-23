@@ -532,7 +532,7 @@ namespace SAM.Analytical.UI
 
                                 if (loadIndex != -1)
                                 {
-                                    values[i, 30] = Convert.ToDateTime(loadIndex, year);
+                                    values[i, 30] = Analytical.Convert.ToDateTime(loadIndex, year);
                                 }
 
                                 if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.HumidityRatio, out double humidityRatio))
@@ -648,12 +648,12 @@ namespace SAM.Analytical.UI
 
                                 if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.MaxDryBulbTemperatureIndex, out int maxDryBulbTemperatureIndex) && !double.IsNaN(maxDryBulbTemperatureIndex))
                                 {
-                                    values[i, 81] = Convert.ToDateTime(maxDryBulbTemperatureIndex, year);
+                                    values[i, 81] = Analytical.Convert.ToDateTime(maxDryBulbTemperatureIndex, year);
                                 }
 
                                 if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.MinDryBulbTemperatureIndex, out int minDryBulbTemperatureIndex) && !double.IsNaN(minDryBulbTemperatureIndex))
                                 {
-                                    values[i, 82] = Convert.ToDateTime(minDryBulbTemperatureIndex, year);
+                                    values[i, 82] = Analytical.Convert.ToDateTime(minDryBulbTemperatureIndex, year);
                                 }
 
                                 if (spaceSimulationResult_Cooling.TryGetValue(SpaceSimulationResultParameter.DesignDayTemperature, out double designDayTemperature) && !double.IsNaN(designDayTemperature))

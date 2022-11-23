@@ -29,5 +29,31 @@ namespace SAM.Analytical.UI
 
             return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0.001);
         }
+
+        public static SurfaceAppearance SurfaceAppearance(this Space space)
+        {
+            if (space == null)
+            {
+                return null;
+            }
+
+
+            if(!space.TryGetValue(SpaceParameter.Color, out Color color))
+            {
+                color = Color.Empty;
+                InternalCondition internalCondition = space.InternalCondition;
+                if(!internalCondition.TryGetValue(InternalConditionParameter.Color, out color))
+                {
+                    color = Color.Empty;
+                }
+            }
+
+            if(color.IsEmpty)
+            {
+                color = Color.FromKnownColor(KnownColor.LightGray);
+            }
+
+            return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0.001);
+        }
     }
 }

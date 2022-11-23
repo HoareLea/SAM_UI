@@ -213,6 +213,8 @@ namespace SAM.Core.UI
                 return result;
             }
 
+            modified = false;
+
             OnSaved();
 
             return result;
