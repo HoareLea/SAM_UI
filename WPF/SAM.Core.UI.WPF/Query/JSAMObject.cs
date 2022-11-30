@@ -1,4 +1,6 @@
-﻿namespace SAM.Core.UI.WPF
+﻿using System.Windows.Media.Media3D;
+
+namespace SAM.Core.UI.WPF
 {
     public static partial class Query
     {
@@ -22,5 +24,23 @@
 
             return default;
         }
+
+        public static T JSAMObject<T>(this Model3D model3D) where T : IJSAMObject
+        {
+            if(model3D == null)
+            {
+                return default;
+            }
+
+            object @object = model3D.GetValue(DependencyProperty.IJSAMObjectProperty);
+            if(@object is T)
+            {
+                return (T)(object)@object;
+            }
+
+            return default;
+        }
+
+
     }
 }

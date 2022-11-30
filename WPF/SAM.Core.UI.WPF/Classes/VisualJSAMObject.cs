@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Core.UI.WPF
 {
+
+
     public class VisualJSAMObject<T> : ModelVisual3D, IVisualJSAMObject where T : IJSAMObject
     {
         private Model3D model3D;

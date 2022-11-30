@@ -58,6 +58,7 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DependencyProperty.cs" />
     <Compile Include="Classes\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\ObjectContextMenuOpeningEventArgs.cs" />
     <Compile Include="Classes\TextChangedEventArgs.cs" />
@@ -71,6 +72,7 @@
       <DependentUpon>JsonControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\Clear.cs" />
+    <Compile Include="Modify\SetIJSAMObject.cs" />
     <Compile Include="Modify\Move.cs" />
     <Compile Include="Modify\Opacity.cs" />
     <Compile Include="Modify\Rotate.cs" />

@@ -1,4 +1,5 @@
 ﻿using SAM.Geometry.Spatial;
+using System.Collections.Generic;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 
@@ -34,30 +35,35 @@ namespace SAM.Geometry.UI.WPF
                 if(curveAppearance.Thickness != 0)
                 {
                     model3DGroup = new Model3DGroup();
-
-                    Material material = UI.Create.Material(curveAppearance.Color);
-
                     foreach(IClosedPlanar3D edge3D in face3D.GetEdge3Ds())
                     {
-                        ISegmentable3D segmentable3D = edge3D as ISegmentable3D;
-                        if(segmentable3D != null)
+                        List<Segment3D> segment3Ds = (edge3D as ISegmentable3D)?.GetSegments();
+                        if(segment3Ds != null)
                         {
-                            segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, curveAppearance.Thickness), material)));
+                            foreach(Segment3D segment3D in segment3Ds)
+                            {
+                                Model3D model3D = Model3D(new Segment3DObject(segment3D, curveAppearance));
+                                model3DGroup.Children.Add(model3D);
+                            }
                         }
                     }
                 }
             }
 
-
             GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color));
-
-            if (model3DGroup != null && model3DGroup.Children.Count != 0)
+            if(model3DGroup == null)
             {
-                model3DGroup.Children.Add(geometryModel3D);
-                return model3DGroup;
+                Core.UI.WPF.Modify.SetIJSAMObject(geometryModel3D, face3DObject);
+                return geometryModel3D;
             }
 
-            return geometryModel3D;
+            Model3DGroup result = new Model3DGroup();
+            result.Children.Add(model3DGroup);
+            result.Children.Add(geometryModel3D);
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, face3DObject);
+
+            return result;
         }
 
         public static Model3D Model3D(this ShellObject shellObject)
@@ -80,37 +86,16 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            Model3DGroup model3DGroup = null;
-
-            CurveAppearance curveAppearance = surfaceAppearance.CurveAppearance;
-            if (curveAppearance != null)
+            Model3DGroup result = new Model3DGroup();
+            foreach (Face3D face3D in shell.Face3Ds)
             {
-                if (curveAppearance.Thickness != 0)
-                {
-                    model3DGroup = new Model3DGroup();
-
-                    Material material = UI.Create.Material(curveAppearance.Color);
-
-                    foreach (IClosedPlanar3D edge3D in shell.GetEdge3Ds())
-                    {
-                        ISegmentable3D segmentable3D = edge3D as ISegmentable3D;
-                        if (segmentable3D != null)
-                        {
-                            segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, curveAppearance.Thickness), material)));
-                        }
-                    }
-                }
+                Model3D model3D = Model3D(new Face3DObject(face3D, surfaceAppearance));
+                result.Children.Add(model3D);
             }
 
-            GeometryModel3D geometryModel3D = new GeometryModel3D(shell.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color));
+            Core.UI.WPF.Modify.SetIJSAMObject(result, shellObject);
 
-            if (model3DGroup != null && model3DGroup.Children.Count != 0)
-            {
-                model3DGroup.Children.Add(geometryModel3D);
-                return model3DGroup;
-            }
-
-            return geometryModel3D;
+            return result;
         }
 
         public static Model3D Model3D(this Segment3DObject segment3DObject)
@@ -135,10 +120,9 @@ namespace SAM.Geometry.UI.WPF
 
             Material material = UI.Create.Material(curveAppearance.Color);
 
-            Model3DGroup model3DGroup = new Model3DGroup();
-            model3DGroup.Children.Add(new GeometryModel3D(segment3D.ToMedia3D(true, curveAppearance.Thickness), material));
-
-            return model3DGroup;
+            GeometryModel3D result = new GeometryModel3D(segment3D.ToMedia3D(true, curveAppearance.Thickness), material);
+            Core.UI.WPF.Modify.SetIJSAMObject(result, segment3DObject);
+            return result;
         }
 
         public static Model3D Model3D(this Polygon3DObject polygon3DObject)
@@ -161,11 +145,16 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            Material material = UI.Create.Material(curveAppearance.Color);
+            Model3DGroup result = new Model3DGroup();
+            foreach(Segment3D segment3D in segmentable3D.GetSegments())
+            {
+                Model3D model3D = Model3D(new Segment3DObject(segment3D, curveAppearance));
+                result.Children.Add(model3D);
+            }
 
-            Model3DGroup model3DGroup = new Model3DGroup();
-            segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, curveAppearance.Thickness), material)));
-            return model3DGroup;
+            Core.UI.WPF.Modify.SetIJSAMObject(result, polygon3DObject);
+
+            return result;
         }
 
         public static Model3D Model3D(this Point3DObject point3DObject)
@@ -189,7 +178,10 @@ namespace SAM.Geometry.UI.WPF
 
             Material material = UI.Create.Material(pointAppearance.Color);
 
-            return new GeometryModel3D(Convert.ToMedia3D(point3D, true, pointAppearance.Thickness), material);
+            GeometryModel3D result = new GeometryModel3D(Convert.ToMedia3D(point3D, true, pointAppearance.Thickness), material);
+            Core.UI.WPF.Modify.SetIJSAMObject(result, point3DObject);
+
+            return result;
         }
 
         public static Model3D Model3D(this SAMGeometry3DObjectCollection sAMGeometry3DObjectCollection)
@@ -239,6 +231,8 @@ namespace SAM.Geometry.UI.WPF
                 }
             }
 
+            Core.UI.WPF.Modify.SetIJSAMObject(result, sAMGeometry3DObjectCollection);
+
             return result;
         }
 
@@ -262,7 +256,11 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            return Core.UI.WPF.Create.GeometryModel3D_Text(text3DObject.Text, new SolidColorBrush(textAppearance.Color), true, textAppearance.Height, plane.Origin.ToMedia3D(), true, plane.AxisX.ToMedia3D(), plane.AxisY.ToMedia3D(), textAppearance.FontFamilyName);
+            GeometryModel3D result = Core.UI.WPF.Create.GeometryModel3D_Text(text3DObject.Text, new SolidColorBrush(textAppearance.Color), true, textAppearance.Height, plane.Origin.ToMedia3D(), true, plane.AxisX.ToMedia3D(), plane.AxisY.ToMedia3D(), textAppearance.FontFamilyName);
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, text3DObject);
+
+            return result;
         }
     }
 }
