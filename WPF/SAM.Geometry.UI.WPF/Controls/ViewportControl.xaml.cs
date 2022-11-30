@@ -92,9 +92,7 @@ namespace SAM.Geometry.UI.WPF
                     foreach (IVisualJSAMObject visualSAMObject_Selected in visualSAMObjects_Selected)
                     {
                         visualSAMObject_Selected.SetSelected(false);
-                        //Modify.Restore((visualSAMObject_Selected as dynamic)?.Content);
                         visualSAMObject_Selected.SetHighlight(false);
-                        //Modify.Restore((visualSAMObject_Selected as dynamic)?.Content);
                     }
                 }
 
@@ -105,7 +103,6 @@ namespace SAM.Geometry.UI.WPF
             if (highlight)
             {
                 visualSAMObject_Highlight?.SetHighlight(false);
-                //Modify.Restore((visualSAMObject_Highlight as dynamic)?.Content);
                 visualSAMObject_Highlight = null;
 
             }

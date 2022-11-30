@@ -42,8 +42,8 @@ namespace SAM.Analytical.UI
             {
                 foreach (Panel panel in panels)
                 {
-                    VisualPanel visualPanel = new VisualPanel(panel);
-                    visualPanel.Add(new Face3DObject(panel.GetFace3D(true), Query.SurfaceAppearance(panel)) { Tag = panel });
+                    GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = panel };
+                    geometryObjectCollection_Panel.Add(new Face3DObject(panel.GetFace3D(true), Query.SurfaceAppearance(panel)));
 
                     if(showApertures)
                     {
@@ -52,7 +52,7 @@ namespace SAM.Analytical.UI
                         {
                             foreach (Aperture aperture in apertures)
                             {
-                                VisualAperture visualAperture = new VisualAperture(aperture);
+                                GeometryObjectCollection geometryObjectCollection_Aperture = new GeometryObjectCollection() { Tag = aperture };
 
                                 AperturePart aperturePart = AperturePart.Undefined;
                                 List<Face3D> face3Ds = null;
@@ -61,22 +61,22 @@ namespace SAM.Analytical.UI
                                 face3Ds = aperture.GetFace3Ds(aperturePart);
                                 if (face3Ds != null && face3Ds.Count != 0)
                                 {
-                                    face3Ds.ForEach(x => visualAperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart)) { Tag = aperture }));
+                                    face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
                                 }
 
                                 aperturePart = AperturePart.Pane;
                                 face3Ds = aperture.GetFace3Ds(aperturePart);
                                 if (face3Ds != null && face3Ds.Count != 0)
                                 {
-                                    face3Ds.ForEach(x => visualAperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart)) { Tag = aperture }));
+                                    face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
                                 }
 
-                                visualPanel.Add(visualAperture);
+                                geometryObjectCollection_Panel.Add(geometryObjectCollection_Aperture);
                             }
                         }
                     }
 
-                    result.Add(visualPanel);
+                    result.Add(geometryObjectCollection_Panel);
                 }
             }
 
@@ -165,7 +165,7 @@ namespace SAM.Analytical.UI
                     continue;
                 }
 
-                VisualPanel visualPanel = new VisualPanel(keyValuePair.Key);
+                GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = keyValuePair.Key };
                 foreach (ISegmentable3D segmentable3D in keyValuePair.Value)
                 {
                     List<Segment3D> segment3Ds = segmentable3D?.GetSegments();
@@ -174,9 +174,9 @@ namespace SAM.Analytical.UI
                         continue;
                     }
 
-                    segment3Ds.ForEach(x => visualPanel.Add(new Segment3DObject(x, new CurveAppearance(Color.FromRgb(105, 105, 105), 0.04)) { Tag = keyValuePair.Key }));
+                    segment3Ds.ForEach(x => geometryObjectCollection_Panel.Add(new Segment3DObject(x, new CurveAppearance(Color.FromRgb(105, 105, 105), 0.04))));
                 }
-                result.Add(visualPanel);
+                result.Add(geometryObjectCollection_Panel);
 
             }
 
@@ -198,7 +198,7 @@ namespace SAM.Analytical.UI
                     List<Face3D> face3Ds_Offset = new List<Face3D>();
                     foreach (Face3D face3D in face3Ds)
                     {
-                        List<Face3D> face3Ds_Offset_Temp = face3D.Offset(-0.05);
+                        List<Face3D> face3Ds_Offset_Temp = face3D.Offset(-0.08);
                         if (face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
                         {
                             continue;
@@ -219,16 +219,16 @@ namespace SAM.Analytical.UI
 
                     System.Drawing.Color color_Darker = ControlPaint.Dark(color);
 
-                    VisualSpace visualSpace = new VisualSpace(space);
-                    face3Ds.ForEach(x => visualSpace.Add(new Face3DObject(x, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02)) { Tag = space }));
+                    GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space};
+                    face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02))));
 
                     Point3D point3D = plane.Project(space.Location);
 
                     Plane plane_Temp = new Plane(plane, point3D.GetMoved(new Vector3D(0, 0, 0.1)) as Point3D);
 
-                    visualSpace.Add(new Text3DObject(space.Name, plane_Temp, new TextAppearance(Color.FromRgb(0, 0, 0), 1, "Segoe UI")) { Tag = space });
+                    geometryObjectCollection_Space.Add(new Text3DObject(space.Name, plane_Temp, new TextAppearance(Color.FromRgb(0, 0, 0), 1, "Segoe UI")) { Tag = space });
 
-                    result.Add(visualSpace);
+                    result.Add(geometryObjectCollection_Space);
                 }
             }
 
