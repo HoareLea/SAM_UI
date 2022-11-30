@@ -89,7 +89,7 @@ namespace SAM.Analytical.UI
                     {
                         foreach (Aperture aperture in apertures)
                         {
-                            VisualAperture visualAperture = new VisualAperture(aperture);
+                            GeometryObjectCollection GeometryObjectCollection_Aperture = new GeometryObjectCollection() { Tag = aperture };
 
                             AperturePart aperturePart = AperturePart.Undefined;
                             List<Face3D> face3Ds = null;
@@ -98,17 +98,17 @@ namespace SAM.Analytical.UI
                             face3Ds = aperture.GetFace3Ds(aperturePart);
                             if (face3Ds != null && face3Ds.Count != 0)
                             {
-                                face3Ds.ForEach(x => visualAperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart)) { Tag = aperture }));
+                                face3Ds.ForEach(x => GeometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
                             }
 
                             aperturePart = AperturePart.Pane;
                             face3Ds = aperture.GetFace3Ds(aperturePart);
                             if (face3Ds != null && face3Ds.Count != 0)
                             {
-                                face3Ds.ForEach(x => visualAperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart)) { Tag = aperture }));
+                                face3Ds.ForEach(x => GeometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
                             }
 
-                            result.Add(visualAperture);
+                            result.Add(GeometryObjectCollection_Aperture);
                         }
                     }
                 }
@@ -121,10 +121,10 @@ namespace SAM.Analytical.UI
                 {
                     Shell shell = adjacencyCluster.Shell(space);
 
-                    VisualSpace visualSpace = new VisualSpace(space);
-                    visualSpace.Add(new ShellObject(shell, Query.SurfaceAppearance(space)) { Tag = space });
+                    GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
+                    geometryObjectCollection_Space.Add(new ShellObject(shell, Query.SurfaceAppearance(space)) { Tag = space });
 
-                    result.Add(visualSpace);
+                    result.Add(geometryObjectCollection_Space);
                 }
             }
 

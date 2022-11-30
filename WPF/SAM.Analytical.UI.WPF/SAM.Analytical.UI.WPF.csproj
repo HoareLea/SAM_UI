@@ -72,21 +72,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\VisualAnalyticalModel.cs" />
-    <Compile Include="Classes\VisualAperture.cs" />
-    <Compile Include="Classes\VisualEdges.cs" />
-    <Compile Include="Classes\VisualPanel.cs" />
-    <Compile Include="Classes\VisualSpace.cs" />
-    <Compile Include="Classes\VisualWidget.cs" />
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToMedia3D\GeometryModel3D.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualAnalyticalModel.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualAperture.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualEdges.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualPanel.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualSpace.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualWidget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
