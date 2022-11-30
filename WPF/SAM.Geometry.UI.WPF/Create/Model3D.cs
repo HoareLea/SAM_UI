@@ -6,7 +6,7 @@ namespace SAM.Geometry.UI.WPF
 {
     public static partial class Create
     {
-        public static VisualGeometryObject VisualGeometryObject(this Face3DObject face3DObject)
+        public static Model3D Model3D(this Face3DObject face3DObject)
         {
             if (face3DObject == null)
             {
@@ -48,23 +48,19 @@ namespace SAM.Geometry.UI.WPF
                 }
             }
 
-            VisualGeometryObject result = new VisualGeometryObject(face3DObject);
 
             GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color));
-            if(model3DGroup != null && model3DGroup.Children.Count != 0)
+
+            if (model3DGroup != null && model3DGroup.Children.Count != 0)
             {
                 model3DGroup.Children.Add(geometryModel3D);
-                result.Content = model3DGroup;
-            }
-            else
-            {
-                result.Content = geometryModel3D;
+                return model3DGroup;
             }
 
-            return result;
+            return geometryModel3D;
         }
 
-        public static VisualGeometryObject VisualGeometryObject(this ShellObject shellObject)
+        public static Model3D Model3D(this ShellObject shellObject)
         {
             if (shellObject == null)
             {
@@ -106,23 +102,18 @@ namespace SAM.Geometry.UI.WPF
                 }
             }
 
-            VisualGeometryObject result = new VisualGeometryObject(shellObject);
-
             GeometryModel3D geometryModel3D = new GeometryModel3D(shell.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color));
+
             if (model3DGroup != null && model3DGroup.Children.Count != 0)
             {
                 model3DGroup.Children.Add(geometryModel3D);
-                result.Content = model3DGroup;
-            }
-            else
-            {
-                result.Content = geometryModel3D;
+                return model3DGroup;
             }
 
-            return result;
+            return geometryModel3D;
         }
 
-        public static VisualGeometryObject VisualGeometryObject(this Segment3DObject segment3DObject)
+        public static Model3D Model3D(this Segment3DObject segment3DObject)
         {
             if (segment3DObject == null)
             {
@@ -147,13 +138,10 @@ namespace SAM.Geometry.UI.WPF
             Model3DGroup model3DGroup = new Model3DGroup();
             model3DGroup.Children.Add(new GeometryModel3D(segment3D.ToMedia3D(true, curveAppearance.Thickness), material));
 
-            VisualGeometryObject result = new VisualGeometryObject(segment3DObject);
-            result.Content = model3DGroup;
-
-            return result;
+            return model3DGroup;
         }
 
-        public static VisualGeometryObject VisualGeometryObject(this Polygon3DObject polygon3DObject)
+        public static Model3D Model3D(this Polygon3DObject polygon3DObject)
         {
             if (polygon3DObject == null)
             {
@@ -177,14 +165,10 @@ namespace SAM.Geometry.UI.WPF
 
             Model3DGroup model3DGroup = new Model3DGroup();
             segmentable3D.GetSegments().ForEach(x => model3DGroup.Children.Add(new GeometryModel3D(x.ToMedia3D(true, curveAppearance.Thickness), material)));
-
-            VisualGeometryObject result = new VisualGeometryObject(polygon3DObject);
-            result.Content = model3DGroup;
-
-            return result;
+            return model3DGroup;
         }
 
-        public static VisualGeometryObject VisualGeometryObject(this Point3DObject point3DObject)
+        public static Model3D Model3D(this Point3DObject point3DObject)
         {
             if (point3DObject == null)
             {
@@ -205,63 +189,60 @@ namespace SAM.Geometry.UI.WPF
 
             Material material = UI.Create.Material(pointAppearance.Color);
 
-            VisualGeometryObject result = new VisualGeometryObject(point3DObject);
-            result.Content = new GeometryModel3D(Convert.ToMedia3D(point3D, true, pointAppearance.Thickness), material);
-
-            return result;
+            return new GeometryModel3D(Convert.ToMedia3D(point3D, true, pointAppearance.Thickness), material);
         }
 
-        public static VisualGeometryObject VisualGeometryObject(this SAMGeometry3DObjectCollection sAMGeometry3DObjectCollection)
+        public static Model3D Model3D(this SAMGeometry3DObjectCollection sAMGeometry3DObjectCollection)
         {
             if (sAMGeometry3DObjectCollection == null)
             {
                 return null;
             }
 
-            VisualGeometryObject result = new VisualGeometryObject(sAMGeometry3DObjectCollection);
+            Model3DGroup result = new Model3DGroup();
             foreach (ISAMGeometry3DObject sAMGeometry3DObject in sAMGeometry3DObjectCollection)
             {
                 if (sAMGeometry3DObject is Face3DObject)
                 {
-                    VisualGeometryObject visualGeometryObject = VisualGeometryObject((Face3DObject)sAMGeometry3DObject);
-                    result.Children.Add(visualGeometryObject);
+                    Model3D model3D = Model3D((Face3DObject)sAMGeometry3DObject);
+                    result.Children.Add(model3D);
                 }
                 else if (sAMGeometry3DObject is Segment3DObject)
                 {
-                    VisualGeometryObject visualGeometryObject = VisualGeometryObject((Segment3DObject)sAMGeometry3DObject);
-                    result.Children.Add(visualGeometryObject);
+                    Model3D model3D = Model3D((Segment3DObject)sAMGeometry3DObject);
+                    result.Children.Add(model3D);
                 }
                 else if (sAMGeometry3DObject is Polygon3DObject)
                 {
-                    VisualGeometryObject visualGeometryObject = VisualGeometryObject((Polygon3DObject)sAMGeometry3DObject);
-                    result.Children.Add(visualGeometryObject);
+                    Model3D model3D = Model3D((Polygon3DObject)sAMGeometry3DObject);
+                    result.Children.Add(model3D);
                 }
                 else if (sAMGeometry3DObject is Point3DObject)
                 {
-                    VisualGeometryObject visualGeometryObject = VisualGeometryObject((Point3DObject)sAMGeometry3DObject);
-                    result.Children.Add(visualGeometryObject);
+                    Model3D model3D = Model3D((Point3DObject)sAMGeometry3DObject);
+                    result.Children.Add(model3D);
                 }
                 else if (sAMGeometry3DObject is ShellObject)
                 {
-                    VisualGeometryObject visualGeometryObject = VisualGeometryObject((ShellObject)sAMGeometry3DObject);
-                    result.Children.Add(visualGeometryObject);
+                    Model3D model3D = Model3D((ShellObject)sAMGeometry3DObject);
+                    result.Children.Add(model3D);
                 }
                 else if (sAMGeometry3DObject is SAMGeometry3DObjectCollection)
                 {
-                    VisualGeometryObject visualGeometryObject = VisualGeometryObject((SAMGeometry3DObjectCollection)sAMGeometry3DObject);
-                    result.Children.Add(visualGeometryObject);
+                    Model3D model3D = Model3D((SAMGeometry3DObjectCollection)sAMGeometry3DObject);
+                    result.Children.Add(model3D);
                 }
                 else
                 {
-                    IVisualGeometryObject visualGeometryObject = VisualGeometryObject(sAMGeometry3DObject as dynamic);
-                    result.Children.Add(visualGeometryObject as dynamic);
+                    Model3D model3D = Model3D(sAMGeometry3DObject as dynamic);
+                    result.Children.Add(model3D as dynamic);
                 }
             }
 
             return result;
         }
 
-        public static VisualGeometryObject VisualGeometryObject(this Text3DObject text3DObject)
+        public static Model3D Model3D(this Text3DObject text3DObject)
         {
             if (text3DObject == null)
             {
@@ -281,10 +262,7 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            VisualGeometryObject result = new VisualGeometryObject(text3DObject);
-            result.Content = Core.UI.WPF.Create.GeometryModel3D_Text(text3DObject.Text, new SolidColorBrush(textAppearance.Color), true, textAppearance.Height, plane.Origin.ToMedia3D(), true, plane.AxisX.ToMedia3D(), plane.AxisY.ToMedia3D(), textAppearance.FontFamilyName);
-
-            return result;
+            return Core.UI.WPF.Create.GeometryModel3D_Text(text3DObject.Text, new SolidColorBrush(textAppearance.Color), true, textAppearance.Height, plane.Origin.ToMedia3D(), true, plane.AxisX.ToMedia3D(), plane.AxisY.ToMedia3D(), textAppearance.FontFamilyName);
         }
     }
 }

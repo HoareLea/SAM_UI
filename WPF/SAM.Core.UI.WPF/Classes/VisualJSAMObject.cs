@@ -6,6 +6,8 @@ namespace SAM.Core.UI.WPF
 {
     public class VisualJSAMObject<T> : ModelVisual3D, IVisualJSAMObject where T : IJSAMObject
     {
+        private Model3D model3D;
+        
         protected T jSAMObject;
 
         public VisualJSAMObject(T jSAMObject)
@@ -73,20 +75,7 @@ namespace SAM.Core.UI.WPF
                     Model3DGroup model3DGroup = Model3DGroup;
                     if (model3DGroup != null && model3DGroup.Children != null)
                     {
-                        foreach (Model3D model3D in model3DGroup.Children)
-                        {
-                            if (!(model3D is IVisualJSAMObject))
-                            {
-                                DiffuseMaterial diffuseMaterial = (model3D as GeometryModel3D).Material as DiffuseMaterial;
-                                if (diffuseMaterial != null)
-                                {
-                                    diffuseMaterials.Add(diffuseMaterial);
-                                }
-                                continue;
-                            }
-
-                            ((IVisualJSAMObject)model3D).Opacity = value;
-                        }
+                        Modify.Opacity(model3DGroup, value);
                     }
 
                 }
@@ -113,7 +102,7 @@ namespace SAM.Core.UI.WPF
                     SolidColorBrush solidColorBrush = diffuseMaterial.Brush as SolidColorBrush;
                     if (solidColorBrush == null)
                     {
-                        return;
+                        continue;
                     }
 
                     if (solidColorBrush.Opacity != value)
@@ -124,9 +113,31 @@ namespace SAM.Core.UI.WPF
             }
         }
 
+        public new Model3D Content
+        {
+            get
+            {
+                return base.Content;
+            }
+
+            set
+            {
+                base.Content = value;
+                if(model3D == null)
+                {
+                    model3D = value?.Clone();
+                }
+            }
+        }
+
+        public void Restore()
+        {
+            base.Content = model3D;
+        }
+
         public virtual bool SetHighlight(bool highlight)
         {
-            double opacity = highlight ? 0.70 : 1;
+            double opacity = highlight ? 0.80 : 1;
             if(Opacity != opacity)
             {
                 Opacity = opacity;
@@ -160,6 +171,78 @@ namespace SAM.Core.UI.WPF
             }
 
             return ((SAMObject)jSAMObject).Guid == ((SAMObject)(object)this.jSAMObject).Guid;
+        }
+
+        public virtual bool SetSelected(bool selected)
+        {
+            if(!selected)
+            {
+                Restore();
+                return true;
+            }
+
+            List<DiffuseMaterial> diffuseMaterials = new List<DiffuseMaterial>();
+            if (Content is GeometryModel3D)
+            {
+                DiffuseMaterial diffuseMaterial = GeometryModel3D.Material as DiffuseMaterial;
+                if (diffuseMaterial != null)
+                {
+                    diffuseMaterials.Add(diffuseMaterial);
+                }
+
+            }
+            else if (Content is Model3DGroup)
+            {
+                Model3DGroup model3DGroup = Model3DGroup;
+                if (model3DGroup != null && model3DGroup.Children != null)
+                {
+                    foreach (Model3D model3D in model3DGroup.Children)
+                    {
+                        if (!(model3D is IVisualJSAMObject))
+                        {
+                            DiffuseMaterial diffuseMaterial = (model3D as GeometryModel3D)?.Material as DiffuseMaterial;
+                            if (diffuseMaterial != null)
+                            {
+                                diffuseMaterials.Add(diffuseMaterial);
+                            }
+                            continue;
+                        }
+
+                        ((IVisualJSAMObject)model3D).SetSelected(selected);
+                    }
+                }
+
+            }
+            else if (Children != null)
+            {
+                foreach (Visual3D visual3D in Children)
+                {
+                    if (!(visual3D is IVisualJSAMObject))
+                    {
+                        continue;
+                    }
+
+                    ((IVisualJSAMObject)visual3D).SetSelected(selected);
+                }
+            }
+
+            if (diffuseMaterials == null || diffuseMaterials.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (DiffuseMaterial diffuseMaterial in diffuseMaterials)
+            {
+                SolidColorBrush solidColorBrush = diffuseMaterial.Brush as SolidColorBrush;
+                if (solidColorBrush == null)
+                {
+                    continue;
+                }
+
+                //solidColorBrush.Color = Color.FromRgb(0,0, 255);
+            }
+
+            return true;
         }
     }
 }

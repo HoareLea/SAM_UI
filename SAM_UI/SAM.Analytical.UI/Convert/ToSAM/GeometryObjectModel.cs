@@ -226,7 +226,7 @@ namespace SAM.Analytical.UI
 
                     Plane plane_Temp = new Plane(plane, point3D.GetMoved(new Vector3D(0, 0, 0.1)) as Point3D);
 
-                    visualSpace.Add(new Text3DObject(space.Name, plane_Temp, new TextAppearance(Color.FromRgb(0, 0, 0), 1, "Segoe UI")));
+                    visualSpace.Add(new Text3DObject(space.Name, plane_Temp, new TextAppearance(Color.FromRgb(0, 0, 0), 1, "Segoe UI")) { Tag = space });
 
                     result.Add(visualSpace);
                 }

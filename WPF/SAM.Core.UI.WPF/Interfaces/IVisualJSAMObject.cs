@@ -10,6 +10,8 @@ namespace SAM.Core.UI.WPF
 
         double Opacity { get; set; }
 
+        bool SetSelected(bool selected);
+
         bool Similar(IJSAMObject jSAMObject);
     }
 }

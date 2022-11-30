@@ -88,7 +88,8 @@
     <Compile Include="Convert\ToSAM\Point3D.cs" />
     <Compile Include="Convert\ToSAM\Vector3D.cs" />
     <Compile Include="Create\IVisualGeometryObject.cs" />
-    <Compile Include="Create\VisualGeometryObject.cs" />
+    <Compile Include="Create\VisualGeometryObject .cs" />
+    <Compile Include="Create\Model3D.cs" />
     <Compile Include="Create\Point3DCollection.cs" />
     <Compile Include="Create\VisualBackground.cs" />
     <Compile Include="Delegates\ObjectDoubleClickedEventHandler.cs" />
@@ -100,6 +101,7 @@
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Center.cs" />
     <Compile Include="Query\LookDirection.cs" />
+    <Compile Include="Query\SelectableVisualJSAMObject.cs" />
     <Compile Include="Query\Plane.cs" />
     <Compile Include="Query\Window.cs" />
     <Compile Include="Windows\GeometryWindow.xaml.cs">

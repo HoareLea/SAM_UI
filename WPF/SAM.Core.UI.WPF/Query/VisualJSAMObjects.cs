@@ -31,6 +31,7 @@ namespace SAM.Core.UI.WPF
                     if(@object is ModelVisual3D)
                     {
                         ModelVisual3D modelVisual3D = (ModelVisual3D)@object;
+
                         List<T> visualSAMObjects = VisualJSAMObjects<T>(modelVisual3D.Children);
                         if(visualSAMObjects != null)
                         {
