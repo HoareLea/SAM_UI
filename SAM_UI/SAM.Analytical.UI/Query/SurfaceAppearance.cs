@@ -27,7 +27,13 @@ namespace SAM.Analytical.UI
 
             Color color = Analytical.Query.Color(aperture.ApertureType, aperturePart);
 
-            return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0.001);
+            SurfaceAppearance result = new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0.001);
+            if(aperturePart == AperturePart.Pane)
+            {
+                result.Opacity = 0.6;
+            }
+
+            return result;
         }
 
         public static SurfaceAppearance SurfaceAppearance(this Space space)

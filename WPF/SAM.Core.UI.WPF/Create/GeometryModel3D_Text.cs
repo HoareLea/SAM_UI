@@ -8,11 +8,11 @@ namespace SAM.Core.UI.WPF
 {
     public static partial class Create
     {
-        public static GeometryModel3D GeometryModel3D_Text(string text, Brush textColor, bool isDoubleSided, double height, Point3D basePoint, bool isBasePointCenterPoint, Vector3D vectorOver, Vector3D vectorUp, string fontFamilyName = "Arial")
+        public static GeometryModel3D GeometryModel3D_Text(string text, Brush brush, bool isDoubleSided, double height, Point3D basePoint, bool isBasePointCenterPoint, Vector3D vectorOver, Vector3D vectorUp, string fontFamilyName = "Arial")
         {
             // First we need a textbox containing the text of our label
             TextBlock textBlock = new TextBlock(new Run(text));
-            textBlock.Foreground = textColor; // setting the text color
+            textBlock.Foreground = brush; // setting the text color
             textBlock.FontFamily = new FontFamily(fontFamilyName); // setting the font to be used
             
             // Now use that TextBox as the brush for a material

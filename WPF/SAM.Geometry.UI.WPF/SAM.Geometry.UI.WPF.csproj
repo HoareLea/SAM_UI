@@ -77,7 +77,6 @@
       <DependentUpon>ViewportControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
-    <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\ModelVisual3D.cs" />
     <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
