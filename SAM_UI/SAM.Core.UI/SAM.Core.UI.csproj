@@ -64,6 +64,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\Brightness.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\WelcomeForm.resx">

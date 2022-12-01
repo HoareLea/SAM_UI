@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF.Windows
 {
@@ -222,47 +223,30 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
             uIAnalyticalModel.JSAMObject = analyticalModel;
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-
-            //TabItem tabItem = new TabItem();
-            //tabItem.Header = string.Format("Plan View ({0}m)", elevation);
-
-            //int id = tabControl.Items.Add(tabItem);
-
-            //ViewportControl viewportControl = new ViewportControl();
-
-            //tabItem.Content = viewportControl;
-
-            //TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(id, Geometry.Spatial.Create.Plane(elevation), null, null);
-
-            //GeometryObjectModel geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(twoDimensionalViewSettings);
-
-            //viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-            //viewportControl.Mode = twoDimensionalViewSettings.Mode();
-            //viewportControl.Loaded += ViewportControl_Loaded;
-            //viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
-            //viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
-            //viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
-
-            //tabControl.SelectedItem = tabItem;
         }
 
         private void ViewControl_ObjectContextMenuOpening(object sender, ObjectContextMenuOpeningEventArgs e)
         {
-            IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
-            if (visualGeometryObject == null)
+
+            ModelVisual3D modelVisual3D = e.ModelVisual3D;
+            if (modelVisual3D == null)
             {
                 return;
             }
 
-            if (!(visualGeometryObject.SAMGeometryObject is ITaggable))
+            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D);
+
+            if (!(jSAMObject is ITaggable))
             {
                 return;
             }
 
+            Tag tag = ((ITaggable)jSAMObject).Tag;
+            if (tag == null)
+            {
+                return;
+            }
 
-
-            IJSAMObject jSAMObject = null;
-            Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
             if (tag.Value is Panel)
             {
                 jSAMObject = (Panel)tag.Value;
@@ -310,18 +294,20 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void ViewportControl_ObjectDoubleClicked(object sender, ObjectDoubleClickedEventArgs e)
         {
-            IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
-            if (visualGeometryObject == null)
+            ModelVisual3D modelVisual3D = e.ModelVisual3D;
+            if (modelVisual3D == null)
             {
                 return;
             }
 
-            if (!(visualGeometryObject.SAMGeometryObject is ITaggable))
+            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D);
+
+            if (!(jSAMObject is ITaggable))
             {
                 return;
             }
 
-            Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
+            Tag tag = ((ITaggable)jSAMObject).Tag;
             if(tag == null)
             {
                 return;
@@ -352,18 +338,20 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             ViewportControl viewportControl = sender as ViewportControl;
 
-            IVisualGeometryObject visualGeometryObject = e.VisualJSAMObject as IVisualGeometryObject;
-            if (visualGeometryObject == null)
+            ModelVisual3D modelVisual3D = e.ModelVisual3D;
+            if (modelVisual3D == null)
             {
                 return;
             }
 
-            if (!(visualGeometryObject.SAMGeometryObject is ITaggable))
+            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D);
+
+            if (!(jSAMObject is ITaggable))
             {
                 return;
             }
 
-            Tag tag = ((ITaggable)visualGeometryObject.SAMGeometryObject).Tag;
+            Tag tag = ((ITaggable)jSAMObject).Tag;
             if(tag == null)
             {
                 return;

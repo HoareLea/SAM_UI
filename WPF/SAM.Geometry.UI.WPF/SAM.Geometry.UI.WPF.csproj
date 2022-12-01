@@ -63,9 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\UIGeometryObjectModel.cs" />
-    <Compile Include="Classes\VisualBackground.cs" />
-    <Compile Include="Classes\VisualGeometryObjectModel.cs" />
-    <Compile Include="Classes\VisualGeometryObject.cs" />
     <Page Include="Controls\ViewportControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -82,23 +79,24 @@
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia3D\Model3DGroup.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
+    <Compile Include="Convert\ToMedia3D\ModelVisual3D.cs" />
     <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
-    <Compile Include="Convert\ToMedia3D\VisualGeometryObjectModel.cs" />
     <Compile Include="Convert\ToSAM\Point2D.cs" />
     <Compile Include="Convert\ToSAM\Point3D.cs" />
     <Compile Include="Convert\ToSAM\Vector3D.cs" />
-    <Compile Include="Create\IVisualGeometryObject.cs" />
-    <Compile Include="Create\VisualGeometryObject.cs" />
+    <Compile Include="Create\Model3D.cs" />
     <Compile Include="Create\Point3DCollection.cs" />
-    <Compile Include="Create\VisualBackground.cs" />
     <Compile Include="Delegates\ObjectDoubleClickedEventHandler.cs" />
     <Compile Include="Delegates\ObjectContextMenuOpeningEventHandler.cs" />
     <Compile Include="Delegates\ObjectHooveredEventHandler.cs" />
-    <Compile Include="Interfaces\IVisualFace3DObject.cs" />
-    <Compile Include="Interfaces\IVisualGeometryObject.cs" />
+    <Compile Include="Modify\Select.cs" />
+    <Compile Include="Modify\Highlight.cs" />
+    <Compile Include="Modify\Restore.cs" />
     <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Center.cs" />
+    <Compile Include="Query\HighlightCurveAppearance.cs" />
+    <Compile Include="Query\SelectionSurfaceAppearance.cs" />
     <Compile Include="Query\LookDirection.cs" />
     <Compile Include="Query\Plane.cs" />
     <Compile Include="Query\Window.cs" />
@@ -154,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SAM_Open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

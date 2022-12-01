@@ -58,20 +58,21 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DependencyProperty.cs" />
     <Compile Include="Classes\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\ObjectContextMenuOpeningEventArgs.cs" />
     <Compile Include="Classes\TextChangedEventArgs.cs" />
     <Compile Include="Classes\ObjectHooveredEventArgs.cs" />
-    <Compile Include="Classes\VisualJSAMObject.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
     <Compile Include="Delegates\TextChangedEventHandler.cs" />
-    <Compile Include="Interfaces\IVisualJSAMObject.cs" />
     <Compile Include="Controls\JsonControl.xaml.cs">
       <DependentUpon>JsonControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\Clear.cs" />
+    <Compile Include="Modify\SetIJSAMObject.cs" />
     <Compile Include="Modify\Move.cs" />
+    <Compile Include="Modify\Opacity.cs" />
     <Compile Include="Modify\Rotate.cs" />
     <Compile Include="Modify\Zoom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -87,8 +88,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Query\JSAMObject.cs" />
     <Compile Include="Query\Center.cs" />
     <Compile Include="Query\IsNaN.cs" />
+    <Compile Include="Query\Branch.cs" />
+    <Compile Include="Query\Parent.cs" />
     <Compile Include="Query\PitchAxis.cs" />
     <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
     <Compile Include="Query\RollAxis.cs" />
@@ -96,7 +100,7 @@
     <Compile Include="Query\TranslateTransform.cs" />
     <Compile Include="Query\TransparentMaterial.cs" />
     <Compile Include="Query\Viewport3DVisual.cs" />
-    <Compile Include="Query\VisualJSAMObjects.cs" />
+    <Compile Include="Query\Visual3Ds.cs" />
     <Compile Include="Query\YawAxis.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -118,6 +122,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

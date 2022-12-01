@@ -1,37 +1,25 @@
-﻿using SAM.Core.UI.WPF;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Geometry.UI.WPF
 {
     public static partial class Query
     {
-        public static Rect3D Bounds(this VisualGeometryObjectModel visualGeometryObjectModel)
+        public static Rect3D Bounds(this ModelVisual3D modelVisual3D)
         {
             Rect3D result = Rect3D.Empty;
 
-            if (visualGeometryObjectModel == null)
+            if (modelVisual3D == null)
             {
                 return result;
             }
 
-            Transform3D transform3D_VisualAnalyticalModel = visualGeometryObjectModel.Transform;
+            Transform3D transform3D = modelVisual3D.Transform;
 
-            foreach (Visual3D visual3D in visualGeometryObjectModel.Children)
+            foreach (Visual3D visual3D in modelVisual3D.Children)
             {
-                IVisualJSAMObject visualJSAMObject = visual3D as IVisualJSAMObject;
-                if(visualJSAMObject == null)
-                {
-                    continue;
-                }
 
-                Rect3D rect3D_VisualFace3DObject = Bounds(visualJSAMObject, transform3D_VisualAnalyticalModel);
-
-                //Rect3D rect3D_VisualFace3DObject = visualJSAMObject.GeometryModel3D.Bounds;
-
-                //Transform3D transform = (visualJSAMObject as ModelVisual3D).Transform;
-                //transform = HelixToolkit.Wpf.Transform3DHelper.CombineTransform(transform, transform3D_VisualAnalyticalModel);
-                //rect3D_VisualFace3DObject = transform.TransformBounds(rect3D_VisualFace3DObject);
+                Rect3D rect3D_VisualFace3DObject = Bounds(visual3D, transform3D);
 
                 if (result == Rect3D.Empty)
                 {
@@ -46,14 +34,14 @@ namespace SAM.Geometry.UI.WPF
             return result;
         }
 
-        public static Rect3D Bounds(this IVisualJSAMObject visualJSAMObject, Transform3D transform3D = null)
+        public static Rect3D Bounds(this Visual3D visual3D, Transform3D transform3D = null)
         {
-            if(visualJSAMObject == null)
+            if(visual3D == null)
             {
                 return Rect3D.Empty;
             }
 
-            ModelVisual3D modelVisual3D = visualJSAMObject as ModelVisual3D;
+            ModelVisual3D modelVisual3D = visual3D as ModelVisual3D;
             if(modelVisual3D == null)
             {
                 return Rect3D.Empty;
@@ -68,9 +56,9 @@ namespace SAM.Geometry.UI.WPF
 
                 Transform3D transform3D_Temp = Transform3D.Identity;
 
-                if (visualJSAMObject is ModelVisual3D)
+                if (visual3D is ModelVisual3D)
                 {
-                    transform3D_Temp = (visualJSAMObject as ModelVisual3D).Transform;
+                    transform3D_Temp = (visual3D as ModelVisual3D).Transform;
                 }
 
                 if(transform3D != null)
@@ -84,15 +72,9 @@ namespace SAM.Geometry.UI.WPF
             Visual3DCollection visual3DCollection = modelVisual3D.Children;
             if (visual3DCollection != null && visual3DCollection.Count != 0)
             {
-                foreach (Visual3D visual3D in visual3DCollection)
+                foreach (Visual3D visual3D_Temp in visual3DCollection)
                 {
-                    IVisualJSAMObject visualJSAMObject_Temp = visual3D as IVisualJSAMObject;
-                    if (visualJSAMObject_Temp == null)
-                    {
-                        continue;
-                    }
-
-                    Rect3D rect3D_Temp = Bounds(visualJSAMObject_Temp, transform3D);
+                    Rect3D rect3D_Temp = Bounds(visual3D_Temp, transform3D);
                     if (rect3D_Temp != Rect3D.Empty)
                     {
                         if (result == Rect3D.Empty)
@@ -110,12 +92,12 @@ namespace SAM.Geometry.UI.WPF
             return result;
         }
 
-        public static Rect3D Bounds(this IEnumerable<VisualGeometryObjectModel> visualGeometryObjectModels)
+        public static Rect3D Bounds(this IEnumerable<Visual3D> visual3Ds)
         {
             Rect3D rect3D = Rect3D.Empty;
-            foreach (VisualGeometryObjectModel visualGeometryObjectModel in visualGeometryObjectModels)
+            foreach (Visual3D visual3D in visual3Ds)
             {
-                Rect3D rect3D_VisualAnalyticalModel = Bounds(visualGeometryObjectModel);
+                Rect3D rect3D_VisualAnalyticalModel = Bounds(visual3D);
 
                 if (rect3D_VisualAnalyticalModel == Rect3D.Empty)
                 {

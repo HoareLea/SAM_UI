@@ -3,7 +3,7 @@
     public static partial class Convert
     {
         /// <summary>
-        /// Convert Drawing Color (WPF) to Media Color (WinForm)
+        /// Convert Drawing Color (WinForm) to Media Color (WPF)
         /// </summary>
         /// <param name="color"></param>
         /// <returns></returns>

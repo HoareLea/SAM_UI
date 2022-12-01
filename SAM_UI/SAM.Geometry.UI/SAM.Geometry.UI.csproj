@@ -68,6 +68,7 @@
     <Compile Include="Classes\Settings\ViewSettings\TwoDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\AppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\ViewSettings.cs" />
+    <Compile Include="Classes\GeometryObjectCollection.cs" />
     <Compile Include="Convert\ToSAM\ISAMGeometryObject.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Enums\Mode.cs" />

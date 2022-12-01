@@ -1,5 +1,7 @@
-﻿using SAM.Core.UI.WPF;
+﻿using SAM.Core;
+using SAM.Core.UI.WPF;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,7 +23,8 @@ namespace SAM.Geometry.UI.WPF
         public event ObjectDoubleClickedEventHandler ObjectDoubleClicked;
         public event ObjectContextMenuOpeningEventHandler ObjectContextMenuOpening;
 
-        private IVisualJSAMObject visualSAMObject_Highlight;
+        private Visual3D visual3D_Highlight;
+        private List<Visual3D> visual3Ds_Selected;
 
         public ViewportControl()
         {
@@ -80,6 +83,29 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.ZoomExtents();
         }
 
+        private void Clear(bool selection = false, bool highlight = false)
+        {
+            if(selection)
+            {
+                if (visual3Ds_Selected != null && visual3Ds_Selected.Count != 0)
+                {
+                    foreach (Visual3D visual3D_Selected in visual3Ds_Selected)
+                    {
+                        Modify.Select(visual3D_Selected, false);
+                        Modify.Highlight(visual3D_Selected, false);
+                    }
+                }
+
+                visual3Ds_Selected = null;
+            }
+
+            if (highlight)
+            {
+                Modify.Highlight(visual3D_Highlight, false);
+                visual3D_Highlight = null;
+            }
+        }
+
         public UIGeometryObjectModel UIGeometryObjectModel
         {
             get
@@ -108,38 +134,6 @@ namespace SAM.Geometry.UI.WPF
             }
         }
 
-        private void helixViewport3D_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) ||
-                Keyboard.IsKeyDown(Key.RightCtrl) ||
-                Keyboard.IsKeyDown(Key.LeftAlt) ||
-                Keyboard.IsKeyDown(Key.RightAlt) ||
-                Keyboard.IsKeyDown(Key.LeftShift) ||
-                Keyboard.IsKeyDown(Key.RightShift))
-            {
-                e.Handled = true;
-                return;
-            }
-
-            helixViewport3D.ContextMenu = new ContextMenu();
-
-            Point point_Current = Mouse.GetPosition(helixViewport3D);
-            HitTestResult hitTestResult = VisualTreeHelper.HitTest(helixViewport3D, point_Current);
-            IVisualGeometryObject visualGeometryObject = hitTestResult?.VisualHit as IVisualGeometryObject;
-
-            MenuItem menuItem = new MenuItem();
-            menuItem.Name = "MenuItem_ZoomExtends";
-            menuItem.Header = "Zoom Extends";
-            menuItem.Click += MenuItem_ZoomExtends_Click;
-            menuItem.Tag = hitTestResult;
-            helixViewport3D.ContextMenu.Items.Add(menuItem);
-
-            if (visualGeometryObject != null)
-            {
-                ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(helixViewport3D.ContextMenu, e, visualGeometryObject));
-            }
-        }
-
         private void MenuItem_ZoomExtends_Click(object sender, RoutedEventArgs e)
         {
             helixViewport3D.ZoomExtents();
@@ -147,16 +141,17 @@ namespace SAM.Geometry.UI.WPF
 
         private void Load(GeometryObjectModel geometryObjectModel)
         {
-            int count = Core.UI.WPF.Query.VisualJSAMObjects<IVisualJSAMObject>(helixViewport3D.Children).Count;
+            Clear(selection: true, highlight: true);
+            int count = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) }).Count;
             if(count > 0)
             {
-                Core.UI.WPF.Modify.Clear<IVisualJSAMObject>(helixViewport3D.Children);
+                Core.UI.WPF.Modify.Clear<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) });
             }
 
-            VisualGeometryObjectModel visualGeometryObjectModel = Convert.ToMedia3D(geometryObjectModel);
-            if (visualGeometryObjectModel != null)
+            ModelVisual3D modelVisual3D = Convert.ToMedia3D(geometryObjectModel);
+            if (modelVisual3D != null)
             {
-                helixViewport3D.Children.Add(visualGeometryObjectModel);
+                helixViewport3D.Children.Add(modelVisual3D);
             }
 
             if(count == 0)
@@ -186,28 +181,111 @@ namespace SAM.Geometry.UI.WPF
             {
                 Point point_Current = e.GetPosition(helixViewport3D);
 
-                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point_Current, out IVisualJSAMObject visualJSAMObject);
-                if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
+                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point_Current, out ModelVisual3D modelVisual3D);
+                if (rayMeshGeometry3DHitTestResult != null && modelVisual3D != null)
                 {
-                    ObjectDoubleClicked?.Invoke(this, new ObjectDoubleClickedEventArgs(e, visualJSAMObject));
+                    ObjectDoubleClicked?.Invoke(this, new ObjectDoubleClickedEventArgs(e, modelVisual3D));
                 }
             }
         }
 
         private void helixViewport3D_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            visualSAMObject_Highlight?.SetHighlight(false);
-            visualSAMObject_Highlight = null;
+            Modify.Highlight(visual3D_Highlight, false);
+            if(visual3Ds_Selected != null && visual3Ds_Selected.Count > 0)
+            {
+                if(visual3Ds_Selected.Contains(visual3D_Highlight))
+                {
+                    Modify.Select(visual3D_Highlight, true);
+                }
+            }
+            
+            
+            visual3D_Highlight = null;
 
             Point point = e.GetPosition(helixViewport3D);
 
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point, out IVisualJSAMObject visualJSAMObject);
-            if (rayMeshGeometry3DHitTestResult != null && visualJSAMObject != null)
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point, out ModelVisual3D modelVisual3D);
+            if (rayMeshGeometry3DHitTestResult != null && modelVisual3D != null)
             {
-                visualSAMObject_Highlight = visualJSAMObject;
-                visualJSAMObject.SetHighlight(true);
+                visual3D_Highlight = modelVisual3D;
+                Modify.Highlight(visual3D_Highlight, true);
 
-                ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, visualJSAMObject));
+                ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, modelVisual3D));
+            }
+        }
+
+        private void helixViewport3D_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Point point_Current = e.GetPosition(helixViewport3D);
+
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point_Current, out ModelVisual3D modelVisual3D);
+            
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                Clear(selection: true);
+            }
+
+            if (rayMeshGeometry3DHitTestResult == null && modelVisual3D == null)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (visual3Ds_Selected == null)
+            {
+                visual3Ds_Selected = new List<Visual3D>();
+            }
+
+            if(visual3Ds_Selected.Contains(modelVisual3D))
+            {
+                Modify.Select(modelVisual3D, false);
+                visual3Ds_Selected.Remove(modelVisual3D);
+            }
+            else
+            {
+                Modify.Select(modelVisual3D, true);
+                visual3Ds_Selected.Add(modelVisual3D);
+            }
+        }
+
+        private void helixViewport3D_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Escape)
+            {
+                Clear(selection: true);
+            }
+        }
+
+        private void helixViewport3D_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) ||
+                Keyboard.IsKeyDown(Key.RightCtrl) ||
+                Keyboard.IsKeyDown(Key.LeftAlt) ||
+                Keyboard.IsKeyDown(Key.RightAlt) ||
+                Keyboard.IsKeyDown(Key.LeftShift) ||
+                Keyboard.IsKeyDown(Key.RightShift))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            helixViewport3D.ContextMenu = new ContextMenu();
+
+            Point point_Current = Mouse.GetPosition(helixViewport3D);
+            HitTestResult hitTestResult = VisualTreeHelper.HitTest(helixViewport3D, point_Current);
+            ModelVisual3D modelVisual3D = hitTestResult?.VisualHit as ModelVisual3D;
+
+            MenuItem menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_ZoomExtends";
+            menuItem.Header = "Zoom Extends";
+            menuItem.Click += MenuItem_ZoomExtends_Click;
+            menuItem.Tag = hitTestResult;
+            helixViewport3D.ContextMenu.Items.Add(menuItem);
+
+            if (modelVisual3D != null)
+            {
+                ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(helixViewport3D.ContextMenu, e, modelVisual3D));
             }
         }
     }

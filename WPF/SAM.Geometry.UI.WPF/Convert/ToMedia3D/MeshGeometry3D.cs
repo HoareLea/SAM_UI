@@ -122,8 +122,7 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            MeshGeometry3D result = new MeshGeometry3D();
-
+            HelixToolkit.Wpf.MeshBuilder meshBuilder = new HelixToolkit.Wpf.MeshBuilder();
             foreach (T segmentable3D in segmentable3Ds)
             {
                 List<Segment3D> segment3Ds = segmentable3D?.GetSegments();
@@ -132,76 +131,104 @@ namespace SAM.Geometry.UI.WPF
                     continue; ;
                 }
 
-                foreach (Segment3D segment3D in segment3Ds)
+                foreach(Segment3D segment3D in segment3Ds)
                 {
                     if (segment3D == null)
                     {
                         continue;
                     }
 
-                    Plane plane = new Plane(segment3D.GetStart(), segment3D.Direction);
-                    if (plane == null)
-                    {
-                        continue;
-                    }
-
-                    Spatial.Vector3D vector3D_X = plane.AxisX;
-                    vector3D_X.Scale(thickness);
-
-                    Spatial.Vector3D vector3D_Y = plane.AxisY;
-                    vector3D_Y.Scale(thickness);
-
-                    Spatial.Point3D point_1 = segment3D.GetStart();
-                    Spatial.Point3D point_2 = segment3D.GetEnd();
-
-                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_X)));
-                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_X.GetNegated())));
-                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_X)));
-                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_X.GetNegated())));
-
-                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_Y)));
-                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_Y.GetNegated())));
-                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_Y)));
-                    result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_Y.GetNegated())));
-
-                    result.TriangleIndices.Add(0);
-                    result.TriangleIndices.Add(1);
-                    result.TriangleIndices.Add(2);
-
-                    result.TriangleIndices.Add(2);
-                    result.TriangleIndices.Add(1);
-                    result.TriangleIndices.Add(3);
-
-                    result.TriangleIndices.Add(4);
-                    result.TriangleIndices.Add(5);
-                    result.TriangleIndices.Add(6);
-
-                    result.TriangleIndices.Add(6);
-                    result.TriangleIndices.Add(5);
-                    result.TriangleIndices.Add(7);
-
-                    if (doubleSided)
-                    {
-                        result.TriangleIndices.Add(2);
-                        result.TriangleIndices.Add(1);
-                        result.TriangleIndices.Add(0);
-
-                        result.TriangleIndices.Add(3);
-                        result.TriangleIndices.Add(1);
-                        result.TriangleIndices.Add(2);
-
-                        result.TriangleIndices.Add(6);
-                        result.TriangleIndices.Add(5);
-                        result.TriangleIndices.Add(4);
-
-                        result.TriangleIndices.Add(7);
-                        result.TriangleIndices.Add(5);
-                        result.TriangleIndices.Add(6);
-                    }
+                    meshBuilder.AddCylinder(segment3D[0].ToMedia3D(), segment3D[1].ToMedia3D(), thickness);
+                    meshBuilder.AddSphere(segment3D[0].ToMedia3D(), thickness);
+                    meshBuilder.AddSphere(segment3D[1].ToMedia3D(), thickness);
                 }
             }
 
-            return result;
+
+            return meshBuilder.ToMesh();
+
+
+
+            //MeshGeometry3D result = new MeshGeometry3D();
+
+            //foreach (T segmentable3D in segmentable3Ds)
+            //{
+            //    List<Segment3D> segment3Ds = segmentable3D?.GetSegments();
+            //    if (segment3Ds == null)
+            //    {
+            //        continue; ;
+            //    }
+
+            //    foreach (Segment3D segment3D in segment3Ds)
+            //    {
+            //        if (segment3D == null)
+            //        {
+            //            continue;
+            //        }
+
+            //        Plane plane = new Plane(segment3D.GetStart(), segment3D.Direction);
+            //        if (plane == null)
+            //        {
+            //            continue;
+            //        }
+
+            //        Spatial.Vector3D vector3D_X = plane.AxisX;
+            //        vector3D_X.Scale(thickness);
+
+            //        Spatial.Vector3D vector3D_Y = plane.AxisY;
+            //        vector3D_Y.Scale(thickness);
+
+            //        Spatial.Point3D point_1 = segment3D.GetStart();
+            //        Spatial.Point3D point_2 = segment3D.GetEnd();
+
+            //        result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_X)));
+            //        result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_X.GetNegated())));
+            //        result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_X)));
+            //        result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_X.GetNegated())));
+
+            //        result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_Y)));
+            //        result.Positions.Add(ToMedia3D((Spatial.Point3D)point_1.GetMoved(vector3D_Y.GetNegated())));
+            //        result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_Y)));
+            //        result.Positions.Add(ToMedia3D((Spatial.Point3D)point_2.GetMoved(vector3D_Y.GetNegated())));
+
+            //        result.TriangleIndices.Add(0);
+            //        result.TriangleIndices.Add(1);
+            //        result.TriangleIndices.Add(2);
+
+            //        result.TriangleIndices.Add(2);
+            //        result.TriangleIndices.Add(1);
+            //        result.TriangleIndices.Add(3);
+
+            //        result.TriangleIndices.Add(4);
+            //        result.TriangleIndices.Add(5);
+            //        result.TriangleIndices.Add(6);
+
+            //        result.TriangleIndices.Add(6);
+            //        result.TriangleIndices.Add(5);
+            //        result.TriangleIndices.Add(7);
+
+            //        if (doubleSided)
+            //        {
+            //            result.TriangleIndices.Add(2);
+            //            result.TriangleIndices.Add(1);
+            //            result.TriangleIndices.Add(0);
+
+            //            result.TriangleIndices.Add(3);
+            //            result.TriangleIndices.Add(1);
+            //            result.TriangleIndices.Add(2);
+
+            //            result.TriangleIndices.Add(6);
+            //            result.TriangleIndices.Add(5);
+            //            result.TriangleIndices.Add(4);
+
+            //            result.TriangleIndices.Add(7);
+            //            result.TriangleIndices.Add(5);
+            //            result.TriangleIndices.Add(6);
+            //        }
+            //    }
+            //}
+
+            //return result;
         }
     }
 }

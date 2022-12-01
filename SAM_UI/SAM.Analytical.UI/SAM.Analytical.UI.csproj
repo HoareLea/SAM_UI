@@ -98,9 +98,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\VisualAperture.cs" />
-    <Compile Include="Classes\VisualSpace.cs" />
-    <Compile Include="Classes\VisualPanel.cs" />
     <Compile Include="Classes\UIAnalyticalModel.cs" />
     <Compile Include="Controls\SimulateControl.cs">
       <SubType>UserControl</SubType>
