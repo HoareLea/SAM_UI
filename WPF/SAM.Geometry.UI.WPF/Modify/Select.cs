@@ -4,6 +4,28 @@ namespace SAM.Geometry.UI.WPF
 {
     public static partial class Modify
     {
+        public static void Select(this Visual3D visual3D,  bool select)
+        {
+            if (visual3D == null)
+            {
+                return;
+            }
+
+            if(visual3D is ModelVisual3D)
+            {
+                ModelVisual3D modelVisual3D = (ModelVisual3D)visual3D;
+                Select(modelVisual3D.Content, select);
+
+                if(modelVisual3D.Children != null && modelVisual3D.Children.Count != 0)
+                {
+                    foreach(Visual3D visual3D_Temp in modelVisual3D.Children)
+                    {
+                        Select(visual3D_Temp, select);
+                    }
+                }
+            }
+        }
+
         public static void Select(this Model3D model3D, bool select)
         {
             if(model3D == null)

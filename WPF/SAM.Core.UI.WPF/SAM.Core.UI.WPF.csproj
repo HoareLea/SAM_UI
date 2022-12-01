@@ -63,11 +63,9 @@
     <Compile Include="Classes\ObjectContextMenuOpeningEventArgs.cs" />
     <Compile Include="Classes\TextChangedEventArgs.cs" />
     <Compile Include="Classes\ObjectHooveredEventArgs.cs" />
-    <Compile Include="Classes\VisualJSAMObject.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
     <Compile Include="Delegates\TextChangedEventHandler.cs" />
-    <Compile Include="Interfaces\IVisualJSAMObject.cs" />
     <Compile Include="Controls\JsonControl.xaml.cs">
       <DependentUpon>JsonControl.xaml</DependentUpon>
     </Compile>
@@ -102,7 +100,7 @@
     <Compile Include="Query\TranslateTransform.cs" />
     <Compile Include="Query\TransparentMaterial.cs" />
     <Compile Include="Query\Viewport3DVisual.cs" />
-    <Compile Include="Query\VisualJSAMObjects.cs" />
+    <Compile Include="Query\Visual3Ds.cs" />
     <Compile Include="Query\YawAxis.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -129,6 +127,9 @@
       <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

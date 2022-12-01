@@ -6,17 +6,17 @@ namespace SAM.Core.UI.WPF
 {
     public static partial class Query
     {
-        public static List<T> VisualJSAMObjects<T>(this Viewport3D viewport3D) where T: IVisualJSAMObject
+        public static List<T> Visual3Ds<T>(this Viewport3D viewport3D) where T: Visual3D
         {
             if(viewport3D == null)
             {
                 return null;
             }
 
-            return VisualJSAMObjects<T>(viewport3D.Children);
+            return Visual3Ds<T>(viewport3D.Children);
         }
 
-        public static List<T> VisualJSAMObjects<T>(this Visual3DCollection visual3DCollection) where T : IVisualJSAMObject
+        public static List<T> Visual3Ds<T>(this Visual3DCollection visual3DCollection) where T : Visual3D
         {
             if (visual3DCollection == null)
             {
@@ -32,7 +32,7 @@ namespace SAM.Core.UI.WPF
                     {
                         ModelVisual3D modelVisual3D = (ModelVisual3D)@object;
 
-                        List<T> visualSAMObjects = VisualJSAMObjects<T>(modelVisual3D.Children);
+                        List<T> visualSAMObjects = Visual3Ds<T>(modelVisual3D.Children);
                         if(visualSAMObjects != null)
                         {
                             result.AddRange(visualSAMObjects);

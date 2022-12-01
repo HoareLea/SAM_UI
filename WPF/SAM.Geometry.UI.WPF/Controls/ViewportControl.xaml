@@ -230,7 +230,7 @@
 
 
             <!--  Remember to add light to the scene  -->
-            <HelixToolkit:SunLight />
+            <HelixToolkit:SunLight  Brightness="1"/>
 
             <!--  You can also add elements here in the xaml  -->
             <HelixToolkit:GridLinesVisual3D x:Name="gridLinesVisual3D"

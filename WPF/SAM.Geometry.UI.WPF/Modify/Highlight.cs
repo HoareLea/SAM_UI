@@ -4,14 +4,36 @@ namespace SAM.Geometry.UI.WPF
 {
     public static partial class Modify
     {
-        public static void Highlight(this Model3D model3D, bool select)
+
+        public static void Highlight(this Visual3D visual3D, bool highlight)
+        {
+            if (visual3D == null)
+            {
+                return;
+            }
+
+            if (visual3D is ModelVisual3D)
+            {
+                ModelVisual3D modelVisual3D = (ModelVisual3D)visual3D;
+                Highlight(modelVisual3D.Content, highlight);
+
+                if (modelVisual3D.Children != null && modelVisual3D.Children.Count != 0)
+                {
+                    foreach (Visual3D visual3D_Temp in modelVisual3D.Children)
+                    {
+                        Highlight(visual3D_Temp, highlight);
+                    }
+                }
+            }
+        }
+        public static void Highlight(this Model3D model3D, bool highlight)
         {
             if (model3D == null)
             {
                 return;
             }
 
-            if (!select)
+            if (!highlight)
             {
                 Restore(model3D);
                 return;
@@ -34,7 +56,7 @@ namespace SAM.Geometry.UI.WPF
                         }
                         else
                         {
-                            Highlight(model3DCollection[i], select);
+                            Highlight(model3DCollection[i], highlight);
                         }
                     }
                 }
