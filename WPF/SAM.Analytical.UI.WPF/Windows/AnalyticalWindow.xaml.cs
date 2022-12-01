@@ -154,9 +154,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
 
             uIAnalyticalModel = new UIAnalyticalModel();
+            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
             uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
+
 
             SetEnabled();
         }
@@ -322,6 +324,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 Space space = (Space)tag.Value;
                 uIAnalyticalModel.EditSpace(space, new Core.Windows.WindowHandle(this));
+            }
+            else if (tag.Value is Aperture)
+            {
+                Aperture aperture = (Aperture)tag.Value;
+                uIAnalyticalModel.EditAperture(aperture, new Core.Windows.WindowHandle(this));
             }
         }
 
@@ -631,12 +638,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             uIAnalyticalModel = new UIAnalyticalModel();
+            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
             uIAnalyticalModel.Path = path;
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
             uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             uIAnalyticalModel.Open();
+
+            
 
             //Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => );
         }
