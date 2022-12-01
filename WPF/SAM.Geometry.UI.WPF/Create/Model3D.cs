@@ -50,7 +50,7 @@ namespace SAM.Geometry.UI.WPF
                 }
             }
 
-            GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(true), UI.Create.Material(surfaceAppearance.Color, surfaceAppearance.Opacity));
+            GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(false), UI.Create.Material(surfaceAppearance.Color, surfaceAppearance.Opacity));
             if(model3DGroup == null)
             {
                 Core.UI.WPF.Modify.SetIJSAMObject(geometryModel3D, face3DObject);
@@ -120,7 +120,7 @@ namespace SAM.Geometry.UI.WPF
 
             Material material = UI.Create.Material(curveAppearance.Color, curveAppearance.Opacity);
 
-            GeometryModel3D result = new GeometryModel3D(segment3D.ToMedia3D(true, curveAppearance.Thickness), material);
+            GeometryModel3D result = new GeometryModel3D(segment3D.ToMedia3D(curveAppearance.Thickness), material);
             Core.UI.WPF.Modify.SetIJSAMObject(result, segment3DObject);
             return result;
         }
@@ -178,7 +178,7 @@ namespace SAM.Geometry.UI.WPF
 
             Material material = UI.Create.Material(pointAppearance.Color, pointAppearance.Opacity);
 
-            GeometryModel3D result = new GeometryModel3D(Convert.ToMedia3D(point3D, true, pointAppearance.Thickness), material);
+            GeometryModel3D result = new GeometryModel3D(Convert.ToMedia3D(point3D, false, pointAppearance.Thickness), material);
             Core.UI.WPF.Modify.SetIJSAMObject(result, point3DObject);
 
             return result;
@@ -259,7 +259,7 @@ namespace SAM.Geometry.UI.WPF
             SolidColorBrush solidColorBrush = new SolidColorBrush(textAppearance.Color);
             solidColorBrush.Opacity = textAppearance.Opacity;
 
-            GeometryModel3D result = Core.UI.WPF.Create.GeometryModel3D_Text(text3DObject.Text, solidColorBrush, true, textAppearance.Height, plane.Origin.ToMedia3D(), true, plane.AxisX.ToMedia3D(), plane.AxisY.ToMedia3D(), textAppearance.FontFamilyName);
+            GeometryModel3D result = Core.UI.WPF.Create.GeometryModel3D_Text(text3DObject.Text, solidColorBrush, false, textAppearance.Height, plane.Origin.ToMedia3D(), true, plane.AxisX.ToMedia3D(), plane.AxisY.ToMedia3D(), textAppearance.FontFamilyName);
 
             Core.UI.WPF.Modify.SetIJSAMObject(result, text3DObject);
 

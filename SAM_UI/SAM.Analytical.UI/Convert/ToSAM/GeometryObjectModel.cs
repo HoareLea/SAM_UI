@@ -43,7 +43,10 @@ namespace SAM.Analytical.UI
                 foreach (Panel panel in panels)
                 {
                     GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = panel };
-                    geometryObjectCollection_Panel.Add(new Face3DObject(panel.GetFace3D(true), Query.SurfaceAppearance(panel)));
+
+                    Face3D face3D = panel.GetFace3D(true);
+
+                    geometryObjectCollection_Panel.Add(new Face3DObject(face3D, Query.SurfaceAppearance(panel)));
 
                     if(showApertures)
                     {
