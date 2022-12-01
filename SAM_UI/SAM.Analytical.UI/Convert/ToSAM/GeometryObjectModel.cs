@@ -46,7 +46,7 @@ namespace SAM.Analytical.UI
 
                     Face3D face3D = panel.GetFace3D(true);
 
-                    geometryObjectCollection_Panel.Add(new Face3DObject(face3D, Query.SurfaceAppearance(panel)));
+                    geometryObjectCollection_Panel.Add(new Face3DObject(face3D, Query.SurfaceAppearance(panel, threeDimensionalViewSettings)));
 
                     if(showApertures)
                     {
@@ -64,14 +64,14 @@ namespace SAM.Analytical.UI
                                 face3Ds = aperture.GetFace3Ds(aperturePart);
                                 if (face3Ds != null && face3Ds.Count != 0)
                                 {
-                                    face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
+                                    face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings))));
                                 }
 
                                 aperturePart = AperturePart.Pane;
                                 face3Ds = aperture.GetFace3Ds(aperturePart);
                                 if (face3Ds != null && face3Ds.Count != 0)
                                 {
-                                    face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
+                                    face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings))));
                                 }
 
                                 geometryObjectCollection_Panel.Add(geometryObjectCollection_Aperture);
@@ -101,14 +101,14 @@ namespace SAM.Analytical.UI
                             face3Ds = aperture.GetFace3Ds(aperturePart);
                             if (face3Ds != null && face3Ds.Count != 0)
                             {
-                                face3Ds.ForEach(x => GeometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
+                                face3Ds.ForEach(x => GeometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings))));
                             }
 
                             aperturePart = AperturePart.Pane;
                             face3Ds = aperture.GetFace3Ds(aperturePart);
                             if (face3Ds != null && face3Ds.Count != 0)
                             {
-                                face3Ds.ForEach(x => GeometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart))));
+                                face3Ds.ForEach(x => GeometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings))));
                             }
 
                             result.Add(GeometryObjectCollection_Aperture);
@@ -125,7 +125,7 @@ namespace SAM.Analytical.UI
                     Shell shell = adjacencyCluster.Shell(space);
 
                     GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
-                    geometryObjectCollection_Space.Add(new ShellObject(shell, Query.SurfaceAppearance(space)) { Tag = space });
+                    geometryObjectCollection_Space.Add(new ShellObject(shell, Query.SurfaceAppearance(space, threeDimensionalViewSettings)) { Tag = space });
 
                     result.Add(geometryObjectCollection_Space);
                 }
@@ -177,7 +177,7 @@ namespace SAM.Analytical.UI
                         continue;
                     }
 
-                    segment3Ds.ForEach(x => geometryObjectCollection_Panel.Add(new Segment3DObject(x, new CurveAppearance(Color.FromRgb(105, 105, 105), 0.04))));
+                    segment3Ds.ForEach(x => geometryObjectCollection_Panel.Add(new Segment3DObject(x, Query.CurveAppearance(keyValuePair.Key, twoDimensionalViewSettings))));
                 }
                 result.Add(geometryObjectCollection_Panel);
 
@@ -222,14 +222,17 @@ namespace SAM.Analytical.UI
 
                     System.Drawing.Color color_Darker = ControlPaint.Dark(color);
 
-                    GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space};
-                    face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02))));
+                    GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
+
+                    SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02));
+
+                    face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, surfaceAppearance)));
 
                     Point3D point3D = plane.Project(space.Location);
 
                     Plane plane_Temp = new Plane(plane, point3D.GetMoved(new Vector3D(0, 0, 0.1)) as Point3D);
 
-                    geometryObjectCollection_Space.Add(new Text3DObject(space.Name, plane_Temp, new TextAppearance(Color.FromRgb(0, 0, 0), 1, "Segoe UI")) { Tag = space });
+                    geometryObjectCollection_Space.Add(new Text3DObject(space.Name, plane_Temp, Query.TextAppearance(space, twoDimensionalViewSettings)) { Tag = space });
 
                     result.Add(geometryObjectCollection_Space);
                 }

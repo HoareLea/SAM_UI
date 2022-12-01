@@ -1,11 +1,12 @@
 ﻿using SAM.Geometry.UI;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI
 {
     public static partial class Query
-    {
+    {       
         public static SurfaceAppearance SurfaceAppearance(this Panel panel)
         {
             if (panel == null)
@@ -60,6 +61,55 @@ namespace SAM.Analytical.UI
             }
 
             return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0.001);
+        }
+
+        public static SurfaceAppearance SurfaceAppearance(this Panel panel, ViewSettings viewSettings)
+        {
+            SurfaceAppearance result = viewSettings.GetAppearances<SurfaceAppearance>(panel)?.FirstOrDefault();
+            if (result == null)
+            {
+                result = SurfaceAppearance(panel);
+            }
+
+            return result;
+        }
+
+        public static SurfaceAppearance SurfaceAppearance(this Space space, ViewSettings viewSettings)
+        {
+            SurfaceAppearance result = viewSettings.GetAppearances<SurfaceAppearance>(space)?.FirstOrDefault();
+            if (result == null)
+            {
+                result = SurfaceAppearance(space);
+            }
+
+            return result;
+        }
+
+        public static SurfaceAppearance SurfaceAppearance(this Space space, ViewSettings viewSettings, SurfaceAppearance surfaceAppearance)
+        {
+            SurfaceAppearance result = viewSettings.GetAppearances<SurfaceAppearance>(space)?.FirstOrDefault();
+            if(result == null)
+            {
+                result = surfaceAppearance;
+            }
+
+            if (result == null)
+            {
+                result = SurfaceAppearance(space);
+            }
+
+            return result;
+        }
+
+        public static SurfaceAppearance SurfaceAppearance(this Aperture aperture, AperturePart aperturePart, ViewSettings viewSettings)
+        {
+            SurfaceAppearance result = viewSettings.GetAppearances<SurfaceAppearance>(aperture)?.FirstOrDefault();
+            if (result == null)
+            {
+                result = SurfaceAppearance(aperture, aperturePart);
+            }
+
+            return result;
         }
     }
 }

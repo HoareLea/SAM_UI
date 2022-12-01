@@ -76,6 +76,16 @@ namespace SAM.Geometry.UI
             return appearanceSettings?.GetAppearances<T>(guid);
         }
 
+        public List<T> GetAppearances<T>(SAMObject sAMObject) where T: IAppearance
+        {
+            if(sAMObject == null)
+            {
+                return null;
+            }
+
+            return GetAppearances<T>(sAMObject.Guid);
+        }
+
         public List<IAppearance> GetAppearances(Guid guid)
         {
             return appearanceSettings?.GetAppearances(guid);
