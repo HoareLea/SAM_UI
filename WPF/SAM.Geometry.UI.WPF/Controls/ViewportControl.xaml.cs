@@ -142,7 +142,7 @@ namespace SAM.Geometry.UI.WPF
         private void Load(GeometryObjectModel geometryObjectModel)
         {
             Clear(selection: true, highlight: true);
-            int count = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children).Count;
+            int count = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) }).Count;
             if(count > 0)
             {
                 Core.UI.WPF.Modify.Clear<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) });

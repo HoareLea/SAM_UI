@@ -234,7 +234,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D.Content);
+            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D);
 
             if (!(jSAMObject is ITaggable))
             {
@@ -300,7 +300,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D.Content);
+            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D);
 
             if (!(jSAMObject is ITaggable))
             {
@@ -344,7 +344,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D.Content);
+            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D);
 
             if (!(jSAMObject is ITaggable))
             {

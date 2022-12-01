@@ -17,13 +17,13 @@ namespace SAM.Geometry.UI.WPF
                 ModelVisual3D modelVisual3D = (ModelVisual3D)visual3D;
                 Highlight(modelVisual3D.Content, highlight);
 
-                if (modelVisual3D.Children != null && modelVisual3D.Children.Count != 0)
-                {
-                    foreach (Visual3D visual3D_Temp in modelVisual3D.Children)
-                    {
-                        Highlight(visual3D_Temp, highlight);
-                    }
-                }
+                //if (modelVisual3D.Children != null && modelVisual3D.Children.Count != 0)
+                //{
+                //    foreach (Visual3D visual3D_Temp in modelVisual3D.Children)
+                //    {
+                //        Highlight(visual3D_Temp, highlight);
+                //    }
+                //}
             }
         }
         public static void Highlight(this Model3D model3D, bool highlight)

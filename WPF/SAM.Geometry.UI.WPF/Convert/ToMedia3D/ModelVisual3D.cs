@@ -46,14 +46,55 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            Model3D model3D = Create.Model3D(sAMGeometryObject as dynamic);
-            if(model3D == null)
+            ModelVisual3D result = new ModelVisual3D();
+            List<Model3D> model3Ds = new List<Model3D>();
+            if (sAMGeometryObject is GeometryObjectCollection)
             {
-                return null;
+                foreach(ISAMGeometry3DObject sAMGeometry3DObject in (GeometryObjectCollection)sAMGeometryObject)
+                {
+                    if(sAMGeometry3DObject is GeometryObjectCollection)
+                    {
+                        ModelVisual3D modelVisual3D = ToMedia3D(sAMGeometry3DObject);
+                        if (modelVisual3D != null)
+                        {
+                            result.Children.Add(modelVisual3D);
+                        }
+                    }
+                    else
+                    {
+                        Model3D model3D = Create.Model3D(sAMGeometry3DObject as dynamic);
+                        if (model3D != null)
+                        {
+                            model3Ds.Add(model3D);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Model3D model3D = Create.Model3D(sAMGeometryObject as dynamic);
+                if (model3D != null)
+                {
+                    model3Ds.Add(model3D);
+                    //result.Content = model3D;
+                }
             }
 
-            ModelVisual3D result = new ModelVisual3D();
-            result.Content = model3D;
+            if(model3Ds != null && model3Ds.Count != 0)
+            {
+                if(model3Ds.Count == 1)
+                {
+                    result.Content = model3Ds[0];
+                }
+                else
+                {
+                    Model3DGroup model3DGroup = new Model3DGroup();
+                    model3Ds.ForEach(x => model3DGroup.Children.Add(x));
+                    result.Content = model3DGroup;
+                }
+            }
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, sAMGeometryObject);
 
             return result;
         }
