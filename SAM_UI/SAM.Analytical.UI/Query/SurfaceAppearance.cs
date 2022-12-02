@@ -49,7 +49,7 @@ namespace SAM.Analytical.UI
             {
                 color = Color.Empty;
                 InternalCondition internalCondition = space.InternalCondition;
-                if(!internalCondition.TryGetValue(InternalConditionParameter.Color, out color))
+                if(internalCondition == null || !internalCondition.TryGetValue(InternalConditionParameter.Color, out color))
                 {
                     color = Color.Empty;
                 }

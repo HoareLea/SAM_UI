@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Media.Media3D;
+﻿using System.Windows.Media.Media3D;
 
 namespace SAM.Geometry.UI.WPF
 {
@@ -45,6 +44,13 @@ namespace SAM.Geometry.UI.WPF
 
                                 model3DGroup.Children[i] = model3D_Temp;
                             }
+                            else if (sAMGeometryObject is Segment3DObject)
+                            {
+                                Model3D model3D_Temp = Create.Model3D(new Segment3DObject((Segment3DObject)sAMGeometryObject) { CurveAppearance = Query.SelectionSurfaceAppearance().CurveAppearance });
+                                Core.UI.WPF.Modify.SetIJSAMObject(model3D_Temp, sAMGeometryObject);
+
+                                model3DGroup.Children[i] = model3D_Temp;
+                            }
                         }
                     }
                 }
@@ -55,6 +61,13 @@ namespace SAM.Geometry.UI.WPF
                     if (sAMGeometryObject is Face3DObject)
                     {
                         Model3D model3D_Temp = Create.Model3D(new Face3DObject((Face3DObject)sAMGeometryObject) { SurfaceAppearance = Query.SelectionSurfaceAppearance() });
+                        Core.UI.WPF.Modify.SetIJSAMObject(model3D_Temp, sAMGeometryObject);
+
+                        modelVisual3D.Content = model3D_Temp;
+                    }
+                    else if (sAMGeometryObject is Segment3DObject)
+                    {
+                        Model3D model3D_Temp = Create.Model3D(new Segment3DObject((Segment3DObject)sAMGeometryObject) { CurveAppearance = Query.SelectionSurfaceAppearance().CurveAppearance });
                         Core.UI.WPF.Modify.SetIJSAMObject(model3D_Temp, sAMGeometryObject);
 
                         modelVisual3D.Content = model3D_Temp;

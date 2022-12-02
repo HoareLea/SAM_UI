@@ -170,7 +170,43 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_View_ViewSettings_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if(analyticalModel == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if(tabItem == null)
+            {
+                return;
+            }
+
+            int id = tabControl.Items.IndexOf(tabItem);
+            if (id == -1)
+            {
+                return;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                return;
+            }
+
+            IViewSettings viewSettings = uIGeometrySettings.GetViewSettings(id);
+
+            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(viewSettings);
+            bool? result = viewSettingsWindow.ShowDialog();
+            if(result == null || !result.HasValue ||!result.Value)
+            {
+                return;
+            }
+
+            uIGeometrySettings.AddViewSettings(viewSettingsWindow.ViewSettings);
+
+            analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
+
+            uIAnalyticalModel.JSAMObject = analyticalModel;
         }
 
         private void RibbonButton_View_New3DView_Click(object sender, RoutedEventArgs e)
@@ -773,6 +809,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             viewportControl.Mode = viewSettings.Mode();
 
+            if(viewSettings != null)
+            {
+                if(!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+                {
+                    uIGeometrySettings = new UIGeometrySettings();
+                }
+
+                uIGeometrySettings.AddViewSettings(viewSettings);
+                analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
+            }
+
             return tabItem;
         }
 
@@ -834,7 +881,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<IViewSettings> viewSettingsList = new List<IViewSettings>();
-
+            int id = -1;
             for (int i = 0; i < tabControl.Items.Count; i++)
             {
                 TabItem tabItem = tabControl.Items[i] as TabItem;
@@ -860,11 +907,12 @@ namespace SAM.Analytical.UI.WPF.Windows
 
                 if(tabControl.SelectedItem == tabItem)
                 {
-                    result.Id = i;
+                    id = i;
                 }
             }
 
             result.SetViewSettings(viewSettingsList);
+            result.Id = id;
 
             return result;
         }
@@ -885,7 +933,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             List<IViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<IViewSettings>();
             if(viewSettingsList == null || viewSettingsList.Count == 0)
             {
-                uIGeometrySettings.AddViewSettings(UI.Query.DefaultViewSettings(tabControl.Items.Count));
+                uIGeometrySettings.AddViewSettings(UI.Query.DefaultViewSettings(0));
                 analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
                 uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
                 uIAnalyticalModel.JSAMObject = analyticalModel;

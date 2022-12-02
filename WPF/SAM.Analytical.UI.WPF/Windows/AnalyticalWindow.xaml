@@ -434,7 +434,7 @@
                     <RibbonButton x:Name="RibbonButton_Edit_ApertureConstructions" Label="Aperture Constructions"/>
                 </RibbonGroup>
             </RibbonTab>
-            <RibbonTab x:Name="RibbonTab_Simulate" Header="Siumlate">
+            <RibbonTab x:Name="RibbonTab_Simulate" Header="Simulate">
                 <RibbonGroup x:Name="RibbonGroup_Simulate_WeatherData" Header="Weather Data">
                     <RibbonButton x:Name="RibbonButton_Simulate_WeatherData" Label="Weather Data"/>
                     <RibbonButton x:Name="RibbonButton_Simulate_Import" Label="Import"/>

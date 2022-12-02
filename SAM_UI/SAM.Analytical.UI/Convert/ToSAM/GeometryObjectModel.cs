@@ -187,92 +187,105 @@ namespace SAM.Analytical.UI
 
             AdjacencyCluster adjacencyCluster = analyticalModel_Temp.AdjacencyCluster;
 
-            Dictionary<Panel, List<ISegmentable3D>> dictionary = Analytical.Query.SectionDictionary<ISegmentable3D>(adjacencyCluster.GetPanels(), plane);
-            if (dictionary == null)
-            {
-                return null;
-            }
+            bool showPanels = twoDimensionalViewSettings.IsValid(typeof(Panel));
+            bool showApertures = twoDimensionalViewSettings.IsValid(typeof(Aperture));
+            bool showSpaces = twoDimensionalViewSettings.IsValid(typeof(Space));
 
             GeometryObjectModel result = new GeometryObjectModel();
-            foreach (KeyValuePair<Panel, List<ISegmentable3D>> keyValuePair in dictionary)
+
+            if (showPanels || showApertures)
             {
-                if (keyValuePair.Key == null)
+                Dictionary<Panel, List<ISegmentable3D>> dictionary = Analytical.Query.SectionDictionary<ISegmentable3D>(adjacencyCluster.GetPanels(), plane);
+                if (dictionary == null)
                 {
-                    continue;
+                    return null;
                 }
 
-                if (keyValuePair.Value == null)
+                foreach (KeyValuePair<Panel, List<ISegmentable3D>> keyValuePair in dictionary)
                 {
-                    continue;
-                }
-
-                GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = keyValuePair.Key };
-                foreach (ISegmentable3D segmentable3D in keyValuePair.Value)
-                {
-                    List<Segment3D> segment3Ds = segmentable3D?.GetSegments();
-                    if (segment3Ds == null)
+                    if (keyValuePair.Key == null)
                     {
                         continue;
                     }
 
-                    segment3Ds.ForEach(x => geometryObjectCollection_Panel.Add(new Segment3DObject(x, Query.CurveAppearance(keyValuePair.Key, twoDimensionalViewSettings))));
-                }
-                result.Add(geometryObjectCollection_Panel);
+                    if (keyValuePair.Value == null)
+                    {
+                        continue;
+                    }
 
+                    if(showPanels)
+                    {
+                        GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = keyValuePair.Key };
+                        foreach (ISegmentable3D segmentable3D in keyValuePair.Value)
+                        {
+                            List<Segment3D> segment3Ds = segmentable3D?.GetSegments();
+                            if (segment3Ds == null)
+                            {
+                                continue;
+                            }
+
+                            segment3Ds.ForEach(x => geometryObjectCollection_Panel.Add(new Segment3DObject(x, Query.CurveAppearance(keyValuePair.Key, twoDimensionalViewSettings))));
+                        }
+                        result.Add(geometryObjectCollection_Panel);
+                    }
+                }
             }
 
-            //Dictionary<System.Guid, System.Drawing.Color> dictionary_SpaceColor = Analytical.Modify.AssignSpaceColors(adjacencyCluster);
-            List<Space> spaces = adjacencyCluster.GetSpaces();
-
-            if (spaces != null)
+            if(showSpaces)
             {
-                foreach (Space space in spaces)
+                //Dictionary<System.Guid, System.Drawing.Color> dictionary_SpaceColor = Analytical.Modify.AssignSpaceColors(adjacencyCluster);
+                List<Space> spaces = adjacencyCluster.GetSpaces();
+
+                if (spaces != null)
                 {
-                    Shell shell = adjacencyCluster.Shell(space);
-                    List<Face3D> face3Ds = shell.Section(plane);
-
-                    if (face3Ds == null || face3Ds.Count == 0)
+                    foreach (Space space in spaces)
                     {
-                        continue;
-                    }
+                        Shell shell = adjacencyCluster.Shell(space);
+                        List<Face3D> face3Ds = shell.Section(plane);
 
-                    List<Face3D> face3Ds_Offset = new List<Face3D>();
-                    foreach (Face3D face3D in face3Ds)
-                    {
-                        List<Face3D> face3Ds_Offset_Temp = face3D.Offset(-0.08);
-                        if (face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
+                        if (face3Ds == null || face3Ds.Count == 0)
                         {
                             continue;
                         }
 
-                        face3Ds_Offset.AddRange(face3Ds_Offset_Temp);
+                        List<Face3D> face3Ds_Offset = new List<Face3D>();
+                        foreach (Face3D face3D in face3Ds)
+                        {
+                            List<Face3D> face3Ds_Offset_Temp = face3D.Offset(-0.08);
+                            if (face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
+                            {
+                                continue;
+                            }
+
+                            face3Ds_Offset.AddRange(face3Ds_Offset_Temp);
+                        }
+
+                        face3Ds = face3Ds_Offset;
+
+                        //System.Drawing.Color color = dictionary_SpaceColor[space.Guid];
+
+                        System.Drawing.Color color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
+                        if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                        {
+                            color = color_Temp;
+                        }
+
+                        System.Drawing.Color color_Darker = ControlPaint.Dark(color);
+
+                        GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
+
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02));
+
+                        face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, surfaceAppearance)));
+
+                        Point3D point3D = plane.Project(space.Location);
+
+                        Plane plane_Temp = new Plane(plane, point3D.GetMoved(new Vector3D(0, 0, 0.1)) as Point3D);
+
+                        geometryObjectCollection_Space.Add(new Text3DObject(space.Name, plane_Temp, Query.TextAppearance(space, twoDimensionalViewSettings)) { Tag = space });
+
+                        result.Add(geometryObjectCollection_Space);
                     }
-
-                    face3Ds = face3Ds_Offset;
-
-                    //System.Drawing.Color color = dictionary_SpaceColor[space.Guid];
-
-                    System.Drawing.Color color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
-                    if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
-                    {
-                        color = color_Temp;
-                    }
-
-                    System.Drawing.Color color_Darker = ControlPaint.Dark(color);
-
-                    GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
-
-                    SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02));
-
-                    face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, surfaceAppearance)));
-
-                    Point3D point3D = plane.Project(space.Location);
-
-                    Plane plane_Temp = new Plane(plane, point3D.GetMoved(new Vector3D(0, 0, 0.1)) as Point3D);
-
-                    geometryObjectCollection_Space.Add(new Text3DObject(space.Name, plane_Temp, Query.TextAppearance(space, twoDimensionalViewSettings)) { Tag = space });
-
-                    result.Add(geometryObjectCollection_Space);
                 }
             }
 

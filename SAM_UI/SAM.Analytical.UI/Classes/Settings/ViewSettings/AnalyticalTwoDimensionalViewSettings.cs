@@ -16,6 +16,12 @@ namespace SAM.Analytical.UI
 
         }
 
+        public AnalyticalTwoDimensionalViewSettings(TwoDimensionalViewSettings twoDimensionalViewSettings)
+            : base(twoDimensionalViewSettings)
+        {
+
+        }
+
         public AnalyticalTwoDimensionalViewSettings(JObject jObject)
             : base(jObject)
         {
