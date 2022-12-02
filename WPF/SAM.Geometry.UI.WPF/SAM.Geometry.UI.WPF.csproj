@@ -93,6 +93,7 @@
     <Compile Include="Modify\Highlight.cs" />
     <Compile Include="Modify\Restore.cs" />
     <Compile Include="Modify\Rotate.cs" />
+    <Compile Include="Query\DoubleSided.cs" />
     <Compile Include="Query\Bounds.cs" />
     <Compile Include="Query\Center.cs" />
     <Compile Include="Query\HighlightCurveAppearance.cs" />

@@ -50,7 +50,7 @@ namespace SAM.Geometry.UI.WPF
                 }
             }
 
-            GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(false), UI.Create.Material(surfaceAppearance.Color, surfaceAppearance.Opacity));
+            GeometryModel3D geometryModel3D = new GeometryModel3D(face3D.ToMedia3D(Query.DoubleSided()), UI.Create.Material(surfaceAppearance.Color, surfaceAppearance.Opacity));
             if(model3DGroup == null)
             {
                 Core.UI.WPF.Modify.SetIJSAMObject(geometryModel3D, face3DObject);

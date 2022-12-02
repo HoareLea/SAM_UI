@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -125,6 +126,11 @@ namespace SAM.Geometry.UI
             }
 
             return result;
+        }
+
+        public List<T> GetAppearances<T>(SAMObject sAMObject) where T : IAppearance
+        {
+            return GetAppearances<T>(sAMObject);
         }
 
         public List<IAppearance> GetAppearances(Guid guid)

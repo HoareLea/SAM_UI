@@ -46,9 +46,14 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_General_CloseAnalyticalModel.Click += RibbonButton_General_CloseAnalyticalModel_Click;
 
 
-            RibbonButton_View_Section.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
-            RibbonButton_View_Section.Click += RibbonButton_View_Section_Click;
+            RibbonButton_View_NewSectionView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_View_NewSectionView.Click += RibbonButton_View_NewSectionView_Click;
 
+            RibbonButton_View_New3DView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_View_New3DView.Click += RibbonButton_View_New3DView_Click;
+
+            RibbonButton_View_ViewSettings.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_View_ViewSettings.Click += RibbonButton_View_ViewSettings_Click;
 
             RibbonButton_Edit_Location.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Location);
             RibbonButton_Edit_Location.Click += RibbonButton_Edit_Location_Click;
@@ -163,59 +168,28 @@ namespace SAM.Analytical.UI.WPF.Windows
             SetEnabled();
         }
 
-        private void RibbonButton_Tools_ViewGeometry_Click(object sender, RoutedEventArgs e)
+        private void RibbonButton_View_ViewSettings_Click(object sender, RoutedEventArgs e)
         {
-            GeometryWindow geometryWindow = new GeometryWindow();
-            geometryWindow.Show();
+            throw new NotImplementedException();
         }
 
-        private void RibbonButton_View_Section_Click(object sender, RoutedEventArgs e)
+        private void RibbonButton_View_New3DView_Click(object sender, RoutedEventArgs e)
         {
-            if(uIAnalyticalModel == null)
+            if (uIAnalyticalModel == null)
             {
                 return;
             }
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
-            if(analyticalModel == null)
+            if (analyticalModel == null)
             {
                 return;
             }
 
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings(tabControl.Items.Count, null, new Type[] { typeof(Panel), typeof(Aperture) });
 
-            List<BoundingBox3D> boundingBox3Ds = analyticalModel.GetPanels()?.ConvertAll(x => x?.GetBoundingBox());
-            if(boundingBox3Ds == null || boundingBox3Ds.Count == 0)
-            {
-                return;
-            }
-
-            boundingBox3Ds.RemoveAll(x => x == null || !x.IsValid());
-
-            if(boundingBox3Ds == null || boundingBox3Ds.Count == 0)
-            {
-                return;
-            }
-
-            double elevation = new BoundingBox3D(boundingBox3Ds).Min.Z;
-            elevation = Core.Query.Round(elevation, 0.01) + 0.1;
-            using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
-            {
-                textBoxForm.Value = elevation;
-                if(textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
-
-                elevation = textBoxForm.Value;
-            }
-
-            if(double.IsNaN(elevation))
-            {
-                return;
-            }
-
-            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new TwoDimensionalViewSettings(tabControl.Items.Count, Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture)}));
-            if(tabItem != null)
+            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, threeDimensionalViewSettings);
+            if (tabItem != null)
             {
                 tabControl.SelectedItem = tabItem;
             }
@@ -226,6 +200,74 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.JSAMObject = analyticalModel;
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
+
+        private void RibbonButton_View_NewSectionView_Click(object sender, RoutedEventArgs e)
+        {
+            if (uIAnalyticalModel == null)
+            {
+                return;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+
+            List<BoundingBox3D> boundingBox3Ds = analyticalModel.GetPanels()?.ConvertAll(x => x?.GetBoundingBox());
+            if (boundingBox3Ds == null || boundingBox3Ds.Count == 0)
+            {
+                return;
+            }
+
+            boundingBox3Ds.RemoveAll(x => x == null || !x.IsValid());
+
+            if (boundingBox3Ds == null || boundingBox3Ds.Count == 0)
+            {
+                return;
+            }
+
+            double elevation = new BoundingBox3D(boundingBox3Ds).Min.Z;
+            elevation = Core.Query.Round(elevation, 0.01) + 0.1;
+            using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
+            {
+                textBoxForm.Value = elevation;
+                if (textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                elevation = textBoxForm.Value;
+            }
+
+            if (double.IsNaN(elevation))
+            {
+                return;
+            }
+
+            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(tabControl.Items.Count, Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
+            analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings = new ZoneAppearanceSettings("");
+
+            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, analyticalTwoDimensionalViewSettings);
+            if (tabItem != null)
+            {
+                tabControl.SelectedItem = tabItem;
+            }
+
+            UpdateUIGeometrySettings(tabControl, analyticalModel);
+
+            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+        }
+
+        private void RibbonButton_Tools_ViewGeometry_Click(object sender, RoutedEventArgs e)
+        {
+            GeometryWindow geometryWindow = new GeometryWindow();
+            geometryWindow.Show();
+        }
+
 
         private void ViewControl_ObjectContextMenuOpening(object sender, ObjectContextMenuOpeningEventArgs e)
         {

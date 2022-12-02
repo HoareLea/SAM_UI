@@ -29,6 +29,9 @@ namespace SAM.Analytical.UI
             AnalyticalModel analyticalModel_Temp = new AnalyticalModel(analyticalModel);
 
             AdjacencyCluster adjacencyCluster = analyticalModel_Temp.AdjacencyCluster;
+            //adjacencyCluster.UpdateNormals(true, true);
+            //adjacencyCluster.Normalize(true, Geometry.Orientation.CounterClockwise);
+
 
             GeometryObjectModel result = new GeometryObjectModel();
 
@@ -45,6 +48,17 @@ namespace SAM.Analytical.UI
                     GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = panel };
 
                     Face3D face3D = panel.GetFace3D(true);
+
+                    List<Face3D> face3Ds_FixEdges = face3D.FixEdges();
+                    if(face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
+                    {
+                        if(face3Ds_FixEdges.Count != 1)
+                        {
+                            face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
+                        }
+
+                        face3D = face3Ds_FixEdges[0];
+                    }
 
                     geometryObjectCollection_Panel.Add(new Face3DObject(face3D, Query.SurfaceAppearance(panel, threeDimensionalViewSettings)));
 
@@ -64,14 +78,38 @@ namespace SAM.Analytical.UI
                                 face3Ds = aperture.GetFace3Ds(aperturePart);
                                 if (face3Ds != null && face3Ds.Count != 0)
                                 {
-                                    face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings))));
+                                    foreach(Face3D face3D_Temp in face3Ds)
+                                    {
+                                        if(face3D_Temp == null)
+                                        {
+                                            continue;
+                                        }
+
+                                        //face3D_Temp.Normalize(Geometry.Orientation.CounterClockwise);
+
+                                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings);
+
+                                        geometryObjectCollection_Aperture.Add(new Face3DObject(face3D_Temp, surfaceAppearance));
+                                    }
                                 }
 
                                 aperturePart = AperturePart.Pane;
                                 face3Ds = aperture.GetFace3Ds(aperturePart);
                                 if (face3Ds != null && face3Ds.Count != 0)
                                 {
-                                    face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings))));
+                                    foreach (Face3D face3D_Temp in face3Ds)
+                                    {
+                                        if (face3D_Temp == null)
+                                        {
+                                            continue;
+                                        }
+
+                                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings);
+
+                                        //face3D_Temp.Normalize(Geometry.Orientation.CounterClockwise);
+
+                                        geometryObjectCollection_Aperture.Add(new Face3DObject(face3D_Temp, surfaceAppearance));
+                                    }
                                 }
 
                                 geometryObjectCollection_Panel.Add(geometryObjectCollection_Aperture);

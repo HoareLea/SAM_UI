@@ -191,16 +191,18 @@ namespace SAM.Geometry.UI.WPF
 
         private void helixViewport3D_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            Modify.Highlight(visual3D_Highlight, false);
-            if(visual3Ds_Selected != null && visual3Ds_Selected.Count > 0)
+            if(visual3D_Highlight != null)
             {
-                if(visual3Ds_Selected.Contains(visual3D_Highlight))
+                Modify.Highlight(visual3D_Highlight, false);
+                if (visual3Ds_Selected != null && visual3Ds_Selected.Count > 0)
                 {
-                    Modify.Select(visual3D_Highlight, true);
+                    if (visual3Ds_Selected.Contains(visual3D_Highlight))
+                    {
+                        Modify.Select(visual3D_Highlight, true);
+                    }
                 }
             }
-            
-            
+
             visual3D_Highlight = null;
 
             Point point = e.GetPosition(helixViewport3D);
