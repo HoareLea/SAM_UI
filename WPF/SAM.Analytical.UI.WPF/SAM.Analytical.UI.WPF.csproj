@@ -95,6 +95,9 @@
     <Compile Include="Controls\SpaceZoneControl.xaml.cs">
       <DependentUpon>SpaceZoneControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SpaceAppearanceSettingsControl.xaml.cs">
+      <DependentUpon>SpaceAppearanceSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\SpaceZoneWindow.xaml.cs">
       <DependentUpon>SpaceZoneWindow.xaml</DependentUpon>
     </Compile>
@@ -261,6 +264,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\SpaceZoneControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SpaceAppearanceSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

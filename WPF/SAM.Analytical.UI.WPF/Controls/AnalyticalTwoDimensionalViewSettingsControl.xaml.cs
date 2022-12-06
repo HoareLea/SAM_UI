@@ -9,7 +9,6 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class AnalyticalTwoDimensionalViewSettingsControl : UserControl
     {
-        private AdjacencyCluster adjacencyCluster;
         private AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings;
 
         public AnalyticalTwoDimensionalViewSettingsControl()
@@ -24,7 +23,6 @@ namespace SAM.Analytical.UI.WPF
             SetAdjacencyCluster(adjacencyCluster);
 
             SetAnalyticalTwoDimensionalViewSettings(analyticalTwoDimensionalViewSettings);
-
         }
 
         public AnalyticalTwoDimensionalViewSettings AnalyticalTwoDimensionalViewSettings
@@ -42,15 +40,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
         {
-            this.adjacencyCluster = adjacencyCluster;
-            
-            comboBox_ZoneType.Items.Clear();
-            List<string> zoneCategories = Query.ZoneCategories(adjacencyCluster);
-            comboBox_ZoneType.Items.Add(string.Empty);
-            foreach (string zoneCategory in zoneCategories)
-            {
-                comboBox_ZoneType.Items.Add(zoneCategory);
-            }
+            spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
         }
 
         private void SetAnalyticalTwoDimensionalViewSettings(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
@@ -61,15 +51,7 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Panel.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Panel));
             checkBox_Visibilty_Aperture.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Aperture));
 
-            if(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings != null)
-            {
-                Geometry.UI.ParameterAppearanceSettings parameterAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings.ParameterAppearanceSettings<Geometry.UI.ParameterAppearanceSettings>();
-                
-                if(parameterAppearanceSettings is ZoneAppearanceSettings)
-                {
-                    comboBox_ZoneType.Text = ((ZoneAppearanceSettings)parameterAppearanceSettings).ZoneCategory;
-                }
-            }
+            spaceAppearanceSettingsControl.SpaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
         }
 
         private AnalyticalTwoDimensionalViewSettings GetAnalyticalTwoDimensionalViewSettings()
@@ -100,10 +82,7 @@ namespace SAM.Analytical.UI.WPF
 
             result.SetTypes(types);
 
-            if(!string.IsNullOrWhiteSpace(comboBox_ZoneType.Text))
-            {
-                result.SpaceAppearanceSettings = new SpaceAppearanceSettings(new ZoneAppearanceSettings(comboBox_ZoneType.Text));
-            }
+            result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
 
             return result;
         }

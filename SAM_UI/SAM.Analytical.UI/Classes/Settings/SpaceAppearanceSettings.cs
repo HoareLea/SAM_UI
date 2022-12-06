@@ -29,6 +29,14 @@ namespace SAM.Analytical.UI
             }
         }
 
+        public SpaceAppearanceSettings(InternalConditionAppearanceSettings internalConditionAppearanceSettings)
+        {
+            if (internalConditionAppearanceSettings != null)
+            {
+                parameterAppearanceSettings = new InternalConditionAppearanceSettings(internalConditionAppearanceSettings);
+            }
+        }
+
         public SpaceAppearanceSettings(JObject jObject)
         {
             FromJObject(jObject);

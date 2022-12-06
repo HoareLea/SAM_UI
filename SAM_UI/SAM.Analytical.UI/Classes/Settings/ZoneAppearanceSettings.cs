@@ -12,6 +12,12 @@ namespace SAM.Analytical.UI
             ZoneCategory = zoneCategory;
         }
 
+        public ZoneAppearanceSettings(string parameterName, string zoneCategory)
+            : base(parameterName)
+        {
+            ZoneCategory = zoneCategory;
+        }
+
         public ZoneAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
             : base(zoneAppearanceSettings)
         {
