@@ -248,7 +248,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(tabControl.Items.Count, Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
-            analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings = new ZoneAppearanceSettings("");
+            analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("");
 
             TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, analyticalTwoDimensionalViewSettings);
             if (tabItem != null)

@@ -8,7 +8,7 @@ namespace SAM.Analytical.UI
 {
     public class AnalyticalTwoDimensionalViewSettings : TwoDimensionalViewSettings
     {
-        public ZoneAppearanceSettings ZoneAppearanceSettings { get; set; }
+        public SpaceAppearanceSettings SpaceAppearanceSettings { get; set; }
 
         public AnalyticalTwoDimensionalViewSettings(int id, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
             :base(id, plane, appearanceSettings, types)
@@ -31,9 +31,9 @@ namespace SAM.Analytical.UI
         public AnalyticalTwoDimensionalViewSettings(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
             :base(analyticalTwoDimensionalViewSettings)
         {
-            if (analyticalTwoDimensionalViewSettings?.ZoneAppearanceSettings != null)
+            if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
             {
-                ZoneAppearanceSettings = new ZoneAppearanceSettings(analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings);
+                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
             }
 
 
@@ -46,9 +46,9 @@ namespace SAM.Analytical.UI
                 return false;
             }
 
-            if(jObject.ContainsKey("ZoneAppearanceSettings"))
+            if(jObject.ContainsKey("SpaceAppearanceSettings"))
             {
-                ZoneAppearanceSettings = new ZoneAppearanceSettings(jObject.Value<JObject>("ZoneAppearanceSettings"));
+                SpaceAppearanceSettings = new SpaceAppearanceSettings(jObject.Value<JObject>("SpaceAppearanceSettings"));
             }
 
             return true;
@@ -62,9 +62,9 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            if(ZoneAppearanceSettings != null)
+            if(SpaceAppearanceSettings != null)
             {
-                jObject.Add("ZoneAppearanceSettings", ZoneAppearanceSettings.ToJObject());
+                jObject.Add("SpaceAppearanceSettings", SpaceAppearanceSettings.ToJObject());
             }
 
             return jObject;

@@ -1,19 +1,19 @@
 ﻿using Newtonsoft.Json.Linq;
-using SAM.Core;
-using System;
 
 namespace SAM.Analytical.UI
 {
-    public class ZoneAppearanceSettings : IJSAMObject
+    public class ZoneAppearanceSettings : Geometry.UI.ParameterAppearanceSettings
     {
         public string ZoneCategory { get; set; }
 
         public ZoneAppearanceSettings(string zoneCategory)
+            :base("Color")
         {
             ZoneCategory = zoneCategory;
         }
 
         public ZoneAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
+            : base(zoneAppearanceSettings)
         {
             if(zoneAppearanceSettings != null)
             {
@@ -22,13 +22,14 @@ namespace SAM.Analytical.UI
         }
 
         public ZoneAppearanceSettings(JObject jObject)
+            : base(jObject)
         {
-            FromJObject(jObject);
+
         }
 
-        public bool FromJObject(JObject jObject)
+        public override bool FromJObject(JObject jObject)
         {
-            if (jObject == null)
+            if(!base.FromJObject(jObject))
             {
                 return false;
             }
@@ -41,10 +42,13 @@ namespace SAM.Analytical.UI
             return true;
         }
 
-        public JObject ToJObject()
+        public override JObject ToJObject()
         {
-            JObject jObject = new JObject();
-            jObject.Add("_type", Core.Query.FullTypeName(this));
+            JObject jObject = base.ToJObject();
+            if(jObject == null)
+            {
+                return null;
+            }
 
             if(ZoneCategory != null)
             {

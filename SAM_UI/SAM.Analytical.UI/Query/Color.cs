@@ -30,23 +30,31 @@ namespace SAM.Analytical.UI
             if(viewSettings is TwoDimensionalViewSettings)
             {
                 AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = (AnalyticalTwoDimensionalViewSettings)viewSettings;
-                if(analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings != null)
+                if(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings != null)
                 {
-                    string zoneCategory = analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings.ZoneCategory;
-                    if(!string.IsNullOrWhiteSpace(zoneCategory))
+                    SpaceAppearanceSettings spaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
+
+                    ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings.ParameterAppearanceSettings<ParameterAppearanceSettings>();
+                    if(parameterAppearanceSettings is ZoneAppearanceSettings)
                     {
-                        if(adjacencyCluster != null)
+                        string zoneCategory = ((ZoneAppearanceSettings)parameterAppearanceSettings).ZoneCategory;
+                        if (!string.IsNullOrWhiteSpace(zoneCategory))
                         {
-                            List<Zone> zones = adjacencyCluster.GetZones(space, zoneCategory);
-                            if(zones != null && zones.Count != 0)
+                            if (adjacencyCluster != null)
                             {
-                                if(zones.FirstOrDefault().TryGetValue(ZoneParameter.Color, out SAMColor sAMColor) && sAMColor != null)
+                                List<Zone> zones = adjacencyCluster.GetZones(space, zoneCategory);
+                                if (zones != null && zones.Count != 0)
                                 {
-                                    return sAMColor.ToColor().ToMedia();
+                                    if (zones.FirstOrDefault().TryGetValue(ZoneParameter.Color, out SAMColor sAMColor) && sAMColor != null)
+                                    {
+                                        return sAMColor.ToColor().ToMedia();
+                                    }
                                 }
                             }
                         }
                     }
+
+
                 }
 
             }

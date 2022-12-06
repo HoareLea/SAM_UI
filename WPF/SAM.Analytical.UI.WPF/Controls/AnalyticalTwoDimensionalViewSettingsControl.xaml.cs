@@ -61,9 +61,14 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Panel.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Panel));
             checkBox_Visibilty_Aperture.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Aperture));
 
-            if(analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings != null)
+            if(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings != null)
             {
-                comboBox_ZoneType.Text = analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings.ZoneCategory;
+                Geometry.UI.ParameterAppearanceSettings parameterAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings.ParameterAppearanceSettings<Geometry.UI.ParameterAppearanceSettings>();
+                
+                if(parameterAppearanceSettings is ZoneAppearanceSettings)
+                {
+                    comboBox_ZoneType.Text = ((ZoneAppearanceSettings)parameterAppearanceSettings).ZoneCategory;
+                }
             }
         }
 
@@ -97,7 +102,7 @@ namespace SAM.Analytical.UI.WPF
 
             if(!string.IsNullOrWhiteSpace(comboBox_ZoneType.Text))
             {
-                result.ZoneAppearanceSettings = new ZoneAppearanceSettings(comboBox_ZoneType.Text);
+                result.SpaceAppearanceSettings = new SpaceAppearanceSettings(new ZoneAppearanceSettings(comboBox_ZoneType.Text));
             }
 
             return result;

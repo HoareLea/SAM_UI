@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.UI
 {
-    public interface IUISettings : Core.IJSAMObject
+    public interface IUISettings : IJSAMObject
     {
     }
 }
