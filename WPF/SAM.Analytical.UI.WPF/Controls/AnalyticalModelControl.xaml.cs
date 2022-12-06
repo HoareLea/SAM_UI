@@ -449,7 +449,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     TreeViewItem treeViewItem_ZoneCategory = new TreeViewItem() { Header = new TextBlock() { Text = keyValuePair.Key }, Tag = keyValuePair.Key };
                     treeViewItem_Zones.Items.Add(treeViewItem_ZoneCategory);
-                    foreach(Zone zone in zones)
+                    foreach(Zone zone in keyValuePair.Value)
                     {
                         TreeViewItem treeViewItem_Zone = new TreeViewItem() { Header = new TextBlock() { Text = zone.Name }, Tag = zone };
                         treeViewItem_ZoneCategory.Items.Add(treeViewItem_Zone);
