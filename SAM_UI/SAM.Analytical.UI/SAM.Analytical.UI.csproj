@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="Classes\Settings\ViewSettings\AnalyticalThreeDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\AnalyticalTwoDimensionalViewSettings.cs" />
+    <Compile Include="Classes\Settings\InternalConditionAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ZoneAppearanceSettings.cs" />
     <Compile Include="Classes\UIAnalyticalModel.cs" />
     <Compile Include="Controls\SimulateControl.cs">

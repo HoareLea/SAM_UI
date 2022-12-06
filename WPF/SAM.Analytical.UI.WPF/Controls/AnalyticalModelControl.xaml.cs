@@ -320,6 +320,9 @@ namespace SAM.Analytical.UI.WPF
             TreeViewItem treeViewItem_MechanicalSystems = new TreeViewItem() { Header = new TextBlock() { Text = "Mechanical Systems" }, Tag = typeof(MechanicalSystemType) };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_MechanicalSystems);
 
+            TreeViewItem treeViewItem_Zones = new TreeViewItem() { Header = new TextBlock() { Text = "Zones" }, Tag = typeof(Zone) };
+            treeViewItem_AnalyticalModel.Items.Add(treeViewItem_Zones);
+
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             if (adjacencyCluster != null)
             {
@@ -414,6 +417,54 @@ namespace SAM.Analytical.UI.WPF
                 {
                     TreeViewItem treeViewItem_Material = new TreeViewItem() { Header = new TextBlock() { Text = material.Name }, Tag = material };
                     treeViewItem_Materials.Items.Add(treeViewItem_Material);
+                }
+            }
+
+            List<Zone> zones = adjacencyCluster.GetZones();
+            if(zones != null)
+            {
+                SortedDictionary<string, List<Zone>> dictionary = new SortedDictionary<string, List<Zone>>();
+                foreach(Zone zone in zones)
+                {
+                    if(zone == null)
+                    {
+                        continue;
+                    }
+
+                    if(!zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory) || string.IsNullOrWhiteSpace(zoneCategory))
+                    {
+                        zoneCategory = "???";
+                    }
+
+                    if(!dictionary.TryGetValue(zoneCategory, out List<Zone> zones_Temp))
+                    {
+                        zones_Temp = new List<Zone>();
+                        dictionary[zoneCategory] = zones_Temp;
+                    }
+
+                    zones_Temp.Add(zone);
+                }
+
+                foreach(KeyValuePair<string, List<Zone>> keyValuePair in dictionary)
+                {
+                    TreeViewItem treeViewItem_ZoneCategory = new TreeViewItem() { Header = new TextBlock() { Text = keyValuePair.Key }, Tag = keyValuePair.Key };
+                    treeViewItem_Zones.Items.Add(treeViewItem_ZoneCategory);
+                    foreach(Zone zone in zones)
+                    {
+                        TreeViewItem treeViewItem_Zone = new TreeViewItem() { Header = new TextBlock() { Text = zone.Name }, Tag = zone };
+                        treeViewItem_ZoneCategory.Items.Add(treeViewItem_Zone);
+
+                        List<Space> spaces = adjacencyCluster.GetRelatedObjects<Space>(zone);
+                        if(spaces != null && spaces.Count != 0)
+                        {
+                            foreach(Space space in spaces)
+                            {
+                                TreeViewItem treeViewItem_Space = new TreeViewItem() { Header = new TextBlock() { Text = space.Name }, Tag = space };
+                                treeViewItem_Zone.Items.Add(treeViewItem_Space);
+                            }
+                        }
+                    }
+
                 }
             }
 
