@@ -142,7 +142,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (jSAMObject is IMaterial)
             {
-                Modify.DuplicateMaterial(uIAnalyticalModel, jSAMObject as dynamic);
+                UI.Modify.DuplicateMaterial(uIAnalyticalModel, jSAMObject as dynamic);
             }
         }
 
@@ -162,7 +162,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (jSAMObject is IMaterial)
             {
-                Modify.RemoveMaterial(uIAnalyticalModel, jSAMObject as dynamic);
+                UI.Modify.RemoveMaterial(uIAnalyticalModel, jSAMObject as dynamic);
             }
         }
 
@@ -215,23 +215,23 @@ namespace SAM.Analytical.UI.WPF
 
             if(jSAMObject is Space)
             {
-                Modify.EditSpace(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
+                UI.Modify.EditSpace(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
             }
             else if(jSAMObject is Panel)
             {
-                Modify.EditPanel(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
+                UI.Modify.EditPanel(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
             }
             else if (jSAMObject is IMaterial)
             {
-                Modify.EditMaterial(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
+                UI.Modify.EditMaterial(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
             }
             else if (jSAMObject is Profile)
             {
-                Modify.EditProfile(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
+                UI.Modify.EditProfile(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
             }
             else if (jSAMObject is Aperture)
             {
-                Modify.EditAperture(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
+                UI.Modify.EditAperture(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
             }
 
 

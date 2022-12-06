@@ -97,6 +97,7 @@
     <Compile Include="Query\RayMeshGeometry3DHitTestResult.cs" />
     <Compile Include="Query\RollAxis.cs" />
     <Compile Include="Query\ScaleTransform.cs" />
+    <Compile Include="Query\Tag.cs" />
     <Compile Include="Query\TranslateTransform.cs" />
     <Compile Include="Query\TransparentMaterial.cs" />
     <Compile Include="Query\Viewport3DVisual.cs" />

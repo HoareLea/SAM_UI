@@ -6,7 +6,7 @@ namespace SAM.Analytical.UI
 {
     public class ZoneAppearanceSettings : IJSAMObject
     {
-        string ZoneCategory { get; set; }
+        public string ZoneCategory { get; set; }
 
         public ZoneAppearanceSettings(string zoneCategory)
         {

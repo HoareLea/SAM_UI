@@ -274,21 +274,13 @@ namespace SAM.Geometry.UI.WPF
 
             helixViewport3D.ContextMenu = new ContextMenu();
 
-            Point point_Current = Mouse.GetPosition(helixViewport3D);
-            HitTestResult hitTestResult = VisualTreeHelper.HitTest(helixViewport3D, point_Current);
-            ModelVisual3D modelVisual3D = hitTestResult?.VisualHit as ModelVisual3D;
-
             MenuItem menuItem = new MenuItem();
             menuItem.Name = "MenuItem_ZoomExtends";
             menuItem.Header = "Zoom Extends";
             menuItem.Click += MenuItem_ZoomExtends_Click;
-            menuItem.Tag = hitTestResult;
             helixViewport3D.ContextMenu.Items.Add(menuItem);
 
-            if (modelVisual3D != null)
-            {
-                ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(helixViewport3D.ContextMenu, e, modelVisual3D));
-            }
+            ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(helixViewport3D.ContextMenu, e, visual3Ds_Selected?.FindAll(x => x is ModelVisual3D)?.ConvertAll(x => x as ModelVisual3D)));
         }
     }
 }

@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            return new TextAppearance(Color.FromRgb(0, 0, 0), 1, "Segoe UI");
+            return new TextAppearance(System.Windows.Media.Color.FromRgb(0, 0, 0), 1, "Segoe UI");
         }
 
         public static TextAppearance TextAppearance(this Space space, ViewSettings viewSettings)

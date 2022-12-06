@@ -31,6 +31,11 @@ namespace SAM.Analytical.UI
         public AnalyticalTwoDimensionalViewSettings(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
             :base(analyticalTwoDimensionalViewSettings)
         {
+            if (analyticalTwoDimensionalViewSettings?.ZoneAppearanceSettings != null)
+            {
+                ZoneAppearanceSettings = new ZoneAppearanceSettings(analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings);
+            }
+
 
         }
 
@@ -39,6 +44,11 @@ namespace SAM.Analytical.UI
             if(!base.FromJObject(jObject))
             {
                 return false;
+            }
+
+            if(jObject.ContainsKey("ZoneAppearanceSettings"))
+            {
+                ZoneAppearanceSettings = new ZoneAppearanceSettings(jObject.Value<JObject>("ZoneAppearanceSettings"));
             }
 
             return true;
@@ -50,6 +60,11 @@ namespace SAM.Analytical.UI
             if(jObject == null)
             {
                 return null;
+            }
+
+            if(ZoneAppearanceSettings != null)
+            {
+                jObject.Add(ZoneAppearanceSettings.ToJObject());
             }
 
             return jObject;

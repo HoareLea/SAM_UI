@@ -47,17 +47,17 @@ namespace SAM.Analytical.UI
 
             if(!space.TryGetValue(SpaceParameter.Color, out Color color))
             {
-                color = Color.Empty;
+                color = System.Drawing.Color.Empty;
                 InternalCondition internalCondition = space.InternalCondition;
                 if(internalCondition == null || !internalCondition.TryGetValue(InternalConditionParameter.Color, out color))
                 {
-                    color = Color.Empty;
+                    color = System.Drawing.Color.Empty;
                 }
             }
 
             if(color.IsEmpty)
             {
-                color = Color.FromKnownColor(KnownColor.LightGray);
+                color = System.Drawing.Color.FromKnownColor(KnownColor.LightGray);
             }
 
             return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0.001);

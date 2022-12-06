@@ -81,19 +81,37 @@
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modify\EditViewSettings.cs" />
+    <Compile Include="Modify\EditZones.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\ZoneTypes.cs" />
     <Compile Include="Query\Header.cs" />
     <Compile Include="Query\Material.cs" />
+    <Compile Include="Controls\SpaceZoneControl.xaml.cs">
+      <DependentUpon>SpaceZoneControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SpaceZoneWindow.xaml.cs">
+      <DependentUpon>SpaceZoneWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
       <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\AnalyticalWindow.xaml.cs">
       <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ZonesControl.xaml.cs">
+      <DependentUpon>ZonesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ZoneControl.xaml.cs">
+      <DependentUpon>ZoneControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ZoneWindow.xaml.cs">
+      <DependentUpon>ZoneWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -242,6 +260,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\SpaceZoneControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SpaceZoneWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ViewSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -249,6 +275,18 @@
     <Page Include="Windows\AnalyticalWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ZonesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ZoneControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ZoneWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -265,7 +303,6 @@
     <Folder Include="Convert\ToMedia3D\" />
     <Folder Include="Create\" />
     <Folder Include="Interfaces\" />
-    <Folder Include="Modify\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SAM_Section.png" />

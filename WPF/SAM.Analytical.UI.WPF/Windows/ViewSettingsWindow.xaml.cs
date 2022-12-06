@@ -13,37 +13,41 @@ namespace SAM.Analytical.UI.WPF.Windows
             InitializeComponent();
         }
 
-        public ViewSettingsWindow(Geometry.UI.IViewSettings viewSettings)
+        public ViewSettingsWindow(Geometry.UI.IViewSettings viewSettings, AdjacencyCluster adjacencyCluster)
         {
             InitializeComponent();
 
-            UIElement uIElement = null;
+            UserControl userControl = null;
 
             if(viewSettings is AnalyticalTwoDimensionalViewSettings)
             {
-                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl((AnalyticalTwoDimensionalViewSettings)viewSettings);
-                uIElement = analyticalTwoDimensionalViewSettingsControl;
+                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl((AnalyticalTwoDimensionalViewSettings)viewSettings, adjacencyCluster);
+                userControl = analyticalTwoDimensionalViewSettingsControl;
             }
             else if (viewSettings is Geometry.UI.TwoDimensionalViewSettings)
             {
-                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl(new AnalyticalTwoDimensionalViewSettings((Geometry.UI.TwoDimensionalViewSettings)viewSettings));
-                uIElement = analyticalTwoDimensionalViewSettingsControl;
+                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl(new AnalyticalTwoDimensionalViewSettings((Geometry.UI.TwoDimensionalViewSettings)viewSettings), adjacencyCluster);
+                userControl = analyticalTwoDimensionalViewSettingsControl;
             }
             else if (viewSettings is AnalyticalThreeDimensionalViewSettings)
             {
                 AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl((AnalyticalThreeDimensionalViewSettings)viewSettings);
-                uIElement = analyticalThreeDimensionalViewSettingsControl;
+                userControl = analyticalThreeDimensionalViewSettingsControl;
             }
             else if (viewSettings is Geometry.UI.ThreeDimensionalViewSettings)
             {
                 AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl(new AnalyticalThreeDimensionalViewSettings((Geometry.UI.ThreeDimensionalViewSettings)viewSettings));
-                uIElement = analyticalThreeDimensionalViewSettingsControl;
+                userControl = analyticalThreeDimensionalViewSettingsControl;
             }
 
 
-            if (uIElement != null)
+            if (userControl != null)
             {
-                viewSettingControl.Children.Add(uIElement);
+                viewSettingControl.Children.Add(userControl);
+
+                userControl.HorizontalAlignment = HorizontalAlignment.Stretch;
+                userControl.VerticalAlignment = VerticalAlignment.Stretch;
+                
                 viewSettingControl.UpdateLayout();
             }
         }
@@ -77,6 +81,15 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void Button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            foreach(UserControl userControl in viewSettingControl.Children)
+            {
+                userControl.Width = viewSettingControl.ActualWidth - 10;
+                userControl.Height = viewSettingControl.ActualHeight - 10;
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class AnalyticalTwoDimensionalViewSettingsControl : UserControl
     {
+        private AdjacencyCluster adjacencyCluster;
         private AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings;
 
         public AnalyticalTwoDimensionalViewSettingsControl()
@@ -16,11 +17,14 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
-        public AnalyticalTwoDimensionalViewSettingsControl(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
+        public AnalyticalTwoDimensionalViewSettingsControl(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings, AdjacencyCluster adjacencyCluster)
         {
             InitializeComponent();
 
+            SetAdjacencyCluster(adjacencyCluster);
+
             SetAnalyticalTwoDimensionalViewSettings(analyticalTwoDimensionalViewSettings);
+
         }
 
         public AnalyticalTwoDimensionalViewSettings AnalyticalTwoDimensionalViewSettings
@@ -36,6 +40,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
+        {
+            this.adjacencyCluster = adjacencyCluster;
+            
+            comboBox_ZoneType.Items.Clear();
+            List<string> zoneCategories = Query.ZoneCategories(adjacencyCluster);
+            comboBox_ZoneType.Items.Add(string.Empty);
+            foreach (string zoneCategory in zoneCategories)
+            {
+                comboBox_ZoneType.Items.Add(zoneCategory);
+            }
+        }
+
         private void SetAnalyticalTwoDimensionalViewSettings(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
         {
             this.analyticalTwoDimensionalViewSettings = analyticalTwoDimensionalViewSettings;
@@ -43,6 +60,11 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Space.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Space));
             checkBox_Visibilty_Panel.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Panel));
             checkBox_Visibilty_Aperture.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Aperture));
+
+            if(analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings != null)
+            {
+                comboBox_ZoneType.Text = analyticalTwoDimensionalViewSettings.ZoneAppearanceSettings.ZoneCategory;
+            }
         }
 
         private AnalyticalTwoDimensionalViewSettings GetAnalyticalTwoDimensionalViewSettings()
@@ -72,6 +94,11 @@ namespace SAM.Analytical.UI.WPF
             }
 
             result.SetTypes(types);
+
+            if(!string.IsNullOrWhiteSpace(comboBox_ZoneType.Text))
+            {
+                result.ZoneAppearanceSettings = new ZoneAppearanceSettings(comboBox_ZoneType.Text);
+            }
 
             return result;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
 
@@ -6,15 +7,17 @@ namespace SAM.Core.UI.WPF
 {
     public class ObjectContextMenuOpeningEventArgs : EventArgs
     {
-        public ModelVisual3D ModelVisual3D { get; }
+        public List<ModelVisual3D> ModelVisual3Ds { get; }
         public ContextMenuEventArgs ContextMenuEventArgs { get; }
         public ContextMenu ContextMenu { get; }
 
-        public ObjectContextMenuOpeningEventArgs(ContextMenu contextMenu, ContextMenuEventArgs contextMenuEventArgs, ModelVisual3D modelVisual3D)
+        public ObjectContextMenuOpeningEventArgs(ContextMenu contextMenu, ContextMenuEventArgs contextMenuEventArgs, IEnumerable<ModelVisual3D> modelVisual3Ds)
         {
             ContextMenu = contextMenu;
             ContextMenuEventArgs = contextMenuEventArgs;
-            ModelVisual3D = modelVisual3D;
+
+            if (modelVisual3Ds != null)
+                ModelVisual3Ds = new List<ModelVisual3D>(modelVisual3Ds);
         }
     }
 }

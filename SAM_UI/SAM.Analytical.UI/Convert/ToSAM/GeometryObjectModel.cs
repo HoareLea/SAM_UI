@@ -1,4 +1,5 @@
-﻿using SAM.Geometry;
+﻿using SAM.Core.UI;
+using SAM.Geometry;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
@@ -233,7 +234,6 @@ namespace SAM.Analytical.UI
 
             if(showSpaces)
             {
-                //Dictionary<System.Guid, System.Drawing.Color> dictionary_SpaceColor = Analytical.Modify.AssignSpaceColors(adjacencyCluster);
                 List<Space> spaces = adjacencyCluster.GetSpaces();
 
                 if (spaces != null)
@@ -262,19 +262,29 @@ namespace SAM.Analytical.UI
 
                         face3Ds = face3Ds_Offset;
 
-                        //System.Drawing.Color color = dictionary_SpaceColor[space.Guid];
-
-                        System.Drawing.Color color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
-                        if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                        Color? color = Query.Color(space, adjacencyCluster, twoDimensionalViewSettings);
+                        if(color == null || !color.HasValue)
                         {
-                            color = color_Temp;
+                            System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
+                            if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                            {
+                                color_Drawing = color_Temp;
+                            }
+
+                            color = Color.FromRgb(color_Drawing.R, color_Drawing.G, color_Drawing.B);
                         }
 
-                        System.Drawing.Color color_Darker = ControlPaint.Dark(color);
+                        if(color == null || !color.HasValue)
+                        {
+                            color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
+                        }
+
+                        System.Drawing.Color color_Darker = ControlPaint.Dark(color.Value.ToDrawing());
+
 
                         GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
 
-                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, new SurfaceAppearance(Color.FromRgb(color.R, color.G, color.B), Color.FromRgb(color_Darker.R, color_Darker.G, color_Darker.B), 0.02));
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, new SurfaceAppearance(color.Value, color_Darker.ToMedia(), 0.02));
 
                         face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, surfaceAppearance)));
 

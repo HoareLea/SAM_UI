@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF.Windows"
-        Title="View Settings" Height="450" Width="800">
+        Title="View Settings" Height="250" Width="400" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -13,8 +13,8 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <StackPanel x:Name="viewSettingControl"  Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="0" Grid.Column="0" Height="auto" Width="auto" />
+        <StackPanel x:Name="viewSettingControl"  Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Height="auto" Width="auto" />
         <Button x:Name="button_OK" Grid.Row="1" Grid.Column="1" Width="60" Height="20" Margin="0,0,79.6,4.4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_OK_Click">OK</Button>
-        <Button x:Name="button_Cancel" Grid.Row="1" Grid.Column="1" Width="60" Height="20" Margin="0,0,9.6,4.4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_Cancel_Click">Cancel</Button>
+        <Button x:Name="button_Cancel" IsCancel="True" Grid.Row="1" Grid.Column="1" Width="60" Height="20" Margin="0,0,9.6,4.4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="Button_Cancel_Click">Cancel</Button>
     </Grid>
 </Window>

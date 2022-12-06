@@ -6,6 +6,7 @@ using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using SAM.Geometry.UI.WPF;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -170,43 +171,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_View_ViewSettings_Click(object sender, RoutedEventArgs e)
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if(analyticalModel == null)
-            {
-                return;
-            }
-
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if(tabItem == null)
-            {
-                return;
-            }
-
-            int id = tabControl.Items.IndexOf(tabItem);
-            if (id == -1)
-            {
-                return;
-            }
-
-            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
-            {
-                return;
-            }
-
-            IViewSettings viewSettings = uIGeometrySettings.GetViewSettings(id);
-
-            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(viewSettings);
-            bool? result = viewSettingsWindow.ShowDialog();
-            if(result == null || !result.HasValue ||!result.Value)
-            {
-                return;
-            }
-
-            uIGeometrySettings.AddViewSettings(viewSettingsWindow.ViewSettings);
-
-            analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
-
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            EditViewSettings();
         }
 
         private void RibbonButton_View_New3DView_Click(object sender, RoutedEventArgs e)
@@ -307,48 +272,106 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void ViewControl_ObjectContextMenuOpening(object sender, ObjectContextMenuOpeningEventArgs e)
         {
-
-            ModelVisual3D modelVisual3D = e.ModelVisual3D;
-            if (modelVisual3D == null)
-            {
-                return;
-            }
-
-            IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D);
-
-            if (!(jSAMObject is ITaggable))
-            {
-                return;
-            }
-
-            Tag tag = ((ITaggable)jSAMObject).Tag;
-            if (tag == null)
-            {
-                return;
-            }
-
-            if (tag.Value is Panel)
-            {
-                jSAMObject = (Panel)tag.Value;
-            }
-            else if (tag.Value is Space)
-            {
-                jSAMObject = (Space)tag.Value;
-            }
-
-            if(jSAMObject == null)
-            {
-                return;
-            }
-
             ContextMenu contextMenu = e.ContextMenu;
 
-            MenuItem menuItem = new MenuItem();
-            menuItem.Name = "MenuItem_Properties";
-            menuItem.Header = "Properties";
-            menuItem.Click += MenuItem_Properties_Click;
-            menuItem.Tag = jSAMObject;
+            MenuItem menuItem = null;
+
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_ViewSettings";
+            menuItem.Header = "View Settings";
+            menuItem.Click += MenuItem_ViewSettings_Click;
             contextMenu.Items.Add(menuItem);
+
+            List<IJSAMObject> jSAMObjects = e.ModelVisual3Ds?.ConvertAll(x => Core.UI.WPF.Query.Tag<IJSAMObject>(x));
+            if(jSAMObjects == null)
+            {
+                return;
+            }
+
+            jSAMObjects.RemoveAll(x => x == null);
+            if(jSAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            if (jSAMObjects.Count == 1)
+            {
+                IJSAMObject jSAMObject = jSAMObjects[0];
+
+                if (jSAMObject is Panel)
+                {
+                    jSAMObject = (Panel)jSAMObject;
+                }
+                else if (jSAMObject is Space)
+                {
+                    jSAMObject = (Space)jSAMObject;
+                }
+                else if (jSAMObject is Aperture)
+                {
+                    jSAMObject = (Aperture)jSAMObject;
+                }
+
+                if (jSAMObject == null)
+                {
+                    return;
+                }
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Properties";
+                menuItem.Header = "Properties";
+                menuItem.Click += MenuItem_Properties_Click;
+                menuItem.Tag = jSAMObject;
+                contextMenu.Items.Add(menuItem);
+            }
+
+            if(jSAMObjects.Count >= 1)
+            {
+                List<Space> spaces = jSAMObjects.FindAll(x => x is Space).ConvertAll(x => (Space)x);
+                if(spaces != null && spaces.Count > 0)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_ManageZones";
+                    menuItem.Header = "Manage Zones";
+                    menuItem.Click += MenuItem_ManageZones_Click;
+                    menuItem.Tag = spaces;
+                    contextMenu.Items.Add(menuItem);
+                }
+            }
+
+        }
+
+        private void MenuItem_ViewSettings_Click(object sender, RoutedEventArgs e)
+        {
+            EditViewSettings();
+        }
+
+        private void MenuItem_ManageZones_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if(menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if(menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach(object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if(@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            uIAnalyticalModel.EditZones(spaces);
+
         }
 
         private void MenuItem_Properties_Click(object sender, RoutedEventArgs e)
@@ -556,7 +579,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Tools_EditLibrary_Click(object sender, RoutedEventArgs e)
         {
-            Modify.EditLibrary(windowHandle);
+            UI.Modify.EditLibrary(windowHandle);
         }
 
         private void RibbonButton_Simulate_EnergySimulation_Click(object sender, RoutedEventArgs e)
@@ -1100,6 +1123,29 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
 
             }
+        }
+
+        private void EditViewSettings()
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            int id = tabControl.Items.IndexOf(tabItem);
+            if (id == -1)
+            {
+                return;
+            }
+
+            Modify.EditViewSettings(uIAnalyticalModel, id);
         }
     }
 }
