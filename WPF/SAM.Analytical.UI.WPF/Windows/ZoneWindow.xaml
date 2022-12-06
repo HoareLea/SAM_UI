@@ -12,7 +12,7 @@
             <RowDefinition Height="21*"></RowDefinition>
         </Grid.RowDefinitions>
         <local:ZoneControl x:Name="zoneControl" Grid.Row="0" Margin="0,0,0,0"></local:ZoneControl>
-        <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="264,10,10,10.4" Width="70" Click="button_Cancel_Click"></Button>
-        <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="189,10,85,10.4" Width="70" Click="button_OK_Click"></Button>
+        <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,10,10,10" Width="70" Click="button_Cancel_Click" HorizontalAlignment="Right"></Button>
+        <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="0,10,85,10" Click="button_OK_Click" HorizontalAlignment="Right" Width="70" />
     </Grid>
 </Window>

@@ -34,6 +34,8 @@ namespace SAM.Analytical.UI.WPF
                 adjacencyCluster.AddObject(zone_Temp);
             }
 
+            zone_Temp.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory);
+
             List<Space> spaces_Temp = spaceZoneWindow.Spaces;
             if(spaces_Temp != null && spaces_Temp.Count != 0 )
             {
@@ -42,6 +44,15 @@ namespace SAM.Analytical.UI.WPF
                     adjacencyCluster.AddObject(space);
                     if(zone_Temp != null)
                     {
+                        List<Zone> zones_Old = adjacencyCluster.GetZones(space, zoneCategory);
+                        if(zones_Old != null && zones_Old.Count != 0)
+                        {
+                            foreach(Zone zone_Old in zones_Old)
+                            {
+                                adjacencyCluster.RemoveRelation(zone_Old, space);
+                            }
+                        }
+                        
                         adjacencyCluster.AddRelation(zone_Temp, space);
                     }
                 }

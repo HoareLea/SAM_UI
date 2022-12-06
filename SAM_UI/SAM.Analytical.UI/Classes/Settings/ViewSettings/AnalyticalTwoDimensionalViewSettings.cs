@@ -64,7 +64,7 @@ namespace SAM.Analytical.UI
 
             if(ZoneAppearanceSettings != null)
             {
-                jObject.Add(ZoneAppearanceSettings.ToJObject());
+                jObject.Add("ZoneAppearanceSettings", ZoneAppearanceSettings.ToJObject());
             }
 
             return jObject;

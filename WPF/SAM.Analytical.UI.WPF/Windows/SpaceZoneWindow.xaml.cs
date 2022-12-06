@@ -28,23 +28,23 @@ namespace SAM.Analytical.UI.WPF
         {
             InitializeComponent();
 
-            zoneControl.AdjacencyCluster = adjacencyCluster;
+            spaceZoneControl.AdjacencyCluster = adjacencyCluster;
 
             if (spaces != null)
             {
-                zoneControl.Spaces = new List<Space>(spaces);
+                spaceZoneControl.Spaces = new List<Space>(spaces);
             }
         }
 
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
-            if(zoneControl.Spaces == null || zoneControl.Spaces.Count == 0)
+            if(spaceZoneControl.Spaces == null || spaceZoneControl.Spaces.Count == 0)
             {
                 MessageBox.Show("Please select spaces");
                 return;
             }
 
-            if(zoneControl.Zone == null)
+            if(spaceZoneControl.Zone == null)
             {
                 MessageBox.Show("Please select zones");
                 return;
@@ -69,12 +69,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return zoneControl.AdjacencyCluster;
+                return spaceZoneControl.AdjacencyCluster;
             }
 
             set
             {
-                zoneControl.AdjacencyCluster = value;
+                spaceZoneControl.AdjacencyCluster = value;
             }
         }
 
@@ -82,12 +82,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return zoneControl.Spaces;
+                return spaceZoneControl.Spaces;
             }
 
             set
             {
-                zoneControl.Spaces = value;
+                spaceZoneControl.Spaces = value;
             }
         }
 
@@ -95,7 +95,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return zoneControl.Zone;
+                return spaceZoneControl.Zone;
             }
         }
     }

@@ -98,6 +98,9 @@ namespace SAM.Analytical.UI.WPF
         {
             LoadZoneCategories();
             LoadZone();
+
+            textBox_Name.Focus();
+            textBox_Name.SelectAll();
         }
 
         public Zone Zone

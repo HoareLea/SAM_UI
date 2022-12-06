@@ -12,7 +12,7 @@
             <ListViewItem>Zone 1</ListViewItem>
         </ListView>
         <Button x:Name="button_Add" Content="Add" HorizontalAlignment="Left" Margin="11,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Add_Click"/>
-        <Button x:Name="button_Remove" Content="Remove" HorizontalAlignment="Left" Margin="164,0,0,10.4" VerticalAlignment="Bottom" Width="70"/>
-        <Button x:Name="button_Edit" Content="Edit" HorizontalAlignment="Left" Margin="87,0,0,10.4" VerticalAlignment="Bottom" Width="70"/>
+        <Button x:Name="button_Remove" Content="Remove" HorizontalAlignment="Left" Margin="164,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Remove_Click"/>
+        <Button x:Name="button_Edit" Content="Edit" HorizontalAlignment="Left" Margin="87,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Edit_Click"/>
     </Grid>
 </UserControl>

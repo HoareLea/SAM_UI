@@ -11,7 +11,7 @@
             <RowDefinition></RowDefinition>
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
-        <local:SpaceZoneControl x:Name="zoneControl" Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></local:SpaceZoneControl>
+        <local:SpaceZoneControl x:Name="spaceZoneControl" Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></local:SpaceZoneControl>
         <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Width="70" Click="button_Cancel_Click" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,9.6,10"></Button>
         <Button x:Name="button_OK" Content="OK" Grid.Row="1" Click="button_OK_Click" Margin="0,11,84.6,10" HorizontalAlignment="Right" Width="70"/>
     </Grid>

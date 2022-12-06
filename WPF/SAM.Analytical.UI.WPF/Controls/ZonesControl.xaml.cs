@@ -72,6 +72,12 @@ namespace SAM.Analytical.UI.WPF
             {
                 return comboBox_ZoneType?.SelectedItem?.ToString();
             }
+
+            set
+            {
+                LoadZoneCategories();
+                comboBox_ZoneType.SelectedItem = value;
+            }
         }
 
         private void LoadZones()
@@ -108,37 +114,10 @@ namespace SAM.Analytical.UI.WPF
 
         private void LoadZoneCategories()
         {
+            object selectedItem = comboBox_ZoneType.SelectedItem;
+
             comboBox_ZoneType.Items.Clear();
             comboBox_ZoneType.Items.Add(string.Empty);
-
-            //HashSet<string> zoneCategories = new HashSet<string>();
-            //foreach (ZoneType zoneType in Enum.GetValues(typeof(ZoneType)))
-            //{
-            //    if (zoneType == ZoneType.Undefined)
-            //    {
-            //        continue;
-            //    }
-
-            //    zoneCategories.Add(Core.Query.Description(zoneType));
-            //}
-
-            //List<Zone> zones = adjacencyCluster?.GetObjects<Zone>();
-            //if (zones != null && zones.Count != 0)
-            //{
-            //    foreach (Zone zone in zones)
-            //    {
-            //        if (!zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory) || string.IsNullOrWhiteSpace(zoneCategory))
-            //        {
-            //            continue;
-            //        }
-
-            //        ZoneType zoneType = Core.Query.Enum<ZoneType>(zoneCategory);
-            //        if(zoneType == ZoneType.Undefined || zoneType == ZoneType.Other)
-            //        {
-            //            zoneCategories.Add(zoneCategory);
-            //        }
-            //    }
-            //}
 
             List<string> zoneCategories = Query.ZoneCategories(adjacencyCluster);
 
@@ -146,35 +125,8 @@ namespace SAM.Analytical.UI.WPF
             {
                 comboBox_ZoneType.Items.Add(zoneCategory);
             }
-        }
 
-        private void button_Add_Click(object sender, RoutedEventArgs e)
-        {
-            Zone zone = new Zone("New Zone");
-            zone.SetValue(ZoneParameter.ZoneCategory, ZoneCategory);
-
-            ZoneWindow zoneWindow = new ZoneWindow(zone, adjacencyCluster);
-            bool? result = zoneWindow.ShowDialog();
-            if(result == null || !result.HasValue || !result.Value)
-            {
-                return;
-            }
-
-            zone = zoneWindow.Zone;
-            if(zone == null)
-            {
-                return;
-            }
-
-            adjacencyCluster.AddObject(zone);
-            LoadZoneCategories();
-
-            if(zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory))
-            {
-                comboBox_ZoneType.SelectedItem = zoneCategory;
-            }
-
-            LoadZones();
+            comboBox_ZoneType.SelectedItem = selectedItem;
         }
 
         public List<Zone> Zones
@@ -195,10 +147,117 @@ namespace SAM.Analytical.UI.WPF
 
                 return result;
             }
+
+            set
+            {
+                if(value == null)
+                {
+                    return;
+                }
+
+                foreach (ListViewItem listViewItem in listView_Zones.Items)
+                {
+                    Zone zone = listViewItem?.Tag as Zone;
+                    if (zone == null)
+                    {
+                        continue;
+                    }
+
+                    if(value.Find(x => x.Guid == zone.Guid) != null)
+                    {
+                        listView_Zones.SelectedItems.Add(listViewItem);
+                    }
+                }
+            }
         }
 
         private void comboBox_ZoneType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            LoadZones();
+        }
+
+        private void button_Edit_Click(object sender, RoutedEventArgs e)
+        {
+            List<Zone> zones = Zones;
+            if(zones == null || zones.Count != 1)
+            {
+                MessageBox.Show("Select single Zone");
+                return;
+            }
+
+            ZoneWindow zoneWindow = new ZoneWindow(zones[0], adjacencyCluster);
+            bool? result = zoneWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+            Zone zone = zoneWindow.Zone;
+            if (zone == null)
+            {
+                return;
+            }
+
+            adjacencyCluster.AddObject(zone);
+            LoadZoneCategories();
+
+            if (zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory))
+            {
+                comboBox_ZoneType.SelectedItem = zoneCategory;
+            }
+
+            LoadZones();
+        }
+
+        private void button_Remove_Click(object sender, RoutedEventArgs e)
+        {
+            List<Zone> zones = Zones;
+            if (zones == null || zones.Count == 0)
+            {
+                MessageBox.Show("Select Zones");
+                return;
+            }
+
+            if(MessageBox.Show("Are you sure to remove selected zones?", "Remove Zones", MessageBoxButton.YesNo) == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            foreach(Zone zone in zones)
+            {
+                adjacencyCluster.RemoveObject<Zone>(zone.Guid);
+            }
+
+            LoadZoneCategories();
+            LoadZones();
+        }
+
+        private void button_Add_Click(object sender, RoutedEventArgs e)
+        {
+            Zone zone = new Zone("New Zone");
+            zone.SetValue(ZoneParameter.ZoneCategory, ZoneCategory);
+
+            ZoneWindow zoneWindow = new ZoneWindow(zone, adjacencyCluster);
+            bool? result = zoneWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+            zone = zoneWindow.Zone;
+            if (zone == null)
+            {
+                return;
+            }
+
+            adjacencyCluster.AddObject(zone);
+            LoadZoneCategories();
+
+            if (zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory))
+            {
+                comboBox_ZoneType.SelectedItem = zoneCategory;
+            }
+
             LoadZones();
         }
     }

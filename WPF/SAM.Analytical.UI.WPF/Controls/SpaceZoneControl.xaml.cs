@@ -25,6 +25,8 @@ namespace SAM.Analytical.UI.WPF
         public SpaceZoneControl()
         {
             InitializeComponent();
+
+            zonesControl.SelectionMode = SelectionMode.Single;
         }
 
         public SpaceZoneControl(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces)
@@ -95,6 +97,53 @@ namespace SAM.Analytical.UI.WPF
                 int index = listView_Spaces.Items.Add(listViewItem);
                 listView_Spaces.SelectedItems.Add(listViewItem);
             }
+        }
+
+        private void SelectZoneCategory()
+        {
+            List<Space> spaces = Spaces;
+            if (spaces != null && spaces.Count != 0)
+            {
+                AdjacencyCluster adjacencyCluster = AdjacencyCluster;
+                if (adjacencyCluster != null)
+                {
+                    List<Tuple<string, int>> tuples = new List<Tuple<string, int>>();
+                    foreach (Space space in spaces)
+                    {
+                        List<Zone> zones = adjacencyCluster.GetZones(space);
+                        if (zones != null && zones.Count != 0)
+                        {
+                            foreach (Zone zone in zones)
+                            {
+                                if (zone == null || !zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory) || string.IsNullOrEmpty(zoneCategory))
+                                {
+                                    continue;
+                                }
+
+                                int index = tuples.FindIndex(x => x.Item1 == zoneCategory);
+                                if (index == -1)
+                                {
+                                    index = tuples.Count;
+                                    tuples.Add(new Tuple<string, int>(zoneCategory, 0));
+                                }
+
+                                tuples[index] = new Tuple<string, int>(zoneCategory, tuples[index].Item2 + 1);
+                            }
+                        }
+                    }
+
+                    if (tuples != null && tuples.Count != 0)
+                    {
+                        tuples.Sort((x, y) => y.Item2.CompareTo(x.Item2));
+                        zonesControl.ZoneCategory = tuples[0].Item1;
+                    }
+                }
+            }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            SelectZoneCategory();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -33,6 +34,38 @@ namespace SAM.Analytical.UI.WPF
             {
                 MessageBox.Show("Provide valid zone type");
                 return;
+            }
+
+            AdjacencyCluster adjacencyCluster = zoneControl.AdjacencyCluster;
+            if (adjacencyCluster != null)
+            {
+                List<Zone> zones = adjacencyCluster.GetZones();
+                if(zones != null && zones.Count != 0)
+                {
+                    foreach(Zone zone_Temp in zones)
+                    {
+                        if(zone_Temp == null)
+                        {
+                            continue;
+                        }
+
+                        if(!zone_Temp.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory_Temp) || string.IsNullOrWhiteSpace(zoneCategory_Temp))
+                        {
+                            continue;
+                        }
+
+                        if(!zoneCategory.Equals(zoneCategory_Temp))
+                        {
+                            continue;
+                        }
+
+                        if(zone.Name == zone_Temp.Name && zone.Guid != zone_Temp.Guid)
+                        {
+                            MessageBox.Show("Zone with the same name already exists. Please provide different name.");
+                            return;
+                        }
+                    }
+                }
             }
 
             DialogResult = true;
