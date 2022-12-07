@@ -31,12 +31,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
             else if (viewSettings is AnalyticalThreeDimensionalViewSettings)
             {
-                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl((AnalyticalThreeDimensionalViewSettings)viewSettings);
+                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl((AnalyticalThreeDimensionalViewSettings)viewSettings, adjacencyCluster);
                 userControl = analyticalThreeDimensionalViewSettingsControl;
             }
             else if (viewSettings is Geometry.UI.ThreeDimensionalViewSettings)
             {
-                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl(new AnalyticalThreeDimensionalViewSettings((Geometry.UI.ThreeDimensionalViewSettings)viewSettings));
+                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl(new AnalyticalThreeDimensionalViewSettings((Geometry.UI.ThreeDimensionalViewSettings)viewSettings), adjacencyCluster);
                 userControl = analyticalThreeDimensionalViewSettingsControl;
             }
 

@@ -16,9 +16,11 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
-        public AnalyticalThreeDimensionalViewSettingsControl(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
+        public AnalyticalThreeDimensionalViewSettingsControl(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings, AdjacencyCluster adjacencyCluster)
         {
             InitializeComponent();
+
+            SetAdjacencyCluster(adjacencyCluster);
 
             SetAnalyticalThreeDimensionalViewSettings(analyticalThreeDimensionalViewSettings);
         }
@@ -36,6 +38,11 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
+        {
+            spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
+        }
+
         private void SetAnalyticalThreeDimensionalViewSettings(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
         {
             this.analyticalThreeDimensionalViewSettings = analyticalThreeDimensionalViewSettings;
@@ -43,6 +50,11 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Space.IsChecked = analyticalThreeDimensionalViewSettings.ContainsType(typeof(Space));
             checkBox_Visibilty_Panel.IsChecked = analyticalThreeDimensionalViewSettings.ContainsType(typeof(Panel));
             checkBox_Visibilty_Aperture.IsChecked = analyticalThreeDimensionalViewSettings.ContainsType(typeof(Aperture));
+
+
+            spaceAppearanceSettingsControl.SpaceAppearanceSettings = analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings;
+
+            textBox_Name.Text = analyticalThreeDimensionalViewSettings.Name;
         }
 
         private AnalyticalThreeDimensionalViewSettings GetAnalyticalThreeDimensionalViewSettings()
@@ -72,6 +84,10 @@ namespace SAM.Analytical.UI.WPF
             }
 
             result.SetTypes(types);
+
+            result.Name = textBox_Name.Text;
+
+            result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
 
             return result;
         }

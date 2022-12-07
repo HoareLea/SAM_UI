@@ -162,15 +162,15 @@ namespace SAM.Analytical.UI.WPF
         {
             if (radioButton_InternalCondition.IsChecked.HasValue && radioButton_InternalCondition.IsChecked.Value)
             {
-                return new SpaceAppearanceSettings(new InternalConditionAppearanceSettings(comboBox_ParameterName.SelectedItem.ToString()));
+                return new SpaceAppearanceSettings(new InternalConditionAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
             }
             else if (radioButton_Space.IsChecked.HasValue && radioButton_Space.IsChecked.Value)
             {
-                return new SpaceAppearanceSettings(comboBox_ParameterName.SelectedItem.ToString());
+                return new SpaceAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString());
             }
             else if (radioButton_Zone.IsChecked.HasValue && radioButton_Zone.IsChecked.Value)
             {
-                return new SpaceAppearanceSettings(new ZoneAppearanceSettings(comboBox_ParameterName.SelectedItem.ToString(), comboBox_ZoneCategory.SelectedItem.ToString()));
+                return new SpaceAppearanceSettings(new ZoneAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString(), comboBox_ZoneCategory?.SelectedItem?.ToString()));
             }
 
             return null;

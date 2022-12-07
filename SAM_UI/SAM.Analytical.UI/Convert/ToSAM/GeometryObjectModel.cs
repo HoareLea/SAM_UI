@@ -163,6 +163,37 @@ namespace SAM.Analytical.UI
                 {
                     Shell shell = adjacencyCluster.Shell(space);
 
+                    Color? color = null;
+                    if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object @object))
+                    {
+                        if (Core.Query.TryConvert(@object, out System.Drawing.Color color_Temp))
+                        {
+                            color = color_Temp.ToMedia();
+                        }
+                    }
+
+                    if (color == null || !color.HasValue)
+                    {
+                        color = Query.Color(space, adjacencyCluster, threeDimensionalViewSettings);
+                        if (color == null || !color.HasValue)
+                        {
+                            System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
+                            if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                            {
+                                color_Drawing = color_Temp;
+                            }
+
+                            color = Color.FromRgb(color_Drawing.R, color_Drawing.G, color_Drawing.B);
+                        }
+                    }
+
+                    if (color == null || !color.HasValue)
+                    {
+                        color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
+                    }
+
+                    SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new SurfaceAppearance(color.Value, ControlPaint.Dark(color.Value.ToDrawing()).ToMedia(), 0));
+
                     GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
                     geometryObjectCollection_Space.Add(new ShellObject(shell, Query.SurfaceAppearance(space, threeDimensionalViewSettings)) { Tag = space });
 

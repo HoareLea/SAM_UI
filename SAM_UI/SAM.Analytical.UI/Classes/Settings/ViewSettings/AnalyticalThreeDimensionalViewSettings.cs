@@ -8,6 +8,8 @@ namespace SAM.Analytical.UI
 {
     public class AnalyticalThreeDimensionalViewSettings : ThreeDimensionalViewSettings
     {
+        public SpaceAppearanceSettings SpaceAppearanceSettings { get; set; }
+
         public AnalyticalThreeDimensionalViewSettings(Guid guid, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
             :base(guid, appearanceSettings, types)
         {
@@ -29,7 +31,10 @@ namespace SAM.Analytical.UI
         public AnalyticalThreeDimensionalViewSettings(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
             :base(analyticalThreeDimensionalViewSettings)
         {
-
+            if (analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            {
+                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
+            }
         }
 
         public override bool FromJObject(JObject jObject)
@@ -37,6 +42,11 @@ namespace SAM.Analytical.UI
             if(!base.FromJObject(jObject))
             {
                 return false;
+            }
+
+            if (jObject.ContainsKey("SpaceAppearanceSettings"))
+            {
+                SpaceAppearanceSettings = new SpaceAppearanceSettings(jObject.Value<JObject>("SpaceAppearanceSettings"));
             }
 
             return true;
@@ -48,6 +58,11 @@ namespace SAM.Analytical.UI
             if(jObject == null)
             {
                 return null;
+            }
+
+            if (SpaceAppearanceSettings != null)
+            {
+                jObject.Add("SpaceAppearanceSettings", SpaceAppearanceSettings.ToJObject());
             }
 
             return jObject;
