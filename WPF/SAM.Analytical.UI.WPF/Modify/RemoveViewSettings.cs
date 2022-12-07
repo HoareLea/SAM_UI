@@ -4,7 +4,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void RemoveViewSettings(this UIAnalyticalModel uIAnalyticalModel, int id)
+        public static void RemoveViewSettings(this UIAnalyticalModel uIAnalyticalModel, System.Guid guid)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
@@ -17,7 +17,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            if(!uIGeometrySettings.RemoveViewSettins(id))
+            if(!uIGeometrySettings.RemoveViewSettings(guid))
             {
                 return;
             };

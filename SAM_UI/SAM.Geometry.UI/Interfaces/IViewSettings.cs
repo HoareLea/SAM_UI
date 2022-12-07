@@ -1,7 +1,10 @@
-﻿namespace SAM.Geometry.UI
+﻿using System;
+
+namespace SAM.Geometry.UI
 {
     public interface IViewSettings : Core.IJSAMObject
     {
-        int Id { get; }
+        Guid Guid { get; }
+        string Name { get; }
     }
 }

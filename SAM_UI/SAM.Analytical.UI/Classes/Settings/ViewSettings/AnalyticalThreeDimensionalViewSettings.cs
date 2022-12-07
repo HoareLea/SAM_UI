@@ -8,8 +8,8 @@ namespace SAM.Analytical.UI
 {
     public class AnalyticalThreeDimensionalViewSettings : ThreeDimensionalViewSettings
     {
-        public AnalyticalThreeDimensionalViewSettings(int id, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            :base(id, appearanceSettings, types)
+        public AnalyticalThreeDimensionalViewSettings(Guid guid, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(guid, appearanceSettings, types)
         {
 
         }

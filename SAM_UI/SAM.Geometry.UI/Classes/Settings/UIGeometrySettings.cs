@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SAM.Core;
 using SAM.Core.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,12 +9,12 @@ namespace SAM.Geometry.UI
 {
     public class UIGeometrySettings : IUISettings
     {
-        private Dictionary<int, IViewSettings> viewSettingsDictionary;
-        private int id;
+        private Dictionary<Guid, IViewSettings> viewSettingsDictionary;
+        private Guid activeGuid;
         
         public UIGeometrySettings()
         {
-            id = -1;
+            activeGuid = Guid.Empty;
         }
 
         public UIGeometrySettings(JObject jObject)
@@ -23,20 +24,20 @@ namespace SAM.Geometry.UI
 
         public UIGeometrySettings(UIGeometrySettings uIGeometrySettings)
         {
-            id = -1;
+            activeGuid = Guid.Empty;
 
             if (uIGeometrySettings != null)
             {
                 if(uIGeometrySettings.viewSettingsDictionary != null)
                 {
-                    viewSettingsDictionary = new Dictionary<int, IViewSettings>();
-                    foreach(KeyValuePair<int, IViewSettings> keyValuePair in uIGeometrySettings.viewSettingsDictionary)
+                    viewSettingsDictionary = new Dictionary<Guid, IViewSettings>();
+                    foreach(KeyValuePair<Guid, IViewSettings> keyValuePair in uIGeometrySettings.viewSettingsDictionary)
                     {
                         viewSettingsDictionary[keyValuePair.Key] = keyValuePair.Value?.Clone();
                     }
                 }
 
-                id = uIGeometrySettings.id;
+                activeGuid = uIGeometrySettings.activeGuid;
             }
         }
 
@@ -55,10 +56,10 @@ namespace SAM.Geometry.UI
 
             if (viewSettingsDictionary == null)
             {
-                viewSettingsDictionary = new Dictionary<int, IViewSettings>();
+                viewSettingsDictionary = new Dictionary<Guid, IViewSettings>();
             }
 
-            viewSettingsDictionary[viewSettings.Id] = viewSettings_Temp;
+            viewSettingsDictionary[viewSettings.Guid] = viewSettings_Temp;
             return true;
         }
 
@@ -74,22 +75,22 @@ namespace SAM.Geometry.UI
                 }
             }
 
-            if(viewSettingsDictionary?.Keys == null || !viewSettingsDictionary.Keys.Contains(id))
+            if(viewSettingsDictionary?.Keys == null || !viewSettingsDictionary.Keys.Contains(activeGuid))
             {
-                id = -1;
+                activeGuid = Guid.Empty;
             }
 
             return true;
         }
 
-        public IViewSettings GetViewSettings(int id)
+        public IViewSettings GetViewSettings(Guid guid)
         {
-            if(id == -1 || viewSettingsDictionary == null)
+            if(guid == Guid.Empty || viewSettingsDictionary == null)
             {
                 return null;
             }
 
-            if(!viewSettingsDictionary.TryGetValue(id, out IViewSettings result))
+            if(!viewSettingsDictionary.TryGetValue(guid, out IViewSettings result))
             {
                 return null;
             }
@@ -97,37 +98,20 @@ namespace SAM.Geometry.UI
             return result.Clone();
         }
 
-        public bool RemoveViewSettins(int id)
+        public bool RemoveViewSettings(Guid guid)
         {
             if(viewSettingsDictionary == null)
             {
                 return false;
             }
 
-            if(!viewSettingsDictionary.ContainsKey(id))
+            if(!viewSettingsDictionary.ContainsKey(guid))
             {
                 return false;
             }
 
-            viewSettingsDictionary.Remove(id);
-            SetIds();
+            viewSettingsDictionary.Remove(guid);
             return true;
-        }
-
-        private void SetIds()
-        {
-            if(viewSettingsDictionary == null || viewSettingsDictionary.Count == 0)
-            {
-                return;
-            }
-
-            List<IViewSettings> viewSettings = new List<IViewSettings>(viewSettingsDictionary.Values);
-            viewSettingsDictionary.Clear();
-
-            for (int i = 0; i < viewSettings.Count(); i++)
-            {
-                viewSettingsDictionary[i] = viewSettings.ElementAt(i);
-            }
         }
 
         public List<T> GetViewSettings<T>() where T: IViewSettings
@@ -162,25 +146,25 @@ namespace SAM.Geometry.UI
             }
 
             viewSettingsDictionary.Clear();
-            id = -1;
+            activeGuid = Guid.Empty;
             return true;
         }
 
-        public HashSet<int> GetIds()
+        public HashSet<Guid> GetGuids()
         {
             if(viewSettingsDictionary == null)
             {
                 return null;
             }
 
-            return new HashSet<int>(viewSettingsDictionary.Keys);
+            return new HashSet<Guid>(viewSettingsDictionary.Keys);
         }
 
-        public int Id
+        public Guid ActiveGuid
         {
             get
             {
-                return id;
+                return activeGuid;
             }
             set
             {
@@ -189,30 +173,8 @@ namespace SAM.Geometry.UI
                     return;
                 }
 
-                if(value < -1 || value >= viewSettingsDictionary.Count)
-                {
-                    return;
-                }
-
-                id = value;
+                activeGuid = value;
             }
-        }
-
-        public int NewId()
-        {
-            IEnumerable<int> ids = viewSettingsDictionary?.Keys;
-            if(ids == null || ids.Count() == 0)
-            {
-                return 0;
-            }
-
-            int result = 0;
-            while(ids.Contains(result))
-            {
-                result++;
-            }
-
-            return result;
         }
 
         public virtual bool FromJObject(JObject jObject)
@@ -224,7 +186,7 @@ namespace SAM.Geometry.UI
 
             if(jObject.ContainsKey("ViewSettings"))
             {
-                viewSettingsDictionary = new Dictionary<int, IViewSettings>();
+                viewSettingsDictionary = new Dictionary<Guid, IViewSettings>();
 
                 JArray jArray = jObject.Value<JArray>("ViewSettings");
                 if(jArray != null)
@@ -237,14 +199,14 @@ namespace SAM.Geometry.UI
                             continue;
                         }
 
-                        viewSettingsDictionary[viewSettings.Id] = viewSettings;
+                        viewSettingsDictionary[viewSettings.Guid] = viewSettings;
                     }
                 }
             }
 
-            if(jObject.ContainsKey("Id"))
+            if(jObject.ContainsKey("ActiveGuid"))
             {
-                id = jObject.Value<int>("Id");
+                activeGuid = Core.Query.Guid(jObject, "ActiveGuid");
             }
 
             return true;
@@ -272,9 +234,9 @@ namespace SAM.Geometry.UI
                 jObject.Add("ViewSettings", jArray);
             }
 
-            if(id != -1)
+            if(activeGuid != Guid.Empty)
             {
-                jObject.Add("Id", id);
+                jObject.Add("ActiveGuid", activeGuid);
             }
 
             return jObject;

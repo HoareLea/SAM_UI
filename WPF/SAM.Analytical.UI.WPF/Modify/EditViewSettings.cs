@@ -5,7 +5,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void EditViewSettings(this UIAnalyticalModel uIAnalyticalModel, int id)
+        public static void EditViewSettings(this UIAnalyticalModel uIAnalyticalModel, System.Guid guid)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
@@ -18,7 +18,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            IViewSettings viewSettings = uIGeometrySettings.GetViewSettings(id);
+            IViewSettings viewSettings = uIGeometrySettings.GetViewSettings(guid);
 
             ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(viewSettings, analyticalModel.AdjacencyCluster);
             bool? result = viewSettingsWindow.ShowDialog();
@@ -28,7 +28,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             uIGeometrySettings.AddViewSettings(viewSettingsWindow.ViewSettings);
-            uIGeometrySettings.Id = id;
+            uIGeometrySettings.ActiveGuid = guid;
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 

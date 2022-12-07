@@ -9,8 +9,8 @@ namespace SAM.Geometry.UI
     {
         private Plane plane;
 
-        public TwoDimensionalViewSettings(int id, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            :base(id, appearanceSettings, types)
+        public TwoDimensionalViewSettings(Guid guid, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(guid, appearanceSettings, types)
         {
             this.plane = plane;
         }

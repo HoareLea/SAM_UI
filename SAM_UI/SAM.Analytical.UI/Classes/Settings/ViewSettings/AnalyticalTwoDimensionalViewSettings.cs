@@ -10,8 +10,14 @@ namespace SAM.Analytical.UI
     {
         public SpaceAppearanceSettings SpaceAppearanceSettings { get; set; }
 
-        public AnalyticalTwoDimensionalViewSettings(int id, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            :base(id, plane, appearanceSettings, types)
+        public AnalyticalTwoDimensionalViewSettings(Guid guid, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(guid, plane, appearanceSettings, types)
+        {
+
+        }
+
+        public AnalyticalTwoDimensionalViewSettings(Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            : base(Guid.NewGuid(), plane, appearanceSettings, types)
         {
 
         }

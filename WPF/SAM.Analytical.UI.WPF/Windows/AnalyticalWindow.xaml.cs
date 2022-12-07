@@ -151,7 +151,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             AnalyticalModelControl.TreeView.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
 
 
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings(0, null, null);
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings(null, null);
 
             GeometryObjectModel geometryObjectModel = UI.Convert.ToSAM_GeometryObjectModel(uIAnalyticalModel?.JSAMObject, threeDimensionalViewSettings);
 
@@ -167,7 +167,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
             uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
-
 
             SetEnabled();
         }
@@ -195,7 +194,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings(tabControl.Items.Count, null, new Type[] { typeof(Panel), typeof(Aperture) });
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings(null, new Type[] { typeof(Panel), typeof(Aperture) });
 
             TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, threeDimensionalViewSettings);
             if (tabItem != null)
@@ -255,7 +254,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(tabControl.Items.Count, Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
+            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
             analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("");
 
             TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, analyticalTwoDimensionalViewSettings);
@@ -803,24 +802,28 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return null;
             }
 
-            int id = -1;
             if (viewSettings == null)
             {
-                id = tabControl.Items.Count;
-                viewSettings = UI.Query.DefaultViewSettings(id);
+                viewSettings = UI.Query.DefaultViewSettings();
             }
 
-            id = viewSettings.Id;
-
-            while (id > tabControl.Items.Count - 1)
+            TabItem tabItem = null;
+            foreach(TabItem tabItem_Temp in tabControl.Items)
             {
-                tabControl.Items.Add(new TabItem() { Header = "???" });
+                ViewportControl viewportControl_Temp = tabItem_Temp.Content as ViewportControl;
+                if(viewportControl_Temp != null)
+                {
+                    if(viewportControl_Temp.Guid == viewSettings.Guid)
+                    {
+                        tabItem = tabItem_Temp;
+                    }
+                }
             }
 
-            TabItem tabItem = tabControl.Items[id] as TabItem;
-            if (tabItem == null)
+            if(tabItem == null)
             {
-                return null;
+                tabItem = new TabItem() { Header = "???" };
+                tabControl.Items.Add(tabItem);
             }
 
             ViewportControl viewportControl = tabItem.Content as ViewportControl;
@@ -832,21 +835,31 @@ namespace SAM.Analytical.UI.WPF.Windows
                 viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
                 viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
                 tabItem.Content = viewportControl;
+
+                if(viewSettings != null)
+                {
+                    viewportControl.Guid = viewSettings.Guid;
+                }
             }
 
-            string header = viewSettings.Header();
-            if (tabItem.Header?.ToString() != header)
+            string name = viewSettings.Name;
+            if(string.IsNullOrEmpty(name))
             {
-                tabItem.Header = header;
+                name = viewSettings.DefaultName();
+            }
+
+            if (!string.IsNullOrEmpty(name) && tabItem.Header?.ToString() != name)
+            {
+                tabItem.Header = name;
             }
 
             GeometryObjectModel geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
             viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             viewportControl.Mode = viewSettings.Mode();
 
-            if(viewSettings != null)
+            if (viewSettings != null)
             {
-                if(!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+                if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
                 {
                     uIGeometrySettings = new UIGeometrySettings();
                 }
@@ -880,9 +893,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                             result.Add(tabItem);
                         }
 
-                        int id = tabControl.Items.IndexOf(tabItem);
-
-                        if (id != -1 && id == uIGeometrySettings.Id)
+                        if (viewSettings.Guid == uIGeometrySettings.ActiveGuid)
                         {
                             tabControl.SelectedItem = tabItem;
                         }
@@ -916,7 +927,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<IViewSettings> viewSettingsList = new List<IViewSettings>();
-            int id = -1;
+            Guid guid = Guid.Empty;
             for (int i = 0; i < tabControl.Items.Count; i++)
             {
                 TabItem tabItem = tabControl.Items[i] as TabItem;
@@ -942,12 +953,12 @@ namespace SAM.Analytical.UI.WPF.Windows
 
                 if(tabControl.SelectedItem == tabItem)
                 {
-                    id = i;
+                    guid = viewSettings.Guid;
                 }
             }
 
             result.SetViewSettings(viewSettingsList);
-            result.Id = id;
+            result.ActiveGuid = guid;
 
             return result;
         }
@@ -968,7 +979,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             List<IViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<IViewSettings>();
             if(viewSettingsList == null || viewSettingsList.Count == 0)
             {
-                uIGeometrySettings.AddViewSettings(UI.Query.DefaultViewSettings(0));
+                ViewSettings viewSettings = UI.Query.DefaultViewSettings();
+                uIGeometrySettings.AddViewSettings(viewSettings);
+                uIGeometrySettings.ActiveGuid = viewSettings.Guid;
                 analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
                 uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
                 uIAnalyticalModel.JSAMObject = analyticalModel;
@@ -1151,13 +1164,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            int id = tabControl.Items.IndexOf(tabItem);
-            if (id == -1)
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
             {
                 return;
             }
 
-            Modify.EditViewSettings(uIAnalyticalModel, id);
+            Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
         private void RemoveViewSettings()
@@ -1174,13 +1187,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            int id = tabControl.Items.IndexOf(tabItem);
-            if (id == -1)
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
             {
                 return;
             }
 
-            Modify.RemoveViewSettings(uIAnalyticalModel, id);
+            Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
         private void tabControl_ContextMenuOpening(object sender, ContextMenuEventArgs e)

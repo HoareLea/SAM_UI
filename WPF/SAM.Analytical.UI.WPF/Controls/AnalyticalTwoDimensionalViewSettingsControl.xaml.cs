@@ -52,6 +52,8 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Aperture.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Aperture));
 
             spaceAppearanceSettingsControl.SpaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
+
+            textBox_Name.Text = analyticalTwoDimensionalViewSettings.Name;
         }
 
         private AnalyticalTwoDimensionalViewSettings GetAnalyticalTwoDimensionalViewSettings()
@@ -81,6 +83,8 @@ namespace SAM.Analytical.UI.WPF
             }
 
             result.SetTypes(types);
+
+            result.Name = textBox_Name.Text;
 
             result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
 

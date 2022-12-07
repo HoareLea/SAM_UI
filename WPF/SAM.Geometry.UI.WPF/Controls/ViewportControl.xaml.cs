@@ -23,6 +23,8 @@ namespace SAM.Geometry.UI.WPF
         public event ObjectDoubleClickedEventHandler ObjectDoubleClicked;
         public event ObjectContextMenuOpeningEventHandler ObjectContextMenuOpening;
 
+        public Guid Guid { get; set; }
+
         private Visual3D visual3D_Highlight;
         private List<Visual3D> visual3Ds_Selected;
 

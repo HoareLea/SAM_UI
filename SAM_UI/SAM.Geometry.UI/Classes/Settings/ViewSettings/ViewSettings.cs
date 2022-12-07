@@ -7,18 +7,19 @@ namespace SAM.Geometry.UI
 {
     public abstract class ViewSettings : IViewSettings
     {
-        private int id = -1;
+        private Guid guid;
+        private string name;
         private AppearanceSettings appearanceSettings;
         private Types types;
 
-        public ViewSettings(int id)
+        public ViewSettings(Guid guid)
         {
-            this.id = id;
+            this.guid = guid;
         }
 
-        public ViewSettings(int id, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+        public ViewSettings(Guid guid, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
         {
-            this.id = id;
+            this.guid = guid;
             this.appearanceSettings = appearanceSettings != null ? new AppearanceSettings(appearanceSettings) : null;
             this.types = types != null ? new Types(types) : null;
         }
@@ -32,8 +33,9 @@ namespace SAM.Geometry.UI
         {
             if(viewSettings != null)
             {
-                id = viewSettings.id;
-                
+                guid = viewSettings.guid;
+                name = viewSettings.name;
+
                 if(viewSettings.appearanceSettings != null)
                 {
                     appearanceSettings = new AppearanceSettings(viewSettings.appearanceSettings);
@@ -137,11 +139,23 @@ namespace SAM.Geometry.UI
             return appearanceSettings.ContainsAppearances(guid);
         }
 
-        public int Id
+        public Guid Guid
         {
             get
             {
-                return id;
+                return guid;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
             }
         }
 
@@ -152,9 +166,14 @@ namespace SAM.Geometry.UI
                 return false;
             }
 
-            if (jObject.ContainsKey("Id"))
+            if (jObject.ContainsKey("Name"))
             {
-                id = jObject.Value<int>("Id");
+                name = jObject.Value<string>("Name");
+            }
+
+            if (jObject.ContainsKey("Guid"))
+            {
+                guid = Guid.Parse(jObject.Value<string>("Guid"));
             }
 
             if (jObject.ContainsKey("AppearanceSettings"))
@@ -175,9 +194,14 @@ namespace SAM.Geometry.UI
             JObject jObject = new JObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
-            jObject.Add("Id", id);
+            jObject.Add("Guid", guid.ToString());
 
-            if(appearanceSettings != null)
+            if(name != null)
+            {
+                jObject.Add("Name", name);
+            }
+
+            if (appearanceSettings != null)
             {
                 jObject.Add("AppearanceSettings", appearanceSettings.ToJObject());
             }

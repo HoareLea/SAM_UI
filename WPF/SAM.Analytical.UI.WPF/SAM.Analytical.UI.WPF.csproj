@@ -91,7 +91,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Query\ZoneTypes.cs" />
-    <Compile Include="Query\Header.cs" />
+    <Compile Include="Query\DefaultName.cs" />
     <Compile Include="Query\Material.cs" />
     <Compile Include="Controls\SpaceZoneControl.xaml.cs">
       <DependentUpon>SpaceZoneControl.xaml</DependentUpon>
