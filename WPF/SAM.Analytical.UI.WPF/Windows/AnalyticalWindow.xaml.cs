@@ -56,6 +56,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_View_ViewSettings.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
             RibbonButton_View_ViewSettings.Click += RibbonButton_View_ViewSettings_Click;
 
+            RibbonButton_View_Close.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_View_Close.Click += RibbonButton_View_Close_Click;
+
             RibbonButton_Edit_Location.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Location);
             RibbonButton_Edit_Location.Click += RibbonButton_Edit_Location_Click;
 
@@ -167,6 +170,11 @@ namespace SAM.Analytical.UI.WPF.Windows
 
 
             SetEnabled();
+        }
+
+        private void RibbonButton_View_Close_Click(object sender, RoutedEventArgs e)
+        {
+            RemoveViewSettings();
         }
 
         private void RibbonButton_View_ViewSettings_Click(object sender, RoutedEventArgs e)
@@ -288,11 +296,15 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+
+
             jSAMObjects.RemoveAll(x => x == null);
             if(jSAMObjects.Count == 0)
             {
                 return;
             }
+
+            contextMenu.Items.Add(new Separator());
 
             if (jSAMObjects.Count == 1)
             {
@@ -1146,6 +1158,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Modify.EditViewSettings(uIAnalyticalModel, id);
+        }
+
+        private void RemoveViewSettings()
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            int id = tabControl.Items.IndexOf(tabItem);
+            if (id == -1)
+            {
+                return;
+            }
+
+            Modify.RemoveViewSettings(uIAnalyticalModel, id);
+        }
+
+        private void tabControl_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            string name = null;
         }
     }
 }

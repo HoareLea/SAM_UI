@@ -406,6 +406,7 @@
             <RibbonTab x:Name="RibbonTab_View" Header="View">
                 <RibbonGroup x:Name="RibbonGroup_View_General" Header="General">
                     <RibbonButton x:Name="RibbonButton_View_ViewSettings" Label="View Settings"/>
+                    <RibbonButton x:Name="RibbonButton_View_Close" Label="Close View"/>
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_New" Header="New">
                     <RibbonButton x:Name="RibbonButton_View_NewSectionView" Label="Section View"/>
@@ -490,7 +491,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
-            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2">
+            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" ContextMenuOpening="tabControl_ContextMenuOpening">
                 <TabItem Header="3D View">
                     <geometry:ViewportControl x:Name="viewportControl" />
                 </TabItem>

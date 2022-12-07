@@ -97,6 +97,39 @@ namespace SAM.Geometry.UI
             return result.Clone();
         }
 
+        public bool RemoveViewSettins(int id)
+        {
+            if(viewSettingsDictionary == null)
+            {
+                return false;
+            }
+
+            if(!viewSettingsDictionary.ContainsKey(id))
+            {
+                return false;
+            }
+
+            viewSettingsDictionary.Remove(id);
+            SetIds();
+            return true;
+        }
+
+        private void SetIds()
+        {
+            if(viewSettingsDictionary == null || viewSettingsDictionary.Count == 0)
+            {
+                return;
+            }
+
+            List<IViewSettings> viewSettings = new List<IViewSettings>(viewSettingsDictionary.Values);
+            viewSettingsDictionary.Clear();
+
+            for (int i = 0; i < viewSettings.Count(); i++)
+            {
+                viewSettingsDictionary[i] = viewSettings.ElementAt(i);
+            }
+        }
+
         public List<T> GetViewSettings<T>() where T: IViewSettings
         {
             if(viewSettingsDictionary == null)
