@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Legend.cs" />
+    <Compile Include="Classes\LegendItem.cs" />
     <Compile Include="Classes\UIJSAMObject.cs" />
     <Compile Include="Convert\ToDrawing\Color.cs" />
     <Compile Include="Convert\ToMedia\Color.cs" />
@@ -77,6 +79,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SAM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.1</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

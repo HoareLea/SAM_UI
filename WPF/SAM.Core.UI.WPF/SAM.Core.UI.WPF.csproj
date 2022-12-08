@@ -69,6 +69,9 @@
     <Compile Include="Controls\JsonControl.xaml.cs">
       <DependentUpon>JsonControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LegendControl.xaml.cs">
+      <DependentUpon>LegendControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\Clear.cs" />
     <Compile Include="Modify\SetIJSAMObject.cs" />
     <Compile Include="Modify\Move.cs" />
@@ -119,6 +122,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\JsonControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LegendControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

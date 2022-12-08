@@ -86,8 +86,9 @@ namespace SAM.Geometry.UI
         public JObject ToJObject()
         {
             JObject jObject = new JObject();
+            jObject.Add("_type", Core.Query.FullTypeName(this));
 
-            if(TextAppearance != null)
+            if (TextAppearance != null)
             {
                 jObject.Add("TextAppearance", TextAppearance.ToJObject());
             }
