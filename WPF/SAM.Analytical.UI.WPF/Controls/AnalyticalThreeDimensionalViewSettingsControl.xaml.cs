@@ -59,7 +59,7 @@ namespace SAM.Analytical.UI.WPF
 
         private AnalyticalThreeDimensionalViewSettings GetAnalyticalThreeDimensionalViewSettings()
         {
-            AnalyticalThreeDimensionalViewSettings result = new AnalyticalThreeDimensionalViewSettings(analyticalThreeDimensionalViewSettings);
+            AnalyticalThreeDimensionalViewSettings result = new AnalyticalThreeDimensionalViewSettings(textBox_Name.Text, analyticalThreeDimensionalViewSettings);
 
             CheckBox checkBox;
 
@@ -84,8 +84,6 @@ namespace SAM.Analytical.UI.WPF
             }
 
             result.SetTypes(types);
-
-            result.Name = textBox_Name.Text;
 
             result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
 

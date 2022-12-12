@@ -269,6 +269,11 @@ namespace SAM.Analytical.UI
 
                 if (spaces != null)
                 {
+                    Dictionary<Space, System.Drawing.Color> dictionary = Query.Colors(spaces, adjacencyCluster, twoDimensionalViewSettings);
+
+
+
+                    
                     foreach (Space space in spaces)
                     {
                         Shell shell = adjacencyCluster.Shell(space);

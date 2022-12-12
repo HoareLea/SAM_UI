@@ -5,37 +5,35 @@ using System.Collections.Generic;
 
 namespace SAM.Geometry.UI
 {
-    public abstract class ViewSettings : IViewSettings
+    public abstract class ViewSettings : SAMObject, IViewSettings
     {
-        private Guid guid;
-        private string name;
         private AppearanceSettings appearanceSettings;
         private Types types;
 
-        public ViewSettings(Guid guid)
+        public ViewSettings(Guid guid, string name)
+            :base(guid, name)
         {
-            this.guid = guid;
+
         }
 
-        public ViewSettings(Guid guid, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+        public ViewSettings(Guid guid, string name, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(guid, name)
         {
-            this.guid = guid;
             this.appearanceSettings = appearanceSettings != null ? new AppearanceSettings(appearanceSettings) : null;
             this.types = types != null ? new Types(types) : null;
         }
 
         public ViewSettings(JObject jObject)
+            :base(jObject)
         {
-            FromJObject(jObject);
+
         }
 
         public ViewSettings(ViewSettings viewSettings)
+            :base(viewSettings)
         {
             if(viewSettings != null)
             {
-                guid = viewSettings.guid;
-                name = viewSettings.name;
-
                 if(viewSettings.appearanceSettings != null)
                 {
                     appearanceSettings = new AppearanceSettings(viewSettings.appearanceSettings);
@@ -46,6 +44,12 @@ namespace SAM.Geometry.UI
                     types = new Types(viewSettings.types);
                 }
             }
+        }
+
+        public ViewSettings(string name, ViewSettings viewSettings)
+            :base(viewSettings)
+        {
+            this.name = name;
         }
 
         public bool IsValid(Type type)
@@ -139,41 +143,12 @@ namespace SAM.Geometry.UI
             return appearanceSettings.ContainsAppearances(guid);
         }
 
-        public Guid Guid
+        public override bool FromJObject(JObject jObject)
         {
-            get
+            bool result = base.FromJObject(jObject);
+            if(!result)
             {
-                return guid;
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-            set
-            {
-                name = value;
-            }
-        }
-
-        public virtual bool FromJObject(JObject jObject)
-        {
-            if(jObject == null)
-            {
-                return false;
-            }
-
-            if (jObject.ContainsKey("Name"))
-            {
-                name = jObject.Value<string>("Name");
-            }
-
-            if (jObject.ContainsKey("Guid"))
-            {
-                guid = Guid.Parse(jObject.Value<string>("Guid"));
+                return result;
             }
 
             if (jObject.ContainsKey("AppearanceSettings"))
@@ -189,17 +164,9 @@ namespace SAM.Geometry.UI
             return true;
         }
 
-        public virtual JObject ToJObject()
+        public override JObject ToJObject()
         {
-            JObject jObject = new JObject();
-            jObject.Add("_type", Core.Query.FullTypeName(this));
-
-            jObject.Add("Guid", guid.ToString());
-
-            if(name != null)
-            {
-                jObject.Add("Name", name);
-            }
+            JObject jObject = base.ToJObject();
 
             if (appearanceSettings != null)
             {

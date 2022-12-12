@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="Interfaces\IAnalyticalViewSettings.cs" />
     <Compile Include="Interfaces\ISection3DObject.cs" />
+    <Compile Include="Query\Colors.cs" />
     <Compile Include="Query\TryGetValue.cs" />
     <Compile Include="Query\Color.cs" />
     <Compile Include="Query\DefaultViewSettings.cs" />
@@ -183,10 +184,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NetOfficeFw.Excel">
-      <Version>1.8.1</Version>
+      <Version>1.9.1</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.1</Version>
+      <Version>13.0.2</Version>
     </PackageReference>
     <PackageReference Include="RibbonWinForms">
       <Version>5.1.0-beta</Version>

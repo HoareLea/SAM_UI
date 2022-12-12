@@ -58,7 +58,7 @@ namespace SAM.Analytical.UI.WPF
 
         private AnalyticalTwoDimensionalViewSettings GetAnalyticalTwoDimensionalViewSettings()
         {
-            AnalyticalTwoDimensionalViewSettings result = new AnalyticalTwoDimensionalViewSettings(analyticalTwoDimensionalViewSettings);
+            AnalyticalTwoDimensionalViewSettings result = new AnalyticalTwoDimensionalViewSettings(textBox_Name.Text, analyticalTwoDimensionalViewSettings);
 
             CheckBox checkBox;
 
@@ -83,8 +83,6 @@ namespace SAM.Analytical.UI.WPF
             }
 
             result.SetTypes(types);
-
-            result.Name = textBox_Name.Text;
 
             result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
 

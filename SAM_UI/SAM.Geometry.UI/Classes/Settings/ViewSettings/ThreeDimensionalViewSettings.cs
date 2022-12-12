@@ -7,14 +7,14 @@ namespace SAM.Geometry.UI
 {
     public class ThreeDimensionalViewSettings : ViewSettings
     {
-        public ThreeDimensionalViewSettings(Guid guid, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            :base(guid, appearanceSettings, types)
+        public ThreeDimensionalViewSettings(Guid guid, string name, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(guid, name, appearanceSettings, types)
         {
 
         }
 
-        public ThreeDimensionalViewSettings(AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            : base(Guid.NewGuid(), appearanceSettings, types)
+        public ThreeDimensionalViewSettings(string name, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            : base(Guid.NewGuid(), name, appearanceSettings, types)
         {
 
         }
@@ -27,6 +27,12 @@ namespace SAM.Geometry.UI
 
         public ThreeDimensionalViewSettings(ThreeDimensionalViewSettings threeDimensionalViewSettings)
             :base(threeDimensionalViewSettings)
+        {
+
+        }
+
+        public ThreeDimensionalViewSettings(string name, ThreeDimensionalViewSettings threeDimensionalViewSettings)
+            : base(name, threeDimensionalViewSettings)
         {
 
         }

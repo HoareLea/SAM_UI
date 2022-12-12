@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using SAM.Geometry.Spatial;
 using System;
 using System.Collections.Generic;
 using SAM.Geometry.UI;
@@ -10,8 +9,8 @@ namespace SAM.Analytical.UI
     {
         public SpaceAppearanceSettings SpaceAppearanceSettings { get; set; }
 
-        public AnalyticalThreeDimensionalViewSettings(Guid guid, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            :base(guid, appearanceSettings, types)
+        public AnalyticalThreeDimensionalViewSettings(Guid guid, string name, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(guid, name, appearanceSettings, types)
         {
 
         }
@@ -30,6 +29,15 @@ namespace SAM.Analytical.UI
 
         public AnalyticalThreeDimensionalViewSettings(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
             :base(analyticalThreeDimensionalViewSettings)
+        {
+            if (analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            {
+                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
+            }
+        }
+
+        public AnalyticalThreeDimensionalViewSettings(string name, AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
+            : base(name, analyticalThreeDimensionalViewSettings)
         {
             if (analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings != null)
             {

@@ -151,7 +151,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             AnalyticalModelControl.TreeView.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
 
 
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings(null, null);
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, null);
 
             GeometryObjectModel geometryObjectModel = UI.Convert.ToSAM_GeometryObjectModel(uIAnalyticalModel?.JSAMObject, threeDimensionalViewSettings);
 
@@ -194,7 +194,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings(null, new Type[] { typeof(Panel), typeof(Aperture) });
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, new Type[] { typeof(Panel), typeof(Aperture) });
 
             TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, threeDimensionalViewSettings);
             if (tabItem != null)
@@ -254,7 +254,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
+            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), null, Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
             analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("");
 
             TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, analyticalTwoDimensionalViewSettings);

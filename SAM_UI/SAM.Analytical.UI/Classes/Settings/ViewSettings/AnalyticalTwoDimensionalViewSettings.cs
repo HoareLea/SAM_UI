@@ -10,14 +10,14 @@ namespace SAM.Analytical.UI
     {
         public SpaceAppearanceSettings SpaceAppearanceSettings { get; set; }
 
-        public AnalyticalTwoDimensionalViewSettings(Guid guid, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            :base(guid, plane, appearanceSettings, types)
+        public AnalyticalTwoDimensionalViewSettings(Guid guid, string name, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(guid, name, plane, appearanceSettings, types)
         {
 
         }
 
-        public AnalyticalTwoDimensionalViewSettings(Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            : base(Guid.NewGuid(), plane, appearanceSettings, types)
+        public AnalyticalTwoDimensionalViewSettings(Plane plane, string name, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            : base(Guid.NewGuid(), name, plane, appearanceSettings, types)
         {
 
         }
@@ -41,8 +41,15 @@ namespace SAM.Analytical.UI
             {
                 SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
             }
+        }
 
-
+        public AnalyticalTwoDimensionalViewSettings(string name, AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
+            : base(name, analyticalTwoDimensionalViewSettings)
+        {
+            if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            {
+                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
+            }
         }
 
         public override bool FromJObject(JObject jObject)

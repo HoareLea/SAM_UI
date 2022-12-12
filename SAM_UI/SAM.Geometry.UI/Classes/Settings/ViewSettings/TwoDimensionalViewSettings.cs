@@ -9,8 +9,8 @@ namespace SAM.Geometry.UI
     {
         private Plane plane;
 
-        public TwoDimensionalViewSettings(Guid guid, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
-            :base(guid, appearanceSettings, types)
+        public TwoDimensionalViewSettings(Guid guid, string name, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+            :base(guid, name, appearanceSettings, types)
         {
             this.plane = plane;
         }
@@ -27,6 +27,18 @@ namespace SAM.Geometry.UI
             if(twoDimensionalViewSettings != null)
             {
                 if(twoDimensionalViewSettings.plane != null)
+                {
+                    plane = new Plane(twoDimensionalViewSettings.plane);
+                }
+            }
+        }
+
+        public TwoDimensionalViewSettings(string name, TwoDimensionalViewSettings twoDimensionalViewSettings)
+        : base(name, twoDimensionalViewSettings)
+        {
+            if (twoDimensionalViewSettings != null)
+            {
+                if (twoDimensionalViewSettings.plane != null)
                 {
                     plane = new Plane(twoDimensionalViewSettings.plane);
                 }

@@ -117,7 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HelixToolkit.Wpf">
-      <Version>2.22.0</Version>
+      <Version>2.23.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
