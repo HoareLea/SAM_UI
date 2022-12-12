@@ -271,9 +271,6 @@ namespace SAM.Analytical.UI
                 {
                     Dictionary<Space, System.Drawing.Color> dictionary = Query.Colors(spaces, adjacencyCluster, twoDimensionalViewSettings);
 
-
-
-                    
                     foreach (Space space in spaces)
                     {
                         Shell shell = adjacencyCluster.Shell(space);
@@ -299,11 +296,20 @@ namespace SAM.Analytical.UI
                         face3Ds = face3Ds_Offset;
 
                         Color? color = null;
-                        if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object @object))
+
+                        if(dictionary.TryGetValue(space, out System.Drawing.Color color_Temp))
                         {
-                            if(Core.Query.TryConvert(@object, out System.Drawing.Color color_Temp))
+                            color = Color.FromRgb(color_Temp.R, color_Temp.G, color_Temp.B);
+                        }
+
+                        if (color == null || !color.HasValue)
+                        {
+                            if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object @object))
                             {
-                                color = color_Temp.ToMedia();
+                                if (Core.Query.TryConvert(@object, out color_Temp))
+                                {
+                                    color = color_Temp.ToMedia();
+                                }
                             }
                         }
 
@@ -313,7 +319,7 @@ namespace SAM.Analytical.UI
                             if (color == null || !color.HasValue)
                             {
                                 System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
-                                if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                                if (space.TryGetValue(SpaceParameter.Color, out color_Temp))
                                 {
                                     color_Drawing = color_Temp;
                                 }
