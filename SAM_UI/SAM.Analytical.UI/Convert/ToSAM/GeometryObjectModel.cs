@@ -33,6 +33,7 @@ namespace SAM.Analytical.UI
             //adjacencyCluster.UpdateNormals(true, true);
             //adjacencyCluster.Normalize(true, Geometry.Orientation.CounterClockwise);
 
+            Legend legend = threeDimensionalViewSettings.Legend;
 
             GeometryObjectModel result = new GeometryObjectModel();
 
@@ -162,6 +163,10 @@ namespace SAM.Analytical.UI
                 if(spaces != null && spaces.Count != 0)
                 {
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings);
+                    if(legend != null)
+                    {
+                        legend.Update(dictionary_LegendItem.Values, true);
+                    }
 
                     foreach (Space space in spaces)
                     {
@@ -169,8 +174,13 @@ namespace SAM.Analytical.UI
 
                         Color? color = null;
 
-                        if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem))
+                        if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem) && legendItem != null)
                         {
+                            if(legend != null)
+                            {
+                                legendItem = legend.Find(legendItem?.Text);
+                            }
+
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
 
@@ -211,10 +221,15 @@ namespace SAM.Analytical.UI
                         result.Add(geometryObjectCollection_Space);
                     }
 
-                    threeDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values) : null;
+                    if(legend != null)
+                    {
+                        threeDimensionalViewSettings.Legend = legend;
+                    }
+                    else
+                    {
+                        threeDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values) : null;
+                    }
                 }
-
-
             }
 
             result.SetValue(GeometryObjectModelParameter.ViewSettings, threeDimensionalViewSettings);

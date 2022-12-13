@@ -69,6 +69,9 @@
     <Compile Include="Controls\JsonControl.xaml.cs">
       <DependentUpon>JsonControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\LegendDisplayControl.xaml.cs">
+      <DependentUpon>LegendDisplayControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\LegendControl.xaml.cs">
       <DependentUpon>LegendControl.xaml</DependentUpon>
     </Compile>
@@ -122,6 +125,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\JsonControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LegendDisplayControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Core.UI
 {
@@ -73,6 +74,75 @@ namespace SAM.Core.UI
 
             legendItems.Add(legendItem);
             return legendItems.Count - 1;
+        }
+
+        public void Update(IEnumerable<LegendItem> legendItems, bool remove = false)
+        {
+            if(legendItems == null || legendItems.Count() == 0)
+            {
+                if(remove)
+                {
+                    this.legendItems = null;
+                }
+
+                return;
+            }
+
+            if(this.legendItems == null || this.legendItems.Count == 0)
+            {
+                foreach(LegendItem legendItem in legendItems)
+                {
+                    Add(legendItem);
+                }
+
+                return;
+            }
+
+            List<LegendItem> legendItems_Temp = new List<LegendItem>(legendItems);
+            for(int i = legendItems_Temp.Count - 1; i >= 0; i--)
+            {
+                if(Contains(legendItems_Temp[i].Text))
+                {
+                    legendItems_Temp.RemoveAt(i);
+                }
+            }
+
+            foreach(LegendItem legendItem in legendItems_Temp)
+            {
+                Add(legendItem);
+            }
+
+            if(remove)
+            {
+                legendItems_Temp = new List<LegendItem>(legendItems);
+                for (int i = this.legendItems.Count - 1; i >= 0; i--)
+                {
+                    if(legendItems_Temp.Find(x => x.Text == this.legendItems[i].Text) == null)
+                    {
+                        this.legendItems.RemoveAt(i);
+                    }
+                }
+            }
+        }
+
+        public bool Contains(string text)
+        {
+            return Find(text) != null;
+        }
+
+        public LegendItem Find(string text)
+        {
+            if (text == null)
+            {
+                return null;
+            }
+
+            if (legendItems == null || legendItems.Count == 0)
+            {
+                return null;
+            }
+
+            return legendItems.Find(x => x.Text == text);
         }
 
         public string Name

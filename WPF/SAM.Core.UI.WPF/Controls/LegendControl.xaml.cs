@@ -1,72 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace SAM.Core.UI.WPF
 {
     /// <summary>
-    /// Interaction logic for LegendControl.xaml
+    /// Interaction logic for LegendSettingsControl.xaml
     /// </summary>
     public partial class LegendControl : UserControl
     {
-        private Legend legend;
-
         public LegendControl()
         {
             InitializeComponent();
-        }
-
-        public Legend Legend
-        {
-            get
-            {
-                return new Legend(legend);
-            }
-
-            set
-            {
-                SetLegend(value);
-            }
-        }
-
-        private void SetLegend(Legend legend)
-        {
-            this.legend = legend;
-
-            label_Name.Content = null;
-            stackPanel.Children.Clear();
-
-            if (legend == null)
-            {
-                return;
-            }
-
-
-            label_Name.Content = legend.Name;
-
-            List<LegendItem> legendItems = legend.LegendItems;
-            if (legendItems != null)
-            {
-                foreach (LegendItem legendItem in legendItems)
-                {
-                    Add(legendItem);
-                }
-            }
-        }
-
-        private void Add(LegendItem legendItem)
-        {
-            if(legendItem == null)
-            {
-                return;
-            }
-
-            StackPanel stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-            stackPanel.Children.Add(new TextBox() { Width = 20, Background = new SolidColorBrush(legendItem.Color.ToMedia()) });
-            stackPanel.Children.Add(new Label() { Content = legendItem.Text });
-            stackPanel.Tag = legendItem;
-
-            this.stackPanel.Children.Add(stackPanel);
         }
     }
 }
