@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SAM.Core;
+using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
 
@@ -9,6 +10,7 @@ namespace SAM.Geometry.UI
     {
         private AppearanceSettings appearanceSettings;
         private Types types;
+        private Legend legend;
 
         public ViewSettings(Guid guid, string name)
             :base(guid, name)
@@ -43,6 +45,11 @@ namespace SAM.Geometry.UI
                 {
                     types = new Types(viewSettings.types);
                 }
+
+                if(viewSettings.legend != null)
+                {
+                    legend = new Legend(viewSettings.legend);
+                }
             }
         }
 
@@ -50,6 +57,24 @@ namespace SAM.Geometry.UI
             :base(viewSettings)
         {
             this.name = name;
+
+            if (viewSettings != null)
+            {
+                if (viewSettings.appearanceSettings != null)
+                {
+                    appearanceSettings = new AppearanceSettings(viewSettings.appearanceSettings);
+                }
+
+                if (viewSettings.types != null)
+                {
+                    types = new Types(viewSettings.types);
+                }
+
+                if (viewSettings.legend != null)
+                {
+                    legend = new Legend(viewSettings.legend);
+                }
+            }
         }
 
         public bool IsValid(Type type)
@@ -161,6 +186,11 @@ namespace SAM.Geometry.UI
                 types = new Types(jObject.Value<JObject>("Types"));
             }
 
+            if(jObject.ContainsKey("Legend"))
+            {
+                legend = new Legend(jObject.Value<JObject>("Legend"));
+            }
+
             return true;
         }
 
@@ -178,7 +208,32 @@ namespace SAM.Geometry.UI
                 jObject.Add("Types", types.ToJObject());
             }
 
+            if (legend != null)
+            {
+                jObject.Add("Legend", legend.ToJObject());
+            }
+
             return jObject;
+        }
+
+        public Legend Legend
+        {
+            get
+            {
+                return legend == null ? null : new Legend(legend);
+            }
+
+            set
+            {
+                if(value != null)
+                {
+                    legend = new Legend(value);
+                }
+                else
+                {
+                    legend = value;
+                }
+            }
         }
     }
 }

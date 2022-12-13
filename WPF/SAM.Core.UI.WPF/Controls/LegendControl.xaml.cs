@@ -45,7 +45,7 @@ namespace SAM.Core.UI.WPF
             label_Name.Content = legend.Name;
 
             List<LegendItem> legendItems = legend.LegendItems;
-            if (legendItems == null)
+            if (legendItems != null)
             {
                 foreach (LegendItem legendItem in legendItems)
                 {
@@ -62,7 +62,7 @@ namespace SAM.Core.UI.WPF
             }
 
             StackPanel stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
-            stackPanel.Children.Add(new TextBox() { Background = new SolidColorBrush(legendItem.Color.ToMedia()) });
+            stackPanel.Children.Add(new TextBox() { Width = 20, Background = new SolidColorBrush(legendItem.Color.ToMedia()) });
             stackPanel.Children.Add(new Label() { Content = legendItem.Text });
             stackPanel.Tag = legendItem;
 

@@ -5,7 +5,7 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class AnalyticalThreeDimensionalViewSettings : ThreeDimensionalViewSettings
+    public class AnalyticalThreeDimensionalViewSettings : ThreeDimensionalViewSettings, IAnalyticalViewSettings
     {
         public SpaceAppearanceSettings SpaceAppearanceSettings { get; set; }
 

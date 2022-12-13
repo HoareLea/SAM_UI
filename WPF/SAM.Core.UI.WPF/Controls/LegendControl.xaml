@@ -5,14 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Core.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="150">
-    <Grid>
+             d:DesignHeight="450" d:DesignWidth="150">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Label x:Name="label_Name"  Grid.Row="0" Content="Legend"></Label>
-        <StackPanel Grid.Row="1" x:Name="stackPanel">
+        <StackPanel Grid.Row="1" x:Name="stackPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ListViewItem>AAA</ListViewItem>
         </StackPanel>
     </Grid>

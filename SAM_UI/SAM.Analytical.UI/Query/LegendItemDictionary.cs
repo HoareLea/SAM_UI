@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.UI;
+﻿using SAM.Core.UI;
+using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +9,7 @@ namespace SAM.Analytical.UI
 {
     public static partial class Query
     {
-        public static Dictionary<Space, Color> Colors(this IEnumerable<Space> spaces, AdjacencyCluster adjacencyCluster = null, ViewSettings viewSettings = null)
+        public static Dictionary<Guid, LegendItem> LegendItemDictionary(this IEnumerable<Space> spaces, AdjacencyCluster adjacencyCluster = null, ViewSettings viewSettings = null)
         {
             if(spaces == null)
             {
@@ -16,10 +17,13 @@ namespace SAM.Analytical.UI
             }
 
             Dictionary<Space, object> dictionary_Values = new Dictionary<Space, object>();
-            HashSet<double> doubles = new HashSet<double>();
+            
+            Dictionary<double, string> dictionary_Doubles = new Dictionary<double, string>();
+
+
             HashSet<string> strings = new HashSet<string>();
 
-            Dictionary<Space, Color> result = new Dictionary<Space, Color>();
+            Dictionary<Guid, LegendItem> result = new Dictionary<Guid, LegendItem>();
             foreach (Space space in spaces)
             {
                 if (!TryGetValue(space, adjacencyCluster, viewSettings, out object @object, out string text))
@@ -31,7 +35,7 @@ namespace SAM.Analytical.UI
                 if(Core.Query.IsNumeric(@object))
                 {
                     double value = System.Convert.ToDouble(@object);
-                    doubles.Add(value);
+                    dictionary_Doubles[value] = SAM.Core.Query.Round(value, Core.Tolerance.MacroDistance).ToString();
                     dictionary_Values[space] = value;
                 }
                 else if(@object is string)
@@ -40,7 +44,7 @@ namespace SAM.Analytical.UI
                 }
                 else if(Core.Query.TryConvert(@object, out Color color))
                 {
-                    result[space] = color;
+                    result[space.Guid] = new LegendItem(color, text);
                 }
                 else if (@object?.ToString() != null)
                 {
@@ -52,33 +56,35 @@ namespace SAM.Analytical.UI
 
             double min = double.MinValue;
             double max = double.MaxValue;
-            if(doubles != null && doubles.Count != 0)
+            if(dictionary_Doubles != null && dictionary_Doubles.Count != 0)
             {
+                List<double> doubles = new List<double>(dictionary_Doubles.Keys);
+
                 max = doubles.Max();
                 min = doubles.Min();
                 double step = (max - min) / doubles.Count;
-                List<Color> colors = Core.Create.Colors(System.Drawing.Color.Red, doubles.Count);
+                List<Color> colors = Core.Create.Colors(System.Drawing.Color.Red, doubles.Count + 1);
 
                 int index = 0;
                 double current = min;
                 while(current <= max)
                 {
                     double next = current + step;
-                    foreach (double @double in doubles)
+                    foreach (KeyValuePair<double, string> keyValuePair_Double in dictionary_Doubles)
                     {
-                        if(@double >= current && @double < next)
+                        if(keyValuePair_Double.Key >= current && keyValuePair_Double.Key < next)
                         {
-                            foreach (KeyValuePair<Space, object> keyValuePair in dictionary_Values)
+                            foreach (KeyValuePair<Space, object> keyValuePair_Space in dictionary_Values)
                             {
-                                if(!(keyValuePair.Value is double))
+                                if(!(keyValuePair_Space.Value is double))
                                 {
                                     continue;
                                 }
 
-                                double value = (double)keyValuePair.Value;
-                                if(value == @double)
+                                double value = (double)keyValuePair_Space.Value;
+                                if(value == keyValuePair_Double.Key)
                                 {
-                                    result[keyValuePair.Key] = colors[index];
+                                    result[keyValuePair_Space.Key.Guid] = new LegendItem(colors[index], keyValuePair_Double.Value);
                                 }
 
                             }
@@ -100,7 +106,7 @@ namespace SAM.Analytical.UI
                     {
                         if(keyValuePair.Value?.ToString() == @string)
                         {
-                            result[keyValuePair.Key] = color;
+                            result[keyValuePair.Key.Guid] = new LegendItem(color, @string);
                         }
                     }
                 }

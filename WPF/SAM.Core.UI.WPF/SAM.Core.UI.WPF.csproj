@@ -69,7 +69,7 @@
     <Compile Include="Controls\JsonControl.xaml.cs">
       <DependentUpon>JsonControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LegendControl.xaml.cs">
+    <Compile Include="Controls\LegendControl.xaml.cs">
       <DependentUpon>LegendControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\Clear.cs" />
@@ -125,7 +125,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="LegendControl.xaml">
+    <Page Include="Controls\LegendControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

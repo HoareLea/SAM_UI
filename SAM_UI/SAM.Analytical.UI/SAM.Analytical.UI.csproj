@@ -127,7 +127,8 @@
     </Compile>
     <Compile Include="Interfaces\IAnalyticalViewSettings.cs" />
     <Compile Include="Interfaces\ISection3DObject.cs" />
-    <Compile Include="Query\Colors.cs" />
+    <Compile Include="Query\LegendName.cs" />
+    <Compile Include="Query\LegendItemDictionary.cs" />
     <Compile Include="Query\TryGetValue.cs" />
     <Compile Include="Query\Color.cs" />
     <Compile Include="Query\DefaultViewSettings.cs" />

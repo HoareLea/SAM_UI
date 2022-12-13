@@ -8,6 +8,18 @@ namespace SAM.Core.UI
         private string name;
         private List<LegendItem> legendItems;
 
+        public Legend(string name, IEnumerable<LegendItem> legendItems)
+        {
+            this.name = name;
+            if(legendItems != null)
+            {
+                foreach(LegendItem legendItem in legendItems)
+                {
+                    Add(legendItem);
+                }
+            }
+        }
+        
         public Legend(string name)
         {
             this.name = name;
@@ -53,7 +65,7 @@ namespace SAM.Core.UI
                 return 0;
             }
 
-            int index = legendItems.IndexOf(legendItem);
+            int index = legendItems.FindIndex(x => x == legendItem);
             if(index != -1)
             {
                 return index;

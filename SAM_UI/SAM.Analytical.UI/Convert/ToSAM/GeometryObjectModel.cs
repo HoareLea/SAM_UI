@@ -12,7 +12,7 @@ namespace SAM.Analytical.UI
     {
         public static GeometryObjectModel ToSAM_GeometryObjectModel(this AnalyticalModel analyticalModel, IViewSettings viewSettings)
         {
-            if(analyticalModel == null || viewSettings == null)
+            if (analyticalModel == null || viewSettings == null)
             {
                 return null;
             }
@@ -51,9 +51,9 @@ namespace SAM.Analytical.UI
                     Face3D face3D = panel.GetFace3D(true);
 
                     List<Face3D> face3Ds_FixEdges = face3D.FixEdges();
-                    if(face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
+                    if (face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
                     {
-                        if(face3Ds_FixEdges.Count != 1)
+                        if (face3Ds_FixEdges.Count != 1)
                         {
                             face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
                         }
@@ -63,7 +63,7 @@ namespace SAM.Analytical.UI
 
                     geometryObjectCollection_Panel.Add(new Face3DObject(face3D, Query.SurfaceAppearance(panel, threeDimensionalViewSettings)));
 
-                    if(showApertures)
+                    if (showApertures)
                     {
                         List<Aperture> apertures = panel.Apertures;
                         if (apertures != null && apertures.Count != 0)
@@ -79,9 +79,9 @@ namespace SAM.Analytical.UI
                                 face3Ds = aperture.GetFace3Ds(aperturePart);
                                 if (face3Ds != null && face3Ds.Count != 0)
                                 {
-                                    foreach(Face3D face3D_Temp in face3Ds)
+                                    foreach (Face3D face3D_Temp in face3Ds)
                                     {
-                                        if(face3D_Temp == null)
+                                        if (face3D_Temp == null)
                                         {
                                             continue;
                                         }
@@ -122,7 +122,7 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            if(showApertures && !showPanels)
+            if (showApertures && !showPanels)
             {
                 foreach (Panel panel in panels)
                 {
@@ -159,46 +159,62 @@ namespace SAM.Analytical.UI
             List<Space> spaces = adjacencyCluster.GetSpaces();
             if (showSpaces)
             {
-                foreach (Space space in spaces)
+                if(spaces != null && spaces.Count != 0)
                 {
-                    Shell shell = adjacencyCluster.Shell(space);
+                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings);
 
-                    Color? color = null;
-                    if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object @object, out string text))
+                    foreach (Space space in spaces)
                     {
-                        if (Core.Query.TryConvert(@object, out System.Drawing.Color color_Temp))
+                        Shell shell = adjacencyCluster.Shell(space);
+
+                        Color? color = null;
+
+                        if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem))
                         {
-                            color = color_Temp.ToMedia();
+                            color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
-                    }
 
-                    if (color == null || !color.HasValue)
-                    {
-                        color = Query.Color(space, adjacencyCluster, threeDimensionalViewSettings);
+                        //Color? color = null;
+                        //if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object @object, out string text))
+                        //{
+                        //    if (Core.Query.TryConvert(@object, out System.Drawing.Color color_Temp))
+                        //    {
+                        //        color = color_Temp.ToMedia();
+                        //    }
+                        //}
+
+                        //if (color == null || !color.HasValue)
+                        //{
+                        //    color = Query.Color(space, adjacencyCluster, threeDimensionalViewSettings);
+                        //    if (color == null || !color.HasValue)
+                        //    {
+                        //        System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
+                        //        if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                        //        {
+                        //            color_Drawing = color_Temp;
+                        //        }
+
+                        //        color = Color.FromRgb(color_Drawing.R, color_Drawing.G, color_Drawing.B);
+                        //    }
+                        //}
+
                         if (color == null || !color.HasValue)
                         {
-                            System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
-                            if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
-                            {
-                                color_Drawing = color_Temp;
-                            }
-
-                            color = Color.FromRgb(color_Drawing.R, color_Drawing.G, color_Drawing.B);
+                            color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
                         }
+
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new SurfaceAppearance(color.Value, ControlPaint.Dark(color.Value.ToDrawing()).ToMedia(), 0));
+
+                        GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
+                        geometryObjectCollection_Space.Add(new ShellObject(shell, surfaceAppearance) { Tag = space });
+
+                        result.Add(geometryObjectCollection_Space);
                     }
 
-                    if (color == null || !color.HasValue)
-                    {
-                        color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
-                    }
-
-                    SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new SurfaceAppearance(color.Value, ControlPaint.Dark(color.Value.ToDrawing()).ToMedia(), 0));
-
-                    GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
-                    geometryObjectCollection_Space.Add(new ShellObject(shell, Query.SurfaceAppearance(space, threeDimensionalViewSettings)) { Tag = space });
-
-                    result.Add(geometryObjectCollection_Space);
+                    threeDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values) : null;
                 }
+
+
             }
 
             result.SetValue(GeometryObjectModelParameter.ViewSettings, threeDimensionalViewSettings);
@@ -245,7 +261,7 @@ namespace SAM.Analytical.UI
                         continue;
                     }
 
-                    if(showPanels)
+                    if (showPanels)
                     {
                         GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = keyValuePair.Key };
                         foreach (ISegmentable3D segmentable3D in keyValuePair.Value)
@@ -263,18 +279,31 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            if(showSpaces)
+            if (showSpaces)
             {
                 List<Space> spaces = adjacencyCluster.GetSpaces();
 
                 if (spaces != null)
                 {
-                    Dictionary<Space, System.Drawing.Color> dictionary = Query.Colors(spaces, adjacencyCluster, twoDimensionalViewSettings);
-
+                    Dictionary<Space, List<Face3D>> dictionary_Space = new Dictionary<Space, List<Face3D>>();
                     foreach (Space space in spaces)
                     {
-                        Shell shell = adjacencyCluster.Shell(space);
-                        List<Face3D> face3Ds = shell.Section(plane);
+                        Shell shell = adjacencyCluster?.Shell(space);
+                        List<Face3D> face3Ds = shell?.Section(plane);
+                        if (face3Ds == null || face3Ds.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        dictionary_Space[space] = face3Ds;
+                    }
+
+                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(dictionary_Space.Keys, adjacencyCluster, twoDimensionalViewSettings);
+
+                    foreach (KeyValuePair<Space, List<Face3D>> keyValuePair in dictionary_Space)
+                    {
+                        Space space = keyValuePair.Key;
+                        List<Face3D> face3Ds = keyValuePair.Value;
 
                         if (face3Ds == null || face3Ds.Count == 0)
                         {
@@ -297,38 +326,38 @@ namespace SAM.Analytical.UI
 
                         Color? color = null;
 
-                        if(dictionary.TryGetValue(space, out System.Drawing.Color color_Temp))
+                        if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem))
                         {
-                            color = Color.FromRgb(color_Temp.R, color_Temp.G, color_Temp.B);
+                            color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
+
+                        //if (color == null || !color.HasValue)
+                        //{
+                        //    if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object @object, out string text))
+                        //    {
+                        //        if (Core.Query.TryConvert(@object, out System.Drawing.Color color_Temp))
+                        //        {
+                        //            color = color_Temp.ToMedia();
+                        //        }
+                        //    }
+                        //}
+
+                        //if(color == null || !color.HasValue)
+                        //{
+                        //    color = Query.Color(space, adjacencyCluster, twoDimensionalViewSettings);
+                        //    if (color == null || !color.HasValue)
+                        //    {
+                        //        System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
+                        //        if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                        //        {
+                        //            color_Drawing = color_Temp;
+                        //        }
+
+                        //        color = Color.FromRgb(color_Drawing.R, color_Drawing.G, color_Drawing.B);
+                        //    }
+                        //}
 
                         if (color == null || !color.HasValue)
-                        {
-                            if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object @object, out string text))
-                            {
-                                if (Core.Query.TryConvert(@object, out color_Temp))
-                                {
-                                    color = color_Temp.ToMedia();
-                                }
-                            }
-                        }
-
-                        if(color == null || !color.HasValue)
-                        {
-                            color = Query.Color(space, adjacencyCluster, twoDimensionalViewSettings);
-                            if (color == null || !color.HasValue)
-                            {
-                                System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
-                                if (space.TryGetValue(SpaceParameter.Color, out color_Temp))
-                                {
-                                    color_Drawing = color_Temp;
-                                }
-
-                                color = Color.FromRgb(color_Drawing.R, color_Drawing.G, color_Drawing.B);
-                            }
-                        }
-
-                        if(color == null || !color.HasValue)
                         {
                             color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
                         }
@@ -350,6 +379,8 @@ namespace SAM.Analytical.UI
 
                         result.Add(geometryObjectCollection_Space);
                     }
+
+                    twoDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(twoDimensionalViewSettings), dictionary_LegendItem.Values) : null;
                 }
             }
 

@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Core.UI;
 using SAM.Core.UI.WPF;
 using System;
 using System.Collections.Generic;
@@ -150,6 +151,11 @@ namespace SAM.Geometry.UI.WPF
                 Core.UI.WPF.Modify.Clear<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) });
             }
 
+            if(geometryObjectModel == null)
+            {
+                return;
+            }
+
             ModelVisual3D modelVisual3D = Convert.ToMedia3D(geometryObjectModel);
             if (modelVisual3D != null)
             {
@@ -159,6 +165,19 @@ namespace SAM.Geometry.UI.WPF
             if(count == 0)
             {
                 helixViewport3D.ZoomExtents();
+            }
+
+            legendControl.Visibility = Visibility.Hidden;
+            if(geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings))
+            {
+                Legend legend = viewSettings.Legend;
+                List<LegendItem> legendItems = legend?.LegendItems;
+
+                if(legend != null && legendItems != null && legendItems.Count != 0)
+                {
+                    legendControl.Visibility = Visibility.Visible;
+                    legendControl.Legend = legend;
+                }
             }
         }
 
