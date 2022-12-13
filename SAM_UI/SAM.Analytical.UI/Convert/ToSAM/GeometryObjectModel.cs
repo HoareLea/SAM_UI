@@ -165,7 +165,7 @@ namespace SAM.Analytical.UI
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings);
                     if(legend != null)
                     {
-                        legend.Update(dictionary_LegendItem.Values, true);
+                        legend.Refresh(dictionary_LegendItem.Values, true);
                     }
 
                     foreach (Space space in spaces)
@@ -248,6 +248,8 @@ namespace SAM.Analytical.UI
 
             AnalyticalModel analyticalModel_Temp = new AnalyticalModel(analyticalModel);
 
+            Legend legend = twoDimensionalViewSettings.Legend;
+
             AdjacencyCluster adjacencyCluster = analyticalModel_Temp.AdjacencyCluster;
 
             bool showPanels = twoDimensionalViewSettings.IsValid(typeof(Panel));
@@ -314,6 +316,11 @@ namespace SAM.Analytical.UI
                     }
 
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(dictionary_Space.Keys, adjacencyCluster, twoDimensionalViewSettings);
+                    if (legend != null)
+                    {
+                        legend.Refresh(dictionary_LegendItem.Values, true);
+                    }
+
 
                     foreach (KeyValuePair<Space, List<Face3D>> keyValuePair in dictionary_Space)
                     {
@@ -343,6 +350,11 @@ namespace SAM.Analytical.UI
 
                         if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem))
                         {
+                            if (legend != null)
+                            {
+                                legendItem = legend.Find(legendItem?.Text);
+                            }
+
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
 
@@ -395,7 +407,14 @@ namespace SAM.Analytical.UI
                         result.Add(geometryObjectCollection_Space);
                     }
 
-                    twoDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(twoDimensionalViewSettings), dictionary_LegendItem.Values) : null;
+                    if (legend != null)
+                    {
+                        twoDimensionalViewSettings.Legend = legend;
+                    }
+                    else
+                    {
+                        twoDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(twoDimensionalViewSettings), dictionary_LegendItem.Values) : null;
+                    }
                 }
             }
 

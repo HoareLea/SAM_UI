@@ -289,6 +289,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem.Click += MenuItem_ViewSettings_Click;
             contextMenu.Items.Add(menuItem);
 
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_LegendSettings";
+            menuItem.Header = "Legend Settings";
+            menuItem.Click += MenuItem_Legend_Click;
+            contextMenu.Items.Add(menuItem);
+
             List<IJSAMObject> jSAMObjects = e.ModelVisual3Ds?.ConvertAll(x => Core.UI.WPF.Query.Tag<IJSAMObject>(x));
             if(jSAMObjects == null)
             {
@@ -349,6 +355,11 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
 
+        }
+
+        private void MenuItem_Legend_Click(object sender, RoutedEventArgs e)
+        {
+            EditLegend();
         }
 
         private void MenuItem_ViewSettings_Click(object sender, RoutedEventArgs e)
@@ -1171,6 +1182,29 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void EditLegend()
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            Modify.EditLegend(uIAnalyticalModel, viewportControl.Guid);
         }
 
         private void RemoveViewSettings()

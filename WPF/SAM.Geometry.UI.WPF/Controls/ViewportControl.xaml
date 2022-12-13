@@ -233,6 +233,6 @@
                 Fill="LightGray" Visible="True"/>
 
         </HelixToolkit:HelixViewport3D>
-        <WPF:LegendDisplayControl x:Name="legendControl"  Visibility="Hidden" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="200"/>
+        <WPF:LegendDisplayControl x:Name="legendControl" Visibility="Hidden" HorizontalAlignment="Left" Height="600" VerticalAlignment="Top" Width="250"/>
     </Grid>
 </UserControl>

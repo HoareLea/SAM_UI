@@ -75,6 +75,9 @@
     <Compile Include="Controls\LegendControl.xaml.cs">
       <DependentUpon>LegendControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\LegendWindow.xaml.cs">
+      <DependentUpon>LegendWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\Clear.cs" />
     <Compile Include="Modify\SetIJSAMObject.cs" />
     <Compile Include="Modify\Move.cs" />
@@ -133,6 +136,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LegendControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\LegendWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

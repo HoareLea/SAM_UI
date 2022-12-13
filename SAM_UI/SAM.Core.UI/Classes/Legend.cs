@@ -7,6 +7,7 @@ namespace SAM.Core.UI
     public class Legend : IJSAMObject
     {
         private string name;
+        private bool visible;
         private List<LegendItem> legendItems;
 
         public Legend(string name, IEnumerable<LegendItem> legendItems)
@@ -76,7 +77,12 @@ namespace SAM.Core.UI
             return legendItems.Count - 1;
         }
 
-        public void Update(IEnumerable<LegendItem> legendItems, bool remove = false)
+        /// <summary>
+        /// Refreshes legend with given legend items. Method will keep colors of existing legendItems
+        /// </summary>
+        /// <param name="legendItems"></param>
+        /// <param name="remove">Remove items from this Legend which does not exists on legendItems</param>
+        public void Refresh(IEnumerable<LegendItem> legendItems, bool remove = false)
         {
             if(legendItems == null || legendItems.Count() == 0)
             {
@@ -125,6 +131,40 @@ namespace SAM.Core.UI
             }
         }
 
+        /// <summary>
+        /// Updates LegendItem Color with given text. If LegendItem with given text does not exists then creates one.
+        /// </summary>
+        /// <param name="color">Color</param>
+        /// <param name="text">Text</param>
+        /// <returns></returns>
+        public LegendItem Update(System.Drawing.Color color, string text)
+        {
+            if(text == null)
+            {
+                return null;
+            }
+
+            int index = -1;
+            if (legendItems != null || legendItems.Count != 0)
+            {
+                index = legendItems.FindIndex(x => x.Text == text);
+            }
+
+            if(index == -1)
+            {
+                index = Add(new LegendItem(color, text));
+                if (index == -1)
+                {
+                    return null;
+                }
+
+                return new LegendItem(legendItems[index]);
+            }
+
+            legendItems[index] = new LegendItem(color, text);
+            return new LegendItem(legendItems[index]);
+        }
+
         public bool Contains(string text)
         {
             return Find(text) != null;
@@ -150,6 +190,24 @@ namespace SAM.Core.UI
             get
             {
                 return name;
+            }
+
+            set
+            {
+                name = value;
+            }
+        }
+
+        public bool Visible
+        {
+            get
+            {
+                return visible;
+            }
+
+            set
+            {
+                visible = value;
             }
         }
 

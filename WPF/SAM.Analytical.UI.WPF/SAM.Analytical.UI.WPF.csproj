@@ -81,6 +81,7 @@
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modify\EditLegend.cs" />
     <Compile Include="Modify\RemoveViewSettings.cs" />
     <Compile Include="Modify\EditViewSettings.cs" />
     <Compile Include="Modify\EditZones.cs" />

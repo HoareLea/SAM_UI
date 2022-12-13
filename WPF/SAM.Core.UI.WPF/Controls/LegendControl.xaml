@@ -5,8 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Core.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="300" d:DesignWidth="400">
     <Grid>
-            
+        <CheckBox x:Name="checkBox_Visible"  Content="Visible" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.682,2.513"/>
+        <Label x:Name="label_Name" Content="Name:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_Name" HorizontalAlignment="Stretch" Height="23" Margin="55,10,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+        <StackPanel HorizontalAlignment="Left" Height="100" Margin="290,149,0,0" VerticalAlignment="Top" Width="100"/>
+        <GroupBox Header="Colors" HorizontalAlignment="Stretch" Margin="10,65,10,10" VerticalAlignment="Stretch" >
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="stackPanel"  Margin="10,10,10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical"/>
+            </ScrollViewer>
+        </GroupBox>
+
     </Grid>
 </UserControl>
