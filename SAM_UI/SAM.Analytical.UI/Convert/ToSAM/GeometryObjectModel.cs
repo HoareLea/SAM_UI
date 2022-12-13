@@ -164,7 +164,7 @@ namespace SAM.Analytical.UI
                     Shell shell = adjacencyCluster.Shell(space);
 
                     Color? color = null;
-                    if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object @object))
+                    if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object @object, out string text))
                     {
                         if (Core.Query.TryConvert(@object, out System.Drawing.Color color_Temp))
                         {
@@ -304,7 +304,7 @@ namespace SAM.Analytical.UI
 
                         if (color == null || !color.HasValue)
                         {
-                            if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object @object))
+                            if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object @object, out string text))
                             {
                                 if (Core.Query.TryConvert(@object, out color_Temp))
                                 {

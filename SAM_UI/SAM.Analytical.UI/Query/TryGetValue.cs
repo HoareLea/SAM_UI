@@ -7,9 +7,10 @@ namespace SAM.Analytical.UI
 {
     public static partial class Query
     {
-        public static bool TryGetValue(this Space space, AdjacencyCluster adjacencyCluster, ViewSettings viewSettings, out object value)
+        public static bool TryGetValue(this Space space, AdjacencyCluster adjacencyCluster, ViewSettings viewSettings, out object value, out string text)
         {
             value = null;
+            text = null;
 
             if(space == null)
             {
@@ -27,8 +28,23 @@ namespace SAM.Analytical.UI
                     {
                         if(parameterAppearanceSettings is InternalConditionAppearanceSettings)
                         {
-                            if (Core.Query.TryGetValue(space.InternalCondition, parameterAppearanceSettings.ParameterName, out value))
+                            InternalCondition internalCondition = space.InternalCondition;
+                            if(internalCondition == null)
                             {
+                                return false;
+                            }
+
+                            if (Core.Query.TryGetValue(internalCondition, parameterAppearanceSettings.ParameterName, out value))
+                            {
+                                if (parameterAppearanceSettings.ParameterName == "Color")
+                                {
+                                    text = internalCondition.Name;
+                                }
+                                else
+                                {
+                                    text = value?.ToString();
+                                }
+
                                 return true;
                             }
                         }
@@ -36,8 +52,24 @@ namespace SAM.Analytical.UI
                         {
                             ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)parameterAppearanceSettings;
                             List<Zone> zones = adjacencyCluster.GetZones(space, zoneAppearanceSettings.ZoneCategory);
-                            if (Core.Query.TryGetValue(zones?.FirstOrDefault(), parameterAppearanceSettings.ParameterName, out value))
+
+                            Zone zone = zones?.FirstOrDefault();
+                            if(zone == null)
                             {
+                                return false;
+                            }
+
+                            if (Core.Query.TryGetValue(zone, parameterAppearanceSettings.ParameterName, out value))
+                            {
+                                if (parameterAppearanceSettings.ParameterName == "Color")
+                                {
+                                    text = zone.Name;
+                                }
+                                else
+                                {
+                                    text = value?.ToString();
+                                }
+
                                 return true;
                             }
                         }
@@ -45,6 +77,15 @@ namespace SAM.Analytical.UI
                         {
                             if (Core.Query.TryGetValue(space, parameterAppearanceSettings.ParameterName, out value))
                             {
+                                if (parameterAppearanceSettings.ParameterName == "Color")
+                                {
+                                    text = space.Name;
+                                }
+                                else
+                                {
+                                    text = value?.ToString();
+                                }
+
                                 return true;
                             }
                         }

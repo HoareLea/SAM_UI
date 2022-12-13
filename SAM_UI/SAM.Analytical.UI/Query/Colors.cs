@@ -22,7 +22,7 @@ namespace SAM.Analytical.UI
             Dictionary<Space, Color> result = new Dictionary<Space, Color>();
             foreach (Space space in spaces)
             {
-                if (!TryGetValue(space, adjacencyCluster, viewSettings, out object @object))
+                if (!TryGetValue(space, adjacencyCluster, viewSettings, out object @object, out string text))
                 {
                     @object = null;
                 }
