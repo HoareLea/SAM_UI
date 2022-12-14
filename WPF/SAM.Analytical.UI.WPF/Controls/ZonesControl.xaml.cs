@@ -259,6 +259,24 @@ namespace SAM.Analytical.UI.WPF
             }
 
             LoadZones();
+
+            if(SelectionMode == SelectionMode.Single)
+            {
+                listView_Zones.SelectedItem = null;
+            }
+            else
+            {
+                listView_Zones.SelectedItems.Clear();
+            }
+
+            foreach(ListViewItem listViewItem in listView_Zones.Items)
+            {
+                if(listViewItem.Tag == zone)
+                {
+                    listView_Zones.SelectedItem = listViewItem;
+                    break;
+                }
+            }
         }
     }
 }

@@ -161,6 +161,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
             viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
             viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+            viewportControl.Focus();
 
             uIAnalyticalModel = new UIAnalyticalModel();
             AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
@@ -296,13 +297,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem.IsEnabled = uIAnalyticalModel.HasLegend(GetActiveGuid());
             contextMenu.Items.Add(menuItem);
 
+            contextMenu.IsOpen = true;
+
             List<IJSAMObject> jSAMObjects = e.ModelVisual3Ds?.ConvertAll(x => Core.UI.WPF.Query.Tag<IJSAMObject>(x));
             if(jSAMObjects == null)
             {
                 return;
             }
-
-
 
             jSAMObjects.RemoveAll(x => x == null);
             if(jSAMObjects.Count == 0)
@@ -1187,21 +1188,26 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditZones(uIAnalyticalModel, spaces);
         }
 
-        private Guid GetActiveGuid()
+        private ViewportControl GetActiveViewPort()
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
             {
-                return Guid.Empty;
+                return null;
             }
 
             TabItem tabItem = tabControl.SelectedItem as TabItem;
             if (tabItem == null)
             {
-                return Guid.Empty;
+                return null;
             }
 
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            return tabItem.Content as ViewportControl;
+        }
+
+        private Guid GetActiveGuid()
+        {
+            ViewportControl viewportControl = GetActiveViewPort();
             if (viewportControl == null)
             {
                 return Guid.Empty;
@@ -1217,6 +1223,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 return;
             }
+
+            viewportControl = GetActiveViewPort();
+            viewportControl.Focus();
 
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
             Modify.SetActiveGuid(uIAnalyticalModel, guid);
@@ -1260,7 +1269,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void tabControl_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            string name = null;
+
         }
     }
 }
