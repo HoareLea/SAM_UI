@@ -36,7 +36,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadZoneCategories();
+            //LoadZoneCategories();
         }
 
         public SelectionMode SelectionMode
@@ -133,39 +133,103 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                List<Zone> result = new List<Zone>();
-                foreach(ListViewItem listViewItem in listView_Zones.SelectedItems)
-                {
-                    Zone zone = listViewItem?.Tag as Zone;
-                    if(zone == null)
-                    {
-                        continue;
-                    }
+                return GetZones(false);
+            }
+        }
 
-                    result.Add(zone);
+        private List<Zone> GetZones(bool selected = true)
+        {
+            System.Collections.IList list = selected ? listView_Zones.SelectedItems : listView_Zones.Items;
+            if(list == null)
+            {
+                return null;
+            }
+
+            List <Zone> result = new List<Zone>();
+            foreach (ListViewItem listViewItem in list)
+            {
+                Zone zone = listViewItem?.Tag as Zone;
+                if (zone == null)
+                {
+                    continue;
                 }
 
-                return result;
+                result.Add(zone);
+            }
+
+            return result;
+        }
+
+        public List<Zone> SelectedZones
+        {
+            get
+            {
+                return GetZones(true);
             }
 
             set
             {
-                if(value == null)
+                SetSelectedZones(value);
+            }
+        }
+
+        private void SetSelectedZones(IEnumerable<Zone> zones)
+        {
+            if(listView_Zones.SelectionMode == SelectionMode.Single)
+            {
+                listView_Zones.SelectedItem = null;
+            }
+            else
+            {
+                listView_Zones.SelectedItems.Clear();
+            }
+
+            if(comboBox_ZoneType.Items.Count == 0)
+            {
+                LoadZoneCategories();
+            }
+
+            if (zones == null)
+            {
+                return;
+            }
+
+            foreach (Zone zone in zones)
+            {
+                if (zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory) && zoneCategory != null)
                 {
-                    return;
+                    if (comboBox_ZoneType.Items.Contains(zoneCategory))
+                    {
+                        ZoneCategory = zoneCategory;
+                        break;
+                    }
+                }
+            }
+
+            foreach (ListViewItem listViewItem in listView_Zones.Items)
+            {
+                Zone zone = listViewItem?.Tag as Zone;
+                if (zone == null)
+                {
+                    continue;
                 }
 
-                foreach (ListViewItem listViewItem in listView_Zones.Items)
+                foreach(Zone zone_Temp in zones)
                 {
-                    Zone zone = listViewItem?.Tag as Zone;
-                    if (zone == null)
+                    if(zone_Temp != null && zone_Temp.Guid == zone.Guid)
                     {
-                        continue;
-                    }
 
-                    if(value.Find(x => x.Guid == zone.Guid) != null)
-                    {
-                        listView_Zones.SelectedItems.Add(listViewItem);
+                        if (listView_Zones.SelectionMode == SelectionMode.Single)
+                        {
+                            listView_Zones.SelectedItem = listViewItem;
+                            return;
+                        }
+                        else
+                        {
+                            listView_Zones.SelectedItems.Add(listViewItem);
+                            break;
+                        }
+
                     }
                 }
             }

@@ -119,6 +119,15 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = jSAMObject;
                 ContextMenu.Items.Add(menuItem);
             }
+            else if (jSAMObject is Zone)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Edit";
+                menuItem.Header = "Edit";
+                menuItem.Click += MenuItem_Edit_Click;
+                menuItem.Tag = jSAMObject;
+                ContextMenu.Items.Add(menuItem);
+            }
             else
             {
                 e.Handled = true;
@@ -232,6 +241,10 @@ namespace SAM.Analytical.UI.WPF
             else if (jSAMObject is Aperture)
             {
                 UI.Modify.EditAperture(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
+            }
+            else if (jSAMObject is Zone)
+            {
+                Modify.EditZone(uIAnalyticalModel, jSAMObject as dynamic);
             }
 
 

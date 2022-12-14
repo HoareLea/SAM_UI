@@ -394,7 +394,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
 
-            EditZones(spaces);
+            EditZones(spaces, spaces);
         }
 
 
@@ -1176,7 +1176,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditViewSettings(uIAnalyticalModel, guid);
         }
 
-        private void EditZones(IEnumerable<Space> spaces)
+        private void EditZones(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
         {
             Guid guid = GetActiveGuid();
             if (guid == Guid.Empty)
@@ -1185,7 +1185,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             SetActiveGuid();
-            Modify.EditZones(uIAnalyticalModel, spaces);
+            Modify.EditZones(uIAnalyticalModel, spaces, selectedSpaces);
         }
 
         private ViewportControl GetActiveViewPort()

@@ -20,8 +20,6 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class SpaceZoneControl : UserControl
     {
-        private List<Space> spaces;
-
         public SpaceZoneControl()
         {
             InitializeComponent();
@@ -29,18 +27,19 @@ namespace SAM.Analytical.UI.WPF
             zonesControl.SelectionMode = SelectionMode.Single;
         }
 
-        public SpaceZoneControl(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces)
+        public SpaceZoneControl(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null, Zone selectedZone = null)
         {
-            if(spaces != null)
-            {
-                this.spaces = new List<Space>(spaces);
-            }
-            
             InitializeComponent();
+
+            SetSpaces(spaces);
 
             zonesControl.SelectionMode = SelectionMode.Single;
             zonesControl.AdjacencyCluster = adjacencyCluster;
+
+            SetSelectedSpaces(selectedSpaces);
         }
+
+
 
         public AdjacencyCluster AdjacencyCluster
         {
@@ -51,7 +50,6 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 zonesControl.AdjacencyCluster = value;
-                LoadSpaces();
             }
         }
 
@@ -59,25 +57,66 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return spaces;
+                return GetSpaces(false);
+            }
+
+            set
+            { 
+                SetSpaces(value);
+            }
+        }
+
+        public List<Space> SelectedSpaces
+        {
+            get
+            {
+                return GetSpaces(true);
             }
 
             set
             {
-                spaces = value;
-                LoadSpaces();
+                SetSelectedSpaces(value);
             }
         }
 
-        public Zone Zone
+        public Zone SelectedZone
         {
             get
             {
-                return zonesControl.Zones?.FirstOrDefault();
+                return zonesControl.SelectedZones?.FirstOrDefault();
+            }
+
+            set
+            {
+                zonesControl.SelectedZones = value == null ? null : new List<Zone>() { value };
             }
         }
 
-        private void LoadSpaces()
+        private List<Space> GetSpaces(bool selected = true)
+        {
+            if(listView_Spaces.SelectedItems == null)
+            {
+                return null;
+            }
+
+            System.Collections.IList list = selected ? listView_Spaces.SelectedItems : listView_Spaces.Items;
+
+            List<Space> result = new List<Space>();
+            foreach(ListViewItem listViewItem in list)
+            {
+                Space space = listViewItem.Tag as Space;
+                if(space == null)
+                {
+                    continue;
+                }
+
+                result.Add(space);
+            }
+
+            return result;
+        }
+
+        private void SetSpaces(IEnumerable<Space> spaces)
         {
             listView_Spaces.Items.Clear();
 
@@ -94,8 +133,41 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 ListViewItem listViewItem = new ListViewItem() { Content = space.Name, Tag = space };
-                int index = listView_Spaces.Items.Add(listViewItem);
-                listView_Spaces.SelectedItems.Add(listViewItem);
+                listView_Spaces.Items.Add(listViewItem);
+            }
+        }
+
+        private void SetSelectedSpaces(IEnumerable<Space> spaces)
+        {
+            if(spaces == null || listView_Spaces.Items == null)
+            {
+                return;
+            }
+
+            listView_Spaces.SelectedItems.Clear();
+
+
+            foreach(ListViewItem listViewItem in listView_Spaces.Items)
+            {
+                Space space = listViewItem?.Tag as Space;
+                if(space == null)
+                {
+                    continue;
+                }
+
+                foreach(Space space_Temp in spaces)
+                {
+                    if(space_Temp == null)
+                    {
+                        continue;
+                    }
+
+                    if(space_Temp.Guid == space.Guid)
+                    {
+                        listView_Spaces.SelectedItems.Add(listViewItem);
+                        break;
+                    }
+                }
             }
         }
 
@@ -143,7 +215,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            SelectZoneCategory();
+            //SelectZoneCategory();
         }
     }
 }

@@ -4,7 +4,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void EditZones(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null, Zone selectedZone = null)
+        public static void EditZone(this UIAnalyticalModel uIAnalyticalModel, Zone zone)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
@@ -15,7 +15,10 @@ namespace SAM.Analytical.UI.WPF
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             ProfileLibrary profileLibrary = analyticalModel.ProfileLibrary;
 
-            SpaceZoneWindow spaceZoneWindow = new SpaceZoneWindow(adjacencyCluster, spaces, selectedSpaces, selectedZone);
+            List<Zone> zones = adjacencyCluster.GetZones();
+            Zone zone_Temp = zones.Find(x => x.Guid == zone.Guid);
+            
+            SpaceZoneWindow spaceZoneWindow = new SpaceZoneWindow(adjacencyCluster, adjacencyCluster.GetSpaces(), adjacencyCluster.GetRelatedObjects<Space>(zone_Temp), zone_Temp);
             bool? result = spaceZoneWindow.ShowDialog();
             if(result == null || !result.HasValue || !result.Value)
             {
@@ -28,7 +31,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            Zone zone_Temp = spaceZoneWindow.SelectedZone;
+            zone_Temp = spaceZoneWindow.SelectedZone;
             if (zone_Temp != null)
             {
                 adjacencyCluster.AddObject(zone_Temp);

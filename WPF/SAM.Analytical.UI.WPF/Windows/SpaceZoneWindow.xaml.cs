@@ -24,7 +24,7 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
-        public SpaceZoneWindow(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces)
+        public SpaceZoneWindow(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null, Zone selectedZone = null)
         {
             InitializeComponent();
 
@@ -34,6 +34,13 @@ namespace SAM.Analytical.UI.WPF
             {
                 spaceZoneControl.Spaces = new List<Space>(spaces);
             }
+
+            if(selectedSpaces != null)
+            {
+                spaceZoneControl.SelectedSpaces = new List<Space>(selectedSpaces);
+            }
+
+            spaceZoneControl.SelectedZone = selectedZone;
         }
 
         private void button_OK_Click(object sender, RoutedEventArgs e)
@@ -44,7 +51,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            if(spaceZoneControl.Zone == null)
+            if(spaceZoneControl.SelectedZone == null)
             {
                 MessageBox.Show("Please select zones");
                 return;
@@ -78,11 +85,11 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public List<Space> Spaces
+        public List<Space> SelectedSpaces
         {
             get
             {
-                return spaceZoneControl.Spaces;
+                return spaceZoneControl.SelectedSpaces;
             }
 
             set
@@ -91,11 +98,11 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public Zone Zone
+        public Zone SelectedZone
         {
             get
             {
-                return spaceZoneControl.Zone;
+                return spaceZoneControl.SelectedZone;
             }
         }
     }
