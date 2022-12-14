@@ -97,4 +97,14 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>set SAM_DIR=$(APPDATA)\SAM\
+if not exist "%25SAM_DIR%25" mkdir "%25SAM_DIR%25"
+
+xcopy "$(SolutionDir)\files\resources" "$(APPDATA)\SAM\resources" /Y/I/E/S
+xcopy "$(SolutionDir)\files\resources" "$(USERPROFILE)\Documents\SAM\resources" /Y/D/I/E/S
+
+copy "$(TargetDir)*.dll" "%25SAM_DIR%25"
+copy "$(TargetDir)*.exe" "%25SAM_DIR%25"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
