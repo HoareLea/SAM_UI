@@ -23,6 +23,8 @@ namespace SAM.Analytical.UI
 
             HashSet<string> strings = new HashSet<string>();
 
+            bool editable = Editable(viewSettings);
+
             Dictionary<Guid, LegendItem> result = new Dictionary<Guid, LegendItem>();
             foreach (Space space in spaces)
             {
@@ -35,7 +37,7 @@ namespace SAM.Analytical.UI
                 if(Core.Query.IsNumeric(@object))
                 {
                     double value = System.Convert.ToDouble(@object);
-                    dictionary_Doubles[value] = SAM.Core.Query.Round(value, Core.Tolerance.MacroDistance).ToString();
+                    dictionary_Doubles[value] = Core.Query.Round(value, Core.Tolerance.MacroDistance).ToString();
                     dictionary_Values[space] = value;
                 }
                 else if(@object is string)
@@ -44,7 +46,7 @@ namespace SAM.Analytical.UI
                 }
                 else if(Core.Query.TryConvert(@object, out Color color))
                 {
-                    result[space.Guid] = new LegendItem(color, text);
+                    result[space.Guid] = new LegendItem(color, text) { Editable = editable };
                 }
                 else if (@object?.ToString() != null)
                 {
@@ -84,7 +86,7 @@ namespace SAM.Analytical.UI
                                 double value = (double)keyValuePair_Space.Value;
                                 if(value == keyValuePair_Double.Key)
                                 {
-                                    result[keyValuePair_Space.Key.Guid] = new LegendItem(colors[index], keyValuePair_Double.Value);
+                                    result[keyValuePair_Space.Key.Guid] = new LegendItem(colors[index], keyValuePair_Double.Value) {Editable = editable };
                                 }
 
                             }

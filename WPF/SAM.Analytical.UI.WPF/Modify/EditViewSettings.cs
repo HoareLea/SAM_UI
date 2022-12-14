@@ -28,7 +28,6 @@ namespace SAM.Analytical.UI.WPF
             }
 
             uIGeometrySettings.AddViewSettings(viewSettingsWindow.ViewSettings);
-            uIGeometrySettings.ActiveGuid = guid;
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 

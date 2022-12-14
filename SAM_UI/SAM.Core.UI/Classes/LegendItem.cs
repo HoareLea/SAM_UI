@@ -8,6 +8,7 @@ namespace SAM.Core.UI
     {
         private Color color;
         private string text;
+        private bool editable = true;
 
         public LegendItem(Color color, string text)
         {
@@ -21,6 +22,7 @@ namespace SAM.Core.UI
             {
                 color = legendItem.color;
                 text = legendItem.text;
+                editable = legendItem.editable;
             }
         }
 
@@ -42,6 +44,19 @@ namespace SAM.Core.UI
             get
             {
                 return text;
+            }
+        }
+
+        public bool Editable
+        {
+            get
+            {
+                return editable;
+            }
+
+            set
+            {
+                editable = value;
             }
         }
 
@@ -70,6 +85,11 @@ namespace SAM.Core.UI
                 text = jObject.Value<string>("Text");
             }
 
+            if (jObject.ContainsKey("Editable"))
+            {
+                editable = jObject.Value<bool>("Editable");
+            }
+
             return true;
         }
 
@@ -88,6 +108,8 @@ namespace SAM.Core.UI
                 jObject.Add("Text", text);
             }
 
+            jObject.Add("Editable", editable);
+
             return jObject;
         }
 
@@ -102,7 +124,7 @@ namespace SAM.Core.UI
             if (ReferenceEquals(legendItem_2, null))
                 return false;
 
-            return legendItem_1.color == legendItem_2.color && legendItem_1.text == legendItem_2.text;
+            return legendItem_1.color == legendItem_2.color && legendItem_1.text == legendItem_2.text && legendItem_1.editable == legendItem_2.editable;
         }
 
         public static bool operator !=(LegendItem legendItem_1, LegendItem legendItem_2)
@@ -116,14 +138,14 @@ namespace SAM.Core.UI
             if (ReferenceEquals(legendItem_2, null))
                 return true;
 
-            return legendItem_1.color != legendItem_2.color || legendItem_1.text != legendItem_2.text;
+            return legendItem_1.color != legendItem_2.color || legendItem_1.text != legendItem_2.text || legendItem_1.editable != legendItem_2.editable;
         }
 
         public override int GetHashCode()
         {
             string text = this.text == null ? string.Empty : this.text;
 
-            return (new Tuple<string, Color>(text, color)).GetHashCode();
+            return (new Tuple<string, Color, bool>(text, color, editable)).GetHashCode();
         }
     }
 }

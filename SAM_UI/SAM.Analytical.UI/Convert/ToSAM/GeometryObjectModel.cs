@@ -3,6 +3,7 @@ using SAM.Geometry;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media;
 
@@ -163,9 +164,9 @@ namespace SAM.Analytical.UI
                 if(spaces != null && spaces.Count != 0)
                 {
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings);
-                    if(legend != null)
+                    if(legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                     {
-                        legend.Refresh(dictionary_LegendItem.Values, true);
+                        legend.Refresh(dictionary_LegendItem.Values, true, true);
                     }
 
                     foreach (Space space in spaces)
@@ -318,7 +319,7 @@ namespace SAM.Analytical.UI
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(dictionary_Space.Keys, adjacencyCluster, twoDimensionalViewSettings);
                     if (legend != null)
                     {
-                        legend.Refresh(dictionary_LegendItem.Values, true);
+                        legend.Refresh(dictionary_LegendItem.Values, true, true);
                     }
 
 

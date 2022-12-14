@@ -74,7 +74,8 @@ namespace SAM.Core.UI.WPF
 
         private Legend GetLegend()
         {
-            Legend result = legend == null ? new Legend(textBox_Name.Text) : new Legend(legend);
+            Legend result = legend == null ? new Legend(textBox_Name.Text) : new Legend(textBox_Name.Text, legend);
+
             result.Visible = true;
             if (checkBox_Visible.IsChecked != null && checkBox_Visible.IsChecked.HasValue)
             {
@@ -103,19 +104,27 @@ namespace SAM.Core.UI.WPF
             return result;
         }
 
-        private void Add(LegendItem legendItem)
+        private int Add(LegendItem legendItem)
         {
-            StackPanel stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
+            if(legendItem == null)
+            {
+                return -1;
+            }
+
+            StackPanel stackPanel = new StackPanel() { Orientation = Orientation.Horizontal, IsEnabled = legendItem.Editable};
 
             TextBox textBox = new TextBox() { IsReadOnly = true, Width = 20, Background = new SolidColorBrush(legendItem.Color.ToMedia()), TextWrapping = System.Windows.TextWrapping.WrapWithOverflow };
             stackPanel.Children.Add(textBox);
             stackPanel.Children.Add(new Label() { Content = legendItem.Text });
             stackPanel.Tag = legendItem;
 
-            stackPanel.MouseLeftButtonUp += StackPanel_MouseLeftButtonUp;
-            textBox.MouseLeftButtonUp += TextBox_MouseLeftButtonUp;
+            if(legendItem.Editable)
+            {
+                stackPanel.MouseLeftButtonUp += StackPanel_MouseLeftButtonUp;
+                textBox.MouseLeftButtonUp += TextBox_MouseLeftButtonUp;
+            }
 
-            this.stackPanel.Children.Add(stackPanel);
+            return this.stackPanel.Children.Add(stackPanel);
         }
         private void UpdateColor(StackPanel stackPanel)
         {

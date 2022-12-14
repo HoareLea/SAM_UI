@@ -78,6 +78,12 @@ namespace SAM.Analytical.UI.WPF
                         textBox_ZoneType_Name.Text = zoneCategory;
                     }
                 }
+                else if(!string.IsNullOrWhiteSpace(zoneCategory))
+                {
+                    comboBox_ZoneType.SelectedItem = Core.Query.Description(ZoneType.Other);
+                    textBox_ZoneType_Name.IsEnabled = true;
+                    textBox_ZoneType_Name.Text = zoneCategory;
+                }
             }
 
         }

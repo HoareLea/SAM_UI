@@ -50,6 +50,29 @@ namespace SAM.Core.UI
             }
         }
 
+        public Legend(string name, Legend legend)
+        {
+            if (legend != null)
+            {
+                this.name = name;
+                if (legend.legendItems != null)
+                {
+                    legendItems = new List<LegendItem>();
+                    foreach (LegendItem legendItem in legend.legendItems)
+                    {
+                        if (legendItem == null)
+                        {
+                            continue;
+                        }
+
+                        legendItems.Add(new LegendItem(legendItem));
+                    }
+                }
+
+                visible = legend.visible;
+            }
+        }
+
         public Legend(JObject jObject)
         {
             FromJObject(jObject);
@@ -84,7 +107,8 @@ namespace SAM.Core.UI
         /// </summary>
         /// <param name="legendItems"></param>
         /// <param name="remove">Remove items from this Legend which does not exists on legendItems</param>
-        public void Refresh(IEnumerable<LegendItem> legendItems, bool remove = false)
+        /// <param name="replaceNotEditable">Replace not editable LegendItems</param>
+        public void Refresh(IEnumerable<LegendItem> legendItems, bool remove = false, bool replaceNotEditable = false)
         {
             if(legendItems == null || legendItems.Count() == 0)
             {
@@ -131,6 +155,17 @@ namespace SAM.Core.UI
                     }
                 }
             }
+
+            if(replaceNotEditable)
+            {
+                foreach (LegendItem legendItem in legendItems)
+                {
+                    if (!legendItem.Editable)
+                    {
+                        Replace(legendItem);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -165,6 +200,38 @@ namespace SAM.Core.UI
 
             legendItems[index] = new LegendItem(color, text);
             return new LegendItem(legendItems[index]);
+        }
+
+        /// <summary>
+        /// Replaces given LegendItem with new one (match by LegendItem Text parameter). Method will add item match does not found.
+        /// </summary>
+        /// <param name="legendItem"></param>
+        /// <returns></returns>
+        public bool Replace(LegendItem legendItem)
+        {
+            if(legendItem == null)
+            {
+                return false;
+            }
+
+            if (legendItems == null)
+            {
+                legendItems = new List<LegendItem>();
+                legendItems.Add(legendItem);
+                return true;
+            }
+
+            int index = legendItems.FindIndex(x => x.Text == legendItem.Text);
+            if(index == -1)
+            {
+                legendItems.Add(new LegendItem(legendItem));
+            }
+            else
+            {
+                legendItems[index] = new LegendItem(legendItem);
+            }
+
+            return true;
         }
 
         public bool Contains(string text)

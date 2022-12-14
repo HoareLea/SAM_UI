@@ -393,9 +393,10 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
 
-            uIAnalyticalModel.EditZones(spaces);
-
+            EditZones(spaces);
         }
+
+
 
         private void MenuItem_Properties_Click(object sender, RoutedEventArgs e)
         {
@@ -1170,7 +1171,20 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            SetActiveGuid();
             Modify.EditViewSettings(uIAnalyticalModel, guid);
+        }
+
+        private void EditZones(IEnumerable<Space> spaces)
+        {
+            Guid guid = GetActiveGuid();
+            if (guid == Guid.Empty)
+            {
+                return;
+            }
+
+            SetActiveGuid();
+            Modify.EditZones(uIAnalyticalModel, spaces);
         }
 
         private Guid GetActiveGuid()
@@ -1196,6 +1210,19 @@ namespace SAM.Analytical.UI.WPF.Windows
             return viewportControl.Guid;
         }
 
+        private void SetActiveGuid()
+        {
+            Guid guid = GetActiveGuid();
+            if (guid == Guid.Empty)
+            {
+                return;
+            }
+
+            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+            Modify.SetActiveGuid(uIAnalyticalModel, guid);
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+        }
+
         private void EditLegend()
         {
             Guid guid = GetActiveGuid();
@@ -1204,6 +1231,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            SetActiveGuid();
             Modify.EditLegend(uIAnalyticalModel, guid);
         }
 
