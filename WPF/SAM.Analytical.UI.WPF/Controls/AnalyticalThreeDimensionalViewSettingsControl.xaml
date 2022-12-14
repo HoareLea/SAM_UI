@@ -9,12 +9,12 @@
     <Grid>
         <GroupBox Header="Visiblity" Height="180" Margin="10,59,0,10.6" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="109">
             <StackPanel>
-                <CheckBox x:Name="checkBox_Visibilty_Space" Content="Space" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkBox_Visibilty_Space" Content="Space" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Visibilty_Space_Click"/>
                 <CheckBox x:Name="checkBox_Visibilty_Panel" Content="Panel" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                 <CheckBox x:Name="checkBox_Visibilty_Aperture" Content="Aperture" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox Header="Color Scheme" HorizontalAlignment="Stretch" Height="180" Margin="124,59,5,10.6" VerticalAlignment="Stretch">
+        <GroupBox x:Name="groupBox_ColorScheme" Header="Color Scheme" HorizontalAlignment="Stretch" Height="180" Margin="124,59,5,10.6" VerticalAlignment="Stretch">
             <local:SpaceAppearanceSettingsControl x:Name="spaceAppearanceSettingsControl" HorizontalAlignment="Left" Height="157" VerticalAlignment="Top" Width="301" Margin="0,0,0,-0.2"/>
         </GroupBox>
         <Label x:Name="label_Name" Content="View Name:" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top"/>

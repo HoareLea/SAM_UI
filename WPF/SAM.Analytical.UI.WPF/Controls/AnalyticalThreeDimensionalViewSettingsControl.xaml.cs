@@ -14,6 +14,8 @@ namespace SAM.Analytical.UI.WPF
         public AnalyticalThreeDimensionalViewSettingsControl()
         {
             InitializeComponent();
+
+            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
         public AnalyticalThreeDimensionalViewSettingsControl(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings, AdjacencyCluster adjacencyCluster)
@@ -23,6 +25,8 @@ namespace SAM.Analytical.UI.WPF
             SetAdjacencyCluster(adjacencyCluster);
 
             SetAnalyticalThreeDimensionalViewSettings(analyticalThreeDimensionalViewSettings);
+
+            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
         public AnalyticalThreeDimensionalViewSettings AnalyticalThreeDimensionalViewSettings
@@ -88,6 +92,11 @@ namespace SAM.Analytical.UI.WPF
             result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
 
             return result;
+        }
+
+        private void checkBox_Visibilty_Space_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
     }
 }

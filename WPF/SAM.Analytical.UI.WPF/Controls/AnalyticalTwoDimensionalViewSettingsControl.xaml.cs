@@ -14,6 +14,8 @@ namespace SAM.Analytical.UI.WPF
         public AnalyticalTwoDimensionalViewSettingsControl()
         {
             InitializeComponent();
+
+            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
         public AnalyticalTwoDimensionalViewSettingsControl(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings, AdjacencyCluster adjacencyCluster)
@@ -23,6 +25,8 @@ namespace SAM.Analytical.UI.WPF
             SetAdjacencyCluster(adjacencyCluster);
 
             SetAnalyticalTwoDimensionalViewSettings(analyticalTwoDimensionalViewSettings);
+
+            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
         public AnalyticalTwoDimensionalViewSettings AnalyticalTwoDimensionalViewSettings
@@ -89,5 +93,9 @@ namespace SAM.Analytical.UI.WPF
             return result;
         }
 
+        private void checkBox_Visibilty_Space_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
+        }
     }
 }
