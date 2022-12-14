@@ -91,6 +91,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\ViewSettings.cs" />
+    <Compile Include="Query\HasLegend.cs" />
     <Compile Include="Query\ZoneTypes.cs" />
     <Compile Include="Query\DefaultName.cs" />
     <Compile Include="Query\Material.cs" />

@@ -173,7 +173,7 @@ namespace SAM.Geometry.UI.WPF
                 Legend legend = viewSettings.Legend;
                 List<LegendItem> legendItems = legend?.LegendItems;
 
-                if(legend != null && legendItems != null && legendItems.Count != 0)
+                if(legend != null && legend.Visible && legendItems != null && legendItems.Count != 0)
                 {
                     legendControl.Visibility = Visibility.Visible;
                     legendControl.Legend = legend;

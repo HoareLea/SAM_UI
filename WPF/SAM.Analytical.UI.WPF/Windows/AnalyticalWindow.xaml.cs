@@ -293,6 +293,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem.Name = "MenuItem_LegendSettings";
             menuItem.Header = "Legend Settings";
             menuItem.Click += MenuItem_Legend_Click;
+            menuItem.IsEnabled = uIAnalyticalModel.HasLegend(GetActiveGuid());
             contextMenu.Items.Add(menuItem);
 
             List<IJSAMObject> jSAMObjects = e.ModelVisual3Ds?.ConvertAll(x => Core.UI.WPF.Query.Tag<IJSAMObject>(x));
@@ -1163,48 +1164,47 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void EditViewSettings()
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
+            Guid guid = GetActiveGuid();
+            if(guid == Guid.Empty)
             {
                 return;
             }
 
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
+            Modify.EditViewSettings(uIAnalyticalModel, guid);
         }
 
-        private void EditLegend()
+        private Guid GetActiveGuid()
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
             {
-                return;
+                return Guid.Empty;
             }
 
             TabItem tabItem = tabControl.SelectedItem as TabItem;
             if (tabItem == null)
             {
-                return;
+                return Guid.Empty;
             }
 
             ViewportControl viewportControl = tabItem.Content as ViewportControl;
             if (viewportControl == null)
             {
+                return Guid.Empty;
+            }
+
+            return viewportControl.Guid;
+        }
+
+        private void EditLegend()
+        {
+            Guid guid = GetActiveGuid();
+            if (guid == Guid.Empty)
+            {
                 return;
             }
 
-            Modify.EditLegend(uIAnalyticalModel, viewportControl.Guid);
+            Modify.EditLegend(uIAnalyticalModel, guid);
         }
 
         private void RemoveViewSettings()

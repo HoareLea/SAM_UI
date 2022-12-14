@@ -7,7 +7,7 @@ namespace SAM.Core.UI
     public class Legend : IJSAMObject
     {
         private string name;
-        private bool visible;
+        private bool visible = true;
         private List<LegendItem> legendItems;
 
         public Legend(string name, IEnumerable<LegendItem> legendItems)
@@ -45,6 +45,8 @@ namespace SAM.Core.UI
                         legendItems.Add(new LegendItem(legendItem));
                     }
                 }
+
+                visible = legend.visible;
             }
         }
 
@@ -249,6 +251,11 @@ namespace SAM.Core.UI
                 name = jObject.Value<string>("Name");
             }
 
+            if (jObject.ContainsKey("Visible"))
+            {
+                visible = jObject.Value<bool>("Visible");
+            }
+
             return true;
         }
 
@@ -278,6 +285,8 @@ namespace SAM.Core.UI
 
                 jObject.Add("LegendItems", jArray);
             }
+
+            jObject.Add("Visible", visible);
 
             return jObject;
         }
