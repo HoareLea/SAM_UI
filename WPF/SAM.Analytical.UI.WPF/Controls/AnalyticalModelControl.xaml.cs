@@ -462,10 +462,15 @@ namespace SAM.Analytical.UI.WPF
                 {
                     TreeViewItem treeViewItem_ZoneCategory = new TreeViewItem() { Header = new TextBlock() { Text = keyValuePair.Key }, Tag = keyValuePair.Key };
                     treeViewItem_Zones.Items.Add(treeViewItem_ZoneCategory);
-                    foreach(Zone zone in keyValuePair.Value)
+
+                    treeViewItem_ZoneCategory.IsExpanded = expandedTags.Find(x => x is string && (string)x == keyValuePair.Key) != null;
+
+                    foreach (Zone zone in keyValuePair.Value)
                     {
                         TreeViewItem treeViewItem_Zone = new TreeViewItem() { Header = new TextBlock() { Text = zone.Name }, Tag = zone };
                         treeViewItem_ZoneCategory.Items.Add(treeViewItem_Zone);
+
+                        treeViewItem_Zone.IsExpanded = expandedTags.Find(x => x is Zone && ((Zone)x).Guid == zone.Guid) != null;
 
                         List<Space> spaces = adjacencyCluster.GetRelatedObjects<Space>(zone);
                         if(spaces != null && spaces.Count != 0)
@@ -490,6 +495,7 @@ namespace SAM.Analytical.UI.WPF
                 treeViewItem_Materials.IsExpanded = expandedTags.Contains(treeViewItem_Materials.Tag);
                 treeViewItem_InternalConditions.IsExpanded = expandedTags.Contains(treeViewItem_InternalConditions.Tag);
                 treeViewItem_MechanicalSystems.IsExpanded = expandedTags.Contains(treeViewItem_MechanicalSystems.Tag);
+                treeViewItem_Zones.IsExpanded = expandedTags.Contains(treeViewItem_Zones.Tag);
             }
         }
 
