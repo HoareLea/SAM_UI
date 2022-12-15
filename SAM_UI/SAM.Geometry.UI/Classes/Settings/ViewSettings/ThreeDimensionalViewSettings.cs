@@ -37,6 +37,12 @@ namespace SAM.Geometry.UI
 
         }
 
+        public ThreeDimensionalViewSettings(Guid guid, string name, ThreeDimensionalViewSettings threeDimensionalViewSettings)
+            : base(guid, name, threeDimensionalViewSettings)
+        {
+
+        }
+
         public override bool FromJObject(JObject jObject)
         {
             if(!base.FromJObject(jObject))

@@ -248,39 +248,6 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             ViewSettings viewSettings = viewSettingsWindow.ViewSettings;
 
-            //List<BoundingBox3D> boundingBox3Ds = analyticalModel.GetPanels()?.ConvertAll(x => x?.GetBoundingBox());
-            //if (boundingBox3Ds == null || boundingBox3Ds.Count == 0)
-            //{
-            //    return;
-            //}
-
-            //boundingBox3Ds.RemoveAll(x => x == null || !x.IsValid());
-
-            //if (boundingBox3Ds == null || boundingBox3Ds.Count == 0)
-            //{
-            //    return;
-            //}
-
-            //double elevation = new BoundingBox3D(boundingBox3Ds).Min.Z;
-            //elevation = Core.Query.Round(elevation, 0.01) + 0.1;
-            //using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
-            //{
-            //    textBoxForm.Value = elevation;
-            //    if (textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-            //    {
-            //        return;
-            //    }
-
-            //    elevation = textBoxForm.Value;
-            //}
-
-            //if (double.IsNaN(elevation))
-            //{
-            //    return;
-            //}
-
-
-
             TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, viewSettings);
             if (tabItem != null)
             {
@@ -302,6 +269,9 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void ViewControl_ObjectContextMenuOpening(object sender, ObjectContextMenuOpeningEventArgs e)
         {
+
+            e.ContextMenuEventArgs.Handled = true;
+
             ContextMenu contextMenu = e.ContextMenu;
 
             MenuItem menuItem = null;
@@ -378,6 +348,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
                 }
             }
+
 
         }
 
@@ -858,6 +829,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             if(tabItem == null)
             {
                 tabItem = new TabItem() { Header = "???" };
+                tabItem.ContextMenuOpening += TabItem_ContextMenuOpening;
                 tabControl.Items.Add(tabItem);
             }
 
@@ -904,6 +876,96 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             return tabItem;
+        }
+
+        private void TabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            TabItem tabItem = sender as TabItem;
+            if(tabItem == null)
+            {
+                return;
+            }
+
+            ContextMenu contextMenu = tabItem.ContextMenu;
+            if(contextMenu == null)
+            {
+                contextMenu = new ContextMenu();
+                tabItem.ContextMenu = contextMenu;
+            }
+
+            tabItem.ContextMenu.Items.Clear();
+
+            MenuItem menuItem = null;
+
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Close_TabItem";
+            menuItem.Header = "Close";
+            menuItem.Click += MenuItem_Close_TabItem_Click;
+            contextMenu.Items.Add(menuItem);
+
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Duplicate_TabItem";
+            menuItem.Header = "Duplicate";
+            menuItem.Click += MenuItem_Duplicate_TabItem_Click;
+            contextMenu.Items.Add(menuItem);
+
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Settings_TabItem";
+            menuItem.Header = "Settings";
+            menuItem.Click += MenuItem_Settings_TabItem_Click;
+            contextMenu.Items.Add(menuItem);
+        }
+
+        private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.PlacementTarget as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            EditViewSettings(tabItem);
+        }
+
+        private void MenuItem_Duplicate_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.PlacementTarget as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            DuplicateViewSettings(tabItem);
+        }
+
+        private void MenuItem_Close_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if(menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.PlacementTarget as TabItem;
+            if(tabItem == null)
+            {
+                return;
+            }
+
+
+            RemoveViewSettings(tabItem);
         }
 
         private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel)
@@ -1157,17 +1219,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        private void EditViewSettings()
-        {
-            Guid guid = GetActiveGuid();
-            if (guid == Guid.Empty)
-            {
-                return;
-            }
 
-            //SetActiveGuid();
-            Modify.EditViewSettings(uIAnalyticalModel, guid);
-        }
 
         private void EditZones(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
         {
@@ -1237,6 +1289,23 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
+        private void EditViewSettings()
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            EditViewSettings(tabItem);
+        }
+
         private void RemoveViewSettings()
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -1251,6 +1320,16 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            RemoveViewSettings(tabItem);
+        }
+
+        private void RemoveViewSettings(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
             ViewportControl viewportControl = tabItem.Content as ViewportControl;
             if (viewportControl == null)
             {
@@ -1258,6 +1337,38 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void DuplicateViewSettings(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            Modify.DuplicateViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void EditViewSettings(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
     }
 }

@@ -45,6 +45,15 @@ namespace SAM.Analytical.UI
             }
         }
 
+        public AnalyticalThreeDimensionalViewSettings(Guid guid, string name, AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
+            : base(guid, name, analyticalThreeDimensionalViewSettings)
+        {
+            if (analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            {
+                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
+            }
+        }
+
         public override bool FromJObject(JObject jObject)
         {
             if(!base.FromJObject(jObject))

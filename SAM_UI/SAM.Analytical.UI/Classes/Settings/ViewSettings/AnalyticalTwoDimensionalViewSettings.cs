@@ -52,6 +52,15 @@ namespace SAM.Analytical.UI
             }
         }
 
+        public AnalyticalTwoDimensionalViewSettings(Guid guid, string name, AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
+            : base(guid, name, analyticalTwoDimensionalViewSettings)
+        {
+            if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            {
+                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
+            }
+        }
+
         public override bool FromJObject(JObject jObject)
         {
             if(!base.FromJObject(jObject))

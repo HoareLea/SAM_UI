@@ -45,6 +45,18 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public TwoDimensionalViewSettings(Guid guid, string name, TwoDimensionalViewSettings twoDimensionalViewSettings)
+            : base(guid, name, twoDimensionalViewSettings)
+        {
+            if (twoDimensionalViewSettings != null)
+            {
+                if (twoDimensionalViewSettings.plane != null)
+                {
+                    plane = new Plane(twoDimensionalViewSettings.plane);
+                }
+            }
+        }
+
         public Plane Plane
         {
             get

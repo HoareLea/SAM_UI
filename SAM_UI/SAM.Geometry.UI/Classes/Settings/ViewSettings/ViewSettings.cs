@@ -88,6 +88,35 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public ViewSettings(Guid guid, string name, ViewSettings viewSettings)
+            : base(guid, viewSettings)
+        {
+            this.name = name;
+
+            if (viewSettings != null)
+            {
+                if (viewSettings.appearanceSettings != null)
+                {
+                    appearanceSettings = new AppearanceSettings(viewSettings.appearanceSettings);
+                }
+
+                if (viewSettings.types != null)
+                {
+                    types = new Types(viewSettings.types);
+                }
+
+                if (viewSettings.legend != null)
+                {
+                    legend = new Legend(viewSettings.legend);
+                }
+
+                if (viewSettings.camera != null)
+                {
+                    camera = viewSettings.camera.Clone();
+                }
+            }
+        }
+
         public bool IsValid(Type type)
         {
             if(types == null)

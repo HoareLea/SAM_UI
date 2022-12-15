@@ -37,12 +37,7 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.RotateGesture = new MouseGesture(MouseAction.RightClick, ModifierKeys.Shift);
             uIGeometryObjectModel = new UIGeometryObjectModel();
 
-            helixViewport3D.CameraChanged += helixViewport3D_CameraChanged;
-        }
-
-        private void helixViewport3D_CameraChanged(object sender, RoutedEventArgs e)
-        {
-            Point3D point3D = helixViewport3D.Camera.Position;
+            helixViewport3D.Loaded += helixViewport3D_Loaded;
         }
 
         private void helixViewport3D_Loaded(object sender, RoutedEventArgs e)
@@ -58,6 +53,8 @@ namespace SAM.Geometry.UI.WPF
                     helixViewport3D.Camera.LookDirection = camera.LookDirection.ToMedia3D();
                 }
             }
+
+            helixViewport3D.Loaded -= helixViewport3D_Loaded;
         }
 
         public Mode Mode
@@ -141,7 +138,7 @@ namespace SAM.Geometry.UI.WPF
                 helixViewport3D.ZoomAroundMouseDownPoint = true;
                 helixViewport3D.IsPanEnabled = true;
                 helixViewport3D.IsRotationEnabled = true;
-                helixViewport3D.ShowCameraInfo = true;
+                //helixViewport3D.ShowCameraInfo = true;
 
             }
             else
@@ -155,7 +152,7 @@ namespace SAM.Geometry.UI.WPF
                 helixViewport3D.ZoomAroundMouseDownPoint = false;
                 helixViewport3D.IsPanEnabled = true;
                 helixViewport3D.IsRotationEnabled = false;
-                helixViewport3D.ShowCameraInfo = true;
+                //helixViewport3D.ShowCameraInfo = true;
             }
 
             helixViewport3D.ZoomExtents();
