@@ -11,6 +11,7 @@ namespace SAM.Geometry.UI
         private AppearanceSettings appearanceSettings;
         private Types types;
         private Legend legend;
+        private Camera camera;
 
         public ViewSettings(Guid guid, string name)
             :base(guid, name)
@@ -50,6 +51,11 @@ namespace SAM.Geometry.UI
                 {
                     legend = new Legend(viewSettings.legend);
                 }
+
+                if(viewSettings.camera != null)
+                {
+                    camera = viewSettings.camera.Clone();
+                }
             }
         }
 
@@ -73,6 +79,11 @@ namespace SAM.Geometry.UI
                 if (viewSettings.legend != null)
                 {
                     legend = new Legend(viewSettings.legend);
+                }
+
+                if (viewSettings.camera != null)
+                {
+                    camera = viewSettings.camera.Clone();
                 }
             }
         }
@@ -191,6 +202,11 @@ namespace SAM.Geometry.UI
                 legend = new Legend(jObject.Value<JObject>("Legend"));
             }
 
+            if (jObject.ContainsKey("Camera"))
+            {
+                camera = Core.Query.IJSAMObject(jObject.Value<JObject>("Camera")) as Camera;
+            }
+
             return true;
         }
 
@@ -213,6 +229,11 @@ namespace SAM.Geometry.UI
                 jObject.Add("Legend", legend.ToJObject());
             }
 
+            if (camera != null)
+            {
+                jObject.Add("Camera", camera.ToJObject());
+            }
+
             return jObject;
         }
 
@@ -232,6 +253,26 @@ namespace SAM.Geometry.UI
                 else
                 {
                     legend = value;
+                }
+            }
+        }
+
+        public Camera Camera
+        {
+            get
+            {
+                return camera == null ? null : camera.Clone();
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    camera = value.Clone();
+                }
+                else
+                {
+                    camera = null;
                 }
             }
         }

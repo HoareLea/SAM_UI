@@ -136,6 +136,10 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_ViewGeometry.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_Tools_ViewGeometry.Click += RibbonButton_Tools_ViewGeometry_Click;
 
+            RibbonButton_Tools_Test.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_Tools_Test.Click += RibbonButton_Tools_Test_Click;
+            RibbonButton_Tools_Test.Visibility = Visibility.Hidden;
+
 
             RibbonButton_Results_AirHandlingUnitDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AirHandlingUnitDiagram);
             RibbonButton_Results_AirHandlingUnitDiagram.Click += RibbonButton_Results_AirHandlingUnitDiagram_Click;
@@ -153,7 +157,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, null);
 
-            GeometryObjectModel geometryObjectModel = UI.Convert.ToSAM_GeometryObjectModel(uIAnalyticalModel?.JSAMObject, threeDimensionalViewSettings);
+            GeometryObjectModel geometryObjectModel = Convert.ToSAM_GeometryObjectModel(uIAnalyticalModel?.JSAMObject, threeDimensionalViewSettings);
 
             viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             viewportControl.Mode = threeDimensionalViewSettings.Mode();
@@ -170,6 +174,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_Tools_Test_Click(object sender, RoutedEventArgs e)
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            Geometry.UI.Camera camera = viewportControl.Camera;
+            camera.Location = new Geometry.Spatial.Point3D(-3.684, -0.48, 0.13);
+
+            viewportControl.Camera = camera;
         }
 
         private void RibbonButton_View_Close_Click(object sender, RoutedEventArgs e)
@@ -808,8 +821,8 @@ namespace SAM.Analytical.UI.WPF.Windows
         
         private void UIAnalyticalModel_Opened(object sender, EventArgs e)
         {
-            SetViewSettings();
-            Reload();
+            SetDefaultViewSettings();
+            Reload(true);
         }
 
         private void UIAnalyticalModel_Closed(object sender, EventArgs e)
@@ -936,7 +949,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             return result;
         }
 
-        private UIGeometrySettings UpdateUIGeometrySettings(TabControl tabControl, AnalyticalModel analyticalModel)
+        private UIGeometrySettings UpdateUIGeometrySettings(TabControl tabControl, AnalyticalModel analyticalModel, bool setViewportControlCamera = false)
         {
             if (analyticalModel == null || tabControl == null)
             {
@@ -971,6 +984,23 @@ namespace SAM.Analytical.UI.WPF.Windows
                     continue;
                 }
 
+                if(viewSettings is ViewSettings)
+                {
+                    ViewSettings viewSettings_Temp = (ViewSettings)viewSettings;
+                    if(setViewportControlCamera)
+                    {
+                        Geometry.UI.Camera camera = viewSettings_Temp.Camera;
+                        if(camera != null)
+                        {
+                            viewportControl.Camera = camera;
+                        }
+                    }
+                    else
+                    {
+                        viewSettings_Temp.Camera = viewportControl.Camera;
+                    }
+                }
+
                 viewSettingsList.Add(viewSettings);
 
                 if(tabControl.SelectedItem == tabItem)
@@ -985,7 +1015,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             return result;
         }
 
-        private void SetViewSettings()
+        private void SetDefaultViewSettings()
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if(analyticalModel == null)
@@ -1011,7 +1041,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        private void Reload()
+        private void Reload(bool setViewportControlCamera = false)
         {
             SetEnabled();
             SetActiveGuid();
@@ -1022,7 +1052,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             UpdateTabItems(tabControl, analyticalModel);
 
-            UpdateUIGeometrySettings(tabControl, analyticalModel);
+            UpdateUIGeometrySettings(tabControl, analyticalModel, setViewportControlCamera);
 
             uIAnalyticalModel.JSAMObject = analyticalModel;
 
@@ -1163,7 +1193,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditLegend(uIAnalyticalModel, guid);
         }
 
-        private ViewportControl GetActiveViewPort()
+        private ViewportControl GetActiveViewportControl()
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
@@ -1182,7 +1212,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private Guid GetActiveGuid()
         {
-            ViewportControl viewportControl = GetActiveViewPort();
+            ViewportControl viewportControl = GetActiveViewportControl();
             if (viewportControl == null)
             {
                 return Guid.Empty;
@@ -1199,7 +1229,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            viewportControl = GetActiveViewPort();
+            viewportControl = GetActiveViewportControl();
             viewportControl.Focus();
 
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;

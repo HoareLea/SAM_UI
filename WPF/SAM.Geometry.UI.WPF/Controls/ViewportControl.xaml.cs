@@ -36,6 +36,28 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.PanGesture = new MouseGesture(MouseAction.LeftClick, ModifierKeys.Shift);
             helixViewport3D.RotateGesture = new MouseGesture(MouseAction.RightClick, ModifierKeys.Shift);
             uIGeometryObjectModel = new UIGeometryObjectModel();
+
+            helixViewport3D.CameraChanged += helixViewport3D_CameraChanged;
+        }
+
+        private void helixViewport3D_CameraChanged(object sender, RoutedEventArgs e)
+        {
+            Point3D point3D = helixViewport3D.Camera.Position;
+        }
+
+        private void helixViewport3D_Loaded(object sender, RoutedEventArgs e)
+        {
+            GeometryObjectModel geometryObjectModel = uIGeometryObjectModel?.JSAMObject;
+
+            if (geometryObjectModel != null && geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings) && viewSettings != null)
+            {
+                Camera camera = viewSettings.Camera;
+                if(camera != null)
+                {
+                    helixViewport3D.Camera.Position = camera.Location.ToMedia3D();
+                    helixViewport3D.Camera.LookDirection = camera.LookDirection.ToMedia3D();
+                }
+            }
         }
 
         public Mode Mode
@@ -55,6 +77,57 @@ namespace SAM.Geometry.UI.WPF
             }
         }
 
+        public Camera Camera
+        {
+            get
+            {
+                return GetCamera();
+            }
+
+            set
+            {
+                SetCamera(value);
+            }
+        }
+
+        private Camera GetCamera()
+        {
+            ProjectionCamera projectionCamera = helixViewport3D.Camera;
+            if(projectionCamera == null)
+            {
+                return null;
+            }
+
+            return new Camera(projectionCamera.Position.ToSAM(), projectionCamera.LookDirection.ToSAM());
+        }
+
+        private void SetCamera(Camera camera)
+        {
+            if (camera == null)
+            {
+                return;
+            }
+
+            ProjectionCamera projectionCamera = helixViewport3D.Camera;
+            if (projectionCamera == null)
+            {
+                return;
+            }
+
+            Spatial.Vector3D lookDirection = camera.LookDirection;
+            if (lookDirection.AlmostEqual(-Spatial.Vector3D.WorldZ, Tolerance.MacroDistance))
+            {
+                lookDirection = new Spatial.Vector3D(0, 0.0001, -0.9999);
+            }
+            else if (lookDirection.AlmostEqual(Spatial.Vector3D.WorldZ, Tolerance.MacroDistance))
+            {
+                lookDirection = new Spatial.Vector3D(0, 0.0001, 0.9999);
+            }
+
+            projectionCamera.LookDirection = lookDirection.ToMedia3D();
+            projectionCamera.Position = camera.Location.ToMedia3D();
+        }
+
         private void UpdateMode()
         {
             if(mode == Mode.ThreeDimensional)
@@ -68,6 +141,7 @@ namespace SAM.Geometry.UI.WPF
                 helixViewport3D.ZoomAroundMouseDownPoint = true;
                 helixViewport3D.IsPanEnabled = true;
                 helixViewport3D.IsRotationEnabled = true;
+                helixViewport3D.ShowCameraInfo = true;
 
             }
             else
@@ -81,6 +155,7 @@ namespace SAM.Geometry.UI.WPF
                 helixViewport3D.ZoomAroundMouseDownPoint = false;
                 helixViewport3D.IsPanEnabled = true;
                 helixViewport3D.IsRotationEnabled = false;
+                helixViewport3D.ShowCameraInfo = true;
             }
 
             helixViewport3D.ZoomExtents();
