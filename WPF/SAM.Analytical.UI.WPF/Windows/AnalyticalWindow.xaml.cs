@@ -287,7 +287,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             geometryWindow.Show();
         }
 
-
         private void ViewControl_ObjectContextMenuOpening(object sender, ObjectContextMenuOpeningEventArgs e)
         {
             ContextMenu contextMenu = e.ContextMenu;
@@ -406,8 +405,6 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             EditZones(spaces, spaces);
         }
-
-
 
         private void MenuItem_Properties_Click(object sender, RoutedEventArgs e)
         {
@@ -805,6 +802,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void UIAnalyticalModel_Modified(object sender, EventArgs e)
         {
+
             Reload();
         }
         
@@ -1016,6 +1014,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void Reload()
         {
             SetEnabled();
+            SetActiveGuid();
 
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
 
@@ -1024,52 +1023,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             UpdateTabItems(tabControl, analyticalModel);
 
             UpdateUIGeometrySettings(tabControl, analyticalModel);
-
-            //if(!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
-            //{
-            //    uIGeometrySettings = new UIGeometrySettings();
-            //}
-
-            //List<IViewSettings> viewSettingsList = new List<IViewSettings>();
-            //for(int i =0; i < tabControl.Items.Count; i++)
-            //{
-            //    TabItem tabItem = tabControl.Items[i] as TabItem;
-
-            //    ViewportControl viewportControl = tabItem?.Content as ViewportControl;
-            //    if (viewportControl == null)
-            //    {
-            //        continue;
-            //    }
-
-            //    IViewSettings viewSettings = null;
-
-            //    GeometryObjectModel geometryObjectModel = viewportControl.UIGeometryObjectModel?.JSAMObject;
-            //    if(geometryObjectModel == null)
-            //    {
-            //        viewSettings = uIGeometrySettings.GetViewSettings(i);
-            //        if(viewSettings == null)
-            //        {
-            //            viewSettings = UI.Query.DefaultViewSettings(i);
-            //        }
-            //    }
-
-            //    if(viewSettings == null)
-            //    {
-            //        if (!geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out viewSettings) || viewSettings == null)
-            //        {
-            //            continue;
-            //        }
-            //    }
-
-            //    geometryObjectModel = uIAnalyticalModel?.JSAMObject.ToSAM_GeometryObjectModel(viewSettings);
-            //    viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-
-            //    viewSettingsList.Add(viewSettings);
-            //}
-
-            //uIGeometrySettings.SetViewSettings(viewSettingsList);
-
-            //analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 
             uIAnalyticalModel.JSAMObject = analyticalModel;
 
@@ -1177,12 +1130,12 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void EditViewSettings()
         {
             Guid guid = GetActiveGuid();
-            if(guid == Guid.Empty)
+            if (guid == Guid.Empty)
             {
                 return;
             }
 
-            SetActiveGuid();
+            //SetActiveGuid();
             Modify.EditViewSettings(uIAnalyticalModel, guid);
         }
 
@@ -1194,8 +1147,20 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            SetActiveGuid();
+            //SetActiveGuid();
             Modify.EditZones(uIAnalyticalModel, spaces, selectedSpaces);
+        }
+
+        private void EditLegend()
+        {
+            Guid guid = GetActiveGuid();
+            if (guid == Guid.Empty)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            Modify.EditLegend(uIAnalyticalModel, guid);
         }
 
         private ViewportControl GetActiveViewPort()
@@ -1242,18 +1207,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
-        private void EditLegend()
-        {
-            Guid guid = GetActiveGuid();
-            if (guid == Guid.Empty)
-            {
-                return;
-            }
-
-            SetActiveGuid();
-            Modify.EditLegend(uIAnalyticalModel, guid);
-        }
-
         private void RemoveViewSettings()
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -1275,11 +1228,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
-        }
-
-        private void tabControl_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-
         }
     }
 }

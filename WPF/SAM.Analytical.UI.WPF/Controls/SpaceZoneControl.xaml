@@ -15,7 +15,7 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Label x:Name="label_Spaces" Grid.Row="0" Grid.Column="0" Content="Spaces:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Width="50"/>
-        <ListView x:Name="listView_Spaces"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Margin="10,36,9.8,10.6" VerticalAlignment="Stretch"/>
+        <ListView x:Name="listView_Spaces"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Margin="10,36,9.8,10.6" VerticalAlignment="Stretch" SelectionChanged="listView_Spaces_SelectionChanged"/>
         <local:ZonesControl x:Name="zonesControl" Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2,0,2.6,0"></local:ZonesControl>
     </Grid>
 </UserControl>

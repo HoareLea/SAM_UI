@@ -25,6 +25,7 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
 
             zonesControl.SelectionMode = SelectionMode.Single;
+            zonesControl.ZoneCategorySelectionChanged += ZonesControl_ZoneCategorySelectionChanged;
         }
 
         public SpaceZoneControl(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null, Zone selectedZone = null)
@@ -35,11 +36,10 @@ namespace SAM.Analytical.UI.WPF
 
             zonesControl.SelectionMode = SelectionMode.Single;
             zonesControl.AdjacencyCluster = adjacencyCluster;
+            zonesControl.ZoneCategorySelectionChanged += ZonesControl_ZoneCategorySelectionChanged;
 
             SetSelectedSpaces(selectedSpaces);
         }
-
-
 
         public AdjacencyCluster AdjacencyCluster
         {
@@ -171,51 +171,66 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void SelectZoneCategory()
-        {
-            List<Space> spaces = Spaces;
-            if (spaces != null && spaces.Count != 0)
-            {
-                AdjacencyCluster adjacencyCluster = AdjacencyCluster;
-                if (adjacencyCluster != null)
-                {
-                    List<Tuple<string, int>> tuples = new List<Tuple<string, int>>();
-                    foreach (Space space in spaces)
-                    {
-                        List<Zone> zones = adjacencyCluster.GetZones(space);
-                        if (zones != null && zones.Count != 0)
-                        {
-                            foreach (Zone zone in zones)
-                            {
-                                if (zone == null || !zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory) || string.IsNullOrEmpty(zoneCategory))
-                                {
-                                    continue;
-                                }
-
-                                int index = tuples.FindIndex(x => x.Item1 == zoneCategory);
-                                if (index == -1)
-                                {
-                                    index = tuples.Count;
-                                    tuples.Add(new Tuple<string, int>(zoneCategory, 0));
-                                }
-
-                                tuples[index] = new Tuple<string, int>(zoneCategory, tuples[index].Item2 + 1);
-                            }
-                        }
-                    }
-
-                    if (tuples != null && tuples.Count != 0)
-                    {
-                        tuples.Sort((x, y) => y.Item2.CompareTo(x.Item2));
-                        zonesControl.ZoneCategory = tuples[0].Item1;
-                    }
-                }
-            }
-        }
-
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //SelectZoneCategory();
+
+        }
+
+        private void UpdateZonesSelection()
+        {
+            List<Space> spaces = SelectedSpaces;
+            if (spaces == null || spaces.Count == 0)
+            {
+                return;
+            }
+
+            List<Zone> zones = zonesControl.Zones;
+            if (zones == null || zones.Count == 0)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+
+            foreach (Space space in spaces)
+            {
+                List<Zone> zones_temp = adjacencyCluster.GetZones(space);
+                if (zones_temp == null || zones_temp.Count == 0)
+                {
+                    zones = null;
+                    break;
+                }
+
+                for (int i = zones.Count - 1; i >= 0; i--)
+                {
+                    if (zones_temp.Find(x => x.Guid == zones[i].Guid) == null)
+                    {
+                        zones.RemoveAt(i);
+                    }
+                }
+
+                if (zones.Count == 0)
+                {
+                    break;
+                }
+            }
+
+            zonesControl.SelectedZones = zones;
+        }
+
+        private void ZonesControl_ZoneCategorySelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateZonesSelection();
+        }
+
+        private void listView_Spaces_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateZonesSelection();
         }
     }
 }

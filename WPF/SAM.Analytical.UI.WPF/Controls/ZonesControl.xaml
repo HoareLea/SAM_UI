@@ -7,8 +7,8 @@
              mc:Ignorable="d" Width="245" Height="350" Loaded="UserControl_Loaded">
     <Grid>
         <Label x:Name="label_ZoneType" Content="Zone Type:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox_ZoneType" HorizontalAlignment="Stretch" Margin="87,13,10,0" VerticalAlignment="Top" SelectionChanged="comboBox_ZoneType_SelectionChanged"/>
-        <ListView x:Name="listView_Zones" HorizontalAlignment="Stretch" Margin="10,44,9.8,34.4" VerticalAlignment="Stretch">
+        <ComboBox x:Name="comboBox_ZoneCategory" HorizontalAlignment="Stretch" Margin="87,13,10,0" VerticalAlignment="Top" SelectionChanged="comboBox_ZoneCategory_SelectionChanged"/>
+        <ListView x:Name="listView_Zones" HorizontalAlignment="Stretch" Margin="10,44,9.8,34.4" VerticalAlignment="Stretch" SelectionChanged="listView_Zones_SelectionChanged">
             <ListViewItem>Zone 1</ListViewItem>
         </ListView>
         <Button x:Name="button_Add" Content="Add" HorizontalAlignment="Left" Margin="11,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Add_Click"/>

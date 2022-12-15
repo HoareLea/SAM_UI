@@ -1,6 +1,7 @@
 ﻿using SAM.Core;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
@@ -64,6 +65,13 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
+                menuItem.Tag = jSAMObject;
+                ContextMenu.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_EditZones";
+                menuItem.Header = "Edit Zones";
+                menuItem.Click += MenuItem_EditZones_Click;
                 menuItem.Tag = jSAMObject;
                 ContextMenu.Items.Add(menuItem);
             }
@@ -132,6 +140,26 @@ namespace SAM.Analytical.UI.WPF
             {
                 e.Handled = true;
                 return;
+            }
+        }
+
+        private void MenuItem_EditZones_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
+            if (jSAMObject == null)
+            {
+                return;
+            }
+
+            if (jSAMObject is Space)
+            {
+                Modify.EditSpaceZone(uIAnalyticalModel, jSAMObject as dynamic);
             }
         }
 
