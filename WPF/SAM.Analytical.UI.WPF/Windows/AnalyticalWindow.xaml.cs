@@ -223,42 +223,52 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
+            analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("Name");
 
-            List<BoundingBox3D> boundingBox3Ds = analyticalModel.GetPanels()?.ConvertAll(x => x?.GetBoundingBox());
-            if (boundingBox3Ds == null || boundingBox3Ds.Count == 0)
+            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(analyticalTwoDimensionalViewSettings, analyticalModel.AdjacencyCluster);
+            bool? result = viewSettingsWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
             {
                 return;
             }
 
-            boundingBox3Ds.RemoveAll(x => x == null || !x.IsValid());
+            ViewSettings viewSettings = viewSettingsWindow.ViewSettings;
 
-            if (boundingBox3Ds == null || boundingBox3Ds.Count == 0)
-            {
-                return;
-            }
+            //List<BoundingBox3D> boundingBox3Ds = analyticalModel.GetPanels()?.ConvertAll(x => x?.GetBoundingBox());
+            //if (boundingBox3Ds == null || boundingBox3Ds.Count == 0)
+            //{
+            //    return;
+            //}
 
-            double elevation = new BoundingBox3D(boundingBox3Ds).Min.Z;
-            elevation = Core.Query.Round(elevation, 0.01) + 0.1;
-            using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
-            {
-                textBoxForm.Value = elevation;
-                if (textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
+            //boundingBox3Ds.RemoveAll(x => x == null || !x.IsValid());
 
-                elevation = textBoxForm.Value;
-            }
+            //if (boundingBox3Ds == null || boundingBox3Ds.Count == 0)
+            //{
+            //    return;
+            //}
 
-            if (double.IsNaN(elevation))
-            {
-                return;
-            }
+            //double elevation = new BoundingBox3D(boundingBox3Ds).Min.Z;
+            //elevation = Core.Query.Round(elevation, 0.01) + 0.1;
+            //using (Core.Windows.Forms.TextBoxForm<double> textBoxForm = new Core.Windows.Forms.TextBoxForm<double>("Height", "Insert Height"))
+            //{
+            //    textBoxForm.Value = elevation;
+            //    if (textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            //    {
+            //        return;
+            //    }
 
-            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), null, Geometry.Spatial.Create.Plane(elevation), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
-            analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("");
+            //    elevation = textBoxForm.Value;
+            //}
 
-            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, analyticalTwoDimensionalViewSettings);
+            //if (double.IsNaN(elevation))
+            //{
+            //    return;
+            //}
+
+
+
+            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, viewSettings);
             if (tabItem != null)
             {
                 tabControl.SelectedItem = tabItem;

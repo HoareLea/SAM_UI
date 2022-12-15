@@ -45,6 +45,15 @@ namespace SAM.Analytical.UI.WPF
         private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
         {
             spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
+
+            List<Architectural.Level> levels = Create.Levels(adjacencyCluster, false);
+            levels?.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
+
+            elevationControl.Levels = levels;
+            if(levels != null && levels.Count != 0)
+            {
+                elevationControl.SelectedLevel = levels[0];
+            }
         }
 
         private void SetAnalyticalTwoDimensionalViewSettings(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
@@ -58,6 +67,8 @@ namespace SAM.Analytical.UI.WPF
             spaceAppearanceSettingsControl.SpaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
 
             textBox_Name.Text = analyticalTwoDimensionalViewSettings.Name;
+
+            elevationControl.Elevation = analyticalTwoDimensionalViewSettings.Plane.Origin.Z;
         }
 
         private AnalyticalTwoDimensionalViewSettings GetAnalyticalTwoDimensionalViewSettings()
@@ -89,6 +100,8 @@ namespace SAM.Analytical.UI.WPF
             result.SetTypes(types);
 
             result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
+
+            result.Plane = Geometry.Spatial.Create.Plane(elevationControl.Elevation);
 
             return result;
         }

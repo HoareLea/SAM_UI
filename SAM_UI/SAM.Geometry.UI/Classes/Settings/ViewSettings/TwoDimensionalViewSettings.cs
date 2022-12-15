@@ -51,6 +51,10 @@ namespace SAM.Geometry.UI
             {
                 return plane == null ? null : new Plane(plane);
             }
+            set
+            {
+                plane = value == null ? null : new Plane(value);
+            }
         }
 
         public override bool FromJObject(JObject jObject)
