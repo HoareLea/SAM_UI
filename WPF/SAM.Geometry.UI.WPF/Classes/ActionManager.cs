@@ -13,9 +13,25 @@ namespace SAM.Geometry.UI.WPF
             actions = new List<IAction>();
         }
 
-        public IEnumerable<T> GetActions<T>()
+        public List<T> GetActions<T>() where T:IAction
         {
-            return actions?.OfType<T>();
+            IEnumerable<T> ts = actions?.OfType<T>();
+            if(ts == null)
+            {
+                return null;
+            }
+
+            return ts.ToList();
+        }
+
+        public T GetAction<T>() where T: IAction
+        {
+            if(actions == null || actions.Count == 0)
+            {
+                return default(T);
+            }
+
+            return actions.OfType<T>().FirstOrDefault();
         }
 
 
@@ -24,10 +40,12 @@ namespace SAM.Geometry.UI.WPF
             if (action is HighlightAction)
             {
                 Update_Highlight(action as dynamic);
+                return true;
             }
             else if (action is SelectAction)
             {
                 Update_Select(action as dynamic);
+                return true;
             }
 
             return false;
@@ -38,10 +56,12 @@ namespace SAM.Geometry.UI.WPF
             if (action is HighlightAction)
             {
                 Apply_Highlight(action as dynamic);
+                return true;
             }
             else if (action is SelectAction)
             {
                 Apply_Select(action as dynamic);
+                return true;
             }
 
             return false;
@@ -49,16 +69,43 @@ namespace SAM.Geometry.UI.WPF
 
         public bool Cancel<T>() where T : IAction
         {
-            if (typeof(T) == typeof(HighlightAction))
+            return Cancel(typeof(T));
+        }
+
+        private bool Cancel(System.Type type)
+        {
+            if (type == typeof(HighlightAction))
             {
                 Cancel_Highlight();
+                return true;
             }
-            else if (typeof(T) == typeof(SelectAction))
+            else if (type == typeof(SelectAction))
             {
                 Cancel_Select();
+                return true;
             }
 
             return false;
+        }
+
+        public bool Cancel()
+        {
+            List<System.Type> types = actions?.ConvertAll(x => x.GetType());
+            if (types == null || types.Count == 0)
+            {
+                return true;
+            }
+
+            bool result = true;
+            foreach (System.Type type in types.Distinct())
+            {
+                if (!Cancel(type))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
         }
 
 
@@ -132,17 +179,22 @@ namespace SAM.Geometry.UI.WPF
 
         private void Cancel_Highlight()
         {
+            bool cancelled = false;
             IEnumerable<HighlightAction> highlightActions = GetActions<HighlightAction>();
             if (highlightActions != null)
             {
                 foreach (HighlightAction highlightAction_Temp in highlightActions)
                 {
+                    cancelled = true;
                     highlightAction_Temp.Highlight(false);
                     actions.Remove(highlightAction_Temp);
                 }
             }
 
-            Update_Select(true);
+            if(cancelled)
+            {
+                Update_Select(true);
+            }
         }
 
         private void Update_Select(SelectAction selectAction)

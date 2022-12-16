@@ -5,6 +5,11 @@ namespace SAM.Geometry.UI.WPF
 {
     public class SelectAction : Visual3DsAction
     {
+        public SelectAction()
+        {
+
+        }
+        
         public SelectAction(Visual3D visual3D)
             :base(visual3D)
         {
