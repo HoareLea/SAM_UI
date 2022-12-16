@@ -1,6 +1,8 @@
 ﻿using SAM.Core;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -63,7 +65,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 MenuItem menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
-                menuItem.Header = "Edit";
+                menuItem.Header = "Edit Space";
                 menuItem.Click += MenuItem_Edit_Click;
                 menuItem.Tag = jSAMObject;
                 ContextMenu.Items.Add(menuItem);
@@ -74,6 +76,21 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Click += MenuItem_EditZones_Click;
                 menuItem.Tag = jSAMObject;
                 ContextMenu.Items.Add(menuItem);
+
+                TreeViewItem treeViewItem_Zone = treeViewItem.Parent as TreeViewItem;
+                if(treeViewItem_Zone != null)
+                {
+                    Zone zone = treeViewItem_Zone.Tag as Zone;
+                    if(zone != null)
+                    {
+                        menuItem = new MenuItem();
+                        menuItem.Name = "MenuItem_RemoveSpaceZone";
+                        menuItem.Header = "Remove From Zone";
+                        menuItem.Click += MenuItem_RemoveSpaceZone_Click;
+                        menuItem.Tag = new List<IJSAMObject>() { jSAMObject, zone };
+                        ContextMenu.Items.Add(menuItem);
+                    }
+                }
             }
             else if(jSAMObject is Panel)
             {
@@ -143,6 +160,35 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        private void MenuItem_RemoveSpaceZone_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            IEnumerable enumerable = menuItem.Tag as IEnumerable;
+            if (enumerable == null)
+            {
+                return;
+            }
+
+            Space space = enumerable.OfType<Space>().FirstOrDefault();
+            if(space == null)
+            {
+                return;
+            }
+
+            Zone zone = enumerable.OfType<Zone>().FirstOrDefault();
+            if(zone == null)
+            {
+                return;
+            }
+
+            Modify.RemoveSpaceZone(uIAnalyticalModel, space, zone);
+        }
+
         private void MenuItem_EditZones_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -163,7 +209,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void MenuItem_Duplicate_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void MenuItem_Duplicate_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             if (menuItem == null)
@@ -183,7 +229,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void MenuItem_Remove_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void MenuItem_Remove_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             if (menuItem == null)
@@ -203,7 +249,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void MenuItem_Create_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void MenuItem_Create_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             if (menuItem == null)
@@ -218,7 +264,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void MenuItem_Edit_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void MenuItem_Edit_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             if(menuItem == null)
@@ -552,7 +598,7 @@ namespace SAM.Analytical.UI.WPF
             return result;
         }
 
-        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             System.Windows.Window window = Geometry.UI.WPF.Query.Window(this);
             if(window != null)
