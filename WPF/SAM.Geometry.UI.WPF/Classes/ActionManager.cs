@@ -141,6 +141,8 @@ namespace SAM.Geometry.UI.WPF
                     actions.Remove(highlightAction_Temp);
                 }
             }
+
+            Update_Select(true);
         }
 
         private void Update_Select(SelectAction selectAction)
@@ -159,12 +161,40 @@ namespace SAM.Geometry.UI.WPF
                 }
             }
 
-            IEnumerable<SelectAction> highlightActions = GetActions<SelectAction>();
-            if (highlightActions != null)
+            IEnumerable<SelectAction> selectActions = GetActions<SelectAction>();
+            if (selectActions != null)
             {
-                foreach (SelectAction selectAction_Temp in highlightActions)
+                foreach (SelectAction selectAction_Temp in selectActions)
                 {
                     visual3Ds_Temp = selectAction_Temp.Visual3Ds;
+                    actions.Remove(selectAction_Temp);
+
+                    if (visual3Ds_Temp != null)
+                    {
+                        foreach (Visual3D visual3D in visual3Ds_Temp)
+                        {
+                            if (!visual3Ds.Contains(visual3D))
+                            {
+                                visual3Ds.Add(visual3D);
+                            }
+                        }
+                    }
+                }
+            }
+
+            Update_Select(true);
+        }
+
+        private void Update_Select(bool select = true)
+        {
+            List<Visual3D> visual3Ds = new List<Visual3D>();
+
+            IEnumerable<SelectAction> selectActions = GetActions<SelectAction>();
+            if (selectActions != null)
+            {
+                foreach (SelectAction selectAction_Temp in selectActions)
+                {
+                    List<Visual3D> visual3Ds_Temp = selectAction_Temp.Visual3Ds;
                     actions.Remove(selectAction_Temp);
 
                     if (visual3Ds_Temp != null)
@@ -183,7 +213,7 @@ namespace SAM.Geometry.UI.WPF
             if (visual3Ds != null && visual3Ds.Count != 0)
             {
                 SelectAction selectAction_Temp = new SelectAction(visual3Ds);
-                selectAction_Temp.Select(true);
+                selectAction_Temp.Select(select);
                 actions.Add(selectAction_Temp);
             }
         }

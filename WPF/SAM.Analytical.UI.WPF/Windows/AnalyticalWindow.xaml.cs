@@ -914,6 +914,8 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem.Header = "Settings";
             menuItem.Click += MenuItem_Settings_TabItem_Click;
             contextMenu.Items.Add(menuItem);
+
+            contextMenu.IsOpen = true;
         }
 
         private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)

@@ -26,6 +26,8 @@ namespace SAM.Geometry.UI.WPF
 
         public Guid Guid { get; set; }
 
+        private ActionManager actionManager;
+
         private Visual3D visual3D_Highlight;
         private List<Visual3D> visual3Ds_Selected;
 
@@ -38,6 +40,8 @@ namespace SAM.Geometry.UI.WPF
             uIGeometryObjectModel = new UIGeometryObjectModel();
 
             helixViewport3D.Loaded += helixViewport3D_Loaded;
+
+            actionManager = new ActionManager();
         }
 
         private void helixViewport3D_Loaded(object sender, RoutedEventArgs e)
