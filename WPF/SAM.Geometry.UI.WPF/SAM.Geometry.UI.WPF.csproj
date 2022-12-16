@@ -62,6 +62,10 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ActionManager.cs" />
+    <Compile Include="Classes\Action\SelectAction.cs" />
+    <Compile Include="Classes\Action\HighlightAction.cs" />
+    <Compile Include="Classes\Action\Visual3DsAction.cs" />
     <Compile Include="Classes\UIGeometryObjectModel.cs" />
     <Page Include="Controls\ViewportControl.xaml">
       <SubType>Designer</SubType>
@@ -88,6 +92,7 @@
     <Compile Include="Delegates\ObjectDoubleClickedEventHandler.cs" />
     <Compile Include="Delegates\ObjectContextMenuOpeningEventHandler.cs" />
     <Compile Include="Delegates\ObjectHooveredEventHandler.cs" />
+    <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Modify\Opacity.cs" />
     <Compile Include="Modify\Select.cs" />
     <Compile Include="Modify\Highlight.cs" />
@@ -154,8 +159,6 @@
   <ItemGroup>
     <None Include="Resources\SAM_Open.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
