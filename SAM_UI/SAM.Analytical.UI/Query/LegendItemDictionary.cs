@@ -9,7 +9,7 @@ namespace SAM.Analytical.UI
 {
     public static partial class Query
     {
-        public static Dictionary<Guid, LegendItem> LegendItemDictionary(this IEnumerable<Space> spaces, AdjacencyCluster adjacencyCluster = null, ViewSettings viewSettings = null)
+        public static Dictionary<Guid, LegendItem> LegendItemDictionary(this IEnumerable<Space> spaces, AdjacencyCluster adjacencyCluster = null, ViewSettings viewSettings = null, LegendItem undefinedLegendItem = null)
         {
             if(spaces == null)
             {
@@ -111,6 +111,19 @@ namespace SAM.Analytical.UI
                             result[keyValuePair.Key.Guid] = new LegendItem(color, @string);
                         }
                     }
+                }
+            }
+
+            if(undefinedLegendItem != null)
+            {
+                foreach(Space space in spaces)
+                {
+                    if(space == null || result.ContainsKey(space.Guid))
+                    {
+                        continue;
+                    }
+
+                    result[space.Guid] = undefinedLegendItem;
                 }
             }
 

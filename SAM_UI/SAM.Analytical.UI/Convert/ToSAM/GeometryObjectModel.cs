@@ -163,7 +163,7 @@ namespace SAM.Analytical.UI
             {
                 if(spaces != null && spaces.Count != 0)
                 {
-                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings);
+                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings, Query.UndefinedLegendItem());
                     if(legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                     {
                         legend.Refresh(dictionary_LegendItem.Values, true, true);
@@ -316,7 +316,7 @@ namespace SAM.Analytical.UI
                         dictionary_Space[space] = face3Ds;
                     }
 
-                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(dictionary_Space.Keys, adjacencyCluster, twoDimensionalViewSettings);
+                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(dictionary_Space.Keys, adjacencyCluster, twoDimensionalViewSettings, Query.UndefinedLegendItem());
                     if (legend != null)
                     {
                         legend.Refresh(dictionary_LegendItem.Values, true, true);
