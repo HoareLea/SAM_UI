@@ -492,7 +492,7 @@ namespace SAM.Core.Mollier.UI.Controls
             new_label.SmartLabelStyle.Enabled = false;
             new_label.Points.AddXY(X + x, Y + y);
             new_label.Label = LabelContent;
-            new_label.LabelAngle = chartType == ChartType.Mollier ? Mollier_angle : Psychrometric_angle;
+            new_label.LabelAngle = chartType == ChartType.Mollier ? Mollier_angle % 90 : Psychrometric_angle % 90;
             new_label.LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, chartParameterType, chartDataType);
             if (color != null)
             {
