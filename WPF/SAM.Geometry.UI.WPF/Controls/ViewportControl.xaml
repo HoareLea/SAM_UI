@@ -7,7 +7,7 @@
              xmlns:WPF="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF" x:Class="SAM.Geometry.UI.WPF.ViewportControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+    <Grid x:Name="grid">
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <HelixToolkit:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />

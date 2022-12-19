@@ -28,6 +28,8 @@ namespace SAM.Geometry.UI.WPF
 
         private ActionManager actionManager;
 
+        private RectangularSelector rectangularSelector;
+
         public ViewportControl()
         {
             InitializeComponent();
@@ -39,6 +41,7 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.Loaded += helixViewport3D_Loaded;
 
             actionManager = new ActionManager();
+            rectangularSelector = new RectangularSelector(grid);
         }
 
         private void helixViewport3D_Loaded(object sender, RoutedEventArgs e)
