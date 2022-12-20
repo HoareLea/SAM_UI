@@ -36,7 +36,7 @@ namespace SAM.Geometry.UI.WPF
             lines = new List<Line>();
         }
 
-        private bool IsValid()
+        public bool IsActive()
         {
             if (startPoint == null || endPoint == null || !startPoint.HasValue || !endPoint.HasValue)
             {
@@ -54,6 +54,21 @@ namespace SAM.Geometry.UI.WPF
             }
 
             return true;
+        }
+
+        public Planar.Rectangle2D Rectangle2D
+        {
+            get
+            {
+                if(!IsActive())
+                {
+                    return null;
+                }
+
+                return Planar.Create.Rectangle2D(new Planar.Point2D[] { new Planar.Point2D(startPoint.Value.X, startPoint.Value.Y), new Planar.Point2D(endPoint.Value.X, endPoint.Value.Y) });
+            }
+
+
         }
 
         private void Panel_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -81,7 +96,7 @@ namespace SAM.Geometry.UI.WPF
                 startPoint = null;
                 endPoint = null;
 
-                if (IsValid())
+                if (IsActive())
                 {
                     Selected?.Invoke(this, new EventArgs());
                 }
@@ -91,7 +106,7 @@ namespace SAM.Geometry.UI.WPF
 
             endPoint = e.GetPosition(panel);
 
-            if (!IsValid())
+            if (!IsActive())
             {
                 return;
             }
