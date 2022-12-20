@@ -67,6 +67,7 @@
     <Compile Include="Classes\Action\HighlightAction.cs" />
     <Compile Include="Classes\Action\Visual3DsAction.cs" />
     <Compile Include="Classes\RectangularSelector.cs" />
+    <Compile Include="Classes\SelectionRequestedEventArgs.cs" />
     <Compile Include="Classes\ZoomRequestedEventArgs.cs" />
     <Compile Include="Classes\UIGeometryObjectModel.cs" />
     <Page Include="Controls\ViewportControl.xaml">
@@ -93,6 +94,7 @@
     <Compile Include="Create\Point3DCollection.cs" />
     <Compile Include="Delegates\ObjectDoubleClickedEventHandler.cs" />
     <Compile Include="Delegates\ObjectContextMenuOpeningEventHandler.cs" />
+    <Compile Include="Delegates\SelectionRequestedEventHandler.cs" />
     <Compile Include="Delegates\ZoomRequestedEventHandler.cs" />
     <Compile Include="Delegates\ObjectHooveredEventHandler.cs" />
     <Compile Include="Enums\Mode.cs" />

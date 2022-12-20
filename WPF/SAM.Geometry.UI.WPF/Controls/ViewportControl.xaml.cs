@@ -127,6 +127,33 @@ namespace SAM.Geometry.UI.WPF
             return actionManager.Apply(new SelectAction(visual3D));
         }
 
+        public bool Select<T>(IEnumerable<T> sAMObjects) where T : SAMObject
+        {
+            if (sAMObjects == null)
+            {
+                return false;
+            }
+
+            List<Visual3D> visual3Ds = new List<Visual3D>();
+            foreach(T t in sAMObjects)
+            {
+                Visual3D visual3D = GetVisual3D<SAMObject>(t.Guid);
+                if (visual3D == null)
+                {
+                    continue;
+                }
+
+                visual3Ds.Add(visual3D);
+            }
+
+            if(visual3Ds == null || visual3Ds.Count == 0)
+            {
+                return false;
+            }
+
+            return actionManager.Apply(new SelectAction(visual3Ds));
+        }
+
         public bool Zoom(SAMObject sAMObject)
         {
             if (sAMObject == null)
