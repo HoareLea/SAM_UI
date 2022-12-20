@@ -287,11 +287,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 tabControl.SelectedItem = tabItem;
             }
 
-            UpdateUIGeometrySettings(tabControl, analyticalModel);
-
-            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
-            uIAnalyticalModel.JSAMObject = analyticalModel;
-            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            SetUIGeometrySettings(tabControl, analyticalModel);
         }
 
         private void RibbonButton_View_NewSectionView_Click(object sender, RoutedEventArgs e)
@@ -325,11 +321,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 tabControl.SelectedItem = tabItem;
             }
 
-            UpdateUIGeometrySettings(tabControl, analyticalModel);
-
-            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
-            uIAnalyticalModel.JSAMObject = analyticalModel;
-            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            SetUIGeometrySettings(tabControl, analyticalModel);
         }
 
         private void RibbonButton_Tools_ViewGeometry_Click(object sender, RoutedEventArgs e)
@@ -758,11 +750,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
 
-            UpdateUIGeometrySettings(tabControl, analyticalModel);
-
-            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
-            uIAnalyticalModel.JSAMObject = analyticalModel;
-            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            SetUIGeometrySettings(tabControl, analyticalModel);
 
             uIAnalyticalModel.SaveAs();
         }
@@ -776,11 +764,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
 
-            UpdateUIGeometrySettings(tabControl, analyticalModel);
-
-            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
-            uIAnalyticalModel.JSAMObject = analyticalModel;
-            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            SetUIGeometrySettings(tabControl, analyticalModel);
 
             if (uIAnalyticalModel.Save())
             {
@@ -1161,6 +1145,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             return result;
         }
 
+        private void SetUIGeometrySettings(TabControl tabControl, AnalyticalModel analyticalModel, bool setViewportControlCamera = false)
+        {
+            UpdateUIGeometrySettings(tabControl, analyticalModel, setViewportControlCamera);
+
+            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+        }
+
         private void SetDefaultViewSettings()
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -1436,7 +1429,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            SetActiveGuid();
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
             Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
@@ -1453,7 +1447,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            SetActiveGuid();
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
             Modify.EnableViewSettings(uIAnalyticalModel, viewportControl.Guid, enabled);
         }
 
@@ -1470,7 +1465,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            SetActiveGuid();
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
             Modify.DuplicateViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
@@ -1487,7 +1483,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            SetActiveGuid();
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
             Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
     }
