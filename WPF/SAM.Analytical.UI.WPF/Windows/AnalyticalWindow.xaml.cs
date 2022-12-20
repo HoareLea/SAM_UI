@@ -258,7 +258,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_View_Close_Click(object sender, RoutedEventArgs e)
         {
-            RemoveViewSettings();
+            EnableViewSettings(false);
         }
 
         private void RibbonButton_View_ViewSettings_Click(object sender, RoutedEventArgs e)
@@ -964,7 +964,9 @@ namespace SAM.Analytical.UI.WPF.Windows
                 tabItem.ContextMenu = contextMenu;
             }
 
-            tabItem.ContextMenu.Items.Clear();
+            contextMenu.Tag = tabItem;
+
+            contextMenu.Items.Clear();
 
             MenuItem menuItem = null;
 
@@ -997,7 +999,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            TabItem tabItem = (menuItem.Parent as ContextMenu)?.PlacementTarget as TabItem;
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
             if (tabItem == null)
             {
                 return;
@@ -1014,7 +1016,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            TabItem tabItem = (menuItem.Parent as ContextMenu)?.PlacementTarget as TabItem;
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
             if (tabItem == null)
             {
                 return;
@@ -1031,14 +1033,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            TabItem tabItem = (menuItem.Parent as ContextMenu)?.PlacementTarget as TabItem;
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
             if(tabItem == null)
             {
                 return;
             }
 
-
-            RemoveViewSettings(tabItem);
+            EnableViewSettings(tabItem, false);
         }
 
         private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel)
@@ -1057,6 +1058,14 @@ namespace SAM.Analytical.UI.WPF.Windows
                 {
                     foreach (IViewSettings viewSettings in viewSettingsList)
                     {
+                        if(viewSettings is ViewSettings)
+                        {
+                            if(!((ViewSettings)viewSettings).Enabled)
+                            {
+                                continue;
+                            }
+                        }
+                        
                         TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, viewSettings);
                         if (tabItem != null)
                         {
@@ -1144,7 +1153,9 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
 
-            result.SetViewSettings(viewSettingsList);
+
+            viewSettingsList.ForEach(x => result.AddViewSettings(x));
+            //result.SetViewSettings(viewSettingsList);
             result.ActiveGuid = guid;
 
             return result;
@@ -1179,7 +1190,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void Reload(bool setViewportControlCamera = false)
         {
             SetEnabled();
-            SetActiveGuid();
+            //SetActiveGuid();
 
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
 
@@ -1293,7 +1304,6 @@ namespace SAM.Analytical.UI.WPF.Windows
         }
 
 
-
         private void EditZones(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
         {
             Guid guid = GetActiveGuid();
@@ -1396,6 +1406,23 @@ namespace SAM.Analytical.UI.WPF.Windows
             RemoveViewSettings(tabItem);
         }
 
+        private void EnableViewSettings(bool enabled)
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            EnableViewSettings(tabItem, enabled);
+        }
+
         private void RemoveViewSettings(TabItem tabItem)
         {
             if (tabItem == null)
@@ -1409,7 +1436,25 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            SetActiveGuid();
             Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void EnableViewSettings(TabItem tabItem, bool enabled)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            SetActiveGuid();
+            Modify.EnableViewSettings(uIAnalyticalModel, viewportControl.Guid, enabled);
         }
 
         private void DuplicateViewSettings(TabItem tabItem)
@@ -1425,6 +1470,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            SetActiveGuid();
             Modify.DuplicateViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
@@ -1441,6 +1487,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            SetActiveGuid();
             Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
     }

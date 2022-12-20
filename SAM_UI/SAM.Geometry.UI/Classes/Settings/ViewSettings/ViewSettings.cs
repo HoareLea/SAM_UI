@@ -12,6 +12,7 @@ namespace SAM.Geometry.UI
         private Types types;
         private Legend legend;
         private Camera camera;
+        private bool enabled = true;
 
         public ViewSettings(Guid guid, string name)
             :base(guid, name)
@@ -56,6 +57,8 @@ namespace SAM.Geometry.UI
                 {
                     camera = viewSettings.camera.Clone();
                 }
+
+                enabled = viewSettings.enabled;
             }
         }
 
@@ -85,6 +88,8 @@ namespace SAM.Geometry.UI
                 {
                     camera = viewSettings.camera.Clone();
                 }
+
+                enabled = viewSettings.enabled;
             }
         }
 
@@ -114,6 +119,8 @@ namespace SAM.Geometry.UI
                 {
                     camera = viewSettings.camera.Clone();
                 }
+
+                enabled = viewSettings.enabled;
             }
         }
 
@@ -236,6 +243,11 @@ namespace SAM.Geometry.UI
                 camera = Core.Query.IJSAMObject(jObject.Value<JObject>("Camera")) as Camera;
             }
 
+            if(jObject.ContainsKey("Enabled"))
+            {
+                enabled = jObject.Value<bool>("Enabled");
+            }
+
             return true;
         }
 
@@ -262,6 +274,8 @@ namespace SAM.Geometry.UI
             {
                 jObject.Add("Camera", camera.ToJObject());
             }
+
+            jObject.Add("Enabled", enabled);
 
             return jObject;
         }
@@ -303,6 +317,19 @@ namespace SAM.Geometry.UI
                 {
                     camera = null;
                 }
+            }
+        }
+
+        public bool Enabled
+        {
+            get
+            {
+                return enabled;
+            }
+
+            set
+            {
+                enabled = value;
             }
         }
     }

@@ -18,20 +18,30 @@ namespace SAM.Analytical.UI.WPF
             }
 
             IViewSettings viewSettings = uIGeometrySettings.GetViewSettings(guid);
-            if(viewSettings == null)
+            if (viewSettings == null)
             {
                 return;
             }
 
             string name = string.IsNullOrWhiteSpace(viewSettings.Name) ? viewSettings.DefaultName() : viewSettings.Name;
-            name = string.Format("New + {0}", name);
+            name = string.Format("New {0}", name);
 
+            using (Core.Windows.Forms.TextBoxForm<string> textBoxForm = new Core.Windows.Forms.TextBoxForm<string>("Duplicate View", "Name"))
+            {
+                textBoxForm.Value = name;
+                if (textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
 
-            if(viewSettings is AnalyticalTwoDimensionalViewSettings)
+                name = textBoxForm.Value;
+            }
+
+            if (viewSettings is AnalyticalTwoDimensionalViewSettings)
             {
                 viewSettings = new AnalyticalTwoDimensionalViewSettings(System.Guid.NewGuid(), name, (AnalyticalTwoDimensionalViewSettings)viewSettings);
             }
-            else if(viewSettings is AnalyticalThreeDimensionalViewSettings)
+            else if (viewSettings is AnalyticalThreeDimensionalViewSettings)
             {
                 viewSettings = new AnalyticalThreeDimensionalViewSettings(System.Guid.NewGuid(), name, (AnalyticalThreeDimensionalViewSettings)viewSettings);
             }
@@ -41,7 +51,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
 
-            if(!uIGeometrySettings.AddViewSettings(viewSettings))
+            if (!uIGeometrySettings.AddViewSettings(viewSettings))
             {
                 return;
             };

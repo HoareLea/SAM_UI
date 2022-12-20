@@ -85,9 +85,11 @@
     <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
       <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modify\ActivateViewSettings.cs" />
     <Compile Include="Modify\RemoveSpaceZone.cs" />
     <Compile Include="Modify\EditSpaceZone.cs" />
     <Compile Include="Modify\DuplicateViewSettings.cs" />
+    <Compile Include="Modify\EnableViewSettings.cs" />
     <Compile Include="Windows\ElevationControl.xaml.cs">
       <DependentUpon>ElevationControl.xaml</DependentUpon>
     </Compile>

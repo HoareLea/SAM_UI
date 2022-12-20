@@ -251,9 +251,23 @@ namespace SAM.Analytical.UI.WPF
                 MenuItem menuItem = null;
 
                 menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Open_TabItem";
+                menuItem.Header = "Open";
+                menuItem.Click += MenuItem_Open_TabItem_Click;
+                menuItem.Tag = jSAMObject;
+                contextMenu_Views.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Close_TabItem";
                 menuItem.Header = "Close";
                 menuItem.Click += MenuItem_Close_TabItem_Click;
+                menuItem.Tag = jSAMObject;
+                contextMenu_Views.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Remove_TabItem";
+                menuItem.Header = "Remove";
+                menuItem.Click += MenuItem_Remove_TabItem_Click;
                 menuItem.Tag = jSAMObject;
                 contextMenu_Views.Items.Add(menuItem);
 
@@ -273,6 +287,41 @@ namespace SAM.Analytical.UI.WPF
 
                 contextMenu_Views.IsOpen = true;
             }
+        }
+
+        private void MenuItem_Remove_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+            if (viewSettings == null)
+            {
+                return;
+            }
+
+            Modify.RemoveViewSettings(uIAnalyticalModel, viewSettings.Guid);
+        }
+
+        private void MenuItem_Open_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+            if (viewSettings == null)
+            {
+                return;
+            }
+
+            Modify.EnableViewSettings(uIAnalyticalModel, viewSettings.Guid, true);
+            Modify.ActivateViewSettings(uIAnalyticalModel, viewSettings.Guid);
         }
 
         private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)
@@ -323,7 +372,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            Modify.RemoveViewSettings(uIAnalyticalModel, viewSettings.Guid);
+            Modify.EnableViewSettings(uIAnalyticalModel, viewSettings.Guid, false);
         }
 
         private void MenuItem_Select_Click(object sender, RoutedEventArgs e)
@@ -826,10 +875,29 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 TreeViewItem treeViewItem_ViewSettings = new TreeViewItem() { Header = new TextBlock() { Text = name_Temp }, Tag = viewSettings };
+                treeViewItem_ViewSettings.PreviewMouseDoubleClick += TreeViewItem_ViewSettings_PreviewMouseDoubleClick;
                 treeViewItem_Views.Items.Add(treeViewItem_ViewSettings);
             }
 
             treeViewItem_AnalyticalModel.ExpandSubtree();
+        }
+
+        private void TreeViewItem_ViewSettings_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            if (treeViewItem == null)
+            {
+                return;
+            }
+
+            ViewSettings viewSettings = treeViewItem.Tag as ViewSettings;
+            if (viewSettings == null)
+            {
+                return;
+            }
+
+            Modify.EnableViewSettings(uIAnalyticalModel, viewSettings.Guid, true);
+            Modify.ActivateViewSettings(uIAnalyticalModel, viewSettings.Guid);
         }
 
         private List<object> GetExpandedTags(ItemCollection itemCollection)
