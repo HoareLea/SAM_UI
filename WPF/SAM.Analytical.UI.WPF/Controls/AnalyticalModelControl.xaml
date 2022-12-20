@@ -19,7 +19,7 @@
             </TabItem>
             <TabItem Header="Views">
                 <Grid Background="#FFE5E5E5">
-                    <TreeView Margin="0,0,0,0" Name="treeView_Views">
+                    <TreeView Margin="0,0,0,0" Name="treeView_Views" ContextMenuOpening="treeView_Views_ContextMenuOpening">
                         <TreeView.ContextMenu>
                             <ContextMenu Name ="contextMenu_Views"></ContextMenu>
                         </TreeView.ContextMenu>

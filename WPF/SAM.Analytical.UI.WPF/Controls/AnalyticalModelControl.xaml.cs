@@ -44,7 +44,6 @@ namespace SAM.Analytical.UI.WPF
 
         private void treeView_Model_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-
             contextMenu_Model.Items.Clear();
 
             TreeViewItem treeViewItem = (e.Source as TextBlock)?.Parent as TreeViewItem;
@@ -227,6 +226,104 @@ namespace SAM.Analytical.UI.WPF
                 e.Handled = true;
                 return;
             }
+        }
+
+        private void treeView_Views_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            contextMenu_Views.Items.Clear();
+
+            TreeViewItem treeViewItem = (e.Source as TextBlock)?.Parent as TreeViewItem;
+            if (treeViewItem == null)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
+            if (jSAMObject == null)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            if (jSAMObject is ViewSettings)
+            {
+                MenuItem menuItem = null;
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Close_TabItem";
+                menuItem.Header = "Close";
+                menuItem.Click += MenuItem_Close_TabItem_Click;
+                menuItem.Tag = jSAMObject;
+                contextMenu_Views.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Duplicate_TabItem";
+                menuItem.Header = "Duplicate";
+                menuItem.Click += MenuItem_Duplicate_TabItem_Click;
+                menuItem.Tag = jSAMObject;
+                contextMenu_Views.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Settings_TabItem";
+                menuItem.Header = "Settings";
+                menuItem.Click += MenuItem_Settings_TabItem_Click;
+                menuItem.Tag = jSAMObject;
+                contextMenu_Views.Items.Add(menuItem);
+
+                contextMenu_Views.IsOpen = true;
+            }
+        }
+
+        private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+            if (viewSettings == null)
+            {
+                return;
+            }
+
+            Modify.EditViewSettings(uIAnalyticalModel, viewSettings.Guid);
+        }
+
+        private void MenuItem_Duplicate_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+            if (viewSettings == null)
+            {
+                return;
+            }
+
+            Modify.DuplicateViewSettings(uIAnalyticalModel, viewSettings.Guid);
+        }
+
+        private void MenuItem_Close_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+            if (viewSettings == null)
+            {
+                return;
+            }
+
+            Modify.RemoveViewSettings(uIAnalyticalModel, viewSettings.Guid);
         }
 
         private void MenuItem_Select_Click(object sender, RoutedEventArgs e)
