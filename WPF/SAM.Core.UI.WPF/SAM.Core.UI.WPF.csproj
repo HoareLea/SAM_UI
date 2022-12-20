@@ -75,6 +75,7 @@
     <Compile Include="Controls\LegendControl.xaml.cs">
       <DependentUpon>LegendControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Query\Visual3D.cs" />
     <Compile Include="Windows\LegendWindow.xaml.cs">
       <DependentUpon>LegendWindow.xaml</DependentUpon>
     </Compile>

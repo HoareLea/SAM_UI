@@ -65,36 +65,65 @@ namespace SAM.Analytical.UI
                 max = doubles.Max();
                 min = doubles.Min();
                 double step = (max - min) / doubles.Count;
-                List<Color> colors = Core.Create.Colors(System.Drawing.Color.Red, doubles.Count + 1);
 
-                int index = 0;
-                double current = min;
-                while(current <= max)
+                Color color_Start = System.Drawing.Color.Red;
+
+                if (step == 0)
                 {
-                    double next = current + step;
                     foreach (KeyValuePair<double, string> keyValuePair_Double in dictionary_Doubles)
                     {
-                        if(keyValuePair_Double.Key >= current && keyValuePair_Double.Key < next)
+                        if (keyValuePair_Double.Key == max || keyValuePair_Double.Key == min)
                         {
                             foreach (KeyValuePair<Space, object> keyValuePair_Space in dictionary_Values)
                             {
-                                if(!(keyValuePair_Space.Value is double))
+                                if (!(keyValuePair_Space.Value is double))
                                 {
                                     continue;
                                 }
 
                                 double value = (double)keyValuePair_Space.Value;
-                                if(value == keyValuePair_Double.Key)
+                                if (value == keyValuePair_Double.Key)
                                 {
-                                    result[keyValuePair_Space.Key.Guid] = new LegendItem(colors[index], keyValuePair_Double.Value) {Editable = editable };
+                                    result[keyValuePair_Space.Key.Guid] = new LegendItem(color_Start, keyValuePair_Double.Value) { Editable = editable };
                                 }
 
                             }
                         }
                     }
+                }
+                else
+                {
+                    List<Color> colors = Core.Create.Colors(color_Start, doubles.Count + 1);
 
-                    current += step;
-                    index++;
+                    int index = 0;
+                    double current = min;
+                    while (current <= max)
+                    {
+                        double next = current + step;
+                        foreach (KeyValuePair<double, string> keyValuePair_Double in dictionary_Doubles)
+                        {
+                            if (keyValuePair_Double.Key >= current && keyValuePair_Double.Key < next)
+                            {
+                                foreach (KeyValuePair<Space, object> keyValuePair_Space in dictionary_Values)
+                                {
+                                    if (!(keyValuePair_Space.Value is double))
+                                    {
+                                        continue;
+                                    }
+
+                                    double value = (double)keyValuePair_Space.Value;
+                                    if (value == keyValuePair_Double.Key)
+                                    {
+                                        result[keyValuePair_Space.Key.Guid] = new LegendItem(colors[index], keyValuePair_Double.Value) { Editable = editable };
+                                    }
+
+                                }
+                            }
+                        }
+
+                        current += step;
+                        index++;
+                    }
                 }
             }
 

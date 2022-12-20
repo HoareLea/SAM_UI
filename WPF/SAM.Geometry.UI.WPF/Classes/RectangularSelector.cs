@@ -17,7 +17,7 @@ namespace SAM.Geometry.UI.WPF
         private Point? startPoint;
         private Point? endPoint;
 
-        private System.Windows.Media.Brush stroke = System.Windows.Media.Brushes.Blue;
+        private System.Windows.Media.Brush stroke = System.Windows.Media.Brushes.Black;
         private double strokeThickness = 2;
         private System.Windows.Media.DoubleCollection strokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 2, 2 });
         private RectangularSelectorMode rectangularSelectorMode = RectangularSelectorMode.Extended;

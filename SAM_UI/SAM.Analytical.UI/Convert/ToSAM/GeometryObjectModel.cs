@@ -359,32 +359,6 @@ namespace SAM.Analytical.UI
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
 
-                        //if (color == null || !color.HasValue)
-                        //{
-                        //    if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object @object, out string text))
-                        //    {
-                        //        if (Core.Query.TryConvert(@object, out System.Drawing.Color color_Temp))
-                        //        {
-                        //            color = color_Temp.ToMedia();
-                        //        }
-                        //    }
-                        //}
-
-                        //if(color == null || !color.HasValue)
-                        //{
-                        //    color = Query.Color(space, adjacencyCluster, twoDimensionalViewSettings);
-                        //    if (color == null || !color.HasValue)
-                        //    {
-                        //        System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
-                        //        if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
-                        //        {
-                        //            color_Drawing = color_Temp;
-                        //        }
-
-                        //        color = Color.FromRgb(color_Drawing.R, color_Drawing.G, color_Drawing.B);
-                        //    }
-                        //}
-
                         if (color == null || !color.HasValue)
                         {
                             color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();

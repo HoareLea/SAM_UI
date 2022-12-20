@@ -44,23 +44,6 @@ namespace SAM.Geometry.UI.WPF
             rectangularSelector = new RectangularSelector(grid);
         }
 
-        private void helixViewport3D_Loaded(object sender, RoutedEventArgs e)
-        {
-            GeometryObjectModel geometryObjectModel = uIGeometryObjectModel?.JSAMObject;
-
-            if (geometryObjectModel != null && geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings) && viewSettings != null)
-            {
-                Camera camera = viewSettings.Camera;
-                if(camera != null)
-                {
-                    helixViewport3D.Camera.Position = camera.Location.ToMedia3D();
-                    helixViewport3D.Camera.LookDirection = camera.LookDirection.ToMedia3D();
-                }
-            }
-
-            helixViewport3D.Loaded -= helixViewport3D_Loaded;
-        }
-
         public Mode Mode
         {
             get
@@ -89,6 +72,124 @@ namespace SAM.Geometry.UI.WPF
             {
                 SetCamera(value);
             }
+        }
+
+        public UIGeometryObjectModel UIGeometryObjectModel
+        {
+            get
+            {
+                return uIGeometryObjectModel;
+            }
+
+            set
+            {
+                uIGeometryObjectModel = value;
+                if (uIGeometryObjectModel != null)
+                {
+                    uIGeometryObjectModel.Modified -= UIGeometryObjectModel_Modified;
+                    uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
+
+                    uIGeometryObjectModel.Closed -= UIGeometryObjectModel_Closed;
+                    uIGeometryObjectModel.Closed += UIGeometryObjectModel_Closed;
+
+                    uIGeometryObjectModel.Opened -= UIGeometryObjectModel_Opened;
+                    uIGeometryObjectModel.Opened += UIGeometryObjectModel_Opened;
+                }
+
+                Load(uIGeometryObjectModel?.JSAMObject);
+
+                gridLinesVisual3D.Visible = uIGeometryObjectModel?.JSAMObject == null;
+            }
+        }
+
+        public Visual3D GetVisual3D<T>(Guid guid) where T :SAMObject
+        {
+            return Core.UI.WPF.Query.Visual3D<T>(helixViewport3D.Children, guid);
+        }
+
+        public T GetSAMObject<T>(Guid guid) where T : SAMObject
+        {
+            return Core.UI.WPF.Query.JSAMObject<T>(GetVisual3D<T>(guid));
+        }
+
+        public bool Select(SAMObject sAMObject)
+        {
+            if(sAMObject == null)
+            {
+                return false;
+            }
+
+            Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
+            if(visual3D == null)
+            {
+                return false;
+            }
+
+            return actionManager.Apply(new SelectAction(visual3D));
+        }
+
+        public bool Zoom(SAMObject sAMObject)
+        {
+            if (sAMObject == null)
+            {
+                return false;
+            }
+
+            Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
+            if (visual3D == null)
+            {
+                return false;
+            }
+
+            Rect3D rect3D = visual3D.Bounds();
+            if(rect3D == Rect3D.Empty)
+            {
+                return false;
+            }
+
+            helixViewport3D.ZoomExtents(rect3D);
+            return true;
+        }
+
+        public bool Zoom<T>(IEnumerable<T> sAMObjects) where T: SAMObject
+        {
+            if (sAMObjects == null)
+            {
+                return false;
+            }
+
+            List<Rect3D> rect3Ds = new List<Rect3D>();
+            foreach(SAMObject sAMObject in sAMObjects)
+            {
+                Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
+                if (visual3D == null)
+                {
+                    continue;
+                }
+
+                Rect3D rect3D = visual3D.Bounds();
+                if (rect3D == Rect3D.Empty)
+                {
+                    continue;
+                }
+
+                rect3Ds.Add(rect3D);
+            }
+
+
+            Rect3D rect3D_Union = Rect3D.Empty;
+            foreach(Rect3D rect3D_Temp in rect3Ds)
+            {
+                rect3D_Union.Union(rect3D_Temp);
+            }
+
+            if(rect3D_Union == Rect3D.Empty)
+            {
+                return false;
+            }
+
+            helixViewport3D.ZoomExtents(rect3D_Union);
+            return true;
         }
 
         private Camera GetCamera()
@@ -162,49 +263,16 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.ZoomExtents();
         }
 
-        public UIGeometryObjectModel UIGeometryObjectModel
-        {
-            get
-            {
-                return uIGeometryObjectModel;
-            }
-
-            set
-            {
-                uIGeometryObjectModel = value;
-                if (uIGeometryObjectModel != null)
-                {
-                    uIGeometryObjectModel.Modified -= UIGeometryObjectModel_Modified;
-                    uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
-
-                    uIGeometryObjectModel.Closed -= UIGeometryObjectModel_Closed;
-                    uIGeometryObjectModel.Closed += UIGeometryObjectModel_Closed;
-
-                    uIGeometryObjectModel.Opened -= UIGeometryObjectModel_Opened;
-                    uIGeometryObjectModel.Opened += UIGeometryObjectModel_Opened;
-                }
-
-                Load(uIGeometryObjectModel?.JSAMObject);
-
-                gridLinesVisual3D.Visible = uIGeometryObjectModel?.JSAMObject == null;
-            }
-        }
-
-        private void MenuItem_ZoomExtends_Click(object sender, RoutedEventArgs e)
-        {
-            helixViewport3D.ZoomExtents();
-        }
-
         private void Load(GeometryObjectModel geometryObjectModel)
         {
             actionManager.Cancel();
             int count = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) }).Count;
-            if(count > 0)
+            if (count > 0)
             {
                 Core.UI.WPF.Modify.Clear<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) });
             }
 
-            if(geometryObjectModel == null)
+            if (geometryObjectModel == null)
             {
                 return;
             }
@@ -215,23 +283,28 @@ namespace SAM.Geometry.UI.WPF
                 helixViewport3D.Children.Add(modelVisual3D);
             }
 
-            if(count == 0)
+            if (count == 0)
             {
                 helixViewport3D.ZoomExtents();
             }
 
             legendControl.Visibility = Visibility.Hidden;
-            if(geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings))
+            if (geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings))
             {
                 Legend legend = viewSettings.Legend;
                 List<LegendItem> legendItems = legend?.LegendItems;
 
-                if(legend != null && legend.Visible && legendItems != null && legendItems.Count != 0)
+                if (legend != null && legend.Visible && legendItems != null && legendItems.Count != 0)
                 {
                     legendControl.Visibility = Visibility.Visible;
                     legendControl.Legend = legend;
                 }
             }
+        }
+
+        private void MenuItem_ZoomExtends_Click(object sender, RoutedEventArgs e)
+        {
+            helixViewport3D.ZoomExtents();
         }
 
         private void UIGeometryObjectModel_Opened(object sender, EventArgs e)
@@ -344,6 +417,23 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.ContextMenu.Items.Add(menuItem);
 
             ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(helixViewport3D.ContextMenu, e, actionManager.SelectedVisual3Ds()?.FindAll(x => x is ModelVisual3D)?.ConvertAll(x => x as ModelVisual3D)));
+        }
+
+        private void helixViewport3D_Loaded(object sender, RoutedEventArgs e)
+        {
+            GeometryObjectModel geometryObjectModel = uIGeometryObjectModel?.JSAMObject;
+
+            if (geometryObjectModel != null && geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings) && viewSettings != null)
+            {
+                Camera camera = viewSettings.Camera;
+                if (camera != null)
+                {
+                    helixViewport3D.Camera.Position = camera.Location.ToMedia3D();
+                    helixViewport3D.Camera.LookDirection = camera.LookDirection.ToMedia3D();
+                }
+            }
+
+            helixViewport3D.Loaded -= helixViewport3D_Loaded;
         }
     }
 }

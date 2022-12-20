@@ -153,6 +153,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
 
             AnalyticalModelControl.TreeView.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
+            AnalyticalModelControl.ZoomRequested += AnalyticalModelControl_ZoomRequested;
 
 
             ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, null);
@@ -174,6 +175,41 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void AnalyticalModelControl_ZoomRequested(object sender, ZoomRequestedEventArgs e)
+        {
+            SAMObject sAMObject = e.SAMObject;
+            if(sAMObject == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if(viewportControl == null)
+            {
+                return;
+            }
+
+            if(sAMObject is Zone)
+            {
+                AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if(adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                List<Space> spaces = adjacencyCluster.GetSpaces((Zone)sAMObject);
+                if(spaces == null || spaces.Count == 0)
+                {
+                    return;
+                }
+
+                viewportControl.Zoom(spaces);
+                return;
+            }
+
+            viewportControl.Zoom(sAMObject);
         }
 
         private void RibbonButton_Tools_Test_Click(object sender, RoutedEventArgs e)

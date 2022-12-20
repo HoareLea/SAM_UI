@@ -17,6 +17,8 @@ namespace SAM.Analytical.UI.WPF
 
         private UIAnalyticalModel uIAnalyticalModel;
 
+        public event Geometry.UI.WPF.ZoomRequestedEventHandler ZoomRequested;
+
         public AnalyticalModelControl()
         {
              InitializeComponent();
@@ -64,6 +66,13 @@ namespace SAM.Analytical.UI.WPF
             if(jSAMObject is Space)
             {
                 MenuItem menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Zoom";
+                menuItem.Header = "Zoom";
+                menuItem.Click += MenuItem_Zoom_Click;
+                menuItem.Tag = jSAMObject;
+                ContextMenu.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit Space";
                 menuItem.Click += MenuItem_Edit_Click;
@@ -95,6 +104,13 @@ namespace SAM.Analytical.UI.WPF
             else if(jSAMObject is Panel)
             {
                 MenuItem menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Zoom";
+                menuItem.Header = "Zoom";
+                menuItem.Click += MenuItem_Zoom_Click;
+                menuItem.Tag = jSAMObject;
+                ContextMenu.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
@@ -104,6 +120,13 @@ namespace SAM.Analytical.UI.WPF
             else if (jSAMObject is Aperture)
             {
                 MenuItem menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Zoom";
+                menuItem.Header = "Zoom";
+                menuItem.Click += MenuItem_Zoom_Click;
+                menuItem.Tag = jSAMObject;
+                ContextMenu.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
@@ -147,6 +170,13 @@ namespace SAM.Analytical.UI.WPF
             else if (jSAMObject is Zone)
             {
                 MenuItem menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Zoom";
+                menuItem.Header = "Zoom";
+                menuItem.Click += MenuItem_Zoom_Click;
+                menuItem.Tag = jSAMObject;
+                ContextMenu.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
@@ -158,6 +188,23 @@ namespace SAM.Analytical.UI.WPF
                 e.Handled = true;
                 return;
             }
+        }
+
+        private void MenuItem_Zoom_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            SAMObject sAMObject = menuItem.Tag as SAMObject;
+            if (sAMObject == null)
+            {
+                return;
+            }
+
+            ZoomRequested?.Invoke(this, new Geometry.UI.WPF.ZoomRequestedEventArgs(sAMObject));
         }
 
         private void MenuItem_RemoveSpaceZone_Click(object sender, RoutedEventArgs e)
