@@ -1,5 +1,4 @@
-﻿using HelixToolkit.Wpf;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 
 namespace SAM.Core.UI.WPF

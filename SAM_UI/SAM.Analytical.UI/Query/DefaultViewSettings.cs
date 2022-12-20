@@ -1,5 +1,4 @@
-﻿using SAM.Core;
-using SAM.Geometry.UI;
+﻿using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {

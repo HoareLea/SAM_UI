@@ -1,9 +1,4 @@
-﻿using SAM.Core.UI;
-using SAM.Geometry.UI;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
+﻿using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {

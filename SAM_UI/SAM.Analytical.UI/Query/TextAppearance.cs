@@ -1,6 +1,5 @@
 ﻿using SAM.Geometry.UI;
 using System.Linq;
-using System.Windows.Media;
 
 namespace SAM.Analytical.UI
 {

@@ -1,5 +1,4 @@
-﻿using SAM.Core;
-using SAM.Geometry.UI;
+﻿using SAM.Geometry.UI;
 using System.Collections.Generic;
 using System.Linq;
 
