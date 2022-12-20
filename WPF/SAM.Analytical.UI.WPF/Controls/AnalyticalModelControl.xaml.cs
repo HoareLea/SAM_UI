@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Geometry.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,17 +26,26 @@ namespace SAM.Analytical.UI.WPF
              InitializeComponent();
         }
 
-        public TreeView TreeView
+        public TreeView TreeView_Model
         {
             get
             {
-                return TreeView_Main;
+                return treeView_Model;
             }
         }
 
-        private void TreeView_Main_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        public TreeView TreeView_Views
         {
-            ContextMenu.Items.Clear();
+            get
+            {
+                return treeView_Views;
+            }
+        }
+
+        private void treeView_Model_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+
+            contextMenu_Model.Items.Clear();
 
             TreeViewItem treeViewItem = (e.Source as TextBlock)?.Parent as TreeViewItem;
             if(treeViewItem == null)
@@ -53,7 +63,7 @@ namespace SAM.Analytical.UI.WPF
                     menuItem.Header = "Create";
                     menuItem.Click += MenuItem_Create_Click; ;
                     menuItem.Tag = typeof(MechanicalSystemType);
-                    ContextMenu.Items.Add(menuItem);
+                    contextMenu_Model.Items.Add(menuItem);
                 }
             }
 
@@ -71,28 +81,28 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Header = "Zoom";
                 menuItem.Click += MenuItem_Zoom_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Select";
                 menuItem.Header = "Select";
                 menuItem.Click += MenuItem_Select_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit Space";
                 menuItem.Click += MenuItem_Edit_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_EditZones";
                 menuItem.Header = "Edit Zones";
                 menuItem.Click += MenuItem_EditZones_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 TreeViewItem treeViewItem_Zone = treeViewItem.Parent as TreeViewItem;
                 if(treeViewItem_Zone != null)
@@ -105,7 +115,7 @@ namespace SAM.Analytical.UI.WPF
                         menuItem.Header = "Remove From Zone";
                         menuItem.Click += MenuItem_RemoveSpaceZone_Click;
                         menuItem.Tag = new List<IJSAMObject>() { jSAMObject, zone };
-                        ContextMenu.Items.Add(menuItem);
+                        contextMenu_Model.Items.Add(menuItem);
                     }
                 }
             }
@@ -116,21 +126,21 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Header = "Zoom";
                 menuItem.Click += MenuItem_Zoom_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Select";
                 menuItem.Header = "Select";
                 menuItem.Click += MenuItem_Select_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
             }
             else if (jSAMObject is Aperture)
             {
@@ -139,21 +149,21 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Header = "Zoom";
                 menuItem.Click += MenuItem_Zoom_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Select";
                 menuItem.Header = "Select";
                 menuItem.Click += MenuItem_Select_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
             }
             else if (jSAMObject is IMaterial)
             {
@@ -164,21 +174,21 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Remove";
                 menuItem.Header = "Remove";
                 menuItem.Click += MenuItem_Remove_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Duplicate";
                 menuItem.Header = "Duplicate";
                 menuItem.Click += MenuItem_Duplicate_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
             }
             else if (jSAMObject is Profile)
             {
@@ -187,7 +197,7 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
             }
             else if (jSAMObject is Zone)
             {
@@ -196,21 +206,21 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Header = "Zoom";
                 menuItem.Click += MenuItem_Zoom_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Select";
                 menuItem.Header = "Select";
                 menuItem.Click += MenuItem_Select_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Edit";
                 menuItem.Header = "Edit";
                 menuItem.Click += MenuItem_Edit_Click;
                 menuItem.Tag = jSAMObject;
-                ContextMenu.Items.Add(menuItem);
+                contextMenu_Model.Items.Add(menuItem);
             }
             else
             {
@@ -458,7 +468,14 @@ namespace SAM.Analytical.UI.WPF
 
         private void LoadAnalyticalModel(AnalyticalModel analyticalModel)
         {
-            TreeView treeView_AnalyticalModel = TreeView_Main;
+            LoadModel(analyticalModel);
+            LoadViews(analyticalModel);
+        }
+
+
+        private void LoadModel(AnalyticalModel analyticalModel)
+        {
+            TreeView treeView_AnalyticalModel = treeView_Model;
             if (treeView_AnalyticalModel == null)
             {
                 return;
@@ -664,6 +681,58 @@ namespace SAM.Analytical.UI.WPF
                 treeViewItem_MechanicalSystems.IsExpanded = expandedTags.Contains(treeViewItem_MechanicalSystems.Tag);
                 treeViewItem_Zones.IsExpanded = expandedTags.Contains(treeViewItem_Zones.Tag);
             }
+        }
+
+        private void LoadViews(AnalyticalModel analyticalModel)
+        {
+            if (treeView_Views == null)
+            {
+                return;
+            }
+
+            treeView_Views.Items.Clear();
+
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            string name = analyticalModel.Name;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                name = "???";
+            }
+
+            TreeViewItem treeViewItem_AnalyticalModel = new TreeViewItem() { Header = new TextBlock() { Text = name }, Tag = analyticalModel };
+            treeView_Views.Items.Add(treeViewItem_AnalyticalModel);
+
+            TreeViewItem treeViewItem_Views = new TreeViewItem() { Header = new TextBlock() { Text = "Views" }, Tag = typeof(ViewSettings) };
+            treeViewItem_AnalyticalModel.Items.Add(treeViewItem_Views);
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                return;
+            }
+
+            List<ViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<ViewSettings>();
+            foreach(ViewSettings viewSettings in viewSettingsList)
+            {
+                string name_Temp = viewSettings.Name;
+                if(string.IsNullOrWhiteSpace(name_Temp))
+                {
+                    name_Temp = Query.DefaultName(viewSettings);
+                }
+
+                if(string.IsNullOrWhiteSpace(name_Temp))
+                {
+                    name_Temp = "???";
+                }
+
+                TreeViewItem treeViewItem_ViewSettings = new TreeViewItem() { Header = new TextBlock() { Text = name_Temp }, Tag = viewSettings };
+                treeViewItem_Views.Items.Add(treeViewItem_ViewSettings);
+            }
+
+            treeViewItem_AnalyticalModel.ExpandSubtree();
         }
 
         private List<object> GetExpandedTags(ItemCollection itemCollection)

@@ -151,7 +151,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Help_Wiki.Click += RibbonButton_Help_Wiki_Click;
 
 
-            AnalyticalModelControl.TreeView.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
+            AnalyticalModelControl.TreeView_Model.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
             AnalyticalModelControl.ZoomRequested += AnalyticalModelControl_ZoomRequested;
             AnalyticalModelControl.SelectionRequested += AnalyticalModelControl_SelectionRequested;
 
@@ -841,7 +841,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            TreeView treeView_AnalyticalModel = AnalyticalModelControl.TreeView;
+            TreeView treeView_AnalyticalModel = AnalyticalModelControl.TreeView_Model;
 
             List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
             TreeViewItem treeViewItem = treeView_AnalyticalModel.SelectedItem as TreeViewItem;
