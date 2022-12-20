@@ -90,7 +90,7 @@
     <Compile Include="Modify\EditSpaceZone.cs" />
     <Compile Include="Modify\DuplicateViewSettings.cs" />
     <Compile Include="Modify\EnableViewSettings.cs" />
-    <Compile Include="Windows\ElevationControl.xaml.cs">
+    <Compile Include="Controls\ElevationControl.xaml.cs">
       <DependentUpon>ElevationControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\EditLegend.cs" />
@@ -289,7 +289,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\ElevationControl.xaml">
+    <Page Include="Controls\ElevationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

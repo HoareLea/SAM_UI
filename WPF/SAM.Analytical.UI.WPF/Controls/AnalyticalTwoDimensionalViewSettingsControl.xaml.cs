@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SAM.Architectural;
+using SAM.Geometry.UI;
+using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
@@ -16,6 +18,8 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
 
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
+            elevationControl.ValueChanged += ElevationControl_ValueChanged;
+            spaceAppearanceSettingsControl.ValueChanged += SpaceAppearanceSettingsControl_ValueChanged;
         }
 
         public AnalyticalTwoDimensionalViewSettingsControl(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings, AdjacencyCluster adjacencyCluster)
@@ -27,6 +31,19 @@ namespace SAM.Analytical.UI.WPF
             SetAnalyticalTwoDimensionalViewSettings(analyticalTwoDimensionalViewSettings);
 
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
+
+            elevationControl.ValueChanged += ElevationControl_ValueChanged;
+            spaceAppearanceSettingsControl.ValueChanged += SpaceAppearanceSettingsControl_ValueChanged;
+        }
+
+        private void ElevationControl_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateName();
+        }
+
+        private void SpaceAppearanceSettingsControl_ValueChanged(object sender, EventArgs e)
+        {
+            UpdateName();
         }
 
         public AnalyticalTwoDimensionalViewSettings AnalyticalTwoDimensionalViewSettings
@@ -69,6 +86,12 @@ namespace SAM.Analytical.UI.WPF
             textBox_Name.Text = analyticalTwoDimensionalViewSettings.Name;
 
             elevationControl.Elevation = analyticalTwoDimensionalViewSettings.Plane.Origin.Z;
+
+            checkBox_UseDefaultName.IsChecked = true;
+            if(analyticalTwoDimensionalViewSettings.TryGetValue(ViewSettingsParameter.UseDefaultName, out bool useDefaultName))
+            {
+                checkBox_UseDefaultName.IsChecked = useDefaultName;
+            }
         }
 
         private AnalyticalTwoDimensionalViewSettings GetAnalyticalTwoDimensionalViewSettings()
@@ -103,12 +126,79 @@ namespace SAM.Analytical.UI.WPF
 
             result.Plane = Geometry.Spatial.Create.Plane(elevationControl.Elevation);
 
+            if(checkBox_UseDefaultName.IsChecked != null && checkBox_UseDefaultName.IsChecked.HasValue)
+            {
+                result.SetValue(ViewSettingsParameter.UseDefaultName, checkBox_UseDefaultName.IsChecked.Value);
+            }
+
             return result;
         }
 
         private void checkBox_Visibilty_Space_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
+        }
+
+        private void checkBox_UseDefaultName_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            UpdateName();
+        }
+
+        private void UpdateName()
+        {
+            bool @checked = checkBox_UseDefaultName.IsChecked != null && checkBox_UseDefaultName.IsChecked.HasValue && checkBox_UseDefaultName.IsChecked.Value;
+
+            textBox_Name.IsEnabled = !@checked;
+
+            if (@checked)
+            {
+                textBox_Name.Text = GetDefaultName();
+            }
+        }
+
+        private string GetDefaultName()
+        {
+            List<string> values = new List<string>();
+
+            Level level = elevationControl.SelectedLevel;
+            if(level != null)
+            {
+                values.Add(level.Name);
+            }
+
+            double elevation = elevationControl.Elevation;
+            values.Add(string.Format("[{0}m]", Core.Query.Round(elevation, Core.Tolerance.MacroDistance).ToString()));
+
+            SpaceAppearanceSettings spaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
+            if(spaceAppearanceSettings != null)
+            {
+                ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings?.ParameterAppearanceSettings<Geometry.UI.ParameterAppearanceSettings>();
+                if (parameterAppearanceSettings != null)
+                {
+                    if (parameterAppearanceSettings is ZoneAppearanceSettings)
+                    {
+                        ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)parameterAppearanceSettings;
+                        
+                            values.Add(zoneAppearanceSettings.ZoneCategory);
+
+                        values.Add("Zone");
+                    }
+                    else if (parameterAppearanceSettings is InternalConditionAppearanceSettings)
+                    {
+                        values.Add("IC");
+                    }
+                    else
+                    {
+                        values.Add("Space");
+                    }
+
+                    values.Add(parameterAppearanceSettings.ParameterName);
+                }
+            }
+
+            values.RemoveAll(x => string.IsNullOrWhiteSpace(x));
+
+            return string.Join(" ", values);
         }
     }
 }

@@ -74,6 +74,7 @@
     <Compile Include="Convert\ToSAM\ISAMGeometryObject.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Enums\Mode.cs" />
+    <Compile Include="Enums\Parameter\ViewSettingsParameter.cs" />
     <Compile Include="Enums\Parameter\GeometryObjectModelParameter.cs" />
     <Compile Include="Interfaces\IAppearanceSettings.cs" />
     <Compile Include="Interfaces\ICamera.cs" />

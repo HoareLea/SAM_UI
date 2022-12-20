@@ -22,5 +22,6 @@
         <GroupBox Header="Elevation" HorizontalAlignment="Left" Height="125" Margin="10,60,0,0" VerticalAlignment="Top" Width="317">
             <local:ElevationControl x:Name="elevationControl" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"/>
         </GroupBox>
+        <CheckBox x:Name="checkBox_UseDefaultName" Content="Default Name" HorizontalAlignment="Left" Margin="331,24,0,0" VerticalAlignment="Top" Checked="checkBox_UseDefaultName_Checked" Unchecked="checkBox_UseDefaultName_Checked"/>
     </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,7 +11,9 @@ namespace SAM.Analytical.UI.WPF
     public partial class SpaceAppearanceSettingsControl : UserControl
     {
         private AdjacencyCluster adjacencyCluster;
-        
+
+        public event EventHandler ValueChanged;
+
         public SpaceAppearanceSettingsControl()
         {
             InitializeComponent();
@@ -139,6 +142,7 @@ namespace SAM.Analytical.UI.WPF
         {
             LoadParameterNames();
             SetZoneTypeVisibility();
+            ValueChanged?.Invoke(this, new EventArgs());
         }
 
         public SpaceAppearanceSettings SpaceAppearanceSettings
@@ -201,5 +205,14 @@ namespace SAM.Analytical.UI.WPF
             SetZoneTypeVisibility();
         }
 
+        private void comboBox_ParameterName_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ValueChanged?.Invoke(this, new EventArgs());
+        }
+
+        private void comboBox_ZoneCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ValueChanged?.Invoke(this, new EventArgs());
+        }
     }
 }

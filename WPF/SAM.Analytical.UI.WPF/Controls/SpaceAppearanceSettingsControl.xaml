@@ -15,9 +15,9 @@
             </StackPanel>
         </GroupBox>
         <Label Content="Parameter Name:" HorizontalAlignment="Left" Margin="170,20,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox_ParameterName" Margin="170,48,20,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox_ParameterName" Margin="170,48,20,0" VerticalAlignment="Top" SelectionChanged="comboBox_ParameterName_SelectionChanged"/>
         <Label x:Name="label_ZoneType" Content="Zone Type:" HorizontalAlignment="Left" Margin="170,87,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox_ZoneCategory" Margin="170,115,20,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox_ZoneCategory" Margin="170,115,20,0" VerticalAlignment="Top" SelectionChanged="comboBox_ZoneCategory_SelectionChanged"/>
 
     </Grid>
 </UserControl>

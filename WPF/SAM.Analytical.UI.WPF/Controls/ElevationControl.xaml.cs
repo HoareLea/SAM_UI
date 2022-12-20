@@ -1,4 +1,5 @@
 ﻿using SAM.Architectural;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
@@ -11,6 +12,8 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class ElevationControl : UserControl
     {
+        public event EventHandler ValueChanged;
+
         public ElevationControl()
         {
             InitializeComponent();
@@ -118,6 +121,8 @@ namespace SAM.Analytical.UI.WPF
         private void textBox_Elevation_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             Core.Windows.EventHandler.ControlText_NumberOnly(sender, e);
+            
+            ValueChanged?.Invoke(this, new EventArgs());
         }
 
         private void comboBox_Level_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -127,6 +132,8 @@ namespace SAM.Analytical.UI.WPF
             {
                 Elevation = level.Elevation;
             }
+
+            ValueChanged?.Invoke(this, new EventArgs());
         }
     }
 }
