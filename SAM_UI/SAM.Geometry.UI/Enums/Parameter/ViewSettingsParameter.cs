@@ -7,5 +7,6 @@ namespace SAM.Geometry.UI
     public enum ViewSettingsParameter
     {
         [ParameterProperties("Use Default Name", "Use Default Name"), ParameterValue(Core.ParameterType.Boolean)] UseDefaultName,
+        [ParameterProperties("Group", "Group"), ParameterValue(Core.ParameterType.String)] Group,
     }
 }

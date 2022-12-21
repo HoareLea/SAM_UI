@@ -1,10 +1,16 @@
 ﻿using SAM.Geometry.UI;
+using System.Collections.Generic;
 
 namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
         public static void EnableViewSettings(this UIAnalyticalModel uIAnalyticalModel, System.Guid guid, bool enabled)
+        {
+            EnableViewSettings(uIAnalyticalModel, new System.Guid[] { guid }, enabled);
+        }
+
+        public static void EnableViewSettings(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<System.Guid> guids, bool enabled)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
@@ -17,20 +23,40 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ViewSettings viewSettings = uIGeometrySettings.GetViewSettings(guid) as ViewSettings;
-            if(viewSettings == null)
+            List<ViewSettings> viewSettingsList = new List<ViewSettings>();
+            foreach(System.Guid guid in guids)
+            {
+                ViewSettings viewSettings = uIGeometrySettings.GetViewSettings(guid) as ViewSettings;
+                if (viewSettings == null)
+                {
+                    continue;
+                }
+
+                if (viewSettings.Enabled == enabled)
+                {
+                    continue;
+                }
+
+                viewSettingsList.Add(viewSettings);
+            }
+
+            if(viewSettingsList == null || viewSettingsList.Count == 0)
             {
                 return;
             }
 
-            if(viewSettings.Enabled == enabled)
+            bool success = false;
+            foreach(ViewSettings viewSettings_Temp in viewSettingsList)
             {
-                return;
+                viewSettings_Temp.Enabled = enabled;
+
+                if (uIGeometrySettings.AddViewSettings(viewSettings_Temp))
+                {
+                    success = true;
+                }
             }
 
-            viewSettings.Enabled = enabled;
-
-            if(!uIGeometrySettings.AddViewSettings(viewSettings))
+            if(!success)
             {
                 return;
             }

@@ -7,6 +7,7 @@ using SAM.Geometry.UI.WPF;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
@@ -1001,6 +1002,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             contextMenu.Items.Add(menuItem);
 
             menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_CloseAllButThis_TabItem";
+            menuItem.Header = "Close All But This";
+            menuItem.Click += MenuItem_CloseAllButThis_TabItem_Click;
+            contextMenu.Items.Add(menuItem);
+
+            menuItem = new MenuItem();
             menuItem.Name = "MenuItem_Duplicate_TabItem";
             menuItem.Header = "Duplicate";
             menuItem.Click += MenuItem_Duplicate_TabItem_Click;
@@ -1013,6 +1020,26 @@ namespace SAM.Analytical.UI.WPF.Windows
             contextMenu.Items.Add(menuItem);
 
             contextMenu.IsOpen = true;
+        }
+
+        private void MenuItem_CloseAllButThis_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            List<TabItem> tabItems = tabControl.Items.Cast<TabItem>().ToList();
+            tabItems.Remove(tabItem);
+
+            EnableViewSettings(tabItems, false);
         }
 
         private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)
@@ -1052,13 +1079,13 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void MenuItem_Close_TabItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
-            if(menuItem == null)
+            if (menuItem == null)
             {
                 return;
             }
 
             TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
-            if(tabItem == null)
+            if (tabItem == null)
             {
                 return;
             }
@@ -1489,7 +1516,32 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             //SetActiveGuid();
             SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            Modify.EnableViewSettings(uIAnalyticalModel, viewportControl.Guid, enabled);
+            Modify.EnableViewSettings(uIAnalyticalModel, new Guid[] { viewportControl.Guid }, enabled);
+        }
+
+        private void EnableViewSettings(IEnumerable<TabItem> tabItems, bool enabled)
+        {
+            if (tabItems == null || tabItems.Count() == 0)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+
+            List<Guid> guids = new List<Guid>();
+            foreach(TabItem tabItem in tabItems)
+            {
+                ViewportControl viewportControl = tabItem.Content as ViewportControl;
+                if (viewportControl == null)
+                {
+                    continue;
+                }
+
+                guids.Add(viewportControl.Guid);
+            }
+
+            Modify.EnableViewSettings(uIAnalyticalModel, guids, enabled);
         }
 
         private void DuplicateViewSettings(TabItem tabItem)
