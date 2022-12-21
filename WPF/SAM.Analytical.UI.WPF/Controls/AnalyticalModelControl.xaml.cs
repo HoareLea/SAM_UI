@@ -1,5 +1,6 @@
 ﻿using SAM.Core;
 using SAM.Geometry.UI;
+using SAM.Geometry.UI.WPF;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,12 +19,54 @@ namespace SAM.Analytical.UI.WPF
 
         private UIAnalyticalModel uIAnalyticalModel;
 
-        public event Geometry.UI.WPF.ZoomRequestedEventHandler ZoomRequested;
-        public event Geometry.UI.WPF.SelectionRequestedEventHandler SelectionRequested;
+        private DragDropManager dragDropManager_Views;
+        private DragDropManager dragDropManager_Model;
+
+        public event ZoomRequestedEventHandler ZoomRequested;
+        public event SelectionRequestedEventHandler SelectionRequested;
 
         public AnalyticalModelControl()
         {
              InitializeComponent();
+
+            dragDropManager_Views = new DragDropManager(treeView_Views);
+            dragDropManager_Views.TreeViewItemDropped += DragDropManager_Views_TreeViewItemDropped;
+
+            dragDropManager_Model = new DragDropManager(treeView_Model);
+            dragDropManager_Model.TreeViewItemDropped += DragDropManager_Model_TreeViewItemDropped;
+        }
+
+        private void DragDropManager_Model_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
+        {
+            object targetObject = e.TargetTreeViewItem.Tag;
+            object selectedObject = e.SelectedTreeViewItem.Tag;
+
+            e.EventResult = EventResult.Canceled;
+
+            if (targetObject == null || selectedObject == null)
+            {
+                return;
+            }
+
+            if(selectedObject is Space && targetObject is Zone)
+            {
+                Modify.AssignSpaceZone(uIAnalyticalModel, (Space)selectedObject, (Zone)targetObject);
+                e.EventResult = EventResult.Succeeded;
+            }
+
+            if(selectedObject is InternalCondition && targetObject is Space)
+            {
+                Modify.AssignSpaceInternalCondition(uIAnalyticalModel, (Space)targetObject, (InternalCondition)selectedObject);
+                e.EventResult = EventResult.Succeeded;
+            }
+        }
+
+        private void DragDropManager_Views_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
+        {
+            ViewSettings viewSettings = e.SelectedTreeViewItem.Tag as ViewSettings;
+            string group = e.TargetTreeViewItem.Tag as string;
+
+            Modify.SetGroup(uIAnalyticalModel, viewSettings.Guid, group);
         }
 
         public TreeView TreeView_Model
@@ -46,7 +89,7 @@ namespace SAM.Analytical.UI.WPF
         {
             contextMenu_Model.Items.Clear();
 
-            TreeViewItem treeViewItem = (e.Source as TextBlock)?.Parent as TreeViewItem;
+            TreeViewItem treeViewItem = e.Source as TreeViewItem;
             if(treeViewItem == null)
             {
                 e.Handled = true;
@@ -232,7 +275,7 @@ namespace SAM.Analytical.UI.WPF
         {
             contextMenu_Views.Items.Clear();
 
-            TreeViewItem treeViewItem = (e.Source as TextBlock)?.Parent as TreeViewItem;
+            TreeViewItem treeViewItem = e.Source as TreeViewItem;
             if (treeViewItem == null)
             {
                 e.Handled = true;
@@ -642,28 +685,28 @@ namespace SAM.Analytical.UI.WPF
                 name = "???";
             }
 
-            TreeViewItem treeViewItem_AnalyticalModel = new TreeViewItem() { Header = new TextBlock() { Text = name }, Tag = analyticalModel };
+            TreeViewItem treeViewItem_AnalyticalModel = new TreeViewItem() { Header = name, Tag = analyticalModel, AllowDrop = false };
             treeView_AnalyticalModel.Items.Add(treeViewItem_AnalyticalModel);
 
-            TreeViewItem treeViewItem_Spaces = new TreeViewItem() { Header = new TextBlock() { Text = "Spaces" }, Tag = typeof(Space) };
+            TreeViewItem treeViewItem_Spaces = new TreeViewItem() { Header = "Spaces", Tag = typeof(Space), AllowDrop = false };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_Spaces);
 
-            TreeViewItem treeViewItem_Shades = new TreeViewItem() { Header = new TextBlock() { Text = "Shades" }, Tag = typeof(Panel) };
+            TreeViewItem treeViewItem_Shades = new TreeViewItem() { Header = "Shades", Tag = typeof(Panel), AllowDrop = false };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_Shades);
 
-            TreeViewItem treeViewItem_Profiles = new TreeViewItem() { Header = new TextBlock() { Text = "Profiles" }, Tag = typeof(Profile) };
+            TreeViewItem treeViewItem_Profiles = new TreeViewItem() { Header = "Profiles", Tag = typeof(Profile), AllowDrop = false };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_Profiles);
 
-            TreeViewItem treeViewItem_Materials = new TreeViewItem() { Header = new TextBlock() { Text = "Materials" }, Tag = typeof(IMaterial) };
+            TreeViewItem treeViewItem_Materials = new TreeViewItem() { Header = "Materials", Tag = typeof(IMaterial), AllowDrop = false };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_Materials);
 
-            TreeViewItem treeViewItem_InternalConditions = new TreeViewItem() { Header = new TextBlock() { Text = "Internal Conditions" }, Tag = typeof(InternalCondition) };
+            TreeViewItem treeViewItem_InternalConditions = new TreeViewItem() { Header = "Internal Conditions", Tag = typeof(InternalCondition), AllowDrop = false };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_InternalConditions);
 
-            TreeViewItem treeViewItem_MechanicalSystems = new TreeViewItem() { Header = new TextBlock() { Text = "Mechanical Systems" }, Tag = typeof(MechanicalSystemType) };
+            TreeViewItem treeViewItem_MechanicalSystems = new TreeViewItem() { Header = "Mechanical Systems", Tag = typeof(MechanicalSystemType), AllowDrop = false };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_MechanicalSystems);
 
-            TreeViewItem treeViewItem_Zones = new TreeViewItem() { Header = new TextBlock() { Text = "Zones" }, Tag = typeof(Zone) };
+            TreeViewItem treeViewItem_Zones = new TreeViewItem() { Header = "Zones", Tag = typeof(Zone), AllowDrop = false };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_Zones);
 
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
@@ -674,14 +717,14 @@ namespace SAM.Analytical.UI.WPF
                 {
                     foreach (Space space in spaces)
                     {
-                        TreeViewItem treeViewItem_Space = new TreeViewItem() { Header = new TextBlock() { Text = space.Name }, Tag = space };
+                        TreeViewItem treeViewItem_Space = new TreeViewItem() { Header = space.Name, Tag = space, AllowDrop = true };
                         treeViewItem_Spaces.Items.Add(treeViewItem_Space);
                         List<Panel> panels_Space = adjacencyCluster.GetPanels(space);
                         if (panels_Space != null)
                         {
                             foreach (Panel panel in panels_Space)
                             {
-                                TreeViewItem treeViewItem_Panel = new TreeViewItem() { Header = new TextBlock() { Text = panel.Name }, Tag = panel };
+                                TreeViewItem treeViewItem_Panel = new TreeViewItem() { Header = panel.Name, Tag = panel, AllowDrop = false};
                                 treeViewItem_Space.Items.Add(treeViewItem_Panel);
 
                                 List<Aperture> apertures = panel.Apertures;
@@ -689,7 +732,7 @@ namespace SAM.Analytical.UI.WPF
                                 {
                                     foreach (Aperture aperture in apertures)
                                     {
-                                        TreeViewItem treeViewItem_Aperture = new TreeViewItem() { Header = new TextBlock() { Text = aperture.Name }, Tag = aperture };
+                                        TreeViewItem treeViewItem_Aperture = new TreeViewItem() { Header = aperture.Name, Tag = aperture, AllowDrop = false };
                                         treeViewItem_Panel.Items.Add(treeViewItem_Aperture);
                                         treeViewItem_Aperture.IsExpanded = expandedTags.Find(x => x is Aperture && ((Aperture)x).Guid == aperture.Guid) != null;
                                     }
@@ -711,7 +754,7 @@ namespace SAM.Analytical.UI.WPF
                         List<Space> spaces_Panel = adjacencyCluster.GetSpaces(panel);
                         if (spaces_Panel == null || spaces_Panel.Count == 0)
                         {
-                            TreeViewItem treeViewItem_Shade = new TreeViewItem() { Header = new TextBlock() { Text = panel.Name }, Tag = panel };
+                            TreeViewItem treeViewItem_Shade = new TreeViewItem() { Header = panel.Name, Tag = panel, AllowDrop = false };
                             treeViewItem_Shade.Tag = panel;
                             treeViewItem_Shade.IsExpanded = expandedTags.Find(x => x is Panel && ((Panel)x).Guid == panel.Guid) != null;
 
@@ -725,7 +768,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     foreach (InternalCondition internalCondition in internalConditions)
                     {
-                        TreeViewItem treeViewItem_InternalCondition = new TreeViewItem() { Header = new TextBlock() { Text = internalCondition.Name }, Tag = internalCondition };
+                        TreeViewItem treeViewItem_InternalCondition = new TreeViewItem() { Header = internalCondition.Name, Tag = internalCondition, AllowDrop = false };
                         treeViewItem_InternalConditions.Items.Add(treeViewItem_InternalCondition);
                     }
                 }
@@ -735,7 +778,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     foreach (MechanicalSystemType mechanicalSystemType in mechanicalSystemTypes)
                     {
-                        TreeViewItem treeViewItem_MechanicalSystemType = new TreeViewItem() { Header = new TextBlock() { Text = mechanicalSystemType.Name }, Tag = mechanicalSystemType };
+                        TreeViewItem treeViewItem_MechanicalSystemType = new TreeViewItem() { Header = mechanicalSystemType.Name, Tag = mechanicalSystemType, AllowDrop = false};
                         treeViewItem_MechanicalSystems.Items.Add(treeViewItem_MechanicalSystemType);
 
                         treeViewItem_MechanicalSystemType.IsExpanded = expandedTags.Find(x => x is MechanicalSystemType && ((MechanicalSystemType)x).Guid == mechanicalSystemType.Guid) != null;
@@ -748,7 +791,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 foreach (Profile profile in profiles)
                 {
-                    TreeViewItem treeViewItem_Profile = new TreeViewItem() { Header = new TextBlock() { Text = profile.Name }, Tag = profile };
+                    TreeViewItem treeViewItem_Profile = new TreeViewItem() { Header = profile.Name, Tag = profile, AllowDrop = false };
                     treeViewItem_Profiles.Items.Add(treeViewItem_Profile);
                 }
             }
@@ -758,7 +801,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 foreach (IMaterial material in materials)
                 {
-                    TreeViewItem treeViewItem_Material = new TreeViewItem() { Header = new TextBlock() { Text = material.Name }, Tag = material };
+                    TreeViewItem treeViewItem_Material = new TreeViewItem() { Header = material.Name, Tag = material, AllowDrop = false };
                     treeViewItem_Materials.Items.Add(treeViewItem_Material);
                 }
             }
@@ -790,14 +833,14 @@ namespace SAM.Analytical.UI.WPF
 
                 foreach(KeyValuePair<string, List<Zone>> keyValuePair in dictionary)
                 {
-                    TreeViewItem treeViewItem_ZoneCategory = new TreeViewItem() { Header = new TextBlock() { Text = keyValuePair.Key }, Tag = keyValuePair.Key };
+                    TreeViewItem treeViewItem_ZoneCategory = new TreeViewItem() { Header = keyValuePair.Key, Tag = keyValuePair.Key, AllowDrop = false };
                     treeViewItem_Zones.Items.Add(treeViewItem_ZoneCategory);
 
                     treeViewItem_ZoneCategory.IsExpanded = expandedTags.Find(x => x is string && (string)x == keyValuePair.Key) != null;
 
                     foreach (Zone zone in keyValuePair.Value)
                     {
-                        TreeViewItem treeViewItem_Zone = new TreeViewItem() { Header = new TextBlock() { Text = zone.Name }, Tag = zone };
+                        TreeViewItem treeViewItem_Zone = new TreeViewItem() { Header = zone.Name, Tag = zone, AllowDrop = true };
                         treeViewItem_ZoneCategory.Items.Add(treeViewItem_Zone);
 
                         treeViewItem_Zone.IsExpanded = expandedTags.Find(x => x is Zone && ((Zone)x).Guid == zone.Guid) != null;
@@ -807,7 +850,7 @@ namespace SAM.Analytical.UI.WPF
                         {
                             foreach(Space space in spaces)
                             {
-                                TreeViewItem treeViewItem_Space = new TreeViewItem() { Header = new TextBlock() { Text = space.Name }, Tag = space };
+                                TreeViewItem treeViewItem_Space = new TreeViewItem() { Header = space.Name, Tag = space, AllowDrop = true };
                                 treeViewItem_Zone.Items.Add(treeViewItem_Space);
                             }
                         }
@@ -849,10 +892,10 @@ namespace SAM.Analytical.UI.WPF
                 name = "???";
             }
 
-            TreeViewItem treeViewItem_AnalyticalModel = new TreeViewItem() { Header = new TextBlock() { Text = name }, Tag = analyticalModel };
+            TreeViewItem treeViewItem_AnalyticalModel = new TreeViewItem() { Header = name, Tag = analyticalModel, AllowDrop = false };
             treeView_Views.Items.Add(treeViewItem_AnalyticalModel);
 
-            TreeViewItem treeViewItem_Views = new TreeViewItem() { Header = new TextBlock() { Text = "Views" }, Tag = typeof(ViewSettings) };
+            TreeViewItem treeViewItem_Views = new TreeViewItem() { Header = "Views", Tag = typeof(ViewSettings), AllowDrop = true };
             treeViewItem_AnalyticalModel.Items.Add(treeViewItem_Views);
 
             if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
@@ -876,14 +919,14 @@ namespace SAM.Analytical.UI.WPF
                     name_Temp = "???";
                 }
 
-                TreeViewItem treeViewItem_ViewSettings = new TreeViewItem() { Header = new TextBlock() { Text = name_Temp }, Tag = viewSettings };
+                TreeViewItem treeViewItem_ViewSettings = new TreeViewItem() { Header = name_Temp, Tag = viewSettings, AllowDrop = false };
                 treeViewItem_ViewSettings.PreviewMouseDoubleClick += TreeViewItem_ViewSettings_PreviewMouseDoubleClick;
                 
                 if(viewSettings.TryGetValue(ViewSettingsParameter.Group, out string group) && !string.IsNullOrWhiteSpace(group))
                 {
                     if(!dictionary.TryGetValue(group, out TreeViewItem treeViewItem) || treeViewItem == null)
                     {
-                        treeViewItem = new TreeViewItem() { Header = new TextBlock() { Text = group }, Tag = group };
+                        treeViewItem = new TreeViewItem() { Header = group, Tag = group, AllowDrop = true };
                         dictionary[group] = treeViewItem;
                         treeViewItem_Views.Items.Add(treeViewItem);
                     }
