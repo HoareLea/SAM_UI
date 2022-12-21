@@ -76,6 +76,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Windows\BatchCreateViewsWindow.xaml.cs">
+      <DependentUpon>BatchCreateViewsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BatchCreateViewsControl.xaml.cs">
+      <DependentUpon>BatchCreateViewsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\AnalyticalThreeDimensionalViewSettingsControl.xaml.cs">
       <DependentUpon>AnalyticalThreeDimensionalViewSettingsControl.xaml</DependentUpon>
     </Compile>
@@ -269,6 +275,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\BatchCreateViewsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\BatchCreateViewsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\AnalyticalThreeDimensionalViewSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

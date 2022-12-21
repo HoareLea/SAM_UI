@@ -405,6 +405,7 @@
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_View" Header="View">
                 <RibbonGroup x:Name="RibbonGroup_View_New" Header="New">
+                    <RibbonButton x:Name="RibbonButton_View_NewSectionViews" Label="Section Views"/>
                     <RibbonButton x:Name="RibbonButton_View_NewSectionView" Label="Section View"/>
                     <RibbonButton x:Name="RibbonButton_View_New3DView" Label="3D View"/>
                 </RibbonGroup>

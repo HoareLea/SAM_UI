@@ -45,6 +45,8 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_General_CloseAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
             RibbonButton_General_CloseAnalyticalModel.Click += RibbonButton_General_CloseAnalyticalModel_Click;
 
+            RibbonButton_View_NewSectionViews.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_View_NewSectionViews.Click += RibbonButton_View_NewSectionViews_Click;
 
             RibbonButton_View_NewSectionView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
             RibbonButton_View_NewSectionView.Click += RibbonButton_View_NewSectionView_Click;
@@ -175,6 +177,44 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_View_NewSectionViews_Click(object sender, RoutedEventArgs e)
+        {
+            if (uIAnalyticalModel == null)
+            {
+                return;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            BatchCreateViewsWindow batchCreateViewsWindow = new BatchCreateViewsWindow(analyticalModel.AdjacencyCluster);
+            bool? result = batchCreateViewsWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+            List<AnalyticalTwoDimensionalViewSettings> analyticalTwoDimensionalViewSettingsList = batchCreateViewsWindow.AnalyticalTwoDimensionalViewSettingsList;
+            if(analyticalTwoDimensionalViewSettingsList == null || analyticalTwoDimensionalViewSettingsList.Count == 0)
+            {
+                return;
+            }
+
+            foreach(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings in analyticalTwoDimensionalViewSettingsList)
+            {
+                TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, analyticalTwoDimensionalViewSettings);
+                if (tabItem != null)
+                {
+                    tabControl.SelectedItem = tabItem;
+                }
+            }
+
+            SetUIGeometrySettings(tabControl, analyticalModel);
         }
 
         private void AnalyticalModelControl_SelectionRequested(object sender, SelectionRequestedEventArgs e)

@@ -63,7 +63,7 @@ namespace SAM.Analytical.UI.WPF
         {
             spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
 
-            List<Architectural.Level> levels = Create.Levels(adjacencyCluster, false);
+            List<Level> levels = Create.Levels(adjacencyCluster, false);
             levels?.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
 
             elevationControl.Levels = levels;
@@ -152,53 +152,8 @@ namespace SAM.Analytical.UI.WPF
 
             if (@checked)
             {
-                textBox_Name.Text = GetDefaultName();
+                textBox_Name.Text = Query.DefaultName(elevationControl.SelectedLevel, elevationControl.Elevation, spaceAppearanceSettingsControl.SpaceAppearanceSettings);
             }
-        }
-
-        private string GetDefaultName()
-        {
-            List<string> values = new List<string>();
-
-            Level level = elevationControl.SelectedLevel;
-            if(level != null)
-            {
-                values.Add(level.Name);
-            }
-
-            double elevation = elevationControl.Elevation;
-            values.Add(string.Format("[{0}m]", Core.Query.Round(elevation, Core.Tolerance.MacroDistance).ToString()));
-
-            SpaceAppearanceSettings spaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
-            if(spaceAppearanceSettings != null)
-            {
-                ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings?.ParameterAppearanceSettings<Geometry.UI.ParameterAppearanceSettings>();
-                if (parameterAppearanceSettings != null)
-                {
-                    if (parameterAppearanceSettings is ZoneAppearanceSettings)
-                    {
-                        ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)parameterAppearanceSettings;
-                        
-                            values.Add(zoneAppearanceSettings.ZoneCategory);
-
-                        values.Add("Zone");
-                    }
-                    else if (parameterAppearanceSettings is InternalConditionAppearanceSettings)
-                    {
-                        values.Add("IC");
-                    }
-                    else
-                    {
-                        values.Add("Space");
-                    }
-
-                    values.Add(parameterAppearanceSettings.ParameterName);
-                }
-            }
-
-            values.RemoveAll(x => string.IsNullOrWhiteSpace(x));
-
-            return string.Join(" ", values);
         }
     }
 }
