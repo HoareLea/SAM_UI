@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="250" d:DesignWidth="450">
+             d:DesignHeight="300" d:DesignWidth="450">
     <Grid>
         <GroupBox Header="Visiblity" Height="180" Margin="10,59,0,10.6" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="109">
             <StackPanel>
@@ -19,5 +19,7 @@
         </GroupBox>
         <Label x:Name="label_Name" Content="View Name:" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="20" Margin="89,22,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <Label x:Name="label_Group" Content="Group:" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox_Group" HorizontalAlignment="Left" Margin="89,47,0,0" VerticalAlignment="Top" Width="120" Height="21" IsEditable="True"/>
     </Grid>
 </UserControl>

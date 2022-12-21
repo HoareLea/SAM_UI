@@ -161,6 +161,8 @@ namespace SAM.Analytical.UI.WPF
                 types.Add(typeof(Panel));
             }
 
+            string group = Query.DefaultGroup(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
+
             List<AnalyticalTwoDimensionalViewSettings> result = new List<AnalyticalTwoDimensionalViewSettings>();
             foreach (Level level in levels)
             {
@@ -171,6 +173,7 @@ namespace SAM.Analytical.UI.WPF
                 AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), name, SAM.Geometry.Spatial.Create.Plane(elevation), null, types);
                 analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
                 analyticalTwoDimensionalViewSettings.SetValue(ViewSettingsParameter.UseDefaultName, true);
+                analyticalTwoDimensionalViewSettings.SetValue(ViewSettingsParameter.Group, group);
 
                 result.Add(analyticalTwoDimensionalViewSettings);
             }

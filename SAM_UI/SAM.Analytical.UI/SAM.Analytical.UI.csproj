@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="Interfaces\IAnalyticalViewSettings.cs" />
     <Compile Include="Interfaces\ISection3DObject.cs" />
+    <Compile Include="Query\ViewSettings.cs" />
     <Compile Include="Query\Editable.cs" />
     <Compile Include="Query\UndefinedLegendItem.cs" />
     <Compile Include="Query\LegendName.cs" />

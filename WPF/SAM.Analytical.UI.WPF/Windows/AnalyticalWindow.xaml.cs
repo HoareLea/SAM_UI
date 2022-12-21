@@ -347,7 +347,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
             analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("Name");
 
-            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(analyticalTwoDimensionalViewSettings, analyticalModel.AdjacencyCluster);
+            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(analyticalTwoDimensionalViewSettings, analyticalModel);
             bool? result = viewSettingsWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)
             {

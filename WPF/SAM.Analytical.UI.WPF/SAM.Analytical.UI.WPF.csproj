@@ -76,6 +76,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Query\DefaultGroup.cs" />
     <Compile Include="Windows\BatchCreateViewsWindow.xaml.cs">
       <DependentUpon>BatchCreateViewsWindow.xaml</DependentUpon>
     </Compile>

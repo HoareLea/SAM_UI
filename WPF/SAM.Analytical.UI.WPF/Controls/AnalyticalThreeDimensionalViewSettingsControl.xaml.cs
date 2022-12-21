@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Geometry.UI;
+using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
@@ -18,11 +19,11 @@ namespace SAM.Analytical.UI.WPF
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
-        public AnalyticalThreeDimensionalViewSettingsControl(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings, AdjacencyCluster adjacencyCluster)
+        public AnalyticalThreeDimensionalViewSettingsControl(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings, AnalyticalModel analyticalModel)
         {
             InitializeComponent();
 
-            SetAdjacencyCluster(adjacencyCluster);
+            SetAnalyticalModel(analyticalModel);
 
             SetAnalyticalThreeDimensionalViewSettings(analyticalThreeDimensionalViewSettings);
 
@@ -42,9 +43,32 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
+        private void SetAnalyticalModel(AnalyticalModel analyticalModel)
         {
-            spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
+            spaceAppearanceSettingsControl.AdjacencyCluster = analyticalModel?.AdjacencyCluster;
+
+            comboBox_Group.Items.Clear();
+
+            List<ViewSettings> viewSettingsList = analyticalModel.ViewSettings<ViewSettings>();
+            if (viewSettingsList != null && viewSettingsList.Count != 0)
+            {
+                HashSet<string> groups = new HashSet<string>();
+                foreach (ViewSettings viewSettings in viewSettingsList)
+                {
+                    if (viewSettings.TryGetValue(ViewSettingsParameter.Group, out string group) && !string.IsNullOrWhiteSpace(group))
+                    {
+                        groups.Add(group);
+                    }
+                }
+
+                List<string> groups_Sorted = new List<string>(groups);
+                groups_Sorted.Sort();
+
+                foreach (string group in groups_Sorted)
+                {
+                    comboBox_Group.Items.Add(group);
+                }
+            }
         }
 
         private void SetAnalyticalThreeDimensionalViewSettings(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
@@ -59,6 +83,12 @@ namespace SAM.Analytical.UI.WPF
             spaceAppearanceSettingsControl.SpaceAppearanceSettings = analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings;
 
             textBox_Name.Text = analyticalThreeDimensionalViewSettings.Name;
+
+            comboBox_Group.Text = string.Empty;
+            if (analyticalThreeDimensionalViewSettings.TryGetValue(ViewSettingsParameter.Group, out string group))
+            {
+                comboBox_Group.Text = group;
+            }
         }
 
         private AnalyticalThreeDimensionalViewSettings GetAnalyticalThreeDimensionalViewSettings()
@@ -90,6 +120,11 @@ namespace SAM.Analytical.UI.WPF
             result.SetTypes(types);
 
             result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
+
+            if (!string.IsNullOrWhiteSpace(comboBox_Group.Text))
+            {
+                result.SetValue(ViewSettingsParameter.Group, comboBox_Group.Text);
+            }
 
             return result;
         }

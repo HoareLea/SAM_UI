@@ -860,6 +860,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            Dictionary<string, TreeViewItem> dictionary = new Dictionary<string, TreeViewItem>();
+
             List<ViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<ViewSettings>();
             foreach(ViewSettings viewSettings in viewSettingsList)
             {
@@ -876,7 +878,22 @@ namespace SAM.Analytical.UI.WPF
 
                 TreeViewItem treeViewItem_ViewSettings = new TreeViewItem() { Header = new TextBlock() { Text = name_Temp }, Tag = viewSettings };
                 treeViewItem_ViewSettings.PreviewMouseDoubleClick += TreeViewItem_ViewSettings_PreviewMouseDoubleClick;
-                treeViewItem_Views.Items.Add(treeViewItem_ViewSettings);
+                
+                if(viewSettings.TryGetValue(ViewSettingsParameter.Group, out string group) && !string.IsNullOrWhiteSpace(group))
+                {
+                    if(!dictionary.TryGetValue(group, out TreeViewItem treeViewItem) || treeViewItem == null)
+                    {
+                        treeViewItem = new TreeViewItem() { Header = new TextBlock() { Text = group }, Tag = group };
+                        dictionary[group] = treeViewItem;
+                        treeViewItem_Views.Items.Add(treeViewItem);
+                    }
+
+                    treeViewItem.Items.Add(treeViewItem_ViewSettings);
+                }
+                else
+                {
+                    treeViewItem_Views.Items.Add(treeViewItem_ViewSettings);
+                }
             }
 
             treeViewItem_AnalyticalModel.ExpandSubtree();

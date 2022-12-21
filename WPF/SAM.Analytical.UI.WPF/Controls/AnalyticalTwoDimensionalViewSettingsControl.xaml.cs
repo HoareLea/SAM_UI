@@ -22,11 +22,11 @@ namespace SAM.Analytical.UI.WPF
             spaceAppearanceSettingsControl.ValueChanged += SpaceAppearanceSettingsControl_ValueChanged;
         }
 
-        public AnalyticalTwoDimensionalViewSettingsControl(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings, AdjacencyCluster adjacencyCluster)
+        public AnalyticalTwoDimensionalViewSettingsControl(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings, AnalyticalModel analyticalModel)
         {
             InitializeComponent();
 
-            SetAdjacencyCluster(adjacencyCluster);
+            SetAnalyticalModel(analyticalModel);
 
             SetAnalyticalTwoDimensionalViewSettings(analyticalTwoDimensionalViewSettings);
 
@@ -59,17 +59,42 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
+        private void SetAnalyticalModel(AnalyticalModel analyticalModel)
         {
+            AdjacencyCluster adjacencyCluster = analyticalModel?.AdjacencyCluster;
+
             spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
 
             List<Level> levels = Create.Levels(adjacencyCluster, false);
             levels?.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
 
             elevationControl.Levels = levels;
-            if(levels != null && levels.Count != 0)
+            if (levels != null && levels.Count != 0)
             {
                 elevationControl.SelectedLevel = levels[0];
+            }
+
+            comboBox_Group.Items.Clear();
+
+            List<ViewSettings> viewSettingsList = analyticalModel.ViewSettings<ViewSettings>();
+            if(viewSettingsList != null && viewSettingsList.Count != 0)
+            {
+                HashSet<string> groups = new HashSet<string>();
+                foreach(ViewSettings viewSettings in viewSettingsList)
+                {
+                    if(viewSettings.TryGetValue(ViewSettingsParameter.Group, out string group) && !string.IsNullOrWhiteSpace(group))
+                    {
+                        groups.Add(group);
+                    }
+                }
+
+                List<string> groups_Sorted = new List<string>(groups);
+                groups_Sorted.Sort();
+
+                foreach(string group in groups_Sorted)
+                {
+                    comboBox_Group.Items.Add(group);
+                }
             }
         }
 
@@ -91,6 +116,12 @@ namespace SAM.Analytical.UI.WPF
             if(analyticalTwoDimensionalViewSettings.TryGetValue(ViewSettingsParameter.UseDefaultName, out bool useDefaultName))
             {
                 checkBox_UseDefaultName.IsChecked = useDefaultName;
+            }
+
+            comboBox_Group.Text = string.Empty;
+            if(analyticalTwoDimensionalViewSettings.TryGetValue(ViewSettingsParameter.Group, out string group))
+            {
+                comboBox_Group.Text = group;
             }
         }
 
@@ -129,6 +160,11 @@ namespace SAM.Analytical.UI.WPF
             if(checkBox_UseDefaultName.IsChecked != null && checkBox_UseDefaultName.IsChecked.HasValue)
             {
                 result.SetValue(ViewSettingsParameter.UseDefaultName, checkBox_UseDefaultName.IsChecked.Value);
+            }
+
+            if(!string.IsNullOrWhiteSpace(comboBox_Group.Text))
+            {
+                result.SetValue(ViewSettingsParameter.Group, comboBox_Group.Text);
             }
 
             return result;

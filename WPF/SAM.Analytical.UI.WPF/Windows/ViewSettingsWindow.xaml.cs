@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             InitializeComponent();
         }
 
-        public ViewSettingsWindow(Geometry.UI.IViewSettings viewSettings, AdjacencyCluster adjacencyCluster)
+        public ViewSettingsWindow(Geometry.UI.IViewSettings viewSettings, AnalyticalModel analyticalModel)
         {
             InitializeComponent();
 
@@ -21,22 +21,22 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             if(viewSettings is AnalyticalTwoDimensionalViewSettings)
             {
-                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl((AnalyticalTwoDimensionalViewSettings)viewSettings, adjacencyCluster);
+                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl((AnalyticalTwoDimensionalViewSettings)viewSettings, analyticalModel);
                 userControl = analyticalTwoDimensionalViewSettingsControl;
             }
             else if (viewSettings is Geometry.UI.TwoDimensionalViewSettings)
             {
-                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl(new AnalyticalTwoDimensionalViewSettings((Geometry.UI.TwoDimensionalViewSettings)viewSettings), adjacencyCluster);
+                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl(new AnalyticalTwoDimensionalViewSettings((Geometry.UI.TwoDimensionalViewSettings)viewSettings), analyticalModel);
                 userControl = analyticalTwoDimensionalViewSettingsControl;
             }
             else if (viewSettings is AnalyticalThreeDimensionalViewSettings)
             {
-                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl((AnalyticalThreeDimensionalViewSettings)viewSettings, adjacencyCluster);
+                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl((AnalyticalThreeDimensionalViewSettings)viewSettings, analyticalModel);
                 userControl = analyticalThreeDimensionalViewSettingsControl;
             }
             else if (viewSettings is Geometry.UI.ThreeDimensionalViewSettings)
             {
-                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl(new AnalyticalThreeDimensionalViewSettings((Geometry.UI.ThreeDimensionalViewSettings)viewSettings), adjacencyCluster);
+                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl(new AnalyticalThreeDimensionalViewSettings((Geometry.UI.ThreeDimensionalViewSettings)viewSettings), analyticalModel);
                 userControl = analyticalThreeDimensionalViewSettingsControl;
             }
 

@@ -20,7 +20,7 @@ namespace SAM.Analytical.UI.WPF
 
             IViewSettings viewSettings = uIGeometrySettings.GetViewSettings(guid);
 
-            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(viewSettings, analyticalModel.AdjacencyCluster);
+            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(viewSettings, analyticalModel);
             bool? result = viewSettingsWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)
             {
