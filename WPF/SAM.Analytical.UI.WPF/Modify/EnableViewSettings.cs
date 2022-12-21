@@ -65,5 +65,55 @@ namespace SAM.Analytical.UI.WPF
 
             uIAnalyticalModel.JSAMObject = analyticalModel;
         }
+
+        public static void EnableViewSettings(this UIAnalyticalModel uIAnalyticalModel, bool enabled)
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                return;
+            }
+
+            System.Func<ViewSettings, string> func = new System.Func<ViewSettings, string>(x => 
+            {
+                string result = x.Name;
+
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    result = Query.DefaultName(x);
+                }
+                
+                if(string.IsNullOrWhiteSpace(result))
+                {
+                    result = "???";
+                }
+
+                return result; 
+            });
+
+            List<ViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<ViewSettings>();
+
+            using (Core.Windows.Forms.TreeViewForm<ViewSettings> treeViewForm = new Core.Windows.Forms.TreeViewForm<ViewSettings>("Select Views", viewSettingsList, func))
+            {
+                if(treeViewForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                viewSettingsList = treeViewForm.SelectedItems;
+            }
+
+            if(viewSettingsList == null || viewSettingsList.Count == 0)
+            {
+                return;
+            }
+
+            EnableViewSettings(uIAnalyticalModel, viewSettingsList.ConvertAll(x => x.Guid), enabled);
+        }
     }
 }

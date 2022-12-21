@@ -1008,6 +1008,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             contextMenu.Items.Add(menuItem);
 
             menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_CloseSelected_TabItem";
+            menuItem.Header = "Close Selected";
+            menuItem.Click += MenuItem_CloseSelected_TabItem_Click;
+            contextMenu.Items.Add(menuItem);
+
+            menuItem = new MenuItem();
             menuItem.Name = "MenuItem_Duplicate_TabItem";
             menuItem.Header = "Duplicate";
             menuItem.Click += MenuItem_Duplicate_TabItem_Click;
@@ -1020,6 +1026,23 @@ namespace SAM.Analytical.UI.WPF.Windows
             contextMenu.Items.Add(menuItem);
 
             contextMenu.IsOpen = true;
+        }
+
+        private void MenuItem_CloseSelected_TabItem_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            Modify.EnableViewSettings(uIAnalyticalModel, false);
         }
 
         private void MenuItem_CloseAllButThis_TabItem_Click(object sender, RoutedEventArgs e)
