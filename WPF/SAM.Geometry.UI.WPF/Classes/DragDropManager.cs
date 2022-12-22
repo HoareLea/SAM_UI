@@ -70,7 +70,7 @@ namespace SAM.Geometry.UI.WPF
             if (e.ChangedButton == MouseButton.Left)
             {
                 lastMouseDown = e.GetPosition(treeView);
-                selectedTreeViewItem = DependencyObject<TreeViewItem>(treeView, lastMouseDown);
+                selectedTreeViewItem = Core.UI.WPF.Query.DependencyObject<TreeViewItem>(treeView, lastMouseDown);
             }
         }
 
@@ -113,7 +113,7 @@ namespace SAM.Geometry.UI.WPF
             e.Handled = true;
 
             // Verify that this is a valid drop and then store the drop target
-            TreeViewItem treeViewItem = DependencyObject<TreeViewItem>(e.OriginalSource as UIElement);
+            TreeViewItem treeViewItem = Core.UI.WPF.Query.DependencyObject<TreeViewItem>(e.OriginalSource as UIElement);
             if (treeViewItem != null && selectedTreeViewItem != null)
             {
                 targetTreeViewItem = treeViewItem;
@@ -128,7 +128,7 @@ namespace SAM.Geometry.UI.WPF
             if ((Math.Abs(currentPosition.X - lastMouseDown.X) > 10.0) || (Math.Abs(currentPosition.Y - lastMouseDown.Y) > 10.0))
             {
                 // Verify that this is a valid drop and then store the drop target
-                TreeViewItem treeViewItem = DependencyObject<TreeViewItem>(e.OriginalSource as UIElement);
+                TreeViewItem treeViewItem = Core.UI.WPF.Query.DependencyObject<TreeViewItem>(e.OriginalSource as UIElement);
                 if (IsValid(selectedTreeViewItem, treeViewItem))
                 {
                     e.Effects = DragDropEffects.Move;
@@ -167,7 +167,7 @@ namespace SAM.Geometry.UI.WPF
             AddChild(sourceTreeViewItem, targetTreeViewItem);
 
             //finding Parent TreeViewItem of dragged TreeViewItem 
-            TreeViewItem treeViewItem = ParentDependencyObject<TreeViewItem>(sourceTreeViewItem);
+            TreeViewItem treeViewItem = Core.UI.WPF.Query.ParentDependencyObject<TreeViewItem>(sourceTreeViewItem);
             // if parent is null then remove from TreeView else remove from Parent TreeViewItem
             if (treeViewItem == null)
             {
@@ -198,48 +198,6 @@ namespace SAM.Geometry.UI.WPF
             }
         }
         
-        private static T ParentDependencyObject<T>(DependencyObject dependencyObject) where T : DependencyObject
-        {
-            if (dependencyObject == null)
-            {
-                return null;
-            }
 
-            DependencyObject dependencyObject_Parent = VisualTreeHelper.GetParent(dependencyObject);
-            if(dependencyObject_Parent == null)
-            {
-                return null;
-            }
-
-            return DependencyObject<T>(dependencyObject_Parent);
-
-        }
-
-        private static T DependencyObject<T>(DependencyObject dependencyObject) where T: DependencyObject
-        {
-            T t = dependencyObject as T;
-            while (t == null && dependencyObject != null)
-            {
-                dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
-                t = dependencyObject as T;
-            }
-            return t;
-        }
-
-        private static T DependencyObject<T>(UIElement uIElement, Point point) where T : DependencyObject
-        {
-            if(uIElement == null)
-            {
-                return null;
-            }
-
-            IInputElement inputElement = uIElement.InputHitTest(point);
-            if(inputElement == null)
-            {
-                return null;
-            }
-
-            return DependencyObject<T>(inputElement as DependencyObject);
-        }
     }
 }

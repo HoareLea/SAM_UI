@@ -78,6 +78,8 @@
     <Compile Include="Controls\ListBoxControl.xaml.cs">
       <DependentUpon>ListBoxControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Query\ParentDependencyObject.cs" />
+    <Compile Include="Query\DependencyObject.cs" />
     <Compile Include="Query\Visual3D.cs" />
     <Compile Include="Windows\LegendWindow.xaml.cs">
       <DependentUpon>LegendWindow.xaml</DependentUpon>
