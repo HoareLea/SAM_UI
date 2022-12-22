@@ -24,6 +24,8 @@ namespace SAM.Analytical.UI.WPF
 
         public event ZoomRequestedEventHandler ZoomRequested;
         public event SelectionRequestedEventHandler SelectionRequested;
+        public event TreeViewItemDroppedEventHandler TreeViewItemDropped;
+
 
         public AnalyticalModelControl()
         {
@@ -48,7 +50,9 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            if(selectedObject is Space && targetObject is Zone)
+            TreeViewItemDropped?.Invoke(this, e);
+
+            if (selectedObject is Space && targetObject is Zone)
             {
                 Modify.AssignSpaceZone(uIAnalyticalModel, (Space)selectedObject, (Zone)targetObject);
                 e.EventResult = EventResult.Succeeded;
@@ -67,22 +71,6 @@ namespace SAM.Analytical.UI.WPF
             string group = e.TargetTreeViewItem.Tag as string;
 
             Modify.SetGroup(uIAnalyticalModel, viewSettings.Guid, group);
-        }
-
-        public TreeView TreeView_Model
-        {
-            get
-            {
-                return treeView_Model;
-            }
-        }
-
-        public TreeView TreeView_Views
-        {
-            get
-            {
-                return treeView_Views;
-            }
         }
 
         private void treeView_Model_ContextMenuOpening(object sender, ContextMenuEventArgs e)

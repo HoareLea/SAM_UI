@@ -64,89 +64,69 @@ namespace SAM.Geometry.UI.WPF
 
         private void TreeView_MouseMove(object sender, MouseEventArgs e)
         {
-            try
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
-                {
-                    Point currentPosition = e.GetPosition(treeView);
+                Point currentPosition = e.GetPosition(treeView);
 
-                    if ((Math.Abs(currentPosition.X - lastMouseDown.X) > 10.0) || (Math.Abs(currentPosition.Y - lastMouseDown.Y) > 10.0))
+                if ((Math.Abs(currentPosition.X - lastMouseDown.X) > 10.0) || (Math.Abs(currentPosition.Y - lastMouseDown.Y) > 10.0))
+                {
+                    selectedTreeViewItem = (TreeViewItem)treeView.SelectedItem;
+                    if (selectedTreeViewItem != null)
                     {
-                        selectedTreeViewItem = (TreeViewItem)treeView.SelectedItem;
-                        if (selectedTreeViewItem != null)
+                        DragDropEffects dragDropEffects = DragDrop.DoDragDrop(treeView, treeView.SelectedValue, DragDropEffects.Move);
+                        //Checking target is not null and item is dragging(moving)
+                        if ((dragDropEffects == DragDropEffects.Move) && (targetTreeViewItem != null))
                         {
-                            DragDropEffects dragDropEffects = DragDrop.DoDragDrop(treeView, treeView.SelectedValue, DragDropEffects.Move);
-                            //Checking target is not null and item is dragging(moving)
-                            if ((dragDropEffects == DragDropEffects.Move) && (targetTreeViewItem != null))
+                            // A Move drop was accepted
+                            if (IsValid(selectedTreeViewItem, targetTreeViewItem))
                             {
-                                // A Move drop was accepted
-                                if (IsValid(selectedTreeViewItem, targetTreeViewItem))
+                                TreeViewItemDroppedEventArgs treeViewItemDroppedEventArgs = new TreeViewItemDroppedEventArgs(selectedTreeViewItem, targetTreeViewItem);
+                                TreeViewItemDropped?.Invoke(treeView, treeViewItemDroppedEventArgs);
+                                if (treeViewItemDroppedEventArgs.EventResult == EventResult.Succeeded)
                                 {
-                                    TreeViewItemDroppedEventArgs treeViewItemDroppedEventArgs = new TreeViewItemDroppedEventArgs(selectedTreeViewItem, targetTreeViewItem);
-                                    TreeViewItemDropped?.Invoke(treeView, treeViewItemDroppedEventArgs);
-                                    if(treeViewItemDroppedEventArgs.EventResult == EventResult.Succeeded)
-                                    {
-                                        CopyItem(selectedTreeViewItem, targetTreeViewItem);
-                                        targetTreeViewItem = null;
-                                        selectedTreeViewItem = null;
-                                    }
+                                    CopyItem(selectedTreeViewItem, targetTreeViewItem);
+                                    targetTreeViewItem = null;
+                                    selectedTreeViewItem = null;
                                 }
                             }
                         }
                     }
                 }
             }
-            catch (Exception)
-            {
-            }
         }
 
         private void TreeView_Drop(object sender, DragEventArgs e)
         {
-            try
-            {
-                e.Effects = DragDropEffects.None;
-                e.Handled = true;
+            e.Effects = DragDropEffects.None;
+            e.Handled = true;
 
-                // Verify that this is a valid drop and then store the drop target
-                TreeViewItem treeViewItem = GetNearestContainer(e.OriginalSource as UIElement);
-                if (treeViewItem != null && selectedTreeViewItem != null)
-                {
-                    targetTreeViewItem = treeViewItem;
-                    e.Effects = DragDropEffects.Move;
-                }
-            }
-            catch (Exception)
+            // Verify that this is a valid drop and then store the drop target
+            TreeViewItem treeViewItem = GetNearestContainer(e.OriginalSource as UIElement);
+            if (treeViewItem != null && selectedTreeViewItem != null)
             {
+                targetTreeViewItem = treeViewItem;
+                e.Effects = DragDropEffects.Move;
             }
         }
 
         private void TreeView_DragOver(object sender, DragEventArgs e)
         {
-            try
+            Point currentPosition = e.GetPosition(treeView);
+
+            if ((Math.Abs(currentPosition.X - lastMouseDown.X) > 10.0) || (Math.Abs(currentPosition.Y - lastMouseDown.Y) > 10.0))
             {
-
-                Point currentPosition = e.GetPosition(treeView);
-
-
-                if ((Math.Abs(currentPosition.X - lastMouseDown.X) > 10.0) || (Math.Abs(currentPosition.Y - lastMouseDown.Y) > 10.0))
+                // Verify that this is a valid drop and then store the drop target
+                TreeViewItem treeViewItem = GetNearestContainer(e.OriginalSource as UIElement);
+                if (IsValid(selectedTreeViewItem, treeViewItem))
                 {
-                    // Verify that this is a valid drop and then store the drop target
-                    TreeViewItem treeViewItem = GetNearestContainer(e.OriginalSource as UIElement);
-                    if (IsValid(selectedTreeViewItem, treeViewItem))
-                    {
-                        e.Effects = DragDropEffects.Move;
-                    }
-                    else
-                    {
-                        e.Effects = DragDropEffects.None;
-                    }
+                    e.Effects = DragDropEffects.Move;
                 }
-                e.Handled = true;
+                else
+                {
+                    e.Effects = DragDropEffects.None;
+                }
             }
-            catch (Exception)
-            {
-            }
+            e.Handled = true;
         }
 
         private TreeView GetTreeView()
@@ -179,26 +159,19 @@ namespace SAM.Geometry.UI.WPF
         
         private void CopyItem(TreeViewItem sourceTreeViewItem, TreeViewItem targetTreeViewItem)
         {
-            try
-            {
-                //adding dragged TreeViewItem in target TreeViewItem
-                AddChild(sourceTreeViewItem, targetTreeViewItem);
+            //adding dragged TreeViewItem in target TreeViewItem
+            AddChild(sourceTreeViewItem, targetTreeViewItem);
 
-                //finding Parent TreeViewItem of dragged TreeViewItem 
-                TreeViewItem treeViewItem = FindVisualParent<TreeViewItem>(sourceTreeViewItem);
-                // if parent is null then remove from TreeView else remove from Parent TreeViewItem
-                if (treeViewItem == null)
-                {
-                    treeView.Items.Remove(sourceTreeViewItem);
-                }
-                else
-                {
-                    treeViewItem.Items.Remove(sourceTreeViewItem);
-                }
+            //finding Parent TreeViewItem of dragged TreeViewItem 
+            TreeViewItem treeViewItem = FindVisualParent<TreeViewItem>(sourceTreeViewItem);
+            // if parent is null then remove from TreeView else remove from Parent TreeViewItem
+            if (treeViewItem == null)
+            {
+                treeView.Items.Remove(sourceTreeViewItem);
             }
-            catch
+            else
             {
-
+                treeViewItem.Items.Remove(sourceTreeViewItem);
             }
         }
         

@@ -154,9 +154,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Help_Wiki.Click += RibbonButton_Help_Wiki_Click;
 
 
-            AnalyticalModelControl.TreeView_Model.SelectedItemChanged += TreeView_Main_SelectedItemChanged;
             AnalyticalModelControl.ZoomRequested += AnalyticalModelControl_ZoomRequested;
             AnalyticalModelControl.SelectionRequested += AnalyticalModelControl_SelectionRequested;
+            AnalyticalModelControl.TreeViewItemDropped += AnalyticalModelControl_TreeViewItemDropped;
 
 
             ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, null);
@@ -178,6 +178,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void AnalyticalModelControl_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
+        {
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
         }
 
         private void RibbonButton_View_NewSectionViews_Click(object sender, RoutedEventArgs e)
@@ -862,22 +867,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             
 
             //Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => );
-        }
-
-        private void TreeView_Main_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            TreeView treeView_AnalyticalModel = AnalyticalModelControl.TreeView_Model;
-
-            List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
-            TreeViewItem treeViewItem = treeView_AnalyticalModel.SelectedItem as TreeViewItem;
-            if (treeViewItem != null)
-            {
-                IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
-                if (jSAMObject != null)
-                {
-                    jSAMObjects.Add(jSAMObject);
-                }
-            }
         }
 
         private void UIAnalyticalModel_Modified(object sender, EventArgs e)
