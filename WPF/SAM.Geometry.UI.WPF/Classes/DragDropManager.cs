@@ -43,7 +43,8 @@ namespace SAM.Geometry.UI.WPF
                 treeView.DragOver -= TreeView_DragOver;
                 treeView.Drop -= TreeView_Drop;
                 treeView.MouseMove -= TreeView_MouseMove;
-                treeView.MouseDown -= TreeView_MouseDown;
+                treeView.PreviewMouseDown -= TreeView_PreviewMouseDown; 
+                treeView.PreviewMouseUp += TreeView_PreviewMouseUp;
             }
             
             this.treeView = treeView;
@@ -51,14 +52,26 @@ namespace SAM.Geometry.UI.WPF
             treeView.DragOver += TreeView_DragOver;
             treeView.Drop += TreeView_Drop;
             treeView.MouseMove += TreeView_MouseMove;
-            treeView.MouseDown += TreeView_MouseDown;
+            treeView.PreviewMouseDown += TreeView_PreviewMouseDown;
+            treeView.PreviewMouseUp += TreeView_PreviewMouseUp;
         }
 
-        private void TreeView_MouseDown(object sender, MouseButtonEventArgs e)
+        private void TreeView_PreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
+            targetTreeViewItem = null;
+            selectedTreeViewItem = null;
+        }
+
+        private void TreeView_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            targetTreeViewItem = null;
+            selectedTreeViewItem = null;
+
             if (e.ChangedButton == MouseButton.Left)
             {
                 lastMouseDown = e.GetPosition(treeView);
+                IInputElement dropNode = treeView.InputHitTest(lastMouseDown);
+                selectedTreeViewItem = GetNearestContainer(dropNode as DependencyObject);
             }
         }
 
@@ -70,7 +83,7 @@ namespace SAM.Geometry.UI.WPF
 
                 if ((Math.Abs(currentPosition.X - lastMouseDown.X) > 10.0) || (Math.Abs(currentPosition.Y - lastMouseDown.Y) > 10.0))
                 {
-                    selectedTreeViewItem = (TreeViewItem)treeView.SelectedItem;
+                    //selectedTreeViewItem = (TreeViewItem)treeView.SelectedItem;
                     if (selectedTreeViewItem != null)
                     {
                         DragDropEffects dragDropEffects = DragDrop.DoDragDrop(treeView, treeView.SelectedValue, DragDropEffects.Move);
@@ -227,6 +240,18 @@ namespace SAM.Geometry.UI.WPF
             {
                 uIElement = VisualTreeHelper.GetParent(uIElement) as UIElement;
                 treeViewItem = uIElement as TreeViewItem;
+            }
+            return treeViewItem;
+        }
+
+        private static TreeViewItem GetNearestContainer(DependencyObject dependencyObject)
+        {
+            // Walk up the element tree to the nearest tree view item.
+            TreeViewItem treeViewItem = dependencyObject as TreeViewItem;
+            while (treeViewItem == null && dependencyObject != null)
+            {
+                dependencyObject = VisualTreeHelper.GetParent(dependencyObject) as UIElement;
+                treeViewItem = dependencyObject as TreeViewItem;
             }
             return treeViewItem;
         }
