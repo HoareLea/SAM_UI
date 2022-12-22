@@ -97,6 +97,16 @@ namespace SAM.Analytical.UI.WPF
             });
 
             List<ViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<ViewSettings>();
+            if(viewSettingsList == null || viewSettingsList.Count == 0)
+            {
+                return;
+            }
+
+            viewSettingsList.RemoveAll(x => !x.Enabled);
+            if (viewSettingsList == null || viewSettingsList.Count == 0)
+            {
+                return;
+            }
 
             using (Core.Windows.Forms.TreeViewForm<ViewSettings> treeViewForm = new Core.Windows.Forms.TreeViewForm<ViewSettings>("Select Views", viewSettingsList, func))
             {
