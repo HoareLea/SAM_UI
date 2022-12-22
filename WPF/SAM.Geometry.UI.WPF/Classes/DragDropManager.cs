@@ -70,8 +70,7 @@ namespace SAM.Geometry.UI.WPF
             if (e.ChangedButton == MouseButton.Left)
             {
                 lastMouseDown = e.GetPosition(treeView);
-                IInputElement dropNode = treeView.InputHitTest(lastMouseDown);
-                selectedTreeViewItem = GetNearestContainer(dropNode as DependencyObject);
+                selectedTreeViewItem = DependencyObject<TreeViewItem>(treeView, lastMouseDown);
             }
         }
 
@@ -114,7 +113,7 @@ namespace SAM.Geometry.UI.WPF
             e.Handled = true;
 
             // Verify that this is a valid drop and then store the drop target
-            TreeViewItem treeViewItem = GetNearestContainer(e.OriginalSource as UIElement);
+            TreeViewItem treeViewItem = DependencyObject<TreeViewItem>(e.OriginalSource as UIElement);
             if (treeViewItem != null && selectedTreeViewItem != null)
             {
                 targetTreeViewItem = treeViewItem;
@@ -129,7 +128,7 @@ namespace SAM.Geometry.UI.WPF
             if ((Math.Abs(currentPosition.X - lastMouseDown.X) > 10.0) || (Math.Abs(currentPosition.Y - lastMouseDown.Y) > 10.0))
             {
                 // Verify that this is a valid drop and then store the drop target
-                TreeViewItem treeViewItem = GetNearestContainer(e.OriginalSource as UIElement);
+                TreeViewItem treeViewItem = DependencyObject<TreeViewItem>(e.OriginalSource as UIElement);
                 if (IsValid(selectedTreeViewItem, treeViewItem))
                 {
                     e.Effects = DragDropEffects.Move;
@@ -160,14 +159,6 @@ namespace SAM.Geometry.UI.WPF
             }
 
             return true;
-
-            //Check whether the target item is meeting your condition
-            //if (!sourceTreeViewItem.Header.ToString().Equals(targetTreeViewItem?.Header?.ToString()))
-            //{
-            //    return true;
-            //}
-
-            //return false;
         }
         
         private void CopyItem(TreeViewItem sourceTreeViewItem, TreeViewItem targetTreeViewItem)
@@ -176,7 +167,7 @@ namespace SAM.Geometry.UI.WPF
             AddChild(sourceTreeViewItem, targetTreeViewItem);
 
             //finding Parent TreeViewItem of dragged TreeViewItem 
-            TreeViewItem treeViewItem = FindVisualParent<TreeViewItem>(sourceTreeViewItem);
+            TreeViewItem treeViewItem = ParentDependencyObject<TreeViewItem>(sourceTreeViewItem);
             // if parent is null then remove from TreeView else remove from Parent TreeViewItem
             if (treeViewItem == null)
             {
@@ -207,53 +198,48 @@ namespace SAM.Geometry.UI.WPF
             }
         }
         
-        private static TObject FindVisualParent<TObject>(UIElement uIElement) where TObject : UIElement
+        private static T ParentDependencyObject<T>(DependencyObject dependencyObject) where T : DependencyObject
         {
-            if (uIElement == null)
+            if (dependencyObject == null)
             {
                 return null;
             }
 
-            UIElement uIElement_Parent = VisualTreeHelper.GetParent(uIElement) as UIElement;
-
-            while (uIElement_Parent != null)
+            DependencyObject dependencyObject_Parent = VisualTreeHelper.GetParent(dependencyObject);
+            if(dependencyObject_Parent == null)
             {
-                TObject tObject = uIElement_Parent as TObject;
-                if (tObject != null)
-                {
-                    return tObject;
-                }
-                else
-                {
-                    uIElement_Parent = VisualTreeHelper.GetParent(uIElement_Parent) as UIElement;
-                }
+                return null;
             }
 
-            return null;
-        }
-        
-        private static TreeViewItem GetNearestContainer(UIElement uIElement)
-        {
-            // Walk up the element tree to the nearest tree view item.
-            TreeViewItem treeViewItem = uIElement as TreeViewItem;
-            while (treeViewItem == null && uIElement != null)
-            {
-                uIElement = VisualTreeHelper.GetParent(uIElement) as UIElement;
-                treeViewItem = uIElement as TreeViewItem;
-            }
-            return treeViewItem;
+            return DependencyObject<T>(dependencyObject_Parent);
+
         }
 
-        private static TreeViewItem GetNearestContainer(DependencyObject dependencyObject)
+        private static T DependencyObject<T>(DependencyObject dependencyObject) where T: DependencyObject
         {
-            // Walk up the element tree to the nearest tree view item.
-            TreeViewItem treeViewItem = dependencyObject as TreeViewItem;
-            while (treeViewItem == null && dependencyObject != null)
+            T t = dependencyObject as T;
+            while (t == null && dependencyObject != null)
             {
-                dependencyObject = VisualTreeHelper.GetParent(dependencyObject) as UIElement;
-                treeViewItem = dependencyObject as TreeViewItem;
+                dependencyObject = VisualTreeHelper.GetParent(dependencyObject);
+                t = dependencyObject as T;
             }
-            return treeViewItem;
+            return t;
+        }
+
+        private static T DependencyObject<T>(UIElement uIElement, Point point) where T : DependencyObject
+        {
+            if(uIElement == null)
+            {
+                return null;
+            }
+
+            IInputElement inputElement = uIElement.InputHitTest(point);
+            if(inputElement == null)
+            {
+                return null;
+            }
+
+            return DependencyObject<T>(inputElement as DependencyObject);
         }
     }
 }
