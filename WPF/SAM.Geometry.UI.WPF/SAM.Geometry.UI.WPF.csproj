@@ -68,7 +68,8 @@
     <Compile Include="Classes\Action\Visual3DsAction.cs" />
     <Compile Include="Classes\RectangularSelector.cs" />
     <Compile Include="Classes\EventArgs\SelectionRequestedEventArgs.cs" />
-    <Compile Include="Classes\DragDropManager.cs" />
+    <Compile Include="Classes\TreeViewHighlightManager.cs" />
+    <Compile Include="Classes\TreeViewDragDropManager.cs" />
     <Compile Include="Classes\EventArgs\TreeViewItemDroppedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ZoomRequestedEventArgs.cs" />
     <Compile Include="Classes\UIGeometryObjectModel.cs" />

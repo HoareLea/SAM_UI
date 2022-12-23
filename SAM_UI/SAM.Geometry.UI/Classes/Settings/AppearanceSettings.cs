@@ -66,7 +66,7 @@ namespace SAM.Geometry.UI
 
             foreach(IAppearance appearance in appearances)
             {
-                IAppearance appearance_Temp = SAM.Core.Query.Clone(appearance);
+                IAppearance appearance_Temp = Core.Query.Clone(appearance);
                 if(appearance_Temp == null)
                 {
                     continue;
@@ -116,7 +116,7 @@ namespace SAM.Geometry.UI
                     continue;
                 }
 
-                appearance = SAM.Core.Query.Clone(appearance);
+                appearance = Core.Query.Clone(appearance);
                 if(!(appearance is T))
                 {
                     continue;

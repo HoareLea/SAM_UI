@@ -104,7 +104,7 @@ namespace SAM.Core.UI.WPF
 
             StackPanel stackPanel = new StackPanel() { Orientation = Orientation.Horizontal, IsEnabled = legendItem.Editable};
 
-            TextBox textBox = new TextBox() { IsReadOnly = true, Width = 20, Background = new SolidColorBrush(legendItem.Color.ToMedia()), TextWrapping = System.Windows.TextWrapping.WrapWithOverflow };
+            TextBox textBox = new TextBox() { IsReadOnly = true, Width = 20, Background = new SolidColorBrush(legendItem.Color.ToMedia()), TextWrapping = TextWrapping.WrapWithOverflow };
             stackPanel.Children.Add(textBox);
             stackPanel.Children.Add(new Label() { Content = legendItem.Text });
             stackPanel.Tag = legendItem;

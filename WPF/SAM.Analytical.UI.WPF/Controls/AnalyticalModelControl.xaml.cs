@@ -19,8 +19,10 @@ namespace SAM.Analytical.UI.WPF
 
         private UIAnalyticalModel uIAnalyticalModel;
 
-        private DragDropManager dragDropManager_Views;
-        private DragDropManager dragDropManager_Model;
+        private TreeViewDragDropManager treeViewDragDropManager_Views;
+        private TreeViewDragDropManager treeViewDragDropManager_Model;
+
+        private TreeViewHighlightManager treeViewHighlightManager_Model;
 
         public event ZoomRequestedEventHandler ZoomRequested;
         public event SelectionRequestedEventHandler SelectionRequested;
@@ -31,11 +33,14 @@ namespace SAM.Analytical.UI.WPF
         {
              InitializeComponent();
 
-            dragDropManager_Views = new DragDropManager(treeView_Views);
-            dragDropManager_Views.TreeViewItemDropped += DragDropManager_Views_TreeViewItemDropped;
+            treeViewDragDropManager_Views = new TreeViewDragDropManager(treeView_Views);
+            treeViewDragDropManager_Views.TreeViewItemDropped += DragDropManager_Views_TreeViewItemDropped;
 
-            dragDropManager_Model = new DragDropManager(treeView_Model);
-            dragDropManager_Model.TreeViewItemDropped += DragDropManager_Model_TreeViewItemDropped;
+            treeViewDragDropManager_Model = new TreeViewDragDropManager(treeView_Model);
+            treeViewDragDropManager_Model.TreeViewItemDropped += DragDropManager_Model_TreeViewItemDropped;
+
+            treeViewHighlightManager_Model = new TreeViewHighlightManager(treeView_Model);
+            treeViewHighlightManager_Model.Enabled = false;
         }
 
         private void DragDropManager_Model_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)

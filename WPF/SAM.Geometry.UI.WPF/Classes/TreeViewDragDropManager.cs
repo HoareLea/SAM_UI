@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace SAM.Geometry.UI.WPF
 {
-    public class DragDropManager
+    public class TreeViewDragDropManager
     {
         private TreeView treeView;
         
@@ -18,7 +18,7 @@ namespace SAM.Geometry.UI.WPF
 
         public event TreeViewItemDroppedEventHandler TreeViewItemDropped;
 
-        public DragDropManager(TreeView treeView)
+        public TreeViewDragDropManager(TreeView treeView)
         {
             SetTreeView(treeView);
         }
