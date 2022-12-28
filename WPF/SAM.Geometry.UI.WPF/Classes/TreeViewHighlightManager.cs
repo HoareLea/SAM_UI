@@ -23,6 +23,8 @@ namespace SAM.Geometry.UI.WPF
 
         private bool enabled = true;
 
+        public event TreeViewItemHighlightedEventHandler TreeViewItemHighlighted;
+
         public TreeViewHighlightManager(TreeView treeView)
         {
             SetTreeView(treeView);
@@ -100,8 +102,19 @@ namespace SAM.Geometry.UI.WPF
             }
             else
             {
-                treeViewItems.Add(treeView.SelectedItem as TreeViewItem);
-                Highlight(true);
+                TreeViewItem treeViewItem = treeView.SelectedItem as TreeViewItem;
+                if(treeViewItem != null)
+                {
+                    TreeViewItemHighlightedEventArgs treeViewItemHighlightedEventArgs = new TreeViewItemHighlightedEventArgs(treeViewItem, GetHighlightedTreeViewItems());
+                    TreeViewItemHighlighted?.Invoke(treeView, treeViewItemHighlightedEventArgs);
+
+                    if (treeViewItemHighlightedEventArgs.EventResult == EventResult.Succeeded)
+                    {
+                        treeViewItems.Add(treeView.SelectedItem as TreeViewItem);
+                    }
+
+                    Highlight(true);
+                }
             }
         }
 

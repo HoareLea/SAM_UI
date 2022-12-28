@@ -40,7 +40,48 @@ namespace SAM.Analytical.UI.WPF
             treeViewDragDropManager_Model.TreeViewItemDropped += DragDropManager_Model_TreeViewItemDropped;
 
             treeViewHighlightManager_Model = new TreeViewHighlightManager(treeView_Model);
-            treeViewHighlightManager_Model.Enabled = false;
+            treeViewHighlightManager_Model.Enabled = true;
+            treeViewHighlightManager_Model.TreeViewItemHighlighted += TreeViewHighlightManager_Model_TreeViewItemHighlighted;
+        }
+
+        private void TreeViewHighlightManager_Model_TreeViewItemHighlighted(object sender, TreeViewItemHighlightedEventArgs e)
+        {
+            TreeViewItem treeViewItem = e.TreeViewItem;
+            if (treeViewItem == null)
+            {
+                e.EventResult = EventResult.Failed;
+                return;
+            }
+
+            Type type = treeViewItem.Tag?.GetType();
+            if(type == null)
+            {
+                e.EventResult = EventResult.Failed;
+                return;
+            }
+
+
+            List<TreeViewItem> treeViewItems = e.HighlightedTreeViewItems;
+            if(treeViewItems == null || treeViewItems.Count == 0)
+            {
+                return;
+            }
+
+            e.EventResult = EventResult.Failed;
+            foreach (TreeViewItem treeViewItem_Temp in treeViewItems)
+            {
+                Type type_Temp = treeViewItem_Temp.Tag?.GetType();
+                if (type_Temp == null)
+                {
+                    continue;
+                }
+
+                if(type_Temp.IsAssignableFrom(type) || type.IsAssignableFrom(type_Temp))
+                {
+                    e.EventResult = EventResult.Succeeded;
+                    break;
+                }
+            }
         }
 
         private void DragDropManager_Model_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
