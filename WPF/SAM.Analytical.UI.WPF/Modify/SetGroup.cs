@@ -1,4 +1,6 @@
 ﻿using SAM.Geometry.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -6,8 +8,13 @@ namespace SAM.Analytical.UI.WPF
     {
         public static void SetGroup(this UIAnalyticalModel uIAnalyticalModel, System.Guid guid, string group)
         {
+            SetGroup(uIAnalyticalModel, new System.Guid[] { guid}, group);
+        }
+
+        public static void SetGroup(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<System.Guid> guids, string group)
+        {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
+            if (analyticalModel == null || guids == null || guids.Count() == 0)
             {
                 return;
             }
@@ -17,14 +24,24 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ViewSettings viewSettings =  uIGeometrySettings.GetViewSettings(guid) as ViewSettings;
-            if(viewSettings == null)
+            bool updated = false;
+            foreach(System.Guid guid in guids)
+            {
+                ViewSettings viewSettings = uIGeometrySettings.GetViewSettings(guid) as ViewSettings;
+                if (viewSettings == null)
+                {
+                    return;
+                }
+
+                viewSettings.SetValue(ViewSettingsParameter.Group, group);
+                uIGeometrySettings.AddViewSettings(viewSettings);
+                updated = true;
+            }
+
+            if(!updated)
             {
                 return;
             }
-
-            viewSettings.SetValue(ViewSettingsParameter.Group, group);
-            uIGeometrySettings.AddViewSettings(viewSettings);
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 

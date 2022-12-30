@@ -23,6 +23,7 @@ namespace SAM.Analytical.UI.WPF
         private TreeViewDragDropManager treeViewDragDropManager_Model;
 
         private TreeViewHighlightManager treeViewHighlightManager_Model;
+        private TreeViewHighlightManager treeViewHighlightManager_Views;
 
         public event ZoomRequestedEventHandler ZoomRequested;
         public event SelectionRequestedEventHandler SelectionRequested;
@@ -42,52 +43,28 @@ namespace SAM.Analytical.UI.WPF
             treeViewHighlightManager_Model = new TreeViewHighlightManager(treeView_Model);
             treeViewHighlightManager_Model.Enabled = true;
             treeViewHighlightManager_Model.TreeViewItemHighlighted += TreeViewHighlightManager_Model_TreeViewItemHighlighted;
+
+            treeViewHighlightManager_Views = new TreeViewHighlightManager(treeView_Views);
+            treeViewHighlightManager_Views.Enabled = true;
+            treeViewHighlightManager_Views.TreeViewItemHighlighted += TreeViewHighlightManager_Views_TreeViewItemHighlighted; ;
+        }
+
+        private void TreeViewHighlightManager_Views_TreeViewItemHighlighted(object sender, TreeViewItemHighlightedEventArgs e)
+        {
+            Modify.AllowTreeViewItemByType(e);
         }
 
         private void TreeViewHighlightManager_Model_TreeViewItemHighlighted(object sender, TreeViewItemHighlightedEventArgs e)
         {
-            TreeViewItem treeViewItem = e.TreeViewItem;
-            if (treeViewItem == null)
-            {
-                e.EventResult = EventResult.Failed;
-                return;
-            }
-
-            Type type = treeViewItem.Tag?.GetType();
-            if(type == null)
-            {
-                e.EventResult = EventResult.Failed;
-                return;
-            }
-
-
-            List<TreeViewItem> treeViewItems = e.HighlightedTreeViewItems;
-            if(treeViewItems == null || treeViewItems.Count == 0)
-            {
-                return;
-            }
-
-            e.EventResult = EventResult.Failed;
-            foreach (TreeViewItem treeViewItem_Temp in treeViewItems)
-            {
-                Type type_Temp = treeViewItem_Temp.Tag?.GetType();
-                if (type_Temp == null)
-                {
-                    continue;
-                }
-
-                if(type_Temp.IsAssignableFrom(type) || type.IsAssignableFrom(type_Temp))
-                {
-                    e.EventResult = EventResult.Succeeded;
-                    break;
-                }
-            }
+            Modify.AllowTreeViewItemByType(e);
         }
 
         private void DragDropManager_Model_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
         {
             object targetObject = e.TargetTreeViewItem.Tag;
             object selectedObject = e.SelectedTreeViewItem.Tag;
+
+            List<object> highlightedObjects = treeViewHighlightManager_Model?.HighlightedTreeViewItems?.ConvertAll(x => x.Tag);
 
             e.EventResult = EventResult.Canceled;
 
@@ -100,7 +77,14 @@ namespace SAM.Analytical.UI.WPF
 
             if (selectedObject is Space && targetObject is Zone)
             {
-                Modify.AssignSpaceZone(uIAnalyticalModel, (Space)selectedObject, (Zone)targetObject);
+                List<Space> spaces = new List<Space>() { (Space)selectedObject };
+                List<Space> highlightedSpaces = highlightedObjects?.FindAll(x => x is Space).ConvertAll(x => (Space)x);
+                if(highlightedSpaces != null)
+                {
+                    spaces.AddRange(highlightedSpaces);
+                }
+
+                Modify.AssignSpaceZone(uIAnalyticalModel, spaces, (Zone)targetObject);
                 e.EventResult = EventResult.Succeeded;
             }
 
@@ -114,9 +98,21 @@ namespace SAM.Analytical.UI.WPF
         private void DragDropManager_Views_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
         {
             ViewSettings viewSettings = e.SelectedTreeViewItem.Tag as ViewSettings;
+            if(viewSettings == null)
+            {
+                return;
+            }
+            
             string group = e.TargetTreeViewItem.Tag as string;
 
-            Modify.SetGroup(uIAnalyticalModel, viewSettings.Guid, group);
+            List<object> highlightedObjects = treeViewHighlightManager_Views?.HighlightedTreeViewItems?.ConvertAll(x => x.Tag);
+
+            HashSet<Guid> guids = new HashSet<Guid>() { viewSettings.Guid };
+
+            List<ViewSettings> highlightedViewSettings = highlightedObjects?.FindAll(x => x is ViewSettings).ConvertAll(x => (ViewSettings)x);
+            highlightedViewSettings?.ForEach(x => guids.Add(x.Guid));
+
+            Modify.SetGroup(uIAnalyticalModel, guids, group);
         }
 
         private void treeView_Model_ContextMenuOpening(object sender, ContextMenuEventArgs e)

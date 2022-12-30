@@ -76,6 +76,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modify\AllowTreeViewItemByType.cs" />
     <Compile Include="Modify\AssignSpaceInternalCondition.cs" />
     <Compile Include="Modify\AssignSpaceZone.cs" />
     <Compile Include="Modify\SetGroup.cs" />
