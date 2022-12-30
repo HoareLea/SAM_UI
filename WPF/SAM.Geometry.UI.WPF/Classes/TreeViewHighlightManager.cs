@@ -104,6 +104,10 @@ namespace SAM.Geometry.UI.WPF
             {
                 treeViewItem_Old.Background = solidColorBrush_Background;
                 treeViewItem_Old.Foreground = solidColorBrush_Foreground;
+                if(treeViewItems.Count == 0)
+                {
+                    treeViewItems.Add(treeViewItem_Old);
+                }
             }
 
             if (treeViewItem_New != null)
