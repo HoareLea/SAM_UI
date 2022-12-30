@@ -73,48 +73,59 @@ namespace SAM.Geometry.UI.WPF
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if(!enabled)
+            if (!enabled)
             {
                 return;
             }
-            
+
             TreeViewItem treeViewItem_Old = e.OldValue as TreeViewItem;
-            if(treeViewItem_Old != null)
+            TreeViewItem treeViewItem_New = treeView.SelectedItem as TreeViewItem;
+
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+
+                if (treeViewItem_Old != null)
+                {
+                    treeViewItem_Old.Background = solidColorBrush_Background;
+                    treeViewItem_Old.Foreground = solidColorBrush_Foreground;
+                }
+                if (treeViewItem_New != null)
+                {
+                    treeViewItem_New.Background = solidColorBrush_Background;
+                    treeViewItem_New.Foreground = solidColorBrush_Highlight_Foreground;
+                }
+
+                Highlight(false);
+                treeViewItems.Clear();
+                return;
+            }
+
+            if (treeViewItem_Old != null)
             {
                 treeViewItem_Old.Background = solidColorBrush_Background;
                 treeViewItem_Old.Foreground = solidColorBrush_Foreground;
             }
-            
-            if (treeView.SelectedItem != null)
+
+            if (treeViewItem_New != null)
             {
-                TreeViewItem treeViewItem = treeView.SelectedItem as TreeViewItem;
-                if (treeViewItem != null)
-                {
-                    treeViewItem.Background = solidColorBrush_Background;
-                    treeViewItem.Foreground = solidColorBrush_Highlight_Foreground;
-                }
+                treeViewItem_New.Background = solidColorBrush_Background;
+                treeViewItem_New.Foreground = solidColorBrush_Highlight_Foreground;
             }
 
-            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+            if (treeViewItem_New != null)
             {
-                Highlight(false);
-                treeViewItems.Clear();
-            }
-            else
-            {
-                TreeViewItem treeViewItem = treeView.SelectedItem as TreeViewItem;
-                if(treeViewItem != null)
-                {
-                    TreeViewItemHighlightedEventArgs treeViewItemHighlightedEventArgs = new TreeViewItemHighlightedEventArgs(treeViewItem, GetHighlightedTreeViewItems());
-                    TreeViewItemHighlighted?.Invoke(treeView, treeViewItemHighlightedEventArgs);
+                TreeViewItemHighlightedEventArgs treeViewItemHighlightedEventArgs = new TreeViewItemHighlightedEventArgs(treeViewItem_New, GetHighlightedTreeViewItems());
+                TreeViewItemHighlighted?.Invoke(treeView, treeViewItemHighlightedEventArgs);
 
-                    if (treeViewItemHighlightedEventArgs.EventResult == EventResult.Succeeded)
+                if (treeViewItemHighlightedEventArgs.EventResult == EventResult.Succeeded)
+                {
+                    if(!treeViewItems.Contains(treeViewItem_New))
                     {
-                        treeViewItems.Add(treeView.SelectedItem as TreeViewItem);
+                        treeViewItems.Add(treeViewItem_New);
                     }
-
-                    Highlight(true);
                 }
+
+                Highlight(true);
             }
         }
 

@@ -51,7 +51,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void TreeViewHighlightManager_Views_TreeViewItemHighlighted(object sender, TreeViewItemHighlightedEventArgs e)
         {
-            Modify.AllowTreeViewItemByType(e);
+            Modify.AllowTreeViewItemByType(e, typeof(ViewSettings));
         }
 
         private void TreeViewHighlightManager_Model_TreeViewItemHighlighted(object sender, TreeViewItemHighlightedEventArgs e)

@@ -7,7 +7,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void AllowTreeViewItemByType(this TreeViewItemHighlightedEventArgs treeViewItemHighlightedEventArgs)
+        public static void AllowTreeViewItemByType(this TreeViewItemHighlightedEventArgs treeViewItemHighlightedEventArgs, Type type = null)
         {
             TreeViewItem treeViewItem = treeViewItemHighlightedEventArgs.TreeViewItem;
             if (treeViewItem == null)
@@ -16,8 +16,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            Type type = treeViewItem.Tag?.GetType();
-            if (type == null)
+            Type type_1 = treeViewItem.Tag?.GetType();
+            if (type_1 == null)
             {
                 treeViewItemHighlightedEventArgs.EventResult = EventResult.Failed;
                 return;
@@ -33,16 +33,27 @@ namespace SAM.Analytical.UI.WPF
             treeViewItemHighlightedEventArgs.EventResult = EventResult.Failed;
             foreach (TreeViewItem treeViewItem_Temp in treeViewItems)
             {
-                Type type_Temp = treeViewItem_Temp.Tag?.GetType();
-                if (type_Temp == null)
+                Type type_2 = treeViewItem_Temp.Tag?.GetType();
+                if (type_2 == null)
                 {
                     continue;
                 }
 
-                if (type_Temp.IsAssignableFrom(type) || type.IsAssignableFrom(type_Temp))
+                if(type_1 == null)
                 {
-                    treeViewItemHighlightedEventArgs.EventResult = EventResult.Succeeded;
-                    break;
+                    if (type_2.IsAssignableFrom(type_1) || type_1.IsAssignableFrom(type_2))
+                    {
+                        treeViewItemHighlightedEventArgs.EventResult = EventResult.Succeeded;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (type.IsAssignableFrom(type_1) || type.IsAssignableFrom(type_2))
+                    {
+                        treeViewItemHighlightedEventArgs.EventResult = EventResult.Succeeded;
+                        break;
+                    }
                 }
             }
         }
