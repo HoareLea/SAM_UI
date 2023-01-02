@@ -926,7 +926,9 @@ namespace SAM.Analytical.UI.WPF.Windows
                 viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
                 viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
                 viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+                viewportControl.UndefinedLegendItem = UI.Query.UndefinedLegendItem();
                 tabItem.Content = viewportControl;
+
 
                 if(viewSettings != null)
                 {

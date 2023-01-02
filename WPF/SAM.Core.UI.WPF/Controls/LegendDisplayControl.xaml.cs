@@ -10,6 +10,9 @@ namespace SAM.Core.UI.WPF
     public partial class LegendDisplayControl : UserControl
     {
         private Legend legend;
+        public bool Sort { get; set; } = true;
+        public LegendItem UndefinedLegendItem { get; set; }
+
 
         public LegendDisplayControl()
         {
@@ -47,7 +50,28 @@ namespace SAM.Core.UI.WPF
             List<LegendItem> legendItems = legend.LegendItems;
             if (legendItems != null)
             {
-                foreach (LegendItem legendItem in legendItems)
+                if(Sort)
+                {
+                    legendItems.Sort((x, y) => x.Text.CompareTo(y.Text));
+                }
+
+                LegendItem legendItem = null;
+                if(UndefinedLegendItem != null)
+                {
+                    int index = legendItems.FindIndex(x => x.Text == UndefinedLegendItem.Text && x.Color == UndefinedLegendItem.Color);
+                    if(index != -1)
+                    {
+                        legendItem = legendItems[index];
+                        legendItems.RemoveAt(index);
+                    }
+                }
+
+                foreach (LegendItem legendItem_Temp in legendItems)
+                {
+                    Add(legendItem_Temp);
+                }
+
+                if(legendItem != null)
                 {
                     Add(legendItem);
                 }

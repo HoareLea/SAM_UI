@@ -461,5 +461,18 @@ namespace SAM.Geometry.UI.WPF
 
             helixViewport3D.Loaded -= helixViewport3D_Loaded;
         }
+
+        public LegendItem UndefinedLegendItem
+        {
+            get
+            {
+                return legendControl.UndefinedLegendItem;
+            }
+
+            set
+            {
+                legendControl.UndefinedLegendItem = value;
+            }
+        }
     }
 }
