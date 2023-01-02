@@ -39,7 +39,7 @@ namespace SAM.Analytical.UI.WPF
                     continue;
                 }
 
-                if(type_1 == null)
+                if(type == null)
                 {
                     if (type_2.IsAssignableFrom(type_1) || type_1.IsAssignableFrom(type_2))
                     {

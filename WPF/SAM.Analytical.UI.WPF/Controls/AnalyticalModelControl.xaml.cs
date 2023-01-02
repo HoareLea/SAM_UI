@@ -146,7 +146,17 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            if(jSAMObject is Space)
+            bool singleSelection = true;
+            if(treeViewHighlightManager_Model != null && treeViewHighlightManager_Model.Enabled)
+            {
+                List<TreeViewItem> treeViewItems = treeViewHighlightManager_Model.HighlightedTreeViewItems;
+                if (treeViewItems != null && treeViewItems.Count != 0)
+                {
+                    singleSelection = false;
+                }
+            }
+
+            if (jSAMObject is Space)
             {
                 MenuItem menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Zoom";
@@ -162,12 +172,15 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = jSAMObject;
                 contextMenu_Model.Items.Add(menuItem);
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Edit";
-                menuItem.Header = "Edit Space";
-                menuItem.Click += MenuItem_Edit_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Model.Items.Add(menuItem);
+                if(singleSelection)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Edit";
+                    menuItem.Header = "Edit Space";
+                    menuItem.Click += MenuItem_Edit_Click;
+                    menuItem.Tag = jSAMObject;
+                    contextMenu_Model.Items.Add(menuItem);
+                }
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_EditZones";
@@ -207,12 +220,16 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = jSAMObject;
                 contextMenu_Model.Items.Add(menuItem);
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Edit";
-                menuItem.Header = "Edit";
-                menuItem.Click += MenuItem_Edit_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Model.Items.Add(menuItem);
+                if(singleSelection)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Edit";
+                    menuItem.Header = "Edit";
+                    menuItem.Click += MenuItem_Edit_Click;
+                    menuItem.Tag = jSAMObject;
+                    contextMenu_Model.Items.Add(menuItem);
+                }
+
             }
             else if (jSAMObject is Aperture)
             {
@@ -230,23 +247,30 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = jSAMObject;
                 contextMenu_Model.Items.Add(menuItem);
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Edit";
-                menuItem.Header = "Edit";
-                menuItem.Click += MenuItem_Edit_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Model.Items.Add(menuItem);
+                if(singleSelection)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Edit";
+                    menuItem.Header = "Edit";
+                    menuItem.Click += MenuItem_Edit_Click;
+                    menuItem.Tag = jSAMObject;
+                    contextMenu_Model.Items.Add(menuItem);
+                }
+
             }
             else if (jSAMObject is IMaterial)
             {
                 MenuItem menuItem = null;
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Edit";
-                menuItem.Header = "Edit";
-                menuItem.Click += MenuItem_Edit_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Model.Items.Add(menuItem);
+                if (singleSelection)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Edit";
+                    menuItem.Header = "Edit";
+                    menuItem.Click += MenuItem_Edit_Click;
+                    menuItem.Tag = jSAMObject;
+                    contextMenu_Model.Items.Add(menuItem);
+                }
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Remove";
@@ -255,21 +279,29 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = jSAMObject;
                 contextMenu_Model.Items.Add(menuItem);
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Duplicate";
-                menuItem.Header = "Duplicate";
-                menuItem.Click += MenuItem_Duplicate_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Model.Items.Add(menuItem);
+                if (singleSelection)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Duplicate";
+                    menuItem.Header = "Duplicate";
+                    menuItem.Click += MenuItem_Duplicate_Click;
+                    menuItem.Tag = jSAMObject;
+                    contextMenu_Model.Items.Add(menuItem);
+                }
+
             }
             else if (jSAMObject is Profile)
             {
-                MenuItem menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Edit";
-                menuItem.Header = "Edit";
-                menuItem.Click += MenuItem_Edit_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Model.Items.Add(menuItem);
+
+                if (singleSelection)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Edit";
+                    menuItem.Header = "Edit";
+                    menuItem.Click += MenuItem_Edit_Click;
+                    menuItem.Tag = jSAMObject;
+                    contextMenu_Model.Items.Add(menuItem);
+                }
             }
             else if (jSAMObject is Zone)
             {
@@ -287,12 +319,15 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = jSAMObject;
                 contextMenu_Model.Items.Add(menuItem);
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Edit";
-                menuItem.Header = "Edit";
-                menuItem.Click += MenuItem_Edit_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Model.Items.Add(menuItem);
+                if (singleSelection)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Edit";
+                    menuItem.Header = "Edit";
+                    menuItem.Click += MenuItem_Edit_Click;
+                    menuItem.Tag = jSAMObject;
+                    contextMenu_Model.Items.Add(menuItem);
+                }
             }
             else
             {
