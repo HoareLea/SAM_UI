@@ -24,6 +24,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             Core.UI.WPF.LegendWindow legendWindow = new Core.UI.WPF.LegendWindow(viewSettings.Legend);
+            legendWindow.UndefinedLegendItem = UI.Query.UndefinedLegendItem();
             bool? result = legendWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)
             {

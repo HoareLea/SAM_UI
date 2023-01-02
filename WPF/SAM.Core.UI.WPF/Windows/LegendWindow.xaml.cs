@@ -32,6 +32,19 @@ namespace SAM.Core.UI.WPF
             }
         }
 
+        public LegendItem UndefinedLegendItem
+        {
+            get
+            {
+                return legendControl.UndefinedLegendItem;
+            }
+
+            set
+            {
+                legendControl.UndefinedLegendItem = value;
+            }
+        }
+
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;

@@ -58,7 +58,7 @@ namespace SAM.Core.UI.WPF
                 LegendItem legendItem = null;
                 if(UndefinedLegendItem != null)
                 {
-                    int index = legendItems.FindIndex(x => x.Text == UndefinedLegendItem.Text && x.Color == UndefinedLegendItem.Color);
+                    int index = legendItems.FindIndex(x => x.Text == UndefinedLegendItem.Text && Core.Query.Equals(x.Color, UndefinedLegendItem.Color));
                     if(index != -1)
                     {
                         legendItem = legendItems[index];
