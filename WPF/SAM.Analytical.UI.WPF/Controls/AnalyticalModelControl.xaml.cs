@@ -161,8 +161,8 @@ namespace SAM.Analytical.UI.WPF
                     if (singleSelection)
                     {
                         MenuItem menuItem = new MenuItem();
-                        menuItem.Name = "MenuItem_EditSpaces";
-                        menuItem.Header = "Edit Spaces";
+                        menuItem.Name = "MenuItem_EditSpace";
+                        menuItem.Header = "Edit Space";
                         menuItem.Click += MenuItem_EditSpaces_Click;
                         menuItem.Tag = treeViewItem.Items == null || treeViewItem.Items.Count == 0 ? null : (treeViewItem.Items[0] as TreeViewItem)?.Tag;
                         contextMenu_Model.Items.Add(menuItem);
@@ -207,8 +207,8 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_EditZones";
-                menuItem.Header = "Edit Zones";
+                menuItem.Name = "MenuItem_EditZone";
+                menuItem.Header = "Edit Zone";
                 menuItem.Click += MenuItem_EditZones_Click;
                 menuItem.Tag = jSAMObject;
                 contextMenu_Model.Items.Add(menuItem);
