@@ -39,6 +39,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Analytical.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Architectural, Version=1.0.8383.18149, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Architectural.dll</HintPath>

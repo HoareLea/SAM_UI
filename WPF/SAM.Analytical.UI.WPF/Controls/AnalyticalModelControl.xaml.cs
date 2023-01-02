@@ -353,6 +353,15 @@ namespace SAM.Analytical.UI.WPF
                     contextMenu_Model.Items.Add(menuItem);
                 }
             }
+            else if(jSAMObject is InternalCondition)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Edit";
+                menuItem.Header = "Edit";
+                menuItem.Click += MenuItem_Edit_Click;
+                menuItem.Tag = jSAMObject;
+                contextMenu_Model.Items.Add(menuItem);
+            }
             else
             {
                 e.Handled = true;
@@ -723,6 +732,10 @@ namespace SAM.Analytical.UI.WPF
             else if (jSAMObject is Zone)
             {
                 Modify.EditZone(uIAnalyticalModel, jSAMObject as dynamic);
+            }
+            else if (jSAMObject is InternalCondition)
+            {
+                UI.Modify.EditInternalCondition(uIAnalyticalModel, jSAMObject as dynamic);
             }
         }
 
