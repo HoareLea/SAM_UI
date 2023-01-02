@@ -78,6 +78,11 @@ namespace SAM.Geometry.UI.WPF
             lines.ForEach(x => panel.Children.Remove(x));
             lines.Clear();
 
+            if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+            {
+                return;
+            }
+
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 if(startPoint == null && !startPoint.HasValue)
@@ -118,7 +123,7 @@ namespace SAM.Geometry.UI.WPF
             double x2 = endPoint.Value.X;
             double y2 = endPoint.Value.Y;
 
-            System.Windows.Media.DoubleCollection strokeDashArray_Temp = x1 > x2 ? null : strokeDashArray;
+            System.Windows.Media.DoubleCollection strokeDashArray_Temp = x1 > x2 ? strokeDashArray : null;
             if(rectangularSelectorMode != RectangularSelectorMode.Extended)
             {
                 strokeDashArray_Temp = null;
