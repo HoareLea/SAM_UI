@@ -1380,14 +1380,20 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void EditZones(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
         {
-            Guid guid = GetActiveGuid();
-            if (guid == Guid.Empty)
+            string zoneCategory = null;
+
+            IAnalyticalViewSettings analyticalViewSettings = Query.ViewSettings<IAnalyticalViewSettings>(uIAnalyticalModel, GetActiveGuid());
+            if(analyticalViewSettings != null)
             {
-                return;
+                ZoneAppearanceSettings zoneAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings?.ParameterAppearanceSettings<ZoneAppearanceSettings>();
+                if(zoneAppearanceSettings != null)
+                {
+                    zoneCategory = zoneAppearanceSettings.ZoneCategory;
+                }
             }
 
             //SetActiveGuid();
-            Modify.EditZones(uIAnalyticalModel, spaces, selectedSpaces);
+            Modify.EditZones(uIAnalyticalModel, spaces, zoneCategory, selectedSpaces);
         }
 
         private void EditLegend()

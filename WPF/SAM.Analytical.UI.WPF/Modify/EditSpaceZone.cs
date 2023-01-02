@@ -4,7 +4,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void EditSpaceZone(this UIAnalyticalModel uIAnalyticalModel, Space space)
+        public static void EditSpaceZone(this UIAnalyticalModel uIAnalyticalModel, Space space, string zoneCategory = null)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null || space == null)
@@ -24,6 +24,7 @@ namespace SAM.Analytical.UI.WPF
             List<Space> spaces = new List<Space>() { space_Temp };
             
             SpaceZoneWindow spaceZoneWindow = new SpaceZoneWindow(adjacencyCluster, spaces, spaces);
+            spaceZoneWindow.ZoneCategory = zoneCategory;
             bool? result = spaceZoneWindow.ShowDialog();
             if(result == null || !result.HasValue || !result.Value)
             {
@@ -42,7 +43,7 @@ namespace SAM.Analytical.UI.WPF
                 adjacencyCluster.AddObject(zone_Temp);
             }
 
-            zone_Temp.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory);
+            zone_Temp.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory_Temp);
 
             List<Space> spaces_Temp = spaceZoneWindow.SelectedSpaces;
             if(spaces_Temp != null && spaces_Temp.Count != 0 )
@@ -52,7 +53,7 @@ namespace SAM.Analytical.UI.WPF
                     adjacencyCluster.AddObject(space_Selected);
                     if(zone_Temp != null)
                     {
-                        List<Zone> zones_Old = adjacencyCluster.GetZones(space_Selected, zoneCategory);
+                        List<Zone> zones_Old = adjacencyCluster.GetZones(space_Selected, zoneCategory_Temp);
                         if(zones_Old != null && zones_Old.Count != 0)
                         {
                             foreach(Zone zone_Old in zones_Old)

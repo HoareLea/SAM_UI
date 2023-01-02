@@ -82,6 +82,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public string ZoneCategory
+        {
+            get 
+            {
+                return zonesControl.ZoneCategory;
+            }
+
+            set
+            {
+                zonesControl.ZoneCategory = value;
+            }
+        }
+
         private List<Space> GetSpaces(bool selected = true)
         {
             if(listView_Spaces.SelectedItems == null)

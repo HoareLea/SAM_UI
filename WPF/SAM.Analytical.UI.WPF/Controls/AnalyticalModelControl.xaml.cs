@@ -210,7 +210,7 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Name = "MenuItem_EditZone";
                 menuItem.Header = "Edit Zone";
                 menuItem.Click += MenuItem_EditZones_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = treeViewItem;
                 contextMenu_Model.Items.Add(menuItem);
 
                 TreeViewItem treeViewItem_Zone = treeViewItem.Parent as TreeViewItem;
@@ -598,15 +598,18 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
-            if (jSAMObject == null)
+            TreeViewItem treeViewItem = menuItem.Tag as TreeViewItem;
+            if (treeViewItem == null)
             {
                 return;
             }
 
-            if (jSAMObject is Space)
+            if (treeViewItem.Tag is Space)
             {
-                Modify.EditSpaceZone(uIAnalyticalModel, jSAMObject as dynamic);
+                Space space = (Space)treeViewItem.Tag;
+                string zoneCategory = ((treeViewItem.Parent as TreeViewItem)?.Parent as TreeViewItem)?.Tag?.ToString();
+
+                Modify.EditSpaceZone(uIAnalyticalModel, space, zoneCategory);
             }
         }
 

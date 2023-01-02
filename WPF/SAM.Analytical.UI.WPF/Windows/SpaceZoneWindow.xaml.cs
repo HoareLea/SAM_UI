@@ -94,5 +94,18 @@ namespace SAM.Analytical.UI.WPF
                 return spaceZoneControl.SelectedZone;
             }
         }
+
+        public string ZoneCategory
+        {
+            get
+            {
+                return spaceZoneControl.ZoneCategory;
+            }
+
+            set
+            {
+                spaceZoneControl.ZoneCategory = value;
+            }
+        }
     }
 }

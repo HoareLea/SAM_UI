@@ -1,6 +1,6 @@
 ﻿namespace SAM.Analytical.UI
 {
-    interface IAnalyticalViewSettings
+    public interface IAnalyticalViewSettings : Geometry.UI.IViewSettings
     {
         SpaceAppearanceSettings SpaceAppearanceSettings { get; set; }
     }
