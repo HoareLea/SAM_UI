@@ -63,5 +63,31 @@ namespace SAM.Analytical.UI.WPF
 
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary);
         }
+
+        public static void EditZone(this UIAnalyticalModel uIAnalyticalModel, string zoneCategory)
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
+
+            List<Zone> zones = adjacencyCluster.GetZones();
+            if(zones == null || zones.Count == 0)
+            {
+                return;
+            }
+
+            foreach(Zone zone in zones)
+            {
+                if(zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory_Temp) && zoneCategory == zoneCategory_Temp)
+                {
+                    EditZone(uIAnalyticalModel, zone);
+                    return;
+                }
+            }
+        }
     }
 }

@@ -139,15 +139,9 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
-            if(jSAMObject == null)
-            {
-                e.Handled = true;
-                return;
-            }
 
             bool singleSelection = true;
-            if(treeViewHighlightManager_Model != null && treeViewHighlightManager_Model.Enabled)
+            if (treeViewHighlightManager_Model != null && treeViewHighlightManager_Model.Enabled)
             {
                 List<TreeViewItem> treeViewItems = treeViewHighlightManager_Model.HighlightedTreeViewItems;
                 if (treeViewItems != null && treeViewItems.Count != 0)
@@ -155,6 +149,36 @@ namespace SAM.Analytical.UI.WPF
                     singleSelection = false;
                 }
             }
+
+            IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
+            if (jSAMObject == null)
+            {
+                TreeViewItem treeViewItem_Parent = treeViewItem.Parent as TreeViewItem;
+
+                bool added = false;
+                if (treeViewItem_Parent.Tag == typeof(Zone))
+                {
+                    if (singleSelection)
+                    {
+                        MenuItem menuItem = new MenuItem();
+                        menuItem.Name = "MenuItem_Edit";
+                        menuItem.Header = "Edit";
+                        menuItem.Click += MenuItem_Edit_Click;
+                        menuItem.Tag = treeViewItem.Items == null || treeViewItem.Items.Count == 0 ? null : (treeViewItem.Items[0] as TreeViewItem)?.Tag;
+                        contextMenu_Model.Items.Add(menuItem);
+                        added = true;
+                    }
+                }
+
+                if(!added)
+                {
+                    e.Handled = true;
+                }
+
+                return;
+            }
+
+
 
             if (jSAMObject is Space)
             {
