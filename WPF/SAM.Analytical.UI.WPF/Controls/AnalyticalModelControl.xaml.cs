@@ -701,8 +701,6 @@ namespace SAM.Analytical.UI.WPF
             {
                 Modify.EditZone(uIAnalyticalModel, jSAMObject as dynamic);
             }
-
-
         }
 
         public UIAnalyticalModel UIAnalyticalModel

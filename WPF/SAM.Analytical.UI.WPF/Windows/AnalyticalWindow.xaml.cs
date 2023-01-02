@@ -1593,5 +1593,18 @@ namespace SAM.Analytical.UI.WPF.Windows
             SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
             Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
+
+        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Guid guid = GetActiveGuid();
+            if (guid == Guid.Empty)
+            {
+                return;
+            }
+
+            uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+            Modify.SetActiveGuid(uIAnalyticalModel, guid);
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+        }
     }
 }
