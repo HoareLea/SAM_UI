@@ -23,6 +23,8 @@ namespace SAM.Geometry.UI.WPF
 
         private bool enabled = true;
 
+        private bool add = true;
+
         public event TreeViewItemHighlightedEventHandler TreeViewItemHighlighted;
 
         public TreeViewHighlightManager(TreeView treeView)
@@ -97,6 +99,7 @@ namespace SAM.Geometry.UI.WPF
 
                 Highlight(false);
                 treeViewItems.Clear();
+                add = true;
                 return;
             }
 
@@ -104,9 +107,10 @@ namespace SAM.Geometry.UI.WPF
             {
                 treeViewItem_Old.Background = solidColorBrush_Background;
                 treeViewItem_Old.Foreground = solidColorBrush_Foreground;
-                if(!treeViewItems.Contains(treeViewItem_Old))
+                if(add && !treeViewItems.Contains(treeViewItem_Old))
                 {
                     treeViewItems.Add(treeViewItem_Old);
+                    add = false;
                 }
             }
 
@@ -121,12 +125,10 @@ namespace SAM.Geometry.UI.WPF
                 TreeViewItemHighlightedEventArgs treeViewItemHighlightedEventArgs = new TreeViewItemHighlightedEventArgs(treeViewItem_New, GetHighlightedTreeViewItems());
                 TreeViewItemHighlighted?.Invoke(treeView, treeViewItemHighlightedEventArgs);
 
-                if (treeViewItemHighlightedEventArgs.EventResult == EventResult.Succeeded)
+                add = treeViewItemHighlightedEventArgs.EventResult == EventResult.Succeeded;
+                if (add && !treeViewItems.Contains(treeViewItem_New))
                 {
-                    if(!treeViewItems.Contains(treeViewItem_New))
-                    {
-                        treeViewItems.Add(treeViewItem_New);
-                    }
+                    treeViewItems.Add(treeViewItem_New);
                 }
 
                 Highlight(true);
