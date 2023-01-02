@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -292,6 +293,24 @@ namespace SAM.Analytical.UI.WPF
         {
             Zone zone = new Zone("New Zone");
             zone.SetValue(ZoneParameter.ZoneCategory, ZoneCategory);
+
+            List<Color> excludedColors = new List<Color>();
+            if(adjacencyCluster != null)
+            {
+                List<Zone> zones = adjacencyCluster.GetZones();
+                foreach(Zone zone_Temp in zones)
+                {
+                    if(zone_Temp.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory_Temp) && ZoneCategory == zoneCategory_Temp)
+                    {
+                        if(zone_Temp.TryGetValue(ZoneParameter.Color, out Color color) && color != Color.Empty)
+                        {
+                            excludedColors.Add(color);
+                        }
+                    }
+                }
+            }
+
+            zone.SetValue(ZoneParameter.Color, Core.Create.Color(excludedColors));
 
             ZoneWindow zoneWindow = new ZoneWindow(zone, adjacencyCluster);
             bool? result = zoneWindow.ShowDialog();
