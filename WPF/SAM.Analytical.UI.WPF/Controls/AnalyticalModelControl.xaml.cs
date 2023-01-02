@@ -133,7 +133,7 @@ namespace SAM.Analytical.UI.WPF
                     MenuItem menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_Create";
                     menuItem.Header = "Create";
-                    menuItem.Click += MenuItem_Create_Click; ;
+                    menuItem.Click += MenuItem_Create_Click;
                     menuItem.Tag = typeof(MechanicalSystemType);
                     contextMenu_Model.Items.Add(menuItem);
                 }
@@ -161,9 +161,9 @@ namespace SAM.Analytical.UI.WPF
                     if (singleSelection)
                     {
                         MenuItem menuItem = new MenuItem();
-                        menuItem.Name = "MenuItem_Edit";
-                        menuItem.Header = "Edit";
-                        menuItem.Click += MenuItem_Edit_Click;
+                        menuItem.Name = "MenuItem_EditSpaces";
+                        menuItem.Header = "Edit Spaces";
+                        menuItem.Click += MenuItem_EditSpaces_Click;
                         menuItem.Tag = treeViewItem.Items == null || treeViewItem.Items.Count == 0 ? null : (treeViewItem.Items[0] as TreeViewItem)?.Tag;
                         contextMenu_Model.Items.Add(menuItem);
                         added = true;
@@ -357,6 +357,26 @@ namespace SAM.Analytical.UI.WPF
             {
                 e.Handled = true;
                 return;
+            }
+        }
+
+        private void MenuItem_EditSpaces_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
+            if (jSAMObject == null)
+            {
+                return;
+            }
+
+            if (jSAMObject is Zone)
+            {
+                Modify.EditSpaceZone(uIAnalyticalModel, jSAMObject as dynamic);
             }
         }
 
