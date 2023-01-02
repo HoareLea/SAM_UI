@@ -235,7 +235,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_Edit_Click(object sender, RoutedEventArgs e)
         {
-            List<Zone> zones = Zones;
+            List<Zone> zones = SelectedZones;
             if(zones == null || zones.Count != 1)
             {
                 MessageBox.Show("Select single Zone");
