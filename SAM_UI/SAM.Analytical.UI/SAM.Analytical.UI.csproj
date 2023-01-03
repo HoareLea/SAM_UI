@@ -98,6 +98,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Modification\AnalyticalModelModification.cs" />
     <Compile Include="Classes\Settings\SpaceAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\AnalyticalThreeDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\AnalyticalTwoDimensionalViewSettings.cs" />

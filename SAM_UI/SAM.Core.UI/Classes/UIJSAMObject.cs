@@ -14,15 +14,15 @@ namespace SAM.Core.UI
         protected bool modified;
 
         public event EventHandler Opening;
-        public event EventHandler Opened;
+        public event OpenedEventHandler Opened;
 
         public event EventHandler Saving;
         public event EventHandler Saved;
 
         public event EventHandler Closing;
-        public event EventHandler Closed;
+        public event ClosedEventHandler Closed;
 
-        public event EventHandler Modified;
+        public event ModifiedEventHandler Modified;
 
         public UIJSAMObject(string path)
         {
@@ -69,10 +69,25 @@ namespace SAM.Core.UI
 
             set
             {
-                jSAMObject = value;
-                modified = true;
-                OnModified();
+                SetJSAMObject(value, new FullModification());
             }
+        }
+
+        public void SetJSAMObject(T jSAMObject, IModification modification)
+        {
+            if(modification == null)
+            {
+                modification = new FullModification();
+            }
+
+            SetJSAMObject(jSAMObject, new List<IModification>() { modification });
+        }
+
+        public void SetJSAMObject(T jSAMObject, IEnumerable<IModification> modifications)
+        {
+            this.jSAMObject = jSAMObject;
+            modified = true;
+            OnModified(modifications);
         }
 
 
@@ -120,12 +135,12 @@ namespace SAM.Core.UI
 
         public void OnOpened()
         {
-            EventHandler eventHandler;
+            OpenedEventHandler eventHandler;
 
             eventHandler = Opened;
             if (eventHandler != null)
             {
-                eventHandler(this, EventArgs.Empty);
+                eventHandler(this, new OpenedEventArgs());
             }
         }
 
@@ -171,12 +186,12 @@ namespace SAM.Core.UI
 
         public void OnClosed()
         {
-            EventHandler eventHandler;
+            ClosedEventHandler eventHandler;
 
             eventHandler = Closed;
             if (eventHandler != null)
             {
-                eventHandler(this, EventArgs.Empty);
+                eventHandler(this, new ClosedEventArgs());
             }
         }
 
@@ -238,13 +253,18 @@ namespace SAM.Core.UI
             }
         }
 
-
-        public void OnModified()
+        public void OnModified(IEnumerable<IModification> modifications = null)
         {
-            EventHandler eventHandler = Modified;
-            if (eventHandler != null)
+            IEnumerable<IModification> modifications_Temp = modifications;
+            if(modifications_Temp == null || modifications_Temp.Count() == 0)
             {
-                eventHandler(this, EventArgs.Empty);
+                modifications_Temp = new List<IModification>() { new FullModification() };
+            }
+            
+            ModifiedEventHandler modifiedEventHandler = Modified;
+            if (modifiedEventHandler != null)
+            {
+                modifiedEventHandler(this, new ModifiedEventArgs(modifications_Temp));
             }
         }
 

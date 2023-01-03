@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using SAM.Core;
+using SAM.Core.UI;
 using SAM.Core.UI.WPF;
 using SAM.Geometry;
 using SAM.Geometry.UI;
@@ -213,7 +214,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             foreach(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings in analyticalTwoDimensionalViewSettingsList)
             {
-                TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, analyticalTwoDimensionalViewSettings);
+                TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(analyticalTwoDimensionalViewSettings)), analyticalTwoDimensionalViewSettings);
                 if (tabItem != null)
                 {
                     tabControl.SelectedItem = tabItem;
@@ -327,7 +328,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, new Type[] { typeof(Panel), typeof(Aperture) });
 
-            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, threeDimensionalViewSettings);
+            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(threeDimensionalViewSettings)), threeDimensionalViewSettings);
             if (tabItem != null)
             {
                 tabControl.SelectedItem = tabItem;
@@ -361,7 +362,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             ViewSettings viewSettings = viewSettingsWindow.ViewSettings;
 
-            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, viewSettings);
+            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(viewSettings)), viewSettings);
             if (tabItem != null)
             {
                 tabControl.SelectedItem = tabItem;
@@ -904,24 +905,23 @@ namespace SAM.Analytical.UI.WPF.Windows
             //Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => );
         }
 
-        private void UIAnalyticalModel_Modified(object sender, EventArgs e)
+        private void UIAnalyticalModel_Modified(object sender, ModifiedEventArgs e)
         {
-
-            Reload();
+            Reload(e);
         }
         
-        private void UIAnalyticalModel_Opened(object sender, EventArgs e)
+        private void UIAnalyticalModel_Opened(object sender, OpenedEventArgs e)
         {
             SetDefaultViewSettings();
-            Reload(true);
+            Reload(e);
         }
 
-        private void UIAnalyticalModel_Closed(object sender, EventArgs e)
+        private void UIAnalyticalModel_Closed(object sender, ClosedEventArgs e)
         {
-            Reload();
+            Reload(e);
         }
 
-        private TabItem UpdateTabItem(TabControl tabControl, AnalyticalModel analyticalModel, IViewSettings viewSettings = null)
+        private TabItem UpdateTabItem(TabControl tabControl, AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs, IViewSettings viewSettings = null)
         {
             if (tabControl == null || analyticalModel == null)
             {
@@ -982,9 +982,18 @@ namespace SAM.Analytical.UI.WPF.Windows
                 tabItem.Header = name;
             }
 
-            GeometryObjectModel geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
-            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-            viewportControl.Mode = viewSettings.Mode();
+            UIGeometryObjectModel uIGeometryObjectModel = viewportControl.UIGeometryObjectModel;
+            if(uIGeometryObjectModel?.JSAMObject == null || modifiedEventArgs.Modifications.Find(x => x is FullModification || x is AnalyticalModelModification) != null)
+            {
+                GeometryObjectModel geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
+                viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+            }
+
+            Mode mode = viewSettings.Mode();
+            if(viewportControl.Mode != mode)
+            {
+                viewportControl.Mode = mode;
+            }
 
             if (viewSettings != null)
             {
@@ -1142,7 +1151,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             EnableViewSettings(tabItem, false);
         }
 
-        private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel)
+        private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs)
         {
             if (tabControl == null)
             {
@@ -1166,7 +1175,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                             }
                         }
                         
-                        TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, viewSettings);
+                        TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, modifiedEventArgs, viewSettings);
                         if (tabItem != null)
                         {
                             result.Add(tabItem);
@@ -1193,7 +1202,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             return result;
         }
 
-        private UIGeometrySettings UpdateUIGeometrySettings(TabControl tabControl, AnalyticalModel analyticalModel, bool setViewportControlCamera = false)
+        private UIGeometrySettings UpdateUIGeometrySettings(TabControl tabControl, AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs)
         {
             if (analyticalModel == null || tabControl == null)
             {
@@ -1231,7 +1240,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 if(viewSettings is ViewSettings)
                 {
                     ViewSettings viewSettings_Temp = (ViewSettings)viewSettings;
-                    if(setViewportControlCamera)
+                    if(modifiedEventArgs is OpenedEventArgs)
                     {
                         Geometry.UI.Camera camera = viewSettings_Temp.Camera;
                         if(camera != null)
@@ -1261,12 +1270,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             return result;
         }
 
-        private void SetUIGeometrySettings(TabControl tabControl, AnalyticalModel analyticalModel, bool setViewportControlCamera = false)
+        private void SetUIGeometrySettings(TabControl tabControl, AnalyticalModel analyticalModel)
         {
-            UpdateUIGeometrySettings(tabControl, analyticalModel, setViewportControlCamera);
+            UIGeometrySettings uIGeometrySettings = UpdateUIGeometrySettings(tabControl, analyticalModel, new ModifiedEventArgs());
 
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(uIGeometrySettings.GetViewSettings<IViewSettings>()));
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
@@ -1296,22 +1305,24 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        private void Reload(bool setViewportControlCamera = false)
+        private void Reload(ModifiedEventArgs modifiedEventArgs)
         {
             SetEnabled();
             //SetActiveGuid();
 
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
+            tabControl.SelectionChanged -= tabControl_SelectionChanged;
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
 
-            UpdateTabItems(tabControl, analyticalModel);
+            UpdateTabItems(tabControl, analyticalModel, modifiedEventArgs);
 
-            UpdateUIGeometrySettings(tabControl, analyticalModel, setViewportControlCamera);
+            UpdateUIGeometrySettings(tabControl, analyticalModel, modifiedEventArgs);
 
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, modifiedEventArgs.Modifications);
 
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            tabControl.SelectionChanged += tabControl_SelectionChanged;
         }
 
         private void SetEnabled()

@@ -17,11 +17,16 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            if(uIGeometrySettings.ActiveGuid == guid)
+            {
+                return;
+            }
+
             uIGeometrySettings.ActiveGuid = guid;
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(uIGeometrySettings.GetViewSettings(guid)));
         }
     }
 }

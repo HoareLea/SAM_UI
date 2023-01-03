@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Core.UI;
 using SAM.Geometry.UI;
 using SAM.Geometry.UI.WPF;
 using System;
@@ -763,22 +764,22 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void UIAnalyticalModel_Modified(object sender, EventArgs e)
+        private void UIAnalyticalModel_Modified(object sender, ModifiedEventArgs e)
         {
-            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
+            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject, e);
         }
 
-        private void UIAnalyticalModel_Opened(object sender, EventArgs e)
+        private void UIAnalyticalModel_Opened(object sender, OpenedEventArgs e)
         {
-            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
+            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject, e);
         }
 
-        private void UIAnalyticalModel_Closed(object sender, EventArgs e)
+        private void UIAnalyticalModel_Closed(object sender, ClosedEventArgs e)
         {
-            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject);
+            LoadAnalyticalModel(uIAnalyticalModel?.JSAMObject, e);
         }
 
-        private void LoadAnalyticalModel(AnalyticalModel analyticalModel)
+        private void LoadAnalyticalModel(AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs)
         {
             LoadModel(analyticalModel);
             LoadViews(analyticalModel);

@@ -17,7 +17,9 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            if(uIGeometrySettings.GetViewSettings(guid) == null)
+            IViewSettings viewSettings = uIGeometrySettings.GetViewSettings(guid);
+
+            if (viewSettings == null)
             {
                 return;
             }
@@ -26,7 +28,7 @@ namespace SAM.Analytical.UI.WPF
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettings));
         }
     }
 }

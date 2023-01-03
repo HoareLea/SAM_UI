@@ -63,7 +63,7 @@ namespace SAM.Analytical.UI.WPF
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettingsList));
         }
 
         public static void EnableViewSettings(this UIAnalyticalModel uIAnalyticalModel, bool enabled)
