@@ -7,6 +7,8 @@ namespace SAM.Geometry.UI
     {
         public List<IViewSettings> ViewSettings { get; }
 
+        public bool UpdateGeometry { get; } = false;
+
         public ViewSettingsModification(IViewSettings viewSettings)
         {
             if(viewSettings != null)
@@ -15,9 +17,26 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public ViewSettingsModification(IViewSettings viewSettings, bool updateGeometry)
+        {
+            if (viewSettings != null)
+            {
+                ViewSettings = new List<IViewSettings>() { viewSettings };
+            }
+
+            UpdateGeometry = updateGeometry;
+        }
+
         public ViewSettingsModification(IEnumerable<IViewSettings> viewSettings)
         {
             ViewSettings = viewSettings == null ? null : new List<IViewSettings>(viewSettings);
+        }
+
+        public ViewSettingsModification(IEnumerable<IViewSettings> viewSettings, bool updateGeometry)
+        {
+            ViewSettings = viewSettings == null ? null : new List<IViewSettings>(viewSettings);
+
+            UpdateGeometry = updateGeometry;
         }
     }
 }

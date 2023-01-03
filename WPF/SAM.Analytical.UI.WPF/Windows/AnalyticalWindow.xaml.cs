@@ -983,7 +983,18 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             UIGeometryObjectModel uIGeometryObjectModel = viewportControl.UIGeometryObjectModel;
-            if(uIGeometryObjectModel?.JSAMObject == null || modifiedEventArgs.Modifications.Find(x => x is FullModification || x is AnalyticalModelModification) != null)
+
+            bool updateGeometry = uIGeometryObjectModel?.JSAMObject == null || modifiedEventArgs.Modifications.Find(x => x is FullModification || x is AnalyticalModelModification) != null;
+            if(!updateGeometry)
+            {
+                List<ViewSettingsModification> viewSettingsModifications = modifiedEventArgs.GetModifications<ViewSettingsModification>((x) => x.ViewSettings?.Find(y => y.Guid == viewSettings.Guid) != null);
+                if(viewSettingsModifications != null && viewSettingsModifications.Find(x => x.UpdateGeometry) != null)
+                {
+                    updateGeometry = true;
+                }
+            }
+
+            if (updateGeometry)
             {
                 GeometryObjectModel geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
                 viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);

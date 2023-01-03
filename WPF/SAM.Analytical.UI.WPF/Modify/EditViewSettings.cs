@@ -27,11 +27,17 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            uIGeometrySettings.AddViewSettings(viewSettingsWindow.ViewSettings);
+            IViewSettings viewSettings_Temp = viewSettingsWindow.ViewSettings;
+            if(viewSettings_Temp == null)
+            {
+                return;
+            }
+
+            uIGeometrySettings.AddViewSettings(viewSettings_Temp);
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettings_Temp, true));
         }
     }
 }

@@ -24,5 +24,34 @@ namespace SAM.Core.UI
                 Modifications = new List<IModification>() { modification };
             }
         }
+
+        public List<T> GetModifications<T>( Func<T, bool> func = null) where T : IModification
+        {
+            if(Modifications == null || Modifications.Count == 0)
+            {
+                return null;
+            }
+
+            List<T> result = new List<T>();
+            foreach(IModification modification in Modifications)
+            {
+                if(!(modification is T))
+                {
+                    continue;
+                }
+
+                T t = (T)(object)modification;
+
+                if(func != null && !func.Invoke(t))
+                {
+                    continue;
+                }
+
+                result.Add(t);
+            }
+
+            return result;
+
+        }
     }
 }

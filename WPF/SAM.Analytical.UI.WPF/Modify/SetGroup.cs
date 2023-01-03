@@ -24,7 +24,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            bool updated = false;
+            List<IViewSettings> viewSettingsList = new List<IViewSettings>();
             foreach(System.Guid guid in guids)
             {
                 ViewSettings viewSettings = uIGeometrySettings.GetViewSettings(guid) as ViewSettings;
@@ -35,17 +35,17 @@ namespace SAM.Analytical.UI.WPF
 
                 viewSettings.SetValue(ViewSettingsParameter.Group, group);
                 uIGeometrySettings.AddViewSettings(viewSettings);
-                updated = true;
+                viewSettingsList.Add(viewSettings);
             }
 
-            if(!updated)
+            if(viewSettingsList == null || viewSettingsList.Count == 0)
             {
                 return;
             }
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 
-            uIAnalyticalModel.JSAMObject = analyticalModel;
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettingsList, true));
         }
     }
 }
