@@ -401,54 +401,80 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
-            if (jSAMObject == null)
+            List<IJSAMObject> jSAMObjects = null;
+
+            if(treeViewItem.Tag is ViewSettings)
+            {
+                jSAMObjects = new List<IJSAMObject>() { (ViewSettings)treeViewItem.Tag };
+            }
+            else if(treeViewItem.Tag is string)
+            {
+                jSAMObjects = new List<IJSAMObject>();
+                foreach (object @object in treeViewItem.Items)
+                {
+                    ViewSettings viewSettings_Temp = (@object as TreeViewItem)?.Tag as ViewSettings;
+                    if(viewSettings_Temp == null)
+                    {
+                        continue;
+                    }
+
+                    jSAMObjects.Add(viewSettings_Temp);
+                }
+            }
+
+            if (jSAMObjects == null || jSAMObjects.Count == 0)
             {
                 e.Handled = true;
                 return;
             }
 
-            if (jSAMObject is ViewSettings)
+            List<TreeViewItem> treeViewItems = treeViewHighlightManager_Model != null && treeViewHighlightManager_Model.Enabled ? treeViewHighlightManager_Model.HighlightedTreeViewItems : null;
+            if (treeViewItems != null && treeViewItems.Count != 0)
             {
-                MenuItem menuItem = null;
+                jSAMObjects.AddRange(treeViewItems.FindAll(x => x?.Tag is ViewSettings).ConvertAll(x => x.Tag as ViewSettings));
+            }
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Open_TabItem";
-                menuItem.Header = "Open";
-                menuItem.Click += MenuItem_Open_TabItem_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Views.Items.Add(menuItem);
+            MenuItem menuItem = null;
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Close_TabItem";
-                menuItem.Header = "Close";
-                menuItem.Click += MenuItem_Close_TabItem_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Views.Items.Add(menuItem);
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Open_TabItem";
+            menuItem.Header = "Open";
+            menuItem.Click += MenuItem_Open_TabItem_Click;
+            menuItem.Tag = jSAMObjects;
+            contextMenu_Views.Items.Add(menuItem);
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Remove_TabItem";
-                menuItem.Header = "Remove";
-                menuItem.Click += MenuItem_Remove_TabItem_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Views.Items.Add(menuItem);
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Close_TabItem";
+            menuItem.Header = "Close";
+            menuItem.Click += MenuItem_Close_TabItem_Click;
+            menuItem.Tag = jSAMObjects;
+            contextMenu_Views.Items.Add(menuItem);
 
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Remove_TabItem";
+            menuItem.Header = "Remove";
+            menuItem.Click += MenuItem_Remove_TabItem_Click;
+            menuItem.Tag = jSAMObjects;
+            contextMenu_Views.Items.Add(menuItem);
+
+            if (jSAMObjects.Count == 1)
+            {
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Duplicate_TabItem";
                 menuItem.Header = "Duplicate";
                 menuItem.Click += MenuItem_Duplicate_TabItem_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = jSAMObjects;
                 contextMenu_Views.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Settings_TabItem";
                 menuItem.Header = "Settings";
                 menuItem.Click += MenuItem_Settings_TabItem_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = jSAMObjects;
                 contextMenu_Views.Items.Add(menuItem);
-
-                contextMenu_Views.IsOpen = true;
             }
+
+            contextMenu_Views.IsOpen = true;
         }
 
         private void MenuItem_Remove_TabItem_Click(object sender, RoutedEventArgs e)
@@ -459,13 +485,24 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
-            if (viewSettings == null)
+            List<ViewSettings> viewSettingsList = null;
+
+            IEnumerable enumerable = menuItem.Tag as IEnumerable;
+            if (enumerable != null)
             {
-                return;
+                viewSettingsList = enumerable.OfType<ViewSettings>()?.ToList();
             }
 
-            Modify.RemoveViewSettings(uIAnalyticalModel, viewSettings.Guid);
+            if (viewSettingsList == null || viewSettingsList.Count() == 0)
+            {
+                ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+                if (viewSettings != null)
+                {
+                    viewSettingsList = new List<ViewSettings>() { viewSettings };
+                }
+            }
+
+            Modify.RemoveViewSettings(uIAnalyticalModel, viewSettingsList.ConvertAll(x => x.Guid));
         }
 
         private void MenuItem_Open_TabItem_Click(object sender, RoutedEventArgs e)
@@ -476,14 +513,30 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
-            if (viewSettings == null)
+            List<ViewSettings> viewSettingsList = null;
+
+            IEnumerable enumerable = menuItem.Tag as IEnumerable;
+            if(enumerable != null)
+            {
+                viewSettingsList = enumerable.OfType<ViewSettings>()?.ToList();
+            }
+
+           if(viewSettingsList == null || viewSettingsList.Count() == 0)
+            {
+                ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+                if (viewSettings != null)
+                {
+                    viewSettingsList = new List<ViewSettings>() { viewSettings };
+                }
+            }
+
+           if(viewSettingsList == null || viewSettingsList.Count() == 0)
             {
                 return;
             }
 
-            Modify.EnableViewSettings(uIAnalyticalModel, viewSettings.Guid, true);
-            Modify.ActivateViewSettings(uIAnalyticalModel, viewSettings.Guid);
+            Modify.EnableViewSettings(uIAnalyticalModel, viewSettingsList.ConvertAll(x => x.Guid), true);
+            Modify.ActivateViewSettings(uIAnalyticalModel, viewSettingsList.First().Guid);
         }
 
         private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)
@@ -528,13 +581,29 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
-            if (viewSettings == null)
+            List<ViewSettings> viewSettingsList = null;
+
+            IEnumerable enumerable = menuItem.Tag as IEnumerable;
+            if (enumerable != null)
+            {
+                viewSettingsList = enumerable.OfType<ViewSettings>()?.ToList();
+            }
+
+            if (viewSettingsList == null || viewSettingsList.Count() == 0)
+            {
+                ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+                if (viewSettings != null)
+                {
+                    viewSettingsList = new List<ViewSettings>() { viewSettings };
+                }
+            }
+
+            if (viewSettingsList == null || viewSettingsList.Count() == 0)
             {
                 return;
             }
 
-            Modify.EnableViewSettings(uIAnalyticalModel, viewSettings.Guid, false);
+            Modify.EnableViewSettings(uIAnalyticalModel, viewSettingsList.ConvertAll(x => x.Guid), false);
         }
 
         private void MenuItem_Select_Click(object sender, RoutedEventArgs e)
@@ -551,7 +620,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            SelectionRequested?.Invoke(this, new Geometry.UI.WPF.SelectionRequestedEventArgs(sAMObject));
+            SelectionRequested?.Invoke(this, new SelectionRequestedEventArgs(sAMObject));
         }
 
         private void MenuItem_Zoom_Click(object sender, RoutedEventArgs e)

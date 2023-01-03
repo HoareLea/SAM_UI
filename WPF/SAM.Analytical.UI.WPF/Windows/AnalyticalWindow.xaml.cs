@@ -451,16 +451,16 @@ namespace SAM.Analytical.UI.WPF.Windows
                 if(spaces != null && spaces.Count > 0)
                 {
                     menuItem = new MenuItem();
-                    menuItem.Name = "MenuItem_ManageZones";
-                    menuItem.Header = "Manage Zones";
-                    menuItem.Click += MenuItem_ManageZones_Click;
+                    menuItem.Name = "MenuItem_AssignInternalCondition";
+                    menuItem.Header = "Assign IC";
+                    menuItem.Click += MenuItem_AssignInternalCondition_Click;
                     menuItem.Tag = spaces;
                     contextMenu.Items.Add(menuItem);
 
                     menuItem = new MenuItem();
-                    menuItem.Name = "MenuItem_AssignInternalCondition";
-                    menuItem.Header = "Assign IC";
-                    menuItem.Click += MenuItem_AssignInternalCondition_Click;
+                    menuItem.Name = "MenuItem_ManageZones";
+                    menuItem.Header = "Manage Zones";
+                    menuItem.Click += MenuItem_ManageZones_Click;
                     menuItem.Tag = spaces;
                     contextMenu.Items.Add(menuItem);
                 }
