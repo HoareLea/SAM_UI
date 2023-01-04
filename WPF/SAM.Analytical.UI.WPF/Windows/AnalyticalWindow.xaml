@@ -469,6 +469,7 @@
                     <RibbonButton x:Name="RibbonButton_Tools_Clean" Label="Clean"/>
                     <RibbonButton x:Name="RibbonButton_Tools_AddMissingObjects" Label="Missing Elements"/>
                     <RibbonButton x:Name="RibbonButton_Tools_PrintRoomDataSheets" Label="Print RDS"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_MapInternalConditions" Label="Map IC"/>
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_SAM" Header="SAM">
                     <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Mollier Diagram"/>

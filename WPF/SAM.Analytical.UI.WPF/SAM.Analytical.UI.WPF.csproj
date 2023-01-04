@@ -83,6 +83,13 @@
     <Compile Include="Controls\ZonesSpacesControl.xaml.cs">
       <DependentUpon>ZonesSpacesControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MapInternalConditionsControl.xaml.cs">
+      <DependentUpon>MapInternalConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\MapInternalConditions.cs" />
+    <Compile Include="Windows\MapInternalConditionsWindow.xaml.cs">
+      <DependentUpon>MapInternalConditionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\AllowTreeViewItemByType.cs" />
     <Compile Include="Modify\AssignSpaceInternalCondition.cs" />
     <Compile Include="Modify\AssignSpaceZone.cs" />
@@ -290,6 +297,14 @@
     <Page Include="Controls\ZonesSpacesControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\MapInternalConditionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MapInternalConditionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\BatchCreateViewsWindow.xaml">
       <SubType>Designer</SubType>

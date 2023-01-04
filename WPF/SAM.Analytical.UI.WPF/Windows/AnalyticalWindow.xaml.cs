@@ -139,6 +139,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_ViewGeometry.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_Tools_ViewGeometry.Click += RibbonButton_Tools_ViewGeometry_Click;
 
+            RibbonButton_Tools_MapInternalConditions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_Tools_MapInternalConditions.Click += RibbonButton_Tools_MapInternalConditions_Click;
+
             RibbonButton_Tools_Test.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_Tools_Test.Click += RibbonButton_Tools_Test_Click;
             RibbonButton_Tools_Test.Visibility = Visibility.Hidden;
@@ -179,6 +182,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_Tools_MapInternalConditions_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.MapInternalConditions(uIAnalyticalModel);
         }
 
         private void AnalyticalModelControl_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
@@ -458,6 +466,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
 
                     menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_MapInternalCondition";
+                    menuItem.Header = "Map IC";
+                    menuItem.Click += MenuItem_MenuItem_MapInternalCondition_Click;
+                    menuItem.Tag = spaces;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_ManageZones";
                     menuItem.Header = "Manage Zones";
                     menuItem.Click += MenuItem_ManageZones_Click;
@@ -467,6 +482,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
 
+        }
+
+        private void MenuItem_MenuItem_MapInternalCondition_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            Modify.MapInternalConditions(uIAnalyticalModel, spaces);
         }
 
         private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
