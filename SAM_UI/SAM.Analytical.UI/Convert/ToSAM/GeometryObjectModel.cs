@@ -59,7 +59,12 @@ namespace SAM.Analytical.UI
                             face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
                         }
 
-                        face3D = face3Ds_FixEdges[0];
+                        face3D = face3Ds_FixEdges.Find(x => x.IsValid());
+                    }
+
+                    if(face3D == null || !face3D.IsValid())
+                    {
+                        continue;
                     }
 
                     geometryObjectCollection_Panel.Add(new Face3DObject(face3D, Query.SurfaceAppearance(panel, threeDimensionalViewSettings)));
