@@ -298,16 +298,20 @@ namespace SAM.Analytical.UI.WPF
             if(adjacencyCluster != null)
             {
                 List<Zone> zones = adjacencyCluster.GetZones();
-                foreach(Zone zone_Temp in zones)
+                if(zones != null)
                 {
-                    if(zone_Temp.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory_Temp) && ZoneCategory == zoneCategory_Temp)
+                    foreach (Zone zone_Temp in zones)
                     {
-                        if(zone_Temp.TryGetValue(ZoneParameter.Color, out Color color) && color != Color.Empty)
+                        if (zone_Temp.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory_Temp) && ZoneCategory == zoneCategory_Temp)
                         {
-                            excludedColors.Add(color);
+                            if (zone_Temp.TryGetValue(ZoneParameter.Color, out Color color) && color != Color.Empty)
+                            {
+                                excludedColors.Add(color);
+                            }
                         }
                     }
                 }
+
             }
 
             zone.SetValue(ZoneParameter.Color, Core.Create.Color(excludedColors));
