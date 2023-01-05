@@ -15,10 +15,6 @@
         </ScrollViewer>
         <Button x:Name="button_SelectAll" Content="Select All" HorizontalAlignment="Left" Margin="10,0,0,58" VerticalAlignment="Bottom" Width="75" Click="button_SelectAll_Click"/>
         <Button x:Name="button_SelectNone" Content="Select None" HorizontalAlignment="Left" Margin="90,0,0,58" VerticalAlignment="Bottom" Width="75" Click="button_SelectNone_Click"/>
-        <DockPanel HorizontalAlignment="Left" Height="44" Margin="213,372,0,0" VerticalAlignment="Top" Width="227">
-            <Label Content="Label" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <ComboBox Height="18"></ComboBox>
-        </DockPanel>
         <ComboBox x:Name="comboBox_InternalConditionLibrary" HorizontalAlignment="Stretch" Height="23" Margin="162,10,10.4,0" Text="" VerticalAlignment="Top" SelectionChanged="comboBox_InternalConditionLibrary_SelectionChanged"/>
         <ComboBox x:Name="comboBox_TextMap"  HorizontalAlignment="Stretch" Height="23" Margin="162,47,10.4,0" Text="" VerticalAlignment="Top" SelectionChanged="comboBox_TextMap_SelectionChanged"/>
 
