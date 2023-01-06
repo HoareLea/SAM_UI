@@ -402,6 +402,10 @@
                     <RibbonButton x:Name="RibbonButton_General_SaveAsAnalyticalModel" Label="Save As"/>
                     <RibbonButton x:Name="RibbonButton_General_CloseAnalyticalModel" Label="Close"/>
                 </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_File_ImportExport" Header="Import/Export">
+                    <RibbonButton x:Name="RibbonButton_ImportExport_ImportAnalyticalModel" Label="Import"/>
+                    <RibbonButton x:Name="RibbonButton_ImportExport_ExportAnalyticalModel" Label="Export"/>
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_View" Header="View">
                 <RibbonGroup x:Name="RibbonGroup_View_New" Header="New">

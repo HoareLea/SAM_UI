@@ -47,6 +47,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_General_CloseAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
             RibbonButton_General_CloseAnalyticalModel.Click += RibbonButton_General_CloseAnalyticalModel_Click;
 
+            RibbonButton_ImportExport_ImportAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
+            RibbonButton_ImportExport_ImportAnalyticalModel.Click += RibbonButton_ImportExport_ImportAnalyticalModel_Click;
+
+            RibbonButton_ImportExport_ExportAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Save);
+            RibbonButton_ImportExport_ExportAnalyticalModel.Click += RibbonButton_ImportExport_ExportAnalyticalModel_Click;
+
             RibbonButton_View_NewSectionViews.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
             RibbonButton_View_NewSectionViews.Click += RibbonButton_View_NewSectionViews_Click;
 
@@ -182,6 +188,16 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_ImportExport_ExportAnalyticalModel_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.Export(uIAnalyticalModel);
+        }
+
+        private void RibbonButton_ImportExport_ImportAnalyticalModel_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.Import(uIAnalyticalModel);
         }
 
         private void RibbonButton_Tools_MapInternalConditions_Click(object sender, RoutedEventArgs e)
@@ -1431,6 +1447,8 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_General_SaveAnalyticalModel.IsEnabled = false;
             RibbonButton_General_NewAnalyticalModel.IsEnabled = false;
             RibbonButton_General_OpenAnalyticalModel.IsEnabled = false;
+            RibbonButton_Tools_MapInternalConditions.IsEnabled = false;
+            RibbonButton_ImportExport_ExportAnalyticalModel.IsEnabled = false;
 
             RibbonButton_Tools_OpenMollierChart.IsEnabled = true;
             RibbonButton_Help_Wiki.IsEnabled = true;
@@ -1449,6 +1467,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 RibbonButton_Tools_PrintRoomDataSheets.IsEnabled = true;
                 RibbonButton_Tools_AddMissingObjects.IsEnabled = true;
                 RibbonButton_Tools_Clean.IsEnabled = true;
+                RibbonButton_Tools_MapInternalConditions.IsEnabled = true;
                 RibbonButton_Simulate_EnergySimulation.IsEnabled = true;
                 RibbonButton_Simulate_SolarSimulation.IsEnabled = true;
                 RibbonButton_Simulate_Import.IsEnabled = true;
@@ -1466,6 +1485,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 RibbonButton_General_CloseAnalyticalModel.IsEnabled = true;
                 RibbonButton_General_SaveAsAnalyticalModel.IsEnabled = true;
                 RibbonButton_General_SaveAnalyticalModel.IsEnabled = true;
+                RibbonButton_ImportExport_ExportAnalyticalModel.IsEnabled = true;
 
                 List<AirHandlingUnit> airHandlingUnits = analyticalModel.AdjacencyCluster?.GetObjects<AirHandlingUnit>();
                 if(airHandlingUnits != null && airHandlingUnits.Count != 0)
