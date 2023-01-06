@@ -15,7 +15,7 @@ namespace SAM.Analytical.UI.WPF
             string path;
             using (OpenFileDialog saveFileDialog = new OpenFileDialog())
             {
-                saveFileDialog.Filter = "Honeybee json files (*.hbjson)|*.hbjson|TAS TBD files (*.tbd)|*.tbd|gbXML files (*.gbXML)|*.gbXML|All files (*.*)|*.*";
+                saveFileDialog.Filter = "Honeybee json files (*.hbjson)|*.hbjson|TAS TBD files (*.tbd)|*.tbd|gbXML files (*.xml)|*.xml|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog() != DialogResult.OK)
@@ -38,7 +38,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 analyticalModel = Tas.Convert.ToSAM(path, false);
             }
-            else if (extension.ToLower().EndsWith("gbxml"))
+            else if (extension.ToLower().EndsWith("xml"))
             {
                 analyticalModel = gbXML.Create.AnalyticalModel(path);
             }
