@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SAM.Core;
+using System.Collections.Generic;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -105,6 +106,8 @@ namespace SAM.Analytical.UI.WPF
 
             zone_Temp.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory);
 
+            List<SAMObject> sAMObjects = new List<SAMObject>();
+
             List<Space> spaces_Temp = spaceZoneWindow.SelectedSpaces;
             if (spaces_Temp != null && spaces_Temp.Count != 0)
             {
@@ -119,15 +122,21 @@ namespace SAM.Analytical.UI.WPF
                             foreach (Zone zone_Old in zones_Old)
                             {
                                 adjacencyCluster.RemoveRelation(zone_Old, space);
+                                if(sAMObjects.Find(x => x is Zone && x.Guid == zone_Old.Guid) == null)
+                                {
+                                    sAMObjects.Add(zone_Old);
+                                }
                             }
                         }
 
                         adjacencyCluster.AddRelation(zone_Temp, space);
+                        sAMObjects.Add(zone_Temp);
+                        sAMObjects.Add(space);
                     }
                 }
             }
 
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary);
+            uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new AnalyticalModelModification(sAMObjects));
         }
 
         public static void EditSpaceZone(this UIAnalyticalModel uIAnalyticalModel, string zoneCategory)

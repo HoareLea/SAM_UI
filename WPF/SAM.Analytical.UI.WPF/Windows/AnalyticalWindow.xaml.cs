@@ -1043,26 +1043,23 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             UIGeometryObjectModel uIGeometryObjectModel = viewportControl.UIGeometryObjectModel;
 
-            bool updateGeometry = uIGeometryObjectModel?.JSAMObject == null || modifiedEventArgs.Modifications.Find(x => x is FullModification || x is AnalyticalModelModification) != null;
+            bool updateGeometry = uIGeometryObjectModel?.JSAMObject == null || modifiedEventArgs.Modifications.Find(x => x is FullModification) != null;
             if(!updateGeometry)
             {
                 List<ViewSettingsModification> viewSettingsModifications = modifiedEventArgs.GetModifications<ViewSettingsModification>((x) => x.ViewSettings?.Find(y => y.Guid == viewSettings.Guid) != null);
                 if(viewSettingsModifications != null && viewSettingsModifications.Find(x => x.UpdateGeometry) != null)
                 {
-                    updateGeometry = true;
+                    
                 }
             }
 
             if (!updateGeometry)
             {
                 List<AnalyticalModelModification> analyticalModelModifications = modifiedEventArgs.GetModifications<AnalyticalModelModification>();
-                HashSet<Guid> guids = analyticalModelModifications.Guids();
-                if(guids != null && guids.Count != 0)
+                HashSet<Guid> guids = analyticalModelModifications?.Guids();
+                if (guids == null || guids.Count == 0 || viewportControl.ContainsAny<SAMObject>(guids))
                 {
-                    if(viewportControl.ContainsAny<SAMObject>(guids))
-                    {
-                        updateGeometry = true;
-                    }
+                    updateGeometry = true;
                 }
             }
 
@@ -1390,6 +1387,9 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void Reload(ModifiedEventArgs modifiedEventArgs)
         {
+            //ProgressBarWindow progressBarWindow = new ProgressBarWindow("Reloading", "Reloading...");
+            //progressBarWindow.Show();
+
             SetEnabled();
             //SetActiveGuid();
 
@@ -1406,6 +1406,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
             tabControl.SelectionChanged += tabControl_SelectionChanged;
+
+            //progressBarWindow.Close();
         }
 
         private void SetEnabled()

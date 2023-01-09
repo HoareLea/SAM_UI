@@ -63,13 +63,16 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            List<SAMObject> sAMObjects = new List<SAMObject>();
+
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             foreach (Space space in spaces_Temp)
             {
                 adjacencyCluster.AddObject(space);
+                sAMObjects.Add(space);
             }
 
-            uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster), new FullModification());
+            uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster), new AnalyticalModelModification(sAMObjects));
         }
     }
 }

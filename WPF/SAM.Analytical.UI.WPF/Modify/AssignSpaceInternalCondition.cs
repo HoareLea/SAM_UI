@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SAM.Core;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SAM.Analytical.UI.WPF
@@ -87,13 +88,15 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            List<SAMObject> sAMObjects = new List<SAMObject>();
             foreach(Space space_Temp in spaces_Temp)
             {
                 space_Temp.InternalCondition = internalCondition;
                 adjacencyCluster.AddObject(space_Temp);
+                sAMObjects.Add(space_Temp);
             }
 
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary);
+            uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new AnalyticalModelModification(sAMObjects));
         }
     }
 }

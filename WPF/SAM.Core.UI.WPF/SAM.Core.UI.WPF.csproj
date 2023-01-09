@@ -78,6 +78,9 @@
     <Compile Include="Controls\ListBoxControl.xaml.cs">
       <DependentUpon>ListBoxControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ProgressBarWindow.xaml.cs">
+      <DependentUpon>ProgressBarWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Query\ParentDependencyObject.cs" />
     <Compile Include="Query\DependencyObject.cs" />
     <Compile Include="Query\Visual3D.cs" />
@@ -146,6 +149,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ListBoxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ProgressBarWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

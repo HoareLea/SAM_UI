@@ -1,4 +1,7 @@
 ﻿
+using SAM.Core;
+using System.Collections.Generic;
+
 namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
@@ -26,9 +29,13 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            adjacencyCluster.RemoveRelation(zone_Temp, space_Temp);
+            List<SAMObject> sAMObjects = new List<SAMObject>();
 
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary);
+            adjacencyCluster.RemoveRelation(zone_Temp, space_Temp);
+            sAMObjects.Add(zone_Temp);
+            sAMObjects.Add(space_Temp);
+
+            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new AnalyticalModelModification(sAMObjects));
         }
     }
 }

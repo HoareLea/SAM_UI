@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SAM.Core;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SAM.Analytical.UI.WPF
@@ -32,6 +33,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            List<SAMObject> sAMObjects = new List<SAMObject>();
+
             bool updated = false;
             foreach(Space space in spaces)
             {
@@ -56,10 +59,16 @@ namespace SAM.Analytical.UI.WPF
                         foreach (Zone zone_Old in zones_Old)
                         {
                             adjacencyCluster.RemoveRelation(zone_Old, space_Temp);
+                            if (sAMObjects.Find(x => x is Zone && x.Guid == zone_Old.Guid) == null)
+                            {
+                                sAMObjects.Add(zone_Old);
+                            }
                         }
                     }
 
                     adjacencyCluster.AddRelation(zone_Temp, space_Temp);
+                    sAMObjects.Add(zone_Temp);
+                    sAMObjects.Add(space_Temp);
                 }
 
                 updated = true;
@@ -70,7 +79,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary);
+            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new AnalyticalModelModification(sAMObjects));
         }
     }
 }
