@@ -106,6 +106,11 @@ namespace SAM.Geometry.UI.WPF
             return Core.UI.WPF.Query.Visual3D<T>(helixViewport3D.Children, guid);
         }
 
+        public bool ContainsAny<T>(IEnumerable<Guid> guids) where T: SAMObject
+        {
+            return Query.ContainsAny<T>(helixViewport3D.Children, guids);
+        }
+
         public T GetSAMObject<T>(Guid guid) where T : SAMObject
         {
             return Core.UI.WPF.Query.JSAMObject<T>(GetVisual3D<T>(guid));

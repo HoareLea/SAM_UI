@@ -114,7 +114,7 @@
     <Compile Include="Query\SelectedVisual3Ds.cs" />
     <Compile Include="Query\DoubleSided.cs" />
     <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\Center.cs" />
+    <Compile Include="Query\ContainsAny.cs" />
     <Compile Include="Query\HighlightCurveAppearance.cs" />
     <Compile Include="Query\SelectionSurfaceAppearance.cs" />
     <Compile Include="Query\LookDirection.cs" />

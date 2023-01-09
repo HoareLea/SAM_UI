@@ -1053,6 +1053,19 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
 
+            if (!updateGeometry)
+            {
+                List<AnalyticalModelModification> analyticalModelModifications = modifiedEventArgs.GetModifications<AnalyticalModelModification>();
+                HashSet<Guid> guids = analyticalModelModifications.Guids();
+                if(guids != null && guids.Count != 0)
+                {
+                    if(viewportControl.ContainsAny<SAMObject>(guids))
+                    {
+                        updateGeometry = true;
+                    }
+                }
+            }
+
             if (updateGeometry)
             {
                 GeometryObjectModel geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
