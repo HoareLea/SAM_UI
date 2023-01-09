@@ -62,6 +62,9 @@
     <Reference Include="SAM.Analytical.gbXML">
       <HintPath>..\..\..\SAM_gbXML\build\SAM.Analytical.gbXML.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Analytical.GEM">
+      <HintPath>..\..\..\SAM_GEM\build\SAM.Analytical.GEM.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Analytical.LadybugTools">
       <HintPath>..\..\..\SAM_LadybugTools\build\SAM.Analytical.LadybugTools.dll</HintPath>
     </Reference>

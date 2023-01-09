@@ -15,7 +15,7 @@ namespace SAM.Analytical.UI.WPF
             string path = null;
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = "Honeybee json files (*.hbjson)|*.hbjson|TAS TBD files (*.tbd)|*.tbd|gbXML files (*.gbXML)|*.gbXML|All files (*.*)|*.*";
+                saveFileDialog.Filter = "Honeybee json files (*.hbjson)|*.hbjson|TAS TBD files (*.tbd)|*.tbd|gbXML files (*.gbXML)|*.gbXML|GEM files (*.gem)|*.gem|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.RestoreDirectory = true;
                 if (saveFileDialog.ShowDialog() != DialogResult.OK)
@@ -53,6 +53,15 @@ namespace SAM.Analytical.UI.WPF
                 if(!string.IsNullOrWhiteSpace(json))
                 {
                     System.IO.File.WriteAllText(path, json);
+                    result = true;
+                }
+            }
+            else if (extension.ToLower().EndsWith("gem"))
+            {
+                string gem = SAM.Analytical.GEM.Convert.ToGEM(analyticalModel);
+                if (!string.IsNullOrWhiteSpace(gem))
+                {
+                    System.IO.File.WriteAllText(path, gem);
                     result = true;
                 }
             }
