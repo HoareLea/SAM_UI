@@ -485,21 +485,10 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<ViewSettings> viewSettingsList = null;
-
-            IEnumerable enumerable = menuItem.Tag as IEnumerable;
-            if (enumerable != null)
-            {
-                viewSettingsList = enumerable.OfType<ViewSettings>()?.ToList();
-            }
-
+            List<ViewSettings> viewSettingsList = GetViewSettings(menuItem);
             if (viewSettingsList == null || viewSettingsList.Count() == 0)
             {
-                ViewSettings viewSettings = menuItem.Tag as ViewSettings;
-                if (viewSettings != null)
-                {
-                    viewSettingsList = new List<ViewSettings>() { viewSettings };
-                }
+                return;
             }
 
             Modify.RemoveViewSettings(uIAnalyticalModel, viewSettingsList.ConvertAll(x => x.Guid));
@@ -513,24 +502,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<ViewSettings> viewSettingsList = null;
-
-            IEnumerable enumerable = menuItem.Tag as IEnumerable;
-            if(enumerable != null)
-            {
-                viewSettingsList = enumerable.OfType<ViewSettings>()?.ToList();
-            }
-
-           if(viewSettingsList == null || viewSettingsList.Count() == 0)
-            {
-                ViewSettings viewSettings = menuItem.Tag as ViewSettings;
-                if (viewSettings != null)
-                {
-                    viewSettingsList = new List<ViewSettings>() { viewSettings };
-                }
-            }
-
-           if(viewSettingsList == null || viewSettingsList.Count() == 0)
+            List<ViewSettings> viewSettingsList = GetViewSettings(menuItem);
+            if (viewSettingsList == null || viewSettingsList.Count() == 0)
             {
                 return;
             }
@@ -547,13 +520,13 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
-            if (viewSettings == null)
+            List<ViewSettings> viewSettingsList = GetViewSettings(menuItem);
+            if (viewSettingsList == null || viewSettingsList.Count() != 1)
             {
                 return;
             }
 
-            Modify.EditViewSettings(uIAnalyticalModel, viewSettings.Guid);
+            Modify.EditViewSettings(uIAnalyticalModel, viewSettingsList[0].Guid);
         }
 
         private void MenuItem_Duplicate_TabItem_Click(object sender, RoutedEventArgs e)
@@ -581,21 +554,10 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<ViewSettings> viewSettingsList = null;
-
-            IEnumerable enumerable = menuItem.Tag as IEnumerable;
-            if (enumerable != null)
-            {
-                viewSettingsList = enumerable.OfType<ViewSettings>()?.ToList();
-            }
-
+            List<ViewSettings> viewSettingsList = GetViewSettings(menuItem);
             if (viewSettingsList == null || viewSettingsList.Count() == 0)
             {
-                ViewSettings viewSettings = menuItem.Tag as ViewSettings;
-                if (viewSettings != null)
-                {
-                    viewSettingsList = new List<ViewSettings>() { viewSettings };
-                }
+                return;
             }
 
             if (viewSettingsList == null || viewSettingsList.Count() == 0)
@@ -1185,6 +1147,33 @@ namespace SAM.Analytical.UI.WPF
             {
                 windowHandle = new Core.Windows.WindowHandle(window);
             }
+        }
+
+        private static List<ViewSettings> GetViewSettings(MenuItem menuItem)
+        {
+            if(menuItem == null)
+            {
+                return null;
+            }
+
+            List<ViewSettings> result = new List<ViewSettings>();
+
+            IEnumerable enumerable = menuItem.Tag as IEnumerable;
+            if (enumerable != null)
+            {
+                result = enumerable.OfType<ViewSettings>()?.ToList();
+            }
+
+            if (result == null || result.Count() == 0)
+            {
+                ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+                if (viewSettings != null)
+                {
+                    result = new List<ViewSettings>() { viewSettings };
+                }
+            }
+
+            return result;
         }
     }
 }
