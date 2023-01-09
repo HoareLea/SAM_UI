@@ -350,6 +350,21 @@ namespace SAM.Analytical.UI
                         }
 
                         face3Ds = face3Ds_Offset;
+                        if (face3Ds == null || face3Ds.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        Point3D point3D = plane.Project(space.Location);
+                        if(point3D == null)
+                        {
+                            if(face3Ds.Count > 1)
+                            {
+                                face3Ds.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
+                            }
+
+                            point3D = face3Ds[0].InternalPoint3D();
+                        }
 
                         Color? color = null;
 
@@ -376,8 +391,6 @@ namespace SAM.Analytical.UI
                         SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, new SurfaceAppearance(color.Value, color_Darker.ToMedia(), 0.02));
 
                         face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, surfaceAppearance)));
-
-                        Point3D point3D = plane.Project(space.Location);
 
                         Plane plane_Temp = new Plane(plane, point3D.GetMoved(new Vector3D(0, 0, 0.1)) as Point3D);
 
