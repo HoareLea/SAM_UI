@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SAM.Core.UI
+﻿namespace SAM.Core.UI
 {
     public class OpenedEventArgs : ModifiedEventArgs
     {

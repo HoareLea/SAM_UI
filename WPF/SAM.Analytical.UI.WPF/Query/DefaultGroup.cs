@@ -1,6 +1,4 @@
-﻿using SAM.Architectural;
-using SAM.Geometry.Spatial;
-using SAM.Geometry.UI;
+﻿using SAM.Geometry.UI;
 using System.Collections.Generic;
 
 namespace SAM.Analytical.UI.WPF

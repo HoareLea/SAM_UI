@@ -1,8 +1,5 @@
-﻿using SAM.Core.Windows;
-using System;
-using System.ComponentModel;
+﻿using System;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Threading;

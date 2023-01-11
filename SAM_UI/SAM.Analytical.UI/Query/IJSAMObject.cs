@@ -1,7 +1,5 @@
 ﻿using SAM.Core;
-using SAM.Core.UI;
 using SAM.Geometry;
-using SAM.Geometry.UI;
 using System;
 
 namespace SAM.Analytical.UI

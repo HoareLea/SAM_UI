@@ -9,11 +9,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
-using System.Windows.Threading;
 
 namespace SAM.Analytical.UI.WPF.Windows
 {
