@@ -961,7 +961,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            List<Zone> zones = adjacencyCluster.GetZones();
+            List<Zone> zones = adjacencyCluster?.GetZones();
             if(zones != null)
             {
                 SortedDictionary<string, List<Zone>> dictionary = new SortedDictionary<string, List<Zone>>();

@@ -53,7 +53,7 @@ namespace SAM.Core.UI.WPF
             Thread thread = new Thread(new ThreadStart(() =>
             {
                 progressBarWindow = new ProgressBarWindow(title, text);
-                progressBarWindow.ShowDialog();
+                progressBarWindow.Show();
                 Dispatcher.Run();
             }));
 
