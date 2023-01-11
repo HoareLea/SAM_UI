@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using SAM.Core.UI.WPF;
+using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -7,7 +8,7 @@ namespace SAM.Analytical.UI.WPF
         public static bool Export(this UIAnalyticalModel uIAnalyticalModel)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if(analyticalModel == null)
+            if (analyticalModel == null)
             {
                 return false;
             }
@@ -15,9 +16,10 @@ namespace SAM.Analytical.UI.WPF
             string path = null;
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
-                saveFileDialog.Filter = "Honeybee json files (*.hbjson)|*.hbjson|TAS TBD files (*.tbd)|*.tbd|gbXML files (*.gbXML)|*.gbXML|GEM files (*.gem)|*.gem|All files (*.*)|*.*";
+                saveFileDialog.Filter = "Honeybee json files (*.hbjson)|*.hbjson|TAS TBD files (*.tbd)|*.tbd|gbXML files (*.xml)|*.xml|GEM files (*.gem)|*.gem|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
                 saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.FileName = analyticalModel.Name;
                 if (saveFileDialog.ShowDialog() != DialogResult.OK)
                 {
                     return false;
@@ -26,48 +28,51 @@ namespace SAM.Analytical.UI.WPF
                 path = saveFileDialog.FileName;
             }
 
-            if(string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
                 return false;
             }
 
             bool result = false;
 
-            string extension = System.IO.Path.GetExtension(path);
-            if (extension.ToLower().EndsWith("tbd"))
+            using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager("Export", "Exporting"))
             {
-                result = Tas.Convert.ToTBD(analyticalModel, path);
-            }
-            else if (extension.ToLower().EndsWith("gbxml"))
-            {
-                gbXMLSerializer.gbXML gbXML = Analytical.gbXML.Convert.TogbXML(analyticalModel);
-                if(gbXML != null)
+                string extension = System.IO.Path.GetExtension(path);
+                if (extension.ToLower().EndsWith("tbd"))
                 {
-                    result = Core.gbXML.Create.gbXML(gbXML, path);
+                    result = Tas.Convert.ToTBD(analyticalModel, path);
                 }
-            }
-            else if(extension.ToLower().EndsWith("hbjson"))
-            {
-                HoneybeeSchema.Model model = SAM.Analytical.LadybugTools.Convert.ToLadybugTools(analyticalModel);
-                string json = model.ToJson();
-                if(!string.IsNullOrWhiteSpace(json))
+                else if (extension.ToLower().EndsWith("gbxml"))
                 {
-                    System.IO.File.WriteAllText(path, json);
-                    result = true;
+                    gbXMLSerializer.gbXML gbXML = Analytical.gbXML.Convert.TogbXML(analyticalModel);
+                    if (gbXML != null)
+                    {
+                        result = Core.gbXML.Create.gbXML(gbXML, path);
+                    }
                 }
-            }
-            else if (extension.ToLower().EndsWith("gem"))
-            {
-                string gem = SAM.Analytical.GEM.Convert.ToGEM(analyticalModel);
-                if (!string.IsNullOrWhiteSpace(gem))
+                else if (extension.ToLower().EndsWith("hbjson"))
                 {
-                    System.IO.File.WriteAllText(path, gem);
-                    result = true;
+                    HoneybeeSchema.Model model = LadybugTools.Convert.ToLadybugTools(analyticalModel);
+                    string json = model.ToJson();
+                    if (!string.IsNullOrWhiteSpace(json))
+                    {
+                        System.IO.File.WriteAllText(path, json);
+                        result = true;
+                    }
+                }
+                else if (extension.ToLower().EndsWith("gem"))
+                {
+                    string gem = GEM.Convert.ToGEM(analyticalModel);
+                    if (!string.IsNullOrWhiteSpace(gem))
+                    {
+                        System.IO.File.WriteAllText(path, gem);
+                        result = true;
+                    }
                 }
             }
 
             return result;
-            
+
         }
     }
 }

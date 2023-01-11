@@ -20,7 +20,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            TextMap textMap = SAM.Analytical.Query.DefaultInternalConditionTextMap();
+            TextMap textMap = Analytical.Query.DefaultInternalConditionTextMap();
 
             InternalConditionLibrary internalConditionLibrary = new InternalConditionLibrary("Default");
             analyticalModel?.AdjacencyCluster.GetInternalConditions(false, true)?.ToList()?.ForEach(x => internalConditionLibrary.Add(x));

@@ -61,6 +61,7 @@
     <Compile Include="Classes\DependencyProperty.cs" />
     <Compile Include="Classes\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\ObjectContextMenuOpeningEventArgs.cs" />
+    <Compile Include="Classes\ProgressBarWindowManager.cs" />
     <Compile Include="Classes\TextChangedEventArgs.cs" />
     <Compile Include="Classes\ObjectHooveredEventArgs.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />

@@ -9,9 +9,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
+using System.Windows.Threading;
 
 namespace SAM.Analytical.UI.WPF.Windows
 {
@@ -20,6 +22,8 @@ namespace SAM.Analytical.UI.WPF.Windows
     /// </summary>
     public partial class AnalyticalWindow : System.Windows.Window
     {
+        private ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager();
+        
         private Core.Windows.WindowHandle windowHandle;
         
         private UIAnalyticalModel uIAnalyticalModel;
@@ -1387,8 +1391,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void Reload(ModifiedEventArgs modifiedEventArgs)
         {
-            //ProgressBarWindow progressBarWindow = new ProgressBarWindow("Reloading", "Reloading...");
-            //progressBarWindow.Show();
+            progressBarWindowManager.Show("Reloading", "Reloading...");
 
             SetEnabled();
             //SetActiveGuid();
@@ -1407,7 +1410,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
             tabControl.SelectionChanged += tabControl_SelectionChanged;
 
-            //progressBarWindow.Close();
+            progressBarWindowManager.Close();
         }
 
         private void SetEnabled()

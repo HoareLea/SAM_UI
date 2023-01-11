@@ -1,4 +1,5 @@
 ﻿using SAM.Core.UI;
+using SAM.Core.UI.WPF;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF
@@ -33,23 +34,27 @@ namespace SAM.Analytical.UI.WPF
 
             AnalyticalModel analyticalModel = null;
 
-            string extension = System.IO.Path.GetExtension(path);
-            if (extension.ToLower().EndsWith("tbd"))
+            using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager("Import", "Importing..."))
             {
-                analyticalModel = Tas.Convert.ToSAM(path, false);
-            }
-            else if (extension.ToLower().EndsWith("xml"))
-            {
-                analyticalModel = gbXML.Create.AnalyticalModel(path);
-            }
-            else if (extension.ToLower().EndsWith("hbjson"))
-            {
-                analyticalModel = SAM.Analytical.LadybugTools.Convert.ToSAM(path) as AnalyticalModel;
-            }
 
-            if (analyticalModel == null)
-            {
-                return;
+                string extension = System.IO.Path.GetExtension(path);
+                if (extension.ToLower().EndsWith("tbd"))
+                {
+                    analyticalModel = Tas.Convert.ToSAM(path, false);
+                }
+                else if (extension.ToLower().EndsWith("xml"))
+                {
+                    analyticalModel = gbXML.Create.AnalyticalModel(path);
+                }
+                else if (extension.ToLower().EndsWith("hbjson"))
+                {
+                    analyticalModel = LadybugTools.Convert.ToSAM(path) as AnalyticalModel;
+                }
+
+                if (analyticalModel == null)
+                {
+                    return;
+                }
             }
 
             uIAnalyticalModel.SetJSAMObject(analyticalModel, new FullModification());
