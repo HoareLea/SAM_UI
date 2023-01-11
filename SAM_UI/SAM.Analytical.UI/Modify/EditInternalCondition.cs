@@ -19,7 +19,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            ProfileLibrary profileLibrary= analyticalModel.ProfileLibrary;
+            ProfileLibrary profileLibrary = analyticalModel.ProfileLibrary;
 
 
             using (InternalConditionForm internalConditionForm = new InternalConditionForm(internalCondition, profileLibrary, adjacencyCluster))
@@ -31,6 +31,7 @@ namespace SAM.Analytical.UI
                 }
 
                 internalCondition = internalConditionForm.InternalCondition;
+                profileLibrary = internalConditionForm.ProfileLibrary;
             }
 
 
@@ -41,7 +42,7 @@ namespace SAM.Analytical.UI
 
             adjacencyCluster.AddObject(internalCondition);
 
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster);
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary);
         }
     }
 }
