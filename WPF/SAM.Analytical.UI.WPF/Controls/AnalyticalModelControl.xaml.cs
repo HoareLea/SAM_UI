@@ -924,6 +924,7 @@ namespace SAM.Analytical.UI.WPF
                     foreach (InternalCondition internalCondition in internalConditions)
                     {
                         TreeViewItem treeViewItem_InternalCondition = new TreeViewItem() { Header = internalCondition.Name, Tag = internalCondition, AllowDrop = false };
+                        treeViewItem_InternalCondition.MouseDoubleClick += TreeViewItem_MouseDoubleClick;
                         treeViewItem_InternalConditions.Items.Add(treeViewItem_InternalCondition);
                     }
                 }
@@ -947,6 +948,7 @@ namespace SAM.Analytical.UI.WPF
                 foreach (Profile profile in profiles)
                 {
                     TreeViewItem treeViewItem_Profile = new TreeViewItem() { Header = profile.Name, Tag = profile, AllowDrop = false };
+                    treeViewItem_Profile.MouseDoubleClick += TreeViewItem_MouseDoubleClick;
                     treeViewItem_Profiles.Items.Add(treeViewItem_Profile);
                 }
             }
@@ -1024,6 +1026,30 @@ namespace SAM.Analytical.UI.WPF
                 treeViewItem_InternalConditions.IsExpanded = expandedTags.Contains(treeViewItem_InternalConditions.Tag);
                 treeViewItem_MechanicalSystems.IsExpanded = expandedTags.Contains(treeViewItem_MechanicalSystems.Tag);
                 treeViewItem_Zones.IsExpanded = expandedTags.Contains(treeViewItem_Zones.Tag);
+            }
+        }
+
+        private void TreeViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            TreeViewItem treeViewItem = sender as TreeViewItem;
+            if(treeViewItem == null)
+            {
+                return;
+            }
+
+            IAnalyticalObject analyticalObject = treeViewItem.Tag as IAnalyticalObject;
+            if(analyticalObject == null)
+            {
+                return;
+            }
+
+            if(analyticalObject is InternalCondition)
+            {
+                UI.Modify.EditInternalCondition(uIAnalyticalModel, (InternalCondition)analyticalObject);
+            }
+            else if(analyticalObject is Profile)
+            {
+                UI.Modify.EditProfile(uIAnalyticalModel, (Profile)analyticalObject);
             }
         }
 

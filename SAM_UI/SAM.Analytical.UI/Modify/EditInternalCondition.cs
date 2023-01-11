@@ -24,6 +24,7 @@ namespace SAM.Analytical.UI
 
             using (InternalConditionForm internalConditionForm = new InternalConditionForm(internalCondition, profileLibrary, adjacencyCluster))
             {
+                internalConditionForm.UseColors = true;
                 if (internalConditionForm.ShowDialog(owner) != DialogResult.OK)
                 {
                     return;
