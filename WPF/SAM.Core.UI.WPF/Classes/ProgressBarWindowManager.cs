@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 
 namespace SAM.Core.UI.WPF
@@ -60,6 +61,8 @@ namespace SAM.Core.UI.WPF
             thread.SetApartmentState(ApartmentState.STA);
             thread.IsBackground = true;
             thread.Start();
+
+            Thread.Sleep(500);
         }
 
         public void Show()
@@ -69,6 +72,11 @@ namespace SAM.Core.UI.WPF
 
         public void Close()
         {
+            if(progressBarWindow == null)
+            {
+                Thread.Sleep(500);
+            }
+            
             Close(progressBarWindow);
         }
 
