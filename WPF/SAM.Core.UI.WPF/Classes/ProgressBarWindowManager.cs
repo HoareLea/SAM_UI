@@ -7,7 +7,8 @@ namespace SAM.Core.UI.WPF
     public class ProgressBarWindowManager: IDisposable
     {
         public string Title { get; set; }
-        public string Text { get; set; }
+        
+        private string text;
 
         private ProgressBarWindow progressBarWindow;
 
@@ -83,6 +84,31 @@ namespace SAM.Core.UI.WPF
         {
             Close();
         }
+
+        public string Text
+        {
+            get
+            {
+                return text;
+            }
+
+            set
+            {
+                text = value;
+                if(progressBarWindow != null)
+                {
+                    if (progressBarWindow.Dispatcher.CheckAccess())
+                    {
+                        progressBarWindow.label.Content = value;
+                    }
+                    else
+                    {
+                        progressBarWindow.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(() => progressBarWindow.label.Content = value));
+                    }
+                }
+            }
+        }
+
         ~ProgressBarWindowManager()
         {
             Dispose();

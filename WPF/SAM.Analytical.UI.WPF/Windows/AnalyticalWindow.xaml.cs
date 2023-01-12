@@ -1067,6 +1067,11 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             if (updateGeometry)
             {
+                if (progressBarWindowManager != null)
+                {
+                    progressBarWindowManager.Text = string.Format("View Regeneration [{0}]", string.IsNullOrWhiteSpace(name) ? "???" : name);
+                }
+
                 GeometryObjectModel geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
                 viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
             }
