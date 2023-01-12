@@ -478,7 +478,7 @@
                 <RibbonGroup x:Name="RibbonGroup_Tools_SAM" Header="SAM">
                     <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Mollier Diagram"/>
                     <RibbonButton x:Name="RibbonButton_Tools_ViewGeometry" Label="View Geometry"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_Test" Label="Test"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_TextMap" Label="Text Map"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">

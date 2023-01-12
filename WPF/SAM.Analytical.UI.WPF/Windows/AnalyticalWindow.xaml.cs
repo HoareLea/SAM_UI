@@ -150,9 +150,8 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_MapInternalConditions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_Tools_MapInternalConditions.Click += RibbonButton_Tools_MapInternalConditions_Click;
 
-            RibbonButton_Tools_Test.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
-            RibbonButton_Tools_Test.Click += RibbonButton_Tools_Test_Click;
-            RibbonButton_Tools_Test.Visibility = Visibility.Hidden;
+            RibbonButton_Tools_TextMap.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_Tools_TextMap.Click += RibbonButton_Tools_TextMap_Click;
 
 
             RibbonButton_Results_AirHandlingUnitDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AirHandlingUnitDiagram);
@@ -190,6 +189,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_Tools_TextMap_Click(object sender, RoutedEventArgs e)
+        {
+            TextMapWindow textMapWindow = new TextMapWindow();
+            if(textMapWindow.ShowDialog()!= true)
+            {
+                return;
+            }
         }
 
         private void RibbonButton_ImportExport_ExportAnalyticalModel_Click(object sender, RoutedEventArgs e)
