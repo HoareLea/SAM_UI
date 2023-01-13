@@ -129,6 +129,8 @@
     <Compile Include="Modify\Import.cs" />
     <Compile Include="Modify\Export.cs" />
     <Compile Include="Modify\MapInternalConditions.cs" />
+    <Compile Include="Query\DefaultMapFunc.cs" />
+    <Compile Include="Query\DefaultGroupFunc.cs" />
     <Compile Include="Windows\MapInternalConditionsWindow.xaml.cs">
       <DependentUpon>MapInternalConditionsWindow.xaml</DependentUpon>
     </Compile>

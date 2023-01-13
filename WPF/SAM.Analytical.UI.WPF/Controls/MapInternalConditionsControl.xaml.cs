@@ -25,6 +25,9 @@ namespace SAM.Analytical.UI.WPF
         private TextMap textMap;
         private InternalConditionLibrary internalConditionLibrary;
 
+        public Func<Space, InternalCondition> MapFunc = null;
+        public Func<Space, string> GroupFunc = null;
+
         public MapInternalConditionsControl()
         {
             InitializeComponent();
@@ -141,13 +144,10 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            int index = 0;
-
             List<Tuple<Space, string>> result = new List<Tuple<Space, string>>();
             foreach (DockPanel dockPanel in wrapPanel.Children)
             {
                 Space space = dockPanel.Tag as Space;
-                index++;
                 if (space == null)
                 {
                     continue;
@@ -196,35 +196,84 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            foreach (Space space in spaces)
+            Dictionary<string, List<Space>> dictionary = new Dictionary<string, List<Space>>();
+            if(GroupFunc == null)
             {
-                string internalConditionName = string.Empty;
-                if(tuples != null)
-                {
-                    int index = tuples.FindIndex(x => x.Item1.Guid == space.Guid);
-                    if(index != -1 && hashSet.Contains(tuples[index].Item2))
-                    {
-                        internalConditionName = tuples[index].Item2;
-                    }
-                }
-
-                DockPanel dockPanel = new DockPanel() { Width = 330, Height = 30, Tag = space };
-
-                CheckBox checkBox = new CheckBox() { Width = 100, Content = space.Name, IsChecked = true, VerticalAlignment = VerticalAlignment.Center };
-                dockPanel.Children.Add(checkBox);
-
-                ComboBox comboBox = new ComboBox() { MinWidth = 150, HorizontalAlignment = System.Windows.HorizontalAlignment.Right, Height = 25 };
-                foreach(string internalConditionName_Temp in hashSet)
-                {
-                    comboBox.Items.Add(internalConditionName_Temp);
-                }
-
-                comboBox.Text = internalConditionName;
-
-                dockPanel.Children.Add(comboBox);
-
-                wrapPanel.Children.Add(dockPanel);
+                dictionary[string.Empty] = spaces.ToList();
             }
+            else
+            {
+                List<Tuple<Space, string>> tuples_Group = spaces.ToList().ConvertAll(x => new Tuple<Space, string>(x, GroupFunc.Invoke(x)));
+                foreach(Space space in spaces)
+                {
+                    if(space == null)
+                    {
+                        continue;
+                    }
+
+                    string group = GroupFunc.Invoke(space);
+                    if(group == null)
+                    {
+                        group = string.Empty;
+                    }
+
+                    if (!dictionary.TryGetValue(group, out List<Space> spaces_Group) || spaces_Group == null)
+                    {
+                        spaces_Group = new List<Space>();
+                        dictionary[group] = spaces_Group;
+                    }
+
+                    spaces_Group.Add(space);
+                }
+            }
+
+            List<string> keys = dictionary.Keys.ToList();
+            keys.Sort();
+
+            foreach(string key in keys)
+            {
+                List<Space> spaces_Group = dictionary[key];
+                spaces_Group.Sort((x, y) => x.Name.CompareTo(y.Name));
+
+                if(!string.IsNullOrEmpty(key))
+                {
+                    DockPanel dockPanel = new DockPanel() { Width = 330, Height = 30 };
+                    System.Windows.Controls.Label label = new System.Windows.Controls.Label() { Width = 100, Content = key, VerticalAlignment = VerticalAlignment.Center };
+                    dockPanel.Children.Add(label);
+                }
+
+                foreach (Space space in spaces_Group)
+                {
+                    string internalConditionName = string.Empty;
+                    if (tuples != null)
+                    {
+                        int index = tuples.FindIndex(x => x.Item1.Guid == space.Guid);
+                        if (index != -1 && hashSet.Contains(tuples[index].Item2))
+                        {
+                            internalConditionName = tuples[index].Item2;
+                        }
+                    }
+
+                    DockPanel dockPanel = new DockPanel() { Width = 330, Height = 30, Tag = space };
+
+                    CheckBox checkBox = new CheckBox() { Width = 100, Content = space.Name, IsChecked = true, VerticalAlignment = VerticalAlignment.Center };
+                    dockPanel.Children.Add(checkBox);
+
+                    ComboBox comboBox = new ComboBox() { MinWidth = 150, HorizontalAlignment = System.Windows.HorizontalAlignment.Right, Height = 25 };
+                    foreach (string internalConditionName_Temp in hashSet)
+                    {
+                        comboBox.Items.Add(internalConditionName_Temp);
+                    }
+
+                    comboBox.Text = internalConditionName;
+
+                    dockPanel.Children.Add(comboBox);
+
+                    wrapPanel.Children.Add(dockPanel);
+                }
+
+            }
+
         }
 
         private void LoadInternalConditionLibrary()
@@ -268,6 +317,12 @@ namespace SAM.Analytical.UI.WPF
 
         private void Assign()
         {
+            Func<Space, InternalCondition> func = MapFunc;
+            if(func == null)
+            {
+                func = Query.DefaultMapFunc(internalConditionLibrary_Loaded, textMap_Loaded);
+            }
+
             foreach(DockPanel dockPanel in wrapPanel.Children)
             {
                 if(!(dockPanel.Children[0] as CheckBox).IsChecked.Value)
@@ -281,12 +336,10 @@ namespace SAM.Analytical.UI.WPF
                     continue;
                 }
 
-                if(Analytical.Query.TryGetInternalCondition(space, internalConditionLibrary_Loaded, textMap, out InternalCondition internalCondition) && internalCondition != null)
+                InternalCondition internalCondition = func.Invoke(space);
+                if(internalCondition?.Name != null)
                 {
-                    if(internalCondition.Name != null)
-                    {
-                        (dockPanel.Children[1] as ComboBox).Text = internalCondition.Name;
-                    }
+                    (dockPanel.Children[1] as ComboBox).Text = internalCondition.Name;
                 }
             }
         }
