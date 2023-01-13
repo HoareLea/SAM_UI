@@ -6,8 +6,7 @@
         xmlns:s="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         xmlns:geometry="clr-namespace:SAM.Geometry.UI.WPF;assembly=SAM.Geometry.UI.WPF"
-        mc:Ignorable="d"
-        Title="Analytical" 
+        mc:Ignorable="d" 
         WindowState="Maximized"
         WindowStyle="SingleBorderWindow" d:DesignWidth="800" d:DesignHeight="600">
     <Window.Resources>
@@ -474,6 +473,7 @@
                     <RibbonButton x:Name="RibbonButton_Tools_AddMissingObjects" Label="Missing Elements"/>
                     <RibbonButton x:Name="RibbonButton_Tools_PrintRoomDataSheets" Label="Print RDS"/>
                     <RibbonButton x:Name="RibbonButton_Tools_MapInternalConditions" Label="Map IC"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_MapInternalConditionsByTM59" Label="Map IC (TM59)"/>
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_SAM" Header="SAM">
                     <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Mollier Diagram"/>

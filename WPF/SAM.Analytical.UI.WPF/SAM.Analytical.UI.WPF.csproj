@@ -126,6 +126,13 @@
     <Compile Include="Controls\MapInternalConditionsControl.xaml.cs">
       <DependentUpon>MapInternalConditionsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MapTM59InternalConditionsControl.xaml.cs">
+      <DependentUpon>MapTM59InternalConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\MapInternalConditionsByTM59.cs" />
+    <Compile Include="Windows\MapTM59InternalConditionsWindow.xaml.cs">
+      <DependentUpon>MapTM59InternalConditionsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\Import.cs" />
     <Compile Include="Modify\Export.cs" />
     <Compile Include="Modify\MapInternalConditions.cs" />
@@ -349,6 +356,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\MapInternalConditionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MapTM59InternalConditionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MapTM59InternalConditionsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

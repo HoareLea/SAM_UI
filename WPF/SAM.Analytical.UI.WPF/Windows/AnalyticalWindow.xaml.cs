@@ -20,6 +20,8 @@ namespace SAM.Analytical.UI.WPF.Windows
     /// </summary>
     public partial class AnalyticalWindow : System.Windows.Window
     {
+        private static string titlePrefix = "SAM Analcytical";
+        
         private ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager();
         
         private Core.Windows.WindowHandle windowHandle;
@@ -29,6 +31,8 @@ namespace SAM.Analytical.UI.WPF.Windows
         public AnalyticalWindow()
         {
             InitializeComponent();
+
+            Title = titlePrefix;
 
             windowHandle = new Core.Windows.WindowHandle(this);
 
@@ -150,6 +154,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_MapInternalConditions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_Tools_MapInternalConditions.Click += RibbonButton_Tools_MapInternalConditions_Click;
 
+            RibbonButton_Tools_MapInternalConditionsByTM59.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_Tools_MapInternalConditionsByTM59.Click += RibbonButton_Tools_MapInternalConditionsByTM59_Click;
+
             RibbonButton_Tools_TextMap.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
             RibbonButton_Tools_TextMap.Click += RibbonButton_Tools_TextMap_Click;
 
@@ -213,6 +220,11 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_Tools_MapInternalConditions_Click(object sender, RoutedEventArgs e)
         {
             Modify.MapInternalConditions(uIAnalyticalModel);
+        }
+
+        private void RibbonButton_Tools_MapInternalConditionsByTM59_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.MapInternalConditionsByTM59(uIAnalyticalModel);
         }
 
         private void AnalyticalModelControl_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
@@ -983,11 +995,21 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             SetDefaultViewSettings();
             Reload(e);
+
+            Title = titlePrefix;
+
+            string name = uIAnalyticalModel?.JSAMObject?.Name;
+            if(name != null)
+            {
+                Title += string.Format(" [{0}]", name);
+            }
         }
 
         private void UIAnalyticalModel_Closed(object sender, ClosedEventArgs e)
         {
             Reload(e);
+
+            Title = titlePrefix;
         }
 
         private TabItem UpdateTabItem(TabControl tabControl, AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs, IViewSettings viewSettings = null)
@@ -1477,6 +1499,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_General_NewAnalyticalModel.IsEnabled = false;
             RibbonButton_General_OpenAnalyticalModel.IsEnabled = false;
             RibbonButton_Tools_MapInternalConditions.IsEnabled = false;
+            RibbonButton_Tools_MapInternalConditionsByTM59.IsEnabled = false;
             RibbonButton_ImportExport_ExportAnalyticalModel.IsEnabled = false;
 
             RibbonButton_Tools_OpenMollierChart.IsEnabled = true;
@@ -1497,6 +1520,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 RibbonButton_Tools_AddMissingObjects.IsEnabled = true;
                 RibbonButton_Tools_Clean.IsEnabled = true;
                 RibbonButton_Tools_MapInternalConditions.IsEnabled = true;
+                RibbonButton_Tools_MapInternalConditionsByTM59.IsEnabled = true;
                 RibbonButton_Simulate_EnergySimulation.IsEnabled = true;
                 RibbonButton_Simulate_SolarSimulation.IsEnabled = true;
                 RibbonButton_Simulate_Import.IsEnabled = true;

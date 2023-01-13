@@ -25,8 +25,8 @@ namespace SAM.Analytical.UI.WPF
         private TextMap textMap;
         private InternalConditionLibrary internalConditionLibrary;
 
-        public Func<Space, InternalCondition> MapFunc = null;
-        public Func<Space, string> GroupFunc = null;
+        private Func<Space, InternalCondition> mapFunc = null;
+        private Func<Space, string> groupFunc = null;
 
         public MapInternalConditionsControl()
         {
@@ -51,6 +51,33 @@ namespace SAM.Analytical.UI.WPF
         {
             LoadInternalConditionLibrary();
             LoadTextMap();
+        }
+
+        public Func<Space, InternalCondition> MapFunc
+        {
+            get
+            {
+                return mapFunc;
+            }
+
+            set
+            {
+                mapFunc = value;
+            }
+        }
+
+        public Func<Space, string> GroupFunc
+        {
+            get
+            {
+                return groupFunc;
+            }
+
+            set
+            {
+                groupFunc = value;
+                SetSpaces(Spaces);
+            }
         }
 
         public TextMap TextMap
@@ -197,13 +224,13 @@ namespace SAM.Analytical.UI.WPF
             }
 
             Dictionary<string, List<Space>> dictionary = new Dictionary<string, List<Space>>();
-            if(GroupFunc == null)
+            if(groupFunc == null)
             {
                 dictionary[string.Empty] = spaces.ToList();
             }
             else
             {
-                List<Tuple<Space, string>> tuples_Group = spaces.ToList().ConvertAll(x => new Tuple<Space, string>(x, GroupFunc.Invoke(x)));
+                List<Tuple<Space, string>> tuples_Group = spaces.ToList().ConvertAll(x => new Tuple<Space, string>(x, groupFunc.Invoke(x)));
                 foreach(Space space in spaces)
                 {
                     if(space == null)
@@ -211,7 +238,7 @@ namespace SAM.Analytical.UI.WPF
                         continue;
                     }
 
-                    string group = GroupFunc.Invoke(space);
+                    string group = groupFunc.Invoke(space);
                     if(group == null)
                     {
                         group = string.Empty;
@@ -237,9 +264,10 @@ namespace SAM.Analytical.UI.WPF
 
                 if(!string.IsNullOrEmpty(key))
                 {
-                    DockPanel dockPanel = new DockPanel() { Width = 330, Height = 30 };
-                    System.Windows.Controls.Label label = new System.Windows.Controls.Label() { Width = 100, Content = key, VerticalAlignment = VerticalAlignment.Center };
+                    DockPanel dockPanel = new DockPanel() { Width = 330, Height = 35 };
+                    System.Windows.Controls.Label label = new System.Windows.Controls.Label() { Width = 100, Content = key, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold, HorizontalAlignment = System.Windows.HorizontalAlignment.Left };
                     dockPanel.Children.Add(label);
+                    wrapPanel.Children.Add(dockPanel);
                 }
 
                 foreach (Space space in spaces_Group)
@@ -317,7 +345,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void Assign()
         {
-            Func<Space, InternalCondition> func = MapFunc;
+            Func<Space, InternalCondition> func = mapFunc;
             if(func == null)
             {
                 func = Query.DefaultMapFunc(internalConditionLibrary_Loaded, textMap_Loaded);
@@ -325,7 +353,18 @@ namespace SAM.Analytical.UI.WPF
 
             foreach(DockPanel dockPanel in wrapPanel.Children)
             {
-                if(!(dockPanel.Children[0] as CheckBox).IsChecked.Value)
+                if(dockPanel == null || dockPanel.Children.Count < 1)
+                {
+                    continue;
+                }
+
+                CheckBox checkBox = dockPanel.Children[0] as CheckBox;
+                if(checkBox == null)
+                {
+                    continue;
+                }
+
+                if (!checkBox.IsChecked.Value)
                 {
                     continue;
                 }
@@ -363,7 +402,18 @@ namespace SAM.Analytical.UI.WPF
         {
             foreach (DockPanel dockPanel in wrapPanel.Children)
             {
-                (dockPanel.Children[0] as CheckBox).IsChecked = isChecked;
+                if(dockPanel == null || dockPanel.Children.Count < 1)
+                {
+                    continue;
+                }
+
+                CheckBox checkBox = dockPanel.Children[0] as CheckBox;
+                if(checkBox == null)
+                {
+                    continue;
+                }
+
+                checkBox.IsChecked = isChecked;
             }
         }
 
