@@ -16,7 +16,7 @@
                 <Button x:Name="button_Open" Content="Open" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Click="button_Open_Click" />
                 <Button x:Name="button_Save" Content="Save" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Click="button_Save_Click" />
                 <Button x:Name="button_Import" Content="Import" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Click="button_Import_Click" />
-                <Button x:Name="button_Export" Content="Export" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" />
+                <Button x:Name="button_Export" Content="Export" HorizontalAlignment="Stretch" Margin="10,10,10,0" VerticalAlignment="Top" Click="button_Export_Click" />
             </StackPanel>
         </GroupBox>
         <GroupBox Header="Test" HorizontalAlignment="Right" Margin="0,224,9.6,10" VerticalAlignment="Stretch" Width="228">

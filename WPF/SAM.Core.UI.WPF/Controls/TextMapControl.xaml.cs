@@ -89,6 +89,15 @@ namespace SAM.Core.UI.WPF
 
         public void Filter(TextMap textMap)
         {
+            HashSet<string> headers = new HashSet<string>();
+            foreach(TreeViewItem treeViewItem in treeView.Items)
+            {
+                if(treeViewItem.IsExpanded)
+                {
+                    headers.Add(treeViewItem.Header as string);
+                }
+            }
+
             treeView.Items.Clear();
 
             if (textMap == null)
@@ -119,7 +128,7 @@ namespace SAM.Core.UI.WPF
                 TreeViewItem treeViewItem_Key = new TreeViewItem() { Header = key };
                 treeView.Items.Add(treeViewItem_Key);
                 treeViewItem_Key.ContextMenuOpening += TreeViewItem_Key_ContextMenuOpening;
-                treeViewItem_Key.MouseDoubleClick += TreeViewItem_Key_PreviewMouseDoubleClick;
+                treeViewItem_Key.MouseDoubleClick += TreeViewItem_Key_MouseDoubleClick;
 
                 List<string> values = textMap.GetValues(key);
                 if (values == null)
@@ -133,13 +142,24 @@ namespace SAM.Core.UI.WPF
                     treeViewItem_Key.Items.Add(treeViewItem_Value);
 
                     treeViewItem_Value.ContextMenuOpening += TreeViewItem_Value_ContextMenuOpening;
-                    treeViewItem_Value.MouseDoubleClick += TreeViewItem_Value_PreviewMouseDoubleClick;
+                    treeViewItem_Value.MouseDoubleClick += TreeViewItem_Value_MouseDoubleClick;
+                }
+
+                if(headers != null && headers.Contains(key))
+                {
+                    treeViewItem_Key.IsExpanded = true;
                 }
             }
         }
 
-        private void TreeViewItem_Key_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void TreeViewItem_Key_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            TextBlock textBlock = e.OriginalSource as TextBlock;
+            if(textBlock == null)
+            {
+                return;
+            }
+
             TreeViewItem treeViewItem = sender as TreeViewItem;
             if (treeViewItem == null)
             {
@@ -148,6 +168,11 @@ namespace SAM.Core.UI.WPF
 
             string key_Old = treeViewItem.Header as string;
             if (key_Old == null)
+            {
+                return;
+            }
+
+            if(textBlock.Text != key_Old)
             {
                 return;
             }
@@ -176,10 +201,10 @@ namespace SAM.Core.UI.WPF
                 SetTextMap(textMap);
             }
 
-            e.Handled = true;
+
         }
 
-        private void TreeViewItem_Value_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void TreeViewItem_Value_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             TreeViewItem treeViewItem = sender as TreeViewItem;
             if (treeViewItem == null)
@@ -232,8 +257,6 @@ namespace SAM.Core.UI.WPF
             {
                 SetTextMap(textMap);
             }
-
-            e.Handled = true;
         }
 
         private void TreeViewItem_Value_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -594,6 +617,50 @@ namespace SAM.Core.UI.WPF
             }
 
             SetTextMap(textMap);
+        }
+
+        private void button_Export_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "csv files (*.csv)|*.csv|All files (*.*)|*.*";
+            saveFileDialog.FilterIndex = 1;
+            saveFileDialog.RestoreDirectory = true;
+            saveFileDialog.FileName = textBox_Name.Text;
+            if (saveFileDialog.ShowDialog() == false)
+            {
+                return;
+            }
+
+            string path = saveFileDialog.FileName;
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            TextMap textMap = GetTextMap();
+
+            IEnumerable<string> keys = textMap?.Keys;
+            if(keys == null)
+            {
+                return;
+            }
+
+            List<DelimitedFileRow> delimitedFileRows = new List<DelimitedFileRow>();
+            foreach(string key in keys)
+            {
+                DelimitedFileRow delimitedFileRow = new DelimitedFileRow();
+                delimitedFileRow.Add(key);
+
+                List<string> values = textMap.GetValues(key);
+                if(values != null)
+                {
+                    values.FindAll(x => x != null).ForEach(x => delimitedFileRow.Add(x));
+                }
+
+                delimitedFileRows.Add(delimitedFileRow);
+            }
+
+            Core.Convert.ToFile(delimitedFileRows, DelimitedFileType.Csv, path);
         }
     }
 }
