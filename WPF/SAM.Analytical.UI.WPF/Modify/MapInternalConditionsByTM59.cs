@@ -71,6 +71,34 @@ namespace SAM.Analytical.UI.WPF
                 sAMObjects.Add(space);
             }
 
+            List<InternalCondition> internalConditions = internalConditionLibrary.GetInternalConditions();
+            if(internalConditions != null)
+            {
+                foreach (InternalCondition internalCondition in internalConditions)
+                {
+                    if(!adjacencyCluster.Contains<InternalCondition>(internalCondition.Guid))
+                    {
+                        if(adjacencyCluster.AddObject(internalCondition))
+                        {
+                            sAMObjects.Add(internalCondition);
+                        }
+
+                    }
+                }
+            }
+
+            List<Profile> profiles = Analytical.Query.DefaultProfileLibrary_TM59()?.GetProfiles();
+            if(profiles != null)
+            {
+                foreach(Profile profile in profiles)
+                {
+                    if(analyticalModel.AddProfile(profile, false))
+                    {
+                        sAMObjects.Add(profile);
+                    }
+                }
+            }
+
             uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster), new AnalyticalModelModification(sAMObjects));
         }
     }
