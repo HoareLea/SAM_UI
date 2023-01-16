@@ -72,6 +72,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Analytical.Tas.TM59">
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.TM59.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Windows\build\SAM.Analytical.Windows.dll</HintPath>
@@ -130,6 +133,7 @@
       <DependentUpon>MapTM59InternalConditionsControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\MapInternalConditionsByTM59.cs" />
+    <Compile Include="Modify\ConvertToTBD.cs" />
     <Compile Include="Windows\MapTM59InternalConditionsWindow.xaml.cs">
       <DependentUpon>MapTM59InternalConditionsWindow.xaml</DependentUpon>
     </Compile>

@@ -139,6 +139,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_Clean.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
             RibbonButton_Tools_Clean.Click += RibbonButton_Tools_Clean_Click;
 
+            RibbonButton_Tools_CreateTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
+            RibbonButton_Tools_CreateTBD.Click += RibbonButton_Tools_CreateTBD_Click;
+
             RibbonButton_Tools_AddMissingObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AddMissingObjects);
             RibbonButton_Tools_AddMissingObjects.Click += RibbonButton_Tools_AddMissingObjects_Click;
 
@@ -196,6 +199,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_Tools_CreateTBD_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.ConvertToTBD();
         }
 
         private void RibbonButton_Tools_TextMap_Click(object sender, RoutedEventArgs e)
@@ -1478,6 +1486,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_OpenTBD.IsEnabled = false;
             RibbonButton_Tools_OpenTPD.IsEnabled = false;
             RibbonButton_Tools_OpenTSD.IsEnabled = false;
+            RibbonButton_Tools_CreateTBD.IsEnabled = false;
             RibbonButton_Tools_EditLibrary.IsEnabled = false;
             RibbonButton_Simulate_EnergySimulation.IsEnabled = false;
             RibbonButton_Simulate_SolarSimulation.IsEnabled = false;
@@ -1539,6 +1548,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 RibbonButton_General_SaveAsAnalyticalModel.IsEnabled = true;
                 RibbonButton_General_SaveAnalyticalModel.IsEnabled = true;
                 RibbonButton_ImportExport_ExportAnalyticalModel.IsEnabled = true;
+                RibbonButton_Tools_CreateTBD.IsEnabled = true;
 
                 List<AirHandlingUnit> airHandlingUnits = analyticalModel.AdjacencyCluster?.GetObjects<AirHandlingUnit>();
                 if(airHandlingUnits != null && airHandlingUnits.Count != 0)
