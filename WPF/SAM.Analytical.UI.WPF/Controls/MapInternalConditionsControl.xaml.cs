@@ -129,9 +129,25 @@ namespace SAM.Analytical.UI.WPF
             List<Space> result = new List<Space>();
             foreach(DockPanel dockPanel in wrapPanel.Children)
             {
-                if(selected)
+                if(dockPanel == null)
                 {
-                    if(!(dockPanel.Children[0] as CheckBox).IsChecked.Value)
+                    continue;
+                }
+
+                if (selected)
+                {
+                    if(dockPanel.Children.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    CheckBox checkBox = dockPanel.Children[0] as CheckBox;
+                    if (checkBox == null)
+                    {
+                        continue;
+                    }
+
+                    if (!checkBox.IsChecked.Value)
                     {
                         continue;
                     }
