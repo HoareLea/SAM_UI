@@ -65,8 +65,16 @@ namespace SAM.Analytical.UI.WPF
 
             List<SAMObject> sAMObjects = new List<SAMObject>();
 
+            TM59Manager tM59Manager = new TM59Manager(textMap);
+
             foreach (Space space in spaces_Temp)
             {
+                int occupancy = tM59Manager.Occupancy(space.InternalCondition);
+                if(occupancy > 0)
+                {
+                    space.SetValue(SpaceParameter.Occupancy, occupancy);
+                }
+
                 adjacencyCluster.AddObject(space);
                 sAMObjects.Add(space);
             }
