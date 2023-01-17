@@ -20,7 +20,7 @@ namespace SAM.Analytical.UI.WPF.Windows
     /// </summary>
     public partial class AnalyticalWindow : System.Windows.Window
     {
-        private static string titlePrefix = "SAM Analcytical";
+        private static string titlePrefix = "SAM Analytical";
         
         private ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager();
         
