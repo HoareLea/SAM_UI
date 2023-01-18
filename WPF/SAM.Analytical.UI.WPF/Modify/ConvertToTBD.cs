@@ -1,4 +1,5 @@
-﻿using SAM.Core.UI.WPF;
+﻿using SAM.Core;
+using SAM.Core.UI.WPF;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF
@@ -30,15 +31,35 @@ namespace SAM.Analytical.UI.WPF
 
             bool converted = false;
 
+            TextMap textMap = Analytical.Query.DefaultInternalConditionTextMap_TM59();
+
             using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager("Convert to TBD", "Converting..."))
             {
-                try
+                converted = Tas.Convert.ToTBD(analyticalModel, path, null, null, null, true);
+                if (converted)
                 {
-                    converted = Tas.TM59.Convert.ToTBD(analyticalModel, path, Analytical.Query.DefaultInternalConditionTextMap_TM59());
-                }
-                catch
-                {
-                    converted = false;
+                    if (Tas.TM59.Modify.TryCreatePath(path, out string path_TM59))
+                    {
+                        Tas.TM59.Convert.ToXml(analyticalModel, path_TM59, new TM59Manager(textMap));
+                    }
+                    string zoneCategory = "Flat";
+
+                    if (string.IsNullOrWhiteSpace(zoneCategory))
+                    {
+                        converted = false;
+                    }
+                    else
+                    {
+                        if (!Tas.SAP.Modify.TryCreatePath(path, out string path_SAP))
+                        {
+                            converted = false;
+                        }
+                        else
+                        {
+                            converted = Tas.SAP.Convert.ToFile(analyticalModel, path_SAP, zoneCategory, textMap);
+                        }
+
+                    }
                 }
             }
 

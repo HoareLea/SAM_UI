@@ -37,6 +37,10 @@
     <Reference Include="gbXMLSerializer">
       <HintPath>..\..\references\gbXMLSerializer.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.TAS3D">
+      <HintPath>..\..\references_buildonly\Interop.TAS3D.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Interop.TBD">
       <HintPath>..\..\references_buildonly\Interop.TBD.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -71,6 +75,9 @@
     <Reference Include="SAM.Analytical.Tas, Version=1.0.8405.29366, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.Tas.SAP">
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.SAP.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.Tas.TM59">
       <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.TM59.dll</HintPath>
@@ -131,6 +138,9 @@
     </Compile>
     <Compile Include="Controls\MapTM59InternalConditionsControl.xaml.cs">
       <DependentUpon>MapTM59InternalConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConvertToTBDControl.xaml.cs">
+      <DependentUpon>ConvertToTBDControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\MapInternalConditionsByTM59.cs" />
     <Compile Include="Modify\ConvertToTBD.cs" />
@@ -364,6 +374,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\MapTM59InternalConditionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConvertToTBDControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

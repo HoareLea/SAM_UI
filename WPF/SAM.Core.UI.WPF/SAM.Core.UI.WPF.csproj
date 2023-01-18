@@ -86,6 +86,9 @@
     <Compile Include="Controls\TextMapControl.xaml.cs">
       <DependentUpon>TextMapControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SelectSAMObjectComboBoxControl.xaml.cs">
+      <DependentUpon>SelectSAMObjectComboBoxControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\TextMapWindow.xaml.cs">
       <DependentUpon>TextMapWindow.xaml</DependentUpon>
     </Compile>
@@ -167,6 +170,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\TextMapControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SelectSAMObjectComboBoxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
