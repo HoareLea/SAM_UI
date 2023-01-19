@@ -72,6 +72,10 @@
     <Reference Include="SAM.Analytical.LadybugTools">
       <HintPath>..\..\..\SAM_LadybugTools\build\SAM.Analytical.LadybugTools.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Analytical.SolarCalculator, Version=1.0.8342.29668, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Analytical.SolarCalculator.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Analytical.Tas, Version=1.0.8405.29366, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.dll</HintPath>
@@ -97,6 +101,10 @@
     <Reference Include="SAM.Core.gbXML">
       <HintPath>..\..\..\SAM_gbXML\build\SAM.Core.gbXML.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Core.SolarCalculator, Version=1.0.8342.29667, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Core.SolarCalculator.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Core.Tas, Version=1.0.8217.19574, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
@@ -109,9 +117,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Geometry.SolarCalculator, Version=1.0.8342.29667, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Geometry.SolarCalculator.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Weather, Version=1.0.8405.25694, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather.Tas, Version=1.0.8418.28734, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Weather.Tas.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -141,6 +157,10 @@
     </Compile>
     <Compile Include="Controls\ConvertToTBDControl.xaml.cs">
       <DependentUpon>ConvertToTBDControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Query\DayTypes.cs" />
+    <Compile Include="Windows\ConvertToTBDWindow.xaml.cs">
+      <DependentUpon>ConvertToTBDWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\MapInternalConditionsByTM59.cs" />
     <Compile Include="Modify\ConvertToTBD.cs" />
@@ -378,6 +398,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ConvertToTBDControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ConvertToTBDWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

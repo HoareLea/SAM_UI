@@ -16,14 +16,7 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class MapInternalConditionsControl : UserControl
     {
-        private static string selectText = "Select...";
-        private static string internalText = "<Internal>";
-
-        private TextMap textMap_Loaded;
-        private InternalConditionLibrary internalConditionLibrary_Loaded;
-
-        private TextMap textMap;
-        private InternalConditionLibrary internalConditionLibrary;
+        private static string internalText = Core.UI.WPF.Query.DefaultInternalText();
 
         private Func<Space, InternalCondition> mapFunc = null;
         private Func<Space, string> groupFunc = null;
@@ -39,8 +32,8 @@ namespace SAM.Analytical.UI.WPF
         {
             InitializeComponent();
 
-            TextMap = textMap;
-            InternalConditionLibrary = internalConditionLibrary;
+            selectSAMObjectComboBoxControl_InternalConditionLibrary.Add(internalText, internalConditionLibrary);
+            selectSAMObjectComboBoxControl_TextMap.Add(internalText, textMap);
 
             SetSpaces(spaces);
 
@@ -49,10 +42,11 @@ namespace SAM.Analytical.UI.WPF
 
         private void Load()
         {
-            LoadInternalConditionLibrary();
-            LoadTextMap();
-
+            selectSAMObjectComboBoxControl_InternalConditionLibrary.SelectedText = internalText;
             selectSAMObjectComboBoxControl_InternalConditionLibrary.ValidateFunc = new Func<IJSAMObject, bool>(x => x is InternalConditionLibrary);
+
+            selectSAMObjectComboBoxControl_TextMap.SelectedText = internalText;
+            selectSAMObjectComboBoxControl_TextMap.ValidateFunc = new Func<IJSAMObject, bool>(x => x is TextMap);
         }
 
         public Func<Space, InternalCondition> MapFunc
@@ -86,7 +80,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return textMap;
+                return selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<TextMap>(internalText);
             }
 
             set
@@ -99,7 +93,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return internalConditionLibrary;
+                return selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>(internalText);
             }
 
             set
@@ -127,6 +121,8 @@ namespace SAM.Analytical.UI.WPF
             {
                 return null;
             }
+
+            InternalConditionLibrary internalConditionLibrary = selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>();
 
             List<Space> result = new List<Space>();
             foreach(DockPanel dockPanel in wrapPanel.Children)
@@ -166,7 +162,7 @@ namespace SAM.Analytical.UI.WPF
                 string internalConditionName = (dockPanel.Children[1] as ComboBox).Text;
                 if(!string.IsNullOrWhiteSpace(internalConditionName))
                 {
-                    internalCondition = internalConditionLibrary.GetInternalConditions(internalConditionName)?.FirstOrDefault();
+                    internalCondition = internalConditionLibrary?.GetInternalConditions(internalConditionName)?.FirstOrDefault();
                 }
 
                 space = new Space(space);
@@ -221,11 +217,13 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            InternalConditionLibrary internalConditionLibrary = selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>();
+
             HashSet<string> hashSet = new HashSet<string>();
             hashSet.Add(string.Empty);
-            if(internalConditionLibrary_Loaded != null)
+            if(internalConditionLibrary != null)
             {
-                List<InternalCondition> internalConditons = internalConditionLibrary_Loaded.GetInternalConditions();
+                List<InternalCondition> internalConditons = internalConditionLibrary.GetInternalConditions();
                 if(internalConditons != null && internalConditons.Count != 0)
                 {
                     foreach(InternalCondition internalCondition in internalConditons)
@@ -322,49 +320,24 @@ namespace SAM.Analytical.UI.WPF
 
         }
 
-        private void LoadInternalConditionLibrary()
-        {
-            Load(comboBox_InternalConditionLibrary, internalConditionLibrary);
-
-            if (InternalConditionLibrary != null)
-            {
-                selectSAMObjectComboBoxControl_InternalConditionLibrary.Add(internalText, InternalConditionLibrary);
-                selectSAMObjectComboBoxControl_InternalConditionLibrary.SelectedText = internalText;
-            }
-        }
-
-        private void LoadTextMap()
-        {
-            Load(comboBox_TextMap, textMap);
-        }
-
         private void SetInternalConditionLibrary(InternalConditionLibrary internalConditionLibrary)
         {
-            if(this.internalConditionLibrary == internalConditionLibrary)
-            {
-                return;
-            }
+            selectSAMObjectComboBoxControl_InternalConditionLibrary.SelectionChanged += SelectSAMObjectComboBoxControl_InternalConditionLibrary_SelectionChanged; ;
 
-            this.internalConditionLibrary = internalConditionLibrary;
-            internalConditionLibrary_Loaded = this.internalConditionLibrary;
+            selectSAMObjectComboBoxControl_InternalConditionLibrary.Add(internalText, internalConditionLibrary);
+            selectSAMObjectComboBoxControl_InternalConditionLibrary.SelectedText = internalText;
+        }
 
-            LoadInternalConditionLibrary();
-
+        private void SelectSAMObjectComboBoxControl_InternalConditionLibrary_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             List<Space> spaces = GetSpaces();
             SetSpaces(spaces);
         }
 
         private void SetTextMap(TextMap textMap)
         {
-            if (this.textMap == textMap)
-            {
-                return;
-            }
-
-            this.textMap = textMap;
-            textMap_Loaded = this.textMap;
-
-            LoadTextMap();
+            selectSAMObjectComboBoxControl_TextMap.Add(internalText, textMap);
+            selectSAMObjectComboBoxControl_TextMap.SelectedText = internalText;
         }
 
         private void Assign()
@@ -372,7 +345,10 @@ namespace SAM.Analytical.UI.WPF
             Func<Space, InternalCondition> func = mapFunc;
             if(func == null)
             {
-                func = Query.DefaultMapFunc(internalConditionLibrary_Loaded, textMap_Loaded);
+                InternalConditionLibrary internalConditionLibrary = selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>();
+                TextMap textMap = selectSAMObjectComboBoxControl_TextMap.GetJSAMObject<TextMap>();
+
+                func = Query.DefaultMapFunc(internalConditionLibrary, textMap);
             }
 
             foreach(DockPanel dockPanel in wrapPanel.Children)
@@ -438,149 +414,6 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 checkBox.IsChecked = isChecked;
-            }
-        }
-
-        private void comboBox_InternalConditionLibrary_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            InternalConditionLibrary internalConditionLibrary = GetJSAMObject(comboBox_InternalConditionLibrary, this.internalConditionLibrary);
-
-            if(internalConditionLibrary == null)
-            {
-                comboBox_InternalConditionLibrary.SelectedItem = comboBox_InternalConditionLibrary.Text;
-                return;
-            }
-
-            internalConditionLibrary_Loaded = internalConditionLibrary;
-        }
-
-        private void comboBox_TextMap_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            TextMap textMap = GetJSAMObject(comboBox_TextMap, this.textMap);
-
-            if (textMap == null)
-            {
-                comboBox_TextMap.SelectedItem = comboBox_TextMap.Text;
-                return;
-            }
-
-            textMap_Loaded = textMap;
-        }
-
-        private static T GetJSAMObject<T>(ComboBox comboBox, T jSAMObject) where T : IJSAMObject
-        {
-            string text = comboBox.SelectedItem as string;
-
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return default(T);
-            }
-
-            T result = default(T);
-            if (text.Equals(selectText))
-            {
-                string path = null;
-                using (OpenFileDialog openFileDialog = new OpenFileDialog())
-                {
-                    string directory = Analytical.Query.ResourcesDirectory();
-                    if (System.IO.Directory.Exists(directory))
-                    {
-                        openFileDialog.InitialDirectory = directory;
-                    }
-
-                    openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                    openFileDialog.FilterIndex = 2;
-                    openFileDialog.RestoreDirectory = true;
-                    if (openFileDialog.ShowDialog() != DialogResult.OK)
-                    {
-                        comboBox.SelectedItem = comboBox.Text;
-                        return result;
-                    }
-
-                    path = openFileDialog.FileName;
-                    comboBox.Items.Add(path);
-                    comboBox.Text = path;
-                }
-
-                List<T> ts = Core.Convert.ToSAM<T>(path);
-                if (ts != null && ts.Count != 0)
-                {
-                    result = ts[0];
-                }
-            }
-            else if (text.Equals(internalText))
-            {
-                result = jSAMObject;
-            }
-            else
-            {
-                List<T> ts = Core.Convert.ToSAM<T>(text);
-                if (ts != null && ts.Count != 0)
-                {
-                    result = ts[0];
-                }
-            }
-
-            return result;
-        }
-
-        private static void Load(ComboBox comboBox, object @object)
-        {
-            string selectedValue = comboBox?.Text;
-
-            HashSet<string> hashSet = new HashSet<string>();
-            foreach (string item in comboBox.Items)
-            {
-                hashSet.Add(item);
-            }
-
-            if (@object == null)
-            {
-                hashSet.Remove(internalText);
-            }
-            else
-            {
-                hashSet.Add(internalText);
-            }
-
-            if (!hashSet.Contains(selectText))
-            {
-                hashSet.Add(selectText);
-            }
-
-            List<string> values = hashSet.ToList();
-
-            if (values.Contains(internalText))
-            {
-                values.Remove(internalText);
-                values.Add(internalText);
-            }
-
-            if (values.Contains(selectText))
-            {
-                values.Remove(selectText);
-                values.Add(selectText);
-            }
-
-            comboBox.Items.Clear();
-            if (comboBox.Items.Count != 0)
-            {
-                comboBox.Items.Clear();
-            }
-
-            foreach (string value in values)
-            {
-                comboBox.Items.Add(value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(selectedValue))
-            {
-                comboBox.Text = selectedValue;
-            }
-
-            if (string.IsNullOrWhiteSpace(comboBox.Text) && @object != null && comboBox.Items.Contains(internalText))
-            {
-                comboBox.Text = internalText;
             }
         }
     }

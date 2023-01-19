@@ -202,7 +202,7 @@ namespace SAM.Analytical.UI.Controls
             // TextBox_From
             // 
             this.TextBox_From.Location = new System.Drawing.Point(225, 265);
-            this.TextBox_From.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.TextBox_From.Margin = new System.Windows.Forms.Padding(4);
             this.TextBox_From.Name = "TextBox_From";
             this.TextBox_From.Size = new System.Drawing.Size(55, 22);
             this.TextBox_From.TabIndex = 28;
@@ -211,7 +211,7 @@ namespace SAM.Analytical.UI.Controls
             // TextBox_To
             // 
             this.TextBox_To.Location = new System.Drawing.Point(329, 263);
-            this.TextBox_To.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.TextBox_To.Margin = new System.Windows.Forms.Padding(4);
             this.TextBox_To.Name = "TextBox_To";
             this.TextBox_To.Size = new System.Drawing.Size(55, 22);
             this.TextBox_To.TabIndex = 30;

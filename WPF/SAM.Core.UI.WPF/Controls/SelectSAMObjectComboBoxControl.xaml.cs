@@ -10,6 +10,8 @@ namespace SAM.Core.UI.WPF
     /// </summary>
     public partial class SelectSAMObjectComboBoxControl : System.Windows.Controls.UserControl
     {
+        public event SelectionChangedEventHandler SelectionChanged;
+
         private class Item
         {
             public string Text { get; set; }
@@ -36,7 +38,27 @@ namespace SAM.Core.UI.WPF
         }
 
         public Func<IJSAMObject, bool> ValidateFunc { get; set; } = new Func<IJSAMObject, bool>(x => x is IJSAMObject);
-        
+
+        public Func<string, IJSAMObject> ReadFunc { get; set; } = new Func<string, IJSAMObject>(x =>
+        {
+            if(string.IsNullOrEmpty(x) || !System.IO.File.Exists(x))
+            {
+                return null;
+            }
+
+            List<IJSAMObject> ts = Core.Convert.ToSAM<IJSAMObject>(x);
+            if (ts != null && ts.Count != 0)
+            {
+                return ts[0];
+            }
+
+            return null;
+        });
+
+        public string DialogFilter { get; set; } = "json files (*.json)|*.json|All files (*.*)|*.*";
+
+        public int DialogFilterIndex { get; set; } = 2;
+
         public int Add(string text, IJSAMObject jSAMObject)
         {
             if(text == null)
@@ -128,6 +150,34 @@ namespace SAM.Core.UI.WPF
             return (T)item.JSAMObject;
         }
 
+        public T GetJSAMObject<T>(string text) where T : IJSAMObject
+        {
+            Item item = null;
+            foreach (object @object in comboBox.Items)
+            {
+                if (@object is Item)
+                {
+                    if (((Item)@object).Text == text)
+                    {
+                        item = (Item)@object;
+                        break;
+                    }
+                }
+            }
+
+            if (item == null)
+            {
+                return default(T);
+            }
+
+            if (!(item.JSAMObject is T))
+            {
+                return default(T);
+            }
+
+            return (T)item.JSAMObject;
+        }
+
         private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!(comboBox.SelectedItem is string))
@@ -139,11 +189,10 @@ namespace SAM.Core.UI.WPF
             IJSAMObject jSAMObject = null;
             while(jSAMObject == null)
             {
-
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
-                    openFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                    openFileDialog.FilterIndex = 2;
+                    openFileDialog.Filter = DialogFilter;
+                    openFileDialog.FilterIndex = DialogFilterIndex;
                     openFileDialog.RestoreDirectory = true;
                     if (openFileDialog.ShowDialog() != DialogResult.OK)
                     {
@@ -167,11 +216,7 @@ namespace SAM.Core.UI.WPF
                     path = openFileDialog.FileName;
                 }
 
-                List<IJSAMObject> ts = Core.Convert.ToSAM<IJSAMObject>(path);
-                if (ts != null && ts.Count != 0)
-                {
-                    jSAMObject = ts[0];
-                }
+                ReadFunc?.Invoke(path);
 
                 if(ValidateFunc != null)
                 {
@@ -206,6 +251,8 @@ namespace SAM.Core.UI.WPF
             comboBox.SelectionChanged -= comboBox_SelectionChanged;
             comboBox.SelectedItem = comboBox.Items[index];
             comboBox.SelectionChanged += comboBox_SelectionChanged;
+
+            SelectionChanged?.Invoke(this, e);
         }
     }
 }

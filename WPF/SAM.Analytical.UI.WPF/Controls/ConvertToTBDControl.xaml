@@ -1,35 +1,38 @@
-﻿<UserControl x:Class="SAM.Analytical.UI.WPF.ConvertToTBDControl"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             xmlns:WPF="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF" x:Class="SAM.Analytical.UI.WPF.ConvertToTBDControl"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="350">
     <Grid>
-        <Label Content="Project Name:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_ProjectName" HorizontalAlignment="Stretch" Height="23" Margin="10,41,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-        <Label Content="Output directory:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_OutputDirectory" HorizontalAlignment="Stretch" Height="23" Margin="10,103,68,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-        <Button x:Name="button_OutputDirectory" Content="..." HorizontalAlignment="Right" Margin="10,103,10,0" VerticalAlignment="Top" Width="53" Height="23"/>
-        <Label Content="Weather Data:" HorizontalAlignment="Left" Margin="10,135,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox_WeatherData" HorizontalAlignment="Stretch" Margin="10,161,10.4,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="checkBox_CreateSAP" Content="Create SAP" HorizontalAlignment="Left" Margin="24,0,0,19" VerticalAlignment="Bottom"/>
-        <CheckBox x:Name="checkBox_CreateTM59" Content="Create TM59" HorizontalAlignment="Left" Margin="24,0,0,50" VerticalAlignment="Bottom"/>
-        <Label Content="Text Map:" HorizontalAlignment="Left" Margin="10,206,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox_TextMap" HorizontalAlignment="Stretch" Margin="10,232,10,0" VerticalAlignment="Top"/>
-        <GroupBox Header="Simulation" HorizontalAlignment="Stretch" Height="244" Margin="10,270,10.4,0" VerticalAlignment="Top">
+        <Label Content="Project Name:" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_ProjectName" HorizontalAlignment="Stretch" Height="23" Margin="10,36,10.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+        <Label Content="Output directory:" HorizontalAlignment="Left" Margin="10,65,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_OutputDirectory" HorizontalAlignment="Stretch" Height="23" Margin="10,96,68.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+        <Button x:Name="button_OutputDirectory" Content="..." HorizontalAlignment="Right" Margin="0,96,10.4,0" VerticalAlignment="Top" Width="53" Height="23" RenderTransformOrigin="0.504,0.5" Click="button_OutputDirectory_Click"/>
+        <Label Content="Weather Data:" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBox_CreateSAP" Content="Create SAP" HorizontalAlignment="Left" Margin="10,0,0,123" VerticalAlignment="Bottom" Click="checkBox_CreateSAP_Click"/>
+        <CheckBox x:Name="checkBox_CreateTM59" Content="Create TM59" HorizontalAlignment="Left" Margin="10,0,0,149" VerticalAlignment="Bottom" Click="checkBox_CreateTM59_Click"/>
+        <Label x:Name="label_TextMap"  Content="Text Map:" HorizontalAlignment="Left" Margin="10,0,0,35.6" VerticalAlignment="Bottom"/>
+        <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_TextMap" HorizontalAlignment="Stretch" Margin="10,0,10.4,13.6" VerticalAlignment="Bottom" Height="22"/>
+        <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_WeatherData" HorizontalAlignment="Stretch" Margin="10,157,10,0" VerticalAlignment="Top" Height="22"/>
+        <ComboBox x:Name="comboBox_ZoneCategory" HorizontalAlignment="Stretch" Margin="10,0,10.4,67" VerticalAlignment="Bottom"/>
+        <Label x:Name="label_ZoneCategory"  Content="Zone Category:" HorizontalAlignment="Left" Margin="10,0,0,89" VerticalAlignment="Bottom"/>
+        <GroupBox Header="Simulation" HorizontalAlignment="Stretch" Height="244" Margin="10,184,10.4,0" VerticalAlignment="Top">
             <Grid>
-                <CheckBox x:Name="checkBox_Simulate" Content="Simulate" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                <Label Content="Solar Calculation Method:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkBox_Simulate" Content="Simulate" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Simulate_Click"/>
+                <Label x:Name="label_SolarCalculationMethod" Content="Solar Calculation Method:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
                 <ComboBox x:Name="comboBox_SolarCalculationMethod" HorizontalAlignment="Stretch" Margin="10,71,10.4,0" VerticalAlignment="Top"/>
                 <CheckBox x:Name="checkBox_FullYearSimulation" Content="Full Year Simulation" HorizontalAlignment="Left" Margin="10,0,0,92.8" VerticalAlignment="Bottom"/>
                 <CheckBox x:Name="checkBox_UnmetHours" Content="Unmet Hours" HorizontalAlignment="Left" Margin="10,0,0,62.8" VerticalAlignment="Bottom"/>
                 <CheckBox x:Name="checkBox_RoomDataSheets" Content="Print Room Data Sheets (RDS)" HorizontalAlignment="Left" Margin="10,0,0,33.8" VerticalAlignment="Bottom"/>
-                <Label Content="From:" HorizontalAlignment="Left" Margin="155,106,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="textBox_FullYearSimulation_From" HorizontalAlignment="Left" Height="23" Margin="200,109,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="30"/>
-                <Label Content="To:" HorizontalAlignment="Left" Margin="233,107,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="textBox_FullYearSimulation_To" HorizontalAlignment="Left" Height="23" Margin="262,110,0,0" TextWrapping="Wrap" Text="365" VerticalAlignment="Top" Width="30"/>
+                <Label x:Name="label_FullYearSimulation_From" Content="From:" HorizontalAlignment="Left" Margin="155,106,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="textBox_FullYearSimulation_From" HorizontalAlignment="Left" Height="23" Margin="200,109,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="30" PreviewTextInput="textBox_FullYearSimulation_From_PreviewTextInput"/>
+                <Label  x:Name="label_FullYearSimulation_To" Content="To:" HorizontalAlignment="Left" Margin="233,107,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="textBox_FullYearSimulation_To" HorizontalAlignment="Left" Height="23" Margin="262,110,0,0" TextWrapping="Wrap" Text="365" VerticalAlignment="Top" Width="30" PreviewTextInput="textBox_FullYearSimulation_To_PreviewTextInput"/>
             </Grid>
         </GroupBox>
 

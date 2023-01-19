@@ -127,7 +127,7 @@ namespace SAM.Analytical.UI
                     }
 
                     progressForm.Update("Converting to TBD");
-                    Tas.Convert.ToTBD(analyticalModel, tBDDocument);
+                    Tas.Convert.ToTBD(analyticalModel, tBDDocument, true);
 
                     progressForm.Update("Updating Zones");
                     Tas.Modify.UpdateZones(tBDDocument.Building, analyticalModel, true);

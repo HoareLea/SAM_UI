@@ -89,6 +89,7 @@
     <Compile Include="Controls\SelectSAMObjectComboBoxControl.xaml.cs">
       <DependentUpon>SelectSAMObjectComboBoxControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Query\DefaultInternalText.cs" />
     <Compile Include="Windows\TextMapWindow.xaml.cs">
       <DependentUpon>TextMapWindow.xaml</DependentUpon>
     </Compile>
