@@ -7,7 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="22.4" d:DesignWidth="120">
     <Grid>
-        <ComboBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
-
+        <ComboBox x:Name="comboBox" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="comboBox_SelectionChanged"/>
     </Grid>
 </UserControl>

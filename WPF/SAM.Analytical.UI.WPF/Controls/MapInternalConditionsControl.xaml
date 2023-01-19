@@ -1,9 +1,11 @@
-﻿<UserControl x:Class="SAM.Analytical.UI.WPF.MapInternalConditionsControl"
+﻿<UserControl
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             xmlns:WPF="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF" 
+             x:Class="SAM.Analytical.UI.WPF.MapInternalConditionsControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="450">
     <Grid Margin="0,0,-0.4,-0.4">
@@ -18,5 +20,6 @@
         <ComboBox x:Name="comboBox_InternalConditionLibrary" HorizontalAlignment="Stretch" Height="23" Margin="162,10,10.4,0" Text="" VerticalAlignment="Top" SelectionChanged="comboBox_InternalConditionLibrary_SelectionChanged"/>
         <ComboBox x:Name="comboBox_TextMap"  HorizontalAlignment="Stretch" Height="23" Margin="162,47,10.4,0" Text="" VerticalAlignment="Top" SelectionChanged="comboBox_TextMap_SelectionChanged"/>
 
+        <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_InternalConditionLibrary" HorizontalAlignment="Stretch" Height="23" Margin="181,0,11,54" VerticalAlignment="Bottom" Visibility="Hidden"/>
     </Grid>
 </UserControl>

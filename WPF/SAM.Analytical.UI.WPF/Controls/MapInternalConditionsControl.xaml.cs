@@ -51,6 +51,8 @@ namespace SAM.Analytical.UI.WPF
         {
             LoadInternalConditionLibrary();
             LoadTextMap();
+
+            selectSAMObjectComboBoxControl_InternalConditionLibrary.ValidateFunc = new Func<IJSAMObject, bool>(x => x is InternalConditionLibrary);
         }
 
         public Func<Space, InternalCondition> MapFunc
@@ -323,6 +325,12 @@ namespace SAM.Analytical.UI.WPF
         private void LoadInternalConditionLibrary()
         {
             Load(comboBox_InternalConditionLibrary, internalConditionLibrary);
+
+            if (InternalConditionLibrary != null)
+            {
+                selectSAMObjectComboBoxControl_InternalConditionLibrary.Add(internalText, InternalConditionLibrary);
+                selectSAMObjectComboBoxControl_InternalConditionLibrary.SelectedText = internalText;
+            }
         }
 
         private void LoadTextMap()

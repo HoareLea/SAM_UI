@@ -139,7 +139,7 @@
     <Compile Include="Controls\MapTM59InternalConditionsControl.xaml.cs">
       <DependentUpon>MapTM59InternalConditionsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ConvertToTBDControl.xaml.cs">
+    <Compile Include="Controls\ConvertToTBDControl.xaml.cs">
       <DependentUpon>ConvertToTBDControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\MapInternalConditionsByTM59.cs" />
@@ -377,7 +377,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ConvertToTBDControl.xaml">
+    <Page Include="Controls\ConvertToTBDControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
