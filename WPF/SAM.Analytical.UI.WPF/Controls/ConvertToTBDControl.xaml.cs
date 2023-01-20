@@ -40,6 +40,11 @@ namespace SAM.Analytical.UI.WPF
 
             foreach (SolarCalculationMethod solarCalculationMethod in Enum.GetValues(typeof(SolarCalculationMethod)))
             {
+                if(solarCalculationMethod == SolarCalculationMethod.Undefined)
+                {
+                    continue;
+                }
+
                 comboBox_SolarCalculationMethod.Items.Add(Core.Query.Description(solarCalculationMethod));
             }
 
@@ -187,7 +192,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                if(!Core.Query.TryConvert( textBox_FullYearSimulation_From.Text, out int result))
+                if(!Core.Query.TryConvert(textBox_FullYearSimulation_From.Text, out int result))
                 {
                     return -1;
                 }
