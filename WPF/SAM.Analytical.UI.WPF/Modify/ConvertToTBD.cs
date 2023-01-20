@@ -132,13 +132,16 @@ namespace SAM.Analytical.UI.WPF
                         }
 
                         progressForm.Update("Converting to TBD");
-                        Tas.Convert.ToTBD(analyticalModel, tBDDocument);
+                        Tas.Convert.ToTBD(analyticalModel, tBDDocument, true);
 
                         progressForm.Update("Updating Zones");
                         Tas.Modify.UpdateZones(tBDDocument.Building, analyticalModel, true);
 
                         progressForm.Update("Updating Shading");
-                        shadingUpdated = Tas.Modify.UpdateShading(tBDDocument, analyticalModel);
+                        if(solarCalculationMethod != SolarCalculationMethod.None)
+                        {
+                            shadingUpdated = Tas.Modify.UpdateShading(tBDDocument, analyticalModel);
+                        }
 
                         sAMTBDDocument.Save();
                     }
