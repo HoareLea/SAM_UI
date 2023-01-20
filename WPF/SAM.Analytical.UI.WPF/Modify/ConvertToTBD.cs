@@ -185,7 +185,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     SolarGain = true,
                     Conduction = true,
-                    ApertureData = false,
+                    ApertureData = true,
                     Condensation = false,
                     Convection = false,
                     LongWave = false,
