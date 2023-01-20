@@ -67,6 +67,16 @@ namespace SAM.Analytical.UI.WPF
             string zoneCategory = convertToTBDWindow.SelectedZoneCategory;
 
             string path_TBD = System.IO.Path.Combine(outputDirectory, projectName + ".tbd");
+            string path_Xml = null;
+            if(solarCalculationMethod == SolarCalculationMethod.TAS)
+            {
+                path_Xml = System.IO.Path.Combine(outputDirectory, projectName + ".xml");
+                if(!gbXML.Convert.ToFile(analyticalModel, path_Xml))
+                {
+                    MessageBox.Show("Could not create gbXML file.");
+                    return;
+                }
+            }
 
             bool shadingUpdated = false;
 
@@ -205,7 +215,7 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
-                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, null, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, false, simulate_From, simulate_To);
+                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, false, simulate_From, simulate_To);
 
                 analyticalModel.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weatherData);
                 converted = true;
