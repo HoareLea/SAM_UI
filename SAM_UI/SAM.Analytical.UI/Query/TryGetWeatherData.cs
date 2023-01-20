@@ -11,6 +11,7 @@ namespace SAM.Analytical.UI
         {
             weatherData = null;
 
+            string path = null;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "epw files (*.epw)|*.epw|TAS TBD files (*.tbd)|*.tbd|TAS TSD files (*.tsd)|*.tsd|TAS TWD files (*.twd)|*.twd|All files (*.*)|*.*";
@@ -22,53 +23,61 @@ namespace SAM.Analytical.UI
                     return false;
                 }
 
-                string path_WeatherData = openFileDialog.FileName;
-                string extension = System.IO.Path.GetExtension(path_WeatherData).ToLower().Trim();
-                if (string.IsNullOrWhiteSpace(extension))
-                {
-                    return false;
-                }
+                path = openFileDialog.FileName;
+            }
 
-                try
+            return TryGetWeatherData(path, out weatherData, owner);
+        }
+
+        public static bool TryGetWeatherData(string path, out WeatherData weatherData, IWin32Window owner = null)
+        {
+            weatherData = null;
+
+            string extension = System.IO.Path.GetExtension(path).ToLower().Trim();
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                return false;
+            }
+
+            try
+            {
+                if (extension.EndsWith("epw"))
                 {
-                    if (extension.EndsWith("epw"))
+                    weatherData = Weather.Convert.ToSAM(path);
+                }
+                else
+                {
+                    List<WeatherData> weatherDatas = Weather.Tas.Convert.ToSAM_WeatherDatas(path);
+                    if (weatherDatas == null || weatherDatas.Count == 0)
                     {
-                        weatherData = Weather.Convert.ToSAM(path_WeatherData);
+                        return false;
+                    }
+
+                    if (weatherDatas.Count == 1)
+                    {
+                        weatherData = weatherDatas[0];
                     }
                     else
                     {
-                        List<WeatherData> weatherDatas = Weather.Tas.Convert.ToSAM_WeatherDatas(path_WeatherData);
-                        if (weatherDatas == null || weatherDatas.Count == 0)
-                        {
-                            return false;
-                        }
+                        weatherDatas.Sort((x, y) => x.Name.CompareTo(y.Name));
 
-                        if (weatherDatas.Count == 1)
+                        using (Core.Windows.Forms.ComboBoxForm<WeatherData> comboBoxForm = new Core.Windows.Forms.ComboBoxForm<WeatherData>("Select Weather Data", weatherDatas, (WeatherData x) => x.Name))
                         {
-                            weatherData = weatherDatas[0];
-                        }
-                        else
-                        {
-                            weatherDatas.Sort((x, y) => x.Name.CompareTo(y.Name));
-
-                            using (Core.Windows.Forms.ComboBoxForm<WeatherData> comboBoxForm = new Core.Windows.Forms.ComboBoxForm<WeatherData>("Select Weather Data", weatherDatas, (WeatherData x) => x.Name))
+                            if (comboBoxForm.ShowDialog(owner) != DialogResult.OK)
                             {
-                                if (comboBoxForm.ShowDialog(owner) != DialogResult.OK)
-                                {
-                                    return false;
-                                }
-
-                                weatherData = comboBoxForm.SelectedItem;
+                                return false;
                             }
 
+                            weatherData = comboBoxForm.SelectedItem;
                         }
 
                     }
+
                 }
-                catch (Exception exception)
-                {
-                    weatherData = null;
-                }
+            }
+            catch (Exception exception)
+            {
+                weatherData = null;
             }
 
             return weatherData != null;

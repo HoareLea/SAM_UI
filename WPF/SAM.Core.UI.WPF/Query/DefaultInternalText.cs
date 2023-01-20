@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows;
-
-namespace SAM.Core.UI.WPF
+﻿namespace SAM.Core.UI.WPF
 {
     public static partial class Query
     {

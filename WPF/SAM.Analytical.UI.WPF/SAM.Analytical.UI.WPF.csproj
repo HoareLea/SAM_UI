@@ -129,6 +129,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Tas\build\SAM.Weather.Tas.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Weather.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Weather.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />

@@ -3,7 +3,6 @@ using SAM.Weather;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Windows.Controls;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF
@@ -24,11 +23,11 @@ namespace SAM.Analytical.UI.WPF
 
         public void Load()
         {
-            selectSAMObjectComboBoxControl_TextMap.ValidateFunc = new System.Func<IJSAMObject, bool>(x => x is TextMap);
-            selectSAMObjectComboBoxControl_WeatherData.ValidateFunc = new System.Func<IJSAMObject, bool>(x => x is WeatherData);
-            selectSAMObjectComboBoxControl_WeatherData.ReadFunc = new System.Func<string, IJSAMObject>(x => 
+            selectSAMObjectComboBoxControl_TextMap.ValidateFunc = new Func<IJSAMObject, bool>(x => x is TextMap);
+            selectSAMObjectComboBoxControl_WeatherData.ValidateFunc = new Func<IJSAMObject, bool>(x => x is WeatherData);
+            selectSAMObjectComboBoxControl_WeatherData.ReadFunc = new Func<string, IJSAMObject>(x => 
             {
-                if (!UI.Query.TryGetWeatherData(out WeatherData weatherData_Temp) || weatherData_Temp == null)
+                if (!UI.Query.TryGetWeatherData(x, out WeatherData weatherData_Temp) || weatherData_Temp == null)
                 {
                     return null;
                 }
@@ -36,9 +35,12 @@ namespace SAM.Analytical.UI.WPF
                 return weatherData_Temp;
             });
 
-            foreach(SolarCalculationMethod solarCalculationMethod in Enum.GetValues(typeof(SolarCalculationMethod)))
+            selectSAMObjectComboBoxControl_WeatherData.DialogFilter = "epw files (*.epw)|*.epw|TAS TBD files (*.tbd)|*.tbd|TAS TSD files (*.tsd)|*.tsd|TAS TWD files (*.twd)|*.twd|All files (*.*)|*.*"; ;
+            selectSAMObjectComboBoxControl_WeatherData.DialogFilterIndex = 1;
+
+            foreach (SolarCalculationMethod solarCalculationMethod in Enum.GetValues(typeof(SolarCalculationMethod)))
             {
-                comboBox_SolarCalculationMethod.Items.Add(SAM.Core.Query.Description(solarCalculationMethod));
+                comboBox_SolarCalculationMethod.Items.Add(Core.Query.Description(solarCalculationMethod));
             }
 
             EnableTextMap();
@@ -311,6 +313,11 @@ namespace SAM.Analytical.UI.WPF
         private void EnableSimulate()
         {
             bool enable = Simulate;
+            EnableSimulate(enable);
+        }
+
+        private void EnableSimulate(bool enable)
+        {
             label_SolarCalculationMethod.IsEnabled = enable;
             comboBox_SolarCalculationMethod.IsEnabled = enable;
             checkBox_FullYearSimulation.IsEnabled = enable;
@@ -363,6 +370,16 @@ namespace SAM.Analytical.UI.WPF
         private void textBox_FullYearSimulation_To_PreviewTextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             e.Handled = !IsTextAllowed(e.Text);
+        }
+
+        private void checkBox_FullYearSimulation_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            EnableFullYearSimulation();
+        }
+
+        private void checkBox_FullYearSimulation_Unchecked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            EnableFullYearSimulation();
         }
     }
 }

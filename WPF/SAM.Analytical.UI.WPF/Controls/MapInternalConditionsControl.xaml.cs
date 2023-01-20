@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using CheckBox = System.Windows.Controls.CheckBox;
 using ComboBox = System.Windows.Controls.ComboBox;
 using UserControl = System.Windows.Controls.UserControl;
@@ -281,7 +280,7 @@ namespace SAM.Analytical.UI.WPF
                 if(!string.IsNullOrEmpty(key))
                 {
                     DockPanel dockPanel = new DockPanel() { Width = 330, Height = 35 };
-                    System.Windows.Controls.Label label = new System.Windows.Controls.Label() { Width = 100, Content = key, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold, HorizontalAlignment = System.Windows.HorizontalAlignment.Left };
+                    System.Windows.Controls.Label label = new System.Windows.Controls.Label() { Width = 100, Content = key, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Left };
                     dockPanel.Children.Add(label);
                     wrapPanel.Children.Add(dockPanel);
                 }
@@ -303,7 +302,7 @@ namespace SAM.Analytical.UI.WPF
                     CheckBox checkBox = new CheckBox() { Width = 100, Content = space.Name, IsChecked = true, VerticalAlignment = VerticalAlignment.Center };
                     dockPanel.Children.Add(checkBox);
 
-                    ComboBox comboBox = new ComboBox() { MinWidth = 150, HorizontalAlignment = System.Windows.HorizontalAlignment.Right, Height = 25 };
+                    ComboBox comboBox = new ComboBox() { MinWidth = 150, HorizontalAlignment = HorizontalAlignment.Right, Height = 25 };
                     foreach (string internalConditionName_Temp in hashSet)
                     {
                         comboBox.Items.Add(internalConditionName_Temp);

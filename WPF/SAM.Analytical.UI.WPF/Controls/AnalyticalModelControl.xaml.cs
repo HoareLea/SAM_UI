@@ -599,7 +599,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ZoomRequested?.Invoke(this, new Geometry.UI.WPF.ZoomRequestedEventArgs(sAMObject));
+            ZoomRequested?.Invoke(this, new ZoomRequestedEventArgs(sAMObject));
         }
 
         private void MenuItem_RemoveSpaceZone_Click(object sender, RoutedEventArgs e)

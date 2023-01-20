@@ -106,7 +106,7 @@ namespace SAM.Analytical.UI.WPF
                     progressForm.Update("Solar Calculations");
                     if (solarCalculationMethod != SolarCalculationMethod.None)
                     {
-                        SolarCalculator.Modify.Simulate(analyticalModel, hoursOfYear.ConvertAll(x => new DateTime(2018, 1, 1).AddHours(x)), false, Core.Tolerance.MacroDistance, Core.Tolerance.MacroDistance, 0.012, Core.Tolerance.Distance);
+                        SolarCalculator.Modify.Simulate(analyticalModel, hoursOfYear.ConvertAll(x => new DateTime(2018, 1, 1).AddHours(x)), false, Tolerance.MacroDistance, Tolerance.MacroDistance, 0.012, Tolerance.Distance);
                     }
 
                     using (SAMTBDDocument sAMTBDDocument = new SAMTBDDocument(path_TBD))

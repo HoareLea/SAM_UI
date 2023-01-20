@@ -216,7 +216,7 @@ namespace SAM.Core.UI.WPF
                     path = openFileDialog.FileName;
                 }
 
-                ReadFunc?.Invoke(path);
+                jSAMObject = ReadFunc?.Invoke(path);
 
                 if(ValidateFunc != null)
                 {
