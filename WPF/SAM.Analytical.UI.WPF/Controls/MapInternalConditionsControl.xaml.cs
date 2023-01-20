@@ -279,8 +279,8 @@ namespace SAM.Analytical.UI.WPF
 
                 if(!string.IsNullOrEmpty(key))
                 {
-                    DockPanel dockPanel = new DockPanel() { Width = 330, Height = 35 };
-                    System.Windows.Controls.Label label = new System.Windows.Controls.Label() { Width = 100, Content = key, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Left };
+                    DockPanel dockPanel = new DockPanel() { Width = 380, Height = 35 };
+                    Label label = new Label() { Width = 300, Content = key, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Left };
                     dockPanel.Children.Add(label);
                     wrapPanel.Children.Add(dockPanel);
                 }
@@ -297,12 +297,12 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    DockPanel dockPanel = new DockPanel() { Width = 330, Height = 30, Tag = space };
+                    DockPanel dockPanel = new DockPanel() { Width = 380, Height = 30, Tag = space };
 
                     CheckBox checkBox = new CheckBox() { Width = 100, Content = space.Name, IsChecked = true, VerticalAlignment = VerticalAlignment.Center };
                     dockPanel.Children.Add(checkBox);
 
-                    ComboBox comboBox = new ComboBox() { MinWidth = 150, HorizontalAlignment = HorizontalAlignment.Right, Height = 25 };
+                    ComboBox comboBox = new ComboBox() { MinWidth = 220, HorizontalAlignment = HorizontalAlignment.Right, Height = 25 };
                     foreach (string internalConditionName_Temp in hashSet)
                     {
                         comboBox.Items.Add(internalConditionName_Temp);
@@ -377,7 +377,23 @@ namespace SAM.Analytical.UI.WPF
                 InternalCondition internalCondition = func.Invoke(space);
                 if(internalCondition?.Name != null)
                 {
-                    (dockPanel.Children[1] as ComboBox).Text = internalCondition.Name;
+                    ComboBox comboBox = dockPanel.Children[1] as ComboBox;
+
+                    int index = -1;
+                    for(int i=0; i < comboBox.Items.Count; i++)
+                    {
+                        if (internalCondition.Name.Equals(comboBox.Items[i].ToString()))
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+
+                    if(index != -1)
+                    {
+                        comboBox.SelectedItem = comboBox.Items[index];
+                    }
+                    
                 }
             }
         }
