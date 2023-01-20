@@ -5,19 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         mc:Ignorable="d"
-        Title="Convert to TBD" Height="680" Width="350">
+        Title="Convert to TBD" Height="680" Width="350" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="253*"/>
+            <ColumnDefinition Width="91*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Height="auto" Width="auto" >
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Height="auto" Width="auto" Grid.ColumnSpan="2" Margin="0,0,0,29.8" Grid.RowSpan="2" >
             <local:ConvertToTBDControl x:Name="convertToTBDControl" Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="341"></local:ConvertToTBDControl>
         </StackPanel>
-        <Button x:Name="button_OK" Grid.Row="1" Grid.Column="1" Width="60" Height="20" Margin="0,0,79.6,4.4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="button_OK_Click">OK</Button>
-        <Button x:Name="button_Cancel" IsCancel="True" Grid.Row="1" Grid.Column="1" Width="60" Height="20" Margin="0,0,9.6,4.4" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="button_Cancel_Click">Cancel</Button>
+        <Button x:Name="button_OK" Grid.Row="1" Width="60" Height="20" Margin="0,0,80,3.8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="button_OK_Click" Grid.ColumnSpan="2">OK</Button>
+        <Button x:Name="button_Cancel" IsCancel="True" Grid.Row="1" Grid.Column="1" Width="60" Height="20" Margin="0,0,10,3.8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="button_Cancel_Click">Cancel</Button>
     </Grid>
 </Window>

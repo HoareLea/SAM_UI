@@ -79,7 +79,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<TextMap>(internalText);
+                return selectSAMObjectComboBoxControl_TextMap.GetJSAMObject<TextMap>(internalText);
             }
 
             set

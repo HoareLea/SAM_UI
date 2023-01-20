@@ -98,7 +98,17 @@ namespace SAM.Analytical.UI.WPF
 
                     if (System.IO.File.Exists(path_TBD))
                     {
-                        System.IO.File.Delete(path_TBD);
+                        try
+                        {
+                            System.IO.File.Delete(path_TBD);
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Cannot override existing TBD file.");
+                            return;
+                        }
+
+
                     }
 
                     List<int> hoursOfYear = Analytical.Query.DefaultHoursOfYear();
