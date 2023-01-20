@@ -170,6 +170,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Results_SpaceDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_SpaceDiagram);
             RibbonButton_Results_SpaceDiagram.Click += RibbonButton_Results_SpaceDiagram_Click;
 
+            RibbonButton_Results_Remove.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
+            RibbonButton_Results_Remove.Click += RibbonButton_Results_Remove_Click;
+
 
             RibbonButton_Help_Wiki.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
             RibbonButton_Help_Wiki.Click += RibbonButton_Help_Wiki_Click;
@@ -199,6 +202,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_Results_Remove_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel.RemoveResults();
         }
 
         private void RibbonButton_Tools_CreateTBD_Click(object sender, RoutedEventArgs e)

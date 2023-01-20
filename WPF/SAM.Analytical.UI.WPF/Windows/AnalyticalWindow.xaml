@@ -450,6 +450,9 @@
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Results" Header="Results">
+                <RibbonGroup x:Name="RibbonGroup_Results_General" Header="General">
+                    <RibbonButton x:Name="RibbonButton_Results_Remove" Label="Remove"/>
+                </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Results_Mollier" Header="Mollier Diagram">
                     <RibbonButton x:Name="RibbonButton_Results_AirHandlingUnitDiagram" Label="AHU"/>
                     <RibbonButton x:Name="RibbonButton_Results_SpaceDiagram" Label="Space"/>

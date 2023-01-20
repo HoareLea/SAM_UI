@@ -162,6 +162,7 @@
     <Compile Include="Controls\ConvertToTBDControl.xaml.cs">
       <DependentUpon>ConvertToTBDControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modify\RemoveResults.cs" />
     <Compile Include="Query\DayTypes.cs" />
     <Compile Include="Windows\ConvertToTBDWindow.xaml.cs">
       <DependentUpon>ConvertToTBDWindow.xaml</DependentUpon>
