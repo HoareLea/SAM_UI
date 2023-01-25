@@ -27,7 +27,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public WeatherData SelectWeatherData
+        public WeatherData SelectedWeatherData
         {
             get
             {

@@ -1,5 +1,6 @@
 ﻿using SAM.Core;
 using SAM.Core.Tas;
+using SAM.Core.UI;
 using SAM.Core.UI.WPF;
 using SAM.Weather;
 using System;
@@ -59,14 +60,23 @@ namespace SAM.Analytical.UI.WPF
             int fullYearSimulation_From = convertToTBDWindow.FullYearSimulation_From;
             int fullYearSimulation_To = convertToTBDWindow.FullYearSimulation_To;
 
+            bool createSAP = convertToTBDWindow.CreateSAP;
+            bool createTM59 = convertToTBDWindow.CreateTM59;
+
             SolarCalculationMethod solarCalculationMethod = convertToTBDWindow.SolarCalculationMethod;
             bool updateConstructionLayersByPanelType = true;
 
             TextMap textMap = convertToTBDWindow.SelectedTextMap;
-            weatherData = convertToTBDWindow.WeatherData;
+            weatherData = convertToTBDWindow.SelectedWeatherData;
             string zoneCategory = convertToTBDWindow.SelectedZoneCategory;
 
-            string path_TBD = System.IO.Path.Combine(outputDirectory, projectName + ".tbd");
+            if (!convertToTBDWindow.Simulate && !createSAP && !createTM59)
+            {
+                return;
+            }
+
+            DateTime dateTime = DateTime.Now;
+
             string path_Xml = null;
             if(solarCalculationMethod == SolarCalculationMethod.TAS)
             {
@@ -77,6 +87,8 @@ namespace SAM.Analytical.UI.WPF
                     return;
                 }
             }
+
+            string path_TBD = System.IO.Path.Combine(outputDirectory, projectName + ".tbd");
 
             bool shadingUpdated = false;
 
@@ -117,64 +129,48 @@ namespace SAM.Analytical.UI.WPF
                             MessageBox.Show("Cannot override existing TBD file.");
                             return;
                         }
-
-
                     }
 
-                    List<int> hoursOfYear = Analytical.Query.DefaultHoursOfYear();
-
-                    progressForm.Update("Solar Calculations");
-                    if (solarCalculationMethod != SolarCalculationMethod.None)
+                    if (solarCalculationMethod == SolarCalculationMethod.SAM)
                     {
+                        List<int> hoursOfYear = Analytical.Query.DefaultHoursOfYear();
+
                         SolarCalculator.Modify.Simulate(analyticalModel, hoursOfYear.ConvertAll(x => new DateTime(2018, 1, 1).AddHours(x)), false, Tolerance.MacroDistance, Tolerance.MacroDistance, 0.012, Tolerance.Distance);
-                    }
 
-                    using (SAMTBDDocument sAMTBDDocument = new SAMTBDDocument(path_TBD))
-                    {
-                        TBD.TBDDocument tBDDocument = sAMTBDDocument.TBDDocument;
-
-                        progressForm.Update("Updating WeatherData");
-                        Weather.Tas.Modify.UpdateWeatherData(tBDDocument, weatherData, analyticalModel == null ? 0 : analyticalModel.AdjacencyCluster.BuildingHeight());
-
-                        TBD.Calendar calendar = tBDDocument.Building.GetCalendar();
-
-                        List<TBD.dayType> dayTypes = Query.DayTypes(calendar);
-                        if (dayTypes.Find(x => x.name == "HDD") == null)
+                        using (SAMTBDDocument sAMTBDDocument = new SAMTBDDocument(path_TBD))
                         {
-                            TBD.dayType dayType = calendar.AddDayType();
-                            dayType.name = "HDD";
-                        }
+                            TBD.TBDDocument tBDDocument = sAMTBDDocument.TBDDocument;
 
-                        if (dayTypes.Find(x => x.name == "CDD") == null)
-                        {
-                            TBD.dayType dayType = calendar.AddDayType();
-                            dayType.name = "CDD";
-                        }
+                            progressForm.Update("Updating WeatherData");
+                            Weather.Tas.Modify.UpdateWeatherData(tBDDocument, weatherData, analyticalModel == null ? 0 : analyticalModel.AdjacencyCluster.BuildingHeight());
 
-                        progressForm.Update("Converting to TBD");
-                        Tas.Convert.ToTBD(analyticalModel, tBDDocument, true);
+                            TBD.Calendar calendar = tBDDocument.Building.GetCalendar();
 
-                        progressForm.Update("Updating Zones");
-                        Tas.Modify.UpdateZones(tBDDocument.Building, analyticalModel, true);
+                            List<TBD.dayType> dayTypes = Query.DayTypes(calendar);
+                            if (dayTypes.Find(x => x.name == "HDD") == null)
+                            {
+                                TBD.dayType dayType = calendar.AddDayType();
+                                dayType.name = "HDD";
+                            }
 
-                        progressForm.Update("Updating Shading");
-                        if(solarCalculationMethod != SolarCalculationMethod.None)
-                        {
+                            if (dayTypes.Find(x => x.name == "CDD") == null)
+                            {
+                                TBD.dayType dayType = calendar.AddDayType();
+                                dayType.name = "CDD";
+                            }
+
+                            progressForm.Update("Converting to TBD");
+                            Tas.Convert.ToTBD(analyticalModel, tBDDocument, true);
+
+                            progressForm.Update("Updating Zones");
+                            Tas.Modify.UpdateZones(tBDDocument.Building, analyticalModel, true);
+
+                            progressForm.Update("Updating Shading");
                             shadingUpdated = Tas.Modify.UpdateShading(tBDDocument, analyticalModel);
+
+                            sAMTBDDocument.Save();
                         }
 
-                        sAMTBDDocument.Save();
-                    }
-
-                    progressForm.Update("Printing Room Data Sheets");
-                    if (printRoomDataSheets && analyticalModel != null)
-                    {
-                        if (!System.IO.Directory.Exists(outputDirectory))
-                        {
-                            System.IO.Directory.CreateDirectory(outputDirectory);
-                        }
-
-                        UI.Modify.PrintRoomDataSheets(analyticalModel, outputDirectory);
                     }
                 }
 
@@ -215,53 +211,80 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
-                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, false, simulate_From, simulate_To);
+                WeatherData weatherData_Workflow = null;
+                bool updateZones_Workflow = false;
+                if(solarCalculationMethod == SolarCalculationMethod.TAS)
+                {
+                    weatherData_Workflow = weatherData;
+                    updateZones_Workflow = true;
+                }
+
+                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, weatherData_Workflow, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, updateZones_Workflow, simulate_From, simulate_To);
+
+                if (printRoomDataSheets && analyticalModel != null)
+                {
+                    if (!System.IO.Directory.Exists(outputDirectory))
+                    {
+                        System.IO.Directory.CreateDirectory(outputDirectory);
+                    }
+
+                    UI.Modify.PrintRoomDataSheets(analyticalModel, outputDirectory);
+                }
 
                 analyticalModel.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weatherData);
                 converted = true;
             }
 
-            using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager("Convert to TBD", "Converting..."))
+            if(createSAP || createTM59)
             {
-                if(!converted)
+                using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager("Convert to TBD", "Converting..."))
                 {
-                    converted = Tas.Convert.ToTBD(analyticalModel, path_TBD, null, null, null, true);
-                }
-
-                if (converted)
-                {
-                    if (Tas.TM59.Modify.TryCreatePath(path_TBD, out string path_TM59))
+                    if (!converted)
                     {
-                        Tas.TM59.Convert.ToXml(analyticalModel, path_TM59, new TM59Manager(textMap));
+                        converted = Tas.Convert.ToTBD(analyticalModel, path_TBD, null, null, null, true);
                     }
 
-                    if (string.IsNullOrWhiteSpace(zoneCategory))
+                    if (converted)
                     {
-                        converted = false;
-                    }
-                    else
-                    {
-                        if (!Tas.SAP.Modify.TryCreatePath(path_TBD, out string path_SAP))
+                        if (createTM59)
                         {
-                            converted = false;
-                        }
-                        else
-                        {
-                            converted = Tas.SAP.Convert.ToFile(analyticalModel, path_SAP, zoneCategory, textMap);
+                            if (Tas.TM59.Modify.TryCreatePath(path_TBD, out string path_TM59))
+                            {
+                                Tas.TM59.Convert.ToXml(analyticalModel, path_TM59, new TM59Manager(textMap));
+                            }
                         }
 
+                        if (createSAP)
+                        {
+                            if (string.IsNullOrWhiteSpace(zoneCategory))
+                            {
+                                converted = false;
+                            }
+                            else
+                            {
+                                if (!Tas.SAP.Modify.TryCreatePath(path_TBD, out string path_SAP))
+                                {
+                                    converted = false;
+                                }
+                                else
+                                {
+                                    converted = Tas.SAP.Convert.ToFile(analyticalModel, path_SAP, zoneCategory, textMap);
+                                }
+
+                            }
+                        }
                     }
                 }
             }
 
-            if(converted)
-            {
-                MessageBox.Show("Model successfuly converted.");
-            }
-            else
-            {
-                MessageBox.Show("Model could not be converted.");
-            }
+            TimeSpan timeSpan = new TimeSpan(DateTime.Now.Ticks - dateTime.Ticks);
+
+            string message = converted ? "Model successfuly converted." : "Model could not be converted.";
+            message += string.Format("\n Time elapsed: {0}min{1}sec", timeSpan.Minutes, timeSpan.Seconds);
+            MessageBox.Show(message);
+
+
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new FullModification());
         }
     }
 }
