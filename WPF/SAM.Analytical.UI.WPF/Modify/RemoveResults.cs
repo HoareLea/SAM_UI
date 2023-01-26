@@ -20,55 +20,87 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            Dictionary<string, Type> dictionary = new Dictionary<string, Type>();
+            List<Tuple<string, string, List<Core.Result>>> tuples = new List<Tuple<string, string, List<Core.Result>>>();
+
+            //Dictionary<string, Type> dictionary = new Dictionary<string, Type>();
             foreach (Core.Result result in results)
             {
-                if(result is Geometry.SolarCalculator.SolarFaceSimulationResult)
+                string name = result.DateTime.ToString("yyyy/MM/dd HH:mm");
+                if(!string.IsNullOrWhiteSpace(result.Source))
                 {
-                    dictionary["Solar Face Simulation Result"] = typeof(Geometry.SolarCalculator.SolarFaceSimulationResult);
+                    name = string.Format("{0} - {1}", name, result.Source);
                 }
+
+                if(string.IsNullOrWhiteSpace(name))
+                {
+                    name = "???";
+                }
+
+                string group = null;
+
+                if (result is Geometry.SolarCalculator.SolarFaceSimulationResult)
+                {
+                    group = "Solar Face Simulation Result";
+                }
+                else if (result is SpaceSimulationResult)
+                {
+                    group = "Space Simulation Result";
+                }
+                else if (result is PanelSimulationResult)
+                {
+                    group = "Panel Simulation Result";
+                }
+                else if (result is AnalyticalModelSimulationResult)
+                {
+                    group = "Analytical Model Simulation Result";
+                }
+
+                if(string.IsNullOrWhiteSpace(group))
+                {
+                    continue;
+                }
+
+                Tuple<string, string, List<Core.Result>> tuple = tuples.Find(x => x.Item1 == group && x.Item2 == name);
+                if(tuple == null)
+                {
+                    tuple = new Tuple<string, string, List<Core.Result>>(group, name, new List<Core.Result>());
+                    tuples.Add(tuple);
+                }
+
+                tuple.Item3.Add(result);
             }
 
-            List<Type> types = new List<Type>();
-            using (TreeViewForm<string> treeViewForm = new TreeViewForm<string>("Select Result Types", dictionary.Keys))
+            List<Core.Result> results_Selected = new List<Core.Result>();
+            using (TreeViewForm<Tuple<string, string, List<Core.Result>>> treeViewForm = new TreeViewForm<Tuple<string, string, List<Core.Result>>>("Select Result Types", tuples, x => x.Item2, x => x.Item1))
             {
                 if(treeViewForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
                     return;
                 }
 
-                foreach(string typeName in treeViewForm.SelectedItems)
+                foreach(Tuple<string, string, List<Core.Result>> tuple in treeViewForm.SelectedItems)
                 {
-                    if(dictionary.TryGetValue(typeName, out Type type) && type != null)
+                    if(tuple?.Item3 != null)
                     {
-                        types.Add(type);
+                        results_Selected.AddRange(tuple.Item3);
                     }
                 }
             }
 
-            if(types == null || types.Count == 0)
+            if(results_Selected == null || results_Selected.Count == 0)
             {
                 return;
             }
 
-            List<Core.SAMObject> sAMObjects = new List<Core.SAMObject>();
-            foreach (Core.Result result in results)
-            {
-                if(types.Contains(result.GetType()))
-                {
-                    sAMObjects.Add(result);
-                }
-            }
+            List<Guid> guids = analyticalModel.Remove(results_Selected);
+            results_Selected.RemoveAll(x => !guids.Contains(x.Guid));
 
-            List<Guid> guids = analyticalModel.Remove(sAMObjects);
-            sAMObjects.RemoveAll(x => !guids.Contains(x.Guid));
-
-            if(sAMObjects == null || sAMObjects.Count == 0)
+            if(results_Selected == null || results_Selected.Count == 0)
             {
                 return;
             }
 
-            uIAnalyticalModel.SetJSAMObject(analyticalModel, new AnalyticalModelModification(sAMObjects));
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new AnalyticalModelModification(results_Selected));
 
         }
     }
