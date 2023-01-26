@@ -211,5 +211,15 @@ namespace SAM.Analytical.UI.Controls
             Label_To.Enabled = fullYearSimulation;
             TextBox_To.Enabled = fullYearSimulation;
         }
+
+        private void ComboBoxControl_SolarCalculationMethod_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

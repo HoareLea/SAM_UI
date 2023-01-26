@@ -11,7 +11,7 @@
         <Label Content="Project Name:" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBox_ProjectName" HorizontalAlignment="Stretch" Height="23" Margin="10,36,10.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
         <Label Content="Output directory:" HorizontalAlignment="Left" Margin="10,65,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_OutputDirectory" HorizontalAlignment="Stretch" Height="23" Margin="10,96,68.4,0" TextWrapping="NoWrap" Text="" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_OutputDirectory" HorizontalAlignment="Stretch" Height="35" Margin="10,96,68.4,0" TextWrapping="Wrap" Text="C:\Users\DengusiakM\Desktop\SAM\2023-01-04_SAM_UI" VerticalAlignment="Top"/>
         <Button x:Name="button_OutputDirectory" Content="..." HorizontalAlignment="Right" Margin="0,96,10.4,0" VerticalAlignment="Top" Width="53" Height="23" RenderTransformOrigin="0.504,0.5" Click="button_OutputDirectory_Click"/>
         <Label Content="Weather Data:" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="checkBox_CreateSAP" Content="Create SAP" HorizontalAlignment="Left" Margin="10,0,0,123" VerticalAlignment="Bottom" Click="checkBox_CreateSAP_Click"/>
