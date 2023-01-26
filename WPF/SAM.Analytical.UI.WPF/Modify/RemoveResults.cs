@@ -71,7 +71,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             List<Core.Result> results_Selected = new List<Core.Result>();
-            using (TreeViewForm<Tuple<string, string, List<Core.Result>>> treeViewForm = new TreeViewForm<Tuple<string, string, List<Core.Result>>>("Select Result Types", tuples, x => x.Item2, x => x.Item1))
+            using (TreeViewForm<Tuple<string, string, List<Core.Result>>> treeViewForm = new TreeViewForm<Tuple<string, string, List<Core.Result>>>("Select Result Types", tuples, x => x.Item2, x => x.Item1, @checked: x => true))
             {
                 if(treeViewForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
