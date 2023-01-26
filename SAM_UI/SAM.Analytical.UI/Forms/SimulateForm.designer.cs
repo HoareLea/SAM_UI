@@ -32,7 +32,6 @@ namespace SAM.Analytical.UI.Forms
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_OK = new System.Windows.Forms.Button();
             this.SimulateControl_Main = new SAM.Analytical.UI.Controls.SimulateControl();
-            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Button_Cancel
@@ -79,21 +78,11 @@ namespace SAM.Analytical.UI.Forms
             this.SimulateControl_Main.UnmetHours = false;
             this.SimulateControl_Main.UpdateConstructionLayersByPanelType = true;
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(119, 26);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 18);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "label1";
-            // 
             // SimulateForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(594, 544);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.SimulateControl_Main);
             this.Controls.Add(this.Button_OK);
             this.Controls.Add(this.Button_Cancel);
@@ -106,7 +95,6 @@ namespace SAM.Analytical.UI.Forms
             this.Text = "Simulate";
             this.Load += new System.EventHandler(this.SimulateForm_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -115,6 +103,5 @@ namespace SAM.Analytical.UI.Forms
         private System.Windows.Forms.Button Button_Cancel;
         private System.Windows.Forms.Button Button_OK;
         private Controls.SimulateControl SimulateControl_Main;
-        private System.Windows.Forms.Label label1;
     }
 }
