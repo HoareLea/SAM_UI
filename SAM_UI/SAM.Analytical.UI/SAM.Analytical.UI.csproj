@@ -128,6 +128,7 @@
     </Compile>
     <Compile Include="Interfaces\IAnalyticalViewSettings.cs" />
     <Compile Include="Interfaces\ISection3DObject.cs" />
+    <Compile Include="Modify\DuplicateInternalCondition.cs" />
     <Compile Include="Query\Guids.cs" />
     <Compile Include="Query\IJSAMObject.cs" />
     <Compile Include="Query\ViewSettings.cs" />

@@ -140,6 +140,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
+            List<Tuple<TreeViewItem, IJSAMObject>> tuples = null;
 
             bool singleSelection = true;
             if (treeViewHighlightManager_Model != null && treeViewHighlightManager_Model.Enabled)
@@ -147,12 +148,21 @@ namespace SAM.Analytical.UI.WPF
                 List<TreeViewItem> treeViewItems = treeViewHighlightManager_Model.HighlightedTreeViewItems;
                 if (treeViewItems != null && treeViewItems.Count != 0)
                 {
-                    singleSelection = false;
+                    tuples = treeViewItems.FindAll(x => x?.Tag is IJSAMObject).ConvertAll(x => new Tuple<TreeViewItem, IJSAMObject>(x, x.Tag as IJSAMObject));
+                    singleSelection = tuples != null && tuples.Count == 1;
                 }
             }
 
-            IJSAMObject jSAMObject = treeViewItem.Tag as IJSAMObject;
-            if (jSAMObject == null)
+            if(tuples == null || tuples.Count == 0)
+            {
+                IJSAMObject jSAMObject_Temp = treeViewItem.Tag as IJSAMObject;
+                if(jSAMObject_Temp != null)
+                {
+                    tuples = new List<Tuple<TreeViewItem, IJSAMObject>>() { new Tuple<TreeViewItem, IJSAMObject>(treeViewItem, jSAMObject_Temp) };
+                }
+            }
+
+            if (tuples == null || tuples.Count == 0)
             {
                 TreeViewItem treeViewItem_Parent = treeViewItem.Parent as TreeViewItem;
 
@@ -180,6 +190,8 @@ namespace SAM.Analytical.UI.WPF
             }
 
 
+            IJSAMObject jSAMObject = tuples[0].Item2;
+
 
             if (jSAMObject is Space)
             {
@@ -187,14 +199,14 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Name = "MenuItem_Zoom";
                 menuItem.Header = "Zoom";
                 menuItem.Click += MenuItem_Zoom_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Select";
                 menuItem.Header = "Select";
                 menuItem.Click += MenuItem_Select_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 if(singleSelection)
@@ -205,29 +217,45 @@ namespace SAM.Analytical.UI.WPF
                     menuItem.Click += MenuItem_Edit_Click;
                     menuItem.Tag = jSAMObject;
                     contextMenu_Model.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_EditZone";
+                    menuItem.Header = "Edit Zone";
+                    menuItem.Click += MenuItem_EditSpaceZone_Click;
+                    menuItem.Tag = tuples[0].Item1;
+                    contextMenu_Model.Items.Add(menuItem);
                 }
 
-                menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_EditZone";
-                menuItem.Header = "Edit Zone";
-                menuItem.Click += MenuItem_EditZones_Click;
-                menuItem.Tag = treeViewItem;
-                contextMenu_Model.Items.Add(menuItem);
-
-                TreeViewItem treeViewItem_Zone = treeViewItem.Parent as TreeViewItem;
-                if(treeViewItem_Zone != null)
+                List<Tuple<Zone, Space>> tuples_Zone = new List<Tuple<Zone, Space>>();
+                foreach(Tuple<TreeViewItem, IJSAMObject> tuple in tuples)
                 {
-                    Zone zone = treeViewItem_Zone.Tag as Zone;
-                    if(zone != null)
+                    if(!(tuple.Item2 is Space))
                     {
-                        menuItem = new MenuItem();
-                        menuItem.Name = "MenuItem_RemoveSpaceZone";
-                        menuItem.Header = "Remove From Zone";
-                        menuItem.Click += MenuItem_RemoveSpaceZone_Click;
-                        menuItem.Tag = new List<IJSAMObject>() { jSAMObject, zone };
-                        contextMenu_Model.Items.Add(menuItem);
+                        continue;
+                    }
+
+                    TreeViewItem treeViewItem_Zone = treeViewItem.Parent as TreeViewItem;
+                    if (treeViewItem_Zone != null)
+                    {
+                        Zone zone = treeViewItem_Zone.Tag as Zone;
+                        if (zone != null)
+                        {
+                            tuples_Zone.Add(new Tuple<Zone, Space>(zone, (Space)tuple.Item2));
+                        }
                     }
                 }
+
+                if(tuples_Zone != null && tuples_Zone.Count > 0)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_RemoveSpaceZone";
+                    menuItem.Header = "Remove From Zone";
+                    menuItem.Click += MenuItem_RemoveSpaceZone_Click;
+                    menuItem.Tag = tuples_Zone;
+                    contextMenu_Model.Items.Add(menuItem);
+                }
+
+
             }
             else if(jSAMObject is Panel)
             {
@@ -235,14 +263,14 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Name = "MenuItem_Zoom";
                 menuItem.Header = "Zoom";
                 menuItem.Click += MenuItem_Zoom_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Select";
                 menuItem.Header = "Select";
                 menuItem.Click += MenuItem_Select_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 if(singleSelection)
@@ -262,14 +290,14 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Name = "MenuItem_Zoom";
                 menuItem.Header = "Zoom";
                 menuItem.Click += MenuItem_Zoom_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Select";
                 menuItem.Header = "Select";
                 menuItem.Click += MenuItem_Select_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 if(singleSelection)
@@ -301,7 +329,7 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Name = "MenuItem_Remove";
                 menuItem.Header = "Remove";
                 menuItem.Click += MenuItem_Remove_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 if (singleSelection)
@@ -334,14 +362,14 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Name = "MenuItem_Zoom";
                 menuItem.Header = "Zoom";
                 menuItem.Click += MenuItem_Zoom_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Select";
                 menuItem.Header = "Select";
                 menuItem.Click += MenuItem_Select_Click;
-                menuItem.Tag = jSAMObject;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
                 if (singleSelection)
@@ -356,12 +384,23 @@ namespace SAM.Analytical.UI.WPF
             }
             else if(jSAMObject is InternalCondition)
             {
-                MenuItem menuItem = new MenuItem();
-                menuItem.Name = "MenuItem_Edit";
-                menuItem.Header = "Edit";
-                menuItem.Click += MenuItem_Edit_Click;
-                menuItem.Tag = jSAMObject;
-                contextMenu_Model.Items.Add(menuItem);
+                if (singleSelection)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Edit";
+                    menuItem.Header = "Edit";
+                    menuItem.Click += MenuItem_Edit_Click;
+                    menuItem.Tag = tuples.ConvertAll(x => x.Item2);
+                    contextMenu_Model.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_Duplicate";
+                    menuItem.Header = "Duplicate";
+                    menuItem.Click += MenuItem_Duplicate_Click;
+                    menuItem.Tag = jSAMObject;
+                    contextMenu_Model.Items.Add(menuItem);
+
+                }
             }
             else
             {
@@ -372,21 +411,15 @@ namespace SAM.Analytical.UI.WPF
 
         private void MenuItem_EditZone_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            if (menuItem == null)
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if(jSAMObjects == null || jSAMObjects.Count == 0)
             {
                 return;
             }
 
-            IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
-            if (jSAMObject == null)
+            foreach(Zone zone in jSAMObjects.FindAll(x => x is Zone))
             {
-                return;
-            }
-
-            if (jSAMObject is Zone)
-            {
-                Modify.EditSpaceZone(uIAnalyticalModel, jSAMObject as dynamic);
+                Modify.EditSpaceZone(uIAnalyticalModel, zone);
             }
         }
 
@@ -428,10 +461,10 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<TreeViewItem> treeViewItems = treeViewHighlightManager_Model != null && treeViewHighlightManager_Model.Enabled ? treeViewHighlightManager_Model.HighlightedTreeViewItems : null;
+            List<TreeViewItem> treeViewItems = treeViewHighlightManager_Views != null && treeViewHighlightManager_Views.Enabled ? treeViewHighlightManager_Views.HighlightedTreeViewItems : null;
             if (treeViewItems != null && treeViewItems.Count != 0)
             {
-                jSAMObjects.AddRange(treeViewItems.FindAll(x => x?.Tag is ViewSettings).ConvertAll(x => x.Tag as ViewSettings));
+                jSAMObjects = new List<IJSAMObject>(treeViewItems.FindAll(x => x?.Tag is ViewSettings).ConvertAll(x => x.Tag as ViewSettings));
             }
 
             MenuItem menuItem = null;
@@ -570,36 +603,24 @@ namespace SAM.Analytical.UI.WPF
 
         private void MenuItem_Select_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            if (menuItem == null)
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if (jSAMObjects == null || jSAMObjects.Count == 0)
             {
                 return;
             }
 
-            SAMObject sAMObject = menuItem.Tag as SAMObject;
-            if (sAMObject == null)
-            {
-                return;
-            }
-
-            SelectionRequested?.Invoke(this, new SelectionRequestedEventArgs(sAMObject));
+            SelectionRequested?.Invoke(this, new SelectionRequestedEventArgs(jSAMObjects?.FindAll(x => x is SAMObject).ConvertAll(x => (SAMObject)x)));
         }
 
         private void MenuItem_Zoom_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            if (menuItem == null)
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if (jSAMObjects == null || jSAMObjects.Count == 0)
             {
                 return;
             }
 
-            SAMObject sAMObject = menuItem.Tag as SAMObject;
-            if (sAMObject == null)
-            {
-                return;
-            }
-
-            ZoomRequested?.Invoke(this, new ZoomRequestedEventArgs(sAMObject));
+            ZoomRequested?.Invoke(this, new ZoomRequestedEventArgs(jSAMObjects?.FindAll(x => x is SAMObject).ConvertAll(x => (SAMObject)x)));
         }
 
         private void MenuItem_RemoveSpaceZone_Click(object sender, RoutedEventArgs e)
@@ -616,22 +637,19 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            Space space = enumerable.OfType<Space>().FirstOrDefault();
-            if(space == null)
+            foreach(object @object in enumerable)
             {
-                return;
-            }
+                Tuple<Zone, Space> tuple = @object as Tuple<Zone, Space>;
+                if(tuple == null)
+                {
+                    continue;
+                }
 
-            Zone zone = enumerable.OfType<Zone>().FirstOrDefault();
-            if(zone == null)
-            {
-                return;
+                Modify.RemoveSpaceZone(uIAnalyticalModel, tuple.Item2, tuple.Item1);
             }
-
-            Modify.RemoveSpaceZone(uIAnalyticalModel, space, zone);
         }
 
-        private void MenuItem_EditZones_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_EditSpaceZone_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
             if (menuItem == null)
@@ -656,41 +674,34 @@ namespace SAM.Analytical.UI.WPF
 
         private void MenuItem_Duplicate_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            if (menuItem == null)
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if(jSAMObjects == null || jSAMObjects.Count == 0)
             {
                 return;
             }
 
-            IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
-            if (jSAMObject == null)
+            foreach(IMaterial material in jSAMObjects.FindAll(x => x is IMaterial))
             {
-                return;
+                UI.Modify.DuplicateMaterial(uIAnalyticalModel, material);
             }
 
-            if (jSAMObject is IMaterial)
+            foreach (InternalCondition internalCondition in jSAMObjects.FindAll(x => x is InternalCondition))
             {
-                UI.Modify.DuplicateMaterial(uIAnalyticalModel, jSAMObject as dynamic);
+                UI.Modify.DuplicateInternalCondition(uIAnalyticalModel, internalCondition);
             }
         }
 
         private void MenuItem_Remove_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = sender as MenuItem;
-            if (menuItem == null)
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if (jSAMObjects == null || jSAMObjects.Count == 0)
             {
                 return;
             }
 
-            IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
-            if (jSAMObject == null)
+            foreach(IMaterial material in jSAMObjects.FindAll(x => x is IMaterial))
             {
-                return;
-            }
-
-            if (jSAMObject is IMaterial)
-            {
-                UI.Modify.RemoveMaterial(uIAnalyticalModel, jSAMObject as dynamic);
+                UI.Modify.RemoveMaterial(uIAnalyticalModel, material);
             }
         }
 
@@ -735,13 +746,15 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
-            if(jSAMObject == null)
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(menuItem);
+            if(jSAMObjects == null || jSAMObjects.Count == 0)
             {
                 return;
             }
 
-            if(jSAMObject is Space)
+            IJSAMObject jSAMObject = jSAMObjects[0];
+
+            if (jSAMObject is Space)
             {
                 UI.Modify.EditSpace(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
             }
@@ -1197,6 +1210,33 @@ namespace SAM.Analytical.UI.WPF
                 {
                     result = new List<ViewSettings>() { viewSettings };
                 }
+            }
+
+            return result;
+        }
+
+        private static List<IJSAMObject> GetSAMObjects(MenuItem menuItem)
+        {
+            if (menuItem == null)
+            {
+                return null;
+            }
+
+            List<IJSAMObject> result = null;
+            if (menuItem.Tag is IEnumerable)
+            {
+                result = new List<IJSAMObject>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is IJSAMObject)
+                    {
+                        result.Add((IJSAMObject)@object);
+                    }
+                }
+            }
+            else if (menuItem.Tag is IJSAMObject)
+            {
+                result = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
             }
 
             return result;

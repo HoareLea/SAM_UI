@@ -288,8 +288,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void AnalyticalModelControl_SelectionRequested(object sender, SelectionRequestedEventArgs e)
         {
-            SAMObject sAMObject = e.SAMObject;
-            if (sAMObject == null)
+            List<SAMObject> sAMObjects = e.SAMObjects;
+            if (sAMObjects == null || sAMObjects.Count == 0)
             {
                 return;
             }
@@ -300,31 +300,36 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            if (sAMObject is Zone)
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster != null)
             {
-                AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-                if (adjacencyCluster == null)
+                for (int i = sAMObjects.Count - 1; i >= 0; i--)
                 {
-                    return;
-                }
+                    Zone zone = sAMObjects[i] as Zone;
+                    if (zone == null)
+                    {
+                        continue;
+                    }
 
-                List<Space> spaces = adjacencyCluster.GetSpaces((Zone)sAMObject);
-                if (spaces == null || spaces.Count == 0)
-                {
-                    return;
-                }
+                    sAMObjects.RemoveAt(i);
 
-                viewportControl.Select(spaces);
-                return;
+                    List<Space> spaces = adjacencyCluster.GetSpaces(zone);
+                    if (spaces == null || spaces.Count == 0)
+                    {
+                        return;
+                    }
+
+                    sAMObjects.AddRange(spaces);
+                }
             }
 
-            viewportControl.Select(sAMObject);
+            viewportControl.Select(sAMObjects);
         }
 
         private void AnalyticalModelControl_ZoomRequested(object sender, ZoomRequestedEventArgs e)
         {
-            SAMObject sAMObject = e.SAMObject;
-            if(sAMObject == null)
+            List<SAMObject> sAMObjects = e.SAMObjects;
+            if(sAMObjects == null || sAMObjects.Count == 0)
             {
                 return;
             }
@@ -335,25 +340,30 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            if(sAMObject is Zone)
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if(adjacencyCluster != null)
             {
-                AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-                if(adjacencyCluster == null)
+                for (int i = sAMObjects.Count - 1; i >= 0; i--)
                 {
-                    return;
-                }
+                    Zone zone = sAMObjects[i] as Zone;
+                    if (zone == null)
+                    {
+                        continue;
+                    }
 
-                List<Space> spaces = adjacencyCluster.GetSpaces((Zone)sAMObject);
-                if(spaces == null || spaces.Count == 0)
-                {
-                    return;
-                }
+                    sAMObjects.RemoveAt(i);
 
-                viewportControl.Zoom(spaces);
-                return;
+                    List<Space> spaces = adjacencyCluster.GetSpaces(zone);
+                    if (spaces == null || spaces.Count == 0)
+                    {
+                        return;
+                    }
+
+                    sAMObjects.AddRange(spaces);
+                }
             }
 
-            viewportControl.Zoom(sAMObject);
+            viewportControl.Zoom(sAMObjects);
         }
 
         private void RibbonButton_Tools_Test_Click(object sender, RoutedEventArgs e)
