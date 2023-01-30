@@ -1,4 +1,5 @@
-﻿using SAM.Core;
+﻿using SAM.Analytical.Windows;
+using SAM.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -169,6 +170,7 @@ namespace SAM.Analytical.UI.WPF
                 if(internalCondition != null)
                 {
                     space.InternalCondition = internalCondition;
+                    space.UpdateAreaPerPerson();
                 }
 
                 result.Add(space);
