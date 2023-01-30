@@ -246,11 +246,13 @@ namespace SAM.Analytical.UI.WPF
 
                     if (converted)
                     {
+                        AnalyticalModel analyticalModel_TBD = Tas.Convert.ToSAM(path_TBD, false);
+
                         if (createTM59)
                         {
                             if (Tas.TM59.Modify.TryCreatePath(path_TBD, out string path_TM59))
                             {
-                                Tas.TM59.Convert.ToXml(analyticalModel, path_TM59, new TM59Manager(textMap));
+                                Tas.TM59.Convert.ToXml(analyticalModel_TBD, path_TM59, new TM59Manager(textMap));
                             }
                         }
 
@@ -268,7 +270,7 @@ namespace SAM.Analytical.UI.WPF
                                 }
                                 else
                                 {
-                                    converted = Tas.SAP.Convert.ToFile(analyticalModel, path_SAP, zoneCategory, textMap);
+                                    converted = Tas.SAP.Convert.ToFile(analyticalModel_TBD, path_SAP, zoneCategory, textMap);
                                 }
 
                             }
