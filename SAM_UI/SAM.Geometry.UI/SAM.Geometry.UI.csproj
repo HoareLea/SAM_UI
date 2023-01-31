@@ -57,10 +57,16 @@
     <Compile Include="Classes\Appearance\TextAppearance.cs" />
     <Compile Include="Classes\Appearance\SurfaceAppearance.cs" />
     <Compile Include="Classes\Appearance\PointAppearance.cs" />
+    <Compile Include="Classes\ExtrusionObject.cs" />
     <Compile Include="Classes\Camera.cs" />
     <Compile Include="Classes\Mesh3DObject.cs" />
     <Compile Include="Classes\Modification\ViewSettingsModification.cs" />
+    <Compile Include="Classes\BoundingBox3DObject.cs" />
+    <Compile Include="Classes\Triangle3DObject.cs" />
+    <Compile Include="Classes\Rectangle3DObject.cs" />
+    <Compile Include="Classes\Polyline3DObject.cs" />
     <Compile Include="Classes\Settings\ParameterAppearanceSettings.cs" />
+    <Compile Include="Classes\SphereObject.cs" />
     <Compile Include="Classes\Text3DObject.cs" />
     <Compile Include="Classes\ShellObject.cs" />
     <Compile Include="Classes\Point3DObject.cs" />

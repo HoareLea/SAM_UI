@@ -52,6 +52,32 @@ namespace SAM.Geometry.UI
                 Mesh3DObject result = new Mesh3DObject((Mesh3D)sAMGeometry3D, Query.DefaultSurfaceAppearance());
                 return result;
             }
+            else if (sAMGeometry3D is BoundingBox3D)
+            {
+                return new BoundingBox3DObject((BoundingBox3D)sAMGeometry3D, Query.DefaultCurveAppearance());
+            }
+            else if (sAMGeometry3D is Extrusion)
+            {
+                ExtrusionObject result = new ExtrusionObject((Extrusion)sAMGeometry3D, Query.DefaultSurfaceAppearance());
+                return result;
+            }
+            else if (sAMGeometry3D is Polyline3D)
+            {
+                return new Polyline3DObject((Polyline3D)sAMGeometry3D, Query.DefaultCurveAppearance());
+            }
+            else if (sAMGeometry3D is Rectangle3D)
+            {
+                return new Rectangle3DObject((Rectangle3D)sAMGeometry3D, Query.DefaultCurveAppearance());
+            }
+            else if (sAMGeometry3D is Sphere)
+            {
+                SphereObject result = new SphereObject((Sphere)sAMGeometry3D, Query.DefaultSurfaceAppearance());
+                return result;
+            }
+            else if (sAMGeometry3D is Triangle3D)
+            {
+                return new Triangle3DObject((Triangle3D)sAMGeometry3D, Query.DefaultCurveAppearance());
+            }
 
             return null;
         }
