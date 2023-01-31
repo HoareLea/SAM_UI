@@ -66,6 +66,62 @@ namespace SAM.Geometry.UI.WPF
             return result;
         }
 
+        public static Model3D Model3D(this Mesh3DObject mesh3DObject)
+        {
+            if (mesh3DObject == null)
+            {
+                return null;
+            }
+
+            SurfaceAppearance surfaceAppearance = mesh3DObject.SurfaceAppearance;
+
+            if (surfaceAppearance == null)
+            {
+                return null;
+            }
+
+            Mesh3D mesh3D = mesh3DObject.Mesh3D;
+            if (mesh3D == null)
+            {
+                return null;
+            }
+
+            Model3DGroup model3DGroup = null;
+
+            CurveAppearance curveAppearance = surfaceAppearance.CurveAppearance;
+            if (curveAppearance != null)
+            {
+                if (curveAppearance.Thickness != 0)
+                {
+                    model3DGroup = new Model3DGroup();
+                    List<Segment3D> segment3Ds = mesh3D.GetSegments();
+                    if(segment3Ds != null)
+                    {
+                        foreach (Segment3D segment3D in segment3Ds)
+                        {
+                            Model3D model3D = Model3D(new Segment3DObject(segment3D, curveAppearance));
+                            model3DGroup.Children.Add(model3D);
+                        }
+                    }
+                }
+            }
+
+            GeometryModel3D geometryModel3D = new GeometryModel3D(mesh3D.ToMedia3D(Query.DoubleSided()), UI.Create.Material(surfaceAppearance.Color, surfaceAppearance.Opacity));
+            if (model3DGroup == null)
+            {
+                Core.UI.WPF.Modify.SetIJSAMObject(geometryModel3D, mesh3DObject);
+                return geometryModel3D;
+            }
+
+            Model3DGroup result = new Model3DGroup();
+            result.Children.Add(model3DGroup);
+            result.Children.Add(geometryModel3D);
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, mesh3DObject);
+
+            return result;
+        }
+
         public static Model3D Model3D(this ShellObject shellObject)
         {
             if (shellObject == null)

@@ -47,7 +47,11 @@ namespace SAM.Geometry.UI
                 ShellObject result = new ShellObject((Shell)sAMGeometry3D, Query.DefaultSurfaceAppearance());
                 return result;
             }
-
+            else if (sAMGeometry3D is Mesh3D)
+            {
+                Mesh3DObject result = new Mesh3DObject((Mesh3D)sAMGeometry3D, Query.DefaultSurfaceAppearance());
+                return result;
+            }
 
             return null;
         }
