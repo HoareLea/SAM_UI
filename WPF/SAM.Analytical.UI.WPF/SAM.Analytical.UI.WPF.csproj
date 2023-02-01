@@ -162,6 +162,12 @@
     <Compile Include="Controls\ConvertToTBDControl.xaml.cs">
       <DependentUpon>ConvertToTBDControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\InternalConditionControl.xaml.cs">
+      <DependentUpon>InternalConditionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\InternalConditionWindow.xaml.cs">
+      <DependentUpon>InternalConditionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\RemoveResults.cs" />
     <Compile Include="Query\DayTypes.cs" />
     <Compile Include="Windows\ConvertToTBDWindow.xaml.cs">
@@ -403,6 +409,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ConvertToTBDControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\InternalConditionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\InternalConditionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
