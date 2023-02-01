@@ -62,7 +62,7 @@ namespace SAM.Geometry.UI.WPF
                     }
                     else
                     {
-                        Model3D model3D = Create.Model3D(sAMGeometry3DObject as dynamic);
+                        Model3D model3D = Create.Model3D(sAMGeometry3DObject);
                         if (model3D != null)
                         {
                             model3Ds.Add(model3D);
@@ -72,7 +72,7 @@ namespace SAM.Geometry.UI.WPF
             }
             else
             {
-                Model3D model3D = Create.Model3D(sAMGeometryObject as dynamic);
+                Model3D model3D = Create.Model3D(sAMGeometryObject);
                 if (model3D != null)
                 {
                     model3Ds.Add(model3D);

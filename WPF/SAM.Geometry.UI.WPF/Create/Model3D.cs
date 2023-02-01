@@ -7,6 +7,190 @@ namespace SAM.Geometry.UI.WPF
 {
     public static partial class Create
     {
+        public static Model3D Model3D(this ISAMGeometryObject sAMGeometryObject)
+        {
+            if(sAMGeometryObject == null)
+            {
+                return null;
+            }
+
+            //SAMGeometryObjectCollection
+            if (sAMGeometryObject is SAMGeometryObjectCollection)
+            {
+                return Model3D((SAMGeometryObjectCollection)sAMGeometryObject);
+            }
+
+            //SAMGeometry3DObjectCollection
+            if (sAMGeometryObject is SAMGeometry3DObjectCollection)
+            {
+                return Model3D((SAMGeometry3DObjectCollection)sAMGeometryObject);
+            }
+
+            //Text3DObject
+            if (sAMGeometryObject is Text3DObject)
+            {
+                return Model3D((Text3DObject)sAMGeometryObject);
+            }
+
+            //IFace3DObject
+            if (sAMGeometryObject is IFace3DObject)
+            {
+                IFace3DObject value = (IFace3DObject)sAMGeometryObject;
+
+                if(value is Face3DObject)
+                {
+                    return Model3D((Face3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new Face3DObject(value.Face3D, UI.Query.DefaultSurfaceAppearance()));
+            }
+
+            //IMesh3DObject
+            if (sAMGeometryObject is IMesh3DObject)
+            {
+                IMesh3DObject value = (IMesh3DObject)sAMGeometryObject;
+
+                if (value is Mesh3DObject)
+                {
+                    return Model3D((Mesh3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new Mesh3DObject(value.Mesh3D, UI.Query.DefaultSurfaceAppearance()));
+            }
+
+            //IShellObject
+            if (sAMGeometryObject is IShellObject)
+            {
+                IShellObject value = (IShellObject)sAMGeometryObject;
+
+                if (value is ShellObject)
+                {
+                    return Model3D((ShellObject)sAMGeometryObject);
+                }
+
+                return Model3D(new ShellObject(value.Shell, UI.Query.DefaultSurfaceAppearance()));
+            }
+
+            //ISegment3DObject
+            if (sAMGeometryObject is ISegment3DObject)
+            {
+                ISegment3DObject value = (ISegment3DObject)sAMGeometryObject;
+
+                if (value is Segment3DObject)
+                {
+                    return Model3D((Segment3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new Segment3DObject(value.Segment3D, UI.Query.DefaultCurveAppearance()));
+            }
+
+            //IPolygon3DObject
+            if (sAMGeometryObject is IPolygon3DObject)
+            {
+                IPolygon3DObject value = (IPolygon3DObject)sAMGeometryObject;
+
+                if (value is Polygon3DObject)
+                {
+                    return Model3D((Polygon3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new Polygon3DObject(value.Polygon3D, UI.Query.DefaultCurveAppearance()));
+            }
+
+            //IPoint3DObject
+            if (sAMGeometryObject is IPoint3DObject)
+            {
+                IPoint3DObject value = (IPoint3DObject)sAMGeometryObject;
+
+                if (value is Point3DObject)
+                {
+                    return Model3D((Point3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new Point3DObject(value.Point3D, UI.Query.DefaultPointAppearance()));
+            }
+
+            //IPolyline3DObject
+            if (sAMGeometryObject is IPolyline3DObject)
+            {
+                IPolyline3DObject value = (IPolyline3DObject)sAMGeometryObject;
+
+                if (value is Polyline3DObject)
+                {
+                    return Model3D((Polyline3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new Polyline3DObject(value.Polyline3D, UI.Query.DefaultCurveAppearance()));
+            }
+
+            //IBoundingBox3DObject
+            if (sAMGeometryObject is IBoundingBox3DObject)
+            {
+                IBoundingBox3DObject value = (IBoundingBox3DObject)sAMGeometryObject;
+
+                if (value is BoundingBox3DObject)
+                {
+                    return Model3D((BoundingBox3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new BoundingBox3DObject(value.BoundingBox3D, UI.Query.DefaultCurveAppearance()));
+            }
+
+            //IExtrusionObject
+            if (sAMGeometryObject is IExtrusionObject)
+            {
+                IExtrusionObject value = (IExtrusionObject)sAMGeometryObject;
+
+                if (value is ExtrusionObject)
+                {
+                    return Model3D((ExtrusionObject)sAMGeometryObject);
+                }
+
+                return Model3D(new ExtrusionObject(value.Extrusion, UI.Query.DefaultSurfaceAppearance()));
+            }
+
+            //IRectangle3DObject
+            if (sAMGeometryObject is IRectangle3DObject)
+            {
+                IRectangle3DObject value = (IRectangle3DObject)sAMGeometryObject;
+
+                if (value is Rectangle3DObject)
+                {
+                    return Model3D((Rectangle3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new Rectangle3DObject(value.Rectangle3D, UI.Query.DefaultCurveAppearance()));
+            }
+
+            //ISphereObject
+            if (sAMGeometryObject is ISphereObject)
+            {
+                ISphereObject value = (ISphereObject)sAMGeometryObject;
+
+                if (value is SphereObject)
+                {
+                    return Model3D((SphereObject)sAMGeometryObject);
+                }
+
+                return Model3D(new SphereObject(value.Sphere, UI.Query.DefaultSurfaceAppearance()));
+            }
+
+            //ITriangle3DObject
+            if (sAMGeometryObject is ITriangle3DObject)
+            {
+                ITriangle3DObject value = (ITriangle3DObject)sAMGeometryObject;
+
+                if (value is Triangle3DObject)
+                {
+                    return Model3D((Triangle3DObject)sAMGeometryObject);
+                }
+
+                return Model3D(new Triangle3DObject(value.Triangle3D, UI.Query.DefaultCurveAppearance()));
+            }
+
+            return null;
+        }
+        
         public static Model3D Model3D(this Face3DObject face3DObject)
         {
             if (face3DObject == null)
@@ -154,6 +338,76 @@ namespace SAM.Geometry.UI.WPF
             return result;
         }
 
+        public static Model3D Model3D(this SphereObject sphereObject)
+        {
+            if (sphereObject == null)
+            {
+                return null;
+            }
+
+            SurfaceAppearance surfaceAppearance = sphereObject.SurfaceAppearance;
+
+            if (surfaceAppearance == null)
+            {
+                return null;
+            }
+
+            Sphere sphere = sphereObject.Sphere;
+            if (sphere == null)
+            {
+                return null;
+            }
+
+            List<Face3D> face3Ds = sphere.Mesh3D(1)?.GetTriangles()?.ConvertAll(x => new Face3D(x));
+            if(face3Ds == null || face3Ds.Count == 0)
+            {
+                return null;
+            }
+
+            Model3DGroup result = new Model3DGroup();
+            foreach (Face3D face3D in face3Ds)
+            {
+                Model3D model3D = Model3D(new Face3DObject(face3D, surfaceAppearance));
+                result.Children.Add(model3D);
+            }
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, sphereObject);
+
+            return result;
+        }
+
+        public static Model3D Model3D(this ExtrusionObject extrusionObject)
+        {
+            if (extrusionObject == null)
+            {
+                return null;
+            }
+
+            SurfaceAppearance surfaceAppearance = extrusionObject.SurfaceAppearance;
+
+            if (surfaceAppearance == null)
+            {
+                return null;
+            }
+
+            Extrusion extrusion = extrusionObject.Extrusion;
+            if (extrusion == null)
+            {
+                return null;
+            }
+
+            Model3DGroup result = new Model3DGroup();
+            foreach (Face3D face3D in extrusion.Face3Ds())
+            {
+                Model3D model3D = Model3D(new Face3DObject(face3D, surfaceAppearance));
+                result.Children.Add(model3D);
+            }
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, extrusionObject);
+
+            return result;
+        }
+
         public static Model3D Model3D(this Segment3DObject segment3DObject)
         {
             if (segment3DObject == null)
@@ -178,6 +432,33 @@ namespace SAM.Geometry.UI.WPF
 
             GeometryModel3D result = new GeometryModel3D(segment3D.ToMedia3D(curveAppearance.Thickness), material);
             Core.UI.WPF.Modify.SetIJSAMObject(result, segment3DObject);
+            return result;
+        }
+
+        public static Model3D Model3D(this BoundingBox3DObject boundingBox3DObject)
+        {
+            if (boundingBox3DObject == null)
+            {
+                return null;
+            }
+
+            CurveAppearance curveAppearance = boundingBox3DObject.CurveAppearance;
+
+            if (curveAppearance == null)
+            {
+                return null;
+            }
+
+            BoundingBox3D boundingBox3D = boundingBox3DObject.BoundingBox3D;
+            if (boundingBox3D == null)
+            {
+                return null;
+            }
+
+            Material material = UI.Create.Material(curveAppearance.Color, curveAppearance.Opacity);
+
+            GeometryModel3D result = new GeometryModel3D(boundingBox3D.ToMedia3D(curveAppearance.Thickness), material);
+            Core.UI.WPF.Modify.SetIJSAMObject(result, boundingBox3DObject);
             return result;
         }
 
@@ -209,6 +490,102 @@ namespace SAM.Geometry.UI.WPF
             }
 
             Core.UI.WPF.Modify.SetIJSAMObject(result, polygon3DObject);
+
+            return result;
+        }
+
+        public static Model3D Model3D(this Triangle3DObject triangle3DObject)
+        {
+            if (triangle3DObject == null)
+            {
+                return null;
+            }
+
+            CurveAppearance curveAppearance = triangle3DObject.CurveAppearance;
+
+            if (curveAppearance == null)
+            {
+                return null;
+            }
+
+            ISegmentable3D segmentable3D = triangle3DObject.Triangle3D;
+            if (segmentable3D == null)
+            {
+                return null;
+            }
+
+            Model3DGroup result = new Model3DGroup();
+            foreach (Segment3D segment3D in segmentable3D.GetSegments())
+            {
+                Model3D model3D = Model3D(new Segment3DObject(segment3D, curveAppearance));
+                result.Children.Add(model3D);
+            }
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, triangle3DObject);
+
+            return result;
+        }
+
+        public static Model3D Model3D(this Polyline3DObject polyline3DObject)
+        {
+            if (polyline3DObject == null)
+            {
+                return null;
+            }
+
+            CurveAppearance curveAppearance = polyline3DObject.CurveAppearance;
+
+            if (curveAppearance == null)
+            {
+                return null;
+            }
+
+            ISegmentable3D segmentable3D = polyline3DObject.Polyline3D;
+            if (segmentable3D == null)
+            {
+                return null;
+            }
+
+            Model3DGroup result = new Model3DGroup();
+            foreach (Segment3D segment3D in segmentable3D.GetSegments())
+            {
+                Model3D model3D = Model3D(new Segment3DObject(segment3D, curveAppearance));
+                result.Children.Add(model3D);
+            }
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, polyline3DObject);
+
+            return result;
+        }
+
+        public static Model3D Model3D(this Rectangle3DObject rectangle3DObject)
+        {
+            if (rectangle3DObject == null)
+            {
+                return null;
+            }
+
+            CurveAppearance curveAppearance = rectangle3DObject.CurveAppearance;
+
+            if (curveAppearance == null)
+            {
+                return null;
+            }
+
+            ISegmentable3D segmentable3D = rectangle3DObject.Rectangle3D;
+            if (segmentable3D == null)
+            {
+                return null;
+            }
+
+            Model3DGroup result = new Model3DGroup();
+            foreach (Segment3D segment3D in segmentable3D.GetSegments())
+            {
+                Model3D model3D = Model3D(new Segment3DObject(segment3D, curveAppearance));
+                result.Children.Add(model3D);
+            }
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, rectangle3DObject);
 
             return result;
         }
@@ -250,44 +627,36 @@ namespace SAM.Geometry.UI.WPF
             Model3DGroup result = new Model3DGroup();
             foreach (ISAMGeometry3DObject sAMGeometry3DObject in sAMGeometry3DObjectCollection)
             {
-                if (sAMGeometry3DObject is Face3DObject)
+                Model3D model3D = Model3D(sAMGeometry3DObject);
+                if(model3D != null)
                 {
-                    Model3D model3D = Model3D((Face3DObject)sAMGeometry3DObject);
                     result.Children.Add(model3D);
-                }
-                else if (sAMGeometry3DObject is Segment3DObject)
-                {
-                    Model3D model3D = Model3D((Segment3DObject)sAMGeometry3DObject);
-                    result.Children.Add(model3D);
-                }
-                else if (sAMGeometry3DObject is Polygon3DObject)
-                {
-                    Model3D model3D = Model3D((Polygon3DObject)sAMGeometry3DObject);
-                    result.Children.Add(model3D);
-                }
-                else if (sAMGeometry3DObject is Point3DObject)
-                {
-                    Model3D model3D = Model3D((Point3DObject)sAMGeometry3DObject);
-                    result.Children.Add(model3D);
-                }
-                else if (sAMGeometry3DObject is ShellObject)
-                {
-                    Model3D model3D = Model3D((ShellObject)sAMGeometry3DObject);
-                    result.Children.Add(model3D);
-                }
-                else if (sAMGeometry3DObject is SAMGeometry3DObjectCollection)
-                {
-                    Model3D model3D = Model3D((SAMGeometry3DObjectCollection)sAMGeometry3DObject);
-                    result.Children.Add(model3D);
-                }
-                else
-                {
-                    Model3D model3D = Model3D(sAMGeometry3DObject as dynamic);
-                    result.Children.Add(model3D as dynamic);
                 }
             }
 
             Core.UI.WPF.Modify.SetIJSAMObject(result, sAMGeometry3DObjectCollection);
+
+            return result;
+        }
+
+        public static Model3D Model3D(this SAMGeometryObjectCollection sAMGeometryObjectCollection)
+        {
+            if (sAMGeometryObjectCollection == null)
+            {
+                return null;
+            }
+
+            Model3DGroup result = new Model3DGroup();
+            foreach (ISAMGeometryObject sAMGeometryObject in sAMGeometryObjectCollection)
+            {
+                Model3D model3D = Model3D(sAMGeometryObject);
+                if (model3D != null)
+                {
+                    result.Children.Add(model3D);
+                }
+            }
+
+            Core.UI.WPF.Modify.SetIJSAMObject(result, sAMGeometryObjectCollection);
 
             return result;
         }
