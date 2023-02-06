@@ -89,6 +89,14 @@
     <Compile Include="Controls\SelectSAMObjectComboBoxControl.xaml.cs">
       <DependentUpon>SelectSAMObjectComboBoxControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\MultipleValueTextBoxControl.xaml.cs">
+      <DependentUpon>MultipleValueTextBoxControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MultipleValueComboBoxControl.xaml.cs">
+      <DependentUpon>MultipleValueComboBoxControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\Background.cs" />
+    <Compile Include="Query\Background.cs" />
     <Compile Include="Query\DefaultInternalText.cs" />
     <Compile Include="Windows\TextMapWindow.xaml.cs">
       <DependentUpon>TextMapWindow.xaml</DependentUpon>
@@ -175,6 +183,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SelectSAMObjectComboBoxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MultipleValueTextBoxControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MultipleValueComboBoxControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

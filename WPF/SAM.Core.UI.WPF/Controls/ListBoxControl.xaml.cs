@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace SAM.Core.UI.WPF
@@ -8,19 +10,85 @@ namespace SAM.Core.UI.WPF
     /// </summary>
     public partial class ListBoxControl : UserControl
     {
+        public event SelectionChangedEventHandler SelectionChanged;
+
         public ListBoxControl()
         {
             InitializeComponent();
         }
 
+        public void SetValues<T>(IEnumerable<T> values, Func<T, string> namesFunc = null)
+        {
+            listBox.Items.Clear();
+
+            if(values == null)
+            {
+                return;
+            }
+
+            foreach(T value in values)
+            {
+                string text = namesFunc == null ? null : namesFunc.Invoke(value);
+                listBox.Items.Add(new ListBoxItem() { Content = text, Tag = value});
+            }
+        }
+
+        public List<T> GetValues<T>(bool selected = true)
+        {
+            System.Collections.IList list = selected ? listBox.SelectedItems : listBox.Items;
+
+            List<T> result = new List<T>();
+            foreach(ListBoxItem listBoxItem in list)
+            {
+                object @object = listBoxItem?.Tag;
+                if(@object is T)
+                {
+                    result.Add((T)@object);
+                }
+            }
+
+            return result;
+        }
+
         private void Button_SelectNone_Click(object sender, RoutedEventArgs e)
         {
-
+            SelectNone();
         }
 
         private void Button_SelectAll_Click(object sender, RoutedEventArgs e)
         {
+            SelectAll();
+        }
 
+        public void SelectAll()
+        {
+            foreach (ListBoxItem listBoxItem in listBox.Items)
+            {
+                listBox.SelectedItems.Add(listBoxItem);
+            }
+        }
+
+        public void SelectNone()
+        {
+            listBox.SelectedItems.Clear();
+        }
+
+        private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            SelectionChanged.Invoke(this, e);
+        }
+
+        public SelectionMode SelectionMode
+        {
+            get
+            {
+                return listBox.SelectionMode;
+            }
+
+            set
+            {
+                listBox.SelectionMode = value;
+            }
         }
     }
 }

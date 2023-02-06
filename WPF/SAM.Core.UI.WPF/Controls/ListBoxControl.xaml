@@ -14,7 +14,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
-        <ListBox HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0"/>
+        <ListBox x:Name="listBox" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" SelectionChanged="listBox_SelectionChanged"/>
         <Button x:Name="button_SelectAll" Grid.Row="1" Width="70" Height="20" Margin="0,0,0,5.4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_SelectAll_Click" Content="Select All"/>
         <Button x:Name="button_SelectNone" Grid.Row="1" Width="70" Height="20" Margin="75,0,0,5.4" HorizontalAlignment="Left" VerticalAlignment="Bottom" Click="Button_SelectNone_Click" Content="Select None"/>
 

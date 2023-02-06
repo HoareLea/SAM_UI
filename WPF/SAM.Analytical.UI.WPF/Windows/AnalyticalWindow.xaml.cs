@@ -163,6 +163,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_TextMap.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
             RibbonButton_Tools_TextMap.Click += RibbonButton_Tools_TextMap_Click;
 
+            RibbonButton_Tools_Test.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_Tools_Test.Click += RibbonButton_Tools_Test_Click;
+
 
             RibbonButton_Results_AirHandlingUnitDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AirHandlingUnitDiagram);
             RibbonButton_Results_AirHandlingUnitDiagram.Click += RibbonButton_Results_AirHandlingUnitDiagram_Click;
@@ -202,6 +205,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_Tools_Test_Click(object sender, RoutedEventArgs e)
+        {
+            InternalConditionWindow internalConditionWindow = new InternalConditionWindow(uIAnalyticalModel);
+            bool? result = internalConditionWindow.ShowDialog();
+            
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
         }
 
         private void RibbonButton_Results_Remove_Click(object sender, RoutedEventArgs e)
@@ -364,15 +378,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             viewportControl.Zoom(sAMObjects);
-        }
-
-        private void RibbonButton_Tools_Test_Click(object sender, RoutedEventArgs e)
-        {
-            ViewportControl viewportControl = GetActiveViewportControl();
-            Geometry.UI.Camera camera = viewportControl.Camera;
-            camera.Location = new Geometry.Spatial.Point3D(-3.684, -0.48, 0.13);
-
-            viewportControl.Camera = camera;
         }
 
         private void RibbonButton_View_Close_Click(object sender, RoutedEventArgs e)

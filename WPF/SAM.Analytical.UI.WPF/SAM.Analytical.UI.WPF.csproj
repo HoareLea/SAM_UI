@@ -150,6 +150,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\InternalConditionData.cs" />
     <Compile Include="Controls\ZonesSpacesControl.xaml.cs">
       <DependentUpon>ZonesSpacesControl.xaml</DependentUpon>
     </Compile>
@@ -165,6 +166,7 @@
     <Compile Include="Controls\InternalConditionControl.xaml.cs">
       <DependentUpon>InternalConditionControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Query\Texts.cs" />
     <Compile Include="Windows\InternalConditionWindow.xaml.cs">
       <DependentUpon>InternalConditionWindow.xaml</DependentUpon>
     </Compile>
@@ -499,7 +501,6 @@
     <None Include="Resources\SAM_SpaceDiagram.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Classes\" />
     <Folder Include="Convert\ToMedia3D\" />
     <Folder Include="Create\" />
     <Folder Include="Interfaces\" />

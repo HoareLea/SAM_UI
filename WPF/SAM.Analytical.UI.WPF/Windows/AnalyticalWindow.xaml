@@ -484,6 +484,9 @@
                     <RibbonButton x:Name="RibbonButton_Tools_ViewGeometry" Label="View Geometry"/>
                     <RibbonButton x:Name="RibbonButton_Tools_TextMap" Label="Text Map"/>
                 </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Developer" Header="Developer">
+                    <RibbonButton x:Name="RibbonButton_Tools_Test" Label="Test"/>
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">
                 <RibbonGroup x:Name="RibbonGroup_Help_General" Header="General">
