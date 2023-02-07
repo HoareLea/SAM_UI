@@ -86,6 +86,12 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.OccupancyLatentGainPerPerson);
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentSensibleGainPerArea);
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentSensibleGain);
+            multipleValueComboBoxControl_InfiltrationProfile_Infiltration.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.InfiltrationAirChangesPerHour);
+            multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingGainPerArea);
+            multipleValueComboBoxControl_LightingProfile_LightingGain.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingGain);
+            multipleValueComboBoxControl_LightingProfile_LightLevel.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingLevel);
+            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentLatentGainPerArea);
+            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentLatentGain);
         }
 
     }

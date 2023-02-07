@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -58,19 +59,39 @@ namespace SAM.Core.UI.WPF
             List<LegendItem> legendItems = legend.LegendItems;
             if(legendItems != null)
             {
-                if (Sort)
-                {
-                    legendItems.Sort((x, y) => x.Text.CompareTo(y.Text));
-                }
-
-                LegendItem legendItem = null;
+                LegendItem undefinedlegendItem = null;
                 if (UndefinedLegendItem != null)
                 {
-                    int index = legendItems.FindIndex(x => x.Text == UndefinedLegendItem.Text && x.Color == UndefinedLegendItem.Color);
-                    if (index != -1)
+                    int undefinedLegendIndex = legendItems.FindIndex(x => x.Text == UndefinedLegendItem.Text && x.Color == UndefinedLegendItem.Color);
+                    if(undefinedLegendIndex != -1)
                     {
-                        legendItem = legendItems[index];
-                        legendItems.RemoveAt(index);
+                        undefinedlegendItem = legendItems[undefinedLegendIndex];
+                        legendItems.RemoveAt(undefinedLegendIndex);
+                    }
+                }
+
+                if (Sort)
+                {
+                    List<Tuple<LegendItem, double>> tuples = new List<Tuple<LegendItem, double>>();
+                    foreach(LegendItem legendItem in legendItems)
+                    {
+                        if(!Core.Query.TryConvert(legendItem.Text, out double value) || double.IsNaN(value))
+                        {
+                            tuples = null;
+                            break;
+                        }
+
+                        tuples.Add(new Tuple<LegendItem, double>(legendItem, value));
+                    }
+                    
+                    if(tuples == null || tuples.Count == 0)
+                    {
+                        legendItems.Sort((x, y) => x.Text.CompareTo(y.Text));
+                    }
+                    else
+                    {
+                        tuples.Sort((x, y) => x.Item2.CompareTo(y.Item2));
+                        legendItems = tuples.ConvertAll(x => x.Item1);
                     }
                 }
 
@@ -79,9 +100,9 @@ namespace SAM.Core.UI.WPF
                     Add(legendItem_Temp);
                 }
 
-                if (legendItem != null)
+                if (undefinedlegendItem != null)
                 {
-                    Add(legendItem);
+                    Add(undefinedlegendItem);
                 }
             }
         }
