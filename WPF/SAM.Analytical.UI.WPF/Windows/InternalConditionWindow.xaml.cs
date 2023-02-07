@@ -30,7 +30,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<InternalConditionData> internalConditionDatas = analyticalModel.GetSpaces()?.ToList().ConvertAll(x => new InternalConditionData(x));
+            List<InternalConditionData> internalConditionDatas = analyticalModel.GetSpaces()?.ToList().ConvertAll(x => new InternalConditionData(analyticalModel, x));
 
             listBoxControl.SelectionChanged += ListBoxControl_SelectionChanged;
             listBoxControl.SetValues(internalConditionDatas, x => x?.Space?.Name);

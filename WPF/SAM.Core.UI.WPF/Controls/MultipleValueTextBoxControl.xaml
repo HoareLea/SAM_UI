@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="23" d:DesignWidth="120">
     <Grid Margin="0,0,0,0">
-        <TextBox x:Name="textBox" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Text="" VerticalAlignment="Stretch" MouseEnter="textBox_MouseEnter" GotKeyboardFocus="textBox_GotKeyboardFocus" LostKeyboardFocus="textBox_LostKeyboardFocus"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Stretch" TextWrapping="NoWrap" Text="" VerticalAlignment="Stretch" MouseEnter="textBox_MouseEnter" GotKeyboardFocus="textBox_GotKeyboardFocus" LostKeyboardFocus="textBox_LostKeyboardFocus" TextChanged="textBox_TextChanged"/>
 
     </Grid>
 </UserControl>

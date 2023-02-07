@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace SAM.Core.UI.WPF
 {
@@ -9,11 +11,20 @@ namespace SAM.Core.UI.WPF
     /// </summary>
     public partial class MultipleValueTextBoxControl : UserControl
     {
-        private System.Windows.Media.Brush foreground;
+        private enum Option
+        {
+            Vary
+        }
 
-        private System.Windows.Media.Brush background;
+        private object defaultValue = null;
+
+        private Brush background;
 
         private List<string> values;
+
+        public string VaryText { get; set; } = "<Vary>";
+
+        public Brush UpdatedBackground { get; set; } = Brushes.LightYellow;
 
         public event TextCompositionEventHandler TextBoxPreviewTextInput
         {
@@ -26,16 +37,11 @@ namespace SAM.Core.UI.WPF
                 textBox.PreviewTextInput -= value;
             }
         }
-
-        public System.Windows.Media.Brush VaryForeground { get; set; } = System.Windows.Media.Brushes.DarkGray;
-        
-        public string VaryText { get; set; } = "<Vary>";
         
         public MultipleValueTextBoxControl()
         {
             InitializeComponent();
 
-            foreground = textBox.Foreground;
             background = textBox.Background;
         }
 
@@ -103,6 +109,35 @@ namespace SAM.Core.UI.WPF
             SetText();
         }
 
+        public void SetDefaultValue(IEnumerable<string> values)
+        {
+            if (values == null || values.Count() == 0)
+            {
+                defaultValue = null;
+                SetBackground();
+                return;
+            }
+
+            defaultValue = values.ElementAt(0);
+            if (values.Count() == 1)
+            {
+                SetBackground();
+                return;
+            }
+
+            foreach (string value in values)
+            {
+                if (defaultValue?.ToString() != value)
+                {
+                    defaultValue = Option.Vary;
+                    SetBackground();
+                    return;
+                }
+            }
+
+            SetBackground();
+        }
+
         public bool Vary
         {
             get
@@ -126,14 +161,48 @@ namespace SAM.Core.UI.WPF
 
         private void SetText()
         {
-            bool vary = Vary;
-            textBox.Text = vary ? VaryText : Value;
-            SetVary(vary);
+            textBox.Text = Vary ? VaryText : Value;
+            SetBackground();
         }
 
-        private void SetVary(bool vary)
+        private void SetBackground()
         {
-            textBox.Foreground = vary ? VaryForeground : foreground;
+            if (background == null)
+            {
+                background = textBox.Background;
+            }
+
+            Brush brush = background;
+            bool vary = defaultValue is Option && (Option)defaultValue == Option.Vary || Vary;
+            if (vary)
+            {
+                brush = UpdatedBackground;
+                if (textBox.Text == VaryText)
+                {
+                    brush = background;
+                }
+            }
+            else
+            {
+                if (defaultValue == null)
+                {
+                    brush = UpdatedBackground;
+                    if ((string.IsNullOrEmpty(textBox.Text) && string.IsNullOrEmpty(Value)) || textBox.Text == Value)
+                    {
+                        brush = background;
+                    }
+                }
+                else
+                {
+                    brush = UpdatedBackground;
+                    if (textBox.Text == defaultValue.ToString())
+                    {
+                        brush = background;
+                    }
+                }
+            }
+
+            textBox.Background = brush;
         }
 
         private void textBox_MouseEnter(object sender, MouseEventArgs e)
@@ -146,7 +215,6 @@ namespace SAM.Core.UI.WPF
             if(Vary && textBox.Text == VaryText)
             {
                 textBox.Text = string.Empty;
-                SetVary(false);
             }
         }
 
@@ -155,36 +223,26 @@ namespace SAM.Core.UI.WPF
             if (Vary && string.IsNullOrEmpty(textBox.Text))
             {
                 textBox.Text = VaryText;
-                SetVary(true);
             }
         }
 
-        public System.Windows.Media.Brush Foreground
+        public new bool IsEnabled
         {
             get
             {
-                return foreground;
+                return base.IsEnabled;
             }
 
             set
             {
-                foreground = value;
-                textBox.Foreground = value;
+                textBox.IsEnabled = value;
+                base.IsEnabled = value;
             }
         }
 
-        public System.Windows.Media.Brush Background
+        private void textBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            get
-            {
-                return background;
-            }
-
-            set
-            {
-                background = value;
-                textBox.Background = value;
-            }
+            SetBackground();
         }
     }
 }

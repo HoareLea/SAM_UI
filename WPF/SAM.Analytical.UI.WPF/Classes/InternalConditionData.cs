@@ -1,18 +1,24 @@
-﻿using SAM.Geometry.UI;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Analytical.UI.WPF
 {
     public class InternalConditionData
     {
+        private AnalyticalModel AnalyticalModel { get; set; }
         private object @object;
 
-        public InternalConditionData(Space space)
+        public InternalConditionData(AnalyticalModel analyticalModel, Space space)
         {
+            AnalyticalModel = analyticalModel;
+
             @object = space == null ? null : new Space(space);
         }
 
-        public InternalConditionData(InternalCondition internalCondition)
+        public InternalConditionData(AnalyticalModel analyticalModel, InternalCondition internalCondition)
         {
+            AnalyticalModel = analyticalModel;
+
             @object = internalCondition == null ? null : new InternalCondition(internalCondition);
         }
 
@@ -101,6 +107,32 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public double HeatingDesignTemperature
+        {
+            get
+            {
+                return Analytical.Query.HeatingDesignTemperature(InternalCondition, AnalyticalModel?.ProfileLibrary);
+            }
+        }
+
+        public double CoolingDesignTemperature
+        {
+            get
+            {
+                return Analytical.Query.CoolingDesignTemperature(InternalCondition, AnalyticalModel?.ProfileLibrary);
+            }
+        }
+
+        public string GetProfileName(ProfileType profileType)
+        {
+            return InternalCondition?.GetProfileName(profileType);
+        }
+
+        public Profile GetProfile(ProfileType profileType)
+        {
+            return InternalCondition?.GetProfile(profileType, AnalyticalModel?.ProfileLibrary);
+        }
+
         public bool TryGetValue<T>(SpaceParameter spaceParameter, out T value, bool tryConvert = true)
         {
             value = default;
@@ -121,6 +153,31 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return InternalCondition.TryGetValue(internalConditionParameter, out value, tryConvert);
+        }
+
+        public InternalCondition GetInternalConditionTemplate()
+        {
+            string name = InternalCondition?.Name;
+            if(string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
+            IEnumerable<InternalCondition> internalConditions = AnalyticalModel?.AdjacencyCluster?.GetInternalConditions(false, true);
+            if(internalConditions == null || internalConditions.Count() == 0)
+            {
+                return null;
+            }
+
+            foreach(InternalCondition internalCondition in internalConditions)
+            {
+                if(internalCondition.Name == name)
+                {
+                    return internalCondition;
+                }
+            }
+
+            return null;
         }
     }
 }

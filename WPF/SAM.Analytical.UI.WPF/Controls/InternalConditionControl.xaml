@@ -19,12 +19,12 @@
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,8,140.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="Design Temperature:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="multipleValueComboBoxControl_HeatingProfile_DesignTemperature" HorizontalAlignment="Stretch" Height="23" Margin="134,40,226.8,0" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False" Width="60" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[°C]" HorizontalAlignment="Left" Margin="198,38,0,0" VerticalAlignment="Top"/>
                 <Button Content="Select" HorizontalAlignment="Left" Margin="351,10,0,0" VerticalAlignment="Top" Width="60"/>
                 <Button Content="View" HorizontalAlignment="Left" Margin="286,10,0,0" VerticalAlignment="Top" Width="60"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_HeatingProfile_Name" HorizontalAlignment="Left" Height="21" Margin="60,10,0,0" VerticalAlignment="Top" Width="221"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_HeatingProfile_DesignTemperature" HorizontalAlignment="Left" Height="23" Margin="133,38,0,0" VerticalAlignment="Top" Width="60"/>
 
             </Grid>
         </GroupBox>

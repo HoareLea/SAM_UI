@@ -16,12 +16,15 @@ namespace SAM.Core.UI.WPF
         {
             Vary
         }
-        
+
+        private object defaultValue = null;
+
+        private Brush background;
+
         public string VaryText { get; set; } = "<Vary>";
 
         public Brush UpdatedBackground { get; set; } = Brushes.LightYellow;
 
-        private Brush background;
 
         public event TextCompositionEventHandler TextBoxPreviewTextInput
         {
@@ -120,6 +123,30 @@ namespace SAM.Core.UI.WPF
             }
         }
 
+        public void SetDefaultValue(IEnumerable<string> values)
+        {
+            if(values == null || values.Count() == 0)
+            {
+                defaultValue = null;
+                return;
+            }
+
+            defaultValue = values.ElementAt(0);
+            if (values.Count() == 1)
+            {
+                return;
+            }
+
+            foreach (string value in values)
+            {
+                if (defaultValue?.ToString() != value)
+                {
+                    defaultValue = Option.Vary;
+                    return;
+                }
+            }
+        }
+
         private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SetBackground();
@@ -133,29 +160,48 @@ namespace SAM.Core.UI.WPF
             }
             
             Brush brush = background;
-            if (Vary)
+            bool vary = defaultValue is Option && (Option)defaultValue == Option.Vary || Vary;
+            if(vary)
             {
-                brush = UpdatedBackground;
                 ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
-                if((comboBoxItem?.Tag is Option) && (Option)comboBoxItem?.Tag == Option.Vary)
+                if(comboBoxItem != null)
                 {
-                    brush = background;
+                    brush = UpdatedBackground;
+                    if ((comboBoxItem.Tag is Option) && (Option)comboBoxItem.Tag == Option.Vary)
+                    {
+                        brush = background;
+                    }
                 }
             }
             else
             {
-                List<string> values = GetValues();
-                if(values != null && values.Count != 0)
+                if (defaultValue == null)
                 {
-                    brush = UpdatedBackground;
-                    ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
-                    if(values[0] == null && comboBoxItem.Tag == null)
+                    List<string> values = GetValues();
+                    if (values != null && values.Count != 0)
                     {
-                        brush = background;
+                        brush = UpdatedBackground;
+                        ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
+                        if (values[0] == null && comboBoxItem.Tag == null)
+                        {
+                            brush = background;
+                        }
+                        else if (comboBoxItem != null && comboBoxItem.Tag is string)
+                        {
+                            if (values[0] == (string)comboBoxItem.Tag)
+                            {
+                                brush = background;
+                            }
+                        }
                     }
-                    else if(comboBoxItem != null && comboBoxItem.Tag is string)
+                }
+                else
+                {
+                    ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
+                    if (comboBoxItem != null && comboBoxItem.Tag is string)
                     {
-                        if(values[0] == (string)comboBoxItem.Tag)
+                        brush = UpdatedBackground;
+                        if (defaultValue.ToString() == (string)comboBoxItem.Tag)
                         {
                             brush = background;
                         }
