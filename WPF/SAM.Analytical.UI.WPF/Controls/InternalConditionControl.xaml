@@ -22,7 +22,7 @@
                 <Label Content="Design Temperature:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
                 <Label Content="[°C]" HorizontalAlignment="Left" Margin="198,38,0,0" VerticalAlignment="Top"/>
                 <Button Content="Select" HorizontalAlignment="Left" Margin="351,10,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="286,10,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_ViewHeatingProfile" Content="View" HorizontalAlignment="Left" Margin="286,10,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewHeatingProfile_Click"/>
                 <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_HeatingProfile_Name" HorizontalAlignment="Left" Height="21" Margin="60,10,0,0" VerticalAlignment="Top" Width="221"/>
                 <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_HeatingProfile_DesignTemperature" HorizontalAlignment="Left" Height="23" Margin="133,38,0,0" VerticalAlignment="Top" Width="60"/>
 
@@ -42,39 +42,38 @@
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,10,140,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="Sensible Gain:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="241,40,131.2,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox x:Name="textBox_OccupancyProfile_CalculatedSensibleGain" HorizontalAlignment="Stretch" Height="23" Margin="241,40,131.2,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="289,40,0,0" VerticalAlignment="Top"/>
                 <Button Content="Select" HorizontalAlignment="Left" Margin="349,12,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="284,12,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_ViewOccupancyProfile" Content="View" HorizontalAlignment="Left" Margin="284,12,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewOccupancyProfile_Click"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson" HorizontalAlignment="Stretch" Height="23" Margin="100,40,254.2,0" VerticalAlignment="Top" Width="65" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W/p]" HorizontalAlignment="Left" Margin="166,40,0,0" VerticalAlignment="Top"/>
                 <Label Content="Latent Gain:" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="241,71,131.2,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox  x:Name="textBox_OccupancyProfile_CalculatedLatentGain" HorizontalAlignment="Stretch" Height="23" Margin="241,71,131.2,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="289,71,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="100,71,254.2,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W/p]" HorizontalAlignment="Left" Margin="167,71,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_OccupancyProfile_Name" HorizontalAlignment="Left" Height="19" Margin="60,12,0,0" VerticalAlignment="Top" Width="219"/>
 
             </Grid>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="100" Margin="8,340,0,0" VerticalAlignment="Top" Width="435">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_EquipmentProfile" Content="Equipment Sensible Profile"/>
+                <CheckBox x:Name="checkBox_EquipmentSensibleProfile" Content="Equipment Sensible Profile"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,10,140,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="Sensible Gain:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="208,43,115,0" VerticalAlignment="Top"  PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="291,40,0,0" VerticalAlignment="Top"/>
                 <Button Content="Select" HorizontalAlignment="Left" Margin="349,12,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="284,12,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_ViewEquipmentSensibleProfile" Content="View" HorizontalAlignment="Left" Margin="284,12,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewEquipmentSensibleProfile_Click"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="96,42,258.2,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W/m2]" HorizontalAlignment="Left" Margin="159,40,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="334,43,38.2,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox x:Name="textBox_EquipmentSensibleProfile_CalculatedSensibleGain" HorizontalAlignment="Stretch" Height="23" Margin="334,43,38.2,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="386,40,0,0" VerticalAlignment="Top"/>
-
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_EquipmentSensibleProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,12,0,0" VerticalAlignment="Top" Width="219"/>
             </Grid>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="448,104,0,0" VerticalAlignment="Top" Width="444">
@@ -83,27 +82,26 @@
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,8,140.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="Design Temperature:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="multipleValueComboBoxControl_CoolingProfile_DesignTemperature" HorizontalAlignment="Stretch" Height="23" Margin="138,41,242,0" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_CoolingProfile_DesignTemperature" HorizontalAlignment="Left" Height="23" Margin="133,38,0,0" VerticalAlignment="Top" Width="60"/>
                 <Label Content="[°C]" HorizontalAlignment="Left" Margin="191,38,0,0" VerticalAlignment="Top"/>
                 <Button Content="Select" HorizontalAlignment="Left" Margin="358,10,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="293,10,0,0" VerticalAlignment="Top" Width="60"/>
-
+                <Button x:Name="button_ViewCoolingProfile" Content="View" HorizontalAlignment="Left" Margin="293,10,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewCoolingProfile_Click"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_CoolingProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,10,0,0" VerticalAlignment="Top" Width="228"/>
             </Grid>
         </GroupBox>
-        <GroupBox HorizontalAlignment="Left" Height="97" Margin="8,445,0,0" VerticalAlignment="Top" Width="406">
+        <GroupBox HorizontalAlignment="Left" Height="97" Margin="8,445,0,0" VerticalAlignment="Top" Width="435">
             <GroupBox.Header>
                 <CheckBox x:Name="checkBox_HumidificationProfile" Content="Humidification Profile"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,8,140.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="Humidity:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_HumidificationProfile_Humidity" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="76,41,249.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
-                <Label Content="[-]" HorizontalAlignment="Left" Margin="144,38,0,0" VerticalAlignment="Top"/>
-                <Button Content="Select" HorizontalAlignment="Left" Margin="320,10,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="255,10,0,0" VerticalAlignment="Top" Width="60"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_HumidificationProfile_Humidity" HorizontalAlignment="Stretch" Height="23" Margin="90,41,280.2,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
+                <Label Content="[-]" HorizontalAlignment="Left" Margin="144,38,0,0" VerticalAlignment="Top" RenderTransformOrigin="1.902,0.461"/>
+                <Button Content="Select" HorizontalAlignment="Left" Margin="349,10,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_ViewHumidificationProfile" Content="View" HorizontalAlignment="Left" Margin="284,10,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewHumidificationProfile_Click"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_HumidificationProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,10,0,0" VerticalAlignment="Top" Width="219"/>
 
             </Grid>
         </GroupBox>
@@ -113,28 +111,27 @@
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,8,140.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_DehumidificationProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,10,0,0" VerticalAlignment="Top" Width="228"/>
                 <Label Content="Dehumidity:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_DehumidificationProfile_Dehumidity" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="89,41,255.6,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[-]" HorizontalAlignment="Left" Margin="166,38,0,0" VerticalAlignment="Top"/>
                 <Button Content="Select" HorizontalAlignment="Left" Margin="358,10,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="293,10,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_ViewDehumidificationProfile" Content="View" HorizontalAlignment="Left" Margin="293,10,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewDehumidificationProfile_Click"/>
 
             </Grid>
         </GroupBox>
-        <GroupBox HorizontalAlignment="Left" Height="97" Margin="10,547,0,0" VerticalAlignment="Top" Width="406">
+        <GroupBox HorizontalAlignment="Left" Height="97" Margin="10,547,0,0" VerticalAlignment="Top" Width="433">
             <GroupBox.Header>
                 <CheckBox x:Name="checkBox_InfiltrationProfile" Content="Infiltration Profile"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,8,140.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="Infiltration:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_InfiltrationProfile_Infiltration" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="82,41,243.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_InfiltrationProfile_Infiltration" HorizontalAlignment="Stretch" Height="23" Margin="95,41,267.8,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[ACH]" HorizontalAlignment="Left" Margin="149,38,0,0" VerticalAlignment="Top"/>
-                <Button Content="Select" HorizontalAlignment="Left" Margin="320,10,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="255,10,0,0" VerticalAlignment="Top" Width="60"/>
-
+                <Button Content="Select" HorizontalAlignment="Left" Margin="347,10,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_ViewInfiltrationProfile" Content="View" HorizontalAlignment="Left" Margin="282,10,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewInfiltrationProfile_Click"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_InfiltrationProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,10,0,0" VerticalAlignment="Top" Width="217"/>
             </Grid>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="129" Margin="448,206,0,0" VerticalAlignment="Top" Width="444">
@@ -143,16 +140,16 @@
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,10,140,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_LightingProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,10,0,0" VerticalAlignment="Top" Width="228"/>
                 <Label Content="Lighting Gain:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingGain" HorizontalAlignment="Stretch" Height="23" Width="65"  Margin="239,43,124,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="305,40,0,0" VerticalAlignment="Top"/>
                 <Button Content="Select" HorizontalAlignment="Left" Margin="358,12,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="293,12,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_ViewLightingProfile" Content="View" HorizontalAlignment="Left" Margin="293,12,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewLightingProfile_Click"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingGainPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="99,42,236,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W/m2]" HorizontalAlignment="Left" Margin="181,40,0,0" VerticalAlignment="Top"/>
                 <Label Content="Lighting Level:" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="352,43,29,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox  x:Name="textBox_LightingProfile_CalculatedLightingGain" HorizontalAlignment="Stretch" Height="23" Margin="352,43,29,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="401,40,-2,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightLevel" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="99,73,236,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[lux]" HorizontalAlignment="Left" Margin="181,71,0,0" VerticalAlignment="Top"/>
@@ -165,15 +162,15 @@
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="60,10,140,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_EquipmentLatentProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,10,0,0" VerticalAlignment="Top" Width="228"/>
                 <Label Content="Latent Gain:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="241,43,122,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="307,40,0,0" VerticalAlignment="Top"/>
                 <Button Content="Select" HorizontalAlignment="Left" Margin="358,12,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button Content="View" HorizontalAlignment="Left" Margin="293,12,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_ViewEquipmentLatentProfile" Content="View" HorizontalAlignment="Left" Margin="293,12,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewEquipmentLatentProfile_Click"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="113,40,250,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W/m2]" HorizontalAlignment="Left" Margin="183,40,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="354,43,29,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox x:Name="textBox_EquipmentLatentProfile_CalculatedLatentGain" HorizontalAlignment="Stretch" Height="23" Margin="349,43,29,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="402,40,-3,0" VerticalAlignment="Top"/>
 
             </Grid>

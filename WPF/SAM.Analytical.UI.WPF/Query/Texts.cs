@@ -79,10 +79,14 @@ namespace SAM.Analytical.UI.WPF
             {
                 if(!internalConditionData.TryGetValue(@enum as dynamic, out string value, true))
                 {
-                    continue;
+                    result.Add(null);
+                }
+                else
+                {
+                    result.Add(value);
                 }
 
-                result.Add(value);
+
             }
 
             return result.ToList();

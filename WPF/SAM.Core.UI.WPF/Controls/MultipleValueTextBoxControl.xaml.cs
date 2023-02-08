@@ -11,6 +11,8 @@ namespace SAM.Core.UI.WPF
     /// </summary>
     public partial class MultipleValueTextBoxControl : UserControl
     {
+        public event System.Windows.Controls.TextChangedEventHandler TextChanged;
+
         private enum Option
         {
             Vary
@@ -243,6 +245,7 @@ namespace SAM.Core.UI.WPF
         private void textBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             SetBackground();
+            TextChanged?.Invoke(this, e);
         }
     }
 }

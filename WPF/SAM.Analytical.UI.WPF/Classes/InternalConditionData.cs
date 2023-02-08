@@ -123,6 +123,74 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public double OccupancySensibleGain
+        {
+            get
+            {
+                return Analytical.Query.OccupancySensibleGain(Space);
+            }
+        }
+
+        public double OccupancyLatentGain
+        {
+            get
+            {
+                return Analytical.Query.OccupancyLatentGain(Space);
+            }
+        }
+
+        public double EquipmentSensibleGain
+        {
+            get
+            {
+                return Analytical.Query.CalculatedEquipmentSensibleGain(Space);
+            }
+        }
+
+        public double EquipmentLatentGain
+        {
+            get
+            {
+                return Analytical.Query.CalculatedEquipmentLatentGain(Space);
+            }
+        }
+
+        public double Humidity
+        {
+            get
+            {
+                Profile profile = GetProfile(ProfileType.Humidification);
+                if(profile == null)
+                {
+                    return double.NaN;
+                }
+
+                return profile.MaxValue;
+            }
+        }
+
+        public double Dehumidity
+        {
+            get
+            {
+                Profile profile = GetProfile(ProfileType.Dehumidification);
+                if (profile == null)
+                {
+                    return double.NaN;
+                }
+
+                return profile.MaxValue;
+            }
+        }
+
+        public double LightingGain
+        {
+            get
+            {
+                return Analytical.Query.CalculatedLightingGain(Space);
+            }
+        }
+
         public string GetProfileName(ProfileType profileType)
         {
             return InternalCondition?.GetProfileName(profileType);

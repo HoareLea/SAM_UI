@@ -12,6 +12,8 @@ namespace SAM.Core.UI.WPF
     /// </summary>
     public partial class MultipleValueComboBoxControl : UserControl
     {
+        public event EventHandler TextChanged;
+
         private enum Option
         {
             Vary
@@ -54,6 +56,31 @@ namespace SAM.Core.UI.WPF
             {
                 SetValues(value);
             }
+        }
+
+        public string Value
+        {
+            get
+            {
+                ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
+                if(comboBoxItem == null)
+                {
+                    return comboBox.Text;
+                }
+                
+                if(comboBoxItem.Tag is string)
+                {
+                    return comboBoxItem.Tag as string;
+                }
+
+                if(comboBoxItem.Tag is Option && (Option)comboBoxItem.Tag == Option.Vary)
+                {
+                    return VaryText;
+                }
+
+                return null;
+            }
+
         }
 
         private void SetValues(IEnumerable<string> values)
@@ -128,12 +155,14 @@ namespace SAM.Core.UI.WPF
             if(values == null || values.Count() == 0)
             {
                 defaultValue = null;
+                SetBackground();
                 return;
             }
 
             defaultValue = values.ElementAt(0);
             if (values.Count() == 1)
             {
+                SetBackground();
                 return;
             }
 
@@ -142,14 +171,19 @@ namespace SAM.Core.UI.WPF
                 if (defaultValue?.ToString() != value)
                 {
                     defaultValue = Option.Vary;
+                    SetBackground();
                     return;
                 }
             }
+
+            SetBackground();
         }
 
         private void comboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SetBackground();
+
+            TextChanged?.Invoke(this, e);
         }
 
         private void SetBackground()
@@ -172,6 +206,10 @@ namespace SAM.Core.UI.WPF
                         brush = background;
                     }
                 }
+                else if(comboBox.Text != VaryText)
+                {
+                    brush = UpdatedBackground;
+                }
             }
             else
             {
@@ -182,7 +220,15 @@ namespace SAM.Core.UI.WPF
                     {
                         brush = UpdatedBackground;
                         ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
-                        if (values[0] == null && comboBoxItem.Tag == null)
+                        if(comboBoxItem == null)
+                        {
+                            string value = Value;
+                            if(value == values[0] || (string.IsNullOrEmpty(value) && string.IsNullOrEmpty(values[0])))
+                            {
+                                brush = background;
+                            }
+                        }
+                        else if (values[0] == null && comboBoxItem?.Tag == null)
                         {
                             brush = background;
                         }
@@ -198,13 +244,20 @@ namespace SAM.Core.UI.WPF
                 else
                 {
                     ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
-                    if (comboBoxItem != null && comboBoxItem.Tag is string)
+                    if (comboBoxItem != null)
+                    {
+                        if(comboBoxItem.Tag is string)
+                        {
+                            brush = UpdatedBackground;
+                            if (defaultValue.ToString() == (string)comboBoxItem.Tag)
+                            {
+                                brush = background;
+                            }
+                        }
+                    }
+                    else if (comboBox.Text != defaultValue.ToString())
                     {
                         brush = UpdatedBackground;
-                        if (defaultValue.ToString() == (string)comboBoxItem.Tag)
-                        {
-                            brush = background;
-                        }
                     }
                 }
             }
@@ -215,6 +268,8 @@ namespace SAM.Core.UI.WPF
         private void comboBox_PreviewKeyUp(object sender, KeyEventArgs e)
         {
             SetBackground();
+
+            TextChanged?.Invoke(this, e);
         }
     }
 }

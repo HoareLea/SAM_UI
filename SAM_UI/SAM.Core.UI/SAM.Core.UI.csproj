@@ -75,6 +75,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\Vary.cs" />
     <Compile Include="Query\Brightness.cs" />
   </ItemGroup>
   <ItemGroup>
