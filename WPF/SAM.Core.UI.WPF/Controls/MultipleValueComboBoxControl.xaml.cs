@@ -80,6 +80,10 @@ namespace SAM.Core.UI.WPF
 
                 return null;
             }
+            set
+            {
+                comboBox.Text = value;
+            }
 
         }
 
@@ -147,6 +151,14 @@ namespace SAM.Core.UI.WPF
                 }
 
                 return false;
+            }
+        }
+
+        public bool VarySet
+        {
+            get
+            {
+                return Value == VaryText;
             }
         }
 

@@ -22,6 +22,13 @@ namespace SAM.Analytical.UI.WPF
             @object = internalCondition == null ? null : new InternalCondition(internalCondition);
         }
 
+        public InternalConditionData(AnalyticalModel analyticalModel, InternalConditionData internalConditionData)
+        {
+            AnalyticalModel = analyticalModel;
+
+            @object = internalConditionData?.@object;
+        }
+
         public InternalCondition InternalCondition
         {
             get
@@ -36,6 +43,17 @@ namespace SAM.Analytical.UI.WPF
 
                 return result;
             }
+            set
+            {
+                if(@object is Space)
+                {
+                    ((Space)@object).InternalCondition = value;
+                }
+                else if(@object is InternalCondition)
+                {
+                    @object = value;
+                }
+            }
         }
 
         public Space Space
@@ -43,6 +61,10 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 return @object as Space;
+            }
+            set
+            {
+                @object = value;
             }
         }
 

@@ -31,6 +31,7 @@ namespace SAM.Analytical.UI.WPF
             checkBox_LightingProfile.IsChecked = true;
             checkBox_OccupancyProfile.IsChecked = true;
 
+            multipleValueComboBoxControl_Name.IsEnabled = false;
             multipleValueTextBoxControl_HeatingProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_HeatingProfile_DesignTemperature.IsEnabled = false;
             multipleValueTextBoxControl_OccupancyProfile_Name.IsEnabled = false;
@@ -233,9 +234,16 @@ namespace SAM.Analytical.UI.WPF
                     internalCondition = new InternalCondition(internalCondition);
                 }
 
-                if(!multipleValueComboBoxControl_Name.Vary)
+                if(!multipleValueComboBoxControl_Name.VarySet)
                 {
-                    internalCondition = new InternalCondition(multipleValueComboBoxControl_Name.Value, internalCondition);
+                    if(internalCondition.Name != multipleValueComboBoxControl_Name.Value)
+                    {
+                        InternalCondition internalCondition_Temp = AnalyticalModel.AdjacencyCluster.GetInternalConditions(false, true)?.ToList()?.Find(x => x.Name == multipleValueComboBoxControl_Name.Value);
+                        if(internalCondition_Temp != null)
+                        {
+                            internalCondition = new InternalCondition(internalCondition_Temp);
+                        }
+                    }
                 }
 
                 Space space = internalConditionData.Space;
@@ -692,6 +700,109 @@ namespace SAM.Analytical.UI.WPF
         private void button_SelectDehumidificationProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_DehumidificationProfile_Name, ProfileType.Dehumidification);
+        }
+
+        private void button_Select_Click(object sender, RoutedEventArgs e)
+        {
+            if(internalConditionDatas == null)
+            {
+                return;
+            }
+            
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if(adjacencyCluster == null)
+            {
+                return;
+            }
+
+            ProfileLibrary profileLibrary = AnalyticalModel.ProfileLibrary;
+
+            InternalConditionLibrary internalConditionLibrary = new InternalConditionLibrary("Internal Condition Library");
+            adjacencyCluster?.GetInternalConditions(false, true)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
+
+            InternalCondition internalCondition = null;
+            if(!multipleValueComboBoxControl_Name.VarySet)
+            {
+                internalCondition = internalConditionLibrary.GetInternalConditions(multipleValueComboBoxControl_Name.Value).FirstOrDefault();
+            }
+
+            using (InternalConditionLibraryForm internalConditionForm = new InternalConditionLibraryForm(internalConditionLibrary, profileLibrary, adjacencyCluster, internalCondition))
+            {
+                if (internalConditionForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                profileLibrary = internalConditionForm.ProfileLibrary;
+                adjacencyCluster = internalConditionForm.AdjacencyCluster;
+                internalCondition = internalConditionForm.GetInternalConditions(true)?.FirstOrDefault();
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster, AnalyticalModel.MaterialLibrary, profileLibrary);
+
+            foreach (InternalConditionData internalConditionData in internalConditionDatas)
+            {
+                internalConditionData.InternalCondition = internalCondition;
+            }
+
+            LoadInternalConditionDatas(internalConditionDatas);
+        }
+
+        private void button_Create_Click(object sender, RoutedEventArgs e)
+        {
+            if (internalConditionDatas == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            InternalConditionLibrary internalConditionLibrary = new InternalConditionLibrary("Internal Condition Library");
+            adjacencyCluster?.GetInternalConditions(true, true)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
+
+            InternalCondition internalCondition = GetInternalConditionDatas(true)?.Find(x => x?.InternalCondition != null)?.InternalCondition;
+
+            string name = internalCondition?.Name;
+            if (string.IsNullOrEmpty(name))
+            {
+                name = "New Internal Condition";
+            }
+
+            int index = 1;
+            string name_Temp = name;
+
+            while(internalConditionLibrary.GetInternalConditions(name_Temp).FirstOrDefault() != null)
+            {
+                name_Temp = string.Format("{0} {1}", name, index);
+                index++;
+            }
+
+            using (Core.Windows.Forms.TextBoxForm<string> textBoxForm = new Core.Windows.Forms.TextBoxForm<string>("Internal Condition Name", "Name"))
+            {
+                textBoxForm.Value = name_Temp;
+                if (textBoxForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                internalCondition = internalCondition == null ? new InternalCondition(textBoxForm.Value) : new InternalCondition(textBoxForm.Value, internalCondition);
+            }
+
+            adjacencyCluster.AddObject(internalCondition);
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+
+            for(int i =0; i < internalConditionDatas.Count; i++)
+            {
+                internalConditionDatas[i] = new InternalConditionData(AnalyticalModel, internalConditionDatas[i]);
+                internalConditionDatas[i].InternalCondition = internalCondition;
+            }
+
+            LoadInternalConditionDatas(internalConditionDatas);
         }
     }
 }

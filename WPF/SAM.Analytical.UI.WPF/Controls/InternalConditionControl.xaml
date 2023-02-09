@@ -10,9 +10,9 @@
     <Grid>
         <Label Content="Name:" HorizontalAlignment="Left" Margin="12,7,0,0" VerticalAlignment="Top"/>
         <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_Name" HorizontalAlignment="Left" Height="23" Margin="62,10,0,0" VerticalAlignment="Top" Width="235"/>
-        <Button Content="Select" HorizontalAlignment="Left" Margin="62,38,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Create" HorizontalAlignment="Left" Margin="142,38,0,0" VerticalAlignment="Top" Width="75"/>
-        <Button Content="Reset" HorizontalAlignment="Left" Margin="222,38,0,0" VerticalAlignment="Top" Width="75"/>
+        <Button x:Name="button_Select" Content="Select" HorizontalAlignment="Left" Margin="62,38,0,0" VerticalAlignment="Top" Width="75" Click="button_Select_Click"/>
+        <Button x:Name="button_Create" Content="Create" HorizontalAlignment="Left" Margin="142,38,0,0" VerticalAlignment="Top" Width="75" Click="button_Create_Click"/>
+        <Button x:Name="button_Reset" Content="Reset" HorizontalAlignment="Left" Margin="222,38,0,0" VerticalAlignment="Top" Width="75"/>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="6,104,0,0" VerticalAlignment="Top" Width="437">
             <GroupBox.Header>
                 <CheckBox x:Name="checkBox_HeatingProfile" Content="Heating Profile"/>
@@ -29,7 +29,7 @@
             </Grid>
         </GroupBox>
         <Label Content="Color:" HorizontalAlignment="Left" Margin="12,56,0,0" VerticalAlignment="Top"/>
-        <Button Content="" HorizontalAlignment="Left" Margin="62,62,0,0" VerticalAlignment="Top" Width="235"/>
+        <Button x:Name="button_Color" Content="" HorizontalAlignment="Left" Margin="62,62,0,0" VerticalAlignment="Top" Width="235"/>
         <Label Content="Area Per Person:" HorizontalAlignment="Left" Margin="510,18,0,0" VerticalAlignment="Top"/>
         <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_AreaPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="609,19,556.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
         <Label Content="[m2/p]" HorizontalAlignment="Left" Margin="679,19,0,0" VerticalAlignment="Top"/>
