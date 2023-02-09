@@ -16,7 +16,12 @@ namespace SAM.Core.UI
             T value = values.ElementAt(0);
             foreach(T value_Temp in values)
             {
-                if((value_Temp == null && value != null) || (value_Temp != null && value == null))
+                if(string.IsNullOrEmpty(value?.ToString()) && string.IsNullOrEmpty(value_Temp?.ToString()))
+                {
+                    continue;
+                }
+
+                if (string.IsNullOrEmpty(value?.ToString()) || string.IsNullOrEmpty(value_Temp?.ToString()))
                 {
                     return true;
                 }

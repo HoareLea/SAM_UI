@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -30,6 +31,46 @@ namespace SAM.Core.UI.WPF
             {
                 string text = namesFunc == null ? null : namesFunc.Invoke(value);
                 listBox.Items.Add(new ListBoxItem() { Content = text, Tag = value});
+            }
+        }
+
+        public void UpdateValue<T>(T value, Func<T, string> uniqueIdFunc)
+        {
+            if(value == null || uniqueIdFunc == null)
+            {
+                return;
+            }
+
+            string uniqueId = uniqueIdFunc(value);
+
+            foreach (ListBoxItem listBoxItem in listBox.Items)
+            {
+                if (!(listBoxItem.Tag is T))
+                {
+                    continue;
+                }
+
+                T value_Old = (T)listBoxItem.Tag;
+
+                if (uniqueId != uniqueIdFunc(value_Old))
+                {
+                    continue;
+                }
+
+                listBoxItem.Tag = value;
+            }
+        }
+
+        public void UpdateValues<T>(IEnumerable<T> values, Func<T, string> uniqueIdFunc)
+        {
+            if(values == null || uniqueIdFunc == null)
+            {
+                return;
+            }
+
+            foreach(T value in values)
+            {
+                UpdateValue<T>(value, uniqueIdFunc);
             }
         }
 

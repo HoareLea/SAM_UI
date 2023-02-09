@@ -1,4 +1,5 @@
-﻿using SAM.Core;
+﻿using HelixToolkit.Wpf;
+using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
 using System;
@@ -478,6 +479,12 @@ namespace SAM.Geometry.UI.WPF
             {
                 legendControl.UndefinedLegendItem = value;
             }
+        }
+
+        private void helixViewport3D_CameraChanged(object sender, RoutedEventArgs e)
+        {
+            //Core.UI.WPF.Modify.Clear<SunLight>(helixViewport3D.Children);
+            helixViewport3D.Children.Add(new SunLight());
         }
     }
 }

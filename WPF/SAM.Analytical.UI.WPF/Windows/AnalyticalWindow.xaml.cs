@@ -456,7 +456,6 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void ViewControl_ObjectContextMenuOpening(object sender, ObjectContextMenuOpeningEventArgs e)
         {
-
             e.ContextMenuEventArgs.Handled = true;
 
             ContextMenu contextMenu = e.ContextMenu;
@@ -549,8 +548,6 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
                 }
             }
-
-
         }
 
         private void MenuItem_MenuItem_MapInternalCondition_Click(object sender, RoutedEventArgs e)

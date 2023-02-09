@@ -121,6 +121,11 @@ namespace SAM.Core.UI.WPF
             }
 
             defaultValue = values.ElementAt(0);
+            if(defaultValue == null)
+            {
+                defaultValue = string.Empty;
+            }
+
             if (values.Count() == 1)
             {
                 SetBackground();
@@ -129,6 +134,11 @@ namespace SAM.Core.UI.WPF
 
             foreach (string value in values)
             {
+                if(string.IsNullOrEmpty(value) && string.IsNullOrEmpty(defaultValue?.ToString()))
+                {
+                    continue;
+                }
+                
                 if (defaultValue?.ToString() != value)
                 {
                     defaultValue = Option.Vary;
@@ -197,7 +207,7 @@ namespace SAM.Core.UI.WPF
                 else
                 {
                     brush = UpdatedBackground;
-                    if (textBox.Text == defaultValue.ToString())
+                    if (textBox.Text == defaultValue.ToString() || (string.IsNullOrEmpty(textBox.Text) && string.IsNullOrEmpty(defaultValue?.ToString())))
                     {
                         brush = background;
                     }

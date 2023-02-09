@@ -1,8 +1,8 @@
 ﻿using SAM.Analytical.Windows.Forms;
+using SAM.Core.UI.WPF;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -225,13 +225,17 @@ namespace SAM.Analytical.UI.WPF
                 InternalCondition internalCondition = internalConditionData?.InternalCondition;
                 if (internalCondition == null)
                 {
-                    result.Add(internalConditionData);
-                    continue;
+                    internalCondition = new InternalCondition(string.Empty);
                 }
 
                 if (internalCondition != null)
                 {
                     internalCondition = new InternalCondition(internalCondition);
+                }
+
+                if(!multipleValueComboBoxControl_Name.Vary)
+                {
+                    internalCondition = new InternalCondition(multipleValueComboBoxControl_Name.Value, internalCondition);
                 }
 
                 Space space = internalConditionData.Space;
@@ -444,7 +448,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return internalConditionDatas;
+                return GetInternalConditionDatas(true);
             }
 
             set
@@ -531,7 +535,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_CoolingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Cooling));
             multipleValueTextBoxControl_CoolingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Cooling)));
 
-            multipleValueTextBoxControl_CoolingProfile_DesignTemperature.Values = internalConditionDatas_Temp.ConvertAll(x => x.HeatingDesignTemperature)?.Texts();
+            multipleValueTextBoxControl_CoolingProfile_DesignTemperature.Values = internalConditionDatas_Temp.ConvertAll(x => x.CoolingDesignTemperature)?.Texts();
             multipleValueTextBoxControl_CoolingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.CoolingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
 
             multipleValueTextBoxControl_LightingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Lighting));
@@ -619,6 +623,75 @@ namespace SAM.Analytical.UI.WPF
         private void button_ViewDehumidificationProfile_Click(object sender, RoutedEventArgs e)
         {
             ViewProfile(ProfileType.Dehumidification);
+        }
+
+        private void SetProfile(MultipleValueTextBoxControl multipleValueTextBoxControl, ProfileType profileType)
+        {
+            if (profileType == ProfileType.Undefined || multipleValueTextBoxControl == null)
+            {
+                return;
+            }
+
+            ProfileLibrary profileLibrary = AnalyticalModel?.ProfileLibrary;
+            if (profileLibrary == null)
+            {
+                return;
+            }
+
+            Profile profile = Analytical.Windows.Modify.SelectProfile(profileLibrary, profileType);
+            if (profile == null)
+            {
+                return;
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, AnalyticalModel.AdjacencyCluster, AnalyticalModel.MaterialLibrary, profileLibrary);
+
+            multipleValueTextBoxControl.Value = profile.Name;
+        }
+
+        private void button_SelectHeatingProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_HeatingProfile_Name, ProfileType.Heating);
+        }
+
+        private void button_SelectOccupancyProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_OccupancyProfile_Name, ProfileType.Occupancy);
+        }
+
+        private void button_SelectEquipmentSensibleProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_EquipmentSensibleProfile_Name, ProfileType.EquipmentSensible);
+        }
+
+        private void button_SelectHumidificationProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_HumidificationProfile_Name, ProfileType.Humidification);
+        }
+
+        private void button_SelectInfiltrationProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_InfiltrationProfile_Name, ProfileType.Infiltration);
+        }
+
+        private void button_SelectCoolingProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_CoolingProfile_Name, ProfileType.Cooling);
+        }
+
+        private void button_SelectLightingProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_LightingProfile_Name, ProfileType.Lighting);
+        }
+
+        private void button_SelectEquipmentLatentProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_EquipmentLatentProfile_Name, ProfileType.EquipmentLatent);
+        }
+
+        private void button_SelectDehumidificationProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_DehumidificationProfile_Name, ProfileType.Dehumidification);
         }
     }
 }
