@@ -297,6 +297,9 @@ namespace SAM.Geometry.UI.WPF
 
         private void Load(GeometryObjectModel geometryObjectModel)
         {
+            helixViewport3D.Lights.Children.Clear();
+            helixViewport3D.Lights.Children.Add(new AmbientLight());
+
             actionManager.Cancel();
             int count = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) }).Count;
             if (count > 0)
@@ -483,8 +486,6 @@ namespace SAM.Geometry.UI.WPF
 
         private void helixViewport3D_CameraChanged(object sender, RoutedEventArgs e)
         {
-            //Core.UI.WPF.Modify.Clear<SunLight>(helixViewport3D.Children);
-            helixViewport3D.Children.Add(new SunLight());
         }
     }
 }
