@@ -29,7 +29,7 @@
             </Grid>
         </GroupBox>
         <Label Content="Color:" HorizontalAlignment="Left" Margin="12,56,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="button_Color" Content="" HorizontalAlignment="Left" Margin="62,62,0,0" VerticalAlignment="Top" Width="235"/>
+        <Button x:Name="button_Color" Content="" HorizontalAlignment="Left" Margin="62,62,0,0" VerticalAlignment="Top" Width="235" Click="button_Color_Click"/>
 
         <GroupBox HorizontalAlignment="Left" Height="129" Margin="8,206,0,0" VerticalAlignment="Top" Width="435">
             <GroupBox.Header>

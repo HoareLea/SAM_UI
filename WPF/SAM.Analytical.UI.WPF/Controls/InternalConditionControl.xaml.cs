@@ -1148,5 +1148,25 @@ namespace SAM.Analytical.UI.WPF
         {
 
         }
+
+        private void button_Color_Click(object sender, RoutedEventArgs e)
+        {
+            Color color = (button_Color.Background as SolidColorBrush).Color;
+
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                colorDialog.Color = System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                color = Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
+            }
+
+            button_Color.Content = string.Empty;
+
+            button_Color.Background = new SolidColorBrush(color);
+        }
     }
 }
