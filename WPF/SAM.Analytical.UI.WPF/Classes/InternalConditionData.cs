@@ -94,7 +94,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public double Occupancy
+        public double SpaceOccupancy
         {
             get
             {
@@ -126,6 +126,118 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 return area / areaPerPerson;
+            }
+
+            set
+            {
+                if(Space != null)
+                {
+                    if(Space.HasParameter(SpaceParameter.Occupancy))
+                    {
+                        if(double.IsNaN(value))
+                        {
+                            Space.RemoveValue(SpaceParameter.Occupancy);
+                        }
+                        else
+                        {
+                            Space.SetValue(SpaceParameter.Occupancy, value);
+                        }
+
+                        return;
+                    }
+                }
+
+                InternalCondition internalCondition = InternalCondition;
+                if (double.IsNaN(value))
+                {
+                    internalCondition.RemoveValue(InternalConditionParameter.AreaPerPerson);
+                }
+                else
+                {
+                    double area = Area;
+                    if (double.IsNaN(area) || area <= 0)
+                    {
+                        return;
+                    }
+
+                    internalCondition.SetValue(InternalConditionParameter.AreaPerPerson, value == 0 ? 0 : area / value);
+                }
+
+                InternalCondition = internalCondition;
+            }
+        }
+
+        public double Occupancy
+        {
+            get
+            {
+                double area = Area;
+                if (double.IsNaN(area))
+                {
+                    return double.NaN;
+                }
+
+                InternalCondition internalCondition = InternalCondition;
+                if (internalCondition == null)
+                {
+                    return double.NaN;
+                }
+
+                if (!internalCondition.TryGetValue(InternalConditionParameter.AreaPerPerson, out double areaPerPerson) || double.IsNaN(areaPerPerson) || areaPerPerson <= 0)
+                {
+                    return double.NaN;
+                }
+
+                return area / areaPerPerson;
+            }
+
+            set
+            {
+                double area = Area;
+                if (double.IsNaN(area))
+                {
+                    return;
+                }
+
+                InternalCondition internalCondition = InternalCondition;
+                if (internalCondition == null)
+                {
+                    return;
+                }
+
+                if(double.IsNaN(value))
+                {
+                    internalCondition.RemoveValue(InternalConditionParameter.AreaPerPerson);
+                }
+                else
+                {
+                    internalCondition.SetValue(InternalConditionParameter.AreaPerPerson, value == 0 ? 0 : area / value);
+                }
+
+                InternalCondition = internalCondition;
+            }
+        }
+
+        public double AreaPerPerson
+        {
+            set
+            {
+                InternalCondition internalCondition = InternalCondition;
+                if(internalCondition == null)
+                {
+                    return;
+                }
+
+                if(double.IsNaN(value))
+                {
+                    internalCondition.RemoveValue(InternalConditionParameter.AreaPerPerson);
+                }
+                else
+                {
+                    internalCondition.SetValue(InternalConditionParameter.AreaPerPerson, value);
+                }
+
+                InternalCondition = internalCondition;
             }
         }
 

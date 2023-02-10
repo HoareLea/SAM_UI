@@ -35,6 +35,7 @@ namespace SAM.Analytical.UI.WPF
             checkBox_InfiltrationProfile.IsChecked = true;
             checkBox_LightingProfile.IsChecked = true;
             checkBox_OccupancyProfile.IsChecked = true;
+            checkBox_Occupancy.IsChecked = true;
 
             multipleValueComboBoxControl_Name.IsEnabled = false;
             multipleValueTextBoxControl_HeatingProfile_Name.IsEnabled = false;
@@ -47,6 +48,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_CoolingProfile_DesignTemperature.IsEnabled = false;
             multipleValueTextBoxControl_LightingProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_EquipmentLatentProfile_Name.IsEnabled = false;
+            multipleValueComboBoxControl_SpaceOccupancy.IsEnabled = false;
 
             multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
             multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged;
@@ -56,6 +58,71 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGainPerArea_TextChanged;
             multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.TextChanged += MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea_TextChanged;
             multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.TextChanged += MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGain_TextChanged;
+            multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
+            multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
+
+            multipleValueComboBoxControl_AreaPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_HumidificationProfile_Humidity.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_InfiltrationProfile_Infiltration.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_LightingProfile_LightingGain.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_LightingProfile_LightLevel.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_Occupancy.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_SpaceOccupancy.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueTextBoxControl_CoolingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueTextBoxControl_HeatingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+        }
+
+        private void MultipleValueComboBoxControl_Number_TextInput(object sender, TextCompositionEventArgs e)
+        {
+            SAM.Core.Windows.EventHandler.ControlText_NumberOnly(sender, e);
+        }
+
+        private void MultipleValueComboBoxControl_Occupancy_TextChanged(object sender, EventArgs e)
+        {
+            multipleValueComboBoxControl_AreaPerPerson.TextChanged -= MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
+
+            if (multipleValueComboBoxControl_Occupancy.VarySet)
+            {
+                multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas.Texts(InternalConditionParameter.AreaPerPerson);
+
+            }
+            else
+            {
+                if (Core.Query.TryConvert(multipleValueComboBoxControl_Occupancy.Value, out double occupancy) && !double.IsNaN(occupancy))
+                {
+                    internalConditionDatas?.ForEach(x => x.Occupancy = occupancy);
+                    multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas?.Texts(InternalConditionParameter.AreaPerPerson);
+                }
+            }
+
+            multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
+        }
+
+        private void MultipleValueComboBoxControl_AreaPerPerson_TextChanged(object sender, EventArgs e)
+        {
+            multipleValueComboBoxControl_Occupancy.TextChanged -= MultipleValueComboBoxControl_Occupancy_TextChanged;
+            if (multipleValueComboBoxControl_AreaPerPerson.VarySet)
+            {
+                multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : x.Occupancy.ToString());
+
+            }
+            else
+            {
+                if (Core.Query.TryConvert(multipleValueComboBoxControl_AreaPerPerson.Value, out double areaPerPerson) && !double.IsNaN(areaPerPerson))
+                {
+                    internalConditionDatas?.ForEach(x => x.AreaPerPerson = areaPerPerson);
+                    multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : x.Occupancy.ToString());
+                }
+            }
+            multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
         }
 
         private void UpdateCalculatedLightingGain()
@@ -268,6 +335,22 @@ namespace SAM.Analytical.UI.WPF
                     {
                         internalCondition?.SetValue(InternalConditionParameter.Color, color);
                     }
+                }
+                if (checkBox_Occupancy.IsChecked.HasValue && checkBox_Occupancy.IsChecked.Value)
+                {
+                    if (!multipleValueComboBoxControl_AreaPerPerson.Vary)
+                    {
+                        string value = multipleValueComboBoxControl_AreaPerPerson.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.AreaPerPerson, value_Temp);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.AreaPerPerson);
+                        }
+                    }
+
                 }
 
                 if (checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
@@ -497,10 +580,15 @@ namespace SAM.Analytical.UI.WPF
 
             List<InternalConditionData> internalConditionDatas_Temp = internalConditionDatas.ToList();
 
-            multipleValueComboBoxControl_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x == null ? double.NaN : x.Occupancy).Texts();
-
             multipleValueComboBoxControl_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.Name);
             multipleValueComboBoxControl_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.Name).FindAll(x => x != null));
+
+            multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.AreaPerPerson);
+            multipleValueComboBoxControl_AreaPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.AreaPerPerson));
+
+            multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas_Temp.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : x.Occupancy.ToString());
+
+            multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas_Temp.ConvertAll(x => x == null || double.IsNaN(x.SpaceOccupancy) ? null : x.SpaceOccupancy.ToString());
 
             multipleValueTextBoxControl_HeatingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Heating));
             multipleValueTextBoxControl_HeatingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Heating)));
@@ -981,6 +1069,11 @@ namespace SAM.Analytical.UI.WPF
             }
 
             LoadInternalConditionDatas(internalConditionDatas);
+        }
+
+        private void checkBox_HeatingProfile_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
