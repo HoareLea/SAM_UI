@@ -652,6 +652,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            SetColor(internalConditionDatas);
+
             List<InternalCondition> internalConditions_Template = internalConditionDatas.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
 
             List<InternalConditionData> internalConditionDatas_Temp = internalConditionDatas.ToList();
@@ -737,8 +739,6 @@ namespace SAM.Analytical.UI.WPF
 
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.Values = internalConditionDatas_Temp.ConvertAll(x => x.Dehumidity)?.Texts();
 
-            SetColor(internalConditionDatas);
-
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
         }
 
@@ -767,6 +767,7 @@ namespace SAM.Analytical.UI.WPF
             colors.Remove(System.Drawing.Color.Empty);
             if (colors == null || colors.Count == 0)
             {
+                button_Color.Background = background;
                 return;
             }
 
@@ -800,7 +801,7 @@ namespace SAM.Analytical.UI.WPF
                 return System.Drawing.Color.Empty;
             }
 
-            return System.Drawing.Color.FromArgb(solidColorBrush.Color.A, solidColorBrush.Color.B, solidColorBrush.Color.G, solidColorBrush.Color.B);
+            return System.Drawing.Color.FromArgb(solidColorBrush.Color.A, solidColorBrush.Color.R, solidColorBrush.Color.G, solidColorBrush.Color.B);
         }
 
         private void ViewProfile(ProfileType profileType)
@@ -1151,22 +1152,41 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_Color_Click(object sender, RoutedEventArgs e)
         {
-            Color color = (button_Color.Background as SolidColorBrush).Color;
-
+            System.Drawing.Color color = System.Drawing.Color.Empty;
             using (ColorDialog colorDialog = new ColorDialog())
             {
-                colorDialog.Color = System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+                Color color_Start = (button_Color.Background as SolidColorBrush).Color;
+
+                colorDialog.Color = System.Drawing.Color.FromArgb(color_Start.A, color_Start.R, color_Start.G, color_Start.B);
                 if (colorDialog.ShowDialog() != DialogResult.OK)
                 {
                     return;
                 }
 
-                color = Color.FromArgb(colorDialog.Color.A, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
+                color = colorDialog.Color;
             }
 
-            button_Color.Content = string.Empty;
+            for (int i = 0; i < internalConditionDatas.Count; i++)
+            {
+                InternalCondition internalCondition = internalConditionDatas[i].InternalCondition;
+                if(internalCondition == null)
+                {
+                    continue;
+                }
 
-            button_Color.Background = new SolidColorBrush(color);
+                if(color == System.Drawing.Color.Empty)
+                {
+                    internalCondition.RemoveValue(InternalConditionParameter.Color);
+                }
+                else
+                {
+                    internalCondition.SetValue(InternalConditionParameter.Color, color);
+                }
+
+                internalConditionDatas[i].InternalCondition = internalCondition;
+            }
+
+            LoadInternalConditionDatas(internalConditionDatas);
         }
     }
 }
