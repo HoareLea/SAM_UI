@@ -17,7 +17,7 @@ namespace SAM.Analytical.UI.WPF
 
             this.uIAnalyticalModel = uIAnalyticalModel;
 
-            listBoxControl.SelectionMode = System.Windows.Controls.SelectionMode.Multiple;
+            listBoxControl.SelectionMode = System.Windows.Controls.SelectionMode.Extended;
 
             Load(spaces);
         }
