@@ -151,6 +151,12 @@ namespace SAM.Analytical.UI.WPF
             }
 
             multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
+
+            UpdateCalculatedOccupancySensibleGainPerPerson();
+            UpdatedCalculatedEquipmentSensibleGain();
+            UpdateCalculatedEquipmentLatentGain();
+            UpdateCalculatedOccupancyLatentGain();
+            UpdateCalculatedOccupancySensibleGainPerPerson();
         }
 
         private void MultipleValueComboBoxControl_AreaPerPerson_TextChanged(object sender, EventArgs e)
@@ -166,10 +172,16 @@ namespace SAM.Analytical.UI.WPF
                 if (Core.Query.TryConvert(multipleValueComboBoxControl_AreaPerPerson.Value, out double areaPerPerson) && !double.IsNaN(areaPerPerson))
                 {
                     internalConditionDatas?.ForEach(x => x.AreaPerPerson = areaPerPerson);
-                    multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : x.Occupancy.ToString());
+                    multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : Core.Query.Round(x.Occupancy, 0.01).ToString());
                 }
             }
             multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
+
+            UpdateCalculatedOccupancySensibleGainPerPerson();
+            UpdatedCalculatedEquipmentSensibleGain();
+            UpdateCalculatedEquipmentLatentGain();
+            UpdateCalculatedOccupancyLatentGain();
+            UpdateCalculatedOccupancySensibleGainPerPerson();
         }
 
         private void UpdateCalculatedLightingGain()
@@ -194,7 +206,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            textBox_LightingProfile_CalculatedLightingGain.Text = double.IsNaN(values[0]) ? null : values[0].ToString();
+            textBox_LightingProfile_CalculatedLightingGain.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
         }
 
         private void UpdatedCalculatedEquipmentSensibleGain()
@@ -219,7 +231,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            textBox_EquipmentSensibleProfile_CalculatedSensibleGain.Text = double.IsNaN(values[0]) ? null : values[0].ToString();
+            textBox_EquipmentSensibleProfile_CalculatedSensibleGain.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
         }
 
         private void UpdateCalculatedEquipmentLatentGain()
@@ -244,7 +256,57 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            textBox_EquipmentLatentProfile_CalculatedLatentGain.Text = double.IsNaN(values[0]) ? null : values[0].ToString();
+            textBox_EquipmentLatentProfile_CalculatedLatentGain.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
+        }
+
+        private void UpdateCalculatedOccupancyLatentGain()
+        {
+            textBox_OccupancyProfile_CalculatedLatentGain.Text = null;
+
+            List<InternalConditionData> internalConditionDatas = GetInternalConditionDatas(true);
+            if (internalConditionDatas == null || internalConditionDatas.Count == 0)
+            {
+                return;
+            }
+
+            List<double> values = internalConditionDatas.ConvertAll(x => x.OccupancyLatentGain);
+            if (values == null || values.Count == 0)
+            {
+                return;
+            }
+
+            if (Core.UI.Query.Vary(values))
+            {
+                textBox_OccupancyProfile_CalculatedLatentGain.Text = multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.VaryText;
+                return;
+            }
+
+            textBox_OccupancyProfile_CalculatedLatentGain.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
+        }
+
+        private void UpdateCalculatedOccupancySensibleGainPerPerson()
+        {
+            textBox_OccupancyProfile_CalculatedSensibleGain.Text = null;
+
+            List<InternalConditionData> internalConditionDatas = GetInternalConditionDatas(true);
+            if (internalConditionDatas == null || internalConditionDatas.Count == 0)
+            {
+                return;
+            }
+
+            List<double> values = internalConditionDatas.ConvertAll(x => x.OccupancySensibleGain);
+            if (values == null || values.Count == 0)
+            {
+                return;
+            }
+
+            if (Core.UI.Query.Vary(values))
+            {
+                textBox_OccupancyProfile_CalculatedSensibleGain.Text = multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.VaryText;
+                return;
+            }
+
+            textBox_OccupancyProfile_CalculatedSensibleGain.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
         }
 
         private void MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGain_TextChanged(object sender, System.EventArgs e)
@@ -279,52 +341,12 @@ namespace SAM.Analytical.UI.WPF
 
         private void MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged(object sender, System.EventArgs e)
         {
-            textBox_OccupancyProfile_CalculatedLatentGain.Text = null;
-
-            List<InternalConditionData> internalConditionDatas = GetInternalConditionDatas(true);
-            if (internalConditionDatas == null || internalConditionDatas.Count == 0)
-            {
-                return;
-            }
-
-            List<double> values = internalConditionDatas.ConvertAll(x => x.OccupancyLatentGain);
-            if (values == null || values.Count == 0)
-            {
-                return;
-            }
-
-            if (Core.UI.Query.Vary(values))
-            {
-                textBox_OccupancyProfile_CalculatedLatentGain.Text = multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.VaryText;
-                return;
-            }
-
-            textBox_OccupancyProfile_CalculatedLatentGain.Text = double.IsNaN(values[0]) ? null : values[0].ToString();
+            UpdateCalculatedOccupancyLatentGain();
         }
 
         private void MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged(object sender, System.EventArgs e)
         {
-            textBox_OccupancyProfile_CalculatedSensibleGain.Text = null;
-
-            List<InternalConditionData> internalConditionDatas = GetInternalConditionDatas(true);
-            if(internalConditionDatas == null || internalConditionDatas.Count == 0)
-            {
-                return;
-            }
-
-            List<double> values = internalConditionDatas.ConvertAll(x => x.OccupancySensibleGain);
-            if(values == null || values.Count == 0)
-            {
-                return;
-            }
-
-            if(Core.UI.Query.Vary(values))
-            {
-                textBox_OccupancyProfile_CalculatedSensibleGain.Text = multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.VaryText;
-                return;
-            }
-
-            textBox_OccupancyProfile_CalculatedSensibleGain.Text = double.IsNaN(values[0]) ? null : values[0].ToString();
+            UpdateCalculatedOccupancySensibleGainPerPerson();
         }
 
         public List<InternalConditionData> GetInternalConditionDatas(bool updated = true)
