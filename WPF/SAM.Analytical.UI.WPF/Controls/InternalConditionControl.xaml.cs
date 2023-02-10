@@ -37,7 +37,9 @@ namespace SAM.Analytical.UI.WPF
             checkBox_OccupancyProfile.IsChecked = true;
             checkBox_Occupancy.IsChecked = true;
 
-            multipleValueComboBoxControl_Name.IsEnabled = false;
+            multipleValueComboBoxControl_Name.IsEnabled = true;
+            multipleValueComboBoxControl_Name.IsEditable = false;
+
             multipleValueTextBoxControl_HeatingProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_HeatingProfile_DesignTemperature.IsEnabled = false;
             multipleValueTextBoxControl_OccupancyProfile_Name.IsEnabled = false;
@@ -78,6 +80,51 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_SpaceOccupancy.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueTextBoxControl_CoolingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueTextBoxControl_HeatingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+
+            multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
+        }
+
+        private void MultipleValueComboBoxControl_Name_TextChanged(object sender, EventArgs e)
+        {
+            if (internalConditionDatas == null)
+            {
+                return;
+            }
+
+            if (multipleValueComboBoxControl_Name.VarySet)
+            {
+                LoadInternalConditionDatas(internalConditionDatas);
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            ProfileLibrary profileLibrary = AnalyticalModel.ProfileLibrary;
+
+            InternalConditionLibrary internalConditionLibrary = new InternalConditionLibrary("Internal Condition Library");
+            adjacencyCluster?.GetInternalConditions(false, true)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
+
+            InternalCondition internalCondition = internalConditionLibrary.GetInternalConditions(multipleValueComboBoxControl_Name.Value).FirstOrDefault();
+            if(internalCondition == null)
+            {
+                internalConditionLibrary = new InternalConditionLibrary("Internal Condition Library");
+                adjacencyCluster?.GetInternalConditions(true, false)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
+                internalCondition = internalConditionLibrary.GetInternalConditions(multipleValueComboBoxControl_Name.Value).FirstOrDefault();
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster, AnalyticalModel.MaterialLibrary, profileLibrary);
+
+            for (int i = 0; i < internalConditionDatas.Count; i++)
+            {
+                internalConditionDatas[i] = new InternalConditionData(AnalyticalModel, internalConditionDatas[i]);
+                internalConditionDatas[i].InternalCondition = internalCondition;
+            }
+
+            LoadInternalConditionDatas(internalConditionDatas);
         }
 
         private void MultipleValueComboBoxControl_Number_TextInput(object sender, TextCompositionEventArgs e)
@@ -569,6 +616,8 @@ namespace SAM.Analytical.UI.WPF
 
         private void LoadInternalConditionDatas(IEnumerable<InternalConditionData> internalConditionDatas)
         {
+            multipleValueComboBoxControl_Name.TextChanged -= MultipleValueComboBoxControl_Name_TextChanged;
+
             multipleValueComboBoxControl_Name.Values = null;
 
             if (internalConditionDatas == null)
@@ -662,6 +711,8 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.Values = internalConditionDatas_Temp.ConvertAll(x => x.Dehumidity)?.Texts();
 
             SetColor(internalConditionDatas);
+
+            multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
         }
 
         private void SetColor(IEnumerable<InternalConditionData> internalConditionDatas)

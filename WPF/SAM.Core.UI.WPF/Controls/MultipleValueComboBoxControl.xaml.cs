@@ -283,5 +283,18 @@ namespace SAM.Core.UI.WPF
 
             TextChanged?.Invoke(this, e);
         }
+
+        public bool IsEditable
+        {
+            get
+            {
+                return comboBox.IsEditable;
+            }
+
+            set
+            {
+                comboBox.IsEditable = value;
+            }
+        }
     }
 }
