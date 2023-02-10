@@ -577,6 +577,28 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
+                if (checkBox_InfiltrationProfile.IsChecked.HasValue && checkBox_InfiltrationProfile.IsChecked.Value)
+                {
+                    if (!multipleValueTextBoxControl_InfiltrationProfile_Name.Vary)
+                    {
+                        string value = multipleValueTextBoxControl_InfiltrationProfile_Name.Value;
+                        internalCondition?.SetValue(InternalConditionParameter.InfiltrationProfileName, value);
+                    }
+
+                    if (!multipleValueComboBoxControl_InfiltrationProfile_Infiltration.Vary)
+                    {
+                        string value = multipleValueComboBoxControl_InfiltrationProfile_Infiltration.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.InfiltrationAirChangesPerHour, value_Temp);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.InfiltrationAirChangesPerHour);
+                        }
+                    }
+                }
+
                 if (space != null)
                 {
                     space.InternalCondition = internalCondition;
