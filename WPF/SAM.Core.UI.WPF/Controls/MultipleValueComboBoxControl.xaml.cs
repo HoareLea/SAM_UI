@@ -166,7 +166,7 @@ namespace SAM.Core.UI.WPF
         {
             if(values == null || values.Count() == 0)
             {
-                defaultValue = null;
+                defaultValue = string.Empty;
                 SetBackground();
                 return;
             }
