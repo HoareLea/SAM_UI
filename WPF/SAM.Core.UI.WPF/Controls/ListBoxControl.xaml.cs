@@ -103,9 +103,16 @@ namespace SAM.Core.UI.WPF
 
         public void SelectAll()
         {
-            foreach (ListBoxItem listBoxItem in listBox.Items)
+            listBox.SelectionChanged -= listBox_SelectionChanged;
+            for(int i =0; i < listBox.Items.Count - 1; i++)
             {
-                listBox.SelectedItems.Add(listBoxItem);
+                listBox.SelectedItems.Add(listBox.Items[i]);
+            }
+            listBox.SelectionChanged += listBox_SelectionChanged;
+
+            if(listBox.Items.Count != 0)
+            {
+                listBox.SelectedItems.Add(listBox.Items[listBox.Items.Count - 1]);
             }
         }
 

@@ -167,6 +167,7 @@
       <DependentUpon>InternalConditionControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\EditInternalConditions.cs" />
+    <Compile Include="Query\Colors.cs" />
     <Compile Include="Query\Texts.cs" />
     <Compile Include="Windows\InternalConditionWindow.xaml.cs">
       <DependentUpon>InternalConditionWindow.xaml</DependentUpon>

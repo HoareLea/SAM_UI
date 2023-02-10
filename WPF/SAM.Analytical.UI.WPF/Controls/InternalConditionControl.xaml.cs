@@ -1,10 +1,13 @@
 ﻿using SAM.Analytical.Windows.Forms;
 using SAM.Core.UI.WPF;
+using SAM.Core.Windows.Forms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -13,6 +16,8 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class InternalConditionControl : System.Windows.Controls.UserControl
     {
+        private Brush background = null;
+
         private List<InternalConditionData> internalConditionDatas;
 
         public AnalyticalModel AnalyticalModel { get; set; }
@@ -250,6 +255,19 @@ namespace SAM.Analytical.UI.WPF
                 if (space != null)
                 {
                     space = new Space(space);
+                }
+
+                System.Drawing.Color color = GetColor(out bool vary);
+                if(!vary)
+                {
+                    if (color == System.Drawing.Color.Empty)
+                    {
+                        internalCondition?.RemoveValue(InternalConditionParameter.Color);
+                    }
+                    else
+                    {
+                        internalCondition?.SetValue(InternalConditionParameter.Color, color);
+                    }
                 }
 
                 if (checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
@@ -554,6 +572,74 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_DehumidificationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Dehumidification)));
 
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.Values = internalConditionDatas_Temp.ConvertAll(x => x.Dehumidity)?.Texts();
+
+            SetColor(internalConditionDatas);
+        }
+
+        private void SetColor(IEnumerable<InternalConditionData> internalConditionDatas)
+        {
+            if(background == null)
+            {
+                background = button_Color.Background;
+            }
+
+            button_Color.Content = string.Empty;
+
+            if (internalConditionDatas == null || internalConditionDatas.Count() == 0)
+            {
+                button_Color.Background = background;
+            }
+
+            List<System.Drawing.Color> colors = internalConditionDatas?.Colors();
+            if(colors == null || colors.Count == 0)
+            {
+                return;
+            }
+
+            if(Core.UI.Query.Vary(colors))
+            {
+                button_Color.Content = multipleValueComboBoxControl_Name.VaryText;
+                button_Color.Background = background;
+                return;
+            }
+
+            colors.Remove(System.Drawing.Color.Empty);
+            if (colors == null || colors.Count == 0)
+            {
+                return;
+            }
+
+            System.Drawing.Color color = colors[0];
+
+            button_Color.Background = new SolidColorBrush(Color.FromArgb(color.A, color.R, color.G, color.B));
+        }
+
+        private System.Drawing.Color GetColor(out bool vary)
+        {
+            vary = false;
+            if(!string.IsNullOrWhiteSpace(button_Color?.Content?.ToString()))
+            {
+                vary = true;
+            }
+
+            SolidColorBrush solidColorBrush = button_Color.Background as SolidColorBrush;
+            if(solidColorBrush == null)
+            {
+                return System.Drawing.Color.Empty;
+            }
+
+            SolidColorBrush solidColorBrush_Background = background as SolidColorBrush;
+            if(solidColorBrush_Background == null)
+            {
+                return System.Drawing.Color.Empty;
+            }
+
+            if (solidColorBrush.Color == solidColorBrush_Background.Color)
+            {
+                return System.Drawing.Color.Empty;
+            }
+
+            return System.Drawing.Color.FromArgb(solidColorBrush.Color.A, solidColorBrush.Color.B, solidColorBrush.Color.G, solidColorBrush.Color.B);
         }
 
         private void ViewProfile(ProfileType profileType)
@@ -740,9 +826,10 @@ namespace SAM.Analytical.UI.WPF
 
             AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster, AnalyticalModel.MaterialLibrary, profileLibrary);
 
-            foreach (InternalConditionData internalConditionData in internalConditionDatas)
+            for (int i = 0; i < internalConditionDatas.Count; i++)
             {
-                internalConditionData.InternalCondition = internalCondition;
+                internalConditionDatas[i] = new InternalConditionData(AnalyticalModel, internalConditionDatas[i]);
+                internalConditionDatas[i].InternalCondition = internalCondition;
             }
 
             LoadInternalConditionDatas(internalConditionDatas);
@@ -798,6 +885,97 @@ namespace SAM.Analytical.UI.WPF
 
             for(int i =0; i < internalConditionDatas.Count; i++)
             {
+                internalConditionDatas[i] = new InternalConditionData(AnalyticalModel, internalConditionDatas[i]);
+                internalConditionDatas[i].InternalCondition = internalCondition;
+            }
+
+            LoadInternalConditionDatas(internalConditionDatas);
+        }
+
+        private void button_Reset_Click(object sender, RoutedEventArgs e)
+        {
+            if (internalConditionDatas == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            InternalConditionLibrary internalConditionLibrary = new InternalConditionLibrary("Internal Condition Library");
+            adjacencyCluster?.GetInternalConditions(false, true)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
+
+            HashSet<Enum> enums = new HashSet<Enum>();
+            foreach(InternalCondition internalCondition_Temp in internalConditionLibrary.GetInternalConditions())
+            {
+                if(internalCondition_Temp == null)
+                {
+                    continue;
+                }
+
+                List<Enum> enums_Temp = Core.Query.Enums(internalCondition_Temp);
+                if(enums_Temp == null)
+                {
+                    continue;
+                }
+
+                enums_Temp.ForEach(x => enums.Add(x));
+            }
+
+            List<Tuple<Enum, Core.Attributes.ParameterProperties>> tuples = enums.ToList().ConvertAll(x => new Tuple<Enum, Core.Attributes.ParameterProperties>(x, Core.Attributes.ParameterProperties.Get(x)));
+            tuples.RemoveAll(x => x == null || x.Item2 == null || string.IsNullOrWhiteSpace(x.Item2.Name));
+            tuples.Sort((x, y) => x.Item2.Name.CompareTo(y.Item2.Name));
+
+            using (TreeViewForm<Tuple<Enum, Core.Attributes.ParameterProperties>> treeViewForm = new TreeViewForm<Tuple<Enum, Core.Attributes.ParameterProperties>>("Select Parameters", tuples, x => x.Item2.Name))
+            {
+                if (treeViewForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                tuples = treeViewForm.SelectedItems;
+            }
+
+            if (tuples == null || tuples.Count == 0)
+            {
+                return;
+            }
+
+            DialogResult dialogResult = System.Windows.Forms.MessageBox.Show("Are you sure you want to reset values", "Reset", MessageBoxButtons.YesNo);
+            if (dialogResult != DialogResult.Yes)
+            {
+                return;
+            }
+
+            for (int i = 0; i < internalConditionDatas.Count; i++)
+            {
+                InternalCondition internalCondition = internalConditionDatas[i].InternalCondition;
+                if(internalCondition == null)
+                {
+                    continue;
+                }
+
+                InternalCondition internalCondition_Template = internalConditionLibrary.GetInternalConditions(internalCondition.Name).FirstOrDefault();
+                if(internalCondition_Template == null)
+                {
+                    continue;
+                }
+
+                foreach (Tuple<Enum, Core.Attributes.ParameterProperties> tuple in tuples)
+                {
+                    if (internalCondition_Template.TryGetValue(tuple.Item1, out object value))
+                    {
+                        internalCondition.SetValue(tuple.Item1, value);
+                    }
+                    else
+                    {
+                        internalCondition.RemoveValue(tuple.Item1);
+                    }
+                }
+
                 internalConditionDatas[i] = new InternalConditionData(AnalyticalModel, internalConditionDatas[i]);
                 internalConditionDatas[i].InternalCondition = internalCondition;
             }
