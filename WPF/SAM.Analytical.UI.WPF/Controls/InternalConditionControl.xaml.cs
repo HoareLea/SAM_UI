@@ -82,6 +82,11 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_HeatingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
 
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
+
+            if (background == null)
+            {
+                background = button_Color.Background;
+            }
         }
 
         private void MultipleValueComboBoxControl_Name_TextChanged(object sender, EventArgs e)
@@ -739,11 +744,6 @@ namespace SAM.Analytical.UI.WPF
 
         private void SetColor(IEnumerable<InternalConditionData> internalConditionDatas)
         {
-            if(background == null)
-            {
-                background = button_Color.Background;
-            }
-
             button_Color.Content = string.Empty;
 
             if (internalConditionDatas == null || internalConditionDatas.Count() == 0)
