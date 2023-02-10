@@ -659,7 +659,7 @@ namespace SAM.Analytical.UI.WPF
 
             multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas_Temp.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : x.Occupancy.ToString());
 
-            multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas_Temp.ConvertAll(x => x == null || double.IsNaN(x.SpaceOccupancy) ? null : x.SpaceOccupancy.ToString());
+            multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas_Temp.ConvertAll(x => x == null || double.IsNaN(x.SpaceOccupancy) ? null : Core.Query.Round(x.SpaceOccupancy, 0.01).ToString());
 
             multipleValueTextBoxControl_HeatingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Heating));
             multipleValueTextBoxControl_HeatingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Heating)));
