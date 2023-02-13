@@ -13,7 +13,12 @@
         <Label Content="Text Map:" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top"/>
         <Button Content="Assign" HorizontalAlignment="Stretch" Margin="10,0,9.6,9.6" VerticalAlignment="Bottom" Click="Button_Assign_Click"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,78,10,82">
-            <WrapPanel x:Name="wrapPanel"  HorizontalAlignment="Stretch"  Margin="0,0,0,0" VerticalAlignment="Stretch" Orientation="Vertical"/>
+            <Grid x:Name="grid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition MinWidth="100"></ColumnDefinition>
+                    <ColumnDefinition MinWidth="220"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+            </Grid>
         </ScrollViewer>
         <Button x:Name="button_SelectAll" Content="Select All" HorizontalAlignment="Left" Margin="10,0,0,58" VerticalAlignment="Bottom" Width="75" Click="button_SelectAll_Click"/>
         <Button x:Name="button_SelectNone" Content="Select None" HorizontalAlignment="Left" Margin="90,0,0,58" VerticalAlignment="Bottom" Width="75" Click="button_SelectNone_Click"/>

@@ -117,57 +117,82 @@ namespace SAM.Analytical.UI.WPF
 
         public List<Space> GetSpaces(bool selected = false)
         {
-            if (wrapPanel.Children == null || wrapPanel.Children.Count == 0)
+            if(grid == null || grid.Children == null || grid.Children.Count == 0)
             {
                 return null;
             }
 
             InternalConditionLibrary internalConditionLibrary = selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>();
 
-            List<Space> result = new List<Space>();
-            foreach(DockPanel dockPanel in wrapPanel.Children)
+            Dictionary<Space, ComboBox> dictionary = new Dictionary<Space, ComboBox>();
+            foreach (UIElement uIElement in grid.Children)
             {
-                if(dockPanel == null)
+                int rowIndex = Grid.GetRow(uIElement);
+                if (rowIndex == -1)
                 {
                     continue;
                 }
 
-                if (selected)
+                if (!(grid.RowDefinitions[rowIndex].Tag is Space))
                 {
-                    if(dockPanel.Children.Count == 0)
+                    continue;
+                }
+
+                if (!(uIElement is ComboBox))
+                {
+                    continue;
+                }
+
+                dictionary[(Space)grid.RowDefinitions[rowIndex].Tag] = uIElement as ComboBox;
+            }
+
+            if (selected)
+            {
+                foreach (UIElement uIElement in grid.Children)
+                {
+                    int rowIndex = Grid.GetRow(uIElement);
+                    if (rowIndex == -1)
                     {
                         continue;
                     }
 
-                    CheckBox checkBox = dockPanel.Children[0] as CheckBox;
+                    if (!(grid.RowDefinitions[rowIndex].Tag is Space))
+                    {
+                        continue;
+                    }
+
+                    CheckBox checkBox = uIElement as CheckBox;
                     if (checkBox == null)
+                    {
+                        continue;
+                    }
+
+                    if (!(uIElement is CheckBox))
                     {
                         continue;
                     }
 
                     if (!checkBox.IsChecked.Value)
                     {
-                        continue;
+                        dictionary.Remove((Space)grid.RowDefinitions[rowIndex].Tag);
                     }
                 }
+            }
 
-                Space space = dockPanel.Tag as Space;
-                if(space == null)
-                {
-                    continue;
-                }
-
+            List<Space> result = new List<Space>();
+            foreach(KeyValuePair<Space, ComboBox> keyValuePair in dictionary)
+            {
                 InternalCondition internalCondition = null;
 
-                string internalConditionName = (dockPanel.Children[1] as ComboBox).Text;
-                if(!string.IsNullOrWhiteSpace(internalConditionName))
+                string internalConditionName = keyValuePair.Value.Text;
+                if (!string.IsNullOrWhiteSpace(internalConditionName))
                 {
                     internalCondition = internalConditionLibrary?.GetInternalConditions(internalConditionName)?.FirstOrDefault();
                 }
 
-                space = new Space(space);
+                Space space = new Space(keyValuePair.Key);
 
-                if(internalCondition != null)
+                if (internalCondition != null)
                 {
                     space.InternalCondition = internalCondition;
                     space.UpdateAreaPerPerson();
@@ -177,41 +202,136 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return result;
+
+
+            //return null;
+
+            //if (wrapPanel.Children == null || wrapPanel.Children.Count == 0)
+            //{
+            //    return null;
+            //}
+
+            //InternalConditionLibrary internalConditionLibrary = selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>();
+
+            //List<Space> result = new List<Space>();
+            //foreach(DockPanel dockPanel in wrapPanel.Children)
+            //{
+            //    if(dockPanel == null)
+            //    {
+            //        continue;
+            //    }
+
+            //    if (selected)
+            //    {
+            //        if(dockPanel.Children.Count == 0)
+            //        {
+            //            continue;
+            //        }
+
+            //        CheckBox checkBox = dockPanel.Children[0] as CheckBox;
+            //        if (checkBox == null)
+            //        {
+            //            continue;
+            //        }
+
+            //        if (!checkBox.IsChecked.Value)
+            //        {
+            //            continue;
+            //        }
+            //    }
+
+            //    Space space = dockPanel.Tag as Space;
+            //    if(space == null)
+            //    {
+            //        continue;
+            //    }
+
+            //    InternalCondition internalCondition = null;
+
+            //    string internalConditionName = (dockPanel.Children[1] as ComboBox).Text;
+            //    if(!string.IsNullOrWhiteSpace(internalConditionName))
+            //    {
+            //        internalCondition = internalConditionLibrary?.GetInternalConditions(internalConditionName)?.FirstOrDefault();
+            //    }
+
+            //    space = new Space(space);
+
+            //    if(internalCondition != null)
+            //    {
+            //        space.InternalCondition = internalCondition;
+            //        space.UpdateAreaPerPerson();
+            //    }
+
+            //    result.Add(space);
+            //}
+
+            //return result;
         }
 
         private List<Tuple<Space, string>> GetTuples()
         {
-            if (wrapPanel.Children == null || wrapPanel.Children.Count == 0)
-            {
-                return null;
-            }
-
             List<Tuple<Space, string>> result = new List<Tuple<Space, string>>();
-            foreach (DockPanel dockPanel in wrapPanel.Children)
+            foreach (UIElement uIElement in grid.Children)
             {
-                Space space = dockPanel.Tag as Space;
-                if (space == null)
+                int rowIndex = Grid.GetRow(uIElement);
+                if (rowIndex == -1)
                 {
                     continue;
                 }
 
-                string internalConditionName = (dockPanel.Children[1] as ComboBox).Text;
-                if(string.IsNullOrWhiteSpace(internalConditionName))
+                if (!(grid.RowDefinitions[rowIndex].Tag is Space))
+                {
+                    continue;
+                }
+
+                if (!(uIElement is ComboBox))
+                {
+                    continue;
+                }
+
+                string internalConditionName = (uIElement as ComboBox).Text;
+                if (string.IsNullOrWhiteSpace(internalConditionName))
                 {
                     internalConditionName = null;
                 }
 
-                result.Add(new Tuple<Space, string>(space, internalConditionName));
+                result.Add(new Tuple<Space, string>((Space)grid.RowDefinitions[rowIndex].Tag, internalConditionName));
             }
 
             return result;
+
+            //if (wrapPanel.Children == null || wrapPanel.Children.Count == 0)
+            //{
+            //    return null;
+            //}
+
+            //List<Tuple<Space, string>> result = new List<Tuple<Space, string>>();
+            //foreach (DockPanel dockPanel in wrapPanel.Children)
+            //{
+            //    Space space = dockPanel.Tag as Space;
+            //    if (space == null)
+            //    {
+            //        continue;
+            //    }
+
+            //    string internalConditionName = (dockPanel.Children[1] as ComboBox).Text;
+            //    if(string.IsNullOrWhiteSpace(internalConditionName))
+            //    {
+            //        internalConditionName = null;
+            //    }
+
+            //    result.Add(new Tuple<Space, string>(space, internalConditionName));
+            //}
+
+            //return result;
         }
 
         private void SetSpaces(IEnumerable<Space> spaces)
         {
             List<Tuple<Space, string>> tuples = GetTuples();
 
-            wrapPanel.Children.Clear();
+            grid.Children.Clear();
+            grid.RowDefinitions.Clear();
 
             if(spaces == null || spaces.Count() == 0)
             {
@@ -281,14 +401,28 @@ namespace SAM.Analytical.UI.WPF
 
                 if(!string.IsNullOrEmpty(key))
                 {
-                    DockPanel dockPanel = new DockPanel() { Width = 380, Height = 35 };
-                    Label label = new Label() { Width = 300, Content = key, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Left };
-                    dockPanel.Children.Add(label);
-                    wrapPanel.Children.Add(dockPanel);
+                    int rowIndex = grid.RowDefinitions.Count;
+
+                    RowDefinition rowDefinition = new RowDefinition();
+                    rowDefinition.Tag = key;
+                    grid.RowDefinitions.Add(rowDefinition);
+
+                    Label label = new Label() { Height = 35, Width = 300, Content = key, VerticalAlignment = VerticalAlignment.Center, FontWeight = FontWeights.Bold, HorizontalAlignment = HorizontalAlignment.Left };
+
+                    grid.Children.Add(label);
+
+                    Grid.SetRow(label, rowIndex);
+                    Grid.SetColumn(label, 0);
                 }
 
                 foreach (Space space in spaces_Group)
                 {
+                    int rowIndex = grid.RowDefinitions.Count;
+
+                    RowDefinition rowDefinition = new RowDefinition();
+                    rowDefinition.Tag = space;
+                    grid.RowDefinitions.Add(rowDefinition);
+
                     string internalConditionName = string.Empty;
                     if (tuples != null)
                     {
@@ -299,12 +433,9 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    DockPanel dockPanel = new DockPanel() { Width = 380, Height = 30, Tag = space };
+                    CheckBox checkBox = new CheckBox() { MinWidth = 100, Content = space.Name, IsChecked = true, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 0, 5) };
 
-                    CheckBox checkBox = new CheckBox() { Width = 100, Content = space.Name, IsChecked = true, VerticalAlignment = VerticalAlignment.Center };
-                    dockPanel.Children.Add(checkBox);
-
-                    ComboBox comboBox = new ComboBox() { MinWidth = 220, HorizontalAlignment = HorizontalAlignment.Right, Height = 25 };
+                    ComboBox comboBox = new ComboBox() { MinWidth = 220, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Center };
                     foreach (string internalConditionName_Temp in hashSet)
                     {
                         comboBox.Items.Add(internalConditionName_Temp);
@@ -312,9 +443,14 @@ namespace SAM.Analytical.UI.WPF
 
                     comboBox.Text = internalConditionName;
 
-                    dockPanel.Children.Add(comboBox);
+                    grid.Children.Add(checkBox);
+                    grid.Children.Add(comboBox);
 
-                    wrapPanel.Children.Add(dockPanel);
+                    Grid.SetRow(checkBox, rowIndex);
+                    Grid.SetColumn(checkBox, 0);
+
+                    Grid.SetRow(comboBox, rowIndex);
+                    Grid.SetColumn(comboBox, 1);
                 }
 
             }
@@ -344,7 +480,7 @@ namespace SAM.Analytical.UI.WPF
         private void Assign()
         {
             Func<Space, InternalCondition> func = mapFunc;
-            if(func == null)
+            if (func == null)
             {
                 InternalConditionLibrary internalConditionLibrary = selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>();
                 TextMap textMap = selectSAMObjectComboBoxControl_TextMap.GetJSAMObject<TextMap>();
@@ -352,37 +488,37 @@ namespace SAM.Analytical.UI.WPF
                 func = Query.DefaultMapFunc(internalConditionLibrary, textMap);
             }
 
-            foreach(DockPanel dockPanel in wrapPanel.Children)
+            Dictionary<Space, ComboBox> dictionary = new Dictionary<Space, ComboBox>();
+            foreach (UIElement uIElement in grid.Children)
             {
-                if(dockPanel == null || dockPanel.Children.Count < 1)
+                int rowIndex = Grid.GetRow(uIElement);
+                if(rowIndex == -1)
                 {
                     continue;
                 }
 
-                CheckBox checkBox = dockPanel.Children[0] as CheckBox;
-                if(checkBox == null)
+                if (!(grid.RowDefinitions[rowIndex].Tag is Space))
                 {
                     continue;
                 }
 
-                if (!checkBox.IsChecked.Value)
+                if(uIElement is ComboBox)
                 {
-                    continue;
+                    dictionary[(Space)grid.RowDefinitions[rowIndex].Tag] = (ComboBox)uIElement;
                 }
+            }
 
-                Space space = dockPanel.Tag as Space;
-                if(space == null)
-                {
-                    continue;
-                }
+            foreach(KeyValuePair<Space, ComboBox> keyValuePair in dictionary)
+            {
+                Space space = keyValuePair.Key;
 
                 InternalCondition internalCondition = func.Invoke(space);
-                if(internalCondition?.Name != null)
+                if (internalCondition?.Name != null)
                 {
-                    ComboBox comboBox = dockPanel.Children[1] as ComboBox;
+                    ComboBox comboBox = keyValuePair.Value;
 
                     int index = -1;
-                    for(int i=0; i < comboBox.Items.Count; i++)
+                    for (int i = 0; i < comboBox.Items.Count; i++)
                     {
                         if (internalCondition.Name.Equals(comboBox.Items[i].ToString()))
                         {
@@ -391,13 +527,61 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if(index != -1)
+                    if (index != -1)
                     {
                         comboBox.SelectedItem = comboBox.Items[index];
                     }
-                    
+
                 }
             }
+
+
+            //foreach(DockPanel dockPanel in wrapPanel.Children)
+            //{
+            //    if(dockPanel == null || dockPanel.Children.Count < 1)
+            //    {
+            //        continue;
+            //    }
+
+            //    CheckBox checkBox = dockPanel.Children[0] as CheckBox;
+            //    if(checkBox == null)
+            //    {
+            //        continue;
+            //    }
+
+            //    if (!checkBox.IsChecked.Value)
+            //    {
+            //        continue;
+            //    }
+
+            //    Space space = dockPanel.Tag as Space;
+            //    if(space == null)
+            //    {
+            //        continue;
+            //    }
+
+            //    InternalCondition internalCondition = func.Invoke(space);
+            //    if(internalCondition?.Name != null)
+            //    {
+            //        ComboBox comboBox = dockPanel.Children[1] as ComboBox;
+
+            //        int index = -1;
+            //        for(int i=0; i < comboBox.Items.Count; i++)
+            //        {
+            //            if (internalCondition.Name.Equals(comboBox.Items[i].ToString()))
+            //            {
+            //                index = i;
+            //                break;
+            //            }
+            //        }
+
+            //        if(index != -1)
+            //        {
+            //            comboBox.SelectedItem = comboBox.Items[index];
+            //        }
+
+            //    }
+            //}
         }
 
         private void Button_Assign_Click(object sender, RoutedEventArgs e)
@@ -417,20 +601,14 @@ namespace SAM.Analytical.UI.WPF
 
         private void CheckAll(bool isChecked)
         {
-            foreach (DockPanel dockPanel in wrapPanel.Children)
+            foreach(UIElement uIElement in grid.Children)
             {
-                if(dockPanel == null || dockPanel.Children.Count < 1)
+                int columnIndex = (int)uIElement.GetValue(Grid.ColumnProperty);
+                
+                if(columnIndex == 0 && uIElement is CheckBox)
                 {
-                    continue;
+                    ((CheckBox)uIElement).IsChecked = isChecked;
                 }
-
-                CheckBox checkBox = dockPanel.Children[0] as CheckBox;
-                if(checkBox == null)
-                {
-                    continue;
-                }
-
-                checkBox.IsChecked = isChecked;
             }
         }
     }
