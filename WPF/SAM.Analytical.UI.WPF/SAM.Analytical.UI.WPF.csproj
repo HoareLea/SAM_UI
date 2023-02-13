@@ -150,6 +150,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ApertureData.cs" />
+    <Compile Include="Modify\EditOpeningProperties.cs" />
+    <Compile Include="Windows\ApertureWindow.xaml.cs">
+      <DependentUpon>ApertureWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ApertureControl.xaml.cs">
+      <DependentUpon>ApertureControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Classes\InternalConditionData.cs" />
     <Compile Include="Controls\ZonesSpacesControl.xaml.cs">
       <DependentUpon>ZonesSpacesControl.xaml</DependentUpon>
@@ -400,6 +408,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\ApertureWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ApertureControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\ZonesSpacesControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

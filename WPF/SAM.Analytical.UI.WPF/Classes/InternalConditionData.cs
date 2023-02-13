@@ -5,26 +5,26 @@ namespace SAM.Analytical.UI.WPF
 {
     public class InternalConditionData
     {
-        private AnalyticalModel AnalyticalModel { get; set; }
+        private AnalyticalModel analyticalModel { get; }
         private object @object;
 
         public InternalConditionData(AnalyticalModel analyticalModel, Space space)
         {
-            AnalyticalModel = analyticalModel;
+            this.analyticalModel = analyticalModel;
 
             @object = space == null ? null : new Space(space);
         }
 
         public InternalConditionData(AnalyticalModel analyticalModel, InternalCondition internalCondition)
         {
-            AnalyticalModel = analyticalModel;
+            this.analyticalModel = analyticalModel;
 
             @object = internalCondition == null ? null : new InternalCondition(internalCondition);
         }
 
         public InternalConditionData(AnalyticalModel analyticalModel, InternalConditionData internalConditionData)
         {
-            AnalyticalModel = analyticalModel;
+            this.analyticalModel = analyticalModel;
 
             @object = internalConditionData?.@object;
         }
@@ -245,7 +245,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return Analytical.Query.HeatingDesignTemperature(InternalCondition, AnalyticalModel?.ProfileLibrary);
+                return Analytical.Query.HeatingDesignTemperature(InternalCondition, analyticalModel?.ProfileLibrary);
             }
         }
 
@@ -253,7 +253,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return Analytical.Query.CoolingDesignTemperature(InternalCondition, AnalyticalModel?.ProfileLibrary);
+                return Analytical.Query.CoolingDesignTemperature(InternalCondition, analyticalModel?.ProfileLibrary);
             }
         }
 
@@ -332,7 +332,7 @@ namespace SAM.Analytical.UI.WPF
 
         public Profile GetProfile(ProfileType profileType)
         {
-            return InternalCondition?.GetProfile(profileType, AnalyticalModel?.ProfileLibrary);
+            return InternalCondition?.GetProfile(profileType, analyticalModel?.ProfileLibrary);
         }
 
         public bool TryGetValue<T>(SpaceParameter spaceParameter, out T value, bool tryConvert = true)
@@ -365,7 +365,7 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            IEnumerable<InternalCondition> internalConditions = AnalyticalModel?.AdjacencyCluster?.GetInternalConditions(false, true);
+            IEnumerable<InternalCondition> internalConditions = analyticalModel?.AdjacencyCluster?.GetInternalConditions(false, true);
             if(internalConditions == null || internalConditions.Count() == 0)
             {
                 return null;

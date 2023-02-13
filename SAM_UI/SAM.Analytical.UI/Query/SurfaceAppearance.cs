@@ -26,7 +26,9 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            Color color = Analytical.Query.Color(aperture.ApertureType, aperturePart);
+
+
+            Color color = Analytical.Query.Color(aperture, aperturePart);
 
             SurfaceAppearance result = new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0);
             if(aperturePart == AperturePart.Pane)

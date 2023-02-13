@@ -547,7 +547,46 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Tag = spaces;
                     contextMenu.Items.Add(menuItem);
                 }
+
+                List<Aperture> apertures = jSAMObjects.FindAll(x => x is Aperture).ConvertAll(x => (Aperture)x);
+                if(apertures != null && apertures.Count > 0)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_EditOpeningProperties";
+                    menuItem.Header = "Opening Properties";
+                    menuItem.Click += MenuItem_EditOpeningProperties_Click;
+                    menuItem.Tag = apertures;
+                    contextMenu.Items.Add(menuItem);
+                }
             }
+        }
+
+        private void MenuItem_EditOpeningProperties_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Aperture> apertures = null;
+            if (menuItem.Tag is Aperture)
+            {
+                apertures = new List<Aperture>() { (Aperture)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                apertures = new List<Aperture>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Aperture)
+                    {
+                        apertures.Add((Aperture)@object);
+                    }
+                }
+            }
+
+            Modify.EditOpeningProperties(uIAnalyticalModel, apertures);
         }
 
         private void MenuItem_MenuItem_MapInternalCondition_Click(object sender, RoutedEventArgs e)
