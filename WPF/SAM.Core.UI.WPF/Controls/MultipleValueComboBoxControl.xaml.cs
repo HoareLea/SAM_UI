@@ -87,6 +87,19 @@ namespace SAM.Core.UI.WPF
 
         }
 
+        public string Text
+        {
+            get
+            {
+                return comboBox.Text;
+            }
+
+            set
+            {
+                comboBox.Text = value;
+            }
+        }
+
         private void SetValues(IEnumerable<string> values)
         {
             comboBox.Items.Clear();

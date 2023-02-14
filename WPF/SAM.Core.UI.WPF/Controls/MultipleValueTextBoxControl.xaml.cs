@@ -95,20 +95,18 @@ namespace SAM.Core.UI.WPF
             }
         }
 
-        private void SetValues(IEnumerable<string> values)
+        public new bool IsEnabled
         {
-            this.values = null;
-
-            if (values != null)
+            get
             {
-                this.values = new List<string>();
-                foreach(string value in values)
-                {
-                    this.values.Add(value);
-                }
+                return base.IsEnabled;
             }
 
-            SetText();
+            set
+            {
+                textBox.IsEnabled = value;
+                base.IsEnabled = value;
+            }
         }
 
         public void SetDefaultValue(IEnumerable<string> values)
@@ -217,6 +215,22 @@ namespace SAM.Core.UI.WPF
             textBox.Background = brush;
         }
 
+        private void SetValues(IEnumerable<string> values)
+        {
+            this.values = null;
+
+            if (values != null)
+            {
+                this.values = new List<string>();
+                foreach (string value in values)
+                {
+                    this.values.Add(value);
+                }
+            }
+
+            SetText();
+        }
+
         private void textBox_MouseEnter(object sender, MouseEventArgs e)
         {
 
@@ -235,20 +249,6 @@ namespace SAM.Core.UI.WPF
             if (Vary && string.IsNullOrEmpty(textBox.Text))
             {
                 textBox.Text = VaryText;
-            }
-        }
-
-        public new bool IsEnabled
-        {
-            get
-            {
-                return base.IsEnabled;
-            }
-
-            set
-            {
-                textBox.IsEnabled = value;
-                base.IsEnabled = value;
             }
         }
 

@@ -245,5 +245,10 @@ namespace SAM.Analytical.UI.WPF
 
             SetApertureDatas(apertureDatas);
         }
+
+        private void label_FunctionExample_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            multipleValueComboBoxControl_Function.Text = label_FunctionExample.Content as string;
+        }
     }
 }
