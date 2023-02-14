@@ -229,7 +229,7 @@ namespace SAM.Analytical.UI.WPF
                 apertureDatas[i].Color = color;
             }
 
-            SetApertureDatas(apertureDatas);
+            SetColor(apertureDatas);
         }
 
         private void checkBox_OpeningProperties_Click(object sender, RoutedEventArgs e)
