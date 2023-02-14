@@ -209,7 +209,14 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
-                if(singleSelection)
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_EditInternalConditions";
+                menuItem.Header = "Modify IC";
+                menuItem.Click += MenuItem_EditInternalConditions_Click;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
+                contextMenu_Model.Items.Add(menuItem);
+
+                if (singleSelection)
                 {
                     menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_Edit";
@@ -407,6 +414,17 @@ namespace SAM.Analytical.UI.WPF
                 e.Handled = true;
                 return;
             }
+        }
+
+        private void MenuItem_EditInternalConditions_Click(object sender, RoutedEventArgs e)
+        {
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if (jSAMObjects == null || jSAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            Modify.EditInternalConditions(uIAnalyticalModel, jSAMObjects.FindAll(x => x is Space).Cast<Space>());
         }
 
         private void MenuItem_EditZone_Click(object sender, RoutedEventArgs e)
