@@ -14,7 +14,10 @@
         <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_Area" HorizontalAlignment="Left" Height="23" Margin="95,41,0,0" VerticalAlignment="Top" Width="99"/>
         <Label Content="Color:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
         <Button x:Name="button_Color" Content="" HorizontalAlignment="Left" Margin="95,72,0,0" VerticalAlignment="Top" Width="195" Click="button_Color_Click"/>
-        <GroupBox Header="Opening Properties" HorizontalAlignment="Left" Height="129" Margin="10,103,0,0" VerticalAlignment="Top" Width="280">
+        <GroupBox HorizontalAlignment="Left" Height="129" Margin="10,103,0,0" VerticalAlignment="Top" Width="280">
+            <GroupBox.Header>
+                <CheckBox x:Name="checkBox_OpeningProperties" Content="Opening Properties" Click="checkBox_OpeningProperties_Click"/>
+            </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Discharge Coefficient:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_DischargeCoefficient" HorizontalAlignment="Left" Height="23" Margin="140,10,0,0" VerticalAlignment="Top" Width="114"/>

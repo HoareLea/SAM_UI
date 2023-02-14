@@ -38,6 +38,8 @@ namespace SAM.Analytical.UI.WPF
             }
 
             multipleValueComboBoxControl_DischargeCoefficient.TextChanged += MultipleValueComboBoxControl_DischargeCoefficient_TextChanged;
+
+            checkBox_OpeningProperties.IsChecked = true;
         }
 
         private void MultipleValueComboBoxControl_DischargeCoefficient_TextChanged(object sender, EventArgs e)
@@ -48,7 +50,10 @@ namespace SAM.Analytical.UI.WPF
                 {
                     for (int i = 0; i < apertureDatas.Count; i++)
                     {
-                        apertureDatas[i].Color = Analytical.Query.Color(ApertureType.Window, AperturePart.Pane, true);
+                        if(apertureDatas[i].OpeningProperties == null || double.IsNaN(apertureDatas[i].OpeningProperties.GetDischargeCoefficient()))
+                        {
+                            apertureDatas[i].Color = Analytical.Query.Color(ApertureType.Window, AperturePart.Pane, true);
+                        }
                     }
 
                     SetColor(apertureDatas);
@@ -222,6 +227,19 @@ namespace SAM.Analytical.UI.WPF
             for (int i = 0; i < apertureDatas.Count; i++)
             {
                 apertureDatas[i].Color = color;
+            }
+
+            SetApertureDatas(apertureDatas);
+        }
+
+        private void checkBox_OpeningProperties_Click(object sender, RoutedEventArgs e)
+        {
+            if(checkBox_OpeningProperties.IsChecked == null || !checkBox_OpeningProperties.IsChecked.HasValue || !checkBox_OpeningProperties.IsChecked.Value)
+            {
+                for (int i = 0; i < apertureDatas.Count; i++)
+                {
+                    apertureDatas[i].OpeningProperties = null;
+                }
             }
 
             SetApertureDatas(apertureDatas);
