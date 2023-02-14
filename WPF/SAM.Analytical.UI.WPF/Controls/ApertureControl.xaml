@@ -25,7 +25,7 @@
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_Function" HorizontalAlignment="Left" Height="23" Margin="89,38,0,0" VerticalAlignment="Top" Width="165"/>
                 <Label Content="Description:" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_Description" HorizontalAlignment="Left" Height="23" Margin="89,100,0,0" VerticalAlignment="Top" Width="165"/>
-                <Label x:Name="label_FunctionExample" Content="zdwon,0,19.00,21.00,99.00" HorizontalAlignment="Left" Margin="89,69,0,0" VerticalAlignment="Top" Cursor="Hand" PreviewMouseDoubleClick="label_FunctionExample_PreviewMouseDoubleClick"/>
+                <Label x:Name="label_FunctionExample" Content="zdwno,0,19.00,21.00,99.00" HorizontalAlignment="Left" Margin="89,69,0,0" VerticalAlignment="Top" Cursor="Hand" PreviewMouseDoubleClick="label_FunctionExample_PreviewMouseDoubleClick"/>
             </Grid>
         </GroupBox>
 
