@@ -993,7 +993,7 @@ namespace SAM.Analytical.UI.WPF
             InternalCondition internalCondition = null;
             if(!multipleValueComboBoxControl_Name.VarySet)
             {
-                internalCondition = internalConditionLibrary.GetInternalConditions(multipleValueComboBoxControl_Name.Value).FirstOrDefault();
+                internalCondition = internalConditionLibrary.GetInternalConditions(multipleValueComboBoxControl_Name.Value)?.FirstOrDefault();
             }
 
             using (InternalConditionLibraryForm internalConditionForm = new InternalConditionLibraryForm(internalConditionLibrary, profileLibrary, adjacencyCluster, internalCondition))
