@@ -74,7 +74,7 @@ namespace SAM.Analytical.UI.WPF
 
             multipleValueComboBoxControl_ConstructionName.Values = this.apertureDatas.ConvertAll(x => x?.ApertureConstruction?.Name);
             multipleValueTextBoxControl_Area.Values = this.apertureDatas.ConvertAll(x => Core.Query.Round(x.Area, 0.01))?.Texts();
-            multipleValueComboBoxControl_DischargeCoefficient.Values = this.apertureDatas.ConvertAll(x => x.DischargeCoefficient)?.Texts();
+            multipleValueComboBoxControl_DischargeCoefficient.Values = this.apertureDatas.ConvertAll(x => Core.Query.Round(x.DischargeCoefficient, Core.Tolerance.MacroDistance))?.Texts();
             multipleValueComboBoxControl_Function.Values = this.apertureDatas.ConvertAll(x => x.Function);
             multipleValueComboBoxControl_Description.Values = this.apertureDatas.ConvertAll(x => x.Description);
 

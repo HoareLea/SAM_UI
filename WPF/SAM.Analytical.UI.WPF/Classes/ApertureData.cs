@@ -9,7 +9,7 @@
             this.aperture = aperture == null ? null : new Aperture(aperture);
         }
 
-        public OpeningProperties OpeningProperties
+        public IOpeningProperties OpeningProperties
         {
             get
             {
@@ -19,7 +19,7 @@
                     return null;
                 }
 
-                if(!aperture.TryGetValue(ApertureParameter.OpeningProperties, out OpeningProperties openingProperties) || openingProperties == null)
+                if(!aperture.TryGetValue(ApertureParameter.OpeningProperties, out IOpeningProperties openingProperties) || openingProperties == null)
                 {
                     return null;
                 }
@@ -122,7 +122,7 @@
         {
             get
             {
-                OpeningProperties openingProperties = OpeningProperties;
+                IOpeningProperties openingProperties = OpeningProperties;
                 if(openingProperties == null)
                 {
                     return null;
@@ -138,7 +138,7 @@
 
             set
             {
-                OpeningProperties openingProperties = OpeningProperties;
+                IOpeningProperties openingProperties = OpeningProperties;
                 if(openingProperties == null)
                 {
                     if(value == null)
@@ -163,7 +163,7 @@
         {
             get
             {
-                OpeningProperties openingProperties = OpeningProperties;
+                IOpeningProperties openingProperties = OpeningProperties;
                 if (openingProperties == null)
                 {
                     return double.NaN;
@@ -174,7 +174,7 @@
 
             set
             {
-                OpeningProperties openingProperties = OpeningProperties;
+                IOpeningProperties openingProperties = OpeningProperties;
                 if (openingProperties == null)
                 {
                     if(double.IsNaN(value))
@@ -186,7 +186,7 @@
                 }
                 else
                 {
-                    openingProperties = new OpeningProperties(openingProperties, value);
+                    openingProperties = new OpeningProperties(openingProperties, openingProperties.GetDischargeCoefficient());
                 }
 
 
@@ -202,7 +202,7 @@
         {
             get
             {
-                OpeningProperties openingProperties = OpeningProperties;
+                IOpeningProperties openingProperties = OpeningProperties;
                 if (openingProperties == null)
                 {
                     return null;
@@ -218,7 +218,7 @@
 
             set
             {
-                OpeningProperties openingProperties = OpeningProperties;
+                IOpeningProperties openingProperties = OpeningProperties;
                 if (openingProperties == null)
                 {
                     if (value == null)
