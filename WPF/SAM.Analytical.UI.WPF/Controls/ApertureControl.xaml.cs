@@ -239,6 +239,7 @@ namespace SAM.Analytical.UI.WPF
                 for (int i = 0; i < apertureDatas.Count; i++)
                 {
                     apertureDatas[i].OpeningProperties = null;
+                    apertureDatas[i].Color = System.Drawing.Color.Empty;
                 }
             }
 
