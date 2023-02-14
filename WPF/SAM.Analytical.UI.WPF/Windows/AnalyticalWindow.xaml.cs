@@ -160,6 +160,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Tools_MapInternalConditionsByTM59.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_Tools_MapInternalConditionsByTM59.Click += RibbonButton_Tools_MapInternalConditionsByTM59_Click;
 
+            RibbonButton_Tools_EditInternalConditions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_Tools_EditInternalConditions.Click += RibbonButton_Tools_EditInternalConditions_Click;
+
             RibbonButton_Tools_TextMap.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
             RibbonButton_Tools_TextMap.Click += RibbonButton_Tools_TextMap_Click;
 
@@ -207,15 +210,26 @@ namespace SAM.Analytical.UI.WPF.Windows
             SetEnabled();
         }
 
-        private void RibbonButton_Tools_Test_Click(object sender, RoutedEventArgs e)
+        private void RibbonButton_Tools_EditInternalConditions_Click(object sender, RoutedEventArgs e)
         {
             InternalConditionWindow internalConditionWindow = new InternalConditionWindow(uIAnalyticalModel);
             bool? result = internalConditionWindow.ShowDialog();
-            
+
             if (result == null || !result.HasValue || !result.Value)
             {
                 return;
             }
+        }
+
+        private void RibbonButton_Tools_Test_Click(object sender, RoutedEventArgs e)
+        {
+            //InternalConditionWindow internalConditionWindow = new InternalConditionWindow(uIAnalyticalModel);
+            //bool? result = internalConditionWindow.ShowDialog();
+            
+            //if (result == null || !result.HasValue || !result.Value)
+            //{
+            //    return;
+            //}
         }
 
         private void RibbonButton_Results_Remove_Click(object sender, RoutedEventArgs e)
@@ -527,6 +541,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                 if(spaces != null && spaces.Count > 0)
                 {
                     menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_EditInternalConditions";
+                    menuItem.Header = "Modify IC";
+                    menuItem.Click += MenuItem_EditInternalConditions_Click;
+                    menuItem.Tag = spaces;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_AssignInternalCondition";
                     menuItem.Header = "Assign IC";
                     menuItem.Click += MenuItem_AssignInternalCondition_Click;
@@ -559,6 +580,34 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
                 }
             }
+        }
+
+        private void MenuItem_EditInternalConditions_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            Modify.EditInternalConditions(uIAnalyticalModel, spaces);
         }
 
         private void MenuItem_EditOpeningProperties_Click(object sender, RoutedEventArgs e)

@@ -478,6 +478,7 @@
                     <RibbonButton x:Name="RibbonButton_Tools_PrintRoomDataSheets" Label="Print RDS"/>
                     <RibbonButton x:Name="RibbonButton_Tools_MapInternalConditions" Label="Map IC"/>
                     <RibbonButton x:Name="RibbonButton_Tools_MapInternalConditionsByTM59" Label="Map IC (TM59)"/>
+                    <RibbonButton x:Name="RibbonButton_Tools_EditInternalConditions" Label="Modify IC"/>
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_SAM" Header="SAM">
                     <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Mollier Diagram"/>
