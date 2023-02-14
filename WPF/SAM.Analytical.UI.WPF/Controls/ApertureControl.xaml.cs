@@ -30,6 +30,7 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
 
             multipleValueComboBoxControl_ConstructionName.IsEditable = false;
+            multipleValueTextBoxControl_Area.IsEnabled = false;
 
             if (background == null)
             {
@@ -72,6 +73,8 @@ namespace SAM.Analytical.UI.WPF
         {
             this.apertureDatas = apertureDatas == null ? null : new List<ApertureData>(apertureDatas);
 
+            multipleValueComboBoxControl_DischargeCoefficient.TextChanged -= MultipleValueComboBoxControl_DischargeCoefficient_TextChanged;
+
             multipleValueComboBoxControl_ConstructionName.Values = this.apertureDatas.ConvertAll(x => x?.ApertureConstruction?.Name);
             multipleValueTextBoxControl_Area.Values = this.apertureDatas.ConvertAll(x => Core.Query.Round(x.Area, 0.01))?.Texts();
             multipleValueComboBoxControl_DischargeCoefficient.Values = this.apertureDatas.ConvertAll(x => Core.Query.Round(x.DischargeCoefficient, Core.Tolerance.MacroDistance))?.Texts();
@@ -79,6 +82,8 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_Description.Values = this.apertureDatas.ConvertAll(x => x.Description);
 
             SetColor(apertureDatas);
+
+            multipleValueComboBoxControl_DischargeCoefficient.TextChanged += MultipleValueComboBoxControl_DischargeCoefficient_TextChanged;
         }
 
         private List<ApertureData> GetApertureDatas(bool updated = true)

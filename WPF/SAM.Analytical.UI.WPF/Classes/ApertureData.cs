@@ -186,7 +186,7 @@
                 }
                 else
                 {
-                    openingProperties = new OpeningProperties(openingProperties, openingProperties.GetDischargeCoefficient());
+                    openingProperties = new OpeningProperties(openingProperties, value);
                 }
 
 
