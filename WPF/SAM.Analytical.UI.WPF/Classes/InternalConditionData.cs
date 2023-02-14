@@ -215,6 +215,19 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 InternalCondition = internalCondition;
+
+                Space space = Space;
+                if(space != null)
+                {
+                    if(double.IsNaN(value))
+                    {
+                        space.RemoveValue(SpaceParameter.Occupancy);
+                    }
+                    else
+                    {
+                        space.SetValue(SpaceParameter.Occupancy, value);
+                    }
+                }
             }
         }
 
@@ -238,6 +251,27 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 InternalCondition = internalCondition;
+
+                Space space = Space;
+                if (space != null)
+                {
+                    double occupancy = double.NaN;
+
+                    double area = Area;
+                    if (!double.IsNaN(area) && area > 0 && !double.IsNaN(value))
+                    {
+                        occupancy = area / value;
+                    }
+
+                    if (double.IsNaN(value))
+                    {
+                        space.RemoveValue(SpaceParameter.Occupancy);
+                    }
+                    else
+                    {
+                        space.SetValue(SpaceParameter.Occupancy, occupancy);
+                    }
+                }
             }
         }
 

@@ -134,7 +134,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void MultipleValueComboBoxControl_Number_TextInput(object sender, TextCompositionEventArgs e)
         {
-            SAM.Core.Windows.EventHandler.ControlText_NumberOnly(sender, e);
+            Core.Windows.EventHandler.ControlText_NumberOnly(sender, e);
         }
 
         private void MultipleValueComboBoxControl_Occupancy_TextChanged(object sender, EventArgs e)
@@ -144,16 +144,22 @@ namespace SAM.Analytical.UI.WPF
             if (multipleValueComboBoxControl_Occupancy.VarySet)
             {
                 multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas.Texts(InternalConditionParameter.AreaPerPerson);
-
             }
             else
             {
                 if (Core.Query.TryConvert(multipleValueComboBoxControl_Occupancy.Value, out double occupancy) && !double.IsNaN(occupancy))
                 {
                     internalConditionDatas?.ForEach(x => x.Occupancy = occupancy);
-                    multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas?.Texts(InternalConditionParameter.AreaPerPerson);
                 }
+                else
+                {
+                    internalConditionDatas?.ForEach(x => x.Occupancy = double.NaN);
+                }
+
+                multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas?.Texts(InternalConditionParameter.AreaPerPerson);
             }
+
+            multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas?.Texts(SpaceParameter.Occupancy);
 
             multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
 
@@ -177,9 +183,17 @@ namespace SAM.Analytical.UI.WPF
                 if (Core.Query.TryConvert(multipleValueComboBoxControl_AreaPerPerson.Value, out double areaPerPerson) && !double.IsNaN(areaPerPerson))
                 {
                     internalConditionDatas?.ForEach(x => x.AreaPerPerson = areaPerPerson);
-                    multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : Core.Query.Round(x.Occupancy, 0.01).ToString());
                 }
+                else
+                {
+                    internalConditionDatas?.ForEach(x => x.AreaPerPerson = double.NaN);
+                }
+
+                multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : Core.Query.Round(x.Occupancy, 0.01).ToString());
             }
+
+            multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas?.Texts(SpaceParameter.Occupancy);
+
             multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
 
             UpdateCalculatedOccupancySensibleGainPerPerson();
@@ -843,7 +857,7 @@ namespace SAM.Analytical.UI.WPF
 
 
 
-            Profile profile = AnalyticalModel.ProfileLibrary.GetProfile(names[0], profileType);
+            Profile profile = AnalyticalModel.ProfileLibrary.GetProfile(names[0], profileType, true);
             if (profile == null)
             {
                 return;
