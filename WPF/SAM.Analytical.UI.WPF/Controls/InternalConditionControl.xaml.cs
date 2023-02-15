@@ -994,6 +994,13 @@ namespace SAM.Analytical.UI.WPF
         private void button_SelectHeatingProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_HeatingProfile_Name, ProfileType.Heating);
+
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_HeatingProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.HeatingProfileName, multipleValueTextBoxControl_HeatingProfile_Name.Value));
+            }
+
+            multipleValueTextBoxControl_HeatingProfile_DesignTemperature.Values = internalConditionDatas?.ToList().ConvertAll(x => x.HeatingDesignTemperature)?.Texts();
         }
 
         private void button_SelectOccupancyProfile_Click(object sender, RoutedEventArgs e)
@@ -1026,6 +1033,13 @@ namespace SAM.Analytical.UI.WPF
         private void button_SelectCoolingProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_CoolingProfile_Name, ProfileType.Cooling);
+
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_CoolingProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.CoolingProfileName, multipleValueTextBoxControl_CoolingProfile_Name.Value));
+            }
+
+            multipleValueTextBoxControl_CoolingProfile_DesignTemperature.Values = internalConditionDatas?.ToList().ConvertAll(x => x.CoolingDesignTemperature)?.Texts();
         }
 
         private void button_SelectLightingProfile_Click(object sender, RoutedEventArgs e)
