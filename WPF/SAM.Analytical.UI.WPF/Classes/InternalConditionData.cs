@@ -347,7 +347,7 @@ namespace SAM.Analytical.UI.WPF
                     return double.NaN;
                 }
 
-                return profile.MaxValue;
+                return profile.MinValue;
             }
         }
 

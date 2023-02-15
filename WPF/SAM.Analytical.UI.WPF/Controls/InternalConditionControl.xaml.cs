@@ -1006,6 +1006,8 @@ namespace SAM.Analytical.UI.WPF
         private void button_SelectHumidificationProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_HumidificationProfile_Name, ProfileType.Humidification);
+
+            multipleValueComboBoxControl_HumidificationProfile_Humidity.Values = internalConditionDatas?.ToList().ConvertAll(x => x.Humidity)?.Texts();
         }
 
         private void button_SelectInfiltrationProfile_Click(object sender, RoutedEventArgs e)
@@ -1031,6 +1033,8 @@ namespace SAM.Analytical.UI.WPF
         private void button_SelectDehumidificationProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_DehumidificationProfile_Name, ProfileType.Dehumidification);
+
+            multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.Values = internalConditionDatas?.ToList().ConvertAll(x => x.Dehumidity)?.Texts();
         }
 
         private void button_Select_Click(object sender, RoutedEventArgs e)
