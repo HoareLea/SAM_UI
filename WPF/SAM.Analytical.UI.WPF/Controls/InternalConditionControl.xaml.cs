@@ -1012,7 +1012,7 @@ namespace SAM.Analytical.UI.WPF
 
             if(internalConditionDatas != null && !multipleValueTextBoxControl_HumidificationProfile_Name.VarySet)
             {
-                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.HumidificationProfileName, multipleValueComboBoxControl_HumidificationProfile_Humidity.Value));
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.HumidificationProfileName, multipleValueTextBoxControl_HumidificationProfile_Name.Value));
             }
 
             multipleValueComboBoxControl_HumidificationProfile_Humidity.Values = internalConditionDatas?.ToList().ConvertAll(x => x.Humidity)?.Texts();
