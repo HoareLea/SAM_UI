@@ -114,7 +114,7 @@ namespace SAM.Analytical.UI.WPF
             adjacencyCluster?.GetInternalConditions(false, true)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
 
             InternalCondition internalCondition = internalConditionLibrary.GetInternalConditions(multipleValueComboBoxControl_Name.Value).FirstOrDefault();
-            if(internalCondition == null)
+            if (internalCondition == null)
             {
                 internalConditionLibrary = new InternalConditionLibrary("Internal Condition Library");
                 adjacencyCluster?.GetInternalConditions(true, false)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
@@ -394,12 +394,12 @@ namespace SAM.Analytical.UI.WPF
                     internalCondition = new InternalCondition(internalCondition);
                 }
 
-                if(!multipleValueComboBoxControl_Name.VarySet)
+                if (!multipleValueComboBoxControl_Name.VarySet)
                 {
-                    if(internalCondition.Name != multipleValueComboBoxControl_Name.Value)
+                    if (internalCondition.Name != multipleValueComboBoxControl_Name.Value)
                     {
                         InternalCondition internalCondition_Temp = AnalyticalModel.AdjacencyCluster.GetInternalConditions(false, true)?.ToList()?.Find(x => x.Name == multipleValueComboBoxControl_Name.Value);
-                        if(internalCondition_Temp != null)
+                        if (internalCondition_Temp != null)
                         {
                             internalCondition = new InternalCondition(internalCondition_Temp);
                         }
@@ -413,7 +413,7 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 System.Drawing.Color color = GetColor(out bool vary);
-                if(!vary)
+                if (!vary)
                 {
                     if (color == System.Drawing.Color.Empty)
                     {
@@ -613,6 +613,24 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
+                if (checkBox_DehumidificationProfile.IsChecked.HasValue && checkBox_DehumidificationProfile.IsChecked.Value)
+                {
+                    if (!multipleValueTextBoxControl_DehumidificationProfile_Name.Vary)
+                    {
+                        string value = multipleValueTextBoxControl_DehumidificationProfile_Name.Value;
+                        internalCondition?.SetValue(InternalConditionParameter.DehumidificationProfileName, value);
+                    }
+                }
+
+                if (checkBox_HumidificationProfile.IsChecked.HasValue && checkBox_HumidificationProfile.IsChecked.Value)
+                {
+                    if (!multipleValueTextBoxControl_HumidificationProfile_Name.Vary)
+                    {
+                        string value = multipleValueTextBoxControl_HumidificationProfile_Name.Value;
+                        internalCondition?.SetValue(InternalConditionParameter.HumidificationProfileName, value);
+                    }
+                }
+
                 if (space != null)
                 {
                     space.InternalCondition = internalCondition;
@@ -690,90 +708,119 @@ namespace SAM.Analytical.UI.WPF
 
             SetColor(internalConditionDatas);
 
-            List<InternalCondition> internalConditions_Template = internalConditionDatas.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+            List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
 
             List<InternalConditionData> internalConditionDatas_Temp = internalConditionDatas.ToList();
 
-            multipleValueComboBoxControl_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.Name);
+            multipleValueComboBoxControl_Name.Values = internalConditionDatas_Temp?.ConvertAll(x => x?.Name);
             multipleValueComboBoxControl_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.Name).FindAll(x => x != null));
 
-            multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.AreaPerPerson);
-            multipleValueComboBoxControl_AreaPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.AreaPerPerson));
+            if (checkBox_Occupancy.IsChecked != null && checkBox_Occupancy.IsChecked.HasValue && checkBox_Occupancy.IsChecked.Value)
+            {
+                multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas_Temp?.Texts(InternalConditionParameter.AreaPerPerson);
+                multipleValueComboBoxControl_AreaPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.AreaPerPerson));
 
-            multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas_Temp.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : x.Occupancy.ToString());
+                multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas_Temp?.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : x.Occupancy.ToString());
 
-            multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas_Temp.ConvertAll(x => x == null || double.IsNaN(x.SpaceOccupancy) ? null : Core.Query.Round(x.SpaceOccupancy, 0.01).ToString());
+                multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas_Temp?.ConvertAll(x => x == null || double.IsNaN(x.SpaceOccupancy) ? null : Core.Query.Round(x.SpaceOccupancy, 0.01).ToString());
+            }
 
-            multipleValueTextBoxControl_HeatingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Heating));
-            multipleValueTextBoxControl_HeatingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Heating)));
+            if (checkBox_HeatingProfile.IsChecked != null && checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_HeatingProfile_Name.Values = internalConditionDatas_Temp?.ConvertAll(x => x?.GetProfileName(ProfileType.Heating));
+                multipleValueTextBoxControl_HeatingProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Heating)));
 
-            multipleValueTextBoxControl_HeatingProfile_DesignTemperature.Values = internalConditionDatas_Temp.ConvertAll(x => x.HeatingDesignTemperature)?.Texts();
-            multipleValueTextBoxControl_HeatingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.HeatingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
+                multipleValueTextBoxControl_HeatingProfile_DesignTemperature.Values = internalConditionDatas_Temp?.ConvertAll(x => x.HeatingDesignTemperature)?.Texts();
+                multipleValueTextBoxControl_HeatingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.HeatingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
+            }
 
-            multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.AreaPerPerson);
-            multipleValueComboBoxControl_AreaPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.AreaPerPerson));
+            if (checkBox_OccupancyProfile.IsChecked != null && checkBox_OccupancyProfile.IsChecked.HasValue && checkBox_OccupancyProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_OccupancyProfile_Name.Values = internalConditionDatas_Temp?.ConvertAll(x => x?.GetProfileName(ProfileType.Occupancy));
+                multipleValueTextBoxControl_OccupancyProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Occupancy)));
 
-            multipleValueTextBoxControl_OccupancyProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Occupancy));
-            multipleValueTextBoxControl_OccupancyProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Occupancy)));
+                multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.Values = internalConditionDatas_Temp?.Texts(InternalConditionParameter.OccupancySensibleGainPerPerson);
+                multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.OccupancySensibleGainPerPerson));
 
-            multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.OccupancySensibleGainPerPerson);
-            multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.OccupancySensibleGainPerPerson));
+                multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.Values = internalConditionDatas_Temp?.Texts(InternalConditionParameter.OccupancyLatentGainPerPerson);
+                multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.OccupancyLatentGainPerPerson));
+            }
 
-            multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.OccupancyLatentGainPerPerson);
-            multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.OccupancyLatentGainPerPerson));
+            if (checkBox_EquipmentSensibleProfile.IsChecked != null && checkBox_EquipmentSensibleProfile.IsChecked.HasValue && checkBox_EquipmentSensibleProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_EquipmentSensibleProfile_Name.Values = internalConditionDatas_Temp?.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentSensible));
+                multipleValueTextBoxControl_EquipmentSensibleProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentSensible)));
 
-            multipleValueTextBoxControl_EquipmentSensibleProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentSensible));
-            multipleValueTextBoxControl_EquipmentSensibleProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentSensible)));
+                multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.Values = internalConditionDatas_Temp?.Texts(InternalConditionParameter.EquipmentSensibleGainPerArea);
+                multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGainPerArea));
 
-            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentSensibleGainPerArea);
-            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGainPerArea));
+                multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.Values = internalConditionDatas_Temp?.Texts(InternalConditionParameter.EquipmentSensibleGain);
+                multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGain));
+            }
 
-            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentSensibleGain);
-            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGain));
+            if (checkBox_InfiltrationProfile.IsChecked != null && checkBox_InfiltrationProfile.IsChecked.HasValue && checkBox_InfiltrationProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_InfiltrationProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Infiltration));
+                multipleValueTextBoxControl_InfiltrationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Infiltration)));
 
-            multipleValueTextBoxControl_InfiltrationProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Infiltration));
-            multipleValueTextBoxControl_InfiltrationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Infiltration)));
+                multipleValueComboBoxControl_InfiltrationProfile_Infiltration.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.InfiltrationAirChangesPerHour);
+                multipleValueComboBoxControl_InfiltrationProfile_Infiltration.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.InfiltrationAirChangesPerHour));
+            }
 
-            multipleValueComboBoxControl_InfiltrationProfile_Infiltration.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.InfiltrationAirChangesPerHour);
-            multipleValueComboBoxControl_InfiltrationProfile_Infiltration.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.InfiltrationAirChangesPerHour));
+            if (checkBox_LightingProfile.IsChecked != null && checkBox_LightingProfile.IsChecked.HasValue && checkBox_LightingProfile.IsChecked.Value)
+            {
+                multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingGainPerArea);
+                multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingGainPerArea));
 
-            multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingGainPerArea);
-            multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingGainPerArea));
+                multipleValueComboBoxControl_LightingProfile_LightingGain.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingGain);
+                multipleValueComboBoxControl_LightingProfile_LightingGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingGain));
 
-            multipleValueComboBoxControl_LightingProfile_LightingGain.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingGain);
-            multipleValueComboBoxControl_LightingProfile_LightingGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingGain));
+                multipleValueComboBoxControl_LightingProfile_LightLevel.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingLevel);
+                multipleValueComboBoxControl_LightingProfile_LightLevel.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingLevel));
+            }
 
-            multipleValueComboBoxControl_LightingProfile_LightLevel.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingLevel);
-            multipleValueComboBoxControl_LightingProfile_LightLevel.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingLevel));
+            if (checkBox_EquipmentLatentProfile.IsChecked != null && checkBox_EquipmentLatentProfile.IsChecked.HasValue && checkBox_EquipmentLatentProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_EquipmentLatentProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentLatent));
+                multipleValueTextBoxControl_EquipmentLatentProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentLatent)));
 
-            multipleValueTextBoxControl_EquipmentLatentProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentLatent));
-            multipleValueTextBoxControl_EquipmentLatentProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentLatent)));
+                multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentLatentGainPerArea);
+                multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentLatentGainPerArea));
 
-            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentLatentGainPerArea);
-            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentLatentGainPerArea));
+                multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentLatentGain);
+                multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentLatentGain));
+            }
 
-            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.EquipmentLatentGain);
-            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentLatentGain));
+            if (checkBox_HumidificationProfile.IsChecked != null && checkBox_HumidificationProfile.IsChecked.HasValue && checkBox_HumidificationProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_HumidificationProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Humidification));
+                multipleValueTextBoxControl_HumidificationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Humidification)));
 
-            multipleValueTextBoxControl_HumidificationProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Humidification));
-            multipleValueTextBoxControl_HumidificationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Humidification)));
+                multipleValueComboBoxControl_HumidificationProfile_Humidity.Values = internalConditionDatas_Temp.ConvertAll(x => x.Humidity)?.Texts();
+            }
 
-            multipleValueComboBoxControl_HumidificationProfile_Humidity.Values = internalConditionDatas_Temp.ConvertAll(x => x.Humidity)?.Texts();
+            if (checkBox_CoolingProfile.IsChecked != null && checkBox_CoolingProfile.IsChecked.HasValue && checkBox_CoolingProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_CoolingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Cooling));
+                multipleValueTextBoxControl_CoolingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Cooling)));
 
-            multipleValueTextBoxControl_CoolingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Cooling));
-            multipleValueTextBoxControl_CoolingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Cooling)));
+                multipleValueTextBoxControl_CoolingProfile_DesignTemperature.Values = internalConditionDatas_Temp.ConvertAll(x => x.CoolingDesignTemperature)?.Texts();
+                multipleValueTextBoxControl_CoolingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.CoolingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
+            }
 
-            multipleValueTextBoxControl_CoolingProfile_DesignTemperature.Values = internalConditionDatas_Temp.ConvertAll(x => x.CoolingDesignTemperature)?.Texts();
-            multipleValueTextBoxControl_CoolingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.CoolingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
+            if (checkBox_LightingProfile.IsChecked != null && checkBox_LightingProfile.IsChecked.HasValue && checkBox_LightingProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_LightingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Lighting));
+                multipleValueTextBoxControl_LightingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Lighting)));
+            }
 
-            multipleValueTextBoxControl_LightingProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Lighting));
-            multipleValueTextBoxControl_LightingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Lighting)));
+            if (checkBox_DehumidificationProfile.IsChecked != null && checkBox_DehumidificationProfile.IsChecked.HasValue && checkBox_DehumidificationProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_DehumidificationProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Dehumidification));
+                multipleValueTextBoxControl_DehumidificationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Dehumidification)));
 
-
-            multipleValueTextBoxControl_DehumidificationProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Dehumidification));
-            multipleValueTextBoxControl_DehumidificationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Dehumidification)));
-
-            multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.Values = internalConditionDatas_Temp.ConvertAll(x => x.Dehumidity)?.Texts();
+                multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.Values = internalConditionDatas_Temp.ConvertAll(x => x.Dehumidity)?.Texts();
+            }
 
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
         }
@@ -788,12 +835,12 @@ namespace SAM.Analytical.UI.WPF
             }
 
             List<System.Drawing.Color> colors = internalConditionDatas?.Colors();
-            if(colors == null || colors.Count == 0)
+            if (colors == null || colors.Count == 0)
             {
                 return;
             }
 
-            if(Core.UI.Query.Vary(colors))
+            if (Core.UI.Query.Vary(colors))
             {
                 button_Color.Content = multipleValueComboBoxControl_Name.VaryText;
                 button_Color.Background = background;
@@ -815,19 +862,19 @@ namespace SAM.Analytical.UI.WPF
         private System.Drawing.Color GetColor(out bool vary)
         {
             vary = false;
-            if(!string.IsNullOrWhiteSpace(button_Color?.Content?.ToString()))
+            if (!string.IsNullOrWhiteSpace(button_Color?.Content?.ToString()))
             {
                 vary = true;
             }
 
             SolidColorBrush solidColorBrush = button_Color.Background as SolidColorBrush;
-            if(solidColorBrush == null)
+            if (solidColorBrush == null)
             {
                 return System.Drawing.Color.Empty;
             }
 
             SolidColorBrush solidColorBrush_Background = background as SolidColorBrush;
-            if(solidColorBrush_Background == null)
+            if (solidColorBrush_Background == null)
             {
                 return System.Drawing.Color.Empty;
             }
@@ -844,7 +891,7 @@ namespace SAM.Analytical.UI.WPF
         {
             List<InternalConditionData> internalConditionDatas = GetInternalConditionDatas(true);
             List<string> names = internalConditionDatas.ConvertAll(x => x.GetProfileName(profileType));
-            
+
             if (names == null || names.Count == 0)
             {
                 return;
@@ -988,13 +1035,13 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_Select_Click(object sender, RoutedEventArgs e)
         {
-            if(internalConditionDatas == null)
+            if (internalConditionDatas == null)
             {
                 return;
             }
-            
+
             AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
-            if(adjacencyCluster == null)
+            if (adjacencyCluster == null)
             {
                 return;
             }
@@ -1005,7 +1052,7 @@ namespace SAM.Analytical.UI.WPF
             adjacencyCluster?.GetInternalConditions(false, true)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
 
             InternalCondition internalCondition = null;
-            if(!multipleValueComboBoxControl_Name.VarySet)
+            if (!multipleValueComboBoxControl_Name.VarySet)
             {
                 internalCondition = internalConditionLibrary.GetInternalConditions(multipleValueComboBoxControl_Name.Value)?.FirstOrDefault();
             }
@@ -1060,7 +1107,7 @@ namespace SAM.Analytical.UI.WPF
             int index = 1;
             string name_Temp = name;
 
-            while(internalConditionLibrary.GetInternalConditions(name_Temp).FirstOrDefault() != null)
+            while (internalConditionLibrary.GetInternalConditions(name_Temp).FirstOrDefault() != null)
             {
                 name_Temp = string.Format("{0} {1}", name, index);
                 index++;
@@ -1081,7 +1128,7 @@ namespace SAM.Analytical.UI.WPF
 
             AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
 
-            for(int i =0; i < internalConditionDatas.Count; i++)
+            for (int i = 0; i < internalConditionDatas.Count; i++)
             {
                 internalConditionDatas[i] = new InternalConditionData(AnalyticalModel, internalConditionDatas[i]);
                 internalConditionDatas[i].InternalCondition = internalCondition;
@@ -1107,15 +1154,15 @@ namespace SAM.Analytical.UI.WPF
             adjacencyCluster?.GetInternalConditions(false, true)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
 
             HashSet<Enum> enums = new HashSet<Enum>();
-            foreach(InternalCondition internalCondition_Temp in internalConditionLibrary.GetInternalConditions())
+            foreach (InternalCondition internalCondition_Temp in internalConditionLibrary.GetInternalConditions())
             {
-                if(internalCondition_Temp == null)
+                if (internalCondition_Temp == null)
                 {
                     continue;
                 }
 
                 List<Enum> enums_Temp = Core.Query.Enums(internalCondition_Temp);
-                if(enums_Temp == null)
+                if (enums_Temp == null)
                 {
                     continue;
                 }
@@ -1151,13 +1198,13 @@ namespace SAM.Analytical.UI.WPF
             for (int i = 0; i < internalConditionDatas.Count; i++)
             {
                 InternalCondition internalCondition = internalConditionDatas[i].InternalCondition;
-                if(internalCondition == null)
+                if (internalCondition == null)
                 {
                     continue;
                 }
 
                 InternalCondition internalCondition_Template = internalConditionLibrary.GetInternalConditions(internalCondition.Name).FirstOrDefault();
-                if(internalCondition_Template == null)
+                if (internalCondition_Template == null)
                 {
                     continue;
                 }
@@ -1181,11 +1228,6 @@ namespace SAM.Analytical.UI.WPF
             LoadInternalConditionDatas(internalConditionDatas);
         }
 
-        private void checkBox_HeatingProfile_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void button_Color_Click(object sender, RoutedEventArgs e)
         {
             System.Drawing.Color color = System.Drawing.Color.Empty;
@@ -1205,12 +1247,12 @@ namespace SAM.Analytical.UI.WPF
             for (int i = 0; i < internalConditionDatas.Count; i++)
             {
                 InternalCondition internalCondition = internalConditionDatas[i].InternalCondition;
-                if(internalCondition == null)
+                if (internalCondition == null)
                 {
                     continue;
                 }
 
-                if(color == System.Drawing.Color.Empty)
+                if (color == System.Drawing.Color.Empty)
                 {
                     internalCondition.RemoveValue(InternalConditionParameter.Color);
                 }
@@ -1223,6 +1265,115 @@ namespace SAM.Analytical.UI.WPF
             }
 
             LoadInternalConditionDatas(internalConditionDatas);
+        }
+
+        private void checkBox_HeatingProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_HeatingProfile.IsChecked != null && checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_HeatingProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Heating)));
+                multipleValueTextBoxControl_HeatingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.HeatingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
+            }
+        }
+
+        private void checkBox_OccupancyProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_OccupancyProfile.IsChecked != null && checkBox_OccupancyProfile.IsChecked.HasValue && checkBox_OccupancyProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_OccupancyProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Occupancy)));
+                multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.OccupancySensibleGainPerPerson));
+                multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.OccupancyLatentGainPerPerson));
+            }
+        }
+
+        private void checkBox_EquipmentSensibleProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_EquipmentSensibleProfile.IsChecked != null && checkBox_EquipmentSensibleProfile.IsChecked.HasValue && checkBox_EquipmentSensibleProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_EquipmentSensibleProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentSensible)));
+                multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGainPerArea));
+                multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGain));
+            }
+        }
+
+        private void checkBox_HumidificationProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_HumidificationProfile.IsChecked != null && checkBox_HumidificationProfile.IsChecked.HasValue && checkBox_HumidificationProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_HumidificationProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Humidification)));
+            }
+        }
+
+        private void checkBox_InfiltrationProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_InfiltrationProfile.IsChecked != null && checkBox_InfiltrationProfile.IsChecked.HasValue && checkBox_InfiltrationProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_InfiltrationProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Infiltration)));
+                multipleValueComboBoxControl_InfiltrationProfile_Infiltration.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.InfiltrationAirChangesPerHour));
+            }
+        }
+
+        private void checkBox_Occupancy_Checked(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_Occupancy.IsChecked != null && checkBox_Occupancy.IsChecked.HasValue && checkBox_Occupancy.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueComboBoxControl_AreaPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.AreaPerPerson));
+            }
+        }
+
+        private void checkBox_CoolingProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_CoolingProfile.IsChecked != null && checkBox_CoolingProfile.IsChecked.HasValue && checkBox_CoolingProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_CoolingProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Cooling)));
+                multipleValueTextBoxControl_CoolingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.CoolingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
+            }
+        }
+
+        private void checkBox_LightingProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_LightingProfile.IsChecked != null && checkBox_LightingProfile.IsChecked.HasValue && checkBox_LightingProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_LightingProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Lighting)));
+            }
+        }
+
+        private void checkBox_EquipmentLatentProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_EquipmentLatentProfile.IsChecked != null && checkBox_EquipmentLatentProfile.IsChecked.HasValue && checkBox_EquipmentLatentProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_EquipmentLatentProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.EquipmentLatent)));
+                multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentLatentGainPerArea));
+                multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentLatentGain));
+            }
+        }
+
+        private void checkBox_DehumidificationProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (checkBox_DehumidificationProfile.IsChecked != null && checkBox_DehumidificationProfile.IsChecked.HasValue && checkBox_DehumidificationProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+                multipleValueTextBoxControl_DehumidificationProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Dehumidification)));
+            }
         }
     }
 }

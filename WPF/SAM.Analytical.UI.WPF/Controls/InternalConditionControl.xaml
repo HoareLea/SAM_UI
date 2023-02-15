@@ -33,7 +33,7 @@
 
         <GroupBox HorizontalAlignment="Left" Height="129" Margin="8,206,0,0" VerticalAlignment="Top" Width="435">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_OccupancyProfile" Content="Occupancy Profile"/>
+                <CheckBox x:Name="checkBox_OccupancyProfile" Content="Occupancy Profile" Click="checkBox_OccupancyProfile_Click"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
@@ -55,7 +55,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="100" Margin="8,340,0,0" VerticalAlignment="Top" Width="435">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_EquipmentSensibleProfile" Content="Equipment Sensible Profile"/>
+                <CheckBox x:Name="checkBox_EquipmentSensibleProfile" Content="Equipment Sensible Profile" Click="checkBox_EquipmentSensibleProfile_Click"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
@@ -73,7 +73,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="448,104,0,0" VerticalAlignment="Top" Width="444">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_CoolingProfile" Content="Cooling Profile"/>
+                <CheckBox x:Name="checkBox_CoolingProfile" Content="Cooling Profile" Click="checkBox_CoolingProfile_Click"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
@@ -87,7 +87,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="8,445,0,0" VerticalAlignment="Top" Width="435">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_HumidificationProfile" Content="Humidification Profile"/>
+                <CheckBox x:Name="checkBox_HumidificationProfile" Content="Humidification Profile" Click="checkBox_HumidificationProfile_Click"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
@@ -102,7 +102,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="448,445,0,0" VerticalAlignment="Top" Width="444">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_DehumidificationProfile" Content="Dehumidification Profile"/>
+                <CheckBox x:Name="checkBox_DehumidificationProfile" Content="Dehumidification Profile" Click="checkBox_DehumidificationProfile_Click"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
@@ -117,7 +117,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="10,547,0,0" VerticalAlignment="Top" Width="433">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_InfiltrationProfile" Content="Infiltration Profile"/>
+                <CheckBox x:Name="checkBox_InfiltrationProfile" Content="Infiltration Profile" Click="checkBox_InfiltrationProfile_Click"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
@@ -131,7 +131,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="129" Margin="448,206,0,0" VerticalAlignment="Top" Width="444">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_LightingProfile" Content="Lighting Profile"/>
+                <CheckBox x:Name="checkBox_LightingProfile" Content="Lighting Profile" Click="checkBox_LightingProfile_Click"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
@@ -153,7 +153,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="100" Margin="448,340,0,0" VerticalAlignment="Top" Width="444">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_EquipmentLatentProfile" Content="Equipment Latent Profile"/>
+                <CheckBox x:Name="checkBox_EquipmentLatentProfile" Content="Equipment Latent Profile" Click="checkBox_EquipmentLatentProfile_Click"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
@@ -196,7 +196,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="448,2,0,0" VerticalAlignment="Top" Width="444">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_Occupancy" Content="Occupancy"/>
+                <CheckBox x:Name="checkBox_Occupancy" Content="Occupancy" Checked="checkBox_Occupancy_Checked"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Internal Condition:" HorizontalAlignment="Left" Margin="10,7,0,0" VerticalAlignment="Top"/>
