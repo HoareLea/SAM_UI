@@ -45,6 +45,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_OccupancyProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_EquipmentSensibleProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_HumidificationProfile_Name.IsEnabled = false;
+            multipleValueTextBoxControl_DehumidificationProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_InfiltrationProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_CoolingProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_CoolingProfile_DesignTemperature.IsEnabled = false;
