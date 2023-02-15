@@ -167,7 +167,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
 
             UpdateCalculatedOccupancySensibleGainPerPerson();
-            UpdatedCalculatedEquipmentSensibleGain();
+            UpdateCalculatedEquipmentSensibleGain();
             UpdateCalculatedEquipmentLatentGain();
             UpdateCalculatedOccupancyLatentGain();
             UpdateCalculatedOccupancySensibleGainPerPerson();
@@ -200,7 +200,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
 
             UpdateCalculatedOccupancySensibleGainPerPerson();
-            UpdatedCalculatedEquipmentSensibleGain();
+            UpdateCalculatedEquipmentSensibleGain();
             UpdateCalculatedEquipmentLatentGain();
             UpdateCalculatedOccupancyLatentGain();
             UpdateCalculatedOccupancySensibleGainPerPerson();
@@ -231,7 +231,7 @@ namespace SAM.Analytical.UI.WPF
             textBox_LightingProfile_CalculatedLightingGain.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
         }
 
-        private void UpdatedCalculatedEquipmentSensibleGain()
+        private void UpdateCalculatedEquipmentSensibleGain()
         {
             textBox_EquipmentSensibleProfile_CalculatedSensibleGain.Text = null;
 
@@ -353,12 +353,12 @@ namespace SAM.Analytical.UI.WPF
 
         private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain_TextChanged(object sender, System.EventArgs e)
         {
-            UpdatedCalculatedEquipmentSensibleGain();
+            UpdateCalculatedEquipmentSensibleGain();
         }
 
         private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged(object sender, System.EventArgs e)
         {
-            UpdatedCalculatedEquipmentSensibleGain();
+            UpdateCalculatedEquipmentSensibleGain();
         }
 
         private void MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged(object sender, System.EventArgs e)
@@ -1006,11 +1006,26 @@ namespace SAM.Analytical.UI.WPF
         private void button_SelectOccupancyProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_OccupancyProfile_Name, ProfileType.Occupancy);
+
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_OccupancyProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.OccupancyProfileName, multipleValueTextBoxControl_OccupancyProfile_Name.Value));
+            }
+
+            UpdateCalculatedOccupancyLatentGain();
+            UpdateCalculatedOccupancySensibleGainPerPerson();
         }
 
         private void button_SelectEquipmentSensibleProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_EquipmentSensibleProfile_Name, ProfileType.EquipmentSensible);
+
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_EquipmentSensibleProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.EquipmentSensibleProfileName, multipleValueTextBoxControl_EquipmentSensibleProfile_Name.Value));
+            }
+
+            UpdateCalculatedEquipmentSensibleGain();
         }
 
         private void button_SelectHumidificationProfile_Click(object sender, RoutedEventArgs e)
@@ -1028,6 +1043,13 @@ namespace SAM.Analytical.UI.WPF
         private void button_SelectInfiltrationProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_InfiltrationProfile_Name, ProfileType.Infiltration);
+
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_InfiltrationProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.InfiltrationProfileName, multipleValueTextBoxControl_InfiltrationProfile_Name.Value));
+            }
+
+            multipleValueComboBoxControl_InfiltrationProfile_Infiltration.Values = internalConditionDatas?.Texts(InternalConditionParameter.InfiltrationAirChangesPerHour);
         }
 
         private void button_SelectCoolingProfile_Click(object sender, RoutedEventArgs e)
@@ -1045,11 +1067,25 @@ namespace SAM.Analytical.UI.WPF
         private void button_SelectLightingProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_LightingProfile_Name, ProfileType.Lighting);
+
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_LightingProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.LightingProfileName, multipleValueTextBoxControl_LightingProfile_Name.Value));
+            }
+
+            UpdateCalculatedLightingGain();
         }
 
         private void button_SelectEquipmentLatentProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_EquipmentLatentProfile_Name, ProfileType.EquipmentLatent);
+
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_EquipmentLatentProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.EquipmentLatentProfileName, multipleValueTextBoxControl_EquipmentLatentProfile_Name.Value));
+            }
+
+            UpdateCalculatedEquipmentLatentGain();
         }
 
         private void button_SelectDehumidificationProfile_Click(object sender, RoutedEventArgs e)
