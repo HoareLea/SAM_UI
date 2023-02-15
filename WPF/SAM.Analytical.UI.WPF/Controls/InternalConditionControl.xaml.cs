@@ -52,6 +52,9 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_EquipmentLatentProfile_Name.IsEnabled = false;
             multipleValueComboBoxControl_SpaceOccupancy.IsEnabled = false;
 
+            multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.IsEnabled = false;
+            multipleValueComboBoxControl_HumidificationProfile_Humidity.IsEnabled = false;
+
             multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
             multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged;
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.TextChanged += MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged;
