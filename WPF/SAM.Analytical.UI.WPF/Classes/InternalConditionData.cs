@@ -415,5 +415,39 @@ namespace SAM.Analytical.UI.WPF
 
             return null;
         }
+
+        public bool SetValue(SpaceParameter spaceParameter, object value)
+        {
+            Space space = Space;
+            if(space == null)
+            {
+                return false;
+            }
+
+            return space.SetValue(spaceParameter, value);
+        }
+
+        public bool SetValue(InternalConditionParameter internalConditionParameter, object value)
+        {
+            InternalCondition internalCondition = InternalCondition;
+            if (internalCondition == null)
+            {
+                internalCondition = new InternalCondition(string.Empty);
+            }
+
+            bool result = internalCondition.SetValue(internalConditionParameter, value);
+            if(!result)
+            {
+                return false;
+            }
+
+            Space space = Space;
+            if(space != null)
+            {
+                space.InternalCondition = internalCondition;
+            }
+
+            return result;
+        }
     }
 }

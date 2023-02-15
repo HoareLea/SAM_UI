@@ -169,6 +169,14 @@ namespace SAM.Core.UI.WPF
             }
         }
 
+        public bool VarySet
+        {
+            get
+            {
+                return textBox.Text == VaryText;
+            }
+        }
+
         private void SetText()
         {
             textBox.Text = Vary ? VaryText : Value;
