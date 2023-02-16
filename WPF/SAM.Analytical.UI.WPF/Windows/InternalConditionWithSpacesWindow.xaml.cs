@@ -7,11 +7,11 @@ namespace SAM.Analytical.UI.WPF
     /// <summary>
     /// Interaction logic for InternalConditionWindow.xaml
     /// </summary>
-    public partial class InternalConditionWindow : System.Windows.Window
+    public partial class InternalConditionWithSpacesWindow : System.Windows.Window
     {
         private UIAnalyticalModel uIAnalyticalModel;
 
-        public InternalConditionWindow(UIAnalyticalModel uIAnalyticalModel, IEnumerable<Space> spaces = null)
+        public InternalConditionWithSpacesWindow(UIAnalyticalModel uIAnalyticalModel, IEnumerable<Space> spaces = null)
         {
             InitializeComponent();
 

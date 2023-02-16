@@ -770,13 +770,18 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            IJSAMObject jSAMObject = jSAMObjects[0];
+            Edit(jSAMObjects[0]);
 
+
+        }
+
+        private void Edit(IJSAMObject jSAMObject)
+        {
             if (jSAMObject is Space)
             {
                 UI.Modify.EditSpace(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
             }
-            else if(jSAMObject is Panel)
+            else if (jSAMObject is Panel)
             {
                 UI.Modify.EditPanel(uIAnalyticalModel, jSAMObject as dynamic, windowHandle);
             }
@@ -1258,6 +1263,25 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return result;
+        }
+
+        private void treeView_Model_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            DependencyObject dependencyObject = Core.UI.WPF.Query.DependencyObject<DependencyObject>(treeView_Model, e.GetPosition(treeView_Model));
+            if(dependencyObject == null)
+            {
+                return;
+            }
+
+            TreeViewItem treeViewItem = Core.UI.WPF.Query.ParentDependencyObject<TreeViewItem>(dependencyObject);
+
+            object @object = treeViewItem?.Tag;
+            if(@object == null || !(@object is ISAMObject))
+            {
+                return;
+            }
+
+            Edit(@object as ISAMObject);
         }
     }
 }

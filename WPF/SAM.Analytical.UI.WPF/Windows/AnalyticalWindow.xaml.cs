@@ -212,7 +212,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Tools_EditInternalConditions_Click(object sender, RoutedEventArgs e)
         {
-            InternalConditionWindow internalConditionWindow = new InternalConditionWindow(uIAnalyticalModel);
+            InternalConditionWithSpacesWindow internalConditionWindow = new InternalConditionWithSpacesWindow(uIAnalyticalModel);
             bool? result = internalConditionWindow.ShowDialog();
 
             if (result == null || !result.HasValue || !result.Value)

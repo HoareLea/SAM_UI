@@ -12,7 +12,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            InternalConditionWindow internalConditionWindow = new InternalConditionWindow(uIAnalyticalModel, spaces);
+            InternalConditionWithSpacesWindow internalConditionWindow = new InternalConditionWithSpacesWindow(uIAnalyticalModel, spaces);
             bool? dialogResult = internalConditionWindow.ShowDialog();
             if(dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
             {

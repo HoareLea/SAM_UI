@@ -151,6 +151,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ApertureData.cs" />
+    <Compile Include="InternalConditionWindow.xaml.cs">
+      <DependentUpon>InternalConditionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\EditOpeningProperties.cs" />
     <Compile Include="Windows\ApertureWindow.xaml.cs">
       <DependentUpon>ApertureWindow.xaml</DependentUpon>
@@ -177,8 +180,8 @@
     <Compile Include="Modify\EditInternalConditions.cs" />
     <Compile Include="Query\Colors.cs" />
     <Compile Include="Query\Texts.cs" />
-    <Compile Include="Windows\InternalConditionWindow.xaml.cs">
-      <DependentUpon>InternalConditionWindow.xaml</DependentUpon>
+    <Compile Include="Windows\InternalConditionWithSpacesWindow.xaml.cs">
+      <DependentUpon>InternalConditionWithSpacesWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\RemoveResults.cs" />
     <Compile Include="Query\DayTypes.cs" />
@@ -408,6 +411,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="InternalConditionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ApertureWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -436,7 +443,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\InternalConditionWindow.xaml">
+    <Page Include="Windows\InternalConditionWithSpacesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

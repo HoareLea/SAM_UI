@@ -19,7 +19,6 @@ namespace SAM.Core.UI.WPF
             }
 
             return DependencyObject<T>(dependencyObject_Parent);
-
         }
     }
 }
