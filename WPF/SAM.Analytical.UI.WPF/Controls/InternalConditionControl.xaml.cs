@@ -1503,5 +1503,10 @@ namespace SAM.Analytical.UI.WPF
             label_LightingProfile_CalculatedLightingGain.Visibility = visibility;
 
         }
+
+        private void checkBox_PollutantProfile_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
