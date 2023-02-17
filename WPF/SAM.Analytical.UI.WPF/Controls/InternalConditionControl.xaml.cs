@@ -63,6 +63,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_HumidificationProfile_Humidity.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_InfiltrationProfile_Infiltration.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_LightingProfile_LightingGain.TextInput += MultipleValueComboBoxControl_Number_TextInput;
@@ -399,6 +400,11 @@ namespace SAM.Analytical.UI.WPF
             UpdateCalculatedEquipmentSensibleGain();
         }
 
+        private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson_TextChanged(object sender, System.EventArgs e)
+        {
+            UpdateCalculatedEquipmentSensibleGain();
+        }
+
         private void MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged(object sender, System.EventArgs e)
         {
             UpdateCalculatedOccupancyLatentGain();
@@ -569,6 +575,19 @@ namespace SAM.Analytical.UI.WPF
                         else
                         {
                             internalCondition?.RemoveValue(InternalConditionParameter.EquipmentSensibleGainPerArea);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.Vary)
+                    {
+                        string value = multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.EquipmentSensibleGainPerPerson, value_Temp);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.EquipmentSensibleGainPerPerson);
                         }
                     }
                 }
@@ -812,6 +831,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged -= MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
             multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.TextChanged -= MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged;
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.TextChanged -= MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.TextChanged -= MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson_TextChanged;
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.TextChanged -= MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain_TextChanged;
             multipleValueComboBoxControl_LightingProfile_LightingGain.TextChanged -= MultipleValueComboBoxControl_LightingProfile_LightingGain_TextChanged;
             multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.TextChanged -= MultipleValueComboBoxControl_LightingProfile_LightingGainPerArea_TextChanged;
@@ -870,6 +890,9 @@ namespace SAM.Analytical.UI.WPF
 
                 multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.Values = internalConditionDatas_Temp?.Texts(InternalConditionParameter.EquipmentSensibleGainPerArea);
                 multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGainPerArea));
+                
+                multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.Values = internalConditionDatas_Temp?.Texts(InternalConditionParameter.EquipmentSensibleGainPerPerson);
+                multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGainPerPerson));
 
                 multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.Values = internalConditionDatas_Temp?.Texts(InternalConditionParameter.EquipmentSensibleGain);
                 multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.EquipmentSensibleGain));
@@ -952,6 +975,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
             multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged;
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.TextChanged += MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.TextChanged += MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson_TextChanged;
             multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.TextChanged += MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain_TextChanged;
             multipleValueComboBoxControl_LightingProfile_LightingGain.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGain_TextChanged;
             multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGainPerArea_TextChanged;
@@ -962,6 +986,14 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
             multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerArea_TextChanged;
             multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerPerson_TextChanged;
+
+            UpdateCalculatedOccupancySensibleGainPerPerson();
+            UpdateCalculatedEquipmentSensibleGain();
+            UpdateCalculatedEquipmentLatentGain();
+            UpdateCalculatedOccupancyLatentGain();
+            UpdateCalculatedOccupancySensibleGainPerPerson();
+            UpdateCalculatedLightingGain();
+            UpdatePollution();
         }
 
         private void SetColor(IEnumerable<InternalConditionData> internalConditionDatas)

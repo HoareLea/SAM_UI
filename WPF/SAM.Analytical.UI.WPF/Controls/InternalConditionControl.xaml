@@ -73,7 +73,7 @@
                 <TextBox x:Name="textBox_EquipmentSensibleProfile_CalculatedSensibleGain" HorizontalAlignment="Stretch" Height="23" Margin="334,43,38.2,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label x:Name="label_EquipmentSensibleProfile_CalculatedSensibleGain" Content="[W]" HorizontalAlignment="Left" Margin="386,40,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_EquipmentSensibleProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,12,0,0" VerticalAlignment="Top" Width="219"/>
-                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_Copy" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="96,72,258.2,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="96,72,258.2,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W/p]" HorizontalAlignment="Left" Margin="159,70,0,0" VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>
