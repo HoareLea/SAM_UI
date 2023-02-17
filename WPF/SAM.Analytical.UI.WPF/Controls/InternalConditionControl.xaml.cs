@@ -36,6 +36,7 @@ namespace SAM.Analytical.UI.WPF
             checkBox_LightingProfile.IsChecked = true;
             checkBox_OccupancyProfile.IsChecked = true;
             checkBox_Occupancy.IsChecked = true;
+            checkBox_PollutantProfile.IsChecked = true;
 
             multipleValueComboBoxControl_Name.IsEnabled = true;
             multipleValueComboBoxControl_Name.IsEditable = false;
@@ -67,6 +68,8 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.TextChanged += MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGain_TextChanged;
             multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
             multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
+            multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerArea_TextChanged;
+            multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerPerson_TextChanged;
 
             multipleValueComboBoxControl_AreaPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.TextInput += MultipleValueComboBoxControl_Number_TextInput;
@@ -86,6 +89,8 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_CoolingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueTextBoxControl_HeatingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_SpaceOccupancy.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
 
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
 
@@ -93,6 +98,16 @@ namespace SAM.Analytical.UI.WPF
             {
                 background = button_Color.Background;
             }
+        }
+
+        private void MultipleValueComboBoxControl_PollutantProfile_GenerationPerPerson_TextChanged(object sender, EventArgs e)
+        {
+            UpdatePollution();
+        }
+
+        private void MultipleValueComboBoxControl_PollutantProfile_GenerationPerArea_TextChanged(object sender, EventArgs e)
+        {
+            UpdatePollution();
         }
 
         private void MultipleValueComboBoxControl_LightingProfile_LightingGainPerPerson_TextChanged(object sender, EventArgs e)
@@ -180,6 +195,7 @@ namespace SAM.Analytical.UI.WPF
             UpdateCalculatedOccupancyLatentGain();
             UpdateCalculatedOccupancySensibleGainPerPerson();
             UpdateCalculatedLightingGain();
+            UpdatePollution();
         }
 
         private void MultipleValueComboBoxControl_AreaPerPerson_TextChanged(object sender, EventArgs e)
@@ -214,6 +230,32 @@ namespace SAM.Analytical.UI.WPF
             UpdateCalculatedOccupancyLatentGain();
             UpdateCalculatedOccupancySensibleGainPerPerson();
             UpdateCalculatedLightingGain();
+            UpdatePollution();
+        }
+
+        private void UpdatePollution()
+        {
+            textBox_PollutantProfile_CalculatedPollutantGeneration.Text = null;
+
+            List<InternalConditionData> internalConditionDatas = GetInternalConditionDatas(true);
+            if (internalConditionDatas == null || internalConditionDatas.Count == 0)
+            {
+                return;
+            }
+
+            List<double> values = internalConditionDatas.ConvertAll(x => x.PollutantGeneration);
+            if (values == null || values.Count == 0)
+            {
+                return;
+            }
+
+            if (Core.UI.Query.Vary(values))
+            {
+                textBox_PollutantProfile_CalculatedPollutantGeneration.Text = multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.VaryText;
+                return;
+            }
+
+            textBox_PollutantProfile_CalculatedPollutantGeneration.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
         }
 
         private void UpdateCalculatedLightingGain()
@@ -451,7 +493,19 @@ namespace SAM.Analytical.UI.WPF
                             internalCondition?.RemoveValue(InternalConditionParameter.AreaPerPerson);
                         }
                     }
+                }
 
+                if(!multipleValueComboBoxControl_SpaceOccupancy.VarySet)
+                {
+                    string value = multipleValueComboBoxControl_SpaceOccupancy.Value;
+                    if (Core.Query.TryConvert(value, out double value_Temp))
+                    {
+                        space?.SetValue(SpaceParameter.Occupancy, value_Temp);
+                    }
+                    else
+                    {
+                        space?.RemoveValue(SpaceParameter.Occupancy);
+                    }
                 }
 
                 if (checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
@@ -460,7 +514,6 @@ namespace SAM.Analytical.UI.WPF
                     {
                         string value = multipleValueTextBoxControl_HeatingProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.HeatingProfileName, value);
-
                     }
                 }
 
@@ -657,6 +710,41 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
+                if (checkBox_PollutantProfile.IsChecked.HasValue && checkBox_PollutantProfile.IsChecked.Value)
+                {
+                    if (!multipleValueTextBoxControl_PollutantProfile_Name.Vary)
+                    {
+                        string value = multipleValueTextBoxControl_PollutantProfile_Name.Value;
+                        internalCondition?.SetValue(InternalConditionParameter.PollutantProfileName, value);
+                    }
+
+                    if (!multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.Vary)
+                    {
+                        string value = multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.PollutantGenerationPerArea, value_Temp);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.PollutantGenerationPerArea);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.Vary)
+                    {
+                        string value = multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.PollutantGenerationPerPerson, value_Temp);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.PollutantGenerationPerPerson);
+                        }
+                    }
+                }
+
                 if (space != null)
                 {
                     space.InternalCondition = internalCondition;
@@ -849,6 +937,14 @@ namespace SAM.Analytical.UI.WPF
                 multipleValueTextBoxControl_DehumidificationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Dehumidification)));
 
                 multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.Values = internalConditionDatas_Temp.ConvertAll(x => x.Dehumidity)?.Texts();
+            }
+
+            if (checkBox_PollutantProfile.IsChecked != null && checkBox_PollutantProfile.IsChecked.HasValue && checkBox_PollutantProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_PollutantProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Pollutant));
+
+                multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.PollutantGenerationPerArea);
+                multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.PollutantGenerationPerPerson);
             }
 
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;

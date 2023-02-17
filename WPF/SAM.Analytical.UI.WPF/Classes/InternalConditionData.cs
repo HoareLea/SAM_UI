@@ -323,6 +323,14 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public double PollutantGeneration
+        {
+            get
+            {
+                return Analytical.Query.CalculatedPollutantGeneration(Space);
+            }
+        }
+
         public double Humidity
         {
             get

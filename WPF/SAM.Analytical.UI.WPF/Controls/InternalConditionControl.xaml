@@ -231,7 +231,7 @@
                 <Button x:Name="button_ViewPollutantProfile" Content="View" HorizontalAlignment="Left" Margin="293,12,0,0" VerticalAlignment="Top" Width="60"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_PollutantProfile_GenerationPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="84,40,279,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[g/h/m2]" HorizontalAlignment="Left" Margin="154,40,0,0" VerticalAlignment="Top"/>
-                <TextBox x:Name="textBox_PollutantProfile_CalculatedPollution" HorizontalAlignment="Stretch" Height="23" Margin="337,43,41,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox x:Name="textBox_PollutantProfile_CalculatedPollutantGeneration" HorizontalAlignment="Stretch" Height="23" Margin="337,43,41,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label x:Name="label_PollutantProfile_CalculatedPollution" Content="[g/h]" HorizontalAlignment="Left" Margin="390,40,0,0" VerticalAlignment="Top"/>
 
             </Grid>
