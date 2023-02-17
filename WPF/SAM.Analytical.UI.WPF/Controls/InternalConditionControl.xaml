@@ -212,9 +212,9 @@
                 <Label Content="[m2/p]" HorizontalAlignment="Left" Margin="194,7,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_Occupancy" HorizontalAlignment="Stretch" Height="23" Margin="287,10,76,0" VerticalAlignment="Top"/>
                 <Label x:Name="label_Occupancy" Content="[p]" HorizontalAlignment="Left" Margin="357,7,0,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_AreaPerPerson_Copy" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="124,38,239,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
-                <Label Content="[p]" HorizontalAlignment="Left" Margin="194,35,0,0" VerticalAlignment="Top"/>
-                <Label Content="Space:" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_SpaceOccupancy" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="124,38,239,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
+                <Label x:Name="label_SpaceOccupancy_Unit" Content="[p]" HorizontalAlignment="Left" Margin="194,35,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="label_SpaceOccupancy_Text" Content="Space:" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top"/>
             </Grid>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="100" Margin="453,504,0,0" VerticalAlignment="Top" Width="444">

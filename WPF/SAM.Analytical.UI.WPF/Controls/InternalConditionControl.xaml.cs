@@ -51,6 +51,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_CoolingProfile_DesignTemperature.IsEnabled = false;
             multipleValueTextBoxControl_LightingProfile_Name.IsEnabled = false;
             multipleValueTextBoxControl_EquipmentLatentProfile_Name.IsEnabled = false;
+            multipleValueComboBoxControl_SpaceOccupancy.IsEnabled = false;
 
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.IsEnabled = false;
             multipleValueComboBoxControl_HumidificationProfile_Humidity.IsEnabled = false;
@@ -84,6 +85,7 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueTextBoxControl_CoolingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueTextBoxControl_HeatingProfile_DesignTemperature.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_SpaceOccupancy.TextInput += MultipleValueComboBoxControl_Number_TextInput;
 
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
 
@@ -168,6 +170,8 @@ namespace SAM.Analytical.UI.WPF
                 multipleValueComboBoxControl_AreaPerPerson.Values = internalConditionDatas?.Texts(InternalConditionParameter.AreaPerPerson);
             }
 
+            multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas?.Texts(SpaceParameter.Occupancy);
+
             multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
 
             UpdateCalculatedOccupancySensibleGainPerPerson();
@@ -199,6 +203,8 @@ namespace SAM.Analytical.UI.WPF
 
                 multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : Core.Query.Round(x.Occupancy, 0.01).ToString());
             }
+
+            multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas?.Texts(SpaceParameter.Occupancy);
 
             multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
 
@@ -744,6 +750,8 @@ namespace SAM.Analytical.UI.WPF
                 multipleValueComboBoxControl_AreaPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.AreaPerPerson));
 
                 multipleValueComboBoxControl_Occupancy.Values = internalConditionDatas_Temp?.ConvertAll(x => x == null || double.IsNaN(x.Occupancy) ? null : x.Occupancy.ToString());
+
+                multipleValueComboBoxControl_SpaceOccupancy.Values = internalConditionDatas_Temp?.ConvertAll(x => x == null || double.IsNaN(x.SpaceOccupancy) ? null : Core.Query.Round(x.SpaceOccupancy, 0.01).ToString());
             }
 
             if (checkBox_HeatingProfile.IsChecked != null && checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
