@@ -638,6 +638,19 @@ namespace SAM.Analytical.UI.WPF
                             internalCondition?.RemoveValue(InternalConditionParameter.LightingGainPerPerson);
                         }
                     }
+
+                    if (!multipleValueComboBoxControl_LightingProfile_LightLevel.Vary)
+                    {
+                        string value = multipleValueComboBoxControl_LightingProfile_LightLevel.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.LightingLevel, value_Temp);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.LightingLevel);
+                        }
+                    }
                 }
 
                 if (checkBox_EquipmentLatentProfile.IsChecked.HasValue && checkBox_EquipmentLatentProfile.IsChecked.Value)
