@@ -227,8 +227,8 @@
                 <Label Content="Generation:" HorizontalAlignment="Left" Margin="10,40,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="213,43,150,0" VerticalAlignment="Top"/>
                 <Label Content="[g/h/p]" HorizontalAlignment="Left" Margin="279,40,0,0" VerticalAlignment="Top"/>
-                <Button x:Name="button_SelectPollutantProfile" Content="Select" HorizontalAlignment="Left" Margin="358,12,0,0" VerticalAlignment="Top" Width="60"/>
-                <Button x:Name="button_ViewPollutantProfile" Content="View" HorizontalAlignment="Left" Margin="293,12,0,0" VerticalAlignment="Top" Width="60"/>
+                <Button x:Name="button_SelectPollutantProfile" Content="Select" HorizontalAlignment="Left" Margin="358,12,0,0" VerticalAlignment="Top" Width="60" Click="button_SelectPollutantProfile_Click"/>
+                <Button x:Name="button_ViewPollutantProfile" Content="View" HorizontalAlignment="Left" Margin="293,12,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewPollutantProfile_Click"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_PollutantProfile_GenerationPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="84,40,279,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[g/h/m2]" HorizontalAlignment="Left" Margin="154,40,0,0" VerticalAlignment="Top"/>
                 <TextBox x:Name="textBox_PollutantProfile_CalculatedPollutantGeneration" HorizontalAlignment="Stretch" Height="23" Margin="337,43,41,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>

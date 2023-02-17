@@ -1269,6 +1269,24 @@ namespace SAM.Analytical.UI.WPF
             UpdateCalculatedEquipmentLatentGain();
         }
 
+        private void button_ViewPollutantProfile_Click(object sender, RoutedEventArgs e)
+        {
+
+            ViewProfile(ProfileType.Pollutant);
+        }
+
+        private void button_SelectPollutantProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_PollutantProfile_Name, ProfileType.Pollutant);
+
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_PollutantProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.PollutantProfileName, multipleValueTextBoxControl_PollutantProfile_Name.Value));
+            }
+
+            UpdatePollution();
+        }
+
         private void button_SelectDehumidificationProfile_Click(object sender, RoutedEventArgs e)
         {
             SetProfile(multipleValueTextBoxControl_DehumidificationProfile_Name, ProfileType.Dehumidification);
@@ -1671,5 +1689,7 @@ namespace SAM.Analytical.UI.WPF
         {
 
         }
+
+
     }
 }
