@@ -57,20 +57,6 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.IsEnabled = false;
             multipleValueComboBoxControl_HumidificationProfile_Humidity.IsEnabled = false;
 
-            multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
-            multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged;
-            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.TextChanged += MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged;
-            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.TextChanged += MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain_TextChanged;
-            multipleValueComboBoxControl_LightingProfile_LightingGain.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGain_TextChanged;
-            multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGainPerArea_TextChanged;
-            multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGainPerPerson_TextChanged;
-            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.TextChanged += MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea_TextChanged;
-            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.TextChanged += MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGain_TextChanged;
-            multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
-            multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
-            multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerArea_TextChanged;
-            multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerPerson_TextChanged;
-
             multipleValueComboBoxControl_AreaPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.TextInput += MultipleValueComboBoxControl_Number_TextInput;
@@ -823,6 +809,20 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged -= MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
+            multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.TextChanged -= MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.TextChanged -= MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.TextChanged -= MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain_TextChanged;
+            multipleValueComboBoxControl_LightingProfile_LightingGain.TextChanged -= MultipleValueComboBoxControl_LightingProfile_LightingGain_TextChanged;
+            multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.TextChanged -= MultipleValueComboBoxControl_LightingProfile_LightingGainPerArea_TextChanged;
+            multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson.TextChanged -= MultipleValueComboBoxControl_LightingProfile_LightingGainPerPerson_TextChanged;
+            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.TextChanged -= MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea_TextChanged;
+            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.TextChanged -= MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGain_TextChanged;
+            multipleValueComboBoxControl_AreaPerPerson.TextChanged -= MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
+            multipleValueComboBoxControl_Occupancy.TextChanged -= MultipleValueComboBoxControl_Occupancy_TextChanged;
+            multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextChanged -= MultipleValueComboBoxControl_PollutantProfile_GenerationPerArea_TextChanged;
+            multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextChanged -= MultipleValueComboBoxControl_PollutantProfile_GenerationPerPerson_TextChanged;
+
             SetColor(internalConditionDatas);
 
             List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
@@ -948,6 +948,20 @@ namespace SAM.Analytical.UI.WPF
             }
 
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
+
+            multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
+            multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.TextChanged += MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged;
+            multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.TextChanged += MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain_TextChanged;
+            multipleValueComboBoxControl_LightingProfile_LightingGain.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGain_TextChanged;
+            multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGainPerArea_TextChanged;
+            multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson.TextChanged += MultipleValueComboBoxControl_LightingProfile_LightingGainPerPerson_TextChanged;
+            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.TextChanged += MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea_TextChanged;
+            multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.TextChanged += MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGain_TextChanged;
+            multipleValueComboBoxControl_AreaPerPerson.TextChanged += MultipleValueComboBoxControl_AreaPerPerson_TextChanged;
+            multipleValueComboBoxControl_Occupancy.TextChanged += MultipleValueComboBoxControl_Occupancy_TextChanged;
+            multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerArea_TextChanged;
+            multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerPerson_TextChanged;
         }
 
         private void SetColor(IEnumerable<InternalConditionData> internalConditionDatas)
