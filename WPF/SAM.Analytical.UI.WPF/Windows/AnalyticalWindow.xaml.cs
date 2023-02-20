@@ -225,11 +225,25 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             //InternalConditionWindow internalConditionWindow = new InternalConditionWindow(uIAnalyticalModel);
             //bool? result = internalConditionWindow.ShowDialog();
-            
+
             //if (result == null || !result.HasValue || !result.Value)
             //{
             //    return;
             //}
+            //ViewportControl viewportControl = sender as ViewportControl;
+
+            //ModelVisual3D modelVisual3D = viewportControl.Get;
+            //if (modelVisual3D == null)
+            //{
+            //    return;
+            //}
+
+            //IJSAMObject jSAMObject = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(modelVisual3D);
+
+
+            //RenameSpacesWindow renameSpacesWindow = new RenameSpacesWindow(uIAnalyticalModel, );
+
+            //uIAnalyticalModel.RenameSpaces(uIAnalyticalModel.JSAMObject.AdjacencyCluster.GetSpaces(), "Test", new RenameSpaceOption());
         }
 
         private void RibbonButton_Results_Remove_Click(object sender, RoutedEventArgs e)
@@ -541,6 +555,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                 if(spaces != null && spaces.Count > 0)
                 {
                     menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_RenameSpaces";
+                    menuItem.Header = "Rename";
+                    menuItem.Click += MenuItem_RenameSpaces_Click;
+                    menuItem.Tag = spaces;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_EditInternalConditions";
                     menuItem.Header = "Modify IC";
                     menuItem.Click += MenuItem_EditInternalConditions_Click;
@@ -579,6 +600,39 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Tag = apertures;
                     contextMenu.Items.Add(menuItem);
                 }
+            }
+        }
+
+        private void MenuItem_RenameSpaces_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            RenameSpacesWindow renameSpacesWindow = new RenameSpacesWindow(uIAnalyticalModel, spaces);
+            bool? result = renameSpacesWindow.ShowDialog();
+            if(result != null && result.HasValue && result.Value)
+            {
+
             }
         }
 

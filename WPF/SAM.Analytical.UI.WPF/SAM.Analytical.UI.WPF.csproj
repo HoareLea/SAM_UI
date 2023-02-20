@@ -151,10 +151,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ApertureData.cs" />
-    <Compile Include="InternalConditionWindow.xaml.cs">
+    <Compile Include="Windows\InternalConditionWindow.xaml.cs">
       <DependentUpon>InternalConditionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\EditOpeningProperties.cs" />
+    <Compile Include="Controls\RenameSpacesControl.xaml.cs">
+      <DependentUpon>RenameSpacesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RenameSpacesWindow.xaml.cs">
+      <DependentUpon>RenameSpacesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ApertureWindow.xaml.cs">
       <DependentUpon>ApertureWindow.xaml</DependentUpon>
     </Compile>
@@ -411,7 +417,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="InternalConditionWindow.xaml">
+    <Page Include="Windows\InternalConditionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RenameSpacesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\RenameSpacesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -98,6 +98,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Modification\RenameSpaceOptions.cs" />
     <Compile Include="Classes\Modification\AnalyticalModelModification.cs" />
     <Compile Include="Classes\Settings\SpaceAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\AnalyticalThreeDimensionalViewSettings.cs" />
@@ -113,6 +114,7 @@
     </Compile>
     <Compile Include="Convert\ToSAM\GeometryObjectModel.cs" />
     <Compile Include="Enums\Parameter\AnalyticalModelParameter.cs" />
+    <Compile Include="Enums\Position.cs" />
     <Compile Include="Enums\SolarCalculationMethod.cs" />
     <Compile Include="Forms\SimulateForm.cs">
       <SubType>Form</SubType>
@@ -122,6 +124,8 @@
     </Compile>
     <Compile Include="Interfaces\IAnalyticalViewSettings.cs" />
     <Compile Include="Interfaces\ISection3DObject.cs" />
+    <Compile Include="Modify\RenameSpace.cs" />
+    <Compile Include="Modify\RenameSpaces.cs" />
     <Compile Include="Modify\DuplicateInternalCondition.cs" />
     <Compile Include="Query\Guids.cs" />
     <Compile Include="Query\IJSAMObject.cs" />
