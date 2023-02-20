@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -211,19 +212,19 @@ namespace SAM.Core.UI.WPF
             TextChanged?.Invoke(this, e);
         }
 
-        private void SetBackground()
+        private async void SetBackground()
         {
-            if(background == null)
+            if (background == null)
             {
                 background = Query.Background(comboBox);
             }
-            
+
             Brush brush = background;
             bool vary = defaultValue is Option && (Option)defaultValue == Option.Vary || Vary;
-            if(vary)
+            if (vary)
             {
                 ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
-                if(comboBoxItem != null)
+                if (comboBoxItem != null)
                 {
                     brush = UpdatedBackground;
                     if ((comboBoxItem.Tag is Option) && (Option)comboBoxItem.Tag == Option.Vary)
@@ -231,7 +232,7 @@ namespace SAM.Core.UI.WPF
                         brush = background;
                     }
                 }
-                else if(comboBox.Text != VaryText)
+                else if (comboBox.Text != VaryText)
                 {
                     brush = UpdatedBackground;
                 }
@@ -245,10 +246,10 @@ namespace SAM.Core.UI.WPF
                     {
                         brush = UpdatedBackground;
                         ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
-                        if(comboBoxItem == null)
+                        if (comboBoxItem == null)
                         {
                             string value = Value;
-                            if(value == values[0] || (string.IsNullOrEmpty(value) && string.IsNullOrEmpty(values[0])))
+                            if (value == values[0] || (string.IsNullOrEmpty(value) && string.IsNullOrEmpty(values[0])))
                             {
                                 brush = background;
                             }
@@ -271,7 +272,7 @@ namespace SAM.Core.UI.WPF
                     ComboBoxItem comboBoxItem = comboBox.SelectedItem as ComboBoxItem;
                     if (comboBoxItem != null)
                     {
-                        if(comboBoxItem.Tag is string)
+                        if (comboBoxItem.Tag is string)
                         {
                             brush = UpdatedBackground;
                             if (defaultValue.ToString() == (string)comboBoxItem.Tag)
@@ -286,7 +287,18 @@ namespace SAM.Core.UI.WPF
                     }
                 }
             }
-            
+
+            for (int i = 0; i < 5; i++)
+            {
+                TextBox textbox = Query.EditableTextBox(comboBox);
+                if (textbox == null)
+                {
+                    await Task.Delay(100);
+                    continue;
+                }
+                break;
+            }
+
             Modify.Background(comboBox, brush);
         }
 

@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="SAM.Core, Version=1.0.8333.29728, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
@@ -96,6 +97,7 @@
       <DependentUpon>MultipleValueComboBoxControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\Background.cs" />
+    <Compile Include="Query\EditableTextBox.cs" />
     <Compile Include="Query\Background.cs" />
     <Compile Include="Query\DefaultInternalText.cs" />
     <Compile Include="Windows\TextMapWindow.xaml.cs">
