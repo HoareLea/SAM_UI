@@ -200,5 +200,10 @@ namespace SAM.Analytical.UI.WPF
             LevelSpeparator = renameSpaceOption.LevelSpeparator;
             NameSpeparator = renameSpaceOption.NameSeparator;
         }
+
+        private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+            textBox_Name.Focus();
+        }
     }
 }

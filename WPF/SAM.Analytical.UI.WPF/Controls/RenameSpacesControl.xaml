@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="230" d:DesignWidth="335">
+             d:DesignHeight="230" d:DesignWidth="335" Loaded="UserControl_Loaded">
     <Grid>
         <CheckBox x:Name="checkBox_IncludeName" Content="Name:" HorizontalAlignment="Left" Margin="30,15,0,0" VerticalAlignment="Top" IsChecked="True"/>
         <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="23" Margin="88,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226"/>
