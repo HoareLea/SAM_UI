@@ -62,7 +62,7 @@ namespace SAM.Analytical.UI
                     max = int.Parse(numberText);
                 }
 
-                for (int index = 0; index < max; index++)
+                for (int index = 1; index < max; index++)
                 {
                     List<string> values = new List<string>();
                     if (renameSpaceOption.IncludeLevel)
