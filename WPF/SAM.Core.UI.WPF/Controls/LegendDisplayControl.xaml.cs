@@ -85,9 +85,11 @@ namespace SAM.Core.UI.WPF
                 return;
             }
 
+            string text = legendItem.Text != null && legendItem.Text.Contains("_") ? string.Format("_{0}", legendItem.Text) : legendItem.Text; //TODO: Temporary solution, first occurance of "_" symbol will be removed from Label Content??
+
             StackPanel stackPanel = new StackPanel() { Orientation = Orientation.Horizontal };
             stackPanel.Children.Add(new TextBox() { IsReadOnly = true, Width = 20, Background = new SolidColorBrush(legendItem.Color.ToMedia()), TextWrapping = System.Windows.TextWrapping.WrapWithOverflow});
-            stackPanel.Children.Add(new Label() { Content = legendItem.Text });
+            stackPanel.Children.Add(new Label() { Content = text });
             stackPanel.Tag = legendItem;
 
             this.stackPanel.Children.Add(stackPanel);
