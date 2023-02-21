@@ -62,7 +62,7 @@ namespace SAM.Analytical.UI
                     max = int.Parse(numberText);
                 }
 
-                for (int index = 1; index < max; index++)
+                if(max.ToString().Length > 5)
                 {
                     List<string> values = new List<string>();
                     if (renameSpaceOption.IncludeLevel)
@@ -82,23 +82,14 @@ namespace SAM.Analytical.UI
                         }
                     }
 
-                    if(!string.IsNullOrEmpty(renameSpaceOption.LevelSpeparator))
+                    if (!string.IsNullOrEmpty(renameSpaceOption.LevelSpeparator))
                     {
                         values.Add(renameSpaceOption.LevelSpeparator);
                     }
 
-                    string number = index.ToString();
-                    while (number.Length < renameSpaceOption.DigitsNumber)
-                    {
-                        number = "0" + number;
-                    }
-
-                    values.Add(number);
-
                     fullName = string.Join(string.Empty, values);
                     if (name != null)
                     {
-
                         if (renameSpaceOption.Position == Position.Prefix)
                         {
                             fullName = string.Format("{0}{1}{2}", string.Join(string.Empty, values), renameSpaceOption.NameSeparator == null ? string.Empty : renameSpaceOption.NameSeparator, name);
@@ -108,13 +99,63 @@ namespace SAM.Analytical.UI
                             fullName = string.Format("{0}{1}{2}", name, renameSpaceOption.NameSeparator == null ? string.Empty : renameSpaceOption.NameSeparator, string.Join(string.Empty, values));
                         }
                     }
-
-                    if (spaces.Find(x => x.Name == fullName) == null)
+                }
+                else
+                {
+                    for (int index = 1; index < max; index++)
                     {
-                        break;
-                    }
+                        List<string> values = new List<string>();
+                        if (renameSpaceOption.IncludeLevel)
+                        {
+                            if (space.TryGetValue(SpaceParameter.LevelName, out string levelName) && !string.IsNullOrEmpty(levelName))
+                            {
+                                levelName = levelName.Trim();
+                                if (levelName.ToUpper().StartsWith("LEVEL"))
+                                {
+                                    levelName = levelName.Substring(5).Trim();
+                                }
 
-                    fullName = null;
+                                if (!string.IsNullOrWhiteSpace(levelName))
+                                {
+                                    values.Add(levelName);
+                                }
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(renameSpaceOption.LevelSpeparator))
+                        {
+                            values.Add(renameSpaceOption.LevelSpeparator);
+                        }
+
+                        string number = index.ToString();
+                        while (number.Length < renameSpaceOption.DigitsNumber)
+                        {
+                            number = "0" + number;
+                        }
+
+                        values.Add(number);
+
+                        fullName = string.Join(string.Empty, values);
+                        if (name != null)
+                        {
+
+                            if (renameSpaceOption.Position == Position.Prefix)
+                            {
+                                fullName = string.Format("{0}{1}{2}", string.Join(string.Empty, values), renameSpaceOption.NameSeparator == null ? string.Empty : renameSpaceOption.NameSeparator, name);
+                            }
+                            else if (renameSpaceOption.Position == Position.Sufix)
+                            {
+                                fullName = string.Format("{0}{1}{2}", name, renameSpaceOption.NameSeparator == null ? string.Empty : renameSpaceOption.NameSeparator, string.Join(string.Empty, values));
+                            }
+                        }
+
+                        if (spaces.Find(x => x.Name == fullName) == null)
+                        {
+                            break;
+                        }
+
+                        fullName = null;
+                    }
                 }
             }
             else
