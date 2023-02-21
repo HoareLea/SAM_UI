@@ -6,6 +6,8 @@
         
         public bool IncludeName { get; set; } = true;
 
+        public bool IncludeNumber { get; set; } = true;
+
         public bool IncludeLevel { get; set; } = true;
 
         public string LevelSpeparator { get; set; } = "_";

@@ -36,68 +36,86 @@ namespace SAM.Analytical.UI
                 renameSpaceOption = new RenameSpaceOption();
             }
 
-            int max = int.MaxValue;
-            if(renameSpaceOption.DigitsNumber > 0 && renameSpaceOption.DigitsNumber < 5)
+            if(!renameSpaceOption.IncludeName && !renameSpaceOption.IncludeNumber)
             {
-                string numberText = "1";
-                for(int i = 0; i < renameSpaceOption.DigitsNumber; i++)
-                {
-                    numberText += "0";
-                }
+                return null;
+            }
 
-                max = int.Parse(numberText);
+            if(!renameSpaceOption.IncludeName)
+            {
+                name = space_Temp.Name;
             }
 
             string fullName = null;
-            for(int index = 0; index < max; index++)
+
+            if (renameSpaceOption.IncludeNumber)
             {
-                List<string> values = new List<string>();
-                if (renameSpaceOption.IncludeLevel)
+                int max = int.MaxValue;
+                if (renameSpaceOption.DigitsNumber > 0 && renameSpaceOption.DigitsNumber < 5)
                 {
-                    if (space.TryGetValue(SpaceParameter.LevelName, out string levelName) && !string.IsNullOrEmpty(levelName))
+                    string numberText = "1";
+                    for (int i = 0; i < renameSpaceOption.DigitsNumber; i++)
                     {
-                        levelName = levelName.Trim();
-                        if (levelName.ToUpper().StartsWith("LEVEL"))
+                        numberText += "0";
+                    }
+
+                    max = int.Parse(numberText);
+                }
+
+                for (int index = 0; index < max; index++)
+                {
+                    List<string> values = new List<string>();
+                    if (renameSpaceOption.IncludeLevel)
+                    {
+                        if (space.TryGetValue(SpaceParameter.LevelName, out string levelName) && !string.IsNullOrEmpty(levelName))
                         {
-                            levelName = levelName.Substring(5).Trim();
-                        }
+                            levelName = levelName.Trim();
+                            if (levelName.ToUpper().StartsWith("LEVEL"))
+                            {
+                                levelName = levelName.Substring(5).Trim();
+                            }
 
-                        if (!string.IsNullOrWhiteSpace(levelName) && renameSpaceOption.LevelSpeparator != null)
+                            if (!string.IsNullOrWhiteSpace(levelName) && renameSpaceOption.LevelSpeparator != null)
+                            {
+                                values.Add(levelName);
+                                values.Add(renameSpaceOption.LevelSpeparator);
+                            }
+                        }
+                    }
+
+                    string number = index.ToString();
+                    while (number.Length < renameSpaceOption.DigitsNumber)
+                    {
+                        number = "0" + number;
+                    }
+
+                    values.Add(number);
+
+                    fullName = string.Join(string.Empty, values);
+                    if (renameSpaceOption.IncludeName && name != null)
+                    {
+
+                        if (renameSpaceOption.Position == Position.Prefix)
                         {
-                            values.Add(levelName);
-                            values.Add(renameSpaceOption.LevelSpeparator);
+                            fullName = string.Format("{0}{1}{2}", string.Join(string.Empty, values), renameSpaceOption.NameSeparator == null ? string.Empty : renameSpaceOption.NameSeparator, name);
+                        }
+                        else if (renameSpaceOption.Position == Position.Sufix)
+                        {
+                            fullName = string.Format("{0}{1}{2}", name, renameSpaceOption.NameSeparator == null ? string.Empty : renameSpaceOption.NameSeparator, string.Join(string.Empty, values));
                         }
                     }
-                }
 
-                string number = index.ToString();
-                while (number.Length < renameSpaceOption.DigitsNumber)
-                {
-                    number = "0" + number;
-                }
-
-                values.Add(number);
-
-                fullName = string.Join(string.Empty, values);
-                if (renameSpaceOption.IncludeName && name != null)
-                {
-
-                    if (renameSpaceOption.Position == Position.Prefix)
+                    if (spaces.Find(x => x.Name == fullName) == null)
                     {
-                        fullName = string.Format("{0}{1}{2}", string.Join(string.Empty, values), renameSpaceOption.NameSeparator == null ? string.Empty : renameSpaceOption.NameSeparator, name);
+                        break;
                     }
-                    else if(renameSpaceOption.Position == Position.Sufix)
-                    {
-                        fullName = string.Format("{0}{1}{2}", name, renameSpaceOption.NameSeparator == null ? string.Empty : renameSpaceOption.NameSeparator, string.Join(string.Empty, values));
-                    }
-                }
 
-                if (spaces.Find(x => x.Name == fullName) == null)
-                {
-                    break;
+                    fullName = null;
                 }
-
-                fullName = null;
+            }
+            else
+            {
+                fullName = name;
             }
 
             if(fullName == null)

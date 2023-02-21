@@ -5,11 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="220" d:DesignWidth="335">
+             d:DesignHeight="230" d:DesignWidth="335">
     <Grid>
-        <CheckBox x:Name="checkBox_IncludeName" Content="Name:" HorizontalAlignment="Left" Margin="22,15,0,0" VerticalAlignment="Top" IsChecked="True"/>
-        <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="234"/>
-        <GroupBox Header="" HorizontalAlignment="Left" Height="168" Margin="22,38,0,0" VerticalAlignment="Top" Width="292">
+        <CheckBox x:Name="checkBox_IncludeName" Content="Name:" HorizontalAlignment="Left" Margin="30,15,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="23" Margin="88,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="226"/>
+        <GroupBox HorizontalAlignment="Left" Height="168" Margin="22,46,0,0" VerticalAlignment="Top" Width="292">
+            <GroupBox.Header>
+                <CheckBox x:Name="checkBox_IncludeNumber" Content="Number" IsChecked="True"/>
+            </GroupBox.Header>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
@@ -22,8 +25,8 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <RadioButton x:Name="radioButton_Prefix" Grid.Column="0" Content="Prefix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
-                <RadioButton x:Name="radioButton_Sufix" Grid.Column="1" Content="Sufix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <RadioButton x:Name="radioButton_Prefix" Grid.Column="0" Content="Prefix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Center" IsChecked="True"/>
+                <RadioButton x:Name="radioButton_Sufix" Grid.Column="1" Content="Sufix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Center"/>
                 <CheckBox x:Name="checkBox_IncludeLevel" Grid.Row="1" Grid.Column="0" Content="Level" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="True"></CheckBox>
                 <TextBox Grid.Row="1" Grid.Column="1" Margin="10,3,-60,3" Visibility="Hidden"/>
                 <Label Grid.Row="2" Grid.Column="0"  Content="Combine By:" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>

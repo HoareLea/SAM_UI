@@ -96,6 +96,18 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public bool IncludeNumber
+        {
+            get
+            {
+                return checkBox_IncludeNumber.IsChecked != null && checkBox_IncludeNumber.IsChecked.HasValue && checkBox_IncludeNumber.IsChecked.Value;
+            }
+            set
+            {
+                checkBox_IncludeNumber.IsChecked = value;
+            }
+        }
+
         public bool IncludeLevel
         {
             get
@@ -160,10 +172,11 @@ namespace SAM.Analytical.UI.WPF
                 {
                     Position = Position,
                     IncludeName = IncludeName,
+                    IncludeNumber = IncludeNumber,
                     IncludeLevel = IncludeLevel,
                     LevelSpeparator = LevelSpeparator,
                     NameSeparator = NameSpeparator,
-                    DigitsNumber = DigitsNumber
+                    DigitsNumber = DigitsNumber,
                 };
             }
 
@@ -182,6 +195,7 @@ namespace SAM.Analytical.UI.WPF
 
             Position = renameSpaceOption.Position;
             IncludeName = renameSpaceOption.IncludeName;
+            IncludeNumber = renameSpaceOption.IncludeNumber;
             IncludeLevel = renameSpaceOption.IncludeLevel;
             LevelSpeparator = renameSpaceOption.LevelSpeparator;
             NameSpeparator = renameSpaceOption.NameSeparator;
