@@ -15,27 +15,44 @@ namespace SAM.Analytical.UI.WPF
         {
             InitializeComponent();
 
-            textBox_DigitsNumber.TextInput += TextBox_DigitsNumber_TextInput;
+            textBox_DigitsNumber.TextInput += TextBox_IntegerOnly_TextInput;
+            textBox_Trim_Count.TextInput += TextBox_IntegerOnly_TextInput;
+
+            Rename = true;
         }
 
         public RenameSpacesControl(string name, RenameSpaceOption renameSpaceOption)
         {
             InitializeComponent();
 
-            textBox_DigitsNumber.TextInput += TextBox_DigitsNumber_TextInput;
+            textBox_DigitsNumber.TextInput += TextBox_IntegerOnly_TextInput;
+            textBox_DigitsNumber.TextInput += TextBox_IntegerOnly_TextInput;
 
             Name = name;
             SetRenameSpaceOption(renameSpaceOption);
+
+            Rename = true;
         }
 
-        private void TextBox_DigitsNumber_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void TextBox_IntegerOnly_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             Core.Windows.EventHandler.ControlText_IntegerOnly(sender, e);
         }
 
-        public void Rename()
+        public void Apply()
         {
-            UIAnalyticalModel.RenameSpaces(Spaces, textBox_Name.Text, RenameSpaceOption);
+            if(Rename)
+            {
+                UIAnalyticalModel.RenameSpaces(Spaces, textBox_Name.Text, RenameSpaceOption);
+            }
+            else if(Replace)
+            {
+                UIAnalyticalModel.RenameSpaces(Spaces, textBox_Replace_Old.Text, textBox_Replace_New.Text);
+            }
+            else if (Trim)
+            {
+                UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimCount);
+            }
         }
 
         public Position Position
@@ -164,6 +181,95 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public bool Rename
+        {
+            get
+            {
+                return radioButton_Rename.IsChecked != null && radioButton_Rename.IsChecked.HasValue && radioButton_Rename.IsChecked.Value;
+            }
+
+            set
+            {
+                radioButton_Rename.IsChecked = value;
+            }
+        }
+
+        public bool Trim
+        {
+            get
+            {
+                return radioButton_Trim.IsChecked != null && radioButton_Trim.IsChecked.HasValue && radioButton_Trim.IsChecked.Value;
+            }
+
+            set
+            {
+                radioButton_Trim.IsChecked = value;
+            }
+        }
+
+        public bool Replace
+        {
+            get
+            {
+                return radioButton_Replace.IsChecked != null && radioButton_Replace.IsChecked.HasValue && radioButton_Replace.IsChecked.Value;
+            }
+
+            set
+            {
+                radioButton_Replace.IsChecked = value;
+            }
+        }
+
+        public Position TrimPosition
+        {
+            get
+            {
+                if (radioButton_Trim_Prefix.IsChecked != null && radioButton_Trim_Prefix.IsChecked.HasValue && radioButton_Trim_Prefix.IsChecked.Value)
+                {
+                    return Position.Prefix;
+                }
+
+                if (radioButton_Trim_Sufix.IsChecked != null && radioButton_Trim_Sufix.IsChecked.HasValue && radioButton_Trim_Sufix.IsChecked.Value)
+                {
+                    return Position.Sufix;
+                }
+
+                return Position.Undefined;
+            }
+
+            set
+            {
+                switch (value)
+                {
+                    case Position.Prefix:
+                        radioButton_Trim_Prefix.IsChecked = true;
+                        break;
+
+                    case Position.Sufix:
+                        radioButton_Trim_Sufix.IsChecked = true;
+                        break;
+                }
+            }
+        }
+
+        public int TrimCount
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(textBox_Trim_Count.Text, out int result))
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                textBox_Trim_Count.Text = value.ToString();
+            }
+        }
+
         public RenameSpaceOption RenameSpaceOption
         {
             get
@@ -204,6 +310,75 @@ namespace SAM.Analytical.UI.WPF
         private void UserControl_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             textBox_Name.Focus();
+        }
+
+        private void radioButton_Rename_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if(radioButton_Rename.IsChecked != null && radioButton_Rename.IsChecked.HasValue && radioButton_Rename.IsChecked.Value)
+            {
+                radioButton_Trim.IsChecked = false;
+                radioButton_Replace.IsChecked = false;
+
+                radioButton_Trim_Prefix.IsEnabled = false;
+                radioButton_Trim_Sufix.IsEnabled = false;
+                label_Trim_Count.IsEnabled = false;
+                textBox_Trim_Count.IsEnabled = false;
+                
+                label_Replace_Old.IsEnabled = false;
+                textBox_Replace_Old.IsEnabled = false;
+                label_Replace_New.IsEnabled = false;
+                textBox_Replace_New.IsEnabled = false;
+
+                groupBox_Number.IsEnabled = true;
+                checkBox_IncludeName.IsEnabled = true;
+                textBox_Name.IsEnabled = true;
+            }
+        }
+
+        private void radioButton_Trim_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (radioButton_Trim.IsChecked != null && radioButton_Trim.IsChecked.HasValue && radioButton_Trim.IsChecked.Value)
+            {
+                radioButton_Rename.IsChecked = false;
+                radioButton_Replace.IsChecked = false;
+
+                radioButton_Trim_Prefix.IsEnabled = true;
+                radioButton_Trim_Sufix.IsEnabled = true;
+                label_Trim_Count.IsEnabled = true;
+                textBox_Trim_Count.IsEnabled = true;
+
+                label_Replace_Old.IsEnabled = false;
+                textBox_Replace_Old.IsEnabled = false;
+                label_Replace_New.IsEnabled = false;
+                textBox_Replace_New.IsEnabled = false;
+
+                groupBox_Number.IsEnabled = false;
+                checkBox_IncludeName.IsEnabled = false;
+                textBox_Name.IsEnabled = false;
+            }
+        }
+
+        private void radioButton_Replace_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (radioButton_Replace.IsChecked != null && radioButton_Replace.IsChecked.HasValue && radioButton_Replace.IsChecked.Value)
+            {
+                radioButton_Rename.IsChecked = false;
+                radioButton_Trim.IsChecked = false;
+
+                radioButton_Trim_Prefix.IsEnabled = false;
+                radioButton_Trim_Sufix.IsEnabled = false;
+                label_Trim_Count.IsEnabled = false;
+                textBox_Trim_Count.IsEnabled = false;
+
+                label_Replace_Old.IsEnabled = true;
+                textBox_Replace_Old.IsEnabled = true;
+                label_Replace_New.IsEnabled = true;
+                textBox_Replace_New.IsEnabled = true;
+
+                groupBox_Number.IsEnabled = false;
+                checkBox_IncludeName.IsEnabled = false;
+                textBox_Name.IsEnabled = false;
+            }
         }
     }
 }

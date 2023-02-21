@@ -24,7 +24,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
-            renameSpacesControl.Rename();
+            renameSpacesControl.Apply();
 
             DialogResult = true;
             Close();
@@ -32,7 +32,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_Apply_Click(object sender, RoutedEventArgs e)
         {
-            renameSpacesControl.Rename();
+            renameSpacesControl.Apply();
         }
     }
 }

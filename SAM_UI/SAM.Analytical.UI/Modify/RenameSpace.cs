@@ -4,6 +4,81 @@ namespace SAM.Analytical.UI
 {
     public static partial class Modify
     {
+        public static string RenameSpace(this AdjacencyCluster adjacencyCluster, Space space, Position position, int count)
+        {
+            if (adjacencyCluster == null || space == null || position == Position.Undefined || count <= 0)
+            {
+                return null;
+            }
+
+            Space space_Temp = adjacencyCluster.GetSpaces()?.Find(x => x.Guid == space.Guid);
+            if (space_Temp == null)
+            {
+                return null;
+            }
+
+            string name = space_Temp.Name;
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
+            if(name.Length <= count)
+            {
+                name = string.Empty;
+            }
+            else
+            {
+                switch(position)
+                {
+                    case Position.Prefix:
+                        name = name.Substring(count);
+                        break;
+
+                    case Position.Sufix:
+                        name = name.Substring(0, name.Length - count);
+                        break;
+                }
+            }
+
+            space_Temp = new Space(space_Temp, name, space_Temp.Location);
+            adjacencyCluster.AddObject(space_Temp);
+
+            return name;
+        }
+
+        public static string RenameSpace(this AdjacencyCluster adjacencyCluster, Space space, string text_Old, string text_New)
+        {
+            if (adjacencyCluster == null || space == null)
+            {
+                return null;
+            }
+
+            Space space_Temp = adjacencyCluster.GetSpaces()?.Find(x => x.Guid == space.Guid);
+            if (space_Temp == null)
+            {
+                return null;
+            }
+
+            string name = space_Temp.Name;
+            if(string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
+            if(!name.Contains(text_Old))
+            {
+                return null;
+            }
+
+            name = name.Replace(text_Old, text_New);
+
+            space_Temp = new Space(space_Temp, name, space_Temp.Location);
+            adjacencyCluster.AddObject(space_Temp);
+
+            return name;
+        }
+        
         public static string RenameSpace(this AdjacencyCluster adjacencyCluster, Space space, string name, RenameSpaceOption renameSpaceOption)
         {
             if(adjacencyCluster == null || space == null)
