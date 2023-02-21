@@ -92,7 +92,7 @@ namespace SAM.Analytical.UI
                     values.Add(number);
 
                     fullName = string.Join(string.Empty, values);
-                    if (renameSpaceOption.IncludeName && name != null)
+                    if (name != null)
                     {
 
                         if (renameSpaceOption.Position == Position.Prefix)
