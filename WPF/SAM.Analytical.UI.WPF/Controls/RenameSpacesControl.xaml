@@ -5,33 +5,33 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="250" d:DesignWidth="350">
+             d:DesignHeight="220" d:DesignWidth="335">
     <Grid>
-        <Label Content="Name:" HorizontalAlignment="Left" Margin="27,23,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="23" Margin="80,23,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="239"/>
-        <GroupBox Header="" HorizontalAlignment="Left" Height="168" Margin="27,54,0,0" VerticalAlignment="Top" Width="292">
+        <CheckBox x:Name="checkBox_IncludeName" Content="Name:" HorizontalAlignment="Left" Margin="22,15,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="23" Margin="80,10,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="234"/>
+        <GroupBox Header="" HorizontalAlignment="Left" Height="168" Margin="22,38,0,0" VerticalAlignment="Top" Width="292">
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
+                    <RowDefinition Height="26"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                 </Grid.ColumnDefinitions>
-                <RadioButton Grid.Column="0" Content="Prefix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                <RadioButton Grid.Column="1" Content="Sufix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                <CheckBox Grid.Row="1" Grid.Column="0" Content="Level:"></CheckBox>
-                <TextBox Grid.Row="1" Grid.Column="1" Margin="10,0.4,-60,0"/>
-                <Label Grid.Row="2" Grid.Column="0"  Content="Combine By:"></Label>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="10,0.4,-60,0"/>
-                <Label Grid.Row="3" Grid.Column="0"  Content="Number of digits:"></Label>
-                <TextBox Grid.Row="3" Grid.Column="1" Margin="10,0.4,-60,0"/>
-                <Label Grid.Row="4" Grid.Column="0"  Content="Division character:"></Label>
-                <TextBox Grid.Row="4" Grid.Column="1" Margin="10,0.4,-60,0"/>
+                <RadioButton x:Name="radioButton_Prefix" Grid.Column="0" Content="Prefix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" IsChecked="True"/>
+                <RadioButton x:Name="radioButton_Sufix" Grid.Column="1" Content="Sufix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkBox_IncludeLevel" Grid.Row="1" Grid.Column="0" Content="Level" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="True"></CheckBox>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="10,3,-60,3" Visibility="Hidden"/>
+                <Label Grid.Row="2" Grid.Column="0"  Content="Combine By:" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+                <TextBox x:Name="textBox_LevelSeparator" Grid.Row="2" Grid.Column="1" Margin="10,3,-60,3" Text="_"/>
+                <Label Grid.Row="3" Grid.Column="0"  Content="Number of digits:" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+                <TextBox x:Name="textBox_DigitsNumber" Grid.Row="3" Grid.Column="1" Margin="10,3.4,-60,3" Text="3"/>
+                <Label Grid.Row="4" Grid.Column="0"  Content="Division character:" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+                <TextBox x:Name="textBox_NameSeparator" Grid.Row="4" Grid.Column="1" Margin="10,3.4,-60,3" Text=" "/>
             </Grid>
         </GroupBox>
 
