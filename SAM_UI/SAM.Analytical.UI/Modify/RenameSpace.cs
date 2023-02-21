@@ -75,12 +75,16 @@ namespace SAM.Analytical.UI
                                 levelName = levelName.Substring(5).Trim();
                             }
 
-                            if (!string.IsNullOrWhiteSpace(levelName) && renameSpaceOption.LevelSpeparator != null)
+                            if (!string.IsNullOrWhiteSpace(levelName))
                             {
                                 values.Add(levelName);
-                                values.Add(renameSpaceOption.LevelSpeparator);
                             }
                         }
+                    }
+
+                    if(!string.IsNullOrEmpty(renameSpaceOption.LevelSpeparator))
+                    {
+                        values.Add(renameSpaceOption.LevelSpeparator);
                     }
 
                     string number = index.ToString();
