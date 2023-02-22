@@ -273,7 +273,7 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
-                if(tuples_Zone != null && tuples_Zone.Count > 0)
+                if (tuples_Zone != null && tuples_Zone.Count > 0)
                 {
                     menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_RemoveSpaceZone";
@@ -282,8 +282,25 @@ namespace SAM.Analytical.UI.WPF
                     menuItem.Tag = tuples_Zone;
                     contextMenu_Model.Items.Add(menuItem);
                 }
+                else
+                {
+                    foreach (Tuple<TreeViewItem, IJSAMObject> tuple in tuples)
+                    {
+                        if (!(tuple.Item2 is Space))
+                        {
+                            continue;
+                        }
 
+                        tuples_Zone.Add(new Tuple<Zone, Space>(null, (Space)tuple.Item2));
+                    }
+                }
 
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_EditZones";
+                menuItem.Header = "Edit Zones";
+                menuItem.Click += MenuItem_EditZones_Click;
+                menuItem.Tag = tuples_Zone;
+                contextMenu_Model.Items.Add(menuItem);
             }
             else if(jSAMObject is Panel)
             {
@@ -435,6 +452,49 @@ namespace SAM.Analytical.UI.WPF
                 e.Handled = true;
                 return;
             }
+        }
+
+        private void MenuItem_EditZones_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            IEnumerable enumerable = menuItem.Tag as IEnumerable;
+            if (enumerable == null)
+            {
+                return;
+            }
+
+
+            List<Space> spaces = new List<Space>();
+            string zoneCategory = null;
+            foreach (object @object in enumerable)
+            {
+                Tuple<Zone, Space> tuple = @object as Tuple<Zone, Space>;
+                if (tuple == null)
+                {
+                    continue;
+                }
+
+                if(tuple.Item2 != null)
+                {
+                    spaces.Add(tuple.Item2);
+                }
+
+                if(tuple.Item1 != null)
+                {
+                    Zone zone = tuple.Item1;
+                    if(zone.TryGetValue(ZoneParameter.ZoneCategory, out string zoneCategory_Temp) && !string.IsNullOrWhiteSpace(zoneCategory_Temp))
+                    {
+                        zoneCategory = zoneCategory_Temp;
+                    }
+                }
+            }
+
+            Modify.EditZones(uIAnalyticalModel, spaces, zoneCategory, spaces);
         }
 
         private void MenuItem_MapInternalConditions_Click(object sender, RoutedEventArgs e)
