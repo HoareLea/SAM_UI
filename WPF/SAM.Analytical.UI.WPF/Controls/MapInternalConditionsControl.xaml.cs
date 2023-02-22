@@ -421,6 +421,7 @@ namespace SAM.Analytical.UI.WPF
 
                     RowDefinition rowDefinition = new RowDefinition();
                     rowDefinition.Tag = space;
+                    rowDefinition.Height = new GridLength(30);
                     grid.RowDefinitions.Add(rowDefinition);
 
                     string internalConditionName = string.Empty;

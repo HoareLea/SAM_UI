@@ -210,9 +210,30 @@ namespace SAM.Analytical.UI.WPF
                 contextMenu_Model.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_RenameSpaces";
+                menuItem.Header = "Rename";
+                menuItem.Click += MenuItem_RenameSpaces_Click;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
+                contextMenu_Model.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_EditInternalConditions";
                 menuItem.Header = "Modify IC";
                 menuItem.Click += MenuItem_EditInternalConditions_Click;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
+                contextMenu_Model.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_AssignInternalCondition";
+                menuItem.Header = "Assign IC";
+                menuItem.Click += MenuItem_AssignInternalCondition_Click;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
+                contextMenu_Model.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_MapInternalConditions";
+                menuItem.Header = "Map IC";
+                menuItem.Click += MenuItem_MapInternalConditions_Click;
                 menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
@@ -414,6 +435,39 @@ namespace SAM.Analytical.UI.WPF
                 e.Handled = true;
                 return;
             }
+        }
+
+        private void MenuItem_MapInternalConditions_Click(object sender, RoutedEventArgs e)
+        {
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if (jSAMObjects == null || jSAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            Modify.MapInternalConditions(uIAnalyticalModel, jSAMObjects.FindAll(x => x is Space).Cast<Space>());
+        }
+
+        private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
+        {
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if (jSAMObjects == null || jSAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            Modify.AssignSpaceInternalCondition(uIAnalyticalModel, jSAMObjects.FindAll(x => x is Space).Cast<Space>());
+        }
+
+        private void MenuItem_RenameSpaces_Click(object sender, RoutedEventArgs e)
+        {
+            List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
+            if (jSAMObjects == null || jSAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            Modify.RenameSpaces(uIAnalyticalModel, jSAMObjects.FindAll(x => x is Space).Cast<Space>());
         }
 
         private void MenuItem_EditInternalConditions_Click(object sender, RoutedEventArgs e)

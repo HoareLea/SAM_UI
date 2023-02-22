@@ -151,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ApertureData.cs" />
+    <Compile Include="Modify\RenameSpaces.cs" />
     <Compile Include="Windows\InternalConditionWindow.xaml.cs">
       <DependentUpon>InternalConditionWindow.xaml</DependentUpon>
     </Compile>

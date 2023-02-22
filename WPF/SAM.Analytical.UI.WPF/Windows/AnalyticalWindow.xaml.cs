@@ -628,12 +628,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
 
-            RenameSpacesWindow renameSpacesWindow = new RenameSpacesWindow(uIAnalyticalModel, spaces);
-            bool? result = renameSpacesWindow.ShowDialog();
-            if(result != null && result.HasValue && result.Value)
-            {
-
-            }
+            Modify.RenameSpaces(uIAnalyticalModel, spaces);
         }
 
         private void MenuItem_EditInternalConditions_Click(object sender, RoutedEventArgs e)
