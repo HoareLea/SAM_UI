@@ -651,6 +651,20 @@ namespace SAM.Analytical.UI.WPF
                             internalCondition?.RemoveValue(InternalConditionParameter.LightingLevel);
                         }
                     }
+
+                    if (!multipleValueComboBoxControl_LighingProfile_LightingControlFunction.Vary)
+                    {
+                        string value = multipleValueComboBoxControl_LighingProfile_LightingControlFunction.Value;
+                        if(string.IsNullOrEmpty(value))
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.LightingControlFunction);
+                        }
+                        else
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.LightingControlFunction, value);
+                        }
+
+                    }
                 }
 
                 if (checkBox_EquipmentLatentProfile.IsChecked.HasValue && checkBox_EquipmentLatentProfile.IsChecked.Value)
@@ -936,6 +950,9 @@ namespace SAM.Analytical.UI.WPF
 
                 multipleValueComboBoxControl_LightingProfile_LightLevel.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingLevel);
                 multipleValueComboBoxControl_LightingProfile_LightLevel.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingLevel));
+
+                multipleValueComboBoxControl_LightingProfile_LightLevel.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingControlFunction);
+                multipleValueComboBoxControl_LightingProfile_LightLevel.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingControlFunction));
             }
 
             if (checkBox_EquipmentLatentProfile.IsChecked != null && checkBox_EquipmentLatentProfile.IsChecked.HasValue && checkBox_EquipmentLatentProfile.IsChecked.Value)
@@ -1690,6 +1707,9 @@ namespace SAM.Analytical.UI.WPF
 
         }
 
+        private void button_ViewLightingProfile_Copy_Click(object sender, RoutedEventArgs e)
+        {
 
+        }
     }
 }

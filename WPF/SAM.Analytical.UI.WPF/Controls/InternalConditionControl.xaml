@@ -156,7 +156,9 @@
                 <Label Content="[lux]" HorizontalAlignment="Left" Margin="181,110,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="113,78,250,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
                 <Label Content="[W/p]" HorizontalAlignment="Left" Margin="181,76,0,0" VerticalAlignment="Top"/>
-
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LighingProfile_LightingControlFunction" HorizontalAlignment="Stretch" Height="23" Margin="239,113,10,0" VerticalAlignment="Top"/>
+                <Label Content="Function:" HorizontalAlignment="Left" Margin="239,82,0,0" VerticalAlignment="Top"/>
+                <Button x:Name="button_ViewLightingProfile_Copy" Content="View" HorizontalAlignment="Left" Margin="358,85,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewLightingProfile_Copy_Click"/>
             </Grid>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="100" Margin="453,399,0,0" VerticalAlignment="Top" Width="444">
