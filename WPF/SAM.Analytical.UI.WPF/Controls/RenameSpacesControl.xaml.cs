@@ -191,6 +191,7 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 radioButton_Rename.IsChecked = value;
+                SetRename();
             }
         }
 
@@ -204,6 +205,7 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 radioButton_Trim.IsChecked = value;
+                SetTrim();
             }
         }
 
@@ -217,6 +219,7 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 radioButton_Replace.IsChecked = value;
+                SetReplace();
             }
         }
 
@@ -314,7 +317,12 @@ namespace SAM.Analytical.UI.WPF
 
         private void radioButton_Rename_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            if(radioButton_Rename.IsChecked != null && radioButton_Rename.IsChecked.HasValue && radioButton_Rename.IsChecked.Value)
+            SetRename();
+        }
+
+        private void SetRename()
+        {
+            if (radioButton_Rename.IsChecked != null && radioButton_Rename.IsChecked.HasValue && radioButton_Rename.IsChecked.Value)
             {
                 radioButton_Trim.IsChecked = false;
                 radioButton_Replace.IsChecked = false;
@@ -323,7 +331,7 @@ namespace SAM.Analytical.UI.WPF
                 radioButton_Trim_Sufix.IsEnabled = false;
                 label_Trim_Count.IsEnabled = false;
                 textBox_Trim_Count.IsEnabled = false;
-                
+
                 label_Replace_Old.IsEnabled = false;
                 textBox_Replace_Old.IsEnabled = false;
                 label_Replace_New.IsEnabled = false;
@@ -336,6 +344,11 @@ namespace SAM.Analytical.UI.WPF
         }
 
         private void radioButton_Trim_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            SetTrim();
+        }
+
+        private void SetTrim()
         {
             if (radioButton_Trim.IsChecked != null && radioButton_Trim.IsChecked.HasValue && radioButton_Trim.IsChecked.Value)
             {
@@ -359,6 +372,11 @@ namespace SAM.Analytical.UI.WPF
         }
 
         private void radioButton_Replace_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            SetReplace();
+        }
+
+        private void SetReplace()
         {
             if (radioButton_Replace.IsChecked != null && radioButton_Replace.IsChecked.HasValue && radioButton_Replace.IsChecked.Value)
             {
