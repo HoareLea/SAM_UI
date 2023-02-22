@@ -18,6 +18,9 @@ namespace SAM.Analytical.UI.WPF
             textBox_DigitsNumber.TextInput += TextBox_IntegerOnly_TextInput;
             textBox_Trim_Count.TextInput += TextBox_IntegerOnly_TextInput;
 
+            textBox_Trim_Count.TextChanged += TextBox_Trim_Count_TextChanged;
+            textBox_Trim_Text.TextChanged += TextBox_Trim_Text_TextChanged;
+
             Rename = true;
         }
 
@@ -27,6 +30,9 @@ namespace SAM.Analytical.UI.WPF
 
             textBox_DigitsNumber.TextInput += TextBox_IntegerOnly_TextInput;
             textBox_DigitsNumber.TextInput += TextBox_IntegerOnly_TextInput;
+
+            textBox_Trim_Count.TextChanged += TextBox_Trim_Count_TextChanged;
+            textBox_Trim_Text.TextChanged += TextBox_Trim_Text_TextChanged;
 
             Name = name;
             SetRenameSpaceOption(renameSpaceOption);
@@ -51,7 +57,17 @@ namespace SAM.Analytical.UI.WPF
             }
             else if (Trim)
             {
-                UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimCount);
+                int count = TrimCount;
+                if(count == -1)
+                {
+                    UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimText);
+                }
+                else
+                {
+                    UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimCount);
+                }
+
+
             }
         }
 
@@ -255,6 +271,14 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public string TrimText
+        {
+            get
+            {
+                return textBox_Trim_Text.Text;
+            }
+        }
+
         public int TrimCount
         {
             get
@@ -331,6 +355,8 @@ namespace SAM.Analytical.UI.WPF
                 radioButton_Trim_Sufix.IsEnabled = false;
                 label_Trim_Count.IsEnabled = false;
                 textBox_Trim_Count.IsEnabled = false;
+                label_Trim_Text.IsEnabled = false;
+                textBox_Trim_Text.IsEnabled = false;
 
                 label_Replace_Old.IsEnabled = false;
                 textBox_Replace_Old.IsEnabled = false;
@@ -359,6 +385,8 @@ namespace SAM.Analytical.UI.WPF
                 radioButton_Trim_Sufix.IsEnabled = true;
                 label_Trim_Count.IsEnabled = true;
                 textBox_Trim_Count.IsEnabled = true;
+                label_Trim_Text.IsEnabled = true;
+                textBox_Trim_Text.IsEnabled = true;
 
                 label_Replace_Old.IsEnabled = false;
                 textBox_Replace_Old.IsEnabled = false;
@@ -387,6 +415,8 @@ namespace SAM.Analytical.UI.WPF
                 radioButton_Trim_Sufix.IsEnabled = false;
                 label_Trim_Count.IsEnabled = false;
                 textBox_Trim_Count.IsEnabled = false;
+                label_Trim_Text.IsEnabled = false;
+                textBox_Trim_Text.IsEnabled = false;
 
                 label_Replace_Old.IsEnabled = true;
                 textBox_Replace_Old.IsEnabled = true;
@@ -397,6 +427,20 @@ namespace SAM.Analytical.UI.WPF
                 checkBox_IncludeName.IsEnabled = false;
                 textBox_Name.IsEnabled = false;
             }
+        }
+
+        private void TextBox_Trim_Text_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textBox_Trim_Count.TextChanged -= TextBox_Trim_Count_TextChanged;
+            textBox_Trim_Count.Text = null;
+            textBox_Trim_Count.TextChanged += TextBox_Trim_Count_TextChanged;
+        }
+
+        private void TextBox_Trim_Count_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            textBox_Trim_Text.TextChanged -= TextBox_Trim_Text_TextChanged;
+            textBox_Trim_Text.Text = null;
+            textBox_Trim_Text.TextChanged += TextBox_Trim_Text_TextChanged;
         }
     }
 }

@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="440" d:DesignWidth="335" Loaded="UserControl_Loaded">
+             d:DesignHeight="460" d:DesignWidth="335" Loaded="UserControl_Loaded">
     <Grid>
 
         <GroupBox HorizontalAlignment="Left" Height="247" Margin="10,10,0,0" VerticalAlignment="Top" Width="315">
@@ -45,13 +45,14 @@
                 </GroupBox>
             </Grid>
         </GroupBox>
-        <GroupBox HorizontalAlignment="Left" Height="84" Margin="10,262,0,0" VerticalAlignment="Top" Width="315">
+        <GroupBox HorizontalAlignment="Left" Height="109" Margin="10,262,0,0" VerticalAlignment="Top" Width="315">
             <GroupBox.Header>
                 <RadioButton x:Name="radioButton_Trim" Content="Trim" IsChecked="False" Click="radioButton_Trim_Click"/>
             </GroupBox.Header>
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
+                    <RowDefinition Height="26"/>
                     <RowDefinition Height="26"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
@@ -62,9 +63,11 @@
                 <RadioButton x:Name="radioButton_Trim_Sufix" Grid.Column="1" Content="Sufix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Center"/>
                 <Label x:Name="label_Trim_Count" Grid.Row="1" Grid.Column="0"  Content="Number of characters: " VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
                 <TextBox x:Name="textBox_Trim_Count" Grid.Row="1" Grid.Column="1" Margin="10,3,-60,3" Text="0"/>
+                <Label x:Name="label_Trim_Text" Grid.Row="2" Grid.Column="0"  Content="Text: " VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
+                <TextBox x:Name="textBox_Trim_Text" Grid.Row="2" Grid.Column="1" Margin="10,3,-95,3" Text=""/>
             </Grid>
         </GroupBox>
-        <GroupBox HorizontalAlignment="Left" Height="75" Margin="10,351,0,0" VerticalAlignment="Top" Width="315">
+        <GroupBox HorizontalAlignment="Left" Height="75" Margin="10,376,0,0" VerticalAlignment="Top" Width="315">
             <GroupBox.Header>
                 <RadioButton x:Name="radioButton_Replace" Content="Replace" IsChecked="False" Click="radioButton_Replace_Click"/>
             </GroupBox.Header>

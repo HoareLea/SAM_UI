@@ -47,6 +47,55 @@ namespace SAM.Analytical.UI
             return name;
         }
 
+        public static string RenameSpace(this AdjacencyCluster adjacencyCluster, Space space, Position position, string text)
+        {
+            if (adjacencyCluster == null || space == null || position == Position.Undefined || string.IsNullOrEmpty(text))
+            {
+                return null;
+            }
+
+            Space space_Temp = adjacencyCluster.GetSpaces()?.Find(x => x.Guid == space.Guid);
+            if (space_Temp == null)
+            {
+                return null;
+            }
+
+            string name = space_Temp.Name;
+            if (string.IsNullOrEmpty(name))
+            {
+                return null;
+            }
+
+            if(!name.Contains(text))
+            {
+                return null;
+            }
+
+            int index = -1;
+            switch(position)
+            {
+                case Position.Prefix:
+                    index = name.IndexOf(text);
+                    name = name.Substring(index + text.Length);
+                    break;
+
+                case Position.Sufix:
+                    index = name.LastIndexOf(text);
+                    name = name.Substring(0, index);
+                    break;
+            }
+
+            if(index == -1)
+            {
+                return null;
+            }
+
+            space_Temp = new Space(space_Temp, name, space_Temp.Location);
+            adjacencyCluster.AddObject(space_Temp);
+
+            return name;
+        }
+
         public static string RenameSpace(this AdjacencyCluster adjacencyCluster, Space space, string text_Old, string text_New)
         {
             if (adjacencyCluster == null || space == null)
