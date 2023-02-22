@@ -652,9 +652,9 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_LighingProfile_LightingControlFunction.Vary)
+                    if (!multipleValueComboBoxControl_LightingProfile_LightingControlFunction.Vary)
                     {
-                        string value = multipleValueComboBoxControl_LighingProfile_LightingControlFunction.Value;
+                        string value = multipleValueComboBoxControl_LightingProfile_LightingControlFunction.Value;
                         if(string.IsNullOrEmpty(value))
                         {
                             internalCondition?.RemoveValue(InternalConditionParameter.LightingControlFunction);
@@ -951,8 +951,8 @@ namespace SAM.Analytical.UI.WPF
                 multipleValueComboBoxControl_LightingProfile_LightLevel.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingLevel);
                 multipleValueComboBoxControl_LightingProfile_LightLevel.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingLevel));
 
-                multipleValueComboBoxControl_LightingProfile_LightLevel.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingControlFunction);
-                multipleValueComboBoxControl_LightingProfile_LightLevel.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingControlFunction));
+                multipleValueComboBoxControl_LightingProfile_LightingControlFunction.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.LightingControlFunction);
+                multipleValueComboBoxControl_LightingProfile_LightingControlFunction.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.LightingControlFunction));
             }
 
             if (checkBox_EquipmentLatentProfile.IsChecked != null && checkBox_EquipmentLatentProfile.IsChecked.HasValue && checkBox_EquipmentLatentProfile.IsChecked.Value)
