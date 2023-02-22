@@ -147,17 +147,17 @@
                 <Label Content="[W]" HorizontalAlignment="Left" Margin="305,40,0,0" VerticalAlignment="Top"/>
                 <Button x:Name="button_SelectLightingProfile" Content="Select" HorizontalAlignment="Left" Margin="358,12,0,0" VerticalAlignment="Top" Width="60" Click="button_SelectLightingProfile_Click"/>
                 <Button x:Name="button_ViewLightingProfile" Content="View" HorizontalAlignment="Left" Margin="293,12,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewLightingProfile_Click"/>
-                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingGainPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="99,42,236,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
-                <Label Content="[W/m2]" HorizontalAlignment="Left" Margin="181,40,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingGainPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="99,42,264,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
+                <Label Content="[W/m2]" HorizontalAlignment="Left" Margin="167,40,0,0" VerticalAlignment="Top"/>
                 <Label Content="Lighting Level:" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top"/>
                 <TextBox  x:Name="textBox_LightingProfile_CalculatedLightingGain" HorizontalAlignment="Stretch" Height="23" Margin="352,43,29,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label x:Name="label_LightingProfile_CalculatedLightingGain" Content="[W]" HorizontalAlignment="Left" Margin="401,40,-2,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightLevel" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="113,112,250,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
-                <Label Content="[lux]" HorizontalAlignment="Left" Margin="181,110,0,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="113,78,250,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
-                <Label Content="[W/p]" HorizontalAlignment="Left" Margin="181,76,0,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingControlFunction" HorizontalAlignment="Stretch" Height="23" Margin="239,113,10,0" VerticalAlignment="Top"/>
-                <Label Content="Function:" HorizontalAlignment="Left" Margin="239,82,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightLevel" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="99,112,264,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
+                <Label Content="[lux]" HorizontalAlignment="Left" Margin="167,110,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="99,78,264,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput"/>
+                <Label Content="[W/p]" HorizontalAlignment="Left" Margin="167,76,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingControlFunction" HorizontalAlignment="Stretch" Height="23" Margin="214,113,10,0" VerticalAlignment="Top"/>
+                <Label Content="Function:" HorizontalAlignment="Left" Margin="212,82,0,0" VerticalAlignment="Top"/>
                 <Button x:Name="button_ViewLightingProfile_Copy" Content="View" HorizontalAlignment="Left" Margin="358,85,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewLightingProfile_Copy_Click"/>
             </Grid>
         </GroupBox>

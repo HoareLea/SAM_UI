@@ -473,7 +473,7 @@ namespace SAM.Analytical.UI.WPF
                 }
                 if (checkBox_Occupancy.IsChecked.HasValue && checkBox_Occupancy.IsChecked.Value)
                 {
-                    if (!multipleValueComboBoxControl_AreaPerPerson.Vary)
+                    if (!multipleValueComboBoxControl_AreaPerPerson.VarySet)
                     {
                         string value = multipleValueComboBoxControl_AreaPerPerson.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -502,7 +502,7 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_HeatingProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_HeatingProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_HeatingProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.HeatingProfileName, value);
@@ -511,13 +511,13 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_OccupancyProfile.IsChecked.HasValue && checkBox_OccupancyProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_OccupancyProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_OccupancyProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_OccupancyProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.OccupancyProfileName, value);
                     }
 
-                    if (!multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.Vary)
+                    if (!multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.VarySet)
                     {
                         string value = multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -530,7 +530,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.Vary)
+                    if (!multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.VarySet)
                     {
                         string value = multipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -546,13 +546,13 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_EquipmentSensibleProfile.IsChecked.HasValue && checkBox_EquipmentSensibleProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_EquipmentSensibleProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_EquipmentSensibleProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_EquipmentSensibleProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.EquipmentSensibleProfileName, value);
                     }
 
-                    if (!multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.Vary)
+                    if (!multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.VarySet)
                     {
                         string value = multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -565,7 +565,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.Vary)
+                    if (!multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.VarySet)
                     {
                         string value = multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -578,7 +578,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.Vary)
+                    if (!multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.VarySet)
                     {
                         string value = multipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -594,13 +594,13 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_LightingProfile.IsChecked.HasValue && checkBox_LightingProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_LightingProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_LightingProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_LightingProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.LightingProfileName, value);
                     }
 
-                    if (!multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.Vary)
+                    if (!multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.VarySet)
                     {
                         string value = multipleValueComboBoxControl_LightingProfile_LightingGainPerArea.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -613,7 +613,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_LightingProfile_LightingGain.Vary)
+                    if (!multipleValueComboBoxControl_LightingProfile_LightingGain.VarySet)
                     {
                         string value = multipleValueComboBoxControl_LightingProfile_LightingGain.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -626,7 +626,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson.Vary)
+                    if (!multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson.VarySet)
                     {
                         string value = multipleValueComboBoxControl_LightingProfile_LightingGainPerPerson.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -639,7 +639,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_LightingProfile_LightLevel.Vary)
+                    if (!multipleValueComboBoxControl_LightingProfile_LightLevel.VarySet)
                     {
                         string value = multipleValueComboBoxControl_LightingProfile_LightLevel.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -652,7 +652,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_LightingProfile_LightingControlFunction.Vary)
+                    if (!multipleValueComboBoxControl_LightingProfile_LightingControlFunction.VarySet)
                     {
                         string value = multipleValueComboBoxControl_LightingProfile_LightingControlFunction.Value;
                         if(string.IsNullOrEmpty(value))
@@ -669,13 +669,13 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_EquipmentLatentProfile.IsChecked.HasValue && checkBox_EquipmentLatentProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_EquipmentLatentProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_EquipmentLatentProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_EquipmentLatentProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.EquipmentLatentProfileName, value);
                     }
 
-                    if (!multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.Vary)
+                    if (!multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.VarySet)
                     {
                         string value = multipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -688,7 +688,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.Vary)
+                    if (!multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.VarySet)
                     {
                         string value = multipleValueComboBoxControl_EquipmentLatentProfile_LatentGain.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -704,13 +704,13 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_InfiltrationProfile.IsChecked.HasValue && checkBox_InfiltrationProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_InfiltrationProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_InfiltrationProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_InfiltrationProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.InfiltrationProfileName, value);
                     }
 
-                    if (!multipleValueComboBoxControl_InfiltrationProfile_Infiltration.Vary)
+                    if (!multipleValueComboBoxControl_InfiltrationProfile_Infiltration.VarySet)
                     {
                         string value = multipleValueComboBoxControl_InfiltrationProfile_Infiltration.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -726,7 +726,7 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_DehumidificationProfile.IsChecked.HasValue && checkBox_DehumidificationProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_DehumidificationProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_DehumidificationProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_DehumidificationProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.DehumidificationProfileName, value);
@@ -735,7 +735,7 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_HumidificationProfile.IsChecked.HasValue && checkBox_HumidificationProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_HumidificationProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_HumidificationProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_HumidificationProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.HumidificationProfileName, value);
@@ -744,13 +744,13 @@ namespace SAM.Analytical.UI.WPF
 
                 if (checkBox_PollutantProfile.IsChecked.HasValue && checkBox_PollutantProfile.IsChecked.Value)
                 {
-                    if (!multipleValueTextBoxControl_PollutantProfile_Name.Vary)
+                    if (!multipleValueTextBoxControl_PollutantProfile_Name.VarySet)
                     {
                         string value = multipleValueTextBoxControl_PollutantProfile_Name.Value;
                         internalCondition?.SetValue(InternalConditionParameter.PollutantProfileName, value);
                     }
 
-                    if (!multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.Vary)
+                    if (!multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.VarySet)
                     {
                         string value = multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
@@ -763,7 +763,7 @@ namespace SAM.Analytical.UI.WPF
                         }
                     }
 
-                    if (!multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.Vary)
+                    if (!multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.VarySet)
                     {
                         string value = multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.Value;
                         if (Core.Query.TryConvert(value, out double value_Temp))
