@@ -185,7 +185,7 @@ namespace SAM.Analytical.UI.WPF
                     Condensation = false,
                     Convection = false,
                     LongWave = false,
-                    Temperature = false
+                    Temperature = true
                 };
 
                 List<SurfaceOutputSpec> surfaceOutputSpecs = new List<SurfaceOutputSpec>() { surfaceOutputSpec };
