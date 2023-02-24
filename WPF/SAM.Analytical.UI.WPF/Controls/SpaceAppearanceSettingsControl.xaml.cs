@@ -1,5 +1,7 @@
-﻿using System;
+﻿using SAM.Core.Attributes;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -61,6 +63,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            Type type = null;
+
             List<object> @objects = new List<object>();
             if(radioButton_InternalCondition.IsChecked.HasValue && radioButton_InternalCondition.IsChecked.Value)
             {
@@ -77,6 +81,7 @@ namespace SAM.Analytical.UI.WPF
                         objects.Add(internalCondition);
                     }
                 }
+                type = typeof(InternalCondition);
             }
             else if(radioButton_Space.IsChecked.HasValue && radioButton_Space.IsChecked.Value)
             {
@@ -93,6 +98,7 @@ namespace SAM.Analytical.UI.WPF
                         objects.Add(space);
                     }
                 }
+                type = typeof(Space);
             }
             else if (radioButton_Zone.IsChecked.HasValue && radioButton_Zone.IsChecked.Value)
             {
@@ -109,6 +115,7 @@ namespace SAM.Analytical.UI.WPF
                         objects.Add(zone);
                     }
                 }
+                type = typeof(Zone);
             }
 
             HashSet<string> parameterNames = new HashSet<string>();
@@ -118,9 +125,29 @@ namespace SAM.Analytical.UI.WPF
                 
             }
 
-            foreach(string parameterName in parameterNames)
+            if(type != null)
             {
-                comboBox_ParameterName.Items.Add(parameterName);
+                foreach (Enum @enum in Core.Query.Enums(type))
+                {
+                    string name = ParameterProperties.Get(@enum)?.Name;
+                    if(string.IsNullOrWhiteSpace(name))
+                    {
+                        continue;
+                    }
+
+                    parameterNames.Add(name);
+                }
+            }
+
+            if(parameterNames != null && parameterNames.Count != 0)
+            {
+                List<string> parameterNames_Sorted = parameterNames.ToList();
+                parameterNames_Sorted.Sort();
+
+                foreach (string parameterName in parameterNames_Sorted)
+                {
+                    comboBox_ParameterName.Items.Add(parameterName);
+                }
             }
         }
 
