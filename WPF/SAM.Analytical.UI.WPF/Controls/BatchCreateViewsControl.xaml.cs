@@ -62,6 +62,11 @@ namespace SAM.Analytical.UI.WPF
                 listBox_Levels.Items.Add(stackPanel);
                 listBox_Levels.SelectedItems.Add(stackPanel);
             }
+
+            if(listBox_Levels.Items.Count > 1)
+            {
+                listBox_Levels.SelectedItems.Remove(listBox_Levels.SelectedItems[listBox_Levels.SelectedItems.Count - 1]);
+            }
         }
 
         public List<Level> SelectedLevels
