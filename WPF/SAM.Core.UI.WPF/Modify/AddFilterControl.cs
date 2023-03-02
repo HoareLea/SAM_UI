@@ -102,5 +102,28 @@ namespace SAM.Core.UI.WPF
             Grid.SetRow((UserControl)filterControl, rowIndex);
             return filterControl;
         }
+
+        public static IFilterControl AddFilterControl(this IFilterControl filterControl, IUIFilter uIFilter)
+        {
+            if(uIFilter == null || filterControl == null)
+            {
+                return null;
+            }
+
+            if(filterControl is LogicalFilterControl)
+            {
+                LogicalFilterControl logicalFilterControl = (LogicalFilterControl)filterControl;
+                logicalFilterControl.Add(uIFilter);
+
+
+            }
+            else if(filterControl is RelationFilterControl)
+            {
+                RelationFilterControl relationFilterControl = (RelationFilterControl)filterControl;
+                relationFilterControl.Add(uIFilter);
+            }
+
+            return null;
+        }
     }
 }
