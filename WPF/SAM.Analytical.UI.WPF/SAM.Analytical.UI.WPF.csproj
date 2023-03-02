@@ -541,6 +541,7 @@
     <None Include="Resources\SAM_SpaceDiagram.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Controls\Filter\" />
     <Folder Include="Convert\ToMedia3D\" />
     <Folder Include="Create\" />
     <Folder Include="Interfaces\" />

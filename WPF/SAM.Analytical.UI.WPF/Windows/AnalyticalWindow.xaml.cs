@@ -244,6 +244,38 @@ namespace SAM.Analytical.UI.WPF.Windows
             //RenameSpacesWindow renameSpacesWindow = new RenameSpacesWindow(uIAnalyticalModel, );
 
             //uIAnalyticalModel.RenameSpaces(uIAnalyticalModel.JSAMObject.AdjacencyCluster.GetSpaces(), "Test", new RenameSpaceOption());
+
+            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space) };
+            filterWindow.FilterAdding += FilterWindow_FilterAdding;
+            bool? result = filterWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+        }
+
+        private void FilterWindow_FilterAdding(object sender, FilterAddingEventArgs e)
+        {
+            e.Handled = true;
+
+            Type type = e.Type;
+            List<IUIFilter> uIFilters = UI.Query.IUIFilters(type);
+            if(uIFilters == null || uIFilters.Count == 0)
+            {
+                return;
+            }
+
+            using (Core.Windows.Forms.SearchForm<IUIFilter> searchForm = new Core.Windows.Forms.SearchForm<IUIFilter>("Select Filter", uIFilters, x => x.Name))
+            {
+                searchForm.SelectionMode = System.Windows.Forms.SelectionMode.One;
+                if(searchForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                e.UIFilter = searchForm.SelectedItems.FirstOrDefault();
+            }
         }
 
         private void RibbonButton_Results_Remove_Click(object sender, RoutedEventArgs e)

@@ -127,6 +127,7 @@
     <Compile Include="Modify\RenameSpace.cs" />
     <Compile Include="Modify\RenameSpaces.cs" />
     <Compile Include="Modify\DuplicateInternalCondition.cs" />
+    <Compile Include="Query\IUIFilters.cs" />
     <Compile Include="Query\Guids.cs" />
     <Compile Include="Query\IJSAMObject.cs" />
     <Compile Include="Query\ViewSettings.cs" />

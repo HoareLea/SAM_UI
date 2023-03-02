@@ -64,13 +64,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\DependencyProperty.cs" />
-    <Compile Include="Classes\ObjectDoubleClickedEventArgs.cs" />
-    <Compile Include="Classes\ObjectContextMenuOpeningEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\ObjectDoubleClickedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\ObjectContextMenuOpeningEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\FilterAddingEventArgs.cs" />
     <Compile Include="Classes\ProgressBarWindowManager.cs" />
-    <Compile Include="Classes\TextChangedEventArgs.cs" />
-    <Compile Include="Classes\ObjectHooveredEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\TextChangedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\ObjectHooveredEventArgs.cs" />
+    <Compile Include="Create\IFilterControl.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
+    <Compile Include="Delegates\FilterAddingEventHandler.cs" />
     <Compile Include="Delegates\TextChangedEventHandler.cs" />
     <Compile Include="Controls\JsonControl.xaml.cs">
       <DependentUpon>JsonControl.xaml</DependentUpon>
@@ -96,10 +99,30 @@
     <Compile Include="Controls\MultipleValueComboBoxControl.xaml.cs">
       <DependentUpon>MultipleValueComboBoxControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Filter\LogicalFilterControl.xaml.cs">
+      <DependentUpon>LogicalFilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filter\FilterControl.xaml.cs">
+      <DependentUpon>FilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IFilterControl.cs" />
+    <Compile Include="Modify\AddFilterControl.cs" />
+    <Compile Include="Modify\Reload.cs" />
+    <Compile Include="Query\FilterControls.cs" />
+    <Compile Include="Query\FilterControl.cs" />
+    <Compile Include="Controls\Filter\RelationFilterControl.xaml.cs">
+      <DependentUpon>RelationFilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\FilterWindow.xaml.cs">
+      <DependentUpon>FilterWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\Background.cs" />
     <Compile Include="Query\EditableTextBox.cs" />
     <Compile Include="Query\Background.cs" />
     <Compile Include="Query\DefaultInternalText.cs" />
+    <Compile Include="Controls\Filter\TextFilterControl.xaml.cs">
+      <DependentUpon>TextFilterControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\TextMapWindow.xaml.cs">
       <DependentUpon>TextMapWindow.xaml</DependentUpon>
     </Compile>
@@ -196,6 +219,26 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Filter\TextFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Filter\LogicalFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Filter\FilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Filter\RelationFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\FilterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\TextMapWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -215,8 +258,6 @@
       <Name>SAM.Core.UI</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

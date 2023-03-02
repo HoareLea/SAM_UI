@@ -1,5 +1,4 @@
-﻿using HelixToolkit.Wpf;
-using SAM.Core;
+﻿using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
 using System;
