@@ -336,7 +336,7 @@ namespace SAM.Geometry.UI.WPF
             }
         }
 
-        private void MenuItem_ZoomExtends_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_ZoomExtents_Click(object sender, RoutedEventArgs e)
         {
             helixViewport3D.ZoomExtents();
         }
@@ -445,9 +445,9 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.ContextMenu = new ContextMenu();
 
             MenuItem menuItem = new MenuItem();
-            menuItem.Name = "MenuItem_ZoomExtends";
-            menuItem.Header = "Zoom Extends";
-            menuItem.Click += MenuItem_ZoomExtends_Click;
+            menuItem.Name = "MenuItem_ZoomExtents";
+            menuItem.Header = "Zoom Extents";
+            menuItem.Click += MenuItem_ZoomExtents_Click;
             helixViewport3D.ContextMenu.Items.Add(menuItem);
 
             ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(helixViewport3D.ContextMenu, e, actionManager.SelectedVisual3Ds()?.FindAll(x => x is ModelVisual3D)?.ConvertAll(x => x as ModelVisual3D)));
