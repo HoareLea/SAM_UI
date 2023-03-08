@@ -480,10 +480,17 @@ namespace SAM.Analytical.UI.WPF
 
         private void Assign()
         {
+            InternalConditionLibrary internalConditionLibrary = selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>();
+            if(internalConditionLibrary == null || internalConditionLibrary.GetInternalConditions() == null || internalConditionLibrary.GetInternalConditions().Count == 0)
+            {
+                MessageBox.Show("Internal Conditions are missing! Select different InternalConditionLibrary to map internal conditions.");
+
+                return;
+            }
+
             Func<Space, InternalCondition> func = mapFunc;
             if (func == null)
             {
-                InternalConditionLibrary internalConditionLibrary = selectSAMObjectComboBoxControl_InternalConditionLibrary.GetJSAMObject<InternalConditionLibrary>();
                 TextMap textMap = selectSAMObjectComboBoxControl_TextMap.GetJSAMObject<TextMap>();
 
                 func = Query.DefaultMapFunc(internalConditionLibrary, textMap);
