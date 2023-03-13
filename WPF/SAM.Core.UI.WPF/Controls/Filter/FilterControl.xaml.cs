@@ -59,6 +59,41 @@ namespace SAM.Core.UI.WPF
             }
         }
 
+        public IUIFilter UIFilter
+        {
+            get
+            {
+                List<IUIFilter> uIFilters = new List<IUIFilter>();
+
+                IUIFilter uIFilter = null;
+
+                uIFilter = Query.FilterControls(grid_Filter).FirstOrDefault().UIFilter;
+                if (uIFilter != null)
+                {
+                    uIFilters.Add(uIFilter);
+                }
+
+                Type type = Type;
+                if (type != null)
+                {
+                    uIFilter = new UITypeFilter(null, type);
+                    uIFilters.Add(uIFilter);
+                }
+
+                if(uIFilters.Count == 0)
+                {
+                    return null;
+                }
+
+                if(uIFilters.Count == 1)
+                {
+                    return uIFilters.FirstOrDefault();
+                }
+
+                return new UILogicalFilter(null, uIFilter.Type, new LogicalFilter(FilterLogicalOperator.And, uIFilters));
+            }
+        }
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             FilterAddingEventArgs filterAddingEventArgs = new FilterAddingEventArgs(Type);

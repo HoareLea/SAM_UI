@@ -245,6 +245,12 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             //uIAnalyticalModel.RenameSpaces(uIAnalyticalModel.JSAMObject.AdjacencyCluster.GetSpaces(), "Test", new RenameSpaceOption());
 
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
             FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space) };
             filterWindow.FilterAdding += FilterWindow_FilterAdding;
             bool? result = filterWindow.ShowDialog();
@@ -252,6 +258,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 return;
             }
+
+            IUIFilter uIFilter = filterWindow.UIFilter;
+
+            UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+
+            List<SAMObject> jSAMObjects = adjacencyCluster.Filter<SAMObject>(uIFilter);
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            viewportControl?.Select(jSAMObjects);
 
         }
 

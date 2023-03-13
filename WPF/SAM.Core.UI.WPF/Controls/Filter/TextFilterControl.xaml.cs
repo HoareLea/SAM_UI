@@ -73,6 +73,7 @@ namespace SAM.Core.UI.WPF
             }
 
             textFilter.Inverted = checkBox_Inverted.IsChecked != null && checkBox_Inverted.IsChecked.HasValue && checkBox_Inverted.IsChecked.Value;
+            textFilter.CaseSensitive = checkBox_CaseSensitive.IsChecked != null && checkBox_CaseSensitive.IsChecked.HasValue && checkBox_CaseSensitive.IsChecked.Value;
             textFilter.Value = textBox_Value.Text;
             textFilter.TextComparisonType = Core.Query.Enum<TextComparisonType>(comboBox_TextComparisonType.SelectedItem.ToString());
 
@@ -97,6 +98,7 @@ namespace SAM.Core.UI.WPF
             }
 
             checkBox_Inverted.IsChecked = textFilter.Inverted;
+            checkBox_CaseSensitive.IsChecked = textFilter.CaseSensitive;
             textBox_Value.Text = textFilter.Value;
             comboBox_TextComparisonType.SelectedItem = Core.Query.Description(textFilter.TextComparisonType);
         }

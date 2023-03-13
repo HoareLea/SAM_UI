@@ -79,7 +79,9 @@ namespace SAM.Core.UI.WPF
 
             List<IFilterControl> filterControls = Query.FilterControls(grid_Filters);
 
-            return new UILogicalFilter(uILogicalFilter.Name, uILogicalFilter.Type, new LogicalFilter(uILogicalFilter.Filter.FilterLogicalOperator, filterControls?.ConvertAll(x => x.UIFilter)));
+            FilterLogicalOperator filterLogicalOperator = Core.Query.Enum<FilterLogicalOperator>(comboBox_FilterLogicalOperator.SelectedItem.ToString());
+
+            return new UILogicalFilter(uILogicalFilter.Name, uILogicalFilter.Type, new LogicalFilter(filterLogicalOperator, filterControls?.ConvertAll(x => x.UIFilter)));
         }
 
         private void SetUILogicalFilter(UILogicalFilter uILogicalFilter)

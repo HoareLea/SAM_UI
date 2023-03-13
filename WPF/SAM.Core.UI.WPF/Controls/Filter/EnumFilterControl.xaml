@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="SAM.Core.UI.WPF.EnumFilterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Core.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="70" d:DesignWidth="270">
+    <Grid>
+        <GroupBox x:Name="groupBox_Main" Header="Text" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid>
+                <ComboBox x:Name="comboBox_Enum" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="184"/>
+                <CheckBox x:Name="checkBox_Inverted" Content="Invert" HorizontalAlignment="Right" Margin="0,14,10.4,0" VerticalAlignment="Top"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

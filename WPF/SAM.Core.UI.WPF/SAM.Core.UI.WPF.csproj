@@ -70,6 +70,12 @@
     <Compile Include="Classes\ProgressBarWindowManager.cs" />
     <Compile Include="Classes\EventArgs\TextChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectHooveredEventArgs.cs" />
+    <Compile Include="Controls\Filter\EnumFilterControl.xaml.cs">
+      <DependentUpon>EnumFilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filter\NumberFilterControl.xaml.cs">
+      <DependentUpon>NumberFilterControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Create\IFilterControl.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
@@ -187,6 +193,14 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\Filter\EnumFilterControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Filter\NumberFilterControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\JsonControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

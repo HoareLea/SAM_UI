@@ -7,7 +7,12 @@ namespace SAM.Core.UI.WPF
     {
         public static void Reload<T>(this ComboBox comboBox, bool includeUndefined = false) where T: Enum
         {
-            if(comboBox == null)
+            Reload(comboBox, typeof(T), includeUndefined);
+        }
+
+        public static void Reload(this ComboBox comboBox, Type type, bool includeUndefined = false)
+        {
+            if (comboBox == null || type == null || !type.IsEnum)
             {
                 return;
             }
@@ -15,7 +20,7 @@ namespace SAM.Core.UI.WPF
             object @object = comboBox.SelectedItem;
             comboBox.Items.Clear();
 
-            foreach (Enum @enum in Enum.GetValues(typeof(T)))
+            foreach (Enum @enum in Enum.GetValues(type))
             {
                 if (!includeUndefined && @enum.ToString() == "Undefined")
                 {

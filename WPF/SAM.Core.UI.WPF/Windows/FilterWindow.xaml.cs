@@ -36,6 +36,14 @@ namespace SAM.Core.UI.WPF
             }
         }
 
+        public IUIFilter UIFilter
+        {
+            get
+            {
+                return filterControl.UIFilter;
+            }
+        }
+
         public Type Type
         {
             get
@@ -47,6 +55,16 @@ namespace SAM.Core.UI.WPF
             {
                 filterControl.Type = value;
             }
+        }
+
+        private void button_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
+
+        private void button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
         }
     }
 }
