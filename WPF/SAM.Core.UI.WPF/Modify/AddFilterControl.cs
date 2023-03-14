@@ -29,64 +29,43 @@ namespace SAM.Core.UI.WPF
                 }
                 else
                 {
-                    IFilterControl filterControl_Temp = Query.FilterControl(filterControls, uIFilter);
-                    if (filterControl_Temp is RelationFilterControl)
-                    {
-                        RelationFilterControl RelationFilterControl = (RelationFilterControl)filterControl_Temp;
-                        filterControl = uIFilter.IFilterControl();
-
-                        RelationFilterControl.Add((uIFilter as UIRelationFilter).Filter.Filter as IUIFilter);
-                        return filterControl;
-                    }
-
                     List<IUIFilter> uIFilters = new List<IUIFilter>();
-                    if (filterControl_Temp == null)
+                    FilterLogicalOperator filterLogicalOperator = FilterLogicalOperator.Or;
+
+                    LogicalFilterControl logicalFilterControl = filterControls.Find(x => x is LogicalFilterControl) as LogicalFilterControl;
+                    if(logicalFilterControl != null)
                     {
-
-                        filterControl_Temp = filterControls[0];
-                        uIFilters.Add(filterControl_Temp.UIFilter);
-
+                        logicalFilterControl.UILogicalFilter?.Filter?.Filters.FindAll(x => x is IUIFilter).ConvertAll(x => (IUIFilter)x).ForEach(x => uIFilters.Add(x));
+                        filterLogicalOperator = logicalFilterControl.FilterLogicalOperator;
                     }
                     else
                     {
-                        if (filterControl_Temp is LogicalFilterControl)
-                        {
-                            LogicalFilterControl logicalFilterControl_Temp = (LogicalFilterControl)filterControl_Temp;
-                            uIFilters.AddRange(logicalFilterControl_Temp.UILogicalFilter.Filter.Filters.FindAll(x => x is IUIFilter).ConvertAll(x => (IUIFilter)x));
-                        }
-                        else
-                        {
-                            uIFilters.Add(filterControl_Temp.UIFilter);
-                        }
+                        filterControls.ForEach(x => uIFilters.Add(x.UIFilter));
                     }
 
                     uIFilters.Add(uIFilter);
 
-                    if (filterControl_Temp == null)
+                    foreach(IFilterControl filterControl_Temp in filterControls)
                     {
-                        return null;
-                    }
-
-                    rowIndex = Grid.GetRow((UserControl)filterControl_Temp);
-                    if (rowIndex != -1)
-                    {
-                        grid.RowDefinitions.RemoveAt(rowIndex);
-                        foreach (UIElement uIElement in grid.Children)
+                        rowIndex = Grid.GetRow((UserControl)filterControl_Temp);
+                        if (rowIndex != -1)
                         {
-                            if (Grid.GetRow(uIElement) == rowIndex)
+                            grid.RowDefinitions.RemoveAt(rowIndex);
+                            foreach (UIElement uIElement in grid.Children)
                             {
-                                grid.Children.Remove(uIElement);
-                                break;
+                                if (Grid.GetRow(uIElement) == rowIndex)
+                                {
+                                    grid.Children.Remove(uIElement);
+                                    break;
+                                }
                             }
                         }
                     }
 
-                    LogicalFilterControl logicalFilterControl = new LogicalFilterControl() { UILogicalFilter = new UILogicalFilter(null, uIFilter.Type, new LogicalFilter(FilterLogicalOperator.Or, uIFilters)) };
+                    logicalFilterControl = new LogicalFilterControl() { UILogicalFilter = new UILogicalFilter(null, uIFilter.Type, new LogicalFilter(FilterLogicalOperator.Or, uIFilters)) };
 
                     filterControl = logicalFilterControl;
                 }
-
-
             }
 
             if(filterControl == null)

@@ -47,7 +47,7 @@ namespace SAM.Core.UI.WPF
                 return;
             }
 
-            groupBox_Name.Header = uIRelationFilter.Type.Name;
+            //groupBox_Name.Header = uIRelationFilter.Type.Name;
 
             Modify.AddFilterControl(grid_Filters, uIRelationFilter?.Filter.Filter as IUIFilter);
         }

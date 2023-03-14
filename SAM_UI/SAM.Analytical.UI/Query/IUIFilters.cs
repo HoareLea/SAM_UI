@@ -1,4 +1,5 @@
-﻿using SAM.Core.UI;
+﻿using SAM.Core;
+using SAM.Core.UI;
 using System.Collections.Generic;
 
 namespace SAM.Analytical.UI
@@ -36,6 +37,7 @@ namespace SAM.Analytical.UI
                 result.Add(new UINumberFilter(string.Format("{0} Azimuth", type.Name), type, new PanelAzimuthFilter(Core.NumberComparisonType.Equals, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Tilt", type.Name), type, new PanelTiltFilter(Core.NumberComparisonType.Equals, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Area", type.Name), type, new PanelAreaFilter(Core.NumberComparisonType.Equals, 0)));
+                result.Add(new UINumberFilter(string.Format("Aperture Count", type.Name), type, new PanelApertureCountFilter(Core.NumberComparisonType.Greater, 0)));
 
                 IUIFilters(typeof(Aperture))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new PanelAperturesFilter(x))));
                 IUIFilters(typeof(Construction))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new PanelConstructionFilter(x))));
@@ -47,6 +49,13 @@ namespace SAM.Analytical.UI
                 result.Add(new UINumberFilter(string.Format("{0} Frame Area", type.Name), type, new ApertureFrameAreaFilter(Core.NumberComparisonType.Greater, 0)));
 
                 IUIFilters(typeof(ApertureConstruction))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new ApertureApertureConstructionFilter(x))));
+            }
+
+            result.RemoveAll(x => x is UILogicalFilter);
+
+            if (result.Count > 0)
+            {
+                result.Add(new UILogicalFilter(string.Format("{0} Logical And/Or", type.Name), type, new LogicalFilter(FilterLogicalOperator.Or)));
             }
 
             result.Sort((x, y) => x.Name.CompareTo(y.Name));
