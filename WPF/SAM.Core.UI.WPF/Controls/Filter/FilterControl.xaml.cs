@@ -92,9 +92,46 @@ namespace SAM.Core.UI.WPF
 
                 return new UILogicalFilter(null, uIFilter.Type, new LogicalFilter(FilterLogicalOperator.And, uIFilters));
             }
+
+            set
+            {
+                SetUIFilter(value);
+            }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void SetUIFilter(IUIFilter uIFilter)
+        {
+            grid_Filter.Children.Clear();
+            grid_Filter.RowDefinitions.Clear();
+
+            if(uIFilter == null)
+            {
+                return;
+            }
+
+            if(uIFilter is UILogicalFilter)
+            {
+                UILogicalFilter uILogicalFilter = (UILogicalFilter)uIFilter;
+                if(uILogicalFilter.Filter?.Filters != null && uILogicalFilter.Filter.FilterLogicalOperator == FilterLogicalOperator.And && uILogicalFilter.Filter?.Filters.Count == 2)
+                {
+                    List<IFilter> filters = new List<IFilter>(uILogicalFilter.Filter?.Filters);
+
+                    UITypeFilter uITypeFilter = filters.Find(x => x is UITypeFilter) as UITypeFilter;
+                    if(uITypeFilter != null)
+                    {
+                        filters.Remove(uITypeFilter);
+
+                        Type = uITypeFilter.Type;
+                        Add(filters.FirstOrDefault() as IUIFilter);
+                        return;
+                    }
+                }
+            }
+
+            Add(uIFilter);
+        }
+
+        private void Button_Add_Click(object sender, RoutedEventArgs e)
         {
             FilterAddingEventArgs filterAddingEventArgs = new FilterAddingEventArgs(Type);
 
@@ -121,6 +158,12 @@ namespace SAM.Core.UI.WPF
             }
 
             Add(filterAddingEventArgs.UIFilter);
+        }
+
+        private void Button_Clear_Click(object sender, RoutedEventArgs e)
+        {
+            grid_Filter.Children.Clear();
+            grid_Filter.RowDefinitions.Clear();
         }
 
         private List<Type> GetTypes()

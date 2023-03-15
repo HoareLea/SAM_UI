@@ -1,6 +1,4 @@
-﻿using SAM.Core.UI;
-
-namespace SAM.Core.UI.WPF
+﻿namespace SAM.Core.UI.WPF
 {
     public interface IFilterControl
     {

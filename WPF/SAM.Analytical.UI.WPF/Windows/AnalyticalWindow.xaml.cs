@@ -9,6 +9,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Media3D;
@@ -251,7 +252,9 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space) };
+            IUIFilter uIFilter = null; // ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
+
+            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space), UIFilter = uIFilter };
             filterWindow.FilterAdding += FilterWindow_FilterAdding;
             bool? result = filterWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)
@@ -259,7 +262,10 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            IUIFilter uIFilter = filterWindow.UIFilter;
+            uIFilter = filterWindow.UIFilter;
+
+            ActiveManager.SetValue(Assembly.GetExecutingAssembly(), "UIFilter", uIFilter?.Clone());
+            ActiveManager.Write();
 
             IFilter filter = uIFilter.Transform();
 

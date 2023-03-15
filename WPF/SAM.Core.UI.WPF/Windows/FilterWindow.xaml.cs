@@ -42,6 +42,11 @@ namespace SAM.Core.UI.WPF
             {
                 return filterControl.UIFilter;
             }
+
+            set
+            {
+                filterControl.UIFilter = value;
+            }
         }
 
         public Type Type
