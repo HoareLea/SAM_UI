@@ -261,9 +261,11 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             IUIFilter uIFilter = filterWindow.UIFilter;
 
-            UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+            IFilter filter = uIFilter.Transform();
 
-            List<SAMObject> jSAMObjects = adjacencyCluster.Filter<SAMObject>(uIFilter);
+            UI.Modify.AssignAdjacencyCluster(filter, adjacencyCluster);
+
+            List<SAMObject> jSAMObjects = adjacencyCluster.Filter<SAMObject>(filter);
 
             ViewportControl viewportControl = GetActiveViewportControl();
             viewportControl?.Select(jSAMObjects);

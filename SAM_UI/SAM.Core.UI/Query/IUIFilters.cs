@@ -20,12 +20,12 @@ namespace SAM.Core.UI
 
             if(typeof(ParameterizedSAMObject).IsAssignableFrom(type))
             {
-                result.Add(new UIParameterFilter(string.Format("{0} Parameter", type.Name), type, new ParameterFilter(string.Empty, string.Empty, TextComparisonType.Equals)));
+                //result.Add(new UIParameterFilter(string.Format("{0} Parameter", type.Name), type, new ParameterFilter(string.Empty, string.Empty, TextComparisonType.Equals)));
             }
 
             if(result.Count > 0)
             {
-                result.Add(new UILogicalFilter(string.Format("{0} Logical And/Or", type.Name), type, new LogicalFilter(FilterLogicalOperator.Or)));
+                //result.Add(new UILogicalFilter(string.Format("{0} Logical And/Or", type.Name), type, new LogicalFilter(FilterLogicalOperator.Or)));
             }
 
             result?.Sort((x, y) => x.Name.CompareTo(y.Name));

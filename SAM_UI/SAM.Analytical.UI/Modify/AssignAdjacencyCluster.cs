@@ -22,7 +22,7 @@ namespace SAM.Analytical.UI
             else if (filter is IAdjacencyClusterFilter)
             {
                 ((IAdjacencyClusterFilter)filter).AdjacencyCluster = adjacencyCluster;
-                if(!(filter is IEnumFilter))
+                if(filter is IUIFilter)
                 {
                     AssignAdjacencyCluster((filter as dynamic).Filter, adjacencyCluster);
                 }

@@ -85,7 +85,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\FilterDictionary.cs" />
     <Compile Include="Query\IUIFilters.cs" />
+    <Compile Include="Query\Transform.cs" />
+    <Compile Include="Query\Reduce.cs" />
     <Compile Include="Query\Vary.cs" />
     <Compile Include="Query\Brightness.cs" />
   </ItemGroup>
