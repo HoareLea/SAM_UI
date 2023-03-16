@@ -252,7 +252,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            IUIFilter uIFilter = null; // ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
+            IUIFilter uIFilter = ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
 
             FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space), UIFilter = uIFilter };
             filterWindow.FilterAdding += FilterWindow_FilterAdding;

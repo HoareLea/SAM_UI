@@ -105,7 +105,7 @@ namespace SAM.Core.UI
 
             if (jObject.ContainsKey("Filter"))
             {
-                filter = (T)Core.Query.IJSAMObject( jObject.Value<JObject>("Filter"));
+                filter = (T)Core.Query.IJSAMObject(jObject.Value<JObject>("Filter"));
             }
 
             return true;
@@ -118,7 +118,7 @@ namespace SAM.Core.UI
 
             if (name != null)
             {
-                jObject.Add("Name", Inverted);
+                jObject.Add("Name", name);
             }
 
             if(type != null)
