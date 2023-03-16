@@ -67,7 +67,7 @@ namespace SAM.Core.UI.WPF
 
                 IUIFilter uIFilter = null;
 
-                uIFilter = Query.FilterControls(grid_Filter).FirstOrDefault().UIFilter;
+                uIFilter = Query.FilterControls(grid_Filter)?.FirstOrDefault()?.UIFilter;
                 if (uIFilter != null)
                 {
                     uIFilters.Add(uIFilter);
@@ -109,7 +109,13 @@ namespace SAM.Core.UI.WPF
                 return;
             }
 
-            if(uIFilter is UILogicalFilter)
+            if (uIFilter is UITypeFilter)
+            {
+                Type = ((UITypeFilter)uIFilter).Type;
+                return;
+            }
+
+            if (uIFilter is UILogicalFilter)
             {
                 UILogicalFilter uILogicalFilter = (UILogicalFilter)uIFilter;
                 if(uILogicalFilter.Filter?.Filters != null && uILogicalFilter.Filter.FilterLogicalOperator == FilterLogicalOperator.And && uILogicalFilter.Filter?.Filters.Count == 2)
