@@ -537,6 +537,8 @@ namespace SAM.Analytical.UI.WPF
         {
             dataGrid.ItemsSource = null;
 
+            AdjacencyCluster adjacencyCluster = UIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+
             Dictionary<Space, string> nameDictionary = GetNameDictionary();
             if(nameDictionary == null || nameDictionary.Count == 0)
             {
@@ -547,7 +549,18 @@ namespace SAM.Analytical.UI.WPF
             List<SpaceData> spaceDatas = new List<SpaceData>();
             foreach(KeyValuePair<Space, string> keyValuePair in nameDictionary)
             {
-                spaceDatas.Add(new SpaceData(keyValuePair.Key?.Name, keyValuePair.Value));
+                if(keyValuePair.Key == null)
+                {
+                    continue;
+                }
+
+                Space space = adjacencyCluster?.GetObject<Space>(keyValuePair.Key.Guid);
+                if(space == null)
+                {
+                    space = keyValuePair.Key;
+                }
+
+                spaceDatas.Add(new SpaceData(space?.Name, keyValuePair.Value));
             }
 
             dataGrid.ItemsSource = spaceDatas;

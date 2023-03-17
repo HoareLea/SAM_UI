@@ -14,6 +14,6 @@
         <local:RenameSpacesControl x:Name="renameSpacesControl" HorizontalAlignment="Stretch" Margin="10,10,0,0" VerticalAlignment="Stretch"/>
         <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Width="70" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,9.6,10.4" Height="19" Click="button_Cancel_Click"/>
         <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="0,5.8,84.6,10.4" HorizontalAlignment="Right" Width="70" Click="button_OK_Click"/>
-        <Button x:Name="button_Apply" Content="Apply" Grid.Row="1" Margin="0,6,160,10" HorizontalAlignment="Right" Width="70" Click="button_Apply_Click"/>
+        <Button x:Name="button_Apply" Content="Apply" Grid.Row="1" Margin="0,6,160,10" HorizontalAlignment="Right" Width="70" Click="button_Apply_Click" Visibility="Hidden"/>
     </Grid>
 </Window>
