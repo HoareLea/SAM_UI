@@ -17,6 +17,16 @@ namespace SAM.Core.UI
             {
                 IRelationFilter relationFilter = filter.Clone() as IRelationFilter;
                 relationFilter.Filter = Transform(relationFilter.Filter);
+
+                if(relationFilter is IMultiRelationFilter)
+                {
+                    IMultiRelationFilter multiRelationFilter = (IMultiRelationFilter)relationFilter;
+                    if(multiRelationFilter.Inverted)
+                    {
+                        multiRelationFilter.FilterLogicalOperator = FilterLogicalOperator.And;
+                    }
+                }
+
                 return relationFilter;
             }
 
