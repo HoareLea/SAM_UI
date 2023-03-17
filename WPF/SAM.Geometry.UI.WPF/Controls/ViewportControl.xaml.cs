@@ -52,7 +52,7 @@ namespace SAM.Geometry.UI.WPF
 
             set
             {
-                if(mode != value)
+                if (mode != value)
                 {
                     mode = value;
                     UpdateMode();
@@ -101,12 +101,12 @@ namespace SAM.Geometry.UI.WPF
             }
         }
 
-        public Visual3D GetVisual3D<T>(Guid guid) where T :SAMObject
+        public Visual3D GetVisual3D<T>(Guid guid) where T : SAMObject
         {
             return Core.UI.WPF.Query.Visual3D<T>(helixViewport3D.Children, guid);
         }
 
-        public bool ContainsAny<T>(IEnumerable<Guid> guids) where T: SAMObject
+        public bool ContainsAny<T>(IEnumerable<Guid> guids) where T : SAMObject
         {
             return Query.ContainsAny<T>(helixViewport3D.Children, guids);
         }
@@ -118,13 +118,13 @@ namespace SAM.Geometry.UI.WPF
 
         public bool Select(SAMObject sAMObject)
         {
-            if(sAMObject == null)
+            if (sAMObject == null)
             {
                 return false;
             }
 
             Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
-            if(visual3D == null)
+            if (visual3D == null)
             {
                 return false;
             }
@@ -140,7 +140,7 @@ namespace SAM.Geometry.UI.WPF
             }
 
             List<Visual3D> visual3Ds = new List<Visual3D>();
-            foreach(T t in sAMObjects)
+            foreach (T t in sAMObjects)
             {
                 Visual3D visual3D = GetVisual3D<SAMObject>(t.Guid);
                 if (visual3D == null)
@@ -151,13 +151,51 @@ namespace SAM.Geometry.UI.WPF
                 visual3Ds.Add(visual3D);
             }
 
-            if(visual3Ds == null || visual3Ds.Count == 0)
+            if (visual3Ds == null || visual3Ds.Count == 0)
             {
                 return false;
             }
 
             return actionManager.Apply(new SelectAction(visual3Ds));
         }
+
+        public List<T> SelectedSAMObjects<T>() where T : SAMObject
+        {
+            if (actionManager == null)
+            {
+                return null;
+            }
+
+            List<SelectAction> selectActions = actionManager.GetActions<SelectAction>();
+            if (selectActions == null || selectActions.Count == 0)
+            {
+                return null;
+            }
+
+            List<T> result = new List<T>();
+            foreach (SelectAction selectAction in selectActions)
+            {
+                List<Visual3D> visual3Ds = selectAction.Visual3Ds;
+                if(visual3Ds != null)
+                {
+                    foreach(Visual3D visual3D in visual3Ds)
+                    {
+                        ITaggable taggable = visual3D?.JSAMObject<IJSAMObject>() as ITaggable;
+                        if (taggable != null)
+                        {
+                            T t = taggable.Tag?.Value as T;
+                            if(t != null)
+                            {
+                                result.Add(t);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         public bool Zoom(SAMObject sAMObject)
         {

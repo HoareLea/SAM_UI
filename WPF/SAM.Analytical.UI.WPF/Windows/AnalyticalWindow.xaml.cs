@@ -684,6 +684,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Modify.RenameSpaces(uIAnalyticalModel, spaces);
+
+            //if(spaces != null && spaces.Count != 0)
+            //{
+            //    GetActiveViewportControl();
+            //}
+
         }
 
         private void MenuItem_EditInternalConditions_Click(object sender, RoutedEventArgs e)
@@ -1322,8 +1328,12 @@ namespace SAM.Analytical.UI.WPF.Windows
                     progressBarWindowManager.Text = string.Format("View Regeneration [{0}]", string.IsNullOrWhiteSpace(name) ? "???" : name);
                 }
 
+                List<SAMObject> sAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
+
                 GeometryObjectModel geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
                 viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+
+                viewportControl.Select(sAMObjects);
             }
 
             Mode mode = viewSettings.Mode();
