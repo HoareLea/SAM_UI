@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
@@ -8,7 +10,34 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class RenameSpacesControl : UserControl
     {
+        private System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer() { Interval = new TimeSpan(0, 0, 1) };
+
+        private class ColumnNameAttribute : System.Attribute
+        {
+            public ColumnNameAttribute(string Name) 
+            { 
+                this.Name = Name; 
+            }
+            public string Name { get; }
+        }
+
+        private class SpaceData
+        {
+            [ColumnName("Old name")]
+            public string Name_Old { get; } = null;
+
+            [ColumnName("New name")]
+            public string Name_New { get; } = null;
+
+            public SpaceData(string name_Old, string name_New)
+            {
+                Name_Old = name_Old;
+                Name_New = name_New;
+            }
+        }
+
         public UIAnalyticalModel UIAnalyticalModel { get; set; }
+        
         public List<Space> Spaces { get; set; }
 
         public RenameSpacesControl()
@@ -21,7 +50,31 @@ namespace SAM.Analytical.UI.WPF
             textBox_Trim_Count.TextChanged += TextBox_Trim_Count_TextChanged;
             textBox_Trim_Text.TextChanged += TextBox_Trim_Text_TextChanged;
 
+            radioButton_Rename.Click += RadioButton_Rename_Click;
+            radioButton_Trim.Click += RadioButton_Trim_Click;
+            radioButton_Replace.Click += RadioButton_Replace_Click;
+
             Rename = true;
+
+            dispatcherTimer.Tick += DispatcherTimer_Tick;
+        }
+
+        private void RadioButton_Replace_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            SetReplace();
+            dispatcherTimer.Start();
+        }
+
+        private void RadioButton_Trim_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            SetTrim();
+            dispatcherTimer.Start();
+        }
+
+        private void RadioButton_Rename_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            SetRename();
+            dispatcherTimer.Start();
         }
 
         public RenameSpacesControl(string name, RenameSpaceOption renameSpaceOption)
@@ -38,6 +91,14 @@ namespace SAM.Analytical.UI.WPF
             SetRenameSpaceOption(renameSpaceOption);
 
             Rename = true;
+
+            dispatcherTimer.Tick += DispatcherTimer_Tick;
+        }
+
+        private void DispatcherTimer_Tick(object sender, System.EventArgs e)
+        {
+            dispatcherTimer.Stop();
+            Refresh();
         }
 
         private void TextBox_IntegerOnly_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
@@ -66,9 +127,43 @@ namespace SAM.Analytical.UI.WPF
                 {
                     UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimCount);
                 }
-
-
             }
+
+            Refresh();
+        }
+
+        public Dictionary<Space, string> GetNameDictionary()
+        {
+            AdjacencyCluster adjacencyCluster = UIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if(adjacencyCluster == null)
+            {
+                return null;
+            }
+
+            adjacencyCluster = new AdjacencyCluster(adjacencyCluster);
+
+            if (Rename)
+            {
+                return adjacencyCluster.RenameSpaces(Spaces, textBox_Name.Text, RenameSpaceOption);
+            }
+            else if (Replace)
+            {
+                return adjacencyCluster.RenameSpaces(Spaces, textBox_Replace_Old.Text, textBox_Replace_New.Text);
+            }
+            else if (Trim)
+            {
+                int count = TrimCount;
+                if (count == -1)
+                {
+                    return adjacencyCluster.RenameSpaces(Spaces, TrimPosition, TrimText);
+                }
+                else
+                {
+                    return adjacencyCluster.RenameSpaces(Spaces, TrimPosition, TrimCount);
+                }
+            }
+
+            return null;
         }
 
         public Position Position
@@ -339,11 +434,6 @@ namespace SAM.Analytical.UI.WPF
             textBox_Name.Focus();
         }
 
-        private void radioButton_Rename_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            SetRename();
-        }
-
         private void SetRename()
         {
             if (radioButton_Rename.IsChecked != null && radioButton_Rename.IsChecked.HasValue && radioButton_Rename.IsChecked.Value)
@@ -369,11 +459,6 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void radioButton_Trim_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            SetTrim();
-        }
-
         private void SetTrim()
         {
             if (radioButton_Trim.IsChecked != null && radioButton_Trim.IsChecked.HasValue && radioButton_Trim.IsChecked.Value)
@@ -397,11 +482,6 @@ namespace SAM.Analytical.UI.WPF
                 checkBox_IncludeName.IsEnabled = false;
                 textBox_Name.IsEnabled = false;
             }
-        }
-
-        private void radioButton_Replace_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            SetReplace();
         }
 
         private void SetReplace()
@@ -441,6 +521,50 @@ namespace SAM.Analytical.UI.WPF
             textBox_Trim_Text.TextChanged -= TextBox_Trim_Text_TextChanged;
             textBox_Trim_Text.Text = null;
             textBox_Trim_Text.TextChanged += TextBox_Trim_Text_TextChanged;
+        }
+
+        private void dataGrid_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            PropertyDescriptor propertyDescriptor = e.PropertyDescriptor as PropertyDescriptor;
+            ColumnNameAttribute columnNameAttribute = propertyDescriptor.Attributes[typeof(ColumnNameAttribute)] as ColumnNameAttribute;
+            if (columnNameAttribute != null)
+            {
+                e.Column.Header = columnNameAttribute.Name;
+            }
+        }
+
+        private void Refresh()
+        {
+            dataGrid.ItemsSource = null;
+
+            Dictionary<Space, string> nameDictionary = GetNameDictionary();
+            if(nameDictionary == null || nameDictionary.Count == 0)
+            {
+                nameDictionary = new Dictionary<Space, string>();
+                Spaces?.FindAll(x => x!= null).ForEach(x => nameDictionary[x] = x.Name);
+            }
+
+            List<SpaceData> spaceDatas = new List<SpaceData>();
+            foreach(KeyValuePair<Space, string> keyValuePair in nameDictionary)
+            {
+                spaceDatas.Add(new SpaceData(keyValuePair.Key?.Name, keyValuePair.Value));
+            }
+
+            dataGrid.ItemsSource = spaceDatas;
+            foreach (DataGridColumn column in dataGrid.Columns)
+            {
+                column.Width = new DataGridLength(1.0, DataGridLengthUnitType.Star);
+            }
+        }
+
+        private void checkBox_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            dispatcherTimer.Start();
+        }
+
+        private void textBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            dispatcherTimer.Start();
         }
     }
 }

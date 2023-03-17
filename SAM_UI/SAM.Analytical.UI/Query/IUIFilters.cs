@@ -47,6 +47,7 @@ namespace SAM.Analytical.UI
                 result.Add(new UIEnumFilter(string.Format("{0} Aperture Type", type.Name), type, new ApertureApertureTypeFilter(ApertureType.Window)));
                 result.Add(new UINumberFilter(string.Format("{0} Pane Area", type.Name), type, new AperturePaneAreaFilter(NumberComparisonType.Greater, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Frame Area", type.Name), type, new ApertureFrameAreaFilter(NumberComparisonType.Greater, 0)));
+                result.Add(new UINumberFilter(string.Format("{0} Azimuth", type.Name), type, new ApertureAzimuthFilter(NumberComparisonType.Equals, 0)));
 
                 IUIFilters(typeof(ApertureConstruction))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new ApertureApertureConstructionFilter(x))));
             }

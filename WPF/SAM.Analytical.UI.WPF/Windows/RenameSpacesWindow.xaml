@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         mc:Ignorable="d"
-        Title="Rename Spaces" Height="550" Width="360" ResizeMode="NoResize">
+        Title="Rename Spaces" Height="550" Width="600" MinHeight="550" MinWidth="600" MaxHeight="550">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>

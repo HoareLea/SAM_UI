@@ -196,7 +196,6 @@ namespace SAM.Geometry.UI.WPF
             return result;
         }
 
-
         public bool Zoom(SAMObject sAMObject)
         {
             if (sAMObject == null)

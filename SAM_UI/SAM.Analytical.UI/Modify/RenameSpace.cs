@@ -120,7 +120,7 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            name = name.Replace(text_Old, text_New);
+            name = string.IsNullOrEmpty(text_Old) ? text_New : name.Replace(text_Old, text_New);
 
             space_Temp = new Space(space_Temp, name, space_Temp.Location);
             adjacencyCluster.AddObject(space_Temp);
