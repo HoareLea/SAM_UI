@@ -21,7 +21,8 @@ namespace SAM.Core.UI
                 if(relationFilter is IMultiRelationFilter)
                 {
                     IMultiRelationFilter multiRelationFilter = (IMultiRelationFilter)relationFilter;
-                    if(multiRelationFilter.Inverted)
+                    IFilter baseFilter = multiRelationFilter.BaseFilter();
+                    if(baseFilter != null && baseFilter.Inverted)
                     {
                         multiRelationFilter.FilterLogicalOperator = FilterLogicalOperator.And;
                     }
