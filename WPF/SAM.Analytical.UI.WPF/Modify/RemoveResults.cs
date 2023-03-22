@@ -46,9 +46,9 @@ namespace SAM.Analytical.UI.WPF
                 {
                     group = "Space Simulation Result";
                 }
-                else if (result is PanelSimulationResult)
+                else if (result is SurfaceSimulationResult)
                 {
-                    group = "Panel Simulation Result";
+                    group = "Surface Simulation Result";
                 }
                 else if (result is AnalyticalModelSimulationResult)
                 {
