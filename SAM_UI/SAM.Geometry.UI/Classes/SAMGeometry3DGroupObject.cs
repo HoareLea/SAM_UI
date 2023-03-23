@@ -4,7 +4,7 @@ using SAM.Geometry.Spatial;
 
 namespace SAM.Geometry.UI
 {
-    public class SAMGeometry3DGroupObject : SAMGeometry3DGroup, ISAMGeometry3DObject, ITaggable
+    public class SAMGeometry3DGroupObject : SAMGeometry3DGroup, ISAMGeometry3DGroupObject, ITaggable
     {
         public CurveAppearance CurveAppearance { get; set; }
         public SurfaceAppearance SurfaceAppearance { get; set; }
