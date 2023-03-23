@@ -188,6 +188,19 @@ namespace SAM.Geometry.UI.WPF
                 return Model3D(new Triangle3DObject(value.Triangle3D, UI.Query.DefaultCurveAppearance()));
             }
 
+            //ISAMGeometry3DGroup
+            if (sAMGeometryObject is ISAMGeometry3DGroupObject)
+            {
+                ISAMGeometry3DGroupObject value = (ISAMGeometry3DGroupObject)sAMGeometryObject;
+
+                if (value is SAMGeometry3DGroupObject)
+                {
+                    return Model3D((SAMGeometry3DGroupObject)sAMGeometryObject);
+                }
+
+                return Model3D(new SAMGeometry3DGroupObject(value.SAMGeometry3DGroup, UI.Query.DefaultPointAppearance(), UI.Query.DefaultCurveAppearance(), UI.Query.DefaultSurfaceAppearance()));
+            }
+
             return null;
         }
         
@@ -688,6 +701,36 @@ namespace SAM.Geometry.UI.WPF
 
             Core.UI.WPF.Modify.SetIJSAMObject(result, text3DObject);
 
+            return result;
+        }
+
+        public static Model3D Model3D(this SAMGeometry3DGroupObject sAMGeometry3DGroupObject)
+        {
+            if(sAMGeometry3DGroupObject == null)
+            {
+                return null;
+            }
+
+            Model3DGroup result = new Model3DGroup();
+            foreach (ISAMGeometry3D sAMGeometry3D in sAMGeometry3DGroupObject)
+            {
+                ISAMGeometryObject sAMGeometryObject = UI.Convert.ToSAM_ISAMGeometryObject(sAMGeometry3D, sAMGeometry3DGroupObject.PointAppearance, sAMGeometry3DGroupObject.CurveAppearance, sAMGeometry3DGroupObject.SurfaceAppearance);
+                if(sAMGeometryObject == null)
+                {
+                    continue;
+                }
+
+                Model3D model3D = Model3D(sAMGeometryObject);
+                if(model3D == null)
+                {
+                    continue;
+                }
+
+                result.Children.Add(model3D);
+            }
+            
+            Core.UI.WPF.Modify.SetIJSAMObject(result, sAMGeometry3DGroupObject);
+            
             return result;
         }
     }

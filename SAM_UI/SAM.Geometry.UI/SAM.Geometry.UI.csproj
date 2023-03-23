@@ -57,6 +57,7 @@
     <Compile Include="Classes\Appearance\TextAppearance.cs" />
     <Compile Include="Classes\Appearance\SurfaceAppearance.cs" />
     <Compile Include="Classes\Appearance\PointAppearance.cs" />
+    <Compile Include="Classes\SAMGeometry3DObject.cs" />
     <Compile Include="Classes\ExtrusionObject.cs" />
     <Compile Include="Classes\Camera.cs" />
     <Compile Include="Classes\Mesh3DObject.cs" />
