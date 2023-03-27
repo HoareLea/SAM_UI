@@ -104,6 +104,7 @@
     <Compile Include="Delegates\ZoomRequestedEventHandler.cs" />
     <Compile Include="Delegates\ObjectHooveredEventHandler.cs" />
     <Compile Include="Enums\EventResult.cs" />
+    <Compile Include="Enums\SelectionType.cs" />
     <Compile Include="Enums\RectangularSelectorMode.cs" />
     <Compile Include="Interfaces\IAction.cs" />
     <Compile Include="Modify\Opacity.cs" />

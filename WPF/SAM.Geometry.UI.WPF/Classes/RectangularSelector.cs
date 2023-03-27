@@ -22,7 +22,6 @@ namespace SAM.Geometry.UI.WPF
         private System.Windows.Media.DoubleCollection strokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 2, 2 });
         private RectangularSelectorMode rectangularSelectorMode = RectangularSelectorMode.Extended;
 
-
         private List<Line> lines;
 
         public RectangularSelector(Panel panel)
@@ -65,10 +64,42 @@ namespace SAM.Geometry.UI.WPF
                     return null;
                 }
 
-                return Planar.Create.Rectangle2D(new Planar.Point2D[] { new Planar.Point2D(startPoint.Value.X, startPoint.Value.Y), new Planar.Point2D(endPoint.Value.X, endPoint.Value.Y) });
+                return new Planar.BoundingBox2D(Convert.ToSAM(startPoint.Value), Convert.ToSAM(endPoint.Value));
             }
+        }
 
+        public Rect Rect
+        {
+            get
+            {
+                if(!IsActive())
+                {
+                    return Rect.Empty;
+                }
 
+                return new Rect(startPoint.Value, endPoint.Value);
+            }
+        }
+
+        public SelectionType SelectionType
+        {
+            get
+            {
+                if(!IsActive())
+                {
+                    return SelectionType.Undefined;
+                }
+
+                if (rectangularSelectorMode != RectangularSelectorMode.Extended)
+                {
+                    return SelectionType.Inside;
+                }
+
+                double x1 = startPoint.Value.X;
+                double x2 = endPoint.Value.X;
+
+                return x1 > x2 ? SelectionType.InsideOrIntersect : SelectionType.Inside;
+            }
         }
 
         private void Panel_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -96,20 +127,20 @@ namespace SAM.Geometry.UI.WPF
                 return;
             }
 
-            if(e.LeftButton == MouseButtonState.Released)
-            {
-                startPoint = null;
-                endPoint = null;
+            endPoint = e.GetPosition(panel);
 
+            if (e.LeftButton == MouseButtonState.Released)
+            {
                 if (IsActive())
                 {
                     Selected?.Invoke(this, new EventArgs());
                 }
 
+                startPoint = null;
+                endPoint = null;
+
                 return;
             }
-
-            endPoint = e.GetPosition(panel);
 
             if (!IsActive())
             {

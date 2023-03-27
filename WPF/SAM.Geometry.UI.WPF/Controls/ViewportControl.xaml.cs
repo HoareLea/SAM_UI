@@ -1,6 +1,7 @@
 ﻿using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
+using SAM.Geometry.Planar;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -41,6 +42,96 @@ namespace SAM.Geometry.UI.WPF
 
             actionManager = new ActionManager();
             rectangularSelector = new RectangularSelector(grid);
+            rectangularSelector.Selected += RectangularSelector_Selected;
+
+            rectangularSelector.Selecting += RectangularSelector_Selecting;
+        }
+
+        private void RectangularSelector_Selecting(object sender, EventArgs e)
+        {
+            actionManager.Cancel<HighlightAction>();
+
+            RectangularSelector rectangularSelector = sender as RectangularSelector;
+            if (rectangularSelector == null)
+            {
+                return;
+            }
+
+            Rectangle2D rectangle2D = rectangularSelector.Rectangle2D;
+            if (rectangle2D == null)
+            {
+                return;
+            }
+
+            List<Point2D> point2Ds = rectangle2D.GetPoints();
+            if (point2Ds == null || point2Ds.Count == 0)
+            {
+                return;
+            }
+
+            SelectionType selectionType = rectangularSelector.SelectionType;
+            if (selectionType == SelectionType.Undefined)
+            {
+                return;
+            }
+
+            List<SAMObject> sAMObjects = new List<SAMObject>();
+            IEnumerable<HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult> rectangleHitResults = HelixToolkit.Wpf.Viewport3DHelper.FindHits(helixViewport3D.Viewport, rectangularSelector.Rect, selectionType == SelectionType.Inside ? HelixToolkit.Wpf.SelectionHitMode.Inside : HelixToolkit.Wpf.SelectionHitMode.Touch);
+            if (rectangleHitResults != null)
+            {
+                foreach (HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult rectangleHitResult in rectangleHitResults)
+                {
+                    IJSAMObject jSAMObject_Visual = SAM.Core.UI.WPF.Query.JSAMObject<IJSAMObject>(rectangleHitResult.Visual);
+                    sAMObjects.Add((jSAMObject_Visual as ITaggable)?.Tag?.Value as SAMObject);
+                }
+            }
+
+            Select(sAMObjects);
+        }
+
+        private void RectangularSelector_Selected(object sender, EventArgs e)
+        {
+            //List<Spatial.Point3D> point3Ds = new List<Spatial.Point3D>();
+
+            //foreach (Point2D point2D in point2Ds)
+            //{
+            //    Point point = new Point(point2D.X, point2D.Y);
+
+            //    //point = helixViewport3D.Viewport.PointFromScreen(point);
+
+            //    HelixToolkit.Wpf.Viewport3DHelper.Point2DtoPoint3D(helixViewport3D.Viewport, point, out Point3D point3D_Near, out Point3D point3D_Far);
+
+            //    Spatial.Point3D point3D_Near_SAM = point3D_Near.ToSAM();
+            //    point3D_Near_SAM = new Spatial.Point3D(point3D_Near_SAM.X, point3D_Near.Y, 5);
+
+            //    Spatial.Point3D point3D_Far_SAM = point3D_Far.ToSAM();
+            //    point3D_Far_SAM = new Spatial.Point3D(point3D_Far_SAM.X, point3D_Far.Y, -10);
+
+            //    point3Ds.Add(point3D_Near_SAM);
+            //    point3Ds.Add(point3D_Far_SAM);
+            //}
+
+            //Spatial.BoundingBox3D boundingBox3D = new Spatial.BoundingBox3D(point3Ds);
+
+            //List<Spatial.ISAMGeometry3DObject> sAMGeometry3DObjects = null;
+            //switch (selectionType)
+            //{
+            //    case SelectionType.Inside:
+            //        sAMGeometry3DObjects = uIGeometryObjectModel?.JSAMObject?.GetSAMGeometryObjects<Spatial.ISAMGeometry3DObject>(x => x is Spatial.ISAMGeometry3DObject && Spatial.Query.Inside(boundingBox3D, x, true));
+            //        break;
+
+            //    case SelectionType.InsideOrIntersect:
+            //        sAMGeometry3DObjects = uIGeometryObjectModel?.JSAMObject?.GetSAMGeometryObjects<Spatial.ISAMGeometry3DObject>(x => x is Spatial.ISAMGeometry3DObject && Spatial.Query.InRange(boundingBox3D, x));
+            //        break;
+            //}
+
+            //if (sAMGeometry3DObjects == null)
+            //{
+            //    return;
+            //}
+
+            //Select(sAMGeometry3DObjects.ConvertAll(x => x as ITaggable).FindAll(x => x != null).ConvertAll(x => x?.Tag?.Value as SAMObject));
+
         }
 
         public Mode Mode
@@ -120,7 +211,7 @@ namespace SAM.Geometry.UI.WPF
         {
             if (sAMObject == null)
             {
-                return false;
+                return actionManager.Cancel<SelectAction>();
             }
 
             Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
@@ -136,7 +227,7 @@ namespace SAM.Geometry.UI.WPF
         {
             if (sAMObjects == null)
             {
-                return false;
+                return actionManager.Cancel<SelectAction>();
             }
 
             List<Visual3D> visual3Ds = new List<Visual3D>();
@@ -153,7 +244,7 @@ namespace SAM.Geometry.UI.WPF
 
             if (visual3Ds == null || visual3Ds.Count == 0)
             {
-                return false;
+                return actionManager.Cancel<SelectAction>();
             }
 
             return actionManager.Apply(new SelectAction(visual3Ds));
