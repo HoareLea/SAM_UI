@@ -47,38 +47,25 @@ namespace SAM.Geometry.UI.WPF
             rectangularSelector.Selected += RectangularSelector_Selected;
 
             rectangularSelector.Selecting += RectangularSelector_Selecting;
+
         }
 
-        private void RectangularSelector_Selecting(object sender, EventArgs e)
+        private void Select(Rect rect, SelectionType selectionType)
         {
             actionManager.Cancel<HighlightAction>();
 
-            RectangularSelector rectangularSelector = sender as RectangularSelector;
-            if (rectangularSelector == null)
+            if (rect == null || rect == Rect.Empty)
             {
                 return;
             }
 
-            Rectangle2D rectangle2D = rectangularSelector.Rectangle2D;
-            if (rectangle2D == null)
-            {
-                return;
-            }
-
-            List<Point2D> point2Ds = rectangle2D.GetPoints();
-            if (point2Ds == null || point2Ds.Count == 0)
-            {
-                return;
-            }
-
-            SelectionType selectionType = rectangularSelector.SelectionType;
             if (selectionType == SelectionType.Undefined)
             {
                 return;
             }
 
             List<SAMObject> sAMObjects = new List<SAMObject>();
-            IEnumerable<HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult> rectangleHitResults = HelixToolkit.Wpf.Viewport3DHelper.FindHits(helixViewport3D.Viewport, rectangularSelector.Rect, selectionType == SelectionType.Inside ? HelixToolkit.Wpf.SelectionHitMode.Inside : HelixToolkit.Wpf.SelectionHitMode.Touch);
+            IEnumerable<HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult> rectangleHitResults = HelixToolkit.Wpf.Viewport3DHelper.FindHits(helixViewport3D.Viewport, rect, selectionType == SelectionType.Inside ? HelixToolkit.Wpf.SelectionHitMode.Inside : HelixToolkit.Wpf.SelectionHitMode.Touch);
             if (rectangleHitResults != null)
             {
                 foreach (HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult rectangleHitResult in rectangleHitResults)
@@ -112,6 +99,30 @@ namespace SAM.Geometry.UI.WPF
             }
 
             Select(sAMObjects);
+        }
+
+        private void RectangularSelector_Selecting(object sender, EventArgs e)
+        {
+            actionManager.Cancel<HighlightAction>();
+
+            if (rectangularSelector == null)
+            {
+                return;
+            }
+
+            Rect rect = rectangularSelector.Rect;
+            if (rect == null || rect == Rect.Empty)
+            {
+                return;
+            }
+
+            SelectionType selectionType = rectangularSelector.SelectionType;
+            if (selectionType == SelectionType.Undefined)
+            {
+                return;
+            }
+
+            Select(rect, selectionType);
         }
 
         private void RectangularSelector_Selected(object sender, EventArgs e)

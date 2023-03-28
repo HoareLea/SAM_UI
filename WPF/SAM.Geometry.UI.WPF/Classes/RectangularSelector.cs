@@ -24,6 +24,8 @@ namespace SAM.Geometry.UI.WPF
 
         private List<Line> lines;
 
+        private Point? endPoint_Temp;
+
         public RectangularSelector(Panel panel)
         {
             this.panel = panel;
@@ -147,7 +149,17 @@ namespace SAM.Geometry.UI.WPF
                 return;
             }
 
-            Selecting?.Invoke(this, new EventArgs());
+            if(endPoint_Temp == null)
+            {
+                endPoint_Temp = endPoint;
+            }
+
+            double distance = endPoint_Temp.Value.ToSAM().Distance(endPoint.Value.ToSAM());
+            if(distance > 10)
+            {
+                endPoint_Temp = endPoint;
+                Selecting?.Invoke(this, new EventArgs());
+            }
 
             double x1 = startPoint.Value.X;
             double y1 = startPoint.Value.Y;
