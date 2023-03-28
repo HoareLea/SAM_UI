@@ -103,6 +103,11 @@ namespace SAM.Geometry.UI.WPF
 
         private void RectangularSelector_Selecting(object sender, EventArgs e)
         {
+
+        }
+
+        private void RectangularSelector_Selected(object sender, EventArgs e)
+        {
             actionManager.Cancel<HighlightAction>();
 
             if (rectangularSelector == null)
@@ -123,10 +128,7 @@ namespace SAM.Geometry.UI.WPF
             }
 
             Select(rect, selectionType);
-        }
 
-        private void RectangularSelector_Selected(object sender, EventArgs e)
-        {
             //List<Spatial.Point3D> point3Ds = new List<Spatial.Point3D>();
 
             //foreach (Point2D point2D in point2Ds)
