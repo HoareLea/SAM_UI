@@ -2,8 +2,10 @@
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
 using SAM.Geometry.Planar;
+using SAM.Geometry.Spatial;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -81,8 +83,31 @@ namespace SAM.Geometry.UI.WPF
             {
                 foreach (HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult rectangleHitResult in rectangleHitResults)
                 {
-                    IJSAMObject jSAMObject_Visual = SAM.Core.UI.WPF.Query.JSAMObject<IJSAMObject>(rectangleHitResult.Visual);
-                    sAMObjects.Add((jSAMObject_Visual as ITaggable)?.Tag?.Value as SAMObject);
+                    IJSAMObject jSAMObject_Model = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(rectangleHitResult.Model);
+                    IJSAMObject jSAMObject_Visual = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(rectangleHitResult.Visual);
+
+                    if (jSAMObject_Model is Text3DObject)
+                    {
+                        continue;
+                    }
+
+                    SAMObject sAMObject = (jSAMObject_Visual as ITaggable)?.Tag?.Value as SAMObject;
+                    if (sAMObject != null)
+                    {
+                        Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
+                        if (jSAMObject_Model is ISAMGeometry3DObject && jSAMObject_Visual is IEnumerable<ISAMGeometry3DObject>)
+                        {
+                            ISAMGeometry3DObject sAMGeometry3DObject = (ISAMGeometry3DObject)jSAMObject_Model;
+                            IEnumerable<ISAMGeometry3DObject> sAMGeometry3DObjects = (IEnumerable<ISAMGeometry3DObject>)jSAMObject_Visual;
+                            if (!sAMGeometry3DObjects.Contains(sAMGeometry3DObject))
+                            {
+                                continue;
+                            }
+                        }
+
+                        sAMObjects.Add(sAMObject);
+                    }
+
                 }
             }
 
@@ -410,7 +435,7 @@ namespace SAM.Geometry.UI.WPF
                 helixViewport3D.Orthographic = true;
                 helixViewport3D.ShowViewCube = false;
                 helixViewport3D.ShowCoordinateSystem = false;
-                helixViewport3D.Camera.LookDirection = new Vector3D(0, 0.0001, -0.9999);
+                helixViewport3D.Camera.LookDirection = new System.Windows.Media.Media3D.Vector3D(0, 0.0001, -0.9999);
                 helixViewport3D.Camera.NearPlaneDistance = -1000;
                 helixViewport3D.Camera.FarPlaneDistance = 1000;
                 helixViewport3D.ZoomAroundMouseDownPoint = false;
