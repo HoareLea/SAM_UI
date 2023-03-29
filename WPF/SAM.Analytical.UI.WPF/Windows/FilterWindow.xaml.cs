@@ -11,17 +11,29 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class FilterWindow : System.Windows.Window
     {
+        private AdjacencyCluster adjacencyCluster = null;
         private List<IJSAMObject> jSAMObjects = null;
 
         public event Core.UI.WPF.FilterAddingEventHandler FilterAdding;
+        public event Core.UI.WPF.FilterChangedEventHandler FilterChanged;
 
         public FilterWindow()
         {
             InitializeComponent();
 
             filterControl.FilterAdding += FilterControl_FilterAdding;
+            filterControl.FilterChanged += FilterControl_FilterChanged;
+
+
             filtersControl.SelectionChanged += FiltersControl_SelectionChanged;
             filtersControl.FilterAdding += FiltersControl_FilterAdding;
+        }
+
+        private void FilterControl_FilterChanged(object sender, Core.UI.WPF.FilterChangedEventArgs e)
+        {
+            
+            
+            FilterChanged?.Invoke(this, new Core.UI.WPF.FilterChangedEventArgs(e.UIFilter));
         }
 
         private void FiltersControl_FilterAdding(object sender, Core.UI.WPF.FilterAddingEventArgs e)
@@ -122,12 +134,29 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public AdjacencyCluster AdjacencyCluster
+        {
+            get
+            {
+                return adjacencyCluster;
+            }
+
+            set
+            {
+                adjacencyCluster = value;
+            }
+        }
+
         public List<IJSAMObject> FilteredJSAMObjects
         {
             get
             {
-                return null;
+                return GetFilteredSAMObjects();
             }
+        }
+        public List<IJSAMObject>  GetFilteredSAMObjects()
+        {
+
         }
 
         public Type Type

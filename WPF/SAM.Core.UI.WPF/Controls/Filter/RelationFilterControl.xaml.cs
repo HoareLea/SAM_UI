@@ -51,7 +51,9 @@ namespace SAM.Core.UI.WPF
 
             //groupBox_Name.Header = uIRelationFilter.Type.Name;
 
-            Modify.AddFilterControl(grid_Filters, uIRelationFilter?.Filter.Filter as IUIFilter);
+            Add(uIRelationFilter?.Filter.Filter as IUIFilter);
+
+            //Modify.AddFilterControl(grid_Filters, uIRelationFilter?.Filter.Filter as IUIFilter);
         }
 
         private UIRelationFilter GetUIRelationFilter()

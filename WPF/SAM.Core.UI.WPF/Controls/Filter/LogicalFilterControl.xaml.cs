@@ -107,7 +107,7 @@ namespace SAM.Core.UI.WPF
 
             foreach(IUIFilter uIFilter in uIFilters)
             {
-                Modify.AddFilterControl(grid_Filters, uIFilter, false);
+                Add(uIFilter);
             }
         }
 
