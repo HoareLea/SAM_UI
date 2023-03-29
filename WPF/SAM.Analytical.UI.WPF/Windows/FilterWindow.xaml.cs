@@ -156,7 +156,7 @@ namespace SAM.Analytical.UI.WPF
         }
         public List<IJSAMObject>  GetFilteredSAMObjects()
         {
-
+            throw new System.NotImplementedException();
         }
 
         public Type Type
