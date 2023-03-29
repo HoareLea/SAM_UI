@@ -3,5 +3,7 @@
     public interface IFilterControl
     {
         IUIFilter UIFilter { get; }
+
+        event FilterChangedEventHandler FilterChanged;
     }
 }

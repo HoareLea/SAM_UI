@@ -10,6 +10,8 @@ namespace SAM.Core.UI.WPF
     {
         private UILogicalFilter uILogicalFilter;
 
+        public event FilterChangedEventHandler FilterChanged;
+
         public LogicalFilterControl()
         {
             InitializeComponent();
@@ -116,7 +118,22 @@ namespace SAM.Core.UI.WPF
                 return;
             }
 
-            Modify.AddFilterControl(grid_Filters, uIFilter, false);
+            IFilterControl filterControl = Modify.AddFilterControl(grid_Filters, uIFilter, false);
+            if(filterControl != null)
+            {
+                filterControl.FilterChanged += FilterControl_FilterChanged;
+                FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+            }
+        }
+
+        private void FilterControl_FilterChanged(object sender, FilterChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(e.UIFilter));
+        }
+
+        private void comboBox_FilterLogicalOperator_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
         }
     }
 }

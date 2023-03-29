@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\DependencyProperty.cs" />
+    <Compile Include="Classes\EventArgs\FilterChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectContextMenuOpeningEventArgs.cs" />
     <Compile Include="Classes\EventArgs\FilterAddingEventArgs.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Create\IFilterControl.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
+    <Compile Include="Delegates\FilterChangedEventHandler.cs" />
     <Compile Include="Delegates\FilterAddingEventHandler.cs" />
     <Compile Include="Delegates\TextChangedEventHandler.cs" />
     <Compile Include="Controls\JsonControl.xaml.cs">
@@ -110,6 +112,9 @@
     </Compile>
     <Compile Include="Controls\Filter\FilterControl.xaml.cs">
       <DependentUpon>FilterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Filter\FiltersControl.xaml.cs">
+      <DependentUpon>FiltersControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IFilterControl.cs" />
     <Compile Include="Modify\AddFilterControl.cs" />
@@ -246,6 +251,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Filter\RelationFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Filter\FiltersControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

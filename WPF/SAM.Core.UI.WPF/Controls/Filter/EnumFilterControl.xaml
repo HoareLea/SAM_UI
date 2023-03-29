@@ -9,8 +9,8 @@
     <Grid>
         <GroupBox x:Name="groupBox_Main" Header="Text" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid>
-                <ComboBox x:Name="comboBox_Enum" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="184"/>
-                <CheckBox x:Name="checkBox_Inverted" Content="Invert" HorizontalAlignment="Right" Margin="0,14,10.4,0" VerticalAlignment="Top"/>
+                <ComboBox x:Name="comboBox_Enum" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="184" SelectionChanged="comboBox_Enum_SelectionChanged"/>
+                <CheckBox x:Name="checkBox_Inverted" Content="Invert" HorizontalAlignment="Right" Margin="0,14,10.4,0" VerticalAlignment="Top" Click="checkBox_Inverted_Click"/>
             </Grid>
         </GroupBox>
     </Grid>

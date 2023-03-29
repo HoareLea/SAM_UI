@@ -2,7 +2,7 @@
 {
     public interface IUIFilter : IFilter
     {
-        string Name { get; }
+        string Name { get; set; }
         System.Type Type { get; }
     }
 }

@@ -152,6 +152,9 @@
   <ItemGroup>
     <Compile Include="Classes\ApertureData.cs" />
     <Compile Include="Modify\RenameSpaces.cs" />
+    <Compile Include="Windows\FilterWindow.xaml.cs">
+      <DependentUpon>FilterWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\InternalConditionWindow.xaml.cs">
       <DependentUpon>InternalConditionWindow.xaml</DependentUpon>
     </Compile>
@@ -418,6 +421,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\FilterWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\InternalConditionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -9,6 +9,8 @@ namespace SAM.Core.UI.WPF
     {
         private UITextFilter uITextFilter;
 
+        public event FilterChangedEventHandler FilterChanged;
+
         public TextFilterControl()
         {
             InitializeComponent();
@@ -102,7 +104,19 @@ namespace SAM.Core.UI.WPF
             comboBox_TextComparisonType.SelectedItem = Core.Query.Description(textFilter.TextComparisonType);
         }
 
+        private void comboBox_TextComparisonType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
 
+        private void checkBox_CaseSensitive_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
 
+        private void textBox_Value_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
     }
 }

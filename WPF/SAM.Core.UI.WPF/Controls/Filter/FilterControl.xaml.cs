@@ -13,6 +13,8 @@ namespace SAM.Core.UI.WPF
     {
         public event FilterAddingEventHandler FilterAdding;
 
+        public event FilterChangedEventHandler FilterChanged;
+
         public FilterControl()
         {
             InitializeComponent();
@@ -63,40 +65,45 @@ namespace SAM.Core.UI.WPF
         {
             get
             {
-                List<IUIFilter> uIFilters = new List<IUIFilter>();
-
-                IUIFilter uIFilter = null;
-
-                uIFilter = Query.FilterControls(grid_Filter)?.FirstOrDefault()?.UIFilter;
-                if (uIFilter != null)
-                {
-                    uIFilters.Add(uIFilter);
-                }
-
-                Type type = Type;
-                if (type != null)
-                {
-                    uIFilter = new UITypeFilter(null, type);
-                    uIFilters.Add(uIFilter);
-                }
-
-                if(uIFilters.Count == 0)
-                {
-                    return null;
-                }
-
-                if(uIFilters.Count == 1)
-                {
-                    return uIFilters.FirstOrDefault();
-                }
-
-                return new UILogicalFilter(null, uIFilter.Type, new LogicalFilter(FilterLogicalOperator.And, uIFilters));
+                return GetUIFilter();
             }
 
             set
             {
                 SetUIFilter(value);
             }
+        }
+
+        public IUIFilter GetUIFilter(string name = null)
+        {
+            List<IUIFilter> uIFilters = new List<IUIFilter>();
+
+            IUIFilter uIFilter = null;
+
+            uIFilter = Query.FilterControls(grid_Filter)?.FirstOrDefault()?.UIFilter;
+            if (uIFilter != null)
+            {
+                uIFilters.Add(uIFilter);
+            }
+
+            Type type = Type;
+            if (type != null)
+            {
+                uIFilter = new UITypeFilter(name, type);
+                uIFilters.Add(uIFilter);
+            }
+
+            if (uIFilters.Count == 0)
+            {
+                return null;
+            }
+
+            if (uIFilters.Count == 1)
+            {
+                return uIFilters.FirstOrDefault();
+            }
+
+            return new UILogicalFilter(name, uIFilter.Type, new LogicalFilter(FilterLogicalOperator.And, uIFilters));
         }
 
         private void SetUIFilter(IUIFilter uIFilter)
@@ -215,7 +222,18 @@ namespace SAM.Core.UI.WPF
 
         private void Add(IUIFilter uIFilter)
         {
-            Modify.AddFilterControl(grid_Filter, uIFilter);
+            IFilterControl filterControl = Modify.AddFilterControl(grid_Filter, uIFilter);
+            filterControl.FilterChanged += FilterControl_FilterChanged;
+            if(filterControl != null)
+            {
+                FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+            }
+
+        }
+
+        private void FilterControl_FilterChanged(object sender, FilterChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(e.UIFilter));
         }
     }
 }

@@ -9,6 +9,8 @@ namespace SAM.Core.UI.WPF
     {
         private UINumberFilter uINumberFilter;
 
+        public event FilterChangedEventHandler FilterChanged;
+
         public NumberFilterControl()
         {
             InitializeComponent();
@@ -108,6 +110,17 @@ namespace SAM.Core.UI.WPF
         private void textBox_Value_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
         {
             Windows.EventHandler.ControlText_NumberOnly(sender, e);
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
+
+        private void comboBox_NumberComparisonType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
+
+        private void checkBox_Inverted_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
         }
     }
 }

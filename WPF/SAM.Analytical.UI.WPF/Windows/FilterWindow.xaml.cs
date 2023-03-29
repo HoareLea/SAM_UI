@@ -1,40 +1,34 @@
-﻿using System;
+﻿using SAM.Core;
+using SAM.Core.UI;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 
-namespace SAM.Core.UI.WPF
+namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
     /// Interaction logic for FilterWindow.xaml
     /// </summary>
-    public partial class FilterWindow : Window
+    public partial class FilterWindow : System.Windows.Window
     {
-        public event FilterAddingEventHandler FilterAdding;
+        private List<IJSAMObject> jSAMObjects = null;
 
-        public event FilterChangedEventHandler FilterChanged;
+        public event Core.UI.WPF.FilterAddingEventHandler FilterAdding;
 
         public FilterWindow()
         {
             InitializeComponent();
 
             filterControl.FilterAdding += FilterControl_FilterAdding;
-            filterControl.FilterChanged += FilterControl_FilterChanged;
-            
             filtersControl.SelectionChanged += FiltersControl_SelectionChanged;
             filtersControl.FilterAdding += FiltersControl_FilterAdding;
-
         }
 
-        private void FilterControl_FilterChanged(object sender, FilterChangedEventArgs e)
-        {
-            FilterChanged?.Invoke(this, new FilterChangedEventArgs(e.UIFilter));
-        }
-
-        private void FiltersControl_FilterAdding(object sender, FilterAddingEventArgs e)
+        private void FiltersControl_FilterAdding(object sender, Core.UI.WPF.FilterAddingEventArgs e)
         {
             e.Handled = true;
 
-            using (Windows.Forms.TextBoxForm<string> textBoxForm = new Windows.Forms.TextBoxForm<string>("Filter", "Filter Name"))
+            using (Core.Windows.Forms.TextBoxForm<string> textBoxForm = new Core.Windows.Forms.TextBoxForm<string>("Filter", "Filter Name"))
             {
                 if (textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
@@ -57,7 +51,7 @@ namespace SAM.Core.UI.WPF
             filterControl.UIFilter = filtersControl.SelectedUIFilter;
         }
 
-        private void FilterControl_FilterAdding(object sender, FilterAddingEventArgs e)
+        private void FilterControl_FilterAdding(object sender, Core.UI.WPF.FilterAddingEventArgs e)
         {
             FilterAdding?.Invoke(this, e);
         }
@@ -112,6 +106,27 @@ namespace SAM.Core.UI.WPF
             set
             {
                 filtersControl.SelectedUIFilter = value;
+            }
+        }
+
+        public List<IJSAMObject> JSAMObjects
+        {
+            get
+            {
+                return jSAMObjects;
+            }
+
+            set
+            {
+                jSAMObjects = value;
+            }
+        }
+
+        public List<IJSAMObject> FilteredJSAMObjects
+        {
+            get
+            {
+                return null;
             }
         }
 

@@ -253,8 +253,26 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             IUIFilter uIFilter = ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
+            List<IUIFilter> uIFilters = ActiveManager.GetValue<SAMCollection<IUIFilter>>(Assembly.GetExecutingAssembly(), "UIFilters")?.Cast<IUIFilter>().ToList();
 
-            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space), UIFilter = uIFilter };
+            List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl != null)
+            {
+                List<SAMObject> sAMObjects_Selected = viewportControl.SelectedSAMObjects<SAMObject>();
+                if (sAMObjects_Selected != null)
+                {
+                    jSAMObjects.AddRange(sAMObjects_Selected);
+                }
+            }
+
+            if(jSAMObjects == null || jSAMObjects.Count == 0)
+            {
+                jSAMObjects = Analytical.Query.FilteringSAMObjects(adjacencyCluster);
+            }
+
+
+            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space), UIFilter = uIFilter, UIFilters = uIFilters, JSAMObjects = jSAMObjects };          
             filterWindow.FilterAdding += FilterWindow_FilterAdding;
             bool? result = filterWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)
@@ -263,18 +281,21 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             uIFilter = filterWindow.UIFilter;
+            uIFilters = filterWindow.UIFilters;
 
             ActiveManager.SetValue(Assembly.GetExecutingAssembly(), "UIFilter", uIFilter?.Clone());
+            ActiveManager.SetValue(Assembly.GetExecutingAssembly(), "UIFilters", new SAMCollection<IUIFilter>(uIFilters));
+
+            
             ActiveManager.Write();
 
             IFilter filter = uIFilter.Transform();
 
             UI.Modify.AssignAdjacencyCluster(filter, adjacencyCluster);
 
-            List<SAMObject> jSAMObjects = adjacencyCluster.Filter<SAMObject>(filter);
+            List<SAMObject> jSAMObjects_Filtered = adjacencyCluster.Filter<SAMObject>(filter, filterWindow.FilteredJSAMObjects);
 
-            ViewportControl viewportControl = GetActiveViewportControl();
-            viewportControl?.Select(jSAMObjects);
+            viewportControl?.Select(jSAMObjects_Filtered);
 
         }
 

@@ -40,6 +40,11 @@ namespace SAM.Core.UI
             {
                 return name;
             }
+
+            set
+            {
+                name = value;
+            }
         }
 
         public Type Type

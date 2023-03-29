@@ -11,6 +11,8 @@ namespace SAM.Core.UI.WPF
     {
         private UIEnumFilter uIEnumFilter;
 
+        public event FilterChangedEventHandler  FilterChanged;
+
         public EnumFilterControl()
         {
             InitializeComponent();
@@ -108,6 +110,16 @@ namespace SAM.Core.UI.WPF
             Modify.Reload(comboBox_Enum, type);
 
             comboBox_Enum.SelectedItem = Core.Query.Description((enumFilter as dynamic).Enum);
+        }
+
+        private void checkBox_Inverted_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIEnumFilter));
+        }
+
+        private void comboBox_Enum_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIEnumFilter));
         }
     }
 }

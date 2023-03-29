@@ -9,7 +9,7 @@
     <Grid>
         <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <GroupBox.Header>
-                <ComboBox x:Name="comboBox_FilterLogicalOperator" Width="75"/>
+                <ComboBox x:Name="comboBox_FilterLogicalOperator" Width="75" SelectionChanged="comboBox_FilterLogicalOperator_SelectionChanged"/>
             </GroupBox.Header>
             <Grid x:Name="grid_Filters" Margin="15,10,15,15">
                 

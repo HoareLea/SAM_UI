@@ -10,6 +10,8 @@ namespace SAM.Core.UI.WPF
     {
         private UIRelationFilter uIRelationFilter;
 
+        public event FilterChangedEventHandler FilterChanged;
+
         public RelationFilterControl()
         {
             InitializeComponent();
@@ -81,7 +83,17 @@ namespace SAM.Core.UI.WPF
                 return;
             }
 
-            Modify.AddFilterControl(grid_Filters, uIFilter, true);
+            IFilterControl filterControl = Modify.AddFilterControl(grid_Filters, uIFilter, true);
+            if(filterControl != null)
+            {
+                filterControl.FilterChanged += FilterControl_FilterChanged;
+                FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+            }
+        }
+
+        private void FilterControl_FilterChanged(object sender, FilterChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(e.UIFilter));
         }
     }
 }
