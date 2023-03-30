@@ -114,7 +114,7 @@ namespace SAM.Core.UI.WPF
             FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
         }
 
-        private void textBox_Value_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        private void textBox_Value_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
         }

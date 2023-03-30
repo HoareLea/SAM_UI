@@ -3,6 +3,7 @@ using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -191,7 +192,43 @@ namespace SAM.Analytical.UI.WPF
 
         private void Refresh()
         {
+            listBox_Before.Items.Clear();
+            listBox_After.Items.Clear();
+            
+            List<IJSAMObject> jSAMObjects = this.jSAMObjects != null && this.jSAMObjects.Count != 0 ? new List<IJSAMObject>(this.jSAMObjects) : Analytical.Query.FilteringSAMObjects(adjacencyCluster);
+            jSAMObjects?.RemoveAll(x => x == null || !x.GetType().IsAssignableFrom(Type));
 
+            if (jSAMObjects != null)
+            {
+                foreach (IJSAMObject jSAMObject in jSAMObjects)
+                {
+                    string name = (jSAMObject as SAMObject)?.Name;
+                    if(string.IsNullOrWhiteSpace(name))
+                    {
+                        continue;
+                    }
+
+                    ListBoxItem listBoxItem = new ListBoxItem() { Tag = jSAMObject, Content = name };
+                    listBox_Before.Items.Add(listBoxItem);
+                }
+            }
+
+
+            jSAMObjects = GetFilteredSAMObjects();
+            if (jSAMObjects != null)
+            {
+                foreach (IJSAMObject jSAMObject in jSAMObjects)
+                {
+                    string name = (jSAMObject as SAMObject)?.Name;
+                    if (string.IsNullOrWhiteSpace(name))
+                    {
+                        continue;
+                    }
+
+                    ListBoxItem listBoxItem = new ListBoxItem() { Tag = jSAMObject, Content = name };
+                    listBox_After.Items.Add(listBoxItem);
+                }
+            }
         }
     }
 }
