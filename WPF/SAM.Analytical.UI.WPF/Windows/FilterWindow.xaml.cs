@@ -31,8 +31,8 @@ namespace SAM.Analytical.UI.WPF
 
         private void FilterControl_FilterChanged(object sender, Core.UI.WPF.FilterChangedEventArgs e)
         {
-            
-            
+            Refresh();
+
             FilterChanged?.Invoke(this, new Core.UI.WPF.FilterChangedEventArgs(e.UIFilter));
         }
 
@@ -131,6 +131,7 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 jSAMObjects = value;
+                Refresh();
             }
         }
 
@@ -144,6 +145,7 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 adjacencyCluster = value;
+                Refresh();
             }
         }
 
@@ -154,9 +156,14 @@ namespace SAM.Analytical.UI.WPF
                 return GetFilteredSAMObjects();
             }
         }
-        public List<IJSAMObject>  GetFilteredSAMObjects()
+
+        private List<IJSAMObject>  GetFilteredSAMObjects()
         {
-            throw new System.NotImplementedException();
+            IFilter filter = UIFilter.Transform();
+
+            UI.Modify.AssignAdjacencyCluster(filter, adjacencyCluster);
+
+            return adjacencyCluster.Filter<IJSAMObject>(filter, jSAMObjects);
         }
 
         public Type Type
@@ -180,6 +187,11 @@ namespace SAM.Analytical.UI.WPF
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
+        }
+
+        private void Refresh()
+        {
+
         }
     }
 }
