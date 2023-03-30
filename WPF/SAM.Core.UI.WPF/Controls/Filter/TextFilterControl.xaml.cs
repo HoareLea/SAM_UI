@@ -118,5 +118,10 @@ namespace SAM.Core.UI.WPF
         {
             FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
         }
+
+        private void checkBox_Inverted_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
     }
 }

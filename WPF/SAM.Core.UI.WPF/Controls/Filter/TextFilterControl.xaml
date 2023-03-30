@@ -11,7 +11,7 @@
             <Grid>
                 <ComboBox x:Name="comboBox_TextComparisonType" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Width="100" SelectionChanged="comboBox_TextComparisonType_SelectionChanged"/>
                 <TextBox x:Name="textBox_Value" Text="" Margin="0,46,10,9.6" TextChanged="textBox_Value_TextChanged"></TextBox>
-                <CheckBox x:Name="checkBox_Inverted" Content="Invert" HorizontalAlignment="Right" Margin="0,14,5,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkBox_Inverted" Content="Invert" HorizontalAlignment="Right" Margin="0,14,5,0" VerticalAlignment="Top" Click="checkBox_Inverted_Click"/>
                 <CheckBox x:Name="checkBox_CaseSensitive" Content="Match case" HorizontalAlignment="Right" Margin="0,14,67.4,0" VerticalAlignment="Top" Click="checkBox_CaseSensitive_Click"/>
             </Grid>
         </GroupBox>
