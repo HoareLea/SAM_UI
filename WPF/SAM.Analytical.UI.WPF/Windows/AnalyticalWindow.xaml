@@ -6,7 +6,7 @@
         xmlns:s="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         xmlns:geometry="clr-namespace:SAM.Geometry.UI.WPF;assembly=SAM.Geometry.UI.WPF"
-        mc:Ignorable="d" 
+        mc:Ignorable="d"
         WindowState="Maximized"
         WindowStyle="SingleBorderWindow" d:DesignWidth="800" d:DesignHeight="600">
     <Window.Resources>
@@ -395,115 +395,119 @@
             </Ribbon.ApplicationMenu>
             <RibbonTab x:Name="RibbonTab_File" Header="File">
                 <RibbonGroup x:Name="RibbonGroup_File_General" Header="General">
-                    <RibbonButton x:Name="RibbonButton_General_NewAnalyticalModel" Label="New"/>
-                    <RibbonButton x:Name="RibbonButton_General_OpenAnalyticalModel" Label="Open"/>
-                    <RibbonButton x:Name="RibbonButton_General_SaveAnalyticalModel" Label="Save"/>
-                    <RibbonButton x:Name="RibbonButton_General_SaveAsAnalyticalModel" Label="Save As"/>
-                    <RibbonButton x:Name="RibbonButton_General_CloseAnalyticalModel" Label="Close"/>
+                    <RibbonButton x:Name="RibbonButton_NewAnalyticalModel" Label="New" />
+                    <RibbonButton x:Name="RibbonButton_OpenAnalyticalModel" Label="Open" />
+                    <RibbonButton x:Name="RibbonButton_SaveAnalyticalModel" Label="Save" />
+                    <RibbonButton x:Name="RibbonButton_SaveAsAnalyticalModel" Label="Save As" />
+                    <RibbonButton x:Name="RibbonButton_CloseAnalyticalModel" Label="Close" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_File_ImportExport" Header="Import/Export">
-                    <RibbonButton x:Name="RibbonButton_ImportExport_ImportAnalyticalModel" Label="Import"/>
-                    <RibbonButton x:Name="RibbonButton_ImportExport_ExportAnalyticalModel" Label="Export"/>
+                    <RibbonButton x:Name="RibbonButton_ImportAnalyticalModel" Label="Import" />
+                    <RibbonButton x:Name="RibbonButton_ExportAnalyticalModel" Label="Export" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_View" Header="View">
                 <RibbonGroup x:Name="RibbonGroup_View_New" Header="New">
-                    <RibbonButton x:Name="RibbonButton_View_NewSectionViews" Label="Section Views"/>
-                    <RibbonButton x:Name="RibbonButton_View_NewSectionView" Label="Section View"/>
-                    <RibbonButton x:Name="RibbonButton_View_New3DView" Label="3D View"/>
+                    <RibbonButton x:Name="RibbonButton_NewSectionViews" Label="Section Views" />
+                    <RibbonButton x:Name="RibbonButton_NewSectionView" Label="Section View" />
+                    <RibbonButton x:Name="RibbonButton_New3DView" Label="3D View" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_General" Header="General">
-                    <RibbonButton x:Name="RibbonButton_View_ViewSettings" Label="View Settings"/>
-                    <RibbonButton x:Name="RibbonButton_View_Close" Label="Close View"/>
+                    <RibbonButton x:Name="RibbonButton_ViewSettings" Label="View Settings" />
+                    <RibbonButton x:Name="RibbonButton_CloseView" Label="Close View" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_View_Select" Header="Select in View">
+                    <RibbonButton x:Name="RibbonButton_SelectByFilter" Label="Select by Filter" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Edit" Header="Edit">
+                <RibbonGroup x:Name="RibbonGroup_Edit_WeatherData" Header="Weather Data">
+                    <RibbonButton x:Name="RibbonButton_EditWeatherData" Label="Weather Data" />
+                    <RibbonButton x:Name="RibbonButton_ImportWeatherData" Label="Import" />
+                </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Edit_General" Header="General">
-                    <RibbonButton x:Name="RibbonButton_Edit_Location" Label="Location"/>
-                    <RibbonButton x:Name="RibbonButton_Edit_Properties" Label="Properties"/>
+                    <RibbonButton x:Name="RibbonButton_AnalyticalModelLocation" Label="Location" />
+                    <RibbonButton x:Name="RibbonButton_AnalyticalModelProperties" Label="Properties" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Edit_Import" Header="Import">
-                    <RibbonButton x:Name="RibbonButton_Edit_Import" Label="Import"/>
+                    <RibbonButton x:Name="RibbonButton_ImportObjects" Label="Import" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Edit_Check" Header="Check">
-                    <RibbonButton x:Name="RibbonButton_Edit_Check" Label="ModelCheck"/>
+                    <RibbonButton x:Name="RibbonButton_AnalyticalModelCheck" Label="ModelCheck" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Edit_ModelLibrary" Header="Model Library">
-                    <RibbonButton x:Name="RibbonButton_Edit_Materials" Label="Materials"/>
-                    <RibbonButton x:Name="RibbonButton_Edit_InternalConditions" Label="Internal Conditions"/>
-                    <RibbonButton x:Name="RibbonButton_Edit_Profiles" Label="Profiles"/>
-                    <RibbonButton x:Name="RibbonButton_Edit_Spaces" Label="Spaces"/>
+                    <RibbonButton x:Name="RibbonButton_EditMaterialLibrary" Label="Materials" />
+                    <RibbonButton x:Name="RibbonButton_EditInternalConditionLibrary" Label="Internal Conditions" />
+                    <RibbonButton x:Name="RibbonButton_EditProfileLibrary" Label="Profiles" />
+                    <RibbonButton x:Name="RibbonButton_EditSpaces" Label="Spaces" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Edit_Constructions" Header="Constructions">
-                    <RibbonButton x:Name="RibbonButton_Edit_Constructions" Label="Constructions"/>
-                    <RibbonButton x:Name="RibbonButton_Edit_ApertureConstructions" Label="Aperture Constructions"/>
+                    <RibbonButton x:Name="RibbonButton_EditConstructions" Label="Constructions" />
+                    <RibbonButton x:Name="RibbonButton_EditApertureConstructions" Label="Aperture Constructions" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_AnalyticalModel" Header="Analytical Model">
+                    <RibbonButton x:Name="RibbonButton_CleanAnalyticalModel" Label="Clean" />
+                    <RibbonButton x:Name="RibbonButton_AddMissingObjects" Label="Missing Elements" />
+                    <RibbonButton x:Name="RibbonButton_PrintRoomDataSheets" Label="Print RDS" />
+                    <RibbonButton x:Name="RibbonButton_MapInternalConditions" Label="Map IC" />
+                    <RibbonButton x:Name="RibbonButton_MapInternalConditionsByTM59" Label="Map IC (TM59)" />
+                    <RibbonButton x:Name="RibbonButton_EditInternalConditions" Label="Modify IC" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Simulate" Header="Simulate">
-                <RibbonGroup x:Name="RibbonGroup_Simulate_WeatherData" Header="Weather Data">
-                    <RibbonButton x:Name="RibbonButton_Simulate_WeatherData" Label="Weather Data"/>
-                    <RibbonButton x:Name="RibbonButton_Simulate_Import" Label="Import"/>
-                </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Simulate_Simulate" Header="Simulate">
-                    <RibbonButton x:Name="RibbonButton_Simulate_SolarSimulation" Label="Solar Simulation"/>
-                    <RibbonButton x:Name="RibbonButton_Simulate_EnergySimulation" Label="Energy Simulation"/>
+                    <RibbonButton x:Name="RibbonButton_SolarSimulation" Label="Solar Simulation" />
+                    <RibbonButton x:Name="RibbonButton_EnergySimulation" Label="Energy Simulation" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Results" Header="Results">
                 <RibbonGroup x:Name="RibbonGroup_Results_General" Header="General">
-                    <RibbonButton x:Name="RibbonButton_Results_Remove" Label="Remove"/>
+                    <RibbonButton x:Name="RibbonButton_RemoveResults" Label="Remove" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Results_Mollier" Header="Mollier Diagram">
-                    <RibbonButton x:Name="RibbonButton_Results_AirHandlingUnitDiagram" Label="AHU"/>
-                    <RibbonButton x:Name="RibbonButton_Results_SpaceDiagram" Label="Space"/>
+                    <RibbonButton x:Name="RibbonButton_AirHandlingUnitDiagram" Label="AHU" />
+                    <RibbonButton x:Name="RibbonButton_SpaceDiagram" Label="Space" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Tools" Header="Tools">
                 <RibbonGroup x:Name="RibbonGroup_Tools_Library" Header="Library">
-                    <RibbonButton x:Name="RibbonButton_Tools_EditLibrary" Label="Edit Library"/>
+                    <RibbonButton x:Name="RibbonButton_EditLibrary" Label="Edit Library" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Tas" Header="Tas">
-                    <RibbonButton x:Name="RibbonButton_Tools_OpenT3D" Label="Open T3D"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_OpenTBD" Label="Open TBD"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_OpenTSD" Label="Open TSD"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_OpenTPD" Label="Open TPD"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_CreateTBD" Label="Create TBD"/>
+                    <RibbonButton x:Name="RibbonButton_OpenT3D" Label="Open T3D" />
+                    <RibbonButton x:Name="RibbonButton_OpenTBD" Label="Open TBD" />
+                    <RibbonButton x:Name="RibbonButton_OpenTSD" Label="Open TSD" />
+                    <RibbonButton x:Name="RibbonButton_OpenTPD" Label="Open TPD" />
+                    <RibbonButton x:Name="RibbonButton_CreateTBD" Label="Create TBD" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Hydra" Header="Hydra">
-                    <RibbonButton x:Name="RibbonButton_Tools_Hydra" Label="Open Hydra"/>
-                </RibbonGroup>
-                <RibbonGroup x:Name="RibbonGroup_Tools_AnalyticalModel" Header="Analytical Model">
-                    <RibbonButton x:Name="RibbonButton_Tools_Clean" Label="Clean"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_AddMissingObjects" Label="Missing Elements"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_PrintRoomDataSheets" Label="Print RDS"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_MapInternalConditions" Label="Map IC"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_MapInternalConditionsByTM59" Label="Map IC (TM59)"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_EditInternalConditions" Label="Modify IC"/>
+                    <RibbonButton x:Name="RibbonButton_Hydra" Label="Open Hydra" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_SAM" Header="SAM">
-                    <RibbonButton x:Name="RibbonButton_Tools_OpenMollierChart" Label="Mollier Diagram"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_ViewGeometry" Label="View Geometry"/>
-                    <RibbonButton x:Name="RibbonButton_Tools_TextMap" Label="Text Map"/>
+                    <RibbonButton x:Name="RibbonButton_OpenMollierChart" Label="Mollier Diagram" />
+                    <RibbonButton x:Name="RibbonButton_ViewGeometry" Label="View Geometry" />
+                    <RibbonButton x:Name="RibbonButton_TextMap" Label="Text Map" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Developer" Header="Developer">
-                    <RibbonButton x:Name="RibbonButton_Tools_Test" Label="Test"/>
+                    <RibbonButton x:Name="RibbonButton_Test" Label="Test" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">
                 <RibbonGroup x:Name="RibbonGroup_Help_General" Header="General">
-                    <RibbonButton x:Name="RibbonButton_Help_Wiki" Label="Wiki"/>
+                    <RibbonButton x:Name="RibbonButton_Wiki" Label="Wiki" />
+                    <RibbonButton x:Name="RibbonButton_About" Label="About" />
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="250"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="461*"/>
-                <ColumnDefinition Width="86*"/>
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="461*" />
+                <ColumnDefinition Width="86*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
             <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" SelectionChanged="tabControl_SelectionChanged">
@@ -511,8 +515,8 @@
                     <geometry:ViewportControl x:Name="viewportControl" />
                 </TabItem>
             </TabControl>
-            
-            <local:AnalyticalModelControl x:Name="AnalyticalModelControl"  Grid.Column="0" Grid.Row="0"/>
+
+            <local:AnalyticalModelControl x:Name="AnalyticalModelControl"  Grid.Column="0" Grid.Row="0" />
         </Grid>
     </DockPanel>
 </Window>
