@@ -12,6 +12,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Analytical.UI.WPF.Windows
@@ -180,6 +181,9 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             RibbonButton_Wiki.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
             RibbonButton_Wiki.Click += RibbonButton_Wiki_Click;
+
+            RibbonButton_About.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
+            RibbonButton_About.Click += RibbonButton_About_Click;
 
             RibbonButton_Test.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
             RibbonButton_Test.Click += RibbonButton_Test_Click;
@@ -758,6 +762,16 @@ namespace SAM.Analytical.UI.WPF.Windows
             //}
         }
 
+        private void MenuItem_SelectByFilter_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByFilter();
+        }
+
+        private void MenuItem_SelectByGuid_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByGuid();
+        }
+
         private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -839,6 +853,19 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
+        private void RibbonButton_About_Click(object sender, RoutedEventArgs e)
+        {
+            List<AboutInfoType> abouInfoTypes = Enum.GetValues(typeof(AboutInfoType)).Cast<AboutInfoType>().ToList();
+
+            using (Core.Windows.Forms.ComboBoxForm<AboutInfoType> comboBoxForm = new Core.Windows.Forms.ComboBoxForm<AboutInfoType>("Info", abouInfoTypes, x => x.Description()))
+            {
+                if(comboBoxForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    MessageBox.Show(Core.Query.AboutInfoTypeText(comboBoxForm.SelectedItem), "Info");
+                }
+            }
+        }
+        
         private void RibbonButton_AddMissingObjects_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.AddMissingObjects(windowHandle);
@@ -1225,6 +1252,56 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_SelectByFilter_Click(object sender, RoutedEventArgs e)
         {
+            SelectByFilter();
+        }
+
+        private void RibbonButton_SelectByGuid_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByGuid();
+        }
+
+        private void RibbonButton_SolarSimulation_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.SolarSimulation(windowHandle);
+        }
+
+        private void RibbonButton_SpaceDiagram_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.SpaceDiagram(windowHandle);
+        }
+
+        private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RibbonButton_TextMap_Click(object sender, RoutedEventArgs e)
+        {
+            TextMapWindow textMapWindow = new TextMapWindow();
+            if (textMapWindow.ShowDialog() != true)
+            {
+                return;
+            }
+        }
+
+        private void RibbonButton_ViewGeometry_Click(object sender, RoutedEventArgs e)
+        {
+            GeometryWindow geometryWindow = new GeometryWindow();
+            geometryWindow.Show();
+        }
+
+        private void RibbonButton_ViewSettings_Click(object sender, RoutedEventArgs e)
+        {
+            EditViewSettings();
+        }
+
+        private void RibbonButton_Wiki_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM/wiki/00-Home");
+        }
+
+        private void SelectByFilter()
+        {
             AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
             if (adjacencyCluster == null)
             {
@@ -1269,8 +1346,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             viewportControl?.Select(jSAMObjects_Filtered?.FindAll(x => x is SAMObject)?.Cast<SAMObject>());
         }
-
-        private void RibbonButton_SelectByGuid_Click(object sender, RoutedEventArgs e)
+        
+        private void SelectByGuid()
         {
             string value = null;
 
@@ -1280,6 +1357,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            List<SAMObject> sAMObjects_Selected = viewportControl.SelectedSAMObjects<SAMObject>();
+
             AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
             if (adjacencyCluster == null)
             {
@@ -1288,14 +1367,14 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             using (Core.Windows.Forms.TextBoxForm<string> textBoxControl = new Core.Windows.Forms.TextBoxForm<string>("Guid", "Insert Guids"))
             {
-                if(textBoxControl.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                if (textBoxControl.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
                     return;
                 }
                 value = textBoxControl.Value;
             }
 
-            if(string.IsNullOrWhiteSpace(value))
+            if (string.IsNullOrWhiteSpace(value))
             {
                 return;
             }
@@ -1307,10 +1386,19 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<SAMObject> sAMObjects = new List<SAMObject>();
-            foreach(Guid guid in guids)
+            foreach (Guid guid in guids)
             {
-                SAMObject sAMObject = viewportControl.GetSAMObject<SAMObject>(guid);
-                if(sAMObject == null)
+                SAMObject sAMObject = null;
+                if (sAMObjects_Selected != null && sAMObjects_Selected.Count != 0)
+                {
+                    sAMObject = sAMObjects_Selected.Find(x => x.Guid == guid);
+                }
+                else
+                {
+                    sAMObject = viewportControl.GetSAMObject<SAMObject>(guid);
+                }
+
+                if (sAMObject == null)
                 {
                     continue;
                 }
@@ -1320,44 +1408,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             viewportControl.Select(sAMObjects);
         }
-
-        private void RibbonButton_SolarSimulation_Click(object sender, RoutedEventArgs e)
-        {
-            uIAnalyticalModel?.SolarSimulation(windowHandle);
-        }
-
-        private void RibbonButton_SpaceDiagram_Click(object sender, RoutedEventArgs e)
-        {
-            uIAnalyticalModel?.SpaceDiagram(windowHandle);
-        }
-
-        private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-        private void RibbonButton_TextMap_Click(object sender, RoutedEventArgs e)
-        {
-            TextMapWindow textMapWindow = new TextMapWindow();
-            if (textMapWindow.ShowDialog() != true)
-            {
-                return;
-            }
-        }
-        private void RibbonButton_ViewGeometry_Click(object sender, RoutedEventArgs e)
-        {
-            GeometryWindow geometryWindow = new GeometryWindow();
-            geometryWindow.Show();
-        }
-
-        private void RibbonButton_ViewSettings_Click(object sender, RoutedEventArgs e)
-        {
-            EditViewSettings();
-        }
-        private void RibbonButton_Wiki_Click(object sender, RoutedEventArgs e)
-        {
-            System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM/wiki/00-Home");
-        }
-
+        
         private void SetActiveGuid()
         {
             Guid guid = GetActiveGuid();
@@ -1864,6 +1915,24 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem.IsEnabled = uIAnalyticalModel.HasLegend(GetActiveGuid());
             contextMenu.Items.Add(menuItem);
 
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Select";
+            menuItem.Header = "Select";
+
+            MenuItem menuItem_SelectByFilter = new MenuItem();
+            menuItem_SelectByFilter.Name = "MenuItem_SelectByFilter";
+            menuItem_SelectByFilter.Header = "By Filter";
+            menuItem_SelectByFilter.Click += MenuItem_SelectByFilter_Click;
+            menuItem.Items.Add(menuItem_SelectByFilter);
+
+            MenuItem menuItem_SelectByGuid = new MenuItem();
+            menuItem_SelectByGuid.Name = "MenuItem_SelectByGuid";
+            menuItem_SelectByGuid.Header = "By Guid";
+            menuItem_SelectByGuid.Click += MenuItem_SelectByGuid_Click;
+            menuItem.Items.Add(menuItem_SelectByGuid);
+
+            contextMenu.Items.Add(menuItem);
+
             contextMenu.IsOpen = true;
 
             List<IJSAMObject> jSAMObjects = e.ModelVisual3Ds?.ConvertAll(x => Core.UI.WPF.Query.Tag<IJSAMObject>(x));
@@ -1963,6 +2032,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
         }
+        
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;
@@ -2009,6 +2079,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 uIAnalyticalModel.EditAperture(aperture, new Core.Windows.WindowHandle(this));
             }
         }
+        
         private void ViewportControl_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;
@@ -2047,6 +2118,34 @@ namespace SAM.Analytical.UI.WPF.Windows
                 {
                     //viewportControl.Hint += string.Format(", IC: {0}", internalCondition.Name);
                 }
+            }
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F)
+            {
+                SelectByGuid();
+                return;
+            }
+
+            if (e.Key == Key.F12)
+            {
+                ViewportControl viewportControl = GetActiveViewportControl();
+                if (viewportControl != null)
+                {
+                    List<SAMObject> sAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
+                    if (sAMObjects != null)
+                    {
+                        using (Core.Windows.Forms.JsonForm<SAMObject> jsonForm = new Core.Windows.Forms.JsonForm<SAMObject>(sAMObjects))
+                        {
+                            jsonForm.ShowDialog();
+
+                        }
+                    }
+
+                }
+                return;
             }
         }
     }
