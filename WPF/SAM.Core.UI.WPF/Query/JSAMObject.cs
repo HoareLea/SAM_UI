@@ -17,6 +17,15 @@ namespace SAM.Core.UI.WPF
                 return (T)(object)@object;
             }
 
+            if(@object is ITaggable)
+            {
+                Tag tag = ((ITaggable)@object)?.Tag;
+                if(tag?.Value is T)
+                {
+                    return (T)(object)tag.Value;
+                }
+            }
+
             return default;
         }
 

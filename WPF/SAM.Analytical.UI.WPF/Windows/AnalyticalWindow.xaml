@@ -418,6 +418,7 @@
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Select" Header="Select in View">
                     <RibbonButton x:Name="RibbonButton_SelectByFilter" Label="Select by Filter" />
+                    <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Edit" Header="Edit">
