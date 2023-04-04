@@ -186,7 +186,7 @@ namespace SAM.Analytical.UI
                     max = int.Parse(numberText);
                 }
 
-                if(max.ToString().Length > 5)
+                if (max.ToString().Length > 5)
                 {
                     List<string> values = new List<string>();
                     if (renameSpaceOption.IncludeLevel)
@@ -226,7 +226,8 @@ namespace SAM.Analytical.UI
                 }
                 else
                 {
-                    for (int index = 1; index < max; index++)
+                    int startIndex = renameSpaceOption.StartIndex == -1 ? 1 : renameSpaceOption.StartIndex;
+                    for (int index = startIndex; index < max; index++)
                     {
                         List<string> values = new List<string>();
                         if (renameSpaceOption.IncludeLevel)

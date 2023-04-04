@@ -5,5 +5,7 @@
         IUIFilter UIFilter { get; }
 
         event FilterChangedEventHandler FilterChanged;
+
+        event FilterRemovingEventHandler FilterRemoving;
     }
 }

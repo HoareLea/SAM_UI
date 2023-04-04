@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:SAM.Core.UI.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="210">
-    <Grid>
+    <Grid ContextMenuOpening="Grid_ContextMenuOpening">
         <GroupBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <GroupBox.Header>
                 <ComboBox x:Name="comboBox_FilterLogicalOperator" Width="75" SelectionChanged="comboBox_FilterLogicalOperator_SelectionChanged"/>

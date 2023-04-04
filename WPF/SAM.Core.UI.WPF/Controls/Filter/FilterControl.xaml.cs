@@ -15,6 +15,8 @@ namespace SAM.Core.UI.WPF
 
         public event FilterChangedEventHandler FilterChanged;
 
+        public event FilterRemovingEventHandler FilterRemoving;
+
         public FilterControl()
         {
             InitializeComponent();
@@ -175,6 +177,11 @@ namespace SAM.Core.UI.WPF
 
         private void Button_Clear_Click(object sender, RoutedEventArgs e)
         {
+            foreach (IFilterControl filterControl in Query.FilterControls(grid_Filter))
+            {
+                FilterRemoving?.Invoke(this, new FilterRemovingEventArgs(filterControl));
+            }
+
             grid_Filter.Children.Clear();
             grid_Filter.RowDefinitions.Clear();
         }
@@ -224,11 +231,19 @@ namespace SAM.Core.UI.WPF
         {
             IFilterControl filterControl = Modify.AddFilterControl(grid_Filter, uIFilter);
             filterControl.FilterChanged += FilterControl_FilterChanged;
+            filterControl.FilterRemoving += FilterControl_FilterRemoving;
             if(filterControl != null)
             {
                 FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
             }
 
+        }
+
+        private void FilterControl_FilterRemoving(object sender, FilterRemovingEventArgs e)
+        {
+            grid_Filter.Children.Remove(e.FilterControl as UIElement);
+
+            FilterRemoving?.Invoke(this, new FilterRemovingEventArgs(e.FilterControl));
         }
 
         private void FilterControl_FilterChanged(object sender, FilterChangedEventArgs e)

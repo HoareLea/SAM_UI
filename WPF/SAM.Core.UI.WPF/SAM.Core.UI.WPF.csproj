@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\DependencyProperty.cs" />
+    <Compile Include="Classes\EventArgs\FilterRemovingEventArgs.cs" />
     <Compile Include="Classes\EventArgs\FilterChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectContextMenuOpeningEventArgs.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Create\IFilterControl.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
+    <Compile Include="Delegates\FilterRemovingEventHandler.cs" />
     <Compile Include="Delegates\FilterChangedEventHandler.cs" />
     <Compile Include="Delegates\FilterAddingEventHandler.cs" />
     <Compile Include="Delegates\TextChangedEventHandler.cs" />

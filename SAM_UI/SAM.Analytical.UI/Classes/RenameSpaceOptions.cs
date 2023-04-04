@@ -10,6 +10,8 @@
 
         public bool IncludeLevel { get; set; } = true;
 
+        public int StartIndex { get; set; } = -1;
+
         public string LevelSpeparator { get; set; } = "_";
 
         public string NameSeparator { get; set; } = " ";
@@ -19,6 +21,21 @@
         public RenameSpaceOption()
         {
 
+        }
+
+        public RenameSpaceOption(RenameSpaceOption renameSpaceOption)
+        {
+            if(renameSpaceOption != null)
+            {
+                Position = renameSpaceOption.Position;
+                IncludeName = renameSpaceOption.IncludeName;
+                IncludeNumber = renameSpaceOption.IncludeNumber;
+                IncludeLevel = renameSpaceOption.IncludeLevel;
+                StartIndex = renameSpaceOption.StartIndex;
+                LevelSpeparator = renameSpaceOption.LevelSpeparator;
+                NameSeparator = renameSpaceOption.NameSeparator;
+                DigitsNumber = renameSpaceOption.DigitsNumber;
+            }
         }
 
     }

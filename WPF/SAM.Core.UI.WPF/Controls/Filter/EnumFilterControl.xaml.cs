@@ -11,7 +11,9 @@ namespace SAM.Core.UI.WPF
     {
         private UIEnumFilter uIEnumFilter;
 
-        public event FilterChangedEventHandler  FilterChanged;
+        public event FilterChangedEventHandler FilterChanged;
+
+        public event FilterRemovingEventHandler FilterRemoving;
 
         public EnumFilterControl()
         {
@@ -120,6 +122,24 @@ namespace SAM.Core.UI.WPF
         private void comboBox_Enum_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIEnumFilter));
+        }
+
+        private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            ContextMenu = new ContextMenu();
+
+            MenuItem menuItem = null;
+
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Remove";
+            menuItem.Header = "Remove";
+            menuItem.Click += MenuItem_Remove_Click;
+            ContextMenu.Items.Add(menuItem);
+        }
+
+        private void MenuItem_Remove_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            FilterRemoving?.Invoke(this, new FilterRemovingEventArgs(this));
         }
     }
 }

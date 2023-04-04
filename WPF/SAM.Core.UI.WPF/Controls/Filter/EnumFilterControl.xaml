@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:SAM.Core.UI.WPF"
              mc:Ignorable="d" 
              d:DesignHeight="70" d:DesignWidth="270">
-    <Grid>
+    <Grid ContextMenuOpening="Grid_ContextMenuOpening">
         <GroupBox x:Name="groupBox_Main" Header="Text" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <Grid>
                 <ComboBox x:Name="comboBox_Enum" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="184" SelectionChanged="comboBox_Enum_SelectionChanged"/>

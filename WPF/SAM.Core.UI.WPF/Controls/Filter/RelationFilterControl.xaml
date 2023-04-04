@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="100" d:DesignWidth="210">
     <Grid>
-        <Grid x:Name="grid_Filters" Margin="0,0,0,0">
+        <Grid x:Name="grid_Filters" Margin="0,0,0,0" ContextMenuOpening="grid_Filters_ContextMenuOpening">
 
         </Grid>
     </Grid>

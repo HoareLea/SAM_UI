@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace SAM.Core.UI.WPF
 {
@@ -10,6 +12,8 @@ namespace SAM.Core.UI.WPF
         private UITextFilter uITextFilter;
 
         public event FilterChangedEventHandler FilterChanged;
+
+        public event FilterRemovingEventHandler FilterRemoving;
 
         public TextFilterControl()
         {
@@ -122,6 +126,24 @@ namespace SAM.Core.UI.WPF
         private void checkBox_Inverted_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
+
+        private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            ContextMenu = new ContextMenu();
+
+            MenuItem menuItem = null;
+
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_Remove";
+            menuItem.Header = "Remove";
+            menuItem.Click += MenuItem_Remove_Click;
+            ContextMenu.Items.Add(menuItem);
+        }
+
+        private void MenuItem_Remove_Click(object sender, RoutedEventArgs e)
+        {
+            FilterRemoving?.Invoke(this, new FilterRemovingEventArgs(this));
         }
     }
 }

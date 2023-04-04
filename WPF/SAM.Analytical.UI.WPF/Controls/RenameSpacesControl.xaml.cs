@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
@@ -23,15 +24,29 @@ namespace SAM.Analytical.UI.WPF
 
         private class SpaceData
         {
+            public Guid Guid { get; }
+
             [ColumnName("Old name")]
             public string Name_Old { get; } = null;
 
             [ColumnName("New name")]
-            public string Name_New { get; } = null;
+            public string Name_New { get; set; } = null;
 
-            public SpaceData(string name_Old, string name_New)
+            public SpaceData(Guid guid, string name_Old, string name_New)
             {
+                Guid = guid;
                 Name_Old = name_Old;
+                Name_New = name_New;
+            }
+
+            public SpaceData(Space space, string name_New)
+            {
+                if(space != null)
+                {
+                    Guid = space.Guid;
+                    Name_Old = space.Name;
+                }
+
                 Name_New = name_New;
             }
         }
@@ -106,28 +121,59 @@ namespace SAM.Analytical.UI.WPF
             Core.Windows.EventHandler.ControlText_IntegerOnly(sender, e);
         }
 
+        private List<SpaceData> GetSpaceDatas()
+        {
+            if(dataGrid?.ItemsSource == null)
+            {
+                return null;
+            }
+
+            return dataGrid.ItemsSource.Cast<SpaceData>().ToList();
+        }
+
         public void Apply()
         {
-            if(Rename)
+            Dictionary<Space, string> dictionary = GetNameDictionary();
+            if(dictionary != null)
             {
-                UIAnalyticalModel.RenameSpaces(Spaces, textBox_Name.Text, RenameSpaceOption);
-            }
-            else if(Replace)
-            {
-                UIAnalyticalModel.RenameSpaces(Spaces, textBox_Replace_Old.Text, textBox_Replace_New.Text);
-            }
-            else if (Trim)
-            {
-                int count = TrimCount;
-                if(count == -1)
+                List<SpaceData> spaceDatas = GetSpaceDatas();
+                if(spaceDatas != null)
                 {
-                    UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimText);
+                    foreach(SpaceData spaceData in spaceDatas)
+                    {
+                        Space space = dictionary.Keys.ToList().Find(x => x.Guid == spaceData.Guid);
+                        if(space != null && spaceData.Name_New != dictionary[space])
+                        {
+                            dictionary[space] = spaceData.Name_New;
+                        }
+                    }
                 }
-                else
-                {
-                    UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimCount);
-                }
+
+                UIAnalyticalModel.RenameSpaces(dictionary);
             }
+
+
+
+            //if (Rename)
+            //{
+            //    UIAnalyticalModel.RenameSpaces(Spaces, textBox_Name.Text, RenameSpaceOption);
+            //}
+            //else if(Replace)
+            //{
+            //    UIAnalyticalModel.RenameSpaces(Spaces, textBox_Replace_Old.Text, textBox_Replace_New.Text);
+            //}
+            //else if (Trim)
+            //{
+            //    int count = TrimCount;
+            //    if(count == -1)
+            //    {
+            //        UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimText);
+            //    }
+            //    else
+            //    {
+            //        UIAnalyticalModel.RenameSpaces(Spaces, TrimPosition, TrimCount);
+            //    }
+            //}
 
             Refresh();
         }
@@ -334,6 +380,20 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public int StartIndex
+        {
+            get
+            {
+                bool uniqueNumber = checkBox_UniqueNumber.IsChecked != null && checkBox_UniqueNumber.IsChecked.HasValue && checkBox_UniqueNumber.IsChecked.Value;
+                return uniqueNumber ? 1 : -1;
+            }
+
+            set
+            {
+                checkBox_UniqueNumber.IsChecked = value != -1;
+            }
+        }
+
         public Position TrimPosition
         {
             get
@@ -405,6 +465,7 @@ namespace SAM.Analytical.UI.WPF
                     LevelSpeparator = LevelSpeparator,
                     NameSeparator = NameSpeparator,
                     DigitsNumber = DigitsNumber,
+                    StartIndex = StartIndex,
                 };
             }
 
@@ -456,6 +517,7 @@ namespace SAM.Analytical.UI.WPF
                 groupBox_Number.IsEnabled = true;
                 checkBox_IncludeName.IsEnabled = true;
                 textBox_Name.IsEnabled = true;
+                checkBox_UniqueNumber.IsEnabled = true;
             }
         }
 
@@ -481,6 +543,7 @@ namespace SAM.Analytical.UI.WPF
                 groupBox_Number.IsEnabled = false;
                 checkBox_IncludeName.IsEnabled = false;
                 textBox_Name.IsEnabled = false;
+                checkBox_UniqueNumber.IsEnabled = false;
             }
         }
 
@@ -506,8 +569,10 @@ namespace SAM.Analytical.UI.WPF
                 groupBox_Number.IsEnabled = false;
                 checkBox_IncludeName.IsEnabled = false;
                 textBox_Name.IsEnabled = false;
+                checkBox_UniqueNumber.IsEnabled = false;
             }
         }
+
 
         private void TextBox_Trim_Text_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -527,10 +592,13 @@ namespace SAM.Analytical.UI.WPF
         {
             PropertyDescriptor propertyDescriptor = e.PropertyDescriptor as PropertyDescriptor;
             ColumnNameAttribute columnNameAttribute = propertyDescriptor.Attributes[typeof(ColumnNameAttribute)] as ColumnNameAttribute;
-            if (columnNameAttribute != null)
+            if (columnNameAttribute == null)
             {
-                e.Column.Header = columnNameAttribute.Name;
+                e.Cancel = true;
+                return;
             }
+
+            e.Column.Header = columnNameAttribute.Name;
         }
 
         private void Refresh()
@@ -560,7 +628,7 @@ namespace SAM.Analytical.UI.WPF
                     space = keyValuePair.Key;
                 }
 
-                spaceDatas.Add(new SpaceData(space?.Name, keyValuePair.Value));
+                spaceDatas.Add(new SpaceData(space, keyValuePair.Value));
             }
 
             dataGrid.ItemsSource = spaceDatas;

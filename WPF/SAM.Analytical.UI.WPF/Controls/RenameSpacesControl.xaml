@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="460" d:DesignWidth="600" Loaded="UserControl_Loaded">
     <Grid>
-        <DataGrid x:Name="dataGrid" Margin="330,10,10,10" HorizontalAlignment="Stretch" AutoGeneratingColumn="dataGrid_AutoGeneratingColumn" IsReadOnly="True">
+        <DataGrid x:Name="dataGrid" Margin="330,10,10,10" HorizontalAlignment="Stretch" AutoGeneratingColumn="dataGrid_AutoGeneratingColumn" IsReadOnly="False">
         </DataGrid>
         <GroupBox HorizontalAlignment="Left" Height="247" Margin="10,10,0,0" VerticalAlignment="Top" Width="315">
             <GroupBox.Header>
@@ -38,14 +38,15 @@
                         </Grid.ColumnDefinitions>
                         <RadioButton x:Name="radioButton_Prefix" Grid.Column="0" Content="Prefix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Center" IsChecked="True" Click="checkBox_Click"/>
                         <RadioButton x:Name="radioButton_Sufix" Grid.Column="1" Content="Sufix" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Center" Click="checkBox_Click"/>
-                        <CheckBox x:Name="checkBox_IncludeLevel" Grid.Row="1" Grid.Column="0" Content="Level" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="True" Click="checkBox_Click"></CheckBox>
+                        <CheckBox x:Name="checkBox_IncludeLevel" Grid.Row="1" Grid.Column="0" Content="Level" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" IsChecked="True" Click="checkBox_Click"></CheckBox>
                         <TextBox Grid.Row="1" Grid.Column="1" Margin="10,3,-60,3" Visibility="Hidden"/>
                         <Label Grid.Row="2" Grid.Column="0"  Content="Combine By:" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
-                        <TextBox x:Name="textBox_LevelSeparator" Grid.Row="2" Grid.Column="1" Margin="10,3,-60,3" Text="_" TextChanged="textBox_TextChanged"/>
+                        <TextBox x:Name="textBox_LevelSeparator" Grid.Row="2" Grid.Column="1" Margin="10,3,-10,3" Text="_" TextChanged="textBox_TextChanged"/>
                         <Label Grid.Row="3" Grid.Column="0"  Content="Number of digits:" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
-                        <TextBox x:Name="textBox_DigitsNumber" Grid.Row="3" Grid.Column="1" Margin="10,3.4,-60,3" Text="3" TextChanged="textBox_TextChanged"/>
+                        <TextBox x:Name="textBox_DigitsNumber" Grid.Row="3" Grid.Column="1" Margin="10,3.4,-10,3" Text="3" TextChanged="textBox_TextChanged"/>
                         <Label Grid.Row="4" Grid.Column="0"  Content="Division character:" VerticalAlignment="Center" HorizontalAlignment="Left"></Label>
-                        <TextBox x:Name="textBox_NameSeparator" Grid.Row="4" Grid.Column="1" Margin="10,3.4,-60,3" Text=" " TextChanged="textBox_TextChanged"/>
+                        <TextBox x:Name="textBox_NameSeparator" Grid.Row="4" Grid.Column="1" Margin="10,3.4,-10,3" Text=" " TextChanged="textBox_TextChanged"/>
+                        <CheckBox x:Name="checkBox_UniqueNumber" Grid.Row="1" Grid.Column="1" Content="Unique Number" VerticalAlignment="Center" HorizontalAlignment="Left" IsChecked="True" Click="checkBox_Click" Margin="10,5.6"/>
                     </Grid>
                 </GroupBox>
             </Grid>

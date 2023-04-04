@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Analytical.UI
 {
@@ -100,6 +101,48 @@ namespace SAM.Analytical.UI
             return result;
         }
 
+        public static Dictionary<Space, string> RenameSpaces(this UIAnalyticalModel uIAnalyticalModel, Dictionary<Space, string> nameDictionary)
+        {
+            if(nameDictionary == null || uIAnalyticalModel == null)
+            {
+                return null;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return null;
+            }
+
+            AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return null;
+            }
+
+            Dictionary<Space, string> result = new Dictionary<Space, string>();
+            foreach (KeyValuePair<Space, string> keyValuePair in nameDictionary)
+            {
+                if(keyValuePair.Key == null)
+                {
+                    continue;
+                }
+
+                Space space = adjacencyCluster.GetObject<Space>(keyValuePair.Key.Guid);
+                if(space == null)
+                {
+                    continue;
+                }
+
+                space = new Space(space, keyValuePair.Value, space.Location);
+                adjacencyCluster.AddObject(space);
+                result[new Space(space)] = keyValuePair.Value;
+            }
+
+            uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster), new AnalyticalModelModification(result.Keys));
+            return result;
+        }
+
         public static Dictionary<Space, string> RenameSpaces(this AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, string name, RenameSpaceOption renameSpaceOption)
         {
             if (adjacencyCluster == null)
@@ -108,8 +151,16 @@ namespace SAM.Analytical.UI
             }
 
             Dictionary<Space, string> result = new Dictionary<Space, string>();
-            foreach (Space space in spaces)
+
+            for(int i=0; i < spaces.Count(); i++)
             {
+                if (renameSpaceOption != null && renameSpaceOption.StartIndex != -1)
+                {
+                    renameSpaceOption = new RenameSpaceOption(renameSpaceOption) { StartIndex = i + 1 };
+                }
+
+                Space space = spaces.ElementAt(i);
+
                 string newName = adjacencyCluster.RenameSpace(space, name, renameSpaceOption);
                 if (newName != null)
                 {
