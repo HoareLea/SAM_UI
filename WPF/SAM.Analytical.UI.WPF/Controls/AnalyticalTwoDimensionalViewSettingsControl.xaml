@@ -25,5 +25,14 @@
         <CheckBox x:Name="checkBox_UseDefaultName" Content="Default Name" HorizontalAlignment="Left" Margin="331,24,0,0" VerticalAlignment="Top" Checked="checkBox_UseDefaultName_Checked" Unchecked="checkBox_UseDefaultName_Checked"/>
         <Label x:Name="label_Group" Content="Group:" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="comboBox_Group" HorizontalAlignment="Left" Margin="89,49,0,0" VerticalAlignment="Top" Width="209" Height="21" IsEditable="True"/>
+        <GroupBox HorizontalAlignment="Left" Height="122" Margin="332,79,0,0" VerticalAlignment="Top" Width="108">
+            <GroupBox.Header>
+                <CheckBox x:Name="checkBox_TextVisibility" Content="Text"/>
+            </GroupBox.Header>
+            <Grid>
+                <Label Content="Font Size:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,19,0,0"/>
+                <TextBox x:Name="textBox_TextSize" HorizontalAlignment="Left" Height="20" Margin="10,50,0,0" TextWrapping="NoWrap" Text="1" VerticalAlignment="Top" Width="76" TextInput="textBox_TextSize_TextInput"/>
+            </Grid>
+        </GroupBox>
     </Grid>
 </UserControl>

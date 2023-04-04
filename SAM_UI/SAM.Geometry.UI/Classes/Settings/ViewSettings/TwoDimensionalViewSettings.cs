@@ -8,11 +8,13 @@ namespace SAM.Geometry.UI
     public class TwoDimensionalViewSettings : ViewSettings
     {
         private Plane plane;
+        private TextAppearance textAppearance;
 
-        public TwoDimensionalViewSettings(Guid guid, string name, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+        public TwoDimensionalViewSettings(Guid guid, string name, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types, TextAppearance textAppearance)
             :base(guid, name, appearanceSettings, types)
         {
             this.plane = plane;
+            this.textAppearance = textAppearance;
         }
 
         public TwoDimensionalViewSettings(JObject jObject)
@@ -29,6 +31,7 @@ namespace SAM.Geometry.UI
                 if(twoDimensionalViewSettings.plane != null)
                 {
                     plane = new Plane(twoDimensionalViewSettings.plane);
+                    textAppearance = twoDimensionalViewSettings.textAppearance == null ? null : new TextAppearance(twoDimensionalViewSettings.textAppearance);
                 }
             }
         }
@@ -41,6 +44,7 @@ namespace SAM.Geometry.UI
                 if (twoDimensionalViewSettings.plane != null)
                 {
                     plane = new Plane(twoDimensionalViewSettings.plane);
+                    textAppearance = twoDimensionalViewSettings.textAppearance == null ? null : new TextAppearance(twoDimensionalViewSettings.textAppearance);
                 }
             }
         }
@@ -53,6 +57,7 @@ namespace SAM.Geometry.UI
                 if (twoDimensionalViewSettings.plane != null)
                 {
                     plane = new Plane(twoDimensionalViewSettings.plane);
+                    textAppearance = twoDimensionalViewSettings.textAppearance == null ? null : new TextAppearance(twoDimensionalViewSettings.textAppearance);
                 }
             }
         }
@@ -69,6 +74,18 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public TextAppearance TextAppearance
+        {
+            get
+            {
+                return textAppearance;
+            }
+            set
+            {
+                textAppearance = value;
+            }
+        }
+
         public override bool FromJObject(JObject jObject)
         {
             if(!base.FromJObject(jObject))
@@ -79,6 +96,11 @@ namespace SAM.Geometry.UI
             if (jObject.ContainsKey("Plane"))
             {
                 plane = new Plane(jObject.Value<JObject>("Plane"));
+            }
+
+            if (jObject.ContainsKey("TextAppearance"))
+            {
+                textAppearance = new TextAppearance(jObject.Value<JObject>("TextAppearance"));
             }
 
             return true;
@@ -95,6 +117,11 @@ namespace SAM.Geometry.UI
             if(plane != null)
             {
                 jObject.Add("Plane", plane.ToJObject());
+            }
+
+            if (textAppearance != null)
+            {
+                jObject.Add("TextAppearance", textAppearance.ToJObject());
             }
 
             return jObject;

@@ -106,6 +106,16 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Panel.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Panel));
             checkBox_Visibilty_Aperture.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Aperture));
 
+            TextAppearance textAppearance = analyticalTwoDimensionalViewSettings.TextAppearance;
+            if(textAppearance == null)
+            {
+                textAppearance = Geometry.UI.Query.DefaultTextAppearance();
+            }
+
+            checkBox_TextVisibility.IsChecked = textAppearance.Opacity != 0;
+
+            textBox_TextSize.Text = textAppearance.Height.ToString();
+
             spaceAppearanceSettingsControl.SpaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
 
             textBox_Name.Text = analyticalTwoDimensionalViewSettings.Name;
@@ -153,16 +163,26 @@ namespace SAM.Analytical.UI.WPF
 
             result.SetTypes(types);
 
+            TextAppearance textAppearance = Geometry.UI.Query.DefaultTextAppearance();
+            textAppearance.Opacity = checkBox_TextVisibility.IsChecked != null && checkBox_TextVisibility.IsChecked.HasValue && checkBox_TextVisibility.IsChecked.Value ? 1 : 0;
+
+            if (Core.Query.TryConvert(textBox_TextSize.Text, out double textSize))
+            {
+                textAppearance.Height = textSize;
+            }
+
+            result.TextAppearance = textAppearance;
+
             result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
 
             result.Plane = Geometry.Spatial.Create.Plane(elevationControl.Elevation);
 
-            if(checkBox_UseDefaultName.IsChecked != null && checkBox_UseDefaultName.IsChecked.HasValue)
+            if (checkBox_UseDefaultName.IsChecked != null && checkBox_UseDefaultName.IsChecked.HasValue)
             {
                 result.SetValue(ViewSettingsParameter.UseDefaultName, checkBox_UseDefaultName.IsChecked.Value);
             }
 
-            if(!string.IsNullOrWhiteSpace(comboBox_Group.Text))
+            if (!string.IsNullOrWhiteSpace(comboBox_Group.Text))
             {
                 result.SetValue(ViewSettingsParameter.Group, comboBox_Group.Text);
             }
@@ -190,6 +210,11 @@ namespace SAM.Analytical.UI.WPF
             {
                 textBox_Name.Text = Query.DefaultName(elevationControl.SelectedLevel, elevationControl.Elevation, spaceAppearanceSettingsControl.SpaceAppearanceSettings);
             }
+        }
+
+        private void textBox_TextSize_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
+        {
+            Core.Windows.EventHandler.ControlText_NumberOnly(sender, e);
         }
     }
 }

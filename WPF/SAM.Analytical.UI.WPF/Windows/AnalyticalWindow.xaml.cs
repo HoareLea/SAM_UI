@@ -1057,7 +1057,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) });
+            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) }, Geometry.UI.Query.DefaultTextAppearance());
             analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("Name");
 
             ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(analyticalTwoDimensionalViewSettings, analyticalModel);
