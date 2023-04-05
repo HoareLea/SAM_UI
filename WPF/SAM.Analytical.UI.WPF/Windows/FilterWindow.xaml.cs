@@ -25,7 +25,6 @@ namespace SAM.Analytical.UI.WPF
             filterControl.FilterAdding += FilterControl_FilterAdding;
             filterControl.FilterChanged += FilterControl_FilterChanged;
 
-
             filtersControl.SelectionChanged += FiltersControl_SelectionChanged;
             filtersControl.FilterAdding += FiltersControl_FilterAdding;
         }

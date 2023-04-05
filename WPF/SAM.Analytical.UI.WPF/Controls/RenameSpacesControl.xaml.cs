@@ -133,16 +133,17 @@ namespace SAM.Analytical.UI.WPF
 
         public void Apply()
         {
-            Dictionary<Space, string> dictionary = GetNameDictionary();
-            if(dictionary != null)
+            AdjacencyCluster adjacencyCluster = UIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if(adjacencyCluster != null)
             {
+                Dictionary<Space, string> dictionary = new Dictionary<Space, string>();
                 List<SpaceData> spaceDatas = GetSpaceDatas();
-                if(spaceDatas != null)
+                if (spaceDatas != null)
                 {
-                    foreach(SpaceData spaceData in spaceDatas)
+                    foreach (SpaceData spaceData in spaceDatas)
                     {
-                        Space space = dictionary.Keys.ToList().Find(x => x.Guid == spaceData.Guid);
-                        if(space != null && spaceData.Name_New != dictionary[space])
+                        Space space = adjacencyCluster.GetObject<Space>(spaceData.Guid);
+                        if(space != null)
                         {
                             dictionary[space] = spaceData.Name_New;
                         }
@@ -151,8 +152,6 @@ namespace SAM.Analytical.UI.WPF
 
                 UIAnalyticalModel.RenameSpaces(dictionary);
             }
-
-
 
             //if (Rename)
             //{

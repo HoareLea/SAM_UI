@@ -230,10 +230,10 @@ namespace SAM.Core.UI.WPF
         private void Add(IUIFilter uIFilter)
         {
             IFilterControl filterControl = Modify.AddFilterControl(grid_Filter, uIFilter);
-            filterControl.FilterChanged += FilterControl_FilterChanged;
-            filterControl.FilterRemoving += FilterControl_FilterRemoving;
             if(filterControl != null)
             {
+                filterControl.FilterChanged += FilterControl_FilterChanged;
+                filterControl.FilterRemoving += FilterControl_FilterRemoving;
                 FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
             }
 
