@@ -14,8 +14,8 @@ namespace SAM.Core.UI
             List<IUIFilter> result = new List<IUIFilter>();
             if (typeof(ISAMObject).IsAssignableFrom(type))
             {
-                result.Add(new UITextFilter(string.Format("{0} Name", type.Name), type, new NameFilter(TextComparisonType.Equals, string.Empty)));
-                result.Add(new UITextFilter(string.Format("{0} Guid", type.Name), type, new GuidFilter(TextComparisonType.Equals, string.Empty)));
+                result.Add(new UITextFilter(string.Format("{0} Name", type.Name), type, new NameFilter(TextComparisonType.Contains, string.Empty)));
+                result.Add(new UITextFilter(string.Format("{0} Guid", type.Name), type, new GuidFilter(TextComparisonType.Contains, string.Empty)));
             }
 
             if(typeof(ParameterizedSAMObject).IsAssignableFrom(type))
