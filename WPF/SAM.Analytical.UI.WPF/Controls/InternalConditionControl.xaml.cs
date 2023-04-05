@@ -1436,8 +1436,14 @@ namespace SAM.Analytical.UI.WPF
             InternalConditionLibrary internalConditionLibrary = new InternalConditionLibrary("Internal Condition Library");
             adjacencyCluster?.GetInternalConditions(false, true)?.ToList().ForEach(x => internalConditionLibrary.Add(x));
 
+            List<InternalCondition> internalConditions = internalConditionLibrary.GetInternalConditions();
+            if(internalConditions == null)
+            {
+                return;
+            }
+
             HashSet<Enum> enums = new HashSet<Enum>();
-            foreach (InternalCondition internalCondition_Temp in internalConditionLibrary.GetInternalConditions())
+            foreach (InternalCondition internalCondition_Temp in internalConditions)
             {
                 if (internalCondition_Temp == null)
                 {

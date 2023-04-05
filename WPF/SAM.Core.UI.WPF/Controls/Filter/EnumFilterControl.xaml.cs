@@ -76,7 +76,11 @@ namespace SAM.Core.UI.WPF
                 return result;
             }
             
-            if(Core.Query.TryGetEnum(comboBox_Enum.Text, type, out Enum @enum))
+            if(Core.Query.TryGetEnum(comboBox_Enum?.SelectedItem?.ToString(), type, out Enum @enum))
+            {
+                enumFilter.Enum = @enum;
+            }
+            else if (Core.Query.TryGetEnum(comboBox_Enum.Text, type, out @enum))
             {
                 enumFilter.Enum = @enum;
             }
