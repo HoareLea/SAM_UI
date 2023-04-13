@@ -1272,7 +1272,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         private void RibbonButton_TextMap_Click(object sender, RoutedEventArgs e)
