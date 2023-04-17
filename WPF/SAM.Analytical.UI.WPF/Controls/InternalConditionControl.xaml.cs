@@ -1179,14 +1179,13 @@ namespace SAM.Analytical.UI.WPF
             }
 
             Profile profile = Analytical.Windows.Modify.SelectProfile(profileLibrary, profileType);
-            if (profile == null)
-            {
-                return;
-            }
 
             AnalyticalModel = new AnalyticalModel(AnalyticalModel, AnalyticalModel.AdjacencyCluster, AnalyticalModel.MaterialLibrary, profileLibrary);
-            
-            multipleValueTextBoxControl.Value = profile.Name;
+
+            if (profile != null)
+            {
+                multipleValueTextBoxControl.Value = profile.Name;
+            }
         }
 
         private void button_SelectHeatingProfile_Click(object sender, RoutedEventArgs e)
