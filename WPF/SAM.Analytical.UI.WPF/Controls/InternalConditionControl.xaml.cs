@@ -1206,6 +1206,7 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_OccupancyProfile_Name, ProfileType.Occupancy);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_OccupancyProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.OccupancyProfileName, multipleValueTextBoxControl_OccupancyProfile_Name.Value));
@@ -1219,6 +1220,7 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_EquipmentSensibleProfile_Name, ProfileType.EquipmentSensible);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_EquipmentSensibleProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.EquipmentSensibleProfileName, multipleValueTextBoxControl_EquipmentSensibleProfile_Name.Value));
@@ -1231,7 +1233,8 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_HumidificationProfile_Name, ProfileType.Humidification);
 
-            if(internalConditionDatas != null && !multipleValueTextBoxControl_HumidificationProfile_Name.VarySet)
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_HumidificationProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.HumidificationProfileName, multipleValueTextBoxControl_HumidificationProfile_Name.Value));
             }
@@ -1243,6 +1246,7 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_InfiltrationProfile_Name, ProfileType.Infiltration);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_InfiltrationProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.InfiltrationProfileName, multipleValueTextBoxControl_InfiltrationProfile_Name.Value));
@@ -1255,6 +1259,7 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_CoolingProfile_Name, ProfileType.Cooling);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_CoolingProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.CoolingProfileName, multipleValueTextBoxControl_CoolingProfile_Name.Value));
@@ -1265,8 +1270,10 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_SelectLightingProfile_Click(object sender, RoutedEventArgs e)
         {
+            
             SetProfile(multipleValueTextBoxControl_LightingProfile_Name, ProfileType.Lighting);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_LightingProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.LightingProfileName, multipleValueTextBoxControl_LightingProfile_Name.Value));
@@ -1279,6 +1286,7 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_EquipmentLatentProfile_Name, ProfileType.EquipmentLatent);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_EquipmentLatentProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.EquipmentLatentProfileName, multipleValueTextBoxControl_EquipmentLatentProfile_Name.Value));
@@ -1297,6 +1305,7 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_PollutantProfile_Name, ProfileType.Pollutant);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_PollutantProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.PollutantProfileName, multipleValueTextBoxControl_PollutantProfile_Name.Value));
@@ -1309,6 +1318,7 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_DehumidificationProfile_Name, ProfileType.Dehumidification);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_DehumidificationProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.DehumidificationProfileName, multipleValueTextBoxControl_DehumidificationProfile_Name.Value));
