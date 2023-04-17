@@ -1193,6 +1193,7 @@ namespace SAM.Analytical.UI.WPF
         {
             SetProfile(multipleValueTextBoxControl_HeatingProfile_Name, ProfileType.Heating);
 
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
             if (internalConditionDatas != null && !multipleValueTextBoxControl_HeatingProfile_Name.VarySet)
             {
                 internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.HeatingProfileName, multipleValueTextBoxControl_HeatingProfile_Name.Value));
