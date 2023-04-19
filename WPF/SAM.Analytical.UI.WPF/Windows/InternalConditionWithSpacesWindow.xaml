@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         xmlns:WPF="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF" x:Class="SAM.Analytical.UI.WPF.InternalConditionWithSpacesWindow"
         mc:Ignorable="d"
-        Title="Internal Condition" Height="780" Width="1440">
+        Title="Internal Condition" Height="780" Width="1440" ResizeMode="NoResize">
     <Grid>
 
         <Grid.RowDefinitions>
