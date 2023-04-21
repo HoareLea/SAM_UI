@@ -247,12 +247,38 @@ namespace SAM.Analytical.UI.WPF
                     if (converted)
                     {
                         AnalyticalModel analyticalModel_TBD = Tas.Convert.ToSAM(path_TBD, false);
+                        if(analyticalModel != null && analyticalModel_TBD != null)
+                        {
+                            AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
+                            List<Space> spaces_TBD = analyticalModel_TBD.AdjacencyCluster?.GetSpaces();
+                            if(spaces_TBD != null && spaces_TBD.Count != 0)
+                            {
+                                List<Space> spaces = adjacencyCluster.GetSpaces();
+                                foreach(Space space in spaces)
+                                {
+                                    Space space_TBD = spaces_TBD.Find(x => x?.Name == space?.Name);
+                                    if(space_TBD == null)
+                                    {
+                                        continue;
+                                    }
+
+                                    if(space_TBD.TryGetValue(Tas.SpaceParameter.ZoneGuid, out Guid guid))
+                                    {
+                                        space.SetValue(Tas.SpaceParameter.ZoneGuid, guid);
+                                        adjacencyCluster.AddObject(space);
+                                    }
+                                }
+                            }
+
+                            analyticalModel = new AnalyticalModel(analyticalModel, adjacencyCluster);
+                        }
+
 
                         if (createTM59)
                         {
                             if (Tas.TM59.Modify.TryCreatePath(path_TBD, out string path_TM59))
                             {
-                                Tas.TM59.Convert.ToXml(analyticalModel_TBD, path_TM59, new TM59Manager(textMap));
+                                Tas.TM59.Convert.ToXml(analyticalModel, path_TM59, new TM59Manager(textMap));
                             }
                         }
 
