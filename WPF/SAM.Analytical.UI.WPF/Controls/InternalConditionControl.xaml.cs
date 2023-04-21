@@ -1767,13 +1767,22 @@ namespace SAM.Analytical.UI.WPF
         private void checkBox_VentilationProfile_Click(object sender, RoutedEventArgs e)
         {
 
-            //if (checkBox_HeatingProfile.IsChecked != null && checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
-            //{
-            //    List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+            if (checkBox_VentilationProfile.IsChecked != null && checkBox_VentilationProfile.IsChecked.HasValue && checkBox_VentilationProfile.IsChecked.Value)
+            {
+                List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
 
-            //    multipleValueTextBoxControl_HeatingProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Heating)));
-            //    multipleValueTextBoxControl_HeatingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.HeatingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
-            //}
+                multipleValueTextBoxControl_VentilationProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Ventilation)));
+
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.SupplyAirFlowPerPerson, 1000));
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.SupplyAirFlowPerArea, 1000));
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.SupplyAirFlow, 1000));
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.SupplyAirChangesPerHour));
+
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirFlowPerPerson, 1000));
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirFlowPerArea, 1000));
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirFlow, 1000));
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirChangesPerHour));
+            }
         }
 
         private void checkBox_HeatingProfile_Click(object sender, RoutedEventArgs e)
