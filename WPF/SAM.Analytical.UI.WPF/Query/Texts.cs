@@ -16,6 +16,11 @@ namespace SAM.Analytical.UI.WPF
             return Texts(internalConditionDatas, (Enum)internalConditionParameter);
         }
 
+        public static List<string> Texts(this IEnumerable<InternalConditionData> internalConditionDatas, InternalConditionParameter internalConditionParameter, double factor, double tolerance = Core.Tolerance.Distance)
+        {
+            return Texts(internalConditionDatas, (Enum)internalConditionParameter, factor, tolerance);
+        }
+
         public static List<string> Texts(this IEnumerable<InternalCondition> internalConditions, InternalConditionParameter internalConditionParameter)
         {
             if(internalConditions == null)
@@ -34,6 +39,38 @@ namespace SAM.Analytical.UI.WPF
                 if (!internalCondition.TryGetValue(internalConditionParameter, out string value, true))
                 {
                     continue;
+                }
+
+                result.Add(value);
+            }
+
+
+            return result;
+        }
+
+        public static List<string> Texts(this IEnumerable<InternalCondition> internalConditions, InternalConditionParameter internalConditionParameter, double factor, double tolerance = Core.Tolerance.Distance)
+        {
+            if (internalConditions == null)
+            {
+                return null;
+            }
+
+            List<string> result = new List<string>();
+            foreach (InternalCondition internalCondition in internalConditions)
+            {
+                if (internalCondition == null)
+                {
+                    continue;
+                }
+
+                if (!internalCondition.TryGetValue(internalConditionParameter, out string value, true))
+                {
+                    continue;
+                }
+
+                if (Core.Query.TryConvert(value, out double @double) && !double.IsNaN(@double))
+                {
+                    value = Core.Query.Round(@double * factor, tolerance).ToString();
                 }
 
                 result.Add(value);
@@ -83,6 +120,36 @@ namespace SAM.Analytical.UI.WPF
                 }
                 else
                 {
+                    result.Add(value);
+                }
+
+
+            }
+
+            return result.ToList();
+        }
+
+        private static List<string> Texts(this IEnumerable<InternalConditionData> internalConditionDatas, Enum @enum, double factor, double tolerance = Core.Tolerance.Distance)
+        {
+            if (internalConditionDatas == null)
+            {
+                return null;
+            }
+
+            HashSet<string> result = new HashSet<string>();
+            foreach (InternalConditionData internalConditionData in internalConditionDatas)
+            {
+                if (!internalConditionData.TryGetValue(@enum as dynamic, out string value, true))
+                {
+                    result.Add(null);
+                }
+                else
+                {
+                    if(Core.Query.TryConvert(value, out double @double) && !double.IsNaN(@double))
+                    {
+                        value = Core.Query.Round(@double * factor, tolerance).ToString();
+                    }
+                    
                     result.Add(value);
                 }
 

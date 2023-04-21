@@ -158,7 +158,7 @@
                 <Label Content="[W/p]" HorizontalAlignment="Left" Margin="167,76,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_LightingProfile_LightingControlFunction" HorizontalAlignment="Stretch" Height="23" Margin="214,113,10,0" VerticalAlignment="Top"/>
                 <Label Content="Function:" HorizontalAlignment="Left" Margin="212,82,0,0" VerticalAlignment="Top"/>
-                <Button x:Name="button_ViewLightingProfile_Copy" Content="View" HorizontalAlignment="Left" Margin="358,85,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewLightingProfile_Copy_Click"/>
+                <Button x:Name="button_ViewLightingProfile_Copy" Content="View" HorizontalAlignment="Left" Margin="358,85,0,0" VerticalAlignment="Top" Width="60"/>
             </Grid>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="100" Margin="453,399,0,0" VerticalAlignment="Top" Width="444">
@@ -193,14 +193,8 @@
                 <Button Content="Select" HorizontalAlignment="Left" Margin="242,80,0,0" VerticalAlignment="Top" Width="60"/>
                 <Label Content="Supply Unit:" HorizontalAlignment="Left" Margin="10,137,0,0" VerticalAlignment="Top"/>
                 <TextBox HorizontalAlignment="Stretch" Height="23" Margin="93,138,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
-                <Label Content="Air Flow:" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="93,171,159,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
-                <Label Content="[m3/s]" HorizontalAlignment="Left" Margin="154,170,0,0" VerticalAlignment="Top"/>
                 <Label Content="Exhaust Unit:" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top"/>
                 <TextBox HorizontalAlignment="Stretch" Height="23" Margin="93,225,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
-                <Label Content="Air Flow:" HorizontalAlignment="Left" Margin="10,257,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="93,258,159,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
-                <Label Content="[m3/s]" HorizontalAlignment="Left" Margin="154,257,0,0" VerticalAlignment="Top"/>
 
             </Grid>
         </GroupBox>
@@ -221,7 +215,7 @@
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="100" Margin="453,504,0,0" VerticalAlignment="Top" Width="444">
             <GroupBox.Header>
-                <CheckBox x:Name="checkBox_PollutantProfile" Content="Pollutant Profile" Click="checkBox_PollutantProfile_Click"/>
+                <CheckBox x:Name="checkBox_PollutantProfile" Content="Pollutant Profile"/>
             </GroupBox.Header>
             <Grid Margin="2,2,2,2">
                 <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
@@ -236,6 +230,43 @@
                 <TextBox x:Name="textBox_PollutantProfile_CalculatedPollutantGeneration" HorizontalAlignment="Stretch" Height="23" Margin="337,43,41,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
                 <Label x:Name="label_PollutantProfile_CalculatedPollution" Content="[g/h]" HorizontalAlignment="Left" Margin="390,40,0,0" VerticalAlignment="Top"/>
 
+            </Grid>
+        </GroupBox>
+        <GroupBox HorizontalAlignment="Left" Height="378" Margin="902,328,0,0" VerticalAlignment="Top" Width="318">
+            <GroupBox.Header>
+                <CheckBox x:Name="checkBox_VentilationProfile" Content="Ventilation Profile" Click="checkBox_VentilationProfile_Click"/>
+            </GroupBox.Header>
+            <Grid Margin="2,2,2,2">
+                <Label Content="Name:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_VentilationProfile_Name" HorizontalAlignment="Left" Height="20" Margin="60,10,0,0" VerticalAlignment="Top" Width="108"/>
+                <Label Content="Supply:" HorizontalAlignment="Left" Margin="10,58,0,0" VerticalAlignment="Top"/>
+                <Button x:Name="button_SelectVentilationProfile" Content="Select" HorizontalAlignment="Left" Margin="238,11,0,0" VerticalAlignment="Top" Width="60" Click="button_SelectVentilationProfile_Click"/>
+                <Button x:Name="button_ViewVentilationProfile" Content="View" HorizontalAlignment="Left" Margin="173,11,0,0" VerticalAlignment="Top" Width="60" Click="button_ViewVentilationProfile_Click"/>
+                <Label Content="[l/s/p]" HorizontalAlignment="Left" Margin="233,58,0,0" VerticalAlignment="Top"/>
+                <Label Content="Exhaust:" HorizontalAlignment="Left" Margin="10,207,0,0" VerticalAlignment="Top"/>
+                <Label Content="[l/s]" HorizontalAlignment="Left" Margin="233,117,0,0" VerticalAlignment="Top"/>
+                <Label Content="[l/s/m2]" HorizontalAlignment="Left" Margin="233,88,0,0" VerticalAlignment="Top"/>
+                <TextBox  x:Name="textBox_VentilationProfile_CalculatedSupplyAirFlowPerPerson" HorizontalAlignment="Stretch" Height="23" Margin="164,60,73.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <Label Content="[ACH]" HorizontalAlignment="Left" Margin="233,149,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="75,151,162.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput" TextChanged="multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour_TextChanged"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="75,60,162.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput" TextChanged="multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson_TextChanged"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="75,90,162.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput" TextChanged="multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea_TextChanged"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="75,120,162.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput" TextChanged="multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow_TextChanged"/>
+                <TextBox  x:Name="textBox_VentilationProfile_CalculatedSupplyAirFlowPerArea" HorizontalAlignment="Stretch" Height="23" Margin="164,90,73.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox  x:Name="textBox_VentilationProfile_CalculatedSupplyAirFlow" HorizontalAlignment="Stretch" Height="23" Margin="164,120,73.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox  x:Name="textBox_VentilationProfile_CalculatedSupplyAirChangesPerHour" HorizontalAlignment="Stretch" Height="23" Margin="164,151,73.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <Label Content="[l/s/p]" HorizontalAlignment="Left" Margin="233,207,0,0" VerticalAlignment="Top"/>
+                <Label Content="[l/s]" HorizontalAlignment="Left" Margin="233,266,0,0" VerticalAlignment="Top"/>
+                <Label Content="[l/s/m2]" HorizontalAlignment="Left" Margin="233,237,0,0" VerticalAlignment="Top"/>
+                <TextBox  x:Name="textBox_VentilationProfile_CalculatedExhaustAirFlowPerPerson" HorizontalAlignment="Stretch" Height="23" Margin="164,209,73.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <Label Content="[ACH]" HorizontalAlignment="Left" Margin="233,298,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="75,300,162.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput" TextChanged="multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour_TextChanged"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="75,209,162.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput" TextChanged="multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson_TextChanged"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="75,239,162.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput" TextChanged="multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea_TextChanged"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow" HorizontalAlignment="Stretch" Height="23" Width="65" Margin="75,269,162.4,0" VerticalAlignment="Top" PreviewTextInput="multipleValueComboBoxControl_PreviewTextInput" TextChanged="multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow_TextChanged"/>
+                <TextBox  x:Name="textBox_VentilationProfile_CalculatedExhaustAirFlowPerArea" HorizontalAlignment="Stretch" Height="23" Margin="164,239,73.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox  x:Name="textBox_VentilationProfile_CalculatedExhaustAirFlow" HorizontalAlignment="Stretch" Height="23" Margin="164,269,73.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <TextBox  x:Name="textBox_VentilationProfile_CalculatedExhaustAirChangesPerHour" HorizontalAlignment="Stretch" Height="23" Margin="164,300,73.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
             </Grid>
         </GroupBox>
 

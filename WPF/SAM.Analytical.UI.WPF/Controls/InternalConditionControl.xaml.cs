@@ -37,6 +37,7 @@ namespace SAM.Analytical.UI.WPF
             checkBox_OccupancyProfile.IsChecked = true;
             checkBox_Occupancy.IsChecked = true;
             checkBox_PollutantProfile.IsChecked = true;
+            checkBox_VentilationProfile.IsChecked = true;
 
             multipleValueComboBoxControl_Name.IsEnabled = true;
             multipleValueComboBoxControl_Name.IsEditable = false;
@@ -54,8 +55,18 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_EquipmentLatentProfile_Name.IsEnabled = false;
             multipleValueComboBoxControl_SpaceOccupancy.IsEnabled = false;
 
+            multipleValueTextBoxControl_VentilationProfile_Name.IsEnabled = false;
+
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.IsEnabled = false;
             multipleValueComboBoxControl_HumidificationProfile_Humidity.IsEnabled = false;
+            textBox_VentilationProfile_CalculatedSupplyAirFlowPerArea.IsEnabled = false;
+            textBox_VentilationProfile_CalculatedSupplyAirFlow.IsEnabled = false;
+            textBox_VentilationProfile_CalculatedSupplyAirChangesPerHour.IsEnabled = false;
+            textBox_VentilationProfile_CalculatedExhaustAirFlowPerPerson.IsEnabled = false;
+            textBox_VentilationProfile_CalculatedExhaustAirFlowPerArea.IsEnabled = false;
+            textBox_VentilationProfile_CalculatedExhaustAirFlow.IsEnabled = false;
+            textBox_VentilationProfile_CalculatedExhaustAirChangesPerHour.IsEnabled = false;
+            textBox_VentilationProfile_CalculatedSupplyAirFlowPerPerson.IsEnabled = false;
 
             multipleValueComboBoxControl_AreaPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_DehumidificationProfile_Dehumidity.TextInput += MultipleValueComboBoxControl_Number_TextInput;
@@ -78,6 +89,15 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_SpaceOccupancy.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
             multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.TextInput += MultipleValueComboBoxControl_Number_TextInput;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.TextInput += MultipleValueComboBoxControl_Number_TextInput;
 
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
 
@@ -777,6 +797,119 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
+                if (checkBox_VentilationProfile.IsChecked.HasValue && checkBox_VentilationProfile.IsChecked.Value)
+                {
+                    if (!multipleValueTextBoxControl_VentilationProfile_Name.VarySet)
+                    {
+                        string value = multipleValueTextBoxControl_VentilationProfile_Name.Value;
+                        internalCondition?.SetValue(InternalConditionParameter.VentilationProfileName, value);
+                    }
+
+                    if (!multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.VarySet)
+                    {
+                        string value = multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.SupplyAirFlowPerPerson, value_Temp / 1000);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.SupplyAirFlowPerPerson);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.VarySet)
+                    {
+                        string value = multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.SupplyAirFlowPerArea, value_Temp / 1000);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.SupplyAirFlowPerArea);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.VarySet)
+                    {
+                        string value = multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.SupplyAirFlow, value_Temp / 1000);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.SupplyAirFlow);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.VarySet)
+                    {
+                        string value = multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.SupplyAirChangesPerHour, value_Temp);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.SupplyAirChangesPerHour);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.VarySet)
+                    {
+                        string value = multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.ExhaustAirFlowPerPerson, value_Temp / 1000);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.ExhaustAirFlowPerPerson);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.VarySet)
+                    {
+                        string value = multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.ExhaustAirFlowPerArea, value_Temp / 1000);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.ExhaustAirFlowPerArea);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.VarySet)
+                    {
+                        string value = multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.ExhaustAirFlow, value_Temp / 1000);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.ExhaustAirFlow);
+                        }
+                    }
+
+                    if (!multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.VarySet)
+                    {
+                        string value = multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.Value;
+                        if (Core.Query.TryConvert(value, out double value_Temp))
+                        {
+                            internalCondition?.SetValue(InternalConditionParameter.ExhaustAirChangesPerHour, value_Temp);
+                        }
+                        else
+                        {
+                            internalCondition?.RemoveValue(InternalConditionParameter.ExhaustAirChangesPerHour);
+                        }
+                    }
+                }
+
                 if (space != null)
                 {
                     space.InternalCondition = internalCondition;
@@ -869,6 +1002,15 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_Occupancy.TextChanged -= MultipleValueComboBoxControl_Occupancy_TextChanged;
             multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextChanged -= MultipleValueComboBoxControl_PollutantProfile_GenerationPerArea_TextChanged;
             multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextChanged -= MultipleValueComboBoxControl_PollutantProfile_GenerationPerPerson_TextChanged;
+            
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.TextChanged -= multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.TextChanged -= multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.TextChanged -= multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.TextChanged -= multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.TextChanged -= multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.TextChanged -= multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.TextChanged -= multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.TextChanged -= multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour_TextChanged;
 
             SetColor(internalConditionDatas);
 
@@ -1000,6 +1142,36 @@ namespace SAM.Analytical.UI.WPF
                 multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.PollutantGenerationPerPerson);
             }
 
+            if (checkBox_VentilationProfile.IsChecked != null && checkBox_VentilationProfile.IsChecked.HasValue && checkBox_VentilationProfile.IsChecked.Value)
+            {
+                multipleValueTextBoxControl_VentilationProfile_Name.Values = internalConditionDatas_Temp.ConvertAll(x => x?.GetProfileName(ProfileType.Ventilation));
+                multipleValueTextBoxControl_VentilationProfile_Name.SetDefaultValue(internalConditions_Template.ConvertAll(x => x?.GetProfileName(ProfileType.Ventilation)));
+
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.SupplyAirFlowPerPerson, 1000);
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.SupplyAirFlowPerPerson, 1000));
+
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.SupplyAirFlowPerArea, 1000);
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.SupplyAirFlowPerArea, 1000));
+
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.SupplyAirFlow, 1000);
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.SupplyAirFlow, 1000));
+
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.SupplyAirChangesPerHour, 1000);
+                multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.SupplyAirChangesPerHour, 1000));
+
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.ExhaustAirFlowPerPerson, 1000);
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirFlowPerPerson, 1000));
+
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.ExhaustAirFlowPerArea, 1000);
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirFlowPerArea, 1000));
+
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.ExhaustAirFlow, 1000);
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirFlow, 1000));
+
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.ExhaustAirChangesPerHour, 1000);
+                multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirChangesPerHour, 1000));
+            }
+
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
 
             multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
@@ -1017,6 +1189,15 @@ namespace SAM.Analytical.UI.WPF
             multipleValueComboBoxControl_PollutantProfile_GenerationPerArea.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerArea_TextChanged;
             multipleValueComboBoxControl_PollutantProfile_GenerationPerPerson.TextChanged += MultipleValueComboBoxControl_PollutantProfile_GenerationPerPerson_TextChanged;
 
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.TextChanged += multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.TextChanged += multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.TextChanged += multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.TextChanged += multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.TextChanged += multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.TextChanged += multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.TextChanged += multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow_TextChanged;
+            multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.TextChanged += multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour_TextChanged;
+
             UpdateCalculatedOccupancySensibleGainPerPerson();
             UpdateCalculatedEquipmentSensibleGain();
             UpdateCalculatedEquipmentLatentGain();
@@ -1024,6 +1205,8 @@ namespace SAM.Analytical.UI.WPF
             UpdateCalculatedOccupancySensibleGainPerPerson();
             UpdateCalculatedLightingGain();
             UpdatePollution();
+            UpdateSupplyAirFlow();
+            UpdateExhaustAirFlow();
         }
 
         private void SetColor(IEnumerable<InternalConditionData> internalConditionDatas)
@@ -1164,6 +1347,10 @@ namespace SAM.Analytical.UI.WPF
         {
             ViewProfile(ProfileType.Dehumidification);
         }
+        private void button_ViewVentilationProfile_Click(object sender, RoutedEventArgs e)
+        {
+            ViewProfile(ProfileType.Ventilation);
+        }
 
         private void SetProfile(MultipleValueTextBoxControl multipleValueTextBoxControl, ProfileType profileType)
         {
@@ -1185,6 +1372,17 @@ namespace SAM.Analytical.UI.WPF
             if (profile != null)
             {
                 multipleValueTextBoxControl.Value = profile.Name;
+            }
+        }
+
+        private void button_SelectVentilationProfile_Click(object sender, RoutedEventArgs e)
+        {
+            SetProfile(multipleValueTextBoxControl_VentilationProfile_Name, ProfileType.Ventilation);
+
+            List<InternalConditionData> internalConditionDatas = InternalConditionDatas;
+            if (internalConditionDatas != null && !multipleValueTextBoxControl_OccupancyProfile_Name.VarySet)
+            {
+                internalConditionDatas.ForEach(x => x.SetValue(InternalConditionParameter.VentilationProfileName, multipleValueTextBoxControl_VentilationProfile_Name.Value));
             }
         }
 
@@ -1566,6 +1764,18 @@ namespace SAM.Analytical.UI.WPF
             LoadInternalConditionDatas(internalConditionDatas);
         }
 
+        private void checkBox_VentilationProfile_Click(object sender, RoutedEventArgs e)
+        {
+
+            //if (checkBox_HeatingProfile.IsChecked != null && checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
+            //{
+            //    List<InternalCondition> internalConditions_Template = internalConditionDatas?.ToList().ConvertAll(x => x?.GetInternalConditionTemplate());
+
+            //    multipleValueTextBoxControl_HeatingProfile_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.GetProfileName(ProfileType.Heating)));
+            //    multipleValueTextBoxControl_HeatingProfile_DesignTemperature.SetDefaultValue(Query.Texts(internalConditions_Template?.ConvertAll(x => Analytical.Query.HeatingDesignTemperature(x, AnalyticalModel?.ProfileLibrary))));
+            //}
+        }
+
         private void checkBox_HeatingProfile_Click(object sender, RoutedEventArgs e)
         {
             if (checkBox_HeatingProfile.IsChecked != null && checkBox_HeatingProfile.IsChecked.HasValue && checkBox_HeatingProfile.IsChecked.Value)
@@ -1718,14 +1928,180 @@ namespace SAM.Analytical.UI.WPF
 
         }
 
-        private void checkBox_PollutantProfile_Click(object sender, RoutedEventArgs e)
+        private void multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson_TextChanged(object sender, EventArgs e)
         {
-
+            UpdateSupplyAirFlow();
         }
 
-        private void button_ViewLightingProfile_Copy_Click(object sender, RoutedEventArgs e)
+        private void multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea_TextChanged(object sender, EventArgs e)
         {
+            UpdateSupplyAirFlow();
+        }
 
+        private void multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSupplyAirFlow();
+        }
+
+        private void multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour_TextChanged(object sender, EventArgs e)
+        {
+            UpdateSupplyAirFlow();
+        }
+
+        private void UpdateSupplyAirFlow()
+        {
+            textBox_VentilationProfile_CalculatedSupplyAirFlowPerPerson.Text = null;
+            textBox_VentilationProfile_CalculatedSupplyAirFlowPerArea.Text = null;
+            textBox_VentilationProfile_CalculatedSupplyAirFlow.Text = null;
+            textBox_VentilationProfile_CalculatedSupplyAirChangesPerHour.Text = null;
+
+            List<InternalConditionData> internalConditionDatas = GetInternalConditionDatas(true);
+            if (internalConditionDatas == null || internalConditionDatas.Count == 0)
+            {
+                return;
+            }
+
+            List<double> values = null;
+
+            values = internalConditionDatas.ConvertAll(x => Core.Query.Round(x.CalculatedSupplyAirFlow, Core.Tolerance.Distance));
+            if (values != null && values.Count > 0)
+            {
+                if (Core.UI.Query.Vary(values))
+                {
+                    textBox_VentilationProfile_CalculatedSupplyAirFlow.Text = multipleValueComboBoxControl_VentilationProfile_SupplyAirFlow.VaryText;
+                }
+                else
+                {
+                    textBox_VentilationProfile_CalculatedSupplyAirFlow.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0] * 1000, 0.01).ToString();
+                }
+            }
+
+            values = internalConditionDatas.ConvertAll(x => Core.Query.Round(x.CalculatedSupplyAirFlowPerArea, Core.Tolerance.Distance));
+            if (values != null && values.Count > 0)
+            {
+                if (Core.UI.Query.Vary(values))
+                {
+                    textBox_VentilationProfile_CalculatedSupplyAirFlowPerArea.Text = multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerArea.VaryText;
+                }
+                else
+                {
+                    textBox_VentilationProfile_CalculatedSupplyAirFlowPerArea.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0] * 1000, 0.01).ToString();
+                }
+            }
+
+            values = internalConditionDatas.ConvertAll(x => Core.Query.Round(x.CalculatedSupplyAirFlowPerPerson, Core.Tolerance.Distance));
+            if (values != null && values.Count > 0)
+            {
+                if (Core.UI.Query.Vary(values))
+                {
+                    textBox_VentilationProfile_CalculatedSupplyAirFlowPerPerson.Text = multipleValueComboBoxControl_VentilationProfile_SupplyAirFlowPerPerson.VaryText;
+                }
+                else
+                {
+                    textBox_VentilationProfile_CalculatedSupplyAirFlowPerPerson.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0] * 1000, 0.01).ToString();
+                }
+            }
+
+            values = internalConditionDatas.ConvertAll(x => Core.Query.Round(x.CalculatedSupplyAirChangesPerHour, Core.Tolerance.Distance));
+            if (values != null && values.Count > 0)
+            {
+                if (Core.UI.Query.Vary(values))
+                {
+                    textBox_VentilationProfile_CalculatedSupplyAirChangesPerHour.Text = multipleValueComboBoxControl_VentilationProfile_SupplyAirChangesPerHour.VaryText;
+                }
+                else
+                {
+                    textBox_VentilationProfile_CalculatedSupplyAirChangesPerHour.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
+                }
+            }
+        }
+
+        private void multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson_TextChanged(object sender, EventArgs e)
+        {
+            UpdateExhaustAirFlow();
+        }
+
+        private void multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea_TextChanged(object sender, EventArgs e)
+        {
+            UpdateExhaustAirFlow();
+        }
+
+        private void multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow_TextChanged(object sender, EventArgs e)
+        {
+            UpdateExhaustAirFlow();
+        }
+
+        private void multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour_TextChanged(object sender, EventArgs e)
+        {
+            UpdateExhaustAirFlow();
+        }
+
+        private void UpdateExhaustAirFlow()
+        {
+            textBox_VentilationProfile_CalculatedExhaustAirFlowPerPerson.Text = null;
+            textBox_VentilationProfile_CalculatedExhaustAirFlowPerArea.Text = null;
+            textBox_VentilationProfile_CalculatedExhaustAirFlow.Text = null;
+            textBox_VentilationProfile_CalculatedExhaustAirChangesPerHour.Text = null;
+
+            List<InternalConditionData> internalConditionDatas = GetInternalConditionDatas(true);
+            if (internalConditionDatas == null || internalConditionDatas.Count == 0)
+            {
+                return;
+            }
+
+            List<double> values = null;
+
+            values = internalConditionDatas.ConvertAll(x => Core.Query.Round(x.CalculatedExhaustAirFlow, Core.Tolerance.Distance));
+            if (values != null && values.Count > 0)
+            {
+                if (Core.UI.Query.Vary(values))
+                {
+                    textBox_VentilationProfile_CalculatedExhaustAirFlow.Text = multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlow.VaryText;
+                }
+                else
+                {
+                    textBox_VentilationProfile_CalculatedExhaustAirFlow.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0] * 1000, 0.01).ToString();
+                }
+            }
+
+            values = internalConditionDatas.ConvertAll(x => Core.Query.Round(x.CalculatedExhaustAirFlowPerArea, Core.Tolerance.Distance));
+            if (values != null && values.Count > 0)
+            {
+                if (Core.UI.Query.Vary(values))
+                {
+                    textBox_VentilationProfile_CalculatedExhaustAirFlowPerArea.Text = multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerArea.VaryText;
+                }
+                else
+                {
+                    textBox_VentilationProfile_CalculatedExhaustAirFlowPerArea.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0] * 1000, 0.01).ToString();
+                }
+            }
+
+            values = internalConditionDatas.ConvertAll(x => Core.Query.Round(x.CalculatedExhaustAirFlowPerPerson, Core.Tolerance.Distance));
+            if (values != null && values.Count > 0)
+            {
+                if (Core.UI.Query.Vary(values))
+                {
+                    textBox_VentilationProfile_CalculatedExhaustAirFlowPerPerson.Text = multipleValueComboBoxControl_VentilationProfile_ExhaustAirFlowPerPerson.VaryText;
+                }
+                else
+                {
+                    textBox_VentilationProfile_CalculatedExhaustAirFlowPerPerson.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0] * 1000, 0.01).ToString();
+                }
+            }
+
+            values = internalConditionDatas.ConvertAll(x => Core.Query.Round(x.CalculatedExhaustAirChangesPerHour, Core.Tolerance.Distance));
+            if (values != null && values.Count > 0)
+            {
+                if (Core.UI.Query.Vary(values))
+                {
+                    textBox_VentilationProfile_CalculatedExhaustAirChangesPerHour.Text = multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.VaryText;
+                }
+                else
+                {
+                    textBox_VentilationProfile_CalculatedExhaustAirChangesPerHour.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
+                }
+            }
         }
     }
 }

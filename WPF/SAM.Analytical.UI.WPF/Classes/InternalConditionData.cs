@@ -86,6 +86,24 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public double Volume
+        {
+            get
+            {
+                if (Space == null)
+                {
+                    return double.NaN;
+                }
+
+                if (!Space.TryGetValue(SpaceParameter.Volume, out double result))
+                {
+                    return double.NaN;
+                }
+
+                return result;
+            }
+        }
+
         public string Name
         {
             get
@@ -328,6 +346,110 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 return Analytical.Query.CalculatedPollutantGeneration(Space);
+            }
+        }
+
+        public double CalculatedSupplyAirFlow
+        {
+            get
+            {
+                return Analytical.Query.CalculatedSupplyAirFlow(Space);
+            }
+        }
+
+        public double CalculatedSupplyAirFlowPerArea
+        {
+            get
+            {
+                double supplyAirFlow = Analytical.Query.CalculatedSupplyAirFlow(Space);
+                if(double.IsNaN(supplyAirFlow))
+                {
+                    return double.NaN;
+                }
+
+                double area = Area;
+                if(double.IsNaN(area))
+                {
+                    return double.NaN;
+                }
+
+                if(area == 0)
+                {
+                    return 0;
+                }
+
+                return supplyAirFlow / area;
+            }
+        }
+
+        public double CalculatedSupplyAirFlowPerPerson
+        {
+            get
+            {
+                Space space = Space;
+                if(space == null)
+                {
+                    return double.NaN;
+                }
+
+                return space.CalculatedSupplyAirFlowPerPerson();
+            }
+        }
+
+        public double CalculatedSupplyAirChangesPerHour
+        {
+            get
+            {
+                double supplyAirFlow = Analytical.Query.CalculatedSupplyAirFlow(Space);
+                if (double.IsNaN(supplyAirFlow))
+                {
+                    return double.NaN;
+                }
+
+                double volume = Volume;
+                if (double.IsNaN(volume))
+                {
+                    return double.NaN;
+                }
+
+                if (volume == 0)
+                {
+                    return 0;
+                }
+
+                return supplyAirFlow / volume * 3600;
+            }
+        }
+
+        public double CalculatedExhaustAirFlow
+        {
+            get
+            {
+                return Analytical.Query.CalculatedExhaustAirFlow(Space);
+            }
+        }
+
+        public double CalculatedExhaustAirChangesPerHour
+        {
+            get
+            {
+                return Analytical.Query.CalculatedExhaustAirChangesPerHour(Space);
+            }
+        }
+
+        public double CalculatedExhaustAirFlowPerPerson
+        {
+            get
+            {
+                return Analytical.Query.CalculatedExhaustAirFlowPerPerson(Space);
+            }
+        }
+
+        public double CalculatedExhaustAirFlowPerArea
+        {
+            get
+            {
+                return Analytical.Query.CalculatedExhaustAirFlowPerArea(Space);
             }
         }
 
