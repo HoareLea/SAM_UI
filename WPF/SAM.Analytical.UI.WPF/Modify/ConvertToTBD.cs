@@ -35,7 +35,7 @@ namespace SAM.Analytical.UI.WPF
 
             convertToTBDWindow.ProjectName = analyticalModel.Name;
             convertToTBDWindow.Simulate = true;
-            convertToTBDWindow.SolarCalculationMethod = SolarCalculationMethod.SAM;
+            convertToTBDWindow.SolarCalculationMethod = SolarCalculationMethod.TAS;
             convertToTBDWindow.FullYearSimulation = true;
             convertToTBDWindow.UnmetHours = true;
             convertToTBDWindow.RoomDataSheets = true;
