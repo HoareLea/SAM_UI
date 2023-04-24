@@ -381,6 +381,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditZones(uIAnalyticalModel, spaces, zoneCategory, selectedSpaces);
         }
 
+        private void EditMechanicalSystems(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
+        {
+            Modify.EditMechanicalSystems(uIAnalyticalModel, spaces, MechanicalSystemCategory.Ventilation, selectedSpaces);
+        }
+
         private void EnableViewSettings(bool enabled)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -678,6 +683,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             EditZones(spaces, spaces);
+        }
+
+        private void MenuItem_ManageMechanicalSystems_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            EditMechanicalSystems(spaces, spaces);
         }
 
         private void MenuItem_MenuItem_MapInternalCondition_Click(object sender, RoutedEventArgs e)
@@ -2018,6 +2051,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Click += MenuItem_ManageZones_Click;
                     menuItem.Tag = spaces;
                     contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_ManageMechanicalSystems";
+                    menuItem.Header = "Manage Systems";
+                    menuItem.Click += MenuItem_ManageMechanicalSystems_Click;
+                    menuItem.Tag = spaces;
+                    contextMenu.Items.Add(menuItem);
                 }
 
                 List<Aperture> apertures = jSAMObjects.FindAll(x => x is Aperture).ConvertAll(x => (Aperture)x);
@@ -2032,7 +2072,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
         }
-        
+
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;

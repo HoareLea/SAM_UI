@@ -151,6 +151,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ApertureData.cs" />
+    <Compile Include="Controls\MechanicalSystemsControl.xaml.cs">
+      <DependentUpon>MechanicalSystemsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SpaceMechanicalSystemControl.xaml.cs">
+      <DependentUpon>SpaceMechanicalSystemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\EditMechanicalSystems.cs" />
     <Compile Include="Modify\RenameSpaces.cs" />
     <Compile Include="Windows\FilterWindow.xaml.cs">
       <DependentUpon>FilterWindow.xaml</DependentUpon>
@@ -261,6 +268,9 @@
     </Compile>
     <Compile Include="Controls\SpaceAppearanceSettingsControl.xaml.cs">
       <DependentUpon>SpaceAppearanceSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SpaceMechanicalSystemWindow.xaml.cs">
+      <DependentUpon>SpaceMechanicalSystemWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SpaceZoneWindow.xaml.cs">
       <DependentUpon>SpaceZoneWindow.xaml</DependentUpon>
@@ -421,6 +431,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\MechanicalSystemsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SpaceMechanicalSystemControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\FilterWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -512,6 +530,10 @@
     <Page Include="Controls\ElevationControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SpaceMechanicalSystemWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Windows\SpaceZoneWindow.xaml">
       <SubType>Designer</SubType>
