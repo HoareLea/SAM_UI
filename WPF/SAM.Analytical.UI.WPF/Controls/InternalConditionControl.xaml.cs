@@ -1172,9 +1172,9 @@ namespace SAM.Analytical.UI.WPF
                 multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirChangesPerHour, 1000));
             }
 
-            multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Ventilation);
-            multipleValueTextBoxControl_HeatingSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Heating);
-            multipleValueTextBoxControl_CoolingSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Cooling);
+            multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas_Temp.Texts(MechanicalSystemCategory.Ventilation);
+            multipleValueTextBoxControl_HeatingSystem_Name.Values = internalConditionDatas_Temp.Texts(MechanicalSystemCategory.Heating);
+            multipleValueTextBoxControl_CoolingSystem_Name.Values = internalConditionDatas_Temp.Texts(MechanicalSystemCategory.Cooling);
             multipleValueTextBoxControl_SupplyUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.SupplyUnitName);
             multipleValueTextBoxControl_ExhaustUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.ExhaustUnitName);
 
@@ -2135,8 +2135,9 @@ namespace SAM.Analytical.UI.WPF
             }
 
             AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+            internalConditionDatas = internalConditionDatas?.ConvertAll(x => new InternalConditionData(AnalyticalModel, x));
 
-            multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas?.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Ventilation);
+            multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas?.Texts(MechanicalSystemCategory.Ventilation);
             multipleValueTextBoxControl_SupplyUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.SupplyUnitName);
             multipleValueTextBoxControl_ExhaustUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.ExhaustUnitName);
         }
@@ -2156,8 +2157,9 @@ namespace SAM.Analytical.UI.WPF
             }
 
             AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+            internalConditionDatas = internalConditionDatas?.ConvertAll(x => new InternalConditionData(AnalyticalModel, x));
 
-            multipleValueTextBoxControl_HeatingSystem_Name.Values = internalConditionDatas?.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Heating);
+            multipleValueTextBoxControl_HeatingSystem_Name.Values = internalConditionDatas?.Texts(MechanicalSystemCategory.Heating);
         }
 
         private void button_SelectCoolingSystem_Click(object sender, RoutedEventArgs e)
@@ -2175,8 +2177,113 @@ namespace SAM.Analytical.UI.WPF
             }
 
             AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+            internalConditionDatas = internalConditionDatas?.ConvertAll(x => new InternalConditionData(AnalyticalModel, x));
 
-            multipleValueTextBoxControl_CoolingSystem_Name.Values = internalConditionDatas?.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Cooling);
+            multipleValueTextBoxControl_CoolingSystem_Name.Values = internalConditionDatas?.Texts(MechanicalSystemCategory.Cooling);
+        }
+
+        private void button_RemoveVentilationSystem_Click(object sender, RoutedEventArgs e)
+        {
+            List<Space> spaces = Spaces;
+            if(spaces == null || spaces.Count == 0)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            foreach(Space space in spaces)
+            {
+                List<VentilationSystem> ventilationSystems = adjacencyCluster.GetRelatedObjects<VentilationSystem>(space);
+                if(ventilationSystems == null || ventilationSystems.Count == 0)
+                {
+                    continue;
+                }
+
+                foreach(VentilationSystem ventilationSystem in ventilationSystems)
+                {
+                    adjacencyCluster.RemoveRelation(space, ventilationSystem);
+                }
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+            internalConditionDatas = internalConditionDatas?.ConvertAll(x => new InternalConditionData(AnalyticalModel, x));
+
+            multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas?.Texts(MechanicalSystemCategory.Ventilation);
+            multipleValueTextBoxControl_SupplyUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.SupplyUnitName);
+            multipleValueTextBoxControl_ExhaustUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.ExhaustUnitName);
+        }
+
+        private void button_RemoveHeatingSystem_Click(object sender, RoutedEventArgs e)
+        {
+            List<Space> spaces = Spaces;
+            if (spaces == null || spaces.Count == 0)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            foreach (Space space in spaces)
+            {
+                List<HeatingSystem> heatingSystems = adjacencyCluster.GetRelatedObjects<HeatingSystem>(space);
+                if (heatingSystems == null || heatingSystems.Count == 0)
+                {
+                    continue;
+                }
+
+                foreach (HeatingSystem heatingSystem in heatingSystems)
+                {
+                    adjacencyCluster.RemoveRelation(space, heatingSystem);
+                }
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+            internalConditionDatas = internalConditionDatas?.ConvertAll(x => new InternalConditionData(AnalyticalModel, x));
+
+            multipleValueTextBoxControl_HeatingSystem_Name.Values = internalConditionDatas?.Texts(MechanicalSystemCategory.Heating);
+        }
+
+        private void button_RemoveCoolingSystem_Click(object sender, RoutedEventArgs e)
+        {
+            List<Space> spaces = Spaces;
+            if (spaces == null || spaces.Count == 0)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            foreach (Space space in spaces)
+            {
+                List<CoolingSystem> coolingSystems = adjacencyCluster.GetRelatedObjects<CoolingSystem>(space);
+                if (coolingSystems == null || coolingSystems.Count == 0)
+                {
+                    continue;
+                }
+
+                foreach (CoolingSystem coolingSystem in coolingSystems)
+                {
+                    adjacencyCluster.RemoveRelation(space, coolingSystem);
+                }
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+            internalConditionDatas = internalConditionDatas?.ConvertAll(x => new InternalConditionData(AnalyticalModel, x));
+
+            multipleValueTextBoxControl_CoolingSystem_Name.Values = internalConditionDatas?.Texts(MechanicalSystemCategory.Cooling);
         }
     }
 }

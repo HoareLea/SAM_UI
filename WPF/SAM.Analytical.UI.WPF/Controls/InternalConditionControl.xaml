@@ -183,18 +183,21 @@
         <GroupBox Header="Systems" HorizontalAlignment="Left" Height="316" Margin="902,4,0,0" VerticalAlignment="Top" Width="320" IsEnabled="True">
             <Grid>
                 <Label Content="Ventilation:" HorizontalAlignment="Left" Margin="10,9,0,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_VentilationSystem_Name" HorizontalAlignment="Stretch" Height="23" Margin="93,10,75,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <Button x:Name="button_SelectVentilationSystem" Content="Select" HorizontalAlignment="Left" Margin="242,12,0,0" VerticalAlignment="Top" Width="60" Click="button_SelectVentilationSystem_Click"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_VentilationSystem_Name" HorizontalAlignment="Stretch" Height="23" Margin="78,9,120,0" VerticalAlignment="Top" IsEnabled="False"/>
+                <Button x:Name="button_SelectVentilationSystem" Content="Select" HorizontalAlignment="Left" Margin="248,12,0,0" VerticalAlignment="Top" Width="50" Click="button_SelectVentilationSystem_Click"/>
                 <Label Content="Heating:" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_HeatingSystem_Name" HorizontalAlignment="Stretch" Height="23" Margin="93,44,75,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <Button x:Name="button_SelectHeatingSystem" Content="Select" HorizontalAlignment="Left" Margin="242,46,0,0" VerticalAlignment="Top" Width="60" Click="button_SelectHeatingSystem_Click"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_HeatingSystem_Name" HorizontalAlignment="Stretch" Height="23" Margin="78,43,120,0" VerticalAlignment="Top" IsEnabled="False"/>
+                <Button x:Name="button_SelectHeatingSystem" Content="Select" HorizontalAlignment="Left" Margin="248,46,0,0" VerticalAlignment="Top" Width="50" Click="button_SelectHeatingSystem_Click"/>
                 <Label Content="Cooling:" HorizontalAlignment="Left" Margin="10,77,0,0" VerticalAlignment="Top"/>
-                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_CoolingSystem_Name" HorizontalAlignment="Stretch" Height="23" Margin="93,78,75,0" VerticalAlignment="Top" IsEnabled="False"/>
-                <Button x:Name="button_SelectCoolingSystem" Content="Select" HorizontalAlignment="Left" Margin="242,80,0,0" VerticalAlignment="Top" Width="60" Click="button_SelectCoolingSystem_Click"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_CoolingSystem_Name" HorizontalAlignment="Stretch" Height="23" Margin="78,77,120,0" VerticalAlignment="Top" IsEnabled="False"/>
+                <Button x:Name="button_SelectCoolingSystem" Content="Select" HorizontalAlignment="Left" Margin="248,80,0,0" VerticalAlignment="Top" Width="50" Click="button_SelectCoolingSystem_Click"/>
                 <Label Content="Supply Unit:" HorizontalAlignment="Left" Margin="10,137,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_SupplyUnitName" HorizontalAlignment="Stretch" Height="23" Margin="93,138,10,0" VerticalAlignment="Top" IsEnabled="False"/>
                 <Label Content="Exhaust Unit:" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top"/>
                 <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_ExhaustUnitName" HorizontalAlignment="Stretch" Height="23" Margin="93,225,10,0" VerticalAlignment="Top" IsEnabled="False"/>
+                <Button x:Name="button_RemoveVentilationSystem" Content="Remove" HorizontalAlignment="Left" Margin="193,12,0,0" VerticalAlignment="Top" Width="50" Click="button_RemoveVentilationSystem_Click"/>
+                <Button x:Name="button_RemoveHeatingSystem" Content="Remove" HorizontalAlignment="Left" Margin="193,46,0,0" VerticalAlignment="Top" Width="50" Click="button_RemoveHeatingSystem_Click"/>
+                <Button x:Name="button_RemoveCoolingSystem" Content="Remove" HorizontalAlignment="Left" Margin="193,80,0,0" VerticalAlignment="Top" Width="50" Click="button_RemoveCoolingSystem_Click"/>
             </Grid>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="453,4,0,0" VerticalAlignment="Top" Width="444">

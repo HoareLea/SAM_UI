@@ -139,9 +139,9 @@ namespace SAM.Analytical.UI.WPF
             return result;
         }
 
-        public static List<string> Texts(this IEnumerable<InternalConditionData> internalConditionDatas, AdjacencyCluster adjacencyCluster, MechanicalSystemCategory mechanicalSystemCategory)
+        public static List<string> Texts(this IEnumerable<InternalConditionData> internalConditionDatas, MechanicalSystemCategory mechanicalSystemCategory)
         {
-            if(internalConditionDatas == null || adjacencyCluster == null)
+            if(internalConditionDatas == null)
             {
                 return null;
             }
@@ -149,13 +149,7 @@ namespace SAM.Analytical.UI.WPF
             List<string> result = new List<string>();
             foreach(InternalConditionData internalConditionData in internalConditionDatas)
             {
-                Space space = internalConditionData?.Space;
-                if(space == null)
-                {
-                    continue;
-                }
-
-                List<MechanicalSystem> mechanicalSystems = adjacencyCluster.MechanicalSystems(space, mechanicalSystemCategory);
+                List<MechanicalSystem> mechanicalSystems = internalConditionData?.MechanicalSystems<MechanicalSystem>(mechanicalSystemCategory);
                 if(mechanicalSystems == null || mechanicalSystems.Count == 0)
                 {
                     continue;
