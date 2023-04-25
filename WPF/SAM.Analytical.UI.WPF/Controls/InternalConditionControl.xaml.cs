@@ -1172,6 +1172,10 @@ namespace SAM.Analytical.UI.WPF
                 multipleValueComboBoxControl_VentilationProfile_ExhaustAirChangesPerHour.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.ExhaustAirChangesPerHour, 1000));
             }
 
+            multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Ventilation);
+            multipleValueTextBoxControl_HeatingSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Heating);
+            multipleValueTextBoxControl_CoolingSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Cooling);
+
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
 
             multipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson.TextChanged += MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged;
@@ -1347,6 +1351,7 @@ namespace SAM.Analytical.UI.WPF
         {
             ViewProfile(ProfileType.Dehumidification);
         }
+        
         private void button_ViewVentilationProfile_Click(object sender, RoutedEventArgs e)
         {
             ViewProfile(ProfileType.Ventilation);
@@ -2111,6 +2116,63 @@ namespace SAM.Analytical.UI.WPF
                     textBox_VentilationProfile_CalculatedExhaustAirChangesPerHour.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
                 }
             }
+        }
+
+        private void button_SelectVentilationSystem_Click(object sender, RoutedEventArgs e)
+        {
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if(adjacencyCluster == null)
+            {
+                return;
+            }
+
+            List<Core.SAMObject> sAMObjects = Modify.EditMechanicalSystems(adjacencyCluster, Spaces, MechanicalSystemCategory.Ventilation, Spaces);
+            if(sAMObjects == null || sAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+
+            multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas?.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Ventilation);
+        }
+
+        private void button_SelectHeatingSystem_Click(object sender, RoutedEventArgs e)
+        {
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            List<Core.SAMObject> sAMObjects = Modify.EditMechanicalSystems(adjacencyCluster, Spaces, MechanicalSystemCategory.Heating, Spaces);
+            if (sAMObjects == null || sAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+
+            multipleValueTextBoxControl_HeatingSystem_Name.Values = internalConditionDatas?.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Heating);
+        }
+
+        private void button_SelectCoolingSystem_Click(object sender, RoutedEventArgs e)
+        {
+            AdjacencyCluster adjacencyCluster = AnalyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            List<Core.SAMObject> sAMObjects = Modify.EditMechanicalSystems(adjacencyCluster, Spaces, MechanicalSystemCategory.Heating, Spaces);
+            if (sAMObjects == null || sAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
+
+            multipleValueTextBoxControl_CoolingSystem_Name.Values = internalConditionDatas?.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Cooling);
         }
     }
 }

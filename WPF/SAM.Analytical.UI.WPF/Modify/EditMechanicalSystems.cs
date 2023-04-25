@@ -14,7 +14,6 @@ namespace SAM.Analytical.UI.WPF
             }
 
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
-            ProfileLibrary profileLibrary = analyticalModel.ProfileLibrary;
 
             SpaceMechanicalSystemWindow spaceZoneWindow = new SpaceMechanicalSystemWindow(adjacencyCluster, spaces, selectedSpaces, selectedMechanicalSystem);
             bool? result = spaceZoneWindow.ShowDialog();
@@ -66,7 +65,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new AnalyticalModelModification(sAMObjects));
+            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, analyticalModel.ProfileLibrary), new AnalyticalModelModification(sAMObjects));
         }
 
         public static void EditMechanicalSystems(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<Space> spaces, MechanicalSystemCategory mechanicalSystemCategory, IEnumerable<Space> selectedSpaces = null)
@@ -78,20 +77,35 @@ namespace SAM.Analytical.UI.WPF
             }
 
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
-            ProfileLibrary profileLibrary = analyticalModel.ProfileLibrary;
+
+            List<SAMObject> sAMObjects = EditMechanicalSystems(adjacencyCluster, spaces, mechanicalSystemCategory, selectedSpaces);
+            if(sAMObjects == null || sAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, analyticalModel.ProfileLibrary), new AnalyticalModelModification(sAMObjects));
+        }
+
+        public static List<SAMObject> EditMechanicalSystems(this AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, MechanicalSystemCategory mechanicalSystemCategory, IEnumerable<Space> selectedSpaces = null)
+        {
+            if(adjacencyCluster == null)
+            {
+                return null;
+            }
 
             SpaceMechanicalSystemWindow spaceMechanicalSystemWindow = new SpaceMechanicalSystemWindow(adjacencyCluster, spaces, selectedSpaces);
             spaceMechanicalSystemWindow.MechanicalSystemCategory = Core.Query.Description(mechanicalSystemCategory);
-            bool? result = spaceMechanicalSystemWindow.ShowDialog();
-            if (result == null || !result.HasValue || !result.Value)
+            bool? dialogResult = spaceMechanicalSystemWindow.ShowDialog();
+            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
             {
-                return;
+                return null;
             }
 
             adjacencyCluster = spaceMechanicalSystemWindow.AdjacencyCluster;
             if (adjacencyCluster == null)
             {
-                return;
+                return null;
             }
 
             MechanicalSystem mechanicalSystem_Temp = spaceMechanicalSystemWindow.SelectedMechanicalSystem;
@@ -100,7 +114,7 @@ namespace SAM.Analytical.UI.WPF
                 adjacencyCluster.AddObject(mechanicalSystem_Temp);
             }
 
-            List<SAMObject> sAMObjects = new List<SAMObject>();
+            List<SAMObject> result = new List<SAMObject>();
 
             List<Space> spaces_Temp = spaceMechanicalSystemWindow.SelectedSpaces;
             if (spaces_Temp != null && spaces_Temp.Count != 0)
@@ -116,21 +130,21 @@ namespace SAM.Analytical.UI.WPF
                             foreach (MechanicalSystem mechanicalSystem_Old in mechanicalSystems_Old)
                             {
                                 adjacencyCluster.RemoveRelation(mechanicalSystem_Old, space);
-                                if (sAMObjects.Find(x => x is Zone && x.Guid == mechanicalSystem_Old.Guid) == null)
+                                if (result.Find(x => x is Zone && x.Guid == mechanicalSystem_Old.Guid) == null)
                                 {
-                                    sAMObjects.Add(mechanicalSystem_Old);
+                                    result.Add(mechanicalSystem_Old);
                                 }
                             }
                         }
 
                         adjacencyCluster.AddRelation(mechanicalSystem_Temp, space);
-                        sAMObjects.Add(mechanicalSystem_Temp);
-                        sAMObjects.Add(space);
+                        result.Add(mechanicalSystem_Temp);
+                        result.Add(space);
                     }
                 }
             }
 
-            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new AnalyticalModelModification(sAMObjects));
+            return result;
         }
     }
 }
