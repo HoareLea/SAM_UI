@@ -104,6 +104,41 @@ namespace SAM.Analytical.UI.WPF
             return result;
         }
 
+        public static List<string> Texts(this IEnumerable<InternalConditionData> internalConditionDatas, VentilationSystemParameter ventilationSystemParameter)
+        {
+            if(internalConditionDatas == null)
+            {
+                return null;
+            }
+
+            List<string> result = new List<string>();
+            foreach(InternalConditionData internalConditionData in internalConditionDatas)
+            {
+                List<VentilationSystem> ventilationSystems = internalConditionData?.MechanicalSystems<VentilationSystem>(MechanicalSystemCategory.Ventilation);
+                if(ventilationSystems == null)
+                {
+                    continue;
+                }
+
+                foreach(VentilationSystem ventilationSystem in ventilationSystems)
+                {
+                    if(ventilationSystem == null)
+                    {
+                        continue;
+                    }
+
+                    if(!ventilationSystem.TryGetValue(ventilationSystemParameter, out string value, true))
+                    {
+                        continue;
+                    }
+
+                    result.Add(value);
+                }
+            }
+
+            return result;
+        }
+
         public static List<string> Texts(this IEnumerable<InternalConditionData> internalConditionDatas, AdjacencyCluster adjacencyCluster, MechanicalSystemCategory mechanicalSystemCategory)
         {
             if(internalConditionDatas == null || adjacencyCluster == null)

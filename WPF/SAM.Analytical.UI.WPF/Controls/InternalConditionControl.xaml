@@ -192,10 +192,9 @@
                 <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_CoolingSystem_Name" HorizontalAlignment="Stretch" Height="23" Margin="93,78,75,0" VerticalAlignment="Top" IsEnabled="False"/>
                 <Button x:Name="button_SelectCoolingSystem" Content="Select" HorizontalAlignment="Left" Margin="242,80,0,0" VerticalAlignment="Top" Width="60" Click="button_SelectCoolingSystem_Click"/>
                 <Label Content="Supply Unit:" HorizontalAlignment="Left" Margin="10,137,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="93,138,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_SupplyUnitName" HorizontalAlignment="Stretch" Height="23" Margin="93,138,10,0" VerticalAlignment="Top" IsEnabled="False"/>
                 <Label Content="Exhaust Unit:" HorizontalAlignment="Left" Margin="10,224,0,0" VerticalAlignment="Top"/>
-                <TextBox HorizontalAlignment="Stretch" Height="23" Margin="93,225,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" IsReadOnly="True" IsEnabled="False"/>
-
+                <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_ExhaustUnitName" HorizontalAlignment="Stretch" Height="23" Margin="93,225,10,0" VerticalAlignment="Top" IsEnabled="False"/>
             </Grid>
         </GroupBox>
         <GroupBox HorizontalAlignment="Left" Height="97" Margin="453,4,0,0" VerticalAlignment="Top" Width="444">

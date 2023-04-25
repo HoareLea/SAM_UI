@@ -579,5 +579,16 @@ namespace SAM.Analytical.UI.WPF
 
             return result;
         }
+
+        public List<T> MechanicalSystems<T>(MechanicalSystemCategory mechanicalSystemCategory) where T:MechanicalSystem
+        {
+            List<MechanicalSystem> mechanicalSystems = analyticalModel?.AdjacencyCluster?.MechanicalSystems(Space, mechanicalSystemCategory);
+            if(mechanicalSystems == null)
+            {
+                return null;
+            }
+
+            return mechanicalSystems.FindAll(x => x is T).ConvertAll(x => (T)x);
+        }
     }
 }

@@ -1175,6 +1175,8 @@ namespace SAM.Analytical.UI.WPF
             multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Ventilation);
             multipleValueTextBoxControl_HeatingSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Heating);
             multipleValueTextBoxControl_CoolingSystem_Name.Values = internalConditionDatas_Temp.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Cooling);
+            multipleValueTextBoxControl_SupplyUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.SupplyUnitName);
+            multipleValueTextBoxControl_ExhaustUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.ExhaustUnitName);
 
             multipleValueComboBoxControl_Name.TextChanged += MultipleValueComboBoxControl_Name_TextChanged;
 
@@ -2135,6 +2137,8 @@ namespace SAM.Analytical.UI.WPF
             AnalyticalModel = new AnalyticalModel(AnalyticalModel, adjacencyCluster);
 
             multipleValueTextBoxControl_VentilationSystem_Name.Values = internalConditionDatas?.Texts(AnalyticalModel?.AdjacencyCluster, MechanicalSystemCategory.Ventilation);
+            multipleValueTextBoxControl_SupplyUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.SupplyUnitName);
+            multipleValueTextBoxControl_ExhaustUnitName.Values = internalConditionDatas?.Texts(VentilationSystemParameter.ExhaustUnitName);
         }
 
         private void button_SelectHeatingSystem_Click(object sender, RoutedEventArgs e)

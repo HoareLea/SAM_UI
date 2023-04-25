@@ -332,6 +332,12 @@ namespace SAM.Analytical.UI.WPF
             {
                 return;
             }
+
+            if(mechanicalSystem is VentilationSystem)
+            {
+
+            }
+
             LoadMechanicalSystemCategories();
             LoadMechanicalSystems();
 
