@@ -142,8 +142,9 @@ namespace SAM.Geometry.UI.WPF
                     {
                         continue;
                     }
-
-                    meshBuilder.AddCylinder(segment3D[0].ToMedia3D(), segment3D[1].ToMedia3D(), thickness);
+                    
+                    //TODO: Update thetaDiv (default value 32)
+                    meshBuilder.AddCylinder(segment3D[0].ToMedia3D(), segment3D[1].ToMedia3D(), thickness, 32);
                     meshBuilder.AddSphere(segment3D[0].ToMedia3D(), thickness);
                     meshBuilder.AddSphere(segment3D[1].ToMedia3D(), thickness);
                 }
