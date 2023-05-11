@@ -349,8 +349,8 @@ namespace SAM.Analytical.UI.WPF
             CreateSAP = tBDConversionOptions.CreateSAP;
             CreateTM59 = tBDConversionOptions.CreateTM59;
 
-            SelectedTextMap = TBDConversionOptions.TextMap;
-            SelectedWeatherData = TBDConversionOptions.WeatherData;
+            SelectedTextMap = tBDConversionOptions.TextMap;
+            SelectedWeatherData = tBDConversionOptions.WeatherData;
 
             return true;
         }
