@@ -28,6 +28,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private UIAnalyticalModel uIAnalyticalModel;
         private Core.Windows.WindowHandle windowHandle;
+        
         public AnalyticalWindow()
         {
             InitializeComponent();
@@ -749,16 +750,23 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            Core.Windows.WindowHandle windowHandle = new Core.Windows.WindowHandle(this);
+
             IJSAMObject jSAMObject = menuItem.Tag as IJSAMObject;
             if (jSAMObject is Panel)
             {
                 Panel panel = (Panel)jSAMObject;
-                uIAnalyticalModel.EditPanel(panel, new Core.Windows.WindowHandle(this));
+                uIAnalyticalModel.EditPanel(panel, windowHandle);
             }
             else if (jSAMObject is Space)
             {
                 Space space = (Space)jSAMObject;
-                uIAnalyticalModel.EditSpace(space, new Core.Windows.WindowHandle(this));
+                uIAnalyticalModel.EditSpace(space, windowHandle);
+            }
+            else if(jSAMObject is Aperture)
+            {
+                Aperture aperture = (Aperture)jSAMObject;
+                uIAnalyticalModel.EditAperture(aperture, windowHandle);
             }
         }
 
@@ -1613,7 +1621,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
-        private void TabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void tabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             TabItem tabItem = sender as TabItem;
             if (tabItem == null)
@@ -1721,7 +1729,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             if (tabItem == null)
             {
                 tabItem = new TabItem() { Header = "???" };
-                tabItem.ContextMenuOpening += TabItem_ContextMenuOpening;
+                tabItem.ContextMenuOpening += tabItem_ContextMenuOpening;
                 tabControl.Items.Add(tabItem);
             }
 
