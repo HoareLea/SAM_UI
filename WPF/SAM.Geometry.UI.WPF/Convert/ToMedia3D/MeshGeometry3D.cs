@@ -89,7 +89,8 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            Mesh3D mesh3D = Spatial.Create.Mesh3D(sphere, 0.01);
+            //TODO: Update max and min Density (2, 10)
+            Mesh3D mesh3D = Spatial.Create.Mesh3D(sphere, 0.01, 2, 10);
             if(mesh3D == null)
             {
                 return null;

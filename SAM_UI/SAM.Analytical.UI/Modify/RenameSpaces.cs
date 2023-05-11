@@ -5,7 +5,7 @@ namespace SAM.Analytical.UI
 {
     public static partial class Modify
     {
-        public static Dictionary<Space, string> RenameSpaces(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<Space> spaces, string name, RenameSpaceOption renameSpaceOption)
+        public static Dictionary<Space, string> RenameSpaces(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<Space> spaces, string name, RenameSpaceOptions renameSpaceOption)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
@@ -143,7 +143,7 @@ namespace SAM.Analytical.UI
             return result;
         }
 
-        public static Dictionary<Space, string> RenameSpaces(this AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, string name, RenameSpaceOption renameSpaceOption)
+        public static Dictionary<Space, string> RenameSpaces(this AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, string name, RenameSpaceOptions renameSpaceOption)
         {
             if (adjacencyCluster == null)
             {
@@ -156,7 +156,7 @@ namespace SAM.Analytical.UI
             {
                 if (renameSpaceOption != null && renameSpaceOption.StartIndex != -1)
                 {
-                    renameSpaceOption = new RenameSpaceOption(renameSpaceOption) { StartIndex = i + 1 };
+                    renameSpaceOption = new RenameSpaceOptions(renameSpaceOption) { StartIndex = i + 1 };
                 }
 
                 Space space = spaces.ElementAt(i);

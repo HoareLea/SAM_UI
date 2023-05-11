@@ -92,7 +92,7 @@ namespace SAM.Analytical.UI.WPF
             dispatcherTimer.Start();
         }
 
-        public RenameSpacesControl(string name, RenameSpaceOption renameSpaceOption)
+        public RenameSpacesControl(string name, RenameSpaceOptions renameSpaceOption)
         {
             InitializeComponent();
 
@@ -451,11 +451,11 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public RenameSpaceOption RenameSpaceOption
+        public RenameSpaceOptions RenameSpaceOption
         {
             get
             {
-                return new RenameSpaceOption()
+                return new RenameSpaceOptions()
                 {
                     Position = Position,
                     IncludeName = IncludeName,
@@ -474,7 +474,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void SetRenameSpaceOption(RenameSpaceOption renameSpaceOption)
+        private void SetRenameSpaceOption(RenameSpaceOptions renameSpaceOption)
         {
             if(renameSpaceOption == null)
             {

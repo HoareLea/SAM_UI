@@ -1,6 +1,6 @@
 ﻿namespace SAM.Analytical.UI
 {
-    public class RenameSpaceOption
+    public class RenameSpaceOptions
     {
         public Position Position { get; set; } = Position.Prefix;
         
@@ -18,12 +18,12 @@
 
         public int DigitsNumber { get; set; } = 3;
 
-        public RenameSpaceOption()
+        public RenameSpaceOptions()
         {
 
         }
 
-        public RenameSpaceOption(RenameSpaceOption renameSpaceOption)
+        public RenameSpaceOptions(RenameSpaceOptions renameSpaceOption)
         {
             if(renameSpaceOption != null)
             {

@@ -128,7 +128,7 @@ namespace SAM.Analytical.UI
             return name;
         }
         
-        public static string RenameSpace(this AdjacencyCluster adjacencyCluster, Space space, string name, RenameSpaceOption renameSpaceOption)
+        public static string RenameSpace(this AdjacencyCluster adjacencyCluster, Space space, string name, RenameSpaceOptions renameSpaceOption)
         {
             if(adjacencyCluster == null || space == null)
             {
@@ -157,7 +157,7 @@ namespace SAM.Analytical.UI
 
             if (renameSpaceOption == null)
             {
-                renameSpaceOption = new RenameSpaceOption();
+                renameSpaceOption = new RenameSpaceOptions();
             }
 
             if(!renameSpaceOption.IncludeName && !renameSpaceOption.IncludeNumber)
