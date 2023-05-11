@@ -15,7 +15,7 @@
         <Button x:Name="button_OutputDirectory" Content="..." HorizontalAlignment="Right" Margin="0,96,10.4,0" VerticalAlignment="Top" Width="53" Height="23" RenderTransformOrigin="0.504,0.5" Click="button_OutputDirectory_Click"/>
         <Label Content="Weather Data:" HorizontalAlignment="Left" Margin="10,131,0,0" VerticalAlignment="Top"/>
         <CheckBox x:Name="checkBox_CreateSAP" Content="Create SAP" HorizontalAlignment="Left" Margin="10,0,0,123" VerticalAlignment="Bottom" Click="checkBox_CreateSAP_Click"/>
-        <CheckBox x:Name="checkBox_CreateTM59" Content="Create TM59" HorizontalAlignment="Left" Margin="10,0,0,149" VerticalAlignment="Bottom" Click="checkBox_CreateTM59_Click"/>
+        <CheckBox x:Name="checkBox_CreateTM59" Content="Domestic Overheating" HorizontalAlignment="Left" Margin="10,0,0,149" VerticalAlignment="Bottom" Click="checkBox_CreateTM59_Click"/>
         <Label x:Name="label_TextMap"  Content="Text Map:" HorizontalAlignment="Left" Margin="10,0,0,35.6" VerticalAlignment="Bottom"/>
         <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_TextMap" HorizontalAlignment="Stretch" Margin="10,0,10.4,13.6" VerticalAlignment="Bottom" Height="22"/>
         <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_WeatherData" HorizontalAlignment="Stretch" Margin="10,157,10.4,0" VerticalAlignment="Top" Height="22"/>

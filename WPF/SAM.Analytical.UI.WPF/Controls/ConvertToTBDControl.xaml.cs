@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Core.UI.WPF;
 using SAM.Weather;
 using System;
 using System.Collections.Generic;
@@ -85,6 +86,11 @@ namespace SAM.Analytical.UI.WPF
             {
                 return selectSAMObjectComboBoxControl_WeatherData.GetJSAMObject<WeatherData>();
             }
+
+            set
+            {
+                selectSAMObjectComboBoxControl_WeatherData.SetIJSAMObject(value);
+            }
         }
 
         public TextMap SelectedTextMap
@@ -92,6 +98,11 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 return selectSAMObjectComboBoxControl_TextMap.GetJSAMObject<TextMap>();
+            }
+
+            set
+            {
+                selectSAMObjectComboBoxControl_TextMap.SetIJSAMObject(value);
             }
         }
 
@@ -285,6 +296,63 @@ namespace SAM.Analytical.UI.WPF
                     comboBox_ZoneCategory.SelectedItem = comboBox_ZoneCategory.Items[0];
                 }
             }
+        }
+
+        public TBDConversionOptions TBDConversionOptions
+        {
+            get
+            {
+                return GetTBDConversionOptions();
+            }
+            set
+            {
+                SetTBDConversionOptions(value);
+            }
+        }
+
+        private TBDConversionOptions GetTBDConversionOptions()
+        {
+            TBDConversionOptions result = new TBDConversionOptions()
+            {
+                ProjectName = ProjectName,
+                ZoneCategories = ZoneCategories,
+                WeatherData = SelectedWeatherData,
+                TextMap = SelectedTextMap,
+                OutputDirectory = OutputDirectory,
+                Simulate = Simulate,
+                SolarCalculationMethod = SolarCalculationMethod,
+                FullYearSimulation = FullYearSimulation,
+                UnmetHours = UnmetHours,
+                RoomDataSheets = RoomDataSheets,
+                CreateSAP = CreateSAP,
+                CreateTM59 = CreateTM59,
+            };
+
+            return result;
+        }
+
+        private bool SetTBDConversionOptions(TBDConversionOptions tBDConversionOptions)
+        {
+            if(tBDConversionOptions == null)
+            {
+                return false;
+            }
+
+            ProjectName = tBDConversionOptions.ProjectName;
+            ZoneCategories = tBDConversionOptions.ZoneCategories;
+            OutputDirectory = tBDConversionOptions.OutputDirectory;
+            Simulate = tBDConversionOptions.Simulate;
+            SolarCalculationMethod = tBDConversionOptions.SolarCalculationMethod;
+            FullYearSimulation = tBDConversionOptions.FullYearSimulation;
+            UnmetHours = tBDConversionOptions.UnmetHours;
+            RoomDataSheets = tBDConversionOptions.RoomDataSheets;
+            CreateSAP = tBDConversionOptions.CreateSAP;
+            CreateTM59 = tBDConversionOptions.CreateTM59;
+
+            SelectedTextMap = TBDConversionOptions.TextMap;
+            SelectedWeatherData = TBDConversionOptions.WeatherData;
+
+            return true;
         }
 
         private void checkBox_CreateTM59_Click(object sender, System.Windows.RoutedEventArgs e)

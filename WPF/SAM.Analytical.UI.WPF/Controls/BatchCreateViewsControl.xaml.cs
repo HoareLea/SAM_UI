@@ -48,7 +48,7 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Panel.IsChecked = true;
             checkBox_Visibilty_Space.IsChecked = true;
 
-            List<Level> levels = Create.Levels(adjacencyCluster, false);
+            List<Level> levels = Analytical.Create.Levels(adjacencyCluster, false);
             levels?.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
 
             listBox_Levels.Items.Clear();

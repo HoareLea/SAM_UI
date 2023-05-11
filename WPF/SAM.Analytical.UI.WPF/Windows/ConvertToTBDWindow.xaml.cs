@@ -208,6 +208,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public TBDConversionOptions TBDConversionOptions
+        {
+            get
+            {
+                return convertToTBDControl.TBDConversionOptions;
+            }
+
+            set
+            {
+                convertToTBDControl.TBDConversionOptions = value;
+            }
+        }
+
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;

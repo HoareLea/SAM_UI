@@ -136,6 +136,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Windows.Controls.Ribbon" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -157,6 +158,8 @@
     <Compile Include="Controls\SpaceMechanicalSystemControl.xaml.cs">
       <DependentUpon>SpaceMechanicalSystemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Enums\Parameter\AnalyticalSettingParameter.cs" />
+    <Compile Include="Manager\ActiveSettings.cs" />
     <Compile Include="Modify\EditMechanicalSystems.cs" />
     <Compile Include="Modify\RenameSpaces.cs" />
     <Compile Include="Windows\FilterWindow.xaml.cs">

@@ -105,6 +105,7 @@
     <Compile Include="Classes\Settings\ViewSettings\AnalyticalTwoDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\InternalConditionAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ZoneAppearanceSettings.cs" />
+    <Compile Include="Classes\TBDConversionOptions.cs" />
     <Compile Include="Classes\UIAnalyticalModel.cs" />
     <Compile Include="Controls\SimulateControl.cs">
       <SubType>UserControl</SubType>
@@ -113,6 +114,7 @@
       <DependentUpon>SimulateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToSAM\GeometryObjectModel.cs" />
+    <Compile Include="Create\TBDConversionOptions.cs" />
     <Compile Include="Enums\Parameter\AnalyticalModelParameter.cs" />
     <Compile Include="Enums\Position.cs" />
     <Compile Include="Enums\SolarCalculationMethod.cs" />

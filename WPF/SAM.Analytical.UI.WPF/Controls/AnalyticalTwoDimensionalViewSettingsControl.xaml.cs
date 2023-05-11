@@ -65,7 +65,7 @@ namespace SAM.Analytical.UI.WPF
 
             spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
 
-            List<Level> levels = Create.Levels(adjacencyCluster, false);
+            List<Level> levels = Analytical.Create.Levels(adjacencyCluster, false);
             levels?.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
 
             elevationControl.Levels = levels;

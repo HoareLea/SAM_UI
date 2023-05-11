@@ -21,35 +21,43 @@ namespace SAM.Analytical.UI.WPF
             }
 
             ConvertToTBDWindow convertToTBDWindow = new ConvertToTBDWindow();
+            ActiveSetting.Setting.TryGetValue(AnalyticalSettingParameter.TBDConversionOptions, out TBDConversionOptions tBDConversionOptions);
+            if(tBDConversionOptions == null)
+            {
+                tBDConversionOptions = Create.TBDConversionOptions(uIAnalyticalModel);
+            }
+
+            convertToTBDWindow.ProjectName = analyticalModel.Name;
+
             if (analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.WeatherData, out WeatherData weatherData))
             {
                 convertToTBDWindow.WeatherData = weatherData;
             }
 
-            convertToTBDWindow.TextMap = Analytical.Query.DefaultInternalConditionTextMap_TM59();
-
-            if(!string.IsNullOrWhiteSpace(uIAnalyticalModel.Path))
+            if (!string.IsNullOrWhiteSpace(uIAnalyticalModel.Path))
             {
                 convertToTBDWindow.OutputDirectory = System.IO.Path.GetDirectoryName(uIAnalyticalModel.Path);
             }
 
-            convertToTBDWindow.ProjectName = analyticalModel.Name;
-            convertToTBDWindow.Simulate = true;
-            convertToTBDWindow.SolarCalculationMethod = SolarCalculationMethod.TAS;
-            convertToTBDWindow.FullYearSimulation = true;
-            convertToTBDWindow.UnmetHours = true;
-            convertToTBDWindow.RoomDataSheets = true;
-            convertToTBDWindow.CreateSAP = true;
-            convertToTBDWindow.CreateTM59 = true;
+            convertToTBDWindow.TBDConversionOptions = tBDConversionOptions;
 
-            convertToTBDWindow.ZoneCategories = analyticalModel.GetZoneCategories()?.ToList();
-
+            //convertToTBDWindow.ZoneCategories = analyticalModel.GetZoneCategories()?.ToList();
+            //convertToTBDWindow.TextMap = Analytical.Query.DefaultInternalConditionTextMap_TM59();
+            //convertToTBDWindow.Simulate = true;
+            //convertToTBDWindow.SolarCalculationMethod = SolarCalculationMethod.TAS;
+            //convertToTBDWindow.FullYearSimulation = true;
+            //convertToTBDWindow.UnmetHours = true;
+            //convertToTBDWindow.RoomDataSheets = true;
+            //convertToTBDWindow.CreateSAP = true;
+            //convertToTBDWindow.CreateTM59 = true;
 
             bool? showdialog = convertToTBDWindow.ShowDialog();
             if(showdialog == null || !showdialog.HasValue || !showdialog.Value)
             {
                 return;
             }
+
+            ActiveSetting.Setting.SetValue(AnalyticalSettingParameter.TBDConversionOptions, convertToTBDWindow.TBDConversionOptions);
 
             string projectName = convertToTBDWindow.ProjectName;
             string outputDirectory = convertToTBDWindow.OutputDirectory;
