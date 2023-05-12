@@ -90,7 +90,7 @@ namespace SAM.Geometry.UI.WPF
             }
 
             //TODO: Update max and min Density (2, 10)
-            Mesh3D mesh3D = Spatial.Create.Mesh3D(sphere, 0.01, 2, 10);
+            Mesh3D mesh3D = Spatial.Create.Mesh3D(sphere, 0.01, 2, 3);
             if(mesh3D == null)
             {
                 return null;
@@ -145,9 +145,9 @@ namespace SAM.Geometry.UI.WPF
                     }
                     
                     //TODO: Update thetaDiv (default value 32)
-                    meshBuilder.AddCylinder(segment3D[0].ToMedia3D(), segment3D[1].ToMedia3D(), thickness, 32);
-                    meshBuilder.AddSphere(segment3D[0].ToMedia3D(), thickness);
-                    meshBuilder.AddSphere(segment3D[1].ToMedia3D(), thickness);
+                    meshBuilder.AddCylinder(segment3D[0].ToMedia3D(), segment3D[1].ToMedia3D(), thickness, 5, false, false);
+                    meshBuilder.AddSphere(segment3D[0].ToMedia3D(), thickness, 5, 5);
+                    meshBuilder.AddSphere(segment3D[1].ToMedia3D(), thickness, 5, 5);
                 }
             }
 

@@ -16,7 +16,8 @@ namespace SAM.Analytical.UI
 
             Color color = Analytical.Query.Color(panel);
 
-            return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0);
+            //thickness 0.001
+            return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0.01);
         }
 
         public static SurfaceAppearance SurfaceAppearance(this Aperture aperture, AperturePart aperturePart)
