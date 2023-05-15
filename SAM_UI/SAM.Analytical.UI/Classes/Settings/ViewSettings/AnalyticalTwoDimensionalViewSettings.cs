@@ -9,6 +9,10 @@ namespace SAM.Analytical.UI
     public class AnalyticalTwoDimensionalViewSettings : TwoDimensionalViewSettings, IAnalyticalViewSettings
     {
         public SpaceAppearanceSettings SpaceAppearanceSettings { get; set; }
+        
+        public PanelAppearanceSettings PanelAppearanceSettings { get; set; }
+
+        public ApertureAppearanceSettings ApertureAppearanceSettings { get; set; }
 
         public AnalyticalTwoDimensionalViewSettings(Guid guid, string name, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types, TextAppearance textAppearance)
             :base(guid, name, plane, appearanceSettings, types, textAppearance)
@@ -40,6 +44,8 @@ namespace SAM.Analytical.UI
             if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
             {
                 SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 
@@ -49,6 +55,8 @@ namespace SAM.Analytical.UI
             if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
             {
                 SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 
@@ -58,6 +66,8 @@ namespace SAM.Analytical.UI
             if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
             {
                 SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 
@@ -71,6 +81,16 @@ namespace SAM.Analytical.UI
             if(jObject.ContainsKey("SpaceAppearanceSettings"))
             {
                 SpaceAppearanceSettings = new SpaceAppearanceSettings(jObject.Value<JObject>("SpaceAppearanceSettings"));
+            }
+
+            if (jObject.ContainsKey("PanelAppearanceSettings"))
+            {
+                PanelAppearanceSettings = new PanelAppearanceSettings(jObject.Value<JObject>("PanelAppearanceSettings"));
+            }
+
+            if (jObject.ContainsKey("ApertureAppearanceSettings"))
+            {
+                ApertureAppearanceSettings = new ApertureAppearanceSettings(jObject.Value<JObject>("ApertureAppearanceSettings"));
             }
 
             return true;
@@ -87,6 +107,16 @@ namespace SAM.Analytical.UI
             if(SpaceAppearanceSettings != null)
             {
                 jObject.Add("SpaceAppearanceSettings", SpaceAppearanceSettings.ToJObject());
+            }
+
+            if (PanelAppearanceSettings != null)
+            {
+                jObject.Add("PanelAppearanceSettings", PanelAppearanceSettings.ToJObject());
+            }
+
+            if (ApertureAppearanceSettings != null)
+            {
+                jObject.Add("ApertureAppearanceSettings", ApertureAppearanceSettings.ToJObject());
             }
 
             return jObject;

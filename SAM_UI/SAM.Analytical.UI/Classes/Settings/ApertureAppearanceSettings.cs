@@ -3,42 +3,34 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class SpaceAppearanceSettings : IAppearanceSettings
+    public class ApertureAppearanceSettings : IAppearanceSettings
     {
         private ParameterAppearanceSettings parameterAppearanceSettings;
 
-        public SpaceAppearanceSettings(string parameterName)
+        public ApertureAppearanceSettings(string parameterName)
         {
             parameterAppearanceSettings = new ParameterAppearanceSettings(parameterName);
         }
 
-        public SpaceAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
+        public ApertureAppearanceSettings(ApertureConstructionAppearanceSettings apertureConstructionAppearanceSettings)
         {
-            if(zoneAppearanceSettings != null)
+            if(apertureConstructionAppearanceSettings != null)
             {
-                parameterAppearanceSettings = new ZoneAppearanceSettings(zoneAppearanceSettings);
+                parameterAppearanceSettings = new ApertureConstructionAppearanceSettings(apertureConstructionAppearanceSettings);
             }
         }
 
-        public SpaceAppearanceSettings(SpaceAppearanceSettings spaceAppearanceSettings)
-        {
-            if (spaceAppearanceSettings?.parameterAppearanceSettings != null)
-            {
-                parameterAppearanceSettings = Core.Query.Clone(spaceAppearanceSettings.parameterAppearanceSettings);
-            }
-        }
-
-        public SpaceAppearanceSettings(InternalConditionAppearanceSettings internalConditionAppearanceSettings)
-        {
-            if (internalConditionAppearanceSettings != null)
-            {
-                parameterAppearanceSettings = new InternalConditionAppearanceSettings(internalConditionAppearanceSettings);
-            }
-        }
-
-        public SpaceAppearanceSettings(JObject jObject)
+        public ApertureAppearanceSettings(JObject jObject)
         {
             FromJObject(jObject);
+        }
+
+        public ApertureAppearanceSettings(ApertureAppearanceSettings apertureAppearanceSettings)
+        {
+            if (apertureAppearanceSettings?.parameterAppearanceSettings != null)
+            {
+                parameterAppearanceSettings = Core.Query.Clone(apertureAppearanceSettings.parameterAppearanceSettings);
+            }
         }
 
         public T ParameterAppearanceSettings<T>() where T: ParameterAppearanceSettings

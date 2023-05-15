@@ -58,6 +58,7 @@
     <Compile Include="Classes\Filter\UITypeFilter.cs" />
     <Compile Include="Classes\Filter\UITextFilter.cs" />
     <Compile Include="Classes\Legend.cs" />
+    <Compile Include="Classes\LegendItemData.cs" />
     <Compile Include="Classes\LegendItem.cs" />
     <Compile Include="Classes\Modification\FullModification.cs" />
     <Compile Include="Classes\Modification\Modification.cs" />
@@ -77,6 +78,7 @@
       <DependentUpon>WelcomeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IModification.cs" />
+    <Compile Include="Interfaces\IAppearanceSettings.cs" />
     <Compile Include="Interfaces\IUIFilter.cs" />
     <Compile Include="Interfaces\IUISettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

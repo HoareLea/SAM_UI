@@ -167,8 +167,20 @@ namespace SAM.Analytical.UI
             {
                 if(spaces != null && spaces.Count != 0)
                 {
-                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings, Query.UndefinedLegendItem());
-                    if(legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                    List<LegendItemData> legendItemDatas = new List<LegendItemData>();
+                    foreach(Space space in spaces)
+                    {
+                        if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        {
+                            legendItemDatas.Add(new LegendItemData(space, value, text));
+                        }
+                    }
+                    
+                    bool editable = Query.Editable<SpaceAppearanceSettings>(threeDimensionalViewSettings);
+
+                    //Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings, Query.UndefinedLegendItem());
+                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
+                    if (legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                     {
                         legend.Refresh(dictionary_LegendItem.Values, true, true);
                     }
@@ -188,30 +200,6 @@ namespace SAM.Analytical.UI
 
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
-
-                        //Color? color = null;
-                        //if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object @object, out string text))
-                        //{
-                        //    if (Core.Query.TryConvert(@object, out System.Drawing.Color color_Temp))
-                        //    {
-                        //        color = color_Temp.ToMedia();
-                        //    }
-                        //}
-
-                        //if (color == null || !color.HasValue)
-                        //{
-                        //    color = Query.Color(space, adjacencyCluster, threeDimensionalViewSettings);
-                        //    if (color == null || !color.HasValue)
-                        //    {
-                        //        System.Drawing.Color color_Drawing = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray);
-                        //        if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
-                        //        {
-                        //            color_Drawing = color_Temp;
-                        //        }
-
-                        //        color = Color.FromRgb(color_Drawing.R, color_Drawing.G, color_Drawing.B);
-                        //    }
-                        //}
 
                         if (color == null || !color.HasValue)
                         {
@@ -320,7 +308,19 @@ namespace SAM.Analytical.UI
                         dictionary_Space[space] = face3Ds;
                     }
 
-                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(dictionary_Space.Keys, adjacencyCluster, twoDimensionalViewSettings, Query.UndefinedLegendItem());
+                    List<LegendItemData> legendItemDatas = new List<LegendItemData>();
+                    foreach (Space space in dictionary_Space.Keys)
+                    {
+                        if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object value, out string text))
+                        {
+                            legendItemDatas.Add(new LegendItemData(space, value, text));
+                        }
+                    }
+
+                    bool editable = Query.Editable<SpaceAppearanceSettings>(twoDimensionalViewSettings);
+
+                    //Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(dictionary_Space.Keys, adjacencyCluster, twoDimensionalViewSettings, Query.UndefinedLegendItem());
+                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
                     if (legend != null)
                     {
                         legend.Refresh(dictionary_LegendItem.Values, true, true);

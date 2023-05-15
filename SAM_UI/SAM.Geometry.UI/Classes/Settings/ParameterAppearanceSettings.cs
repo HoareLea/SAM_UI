@@ -3,7 +3,7 @@ using SAM.Core;
 
 namespace SAM.Geometry.UI
 {
-    public class ParameterAppearanceSettings : IJSAMObject
+    public class ParameterAppearanceSettings : IAppearanceSettings
     {
         public string ParameterName { get; set; }
 

@@ -100,6 +100,10 @@
   <ItemGroup>
     <Compile Include="Classes\RenameSpaceOptions.cs" />
     <Compile Include="Classes\Modification\AnalyticalModelModification.cs" />
+    <Compile Include="Classes\Settings\ApertureConstructionAppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\ConstructionAppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\ApertureAppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\PanelAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\SpaceAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\AnalyticalThreeDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\AnalyticalTwoDimensionalViewSettings.cs" />

@@ -4,53 +4,125 @@ namespace SAM.Analytical.UI
 {
     public static partial class Query
     {
-        public static bool Editable(ViewSettings viewSettings)
+        public static bool Editable<T>(ViewSettings viewSettings) where T : IAppearanceSettings
         {
             if (viewSettings is IAnalyticalViewSettings)
             {
                 IAnalyticalViewSettings analyticalViewSettings = (IAnalyticalViewSettings)viewSettings;
-                SpaceAppearanceSettings spaceAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings;
-                if (spaceAppearanceSettings != null)
+
+                if(typeof(T).IsAssignableFrom(typeof(SpaceAppearanceSettings)))
                 {
-                    ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings.ParameterAppearanceSettings<ParameterAppearanceSettings>();
-                    if (parameterAppearanceSettings != null)
+                    SpaceAppearanceSettings spaceAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings;
+                    if (spaceAppearanceSettings != null)
                     {
-                        if (parameterAppearanceSettings is InternalConditionAppearanceSettings)
+                        ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings.ParameterAppearanceSettings<ParameterAppearanceSettings>();
+                        if (parameterAppearanceSettings != null)
                         {
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                            if (parameterAppearanceSettings is InternalConditionAppearanceSettings)
                             {
-                                return false;
+                                if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    return true;
+                                }
+                            }
+                            else if (parameterAppearanceSettings is ZoneAppearanceSettings)
+                            {
+                                ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)parameterAppearanceSettings;
+                                if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    return true;
+                                }
                             }
                             else
                             {
-                                return true;
-                            }
-                        }
-                        else if (parameterAppearanceSettings is ZoneAppearanceSettings)
-                        {
-                            ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)parameterAppearanceSettings;
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
-                            {
-                                return false;
-                            }
-                            else
-                            {
-                                return true;
-                            }
-                        }
-                        else
-                        {
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
-                            {
-                                return false;
-                            }
-                            else
-                            {
-                                return true;
+                                if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    return true;
+                                }
                             }
                         }
                     }
                 }
+                else if (typeof(T).IsAssignableFrom(typeof(PanelAppearanceSettings)))
+                {
+                    PanelAppearanceSettings panelAppearanceSettings = analyticalViewSettings.PanelAppearanceSettings;
+                    if (panelAppearanceSettings != null)
+                    {
+                        ParameterAppearanceSettings parameterAppearanceSettings = panelAppearanceSettings.ParameterAppearanceSettings<ParameterAppearanceSettings>();
+                        if (parameterAppearanceSettings != null)
+                        {
+                            if (parameterAppearanceSettings is ConstructionAppearanceSettings)
+                            {
+                                if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(typeof(T).IsAssignableFrom(typeof(ApertureAppearanceSettings)))
+                {
+                    ApertureAppearanceSettings apertureAppearanceSettings = analyticalViewSettings.ApertureAppearanceSettings;
+                    if (apertureAppearanceSettings != null)
+                    {
+                        ParameterAppearanceSettings parameterAppearanceSettings = apertureAppearanceSettings.ParameterAppearanceSettings<ParameterAppearanceSettings>();
+                        if (parameterAppearanceSettings != null)
+                        {
+                            if (parameterAppearanceSettings is ApertureConstructionAppearanceSettings)
+                            {
+                                if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    return true;
+                                }
+                            }
+                            else
+                            {
+                                if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
             }
 
             return true;

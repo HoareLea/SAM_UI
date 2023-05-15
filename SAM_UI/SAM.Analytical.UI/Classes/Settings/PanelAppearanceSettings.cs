@@ -3,40 +3,32 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class SpaceAppearanceSettings : IAppearanceSettings
+    public class PanelAppearanceSettings : IAppearanceSettings
     {
         private ParameterAppearanceSettings parameterAppearanceSettings;
 
-        public SpaceAppearanceSettings(string parameterName)
+        public PanelAppearanceSettings(string parameterName)
         {
             parameterAppearanceSettings = new ParameterAppearanceSettings(parameterName);
         }
 
-        public SpaceAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
+        public PanelAppearanceSettings(ConstructionAppearanceSettings constructionAppearanceSettings)
         {
-            if(zoneAppearanceSettings != null)
+            if(constructionAppearanceSettings != null)
             {
-                parameterAppearanceSettings = new ZoneAppearanceSettings(zoneAppearanceSettings);
+                parameterAppearanceSettings = new ConstructionAppearanceSettings(constructionAppearanceSettings);
             }
         }
 
-        public SpaceAppearanceSettings(SpaceAppearanceSettings spaceAppearanceSettings)
+        public PanelAppearanceSettings(PanelAppearanceSettings panelAppearanceSettings)
         {
-            if (spaceAppearanceSettings?.parameterAppearanceSettings != null)
+            if (panelAppearanceSettings?.parameterAppearanceSettings != null)
             {
-                parameterAppearanceSettings = Core.Query.Clone(spaceAppearanceSettings.parameterAppearanceSettings);
+                parameterAppearanceSettings = Core.Query.Clone(panelAppearanceSettings.parameterAppearanceSettings);
             }
         }
 
-        public SpaceAppearanceSettings(InternalConditionAppearanceSettings internalConditionAppearanceSettings)
-        {
-            if (internalConditionAppearanceSettings != null)
-            {
-                parameterAppearanceSettings = new InternalConditionAppearanceSettings(internalConditionAppearanceSettings);
-            }
-        }
-
-        public SpaceAppearanceSettings(JObject jObject)
+        public PanelAppearanceSettings(JObject jObject)
         {
             FromJObject(jObject);
         }
