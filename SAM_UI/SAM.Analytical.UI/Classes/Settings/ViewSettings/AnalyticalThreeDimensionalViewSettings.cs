@@ -34,33 +34,33 @@ namespace SAM.Analytical.UI
         public AnalyticalThreeDimensionalViewSettings(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
             :base(analyticalThreeDimensionalViewSettings)
         {
-            if (analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            if(analyticalThreeDimensionalViewSettings != null)
             {
-                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
-                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalThreeDimensionalViewSettings.PanelAppearanceSettings);
-                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalThreeDimensionalViewSettings.ApertureAppearanceSettings);
+                SpaceAppearanceSettings = analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings == null ? null : new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = analyticalThreeDimensionalViewSettings?.PanelAppearanceSettings == null ? null : new PanelAppearanceSettings(analyticalThreeDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = analyticalThreeDimensionalViewSettings?.ApertureAppearanceSettings == null ? null : new ApertureAppearanceSettings(analyticalThreeDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 
         public AnalyticalThreeDimensionalViewSettings(string name, AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
             : base(name, analyticalThreeDimensionalViewSettings)
         {
-            if (analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            if (analyticalThreeDimensionalViewSettings != null)
             {
-                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
-                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalThreeDimensionalViewSettings.PanelAppearanceSettings);
-                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalThreeDimensionalViewSettings.ApertureAppearanceSettings);
+                SpaceAppearanceSettings = analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings == null ? null : new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = analyticalThreeDimensionalViewSettings?.PanelAppearanceSettings == null ? null : new PanelAppearanceSettings(analyticalThreeDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = analyticalThreeDimensionalViewSettings?.ApertureAppearanceSettings == null ? null : new ApertureAppearanceSettings(analyticalThreeDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 
         public AnalyticalThreeDimensionalViewSettings(Guid guid, string name, AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
             : base(guid, name, analyticalThreeDimensionalViewSettings)
         {
-            if (analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            if (analyticalThreeDimensionalViewSettings != null)
             {
-                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
-                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalThreeDimensionalViewSettings.PanelAppearanceSettings);
-                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalThreeDimensionalViewSettings.ApertureAppearanceSettings);
+                SpaceAppearanceSettings = analyticalThreeDimensionalViewSettings?.SpaceAppearanceSettings == null ? null : new SpaceAppearanceSettings(analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = analyticalThreeDimensionalViewSettings?.PanelAppearanceSettings == null ? null : new PanelAppearanceSettings(analyticalThreeDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = analyticalThreeDimensionalViewSettings?.ApertureAppearanceSettings == null ? null : new ApertureAppearanceSettings(analyticalThreeDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 

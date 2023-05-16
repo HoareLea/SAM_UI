@@ -41,33 +41,33 @@ namespace SAM.Analytical.UI
         public AnalyticalTwoDimensionalViewSettings(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
             :base(analyticalTwoDimensionalViewSettings)
         {
-            if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            if (analyticalTwoDimensionalViewSettings != null)
             {
-                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
-                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
-                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
+                SpaceAppearanceSettings = analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings == null ? null : new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = analyticalTwoDimensionalViewSettings?.PanelAppearanceSettings == null ? null : new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = analyticalTwoDimensionalViewSettings?.ApertureAppearanceSettings == null ? null : new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 
         public AnalyticalTwoDimensionalViewSettings(string name, AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
             : base(name, analyticalTwoDimensionalViewSettings)
         {
-            if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            if (analyticalTwoDimensionalViewSettings != null)
             {
-                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
-                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
-                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
+                SpaceAppearanceSettings = analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings == null ? null : new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = analyticalTwoDimensionalViewSettings?.PanelAppearanceSettings == null ? null : new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = analyticalTwoDimensionalViewSettings?.ApertureAppearanceSettings == null ? null : new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 
         public AnalyticalTwoDimensionalViewSettings(Guid guid, string name, AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
             : base(guid, name, analyticalTwoDimensionalViewSettings)
         {
-            if (analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings != null)
+            if (analyticalTwoDimensionalViewSettings != null)
             {
-                SpaceAppearanceSettings = new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
-                PanelAppearanceSettings = new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
-                ApertureAppearanceSettings = new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
+                SpaceAppearanceSettings = analyticalTwoDimensionalViewSettings?.SpaceAppearanceSettings == null ? null : new SpaceAppearanceSettings(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings);
+                PanelAppearanceSettings = analyticalTwoDimensionalViewSettings?.PanelAppearanceSettings == null ? null : new PanelAppearanceSettings(analyticalTwoDimensionalViewSettings.PanelAppearanceSettings);
+                ApertureAppearanceSettings = analyticalTwoDimensionalViewSettings?.ApertureAppearanceSettings == null ? null : new ApertureAppearanceSettings(analyticalTwoDimensionalViewSettings.ApertureAppearanceSettings);
             }
         }
 

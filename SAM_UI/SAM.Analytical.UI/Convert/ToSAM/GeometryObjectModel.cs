@@ -43,6 +43,7 @@ namespace SAM.Analytical.UI
             bool showApertures = threeDimensionalViewSettings.IsValid(typeof(Aperture));
             bool showSpaces = threeDimensionalViewSettings.IsValid(typeof(Space));
 
+
             if (showPanels && panels != null)
             {
                 foreach (Panel panel in panels)
