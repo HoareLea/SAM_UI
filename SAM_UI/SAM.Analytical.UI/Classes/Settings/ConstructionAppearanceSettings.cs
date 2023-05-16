@@ -1,18 +1,19 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class ConstructionAppearanceSettings : Geometry.UI.ParameterAppearanceSettings
+    public class ConstructionAppearanceSettings : TypeAppearanceSettings
     {
 
         public ConstructionAppearanceSettings(string parameterName)
             :base(parameterName)
         {
-            ParameterName = parameterName;
+
         }
 
         public ConstructionAppearanceSettings(ConstructionAppearanceSettings constructionAppearanceSettings)
-            :base(constructionAppearanceSettings)
+            :base(constructionAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
         {
 
         }
@@ -20,23 +21,6 @@ namespace SAM.Analytical.UI
         public ConstructionAppearanceSettings(JObject jObject)
             :base(jObject)
         {
-        }
-
-        public override bool FromJObject(JObject jObject)
-        {
-            if(!base.FromJObject(jObject))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public JObject ToJObject()
-        {
-            JObject result = base.ToJObject();
-
-            return result;
         }
     }
 }

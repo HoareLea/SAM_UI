@@ -1,4 +1,5 @@
 ﻿using SAM.Architectural;
+using SAM.Core.UI;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
@@ -50,26 +51,33 @@ namespace SAM.Analytical.UI.WPF
 
             if (spaceAppearanceSettings != null)
             {
-                ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings?.ParameterAppearanceSettings<ParameterAppearanceSettings>();
-                if (parameterAppearanceSettings != null)
+                IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+           
+                if (appearanceSettings is TypeAppearanceSettings)
                 {
-                    if (parameterAppearanceSettings is ZoneAppearanceSettings)
+                    if (appearanceSettings is ZoneAppearanceSettings)
                     {
-                        ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)parameterAppearanceSettings;
+                        ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)appearanceSettings;
 
                         values.Add(zoneAppearanceSettings.ZoneCategory);
 
                         values.Add("Zone");
                     }
-                    else if (parameterAppearanceSettings is InternalConditionAppearanceSettings)
+                    else if (appearanceSettings is InternalConditionAppearanceSettings)
                     {
                         values.Add("IC");
                     }
-                    else
+                    else if (appearanceSettings is SpaceAppearanceSettings)
                     {
                         values.Add("Space");
                     }
 
+                    appearanceSettings = spaceAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                }
+
+                if (appearanceSettings is ParameterAppearanceSettings)
+                {
+                    ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
                     values.Add(parameterAppearanceSettings.ParameterName);
                 }
             }

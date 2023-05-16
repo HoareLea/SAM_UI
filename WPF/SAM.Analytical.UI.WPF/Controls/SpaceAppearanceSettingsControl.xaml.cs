@@ -1,4 +1,5 @@
 ﻿using SAM.Core.Attributes;
+using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -205,19 +206,34 @@ namespace SAM.Analytical.UI.WPF
 
         private void SetSpaceAppearanceSettings(SpaceAppearanceSettings spaceAppearanceSettings)
         {
-            Geometry.UI.ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings?.ParameterAppearanceSettings<Geometry.UI.ParameterAppearanceSettings>();
-            if(parameterAppearanceSettings == null)
+            Core.UI.IAppearanceSettings appearanceSettings = spaceAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>();
+            if(appearanceSettings == null)
             {
                 return;
             }
 
-            if(parameterAppearanceSettings is ZoneAppearanceSettings)
+            string parameterName = null;
+            if(appearanceSettings is ParameterAppearanceSettings)
+            {
+                parameterName = ((ParameterAppearanceSettings)appearanceSettings).ParameterName;
+            }
+            else if(appearanceSettings is TypeAppearanceSettings)
+            {
+                parameterName = ((TypeAppearanceSettings)appearanceSettings).GetAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+            }
+
+            if(parameterName == null)
+            {
+                return;
+            }
+
+            if(appearanceSettings is ZoneAppearanceSettings)
             {
                 radioButton_Zone.IsChecked = true;
                 LoadZoneCategories();
-                comboBox_ZoneCategory.SelectedItem = ((ZoneAppearanceSettings)parameterAppearanceSettings).ZoneCategory;
+                comboBox_ZoneCategory.SelectedItem = ((ZoneAppearanceSettings)appearanceSettings).ZoneCategory;
             }
-            else if(parameterAppearanceSettings is InternalConditionAppearanceSettings)
+            else if(appearanceSettings is InternalConditionAppearanceSettings)
             {
                 radioButton_InternalCondition.IsChecked = true;
             }
@@ -227,7 +243,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             LoadParameterNames();
-            comboBox_ParameterName.SelectedItem = parameterAppearanceSettings.ParameterName;
+            comboBox_ParameterName.SelectedItem = parameterName;
 
             SetZoneTypeVisibility();
         }

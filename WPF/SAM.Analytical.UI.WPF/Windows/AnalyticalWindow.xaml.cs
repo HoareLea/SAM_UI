@@ -371,7 +371,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             IAnalyticalViewSettings analyticalViewSettings = Query.ViewSettings<IAnalyticalViewSettings>(uIAnalyticalModel, GetActiveGuid());
             if (analyticalViewSettings != null)
             {
-                ZoneAppearanceSettings zoneAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings?.ParameterAppearanceSettings<ZoneAppearanceSettings>();
+                ZoneAppearanceSettings zoneAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings?.GetAppearanceSettings<ZoneAppearanceSettings>();
                 if (zoneAppearanceSettings != null)
                 {
                     zoneCategory = zoneAppearanceSettings.ZoneCategory;

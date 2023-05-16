@@ -8,7 +8,7 @@ namespace SAM.Geometry.UI
 {
     public abstract class ViewSettings : SAMObject, IViewSettings
     {
-        private AppearanceSettings appearanceSettings;
+        private GuidAppearanceSettings appearanceSettings;
         private Types types;
         private Legend legend;
         private Camera camera;
@@ -20,10 +20,10 @@ namespace SAM.Geometry.UI
 
         }
 
-        public ViewSettings(Guid guid, string name, AppearanceSettings appearanceSettings, IEnumerable<Type> types)
+        public ViewSettings(Guid guid, string name, GuidAppearanceSettings appearanceSettings, IEnumerable<Type> types)
             :base(guid, name)
         {
-            this.appearanceSettings = appearanceSettings != null ? new AppearanceSettings(appearanceSettings) : null;
+            this.appearanceSettings = appearanceSettings != null ? new GuidAppearanceSettings(appearanceSettings) : null;
             this.types = types != null ? new Types(types) : null;
         }
 
@@ -40,7 +40,7 @@ namespace SAM.Geometry.UI
             {
                 if(viewSettings.appearanceSettings != null)
                 {
-                    appearanceSettings = new AppearanceSettings(viewSettings.appearanceSettings);
+                    appearanceSettings = new GuidAppearanceSettings(viewSettings.appearanceSettings);
                 }
 
                 if(viewSettings.types != null)
@@ -71,7 +71,7 @@ namespace SAM.Geometry.UI
             {
                 if (viewSettings.appearanceSettings != null)
                 {
-                    appearanceSettings = new AppearanceSettings(viewSettings.appearanceSettings);
+                    appearanceSettings = new GuidAppearanceSettings(viewSettings.appearanceSettings);
                 }
 
                 if (viewSettings.types != null)
@@ -102,7 +102,7 @@ namespace SAM.Geometry.UI
             {
                 if (viewSettings.appearanceSettings != null)
                 {
-                    appearanceSettings = new AppearanceSettings(viewSettings.appearanceSettings);
+                    appearanceSettings = new GuidAppearanceSettings(viewSettings.appearanceSettings);
                 }
 
                 if (viewSettings.types != null)
@@ -173,7 +173,7 @@ namespace SAM.Geometry.UI
         {
             if(appearanceSettings == null)
             {
-                appearanceSettings = new AppearanceSettings();
+                appearanceSettings = new GuidAppearanceSettings();
             }
 
             return appearanceSettings.SetAppearances(guid, appearances);
@@ -183,7 +183,7 @@ namespace SAM.Geometry.UI
         {
             if (appearanceSettings == null)
             {
-                appearanceSettings = new AppearanceSettings();
+                appearanceSettings = new GuidAppearanceSettings();
             }
 
             return appearanceSettings.AddAppearances(guid, appearances);
@@ -225,7 +225,7 @@ namespace SAM.Geometry.UI
 
             if (jObject.ContainsKey("AppearanceSettings"))
             {
-                appearanceSettings = new AppearanceSettings(jObject.Value<JObject>("AppearanceSettings"));
+                appearanceSettings = new GuidAppearanceSettings(jObject.Value<JObject>("AppearanceSettings"));
             }
 
             if (jObject.ContainsKey("Types"))

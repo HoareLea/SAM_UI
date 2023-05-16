@@ -14,14 +14,14 @@ namespace SAM.Analytical.UI
 
         public ApertureAppearanceSettings ApertureAppearanceSettings { get; set; }
 
-        public AnalyticalTwoDimensionalViewSettings(Guid guid, string name, Plane plane, AppearanceSettings appearanceSettings, IEnumerable<Type> types, TextAppearance textAppearance)
-            :base(guid, name, plane, appearanceSettings, types, textAppearance)
+        public AnalyticalTwoDimensionalViewSettings(Guid guid, string name, Plane plane, GuidAppearanceSettings guidAppearanceSettings, IEnumerable<Type> types, TextAppearance textAppearance)
+            :base(guid, name, plane, guidAppearanceSettings, types, textAppearance)
         {
 
         }
 
-        public AnalyticalTwoDimensionalViewSettings(Plane plane, string name, AppearanceSettings appearanceSettings, IEnumerable<Type> types, TextAppearance textAppearance)
-            : base(Guid.NewGuid(), name, plane, appearanceSettings, types, textAppearance)
+        public AnalyticalTwoDimensionalViewSettings(Plane plane, string name, GuidAppearanceSettings guidAppearanceSettings, IEnumerable<Type> types, TextAppearance textAppearance)
+            : base(Guid.NewGuid(), name, plane, guidAppearanceSettings, types, textAppearance)
         {
 
         }

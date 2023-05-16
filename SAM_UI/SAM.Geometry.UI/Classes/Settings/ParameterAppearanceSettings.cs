@@ -1,9 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
-using SAM.Core;
 
 namespace SAM.Geometry.UI
 {
-    public class ParameterAppearanceSettings : IAppearanceSettings
+    public class ParameterAppearanceSettings : Core.UI.IAppearanceSettings
     {
         public string ParameterName { get; set; }
 

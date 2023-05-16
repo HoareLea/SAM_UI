@@ -63,6 +63,7 @@
     <Compile Include="Classes\Mesh3DObject.cs" />
     <Compile Include="Classes\Modification\ViewSettingsModification.cs" />
     <Compile Include="Classes\BoundingBox3DObject.cs" />
+    <Compile Include="Classes\Settings\TypeAppearanceSettings.cs" />
     <Compile Include="Classes\Triangle3DObject.cs" />
     <Compile Include="Classes\Rectangle3DObject.cs" />
     <Compile Include="Classes\Polyline3DObject.cs" />
@@ -77,7 +78,7 @@
     <Compile Include="Classes\Settings\UIGeometrySettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\ThreeDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\TwoDimensionalViewSettings.cs" />
-    <Compile Include="Classes\Settings\AppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\GuidAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\ViewSettings.cs" />
     <Compile Include="Classes\GeometryObjectCollection.cs" />
     <Compile Include="Convert\ToSAM\ISAMGeometryObject.cs" />
@@ -85,7 +86,7 @@
     <Compile Include="Enums\Mode.cs" />
     <Compile Include="Enums\Parameter\ViewSettingsParameter.cs" />
     <Compile Include="Enums\Parameter\GeometryObjectModelParameter.cs" />
-    <Compile Include="Interfaces\IAppearanceSettings.cs" />
+    <Compile Include="Interfaces\ITypeAppearanceSettings.cs" />
     <Compile Include="Interfaces\ICamera.cs" />
     <Compile Include="Interfaces\IViewSettings.cs" />
     <Compile Include="Interfaces\IText3DObject.cs" />

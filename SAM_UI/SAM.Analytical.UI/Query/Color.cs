@@ -34,10 +34,10 @@ namespace SAM.Analytical.UI
                 {
                     SpaceAppearanceSettings spaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
 
-                    ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings.ParameterAppearanceSettings<ParameterAppearanceSettings>();
-                    if(parameterAppearanceSettings is ZoneAppearanceSettings)
+                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                    if(appearanceSettings is ZoneAppearanceSettings)
                     {
-                        string zoneCategory = ((ZoneAppearanceSettings)parameterAppearanceSettings).ZoneCategory;
+                        string zoneCategory = ((ZoneAppearanceSettings)appearanceSettings).ZoneCategory;
                         if (!string.IsNullOrWhiteSpace(zoneCategory))
                         {
                             if (adjacencyCluster != null)

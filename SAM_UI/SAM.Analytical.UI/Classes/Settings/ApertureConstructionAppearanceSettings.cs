@@ -1,18 +1,17 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class ApertureConstructionAppearanceSettings : Geometry.UI.ParameterAppearanceSettings
+    public class ApertureConstructionAppearanceSettings : TypeAppearanceSettings
     {
-
         public ApertureConstructionAppearanceSettings(string parameterName)
             :base(parameterName)
         {
-            ParameterName = parameterName;
         }
 
         public ApertureConstructionAppearanceSettings(ApertureConstructionAppearanceSettings apertureConstructionAppearanceSettings)
-            :base(apertureConstructionAppearanceSettings)
+            :base(apertureConstructionAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
         {
 
         }
@@ -20,23 +19,6 @@ namespace SAM.Analytical.UI
         public ApertureConstructionAppearanceSettings(JObject jObject)
             :base(jObject)
         {
-        }
-
-        public override bool FromJObject(JObject jObject)
-        {
-            if(!base.FromJObject(jObject))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public JObject ToJObject()
-        {
-            JObject result = base.ToJObject();
-
-            return result;
         }
     }
 }

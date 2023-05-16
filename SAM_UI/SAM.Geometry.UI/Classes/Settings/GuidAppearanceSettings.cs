@@ -6,21 +6,21 @@ using System.Linq;
 
 namespace SAM.Geometry.UI
 {
-    public class AppearanceSettings : IAppearanceSettings
+    public class GuidAppearanceSettings : Core.UI.IAppearanceSettings
     {
         private Dictionary<Guid, List<IAppearance>> appearanceDictionary;
 
-        public AppearanceSettings()
+        public GuidAppearanceSettings()
         {
 
         }
 
-        public AppearanceSettings(JObject jObject)
+        public GuidAppearanceSettings(JObject jObject)
         {
             FromJObject(jObject);
         }
 
-        public AppearanceSettings(AppearanceSettings appearanceSettings)
+        public GuidAppearanceSettings(GuidAppearanceSettings appearanceSettings)
         {
             if(appearanceSettings != null)
             {

@@ -5,7 +5,6 @@ using SAM.Core.UI.WPF;
 using SAM.Weather;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF

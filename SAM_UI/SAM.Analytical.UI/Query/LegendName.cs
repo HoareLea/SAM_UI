@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.UI;
+﻿using SAM.Core.UI;
+using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
@@ -12,41 +13,45 @@ namespace SAM.Analytical.UI
                 SpaceAppearanceSettings spaceAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings;
                 if (spaceAppearanceSettings != null)
                 {
-                    ParameterAppearanceSettings parameterAppearanceSettings = spaceAppearanceSettings.ParameterAppearanceSettings<ParameterAppearanceSettings>();
-                    if (parameterAppearanceSettings != null)
+                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                    if (appearanceSettings is ParameterAppearanceSettings)
                     {
-                        if (parameterAppearanceSettings is InternalConditionAppearanceSettings)
+                        ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+
+                        if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
                         {
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                            return "Spaces";
+                        }
+                        else
+                        {
+                            return parameterAppearanceSettings.ParameterName;
+                        }
+                    }
+                    else if(appearanceSettings is TypeAppearanceSettings)
+                    {
+                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                        
+                        if (appearanceSettings is InternalConditionAppearanceSettings)
+                        {
+                            if (parameterName == "Color" || parameterName == "Name")
                             {
                                 return "Internal Conditions";
                             }
                             else
                             {
-                                return parameterAppearanceSettings.ParameterName;
+                                return parameterName;
                             }
                         }
-                        else if (parameterAppearanceSettings is ZoneAppearanceSettings)
+                        else if(appearanceSettings is ZoneAppearanceSettings)
                         {
-                            ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)parameterAppearanceSettings;
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                            ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)appearanceSettings;
+                            if (parameterName == "Color" || parameterName == "Name")
                             {
                                 return string.Format("{0} Zones", zoneAppearanceSettings.ZoneCategory);
                             }
                             else
                             {
-                                return parameterAppearanceSettings.ParameterName;
-                            }
-                        }
-                        else
-                        {
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
-                            {
-                                return "Spaces";
-                            }
-                            else
-                            {
-                                return parameterAppearanceSettings.ParameterName;
+                                return parameterName;
                             }
                         }
                     }

@@ -159,7 +159,7 @@ namespace SAM.Analytical.UI
                             result.Add(GeometryObjectCollection_Aperture);
                         }
                     }
-                }
+                } 
             }
 
             List<Space> spaces = adjacencyCluster.GetSpaces();

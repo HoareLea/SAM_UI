@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class ZoneAppearanceSettings : Geometry.UI.ParameterAppearanceSettings
+    public class ZoneAppearanceSettings : TypeAppearanceSettings
     {
         public string ZoneCategory { get; set; }
 
@@ -19,7 +20,7 @@ namespace SAM.Analytical.UI
         }
 
         public ZoneAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
-            : base(zoneAppearanceSettings)
+            : base(zoneAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
         {
             if(zoneAppearanceSettings != null)
             {
@@ -31,37 +32,6 @@ namespace SAM.Analytical.UI
             : base(jObject)
         {
 
-        }
-
-        public override bool FromJObject(JObject jObject)
-        {
-            if(!base.FromJObject(jObject))
-            {
-                return false;
-            }
-
-            if (jObject.ContainsKey("ZoneCategory"))
-            {
-                ZoneCategory = jObject.Value<string>("ZoneCategory");
-            }
-
-            return true;
-        }
-
-        public override JObject ToJObject()
-        {
-            JObject jObject = base.ToJObject();
-            if(jObject == null)
-            {
-                return null;
-            }
-
-            if(ZoneCategory != null)
-            {
-                jObject.Add("ZoneCategory", ZoneCategory);
-            }
-
-            return jObject;
         }
     }
 }
