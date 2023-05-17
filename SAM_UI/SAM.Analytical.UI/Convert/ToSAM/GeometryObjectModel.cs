@@ -3,6 +3,7 @@ using SAM.Geometry;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media;
 
@@ -30,156 +31,161 @@ namespace SAM.Analytical.UI
             AnalyticalModel analyticalModel_Temp = new AnalyticalModel(analyticalModel);
 
             AdjacencyCluster adjacencyCluster = analyticalModel_Temp.AdjacencyCluster;
-            //adjacencyCluster.UpdateNormals(true, true);
-            //adjacencyCluster.Normalize(true, Geometry.Orientation.CounterClockwise);
 
             Legend legend = threeDimensionalViewSettings.Legend;
 
             GeometryObjectModel result = new GeometryObjectModel();
 
-            List<Panel> panels = adjacencyCluster.GetPanels();
-
-            bool showPanels = threeDimensionalViewSettings.IsValid(typeof(Panel));
             bool showApertures = threeDimensionalViewSettings.IsValid(typeof(Aperture));
-            bool showSpaces = threeDimensionalViewSettings.IsValid(typeof(Space));
-
-
-            if (showPanels && panels != null)
+            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Apertures = new Dictionary<System.Guid, GeometryObjectCollection>();
+            if(showApertures)
             {
-                foreach (Panel panel in panels)
+                List<Aperture> apertures = adjacencyCluster.GetApertures();
+                if(apertures != null && apertures.Count != 0)
                 {
-                    GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = panel };
-
-                    Face3D face3D = panel.GetFace3D(true);
-
-                    List<Face3D> face3Ds_FixEdges = face3D.FixEdges();
-                    if (face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
+                    List<LegendItemData> legendItemDatas = new List<LegendItemData>();
+                    foreach (Aperture aperture in apertures)
                     {
-                        if (face3Ds_FixEdges.Count != 1)
+                        if (Query.TryGetValue(aperture, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
                         {
-                            face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
+                            legendItemDatas.Add(new LegendItemData(aperture, value, text));
                         }
-
-                        face3D = face3Ds_FixEdges.Find(x => x.IsValid());
                     }
 
-                    if(face3D == null || !face3D.IsValid())
+                    bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
+
+                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
+                    if (legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                     {
-                        continue;
+                        legend.Refresh(dictionary_LegendItem.Values, true, true);
                     }
 
-                    geometryObjectCollection_Panel.Add(new Face3DObject(face3D, Query.SurfaceAppearance(panel, threeDimensionalViewSettings)));
-
-                    if (showApertures)
+                    foreach (Aperture aperture in apertures)
                     {
-                        List<Aperture> apertures = panel.Apertures;
-                        if (apertures != null && apertures.Count != 0)
+                        GeometryObjectCollection geometryObjectCollection_Aperture = new GeometryObjectCollection() { Tag = aperture };
+
+                        Color? color = null;
+
+                        if (dictionary_LegendItem.TryGetValue(aperture.Guid, out LegendItem legendItem) && legendItem != null)
                         {
-                            foreach (Aperture aperture in apertures)
+                            if (legend != null)
                             {
-                                GeometryObjectCollection geometryObjectCollection_Aperture = new GeometryObjectCollection() { Tag = aperture };
-
-                                AperturePart aperturePart = AperturePart.Undefined;
-                                List<Face3D> face3Ds = null;
-
-                                aperturePart = AperturePart.Frame;
-                                face3Ds = aperture.GetFace3Ds(aperturePart);
-                                if (face3Ds != null && face3Ds.Count != 0)
-                                {
-                                    foreach (Face3D face3D_Temp in face3Ds)
-                                    {
-                                        if (face3D_Temp == null)
-                                        {
-                                            continue;
-                                        }
-
-                                        //face3D_Temp.Normalize(Geometry.Orientation.CounterClockwise);
-
-                                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings);
-
-                                        geometryObjectCollection_Aperture.Add(new Face3DObject(face3D_Temp, surfaceAppearance));
-                                    }
-                                }
-
-                                aperturePart = AperturePart.Pane;
-                                face3Ds = aperture.GetFace3Ds(aperturePart);
-                                if (face3Ds != null && face3Ds.Count != 0)
-                                {
-                                    foreach (Face3D face3D_Temp in face3Ds)
-                                    {
-                                        if (face3D_Temp == null)
-                                        {
-                                            continue;
-                                        }
-
-                                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings);
-
-                                        //face3D_Temp.Normalize(Geometry.Orientation.CounterClockwise);
-
-                                        geometryObjectCollection_Aperture.Add(new Face3DObject(face3D_Temp, surfaceAppearance));
-                                    }
-                                }
-
-                                geometryObjectCollection_Panel.Add(geometryObjectCollection_Aperture);
+                                legendItem = legend.Find(legendItem?.Text);
                             }
-                        }
-                    }
 
-                    result.Add(geometryObjectCollection_Panel);
+                            color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
+                        }
+
+                        SurfaceAppearance surfaceAppearance_Frame = Query.SurfaceAppearance(aperture, AperturePart.Frame, threeDimensionalViewSettings, color);
+                        SurfaceAppearance surfaceAppearance_Pane = Query.SurfaceAppearance(aperture, AperturePart.Pane, threeDimensionalViewSettings, color);
+
+                        AperturePart aperturePart = AperturePart.Undefined;
+                        List<Face3D> face3Ds = null;
+
+                        aperturePart = AperturePart.Frame;
+                        face3Ds = aperture.GetFace3Ds(aperturePart);
+                        if (face3Ds != null && face3Ds.Count != 0)
+                        {
+                            face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Frame)));
+                        }
+
+                        aperturePart = AperturePart.Pane;
+                        face3Ds = aperture.GetFace3Ds(aperturePart);
+                        if (face3Ds != null && face3Ds.Count != 0)
+                        {
+                            face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Pane)));
+                        }
+
+                        dictionary_Apertures[aperture.Guid] = geometryObjectCollection_Aperture;
+                    }
                 }
             }
 
-            if (showApertures && !showPanels)
+            bool showPanels = threeDimensionalViewSettings.IsValid(typeof(Panel));
+            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Panels = new Dictionary<System.Guid, GeometryObjectCollection>();
+            if(showPanels)
             {
-                foreach (Panel panel in panels)
-                {
-                    List<Aperture> apertures = panel.Apertures;
-                    if (apertures != null && apertures.Count != 0)
-                    {
-                        foreach (Aperture aperture in apertures)
-                        {
-                            GeometryObjectCollection GeometryObjectCollection_Aperture = new GeometryObjectCollection() { Tag = aperture };
-
-                            AperturePart aperturePart = AperturePart.Undefined;
-                            List<Face3D> face3Ds = null;
-
-                            aperturePart = AperturePart.Frame;
-                            face3Ds = aperture.GetFace3Ds(aperturePart);
-                            if (face3Ds != null && face3Ds.Count != 0)
-                            {
-                                face3Ds.ForEach(x => GeometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings))));
-                            }
-
-                            aperturePart = AperturePart.Pane;
-                            face3Ds = aperture.GetFace3Ds(aperturePart);
-                            if (face3Ds != null && face3Ds.Count != 0)
-                            {
-                                face3Ds.ForEach(x => GeometryObjectCollection_Aperture.Add(new Face3DObject(x, Query.SurfaceAppearance(aperture, aperturePart, threeDimensionalViewSettings))));
-                            }
-
-                            result.Add(GeometryObjectCollection_Aperture);
-                        }
-                    }
-                } 
-            }
-
-            List<Space> spaces = adjacencyCluster.GetSpaces();
-            if (showSpaces)
-            {
-                if(spaces != null && spaces.Count != 0)
+                List<Panel> panels = adjacencyCluster.GetPanels();
+                if(panels != null && panels.Count != 0)
                 {
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
-                    foreach(Space space in spaces)
+                    foreach (Panel panel in panels)
+                    {
+                        if (Query.TryGetValue(panel, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        {
+                            legendItemDatas.Add(new LegendItemData(panel, value, text));
+                        }
+                    }
+
+                    bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
+
+                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
+                    if (legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                    {
+                        legend.Refresh(dictionary_LegendItem.Values, true, true);
+                    }
+
+                    foreach (Panel panel in panels)
+                    {
+                        GeometryObjectCollection geometryObjectCollection_Panel = new GeometryObjectCollection() { Tag = panel };
+
+                        Color? color = null;
+
+                        if (dictionary_LegendItem.TryGetValue(panel.Guid, out LegendItem legendItem) && legendItem != null)
+                        {
+                            if (legend != null)
+                            {
+                                legendItem = legend.Find(legendItem?.Text);
+                            }
+
+                            color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
+                        }
+
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(panel, threeDimensionalViewSettings, color);
+
+                        Face3D face3D = panel.GetFace3D(true);
+
+                        List<Face3D> face3Ds_FixEdges = face3D.FixEdges();
+                        if (face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
+                        {
+                            if (face3Ds_FixEdges.Count != 1)
+                            {
+                                face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
+                            }
+
+                            face3D = face3Ds_FixEdges.Find(x => x.IsValid());
+                        }
+
+                        if (face3D == null || !face3D.IsValid())
+                        {
+                            continue;
+                        }
+
+                        geometryObjectCollection_Panel.Add(new Face3DObject(face3D, surfaceAppearance));
+
+                        dictionary_Panels[panel.Guid] = geometryObjectCollection_Panel;
+                    }
+                }
+            }
+
+            bool showSpaces = threeDimensionalViewSettings.IsValid(typeof(Space));
+            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Spaces = new Dictionary<System.Guid, GeometryObjectCollection>();
+            if (showSpaces)
+            {
+                List<Space> spaces = adjacencyCluster.GetSpaces();
+                if (spaces != null && spaces.Count != 0)
+                {
+                    List<LegendItemData> legendItemDatas = new List<LegendItemData>();
+                    foreach (Space space in spaces)
                     {
                         if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
                         {
                             legendItemDatas.Add(new LegendItemData(space, value, text));
                         }
                     }
-                    
+
                     bool editable = Query.Editable<SpaceAppearanceSettings>(threeDimensionalViewSettings);
 
-                    //Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(spaces, adjacencyCluster, threeDimensionalViewSettings, Query.UndefinedLegendItem());
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
                     if (legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                     {
@@ -194,7 +200,7 @@ namespace SAM.Analytical.UI
 
                         if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem) && legendItem != null)
                         {
-                            if(legend != null)
+                            if (legend != null)
                             {
                                 legendItem = legend.Find(legendItem?.Text);
                             }
@@ -212,10 +218,11 @@ namespace SAM.Analytical.UI
                         GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
                         geometryObjectCollection_Space.Add(new ShellObject(shell, surfaceAppearance) { Tag = space });
 
-                        result.Add(geometryObjectCollection_Space);
+
+                        dictionary_Spaces[space.Guid] = geometryObjectCollection_Space;
                     }
 
-                    if(legend != null)
+                    if (legend != null)
                     {
                         threeDimensionalViewSettings.Legend = legend;
                     }
@@ -224,6 +231,56 @@ namespace SAM.Analytical.UI
                         threeDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values) : null;
                     }
                 }
+            }
+
+            if(dictionary_Panels != null && dictionary_Panels.Count != 0)
+            {
+                if(dictionary_Apertures != null && dictionary_Apertures.Count != 0)
+                {
+                    HashSet<System.Guid> guids = new HashSet<System.Guid>();
+                    foreach(KeyValuePair<System.Guid, GeometryObjectCollection> keyValuePair in dictionary_Apertures)
+                    {
+                        Aperture aperture = adjacencyCluster.GetAperture(keyValuePair.Key);
+                        if(aperture == null)
+                        {
+                            continue;
+                        }
+
+                        Panel panel = adjacencyCluster.GetPanel(aperture);
+                        if(panel == null)
+                        {
+                            continue;
+                        }
+
+                        if(!dictionary_Panels.TryGetValue(panel.Guid, out GeometryObjectCollection geometryObjectCollection) || geometryObjectCollection == null)
+                        {
+                            continue;
+                        }
+
+                        geometryObjectCollection.Add(keyValuePair.Value);
+                        guids.Add(keyValuePair.Key);
+                    }
+
+                    foreach(System.Guid guid in guids)
+                    {
+                        dictionary_Apertures.Remove(guid);
+                    }
+                }
+            }
+
+            foreach(GeometryObjectCollection geometryObjectCollection in dictionary_Apertures.Values)
+            {
+                result.Add(geometryObjectCollection);
+            }
+
+            foreach (GeometryObjectCollection geometryObjectCollection in dictionary_Panels.Values)
+            {
+                result.Add(geometryObjectCollection);
+            }
+
+            foreach (GeometryObjectCollection geometryObjectCollection in dictionary_Spaces.Values)
+            {
+                result.Add(geometryObjectCollection);
             }
 
             result.SetValue(GeometryObjectModelParameter.ViewSettings, threeDimensionalViewSettings);
@@ -376,7 +433,7 @@ namespace SAM.Analytical.UI
                                 legendItem = legend.Find(legendItem?.Text);
                             }
 
-                            color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
+                            color = Core.UI.Convert.ToMedia(legendItem.Color);
                         }
 
                         if (color == null || !color.HasValue)
@@ -384,12 +441,9 @@ namespace SAM.Analytical.UI
                             color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
                         }
 
-                        System.Drawing.Color color_Darker = ControlPaint.Dark(color.Value.ToDrawing());
-
-
                         GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
 
-                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, new SurfaceAppearance(color.Value, color_Darker.ToMedia(), 0.02));
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, color);
 
                         face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, surfaceAppearance)));
 
