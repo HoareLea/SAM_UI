@@ -413,8 +413,12 @@ namespace SAM.Analytical.UI
                             continue;
                         }
 
-                        Point3D point3D = plane.Project(space.Location);
-                        if(point3D == null)
+                        //TODO: Currently we use InternalPoint form Shell section. However we should be able to defind x,y location of space in UI
+                        //and store this data as space.Location this will allow more control over where tags are placed
+                        //Point3D point3D = plane.Project(space.Location);
+
+                        Point3D point3D = null;
+                        if (point3D == null)
                         {
                             if(face3Ds.Count > 1)
                             {
