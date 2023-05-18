@@ -206,7 +206,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void SetSpaceAppearanceSettings(SpaceAppearanceSettings spaceAppearanceSettings)
         {
-            Core.UI.IAppearanceSettings appearanceSettings = spaceAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>();
+            Core.UI.IAppearanceSettings appearanceSettings = spaceAppearanceSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>();
             if(appearanceSettings == null)
             {
                 return;
@@ -219,7 +219,7 @@ namespace SAM.Analytical.UI.WPF
             }
             else if(appearanceSettings is TypeAppearanceSettings)
             {
-                parameterName = ((TypeAppearanceSettings)appearanceSettings).GetAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
             }
 
             if(parameterName == null)

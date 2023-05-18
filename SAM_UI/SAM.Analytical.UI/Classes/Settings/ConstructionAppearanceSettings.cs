@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI
         }
 
         public ConstructionAppearanceSettings(ConstructionAppearanceSettings constructionAppearanceSettings)
-            :base(constructionAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
+            :base(constructionAppearanceSettings)
         {
 
         }

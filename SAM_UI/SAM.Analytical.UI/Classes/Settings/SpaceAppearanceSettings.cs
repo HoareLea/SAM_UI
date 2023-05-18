@@ -11,20 +11,20 @@ namespace SAM.Analytical.UI
 
         }
 
-        public SpaceAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
-            :base(zoneAppearanceSettings)
+        public SpaceAppearanceSettings(SpaceAppearanceSettings spaceAppearanceSettings)
+            : base(spaceAppearanceSettings)
         {
 
         }
 
-        public SpaceAppearanceSettings(SpaceAppearanceSettings spaceAppearanceSettings)
-            :base(spaceAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
+        public SpaceAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
+            :base(zoneAppearanceSettings as ValueAppearanceSettings)
         {
 
         }
 
         public SpaceAppearanceSettings(InternalConditionAppearanceSettings internalConditionAppearanceSettings)
-            :base(internalConditionAppearanceSettings)
+            :base(internalConditionAppearanceSettings as ValueAppearanceSettings)
         {
 
         }

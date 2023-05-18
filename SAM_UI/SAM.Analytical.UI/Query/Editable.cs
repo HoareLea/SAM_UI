@@ -16,7 +16,7 @@ namespace SAM.Analytical.UI
                     SpaceAppearanceSettings spaceAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings;
                     if (spaceAppearanceSettings != null)
                     {
-                        IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                        IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
                         if(appearanceSettings is ParameterAppearanceSettings)
                         {
                             ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
@@ -32,7 +32,7 @@ namespace SAM.Analytical.UI
                         }
                         else if(appearanceSettings is TypeAppearanceSettings)
                         {
-                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
 
                             if (appearanceSettings is InternalConditionAppearanceSettings)
                             {
@@ -65,7 +65,7 @@ namespace SAM.Analytical.UI
                     if (panelAppearanceSettings != null)
                     {
 
-                        IAppearanceSettings appearanceSettings = panelAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                        IAppearanceSettings appearanceSettings = panelAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
                         if (appearanceSettings is ParameterAppearanceSettings)
                         {
                             ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
@@ -81,7 +81,7 @@ namespace SAM.Analytical.UI
                         }
                         else if (appearanceSettings is TypeAppearanceSettings)
                         {
-                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
 
                             if (appearanceSettings is ConstructionAppearanceSettings)
                             {
@@ -103,7 +103,7 @@ namespace SAM.Analytical.UI
                     if (apertureAppearanceSettings != null)
                     {
 
-                        IAppearanceSettings appearanceSettings = apertureAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                        IAppearanceSettings appearanceSettings = apertureAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
                         if (appearanceSettings is ParameterAppearanceSettings)
                         {
                             ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
@@ -119,7 +119,7 @@ namespace SAM.Analytical.UI
                         }
                         else if (appearanceSettings is TypeAppearanceSettings)
                         {
-                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
 
                             if (appearanceSettings is ApertureConstructionAppearanceSettings)
                             {

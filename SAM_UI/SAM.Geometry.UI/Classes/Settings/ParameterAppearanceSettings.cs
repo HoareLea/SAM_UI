@@ -1,17 +1,20 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Core;
 
 namespace SAM.Geometry.UI
 {
-    public class ParameterAppearanceSettings : Core.UI.IAppearanceSettings
+    public class ParameterAppearanceSettings : ValueAppearanceSettings
     {
         public string ParameterName { get; set; }
 
         public ParameterAppearanceSettings(string parameterName)
+            :base()
         {
             ParameterName = parameterName;
         }
 
         public ParameterAppearanceSettings(ParameterAppearanceSettings parameterAppearanceSettings)
+            :base(parameterAppearanceSettings)
         {
             if(parameterAppearanceSettings != null)
             {
@@ -20,12 +23,19 @@ namespace SAM.Geometry.UI
         }
 
         public ParameterAppearanceSettings(JObject jObject)
+            :base(jObject)
         {
-            FromJObject(jObject);
+
         }
 
         public virtual bool FromJObject(JObject jObject)
         {
+            bool result = base.FromJObject(jObject);
+            if(!result)
+            {
+                return false;
+            }
+
             if (jObject == null)
             {
                 return false;
@@ -41,15 +51,43 @@ namespace SAM.Geometry.UI
 
         public virtual JObject ToJObject()
         {
-            JObject jObject = new JObject();
-            jObject.Add("_type", Core.Query.FullTypeName(this));
+            JObject result = base.ToJObject();
+            if(result == null)
+            {
+                return null;
+            }
 
             if(ParameterName != null)
             {
-                jObject.Add("ParameterName", ParameterName);
+                result.Add("ParameterName", ParameterName);
             }
 
-            return jObject;
+            return result;
+        }
+
+        public override bool TryGetValue<T>(IJSAMObject jSAMObject, out T value)
+        {
+            value = default;
+
+            object value_Temp = null;
+            if(!Core.Query.TryGetValue(jSAMObject, ParameterName, out value))
+            {
+                return false;
+            }
+
+            if(value_Temp is T)
+            {
+                value = (T)value_Temp;
+                return true;
+            }
+
+            if(!Core.Query.TryConvert(value_Temp, out T value_Converted))
+            {
+                return false;
+            }
+
+            value = value_Converted;
+            return true;
         }
     }
 }

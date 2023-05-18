@@ -5,6 +5,10 @@ namespace SAM.Geometry.UI
 {
     public abstract class ValueAppearanceSettings : Core.UI.IAppearanceSettings
     {
+        public ValueAppearanceSettings() 
+        {
+
+        }
         public ValueAppearanceSettings(ValueAppearanceSettings valueAppearanceSettings)
         {
             if(valueAppearanceSettings != null)

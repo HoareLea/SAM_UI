@@ -12,7 +12,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (spaceAppearanceSettings != null)
             {
-                IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
                 if (appearanceSettings is TypeAppearanceSettings)
                 {
                     if (appearanceSettings is ZoneAppearanceSettings)
@@ -32,7 +32,7 @@ namespace SAM.Analytical.UI.WPF
                         values.Add("Space");
                     }
 
-                    appearanceSettings = ((TypeAppearanceSettings)appearanceSettings).GetAppearanceSettings<ParameterAppearanceSettings>();
+                    appearanceSettings = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>();
                 }
 
                 if (appearanceSettings is ParameterAppearanceSettings)

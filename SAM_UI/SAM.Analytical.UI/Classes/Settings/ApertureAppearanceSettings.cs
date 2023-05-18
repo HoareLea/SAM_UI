@@ -17,13 +17,13 @@ namespace SAM.Analytical.UI
         }
 
         public ApertureAppearanceSettings(ApertureAppearanceSettings apertureAppearanceSettings)
-            :base(apertureAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
+            :base(apertureAppearanceSettings)
         {
 
         }
 
         public ApertureAppearanceSettings(ApertureConstructionAppearanceSettings apertureConstructionAppearanceSettings)
-            : base(apertureConstructionAppearanceSettings)
+            : base(apertureConstructionAppearanceSettings as ValueAppearanceSettings)
         {
 
         }

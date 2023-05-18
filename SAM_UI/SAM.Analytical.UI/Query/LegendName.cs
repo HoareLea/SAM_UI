@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI
                 SpaceAppearanceSettings spaceAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings;
                 if (spaceAppearanceSettings != null)
                 {
-                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
                     if (appearanceSettings is ParameterAppearanceSettings)
                     {
                         ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
@@ -29,7 +29,7 @@ namespace SAM.Analytical.UI
                     }
                     else if(appearanceSettings is TypeAppearanceSettings)
                     {
-                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
                         
                         if (appearanceSettings is InternalConditionAppearanceSettings)
                         {

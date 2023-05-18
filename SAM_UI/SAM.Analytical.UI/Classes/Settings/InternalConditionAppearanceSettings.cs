@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI
         }
 
         public InternalConditionAppearanceSettings(InternalConditionAppearanceSettings internalConditionAppearanceSettings)
-            :base(internalConditionAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
+            :base(internalConditionAppearanceSettings)
         {
 
         }

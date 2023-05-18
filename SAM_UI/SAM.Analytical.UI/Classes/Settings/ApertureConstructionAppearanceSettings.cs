@@ -11,7 +11,7 @@ namespace SAM.Analytical.UI
         }
 
         public ApertureConstructionAppearanceSettings(ApertureConstructionAppearanceSettings apertureConstructionAppearanceSettings)
-            :base(apertureConstructionAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
+            :base(apertureConstructionAppearanceSettings)
         {
 
         }

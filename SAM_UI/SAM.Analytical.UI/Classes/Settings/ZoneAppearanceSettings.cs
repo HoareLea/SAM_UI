@@ -21,7 +21,7 @@ namespace SAM.Analytical.UI
         }
 
         public ZoneAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
-            : base(zoneAppearanceSettings?.GetAppearanceSettings<Core.UI.IAppearanceSettings>())
+            : base(zoneAppearanceSettings)
         {
             if(zoneAppearanceSettings != null)
             {

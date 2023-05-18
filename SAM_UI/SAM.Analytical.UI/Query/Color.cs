@@ -34,7 +34,7 @@ namespace SAM.Analytical.UI
                 {
                     SpaceAppearanceSettings spaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
 
-                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetAppearanceSettings<IAppearanceSettings>();
+                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
                     if(appearanceSettings is ZoneAppearanceSettings)
                     {
                         string zoneCategory = ((ZoneAppearanceSettings)appearanceSettings).ZoneCategory;

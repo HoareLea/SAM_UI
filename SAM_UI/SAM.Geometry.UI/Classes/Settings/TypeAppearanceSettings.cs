@@ -1,41 +1,66 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Core;
 using SAM.Core.UI;
 
 namespace SAM.Geometry.UI
 {
-    public abstract class TypeAppearanceSettings : ITypeAppearanceSettings
+    public abstract class TypeAppearanceSettings : ValueAppearanceSettings, ITypeAppearanceSettings
     {
-        private IAppearanceSettings appearanceSettings;
+        private ValueAppearanceSettings valueAppearanceSettings;
         
         public TypeAppearanceSettings(string parameterName)
+            :base()
         {
-            appearanceSettings = new ParameterAppearanceSettings(parameterName);
+            valueAppearanceSettings = new ParameterAppearanceSettings(parameterName);
         }
 
         public TypeAppearanceSettings(JObject jObject)
+            :base(jObject)
         {
-            FromJObject(jObject);
+
         }
 
-        public TypeAppearanceSettings(IAppearanceSettings appearanceSettings)
+        public TypeAppearanceSettings(TypeAppearanceSettings typeAppearanceSettings)
+            : base(typeAppearanceSettings)
         {
-            this.appearanceSettings = appearanceSettings == null ? null : Core.Query.Clone(appearanceSettings);
+            if(typeAppearanceSettings != null)
+            {
+                valueAppearanceSettings = typeAppearanceSettings.valueAppearanceSettings == null ? null : Core.Query.Clone(typeAppearanceSettings.valueAppearanceSettings);
+            }
         }
 
-        public T GetAppearanceSettings<T>() where T: IAppearanceSettings
+        public TypeAppearanceSettings(ValueAppearanceSettings valueAppearanceSettings)
+            :base()
         {
-            if(appearanceSettings == null)
+            this.valueAppearanceSettings = valueAppearanceSettings == null ? null : Core.Query.Clone(valueAppearanceSettings);
+        }
+
+        public T GetValueAppearanceSettings<T>() where T: ValueAppearanceSettings
+        {
+            if(valueAppearanceSettings == null)
             {
                 return default;
             }
 
-            IAppearanceSettings result = Core.Query.Clone(appearanceSettings);
+            IAppearanceSettings result = Core.Query.Clone(valueAppearanceSettings);
             if(!(result is T))
             {
                 return default;
             }
 
             return (T)result;
+        }
+
+        public override bool TryGetValue<T>(IJSAMObject jSAMObject, out T value)
+        {
+            value = default;
+
+            if(valueAppearanceSettings == null)
+            {
+                return false;
+            }
+
+            return valueAppearanceSettings.TryGetValue(jSAMObject, out value);
         }
 
         public virtual bool FromJObject(JObject jObject)
@@ -45,9 +70,9 @@ namespace SAM.Geometry.UI
                 return false;
             }
 
-            if (jObject.ContainsKey("AppearanceSettings"))
+            if (jObject.ContainsKey("ValueAppearanceSettings"))
             {
-                appearanceSettings = Core.Query.IJSAMObject(jObject.Value<JObject>("AppearanceSettings")) as ParameterAppearanceSettings;
+                valueAppearanceSettings = Core.Query.IJSAMObject(jObject.Value<JObject>("ValueAppearanceSettings")) as ValueAppearanceSettings;
             }
 
             return true;
@@ -58,9 +83,9 @@ namespace SAM.Geometry.UI
             JObject jObject = new JObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
-            if(appearanceSettings != null)
+            if(valueAppearanceSettings != null)
             {
-                jObject.Add("AppearanceSettings", appearanceSettings.ToJObject());
+                jObject.Add("ValueAppearanceSettings", valueAppearanceSettings.ToJObject());
             }
 
             return jObject;
