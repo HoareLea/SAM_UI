@@ -6,7 +6,7 @@ namespace SAM.Analytical.UI
     {
         public static ViewSettings DefaultViewSettings()
         {
-            ViewSettings result = new ThreeDimensionalViewSettings(System.Guid.NewGuid(), "3D View", null, new System.Type[] { typeof(Panel), typeof(Aperture) });
+            ViewSettings result = new ThreeDimensionalViewSettings(System.Guid.NewGuid(), "3D View", null, new System.Type[] { typeof(Panel), typeof(Aperture) }, null);
 
             return result;
         }

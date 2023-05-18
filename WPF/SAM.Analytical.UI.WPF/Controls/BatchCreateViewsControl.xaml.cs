@@ -166,7 +166,7 @@ namespace SAM.Analytical.UI.WPF
 
                 string name = Query.DefaultName(level, elevation, spaceAppearanceSettingsControl.SpaceAppearanceSettings);
 
-                AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), name, Geometry.Spatial.Create.Plane(elevation), null, types, Geometry.UI.Query.DefaultTextAppearance());
+                AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), name, Geometry.Spatial.Create.Plane(elevation), null, types, Geometry.UI.Query.DefaultTextAppearance(), null);
                 analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
                 analyticalTwoDimensionalViewSettings.SetValue(ViewSettingsParameter.UseDefaultName, true);
                 analyticalTwoDimensionalViewSettings.SetValue(ViewSettingsParameter.Group, group);

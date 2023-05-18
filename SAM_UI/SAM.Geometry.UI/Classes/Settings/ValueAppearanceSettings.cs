@@ -5,9 +5,9 @@ namespace SAM.Geometry.UI
 {
     public abstract class ValueAppearanceSettings : Core.UI.IAppearanceSettings
     {
-        public ValueAppearanceSettings(ValueAppearanceSettings functionAppearanceSettings)
+        public ValueAppearanceSettings(ValueAppearanceSettings valueAppearanceSettings)
         {
-            if(functionAppearanceSettings != null)
+            if(valueAppearanceSettings != null)
             {
 
             }
@@ -16,6 +16,16 @@ namespace SAM.Geometry.UI
         public ValueAppearanceSettings(JObject jObject)
         {
             FromJObject(jObject);
+        }
+
+        public bool IsValid(IJSAMObject jSAMObject)
+        {
+            if(jSAMObject == null)
+            {
+                return false;
+            }
+
+            return TryGetValue(jSAMObject, out object value);
         }
 
         public abstract bool TryGetValue<T>(IJSAMObject sAMObject, out T value);

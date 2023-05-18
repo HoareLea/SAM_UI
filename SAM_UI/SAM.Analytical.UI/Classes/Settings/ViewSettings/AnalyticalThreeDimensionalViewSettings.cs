@@ -13,8 +13,8 @@ namespace SAM.Analytical.UI
 
         public ApertureAppearanceSettings ApertureAppearanceSettings { get; set; }
 
-        public AnalyticalThreeDimensionalViewSettings(Guid guid, string name, GuidAppearanceSettings guidAppearanceSettings, IEnumerable<Type> types)
-            :base(guid, name, guidAppearanceSettings, types)
+        public AnalyticalThreeDimensionalViewSettings(Guid guid, string name, GuidAppearanceSettings guidAppearanceSettings, IEnumerable<Type> types, IEnumerable<ValueAppearanceSettings> valueAppearanceSettings)
+            :base(guid, name, guidAppearanceSettings, types, valueAppearanceSettings)
         {
 
         }

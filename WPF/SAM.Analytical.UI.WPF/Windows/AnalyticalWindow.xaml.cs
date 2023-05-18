@@ -193,7 +193,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             AnalyticalModelControl.SelectionRequested += AnalyticalModelControl_SelectionRequested;
             AnalyticalModelControl.TreeViewItemDropped += AnalyticalModelControl_TreeViewItemDropped;
 
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, null);
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, null, null);
 
             GeometryObjectModel geometryObjectModel = Convert.ToSAM_GeometryObjectModel(uIAnalyticalModel?.JSAMObject, threeDimensionalViewSettings);
 
@@ -1061,7 +1061,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, new Type[] { typeof(Panel), typeof(Aperture) });
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, new Type[] { typeof(Panel), typeof(Aperture) }, null);
 
             TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(threeDimensionalViewSettings)), threeDimensionalViewSettings);
             if (tabItem != null)
@@ -1098,7 +1098,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) }, Geometry.UI.Query.DefaultTextAppearance());
+            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) }, Geometry.UI.Query.DefaultTextAppearance(), null);
             analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("Name");
 
             ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(analyticalTwoDimensionalViewSettings, analyticalModel);
