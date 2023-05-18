@@ -37,13 +37,13 @@ namespace SAM.Analytical.UI.WPF
                 name = textBoxForm.Value;
             }
 
-            if (viewSettings is AnalyticalTwoDimensionalViewSettings)
+            if (viewSettings is TwoDimensionalViewSettings)
             {
-                viewSettings = new AnalyticalTwoDimensionalViewSettings(System.Guid.NewGuid(), name, (AnalyticalTwoDimensionalViewSettings)viewSettings);
+                viewSettings = new TwoDimensionalViewSettings(System.Guid.NewGuid(), name, (TwoDimensionalViewSettings)viewSettings);
             }
-            else if (viewSettings is AnalyticalThreeDimensionalViewSettings)
+            else if (viewSettings is ThreeDimensionalViewSettings)
             {
-                viewSettings = new AnalyticalThreeDimensionalViewSettings(System.Guid.NewGuid(), name, (AnalyticalThreeDimensionalViewSettings)viewSettings);
+                viewSettings = new ThreeDimensionalViewSettings(System.Guid.NewGuid(), name, (ThreeDimensionalViewSettings)viewSettings);
             }
             else
             {

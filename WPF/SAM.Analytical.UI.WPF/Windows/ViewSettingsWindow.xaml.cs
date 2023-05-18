@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using SAM.Geometry.UI;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF.Windows
@@ -13,30 +14,20 @@ namespace SAM.Analytical.UI.WPF.Windows
             InitializeComponent();
         }
 
-        public ViewSettingsWindow(Geometry.UI.IViewSettings viewSettings, AnalyticalModel analyticalModel)
+        public ViewSettingsWindow(IViewSettings viewSettings, AnalyticalModel analyticalModel)
         {
             InitializeComponent();
 
             UserControl userControl = null;
 
-            if(viewSettings is AnalyticalTwoDimensionalViewSettings)
+            if(viewSettings is TwoDimensionalViewSettings)
             {
-                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl((AnalyticalTwoDimensionalViewSettings)viewSettings, analyticalModel);
+                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl((TwoDimensionalViewSettings)viewSettings, analyticalModel);
                 userControl = analyticalTwoDimensionalViewSettingsControl;
             }
-            else if (viewSettings is Geometry.UI.TwoDimensionalViewSettings)
+            else if (viewSettings is ThreeDimensionalViewSettings)
             {
-                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl(new AnalyticalTwoDimensionalViewSettings((Geometry.UI.TwoDimensionalViewSettings)viewSettings), analyticalModel);
-                userControl = analyticalTwoDimensionalViewSettingsControl;
-            }
-            else if (viewSettings is AnalyticalThreeDimensionalViewSettings)
-            {
-                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl((AnalyticalThreeDimensionalViewSettings)viewSettings, analyticalModel);
-                userControl = analyticalThreeDimensionalViewSettingsControl;
-            }
-            else if (viewSettings is Geometry.UI.ThreeDimensionalViewSettings)
-            {
-                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl(new AnalyticalThreeDimensionalViewSettings((Geometry.UI.ThreeDimensionalViewSettings)viewSettings), analyticalModel);
+                AnalyticalThreeDimensionalViewSettingsControl analyticalThreeDimensionalViewSettingsControl = new AnalyticalThreeDimensionalViewSettingsControl((ThreeDimensionalViewSettings)viewSettings, analyticalModel);
                 userControl = analyticalThreeDimensionalViewSettingsControl;
             }
 
@@ -52,7 +43,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        public Geometry.UI.ViewSettings ViewSettings
+        public ViewSettings ViewSettings
         {
             get
             {
@@ -60,12 +51,12 @@ namespace SAM.Analytical.UI.WPF.Windows
                 {
                     if(uIElement is AnalyticalTwoDimensionalViewSettingsControl)
                     {
-                        return ((AnalyticalTwoDimensionalViewSettingsControl)uIElement).AnalyticalTwoDimensionalViewSettings;
+                        return ((AnalyticalTwoDimensionalViewSettingsControl)uIElement).TwoDimensionalViewSettings;
                     }
 
                     if (uIElement is AnalyticalThreeDimensionalViewSettingsControl)
                     {
-                        return ((AnalyticalThreeDimensionalViewSettingsControl)uIElement).AnalyticalThreeDimensionalViewSettings;
+                        return ((AnalyticalThreeDimensionalViewSettingsControl)uIElement).ThreeDimensionalViewSettings;
                     }
                 }
 

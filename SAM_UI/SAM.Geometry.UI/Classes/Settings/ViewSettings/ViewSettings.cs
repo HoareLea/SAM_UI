@@ -331,6 +331,11 @@ namespace SAM.Geometry.UI
             return valueAppearanceSettings.FindAll(x => x is T && x.IsValid(jSAMObject))?.Cast<T>()?.ToList();
         }
 
+        public List<T> GetValueAppearanceSettings<T>() where T : ValueAppearanceSettings 
+        {
+            return valueAppearanceSettings?.OfType<T>()?.ToList();
+        }
+
         public bool IsValid(Type type)
         {
             if (types == null)
@@ -374,6 +379,16 @@ namespace SAM.Geometry.UI
             }
 
             return this.valueAppearanceSettings.RemoveAll(x => x?.GetType() == valueAppearanceSettings.GetType()) > 0;
+        }
+
+        public bool RemoveAppearanceSettings<T>() where T: ValueAppearanceSettings
+        {
+            if (valueAppearanceSettings == null)
+            {
+                return false;
+            }
+
+            return valueAppearanceSettings.RemoveAll(x => x is T) > 0;
         }
 
         public bool SetAppearances(Guid guid, IEnumerable<IAppearance> appearances)

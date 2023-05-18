@@ -2,6 +2,7 @@
 using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
@@ -11,7 +12,7 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class AnalyticalTwoDimensionalViewSettingsControl : UserControl
     {
-        private AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings;
+        private TwoDimensionalViewSettings twoDimensionalViewSettings;
 
         public AnalyticalTwoDimensionalViewSettingsControl()
         {
@@ -22,13 +23,13 @@ namespace SAM.Analytical.UI.WPF
             spaceAppearanceSettingsControl.ValueChanged += SpaceAppearanceSettingsControl_ValueChanged;
         }
 
-        public AnalyticalTwoDimensionalViewSettingsControl(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings, AnalyticalModel analyticalModel)
+        public AnalyticalTwoDimensionalViewSettingsControl(TwoDimensionalViewSettings twoDimensionalViewSettings, AnalyticalModel analyticalModel)
         {
             InitializeComponent();
 
             SetAnalyticalModel(analyticalModel);
 
-            SetAnalyticalTwoDimensionalViewSettings(analyticalTwoDimensionalViewSettings);
+            SetAnalyticalTwoDimensionalViewSettings(twoDimensionalViewSettings);
 
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
 
@@ -46,11 +47,11 @@ namespace SAM.Analytical.UI.WPF
             UpdateName();
         }
 
-        public AnalyticalTwoDimensionalViewSettings AnalyticalTwoDimensionalViewSettings
+        public TwoDimensionalViewSettings TwoDimensionalViewSettings
         {
             get
             {
-                return GetAnalyticalTwoDimensionalViewSettings();
+                return GetTwoDimensionalViewSettings();
             }
 
             set
@@ -98,15 +99,15 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void SetAnalyticalTwoDimensionalViewSettings(AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings)
+        private void SetAnalyticalTwoDimensionalViewSettings(TwoDimensionalViewSettings twoDimensionalViewSettings)
         {
-            this.analyticalTwoDimensionalViewSettings = analyticalTwoDimensionalViewSettings;
+            this.twoDimensionalViewSettings = twoDimensionalViewSettings;
 
-            checkBox_Visibilty_Space.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Space));
-            checkBox_Visibilty_Panel.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Panel));
-            checkBox_Visibilty_Aperture.IsChecked = analyticalTwoDimensionalViewSettings.ContainsType(typeof(Aperture));
+            checkBox_Visibilty_Space.IsChecked = twoDimensionalViewSettings.ContainsType(typeof(Space));
+            checkBox_Visibilty_Panel.IsChecked = twoDimensionalViewSettings.ContainsType(typeof(Panel));
+            checkBox_Visibilty_Aperture.IsChecked = twoDimensionalViewSettings.ContainsType(typeof(Aperture));
 
-            TextAppearance textAppearance = analyticalTwoDimensionalViewSettings.TextAppearance;
+            TextAppearance textAppearance = twoDimensionalViewSettings.TextAppearance;
             if(textAppearance == null)
             {
                 textAppearance = Geometry.UI.Query.DefaultTextAppearance();
@@ -116,28 +117,28 @@ namespace SAM.Analytical.UI.WPF
 
             textBox_TextSize.Text = textAppearance.Height.ToString();
 
-            spaceAppearanceSettingsControl.SpaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
+            spaceAppearanceSettingsControl.SpaceAppearanceSettings = twoDimensionalViewSettings.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault();
 
-            textBox_Name.Text = analyticalTwoDimensionalViewSettings.Name;
+            textBox_Name.Text = twoDimensionalViewSettings.Name;
 
-            elevationControl.Elevation = analyticalTwoDimensionalViewSettings.Plane.Origin.Z;
+            elevationControl.Elevation = twoDimensionalViewSettings.Plane.Origin.Z;
 
             checkBox_UseDefaultName.IsChecked = true;
-            if(analyticalTwoDimensionalViewSettings.TryGetValue(ViewSettingsParameter.UseDefaultName, out bool useDefaultName))
+            if(twoDimensionalViewSettings.TryGetValue(ViewSettingsParameter.UseDefaultName, out bool useDefaultName))
             {
                 checkBox_UseDefaultName.IsChecked = useDefaultName;
             }
 
             comboBox_Group.Text = string.Empty;
-            if(analyticalTwoDimensionalViewSettings.TryGetValue(ViewSettingsParameter.Group, out string group))
+            if(twoDimensionalViewSettings.TryGetValue(ViewSettingsParameter.Group, out string group))
             {
                 comboBox_Group.Text = group;
             }
         }
 
-        private AnalyticalTwoDimensionalViewSettings GetAnalyticalTwoDimensionalViewSettings()
+        private TwoDimensionalViewSettings GetTwoDimensionalViewSettings()
         {
-            AnalyticalTwoDimensionalViewSettings result = new AnalyticalTwoDimensionalViewSettings(textBox_Name.Text, analyticalTwoDimensionalViewSettings);
+            TwoDimensionalViewSettings result = new TwoDimensionalViewSettings(textBox_Name.Text, twoDimensionalViewSettings);
 
             CheckBox checkBox;
 
@@ -173,7 +174,14 @@ namespace SAM.Analytical.UI.WPF
 
             result.TextAppearance = textAppearance;
 
-            result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
+            if (spaceAppearanceSettingsControl.SpaceAppearanceSettings == null)
+            {
+                result.RemoveAppearanceSettings<SpaceAppearanceSettings>();
+            }
+            else
+            {
+                result.AddAppearanceSettings(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
+            }
 
             result.Plane = Geometry.Spatial.Create.Plane(elevationControl.Elevation);
 

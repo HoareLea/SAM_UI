@@ -1,6 +1,7 @@
 ﻿using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
@@ -10,7 +11,7 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class AnalyticalThreeDimensionalViewSettingsControl : UserControl
     {
-        private AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings;
+        private ThreeDimensionalViewSettings threeDimensionalViewSettings;
 
         public AnalyticalThreeDimensionalViewSettingsControl()
         {
@@ -19,22 +20,22 @@ namespace SAM.Analytical.UI.WPF
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
-        public AnalyticalThreeDimensionalViewSettingsControl(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings, AnalyticalModel analyticalModel)
+        public AnalyticalThreeDimensionalViewSettingsControl(ThreeDimensionalViewSettings threeDimensionalViewSettings, AnalyticalModel analyticalModel)
         {
             InitializeComponent();
 
             SetAnalyticalModel(analyticalModel);
 
-            SetAnalyticalThreeDimensionalViewSettings(analyticalThreeDimensionalViewSettings);
+            SetAnalyticalThreeDimensionalViewSettings(threeDimensionalViewSettings);
 
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
-        public AnalyticalThreeDimensionalViewSettings AnalyticalThreeDimensionalViewSettings
+        public ThreeDimensionalViewSettings ThreeDimensionalViewSettings
         {
             get
             {
-                return GetAnalyticalThreeDimensionalViewSettings();
+                return GetThreeDimensionalViewSettings();
             }
 
             set
@@ -71,29 +72,29 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void SetAnalyticalThreeDimensionalViewSettings(AnalyticalThreeDimensionalViewSettings analyticalThreeDimensionalViewSettings)
+        private void SetAnalyticalThreeDimensionalViewSettings(ThreeDimensionalViewSettings threeDimensionalViewSettings)
         {
-            this.analyticalThreeDimensionalViewSettings = analyticalThreeDimensionalViewSettings;
+            this.threeDimensionalViewSettings = threeDimensionalViewSettings;
 
-            checkBox_Visibilty_Space.IsChecked = analyticalThreeDimensionalViewSettings.ContainsType(typeof(Space));
-            checkBox_Visibilty_Panel.IsChecked = analyticalThreeDimensionalViewSettings.ContainsType(typeof(Panel));
-            checkBox_Visibilty_Aperture.IsChecked = analyticalThreeDimensionalViewSettings.ContainsType(typeof(Aperture));
+            checkBox_Visibilty_Space.IsChecked = threeDimensionalViewSettings.ContainsType(typeof(Space));
+            checkBox_Visibilty_Panel.IsChecked = threeDimensionalViewSettings.ContainsType(typeof(Panel));
+            checkBox_Visibilty_Aperture.IsChecked = threeDimensionalViewSettings.ContainsType(typeof(Aperture));
 
 
-            spaceAppearanceSettingsControl.SpaceAppearanceSettings = analyticalThreeDimensionalViewSettings.SpaceAppearanceSettings;
+            spaceAppearanceSettingsControl.SpaceAppearanceSettings = threeDimensionalViewSettings?.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault();
 
-            textBox_Name.Text = analyticalThreeDimensionalViewSettings.Name;
+            textBox_Name.Text = threeDimensionalViewSettings.Name;
 
             comboBox_Group.Text = string.Empty;
-            if (analyticalThreeDimensionalViewSettings.TryGetValue(ViewSettingsParameter.Group, out string group))
+            if (threeDimensionalViewSettings.TryGetValue(ViewSettingsParameter.Group, out string group))
             {
                 comboBox_Group.Text = group;
             }
         }
 
-        private AnalyticalThreeDimensionalViewSettings GetAnalyticalThreeDimensionalViewSettings()
+        private ThreeDimensionalViewSettings GetThreeDimensionalViewSettings()
         {
-            AnalyticalThreeDimensionalViewSettings result = new AnalyticalThreeDimensionalViewSettings(textBox_Name.Text, analyticalThreeDimensionalViewSettings);
+            ThreeDimensionalViewSettings result = new ThreeDimensionalViewSettings(textBox_Name.Text, threeDimensionalViewSettings);
 
             CheckBox checkBox;
 
@@ -119,7 +120,14 @@ namespace SAM.Analytical.UI.WPF
 
             result.SetTypes(types);
 
-            result.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
+            if(spaceAppearanceSettingsControl.SpaceAppearanceSettings == null)
+            {
+                result.RemoveAppearanceSettings<SpaceAppearanceSettings>();
+            }
+            else
+            {
+                result.AddAppearanceSettings(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
+            }
 
             if (!string.IsNullOrWhiteSpace(comboBox_Group.Text))
             {

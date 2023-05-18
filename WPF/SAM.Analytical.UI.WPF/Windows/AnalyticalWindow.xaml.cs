@@ -368,10 +368,10 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             string zoneCategory = null;
 
-            IAnalyticalViewSettings analyticalViewSettings = Query.ViewSettings<IAnalyticalViewSettings>(uIAnalyticalModel, GetActiveGuid());
-            if (analyticalViewSettings != null)
+            ViewSettings viewSettings = Query.ViewSettings<ViewSettings>(uIAnalyticalModel, GetActiveGuid());
+            if (viewSettings != null)
             {
-                ZoneAppearanceSettings zoneAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings?.GetValueAppearanceSettings<ZoneAppearanceSettings>();
+                ZoneAppearanceSettings zoneAppearanceSettings = viewSettings.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault()?.GetValueAppearanceSettings<ZoneAppearanceSettings>();
                 if (zoneAppearanceSettings != null)
                 {
                     zoneCategory = zoneAppearanceSettings.ZoneCategory;
@@ -1098,10 +1098,10 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) }, Geometry.UI.Query.DefaultTextAppearance(), null);
-            analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = new SpaceAppearanceSettings("Name");
+            TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) }, Geometry.UI.Query.DefaultTextAppearance(), null);
+            twoDimensionalViewSettings.AddAppearanceSettings(new SpaceAppearanceSettings("Name"));
 
-            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(analyticalTwoDimensionalViewSettings, analyticalModel);
+            ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(twoDimensionalViewSettings, analyticalModel);
             bool? result = viewSettingsWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)
             {
@@ -1139,15 +1139,15 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            List<AnalyticalTwoDimensionalViewSettings> analyticalTwoDimensionalViewSettingsList = batchCreateViewsWindow.AnalyticalTwoDimensionalViewSettingsList;
-            if (analyticalTwoDimensionalViewSettingsList == null || analyticalTwoDimensionalViewSettingsList.Count == 0)
+            List<TwoDimensionalViewSettings> twoDimensionalViewSettingsList = batchCreateViewsWindow.TwoDimensionalViewSettingsList;
+            if (twoDimensionalViewSettingsList == null || twoDimensionalViewSettingsList.Count == 0)
             {
                 return;
             }
 
-            foreach (AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings in analyticalTwoDimensionalViewSettingsList)
+            foreach (TwoDimensionalViewSettings twoDimensionalViewSettings in twoDimensionalViewSettingsList)
             {
-                TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(analyticalTwoDimensionalViewSettings)), analyticalTwoDimensionalViewSettings);
+                TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(twoDimensionalViewSettings)), twoDimensionalViewSettings);
                 if (tabItem != null)
                 {
                     tabControl.SelectedItem = tabItem;

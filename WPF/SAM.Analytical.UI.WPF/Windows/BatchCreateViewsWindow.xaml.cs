@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SAM.Geometry.UI;
+using System.Collections.Generic;
 using System.Windows;
 
 namespace SAM.Analytical.UI.WPF
@@ -47,11 +48,11 @@ namespace SAM.Analytical.UI.WPF
             Close();
         }
 
-        public List<AnalyticalTwoDimensionalViewSettings> AnalyticalTwoDimensionalViewSettingsList
+        public List<TwoDimensionalViewSettings> TwoDimensionalViewSettingsList
         {
             get
             {
-                return batchCreateViewsControl.AnalyticalTwoDimensionalViewSettingsList;
+                return batchCreateViewsControl.TwoDimensionalViewSettingsList;
             }
         }
     }

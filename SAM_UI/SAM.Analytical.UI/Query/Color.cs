@@ -15,11 +15,11 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            System.Windows.Media.Color? result = null;
+            System.Drawing.Color color_Temp;
 
             if(adjacencyCluster == null && viewSettings == null)
             {
-                if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
+                if (space.TryGetValue(SpaceParameter.Color, out color_Temp))
                 {
                     return color_Temp.ToMedia();
                 }
@@ -27,49 +27,36 @@ namespace SAM.Analytical.UI
                 return System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
             }
 
-            if(viewSettings is TwoDimensionalViewSettings)
+            SpaceAppearanceSettings spaceAppearanceSettings = viewSettings?.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault();
+            if (spaceAppearanceSettings != null)
             {
-                AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = (AnalyticalTwoDimensionalViewSettings)viewSettings;
-                if(analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings != null)
+                IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
+                if (appearanceSettings is ZoneAppearanceSettings)
                 {
-                    SpaceAppearanceSettings spaceAppearanceSettings = analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings;
-
-                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
-                    if(appearanceSettings is ZoneAppearanceSettings)
+                    string zoneCategory = ((ZoneAppearanceSettings)appearanceSettings).ZoneCategory;
+                    if (!string.IsNullOrWhiteSpace(zoneCategory))
                     {
-                        string zoneCategory = ((ZoneAppearanceSettings)appearanceSettings).ZoneCategory;
-                        if (!string.IsNullOrWhiteSpace(zoneCategory))
+                        if (adjacencyCluster != null)
                         {
-                            if (adjacencyCluster != null)
+                            List<Zone> zones = adjacencyCluster.GetZones(space, zoneCategory);
+                            if (zones != null && zones.Count != 0)
                             {
-                                List<Zone> zones = adjacencyCluster.GetZones(space, zoneCategory);
-                                if (zones != null && zones.Count != 0)
+                                if (zones.FirstOrDefault().TryGetValue(ZoneParameter.Color, out SAMColor sAMColor) && sAMColor != null)
                                 {
-                                    if (zones.FirstOrDefault().TryGetValue(ZoneParameter.Color, out SAMColor sAMColor) && sAMColor != null)
-                                    {
-                                        return sAMColor.ToColor().ToMedia();
-                                    }
+                                    return sAMColor.ToColor().ToMedia();
                                 }
                             }
                         }
                     }
-
-
                 }
-
             }
 
-            if(result == null)
+            if (space.TryGetValue(SpaceParameter.Color, out color_Temp))
             {
-                if (space.TryGetValue(SpaceParameter.Color, out System.Drawing.Color color_Temp))
-                {
-                    return color_Temp.ToMedia();
-                }
-
-                result = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
+                return color_Temp.ToMedia();
             }
 
-            return result;
+            return System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
         }
     }
 }

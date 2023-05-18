@@ -117,15 +117,15 @@ namespace SAM.Analytical.UI.WPF
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
-        public List<AnalyticalTwoDimensionalViewSettings> AnalyticalTwoDimensionalViewSettingsList
+        public List<TwoDimensionalViewSettings> TwoDimensionalViewSettingsList
         {
             get
             {
-                return GetAnalyticalTwoDimensionalViewSettingsList();
+                return GetTwoDimensionalViewSettingsList();
             }
         }
 
-        private List<AnalyticalTwoDimensionalViewSettings> GetAnalyticalTwoDimensionalViewSettingsList()
+        private List<TwoDimensionalViewSettings> GetTwoDimensionalViewSettingsList()
         {
             List<Level> levels = GetLevels(true);
             if(levels == null || levels.Count == 0)
@@ -159,19 +159,19 @@ namespace SAM.Analytical.UI.WPF
 
             string group = Query.DefaultGroup(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
 
-            List<AnalyticalTwoDimensionalViewSettings> result = new List<AnalyticalTwoDimensionalViewSettings>();
+            List<TwoDimensionalViewSettings> result = new List<TwoDimensionalViewSettings>();
             foreach (Level level in levels)
             {
                 double elevation = level.Elevation + offset;
 
                 string name = Query.DefaultName(level, elevation, spaceAppearanceSettingsControl.SpaceAppearanceSettings);
 
-                AnalyticalTwoDimensionalViewSettings analyticalTwoDimensionalViewSettings = new AnalyticalTwoDimensionalViewSettings(Guid.NewGuid(), name, Geometry.Spatial.Create.Plane(elevation), null, types, Geometry.UI.Query.DefaultTextAppearance(), null);
-                analyticalTwoDimensionalViewSettings.SpaceAppearanceSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings;
-                analyticalTwoDimensionalViewSettings.SetValue(ViewSettingsParameter.UseDefaultName, true);
-                analyticalTwoDimensionalViewSettings.SetValue(ViewSettingsParameter.Group, group);
+                TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(Guid.NewGuid(), name, Geometry.Spatial.Create.Plane(elevation), null, types, Geometry.UI.Query.DefaultTextAppearance(), null);
+                twoDimensionalViewSettings.AddAppearanceSettings(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
+                twoDimensionalViewSettings.SetValue(ViewSettingsParameter.UseDefaultName, true);
+                twoDimensionalViewSettings.SetValue(ViewSettingsParameter.Group, group);
 
-                result.Add(analyticalTwoDimensionalViewSettings);
+                result.Add(twoDimensionalViewSettings);
             }
 
 

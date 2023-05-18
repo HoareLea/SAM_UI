@@ -1,27 +1,45 @@
 ﻿using SAM.Core.UI;
 using SAM.Geometry.UI;
+using System.Linq;
 
 namespace SAM.Analytical.UI
 {
     public static partial class Query
     {
-        public static bool Editable<T>(ViewSettings viewSettings) where T : IAppearanceSettings
+        public static bool Editable<T>(ViewSettings viewSettings) where T : ValueAppearanceSettings
         {
-            if (viewSettings is IAnalyticalViewSettings)
+            T valueAppearanceSettings = viewSettings?.GetValueAppearanceSettings<T>()?.FirstOrDefault();
+            if(valueAppearanceSettings == null)
             {
-                IAnalyticalViewSettings analyticalViewSettings = (IAnalyticalViewSettings)viewSettings;
+                return true;
+            }
 
-                if(typeof(T).IsAssignableFrom(typeof(SpaceAppearanceSettings)))
+            if (valueAppearanceSettings is SpaceAppearanceSettings)
+            {
+                SpaceAppearanceSettings spaceAppearanceSettings = (SpaceAppearanceSettings)(object)valueAppearanceSettings;
+                if (spaceAppearanceSettings != null)
                 {
-                    SpaceAppearanceSettings spaceAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings;
-                    if (spaceAppearanceSettings != null)
+                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
+                    if (appearanceSettings is ParameterAppearanceSettings)
                     {
-                        IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
-                        if(appearanceSettings is ParameterAppearanceSettings)
-                        {
-                            ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+                        ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
 
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                        if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                    else if (appearanceSettings is TypeAppearanceSettings)
+                    {
+                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+
+                        if (appearanceSettings is InternalConditionAppearanceSettings)
+                        {
+                            if (parameterName == "Color" || parameterName == "Name")
                             {
                                 return false;
                             }
@@ -30,47 +48,9 @@ namespace SAM.Analytical.UI
                                 return true;
                             }
                         }
-                        else if(appearanceSettings is TypeAppearanceSettings)
+                        else if (appearanceSettings is ZoneAppearanceSettings)
                         {
-                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
-
-                            if (appearanceSettings is InternalConditionAppearanceSettings)
-                            {
-                                if (parameterName == "Color" || parameterName == "Name")
-                                {
-                                    return false;
-                                }
-                                else
-                                {
-                                    return true;
-                                }
-                            }
-                            else if (appearanceSettings is ZoneAppearanceSettings)
-                            {
-                                if (parameterName == "Color" || parameterName == "Name")
-                                {
-                                    return false;
-                                }
-                                else
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-                else if (typeof(T).IsAssignableFrom(typeof(PanelAppearanceSettings)))
-                {
-                    PanelAppearanceSettings panelAppearanceSettings = analyticalViewSettings.PanelAppearanceSettings;
-                    if (panelAppearanceSettings != null)
-                    {
-
-                        IAppearanceSettings appearanceSettings = panelAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
-                        if (appearanceSettings is ParameterAppearanceSettings)
-                        {
-                            ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
-
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                            if (parameterName == "Color" || parameterName == "Name")
                             {
                                 return false;
                             }
@@ -79,36 +59,36 @@ namespace SAM.Analytical.UI
                                 return true;
                             }
                         }
-                        else if (appearanceSettings is TypeAppearanceSettings)
-                        {
-                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
-
-                            if (appearanceSettings is ConstructionAppearanceSettings)
-                            {
-                                if (parameterName == "Color" || parameterName == "Name")
-                                {
-                                    return false;
-                                }
-                                else
-                                {
-                                    return true;
-                                }
-                            }
-                        }
                     }
                 }
-                else if(typeof(T).IsAssignableFrom(typeof(ApertureAppearanceSettings)))
+            }
+            else if (valueAppearanceSettings is PanelAppearanceSettings)
+            {
+                PanelAppearanceSettings panelAppearanceSettings = (PanelAppearanceSettings)(object)valueAppearanceSettings;
+                if (panelAppearanceSettings != null)
                 {
-                    ApertureAppearanceSettings apertureAppearanceSettings = analyticalViewSettings.ApertureAppearanceSettings;
-                    if (apertureAppearanceSettings != null)
+
+                    IAppearanceSettings appearanceSettings = panelAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
+                    if (appearanceSettings is ParameterAppearanceSettings)
                     {
+                        ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
 
-                        IAppearanceSettings appearanceSettings = apertureAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
-                        if (appearanceSettings is ParameterAppearanceSettings)
+                        if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
                         {
-                            ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                    else if (appearanceSettings is TypeAppearanceSettings)
+                    {
+                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
 
-                            if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                        if (appearanceSettings is ConstructionAppearanceSettings)
+                        {
+                            if (parameterName == "Color" || parameterName == "Name")
                             {
                                 return false;
                             }
@@ -117,26 +97,46 @@ namespace SAM.Analytical.UI
                                 return true;
                             }
                         }
-                        else if (appearanceSettings is TypeAppearanceSettings)
-                        {
-                            string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                    }
+                }
+            }
+            else if (valueAppearanceSettings is ApertureAppearanceSettings)
+            {
+                ApertureAppearanceSettings apertureAppearanceSettings = (ApertureAppearanceSettings)(object)valueAppearanceSettings;
+                if (apertureAppearanceSettings != null)
+                {
 
-                            if (appearanceSettings is ApertureConstructionAppearanceSettings)
+                    IAppearanceSettings appearanceSettings = apertureAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
+                    if (appearanceSettings is ParameterAppearanceSettings)
+                    {
+                        ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+
+                        if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                    else if (appearanceSettings is TypeAppearanceSettings)
+                    {
+                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+
+                        if (appearanceSettings is ApertureConstructionAppearanceSettings)
+                        {
+                            if (parameterName == "Color" || parameterName == "Name")
                             {
-                                if (parameterName == "Color" || parameterName == "Name")
-                                {
-                                    return false;
-                                }
-                                else
-                                {
-                                    return true;
-                                }
+                                return false;
+                            }
+                            else
+                            {
+                                return true;
                             }
                         }
                     }
                 }
-
-
             }
 
             return true;

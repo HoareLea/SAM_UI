@@ -1,5 +1,6 @@
 ﻿using SAM.Core.UI;
 using SAM.Geometry.UI;
+using System.Linq;
 
 namespace SAM.Analytical.UI
 {
@@ -7,52 +8,58 @@ namespace SAM.Analytical.UI
     {
         public static string LegendName(ViewSettings viewSettings)
         {
-            if (viewSettings is IAnalyticalViewSettings)
+            if(viewSettings == null)
             {
-                IAnalyticalViewSettings analyticalViewSettings = (IAnalyticalViewSettings)viewSettings;
-                SpaceAppearanceSettings spaceAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings;
-                if (spaceAppearanceSettings != null)
-                {
-                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
-                    if (appearanceSettings is ParameterAppearanceSettings)
-                    {
-                        ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+                return null;
+            }
 
-                        if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+            SpaceAppearanceSettings spaceAppearanceSettings = viewSettings?.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault();
+            if (spaceAppearanceSettings == null)
+            {
+                return null;
+            }
+
+            if (spaceAppearanceSettings != null)
+            {
+                IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
+                if (appearanceSettings is ParameterAppearanceSettings)
+                {
+                    ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+
+                    if (parameterAppearanceSettings.ParameterName == "Color" || parameterAppearanceSettings.ParameterName == "Name")
+                    {
+                        return "Spaces";
+                    }
+                    else
+                    {
+                        return parameterAppearanceSettings.ParameterName;
+                    }
+                }
+                else if (appearanceSettings is TypeAppearanceSettings)
+                {
+                    string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+
+                    if (appearanceSettings is InternalConditionAppearanceSettings)
+                    {
+                        if (parameterName == "Color" || parameterName == "Name")
                         {
-                            return "Spaces";
+                            return "Internal Conditions";
                         }
                         else
                         {
-                            return parameterAppearanceSettings.ParameterName;
+                            return parameterName;
                         }
                     }
-                    else if(appearanceSettings is TypeAppearanceSettings)
+                    else if (appearanceSettings is ZoneAppearanceSettings)
                     {
-                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
-                        
-                        if (appearanceSettings is InternalConditionAppearanceSettings)
+                        ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)appearanceSettings;
+                        if (parameterName == "Color" || parameterName == "Name")
                         {
-                            if (parameterName == "Color" || parameterName == "Name")
-                            {
-                                return "Internal Conditions";
-                            }
-                            else
-                            {
-                                return parameterName;
-                            }
+                            return string.Format("{0} Zones", zoneAppearanceSettings.ZoneCategory);
                         }
-                        else if(appearanceSettings is ZoneAppearanceSettings)
+                        else
                         {
-                            ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)appearanceSettings;
-                            if (parameterName == "Color" || parameterName == "Name")
-                            {
-                                return string.Format("{0} Zones", zoneAppearanceSettings.ZoneCategory);
-                            }
-                            else
-                            {
-                                return parameterName;
-                            }
+                            return parameterName;
                         }
                     }
                 }

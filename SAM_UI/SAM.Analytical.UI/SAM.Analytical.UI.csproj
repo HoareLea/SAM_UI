@@ -105,8 +105,6 @@
     <Compile Include="Classes\Settings\ApertureAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\PanelAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\SpaceAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\ViewSettings\AnalyticalThreeDimensionalViewSettings.cs" />
-    <Compile Include="Classes\Settings\ViewSettings\AnalyticalTwoDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\InternalConditionAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ZoneAppearanceSettings.cs" />
     <Compile Include="Classes\TBDConversionOptions.cs" />
@@ -128,7 +126,6 @@
     <Compile Include="Forms\SimulateForm.designer.cs">
       <DependentUpon>SimulateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IAnalyticalViewSettings.cs" />
     <Compile Include="Interfaces\ISection3DObject.cs" />
     <Compile Include="Modify\AssignAdjacencyCluster.cs" />
     <Compile Include="Modify\RenameSpace.cs" />

@@ -17,22 +17,45 @@ namespace SAM.Analytical.UI
                 return false;
             }
 
-            if(viewSettings is IAnalyticalViewSettings)
+            SpaceAppearanceSettings spaceAppearanceSettings = viewSettings?.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault();
+            if (spaceAppearanceSettings != null)
             {
-                IAnalyticalViewSettings analyticalViewSettings = (IAnalyticalViewSettings)viewSettings;
-                SpaceAppearanceSettings spaceAppearanceSettings = analyticalViewSettings.SpaceAppearanceSettings;
-                if(spaceAppearanceSettings != null)
+                IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
+                if (appearanceSettings is ParameterAppearanceSettings)
                 {
-                    IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
-                    if(appearanceSettings is ParameterAppearanceSettings)
-                    {
-                        ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+                    ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
 
-                        if (Core.Query.TryGetValue(space, parameterAppearanceSettings.ParameterName, out value))
+                    if (Core.Query.TryGetValue(space, parameterAppearanceSettings.ParameterName, out value))
+                    {
+                        if (parameterAppearanceSettings.ParameterName == "Color")
                         {
-                            if (parameterAppearanceSettings.ParameterName == "Color")
+                            text = space.Name;
+                        }
+                        else
+                        {
+                            text = value?.ToString();
+                        }
+
+                        return true;
+                    }
+                }
+                else if (appearanceSettings is TypeAppearanceSettings)
+                {
+                    string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+
+                    if (appearanceSettings is InternalConditionAppearanceSettings)
+                    {
+                        InternalCondition internalCondition = space.InternalCondition;
+                        if (internalCondition == null)
+                        {
+                            return false;
+                        }
+
+                        if (Core.Query.TryGetValue(internalCondition, parameterName, out value))
+                        {
+                            if (parameterName == "Color")
                             {
-                                text = space.Name;
+                                text = internalCondition.Name;
                             }
                             else
                             {
@@ -42,56 +65,29 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
-                    else if(appearanceSettings is TypeAppearanceSettings)
+                    else if (appearanceSettings is ZoneAppearanceSettings)
                     {
-                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                        ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)appearanceSettings;
+                        List<Zone> zones = adjacencyCluster.GetZones(space, zoneAppearanceSettings.ZoneCategory);
 
-                        if (appearanceSettings is InternalConditionAppearanceSettings)
+                        Zone zone = zones?.FirstOrDefault();
+                        if (zone == null)
                         {
-                            InternalCondition internalCondition = space.InternalCondition;
-                            if (internalCondition == null)
-                            {
-                                return false;
-                            }
-
-                            if (Core.Query.TryGetValue(internalCondition, parameterName, out value))
-                            {
-                                if (parameterName == "Color")
-                                {
-                                    text = internalCondition.Name;
-                                }
-                                else
-                                {
-                                    text = value?.ToString();
-                                }
-
-                                return true;
-                            }
+                            return false;
                         }
-                        else if (appearanceSettings is ZoneAppearanceSettings)
+
+                        if (Core.Query.TryGetValue(zone, parameterName, out value))
                         {
-                            ZoneAppearanceSettings zoneAppearanceSettings = (ZoneAppearanceSettings)appearanceSettings;
-                            List<Zone> zones = adjacencyCluster.GetZones(space, zoneAppearanceSettings.ZoneCategory);
-
-                            Zone zone = zones?.FirstOrDefault();
-                            if (zone == null)
+                            if (parameterName == "Color")
                             {
-                                return false;
+                                text = zone.Name;
+                            }
+                            else
+                            {
+                                text = value?.ToString();
                             }
 
-                            if (Core.Query.TryGetValue(zone, parameterName, out value))
-                            {
-                                if (parameterName == "Color")
-                                {
-                                    text = zone.Name;
-                                }
-                                else
-                                {
-                                    text = value?.ToString();
-                                }
-
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
@@ -111,21 +107,44 @@ namespace SAM.Analytical.UI
                 return false;
             }
 
-            if (viewSettings is IAnalyticalViewSettings)
+            PanelAppearanceSettings panelAppearanceSettings = viewSettings?.GetValueAppearanceSettings<PanelAppearanceSettings>()?.FirstOrDefault();
+            if (panelAppearanceSettings != null)
             {
-                IAnalyticalViewSettings analyticalViewSettings = (IAnalyticalViewSettings)viewSettings;
-                PanelAppearanceSettings panelAppearanceSettings = analyticalViewSettings.PanelAppearanceSettings;
-                if (panelAppearanceSettings != null)
+                IAppearanceSettings appearanceSettings = panelAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
+                if (appearanceSettings is ParameterAppearanceSettings)
                 {
-                    IAppearanceSettings appearanceSettings = panelAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
-                    if(appearanceSettings is ParameterAppearanceSettings)
+                    ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+                    if (Core.Query.TryGetValue(panel, parameterAppearanceSettings.ParameterName, out value))
                     {
-                        ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
-                        if (Core.Query.TryGetValue(panel, parameterAppearanceSettings.ParameterName, out value))
+                        if (parameterAppearanceSettings.ParameterName == "Color")
                         {
-                            if (parameterAppearanceSettings.ParameterName == "Color")
+                            text = panel.Name;
+                        }
+                        else
+                        {
+                            text = value?.ToString();
+                        }
+
+                        return true;
+                    }
+                }
+                else if (appearanceSettings is TypeAppearanceSettings)
+                {
+                    string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+
+                    if (appearanceSettings is ConstructionAppearanceSettings)
+                    {
+                        Construction construction = panel.Construction;
+                        if (construction == null)
+                        {
+                            return false;
+                        }
+
+                        if (Core.Query.TryGetValue(construction, parameterName, out value))
+                        {
+                            if (parameterName == "Color")
                             {
-                                text = panel.Name;
+                                text = construction.Name;
                             }
                             else
                             {
@@ -133,33 +152,6 @@ namespace SAM.Analytical.UI
                             }
 
                             return true;
-                        }
-                    }
-                    else if(appearanceSettings is TypeAppearanceSettings)
-                    {
-                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
-
-                        if (appearanceSettings is ConstructionAppearanceSettings)
-                        {
-                            Construction construction = panel.Construction;
-                            if (construction == null)
-                            {
-                                return false;
-                            }
-
-                            if (Core.Query.TryGetValue(construction, parameterName, out value))
-                            {
-                                if (parameterName == "Color")
-                                {
-                                    text = construction.Name;
-                                }
-                                else
-                                {
-                                    text = value?.ToString();
-                                }
-
-                                return true;
-                            }
                         }
                     }
                 }
@@ -179,21 +171,44 @@ namespace SAM.Analytical.UI
                 return false;
             }
 
-            if (viewSettings is IAnalyticalViewSettings)
+            ApertureAppearanceSettings apertureAppearanceSettings = viewSettings?.GetValueAppearanceSettings<ApertureAppearanceSettings>()?.FirstOrDefault();
+            if (apertureAppearanceSettings != null)
             {
-                IAnalyticalViewSettings analyticalViewSettings = (IAnalyticalViewSettings)viewSettings;
-                ApertureAppearanceSettings apertureAppearanceSettings = analyticalViewSettings.ApertureAppearanceSettings;
-                if (apertureAppearanceSettings != null)
+                IAppearanceSettings appearanceSettings = apertureAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
+                if (appearanceSettings is ParameterAppearanceSettings)
                 {
-                    IAppearanceSettings appearanceSettings = apertureAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
-                    if (appearanceSettings is ParameterAppearanceSettings)
+                    ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
+                    if (Core.Query.TryGetValue(aperture, parameterAppearanceSettings.ParameterName, out value))
                     {
-                        ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
-                        if (Core.Query.TryGetValue(aperture, parameterAppearanceSettings.ParameterName, out value))
+                        if (parameterAppearanceSettings.ParameterName == "Color")
                         {
-                            if (parameterAppearanceSettings.ParameterName == "Color")
+                            text = aperture.Name;
+                        }
+                        else
+                        {
+                            text = value?.ToString();
+                        }
+
+                        return true;
+                    }
+                }
+                else if (appearanceSettings is TypeAppearanceSettings)
+                {
+                    string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+
+                    if (appearanceSettings is ApertureConstructionAppearanceSettings)
+                    {
+                        ApertureConstruction apertureConstruction = aperture.ApertureConstruction;
+                        if (apertureConstruction == null)
+                        {
+                            return false;
+                        }
+
+                        if (Core.Query.TryGetValue(apertureConstruction, parameterName, out value))
+                        {
+                            if (parameterName == "Color")
                             {
-                                text = aperture.Name;
+                                text = apertureConstruction.Name;
                             }
                             else
                             {
@@ -201,33 +216,6 @@ namespace SAM.Analytical.UI
                             }
 
                             return true;
-                        }
-                    }
-                    else if (appearanceSettings is TypeAppearanceSettings)
-                    {
-                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
-
-                        if (appearanceSettings is ApertureConstructionAppearanceSettings)
-                        {
-                            ApertureConstruction apertureConstruction = aperture.ApertureConstruction;
-                            if (apertureConstruction == null)
-                            {
-                                return false;
-                            }
-
-                            if (Core.Query.TryGetValue(apertureConstruction, parameterName, out value))
-                            {
-                                if (parameterName == "Color")
-                                {
-                                    text = apertureConstruction.Name;
-                                }
-                                else
-                                {
-                                    text = value?.ToString();
-                                }
-
-                                return true;
-                            }
                         }
                     }
                 }
