@@ -272,6 +272,9 @@
     <Compile Include="Controls\SpaceAppearanceSettingsControl.xaml.cs">
       <DependentUpon>SpaceAppearanceSettingsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Windows\SpaceAppearanceSettingsWindow.xaml.cs">
+      <DependentUpon>SpaceAppearanceSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\SpaceMechanicalSystemWindow.xaml.cs">
       <DependentUpon>SpaceMechanicalSystemWindow.xaml</DependentUpon>
     </Compile>
@@ -531,6 +534,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ElevationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SpaceAppearanceSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

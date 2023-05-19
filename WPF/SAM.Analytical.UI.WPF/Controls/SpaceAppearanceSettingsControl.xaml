@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="150" d:DesignWidth="300">
     <Grid>
-        <GroupBox Header="Element" HorizontalAlignment="Stretch"  Margin="10,10,140,10" VerticalAlignment="Stretch">
+        <GroupBox Header="Element" Margin="10,10,140,10" VerticalAlignment="Top" HorizontalAlignment="Left">
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0.4,-0.2">
                 <RadioButton x:Name="radioButton_Space" Content="Space" Height="30" Click="RadioButton_Click"/>
                 <RadioButton x:Name="radioButton_Zone" Content="Zone" Height="30" Click="RadioButton_Click" IsChecked="True"/>

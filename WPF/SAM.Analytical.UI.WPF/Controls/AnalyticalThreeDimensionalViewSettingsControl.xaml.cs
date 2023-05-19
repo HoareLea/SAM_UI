@@ -141,5 +141,15 @@ namespace SAM.Analytical.UI.WPF
         {
             groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
+
+        private void button_Color_Space_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_Color_Panel_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
     }
 }
