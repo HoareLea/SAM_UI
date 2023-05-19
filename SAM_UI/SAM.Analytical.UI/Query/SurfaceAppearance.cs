@@ -70,7 +70,7 @@ namespace SAM.Analytical.UI
             SurfaceAppearance result = viewSettings.GetAppearances<SurfaceAppearance>(panel)?.FirstOrDefault();
             if (result == null && color != null)
             {
-                result = new SurfaceAppearance(color.Value, Core.UI.Convert.ToMedia(ControlPaint.Dark(color.Value.ToDrawing())), 0);
+                result = new SurfaceAppearance(color.Value, Core.UI.Convert.ToMedia(ControlPaint.Dark(color.Value.ToDrawing())), 0.01);
             }
 
             if (result == null)

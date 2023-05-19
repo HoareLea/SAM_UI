@@ -107,6 +107,17 @@ namespace SAM.Analytical.UI
                 return false;
             }
 
+            ValueAppearanceSettings valueAppearanceSettings = viewSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>(panel)?.FirstOrDefault();
+            if(valueAppearanceSettings != null)
+            {
+                if (valueAppearanceSettings.TryGetValue(panel, out object value_Temp))
+                {
+                    value = value_Temp;
+                    text = value_Temp?.ToString();
+                    return true;
+                }
+            }
+
             PanelAppearanceSettings panelAppearanceSettings = viewSettings?.GetValueAppearanceSettings<PanelAppearanceSettings>()?.FirstOrDefault();
             if (panelAppearanceSettings != null)
             {

@@ -106,6 +106,7 @@
     <Compile Include="Classes\Settings\PanelAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\SpaceAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\InternalConditionAppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\ThermalTransmittanceAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ZoneAppearanceSettings.cs" />
     <Compile Include="Classes\TBDConversionOptions.cs" />
     <Compile Include="Classes\UIAnalyticalModel.cs" />
