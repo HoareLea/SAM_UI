@@ -12,12 +12,11 @@ namespace SAM.Analytical.UI.WPF
     public partial class AnalyticalThreeDimensionalViewSettingsControl : UserControl
     {
         private ThreeDimensionalViewSettings threeDimensionalViewSettings;
+        private AnalyticalModel analyticalModel;
 
         public AnalyticalThreeDimensionalViewSettingsControl()
         {
             InitializeComponent();
-
-            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
         public AnalyticalThreeDimensionalViewSettingsControl(ThreeDimensionalViewSettings threeDimensionalViewSettings, AnalyticalModel analyticalModel)
@@ -27,8 +26,6 @@ namespace SAM.Analytical.UI.WPF
             SetAnalyticalModel(analyticalModel);
 
             SetAnalyticalThreeDimensionalViewSettings(threeDimensionalViewSettings);
-
-            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
         }
 
         public ThreeDimensionalViewSettings ThreeDimensionalViewSettings
@@ -46,7 +43,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void SetAnalyticalModel(AnalyticalModel analyticalModel)
         {
-            spaceAppearanceSettingsControl.AdjacencyCluster = analyticalModel?.AdjacencyCluster;
+            this.analyticalModel = analyticalModel;
 
             comboBox_Group.Items.Clear();
 
@@ -74,14 +71,16 @@ namespace SAM.Analytical.UI.WPF
 
         private void SetAnalyticalThreeDimensionalViewSettings(ThreeDimensionalViewSettings threeDimensionalViewSettings)
         {
-            this.threeDimensionalViewSettings = threeDimensionalViewSettings;
+            this.threeDimensionalViewSettings = threeDimensionalViewSettings == null ? null : new ThreeDimensionalViewSettings(threeDimensionalViewSettings);
 
             checkBox_Visibilty_Space.IsChecked = threeDimensionalViewSettings.ContainsType(typeof(Space));
+            button_Color_Space.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
+
             checkBox_Visibilty_Panel.IsChecked = threeDimensionalViewSettings.ContainsType(typeof(Panel));
+            button_Color_Panel.IsEnabled = checkBox_Visibilty_Panel.IsChecked != null && checkBox_Visibilty_Panel.IsChecked.Value;
+
             checkBox_Visibilty_Aperture.IsChecked = threeDimensionalViewSettings.ContainsType(typeof(Aperture));
-
-
-            spaceAppearanceSettingsControl.SpaceAppearanceSettings = threeDimensionalViewSettings?.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault();
+            button_Color_Aperture.IsEnabled = checkBox_Visibilty_Aperture.IsChecked != null && checkBox_Visibilty_Aperture.IsChecked.Value;
 
             textBox_Name.Text = threeDimensionalViewSettings.Name;
 
@@ -120,15 +119,6 @@ namespace SAM.Analytical.UI.WPF
 
             result.SetTypes(types);
 
-            if(spaceAppearanceSettingsControl.SpaceAppearanceSettings == null)
-            {
-                result.RemoveAppearanceSettings<SpaceAppearanceSettings>();
-            }
-            else
-            {
-                result.AddAppearanceSettings(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
-            }
-
             if (!string.IsNullOrWhiteSpace(comboBox_Group.Text))
             {
                 result.SetValue(ViewSettingsParameter.Group, comboBox_Group.Text);
@@ -139,17 +129,49 @@ namespace SAM.Analytical.UI.WPF
 
         private void checkBox_Visibilty_Space_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            groupBox_ColorScheme.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
+            button_Color_Space.IsEnabled = checkBox_Visibilty_Space.IsChecked != null && checkBox_Visibilty_Space.IsChecked.Value;
+        }
+        private void checkBox_Visibilty_Panel_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            button_Color_Panel.IsEnabled = checkBox_Visibilty_Panel.IsChecked != null && checkBox_Visibilty_Panel.IsChecked.Value;
+        }
+
+        private void checkBox_Visibilty_Aperture_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            button_Color_Aperture.IsEnabled = checkBox_Visibilty_Aperture.IsChecked != null && checkBox_Visibilty_Aperture.IsChecked.Value;
         }
 
         private void button_Color_Space_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            if(analyticalModel == null)
+            {
+                return;
+            }
 
+            SpaceAppearanceSettings spaceAppearanceSettings = threeDimensionalViewSettings.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault();
+
+            Windows.SpaceAppearanceSettingsWindow spaceAppearanceSettingsWindow = new Windows.SpaceAppearanceSettingsWindow(analyticalModel?.AdjacencyCluster, spaceAppearanceSettings);
+            bool? result = spaceAppearanceSettingsWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+            spaceAppearanceSettings = spaceAppearanceSettingsWindow.SpaceAppearanceSettings;
+
+            threeDimensionalViewSettings.RemoveAppearanceSettings<SpaceAppearanceSettings>();
+
+            if(spaceAppearanceSettings != null)
+            {
+                threeDimensionalViewSettings.AddAppearanceSettings(spaceAppearanceSettings);
+            }
         }
 
         private void button_Color_Panel_Click(object sender, System.Windows.RoutedEventArgs e)
         {
 
         }
+
+
     }
 }

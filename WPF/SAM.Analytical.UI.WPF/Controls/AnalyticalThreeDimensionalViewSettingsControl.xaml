@@ -5,10 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="450">
+             d:DesignHeight="300" d:DesignWidth="250">
     <Grid>
-        <GroupBox Header="Visiblity" Height="180" Margin="10,59,0,10.6" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="109">
-            <!-- 
+        <GroupBox Header="Visiblity" Height="180" Margin="10,60,10,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="5,5,5,5">
                 <Grid x:Name="grid">
                     <Grid.ColumnDefinitions>
@@ -21,26 +20,24 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <CheckBox x:Name="checkBox_Visibilty_Space" Grid.Row="0"  Grid.Column="0" Content="Space" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Visibilty_Space_Click"/>
-                    <CheckBox x:Name="checkBox_Visibilty_Panel" Grid.Row="1"  Grid.Column="0" Content="Panel" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-                    <CheckBox x:Name="checkBox_Visibilty_Aperture" Grid.Row="2"  Grid.Column="0" Content="Aperture" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                    <CheckBox x:Name="checkBox_Visibilty_Panel" Grid.Row="1"  Grid.Column="0" Content="Panel" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Visibilty_Panel_Click"/>
+                    <CheckBox x:Name="checkBox_Visibilty_Aperture" Grid.Row="2"  Grid.Column="0" Content="Aperture" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Visibilty_Aperture_Click"/>
                     <Button x:Name="button_Color_Space" Grid.Row="0" Grid.Column="1" Content="Color" Click="button_Color_Space_Click"/>
                     <Button x:Name="button_Color_Panel" Grid.Row="1" Grid.Column="1" Content="Color" Click="button_Color_Panel_Click"/>
                     <Button x:Name="button_Color_Aperture" Grid.Row="2" Grid.Column="1" Content="Color" Click="button_Color_Panel_Click"/>
                 </Grid>
             </ScrollViewer>
-            -->          
+            <!-- 
             <StackPanel>
                     <CheckBox x:Name="checkBox_Visibilty_Space" Content="Space" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Visibilty_Space_Click"/>
                     <CheckBox x:Name="checkBox_Visibilty_Panel" Content="Panel" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                     <CheckBox x:Name="checkBox_Visibilty_Aperture" Content="Aperture" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-            </StackPanel> 
-        </GroupBox>
-        <GroupBox x:Name="groupBox_ColorScheme" Header="Color Scheme" HorizontalAlignment="Stretch" Height="180" Margin="124,59,5,10.6" VerticalAlignment="Stretch">
-            <local:SpaceAppearanceSettingsControl x:Name="spaceAppearanceSettingsControl" HorizontalAlignment="Left" Height="157" VerticalAlignment="Top" Width="301" Margin="0,0,0,-0.2"/>
+            </StackPanel>
+            -->
         </GroupBox>
         <Label x:Name="label_Name" Content="View Name:" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="20" Margin="89,22,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="20" Margin="89,22,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="140"/>
         <Label x:Name="label_Group" Content="Group:" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox_Group" HorizontalAlignment="Left" Margin="89,47,0,0" VerticalAlignment="Top" Width="120" Height="21" IsEditable="True"/>
+        <ComboBox x:Name="comboBox_Group" HorizontalAlignment="Left" Margin="89,47,0,0" VerticalAlignment="Top" Width="140" Height="21" IsEditable="True"/>
     </Grid>
 </UserControl>

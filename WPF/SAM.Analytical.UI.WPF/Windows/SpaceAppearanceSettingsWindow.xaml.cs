@@ -12,6 +12,14 @@ namespace SAM.Analytical.UI.WPF.Windows
             InitializeComponent();
         }
 
+        public SpaceAppearanceSettingsWindow(AdjacencyCluster adjacencyCluster, SpaceAppearanceSettings spaceAppearanceSettings)
+        {
+            InitializeComponent();
+
+            AdjacencyCluster = adjacencyCluster;
+            SpaceAppearanceSettings = spaceAppearanceSettings;
+        }
+
         public AdjacencyCluster AdjacencyCluster
         {
             get
