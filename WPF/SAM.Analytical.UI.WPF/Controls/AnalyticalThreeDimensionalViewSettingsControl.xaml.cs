@@ -169,7 +169,28 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_Color_Panel_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            if (analyticalModel == null)
+            {
+                return;
+            }
 
+            PanelAppearanceSettings panelAppearanceSettings = threeDimensionalViewSettings.GetValueAppearanceSettings<PanelAppearanceSettings>()?.FirstOrDefault();
+
+            Windows.PanelAppearanceSettingsWindow spaceAppearanceSettingsWindow = new Windows.PanelAppearanceSettingsWindow(analyticalModel?.AdjacencyCluster, panelAppearanceSettings);
+            bool? result = spaceAppearanceSettingsWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+            panelAppearanceSettings = spaceAppearanceSettingsWindow.PanelAppearanceSettings;
+
+            threeDimensionalViewSettings.RemoveAppearanceSettings<PanelAppearanceSettings>();
+
+            if (panelAppearanceSettings != null)
+            {
+                threeDimensionalViewSettings.AddAppearanceSettings(panelAppearanceSettings);
+            }
         }
 
 

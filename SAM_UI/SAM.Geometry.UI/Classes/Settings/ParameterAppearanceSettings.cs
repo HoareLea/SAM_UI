@@ -70,7 +70,7 @@ namespace SAM.Geometry.UI
             value = default;
 
             object value_Temp = null;
-            if(!Core.Query.TryGetValue(jSAMObject, ParameterName, out value))
+            if(!Core.Query.TryGetValue(jSAMObject, ParameterName, out value_Temp))
             {
                 return false;
             }

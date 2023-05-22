@@ -164,6 +164,15 @@ namespace SAM.Analytical.UI
 
                         dictionary_Panels[panel.Guid] = geometryObjectCollection_Panel;
                     }
+
+                    if (legend != null)
+                    {
+                        threeDimensionalViewSettings.Legend = legend;
+                    }
+                    else
+                    {
+                        threeDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values) : null;
+                    }
                 }
             }
 

@@ -162,6 +162,12 @@
     <Compile Include="Manager\ActiveSettings.cs" />
     <Compile Include="Modify\EditMechanicalSystems.cs" />
     <Compile Include="Modify\RenameSpaces.cs" />
+    <Compile Include="Controls\PanelAppearanceSettingsControl.xaml.cs">
+      <DependentUpon>PanelAppearanceSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PanelAppearanceSettingsWindow.xaml.cs">
+      <DependentUpon>PanelAppearanceSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\FilterWindow.xaml.cs">
       <DependentUpon>FilterWindow.xaml</DependentUpon>
     </Compile>
@@ -444,6 +450,14 @@
     <Page Include="Controls\SpaceMechanicalSystemControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PanelAppearanceSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\PanelAppearanceSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\FilterWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
