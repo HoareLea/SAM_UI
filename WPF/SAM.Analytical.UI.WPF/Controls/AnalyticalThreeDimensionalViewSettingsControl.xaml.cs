@@ -175,6 +175,10 @@ namespace SAM.Analytical.UI.WPF
             }
 
             PanelAppearanceSettings panelAppearanceSettings = threeDimensionalViewSettings.GetValueAppearanceSettings<PanelAppearanceSettings>()?.FirstOrDefault();
+            if(panelAppearanceSettings == null)
+            {
+                panelAppearanceSettings = new PanelAppearanceSettings("Name");
+            }
 
             Windows.PanelAppearanceSettingsWindow spaceAppearanceSettingsWindow = new Windows.PanelAppearanceSettingsWindow(analyticalModel?.AdjacencyCluster, panelAppearanceSettings);
             bool? result = spaceAppearanceSettingsWindow.ShowDialog();
