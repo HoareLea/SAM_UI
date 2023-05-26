@@ -73,7 +73,7 @@ namespace SAM.Geometry.UI
             return base.IsValid(jSAMObject);
         }
 
-        public virtual bool FromJObject(JObject jObject)
+        public override bool FromJObject(JObject jObject)
         {
             if (jObject == null)
             {
@@ -88,7 +88,7 @@ namespace SAM.Geometry.UI
             return true;
         }
 
-        public virtual JObject ToJObject()
+        public override JObject ToJObject()
         {
             JObject jObject = new JObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
