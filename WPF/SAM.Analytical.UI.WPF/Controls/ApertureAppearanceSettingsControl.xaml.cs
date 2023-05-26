@@ -143,7 +143,7 @@ namespace SAM.Analytical.UI.WPF
                 type = typeof(IOpeningProperties);
             }
 
-            Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type", "ApertureConstruction", "BoundingBox", "Clone", "Color", "ExtrenalEdge2D", "Face3D", "FrameFace3D", "PaneFace3Ds", "PlanarBoundary3D", "Plane", "FrameConstructionLayers", "PaneConstructionLayers", "Apertures", "Construction", "InternalPoint3D", "Origin");
+            Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type", "ApertureConstruction", "BoundingBox", "Clone", "Color", "ExternalEdge3D", "ExternalEdge2D", "Face3D", "FrameFace3D", "PaneFace3Ds", "PlanarBoundary3D", "Plane", "FrameConstructionLayers", "PaneConstructionLayers", "Apertures", "Construction", "InternalPoint3D", "Origin", "Normal");
         }
 
         private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
