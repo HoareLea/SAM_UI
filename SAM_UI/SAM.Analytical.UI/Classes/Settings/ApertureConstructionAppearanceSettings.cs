@@ -3,7 +3,7 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class ApertureConstructionAppearanceSettings : TypeAppearanceSettings
+    public class ApertureConstructionAppearanceSettings : TypeAppearanceSettings<Aperture>
     {
         public ApertureConstructionAppearanceSettings(string parameterName)
             :base(parameterName)

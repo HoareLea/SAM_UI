@@ -175,10 +175,6 @@ namespace SAM.Analytical.UI.WPF
             }
 
             PanelAppearanceSettings panelAppearanceSettings = threeDimensionalViewSettings.GetValueAppearanceSettings<PanelAppearanceSettings>()?.FirstOrDefault();
-            if(panelAppearanceSettings == null)
-            {
-                panelAppearanceSettings = new PanelAppearanceSettings("Name");
-            }
 
             Windows.PanelAppearanceSettingsWindow spaceAppearanceSettingsWindow = new Windows.PanelAppearanceSettingsWindow(analyticalModel?.AdjacencyCluster, panelAppearanceSettings);
             bool? result = spaceAppearanceSettingsWindow.ShowDialog();
@@ -197,6 +193,30 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        private void button_Color_Aperture_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (analyticalModel == null)
+            {
+                return;
+            }
 
+            ApertureAppearanceSettings apertureAppearanceSettings = threeDimensionalViewSettings.GetValueAppearanceSettings<ApertureAppearanceSettings>()?.FirstOrDefault();
+
+            ApertureAppearanceSettingsWindow apertureAppearanceSettingsWindow = new ApertureAppearanceSettingsWindow(analyticalModel?.AdjacencyCluster, apertureAppearanceSettings);
+            bool? result = apertureAppearanceSettingsWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+            apertureAppearanceSettings = apertureAppearanceSettingsWindow.ApertureAppearanceSettings;
+
+            threeDimensionalViewSettings.RemoveAppearanceSettings<ApertureAppearanceSettings>();
+
+            if (apertureAppearanceSettings != null)
+            {
+                threeDimensionalViewSettings.AddAppearanceSettings(apertureAppearanceSettings);
+            }
+        }
     }
 }

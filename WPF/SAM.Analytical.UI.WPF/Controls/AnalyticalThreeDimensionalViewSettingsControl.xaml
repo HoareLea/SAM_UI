@@ -24,7 +24,7 @@
                     <CheckBox x:Name="checkBox_Visibilty_Aperture" Grid.Row="2"  Grid.Column="0" Content="Aperture" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Visibilty_Aperture_Click"/>
                     <Button x:Name="button_Color_Space" Grid.Row="0" Grid.Column="1" Content="Color" Click="button_Color_Space_Click"/>
                     <Button x:Name="button_Color_Panel" Grid.Row="1" Grid.Column="1" Content="Color" Click="button_Color_Panel_Click"/>
-                    <Button x:Name="button_Color_Aperture" Grid.Row="2" Grid.Column="1" Content="Color" Click="button_Color_Panel_Click"/>
+                    <Button x:Name="button_Color_Aperture" Grid.Row="2" Grid.Column="1" Content="Color" Click="button_Color_Aperture_Click"/>
                 </Grid>
             </ScrollViewer>
             <!-- 

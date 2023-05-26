@@ -3,7 +3,7 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class ConstructionAppearanceSettings : TypeAppearanceSettings
+    public class ConstructionAppearanceSettings : TypeAppearanceSettings<Construction>
     {
 
         public ConstructionAppearanceSettings(string parameterName)

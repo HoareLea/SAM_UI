@@ -3,7 +3,7 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class PanelAppearanceSettings : TypeAppearanceSettings
+    public class PanelAppearanceSettings : TypeAppearanceSettings<Panel>
     {
         public PanelAppearanceSettings(string parameterName)
             :base(parameterName)

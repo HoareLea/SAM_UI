@@ -35,9 +35,9 @@ namespace SAM.Analytical.UI
                         return parameterAppearanceSettings.ParameterName;
                     }
                 }
-                else if (appearanceSettings is TypeAppearanceSettings)
+                else if (appearanceSettings is ITypeAppearanceSettings)
                 {
-                    string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                    string parameterName = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
 
                     if (appearanceSettings is InternalConditionAppearanceSettings)
                     {

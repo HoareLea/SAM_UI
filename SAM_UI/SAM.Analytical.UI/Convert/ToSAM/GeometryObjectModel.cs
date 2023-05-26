@@ -35,37 +35,46 @@ namespace SAM.Analytical.UI
 
             GeometryObjectModel result = new GeometryObjectModel();
 
-            bool showApertures = threeDimensionalViewSettings.IsValid(typeof(Aperture));
-            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Apertures = new Dictionary<System.Guid, GeometryObjectCollection>();
-            if(showApertures)
+            bool legendUpdated = false;
+
+            bool showSpaces = threeDimensionalViewSettings.IsValid(typeof(Space));
+            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Spaces = new Dictionary<System.Guid, GeometryObjectCollection>();
+            if (showSpaces)
             {
-                List<Aperture> apertures = adjacencyCluster.GetApertures();
-                if(apertures != null && apertures.Count != 0)
+                List<Space> spaces = adjacencyCluster.GetSpaces();
+                if (spaces != null && spaces.Count != 0)
                 {
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
-                    foreach (Aperture aperture in apertures)
+                    foreach (Space space in spaces)
                     {
-                        if (Query.TryGetValue(aperture, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
                         {
-                            legendItemDatas.Add(new LegendItemData(aperture, value, text));
+                            legendItemDatas.Add(new LegendItemData(space, value, text));
                         }
                     }
 
-                    bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
+                    bool editable = Query.Editable<SpaceAppearanceSettings>(threeDimensionalViewSettings);
 
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
-                    if (legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                    if (legend != null)
                     {
-                        legend.Refresh(dictionary_LegendItem.Values, true, true);
+                        if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                        {
+                            legend.Refresh(dictionary_LegendItem.Values, true, true);
+                        }
+                        else
+                        {
+                            legend = null;
+                        }
                     }
 
-                    foreach (Aperture aperture in apertures)
+                    foreach (Space space in spaces)
                     {
-                        GeometryObjectCollection geometryObjectCollection_Aperture = new GeometryObjectCollection() { Tag = aperture };
+                        Shell shell = adjacencyCluster.Shell(space);
 
                         Color? color = null;
 
-                        if (dictionary_LegendItem.TryGetValue(aperture.Guid, out LegendItem legendItem) && legendItem != null)
+                        if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem) && legendItem != null)
                         {
                             if (legend != null)
                             {
@@ -75,37 +84,49 @@ namespace SAM.Analytical.UI
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
 
-                        SurfaceAppearance surfaceAppearance_Frame = Query.SurfaceAppearance(aperture, AperturePart.Frame, threeDimensionalViewSettings, color);
-                        SurfaceAppearance surfaceAppearance_Pane = Query.SurfaceAppearance(aperture, AperturePart.Pane, threeDimensionalViewSettings, color);
-
-                        AperturePart aperturePart = AperturePart.Undefined;
-                        List<Face3D> face3Ds = null;
-
-                        aperturePart = AperturePart.Frame;
-                        face3Ds = aperture.GetFace3Ds(aperturePart);
-                        if (face3Ds != null && face3Ds.Count != 0)
+                        if (color == null || !color.HasValue)
                         {
-                            face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Frame)));
+                            color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
                         }
 
-                        aperturePart = AperturePart.Pane;
-                        face3Ds = aperture.GetFace3Ds(aperturePart);
-                        if (face3Ds != null && face3Ds.Count != 0)
-                        {
-                            face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Pane)));
-                        }
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new SurfaceAppearance(color.Value, ControlPaint.Dark(color.Value.ToDrawing()).ToMedia(), 0));
 
-                        dictionary_Apertures[aperture.Guid] = geometryObjectCollection_Aperture;
+                        GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
+                        geometryObjectCollection_Space.Add(new ShellObject(shell, surfaceAppearance) { Tag = space });
+
+
+                        dictionary_Spaces[space.Guid] = geometryObjectCollection_Space;
+                    }
+
+                    if(!legendUpdated)
+                    {
+                        if (legend != null)
+                        {
+                            threeDimensionalViewSettings.Legend = legend;
+                            legendUpdated = true;
+                        }
+                        else
+                        {
+                            if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                            {
+                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values);
+                                legendUpdated = true;
+                            }
+                            else
+                            {
+                                threeDimensionalViewSettings.Legend = null;
+                            }
+                        }
                     }
                 }
             }
 
             bool showPanels = threeDimensionalViewSettings.IsValid(typeof(Panel));
             Dictionary<System.Guid, GeometryObjectCollection> dictionary_Panels = new Dictionary<System.Guid, GeometryObjectCollection>();
-            if(showPanels)
+            if (showPanels)
             {
                 List<Panel> panels = adjacencyCluster.GetPanels();
-                if(panels != null && panels.Count != 0)
+                if (panels != null && panels.Count != 0)
                 {
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Panel panel in panels)
@@ -119,9 +140,16 @@ namespace SAM.Analytical.UI
                     bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
 
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
-                    if (legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                    if (legend != null)
                     {
-                        legend.Refresh(dictionary_LegendItem.Values, true, true);
+                        if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                        {
+                            legend.Refresh(dictionary_LegendItem.Values, true, true);
+                        }
+                        else
+                        {
+                            legend = null;
+                        }
                     }
 
                     foreach (Panel panel in panels)
@@ -165,48 +193,68 @@ namespace SAM.Analytical.UI
                         dictionary_Panels[panel.Guid] = geometryObjectCollection_Panel;
                     }
 
-                    if (legend != null)
+                    if (!legendUpdated)
                     {
-                        threeDimensionalViewSettings.Legend = legend;
-                    }
-                    else
-                    {
-                        threeDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values) : null;
+                        if (legend != null)
+                        {
+                            threeDimensionalViewSettings.Legend = legend;
+                            legendUpdated = true;
+                        }
+                        else
+                        {
+                            if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                            {
+                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values);
+                                legendUpdated = true;
+                            }
+                            else
+                            {
+                                threeDimensionalViewSettings.Legend = null;
+                            }
+                        }
+
                     }
                 }
             }
 
-            bool showSpaces = threeDimensionalViewSettings.IsValid(typeof(Space));
-            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Spaces = new Dictionary<System.Guid, GeometryObjectCollection>();
-            if (showSpaces)
+            bool showApertures = threeDimensionalViewSettings.IsValid(typeof(Aperture));
+            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Apertures = new Dictionary<System.Guid, GeometryObjectCollection>();
+            if (showApertures)
             {
-                List<Space> spaces = adjacencyCluster.GetSpaces();
-                if (spaces != null && spaces.Count != 0)
+                List<Aperture> apertures = adjacencyCluster.GetApertures();
+                if (apertures != null && apertures.Count != 0)
                 {
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
-                    foreach (Space space in spaces)
+                    foreach (Aperture aperture in apertures)
                     {
-                        if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(aperture, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
                         {
-                            legendItemDatas.Add(new LegendItemData(space, value, text));
+                            legendItemDatas.Add(new LegendItemData(aperture, value, text));
                         }
                     }
 
-                    bool editable = Query.Editable<SpaceAppearanceSettings>(threeDimensionalViewSettings);
+                    bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
 
                     Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
-                    if (legend != null && dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                    if (legend != null)
                     {
-                        legend.Refresh(dictionary_LegendItem.Values, true, true);
+                        if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                        {
+                            legend.Refresh(dictionary_LegendItem.Values, true, true);
+                        }
+                        else
+                        {
+                            legend = null;
+                        }
                     }
 
-                    foreach (Space space in spaces)
+                    foreach (Aperture aperture in apertures)
                     {
-                        Shell shell = adjacencyCluster.Shell(space);
+                        GeometryObjectCollection geometryObjectCollection_Aperture = new GeometryObjectCollection() { Tag = aperture };
 
                         Color? color = null;
 
-                        if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem) && legendItem != null)
+                        if (dictionary_LegendItem.TryGetValue(aperture.Guid, out LegendItem legendItem) && legendItem != null)
                         {
                             if (legend != null)
                             {
@@ -216,32 +264,53 @@ namespace SAM.Analytical.UI
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
 
-                        if (color == null || !color.HasValue)
+                        SurfaceAppearance surfaceAppearance_Frame = Query.SurfaceAppearance(aperture, AperturePart.Frame, threeDimensionalViewSettings, color);
+                        SurfaceAppearance surfaceAppearance_Pane = Query.SurfaceAppearance(aperture, AperturePart.Pane, threeDimensionalViewSettings, color);
+
+                        AperturePart aperturePart = AperturePart.Undefined;
+                        List<Face3D> face3Ds = null;
+
+                        aperturePart = AperturePart.Frame;
+                        face3Ds = aperture.GetFace3Ds(aperturePart);
+                        if (face3Ds != null && face3Ds.Count != 0)
                         {
-                            color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
+                            face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Frame)));
                         }
 
-                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new SurfaceAppearance(color.Value, ControlPaint.Dark(color.Value.ToDrawing()).ToMedia(), 0));
+                        aperturePart = AperturePart.Pane;
+                        face3Ds = aperture.GetFace3Ds(aperturePart);
+                        if (face3Ds != null && face3Ds.Count != 0)
+                        {
+                            face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Pane)));
+                        }
 
-                        GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
-                        geometryObjectCollection_Space.Add(new ShellObject(shell, surfaceAppearance) { Tag = space });
-
-
-                        dictionary_Spaces[space.Guid] = geometryObjectCollection_Space;
+                        dictionary_Apertures[aperture.Guid] = geometryObjectCollection_Aperture;
                     }
 
-                    if (legend != null)
+                    if (!legendUpdated)
                     {
-                        threeDimensionalViewSettings.Legend = legend;
-                    }
-                    else
-                    {
-                        threeDimensionalViewSettings.Legend = dictionary_LegendItem != null && dictionary_LegendItem.Count != 0 ? new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values) : null;
+                        if (legend != null)
+                        {
+                            threeDimensionalViewSettings.Legend = legend;
+                            legendUpdated = true;
+                        }
+                        else
+                        {
+                            if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
+                            {
+                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values);
+                                legendUpdated = true;
+                            }
+                            else
+                            {
+                                threeDimensionalViewSettings.Legend = null;
+                            }
+                        }
                     }
                 }
             }
 
-            if(dictionary_Panels != null && dictionary_Panels.Count != 0)
+            if (dictionary_Panels != null && dictionary_Panels.Count != 0)
             {
                 if(dictionary_Apertures != null && dictionary_Apertures.Count != 0)
                 {

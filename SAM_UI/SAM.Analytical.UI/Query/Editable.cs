@@ -33,9 +33,9 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
-                    else if (appearanceSettings is TypeAppearanceSettings)
+                    else if (appearanceSettings is ITypeAppearanceSettings)
                     {
-                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                        string parameterName = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
 
                         if (appearanceSettings is InternalConditionAppearanceSettings)
                         {
@@ -82,9 +82,9 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
-                    else if (appearanceSettings is TypeAppearanceSettings)
+                    else if (appearanceSettings is ITypeAppearanceSettings)
                     {
-                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                        string parameterName = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
 
                         if (appearanceSettings is ConstructionAppearanceSettings)
                         {
@@ -120,9 +120,9 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
-                    else if (appearanceSettings is TypeAppearanceSettings)
+                    else if (appearanceSettings is ITypeAppearanceSettings)
                     {
-                        string parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                        string parameterName = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
 
                         if (appearanceSettings is ApertureConstructionAppearanceSettings)
                         {

@@ -3,21 +3,30 @@ using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
-    /// Interaction logic for PanelAppearanceSettingsControl.xaml
+    /// Interaction logic for ApertureAppearanceSettingsControl.xaml
     /// </summary>
-    public partial class PanelAppearanceSettingsControl : UserControl
+    public partial class ApertureAppearanceSettingsControl : UserControl
     {
         private AdjacencyCluster adjacencyCluster;
 
         public event EventHandler ValueChanged;
 
-        public PanelAppearanceSettingsControl()
+        public ApertureAppearanceSettingsControl()
         {
             InitializeComponent();
         }
@@ -60,22 +69,22 @@ namespace SAM.Analytical.UI.WPF
             Type type = null;
 
             List<object> @objects = new List<object>();
-            if (radioButton_Construction.IsChecked.HasValue && radioButton_Construction.IsChecked.Value)
+            if (radioButton_ApertureConstruction.IsChecked.HasValue && radioButton_ApertureConstruction.IsChecked.Value)
             {
-                IEnumerable<Construction> constructions = adjacencyCluster.GetConstructions();
-                if (constructions != null)
+                IEnumerable<ApertureConstruction> apertureConstructions = adjacencyCluster.GetApertureConstructions();
+                if (apertureConstructions != null)
                 {
-                    foreach (Construction construction in constructions)
+                    foreach (ApertureConstruction apertureConstruction in apertureConstructions)
                     {
-                        if (construction == null)
+                        if (apertureConstruction == null)
                         {
                             continue;
                         }
 
-                        objects.Add(construction);
+                        objects.Add(apertureConstruction);
                     }
                 }
-                type = typeof(Zone);
+                type = typeof(ApertureConstruction);
             }
             else if (radioButton_Panel.IsChecked.HasValue && radioButton_Panel.IsChecked.Value)
             {
@@ -94,6 +103,46 @@ namespace SAM.Analytical.UI.WPF
                 }
                 type = typeof(Panel);
             }
+            else if (radioButton_Aperture.IsChecked.HasValue && radioButton_Aperture.IsChecked.Value)
+            {
+                IEnumerable<Aperture> apertures = adjacencyCluster.GetApertures();
+                if (apertures != null)
+                {
+                    foreach (Aperture aperture in apertures)
+                    {
+                        if (aperture == null)
+                        {
+                            continue;
+                        }
+
+                        objects.Add(aperture);
+                    }
+                }
+                type = typeof(Aperture);
+            }
+            else if (radioButton_OpeningProperties.IsChecked.HasValue && radioButton_OpeningProperties.IsChecked.Value)
+            {
+                IEnumerable<Aperture> apertures = adjacencyCluster.GetApertures();
+                if (apertures != null)
+                {
+                    foreach (Aperture aperture in apertures)
+                    {
+                        if (aperture == null)
+                        {
+                            continue;
+                        }
+
+                        if(!aperture.TryGetValue(ApertureParameter.OpeningProperties, out IOpeningProperties openingProperties) || openingProperties == null)
+                        {
+                            continue;
+                        }
+
+                        objects.Add(openingProperties);
+                    }
+                }
+                type = typeof(IOpeningProperties);
+            }
+
 
             HashSet<string> parameterNames = new HashSet<string>();
             foreach (object @object in objects)
@@ -139,29 +188,39 @@ namespace SAM.Analytical.UI.WPF
             ValueChanged?.Invoke(this, new EventArgs());
         }
 
-        public PanelAppearanceSettings PanelAppearanceSettings
+        public ApertureAppearanceSettings ApertureAppearanceSettings
         {
             get
             {
-                return GetPanelAppearanceSettings();
+                return GetApertureAppearanceSettings();
             }
 
             set
             {
-                SetPanelAppearanceSettings(value);
+                SetApertureAppearanceSettings(value);
             }
         }
 
-        private PanelAppearanceSettings GetPanelAppearanceSettings()
+        private ApertureAppearanceSettings GetApertureAppearanceSettings()
         {
             if (radioButton_Panel.IsChecked.HasValue && radioButton_Panel.IsChecked.Value)
             {
-                return new PanelAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString());
+                return new ApertureAppearanceSettings(new PanelAppearanceSettings( comboBox_ParameterName?.SelectedItem?.ToString()));
             }
 
-            if (radioButton_Construction.IsChecked.HasValue && radioButton_Construction.IsChecked.Value)
+            if (radioButton_Aperture.IsChecked.HasValue && radioButton_Aperture.IsChecked.Value)
             {
-                return new PanelAppearanceSettings(new ConstructionAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
+                return new ApertureAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString());
+            }
+
+            if (radioButton_ApertureConstruction.IsChecked.HasValue && radioButton_ApertureConstruction.IsChecked.Value)
+            {
+                return new ApertureAppearanceSettings(new ApertureConstructionAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
+            }
+
+            if (radioButton_OpeningProperties.IsChecked.HasValue && radioButton_OpeningProperties.IsChecked.Value)
+            {
+                return new ApertureAppearanceSettings(new OpeningPropertiesAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
             }
 
             if (radioButton_Default.IsChecked.HasValue && radioButton_Default.IsChecked.Value)
@@ -172,9 +231,9 @@ namespace SAM.Analytical.UI.WPF
             return null;
         }
 
-        private void SetPanelAppearanceSettings(PanelAppearanceSettings panelAppearanceSettings)
+        private void SetApertureAppearanceSettings(ApertureAppearanceSettings apertureAppearanceSettings)
         {
-            Core.UI.IAppearanceSettings appearanceSettings = panelAppearanceSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>();
+            Core.UI.IAppearanceSettings appearanceSettings = apertureAppearanceSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>();
             if (appearanceSettings == null)
             {
                 radioButton_Default.IsChecked = true;
@@ -192,17 +251,34 @@ namespace SAM.Analytical.UI.WPF
                 parameterName = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
             }
 
-            if (appearanceSettings is ConstructionAppearanceSettings)
+            if (parameterName == null)
             {
-                radioButton_Construction.IsChecked = true;
+                return;
             }
-            else
+
+            if (appearanceSettings is ApertureConstructionAppearanceSettings)
+            {
+                radioButton_ApertureConstruction.IsChecked = true;
+            }
+            else if (appearanceSettings is PanelAppearanceSettings)
             {
                 radioButton_Panel.IsChecked = true;
             }
+            else if (appearanceSettings is ApertureAppearanceSettings)
+            {
+                radioButton_Aperture.IsChecked = true;
+            }
+            else if (appearanceSettings is OpeningPropertiesAppearanceSettings)
+            {
+                radioButton_OpeningProperties.IsChecked = true;
+            }
+            else
+            {
+                radioButton_Aperture.IsChecked = true;
+            }
 
             LoadParameterNames();
-            if(parameterName != null)
+            if (parameterName != null)
             {
                 comboBox_ParameterName.SelectedItem = parameterName;
             }
@@ -212,5 +288,8 @@ namespace SAM.Analytical.UI.WPF
         {
             ValueChanged?.Invoke(this, new EventArgs());
         }
+
     }
+
+
 }

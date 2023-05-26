@@ -3,7 +3,7 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class InternalConditionAppearanceSettings : TypeAppearanceSettings
+    public class InternalConditionAppearanceSettings : TypeAppearanceSettings<InternalCondition>
     {
 
         public InternalConditionAppearanceSettings(string parameterName)

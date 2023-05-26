@@ -64,6 +64,24 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            if (radioButton_Default.IsChecked.HasValue && radioButton_Default.IsChecked.Value)
+            {
+                comboBox_ParameterName.Visibility = Visibility.Hidden;
+                label_ParameterName.Visibility = Visibility.Hidden;
+
+                comboBox_ZoneCategory.Visibility = Visibility.Hidden;
+                label_ZoneType.Visibility = Visibility.Hidden;
+                return;
+            }
+            else
+            {
+                comboBox_ParameterName.Visibility = Visibility.Visible;
+                label_ParameterName.Visibility = Visibility.Visible;
+
+                comboBox_ZoneCategory.Visibility = Visibility.Visible;
+                label_ZoneType.Visibility = Visibility.Visible;
+            }
+
             Type type = null;
 
             List<object> @objects = new List<object>();
@@ -209,6 +227,9 @@ namespace SAM.Analytical.UI.WPF
             Core.UI.IAppearanceSettings appearanceSettings = spaceAppearanceSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>();
             if(appearanceSettings == null)
             {
+                radioButton_Default.IsChecked = true;
+                LoadParameterNames();
+                SetZoneTypeVisibility();
                 return;
             }
 
@@ -217,9 +238,9 @@ namespace SAM.Analytical.UI.WPF
             {
                 parameterName = ((ParameterAppearanceSettings)appearanceSettings).ParameterName;
             }
-            else if(appearanceSettings is TypeAppearanceSettings)
+            else if(appearanceSettings is ITypeAppearanceSettings)
             {
-                parameterName = ((TypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
+                parameterName = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
             }
 
             if(parameterName == null)

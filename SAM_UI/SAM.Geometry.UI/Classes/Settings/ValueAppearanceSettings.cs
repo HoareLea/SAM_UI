@@ -9,6 +9,7 @@ namespace SAM.Geometry.UI
         {
 
         }
+        
         public ValueAppearanceSettings(ValueAppearanceSettings valueAppearanceSettings)
         {
             if(valueAppearanceSettings != null)
@@ -22,7 +23,7 @@ namespace SAM.Geometry.UI
             FromJObject(jObject);
         }
 
-        public bool IsValid(IJSAMObject jSAMObject)
+        public virtual bool IsValid(IJSAMObject jSAMObject)
         {
             if(jSAMObject == null)
             {

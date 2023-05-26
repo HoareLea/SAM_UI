@@ -4,7 +4,7 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class ZoneAppearanceSettings : TypeAppearanceSettings
+    public class ZoneAppearanceSettings : TypeAppearanceSettings<Zone>
     {
         public string ZoneCategory { get; set; }
 

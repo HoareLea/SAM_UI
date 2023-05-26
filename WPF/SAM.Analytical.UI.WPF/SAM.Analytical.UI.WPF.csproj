@@ -151,7 +151,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Windows\ApertureAppearanceSettingsWindow.xaml.cs">
+      <DependentUpon>ApertureAppearanceSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Classes\ApertureData.cs" />
+    <Compile Include="Controls\ApertureAppearanceSettingsControl.xaml.cs">
+      <DependentUpon>ApertureAppearanceSettingsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MechanicalSystemsControl.xaml.cs">
       <DependentUpon>MechanicalSystemsControl.xaml</DependentUpon>
     </Compile>
@@ -443,6 +449,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\ApertureAppearanceSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ApertureAppearanceSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\MechanicalSystemsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

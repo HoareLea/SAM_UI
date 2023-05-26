@@ -53,7 +53,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 IAppearanceSettings appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();
            
-                if (appearanceSettings is TypeAppearanceSettings)
+                if (appearanceSettings is ITypeAppearanceSettings)
                 {
                     if (appearanceSettings is ZoneAppearanceSettings)
                     {

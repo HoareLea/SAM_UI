@@ -3,7 +3,7 @@ using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
-    public class SpaceAppearanceSettings : TypeAppearanceSettings
+    public class SpaceAppearanceSettings : TypeAppearanceSettings<Space>
     {
         public SpaceAppearanceSettings(string parameterName)
             :base(parameterName)

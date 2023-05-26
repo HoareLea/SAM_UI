@@ -4,7 +4,7 @@ using SAM.Core.UI;
 
 namespace SAM.Geometry.UI
 {
-    public abstract class TypeAppearanceSettings : ValueAppearanceSettings, ITypeAppearanceSettings
+    public abstract class TypeAppearanceSettings<T> : ValueAppearanceSettings, ITypeAppearanceSettings where T : IJSAMObject
     {
         private ValueAppearanceSettings valueAppearanceSettings;
         
@@ -20,7 +20,7 @@ namespace SAM.Geometry.UI
 
         }
 
-        public TypeAppearanceSettings(TypeAppearanceSettings typeAppearanceSettings)
+        public TypeAppearanceSettings(TypeAppearanceSettings<T> typeAppearanceSettings)
             : base(typeAppearanceSettings)
         {
             if(typeAppearanceSettings != null)
@@ -35,7 +35,7 @@ namespace SAM.Geometry.UI
             this.valueAppearanceSettings = valueAppearanceSettings == null ? null : Core.Query.Clone(valueAppearanceSettings);
         }
 
-        public T GetValueAppearanceSettings<T>() where T: ValueAppearanceSettings
+        public Z GetValueAppearanceSettings<Z>() where Z: ValueAppearanceSettings
         {
             if(valueAppearanceSettings == null)
             {
@@ -43,15 +43,15 @@ namespace SAM.Geometry.UI
             }
 
             IAppearanceSettings result = Core.Query.Clone(valueAppearanceSettings);
-            if(!(result is T))
+            if(!(result is Z))
             {
                 return default;
             }
 
-            return (T)result;
+            return (Z)result;
         }
 
-        public override bool TryGetValue<T>(IJSAMObject jSAMObject, out T value)
+        public override bool TryGetValue<Z>(IJSAMObject jSAMObject, out Z value)
         {
             value = default;
 
@@ -61,6 +61,16 @@ namespace SAM.Geometry.UI
             }
 
             return valueAppearanceSettings.TryGetValue(jSAMObject, out value);
+        }
+
+        public override bool IsValid(IJSAMObject jSAMObject)
+        {
+            if(jSAMObject == null || !(jSAMObject is T))
+            {
+                return false;
+            }
+
+            return base.IsValid(jSAMObject);
         }
 
         public virtual bool FromJObject(JObject jObject)
