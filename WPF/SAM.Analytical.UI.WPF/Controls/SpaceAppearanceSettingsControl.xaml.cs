@@ -136,38 +136,25 @@ namespace SAM.Analytical.UI.WPF
                 }
                 type = typeof(Zone);
             }
-
-            HashSet<string> parameterNames = new HashSet<string>();
-            foreach(object @object in objects)
+            else if (radioButton_VentilationSystem.IsChecked.HasValue && radioButton_VentilationSystem.IsChecked.Value)
             {
-                Core.Query.UserFriendlyNames(@object)?.ForEach(x => parameterNames.Add(x));
-                
-            }
-
-            if(type != null)
-            {
-                foreach (Enum @enum in Core.Query.Enums(type))
+                IEnumerable<VentilationSystem> ventilationSystems = adjacencyCluster.GetMechanicalSystems<VentilationSystem>();
+                if (ventilationSystems != null)
                 {
-                    string name = ParameterProperties.Get(@enum)?.Name;
-                    if(string.IsNullOrWhiteSpace(name))
+                    foreach (VentilationSystem ventilationSystem in ventilationSystems)
                     {
-                        continue;
+                        if (ventilationSystem == null)
+                        {
+                            continue;
+                        }
+
+                        objects.Add(ventilationSystem);
                     }
-
-                    parameterNames.Add(name);
                 }
+                type = typeof(VentilationSystem);
             }
 
-            if(parameterNames != null && parameterNames.Count != 0)
-            {
-                List<string> parameterNames_Sorted = parameterNames.ToList();
-                parameterNames_Sorted.Sort();
-
-                foreach (string parameterName in parameterNames_Sorted)
-                {
-                    comboBox_ParameterName.Items.Add(parameterName);
-                }
-            }
+            Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type");
         }
 
         private void SetZoneTypeVisibility()
@@ -218,6 +205,10 @@ namespace SAM.Analytical.UI.WPF
             {
                 return new SpaceAppearanceSettings(new ZoneAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString(), comboBox_ZoneCategory?.SelectedItem?.ToString()));
             }
+            else if (radioButton_VentilationSystem.IsChecked.HasValue && radioButton_VentilationSystem.IsChecked.Value)
+            {
+                return new SpaceAppearanceSettings(new VentilationSystemAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
+            }
 
             return null;
         }
@@ -258,7 +249,11 @@ namespace SAM.Analytical.UI.WPF
             {
                 radioButton_InternalCondition.IsChecked = true;
             }
-            else
+            else if (appearanceSettings is VentilationSystemAppearanceSettings)
+            {
+                radioButton_VentilationSystem.IsChecked = true;
+            }
+            else 
             {
                 radioButton_Space.IsChecked = true;
             }

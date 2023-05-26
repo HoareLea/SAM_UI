@@ -18,13 +18,19 @@ namespace SAM.Analytical.UI
         }
 
         public SpaceAppearanceSettings(ZoneAppearanceSettings zoneAppearanceSettings)
-            :base(zoneAppearanceSettings as ValueAppearanceSettings)
+            :base(zoneAppearanceSettings)
         {
 
         }
 
         public SpaceAppearanceSettings(InternalConditionAppearanceSettings internalConditionAppearanceSettings)
-            :base(internalConditionAppearanceSettings as ValueAppearanceSettings)
+            :base(internalConditionAppearanceSettings)
+        {
+
+        }
+
+        public SpaceAppearanceSettings(VentilationSystemAppearanceSettings ventilationSystemAppearanceSettings)
+            : base(ventilationSystemAppearanceSettings)
         {
 
         }

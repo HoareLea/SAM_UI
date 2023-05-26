@@ -90,6 +90,30 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
+                    else if(appearanceSettings is VentilationSystemAppearanceSettings)
+                    {
+                        List<VentilationSystem> ventilationSystems = adjacencyCluster.GetRelatedObjects<VentilationSystem>(space);
+
+                        VentilationSystem ventilationSystem = ventilationSystems?.FirstOrDefault();
+                        if (ventilationSystem == null)
+                        {
+                            return false;
+                        }
+
+                        if (Core.Query.TryGetValue(ventilationSystem, parameterName, out value))
+                        {
+                            if (parameterName == "Color")
+                            {
+                                text = ventilationSystem.Name;
+                            }
+                            else
+                            {
+                                text = value?.ToString();
+                            }
+
+                            return true;
+                        }
+                    }
                 }
             }
 

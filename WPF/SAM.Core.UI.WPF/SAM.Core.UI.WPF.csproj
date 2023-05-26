@@ -120,6 +120,7 @@
     </Compile>
     <Compile Include="Interfaces\IFilterControl.cs" />
     <Compile Include="Modify\AddFilterControl.cs" />
+    <Compile Include="Modify\AddParameterNames.cs" />
     <Compile Include="Modify\Reload.cs" />
     <Compile Include="Query\FilterControls.cs" />
     <Compile Include="Query\FilterControl.cs" />

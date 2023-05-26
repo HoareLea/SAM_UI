@@ -143,38 +143,7 @@ namespace SAM.Analytical.UI.WPF
                 type = typeof(IOpeningProperties);
             }
 
-
-            HashSet<string> parameterNames = new HashSet<string>();
-            foreach (object @object in objects)
-            {
-                Core.Query.UserFriendlyNames(@object)?.ForEach(x => parameterNames.Add(x));
-
-            }
-
-            if (type != null)
-            {
-                foreach (Enum @enum in Core.Query.Enums(type))
-                {
-                    string name = ParameterProperties.Get(@enum)?.Name;
-                    if (string.IsNullOrWhiteSpace(name))
-                    {
-                        continue;
-                    }
-
-                    parameterNames.Add(name);
-                }
-            }
-
-            if (parameterNames != null && parameterNames.Count != 0)
-            {
-                List<string> parameterNames_Sorted = parameterNames.ToList();
-                parameterNames_Sorted.Sort();
-
-                foreach (string parameterName in parameterNames_Sorted)
-                {
-                    comboBox_ParameterName.Items.Add(parameterName);
-                }
-            }
+            Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type", "ApertureConstruction", "BoundingBox", "Clone", "Color", "ExtrenalEdge2D", "Face3D", "FrameFace3D", "PaneFace3Ds", "PlanarBoundary3D", "Plane", "FrameConstructionLayers", "PaneConstructionLayers", "Apertures", "Construction", "InternalPoint3D", "Origin");
         }
 
         private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
