@@ -167,6 +167,7 @@ namespace SAM.Analytical.UI.WPF
                 string name = Query.DefaultName(level, elevation, spaceAppearanceSettingsControl.SpaceAppearanceSettings);
 
                 TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(Guid.NewGuid(), name, Geometry.Spatial.Create.Plane(elevation), null, types, Geometry.UI.Query.DefaultTextAppearance(), null);
+                twoDimensionalViewSettings.Legend = new Core.UI.Legend(group);
                 twoDimensionalViewSettings.AddAppearanceSettings(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
                 twoDimensionalViewSettings.SetValue(ViewSettingsParameter.UseDefaultName, true);
                 twoDimensionalViewSettings.SetValue(ViewSettingsParameter.Group, group);
