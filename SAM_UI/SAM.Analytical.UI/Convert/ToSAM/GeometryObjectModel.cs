@@ -109,7 +109,7 @@ namespace SAM.Analytical.UI
                         {
                             if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                             {
-                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values);
+                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName<Space>(threeDimensionalViewSettings), dictionary_LegendItem.Values);
                                 legendUpdated = true;
                             }
                             else
@@ -204,7 +204,7 @@ namespace SAM.Analytical.UI
                         {
                             if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                             {
-                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values);
+                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName<Panel>(threeDimensionalViewSettings), dictionary_LegendItem.Values);
                                 legendUpdated = true;
                             }
                             else
@@ -298,7 +298,7 @@ namespace SAM.Analytical.UI
                         {
                             if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                             {
-                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName(threeDimensionalViewSettings), dictionary_LegendItem.Values);
+                                threeDimensionalViewSettings.Legend = new Legend(Query.LegendName<Aperture>(threeDimensionalViewSettings), dictionary_LegendItem.Values);
                                 legendUpdated = true;
                             }
                             else
@@ -558,7 +558,7 @@ namespace SAM.Analytical.UI
                         {
                             if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                             {
-                                twoDimensionalViewSettings.Legend = new Legend(Query.LegendName(twoDimensionalViewSettings), dictionary_LegendItem.Values);
+                                twoDimensionalViewSettings.Legend = new Legend(Query.LegendName<Space>(twoDimensionalViewSettings), dictionary_LegendItem.Values);
                                 legendUpdated = true;
                             }
                             else
