@@ -152,17 +152,29 @@ namespace SAM.Core.UI.WPF
 
             TextBox textBox = new TextBox() { IsReadOnly = true, Width = 20, Background = new SolidColorBrush(legendItem.Color.ToMedia()), TextWrapping = TextWrapping.WrapWithOverflow };
             stackPanel.Children.Add(textBox);
-            stackPanel.Children.Add(new Label() { Content = text });
+
+            Label label = new Label() { Content = text };
+            stackPanel.Children.Add(label);
+            
             stackPanel.Tag = legendItem;
 
             if(legendItem.Editable)
             {
-                stackPanel.MouseLeftButtonUp += StackPanel_MouseLeftButtonUp;
-                textBox.MouseLeftButtonUp += TextBox_MouseLeftButtonUp;
+                textBox.Cursor = Cursors.Hand;
+                label.Cursor = Cursors.Hand;
+
+                textBox.MouseDoubleClick += Control_DoubleClick;
+                label.MouseDoubleClick += Control_DoubleClick;
             }
 
             return this.stackPanel.Children.Add(stackPanel);
         }
+
+        private void Control_DoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            UpdateColor((sender as Control).Parent as StackPanel);
+        }
+
         private void UpdateColor(StackPanel stackPanel)
         {
             if(stackPanel == null)
@@ -197,16 +209,6 @@ namespace SAM.Core.UI.WPF
 
             stackPanel.Tag = legend?.Update(color, legendItem.Text);
             SetLegend(legend);
-        }
-
-        private void TextBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            UpdateColor((sender as TextBox).Parent as StackPanel);
-        }
-
-        private void StackPanel_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            UpdateColor(sender as StackPanel);
         }
     }
 }

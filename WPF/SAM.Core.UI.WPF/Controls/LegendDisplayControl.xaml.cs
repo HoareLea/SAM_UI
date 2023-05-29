@@ -68,6 +68,7 @@ namespace SAM.Core.UI.WPF
                     if(!Core.Query.TryConvert( legendItem_Temp.Text, out double value))
                     {
                         tuples_String.Add(new Tuple<string, LegendItem>(legendItem_Temp.Text, legendItem_Temp));
+                        continue;
                     }
 
                     tuples_Double.Add(new Tuple<double, LegendItem>(value, legendItem_Temp));

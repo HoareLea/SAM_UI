@@ -22,6 +22,12 @@ namespace SAM.Analytical.UI
 
         }
 
+        public PanelAppearanceSettings(BoundaryTypeAppearanceSettings boundaryTypeAppearanceSettings)
+            : base(boundaryTypeAppearanceSettings)
+        {
+
+        }
+
         public PanelAppearanceSettings(JObject jObject)
             :base(jObject)
         {

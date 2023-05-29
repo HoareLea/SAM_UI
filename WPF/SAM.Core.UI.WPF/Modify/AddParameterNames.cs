@@ -10,7 +10,7 @@ namespace SAM.Core.UI.WPF
     {
         
         
-        public static void AddParameterNames(this ComboBox comboBox, IEnumerable<object> objects, Type type = null, params string[] parameterNames_ToBeRemoved)
+        public static void AddParameterNames(this ComboBox comboBox, IEnumerable<object> objects, Type type = null, IEnumerable<string> parameterNames_ToBeRemoved = null, IEnumerable<string> parameterNames_ToBeAdded = null)
         {
             if(comboBox == null || objects == null)
             {
@@ -22,6 +22,14 @@ namespace SAM.Core.UI.WPF
             {
                 Core.Query.UserFriendlyNames(@object)?.ForEach(x => parameterNames.Add(x));
 
+            }
+
+            if(parameterNames_ToBeAdded != null)
+            {
+                foreach (string parameterName in parameterNames_ToBeAdded)
+                {
+                    parameterNames.Add(parameterName);
+                }
             }
 
             List<string> parameterNames_ToBeRemoved_Temp = new List<string>();

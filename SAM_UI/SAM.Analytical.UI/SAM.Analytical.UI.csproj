@@ -100,6 +100,8 @@
   <ItemGroup>
     <Compile Include="Classes\RenameSpaceOptions.cs" />
     <Compile Include="Classes\Modification\AnalyticalModelModification.cs" />
+    <Compile Include="Classes\Settings\BoundaryTypeAppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\AdjacencyClusterAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\VentilationSystemAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\OpeningPropertiesAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ApertureConstructionAppearanceSettings.cs" />

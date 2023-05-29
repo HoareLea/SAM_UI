@@ -154,7 +154,7 @@ namespace SAM.Analytical.UI.WPF
                 type = typeof(VentilationSystem);
             }
 
-            Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type");
+            Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, new string[] { "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type" });
         }
 
         private void SetZoneTypeVisibility()

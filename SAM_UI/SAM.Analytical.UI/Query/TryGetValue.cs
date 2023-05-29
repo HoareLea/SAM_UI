@@ -190,6 +190,18 @@ namespace SAM.Analytical.UI
                         }
                     }
                 }
+                else if (appearanceSettings is AdjacencyClusterAppearanceSettings)
+                {
+                    AdjacencyClusterAppearanceSettings adjacencyClusterAppearanceSettings = (AdjacencyClusterAppearanceSettings)appearanceSettings;
+                    adjacencyClusterAppearanceSettings.AdjacencyCluster = adjacencyCluster;
+
+                    if (adjacencyClusterAppearanceSettings.TryGetValue(panel, out object value_Temp))
+                    {
+                        value = value_Temp;
+                        text = value_Temp?.ToString();
+                        return true;
+                    }
+                }
             }
 
             return false;

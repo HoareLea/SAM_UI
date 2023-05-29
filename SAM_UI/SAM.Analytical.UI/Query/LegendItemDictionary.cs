@@ -33,7 +33,11 @@ namespace SAM.Analytical.UI
                 object @object = legendItemData.Value;
 
                 dictionary_Values[legendItemData] = @object;
-                if (Core.Query.IsNumeric(@object))
+                if(@object is Enum)
+                {
+                    strings.Add(Core.Query.Description((Enum)@object));
+                }
+                else if (Core.Query.IsNumeric(@object))
                 {
                     double value = System.Convert.ToDouble(@object);
                     dictionary_Doubles[value] = Core.Query.Round(value, Core.Tolerance.MacroDistance).ToString();

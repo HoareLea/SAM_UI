@@ -13,6 +13,8 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class PanelAppearanceSettingsControl : UserControl
     {
+        private readonly static string BoundaryTypeName = "Boundary Type";
+
         private AdjacencyCluster adjacencyCluster;
 
         public event EventHandler ValueChanged;
@@ -59,6 +61,8 @@ namespace SAM.Analytical.UI.WPF
 
             Type type = null;
 
+            List<string> parameterNames_ToBeAdded = new List<string>();
+
             List<object> @objects = new List<object>();
             if (radioButton_Construction.IsChecked.HasValue && radioButton_Construction.IsChecked.Value)
             {
@@ -93,9 +97,10 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
                 type = typeof(Panel);
+                parameterNames_ToBeAdded.Add(BoundaryTypeName);
             }
 
-            Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type", "Apertures", "BoundingBox", "Construction", "Face3D", "InternalPoint3D", "Normal", "Origin", "Plane", "ConstructionLayers");
+            Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, new string[] { "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type", "Apertures", "BoundingBox", "Construction", "Face3D", "InternalPoint3D", "Normal", "Origin", "Plane", "ConstructionLayers" }, parameterNames_ToBeAdded);
         }
 
         private void SetAdjacencyCluster(AdjacencyCluster adjacencyCluster)
@@ -126,7 +131,15 @@ namespace SAM.Analytical.UI.WPF
         {
             if (radioButton_Panel.IsChecked.HasValue && radioButton_Panel.IsChecked.Value)
             {
-                return new PanelAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString());
+                string name = comboBox_ParameterName?.SelectedItem?.ToString();
+                if(name == BoundaryTypeName)
+                {
+                    return new PanelAppearanceSettings(new BoundaryTypeAppearanceSettings());
+                }
+                else
+                {
+                    return new PanelAppearanceSettings(name);
+                }
             }
 
             if (radioButton_Construction.IsChecked.HasValue && radioButton_Construction.IsChecked.Value)
@@ -169,6 +182,10 @@ namespace SAM.Analytical.UI.WPF
             else
             {
                 radioButton_Panel.IsChecked = true;
+                if(appearanceSettings is BoundaryTypeAppearanceSettings)
+                {
+                    parameterName = BoundaryTypeName;
+                }
             }
 
             LoadParameterNames();
