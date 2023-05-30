@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.Spatial;
+﻿using HelixToolkit.Wpf;
+using SAM.Geometry.Spatial;
 using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 
@@ -39,6 +40,16 @@ namespace SAM.Geometry.UI.WPF
             return result;
         }
 
+        public static ModelVisual3D ToMedia3D(this ISegment3DObject segment3DObject)
+        {
+            if (segment3DObject is Segment3DObject)
+            {
+                return ToMedia3D((Segment3DObject)segment3DObject);
+            }
+
+            return ToMedia3D(segment3DObject.Segment3D, UI.Query.DefaultCurveAppearance().Thickness);
+        }
+
         public static ModelVisual3D ToMedia3D(this ISAMGeometryObject sAMGeometryObject)
         {
             if(sAMGeometryObject == null)
@@ -59,6 +70,30 @@ namespace SAM.Geometry.UI.WPF
                         {
                             result.Children.Add(modelVisual3D);
                         }
+                    }
+                    else if (sAMGeometry3DObject is Face3DObject)
+                    {
+                        ISegmentable3D segmentable3D = null;
+                        LinesVisual3D linesVisual3D = null;
+
+                        segmentable3D = ((Face3DObject)sAMGeometry3DObject).GetExternalEdge3D() as ISegmentable3D;
+                        linesVisual3D = segmentable3D.ToMedia3D(1);
+                        result.Children.Add(linesVisual3D);
+
+                        List<IClosedPlanar3D> closedPlanar3Ds = ((Face3DObject)sAMGeometry3DObject).GetInternalEdge3Ds();
+                        if (closedPlanar3Ds != null)
+                        {
+                            foreach (IClosedPlanar3D closedPlanar3D in closedPlanar3Ds)
+                            {
+                                linesVisual3D = (closedPlanar3D as ISegmentable3D)?.ToMedia3D(1);
+                                result.Children.Add(linesVisual3D);
+                            }
+                        }
+
+                        SurfaceAppearance surfaceAppearance = ((Face3DObject)sAMGeometry3DObject).SurfaceAppearance;
+
+                        result.Content = new GeometryModel3D(((Face3DObject)sAMGeometry3DObject).Face3D.ToMedia3D(Query.DoubleSided()), UI.Create.Material(surfaceAppearance.Color, surfaceAppearance.Opacity));
+
                     }
                     else
                     {

@@ -443,7 +443,8 @@ namespace SAM.Geometry.UI.WPF
 
             Material material = UI.Create.Material(curveAppearance.Color, curveAppearance.Opacity);
 
-            GeometryModel3D result = new GeometryModel3D(segment3D.ToMedia3D(curveAppearance.Thickness), material);
+
+            GeometryModel3D result = new GeometryModel3D(segment3D.ToMedia3D_MeshGeometry3D(curveAppearance.Thickness), material);
             Core.UI.WPF.Modify.SetIJSAMObject(result, segment3DObject);
             return result;
         }
@@ -470,7 +471,7 @@ namespace SAM.Geometry.UI.WPF
 
             Material material = UI.Create.Material(curveAppearance.Color, curveAppearance.Opacity);
 
-            GeometryModel3D result = new GeometryModel3D(boundingBox3D.ToMedia3D(curveAppearance.Thickness), material);
+            GeometryModel3D result = new GeometryModel3D(boundingBox3D.ToMedia3D_MeshGeometry3D(curveAppearance.Thickness), material);
             Core.UI.WPF.Modify.SetIJSAMObject(result, boundingBox3DObject);
             return result;
         }

@@ -87,6 +87,7 @@
     <Compile Include="Controls\ViewportControl.xaml.cs">
       <DependentUpon>ViewportControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Convert\ToMedia3D\LinesVisual3D.cs" />
     <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
     <Compile Include="Convert\ToMedia3D\Point3D.cs" />
     <Compile Include="Convert\ToMedia3D\ModelVisual3D.cs" />
