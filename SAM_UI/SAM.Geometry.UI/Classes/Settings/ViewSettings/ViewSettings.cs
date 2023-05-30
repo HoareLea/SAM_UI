@@ -308,10 +308,6 @@ namespace SAM.Geometry.UI
             }
 
             List<T> result = GetAppearances<T>(sAMObject.Guid);
-            if (valueAppearanceSettings != null)
-            {
-                result = valueAppearanceSettings.FindAll(x => x is T && x.IsValid(sAMObject))?.Cast<T>()?.ToList();
-            }
 
             return result;
         }
@@ -369,6 +365,16 @@ namespace SAM.Geometry.UI
             }
 
             return guidAppearanceSettings.RemoveAppearances(guid);
+        }
+
+        public bool RemoveAppearances()
+        {
+            if (guidAppearanceSettings == null)
+            {
+                return false;
+            }
+
+            return guidAppearanceSettings.RemoveAppearances();
         }
 
         public bool RemoveAppearanceSettings(ValueAppearanceSettings valueAppearanceSettings)

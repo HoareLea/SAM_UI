@@ -9,6 +9,8 @@ namespace SAM.Geometry.UI
 
         public double Opacity { get; set; } = 1;
 
+        public bool Visible { get; set; } = true;
+
         public Appearance(Color color)
         {
             Color = color;
@@ -25,6 +27,7 @@ namespace SAM.Geometry.UI
             {
                 Color = appearance.Color;
                 Opacity = appearance.Opacity;
+                Visible = appearance.Visible;
             }
         }
 
@@ -49,6 +52,11 @@ namespace SAM.Geometry.UI
                 Opacity = jObject.Value<double>("Opacity");
             }
 
+            if (jObject.ContainsKey("Visible"))
+            {
+                Visible = jObject.Value<bool>("Visible");
+            }
+
             return true;
         }
 
@@ -58,7 +66,13 @@ namespace SAM.Geometry.UI
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             jObject.Add("Color", new Core.SAMColor(Color.A, Color.R, Color.G, Color.B).ToJObject());
-            jObject.Add("Opacity", Opacity);
+            
+            if(!double.IsNaN(Opacity))
+            {
+                jObject.Add("Opacity", Opacity);
+            }
+
+            jObject.Add("Visible", Visible);
 
             return jObject;
         }

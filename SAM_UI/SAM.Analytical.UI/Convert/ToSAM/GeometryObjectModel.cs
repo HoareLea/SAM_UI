@@ -70,8 +70,6 @@ namespace SAM.Analytical.UI
 
                     foreach (Space space in spaces)
                     {
-                        Shell shell = adjacencyCluster.Shell(space);
-
                         Color? color = null;
 
                         if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem) && legendItem != null)
@@ -90,10 +88,15 @@ namespace SAM.Analytical.UI
                         }
 
                         SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new SurfaceAppearance(color.Value, ControlPaint.Dark(color.Value.ToDrawing()).ToMedia(), 0));
+                        if(surfaceAppearance == null || surfaceAppearance.Opacity == 0 || !surfaceAppearance.Visible)
+                        {
+                            continue;
+                        }
+
+                        Shell shell = adjacencyCluster.Shell(space);
 
                         GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
                         geometryObjectCollection_Space.Add(new ShellObject(shell, surfaceAppearance) { Tag = space });
-
 
                         dictionary_Spaces[space.Guid] = geometryObjectCollection_Space;
                     }
@@ -169,6 +172,10 @@ namespace SAM.Analytical.UI
                         }
 
                         SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(panel, threeDimensionalViewSettings, color);
+                        if (surfaceAppearance == null || surfaceAppearance.Opacity == 0 || !surfaceAppearance.Visible)
+                        {
+                            continue;
+                        }
 
                         Face3D face3D = panel.GetFace3D(true);
 
@@ -265,23 +272,44 @@ namespace SAM.Analytical.UI
                         }
 
                         SurfaceAppearance surfaceAppearance_Frame = Query.SurfaceAppearance(aperture, AperturePart.Frame, threeDimensionalViewSettings, color);
+                        if (surfaceAppearance_Frame == null || surfaceAppearance_Frame.Opacity == 0 || !surfaceAppearance_Frame.Visible)
+                        {
+                            surfaceAppearance_Frame = null;
+                        }
+
                         SurfaceAppearance surfaceAppearance_Pane = Query.SurfaceAppearance(aperture, AperturePart.Pane, threeDimensionalViewSettings, color);
+                        if (surfaceAppearance_Pane == null || surfaceAppearance_Pane.Opacity == 0 || !surfaceAppearance_Pane.Visible)
+                        {
+                            surfaceAppearance_Pane = null;
+                        }
+
+                        if(surfaceAppearance_Frame == null && surfaceAppearance_Pane == null)
+                        {
+                            continue;
+                        }
+
 
                         AperturePart aperturePart = AperturePart.Undefined;
                         List<Face3D> face3Ds = null;
 
                         aperturePart = AperturePart.Frame;
-                        face3Ds = aperture.GetFace3Ds(aperturePart);
-                        if (face3Ds != null && face3Ds.Count != 0)
+                        if(surfaceAppearance_Frame != null)
                         {
-                            face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Frame)));
+                            face3Ds = aperture.GetFace3Ds(aperturePart);
+                            if (face3Ds != null && face3Ds.Count != 0)
+                            {
+                                face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Frame)));
+                            }
                         }
 
                         aperturePart = AperturePart.Pane;
-                        face3Ds = aperture.GetFace3Ds(aperturePart);
-                        if (face3Ds != null && face3Ds.Count != 0)
+                        if(surfaceAppearance_Pane != null)
                         {
-                            face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Pane)));
+                            face3Ds = aperture.GetFace3Ds(aperturePart);
+                            if (face3Ds != null && face3Ds.Count != 0)
+                            {
+                                face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Pane)));
+                            }
                         }
 
                         dictionary_Apertures[aperture.Guid] = geometryObjectCollection_Aperture;

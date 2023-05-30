@@ -1,5 +1,6 @@
 ﻿using SAM.Core.UI;
 using SAM.Geometry.UI;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -126,14 +127,26 @@ namespace SAM.Analytical.UI
 
         public static SurfaceAppearance SurfaceAppearance(this Aperture aperture, AperturePart aperturePart, ViewSettings viewSettings, System.Windows.Media.Color? color = null)
         {
-            SurfaceAppearance result = viewSettings.GetAppearances<SurfaceAppearance>(aperture)?.FirstOrDefault();
+            if(aperturePart == AperturePart.Undefined)
+            {
+                return null;
+            }
+
+            List<SurfaceAppearance> surfaceAppearances = viewSettings.GetAppearances<SurfaceAppearance>(aperture);
+
+            SurfaceAppearance result = null;
+            if (surfaceAppearances != null && surfaceAppearances.Count != 0)
+            {
+                int index = aperturePart == AperturePart.Pane ? 0 : 1;
+                if(surfaceAppearances.Count > index)
+                {
+                    result = surfaceAppearances[index];
+                }
+            }
+
             if(result == null && color != null)
             {
                 result = new SurfaceAppearance(color.Value, Core.UI.Convert.ToMedia(ControlPaint.Dark(color.Value.ToDrawing())), 0);
-                if (aperturePart == AperturePart.Pane)
-                {
-                    //result.Opacity = 0.6;
-                }
             }
 
             if (result == null)

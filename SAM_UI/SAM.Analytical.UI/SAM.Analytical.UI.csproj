@@ -133,6 +133,8 @@
     </Compile>
     <Compile Include="Interfaces\ISection3DObject.cs" />
     <Compile Include="Modify\AssignAdjacencyCluster.cs" />
+    <Compile Include="Modify\Hide.cs" />
+    <Compile Include="Modify\RemoveOverrides.cs" />
     <Compile Include="Modify\RenameSpace.cs" />
     <Compile Include="Modify\RenameSpaces.cs" />
     <Compile Include="Modify\DuplicateInternalCondition.cs" />

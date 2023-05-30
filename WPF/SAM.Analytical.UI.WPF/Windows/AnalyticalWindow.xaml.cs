@@ -171,6 +171,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_SelectByGuid.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
             RibbonButton_SelectByGuid.Click += RibbonButton_SelectByGuid_Click;
 
+            RibbonButton_RevealHidden.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_RevealHidden.Click += RibbonButton_RevealHidden_Click;
+
             RibbonButton_AirHandlingUnitDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AirHandlingUnitDiagram);
             RibbonButton_AirHandlingUnitDiagram.Click += RibbonButton_AirHandlingUnitDiagram_Click;
 
@@ -1061,7 +1064,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, new Type[] { typeof(Panel), typeof(Aperture) }, null);
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = UI.Query.DefaultViewSettings(analyticalModel) as ThreeDimensionalViewSettings;
 
             TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(threeDimensionalViewSettings)), threeDimensionalViewSettings);
             if (tabItem != null)
@@ -1482,7 +1485,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             List<IViewSettings> viewSettingsList = uIGeometrySettings.GetViewSettings<IViewSettings>();
             if (viewSettingsList == null || viewSettingsList.Count == 0)
             {
-                ViewSettings viewSettings = UI.Query.DefaultViewSettings();
+                ViewSettings viewSettings = UI.Query.DefaultViewSettings(analyticalModel);
                 uIGeometrySettings.AddViewSettings(viewSettings);
                 uIGeometrySettings.ActiveGuid = viewSettings.Guid;
                 analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
@@ -1710,7 +1713,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             if (viewSettings == null)
             {
-                viewSettings = UI.Query.DefaultViewSettings();
+                viewSettings = UI.Query.DefaultViewSettings(analyticalModel);
             }
 
             TabItem tabItem = null;
@@ -1988,6 +1991,14 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            MenuItem menuItem_Hide = new MenuItem();
+            menuItem_Hide.Name = "MenuItem_Hide";
+            menuItem_Hide.Header = "Hide";
+            menuItem_Hide.Click += MenuItem_Hide_Click;
+            menuItem_Hide.Tag = jSAMObjects;
+            contextMenu.Items.Add(menuItem_Hide);
+
+
             contextMenu.Items.Add(new Separator());
 
             if (jSAMObjects.Count == 1)
@@ -2079,6 +2090,65 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
                 }
             }
+        }
+
+        private void MenuItem_Hide_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects = null;
+            if (menuItem.Tag is IJSAMObject)
+            {
+                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                jSAMObjects = new List<IJSAMObject>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is IJSAMObject)
+                    {
+                        jSAMObjects.Add((IJSAMObject)@object);
+                    }
+                }
+            }
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        }
+
+        private void RibbonButton_RevealHidden_Click(object sender, RoutedEventArgs e)
+        {
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.RemoveOverrides(uIAnalyticalModel, viewportControl.Guid);
         }
 
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)

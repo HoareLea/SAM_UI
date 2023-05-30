@@ -95,6 +95,17 @@ namespace SAM.Geometry.UI
             return appearanceDictionary.Remove(guid);
         }
 
+        public bool RemoveAppearances()
+        {
+            if (appearanceDictionary == null || appearanceDictionary.Count == 0)
+            {
+                return false;
+            }
+
+            appearanceDictionary.Clear();
+            return true;
+        }
+
         public List<T> GetAppearances<T>(Guid guid) where T: IAppearance
         {
             if(appearanceDictionary == null || !appearanceDictionary.ContainsKey(guid))

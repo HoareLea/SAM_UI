@@ -420,6 +420,9 @@
                     <RibbonButton x:Name="RibbonButton_SelectByFilter" Label="Select by Filter" />
                     <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
                 </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_View_Visibility" Header="Visiblity">
+                    <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Reveal Hidden" />
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Edit" Header="Edit">
                 <RibbonGroup x:Name="RibbonGroup_Edit_WeatherData" Header="Weather Data">
