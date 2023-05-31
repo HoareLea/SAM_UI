@@ -37,6 +37,8 @@ namespace SAM.Analytical.UI
                 result.Add(new UINumberFilter(string.Format("{0} Azimuth", type.Name), type, new PanelAzimuthFilter(NumberComparisonType.Equals, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Tilt", type.Name), type, new PanelTiltFilter(NumberComparisonType.Equals, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Area", type.Name), type, new PanelAreaFilter(NumberComparisonType.Equals, 0)));
+                result.Add(new UINumberFilter(string.Format("{0} Min Elevation", type.Name), type, new PanelMinElevationFilter(NumberComparisonType.Equals, 0)));
+                result.Add(new UINumberFilter(string.Format("{0} Max Elevation", type.Name), type, new PanelMaxElevationFilter(NumberComparisonType.Equals, 0)));
                 result.Add(new UINumberFilter(string.Format("Aperture Count", type.Name), type, new PanelApertureCountFilter(NumberComparisonType.Greater, 0)));
 
                 IUIFilters(typeof(Aperture))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new PanelAperturesFilter(x))));

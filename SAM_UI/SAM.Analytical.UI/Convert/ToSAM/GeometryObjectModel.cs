@@ -33,6 +33,8 @@ namespace SAM.Analytical.UI
 
             Legend legend = threeDimensionalViewSettings.Legend;
 
+            Plane plane = null;
+
             GeometryObjectModel result = new GeometryObjectModel();
 
             bool legendUpdated = false;
@@ -94,6 +96,12 @@ namespace SAM.Analytical.UI
                         }
 
                         Shell shell = adjacencyCluster.Shell(space);
+
+                        //if (plane != null)
+                        //{
+                        //    List<Shell> shells = shell.Cut(plane);
+                            
+                        //}
 
                         GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
                         geometryObjectCollection_Space.Add(new ShellObject(shell, surfaceAppearance) { Tag = space });
