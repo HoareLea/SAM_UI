@@ -26,8 +26,10 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager();
 
-        private UIAnalyticalModel uIAnalyticalModel;
-        private Core.Windows.WindowHandle windowHandle;
+        private UIAnalyticalModel uIAnalyticalModel = null;
+        private Core.Windows.WindowHandle windowHandle = null;
+
+        private DoubleRangeWindow doubleRangeWindow = null;
         
         public AnalyticalWindow()
         {
@@ -174,6 +176,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_RevealHidden.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
             RibbonButton_RevealHidden.Click += RibbonButton_RevealHidden_Click;
 
+            RibbonButton_ViewRange.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_ViewRange.Click += RibbonButton_ViewRange_Click;
+
             RibbonButton_AirHandlingUnitDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AirHandlingUnitDiagram);
             RibbonButton_AirHandlingUnitDiagram.Click += RibbonButton_AirHandlingUnitDiagram_Click;
 
@@ -215,6 +220,156 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_ViewRange_Click(object sender, RoutedEventArgs e)
+        {
+            ShowViewRange();
+        }
+
+        private void ShowViewRange()
+        {
+            if (doubleRangeWindow != null)
+            {
+                doubleRangeWindow.Close();
+                return;
+            }
+
+            double max = 0;
+            double min = 0;
+            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
+            if (range != null)
+            {
+                max = range.Max;
+                min = range.Min;
+            }
+
+            doubleRangeWindow = new DoubleRangeWindow(max, min);
+            doubleRangeWindow.ShowActivated = true;
+            doubleRangeWindow.Topmost = true;
+            doubleRangeWindow.RangeChanged += DoubleRangeWindow_RangeChanged;
+            doubleRangeWindow.Closing += DoubleRangeWindow_Closing;
+
+            RefreshDoubleRangeWindow();
+
+            doubleRangeWindow.Show();
+        }
+
+        private void DoubleRangeWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            doubleRangeWindow = null;
+        }
+
+        private void RefreshDoubleRangeWindow()
+        {
+            if(doubleRangeWindow == null)
+            {
+                return;
+            }
+            
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = GetActiveViewSettings() as ThreeDimensionalViewSettings;
+            if (threeDimensionalViewSettings == null)
+            {
+                return;
+            }
+
+            double max = 0;
+            double min = 0;
+            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
+            if (range != null)
+            {
+                max = range.Max;
+                min = range.Min;
+            }
+
+            range = new Range<double>(min, max);
+
+            List<Geometry.Spatial.Plane> planes = threeDimensionalViewSettings.Planes;
+            if (planes != null && planes.Count != 0)
+            {
+                if(planes.Count == 1)
+                {
+                    Geometry.Spatial.Plane plane = planes[0];
+
+                    if(plane.Normal.Z > 0)
+                    {
+                        range = new Range<double>(plane.Origin.Z, max);
+                    }
+                    else
+                    {
+                        range = new Range<double>(plane.Origin.Z, min);
+                    }
+                }
+                else
+                {
+                    List<double> values = planes.ConvertAll(x => x.Origin.Z);
+                    range = new Range<double>(values);
+                }
+            }
+
+            doubleRangeWindow.Range = range;
+        }
+
+        private void DoubleRangeWindow_RangeChanged(object sender, RangeChangedEventArgs<double> e)
+        {
+            Range<double> range = e.Range;
+            if(range == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                return;
+            }
+
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = uIGeometrySettings.GetViewSettings(viewportControl.Guid) as ThreeDimensionalViewSettings;
+            if(threeDimensionalViewSettings == null)
+            {
+                return;
+            }
+
+            List<Geometry.Spatial.Plane> planes = new List<Geometry.Spatial.Plane>();
+
+            if(doubleRangeWindow.Min != range.Min)
+            {
+                Geometry.Spatial.Plane plane_Min = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Min)) as Geometry.Spatial.Plane;
+
+                planes.Add(plane_Min);
+            }
+
+            if (doubleRangeWindow.Max != range.Max)
+            {
+                Geometry.Spatial.Plane plane_Max = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Max)) as Geometry.Spatial.Plane;
+                plane_Max.Reverse();
+
+                planes.Add(plane_Max);
+            }
+
+            if(planes.Count == 0)
+            {
+                planes = null;
+            }
+
+            threeDimensionalViewSettings.Planes = planes;
+
+            uIGeometrySettings.AddViewSettings(threeDimensionalViewSettings);
+
+            analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
+
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(threeDimensionalViewSettings, true));
         }
 
         private void AnalyticalModelControl_SelectionRequested(object sender, SelectionRequestedEventArgs e)
@@ -499,6 +654,28 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             return tabItem.Content as ViewportControl;
+        }
+
+        private IViewSettings GetActiveViewSettings()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return null;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return null;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                return null;
+            }
+
+            return uIGeometrySettings.GetViewSettings(viewportControl.Guid);
         }
 
         private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
@@ -1622,6 +1799,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
             Modify.SetActiveGuid(uIAnalyticalModel, guid);
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+
+            if(doubleRangeWindow != null)
+            {
+                RefreshDoubleRangeWindow();
+            }
         }
 
         private void tabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -2264,6 +2446,15 @@ namespace SAM.Analytical.UI.WPF.Windows
 
                 }
                 return;
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if(doubleRangeWindow != null)
+            {
+                doubleRangeWindow.Close();
+                doubleRangeWindow = null;
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using SAM.Core.UI;
+﻿using SAM.Core;
+using SAM.Core.UI;
 using SAM.Geometry;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
@@ -33,7 +34,14 @@ namespace SAM.Analytical.UI
 
             Legend legend = threeDimensionalViewSettings.Legend;
 
-            Plane plane = null;
+            List<Plane> planes = threeDimensionalViewSettings.Planes;
+
+            //Range<double> range = analyticalModel.GetElevationRange();
+            //if(range != null)
+            //{
+            //    Plane plane = Plane.WorldXY.GetMoved(new Vector3D(0, 0, (range.Min + range.Max) / 2)) as Plane;
+            //    planes = new List<Plane>() { plane };
+            //}
 
             GeometryObjectModel result = new GeometryObjectModel();
 
@@ -96,15 +104,32 @@ namespace SAM.Analytical.UI
                         }
 
                         Shell shell = adjacencyCluster.Shell(space);
+                        if(shell == null)
+                        {
+                            continue;
+                        }
 
-                        //if (plane != null)
-                        //{
-                        //    List<Shell> shells = shell.Cut(plane);
-                            
-                        //}
+                        List<Shell> shells = null;
+                        if (planes != null && planes.Count != 0)
+                        {
+                            shells = shell.Cut(planes);
+                            shells = shells.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.InternalPoint3D(), 0)));
+                        }
+                        else
+                        {
+                            shells = new List<Shell>() { shell };
+                        }
+
+                        if(shells == null || shells.Count == 0)
+                        {
+                            continue;
+                        }
 
                         GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
-                        geometryObjectCollection_Space.Add(new ShellObject(shell, surfaceAppearance) { Tag = space });
+                        foreach (Shell shell_Temp in shells)
+                        {
+                            geometryObjectCollection_Space.Add(new ShellObject(shell_Temp, surfaceAppearance) { Tag = space });
+                        }
 
                         dictionary_Spaces[space.Guid] = geometryObjectCollection_Space;
                     }
@@ -203,7 +228,26 @@ namespace SAM.Analytical.UI
                             continue;
                         }
 
-                        geometryObjectCollection_Panel.Add(new Face3DObject(face3D, surfaceAppearance));
+                        List<Face3D> face3Ds = null;
+                        if (planes != null && planes.Count != 0)
+                        {
+                            face3Ds = face3D.Cut(planes);
+                            face3Ds = face3Ds.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.GetCentroid(), 0)));
+                        }
+                        else
+                        {
+                            face3Ds = new List<Face3D>() { face3D };
+                        }
+
+                        if(face3Ds == null || face3Ds.Count == 0)
+                        {
+                            continue;
+                        }
+
+                        foreach(Face3D face3D_Temp in face3Ds)
+                        {
+                            geometryObjectCollection_Panel.Add(new Face3DObject(face3D_Temp, surfaceAppearance));
+                        }
 
                         dictionary_Panels[panel.Guid] = geometryObjectCollection_Panel;
                     }
@@ -306,6 +350,13 @@ namespace SAM.Analytical.UI
                             face3Ds = aperture.GetFace3Ds(aperturePart);
                             if (face3Ds != null && face3Ds.Count != 0)
                             {
+                                if (planes != null && planes.Count != 0)
+                                {
+                                    face3Ds = face3Ds.Cut(planes);
+                                    face3Ds = face3Ds.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.GetCentroid(), 0)));
+
+                                }
+
                                 face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Frame)));
                             }
                         }
@@ -316,6 +367,12 @@ namespace SAM.Analytical.UI
                             face3Ds = aperture.GetFace3Ds(aperturePart);
                             if (face3Ds != null && face3Ds.Count != 0)
                             {
+                                if(planes != null && planes.Count != 0)
+                                {
+                                    face3Ds = face3Ds.Cut(planes);
+                                    face3Ds = face3Ds.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.GetCentroid(), 0)));
+                                }
+                                
                                 face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Pane)));
                             }
                         }

@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using SAM.Core;
 using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI

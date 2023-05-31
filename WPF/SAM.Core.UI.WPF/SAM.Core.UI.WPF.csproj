@@ -69,6 +69,7 @@
     <Compile Include="Classes\EventArgs\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectContextMenuOpeningEventArgs.cs" />
     <Compile Include="Classes\EventArgs\FilterAddingEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\RangeChangedEventArgs.cs" />
     <Compile Include="Classes\ProgressBarWindowManager.cs" />
     <Compile Include="Classes\EventArgs\TextChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectHooveredEventArgs.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Delegates\FilterRemovingEventHandler.cs" />
     <Compile Include="Delegates\FilterChangedEventHandler.cs" />
     <Compile Include="Delegates\FilterAddingEventHandler.cs" />
+    <Compile Include="Delegates\RangeChangedEventHandler.cs" />
     <Compile Include="Delegates\TextChangedEventHandler.cs" />
     <Compile Include="Controls\JsonControl.xaml.cs">
       <DependentUpon>JsonControl.xaml</DependentUpon>
@@ -117,6 +119,12 @@
     </Compile>
     <Compile Include="Controls\Filter\FiltersControl.xaml.cs">
       <DependentUpon>FiltersControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DoubleRangeControl.xaml.cs">
+      <DependentUpon>DoubleRangeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\DoubleRangeWindow.xaml.cs">
+      <DependentUpon>DoubleRangeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\IFilterControl.cs" />
     <Compile Include="Modify\AddFilterControl.cs" />
@@ -258,6 +266,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Filter\FiltersControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DoubleRangeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\DoubleRangeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

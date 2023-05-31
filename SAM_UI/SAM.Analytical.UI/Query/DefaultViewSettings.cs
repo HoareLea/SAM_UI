@@ -1,5 +1,6 @@
 ﻿using SAM.Core;
 using SAM.Geometry.UI;
+using System;
 using System.Collections.Generic;
 
 namespace SAM.Analytical.UI
@@ -47,6 +48,16 @@ namespace SAM.Analytical.UI
                                 }
                             }
                         }
+
+                        //if(panels.Count > 1000)
+                        //{
+                        //    List<Tuple<double, Panel>> tuples = panels.ConvertAll(x => new Tuple<double, Panel>(SAM.Core.Query.Round(x.GetElevationRange().Min, 1), x));
+                        //    tuples.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+
+                        //    double value = tuples[tuples.Count / 2].Item1;
+
+                            
+                        //}
 
                         Modify.Hide(result, jSAMObjects);
                     }
