@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using SAM.Core;
+using SAM.Core.UI;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -10,6 +11,8 @@ namespace SAM.Geometry.UI.WPF
     /// </summary>
     public partial class GeometryWindow : Window
     {
+        private UIGeometryObjectModel uIGeometryObjectModel = null;
+
         public GeometryWindow()
         {
             InitializeComponent();
@@ -46,15 +49,21 @@ namespace SAM.Geometry.UI.WPF
 
             List<IJSAMObject> jSAMObjects = Core.Convert.ToSAM(json);
 
-            UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel();
+            uIGeometryObjectModel = new UIGeometryObjectModel();
             uIGeometryObjectModel.Open(jSAMObjects);
-
-            viewportControl.UIGeometryObjectModel = uIGeometryObjectModel;
+            uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
+            uIGeometryObjectModel.Closed += UIGeometryObjectModel_Closed;
+            uIGeometryObjectModel.Opened += UIGeometryObjectModel_Opened;
         }
 
         private void RibbonButton_General_CloseModel_Click(object sender, RoutedEventArgs e)
         {
-            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel();
+            if (uIGeometryObjectModel == null)
+            {
+                return;
+            }
+
+            uIGeometryObjectModel.Close();
         }
 
         private void RibbonButton_General_OpenModel_Click(object sender, RoutedEventArgs e)
@@ -76,12 +85,32 @@ namespace SAM.Geometry.UI.WPF
                 return;
             }
 
-            UIGeometryObjectModel uIGeometryObjectModel = new UIGeometryObjectModel();
+            uIGeometryObjectModel = new UIGeometryObjectModel();
             uIGeometryObjectModel.Path = path;
+            uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
+            uIGeometryObjectModel.Closed += UIGeometryObjectModel_Closed;
+            uIGeometryObjectModel.Opened += UIGeometryObjectModel_Opened;
 
-            Core.Windows.Forms.MarqueeProgressForm.Show("Opening File", () => uIGeometryObjectModel.Open());
+            uIGeometryObjectModel.Open();
+        }
+        private void Reload(ModifiedEventArgs modifiedEventArgs)
+        {
+            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(uIGeometryObjectModel.JSAMObject);
+        }
 
-            viewportControl.UIGeometryObjectModel = uIGeometryObjectModel;
+        private void UIGeometryObjectModel_Opened(object sender, OpenedEventArgs e)
+        {
+            Reload(e);
+        }
+
+        private void UIGeometryObjectModel_Closed(object sender, ClosedEventArgs e)
+        {
+            Reload(e);
+        }
+
+        private void UIGeometryObjectModel_Modified(object sender, ModifiedEventArgs e)
+        {
+            Reload(e);
         }
 
         private void RibbonButton_View_Mode_Click(object sender, RoutedEventArgs e)

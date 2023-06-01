@@ -1799,11 +1799,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
             Modify.SetActiveGuid(uIAnalyticalModel, guid);
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-
-            if(doubleRangeWindow != null)
-            {
-                RefreshDoubleRangeWindow();
-            }
         }
 
         private void tabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
@@ -2339,6 +2334,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             if (viewportControl == null)
             {
                 return;
+            }
+
+            if (doubleRangeWindow != null)
+            {
+                RefreshDoubleRangeWindow();
             }
         }
 
