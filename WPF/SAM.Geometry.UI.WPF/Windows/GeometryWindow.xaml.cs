@@ -50,10 +50,11 @@ namespace SAM.Geometry.UI.WPF
             List<IJSAMObject> jSAMObjects = Core.Convert.ToSAM(json);
 
             uIGeometryObjectModel = new UIGeometryObjectModel();
-            uIGeometryObjectModel.Open(jSAMObjects);
             uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
             uIGeometryObjectModel.Closed += UIGeometryObjectModel_Closed;
             uIGeometryObjectModel.Opened += UIGeometryObjectModel_Opened;
+
+            uIGeometryObjectModel.Open(jSAMObjects);
         }
 
         private void RibbonButton_General_CloseModel_Click(object sender, RoutedEventArgs e)
