@@ -12,7 +12,8 @@ namespace SAM.Core.Mollier.UI.Controls
     {
         public event EventHandler<MollierPointEventArgs> MollierPointSelected;
 
-        public static double MaxPressure = 108400, MinPressure = 90000;
+        //public static double MaxPressure = 108400, MinPressure = 90000;
+        public static double MaxPressure = 400000, MinPressure = 50000;
         private Point mdown = Point.Empty;
         private bool selection = false;
         private MollierControlSettings mollierControlSettings;
@@ -416,12 +417,12 @@ namespace SAM.Core.Mollier.UI.Controls
         private void create_specific_volume_line(ChartType chartType, double specific_volume_Min, double specific_volume_Max, double pressure)
         {
             Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.SpecificVolumeLine(specific_volume_Min, specific_volume_Max, pressure);
-            if (dictionary == null)
+            if (dictionary == null || dictionary.Count == 0)
             {
                 return;
             }
 
-            List<Series> series = CreateSeries(dictionary, chartType, ChartDataType.SpecificVolume, "kg/m³", "specific volume");
+            List<Series> series = CreateSeries(dictionary, chartType, ChartDataType.SpecificVolume, "m³/kg", "specific volume");
 
             Series series_Temp = series?.Find(x => x.Name.Contains(0.9.ToString()));
             if (series_Temp != null)
@@ -429,7 +430,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 double X = series_Temp.Points.Last().XValue;
                 double Y = series_Temp.Points.Last().YValues[0];
                 int angle = findAngle(series_Temp, chartType);
-                create_moved_label(chartType, X, Y, angle, angle, -3, 0.8, 2.5, -0.005, "Specific volume v [kg/m³]", ChartDataType.SpecificVolume, ChartParameterType.Label, mollierControlSettings.DisableLabels);
+                create_moved_label(chartType, X, Y, angle, angle, -3, 0.8, 2.5, -0.005, "Specific volume v [m³/kg]", ChartDataType.SpecificVolume, ChartParameterType.Label, mollierControlSettings.DisableLabels);
             }
         }
         private Dictionary<double, List<MollierPoint>> GetMollierPoints_SpecificVolume(double specific_volume_Min, double specific_volume_Max, double pressure)
@@ -509,6 +510,11 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private void createLabels(ChartType chartType, string name, ChartDataType chartDataType, Series series, double value)
         {
+            if(series == null || series.Points == null || series.Points.Count == 0)
+            {
+                return;
+            }
+
             double X, Y;
             int angle = 0;
             switch (name)
@@ -566,7 +572,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private Series CreateSeries(List<MollierPoint> mollierPoints, ChartType chartType, ChartDataType chartDataType, double value, string unit, string prefix)
         {
-            Series result = MollierChart.Series.Add(String.Format("{0} {1} {2}", prefix, value, unit));
+            Series result = MollierChart.Series.Add(string.Format("{0} {1} {2}", prefix, value, unit));
             result.ChartType = SeriesChartType.Spline;
             result.IsVisibleInLegend = false;
 
@@ -592,11 +598,26 @@ namespace SAM.Core.Mollier.UI.Controls
             foreach (MollierPoint mollierPoint in mollierPoints)
             {
                 double temperature = mollierPoint.DryBulbTemperature;
+                if (double.IsNaN(temperature) || double.IsInfinity(temperature))
+                {
+                    continue;
+                }
+
                 double humidityRatio = mollierPoint.HumidityRatio;
+                if (double.IsNaN(humidityRatio) || double.IsInfinity(humidityRatio))
+                {
+                    continue;
+                }
+
 
                 if (chartType == ChartType.Mollier)
                 {
                     temperature = Mollier.Query.DiagramTemperature(mollierPoint);
+                    if (double.IsNaN(temperature) || double.IsInfinity(temperature))
+                    {
+                        continue;
+                    }
+
                     humidityRatio = humidityRatio * 1000;
                     result.Points.AddXY(humidityRatio, temperature);
                 }
@@ -605,6 +626,13 @@ namespace SAM.Core.Mollier.UI.Controls
                     result.Points.AddXY(temperature, humidityRatio);
                 }
             }
+
+            if(result.Points == null || result.Points.Count == 0)
+            {
+                MollierChart.Series.Remove(result);
+                return null;
+            }
+
             createLabels(chartType, prefix, chartDataType, result, value);
             return result;
         }
@@ -1499,12 +1527,12 @@ namespace SAM.Core.Mollier.UI.Controls
             ChartType chartType = mollierControlSettings.ChartType;
             int wetBulbTemperature_Min = -10;
             int wetBulbTemperature_Max = 30;
-            double density_Min = 0.96;
+            double density_Min = 0.45;//0.96
             double density_Max = 1.41;
             int enthalpy_Min = -20;
             int enthalpy_Max = 140;
-            double specific_volume_Min = 0.75;
-            double specific_volume_Max = 0.95;
+            double specific_volume_Min = 0.65;
+            double specific_volume_Max = 1.92; //0.95;
             double relative_humidity = 10;
             //checking whether creating a new graph has sense with this pressure
 
@@ -1666,7 +1694,8 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.Title = "Partial Vapour Pressure P_w [kPa]";
             axisY.TextOrientation = TextOrientation.Rotated270;
             axisY.Maximum = humidityRatio_Max / 1000;
-            axisY.Minimum = humidityRatio_Min / 1000;
+            //axisY.Minimum = humidityRatio_Min > humidityRatio_Max ? 0 : humidityRatio_Min / 1000;
+            axisY.Minimum = humidityRatio_Min / 1000; //TODO: Fix Range
             axisY.Interval = humidityRatio_interval / 1000;
             axisY.MajorGrid.Enabled = false;
             axisY.MajorGrid.LineColor = Color.Gray;
@@ -1729,10 +1758,10 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 return null;
             }
-            string mask = "t = {3} °C\nx = {1}{2}\nφ = {0} %\nt_wb = {6} °C\nh = {5} kJ/kg\nρ = {8} kg/m³\np = {4} Pa\nv = {7} kg/m³";
+            string mask = "t = {3} °C\nx = {1}{2}\nφ = {0} %\nt_wb = {6} °C\nh = {5} kJ/kg\nρ = {8} kg/m³\np = {4} Pa\nv = {7} m³/kg";
             if(toolTipName != null && toolTipName != "")
             {
-                mask = toolTipName + "\nt = {3} °C\nx = {1}{2}\nφ = {0} %\nt_wb = {6} °C\nh = {5} kJ/kg\nρ = {8} kg/m³\np = {4} Pa\nv = {7} kg/m³";
+                mask = toolTipName + "\nt = {3} °C\nx = {1}{2}\nφ = {0} %\nt_wb = {6} °C\nh = {5} kJ/kg\nρ = {8} kg/m³\np = {4} Pa\nv = {7} m³/kg";
             }
 
             switch (chartType)
