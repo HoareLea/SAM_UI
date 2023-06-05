@@ -174,6 +174,8 @@ namespace SAM.Core.Mollier.UI
 
             using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
             {
+                mollierPointForm.MollierPoint = previousMollierPoint;
+
                 DialogResult dialogResult = mollierPointForm.ShowDialog();
                 if (dialogResult != DialogResult.OK)
                 {

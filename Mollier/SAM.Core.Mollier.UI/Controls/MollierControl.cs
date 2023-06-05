@@ -13,7 +13,7 @@ namespace SAM.Core.Mollier.UI.Controls
         public event EventHandler<MollierPointEventArgs> MollierPointSelected;
 
         //public static double MaxPressure = 108400, MinPressure = 90000;
-        public static double MaxPressure = 400000, MinPressure = 50000;
+        public static double MaxPressure = 400000, MinPressure = 35000;
         private Point mdown = Point.Empty;
         private bool selection = false;
         private MollierControlSettings mollierControlSettings;
@@ -328,7 +328,7 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 double X = series_Temp.Points.Last().XValue;
                 double Y = series_Temp.Points.Last().YValues[0];
-                create_moved_label(chartType, X, Y, 0, 0, 6, 26, -2, 0.0007, "Enthalpy  h [kJ/kg]", ChartDataType.Enthalpy, ChartParameterType.Label, mollierControlSettings.DisableLabels);
+                create_moved_label(chartType, X, Y, 0, 0, 6.5, 24, 27.0, 0.0054, "Enthalpy h [kJ/kg]", ChartDataType.Enthalpy, ChartParameterType.Label, mollierControlSettings.DisableLabels);
             }
         }
         private Dictionary<double, List<MollierPoint>> GetMollierPoints_Enthalpy(double enthalpy_Min, double enthalpy_Max, ChartType chartType, double pressure)
@@ -1632,12 +1632,12 @@ namespace SAM.Core.Mollier.UI.Controls
             //INITIAL SIZES
             int wetBulbTemperature_Min = -10;
             int wetBulbTemperature_Max = 30;
-            double density_Min = 0.96;
+            double density_Min = 0.45;//0.96;
             double density_Max = 1.41;
             int enthalpy_Min = -20;
             int enthalpy_Max = 140;
-            double specific_volume_Min = 0.75;
-            double specific_volume_Max = 0.95;
+            double specific_volume_Min = 0.65;// 0.75;
+            double specific_volume_Max = 1.92;//0.95;
             double relative_humidity = 10;
             double pressure = mollierControlSettings.Pressure;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
