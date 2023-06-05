@@ -310,6 +310,7 @@ namespace SAM.Core.Mollier.UI
             {
                 mollierControlSettings = new MollierControlSettings();
             }
+
             ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier;
             ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric;
             ToolStripMenuItem_Density.Checked = mollierControlSettings.Density_line;
@@ -321,6 +322,8 @@ namespace SAM.Core.Mollier.UI
             grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
             blueBlackToolStripMenuItem.Checked = mollierControlSettings.Color == "blue-black";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
+
+            TextBox_Pressure.Text = MollierControlSettings.Pressure.ToString();
         }
 
         //buttons which enable to change color, chart or disable line
@@ -523,6 +526,7 @@ namespace SAM.Core.Mollier.UI
         {
             MollierControl_Main.Save(ChartExportType.PDF, PageSize.A4, PageOrientation.Landscape);
         }
+        
         private void PointsCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
@@ -542,6 +546,7 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
 
         }
+        
         private void TextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) &&
@@ -555,6 +560,7 @@ namespace SAM.Core.Mollier.UI
                 e.Handled = true;
             }
         }
+        
         private void PercentPointsTextBox_TextChanged(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
@@ -572,7 +578,6 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.FindPointType = ColorPointComboBox.Text;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
-
 
         private void DivisionAreaCheckBox_CheckedChanged(object sender, EventArgs e)
         {
@@ -744,6 +749,7 @@ namespace SAM.Core.Mollier.UI
         {
             MollierControl_Main.Print();
         }
+        
         private void PercentPointsTextBox_MouseHover(object sender, EventArgs e)
         {
             toolTip.Show("0 is the highest value, 100 is the lowest value", PercentPointsTextBox);

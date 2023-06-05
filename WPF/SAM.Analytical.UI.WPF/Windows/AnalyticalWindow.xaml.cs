@@ -1947,8 +1947,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             if (!updateGeometry)
             {
                 List<ViewSettingsModification> viewSettingsModifications = modifiedEventArgs.GetModifications<ViewSettingsModification>((x) => x.ViewSettings?.Find(y => y.Guid == viewSettings.Guid) != null);
-                if (viewSettingsModifications != null && viewSettingsModifications.Find(x => x.UpdateGeometry) != null)
+                if(viewSettingsModifications != null && viewSettingsModifications.Count != 0)
                 {
+
                 }
             }
 
