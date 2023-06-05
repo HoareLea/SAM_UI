@@ -145,6 +145,16 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.Save(ChartExportType.EMF, path: path);
         }
         
+        private MollierPoint GetMollierPoint()
+        {
+            if(!Core.Query.TryConvert(TextBox_Pressure.Text, out double pressure))
+            {
+                pressure = 101235;
+            }
+
+            return Mollier.Create.MollierPoint_ByRelativeHumidity(35, 50, pressure);
+        }
+
         //operation of the add process and add point buttons
         private void Button_AddPoint_Click(object sender, EventArgs e)
         {
@@ -156,6 +166,11 @@ namespace SAM.Core.Mollier.UI
             //mollierPointForm.FormClosing += MollierPointForm_FormClosing;
 
             // mollierPointForm.Show();
+
+            if(previousMollierPoint == null)
+            {
+                previousMollierPoint = GetMollierPoint();
+            }
 
             using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
             {
@@ -173,6 +188,11 @@ namespace SAM.Core.Mollier.UI
         }
         private void Button_AddProcess_Click(object sender, EventArgs e)
         {
+            if (previousMollierPoint == null)
+            {
+                previousMollierPoint = GetMollierPoint();
+            }
+
             UIMollierProcess UI_MollierProcess = null;
             using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm(MollierControl_Main))    
             {

@@ -7,14 +7,12 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class AdiabaticHumidificationProcessControl : UserControl
     {
-
         public AdiabaticHumidificationProcessControl()
         {
             InitializeComponent();
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
         }
         
-
         public UIMollierProcess CreateAdiabaticHumidificationProcess()
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);
@@ -35,6 +33,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             return new UIMollierProcess(mollierProcess, Color.Empty);
         }
+        
         public MollierPoint Start
         {
             get
@@ -47,6 +46,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 MollierPointControl_Start.MollierPoint = value;
             }
         }
+        
         private void processCalculateType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);

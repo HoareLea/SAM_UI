@@ -17,18 +17,57 @@ namespace SAM.Core.Mollier.UI.Forms
         public event EventHandler SelectPointClicked;
         private MollierPoint mollierPoint;
         private MollierPoint previousMollierPoint;
+        
         public MollierProcessForm()
         {
             InitializeComponent();
             
         }    
+        
         public MollierProcessForm(MollierControl mollierControl)
         {
             InitializeComponent();
             this.mollierControl = mollierControl;
 
         }
-        private void OK_Button_Click(object sender, EventArgs e)    
+        
+        public UIMollierProcess UIMollierProcess
+        {
+            get
+            {
+                return UI_MollierProcess;
+            }
+
+        }
+        
+        public MollierPoint MollierPoint
+        {
+            get
+            {
+                return mollierPoint;
+            }
+            set
+            {
+                mollierPoint = value;
+            }
+        }
+
+        public MollierPoint PreviousMollierPoint
+        {
+            get
+            {
+                return previousMollierPoint;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    previousMollierPoint = value;
+                }
+            }
+        }
+
+        private void OK_Button_Click(object sender, EventArgs e)
         {
             MollierProcessType mollierProcessType = Core.Query.Enum<MollierProcessType>(MollierProcessType_ComboBox.Text);
             switch (mollierProcessType)
@@ -63,25 +102,7 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             DialogResult = DialogResult.Cancel;
         }
-        public UIMollierProcess UIMollierProcess
-        {
-            get
-            {
-                return UI_MollierProcess;
-            }
 
-        }
-        public MollierPoint MollierPoint
-        {
-            get
-            {
-                return mollierPoint;
-            }
-            set
-            {
-                mollierPoint = value;
-            }
-        }
         private void MollierProcessType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             MollierProcessType mollierProcessType = Core.Query.Enum<MollierProcessType>(MollierProcessType_ComboBox.Text);
@@ -116,23 +137,25 @@ namespace SAM.Core.Mollier.UI.Forms
             }
 
         }
-        public MollierPoint PreviousMollierPoint
-        {
-            get
-            {
-                return previousMollierPoint;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    previousMollierPoint = value;
-                }
-            }
-        }
+        
         private void MollierProcessForm_SelectPointClicked(object sender, EventArgs e)
         {
             SelectPointClicked?.Invoke(this, e);
+        }
+
+        private void Customize_Button_Click(object sender, EventArgs e)
+        {
+            using (CustomizeProcessForm customizeProcessForm = new CustomizeProcessForm())
+            {
+                if (customizeProcessForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                color = customizeProcessForm.Color;
+                start_Label = customizeProcessForm.Start_Label;
+                process_Label = customizeProcessForm.Process_Label;
+                end_Label = customizeProcessForm.End_Label;
+            }
         }
 
         private void addControl(MollierProcessType mollierProcessType)
@@ -163,21 +186,6 @@ namespace SAM.Core.Mollier.UI.Forms
             {
                 control.Parent = splitContainer1.Panel2;
                 control.Dock = DockStyle.Fill;
-            }
-        }
-
-        private void Customize_Button_Click(object sender, EventArgs e)
-        {
-            using(CustomizeProcessForm customizeProcessForm = new CustomizeProcessForm())
-            {
-               if(customizeProcessForm.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                color = customizeProcessForm.Color;
-                start_Label = customizeProcessForm.Start_Label;
-                process_Label = customizeProcessForm.Process_Label;
-                end_Label = customizeProcessForm.End_Label;
             }
         }
     }
