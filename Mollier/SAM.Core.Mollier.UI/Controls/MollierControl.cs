@@ -966,7 +966,7 @@ namespace SAM.Core.Mollier.UI.Controls
         private void add_MollierProcesses(ChartType chartType)
         {
             created_points = new List<Tuple<MollierPoint, string>>();//used for labeling in label process new 2
-            
+
             List<UIMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<UIMollierProcess>(mollierProcesses.Cast<UIMollierProcess>());
             mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
             createProcessesLabels(mollierProcesses_Temp, chartType);
@@ -977,7 +977,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 UIMollierProcess UI_MollierProcess = mollierProcesses[i];//contains all spcified data of the process like color, start label etc.
                 MollierProcess mollierProcess = (MollierProcess)(UI_MollierProcess.MollierProcess);//contains the most important data of the process: only start end point, and what type of process is it 
 
-                if(mollierProcess is UndefinedProcess)
+                if (mollierProcess is UndefinedProcess)
                 {
                     createSeries_RoomProcess(UI_MollierProcess);
                     continue;
@@ -989,7 +989,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.BorderWidth = 4;
                 series.Color = (UI_MollierProcess.Color == Color.Empty) ? mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess) : UI_MollierProcess.Color;
                 series.Tag = mollierProcess;
-                
+
                 MollierPoint start = mollierProcess?.Start;
                 MollierPoint end = mollierProcess?.End;
                 if (start == null || end == null)
@@ -1007,12 +1007,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 index = chartType == ChartType.Mollier ? series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end)) : series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
                 series.Points[index].Tag = end;
 
-                
+
                 //cooling process create one unique process with ADP point
                 if (mollierProcess is CoolingProcess)
                 {
                     CoolingProcess coolingProcess = (CoolingProcess)mollierProcess;
-                    if(start.HumidityRatio == end.HumidityRatio)
+                    if (start.HumidityRatio == end.HumidityRatio)
                     {
                         continue;
                     }
@@ -1036,12 +1036,34 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     //Additional Lines 2023.06.06
                     MollierPoint mollierPoint_Start = coolingProcess.Start;
-                    MollierPoint mollierPoint_75 = Mollier.Create.MollierPoint_ByRelativeHumidity(mollierPoint_Start.DryBulbTemperature, 0.75, mollierPoint_Start.Pressure);
-                    MollierPoint mollierPoint_85 = Mollier.Create.MollierPoint_ByRelativeHumidity(mollierPoint_Start.DryBulbTemperature - 2.5, 0.85, mollierPoint_Start.Pressure);
-                    MollierPoint mollierPoint_End = coolingProcess.End;
-                    createSeries_DewPoint(start, mollierPoint_75, mollierProcess, chartType);
-                    createSeries_DewPoint(mollierPoint_75, mollierPoint_85, mollierProcess, chartType);
-                    createSeries_DewPoint(mollierPoint_85, mollierPoint_End, mollierProcess, chartType);
+
+                    MollierPoint mollierPoint_75 = null;
+                    MollierPoint mollierPoint_85 = null;
+                    double dryBulbTemperature = mollierPoint_Start.RelativeHumidity < 75 ? Mollier.Query.DryBulbTemperature_ByHumidityRatio(mollierPoint_Start.HumidityRatio, 75, mollierPoint_Start.Pressure) : mollierPoint_Start.DryBulbTemperature;
+                    if(mollierPoint_Start.RelativeHumidity < 85)
+                    {
+                        mollierPoint_85 = Mollier.Create.MollierPoint_ByRelativeHumidity(dryBulbTemperature - 2.5, 85, mollierPoint_Start.Pressure);
+                        if (mollierPoint_Start.RelativeHumidity < 75)
+                        {
+                            mollierPoint_75 = Mollier.Create.MollierPoint_ByRelativeHumidity(dryBulbTemperature, 75, mollierPoint_Start.Pressure);
+                        }
+                    }
+
+                    if(mollierPoint_85 != null)
+                    {
+                        MollierPoint mollierPoint_End = coolingProcess.End;
+                        
+                        createSeries_DewPoint(mollierPoint_85, mollierPoint_End, mollierProcess, chartType);
+                        if(mollierPoint_75 != null)
+                        {
+                            createSeries_DewPoint(start, mollierPoint_75, mollierProcess, chartType);
+                            createSeries_DewPoint(mollierPoint_75, mollierPoint_85, mollierProcess, chartType);
+                        }
+                        else
+                        {
+                            createSeries_DewPoint(mollierPoint_Start, mollierPoint_85, mollierProcess, chartType);
+                        }
+                    }
                 }
 
             }
