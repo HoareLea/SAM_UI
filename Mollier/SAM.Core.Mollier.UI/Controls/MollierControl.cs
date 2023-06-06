@@ -1040,7 +1040,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         for(int j = 0; j < mollierPoints.Count - 1; j++)
                         {
-                            createSeries_DewPoint(mollierPoints[j], mollierPoints[j - 1], mollierProcess, chartType, Color.Gray, 3, ChartDashStyle.Solid);
+                            createSeries_DewPoint(mollierPoints[j], mollierPoints[j + 1], mollierProcess, chartType, Color.Gray, 3, ChartDashStyle.Solid);
                         }
                     }
                 }
