@@ -2,7 +2,7 @@
 {
     public static partial class Query
     {
-        public static MollierPoint DownPoint(this CoolingProcess coolingProcess)
+        public static MollierPoint DewPoint(this CoolingProcess coolingProcess)
         {
             if(coolingProcess == null)
             {

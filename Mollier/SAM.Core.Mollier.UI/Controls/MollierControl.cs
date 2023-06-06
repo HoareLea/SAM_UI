@@ -1024,7 +1024,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     MollierPoint ADPPoint_Temp = chartType == ChartType.Mollier ? new MollierPoint(apparatusDewPoint.DryBulbTemperature - 3 * Query.ScaleVector2D(this, MollierControlSettings).Y, apparatusDewPoint.HumidityRatio, mollierControlSettings.Pressure) : new MollierPoint(apparatusDewPoint.DryBulbTemperature - 1 * Query.ScaleVector2D(this, MollierControlSettings).X, apparatusDewPoint.HumidityRatio - 0.0007 * Query.ScaleVector2D(this, MollierControlSettings).Y, mollierControlSettings.Pressure);
                     created_points.Add(new Tuple<MollierPoint, string>(ADPPoint_Temp, "ADP"));
 
-                    MollierPoint secondPoint = coolingProcess.DownPoint();
+                    MollierPoint secondPoint = coolingProcess.DewPoint();
                     //creating series - processes points pattern
                     createSeries_ProcessesPoints(apparatusDewPoint, UI_MollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
                     createSeries_ProcessesPoints(secondPoint, UI_MollierProcess, chartType, pointType: "SecondPoint");
@@ -1032,6 +1032,16 @@ namespace SAM.Core.Mollier.UI.Controls
                     createSeries_DewPoint(start, secondPoint, mollierProcess, chartType);
                     createSeries_DewPoint(end, apparatusDewPoint, mollierProcess, chartType);
                     createSeries_DewPoint(end, secondPoint, mollierProcess, chartType);
+
+
+                    //Additional Lines 2023.06.06
+                    MollierPoint mollierPoint_Start = coolingProcess.Start;
+                    MollierPoint mollierPoint_75 = Mollier.Create.MollierPoint_ByRelativeHumidity(mollierPoint_Start.DryBulbTemperature, 0.75, mollierPoint_Start.Pressure);
+                    MollierPoint mollierPoint_85 = Mollier.Create.MollierPoint_ByRelativeHumidity(mollierPoint_Start.DryBulbTemperature - 2.5, 0.85, mollierPoint_Start.Pressure);
+                    MollierPoint mollierPoint_End = coolingProcess.End;
+                    createSeries_DewPoint(start, mollierPoint_75, mollierProcess, chartType);
+                    createSeries_DewPoint(mollierPoint_75, mollierPoint_85, mollierProcess, chartType);
+                    createSeries_DewPoint(mollierPoint_85, mollierPoint_End, mollierProcess, chartType);
                 }
 
             }
