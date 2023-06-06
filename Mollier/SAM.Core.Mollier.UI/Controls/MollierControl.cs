@@ -1029,39 +1029,18 @@ namespace SAM.Core.Mollier.UI.Controls
                     createSeries_ProcessesPoints(apparatusDewPoint, UI_MollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
                     createSeries_ProcessesPoints(secondPoint, UI_MollierProcess, chartType, pointType: "SecondPoint");
                     //creating series - special with ADP process pattern
-                    createSeries_DewPoint(start, secondPoint, mollierProcess, chartType);
-                    createSeries_DewPoint(end, apparatusDewPoint, mollierProcess, chartType);
-                    createSeries_DewPoint(end, secondPoint, mollierProcess, chartType);
+                    createSeries_DewPoint(start, secondPoint, mollierProcess, chartType, Color.LightGray, 2, ChartDashStyle.Dash);
+                    createSeries_DewPoint(end, apparatusDewPoint, mollierProcess, chartType, Color.LightGray, 2, ChartDashStyle.Dash);
+                    createSeries_DewPoint(end, secondPoint, mollierProcess, chartType, Color.LightGray, 2, ChartDashStyle.Dash);
 
 
                     //Additional Lines 2023.06.06
-                    MollierPoint mollierPoint_Start = coolingProcess.Start;
-
-                    MollierPoint mollierPoint_75 = null;
-                    MollierPoint mollierPoint_85 = null;
-                    double dryBulbTemperature = mollierPoint_Start.RelativeHumidity < 75 ? Mollier.Query.DryBulbTemperature_ByHumidityRatio(mollierPoint_Start.HumidityRatio, 75, mollierPoint_Start.Pressure) : mollierPoint_Start.DryBulbTemperature;
-                    if(mollierPoint_Start.RelativeHumidity < 85)
+                    List<MollierPoint> mollierPoints = Mollier.Query.ProcessMollierPoints(coolingProcess);
+                    if(mollierPoints != null && mollierPoints.Count > 1)
                     {
-                        mollierPoint_85 = Mollier.Create.MollierPoint_ByRelativeHumidity(dryBulbTemperature - 2.5, 85, mollierPoint_Start.Pressure);
-                        if (mollierPoint_Start.RelativeHumidity < 75)
+                        for(int j = 0; j < mollierPoints.Count - 1; j++)
                         {
-                            mollierPoint_75 = Mollier.Create.MollierPoint_ByRelativeHumidity(dryBulbTemperature, 75, mollierPoint_Start.Pressure);
-                        }
-                    }
-
-                    if(mollierPoint_85 != null)
-                    {
-                        MollierPoint mollierPoint_End = coolingProcess.End;
-                        
-                        createSeries_DewPoint(mollierPoint_85, mollierPoint_End, mollierProcess, chartType);
-                        if(mollierPoint_75 != null)
-                        {
-                            createSeries_DewPoint(start, mollierPoint_75, mollierProcess, chartType);
-                            createSeries_DewPoint(mollierPoint_75, mollierPoint_85, mollierProcess, chartType);
-                        }
-                        else
-                        {
-                            createSeries_DewPoint(mollierPoint_Start, mollierPoint_85, mollierProcess, chartType);
+                            createSeries_DewPoint(mollierPoints[j], mollierPoints[j - 1], mollierProcess, chartType, Color.Gray, 3, ChartDashStyle.Solid);
                         }
                     }
                 }
@@ -1071,7 +1050,7 @@ namespace SAM.Core.Mollier.UI.Controls
             createPorcessesLabels_New(mollierProcesses_Temp, chartType);
         }
 
-        private void createSeries_DewPoint(MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType)
+        private void createSeries_DewPoint(MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType, Color color, int borderWidth, ChartDashStyle borderDashStyle)
         {
             Series series= MollierChart.Series.Add(Guid.NewGuid().ToString());
             if (chartType == ChartType.Mollier)
@@ -1084,13 +1063,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.Points.AddXY(mollierPoint_1.DryBulbTemperature, mollierPoint_1.HumidityRatio);
                 series.Points.AddXY(mollierPoint_2.DryBulbTemperature, mollierPoint_2.HumidityRatio);
             }
-            series.Color = Color.LightGray;
+            series.Color = color;
             series.IsVisibleInLegend = false;
-            series.BorderWidth = 2;
+            series.BorderWidth = borderWidth;
             series.ChartType = SeriesChartType.Spline;
-            series.BorderDashStyle = ChartDashStyle.Dash;
+            series.BorderDashStyle = borderDashStyle;
             series.Tag = "dashLine";
         }
+
         private void createSeries_ProcessesPoints(MollierPoint mollierPoint, UIMollierProcess UI_MollierProcess, ChartType chartType, string toolTipName = null, string pointType = "Default")
         {
             Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
