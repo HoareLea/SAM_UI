@@ -196,7 +196,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             UIMollierProcess UI_MollierProcess = null;
-            using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm(MollierControl_Main))    
+            using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm())    
             {
                 mollierProcessForm.PreviousMollierPoint = previousMollierPoint;
                 DialogResult dialogResult = mollierProcessForm.ShowDialog();
@@ -208,7 +208,7 @@ namespace SAM.Core.Mollier.UI
                     return;
                 }
                 mollierProcessForm.SelectPointClicked += MollierProcessForm_SelectPointClicked;
-                UI_MollierProcess = mollierProcessForm.UI_MollierProcess;
+                UI_MollierProcess = mollierProcessForm.GetUIMollierProcess();
             }
             if(UI_MollierProcess == null)
             {

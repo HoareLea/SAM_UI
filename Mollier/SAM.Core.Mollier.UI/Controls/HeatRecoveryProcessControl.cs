@@ -10,12 +10,12 @@ namespace SAM.Core.Mollier.UI.Controls
         public HeatRecoveryProcessControl()
         {
             InitializeComponent();
-            SensibleHeatRecoveryEfficiencyControl.Refresh(ProcessParameterType.SensibleHeatRecoveryEfficiency);
+            SensibleHeatRecoveryEfficiencyControl.ProcessParameterType = ProcessParameterType.SensibleHeatRecoveryEfficiency;
             SensibleHeatRecoveryEfficiencyControl.Value = 75;
-            LatentHeatRecoveryEfficiencyControl.Refresh(ProcessParameterType.LatentHeatRecoveryEfficiency);
+            LatentHeatRecoveryEfficiencyControl.ProcessParameterType = ProcessParameterType.LatentHeatRecoveryEfficiency;
             LatentHeatRecoveryEfficiencyControl.Value = 0;
 
-            MollierPointControl_Return.UnvisiblePressure();
+            MollierPointControl_Return.PressureVisible = false;
         }
 
 

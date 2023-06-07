@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="SAM.Core, Version=1.0.8236.30908, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
@@ -108,6 +109,12 @@
     </Compile>
     <Compile Include="Controls\HeatingProcessControl.Designer.cs">
       <DependentUpon>HeatingProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RoomProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\RoomProcessControl.Designer.cs">
+      <DependentUpon>RoomProcessControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\HeatRecoveryProcessControl.cs">
       <SubType>UserControl</SubType>
@@ -229,7 +236,7 @@
     <Compile Include="Query\DefaultMollierControlSettings.cs" />
     <Compile Include="Query\ParameterValue.cs" />
     <Compile Include="Query\ProcessParameterTypes.cs" />
-    <Compile Include="Query\DownPoint.cs" />
+    <Compile Include="Query\DewPoint.cs" />
     <Compile Include="Query\MollierPointByTwoParameters.cs" />
     <Compile Include="Query\ShapeSizeFactor.cs" />
     <Compile Include="Query\FindDivisionAreaCornerPoint.cs" />
@@ -263,6 +270,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\HeatingProcessControl.resx">
       <DependentUpon>HeatingProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RoomProcessControl.resx">
+      <DependentUpon>RoomProcessControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\HeatRecoveryProcessControl.resx">
       <DependentUpon>HeatRecoveryProcessControl.cs</DependentUpon>

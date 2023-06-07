@@ -7,14 +7,13 @@ namespace SAM.Core.Mollier.UI.Forms
 {
     public partial class MollierProcessForm : Form
     {
-        public UIMollierProcess UI_MollierProcess;
-        private Control control;
+        public event EventHandler SelectPointClicked;
+
         private Color color;
         private string start_Label;
         private string process_Label;
         private string end_Label;
-        private MollierControl mollierControl;
-        public event EventHandler SelectPointClicked;
+        
         private MollierPoint mollierPoint;
         private MollierPoint previousMollierPoint;
         
@@ -23,22 +22,6 @@ namespace SAM.Core.Mollier.UI.Forms
             InitializeComponent();
             
         }    
-        
-        public MollierProcessForm(MollierControl mollierControl)
-        {
-            InitializeComponent();
-            this.mollierControl = mollierControl;
-
-        }
-        
-        public UIMollierProcess UIMollierProcess
-        {
-            get
-            {
-                return UI_MollierProcess;
-            }
-
-        }
         
         public MollierPoint MollierPoint
         {
@@ -67,34 +50,51 @@ namespace SAM.Core.Mollier.UI.Forms
             }
         }
 
+        public UIMollierProcess GetUIMollierProcess()
+        {
+            Control control = GetControl();
+            if (control == null)
+            {
+                return null;
+            }
+
+            UIMollierProcess result = null;
+
+            if (control is HeatingProcessControl)
+            {
+                result = ((HeatingProcessControl)control).CreateHeatingProcess();
+            }
+            else if (control is CoolingProcessControl)
+            {
+                result = ((CoolingProcessControl)control).CreateCoolingProcess();
+            }
+            else if (control is HeatRecoveryProcessControl)
+            {
+                result = ((HeatRecoveryProcessControl)control).CreateHeatRecoveryProcess();
+            }
+            else if (control is MixingProcessControl)
+            {
+                result = ((MixingProcessControl)control).CreateMixingProcess();
+            }
+            else if (control is AdiabaticHumidificationProcessControl)
+            {
+                result = ((AdiabaticHumidificationProcessControl)control).CreateAdiabaticHumidificationProcess();
+            }
+            else if (control is IsotermicHumidificationProcessControl)
+            {
+                result = ((IsotermicHumidificationProcessControl)control).CreateIsotermicHumidificationProcess();
+            }
+
+            result.Color = color;
+            result.Start_Label = start_Label;
+            result.Process_Label = process_Label;
+            result.End_Label = end_Label;
+
+            return result;
+        }
+
         private void OK_Button_Click(object sender, EventArgs e)
         {
-            MollierProcessType mollierProcessType = Core.Query.Enum<MollierProcessType>(MollierProcessType_ComboBox.Text);
-            switch (mollierProcessType)
-            {
-                case MollierProcessType.Heating:
-                    UI_MollierProcess = (control as HeatingProcessControl).CreateHeatingProcess();
-                    break;
-                case MollierProcessType.Cooling:
-                    UI_MollierProcess = (control as CoolingProcessControl).CreateCoolingProcess();
-                    break;
-                case MollierProcessType.HeatRecovery:
-                    UI_MollierProcess = (control as HeatRecoveryProcessControl).CreateHeatRecoveryProcess();
-                    break;
-                case MollierProcessType.Mixing:
-                    UI_MollierProcess = (control as MixingProcessControl).CreateMixingProcess();
-                    break;
-                case MollierProcessType.AdiabaticHumidification:
-                    UI_MollierProcess = (control as AdiabaticHumidificationProcessControl).CreateAdiabaticHumidificationProcess();
-                    break;
-                case MollierProcessType.IsotermicHumidification:
-                    UI_MollierProcess = (control as IsotermicHumidificationProcessControl).CreateIsotermicHumidificationProcess();
-                    break;
-            }
-            UI_MollierProcess.Color = color;
-            UI_MollierProcess.Start_Label = start_Label;
-            UI_MollierProcess.Process_Label = process_Label;
-            UI_MollierProcess.End_Label = end_Label;
             DialogResult = DialogResult.OK;
         }
 
@@ -105,37 +105,7 @@ namespace SAM.Core.Mollier.UI.Forms
 
         private void MollierProcessType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            MollierProcessType mollierProcessType = Core.Query.Enum<MollierProcessType>(MollierProcessType_ComboBox.Text);
-            control?.Dispose();
-            switch (mollierProcessType)
-            {
-                case MollierProcessType.Heating:
-                    addControl(mollierProcessType);
-                    (control as HeatingProcessControl).SelectPointClicked += MollierProcessForm_SelectPointClicked;
-                    (control as HeatingProcessControl).Start = previousMollierPoint;
-                    break;
-                case MollierProcessType.Cooling:
-                    addControl(mollierProcessType);
-                    (control as CoolingProcessControl).Start = previousMollierPoint;
-                    break;
-                case MollierProcessType.HeatRecovery:
-                    addControl(mollierProcessType);
-                    (control as HeatRecoveryProcessControl).Supply = previousMollierPoint;
-                    break;
-                case MollierProcessType.Mixing:
-                    addControl(mollierProcessType);
-                    (control as MixingProcessControl).FirstPoint = previousMollierPoint;
-                    break;
-                case MollierProcessType.AdiabaticHumidification:
-                    addControl(mollierProcessType);
-                    (control as AdiabaticHumidificationProcessControl).Start = previousMollierPoint;
-                    break;
-                case MollierProcessType.IsotermicHumidification:
-                    addControl(mollierProcessType);
-                    (control as IsotermicHumidificationProcessControl).Start = previousMollierPoint;
-                    break;
-            }
-
+            UpdateControl();
         }
         
         private void MollierProcessForm_SelectPointClicked(object sender, EventArgs e)
@@ -151,6 +121,7 @@ namespace SAM.Core.Mollier.UI.Forms
                 {
                     return;
                 }
+
                 color = customizeProcessForm.Color;
                 start_Label = customizeProcessForm.Start_Label;
                 process_Label = customizeProcessForm.Process_Label;
@@ -158,35 +129,62 @@ namespace SAM.Core.Mollier.UI.Forms
             }
         }
 
-        private void addControl(MollierProcessType mollierProcessType)
+        private Control GetControl()
         {
-            control?.Dispose();
-            switch (mollierProcessType)
+            Control.ControlCollection controlCollection = splitContainer1?.Panel2?.Controls;
+            if(controlCollection == null || controlCollection.Count == 0)
+            {
+                return null;
+            }
+
+            return controlCollection[0];
+        }
+
+        private Control CreateControl()
+        {
+            MollierProcessType mollierProcessType = Core.Query.Enum<MollierProcessType>(MollierProcessType_ComboBox.Text); 
+
+            switch(mollierProcessType)
             {
                 case MollierProcessType.Heating:
-                    control = new HeatingProcessControl();
-                    break;
+                    HeatingProcessControl HeatingProcessControl = new HeatingProcessControl() { Start = previousMollierPoint };
+                    HeatingProcessControl.SelectPointClicked += MollierProcessForm_SelectPointClicked;
+                    return HeatingProcessControl;
+
                 case MollierProcessType.Cooling:
-                    control = new CoolingProcessControl(mollierControl);
-                    break;
+                    return new CoolingProcessControl() { Start = previousMollierPoint };
+
                 case MollierProcessType.HeatRecovery:
-                    control = new HeatRecoveryProcessControl();
-                    break;
+                    return new HeatRecoveryProcessControl() { Supply = previousMollierPoint };
+
                 case MollierProcessType.Mixing:
-                    control = new MixingProcessControl();
-                    break;
+                    return new MixingProcessControl() { FirstPoint = previousMollierPoint };
+
                 case MollierProcessType.AdiabaticHumidification:
-                    control = new AdiabaticHumidificationProcessControl();
-                    break;
+                    return new AdiabaticHumidificationProcessControl() { Start = previousMollierPoint };
+
                 case MollierProcessType.IsotermicHumidification:
-                    control = new IsotermicHumidificationProcessControl();
-                    break;
+                    return new IsotermicHumidificationProcessControl() { Start = previousMollierPoint };
+
+                case MollierProcessType.Undefined:
+                    return new RoomProcessControl() { StartMollierPoint = previousMollierPoint };
             }
-            if (control != null)
+
+            return null;
+        }
+
+        private void UpdateControl()
+        {
+            splitContainer1?.Panel2?.Controls.Clear();
+
+            Control control = CreateControl();
+            if(control == null)
             {
-                control.Parent = splitContainer1.Panel2;
-                control.Dock = DockStyle.Fill;
+                return;
             }
+
+            control.Parent = splitContainer1.Panel2;
+            control.Dock = DockStyle.Fill;
         }
     }
 }

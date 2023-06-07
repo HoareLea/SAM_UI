@@ -13,6 +13,7 @@
                 case ProcessParameterType.RelativeHumidity:
                     return Units.UnitType.Percent;
                 case ProcessParameterType.HumidityRatioDifference:
+                case ProcessParameterType.HumidityRatio:
                     return Units.UnitType.GramPerKilogram;
                 case ProcessParameterType.EnthalpyDifference:
                     return Units.UnitType.Kilojule;

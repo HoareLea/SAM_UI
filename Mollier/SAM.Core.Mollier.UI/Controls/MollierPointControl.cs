@@ -9,6 +9,9 @@ namespace SAM.Core.Mollier.UI.Controls
     {
         private List<ChartDataType> chartDataTypes = new List<ChartDataType>() { ChartDataType.DryBulbTemperature, ChartDataType.RelativeHumidity, ChartDataType.HumidityRatio, ChartDataType.WetBulbTemperature, ChartDataType.DewPointTemperature};
 
+        public event EventHandler SelectPointClicked;
+
+        public event EventHandler ValueHanged;
 
         public MollierPointControl()
         {
@@ -32,6 +35,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
             firstParameter_ComboBox.Text = ChartDataType.DryBulbTemperature.Description();
             secondParameter_ComboBox.Text = ChartDataType.HumidityRatio.Description();
+
+            SetMollierPoint(mollierPoint);
             pressureTextBox.ReadOnly = pressureEnabled;
         }
 
@@ -203,8 +208,6 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void secondParameter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //secondParameter_Value.Text = String.Empty;
-
             if (secondParameter_ComboBox.Text == "Dew Point Temperature")
             {
                 firstParameter_ComboBox.Text = "Dew Point Temperature";
@@ -229,12 +232,17 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void firstParameter_Value_TextChanged(object sender, EventArgs e)
         {
-
+            ValueHanged?.Invoke(this, e);
         }
 
         private void secondParameter_Value_TextChanged(object sender, EventArgs e)
         {
+            ValueHanged?.Invoke(this, e);
+        }
 
+        private void pressureTextBox_TextChanged(object sender, EventArgs e)
+        {
+            ValueHanged?.Invoke(this, e);
         }
 
         private void valueSecure(object sender, KeyPressEventArgs e)
@@ -264,6 +272,7 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             valueSecure(sender, e);
         }
+        
         private void updateLabel(ComboBox comboBox, Label label)
         {
             switch (comboBox.Text)
@@ -290,14 +299,22 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             SelectPointClicked?.Invoke(this, e);
         }
-        public event EventHandler SelectPointClicked;
 
-        public void UnvisiblePressure()
+        public bool PressureVisible
         {
-            pressureLabel.Visible = false;
-            pressureTextBox.Visible = false;
-            pressureUnitLabel.Visible = false;
+            get
+            {
+                return Label_Pressure.Visible;
+            }
+
+            set
+            {
+                Label_Pressure.Visible = value;
+                pressureTextBox.Visible = value;
+                pressureUnitLabel.Visible = value;
+            }
         }
+        
         public double Pressure
         {
             get
@@ -310,7 +327,5 @@ namespace SAM.Core.Mollier.UI.Controls
                 pressureTextBox.Text = value.ToString();
             }
         }
-        
-
     }
 }

@@ -28,48 +28,50 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.parameterNameLabel = new System.Windows.Forms.Label();
-            this.Parameter_Value = new System.Windows.Forms.TextBox();
-            this.parameterUnitLabel = new System.Windows.Forms.Label();
+            this.Label_Name = new System.Windows.Forms.Label();
+            this.TextBox_Value = new System.Windows.Forms.TextBox();
+            this.Label_Unit = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // parameterNameLabel
+            // Label_Name
             // 
-            this.parameterNameLabel.AutoSize = true;
-            this.parameterNameLabel.Location = new System.Drawing.Point(3, 0);
-            this.parameterNameLabel.Name = "parameterNameLabel";
-            this.parameterNameLabel.Size = new System.Drawing.Size(106, 16);
-            this.parameterNameLabel.TabIndex = 0;
-            this.parameterNameLabel.Text = "parameterName";
+            this.Label_Name.AutoSize = true;
+            this.Label_Name.Location = new System.Drawing.Point(0, 0);
+            this.Label_Name.Name = "Label_Name";
+            this.Label_Name.Size = new System.Drawing.Size(110, 17);
+            this.Label_Name.TabIndex = 0;
+            this.Label_Name.Text = "parameterName";
             // 
-            // Parameter_Value
+            // TextBox_Value
             // 
-            this.Parameter_Value.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.TextBox_Value.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Parameter_Value.Location = new System.Drawing.Point(0, 19);
-            this.Parameter_Value.Name = "Parameter_Value";
-            this.Parameter_Value.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Parameter_Value.Size = new System.Drawing.Size(150, 22);
-            this.Parameter_Value.TabIndex = 1;
-            this.Parameter_Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.Parameter_Value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Parameter_Value_KeyPress);
+            this.TextBox_Value.Location = new System.Drawing.Point(0, 21);
+            this.TextBox_Value.Name = "TextBox_Value";
+            this.TextBox_Value.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.TextBox_Value.Size = new System.Drawing.Size(150, 22);
+            this.TextBox_Value.TabIndex = 1;
+            this.TextBox_Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.TextBox_Value.TextChanged += new System.EventHandler(this.TextBox_Value_TextChanged);
             // 
-            // parameterUnitLabel
+            // Label_Unit
             // 
-            this.parameterUnitLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.parameterUnitLabel.Location = new System.Drawing.Point(153, 22);
-            this.parameterUnitLabel.Name = "parameterUnitLabel";
-            this.parameterUnitLabel.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.parameterUnitLabel.Size = new System.Drawing.Size(41, 16);
-            this.parameterUnitLabel.TabIndex = 2;
-            this.parameterUnitLabel.Text = "kg/kg";
+            this.Label_Unit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Label_Unit.AutoSize = true;
+            this.Label_Unit.Location = new System.Drawing.Point(153, 24);
+            this.Label_Unit.Name = "Label_Unit";
+            this.Label_Unit.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.Label_Unit.Size = new System.Drawing.Size(42, 17);
+            this.Label_Unit.TabIndex = 2;
+            this.Label_Unit.Text = "kg/kg";
+            this.Label_Unit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // ParameterControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.Controls.Add(this.parameterUnitLabel);
-            this.Controls.Add(this.Parameter_Value);
-            this.Controls.Add(this.parameterNameLabel);
+            this.Controls.Add(this.Label_Unit);
+            this.Controls.Add(this.TextBox_Value);
+            this.Controls.Add(this.Label_Name);
             this.Name = "ParameterControl";
             this.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.Size = new System.Drawing.Size(200, 51);
@@ -80,8 +82,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Label parameterNameLabel;
-        private System.Windows.Forms.TextBox Parameter_Value;
-        private System.Windows.Forms.Label parameterUnitLabel;
+        private System.Windows.Forms.Label Label_Name;
+        private System.Windows.Forms.TextBox TextBox_Value;
+        private System.Windows.Forms.Label Label_Unit;
     }
 }

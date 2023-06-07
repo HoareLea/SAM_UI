@@ -11,6 +11,8 @@ namespace SAM.Core.Mollier.UI
         [Description("Dry Bulb Temperature Difference")] DryBulbTemperatureDifference,
         [Description("Enthalpy Difference")] EnthalpyDifference,
         [Description("Humidity Ratio Difference")] HumidityRatioDifference,
+        [Description("Humidity Ratio")] HumidityRatio,
+        [Description("Load")] Load,
         [Description("Relative Humidity")] RelativeHumidity,
         [Description("Sensible Heat Recovery Efficiency")] SensibleHeatRecoveryEfficiency,
         [Description("Latent Heat Recovery Efficiency")] LatentHeatRecoveryEfficiency,

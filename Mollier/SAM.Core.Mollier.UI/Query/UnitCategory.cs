@@ -29,6 +29,8 @@
                     return Units.UnitCategory.RelativeHumidity;
                 case ProcessParameterType.EnthalpyDifference:
                     return Units.UnitCategory.Undefined;
+                case ProcessParameterType.Load:
+                    return Units.UnitCategory.Power;
                 case ProcessParameterType.Undefined:
                     return Units.UnitCategory.Undefined;
             }

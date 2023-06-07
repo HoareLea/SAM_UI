@@ -40,7 +40,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label2.Location = new System.Drawing.Point(15, 4);
+            this.label2.Location = new System.Drawing.Point(24, 4);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(142, 20);
             this.label2.TabIndex = 14;
@@ -58,8 +58,9 @@
             // 
             // FirstAirflowControl
             // 
-            this.FirstAirflowControl.Location = new System.Drawing.Point(4, 217);
+            this.FirstAirflowControl.Location = new System.Drawing.Point(4, 229);
             this.FirstAirflowControl.Name = "FirstAirflowControl";
+            this.FirstAirflowControl.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.FirstAirflowControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.FirstAirflowControl.Size = new System.Drawing.Size(200, 51);
             this.FirstAirflowControl.TabIndex = 17;
@@ -67,8 +68,9 @@
             // 
             // SecondAirflowControl
             // 
-            this.SecondAirflowControl.Location = new System.Drawing.Point(272, 217);
+            this.SecondAirflowControl.Location = new System.Drawing.Point(272, 229);
             this.SecondAirflowControl.Name = "SecondAirflowControl";
+            this.SecondAirflowControl.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.SecondAirflowControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.SecondAirflowControl.Size = new System.Drawing.Size(200, 51);
             this.SecondAirflowControl.TabIndex = 16;
@@ -76,16 +78,20 @@
             // 
             // MollierPointControl_SecondPoint
             // 
+            this.MollierPointControl_SecondPoint.AutoSize = true;
             this.MollierPointControl_SecondPoint.Location = new System.Drawing.Point(272, 27);
             this.MollierPointControl_SecondPoint.Name = "MollierPointControl_SecondPoint";
-            this.MollierPointControl_SecondPoint.Size = new System.Drawing.Size(204, 206);
+            this.MollierPointControl_SecondPoint.Pressure = 101325D;
+            this.MollierPointControl_SecondPoint.Size = new System.Drawing.Size(205, 206);
             this.MollierPointControl_SecondPoint.TabIndex = 1;
             // 
             // MollierPointControl_FirstPoint
             // 
+            this.MollierPointControl_FirstPoint.AutoSize = true;
             this.MollierPointControl_FirstPoint.Location = new System.Drawing.Point(0, 27);
             this.MollierPointControl_FirstPoint.Name = "MollierPointControl_FirstPoint";
-            this.MollierPointControl_FirstPoint.Size = new System.Drawing.Size(204, 206);
+            this.MollierPointControl_FirstPoint.Pressure = 101325D;
+            this.MollierPointControl_FirstPoint.Size = new System.Drawing.Size(205, 206);
             this.MollierPointControl_FirstPoint.TabIndex = 0;
             // 
             // MixingProcessControl
@@ -98,7 +104,7 @@
             this.Controls.Add(this.MollierPointControl_SecondPoint);
             this.Controls.Add(this.MollierPointControl_FirstPoint);
             this.Name = "MixingProcessControl";
-            this.Size = new System.Drawing.Size(491, 321);
+            this.Size = new System.Drawing.Size(489, 295);
             this.ResumeLayout(false);
             this.PerformLayout();
 

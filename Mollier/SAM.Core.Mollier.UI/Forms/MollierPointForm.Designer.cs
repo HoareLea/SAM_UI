@@ -36,7 +36,7 @@
             // Button_OK
             // 
             this.Button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_OK.Location = new System.Drawing.Point(232, 214);
+            this.Button_OK.Location = new System.Drawing.Point(43, 253);
             this.Button_OK.Name = "Button_OK";
             this.Button_OK.Size = new System.Drawing.Size(75, 23);
             this.Button_OK.TabIndex = 4;
@@ -48,7 +48,7 @@
             // 
             this.Button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Button_Cancel.Location = new System.Drawing.Point(313, 214);
+            this.Button_Cancel.Location = new System.Drawing.Point(124, 253);
             this.Button_Cancel.Name = "Button_Cancel";
             this.Button_Cancel.Size = new System.Drawing.Size(75, 23);
             this.Button_Cancel.TabIndex = 5;
@@ -58,9 +58,12 @@
             // 
             // mollierPointControl1
             // 
+            this.mollierPointControl1.AutoSize = true;
             this.mollierPointControl1.Location = new System.Drawing.Point(3, 12);
             this.mollierPointControl1.Name = "mollierPointControl1";
-            this.mollierPointControl1.Size = new System.Drawing.Size(204, 206);
+            this.mollierPointControl1.Pressure = 101325D;
+            this.mollierPointControl1.PressureVisible = true;
+            this.mollierPointControl1.Size = new System.Drawing.Size(205, 206);
             this.mollierPointControl1.TabIndex = 6;
             // 
             // MollierPointForm
@@ -69,7 +72,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.Button_Cancel;
-            this.ClientSize = new System.Drawing.Size(400, 249);
+            this.ClientSize = new System.Drawing.Size(211, 288);
             this.Controls.Add(this.mollierPointControl1);
             this.Controls.Add(this.Button_Cancel);
             this.Controls.Add(this.Button_OK);
@@ -81,6 +84,7 @@
             this.ShowInTaskbar = false;
             this.Text = "Point";
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 

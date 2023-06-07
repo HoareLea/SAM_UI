@@ -9,9 +9,9 @@ namespace SAM.Core.Mollier.UI.Controls
         public MixingProcessControl()
         {
             InitializeComponent();
-            FirstAirflowControl.Refresh(ProcessParameterType.Airflow);
-            SecondAirflowControl.Refresh(ProcessParameterType.Airflow);
-            MollierPointControl_SecondPoint.UnvisiblePressure();
+            FirstAirflowControl.ProcessParameterType = ProcessParameterType.Airflow;
+            SecondAirflowControl.ProcessParameterType = ProcessParameterType.Airflow;
+            MollierPointControl_SecondPoint.PressureVisible = false;
         }
 
 

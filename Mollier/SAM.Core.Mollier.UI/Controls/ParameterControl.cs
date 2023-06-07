@@ -1,54 +1,137 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class ParameterControl : UserControl
     {
+        public event EventHandler ValueHanged;
+
+        private Units.UnitType unitType = Units.UnitType.Undefined;
+        private string text = null;
+
         public ParameterControl()
         {
             InitializeComponent();
+
+            TextBox_Value.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_NumberOnly);
         }
+        
         public ParameterControl(ProcessParameterType processParameterType)
         {
             InitializeComponent();
-            Refresh(processParameterType);
+
+            SetProcessParameterType(processParameterType);
+
+            TextBox_Value.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_NumberOnly);
         }
-        public void Refresh(ProcessParameterType processParameterType)
+        
+        private void SetProcessParameterType(ProcessParameterType processParameterType)
         {
-            parameterNameLabel.Text = processParameterType.Description();
-            parameterUnitLabel.Text = Units.Query.Abbreviation(Query.DefaultUnitType(processParameterType));
+            if (processParameterType != ProcessParameterType.Undefined)
+            {
+                Label_Name.Text = processParameterType.Description();
+                Label_Unit.Text = Units.Query.Abbreviation(Query.DefaultUnitType(processParameterType));
+
+                unitType = Units.UnitType.Undefined;
+                text = null;
+            }
+            else
+            {
+                Label_Name.Text = text;
+                Label_Unit.Text = Units.Query.Abbreviation(unitType);
+            }
         }
+
+        public Units.UnitType UnitType
+        {
+            get
+            {
+                ProcessParameterType processParameterType = ProcessParameterType;
+                if(processParameterType != ProcessParameterType.Undefined)
+                {
+                    return Query.DefaultUnitType(processParameterType);
+                }
+                else
+                {
+                    return unitType;
+                }
+            }
+
+            set
+            {
+                unitType = value;
+                Label_Unit.Text = Units.Query.Abbreviation(unitType);
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                return Label_Name.Text;
+            }
+
+            set
+            {
+                text = value;
+                Label_Name.Text = text;
+            }
+
+        }
+
         public ProcessParameterType ProcessParameterType
         {
             get
             {
-                return Core.Query.Enum<ProcessParameterType>(parameterNameLabel.Text);
+                return Core.Query.Enum<ProcessParameterType>(Label_Name.Text);
+            }
+
+            set
+            {
+                SetProcessParameterType(value);
             }
         }
+        
         public double Value
         {
             get
             {
-                double result = double.NaN;
-                Core.Query.TryConvert(Parameter_Value.Text, out result);
+                if(!Core.Query.TryConvert(TextBox_Value.Text, out double result))
+                {
+                    return double.NaN;
+                }
                 return result;
             }
             set
             {
-                Parameter_Value.Text = value.ToString();
+                if(double.IsNaN(value))
+                {
+                    TextBox_Value.Text = null;
+                }
+                else
+                {
+                    TextBox_Value.Text = value.ToString();
+                }
             }
         }
 
-        private void Parameter_Value_KeyPress(object sender, KeyPressEventArgs e)
+        public new bool Enabled
         {
-            valueSecure(sender, e);
-        }
-        private void valueSecure(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.') && (e.KeyChar != '-'))
+            get
             {
-                e.Handled = true;
+                return TextBox_Value.Enabled;
             }
+
+            set
+            {
+                TextBox_Value.Enabled = value;
+            }
+        }
+
+        private void TextBox_Value_TextChanged(object sender, EventArgs e)
+        {
+            ValueHanged?.Invoke(sender, e);
         }
     }
 }
