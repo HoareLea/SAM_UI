@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
-    public partial class HeatRecoveryProcessControl : UserControl
+    public partial class HeatRecoveryProcessControl : UserControl, IMollierProcessControl
     {
 
         public HeatRecoveryProcessControl()
@@ -19,7 +19,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
 
-        public UIMollierProcess CreateHeatRecoveryProcess()
+        public UIMollierProcess GetUIMollierProcess()
         {
             MollierPointControl_Return.Pressure = MollierPointControl_Supply.Pressure;
 

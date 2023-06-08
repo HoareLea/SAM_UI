@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
-    public partial class AdiabaticHumidificationProcessControl : UserControl
+    public partial class AdiabaticHumidificationProcessControl : UserControl, IMollierProcessControl
     {
         public AdiabaticHumidificationProcessControl()
         {
@@ -13,7 +13,7 @@ namespace SAM.Core.Mollier.UI.Controls
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
         }
         
-        public UIMollierProcess CreateAdiabaticHumidificationProcess()
+        public UIMollierProcess GetUIMollierProcess()
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);
             IMollierProcess mollierProcess = null;

@@ -84,49 +84,43 @@ namespace SAM.Core.Mollier.UI.Controls
             double pressure = Standard.Pressure;
             
             ChartDataType chartDataType = Core.Query.Enum<ChartDataType>(firstParameter_ComboBox.Text);
-            if (firstParameter_ComboBox.Visible)
+            switch (chartDataType)
             {
-                switch (chartDataType)
-                {
-                    case ChartDataType.DryBulbTemperature:
-                        Core.Query.TryConvert(firstParameter_Value.Text, out dryBulbTemperature);
-                        break;
-                    case ChartDataType.RelativeHumidity:
-                        Core.Query.TryConvert(firstParameter_Value.Text, out relativeHumidity);
-                        break;
-                    case ChartDataType.HumidityRatio:
-                        Core.Query.TryConvert(firstParameter_Value.Text, out humidityRatio);
-                        break;
-                    case ChartDataType.DewPointTemperature:
-                        Core.Query.TryConvert(firstParameter_Value.Text, out dewPointTemperature);
-                        break;
-                    case ChartDataType.WetBulbTemperature:
-                        Core.Query.TryConvert(firstParameter_Value.Text, out wetBulbTemperature);
-                        break;
-                }
+                case ChartDataType.DryBulbTemperature:
+                    Core.Query.TryConvert(firstParameter_Value.Text, out dryBulbTemperature);
+                    break;
+                case ChartDataType.RelativeHumidity:
+                    Core.Query.TryConvert(firstParameter_Value.Text, out relativeHumidity);
+                    break;
+                case ChartDataType.HumidityRatio:
+                    Core.Query.TryConvert(firstParameter_Value.Text, out humidityRatio);
+                    break;
+                case ChartDataType.DewPointTemperature:
+                    Core.Query.TryConvert(firstParameter_Value.Text, out dewPointTemperature);
+                    break;
+                case ChartDataType.WetBulbTemperature:
+                    Core.Query.TryConvert(firstParameter_Value.Text, out wetBulbTemperature);
+                    break;
             }
-            
+
             chartDataType = Core.Query.Enum<ChartDataType>(secondParameter_ComboBox.Text);
-            if (secondParameter_ComboBox.Visible)
+            switch (chartDataType)
             {
-                switch (chartDataType)
-                {
-                    case ChartDataType.DryBulbTemperature:
-                        Core.Query.TryConvert(secondParameter_Value.Text, out dryBulbTemperature);
-                        break;
-                    case ChartDataType.RelativeHumidity:
-                        Core.Query.TryConvert(secondParameter_Value.Text, out relativeHumidity);
-                        break;
-                    case ChartDataType.HumidityRatio:
-                        Core.Query.TryConvert(secondParameter_Value.Text, out humidityRatio);
-                        break;
-                    case ChartDataType.DewPointTemperature:
-                        Core.Query.TryConvert(secondParameter_Value.Text, out dewPointTemperature);
-                        break;
-                    case ChartDataType.WetBulbTemperature:
-                        Core.Query.TryConvert(secondParameter_Value.Text, out wetBulbTemperature);
-                        break;
-                }
+                case ChartDataType.DryBulbTemperature:
+                    Core.Query.TryConvert(secondParameter_Value.Text, out dryBulbTemperature);
+                    break;
+                case ChartDataType.RelativeHumidity:
+                    Core.Query.TryConvert(secondParameter_Value.Text, out relativeHumidity);
+                    break;
+                case ChartDataType.HumidityRatio:
+                    Core.Query.TryConvert(secondParameter_Value.Text, out humidityRatio);
+                    break;
+                case ChartDataType.DewPointTemperature:
+                    Core.Query.TryConvert(secondParameter_Value.Text, out dewPointTemperature);
+                    break;
+                case ChartDataType.WetBulbTemperature:
+                    Core.Query.TryConvert(secondParameter_Value.Text, out wetBulbTemperature);
+                    break;
             }
 
             Core.Query.TryConvert(pressureTextBox.Text, out pressure);

@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
-    public partial class MixingProcessControl : UserControl
+    public partial class MixingProcessControl : UserControl, IMollierProcessControl
     {
 
         public MixingProcessControl()
@@ -15,7 +15,7 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
 
-        public UIMollierProcess CreateMixingProcess()
+        public UIMollierProcess GetUIMollierProcess()
         {
             IMollierProcess mollierProcess = null;
 

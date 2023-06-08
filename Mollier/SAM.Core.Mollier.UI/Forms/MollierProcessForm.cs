@@ -58,31 +58,16 @@ namespace SAM.Core.Mollier.UI.Forms
                 return null;
             }
 
-            UIMollierProcess result = null;
+            IMollierProcessControl mollierProcessControl = control as IMollierProcessControl;
+            if(mollierProcessControl == null)
+            {
+                return null;
+            }
 
-            if (control is HeatingProcessControl)
+            UIMollierProcess result = mollierProcessControl.GetUIMollierProcess();
+            if(result == null)
             {
-                result = ((HeatingProcessControl)control).CreateHeatingProcess();
-            }
-            else if (control is CoolingProcessControl)
-            {
-                result = ((CoolingProcessControl)control).CreateCoolingProcess();
-            }
-            else if (control is HeatRecoveryProcessControl)
-            {
-                result = ((HeatRecoveryProcessControl)control).CreateHeatRecoveryProcess();
-            }
-            else if (control is MixingProcessControl)
-            {
-                result = ((MixingProcessControl)control).CreateMixingProcess();
-            }
-            else if (control is AdiabaticHumidificationProcessControl)
-            {
-                result = ((AdiabaticHumidificationProcessControl)control).CreateAdiabaticHumidificationProcess();
-            }
-            else if (control is IsotermicHumidificationProcessControl)
-            {
-                result = ((IsotermicHumidificationProcessControl)control).CreateIsotermicHumidificationProcess();
+                return null;
             }
 
             result.Color = color;

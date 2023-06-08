@@ -195,7 +195,7 @@ namespace SAM.Core.Mollier.UI
                 previousMollierPoint = GetMollierPoint();
             }
 
-            UIMollierProcess UI_MollierProcess = null;
+            UIMollierProcess uIMollierProcess = null;
             using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm())    
             {
                 mollierProcessForm.PreviousMollierPoint = previousMollierPoint;
@@ -208,15 +208,15 @@ namespace SAM.Core.Mollier.UI
                     return;
                 }
                 mollierProcessForm.SelectPointClicked += MollierProcessForm_SelectPointClicked;
-                UI_MollierProcess = mollierProcessForm.GetUIMollierProcess();
+                uIMollierProcess = mollierProcessForm.GetUIMollierProcess();
             }
-            if(UI_MollierProcess == null)
+            if(uIMollierProcess == null)
             {
                 return;
             }
-            previousMollierPoint = UI_MollierProcess.End;
+            previousMollierPoint = uIMollierProcess.End;
             List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
-            mollierProcesses.Add(UI_MollierProcess);
+            mollierProcesses.Add(uIMollierProcess);
 
             AddProcesses(mollierProcesses);            
         }

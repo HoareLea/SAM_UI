@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
-    public partial class CoolingProcessControl : UserControl
+    public partial class CoolingProcessControl : UserControl, IMollierProcessControl
     {
         private MollierControl mollierControl;
         public CoolingProcessControl()
@@ -21,7 +21,7 @@ namespace SAM.Core.Mollier.UI.Controls
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
             this.mollierControl = mollierControl;
         }
-        public UIMollierProcess CreateCoolingProcess()
+        public UIMollierProcess GetUIMollierProcess()
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);
             IMollierProcess mollierProcess = null;

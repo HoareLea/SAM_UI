@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
-    public partial class HeatingProcessControl : UserControl
+    public partial class HeatingProcessControl : UserControl, IMollierProcessControl
     {
         public event EventHandler SelectPointClicked;
         public HeatingProcessControl()
@@ -21,7 +21,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         }
 
-        public UIMollierProcess CreateHeatingProcess()
+        public UIMollierProcess GetUIMollierProcess()
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);
             IMollierProcess mollierProcess = null;
