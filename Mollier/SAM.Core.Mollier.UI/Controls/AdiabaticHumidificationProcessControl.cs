@@ -7,12 +7,38 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class AdiabaticHumidificationProcessControl : UserControl, IMollierProcessControl
     {
+        private MollierForm mollierForm;
+
+        public event SelectMollierPointEventHandler SelectMollierPoint;
+
         public AdiabaticHumidificationProcessControl()
         {
             InitializeComponent();
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
+
+            MollierPointControl_Start.SelectMollierPoint += MollierPointControl_Start_SelectMollierPoint; ;
         }
-        
+
+        private void MollierPointControl_Start_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
+        {
+            SelectMollierPoint?.Invoke(this, e);
+
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected += MollierForm_MollierPointSelected; ;
+            }
+        }
+
+        private void MollierForm_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
+        {
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected -= MollierForm_MollierPointSelected;
+            }
+
+            Start = e.MollierPoint;
+        }
+
         public UIMollierProcess GetUIMollierProcess()
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);
@@ -34,6 +60,20 @@ namespace SAM.Core.Mollier.UI.Controls
             return new UIMollierProcess(mollierProcess, Color.Empty);
         }
         
+        public MollierForm MollierForm
+        {
+            get
+            {
+                return mollierForm;
+            }
+
+            set
+            {
+                mollierForm = value;
+                MollierPointControl_Start.SelectMollierPointVisible = value != null;
+            }
+        }
+
         public MollierPoint Start
         {
             get

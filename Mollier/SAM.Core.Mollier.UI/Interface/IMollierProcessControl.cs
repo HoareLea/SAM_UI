@@ -3,5 +3,7 @@
     public interface IMollierProcessControl
     {
         UIMollierProcess GetUIMollierProcess();
+
+        MollierForm MollierForm { get; set; }
     }
 }

@@ -5,6 +5,8 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class RoomProcessControl : UserControl, IMollierProcessControl
     {
+        private MollierForm mollierForm;
+        
         public event SelectMollierPointEventHandler SelectMollierPoint;
 
         public RoomProcessControl()
@@ -43,6 +45,11 @@ namespace SAM.Core.Mollier.UI.Controls
         private void MollierPointControl_Start_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
         {
             SelectMollierPoint?.Invoke(this, e);
+
+            if(MollierForm != null)
+            {
+                MollierForm.MollierPointSelected += MollierForm_MollierPointSelected;
+            }
         }
 
         private void ParameterControl_Airflow_ValueHanged(object sender, System.EventArgs e)
@@ -142,6 +149,30 @@ namespace SAM.Core.Mollier.UI.Controls
 
             mollierPointControl_Room.MollierPoint = mollierPoint;
             ParameterControl_HumidityRatio_Room.Value = mollierPoint == null ? double.NaN : Core.Query.Round(mollierPoint.HumidityRatio * 1000, Tolerance.MacroDistance);
+        }
+
+        public MollierForm MollierForm
+        {
+            get
+            {
+                return mollierForm;
+            }
+
+            set
+            {
+                mollierForm = value;
+                MollierPointControl_Start.SelectMollierPointVisible = value != null;
+            }
+        }
+
+        private void MollierForm_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
+        {
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected -= MollierForm_MollierPointSelected;
+            }
+
+            StartMollierPoint = e.MollierPoint;
         }
 
         public MollierPoint StartMollierPoint

@@ -43,7 +43,6 @@
             this.MollierPointControl_Supply.Pressure = 101325D;
             this.MollierPointControl_Supply.Size = new System.Drawing.Size(199, 220);
             this.MollierPointControl_Supply.TabIndex = 0;
-            this.MollierPointControl_Supply.Load += new System.EventHandler(this.MollierPointControl_Supply_Load);
             // 
             // MollierPointControl_Return
             // 
@@ -102,7 +101,6 @@
             this.Controls.Add(this.MollierPointControl_Supply);
             this.Name = "HeatRecoveryProcessControl";
             this.Size = new System.Drawing.Size(707, 338);
-            this.Load += new System.EventHandler(this.HeatRecoveryProcessControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

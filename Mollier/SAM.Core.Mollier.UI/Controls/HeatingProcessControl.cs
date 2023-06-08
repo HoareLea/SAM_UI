@@ -7,18 +7,35 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class HeatingProcessControl : UserControl, IMollierProcessControl
     {
-        public event EventHandler SelectPointClicked;
+        private MollierForm mollierForm;
+
+        public event SelectMollierPointEventHandler SelectMollierPoint;
         public HeatingProcessControl()
         {
             InitializeComponent();
+
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
-            MollierPointControl_Start.SelectMollierPoint += MollierPointControl_Start_SelectPointClicked;
+            MollierPointControl_Start.SelectMollierPoint += MollierPointControl_Start_SelectMollierPoint; ;
         }
 
-        private void MollierPointControl_Start_SelectPointClicked(object sender, EventArgs e)
+        private void MollierPointControl_Start_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
         {
-            SelectPointClicked?.Invoke(this, e);
+            SelectMollierPoint?.Invoke(this, e);
 
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected += MollierForm_MollierPointSelected; ;
+            }
+        }
+
+        private void MollierForm_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
+        {
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected -= MollierForm_MollierPointSelected;
+            }
+
+            Start = e.MollierPoint;
         }
 
         public UIMollierProcess GetUIMollierProcess()
@@ -54,8 +71,24 @@ namespace SAM.Core.Mollier.UI.Controls
             set
             {
                 MollierPointControl_Start.MollierPoint = value;
+                MollierPointControl_Start.SelectMollierPointVisible = value != null;
             }
         }
+
+        public MollierForm MollierForm
+        {
+            get
+            {
+                return mollierForm;
+            }
+
+            set
+            {
+                mollierForm = value;
+                MollierPointControl_Start.SelectMollierPointVisible = value != null;
+            }
+        }
+
         private void processCalculateType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);

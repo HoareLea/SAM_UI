@@ -74,7 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
-    <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs - Copy.cs" />
+    <Compile Include="Classes\EventArgs\MollierPointSelectedEventArgs.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
     <Compile Include="Classes\MollierPointEventArgs.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
@@ -172,6 +173,7 @@
       <DependentUpon>TestControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Create\Controls.cs" />
+    <Compile Include="Delegates\MollierPointSelectedEventHandler.cs" />
     <Compile Include="Delegates\SelectMollierPointEventHandler.cs" />
     <Compile Include="Enums\ProcessParameterType.cs" />
     <Compile Include="Enums\ProcessCalculationType.cs" />
@@ -236,6 +238,7 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\ToolTipText.cs" />
     <Compile Include="Query\Value.cs" />
     <Compile Include="Query\DefaultMollierControlSettings.cs" />
     <Compile Include="Query\ParameterValue.cs" />

@@ -7,19 +7,17 @@ namespace SAM.Core.Mollier.UI
 {
     public partial class MollierForm : Form
     {
-        Forms.MollierPointForm mollierPointForm = null;
-        Forms.MollierProcessForm mollierProcessForm = null;
-        MollierPoint previousMollierPoint = null;
-
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
-        private static string mollierControlPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(Control).Name);
-        private ToolTip toolTip = new ToolTip();
-        private void MollierForm_Load(object sender, EventArgs e)
-        {
-            ColorPointComboBox.Text = "Enthalpy";
-        }
 
-        //Chart's initialization and reset to default values
+        private ToolTip toolTip = new ToolTip();
+
+        private Forms.MollierPointForm mollierPointForm = null;
+        private Forms.MollierProcessForm mollierProcessForm = null;
+        
+        private MollierPoint previousMollierPoint = null;
+
+        public event MollierPointSelectedEventHandler MollierPointSelected;
+
         public MollierForm()
         {
             InitializeComponent();
@@ -27,6 +25,24 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null ;
             default_chart(mollierControlSettings);
         }
+
+        private void MollierForm_Load(object sender, EventArgs e)
+        {
+            ColorPointComboBox.Text = "Enthalpy";
+
+            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected;
+        }
+
+        private void MollierControl_Main_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
+        {
+            if(mollierProcessForm != null)
+            {
+                mollierProcessForm.Show();
+            }
+
+            MollierPointSelected?.Invoke(this, e);
+        }
+
         private void resetChartToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings= new MollierControlSettings();
@@ -34,7 +50,6 @@ namespace SAM.Core.Mollier.UI
             default_chart(mollierControlSettings);
         }
       
-        //operation of changing pressure or elevation value
         private void TextBox_Pressure_TextChanged(object sender, EventArgs e)
         {
            if (!Core.Query.TryConvert(TextBox_Pressure.Text, out double pressure))
@@ -57,6 +72,7 @@ namespace SAM.Core.Mollier.UI
             
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
         private void TextBox_Elevation_TextChanged(object sender, EventArgs e)
         {
             if (!Core.Query.TryConvert(TextBox_Elevation.Text, out double elevation))
@@ -82,7 +98,6 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
-        //pressure changing
         public double Pressure
         {
             get 
@@ -98,7 +113,6 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-        //opening stripmenu's or saving the graph data
         private void ToolStripMenuItem_OpenSettings_Click(object sender, EventArgs e)
         {
             using (MollierControlSettingsForm mollierSettingsForm = new MollierControlSettingsForm(MollierControl_Main))
@@ -127,14 +141,17 @@ namespace SAM.Core.Mollier.UI
                 Convert.ToFile(mollierControlSettings, mollierControlSettingsPath);
             }
         }
+        
         private void MollierForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveMollierControlSettings();
         }
+        
         private void ToolStripMenuItem_Settings_Click(object sender, EventArgs e)
         {
 
         }
+        
         public bool Clear()
         {
            return MollierControl_Main.Clear();
@@ -158,15 +175,6 @@ namespace SAM.Core.Mollier.UI
         //operation of the add process and add point buttons
         private void Button_AddPoint_Click(object sender, EventArgs e)
         {
-            //MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
-
-            //mollierPointForm = new Forms.MollierPointForm();
-            //mollierPointForm.TopMost = true;
-            //mollierPointForm.SelectPointClicked += MollierPointForm_SelectPointClicked;
-            //mollierPointForm.FormClosing += MollierPointForm_FormClosing;
-
-            // mollierPointForm.Show();
-
             if(previousMollierPoint == null)
             {
                 previousMollierPoint = GetMollierPoint();
@@ -188,6 +196,7 @@ namespace SAM.Core.Mollier.UI
                 MollierControl_Main.AddPoints(mollierPoints);
             }
         }
+        
         private void Button_AddProcess_Click(object sender, EventArgs e)
         {
             if (previousMollierPoint == null)
@@ -195,49 +204,38 @@ namespace SAM.Core.Mollier.UI
                 previousMollierPoint = GetMollierPoint();
             }
 
-            UIMollierProcess uIMollierProcess = null;
-            using (Forms.MollierProcessForm mollierProcessForm = new Forms.MollierProcessForm())    
+            if(mollierProcessForm == null)
             {
-                mollierProcessForm.PreviousMollierPoint = previousMollierPoint;
-                DialogResult dialogResult = mollierProcessForm.ShowDialog();
-
-                MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
-                this.mollierProcessForm = mollierProcessForm;
-                if (dialogResult != DialogResult.OK)
-                {
-                    return;
-                }
-                mollierProcessForm.SelectMollierPoint += MollierProcessForm_SelectMollierPoint;
-                uIMollierProcess = mollierProcessForm.GetUIMollierProcess();
+                mollierProcessForm = new Forms.MollierProcessForm();
+                mollierProcessForm.MollierForm = this;
+                mollierProcessForm.FormClosing += MollierProcessForm_FormClosing;
             }
+
+            mollierProcessForm.PreviousMollierPoint = previousMollierPoint;
+            mollierProcessForm.Show();          
+        }
+
+        private void MollierProcessForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            UIMollierProcess uIMollierProcess = mollierProcessForm?.GetUIMollierProcess();
             if(uIMollierProcess == null)
             {
+                mollierProcessForm = null;
                 return;
             }
-            previousMollierPoint = uIMollierProcess.End;
-            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
-            mollierProcesses.Add(uIMollierProcess);
 
-            AddProcesses(mollierProcesses);            
-        }
-
-        private void MollierProcessForm_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
-        {
-            e.MollierPoint = new MollierPoint(15, 15, 101235);
-        }
-
-        private void MollierProcessForm_SelectPointClicked(object sender, EventArgs e)
-        {
-            MollierControl_Main.MollierPointSelected -= MollierProcessForm_SelectPointClicked;
-
-            if (mollierPointForm == null)
+            if(mollierProcessForm.DialogResult != DialogResult.OK)
             {
+                mollierProcessForm = null;
                 return;
             }
 
-            mollierPointForm.Visible = false;
+            mollierProcessForm = null;
 
-            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected;
+            previousMollierPoint = uIMollierProcess.End;
+            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>() { uIMollierProcess };
+
+            AddProcesses(mollierProcesses);
         }
 
         private void MollierPointForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -255,38 +253,6 @@ namespace SAM.Core.Mollier.UI
 
             MollierControl_Main.AddPoints(new MollierPoint[] { mollierPoint });
         }
-
-        private void MollierControl_Main_MollierPointSelected(object sender, MollierPointEventArgs e)
-        {
-            if(mollierPointForm == null)
-            {
-
-                mollierPointForm.MollierPoint = e.MolierPoint; //TODO: Maciek to implement MollierPointForm.MollierPoint setter
-                mollierPointForm.Visible = true;
-            }
-            if(mollierProcessForm != null)
-            {
-                mollierProcessForm.MollierPoint = e.MolierPoint;
-            }
-
-            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
-        }
-
-        private void MollierPointForm_SelectPointClicked(object sender, EventArgs e)
-        {
-            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected;
-
-            if (mollierPointForm == null)
-            {
-                return;
-            }
-
-            mollierPointForm.Visible = false;
-
-            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected;
-
-        }
-
 
         //disable some function for data reading only
         public bool ReadOnly
@@ -319,6 +285,7 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.AddProcesses(mollierProcesses, checkPressure);
             return true;
         }
+        
         public bool AddPoints(IEnumerable<MollierPoint> mollierPoints, bool checkPressure = true)
         {
             if (mollierPoints == null)
@@ -373,6 +340,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Color = "blue";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
         private void grayToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (defaultToolStripMenuItem.Checked)
@@ -392,6 +360,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Color = "gray";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
         private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (blueToolStripMenuItem.Checked)
@@ -411,6 +380,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Color = "default";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+       
         private void blueBlackToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (blueToolStripMenuItem.Checked)
@@ -430,6 +400,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Color = "blue-black";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+       
         private void ChartToolStripMenuItem_Mollier_Click(object sender, EventArgs e)
         {
             if (ChartToolStripMenuItem_Mollier.Checked)
@@ -450,6 +421,7 @@ namespace SAM.Core.Mollier.UI
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
         private void ChartToolStripMenuItem_Psychrometric_Click(object sender, EventArgs e)
         {
             if(ChartToolStripMenuItem_Psychrometric.Checked)
@@ -470,6 +442,7 @@ namespace SAM.Core.Mollier.UI
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
         private void ToolStripMenuItem_Density_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem_Density.Checked = !ToolStripMenuItem_Density.Checked;
@@ -477,6 +450,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Density_line = ToolStripMenuItem_Density.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
         private void ToolStripMenuItem_Enthalpy_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem_Enthalpy.Checked = !ToolStripMenuItem_Enthalpy.Checked;
@@ -484,6 +458,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.Enthalpy_line = ToolStripMenuItem_Enthalpy.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
         private void ToolStripMenuItem_SpecificVolume_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem_SpecificVolume.Checked = !ToolStripMenuItem_SpecificVolume.Checked;
@@ -491,6 +466,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.SpecificVolume_line = ToolStripMenuItem_SpecificVolume.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
         private void ToolStripMenuItem_WetBulbTemperature_Click(object sender, EventArgs e)
         {
 

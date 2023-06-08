@@ -7,8 +7,6 @@ namespace SAM.Core.Mollier.UI.Forms
 {
     public partial class MollierProcessForm : Form
     {
-        public event SelectMollierPointEventHandler SelectMollierPoint;
-
         private Color color;
         private string start_Label;
         private string process_Label;
@@ -21,8 +19,10 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             InitializeComponent();
             
-        }    
-        
+        }
+
+        public MollierForm MollierForm { get; set; }
+
         public MollierPoint MollierPoint
         {
             get
@@ -81,11 +81,13 @@ namespace SAM.Core.Mollier.UI.Forms
         private void OK_Button_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void MollierProcessType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -127,28 +129,40 @@ namespace SAM.Core.Mollier.UI.Forms
             switch(mollierProcessType)
             {
                 case MollierProcessType.Heating:
-                    HeatingProcessControl HeatingProcessControl = new HeatingProcessControl() { Start = previousMollierPoint };
-                    return HeatingProcessControl;
+                    HeatingProcessControl heatingProcessControl = new HeatingProcessControl() { MollierForm = MollierForm, Start = previousMollierPoint };
+                    heatingProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
+                    return heatingProcessControl;
 
                 case MollierProcessType.Cooling:
-                    return new CoolingProcessControl() { Start = previousMollierPoint };
+                    CoolingProcessControl coolingProcessControl = new CoolingProcessControl() { MollierForm = MollierForm, Start = previousMollierPoint };
+                    coolingProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
+                    return coolingProcessControl;
 
                 case MollierProcessType.HeatRecovery:
-                    return new HeatRecoveryProcessControl() { Supply = previousMollierPoint };
+                    HeatRecoveryProcessControl heatRecoveryProcessControl = new HeatRecoveryProcessControl() { MollierForm = MollierForm, Supply = previousMollierPoint };
+                    heatRecoveryProcessControl.SelectSupplyMollierPoint += ProcessControl_SelectMollierPoint;
+                    heatRecoveryProcessControl.SelectReturnMollierPoint += ProcessControl_SelectMollierPoint;
+                    return heatRecoveryProcessControl;
 
                 case MollierProcessType.Mixing:
-                    return new MixingProcessControl() { FirstPoint = previousMollierPoint };
+                    MixingProcessControl mixingProcessControl = new MixingProcessControl() { MollierForm = MollierForm, FirstPoint = previousMollierPoint };
+                    mixingProcessControl.SelectFirstMollierPoint += ProcessControl_SelectMollierPoint;
+                    mixingProcessControl.SelectSecondMollierPoint += ProcessControl_SelectMollierPoint;
+                    return mixingProcessControl;
 
                 case MollierProcessType.AdiabaticHumidification:
-                    return new AdiabaticHumidificationProcessControl() { Start = previousMollierPoint };
+                    AdiabaticHumidificationProcessControl adiabaticHumidificationProcessControl = new AdiabaticHumidificationProcessControl() { MollierForm = MollierForm, Start = previousMollierPoint };
+                    adiabaticHumidificationProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
+                    return adiabaticHumidificationProcessControl;
 
                 case MollierProcessType.IsotermicHumidification:
-                    return new IsotermicHumidificationProcessControl() { Start = previousMollierPoint };
+                    IsotermicHumidificationProcessControl isotermicHumidificationProcessControl = new IsotermicHumidificationProcessControl() { MollierForm = MollierForm, Start = previousMollierPoint };
+                    isotermicHumidificationProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
+                    return isotermicHumidificationProcessControl;
 
                 case MollierProcessType.Undefined:
-                    RoomProcessControl roomProcessControl = new RoomProcessControl() { StartMollierPoint = previousMollierPoint };
+                    RoomProcessControl roomProcessControl = new RoomProcessControl() { MollierForm = MollierForm, StartMollierPoint = previousMollierPoint };
                     roomProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
-
                     return roomProcessControl;
             }
 
@@ -158,10 +172,6 @@ namespace SAM.Core.Mollier.UI.Forms
         private void ProcessControl_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
         {
             Hide();
-
-            SelectMollierPoint?.Invoke(this, e);
-
-            //Visible = true;
         }
 
         private void UpdateControl()

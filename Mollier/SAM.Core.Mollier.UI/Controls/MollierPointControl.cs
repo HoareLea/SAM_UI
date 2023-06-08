@@ -67,10 +67,29 @@ namespace SAM.Core.Mollier.UI.Controls
 
             chartDataType = Core.Query.Enum<ChartDataType>(firstParameter_ComboBox.Text);
             value = mollierPoint.Value(chartDataType);
-            firstParameter_Value.Text = double.IsNaN(value ) ? null : Core.Query.Round(value).ToString();
+            if(!double.IsNaN(value))
+            {
+                switch (chartDataType)
+                {
+                    case ChartDataType.HumidityRatio:
+                        value = value * 1000;
+                        break;
+                }
+            }
+
+            firstParameter_Value.Text = double.IsNaN(value) ? null : Core.Query.Round(value).ToString();
 
             chartDataType = Core.Query.Enum<ChartDataType>(secondParameter_ComboBox.Text);
             value = mollierPoint.Value(chartDataType);
+            if (!double.IsNaN(value))
+            {
+                switch (chartDataType)
+                {
+                    case ChartDataType.HumidityRatio:
+                        value = value * 1000;
+                        break;
+                }
+            }
             secondParameter_Value.Text = double.IsNaN(value) ? null : Core.Query.Round(value).ToString();
         }
 

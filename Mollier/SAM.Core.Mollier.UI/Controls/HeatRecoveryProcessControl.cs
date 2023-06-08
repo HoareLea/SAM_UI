@@ -6,6 +6,10 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class HeatRecoveryProcessControl : UserControl, IMollierProcessControl
     {
+        private MollierForm mollierForm;
+
+        public event SelectMollierPointEventHandler SelectSupplyMollierPoint;
+        public event SelectMollierPointEventHandler SelectReturnMollierPoint;
 
         public HeatRecoveryProcessControl()
         {
@@ -16,19 +20,62 @@ namespace SAM.Core.Mollier.UI.Controls
             LatentHeatRecoveryEfficiencyControl.Value = 0;
 
             MollierPointControl_Return.PressureVisible = false;
+
+            MollierPointControl_Supply.SelectMollierPoint += MollierPointControl_Supply_SelectMollierPoint;
+            MollierPointControl_Return.SelectMollierPoint += MollierPointControl_Return_SelectMollierPoint;
         }
 
+        private void MollierPointControl_Return_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
+        {
+            SelectReturnMollierPoint?.Invoke(this, e);
+
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected += MollierForm_ReturnMollierPointSelected;
+            }
+        }
+
+        private void MollierForm_ReturnMollierPointSelected(object sender, MollierPointSelectedEventArgs e)
+        {
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected -= MollierForm_ReturnMollierPointSelected;
+            }
+
+            Return = e.MollierPoint;
+        }
+
+        private void MollierPointControl_Supply_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
+        {
+            SelectSupplyMollierPoint?.Invoke(this, e);
+
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected += MollierForm_SupplyMollierPointSelected; ;
+            }
+        }
+
+        private void MollierForm_SupplyMollierPointSelected(object sender, MollierPointSelectedEventArgs e)
+        {
+            if (MollierForm != null)
+            {
+                MollierForm.MollierPointSelected -= MollierForm_SupplyMollierPointSelected;
+            }
+
+            Supply = e.MollierPoint;
+        }
 
         public UIMollierProcess GetUIMollierProcess()
         {
             MollierPointControl_Return.Pressure = MollierPointControl_Supply.Pressure;
 
-            IMollierProcess mollierProcess = null;
             MollierPoint supplyPoint = Supply;
             MollierPoint returnPoint = Return;
+
             double sensibleHeatRecoveryEfficiency = SensibleHeatRecoveryEfficiencyControl.Value;
             double latentHeatRecoveryEfficiency = LatentHeatRecoveryEfficiencyControl.Value;
-            mollierProcess = Mollier.Create.HeatRecoveryProcess(supplyPoint, returnPoint, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
+
+            IMollierProcess mollierProcess = Mollier.Create.HeatRecoveryProcess(supplyPoint, returnPoint, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
             return new UIMollierProcess(mollierProcess, Color.Empty);
         }
         public MollierPoint Supply
@@ -55,14 +102,19 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        private void HeatRecoveryProcessControl_Load(object sender, EventArgs e)
+        public MollierForm MollierForm
         {
+            get
+            {
+                return mollierForm;
+            }
 
-        }
-
-        private void MollierPointControl_Supply_Load(object sender, EventArgs e)
-        {
-
+            set
+            {
+                mollierForm = value;
+                MollierPointControl_Supply.SelectMollierPointVisible = value != null;
+                MollierPointControl_Return.SelectMollierPointVisible = value != null;
+            }
         }
     }
 }
