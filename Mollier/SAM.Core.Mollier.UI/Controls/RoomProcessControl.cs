@@ -74,14 +74,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            ParameterControl_SensibleLoadRatio.Value = sensible / (sensible + latent);
+            ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(sensible / (sensible + latent), Tolerance.MacroDistance);
         }
 
         private void MollierPointControl_Start_ValueHanged(object sender, System.EventArgs e)
         {
             CalculateRoomMollierPoint();
 
-            ParameterControl_HumidityRatio_Start.Value = MollierPointControl_Start.MollierPoint == null ? 0 : Core.Query.Round(MollierPointControl_Start.MollierPoint.HumidityRatio * 1000, Tolerance.Distance);
+            ParameterControl_HumidityRatio_Start.Value = MollierPointControl_Start.MollierPoint == null ? 0 : Core.Query.Round(MollierPointControl_Start.MollierPoint.HumidityRatio * 1000, Tolerance.MacroDistance);
         }
 
         public void CalculateRoomMollierPoint()
@@ -133,7 +133,7 @@ namespace SAM.Core.Mollier.UI.Controls
             set
             {
                 MollierPointControl_Start.MollierPoint = value;
-                ParameterControl_HumidityRatio_Start.Value = MollierPointControl_Start.MollierPoint == null ? 0 : Core.Query.Round(MollierPointControl_Start.MollierPoint.HumidityRatio * 1000, Tolerance.Distance);
+                ParameterControl_HumidityRatio_Start.Value = MollierPointControl_Start.MollierPoint == null ? 0 : Core.Query.Round(MollierPointControl_Start.MollierPoint.HumidityRatio * 1000, Tolerance.MacroDistance);
             }
         }
 
