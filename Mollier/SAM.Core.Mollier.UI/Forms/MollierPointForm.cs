@@ -10,7 +10,7 @@ namespace SAM.Core.Mollier.UI.Forms
         public MollierPointForm()
         {
             InitializeComponent();
-            mollierPointControl1.SelectPointClicked += MollierPointControl1_SelectPointClicked;
+            mollierPointControl1.SelectMollierPoint += MollierPointControl1_SelectPointClicked;
         }
 
         private void MollierPointControl1_SelectPointClicked(object sender, EventArgs e)

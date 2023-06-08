@@ -7,7 +7,7 @@ namespace SAM.Core.Mollier.UI.Forms
 {
     public partial class MollierProcessForm : Form
     {
-        public event EventHandler SelectPointClicked;
+        public event SelectMollierPointEventHandler SelectMollierPoint;
 
         private Color color;
         private string start_Label;
@@ -92,11 +92,6 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             UpdateControl();
         }
-        
-        private void MollierProcessForm_SelectPointClicked(object sender, EventArgs e)
-        {
-            SelectPointClicked?.Invoke(this, e);
-        }
 
         private void Customize_Button_Click(object sender, EventArgs e)
         {
@@ -133,7 +128,6 @@ namespace SAM.Core.Mollier.UI.Forms
             {
                 case MollierProcessType.Heating:
                     HeatingProcessControl HeatingProcessControl = new HeatingProcessControl() { Start = previousMollierPoint };
-                    HeatingProcessControl.SelectPointClicked += MollierProcessForm_SelectPointClicked;
                     return HeatingProcessControl;
 
                 case MollierProcessType.Cooling:
@@ -152,10 +146,22 @@ namespace SAM.Core.Mollier.UI.Forms
                     return new IsotermicHumidificationProcessControl() { Start = previousMollierPoint };
 
                 case MollierProcessType.Undefined:
-                    return new RoomProcessControl() { StartMollierPoint = previousMollierPoint };
+                    RoomProcessControl roomProcessControl = new RoomProcessControl() { StartMollierPoint = previousMollierPoint };
+                    roomProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
+
+                    return roomProcessControl;
             }
 
             return null;
+        }
+
+        private void ProcessControl_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
+        {
+            Hide();
+
+            SelectMollierPoint?.Invoke(this, e);
+
+            //Visible = true;
         }
 
         private void UpdateControl()

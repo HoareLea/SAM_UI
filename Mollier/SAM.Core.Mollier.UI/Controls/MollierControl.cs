@@ -2284,7 +2284,15 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
 
                 seriesData.Add(new Tuple<Series, int>(series, series.BorderWidth));
-                series.BorderWidth += 1;
+
+                if(series.Tag is MollierProcess)
+                {
+                    series.BorderWidth += 2;
+                }
+                else
+                {
+                    series.BorderWidth += 1;
+                }
 
                 //int index = hitTestResult.PointIndex;
                 //if(index >= 0)
@@ -2486,6 +2494,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void MollierChart_MouseClick(object sender, MouseEventArgs e)
         {
+            MollierPoint MollierPoint = GetMollierPoint(e.X, e.Y);
+
             HitTestResult result = MollierChart.HitTest(e.X, e.Y, ChartElementType.DataPoint);
             if (result == null || result.ChartElementType != ChartElementType.DataPoint)
             {
@@ -2504,10 +2514,14 @@ namespace SAM.Core.Mollier.UI.Controls
 
         public MollierPoint GetMollierPoint(int x, int y)
         {
-            double dryBulbTemperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DryBulbTemperature_ByDiagramTemperature(y, x) : x;
-            double humidityRatio = mollierControlSettings.ChartType == ChartType.Mollier ? x / 1000 : y;
-            MollierPoint mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio, mollierControlSettings.Pressure); //TODO: Maciek to extract MolierPoint from MolierControl
-            return mollierPoint;
+            double chartX = MollierChart.ChartAreas[0].AxisX.PixelPositionToValue(x);
+            double chartY = MollierChart.ChartAreas[0].AxisY.PixelPositionToValue(y);
+
+            double dryBulbTemperature = mollierControlSettings.ChartType == ChartType.Mollier ? chartY : chartX;
+            double humidityRatio = mollierControlSettings.ChartType == ChartType.Mollier ? chartX * 1000 : chartY;
+            
+            MollierPoint result = new MollierPoint(dryBulbTemperature, humidityRatio, mollierControlSettings.Pressure);
+            return result;
         }
 
         public void ClearObjects()

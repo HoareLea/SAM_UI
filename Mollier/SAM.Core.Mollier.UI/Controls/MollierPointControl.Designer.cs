@@ -148,14 +148,14 @@
             // Button_SelectMollierPoint
             // 
             this.Button_SelectMollierPoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_SelectMollierPoint.Enabled = false;
             this.Button_SelectMollierPoint.Location = new System.Drawing.Point(120, 3);
             this.Button_SelectMollierPoint.Name = "Button_SelectMollierPoint";
             this.Button_SelectMollierPoint.Size = new System.Drawing.Size(25, 23);
             this.Button_SelectMollierPoint.TabIndex = 9;
             this.Button_SelectMollierPoint.Text = "...";
             this.Button_SelectMollierPoint.UseVisualStyleBackColor = true;
-            this.Button_SelectMollierPoint.Click += new System.EventHandler(this.ChoosePoint_Button_Click);
+            this.Button_SelectMollierPoint.Visible = false;
+            this.Button_SelectMollierPoint.Click += new System.EventHandler(this.Button_SelectMollierPoint_Click);
             // 
             // MollierPointControl
             // 

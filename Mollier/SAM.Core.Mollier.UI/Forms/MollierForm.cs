@@ -207,7 +207,7 @@ namespace SAM.Core.Mollier.UI
                 {
                     return;
                 }
-                mollierProcessForm.SelectPointClicked += MollierProcessForm_SelectPointClicked;
+                mollierProcessForm.SelectMollierPoint += MollierProcessForm_SelectMollierPoint;
                 uIMollierProcess = mollierProcessForm.GetUIMollierProcess();
             }
             if(uIMollierProcess == null)
@@ -219,6 +219,11 @@ namespace SAM.Core.Mollier.UI
             mollierProcesses.Add(uIMollierProcess);
 
             AddProcesses(mollierProcesses);            
+        }
+
+        private void MollierProcessForm_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
+        {
+            e.MollierPoint = new MollierPoint(15, 15, 101235);
         }
 
         private void MollierProcessForm_SelectPointClicked(object sender, EventArgs e)

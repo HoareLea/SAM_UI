@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
+    <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
     <Compile Include="Classes\MollierPointEventArgs.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
@@ -171,6 +172,7 @@
       <DependentUpon>TestControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Create\Controls.cs" />
+    <Compile Include="Delegates\SelectMollierPointEventHandler.cs" />
     <Compile Include="Enums\ProcessParameterType.cs" />
     <Compile Include="Enums\ProcessCalculationType.cs" />
     <Compile Include="Enums\ChartExportType.cs" />

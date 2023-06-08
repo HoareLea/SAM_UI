@@ -9,7 +9,7 @@ namespace SAM.Core.Mollier.UI.Controls
     {
         private List<ChartDataType> chartDataTypes = new List<ChartDataType>() { ChartDataType.DryBulbTemperature, ChartDataType.RelativeHumidity, ChartDataType.HumidityRatio, ChartDataType.WetBulbTemperature, ChartDataType.DewPointTemperature};
 
-        public event EventHandler SelectPointClicked;
+        public event SelectMollierPointEventHandler SelectMollierPoint;
 
         public event EventHandler ValueHanged;
 
@@ -257,9 +257,19 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        private void ChoosePoint_Button_Click(object sender, EventArgs e)
+        private void Button_SelectMollierPoint_Click(object sender, EventArgs e)
         {
-            SelectPointClicked?.Invoke(this, e);
+            SelectMollierPointEventArgs selectMollierPointEventArgs = new SelectMollierPointEventArgs();
+
+            SelectMollierPoint?.Invoke(this, selectMollierPointEventArgs);
+
+            MollierPoint mollierPoint = selectMollierPointEventArgs?.MollierPoint;
+            if(mollierPoint == null)
+            {
+                return;
+            }
+
+            MollierPoint = mollierPoint;
         }
 
         public bool PressureVisible
@@ -275,6 +285,19 @@ namespace SAM.Core.Mollier.UI.Controls
                 pressureTextBox.Visible = value;
                 pressureUnitLabel.Visible = value;
             }
+        }
+
+        public bool SelectMollierPointVisible
+        {
+            get
+            {
+                return Button_SelectMollierPoint.Visible;
+            }
+            set
+            {
+                Button_SelectMollierPoint.Visible = value;
+            }
+
         }
         
         public double Pressure

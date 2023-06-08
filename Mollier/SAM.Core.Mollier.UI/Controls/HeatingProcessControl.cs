@@ -12,7 +12,7 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             InitializeComponent();
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
-            MollierPointControl_Start.SelectPointClicked += MollierPointControl_Start_SelectPointClicked;
+            MollierPointControl_Start.SelectMollierPoint += MollierPointControl_Start_SelectPointClicked;
         }
 
         private void MollierPointControl_Start_SelectPointClicked(object sender, EventArgs e)
