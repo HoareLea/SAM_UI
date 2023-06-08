@@ -38,6 +38,7 @@
             this.ParameterControl_HumidityRatio_Start = new SAM.Core.Mollier.UI.Controls.ParameterControl();
             this.ParameterControl_Airflow = new SAM.Core.Mollier.UI.Controls.ParameterControl();
             this.MollierPointControl_Start = new SAM.Core.Mollier.UI.Controls.MollierPointControl();
+            this.ParameterControl_HumidityRatio_Room = new SAM.Core.Mollier.UI.Controls.ParameterControl();
             this.SuspendLayout();
             // 
             // label2
@@ -145,10 +146,22 @@
             this.MollierPointControl_Start.Size = new System.Drawing.Size(168, 220);
             this.MollierPointControl_Start.TabIndex = 0;
             // 
+            // ParameterControl_HumidityRatio_Room
+            // 
+            this.ParameterControl_HumidityRatio_Room.Location = new System.Drawing.Point(401, 232);
+            this.ParameterControl_HumidityRatio_Room.Name = "ParameterControl_HumidityRatio_Room";
+            this.ParameterControl_HumidityRatio_Room.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_HumidityRatio_Room.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_HumidityRatio_Room.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_HumidityRatio_Room.TabIndex = 23;
+            this.ParameterControl_HumidityRatio_Room.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_HumidityRatio_Room.Value = 0D;
+            // 
             // RoomProcessControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoSize = true;
+            this.Controls.Add(this.ParameterControl_HumidityRatio_Room);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.mollierPointControl_Room);
             this.Controls.Add(this.ParameterControl_SensibleLoadRatio);
@@ -178,5 +191,6 @@
         private ParameterControl ParameterControl_SensibleLoadRatio;
         private System.Windows.Forms.Label label3;
         private MollierPointControl mollierPointControl_Room;
+        private ParameterControl ParameterControl_HumidityRatio_Room;
     }
 }

@@ -12,6 +12,7 @@
                 case ProcessParameterType.DryBulbTemperatureDifference:
                     return Units.UnitCategory.Temperature;
                 case ProcessParameterType.HumidityRatioDifference:
+                case ProcessParameterType.HumidityRatio:
                     return Units.UnitCategory.HumidityRatio;
                 case ProcessParameterType.FlowTemperature:
                     return Units.UnitCategory.Temperature;

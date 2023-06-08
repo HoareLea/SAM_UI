@@ -55,60 +55,23 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        private void SetMollierPoint(MollierPoint value)
+        private void SetMollierPoint(MollierPoint mollierPoint)
         {
-            if(value == null)
+            if(mollierPoint == null)
             {
                 return;
             }
-            double dryBulbTemperature = value.DryBulbTemperature;
-            double relativeHumidity = value.RelativeHumidity;
-            double humidityRatio = value.HumidityRatio;
-            double wetBulbTemperature = value.WetBulbTemperature();
-            double dewPointTemperature = value.DewPointTemperature();
-            double pressure = value.Pressure;
 
-            ChartDataType chartDataType = Core.Query.Enum<ChartDataType>(firstParameter_ComboBox.Text);
-            
-            pressureTextBox.Text = pressure.ToString();
+            ChartDataType chartDataType = ChartDataType.Undefined;
+            double value = double.NaN;
 
-            switch (chartDataType)
-            {
-                case ChartDataType.DryBulbTemperature:
-                    firstParameter_Value.Text = dryBulbTemperature.ToString();
-                    break;
-                case ChartDataType.RelativeHumidity:
-                    firstParameter_Value.Text = relativeHumidity.ToString();
-                    break;
-                case ChartDataType.HumidityRatio:
-                    firstParameter_Value.Text = humidityRatio.ToString();
-                    break;
-                case ChartDataType.DewPointTemperature:
-                    firstParameter_Value.Text = dewPointTemperature.ToString();
-                    break;
-                case ChartDataType.WetBulbTemperature:
-                    firstParameter_Value.Text = wetBulbTemperature.ToString();
-                    break;
-            }
+            chartDataType = Core.Query.Enum<ChartDataType>(firstParameter_ComboBox.Text);
+            value = mollierPoint.Value(chartDataType);
+            firstParameter_Value.Text = double.IsNaN(value ) ? null : Core.Query.Round(value).ToString();
+
             chartDataType = Core.Query.Enum<ChartDataType>(secondParameter_ComboBox.Text);
-            switch (chartDataType)
-            {
-                case ChartDataType.DryBulbTemperature:
-                    secondParameter_Value.Text = dryBulbTemperature.ToString();
-                    break;
-                case ChartDataType.RelativeHumidity:
-                    secondParameter_Value.Text = relativeHumidity.ToString();
-                    break;
-                case ChartDataType.HumidityRatio:
-                    secondParameter_Value.Text = humidityRatio.ToString();
-                    break;
-                case ChartDataType.DewPointTemperature:
-                    secondParameter_Value.Text = dewPointTemperature.ToString();
-                    break;
-                case ChartDataType.WetBulbTemperature:
-                    secondParameter_Value.Text = wetBulbTemperature.ToString();
-                    break;
-            }
+            value = mollierPoint.Value(chartDataType);
+            secondParameter_Value.Text = double.IsNaN(value) ? null : Core.Query.Round(value).ToString();
         }
 
         private MollierPoint GetMollierPoint()
@@ -119,6 +82,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double wetBulbTemperature = double.NaN;
             double dewPointTemperature = double.NaN;
             double pressure = Standard.Pressure;
+            
             ChartDataType chartDataType = Core.Query.Enum<ChartDataType>(firstParameter_ComboBox.Text);
             if (firstParameter_ComboBox.Visible)
             {
@@ -141,6 +105,7 @@ namespace SAM.Core.Mollier.UI.Controls
                         break;
                 }
             }
+            
             chartDataType = Core.Query.Enum<ChartDataType>(secondParameter_ComboBox.Text);
             if (secondParameter_ComboBox.Visible)
             {
@@ -163,11 +128,14 @@ namespace SAM.Core.Mollier.UI.Controls
                         break;
                 }
             }
+
             Core.Query.TryConvert(pressureTextBox.Text, out pressure);
+            
             if (!double.IsNaN(humidityRatio))
             {
                 humidityRatio /= 1000;
             }
+
             MollierPoint result = Query.MollierPointByTwoParameters(pressure: pressure, humidityRatio: humidityRatio, dryBulbTemperature: dryBulbTemperature, relativeHumidity: relativeHumidity, wetBulbTemperature: wetBulbTemperature, dewPointTemperature: dewPointTemperature);
 
             return result;
