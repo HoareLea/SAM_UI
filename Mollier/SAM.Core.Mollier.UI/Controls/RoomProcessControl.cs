@@ -138,10 +138,10 @@ namespace SAM.Core.Mollier.UI.Controls
 
         public void CalculateRoomMollierPoint()
         {
-            UndefinedProcess undefinedProcess = GetUndefinedProcess();
+            MollierPoint mollierPoint = GetUndefinedProcess()?.End;
 
-            mollierPointControl_Room.MollierPoint = undefinedProcess.End;
-            ParameterControl_HumidityRatio_Room.Value = Core.Query.Round(undefinedProcess.End.HumidityRatio * 1000, Tolerance.MacroDistance);
+            mollierPointControl_Room.MollierPoint = mollierPoint;
+            ParameterControl_HumidityRatio_Room.Value = mollierPoint == null ? double.NaN : Core.Query.Round(mollierPoint.HumidityRatio * 1000, Tolerance.MacroDistance);
         }
 
         public MollierPoint StartMollierPoint
