@@ -58,7 +58,7 @@
             this.MollierChart.Series.Add(series1);
             this.MollierChart.Size = new System.Drawing.Size(816, 588);
             this.MollierChart.TabIndex = 0;
-            this.MollierChart.Text = "chart1";
+            this.MollierChart.Text = "Mollier Chart";
             this.MollierChart.MouseClick += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseClick);
             this.MollierChart.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseDown);
             this.MollierChart.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MollierChart_MouseMove);
