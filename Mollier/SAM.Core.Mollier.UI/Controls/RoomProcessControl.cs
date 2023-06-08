@@ -74,7 +74,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(sensible / (sensible + latent), Tolerance.MacroDistance);
+            ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(sensible / (System.Math.Abs(sensible) + System.Math.Abs(latent)), Tolerance.MacroDistance);
         }
 
         private void MollierPointControl_Start_ValueHanged(object sender, System.EventArgs e)
