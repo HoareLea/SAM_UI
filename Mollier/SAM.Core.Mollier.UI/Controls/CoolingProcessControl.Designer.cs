@@ -33,7 +33,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.flowLayoutPanel_Main = new System.Windows.Forms.FlowLayoutPanel();
             this.MollierPointControl_Start = new SAM.Core.Mollier.UI.Controls.MollierPointControl();
-            this.optionButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -83,24 +82,15 @@
             // 
             this.MollierPointControl_Start.Location = new System.Drawing.Point(0, 23);
             this.MollierPointControl_Start.Name = "MollierPointControl_Start";
+            this.MollierPointControl_Start.Pressure = 101325D;
+            this.MollierPointControl_Start.PressureVisible = true;
+            this.MollierPointControl_Start.SelectMollierPointVisible = false;
             this.MollierPointControl_Start.Size = new System.Drawing.Size(199, 220);
             this.MollierPointControl_Start.TabIndex = 10;
-            // 
-            // optionButton
-            // 
-            this.optionButton.Location = new System.Drawing.Point(178, 0);
-            this.optionButton.Name = "optionButton";
-            this.optionButton.Size = new System.Drawing.Size(33, 23);
-            this.optionButton.TabIndex = 12;
-            this.optionButton.Text = "...";
-            this.optionButton.UseVisualStyleBackColor = true;
-            this.optionButton.Visible = false;
-            this.optionButton.Click += new System.EventHandler(this.optionButton_Click);
             // 
             // CoolingProcessControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.Controls.Add(this.optionButton);
             this.Controls.Add(this.MollierPointControl_Start);
             this.Controls.Add(this.flowLayoutPanel_Main);
             this.Controls.Add(this.label2);
@@ -120,6 +110,5 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel_Main;
         private MollierPointControl MollierPointControl_Start;
-        private System.Windows.Forms.Button optionButton;
     }
 }

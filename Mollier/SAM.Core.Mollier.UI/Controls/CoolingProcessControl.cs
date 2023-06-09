@@ -9,8 +9,6 @@ namespace SAM.Core.Mollier.UI.Controls
     public partial class CoolingProcessControl : UserControl, IMollierProcessControl
     {
         private MollierForm mollierForm;
-        
-        private MollierControl mollierControl;
 
         public event SelectMollierPointEventHandler SelectMollierPoint;
 
@@ -18,16 +16,8 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             InitializeComponent();
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
-        }
 
-        public CoolingProcessControl(MollierControl mollierControl)
-        {
-            InitializeComponent();
-
-            processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
-            this.mollierControl = mollierControl;
-
-            MollierPointControl_Start.SelectMollierPoint += MollierPointControl_Start_SelectMollierPoint; ;
+            MollierPointControl_Start.SelectMollierPoint += MollierPointControl_Start_SelectMollierPoint;
         }
 
         private void MollierPointControl_Start_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
@@ -111,6 +101,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 MollierPointControl_Start.SelectMollierPointVisible = value != null;
             }
         }
+
         private void processCalculateType_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);
@@ -126,27 +117,6 @@ namespace SAM.Core.Mollier.UI.Controls
             foreach (Control control in controls)
             {
                 flowLayoutPanel_Main.Controls.Add(control);
-            }
-        }
-
-        private void optionButton_Click(object sender, EventArgs e)
-        {
-
-            if(mollierControl == null)
-            {
-                return;
-            }
-            using(PointListOptionForm pointListOptionForm = new PointListOptionForm(mollierControl))
-            {
-                if(pointListOptionForm.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                MollierPoint mollierPoint_Temp = pointListOptionForm.MollierPoint;
-                if(mollierPoint_Temp != null)
-                {
-                    MollierPointControl_Start.MollierPoint = mollierPoint_Temp;
-                }
             }
         }
     }

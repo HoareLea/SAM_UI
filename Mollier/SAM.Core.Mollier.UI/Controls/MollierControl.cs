@@ -2482,9 +2482,9 @@ namespace SAM.Core.Mollier.UI.Controls
             double chartX = MollierChart.ChartAreas[0].AxisX.PixelPositionToValue(x);
             double chartY = MollierChart.ChartAreas[0].AxisY.PixelPositionToValue(y);
 
-            double dryBulbTemperature = mollierControlSettings.ChartType == ChartType.Mollier ? chartY : chartX;
             double humidityRatio = mollierControlSettings.ChartType == ChartType.Mollier ? chartX / 1000 : chartY;
-            
+            double dryBulbTemperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DryBulbTemperature_ByDiagramTemperature(chartY, humidityRatio) : chartX;
+
             MollierPoint result = new MollierPoint(dryBulbTemperature, humidityRatio, mollierControlSettings.Pressure);
             return result;
         }
