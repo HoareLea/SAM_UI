@@ -28,8 +28,8 @@
                     return Units.UnitCategory.Efficiency;
                 case ProcessParameterType.RelativeHumidity:
                     return Units.UnitCategory.RelativeHumidity;
-                case ProcessParameterType.EnthalpyDifference:
-                    return Units.UnitCategory.Undefined;
+                case ProcessParameterType.SpecificEnthalpyDifference:
+                    return Units.UnitCategory.SpecificEnthaply;
                 case ProcessParameterType.Load:
                     return Units.UnitCategory.Power;
                 case ProcessParameterType.Undefined:

@@ -50,8 +50,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     double dryBulbTemperature = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.DryBulbTemperature);
                     mollierProcess = Mollier.Create.HeatingProcess(start, dryBulbTemperature);
                     break;
-                case ProcessCalculationType.EnthalpyDifference:
-                    double enthalpyDifference = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.EnthalpyDifference);
+                case ProcessCalculationType.SpecificEnthalpyDifference:
+                    double enthalpyDifference = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.SpecificEnthalpyDifference);
                     mollierProcess = Mollier.Create.HeatingProcess_ByEnthalpyDifference(start, enthalpyDifference * 1000);//because input in kJ
                     break;
                 case ProcessCalculationType.DryBulbTemperatureDifference:

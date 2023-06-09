@@ -15,8 +15,8 @@ namespace SAM.Core.Mollier.UI
                     return new List<ProcessParameterType>() { ProcessParameterType.DryBulbTemperatureDifference };
                 case ProcessCalculationType.HumidityRatioDifference:
                     return new List<ProcessParameterType>() { ProcessParameterType.HumidityRatioDifference };
-                case ProcessCalculationType.EnthalpyDifference:
-                    return new List<ProcessParameterType>() { ProcessParameterType.EnthalpyDifference };
+                case ProcessCalculationType.SpecificEnthalpyDifference:
+                    return new List<ProcessParameterType>() { ProcessParameterType.SpecificEnthalpyDifference };
                 case ProcessCalculationType.MediumAndDryBulbTemperature:
                     return new List<ProcessParameterType>() { ProcessParameterType.FlowTemperature, ProcessParameterType.ReturnTemperature, ProcessParameterType.DryBulbTemperature };
                 case ProcessCalculationType.MediumAndEfficiency:

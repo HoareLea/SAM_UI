@@ -28,80 +28,43 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.firstParameter_Value = new System.Windows.Forms.TextBox();
-            this.secondParameter_ComboBox = new System.Windows.Forms.ComboBox();
-            this.secondParameter_Value = new System.Windows.Forms.TextBox();
-            this.firstParameter_ComboBox = new System.Windows.Forms.ComboBox();
-            this.pressureTextBox = new System.Windows.Forms.TextBox();
+            this.ComboBox_SecondParameter = new System.Windows.Forms.ComboBox();
+            this.ComboBox_FirstParameter = new System.Windows.Forms.ComboBox();
             this.Label_Pressure = new System.Windows.Forms.Label();
-            this.firstUnitLabel = new System.Windows.Forms.Label();
-            this.secondUnitLabel = new System.Windows.Forms.Label();
-            this.pressureUnitLabel = new System.Windows.Forms.Label();
+            this.Label_FirstParameterUnit = new System.Windows.Forms.Label();
+            this.Label_SecondParameterUnit = new System.Windows.Forms.Label();
+            this.Label_PressureUnit = new System.Windows.Forms.Label();
             this.Button_SelectMollierPoint = new System.Windows.Forms.Button();
+            this.NumberBoxControl_SecondParameter = new SAM.Core.Windows.NumberBoxControl();
+            this.NumberBoxControl_FirstParameter = new SAM.Core.Windows.NumberBoxControl();
+            this.NumberBoxControl_Pressure = new SAM.Core.Windows.NumberBoxControl();
             this.SuspendLayout();
             // 
-            // firstParameter_Value
+            // ComboBox_SecondParameter
             // 
-            this.firstParameter_Value.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ComboBox_SecondParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.firstParameter_Value.Location = new System.Drawing.Point(0, 96);
-            this.firstParameter_Value.Name = "firstParameter_Value";
-            this.firstParameter_Value.Size = new System.Drawing.Size(104, 22);
-            this.firstParameter_Value.TabIndex = 0;
-            this.firstParameter_Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.firstParameter_Value.TextChanged += new System.EventHandler(this.firstParameter_Value_TextChanged);
-            this.firstParameter_Value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.firstParameter_Value_KeyPress);
+            this.ComboBox_SecondParameter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBox_SecondParameter.FormattingEnabled = true;
+            this.ComboBox_SecondParameter.Location = new System.Drawing.Point(0, 137);
+            this.ComboBox_SecondParameter.Name = "ComboBox_SecondParameter";
+            this.ComboBox_SecondParameter.Size = new System.Drawing.Size(152, 24);
+            this.ComboBox_SecondParameter.TabIndex = 1;
+            this.ComboBox_SecondParameter.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SecondParameter_SelectedIndexChanged);
+            this.ComboBox_SecondParameter.Click += new System.EventHandler(this.ComboBox_SecondParameter_Click);
             // 
-            // secondParameter_ComboBox
+            // ComboBox_FirstParameter
             // 
-            this.secondParameter_ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.ComboBox_FirstParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.secondParameter_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.secondParameter_ComboBox.FormattingEnabled = true;
-            this.secondParameter_ComboBox.Location = new System.Drawing.Point(0, 137);
-            this.secondParameter_ComboBox.Name = "secondParameter_ComboBox";
-            this.secondParameter_ComboBox.Size = new System.Drawing.Size(152, 24);
-            this.secondParameter_ComboBox.TabIndex = 1;
-            this.secondParameter_ComboBox.SelectedIndexChanged += new System.EventHandler(this.secondParameter_ComboBox_SelectedIndexChanged);
-            this.secondParameter_ComboBox.Click += new System.EventHandler(this.secondParameter_ComboBox_Click);
-            // 
-            // secondParameter_Value
-            // 
-            this.secondParameter_Value.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.secondParameter_Value.Location = new System.Drawing.Point(0, 164);
-            this.secondParameter_Value.Name = "secondParameter_Value";
-            this.secondParameter_Value.Size = new System.Drawing.Size(104, 22);
-            this.secondParameter_Value.TabIndex = 2;
-            this.secondParameter_Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.secondParameter_Value.TextChanged += new System.EventHandler(this.secondParameter_Value_TextChanged);
-            this.secondParameter_Value.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.secondParameter_Value_KeyPress);
-            // 
-            // firstParameter_ComboBox
-            // 
-            this.firstParameter_ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.firstParameter_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.firstParameter_ComboBox.FormattingEnabled = true;
-            this.firstParameter_ComboBox.Location = new System.Drawing.Point(0, 69);
-            this.firstParameter_ComboBox.Name = "firstParameter_ComboBox";
-            this.firstParameter_ComboBox.Size = new System.Drawing.Size(152, 24);
-            this.firstParameter_ComboBox.TabIndex = 3;
-            this.firstParameter_ComboBox.SelectedIndexChanged += new System.EventHandler(this.firstParameter_ComboBox_SelectedIndexChanged);
-            this.firstParameter_ComboBox.Click += new System.EventHandler(this.firstParameter_ComboBox_Click);
-            // 
-            // pressureTextBox
-            // 
-            this.pressureTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pressureTextBox.Location = new System.Drawing.Point(3, 33);
-            this.pressureTextBox.Name = "pressureTextBox";
-            this.pressureTextBox.Size = new System.Drawing.Size(101, 22);
-            this.pressureTextBox.TabIndex = 4;
-            this.pressureTextBox.Text = "101325";
-            this.pressureTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.pressureTextBox.TextChanged += new System.EventHandler(this.pressureTextBox_TextChanged);
-            this.pressureTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.pressureTextBox_KeyPress);
+            this.ComboBox_FirstParameter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ComboBox_FirstParameter.FormattingEnabled = true;
+            this.ComboBox_FirstParameter.Location = new System.Drawing.Point(0, 69);
+            this.ComboBox_FirstParameter.Name = "ComboBox_FirstParameter";
+            this.ComboBox_FirstParameter.Size = new System.Drawing.Size(152, 24);
+            this.ComboBox_FirstParameter.TabIndex = 3;
+            this.ComboBox_FirstParameter.SelectedIndexChanged += new System.EventHandler(this.ComboBox_FirstParameter_SelectedIndexChanged);
+            this.ComboBox_FirstParameter.Click += new System.EventHandler(this.ComboBox_FirstParameter_Click);
             // 
             // Label_Pressure
             // 
@@ -114,38 +77,38 @@
             this.Label_Pressure.TabIndex = 5;
             this.Label_Pressure.Text = "Pressure";
             // 
-            // firstUnitLabel
+            // Label_FirstParameterUnit
             // 
-            this.firstUnitLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.firstUnitLabel.AutoSize = true;
-            this.firstUnitLabel.Location = new System.Drawing.Point(110, 96);
-            this.firstUnitLabel.Name = "firstUnitLabel";
-            this.firstUnitLabel.Size = new System.Drawing.Size(42, 17);
-            this.firstUnitLabel.TabIndex = 6;
-            this.firstUnitLabel.Text = "kg/kg";
-            this.firstUnitLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Label_FirstParameterUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Label_FirstParameterUnit.AutoSize = true;
+            this.Label_FirstParameterUnit.Location = new System.Drawing.Point(110, 102);
+            this.Label_FirstParameterUnit.Name = "Label_FirstParameterUnit";
+            this.Label_FirstParameterUnit.Size = new System.Drawing.Size(42, 17);
+            this.Label_FirstParameterUnit.TabIndex = 6;
+            this.Label_FirstParameterUnit.Text = "kg/kg";
+            this.Label_FirstParameterUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // secondUnitLabel
+            // Label_SecondParameterUnit
             // 
-            this.secondUnitLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.secondUnitLabel.AutoSize = true;
-            this.secondUnitLabel.Location = new System.Drawing.Point(110, 167);
-            this.secondUnitLabel.Name = "secondUnitLabel";
-            this.secondUnitLabel.Size = new System.Drawing.Size(42, 17);
-            this.secondUnitLabel.TabIndex = 7;
-            this.secondUnitLabel.Text = "kg/kg";
-            this.secondUnitLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Label_SecondParameterUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Label_SecondParameterUnit.AutoSize = true;
+            this.Label_SecondParameterUnit.Location = new System.Drawing.Point(110, 170);
+            this.Label_SecondParameterUnit.Name = "Label_SecondParameterUnit";
+            this.Label_SecondParameterUnit.Size = new System.Drawing.Size(42, 17);
+            this.Label_SecondParameterUnit.TabIndex = 7;
+            this.Label_SecondParameterUnit.Text = "kg/kg";
+            this.Label_SecondParameterUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // pressureUnitLabel
+            // Label_PressureUnit
             // 
-            this.pressureUnitLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pressureUnitLabel.AutoSize = true;
-            this.pressureUnitLabel.Location = new System.Drawing.Point(110, 36);
-            this.pressureUnitLabel.Name = "pressureUnitLabel";
-            this.pressureUnitLabel.Size = new System.Drawing.Size(25, 17);
-            this.pressureUnitLabel.TabIndex = 8;
-            this.pressureUnitLabel.Text = "Pa";
-            this.pressureUnitLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Label_PressureUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Label_PressureUnit.AutoSize = true;
+            this.Label_PressureUnit.Location = new System.Drawing.Point(113, 36);
+            this.Label_PressureUnit.Name = "Label_PressureUnit";
+            this.Label_PressureUnit.Size = new System.Drawing.Size(25, 17);
+            this.Label_PressureUnit.TabIndex = 8;
+            this.Label_PressureUnit.Text = "Pa";
+            this.Label_PressureUnit.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // Button_SelectMollierPoint
             // 
@@ -159,19 +122,61 @@
             this.Button_SelectMollierPoint.Visible = false;
             this.Button_SelectMollierPoint.Click += new System.EventHandler(this.Button_SelectMollierPoint_Click);
             // 
+            // NumberBoxControl_SecondParameter
+            // 
+            this.NumberBoxControl_SecondParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.NumberBoxControl_SecondParameter.Location = new System.Drawing.Point(0, 167);
+            this.NumberBoxControl_SecondParameter.Name = "NumberBoxControl_SecondParameter";
+            this.NumberBoxControl_SecondParameter.Size = new System.Drawing.Size(104, 22);
+            this.NumberBoxControl_SecondParameter.String_NaN = "";
+            this.NumberBoxControl_SecondParameter.String_NegativeInfinity = "";
+            this.NumberBoxControl_SecondParameter.String_PositiveInfinity = "";
+            this.NumberBoxControl_SecondParameter.TabIndex = 10;
+            this.NumberBoxControl_SecondParameter.Tolerance = 0.001D;
+            this.NumberBoxControl_SecondParameter.Value = double.NaN;
+            // 
+            // NumberBoxControl_FirstParameter
+            // 
+            this.NumberBoxControl_FirstParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.NumberBoxControl_FirstParameter.Location = new System.Drawing.Point(0, 99);
+            this.NumberBoxControl_FirstParameter.Name = "NumberBoxControl_FirstParameter";
+            this.NumberBoxControl_FirstParameter.Size = new System.Drawing.Size(104, 22);
+            this.NumberBoxControl_FirstParameter.String_NaN = "";
+            this.NumberBoxControl_FirstParameter.String_NegativeInfinity = "";
+            this.NumberBoxControl_FirstParameter.String_PositiveInfinity = "";
+            this.NumberBoxControl_FirstParameter.TabIndex = 11;
+            this.NumberBoxControl_FirstParameter.Tolerance = 0.001D;
+            this.NumberBoxControl_FirstParameter.Value = double.NaN;
+            // 
+            // NumberBoxControl_Pressure
+            // 
+            this.NumberBoxControl_Pressure.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.NumberBoxControl_Pressure.Location = new System.Drawing.Point(3, 33);
+            this.NumberBoxControl_Pressure.Name = "NumberBoxControl_Pressure";
+            this.NumberBoxControl_Pressure.Size = new System.Drawing.Size(104, 22);
+            this.NumberBoxControl_Pressure.String_NaN = "";
+            this.NumberBoxControl_Pressure.String_NegativeInfinity = "";
+            this.NumberBoxControl_Pressure.String_PositiveInfinity = "";
+            this.NumberBoxControl_Pressure.TabIndex = 12;
+            this.NumberBoxControl_Pressure.Tolerance = 0.001D;
+            this.NumberBoxControl_Pressure.Value = double.NaN;
+            // 
             // MollierPointControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Controls.Add(this.NumberBoxControl_Pressure);
+            this.Controls.Add(this.NumberBoxControl_FirstParameter);
+            this.Controls.Add(this.NumberBoxControl_SecondParameter);
             this.Controls.Add(this.Button_SelectMollierPoint);
-            this.Controls.Add(this.pressureUnitLabel);
-            this.Controls.Add(this.secondUnitLabel);
-            this.Controls.Add(this.firstUnitLabel);
+            this.Controls.Add(this.Label_PressureUnit);
+            this.Controls.Add(this.Label_SecondParameterUnit);
+            this.Controls.Add(this.Label_FirstParameterUnit);
             this.Controls.Add(this.Label_Pressure);
-            this.Controls.Add(this.pressureTextBox);
-            this.Controls.Add(this.firstParameter_ComboBox);
-            this.Controls.Add(this.secondParameter_Value);
-            this.Controls.Add(this.secondParameter_ComboBox);
-            this.Controls.Add(this.firstParameter_Value);
+            this.Controls.Add(this.ComboBox_FirstParameter);
+            this.Controls.Add(this.ComboBox_SecondParameter);
             this.Name = "MollierPointControl";
             this.Size = new System.Drawing.Size(155, 200);
             this.ResumeLayout(false);
@@ -180,16 +185,15 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox firstParameter_Value;
-        private System.Windows.Forms.ComboBox secondParameter_ComboBox;
-        private System.Windows.Forms.TextBox secondParameter_Value;
-        private System.Windows.Forms.ComboBox firstParameter_ComboBox;
-        private System.Windows.Forms.TextBox pressureTextBox;
+        private System.Windows.Forms.ComboBox ComboBox_SecondParameter;
+        private System.Windows.Forms.ComboBox ComboBox_FirstParameter;
         private System.Windows.Forms.Label Label_Pressure;
-        private System.Windows.Forms.Label firstUnitLabel;
-        private System.Windows.Forms.Label secondUnitLabel;
-        private System.Windows.Forms.Label pressureUnitLabel;
+        private System.Windows.Forms.Label Label_FirstParameterUnit;
+        private System.Windows.Forms.Label Label_SecondParameterUnit;
+        private System.Windows.Forms.Label Label_PressureUnit;
         private System.Windows.Forms.Button Button_SelectMollierPoint;
+        private SAM.Core.Windows.NumberBoxControl NumberBoxControl_SecondParameter;
+        private Windows.NumberBoxControl NumberBoxControl_FirstParameter;
+        private Windows.NumberBoxControl NumberBoxControl_Pressure;
     }
 }

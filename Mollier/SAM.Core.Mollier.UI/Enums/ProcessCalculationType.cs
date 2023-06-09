@@ -8,7 +8,7 @@ namespace SAM.Core.Mollier.UI
         [Description("Undefined")] Undefined,
         [Description("Dry Bulb Temperature")] DryBulbTemperature,
         [Description("Dry Bulb Temperature Difference")] DryBulbTemperatureDifference,
-        [Description("Enthalpy Difference")] EnthalpyDifference,
+        [Description("Enthalpy Difference")] SpecificEnthalpyDifference,
         [Description("Relative Humidity")] RelativeHumidity,
         [Description("Humidity Ratio Difference")] HumidityRatioDifference,  
         [Description("Medium and Dry Bulb Temperature")] MediumAndDryBulbTemperature,
