@@ -939,7 +939,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 createSeries_ProcessesPoints(end, UI_MollierProcess, chartType, toolTipName: UI_MollierProcess.End_Label);
                 //add start and end point to the process series
                 int index;
-                series.ToolTip = ToolTipProcess(start, end, chartType, Query.FullProcessName(UI_MollierProcess));
+                series.ToolTip = Query.ToolTipText(start, end, chartType, Query.FullProcessName(UI_MollierProcess));
                 index = chartType == ChartType.Mollier ? series.Points.AddXY(start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start)) : series.Points.AddXY(start.DryBulbTemperature, start.HumidityRatio);
                 series.Points[index].Tag = start;
                 index = chartType == ChartType.Mollier ? series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end)) : series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
@@ -1062,7 +1062,7 @@ namespace SAM.Core.Mollier.UI.Controls
             series.Points[index].Tag = start;
             index = mollierControlSettings.ChartType == ChartType.Mollier ? series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end)) : series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
             series.Points[index].Tag = end;
-            series.ToolTip = ToolTipProcess(start, end, mollierControlSettings.ChartType, Query.FullProcessName(UI_MollierProcess));
+            series.ToolTip = Query.ToolTipText(start, end, mollierControlSettings.ChartType, Query.FullProcessName(UI_MollierProcess));
 
             //creating series for Room air condition point 
             Series seriesRoomPoint = MollierChart.Series.Add(Guid.NewGuid().ToString());
@@ -1702,26 +1702,7 @@ namespace SAM.Core.Mollier.UI.Controls
             ColorPoints(mollierControlSettings.FindPoint, mollierControlSettings.Percent, mollierControlSettings.FindPointType);
         }
 
-        private string ToolTipProcess(MollierPoint start, MollierPoint end, ChartType chartType, string toolTipName = null)
-        {
-            if (start == null || end == null)
-            {
-                return null;
-            }
-            string mask = "Δt = {0} °C\nΔx = {1} {3}\nΔh = {2} kJ/kg";
-            if (toolTipName != null && toolTipName != "")
-            {
-                mask = toolTipName + "\nΔt = {0} °C\nΔx = {1} {3}\nΔh = {2} kJ/kg";
-            }
-            switch (chartType)
-            {
-                case ChartType.Mollier:
-                    return String.Format(mask, System.Math.Round(System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), 2), System.Math.Round(System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2), 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg");
-                case ChartType.Psychrometric:
-                    return String.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round(System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5), 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "kg/kg");
-            }
-            return null;
-        }
+
 
         public List<MollierPoint> AddPoints(IEnumerable<MollierPoint> mollierPoints, bool checkPressure = true)
         {
