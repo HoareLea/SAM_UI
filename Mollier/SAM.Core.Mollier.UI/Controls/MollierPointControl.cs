@@ -13,6 +13,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
         public event EventHandler ValueHanged;
 
+        private MollierPoint mollierPoint;
+
         public MollierPointControl()
         {
             InitializeComponent();
@@ -185,6 +187,9 @@ namespace SAM.Core.Mollier.UI.Controls
 
             }
             updateLabel(firstParameter_ComboBox, firstUnitLabel);
+
+            SetMollierPoint(mollierPoint);
+            mollierPoint = null;
         }
 
         private void secondParameter_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -208,6 +213,9 @@ namespace SAM.Core.Mollier.UI.Controls
             firstParameter_ComboBox.Text = text;
             this.firstParameter_ComboBox.SelectedIndexChanged += new EventHandler(firstParameter_ComboBox_SelectedIndexChanged);
             updateLabel(secondParameter_ComboBox, secondUnitLabel);
+
+            SetMollierPoint(mollierPoint);
+            mollierPoint = null;
 
         }
 
@@ -330,6 +338,16 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 pressureTextBox.Text = value.ToString();
             }
+        }
+
+        private void secondParameter_ComboBox_Click(object sender, EventArgs e)
+        {
+            mollierPoint = GetMollierPoint();
+        }
+
+        private void firstParameter_ComboBox_Click(object sender, EventArgs e)
+        {
+            mollierPoint = GetMollierPoint();
         }
     }
 }

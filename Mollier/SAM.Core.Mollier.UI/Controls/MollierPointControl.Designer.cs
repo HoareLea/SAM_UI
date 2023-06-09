@@ -63,6 +63,7 @@
             this.secondParameter_ComboBox.Size = new System.Drawing.Size(152, 24);
             this.secondParameter_ComboBox.TabIndex = 1;
             this.secondParameter_ComboBox.SelectedIndexChanged += new System.EventHandler(this.secondParameter_ComboBox_SelectedIndexChanged);
+            this.secondParameter_ComboBox.Click += new System.EventHandler(this.secondParameter_ComboBox_Click);
             // 
             // secondParameter_Value
             // 
@@ -87,6 +88,7 @@
             this.firstParameter_ComboBox.Size = new System.Drawing.Size(152, 24);
             this.firstParameter_ComboBox.TabIndex = 3;
             this.firstParameter_ComboBox.SelectedIndexChanged += new System.EventHandler(this.firstParameter_ComboBox_SelectedIndexChanged);
+            this.firstParameter_ComboBox.Click += new System.EventHandler(this.firstParameter_ComboBox_Click);
             // 
             // pressureTextBox
             // 
