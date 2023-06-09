@@ -169,41 +169,45 @@ namespace SAM.Core.Mollier.UI
                 pressure = 101235;
             }
 
-            return Mollier.Create.MollierPoint_ByRelativeHumidity(35, 50, pressure);
+            double dryBulbTemperature = 35;
+            double relativeHumidity = 50;
+
+            if(previousMollierPoint != null)
+            {
+                if(!double.IsNaN(previousMollierPoint.DryBulbTemperature))
+                {
+                    dryBulbTemperature = previousMollierPoint.DryBulbTemperature;
+                }
+
+                if (!double.IsNaN(previousMollierPoint.RelativeHumidity))
+                {
+                    relativeHumidity = previousMollierPoint.RelativeHumidity;
+                }
+            }
+
+            return Mollier.Create.MollierPoint_ByRelativeHumidity(dryBulbTemperature, relativeHumidity, pressure);
         }
 
         //operation of the add process and add point buttons
         private void Button_AddPoint_Click(object sender, EventArgs e)
         {
-            if(previousMollierPoint == null)
-            {
-                previousMollierPoint = GetMollierPoint();
-            }
-
             using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
             {
-                mollierPointForm.MollierPoint = previousMollierPoint;
+                mollierPointForm.MollierPoint = GetMollierPoint();
 
                 DialogResult dialogResult = mollierPointForm.ShowDialog();
                 if (dialogResult != DialogResult.OK)
                 {
                     return;
                 }
-                MollierPoint mollierPoint = mollierPointForm.MollierPoint;
-                previousMollierPoint = mollierPoint;
-                List<MollierPoint> mollierPoints = new List<MollierPoint>();
-                mollierPoints.Add(mollierPoint);
-                MollierControl_Main.AddPoints(mollierPoints);
+
+                previousMollierPoint = mollierPointForm.MollierPoint;
+                MollierControl_Main.AddPoints(new MollierPoint[] { previousMollierPoint });
             }
         }
         
         private void Button_AddProcess_Click(object sender, EventArgs e)
         {
-            if (previousMollierPoint == null)
-            {
-                previousMollierPoint = GetMollierPoint();
-            }
-
             if(mollierProcessForm == null)
             {
                 mollierProcessForm = new Forms.MollierProcessForm();
@@ -211,7 +215,7 @@ namespace SAM.Core.Mollier.UI
                 mollierProcessForm.FormClosing += MollierProcessForm_FormClosing;
             }
 
-            mollierProcessForm.PreviousMollierPoint = previousMollierPoint;
+            mollierProcessForm.PreviousMollierPoint = GetMollierPoint();
             mollierProcessForm.Show();          
         }
 

@@ -86,6 +86,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 mollierForm = value;
                 MollierPointControl_FirstPoint.SelectMollierPointVisible = value != null;
                 MollierPointControl_SecondPoint.SelectMollierPointVisible = value != null;
+                MollierPointControl_FirstPoint.PressureEnabled = value == null;
+                MollierPointControl_SecondPoint.PressureEnabled = value == null;
             }
         }
 

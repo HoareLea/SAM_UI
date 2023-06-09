@@ -64,6 +64,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
+            pressureTextBox.Text = double.IsNaN(mollierPoint.Pressure) ? null : mollierPoint.Pressure.ToString();
+
             ChartDataType chartDataType = ChartDataType.Undefined;
             double value = double.NaN;
 
@@ -311,6 +313,19 @@ namespace SAM.Core.Mollier.UI.Controls
                 Label_Pressure.Visible = value;
                 pressureTextBox.Visible = value;
                 pressureUnitLabel.Visible = value;
+            }
+        }
+
+        public bool PressureEnabled
+        {
+            get
+            {
+                return pressureTextBox.Enabled;
+            }
+
+            set
+            {
+                pressureTextBox.Enabled = value;
             }
         }
 
