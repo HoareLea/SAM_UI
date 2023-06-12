@@ -6,6 +6,7 @@ using System.Drawing;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
 using System.Windows.Forms;
+using Grasshopper.Kernel.Data;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
@@ -167,10 +168,24 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
-            IMollierProcess mollierProcess = null;
+            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
             foreach(IGH_Param gH_Param in Params.Output)
             {
+                GooMollierProcessParam gooMollierProcessParam = gH_Param as GooMollierProcessParam;
+                if(gooMollierProcessParam == null)
+                {
+                    continue;
+                }
 
+                IGH_Structure gH_Structure = gooMollierProcessParam.VolatileData;
+                foreach(object @object in gH_Structure.AllData(true))
+                {
+                    IMollierProcess mollierProcess_Temp = (@object as GooMollierProcess)?.Value;
+                    if(mollierProcess_Temp != null)
+                    {
+                        mollierProcesses.Add(mollierProcess_Temp);
+                    }
+                }
             }
 
             if(mollierForm == null)
@@ -181,9 +196,9 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             mollierForm.Clear();
 
 
-            if(mollierProcess != null)
+            if(mollierProcesses != null && mollierProcesses.Count != 0)
             {
-                mollierForm.AddProcesses(new IMollierProcess[] { mollierProcess }, false);
+                mollierForm.AddProcesses(mollierProcesses, false);
             }
 
             mollierForm.Show();
