@@ -5,12 +5,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
-using System.Windows.Forms;
-using Grasshopper.Kernel.Data;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
-    public class SAMMollierCreateRoomProcess : GH_SAMVariableOutputParameterComponent
+    public class SAMMollierCreateRoomProcess : MollierDiagramComponent
     {
         private MollierForm mollierForm = null;
 
@@ -22,7 +20,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.0";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -152,56 +150,9 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
         }
 
-        public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
+        protected override IEnumerable<IGH_Param> GetMollierDiagramParameters()
         {
-            Menu_AppendItem(menu, "Open Mollier Diagram", Menu_OpenMollierDiagram);
-
-            //Menu_AppendSeparator(menu);
-
-            base.AppendAdditionalMenuItems(menu);
-        }
-
-        private void Menu_OpenMollierDiagram(object sender, EventArgs e)
-        {
-            if(Params?.Output == null || Params.Output.Count == 0)
-            {
-                return;
-            }
-
-            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
-            foreach(IGH_Param gH_Param in Params.Output)
-            {
-                GooMollierProcessParam gooMollierProcessParam = gH_Param as GooMollierProcessParam;
-                if(gooMollierProcessParam == null)
-                {
-                    continue;
-                }
-
-                IGH_Structure gH_Structure = gooMollierProcessParam.VolatileData;
-                foreach(object @object in gH_Structure.AllData(true))
-                {
-                    IMollierProcess mollierProcess_Temp = (@object as GooMollierProcess)?.Value;
-                    if(mollierProcess_Temp != null)
-                    {
-                        mollierProcesses.Add(mollierProcess_Temp);
-                    }
-                }
-            }
-
-            if(mollierForm == null)
-            {
-                mollierForm = new MollierForm();
-            }
-
-            mollierForm.Clear();
-
-
-            if(mollierProcesses != null && mollierProcesses.Count != 0)
-            {
-                mollierForm.AddProcesses(mollierProcesses, false);
-            }
-
-            mollierForm.Show();
+            return new IGH_Param[] { Params.Output.Find(x => x.Name == "roomProcess") };
         }
     }
 }

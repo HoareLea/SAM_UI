@@ -78,13 +78,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\MollierDiagramComponent.cs" />
+    <Compile Include="Component\SAMMollierCreateIsotermicHumidificationProcessByHumidityRatioDifference.cs" />
+    <Compile Include="Component\SAMMollierCreateIsotermicHumidificationProcessByRelativeHumidity.cs" />
+    <Compile Include="Component\SAMMollierCreateMixingProcess.cs" />
+    <Compile Include="Component\SAMMollierCreateMollierPoint.cs" />
     <Compile Include="Component\SAMMollierCreateRoomProcess.cs" />
+    <Compile Include="Component\SAMMollierGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\MollierPoints.cs" />
+    <Compile Include="Query\MollierProcesses.cs" />
+    <Compile Include="Component\SAMMollierCreateAdiabaticHumidificationProcessByHumidityRatioDifference.cs" />
+    <Compile Include="Component\SAMMollierCreateAdiabaticHumidificationProcessByRelativeHumidity.cs" />
+    <Compile Include="Component\SAMMollierCreateCoolingProcessByDryBulbTemperature.cs" />
+    <Compile Include="Component\SAMMollierCreateCoolingProcessByEnthalpyDifference.cs" />
+    <Compile Include="Component\SAMMollierCreateCoolingProcessByMedium.cs" />
+    <Compile Include="Component\SAMMollierCreateCoolingProcessByMediumAndDryBulbTemperature.cs" />
+    <Compile Include="Component\SAMMollierCreateCoolingProcessByTemperatureDifference.cs" />
+    <Compile Include="Component\SAMMollierCreateHeatingProcessByDryBulbTemperature.cs" />
+    <Compile Include="Component\SAMMollierCreateHeatingProcessByEnthalpyDifference.cs" />
+    <Compile Include="Component\SAMMollierCreateHeatingProcessByTemperatureDifference.cs" />
+    <Compile Include="Component\SAMMollierCreateHeatRecoveryProcess.cs" />
+    <Compile Include="Component\SAMMollierCreateSteamHumidificationProcessByHumidityRatioDifference.cs" />
+    <Compile Include="SAMMollierCreateSteamHumidificationProcessByRelativeHumidity.cs" />
+    <Compile Include="SAMMollierCreateUndefinedProcess.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
