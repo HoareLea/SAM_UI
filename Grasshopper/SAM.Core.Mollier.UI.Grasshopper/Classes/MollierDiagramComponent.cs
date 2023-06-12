@@ -25,7 +25,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
-            Menu_AppendItem(menu, "Open Mollier Diagram", Menu_OpenMollierDiagram);
+            Menu_AppendItem(menu, "Open Diagram (Mollier-Psychrometric)", Menu_OpenMollierDiagram);
 
             base.AppendAdditionalMenuItems(menu);
         }
@@ -41,6 +41,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             if (mollierForm == null)
             {
                 mollierForm = new MollierForm();
+                mollierForm.FormClosing += MollierForm_FormClosing;
                 mollierForm.MollierControlSettings = GetMollierControlSettings();
             }
 
@@ -60,6 +61,11 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
 
             mollierForm.Show();
+        }
+
+        private void MollierForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            mollierForm = null;
         }
     }
 }

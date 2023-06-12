@@ -10,8 +10,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 {
     public class SAMMollierCreateRoomProcess : MollierDiagramComponent
     {
-        private MollierForm mollierForm = null;
-
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>

@@ -1609,7 +1609,7 @@ namespace SAM.Core.Mollier.UI.Controls
             ChartType chartType = mollierControlSettings.ChartType;
 
             //BASE CHART INITIALIZATION
-            MollierChart.Series.Clear();
+            MollierChart.Series?.Clear();
             ChartArea chartArea = MollierChart.ChartAreas[0];
             ChartArea ca = MollierChart.ChartAreas[0];
             ca.Position = new ElementPosition(2, 2, 95, 95);//define sizes of chart
