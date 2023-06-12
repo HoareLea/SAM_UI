@@ -1,9 +1,11 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
@@ -38,7 +40,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 //curves = new global::Grasshopper.Kernel.Parameters.Param_Curve() { Name = "Mollier Chart", NickName = "Inspect Mollier Lines", Description = "Base of Chart - output from InspectMollierDiagram output ", Access = GH_ParamAccess.list, Optional = true };
                 // result.Add(new GH_SAMParam(curves, ParamVisibility.Binding));
 
-                global::Grasshopper.Kernel.Parameters.Param_Boolean param_Bool = null;
+                Param_Boolean param_Bool = null;
                 param_Bool = new global::Grasshopper.Kernel.Parameters.Param_Boolean() { Name = "_chartType_", NickName = "_chartType_", Description = "Type of the chart: true - Mollier Chart, false - Psychrometric Chart", Access = GH_ParamAccess.item, Optional = true };
                 param_Bool.SetPersistentData(true);
                 result.Add(new GH_SAMParam(param_Bool, ParamVisibility.Binding));
@@ -186,6 +188,26 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             if (gH_Param != null)
             {
                 result.Add(gH_Param);
+            }
+
+            return result;
+        }
+
+        protected override MollierControlSettings GetMollierControlSettings()
+        {
+            MollierControlSettings result = base.GetMollierControlSettings();
+            if(result == null)
+            {
+                return null;
+            }
+
+            IGH_Param gH_Param = Params.Input.Find(x => x.Name == "_chartType_") as IGH_Param;
+            if(gH_Param != null)
+            {
+                if(gH_Param.VolatileData.AllData(true).First().CastTo(out bool chartType))
+                {
+                    result.ChartType = chartType ? ChartType.Mollier : ChartType.Psychrometric;
+                }
             }
 
             return result;

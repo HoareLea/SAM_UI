@@ -18,6 +18,11 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
         protected abstract IEnumerable<IGH_Param> GetMollierDiagramParameters();
 
+        protected virtual MollierControlSettings GetMollierControlSettings()
+        {
+            return new MollierControlSettings();
+        }
+
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
             Menu_AppendItem(menu, "Open Mollier Diagram", Menu_OpenMollierDiagram);
@@ -36,6 +41,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             if (mollierForm == null)
             {
                 mollierForm = new MollierForm();
+                mollierForm.MollierControlSettings = GetMollierControlSettings();
             }
 
             mollierForm.Clear();
