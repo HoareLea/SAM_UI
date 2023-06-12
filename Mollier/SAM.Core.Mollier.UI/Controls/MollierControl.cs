@@ -399,6 +399,11 @@ namespace SAM.Core.Mollier.UI.Controls
             b.Y = chartType == ChartType.Mollier ? series.Points[1].YValues[0] : series.Points[1].YValues[0] * 1000 * range_difference;
 
             Vector2D vector = chartType == ChartType.Mollier ? new Vector2D(a, b) : new Vector2D(a, b);
+            if(Core.Query.AlmostEqual( vector.Length, 0))
+            {
+                return 0;
+            }
+            
             int result = System.Convert.ToInt32(vector.Angle(Vector2D.WorldX) * 180 / System.Math.PI);
 
             return chartType == ChartType.Mollier ? result : 180 - result;
@@ -2286,10 +2291,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 MollierChart.Refresh();
                 return;
             }
-            double x_Min = System.Math.Round(System.Math.Min((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X)));
-            double x_Max = System.Math.Round(System.Math.Max((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X)));
-            double y_Min = System.Math.Round(System.Math.Min((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y)));
-            double y_Max = System.Math.Round(System.Math.Max((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y)));
+            double x_Min = System.Math.Min((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X));
+            double x_Max = System.Math.Max((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X));
+            double y_Min = System.Math.Min((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y));
+            double y_Max = System.Math.Max((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y));
             double x_Difference = x_Max - x_Min;
             double y_Difference = mollierControlSettings.ChartType == ChartType.Mollier ? y_Max - y_Min : (y_Max - y_Min) * 1000;
             if (x_Difference < 1 || y_Difference < 1)
@@ -2302,6 +2307,13 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierControlSettings.HumidityRatio_Max = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Min(x_Max, X_Max) : System.Math.Min(y_Max * 1000, Y_Max);
             mollierControlSettings.Temperature_Min = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Max(y_Min, Y_Min) : System.Math.Max(x_Min, X_Min);
             mollierControlSettings.Temperature_Max = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Min(y_Max, Y_Max) : System.Math.Min(x_Max, X_Max);
+
+            mollierControlSettings.HumidityRatio_Min = System.Math.Round(mollierControlSettings.HumidityRatio_Min);
+            mollierControlSettings.HumidityRatio_Max = System.Math.Round(mollierControlSettings.HumidityRatio_Max);
+            mollierControlSettings.Temperature_Min = System.Math.Round(mollierControlSettings.Temperature_Min);
+            mollierControlSettings.Temperature_Max = System.Math.Round(mollierControlSettings.Temperature_Max);
+
+
             generate_graph();
 
             MollierChart.Refresh();
