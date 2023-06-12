@@ -58,7 +58,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void FiltersControl_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void FiltersControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             filterControl.UIFilter = filtersControl.SelectedUIFilter;
         }

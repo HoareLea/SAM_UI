@@ -69,7 +69,7 @@ namespace SAM.Core.UI.WPF
 
             foreach(T value in values)
             {
-                UpdateValue<T>(value, uniqueIdFunc);
+                UpdateValue(value, uniqueIdFunc);
             }
         }
 

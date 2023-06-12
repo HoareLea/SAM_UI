@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI.WPF
     {
         private System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer() { Interval = new TimeSpan(0, 0, 1) };
 
-        private class ColumnNameAttribute : System.Attribute
+        private class ColumnNameAttribute : Attribute
         {
             public ColumnNameAttribute(string Name) 
             { 
@@ -110,7 +110,7 @@ namespace SAM.Analytical.UI.WPF
             dispatcherTimer.Tick += DispatcherTimer_Tick;
         }
 
-        private void DispatcherTimer_Tick(object sender, System.EventArgs e)
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
         {
             dispatcherTimer.Stop();
             Refresh();

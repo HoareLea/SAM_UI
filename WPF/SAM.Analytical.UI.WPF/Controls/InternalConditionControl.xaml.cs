@@ -390,47 +390,47 @@ namespace SAM.Analytical.UI.WPF
             textBox_OccupancyProfile_CalculatedSensibleGain.Text = double.IsNaN(values[0]) ? null : Core.Query.Round(values[0], 0.01).ToString();
         }
 
-        private void MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGain_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGain_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedEquipmentLatentGain();
         }
 
-        private void MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_EquipmentLatentProfile_LatentGainPerArea_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedEquipmentLatentGain();
         }
 
-        private void MultipleValueComboBoxControl_LightingProfile_LightingGainPerArea_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_LightingProfile_LightingGainPerArea_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedLightingGain();
         }
 
-        private void MultipleValueComboBoxControl_LightingProfile_LightingGain_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_LightingProfile_LightingGain_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedLightingGain();
         }
 
-        private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGain_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedEquipmentSensibleGain();
         }
 
-        private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerArea_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedEquipmentSensibleGain();
         }
 
-        private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_EquipmentSensibleProfile_SensibleGainPerPerson_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedEquipmentSensibleGain();
         }
 
-        private void MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_OccupancyProfile_LatentGainPerPerson_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedOccupancyLatentGain();
         }
 
-        private void MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged(object sender, System.EventArgs e)
+        private void MultipleValueComboBoxControl_OccupancyProfile_SensibleGainPerPerson_TextChanged(object sender, EventArgs e)
         {
             UpdateCalculatedOccupancySensibleGainPerPerson();
         }
@@ -1611,7 +1611,7 @@ namespace SAM.Analytical.UI.WPF
                 index++;
             }
 
-            using (Core.Windows.Forms.TextBoxForm<string> textBoxForm = new Core.Windows.Forms.TextBoxForm<string>("Internal Condition Name", "Name"))
+            using (TextBoxForm<string> textBoxForm = new TextBoxForm<string>("Internal Condition Name", "Name"))
             {
                 textBoxForm.Value = name_Temp;
                 if (textBoxForm.ShowDialog() != DialogResult.OK)

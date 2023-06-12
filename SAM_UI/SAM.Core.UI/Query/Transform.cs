@@ -43,7 +43,7 @@ namespace SAM.Core.UI
                 return result;
             }
 
-            Dictionary<System.Type, List<IRelationFilter>> dictionary = new Dictionary<System.Type, List<IRelationFilter>>();
+            Dictionary<Type, List<IRelationFilter>> dictionary = new Dictionary<Type, List<IRelationFilter>>();
             for (int i = filters.Count - 1; i >= 0; i--)
             {
                 IFilter filter_Temp = Transform(filters[i]);
@@ -59,7 +59,7 @@ namespace SAM.Core.UI
                     continue;
                 }
 
-                System.Type type = relationFilter.GetType();
+                Type type = relationFilter.GetType();
                 if (type == null)
                 {
                     filters.RemoveAt(i);
