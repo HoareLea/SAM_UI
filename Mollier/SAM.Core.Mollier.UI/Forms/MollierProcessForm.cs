@@ -70,10 +70,10 @@ namespace SAM.Core.Mollier.UI.Forms
                 return null;
             }
 
-            result.Color = color;
-            result.Start_Label = start_Label;
-            result.Process_Label = process_Label;
-            result.End_Label = end_Label;
+            result.UIMollierAppearance.Color = color;
+            result.UIMollierAppearance_Start.Label = start_Label;
+            result.UIMollierAppearance.Label = process_Label;
+            result.UIMollierAppearance_End.Label = end_Label;
 
             return result;
         }

@@ -133,7 +133,7 @@ namespace SAM.Geometry.UI
                     continue;
                 }
 
-                result.Add((T)(object)appearance);
+                result.Add((T)appearance);
             }
 
             return result;

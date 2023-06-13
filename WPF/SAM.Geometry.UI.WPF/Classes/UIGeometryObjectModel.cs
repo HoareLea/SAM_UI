@@ -94,7 +94,7 @@ namespace SAM.Geometry.UI.WPF
                 sAMGeometryObjects.ForEach(x => geometryObjectModel_Result.Add(x));
             }
 
-            List<GeometryObjectModel> geometryObjectModels = jSAMObjects_Temp.FindAll(x => x is GeometryObjectModel).ConvertAll(x => (GeometryObjectModel)(object)x);
+            List<GeometryObjectModel> geometryObjectModels = jSAMObjects_Temp.FindAll(x => x is GeometryObjectModel).ConvertAll(x => (GeometryObjectModel)x);
             if (geometryObjectModels != null && geometryObjectModels.Count != 0)
             {
                 foreach (GeometryObjectModel geometryObjectModel in geometryObjectModels)

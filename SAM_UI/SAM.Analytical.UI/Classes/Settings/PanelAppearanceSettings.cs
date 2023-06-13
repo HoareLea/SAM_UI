@@ -11,7 +11,7 @@ namespace SAM.Analytical.UI
         }
 
         public PanelAppearanceSettings(ConstructionAppearanceSettings constructionAppearanceSettings)
-            :base(constructionAppearanceSettings as ValueAppearanceSettings)
+            :base(constructionAppearanceSettings)
         {
 
         }

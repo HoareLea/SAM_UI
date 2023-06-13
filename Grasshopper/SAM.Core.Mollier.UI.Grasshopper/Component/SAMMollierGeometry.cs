@@ -129,8 +129,8 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 }
                 if (process.Value is UIMollierProcess)
                 {
-                    UIMollierProcess process1 = (UIMollierProcess)process.Value;
-                    color = process1.Color;
+                    UIMollierProcess uIMollierProcess = (UIMollierProcess)process.Value;
+                    color = uIMollierProcess.UIMollierAppearance.Color;
                 }
                 MollierPoint point_1 = process.Value.Start;
                 MollierPoint point_2 = process.Value.End;
@@ -201,7 +201,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return null;
             }
 
-            IGH_Param gH_Param = Params.Input.Find(x => x.Name == "_chartType_") as IGH_Param;
+            IGH_Param gH_Param = Params.Input.Find(x => x.Name == "_chartType_");
             if(gH_Param != null)
             {
                 if(gH_Param.VolatileData.AllData(true).First().CastTo(out bool chartType))

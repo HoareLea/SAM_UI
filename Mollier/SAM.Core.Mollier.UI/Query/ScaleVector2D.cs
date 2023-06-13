@@ -15,8 +15,8 @@ namespace SAM.Core.Mollier.UI
             //double widthFactor = 1500, heightFactor = 725; dpi 96
             //double xFactor_2 = 1339 yFactor = 907 120
 
-            double widthFactor = (double)1501 / (double)control.Size.Width;
-            double heigthFactor = (double)723 / (double)control.Size.Height;
+            double widthFactor = 1501 / (double)control.Size.Width;
+            double heigthFactor = 723 / (double)control.Size.Height;
 
 
 
@@ -43,7 +43,7 @@ namespace SAM.Core.Mollier.UI
             {
                 Math.LinearEquation linearEquation = Math.Create.LinearEquation(96.0, 1.0, 120.0, 1.2);
 
-                double constant =  linearEquation.Evaluate((double)control.DeviceDpi);
+                double constant =  linearEquation.Evaluate(control.DeviceDpi);
                 xFactor_Temp *= constant;
                 yFactor_Temp *= constant;
             }

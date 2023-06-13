@@ -918,7 +918,7 @@ namespace SAM.Core.Mollier.UI.Controls
             for (int i = 0; i < mollierProcesses.Count; i++)
             {
                 UIMollierProcess UI_MollierProcess = mollierProcesses[i];//contains all spcified data of the process like color, start label etc.
-                MollierProcess mollierProcess = (MollierProcess)(UI_MollierProcess.MollierProcess);//contains the most important data of the process: only start end point, and what type of process is it 
+                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;//contains the most important data of the process: only start end point, and what type of process is it 
 
                 if (mollierProcess is UndefinedProcess)
                 {
@@ -930,7 +930,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 4;
-                series.Color = (UI_MollierProcess.Color == Color.Empty) ? mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess) : UI_MollierProcess.Color;
+                series.Color = (UI_MollierProcess.UIMollierAppearance.Color == Color.Empty) ? mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess) : UI_MollierProcess.UIMollierAppearance.Color;
                 series.Tag = mollierProcess;
 
                 MollierPoint start = mollierProcess?.Start;
@@ -940,8 +940,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     continue;
                 }
                 //creating series - processes points pattern
-                createSeries_ProcessesPoints(start, UI_MollierProcess, chartType, toolTipName: UI_MollierProcess.Start_Label);
-                createSeries_ProcessesPoints(end, UI_MollierProcess, chartType, toolTipName: UI_MollierProcess.End_Label);
+                createSeries_ProcessesPoints(start, UI_MollierProcess, chartType, toolTipName: UI_MollierProcess.UIMollierAppearance_Start.Label);
+                createSeries_ProcessesPoints(end, UI_MollierProcess, chartType, toolTipName: UI_MollierProcess.UIMollierAppearance_End.Label);
                 //add start and end point to the process series
                 int index;
                 series.ToolTip = Query.ToolTipText(start, end, chartType, Query.FullProcessName(UI_MollierProcess));
@@ -1047,10 +1047,10 @@ namespace SAM.Core.Mollier.UI.Controls
         private void createSeries_RoomProcess(UIMollierProcess UI_MollierProcess)
         {
             //defines the end label of the process
-            MollierProcess mollierProcess = (MollierProcess)(UI_MollierProcess.MollierProcess);
+            MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
             //specified the color of the Room air condition point
             Color color = Color.Orange;
-            color = UI_MollierProcess.Color == Color.Empty ? color : UI_MollierProcess.Color;
+            color = UI_MollierProcess.UIMollierAppearance.Color == Color.Empty ? color : UI_MollierProcess.UIMollierAppearance.Color;
             //creating series for room process
             Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
@@ -1084,7 +1084,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(end) : end.HumidityRatio;
             seriesRoomPoint.Points.AddXY(X, Y);
             seriesRoomPoint.Points[0].ToolTip = Query.ToolTipText(end, mollierControlSettings.ChartType, "ROOM");
-            if (UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
+            if (!string.IsNullOrWhiteSpace(UI_MollierProcess?.UIMollierAppearance_Start?.Label))
             {
                 createSeries_ProcessesPoints(start, UI_MollierProcess, MollierControlSettings.ChartType);
             }
@@ -1105,31 +1105,31 @@ namespace SAM.Core.Mollier.UI.Controls
                 for (int j = 0; j < systems[i].Count; j++)
                 {
                     UIMollierProcess UI_MollierProcess = systems[i][j];
-                    MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
-                    if (UI_MollierProcess.End_Label == "SUP")
+                    MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
+                    if (UI_MollierProcess.UIMollierAppearance_End?.Label == "SUP")
                     {
-                        UI_MollierProcess.End_Label = null;
+                        UI_MollierProcess.UIMollierAppearance_End.Label = null;
                     }
 
 
-                    if (UI_MollierProcess.Start_Label == null && systems[i].Count == 1)
+                    if (UI_MollierProcess.UIMollierAppearance_Start.Label == null && systems[i].Count == 1)
                     {
-                        UI_MollierProcess.Start_Label = name + "1";
+                        UI_MollierProcess.UIMollierAppearance_Start.Label = name + "1";
                     }
-                    else if (UI_MollierProcess.Start_Label == null && j == 0)
+                    else if (UI_MollierProcess.UIMollierAppearance_Start.Label == null && j == 0)
                     {
-                        UI_MollierProcess.Start_Label = "OSA";
+                        UI_MollierProcess.UIMollierAppearance_Start.Label = "OSA";
                     }
-                    if (UI_MollierProcess.End_Label == null && systems[i].Count > 1 && j == systems[i].Count - 2 && systems[i][j + 1].MollierProcess is UndefinedProcess)
+                    if (UI_MollierProcess.UIMollierAppearance_End.Label == null && systems[i].Count > 1 && j == systems[i].Count - 2 && systems[i][j + 1].MollierProcess is UndefinedProcess)
                     {
-                        UI_MollierProcess.End_Label = "SUP";
+                        UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
                     }
-                    else if (UI_MollierProcess.End_Label == null && systems[i].Count > 1 && j == systems[i].Count - 1)
+                    else if (UI_MollierProcess.UIMollierAppearance_End.Label == null && systems[i].Count > 1 && j == systems[i].Count - 1)
                     {
-                        UI_MollierProcess.End_Label = "SUP";
+                        UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
                     }
-                    UI_MollierProcess.Process_Label = UI_MollierProcess.Process_Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.Process_Label;
-                    UI_MollierProcess.End_Label = UI_MollierProcess.End_Label == null ? name + "2" : UI_MollierProcess.End_Label;
+                    UI_MollierProcess.UIMollierAppearance.Label = UI_MollierProcess.UIMollierAppearance.Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.UIMollierAppearance.Label;
+                    UI_MollierProcess.UIMollierAppearance_End.Label = UI_MollierProcess.UIMollierAppearance_End.Label == null ? name + "2" : UI_MollierProcess.UIMollierAppearance_End.Label;
 
                     name++;
                 }
@@ -1143,25 +1143,25 @@ namespace SAM.Core.Mollier.UI.Controls
 
             foreach (UIMollierProcess UI_MollierProcess in mollierProcesses)
             {
-                if (UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
+                if (!string.IsNullOrWhiteSpace(UI_MollierProcess?.UIMollierAppearance_Start?.Label))
                 {
-                    points_list.Add(new Tuple<MollierPoint, string>(UI_MollierProcess.Start, UI_MollierProcess.Start_Label));
+                    points_list.Add(new Tuple<MollierPoint, string>(UI_MollierProcess.Start, UI_MollierProcess.UIMollierAppearance_Start.Label));
                 }
-                if (UI_MollierProcess.End_Label != null && UI_MollierProcess.End_Label != "")
+                if (UI_MollierProcess.UIMollierAppearance_End.Label != null && UI_MollierProcess.UIMollierAppearance_End.Label != "")
                 {
-                    points_list.Add(new Tuple<MollierPoint, string>(UI_MollierProcess.End, UI_MollierProcess.End_Label));
+                    points_list.Add(new Tuple<MollierPoint, string>(UI_MollierProcess.End, UI_MollierProcess.UIMollierAppearance_End.Label));
                 }
 
             }
             points_list?.Sort((x, y) => x.Item1.HumidityRatio.CompareTo(y.Item1.HumidityRatio));
             foreach (UIMollierProcess UI_MollierProcess in mollierProcesses)
             {
-                if (UI_MollierProcess.Process_Label != null && UI_MollierProcess.Process_Label != "")
+                if (UI_MollierProcess.UIMollierAppearance.Label != null && UI_MollierProcess.UIMollierAppearance.Label != "")
                 {
                     double dryBulbTemperature = (UI_MollierProcess.Start.DryBulbTemperature + UI_MollierProcess.End.DryBulbTemperature) / 2;
                     double humdityRatio = (UI_MollierProcess.Start.HumidityRatio + UI_MollierProcess.End.HumidityRatio) / 2;
                     MollierPoint mid = new MollierPoint(dryBulbTemperature, humdityRatio, mollierControlSettings.Pressure);
-                    points_list.Add(new Tuple<MollierPoint, string>(mid, UI_MollierProcess.Process_Label));
+                    points_list.Add(new Tuple<MollierPoint, string>(mid, UI_MollierProcess.UIMollierAppearance.Label));
                 }
             }
             createPorcessesLabels_New_2(points_list);
@@ -1179,7 +1179,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     //1st option right
                     bool is_space = true;
                     //how much move the label 
-                    double moveHumidityRatio = (0.25 + 0.2 * (double)label.Length / 2.0) * vector2D.X;
+                    double moveHumidityRatio = (0.25 + 0.2 * label.Length / 2.0) * vector2D.X;
                     double moveTemperature = -1.4 * vector2D.Y;
                     //mollier point moved  riBght, top, left, down
                     MollierPoint mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
@@ -1221,7 +1221,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     else
                     {
                         is_space = true;
-                        moveHumidityRatio = -(0.25 + 0.2 * (double)label.Length / 2.0) * vector2D.X;
+                        moveHumidityRatio = -(0.25 + 0.2 * label.Length / 2.0) * vector2D.X;
                         moveTemperature = -1.4 * vector2D.Y;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio / 1000, mollierControlSettings.Pressure);
                     }
@@ -1292,7 +1292,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         is_space = true;
                         moveHumidityRatio = -0.0007 * vector2D.Y;
-                        moveTemperature = (0.5 + 0.4 * (double)label.Length / 2.0) * vector2D.X;
+                        moveTemperature = (0.5 + 0.4 * label.Length / 2.0) * vector2D.X;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
                     }
 
@@ -1335,7 +1335,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     {
                         is_space = true;
                         moveHumidityRatio = -0.0007 * vector2D.Y;
-                        moveTemperature = -(0.5 + 0.4 * (double)label.Length / 2.0) * vector2D.X;
+                        moveTemperature = -(0.5 + 0.4 * label.Length / 2.0) * vector2D.X;
                         mollierPoint_Moved = new MollierPoint(mollierPoint.DryBulbTemperature + moveTemperature, mollierPoint.HumidityRatio + moveHumidityRatio, mollierControlSettings.Pressure);
                     }
                     //4th option left  
@@ -1380,14 +1380,14 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 double y = 0.95 * vector2D.Y;
                 double x = 0.2 * vector2D.X;// 0.2 is one letter width in mollier
-                x *= (double)label.Length;
+                x *= label.Length;
 
                 Point2D origin = new Point2D(NewPoint_X - x / 2.0, NewPoint_Y + y);
                 Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
 
 
                 x = 0.2 * vector2D.X;
-                x *= (double)OldLabel.Length;
+                x *= OldLabel.Length;
                 origin = new Point2D(OldPoint_X - x / 2.0, OldPoint_Y + y);
                 Rectangle2D rectangle2Dold = new Rectangle2D(origin, x, y);
 
@@ -1397,14 +1397,14 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 double y = 0.00049 * vector2D.Y;
                 double x = 0.49 * vector2D.X;// 0.25 is one letter width in psychro
-                x *= (double)label.Length;
+                x *= label.Length;
 
                 Point2D origin = new Point2D(NewPoint_X - x / 2.0, NewPoint_Y + y);
                 Rectangle2D rectangle2Dnew = new Rectangle2D(origin, x, y);
 
 
                 x = 0.49 * vector2D.X;
-                x *= (double)OldLabel.Length;
+                x *= OldLabel.Length;
                 origin = new Point2D(OldPoint_X - x / 2.0, OldPoint_Y + y);
                 Rectangle2D rectangle2Dold = new Rectangle2D(origin, x, y);
 
@@ -1421,12 +1421,12 @@ namespace SAM.Core.Mollier.UI.Controls
             Vector2D vector2D = Query.ScaleVector2D(this, MollierControlSettings);
             double y = 0.95 * vector2D.Y;
             double x = 0.2 * vector2D.X;// 0.2 is one letter width in mollier
-            x *= (double)label.Length;
+            x *= label.Length;
             if (chartType == ChartType.Psychrometric)
             {
                 y = 0.00048 * vector2D.Y;
                 x = 0.48 * vector2D.X;// 0.25 is one letter width in psychro
-                x *= (double)label.Length;
+                x *= label.Length;
             }
             Point2D origin = new Point2D(NewPoint_X - x / 2.0, NewPoint_Y + y);
 
@@ -1753,18 +1753,18 @@ namespace SAM.Core.Mollier.UI.Controls
                 //{
                 //    return null;
                 //}
-                if (!(mollierProcess is UIMollierProcess))
+                if (mollierProcess is MollierProcess)
                 {
-                    UIMollierProcess mollierProcess_Temp = new UIMollierProcess(mollierProcess, Color.Empty);
+                    UIMollierProcess mollierProcess_Temp = new UIMollierProcess((MollierProcess)mollierProcess, Color.Empty);
                     mollierProcess = mollierProcess_Temp;
                 }
-                UIMollierProcess mollierProcess_UI = new UIMollierProcess(((UIMollierProcess)mollierProcess).MollierProcess, ((UIMollierProcess)mollierProcess).Color) { Start_Label = ((UIMollierProcess)mollierProcess).Start_Label, Process_Label = ((UIMollierProcess)mollierProcess).Process_Label, End_Label = ((UIMollierProcess)mollierProcess).End_Label };
-                if (mollierProcess_UI.MollierProcess is UndefinedProcess && mollierProcess_UI.End_Label == null)
+                UIMollierProcess uIMollierProcess = new UIMollierProcess((UIMollierProcess)mollierProcess);
+                if (uIMollierProcess.MollierProcess is UndefinedProcess && uIMollierProcess.UIMollierAppearance_End.Label == null)
                 {
-                    mollierProcess_UI.End_Label = "ROOM";
+                    uIMollierProcess.UIMollierAppearance_End.Label = "ROOM";
                 }
-                this.mollierProcesses.Add(mollierProcess_UI);
-                result.Add(mollierProcess_UI);
+                this.mollierProcesses.Add(uIMollierProcess);
+                result.Add(uIMollierProcess);
             }
             systems = Query.ProcessSortBySystem(this.mollierProcesses);
             generate_graph();
@@ -1953,13 +1953,13 @@ namespace SAM.Core.Mollier.UI.Controls
                             for (int j = 0; j < systems[i].Count; j++)
                             {
                                 UIMollierProcess UI_MollierProcess = systems[i][j];
-                                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
-                                if (UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
+                                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
+                                if (UI_MollierProcess.UIMollierAppearance_Start.Label != null && UI_MollierProcess.UIMollierAppearance_Start.Label != "")
                                 {
                                     range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                                     move_Temp++;
                                 }
-                                if (UI_MollierProcess.End_Label != null && UI_MollierProcess.End_Label != "")
+                                if (UI_MollierProcess.UIMollierAppearance_End.Label != null && UI_MollierProcess.UIMollierAppearance_End.Label != "")
                                 {
                                     range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                                     move_Temp++;
@@ -1993,7 +1993,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                 for (int j = 0; j < systems[i].Count; j++)
                                 {
                                     UIMollierProcess UI_MollierProcess = systems[i][j];
-                                    MollierProcess mollierProcess = UI_MollierProcess.MollierProcess as MollierProcess;
+                                    MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
                                     MollierPoint start = mollierProcess.Start;
                                     MollierPoint end = mollierProcess.End;
                                     string value_1 = string.Empty;
@@ -2001,8 +2001,8 @@ namespace SAM.Core.Mollier.UI.Controls
                                     switch (key_Temp)
                                     {
                                         case "[ProcessPointName]":
-                                            value_1 = UI_MollierProcess.Start_Label;
-                                            value_2 = UI_MollierProcess.End_Label;
+                                            value_1 = UI_MollierProcess.UIMollierAppearance_Start.Label;
+                                            value_2 = UI_MollierProcess.UIMollierAppearance_End.Label;
                                             break;
                                         case "[DryBulbTemperature]":
                                             value_1 = System.Math.Round(start.DryBulbTemperature, 2).ToString();
@@ -2052,7 +2052,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
 
 
-                                    if (UI_MollierProcess.Start_Label != null && UI_MollierProcess.Start_Label != "")
+                                    if (UI_MollierProcess.UIMollierAppearance_Start.Label != null && UI_MollierProcess.UIMollierAppearance_Start.Label != "")
                                     {
                                         if (value_1 != string.Empty)
                                         {
@@ -2067,7 +2067,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                             id++;
                                         }
                                     }
-                                    if (UI_MollierProcess.End_Label != null && UI_MollierProcess.End_Label != "")
+                                    if (UI_MollierProcess.UIMollierAppearance_End.Label != null && UI_MollierProcess.UIMollierAppearance_End.Label != "")
                                     {
                                         //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                                         if (value_2 != string.Empty)

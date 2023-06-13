@@ -32,13 +32,13 @@ namespace SAM.Core.Mollier.UI.Forms
             foreach (UIMollierProcess UI_MollierProcess in mollierProcesses)
             {
                 MollierPoint start = UI_MollierProcess.Start;
-                string start_Label = UI_MollierProcess.Start_Label;
+                string start_Label = UI_MollierProcess.UIMollierAppearance_Start.Label;
                 if (start_Label != null && start_Label != "")
                 {
                     flowLayoutPanel1.Controls.Add(new ListPointsOptionControl(start, start_Label, this));
                 }
                 MollierPoint end = UI_MollierProcess.End;
-                string end_Label = UI_MollierProcess.End_Label;
+                string end_Label = UI_MollierProcess.UIMollierAppearance_End.Label;
                 if (end_Label != null && end_Label != "")
                 {
                     flowLayoutPanel1.Controls.Add(new ListPointsOptionControl(end, end_Label, this));

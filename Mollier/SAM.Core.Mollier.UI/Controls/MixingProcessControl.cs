@@ -63,7 +63,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         public UIMollierProcess GetUIMollierProcess()
         {
-            IMollierProcess mollierProcess = null;
+            MollierProcess mollierProcess = null;
 
             MollierPointControl_SecondPoint.Pressure = MollierPointControl_FirstPoint.Pressure;
             MollierPoint firstPoint = FirstPoint;

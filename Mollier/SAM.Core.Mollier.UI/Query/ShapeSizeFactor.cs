@@ -6,7 +6,7 @@
         {
             Math.LinearEquation linearEquation = Math.Create.LinearEquation(96.0, initialFactor, 120.0, 1.0);
 
-            return linearEquation.Evaluate((double)deviceDpi);
+            return linearEquation.Evaluate(deviceDpi);
         }
     }
 }

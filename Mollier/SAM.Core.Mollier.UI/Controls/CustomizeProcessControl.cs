@@ -23,10 +23,10 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 return;
             }
-            color = UI_MollierProcess.Color;
-            start_Label = UI_MollierProcess.Start_Label;
-            process_Label = UI_MollierProcess.Process_Label;
-            end_Label = UI_MollierProcess.End_Label;
+            color = UI_MollierProcess.UIMollierAppearance.Color;
+            start_Label = UI_MollierProcess.UIMollierAppearance_Start.Label;
+            process_Label = UI_MollierProcess.UIMollierAppearance.Label;
+            end_Label = UI_MollierProcess.UIMollierAppearance_End.Label;
             ProcessColor_button.BackColor = color;
         }
 

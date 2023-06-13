@@ -17,7 +17,7 @@ namespace SAM.Core.UI.WPF
                 return default;
             }
 
-            ITaggable taggable = (ITaggable)(object)jSAMObject;
+            ITaggable taggable = (ITaggable)jSAMObject;
 
             if(taggable.Tag == null)
             {

@@ -29,13 +29,13 @@ namespace SAM.Analytical.UI
         }
 
         public ApertureAppearanceSettings(PanelAppearanceSettings panelConstructionAppearanceSettings)
-            : base(panelConstructionAppearanceSettings as ValueAppearanceSettings)
+            : base(panelConstructionAppearanceSettings)
         {
 
         }
 
         public ApertureAppearanceSettings(OpeningPropertiesAppearanceSettings openingPropertiesAppearanceSettings)
-            : base(openingPropertiesAppearanceSettings as ValueAppearanceSettings)
+            : base(openingPropertiesAppearanceSettings)
         {
 
         }

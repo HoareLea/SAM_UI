@@ -40,7 +40,7 @@ namespace SAM.Core.UI
                     continue;
                 }
 
-                T t = (T)(object)modification;
+                T t = (T)modification;
 
                 if(func != null && !func.Invoke(t))
                 {

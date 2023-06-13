@@ -41,7 +41,7 @@ namespace SAM.Core.Mollier.UI.Controls
         public UIMollierProcess GetUIMollierProcess()
         {
             ProcessCalculationType processCalculationType = Core.Query.Enum<ProcessCalculationType>(processCalculateType_ComboBox.Text);
-            IMollierProcess mollierProcess = null;
+            MollierProcess mollierProcess = null;
             MollierPoint start = Start;
 
             switch (processCalculationType)

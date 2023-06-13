@@ -14,7 +14,7 @@ namespace SAM.Core.UI.WPF
             object @object = dependencyObject.GetValue(DependencyProperty.IJSAMObjectProperty);
             if(@object is T)
             {
-                return (T)(object)@object;
+                return (T)@object;
             }
 
             if(@object is ITaggable)
@@ -22,7 +22,7 @@ namespace SAM.Core.UI.WPF
                 Tag tag = ((ITaggable)@object)?.Tag;
                 if(tag?.Value is T)
                 {
-                    return (T)(object)tag.Value;
+                    return (T)tag.Value;
                 }
             }
 
