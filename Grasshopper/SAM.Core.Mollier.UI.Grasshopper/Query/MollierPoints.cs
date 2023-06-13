@@ -17,13 +17,13 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             List<MollierPoint> result = new List<MollierPoint>();
             foreach (IGH_Param gH_Param in gH_Params)
             {
-                GooMollierProcessParam gooMollierProcessParam = gH_Param as GooMollierProcessParam;
-                if (gooMollierProcessParam == null)
+                GooMollierPointParam gooMollierPointParam = gH_Param as GooMollierPointParam;
+                if (gooMollierPointParam == null)
                 {
                     continue;
                 }
 
-                IGH_Structure gH_Structure = gooMollierProcessParam.VolatileData;
+                IGH_Structure gH_Structure = gooMollierPointParam.VolatileData;
                 foreach (object @object in gH_Structure.AllData(true))
                 {
                     MollierPoint mollierPoint = (@object as GooMollierPoint)?.Value;
