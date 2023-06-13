@@ -19,7 +19,7 @@ namespace SAM.Core.Mollier.UI.Controls
         private Point mdown = Point.Empty;
         private bool selection = false;
         private MollierControlSettings mollierControlSettings;
-        private List<MollierPoint> mollierPoints;
+        private List<UIMollierPoint> mollierPoints;
         private List<UIMollierProcess> mollierProcesses;
         private List<MollierZone> mollierZones;
         private List<List<UIMollierProcess>> systems;
@@ -778,7 +778,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             List<MollierPoint>[,] rectangles_points = new List<MollierPoint>[RH_size, Ent_size];//for every rh interval and every enthalpy interval it stores the list of points that belong to this area 
             double maxCount;
-            Query.NeighborhoodCount(mollierPoints, out maxCount, out rectangles_points);
+            Query.NeighborhoodCount(mollierPoints?.ConvertAll(x => x.MollierPoint), out maxCount, out rectangles_points);
 
             for (int rh = 0; rh <= 100 - deltaRelativeHumidity; rh += 10)
             {
@@ -878,32 +878,46 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (pointGradientVisibilitySetting != null)
             {
-                dictionary = Query.NeighborhoodCount(mollierPoints, out MaxCount, out rectangles_points);
+                dictionary = Query.NeighborhoodCount(mollierPoints.ConvertAll(x => x.MollierPoint), out MaxCount, out rectangles_points);
             }
             else
             {
                 series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Point, ChartDataType.Undefined);
             }
             //add points to the chart
-            foreach (MollierPoint point in mollierPoints)
+            foreach (UIMollierPoint uIMollierPoint in mollierPoints)
             {
-                double humidity_ratio = point.HumidityRatio;
-                double DryBulbTemperature = point.DryBulbTemperature;
-                double diagram_temperature = Mollier.Query.DiagramTemperature(point);
-                int index = chartType == ChartType.Mollier ? series.Points.AddXY(humidity_ratio * 1000, diagram_temperature) : series.Points.AddXY(DryBulbTemperature, humidity_ratio);
+                MollierPoint mollierPoint = uIMollierPoint?.MollierPoint;
+                if(mollierPoint == null)
+                {
+                    continue;
+                }
+
+                double humidityRatio = mollierPoint.HumidityRatio;
+                double dryBulbTemperature = mollierPoint.DryBulbTemperature;
+                double diagramTemperature = Mollier.Query.DiagramTemperature(mollierPoint);
+                int index = chartType == ChartType.Mollier ? series.Points.AddXY(humidityRatio * 1000, diagramTemperature) : series.Points.AddXY(dryBulbTemperature, humidityRatio);
                 //if gradient point is on then set a gradient point color with earlier counted intensity
                 if (pointGradientVisibilitySetting != null)
                 {
-                    double value = MaxCount == 0 ? 0 : System.Convert.ToDouble(dictionary[point]) / MaxCount;
+                    double value = MaxCount == 0 ? 0 : System.Convert.ToDouble(dictionary[mollierPoint]) / MaxCount;
                     series.Points[index].Color = Core.Query.Lerp(pointGradientVisibilitySetting.Color, pointGradientVisibilitySetting.GradientColor, value);
                 }
-                series.Points[index].ToolTip = Query.ToolTipText(point, chartType, null);
-                series.Points[index].Tag = point;
+                series.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, null);
+                series.Points[index].Tag = mollierPoint;
 
-                //Series series1 = MollierChart.Series.Add(Guid.NewGuid().ToString());
-                //series1.Points.AddXY(point.DryBulbTemperature, point.HumidityRatio);
-                //series1.ChartType = SeriesChartType.Point;
-                //series1.Label = "A2";
+                if(uIMollierPoint.UIMollierAppearance != null)
+                {
+                    if(uIMollierPoint.UIMollierAppearance.Color != Color.Empty)
+                    {
+                        series.Points[index].Color = uIMollierPoint.UIMollierAppearance.Color;
+                    }
+
+                    if(!string.IsNullOrWhiteSpace(uIMollierPoint.UIMollierAppearance.Label))
+                    {
+                        series.Points[index].Label = uIMollierPoint.UIMollierAppearance.Label;
+                    }
+                }
             }
         }
         private void add_MollierProcesses(ChartType chartType)
@@ -1709,26 +1723,49 @@ namespace SAM.Core.Mollier.UI.Controls
 
 
 
-        public List<MollierPoint> AddPoints(IEnumerable<MollierPoint> mollierPoints, bool checkPressure = true)
+        public List<UIMollierPoint> AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
         {
             if (mollierPoints == null)
-                return null;
-            if (this.mollierPoints == null)
             {
-                this.mollierPoints = new List<MollierPoint>();
+                return null;
             }
 
-            List<MollierPoint> mollierPointsResult = new List<MollierPoint>();
-            foreach (MollierPoint point in mollierPoints)
+            if (this.mollierPoints == null)
             {
-                //if (!checkPressure || Core.Query.AlmostEqual(point.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
-                //{
-                mollierPointsResult.Add(point);
-                //}
+                this.mollierPoints = new List<UIMollierPoint>();
             }
-            this.mollierPoints.AddRange(mollierPointsResult);
+
+            List<UIMollierPoint> result = new List<UIMollierPoint>();
+            foreach (IMollierPoint mollierPoint in mollierPoints)
+            {
+                if(mollierPoint == null)
+                {
+                    continue;
+                }
+
+                UIMollierPoint uIMollierPoint = mollierPoint as UIMollierPoint;
+                if(uIMollierPoint == null)
+                {
+                    if (mollierPoint is MollierPoint)
+                    {
+                        UIMollierAppearance uIMollierAppearance = new UIMollierAppearance(Color.Blue);
+
+                        uIMollierPoint = new UIMollierPoint((MollierPoint)mollierPoint, uIMollierAppearance);
+                    }
+                }
+
+                if(uIMollierPoint == null)
+                {
+                    continue;
+                }
+
+                result.Add(uIMollierPoint);
+            }
+            this.mollierPoints.AddRange(result);
+
             generate_graph();
-            return mollierPointsResult;
+            
+            return result;
         }
 
         public List<UIMollierProcess> AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
@@ -2359,7 +2396,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
 
-        public List<MollierPoint> MollierPoints
+        public List<UIMollierPoint> UIMollierPoints
         {
             get
             {
@@ -2368,7 +2405,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     return null;
                 }
 
-                return mollierPoints.ConvertAll(x => new MollierPoint(x));
+                return mollierPoints.ConvertAll(x => x?.Clone());
             }
         }
 
@@ -2414,7 +2451,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 index = 0;
             }
 
-            List<MollierPoint> points = new List<MollierPoint>(mollierPoints);//copy of mollierPoints
+            List<UIMollierPoint> uIMollierPoints = new List<UIMollierPoint>(mollierPoints);//copy of mollierPoints
             Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Point;
@@ -2442,22 +2479,22 @@ namespace SAM.Core.Mollier.UI.Controls
             switch (chartDataType)
             {
                 case "Temperature":
-                    points.Sort((x, y) => x.DryBulbTemperature.CompareTo(y.DryBulbTemperature));
-                    MollierPoint mollierPoint_Temperature = points[index];
-                    double X_Temperature = mollierControlSettings.ChartType == ChartType.Mollier ? mollierPoint_Temperature.HumidityRatio * 1000 : mollierPoint_Temperature.DryBulbTemperature;
-                    double Y_Temperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(mollierPoint_Temperature) : mollierPoint_Temperature.HumidityRatio;
+                    uIMollierPoints.Sort((x, y) => x.MollierPoint.DryBulbTemperature.CompareTo(y.MollierPoint.DryBulbTemperature));
+                    UIMollierPoint uIMollierPoint_Temperature = uIMollierPoints[index];
+                    double X_Temperature = mollierControlSettings.ChartType == ChartType.Mollier ? uIMollierPoint_Temperature.MollierPoint.HumidityRatio * 1000 : uIMollierPoint_Temperature.MollierPoint.DryBulbTemperature;
+                    double Y_Temperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(uIMollierPoint_Temperature.MollierPoint) : uIMollierPoint_Temperature.MollierPoint.HumidityRatio;
                     series.Points.AddXY(X_Temperature, Y_Temperature);
-                    string name_Temperature = Query.ToolTipText(mollierPoint_Temperature, mollierControlSettings.ChartType, "Temperature " + percent.ToString() + "%") + "\nUnmet hours: " + System.Math.Ceiling(percent / 100 * points.Count).ToString();
+                    string name_Temperature = Query.ToolTipText(uIMollierPoint_Temperature.MollierPoint, mollierControlSettings.ChartType, "Temperature " + percent.ToString() + "%") + "\nUnmet hours: " + System.Math.Ceiling(percent / 100 * uIMollierPoints.Count).ToString();
                     create_moved_label(mollierControlSettings.ChartType, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, -16 * Query.ScaleVector2D(this, MollierControlSettings).Y, 0, 0, name_Temperature, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, tag: "ColorPointLabel");
                     break;
                 case "Enthalpy":
-                    points.Sort((x, y) => x.Enthalpy.CompareTo(y.Enthalpy));
-                    MollierPoint mollierPoint_Enthalpy = points[index];
+                    uIMollierPoints.Sort((x, y) => x.MollierPoint.Enthalpy.CompareTo(y.MollierPoint.Enthalpy));
+                    MollierPoint mollierPoint_Enthalpy = uIMollierPoints[index].MollierPoint;
                     double X_Enthalpy = mollierControlSettings.ChartType == ChartType.Mollier ? mollierPoint_Enthalpy.HumidityRatio * 1000 : mollierPoint_Enthalpy.DryBulbTemperature;
                     double Y_Enthalpy = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(mollierPoint_Enthalpy) : mollierPoint_Enthalpy.HumidityRatio;
                     series.Points.AddXY(X_Enthalpy, Y_Enthalpy);
 
-                    string name_Enthalpy = Query.ToolTipText(mollierPoint_Enthalpy, mollierControlSettings.ChartType, "Enthalpy " + percent.ToString() + "%") + "\nUnmet hours: " + System.Math.Ceiling(percent / 100 * points.Count).ToString();
+                    string name_Enthalpy = Query.ToolTipText(mollierPoint_Enthalpy, mollierControlSettings.ChartType, "Enthalpy " + percent.ToString() + "%") + "\nUnmet hours: " + System.Math.Ceiling(percent / 100 * uIMollierPoints.Count).ToString();
                     create_moved_label(mollierControlSettings.ChartType, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, -16 * Query.ScaleVector2D(this, MollierControlSettings).Y, 0, 0, name_Enthalpy, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, tag: "ColorPointLabel");
                     break;
             }

@@ -166,11 +166,11 @@
     <Compile Include="Controls\ParameterControl.Designer.cs">
       <DependentUpon>ParameterControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\TestControl.cs">
+    <Compile Include="Controls\UIMollierAppearanceControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\TestControl.Designer.cs">
-      <DependentUpon>TestControl.cs</DependentUpon>
+    <Compile Include="Controls\UIMollierAppearanceControl.Designer.cs">
+      <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Create\Controls.cs" />
     <Compile Include="Delegates\MollierPointSelectedEventHandler.cs" />
@@ -204,12 +204,6 @@
     <Compile Include="Forms\MollierPointForm.Designer.cs">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MollierProcessForm4.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\MollierProcessForm4.Designer.cs">
-      <DependentUpon>MollierProcessForm4.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\MollierProcessForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -227,12 +221,6 @@
     </Compile>
     <Compile Include="Forms\PointListOptionForm.Designer.cs">
       <DependentUpon>PointListOptionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\TestForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\TestForm.Designer.cs">
-      <DependentUpon>TestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\IMollierProcessControl.cs" />
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
@@ -305,8 +293,8 @@
     <EmbeddedResource Include="Controls\ParameterControl.resx">
       <DependentUpon>ParameterControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\TestControl.resx">
-      <DependentUpon>TestControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\UIMollierAppearanceControl.resx">
+      <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CustomizeProcessForm.resx">
       <DependentUpon>CustomizeProcessForm.cs</DependentUpon>
@@ -320,9 +308,6 @@
     <EmbeddedResource Include="Forms\MollierPointForm.resx">
       <DependentUpon>MollierPointForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MollierProcessForm4.resx">
-      <DependentUpon>MollierProcessForm4.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierProcessForm.resx">
       <DependentUpon>MollierProcessForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -331,9 +316,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\PointListOptionForm.resx">
       <DependentUpon>PointListOptionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\TestForm.resx">
-      <DependentUpon>TestForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

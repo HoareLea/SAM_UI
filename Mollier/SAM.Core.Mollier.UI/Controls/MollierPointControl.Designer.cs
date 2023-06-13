@@ -38,6 +38,7 @@
             this.NumberBoxControl_SecondParameter = new SAM.Core.Windows.NumberBoxControl();
             this.NumberBoxControl_FirstParameter = new SAM.Core.Windows.NumberBoxControl();
             this.NumberBoxControl_Pressure = new SAM.Core.Windows.NumberBoxControl();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.SuspendLayout();
             // 
             // ComboBox_SecondParameter
@@ -126,6 +127,7 @@
             // 
             this.NumberBoxControl_SecondParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.NumberBoxControl_SecondParameter.HorizontalAlignment = System.Windows.Forms.HorizontalAlignment.Right;
             this.NumberBoxControl_SecondParameter.Location = new System.Drawing.Point(0, 167);
             this.NumberBoxControl_SecondParameter.Name = "NumberBoxControl_SecondParameter";
             this.NumberBoxControl_SecondParameter.Size = new System.Drawing.Size(104, 22);
@@ -140,6 +142,7 @@
             // 
             this.NumberBoxControl_FirstParameter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.NumberBoxControl_FirstParameter.HorizontalAlignment = System.Windows.Forms.HorizontalAlignment.Right;
             this.NumberBoxControl_FirstParameter.Location = new System.Drawing.Point(0, 99);
             this.NumberBoxControl_FirstParameter.Name = "NumberBoxControl_FirstParameter";
             this.NumberBoxControl_FirstParameter.Size = new System.Drawing.Size(104, 22);
@@ -154,6 +157,7 @@
             // 
             this.NumberBoxControl_Pressure.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.NumberBoxControl_Pressure.HorizontalAlignment = System.Windows.Forms.HorizontalAlignment.Right;
             this.NumberBoxControl_Pressure.Location = new System.Drawing.Point(3, 33);
             this.NumberBoxControl_Pressure.Name = "NumberBoxControl_Pressure";
             this.NumberBoxControl_Pressure.Size = new System.Drawing.Size(104, 22);
@@ -195,5 +199,6 @@
         private SAM.Core.Windows.NumberBoxControl NumberBoxControl_SecondParameter;
         private Windows.NumberBoxControl NumberBoxControl_FirstParameter;
         private Windows.NumberBoxControl NumberBoxControl_Pressure;
+        private System.Windows.Forms.ColorDialog colorDialog1;
     }
 }

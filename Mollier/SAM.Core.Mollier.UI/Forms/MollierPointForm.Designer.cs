@@ -30,13 +30,14 @@
         {
             this.Button_OK = new System.Windows.Forms.Button();
             this.Button_Cancel = new System.Windows.Forms.Button();
-            this.mollierPointControl1 = new SAM.Core.Mollier.UI.Controls.MollierPointControl();
+            this.MollierPointControl_Main = new SAM.Core.Mollier.UI.Controls.MollierPointControl();
+            this.UIMollierAppearanceControl_Main = new SAM.Core.Mollier.UI.Controls.UIMollierAppearanceControl();
             this.SuspendLayout();
             // 
             // Button_OK
             // 
             this.Button_OK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Button_OK.Location = new System.Drawing.Point(43, 253);
+            this.Button_OK.Location = new System.Drawing.Point(77, 308);
             this.Button_OK.Name = "Button_OK";
             this.Button_OK.Size = new System.Drawing.Size(75, 23);
             this.Button_OK.TabIndex = 4;
@@ -48,7 +49,7 @@
             // 
             this.Button_Cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.Button_Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.Button_Cancel.Location = new System.Drawing.Point(124, 253);
+            this.Button_Cancel.Location = new System.Drawing.Point(158, 308);
             this.Button_Cancel.Name = "Button_Cancel";
             this.Button_Cancel.Size = new System.Drawing.Size(75, 23);
             this.Button_Cancel.TabIndex = 5;
@@ -56,15 +57,25 @@
             this.Button_Cancel.UseVisualStyleBackColor = true;
             this.Button_Cancel.Click += new System.EventHandler(this.Button_Cancel_Click);
             // 
-            // mollierPointControl1
+            // MollierPointControl_Main
             // 
-            this.mollierPointControl1.AutoSize = true;
-            this.mollierPointControl1.Location = new System.Drawing.Point(3, 12);
-            this.mollierPointControl1.Name = "mollierPointControl1";
-            this.mollierPointControl1.Pressure = 101325D;
-            this.mollierPointControl1.PressureVisible = true;
-            this.mollierPointControl1.Size = new System.Drawing.Size(205, 206);
-            this.mollierPointControl1.TabIndex = 6;
+            this.MollierPointControl_Main.AutoSize = true;
+            this.MollierPointControl_Main.Location = new System.Drawing.Point(3, 12);
+            this.MollierPointControl_Main.Name = "MollierPointControl_Main";
+            this.MollierPointControl_Main.Pressure = 101325D;
+            this.MollierPointControl_Main.PressureEnabled = true;
+            this.MollierPointControl_Main.PressureVisible = true;
+            this.MollierPointControl_Main.SelectMollierPointVisible = false;
+            this.MollierPointControl_Main.Size = new System.Drawing.Size(230, 202);
+            this.MollierPointControl_Main.TabIndex = 6;
+            // 
+            // UIMollierAppearanceControl_Main
+            // 
+            this.UIMollierAppearanceControl_Main.AutoSize = true;
+            this.UIMollierAppearanceControl_Main.Location = new System.Drawing.Point(3, 221);
+            this.UIMollierAppearanceControl_Main.Name = "UIMollierAppearanceControl_Main";
+            this.UIMollierAppearanceControl_Main.Size = new System.Drawing.Size(242, 57);
+            this.UIMollierAppearanceControl_Main.TabIndex = 7;
             // 
             // MollierPointForm
             // 
@@ -72,8 +83,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.Button_Cancel;
-            this.ClientSize = new System.Drawing.Size(211, 288);
-            this.Controls.Add(this.mollierPointControl1);
+            this.ClientSize = new System.Drawing.Size(245, 343);
+            this.Controls.Add(this.UIMollierAppearanceControl_Main);
+            this.Controls.Add(this.MollierPointControl_Main);
             this.Controls.Add(this.Button_Cancel);
             this.Controls.Add(this.Button_OK);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -91,6 +103,7 @@
         #endregion
         private System.Windows.Forms.Button Button_OK;
         private System.Windows.Forms.Button Button_Cancel;
-        private Controls.MollierPointControl mollierPointControl1;
+        private Controls.MollierPointControl MollierPointControl_Main;
+        private Controls.UIMollierAppearanceControl UIMollierAppearanceControl_Main;
     }
 }

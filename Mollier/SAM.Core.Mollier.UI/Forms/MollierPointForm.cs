@@ -5,43 +5,68 @@ namespace SAM.Core.Mollier.UI.Forms
 {
     public partial class MollierPointForm : Form
     {
-        private MollierPoint mollierPoint;
         public event EventHandler SelectPointClicked;
+        
         public MollierPointForm()
         {
             InitializeComponent();
-            mollierPointControl1.SelectMollierPoint += MollierPointControl1_SelectPointClicked;
+            MollierPointControl_Main.SelectMollierPoint += MollierPointControl_Main_SelectPointClicked;
         }
 
-        private void MollierPointControl1_SelectPointClicked(object sender, EventArgs e)
+        private void MollierPointControl_Main_SelectPointClicked(object sender, EventArgs e)
         {
             SelectPointClicked?.Invoke(this, e);
+        }
+
+        public UIMollierPoint UIMollierPoint
+        {
+            get
+            {
+                return new UIMollierPoint(MollierPoint, UIMollierAppearance);
+            }
+
+            set
+            {
+                MollierPoint = value?.MollierPoint;
+                UIMollierAppearance = value?.UIMollierAppearance;
+            }
         }
 
         public MollierPoint MollierPoint
         {
             get
             {
-                return mollierPoint;
+                return MollierPointControl_Main.MollierPoint;
             }
             set
             {
-                mollierPoint = value;
-                mollierPointControl1.MollierPoint = value;
+                MollierPointControl_Main.MollierPoint = value;
             }
         }
+
+        public UIMollierAppearance UIMollierAppearance
+        {
+            get
+            {
+                return UIMollierAppearanceControl_Main.UIMollierAppearance;
+            }
+
+            set
+            {
+                UIMollierAppearanceControl_Main.UIMollierAppearance = value;
+            }
+        }
+
         private void Button_OK_Click(object sender, EventArgs e)
         {
-            mollierPoint = mollierPointControl1.MollierPoint;
             DialogResult = DialogResult.OK;
             Close();
         }
+        
         private void Button_Cancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
-
     }
 }

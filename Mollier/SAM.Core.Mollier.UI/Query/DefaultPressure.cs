@@ -12,21 +12,21 @@ namespace SAM.Core.Mollier.UI
         /// <param name="mollierPoints">List of Mollier Points</param>
         /// <param name="mollierProcesses">List of Mollier Processes</param>
         /// <returns>Returns the most frequenly appearing value of pressure in both lists</returns>
-        public static double DefaultPressure(IEnumerable<MollierPoint> mollierPoints = null, IEnumerable<IMollierProcess> mollierProcesses = null)
+        public static double DefaultPressure(IEnumerable<IMollierPoint> mollierPoints = null, IEnumerable<IMollierProcess> mollierProcesses = null)
         {
             List<double> pressures = new List<double>();
             if (mollierProcesses != null)
             {
-                foreach (IMollierProcess process in mollierProcesses)
+                foreach (IMollierProcess mollierProcess in mollierProcesses)
                 {
-                    pressures.Add(process.Pressure);
+                    pressures.Add(mollierProcess.Pressure);
                 }
             }
             if (mollierPoints != null)
             {
-                foreach (MollierPoint point in mollierPoints)
+                foreach (IMollierPoint mollierPoint in mollierPoints)
                 {
-                    pressures.Add(point.Pressure);
+                    pressures.Add(mollierPoint.Pressure);
                 }
             }
 

@@ -138,17 +138,17 @@ namespace SAM.Core.Mollier.UI
             // 
             // openFromJSONToolStripMenuItem
             // 
-            this.openFromJSONToolStripMenuItem.Name = "openFromJSONToolStripMenuItem";
+            this.openFromJSONToolStripMenuItem.Name = "OpenToolStripMenuItem";
             this.openFromJSONToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.openFromJSONToolStripMenuItem.Text = "Open from JSON";
-            this.openFromJSONToolStripMenuItem.Click += new System.EventHandler(this.openFromJSONToolStripMenuItem_Click);
+            this.openFromJSONToolStripMenuItem.Text = "Open";
+            this.openFromJSONToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
             // exportToJSONToolStripMenuItem
             // 
-            this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
+            this.exportToJSONToolStripMenuItem.Name = "SaveToolStripMenuItem";
             this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.exportToJSONToolStripMenuItem.Text = "Export to JSON";
-            this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.exportToJSONToolStripMenuItem_Click);
+            this.exportToJSONToolStripMenuItem.Text = "Save";
+            this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
             // 
             // ToolStripMenuItem_Save
             // 

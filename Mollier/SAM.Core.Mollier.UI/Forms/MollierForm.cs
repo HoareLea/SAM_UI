@@ -14,7 +14,7 @@ namespace SAM.Core.Mollier.UI
         private Forms.MollierPointForm mollierPointForm = null;
         private Forms.MollierProcessForm mollierProcessForm = null;
         
-        private MollierPoint previousMollierPoint = null;
+        private UIMollierPoint previousUIMollierPoint = null;
 
         public event MollierPointSelectedEventHandler MollierPointSelected;
 
@@ -172,16 +172,16 @@ namespace SAM.Core.Mollier.UI
             double dryBulbTemperature = 35;
             double relativeHumidity = 50;
 
-            if(previousMollierPoint != null)
+            if(previousUIMollierPoint != null)
             {
-                if(!double.IsNaN(previousMollierPoint.DryBulbTemperature))
+                if(!double.IsNaN(previousUIMollierPoint.MollierPoint.DryBulbTemperature))
                 {
-                    dryBulbTemperature = previousMollierPoint.DryBulbTemperature;
+                    dryBulbTemperature = previousUIMollierPoint.MollierPoint.DryBulbTemperature;
                 }
 
-                if (!double.IsNaN(previousMollierPoint.RelativeHumidity))
+                if (!double.IsNaN(previousUIMollierPoint.MollierPoint.RelativeHumidity))
                 {
-                    relativeHumidity = previousMollierPoint.RelativeHumidity;
+                    relativeHumidity = previousUIMollierPoint.MollierPoint.RelativeHumidity;
                 }
             }
 
@@ -201,8 +201,8 @@ namespace SAM.Core.Mollier.UI
                     return;
                 }
 
-                previousMollierPoint = mollierPointForm.MollierPoint;
-                MollierControl_Main.AddPoints(new MollierPoint[] { previousMollierPoint });
+                previousUIMollierPoint = mollierPointForm.UIMollierPoint;
+                MollierControl_Main.AddPoints(new UIMollierPoint[] { previousUIMollierPoint });
             }
         }
         
@@ -236,7 +236,7 @@ namespace SAM.Core.Mollier.UI
 
             mollierProcessForm = null;
 
-            previousMollierPoint = uIMollierProcess.End;
+            previousUIMollierPoint = uIMollierProcess.GetUIMollierPoint_End();
             List<IMollierProcess> mollierProcesses = new List<IMollierProcess>() { uIMollierProcess };
 
             AddProcesses(mollierProcesses);
@@ -290,7 +290,7 @@ namespace SAM.Core.Mollier.UI
             return true;
         }
         
-        public bool AddPoints(IEnumerable<MollierPoint> mollierPoints, bool checkPressure = true)
+        public bool AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
         {
             if (mollierPoints == null)
             {
@@ -630,7 +630,7 @@ namespace SAM.Core.Mollier.UI
             SaveAs(null);
         }
 
-        private void openFromJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string path = null;
 
@@ -682,7 +682,7 @@ namespace SAM.Core.Mollier.UI
     
         }
 
-        private void exportToJSONToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             List<IJSAMObject> mollierObjects = new List<IJSAMObject>();
 
@@ -692,10 +692,10 @@ namespace SAM.Core.Mollier.UI
                 mollierObjects.AddRange(uIMollierProcesses.Cast<IMollierObject>());
             }
 
-            List<MollierPoint> mollierPoints = MollierControl_Main.MollierPoints;
-            if (mollierPoints != null)
+            List<UIMollierPoint> uIMollierPoints = MollierControl_Main.UIMollierPoints;
+            if (uIMollierPoints != null)
             {
-                mollierObjects.AddRange(mollierPoints.Cast<IMollierObject>());
+                mollierObjects.AddRange(uIMollierPoints.Cast<IMollierObject>());
             }
 
             string path = null;
@@ -731,16 +731,16 @@ namespace SAM.Core.Mollier.UI
             }
 
             List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
-            List<MollierPoint> mollierPoints = new List<MollierPoint>();
+            List<IMollierPoint> mollierPoints = new List<IMollierPoint>();
             foreach(IMollierObject mollierObject in mollierObjects)
             {
                 if(mollierObject is IMollierProcess)
                 {
                     mollierProcesses.Add((IMollierProcess)mollierObject);
                 }
-                else if(mollierObject is MollierPoint)
+                else if(mollierObject is IMollierPoint)
                 {
-                    mollierPoints.Add((MollierPoint)mollierObject);
+                    mollierPoints.Add((IMollierPoint)mollierObject);
                 }
             }
 
