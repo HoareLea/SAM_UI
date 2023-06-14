@@ -9,6 +9,9 @@ using System.Linq;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
+    /// <summary>
+    /// Represents the SAMMollierGeometry class.
+    /// </summary>
     public class SAMMollierGeometry : MollierDiagramComponent
     {
         /// <summary>
@@ -19,7 +22,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.3";
+        public override string LatestComponentVersion => "1.0.4";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -34,7 +37,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
 
-                result.Add(new GH_SAMParam(new GooMollierGeometryParam() { Name = "Mollier Chart", NickName = "Inspect Mollier Lines", Description = "MollierGeometry, Base of Chart - output from InspectMollierDiagram output ", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierGeometryParam() { Name = "MollierGeometry Lines", NickName = "MollierGeometry Lines", Description = "MollierGeometry Lines, Base of your Chart - select lines you want to display on your chart,\n *output from .CreateMollierDiagram ", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
 
                 // global::Grasshopper.Kernel.Parameters.Param_Curve curves = null;
                 //curves = new global::Grasshopper.Kernel.Parameters.Param_Curve() { Name = "Mollier Chart", NickName = "Inspect Mollier Lines", Description = "Base of Chart - output from InspectMollierDiagram output ", Access = GH_ParamAccess.list, Optional = true };
@@ -67,12 +70,9 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
         }
 
-        /// <summary>
-        /// Updates PanelTypes for AdjacencyCluster
-        /// </summary>
         public SAMMollierGeometry()
           : base("SAMMollier.Geometry ", "SAMGeometry ",
-              "Connects points, lines and processes",
+              "Displays diagram lines together with provided Mollier points and processes \n *Right click to open diagram in UI",
               "SAM", "Mollier")
         {
         }
@@ -80,7 +80,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         protected override void SolveInstance(IGH_DataAccess dataAccess)
         {
 
-            int index = Params.IndexOfInputParam("Mollier Chart");
+            int index = Params.IndexOfInputParam("MollierGeometry Lines");
             List<GooMollierGeometry> curves = new List<GooMollierGeometry>();
             if (index != -1)
             {
