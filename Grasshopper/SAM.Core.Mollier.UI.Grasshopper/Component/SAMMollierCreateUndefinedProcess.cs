@@ -1,8 +1,6 @@
 ﻿using Grasshopper.Kernel;
-using SAM.Core.Grasshopper.Mollier.Properties;
 using System;
 using System.Collections.Generic;
-using SAM.Core.Mollier;
 using System.Drawing;
 using SAM.Core.Grasshopper;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
@@ -25,7 +23,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon => Resources.SAM_Mollier;
+        protected override Bitmap Icon => Resources.SAM_Mollier;
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 

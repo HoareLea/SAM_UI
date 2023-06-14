@@ -54,7 +54,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 mollierForm.AddProcesses(mollierProcesses, false);
             }
 
-            List<MollierPoint> mollierPoints = Query.MollierPoints(gH_Params);
+            List<IMollierPoint> mollierPoints = Query.MollierPoints(gH_Params);
             if (mollierPoints != null && mollierPoints.Count != 0)
             {
                 mollierForm.AddPoints(mollierPoints, false);

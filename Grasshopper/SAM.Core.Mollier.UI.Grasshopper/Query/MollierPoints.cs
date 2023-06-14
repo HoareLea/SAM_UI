@@ -7,14 +7,14 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 {
     public static partial class Query
     {
-        public static List<MollierPoint> MollierPoints(this IEnumerable<IGH_Param> gH_Params)
+        public static List<IMollierPoint> MollierPoints(this IEnumerable<IGH_Param> gH_Params)
         {
             if (gH_Params == null)
             {
                 return null;
             }
 
-            List<MollierPoint> result = new List<MollierPoint>();
+            List<IMollierPoint> result = new List<IMollierPoint>();
             foreach (IGH_Param gH_Param in gH_Params)
             {
                 GooMollierPointParam gooMollierPointParam = gH_Param as GooMollierPointParam;
@@ -26,7 +26,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 IGH_Structure gH_Structure = gooMollierPointParam.VolatileData;
                 foreach (object @object in gH_Structure.AllData(true))
                 {
-                    MollierPoint mollierPoint = (@object as GooMollierPoint)?.Value;
+                    IMollierPoint mollierPoint = (@object as GooMollierPoint)?.Value;
                     if (mollierPoint != null)
                     {
                         result.Add(mollierPoint);

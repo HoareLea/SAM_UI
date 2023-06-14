@@ -1,11 +1,10 @@
 ﻿using Grasshopper.Kernel;
-using SAM.Core.Grasshopper.Mollier.Properties;
 using System;
 using System.Collections.Generic;
-using SAM.Core.Mollier;
 using SAM.Core.Grasshopper;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
 using SAM.Core.Grasshopper.Mollier;
+using System.Drawing;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
@@ -19,12 +18,12 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.2";
+        public override string LatestComponentVersion => "1.0.3";
 
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
-        protected override System.Drawing.Bitmap Icon => Resources.SAM_Mollier;
+        protected override Bitmap Icon => Resources.SAM_Mollier;
 
         public override GH_Exposure Exposure => GH_Exposure.primary;
 
@@ -53,6 +52,16 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_elevation_", NickName = "_elevation_", Description = "Elevation [m]", Access = GH_ParamAccess.item, Optional = true };
                 param_Number.SetPersistentData(double.NaN);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
+
+                global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
+
+                param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
+                result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));
+
+                global::Grasshopper.Kernel.Parameters.Param_String param_Label = null;
+
+                param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "_label_", NickName = "_label_", Description = "Label", Access = GH_ParamAccess.item, Optional = true };
+                result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
 
                 return result.ToArray();
             }
@@ -131,7 +140,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
             else
             {
-                humidityRatio = Core.Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
+                humidityRatio = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
             }
 
             index = Params.IndexOfInputParam("_wetBulbTemperature_");
@@ -154,11 +163,28 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
             MollierPoint mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
 
+            Color color = Color.Empty;
+
+            index = Params.IndexOfInputParam("_color_");
+            if (index != -1)
+            {
+                dataAccess.GetData(index, ref color);
+            }
+
+            string label = null;
+            index = Params.IndexOfInputParam("_label_");
+            if (index != -1)
+            {
+                dataAccess.GetData(index, ref label);
+            }
+
+            UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint, new UIMollierAppearance(color, label));
+
 
             index = Params.IndexOfOutputParam("mollierPoint");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierPoint(mollierPoint));
+                dataAccess.SetData(index, new GooMollierPoint(uIMollierPoint));
             }
         }
 
