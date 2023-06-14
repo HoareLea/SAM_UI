@@ -47,6 +47,8 @@
             // 
             // processCalculateType_ComboBox
             // 
+            this.processCalculateType_ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.processCalculateType_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.processCalculateType_ComboBox.FormattingEnabled = true;
             this.processCalculateType_ComboBox.Items.AddRange(new object[] {
@@ -57,7 +59,7 @@
             "Medium and Efficiency"});
             this.processCalculateType_ComboBox.Location = new System.Drawing.Point(261, 23);
             this.processCalculateType_ComboBox.Name = "processCalculateType_ComboBox";
-            this.processCalculateType_ComboBox.Size = new System.Drawing.Size(266, 24);
+            this.processCalculateType_ComboBox.Size = new System.Drawing.Size(360, 24);
             this.processCalculateType_ComboBox.TabIndex = 5;
             this.processCalculateType_ComboBox.SelectedIndexChanged += new System.EventHandler(this.processCalculateType_ComboBox_SelectedIndexChanged);
             // 
@@ -65,7 +67,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label2.Location = new System.Drawing.Point(17, 0);
+            this.label2.Location = new System.Drawing.Point(6, 30);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(155, 20);
             this.label2.TabIndex = 8;
@@ -73,19 +75,23 @@
             // 
             // flowLayoutPanel_Main
             // 
+            this.flowLayoutPanel_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel_Main.Location = new System.Drawing.Point(261, 53);
             this.flowLayoutPanel_Main.Name = "flowLayoutPanel_Main";
-            this.flowLayoutPanel_Main.Size = new System.Drawing.Size(360, 177);
+            this.flowLayoutPanel_Main.Size = new System.Drawing.Size(360, 224);
             this.flowLayoutPanel_Main.TabIndex = 9;
             // 
             // MollierPointControl_Start
             // 
-            this.MollierPointControl_Start.Location = new System.Drawing.Point(0, 23);
+            this.MollierPointControl_Start.Location = new System.Drawing.Point(3, 53);
             this.MollierPointControl_Start.Name = "MollierPointControl_Start";
             this.MollierPointControl_Start.Pressure = 101325D;
+            this.MollierPointControl_Start.PressureEnabled = true;
             this.MollierPointControl_Start.PressureVisible = true;
             this.MollierPointControl_Start.SelectMollierPointVisible = false;
-            this.MollierPointControl_Start.Size = new System.Drawing.Size(199, 220);
+            this.MollierPointControl_Start.Size = new System.Drawing.Size(172, 220);
             this.MollierPointControl_Start.TabIndex = 10;
             // 
             // CoolingProcessControl

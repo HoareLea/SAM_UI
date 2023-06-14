@@ -114,10 +114,56 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             flowLayoutPanel_Main.Controls?.Clear();
             List<Control> controls = Create.Controls(processParameterTypes);
+            if(processCalculationType == ProcessCalculationType.MediumAndDryBulbTemperature)
+            {
+                ParameterControl parameterControl = new ParameterControl(ProcessParameterType.Efficiency);
+                parameterControl.Enabled = false;
+                controls.Add(parameterControl);
+
+                foreach (Control control in controls)
+                {
+                    parameterControl = control as ParameterControl;
+                    if(parameterControl == null)
+                    {
+                        continue;
+                    }
+
+                    parameterControl.ValueHanged += ParameterControl_ValueHanged;
+                }
+            }
+
             foreach (Control control in controls)
             {
                 flowLayoutPanel_Main.Controls.Add(control);
             }
+        }
+
+        private void ParameterControl_ValueHanged(object sender, EventArgs e)
+        {
+            double value = double.NaN;
+
+            double td_1 = MollierPointControl_Start.MollierPoint.DryBulbTemperature;
+            if(!double.IsNaN(td_1))
+            {
+                double td_2 = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.DryBulbTemperature);
+                if(!double.IsNaN(td_2))
+                {
+                    double flowTemperature = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.FlowTemperature);
+                    if(!double.IsNaN(flowTemperature))
+                    {
+                        double returnTemperature = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.ReturnTemperature);
+                        if (!double.IsNaN(returnTemperature))
+                        {
+                            double td_3 = (flowTemperature + returnTemperature) / 2;
+
+                            value = Core.Query.AlmostEqual(System.Math.Abs(td_1 - td_3), 0) ? 0 : (td_1 - td_2) / (td_1 - td_3);
+                            value = Core.Query.Round(value, Tolerance.MacroDistance) * 100;
+                        }
+                    }
+                }
+            }
+
+            Modify.SetParameterValue(flowLayoutPanel_Main, ProcessParameterType.Efficiency, value);
         }
     }
 }

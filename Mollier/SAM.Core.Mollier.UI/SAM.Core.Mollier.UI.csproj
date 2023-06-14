@@ -225,6 +225,7 @@
     <Compile Include="Interface\IMollierProcessControl.cs" />
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
+    <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\ToolTipText.cs" />
     <Compile Include="Query\Value.cs" />
