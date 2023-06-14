@@ -140,28 +140,12 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void ParameterControl_ValueHanged(object sender, EventArgs e)
         {
-            double value = double.NaN;
-
-            double td_1 = MollierPointControl_Start.MollierPoint.DryBulbTemperature;
-            if(!double.IsNaN(td_1))
-            {
-                double td_2 = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.DryBulbTemperature);
-                if(!double.IsNaN(td_2))
-                {
-                    double flowTemperature = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.FlowTemperature);
-                    if(!double.IsNaN(flowTemperature))
-                    {
-                        double returnTemperature = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.ReturnTemperature);
-                        if (!double.IsNaN(returnTemperature))
-                        {
-                            double td_3 = (flowTemperature + returnTemperature) / 2;
-
-                            value = Core.Query.AlmostEqual(System.Math.Abs(td_1 - td_3), 0) ? 0 : (td_1 - td_2) / (td_1 - td_3);
-                            value = Core.Query.Round(value, Tolerance.MacroDistance) * 100;
-                        }
-                    }
-                }
-            }
+            double value = Mollier.Query.Efficiency(
+                MollierPointControl_Start.MollierPoint.DryBulbTemperature,
+                Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.DryBulbTemperature),
+                Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.FlowTemperature),
+                Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.ReturnTemperature),
+                Tolerance.MacroDistance);
 
             Modify.SetParameterValue(flowLayoutPanel_Main, ProcessParameterType.Efficiency, value);
         }

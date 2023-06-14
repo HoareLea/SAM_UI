@@ -37,13 +37,15 @@
             // 
             // processCalculateType_ComboBox
             // 
+            this.processCalculateType_ComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.processCalculateType_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.processCalculateType_ComboBox.FormattingEnabled = true;
             this.processCalculateType_ComboBox.Items.AddRange(new object[] {
             "Dry Bulb Temperature",
             "Enthalpy Difference",
             "Dry Bulb Temperature Difference"});
-            this.processCalculateType_ComboBox.Location = new System.Drawing.Point(261, 23);
+            this.processCalculateType_ComboBox.Location = new System.Drawing.Point(207, 23);
             this.processCalculateType_ComboBox.Name = "processCalculateType_ComboBox";
             this.processCalculateType_ComboBox.Size = new System.Drawing.Size(266, 24);
             this.processCalculateType_ComboBox.TabIndex = 0;
@@ -53,7 +55,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.Location = new System.Drawing.Point(257, 0);
+            this.label1.Location = new System.Drawing.Point(282, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(133, 20);
             this.label1.TabIndex = 4;
@@ -63,7 +65,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label2.Location = new System.Drawing.Point(14, 0);
+            this.label2.Location = new System.Drawing.Point(25, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(155, 20);
             this.label2.TabIndex = 7;
@@ -71,18 +73,24 @@
             // 
             // flowLayoutPanel_Main
             // 
-            this.flowLayoutPanel_Main.Location = new System.Drawing.Point(261, 53);
+            this.flowLayoutPanel_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel_Main.Location = new System.Drawing.Point(207, 53);
             this.flowLayoutPanel_Main.Name = "flowLayoutPanel_Main";
-            this.flowLayoutPanel_Main.Size = new System.Drawing.Size(360, 177);
+            this.flowLayoutPanel_Main.Size = new System.Drawing.Size(266, 177);
             this.flowLayoutPanel_Main.TabIndex = 8;
             // 
             // MollierPointControl_Start
             // 
-            this.MollierPointControl_Start.Location = new System.Drawing.Point(0, 23);
+            this.MollierPointControl_Start.Location = new System.Drawing.Point(3, 23);
             this.MollierPointControl_Start.Name = "MollierPointControl_Start";
+            this.MollierPointControl_Start.Pressure = double.NaN;
+            this.MollierPointControl_Start.PressureEnabled = true;
+            this.MollierPointControl_Start.PressureVisible = true;
+            this.MollierPointControl_Start.SelectMollierPointVisible = false;
             this.MollierPointControl_Start.Size = new System.Drawing.Size(198, 220);
             this.MollierPointControl_Start.TabIndex = 5;
-            this.MollierPointControl_Start.Load += new System.EventHandler(this.MollierPointControl_Start_Load);
             // 
             // HeatingProcessControl
             // 
@@ -93,7 +101,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.processCalculateType_ComboBox);
             this.Name = "HeatingProcessControl";
-            this.Size = new System.Drawing.Size(655, 280);
+            this.Size = new System.Drawing.Size(484, 243);
             this.ResumeLayout(false);
             this.PerformLayout();
 

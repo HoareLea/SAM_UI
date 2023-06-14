@@ -102,15 +102,10 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             flowLayoutPanel_Main.Controls?.Clear();
             List<Control> controls = Create.Controls(processParameterTypes);
-            foreach(Control control in controls)
+            foreach (Control control in controls)
             {
                 flowLayoutPanel_Main.Controls.Add(control);
             }            
-        }
-
-        private void MollierPointControl_Start_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

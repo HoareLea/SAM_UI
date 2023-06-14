@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this components
         /// </summary>
-        public override string LatestComponentVersion => "1.0.0";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -64,6 +64,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
                 result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "coolingProcess", NickName = "coolingProcess", Description = "Cooling Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "end", NickName = "end", Description = "End", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "efficiency", NickName = "efficiency", Description = "Efficiency [%]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "color", NickName = "color", Description = "Color", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
 
                 return result.ToArray();
@@ -164,8 +165,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            CoolingProcess coolingProcess = Core.Mollier.Create.CoolingProcess_ByMediumAndDryBulbTemperature(mollierPoint, flowTemperature, returnTemperature, dryBulbTemperature);
-
+            CoolingProcess coolingProcess = Mollier.Create.CoolingProcess_ByMediumAndDryBulbTemperature(mollierPoint, flowTemperature, returnTemperature, dryBulbTemperature);
 
             index = Params.IndexOfOutputParam("coolingProcess");
             if (index != -1)
@@ -176,16 +176,25 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 return;
             }
+
             MollierPoint end = new MollierPoint(coolingProcess.End);
             index = Params.IndexOfOutputParam("end");
             if (index != -1)
             {
                 dataAccess.SetData(index, new GooMollierPoint(end));
             }
+
             index = Params.IndexOfOutputParam("color");
             if (index != -1)
             {
                 dataAccess.SetData(index, color);
+            }
+
+            double efficiency = Mollier.Query.Efficiency(mollierPoint.DryBulbTemperature, dryBulbTemperature, flowTemperature, returnTemperature);
+            index = Params.IndexOfOutputParam("efficiency");
+            if (index != -1)
+            {
+                dataAccess.SetData(index, efficiency);
             }
         }
 
