@@ -45,9 +45,7 @@ namespace SAM.Core.Mollier.UI
 
         private void resetChartToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MollierControlSettings mollierControlSettings= new MollierControlSettings();
-            mollierControlSettings.Pressure = MollierControl_Main.MollierControlSettings.Pressure;
-            default_chart(mollierControlSettings);
+            Reset();
         }
       
         private void TextBox_Pressure_TextChanged(object sender, EventArgs e)
@@ -407,6 +405,16 @@ namespace SAM.Core.Mollier.UI
        
         private void ChartToolStripMenuItem_Mollier_Click(object sender, EventArgs e)
         {
+            ShowMollier();
+        }
+        
+        private void ChartToolStripMenuItem_Psychrometric_Click(object sender, EventArgs e)
+        {
+            ShowPsychrometric();
+        }
+
+        private void ShowMollier()
+        {
             if (ChartToolStripMenuItem_Mollier.Checked)
             {
                 return;
@@ -417,7 +425,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (ChartToolStripMenuItem_Mollier.Checked)
             {
-                mollierControlSettings.ChartType = ChartType.Mollier; 
+                mollierControlSettings.ChartType = ChartType.Mollier;
             }
             else if (ChartToolStripMenuItem_Psychrometric.Checked)
             {
@@ -425,10 +433,10 @@ namespace SAM.Core.Mollier.UI
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
-        
-        private void ChartToolStripMenuItem_Psychrometric_Click(object sender, EventArgs e)
+
+        private void ShowPsychrometric()
         {
-            if(ChartToolStripMenuItem_Psychrometric.Checked)
+            if (ChartToolStripMenuItem_Psychrometric.Checked)
             {
                 return;
             }
@@ -446,7 +454,14 @@ namespace SAM.Core.Mollier.UI
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
-        
+
+        private void Reset()
+        {
+            MollierControlSettings mollierControlSettings = new MollierControlSettings();
+            mollierControlSettings.Pressure = MollierControl_Main.MollierControlSettings.Pressure;
+            default_chart(mollierControlSettings);
+        }
+
         private void ToolStripMenuItem_Density_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem_Density.Checked = !ToolStripMenuItem_Density.Checked;
@@ -776,6 +791,21 @@ namespace SAM.Core.Mollier.UI
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             MollierControl_Main.ClearObjects();
+        }
+
+        private void Button_Mollier_Click(object sender, EventArgs e)
+        {
+            ShowMollier();
+        }
+
+        private void Button_Psychrometric_Click(object sender, EventArgs e)
+        {
+            ShowPsychrometric();
+        }
+
+        private void Button_Reset_Click(object sender, EventArgs e)
+        {
+            Reset();
         }
     }
 }
