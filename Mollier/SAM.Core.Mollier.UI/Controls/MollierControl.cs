@@ -905,7 +905,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
                 series.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, null);
                 series.Points[index].Tag = mollierPoint;
-                series.Points[index].MarkerSize = 15; //TODO: Change size of marker
+                series.Points[index].MarkerSize = 7; //TODO: Change size of marker
                 series.Points[index].MarkerStyle = MarkerStyle.Circle;
 
                 if (uIMollierPoint.UIMollierAppearance != null)
