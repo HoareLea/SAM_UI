@@ -1,11 +1,14 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
+using Rhino;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
@@ -137,20 +140,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                     return;
                 }
 
-                System.Drawing.Color color = System.Drawing.Color.DarkGreen;
-                if (process.Value is HeatingProcess)
-                {
-                    color = System.Drawing.Color.Red;
-                }
-                else if (process.Value is CoolingProcess)
-                {
-                    color = System.Drawing.Color.Blue;
-                }
-                else if (process.Value is UIMollierProcess)
-                {
-                    UIMollierProcess uIMollierProcess = (UIMollierProcess)process.Value;
-                    color = uIMollierProcess.UIMollierAppearance.Color;
-                }
+                System.Drawing.Color color = Mollier.Query.Color(process.Value);
 
                 GH_MollierGeometry gH_MollierGeometry = null;
 
@@ -240,6 +230,48 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
 
             return result;
+        }
+
+        protected override void AppendAdditionalComponentMenuItems(ToolStripDropDown menu)
+        {
+            Menu_AppendItem(menu, "Bake By Mollier", Menu_BakeByMollier, true);
+            Menu_AppendItem(menu, "Bake By Psychrometric", Menu_BakeByPsychrometric, true);
+
+            base.AppendAdditionalComponentMenuItems(menu);
+        }
+
+        private void Menu_BakeByMollier(object sender, EventArgs e)
+        {
+            Bake(ChartType.Mollier);
+        }
+
+        private void Menu_BakeByPsychrometric(object sender, EventArgs e)
+        {
+            Bake(ChartType.Psychrometric);
+        }
+
+        private void Bake(ChartType chartType)
+        {
+            IGH_Param gHParam = null;
+
+            List<IMollierProcess> mollierProcesses = null;
+
+            gHParam = Params?.Input?.Find(x => x.Name == "Mollier Processes");
+            if (gHParam != null)
+            {
+                mollierProcesses = Query.MollierProcesses<IMollierProcess>(new IGH_Param[] { gHParam });
+            }
+
+            List<IMollierPoint> mollierPoints = null;
+
+            gHParam = Params?.Input?.Find(x => x.Name == "Mollier Points");
+            if (gHParam != null)
+            {
+                mollierPoints = Query.MollierPoints(new IGH_Param[] { gHParam });
+            }
+
+            Core.Grasshopper.Mollier.Modify.BakeGeometry(RhinoDoc.ActiveDoc, chartType, mollierProcesses, mollierPoints);
+
         }
     }
 }
