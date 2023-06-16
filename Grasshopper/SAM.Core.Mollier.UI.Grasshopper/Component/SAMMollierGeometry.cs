@@ -55,7 +55,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
                 result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "Mollier Processes", NickName = "Mollier Processes", Description = "Mollier Processes", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
 
-                param_Bool = new Param_Boolean() { Name = "_coolingLineRealistic_", NickName = "_coolingLineRealistic_", Description = "Cooling Line Realistic", Access = GH_ParamAccess.item, Optional = true };
+                param_Bool = new Param_Boolean() { Name = "_coolingLineRealistic_", NickName = "_coolingLineRealistic_", Description = "This option will represent Cooling with dehumidification process in 'more' realistic curve - estimation", Access = GH_ParamAccess.item, Optional = true };
                 param_Bool.SetPersistentData(false);
                 result.Add(new GH_SAMParam(param_Bool, ParamVisibility.Voluntary));
 
