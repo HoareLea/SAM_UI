@@ -926,19 +926,19 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             created_points = new List<Tuple<MollierPoint, string>>();//used for labeling in label process new 2
 
-            List<UIMollierProcess> mollierProcesses_Temp = mollierProcesses == null ? null : new List<UIMollierProcess>(mollierProcesses.Cast<UIMollierProcess>());
-            mollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
-            createProcessesLabels(mollierProcesses_Temp, chartType);
+            List<UIMollierProcess> uIMollierProcesses_Temp = mollierProcesses == null ? null : new List<UIMollierProcess>(mollierProcesses.Cast<UIMollierProcess>());
+            uIMollierProcesses_Temp?.Sort((x, y) => System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio).CompareTo(System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio)));
+            createProcessesLabels(uIMollierProcesses_Temp, chartType);
 
             //create series for all points and lines in processes(create circles, lines, tooltips, ADP etc.)
             for (int i = 0; i < mollierProcesses.Count; i++)
             {
-                UIMollierProcess UI_MollierProcess = mollierProcesses[i];//contains all spcified data of the process like color, start label etc.
-                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;//contains the most important data of the process: only start end point, and what type of process is it 
+                UIMollierProcess uIMollierProcess = mollierProcesses[i];//contains all spcified data of the process like color, start label etc.
+                MollierProcess mollierProcess = uIMollierProcess.MollierProcess;//contains the most important data of the process: only start end point, and what type of process is it 
 
                 if (mollierProcess is UndefinedProcess)
                 {
-                    createSeries_RoomProcess(UI_MollierProcess);
+                    createSeries_RoomProcess(uIMollierProcess);
                     continue;
                 }
                 //process series
@@ -946,7 +946,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 4;
-                series.Color = (UI_MollierProcess.UIMollierAppearance.Color == Color.Empty) ? mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess) : UI_MollierProcess.UIMollierAppearance.Color;
+                series.Color = (uIMollierProcess.UIMollierAppearance.Color == Color.Empty) ? mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, ChartParameterType.Line, mollierProcess) : uIMollierProcess.UIMollierAppearance.Color;
                 series.Tag = mollierProcess;
 
                 MollierPoint start = mollierProcess?.Start;
@@ -956,11 +956,11 @@ namespace SAM.Core.Mollier.UI.Controls
                     continue;
                 }
                 //creating series - processes points pattern
-                createSeries_ProcessesPoints(start, UI_MollierProcess, chartType, toolTipName: UI_MollierProcess.UIMollierAppearance_Start.Label);
-                createSeries_ProcessesPoints(end, UI_MollierProcess, chartType, toolTipName: UI_MollierProcess.UIMollierAppearance_End.Label);
+                createSeries_ProcessesPoints(start, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierAppearance_Start.Label);
+                createSeries_ProcessesPoints(end, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierAppearance_End.Label);
                 //add start and end point to the process series
                 int index;
-                series.ToolTip = Query.ToolTipText(start, end, chartType, Query.FullProcessName(UI_MollierProcess));
+                series.ToolTip = Query.ToolTipText(start, end, chartType, Query.FullProcessName(uIMollierProcess));
                 index = chartType == ChartType.Mollier ? series.Points.AddXY(start.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(start)) : series.Points.AddXY(start.DryBulbTemperature, start.HumidityRatio);
                 series.Points[index].Tag = start;
                 index = chartType == ChartType.Mollier ? series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end)) : series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
@@ -985,8 +985,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     MollierPoint secondPoint = coolingProcess.DewPoint();
                     //creating series - processes points pattern
-                    createSeries_ProcessesPoints(apparatusDewPoint, UI_MollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
-                    createSeries_ProcessesPoints(secondPoint, UI_MollierProcess, chartType, pointType: "SecondPoint");
+                    createSeries_ProcessesPoints(apparatusDewPoint, uIMollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
+                    createSeries_ProcessesPoints(secondPoint, uIMollierProcess, chartType, pointType: "SecondPoint");
                     //creating series - special with ADP process pattern
                     createSeries_DewPoint(start, secondPoint, mollierProcess, chartType, Color.LightGray, 2, ChartDashStyle.Dash);
                     createSeries_DewPoint(end, apparatusDewPoint, mollierProcess, chartType, Color.LightGray, 2, ChartDashStyle.Dash);
@@ -1006,7 +1006,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             }
             //labeling all the processes
-            createPorcessesLabels_New(mollierProcesses_Temp, chartType);
+            createPorcessesLabels_New(uIMollierProcesses_Temp, chartType);
         }
 
         private void createSeries_DewPoint(MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType, Color color, int borderWidth, ChartDashStyle borderDashStyle)
@@ -1060,18 +1060,17 @@ namespace SAM.Core.Mollier.UI.Controls
             series.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, toolTipName);
             //seriesDew.mark
         }
-        private void createSeries_RoomProcess(UIMollierProcess UI_MollierProcess)
+        private void createSeries_RoomProcess(UIMollierProcess uIMollierProcess)
         {
             //defines the end label of the process
-            MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
+            MollierProcess mollierProcess = uIMollierProcess.MollierProcess;
             //specified the color of the Room air condition point
-            Color color = Color.Orange;
-            color = UI_MollierProcess.UIMollierAppearance.Color == Color.Empty ? color : UI_MollierProcess.UIMollierAppearance.Color;
+            Color color = uIMollierProcess.UIMollierAppearance.Color == Color.Empty ? Color.Gray : uIMollierProcess.UIMollierAppearance.Color;
             //creating series for room process
             Series series = MollierChart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
-            series.Color = Color.Gray;
+            series.Color = color;
             series.BorderDashStyle = ChartDashStyle.Dash;
             series.BorderWidth = 3;
             series.Tag = mollierProcess;
@@ -1083,7 +1082,7 @@ namespace SAM.Core.Mollier.UI.Controls
             series.Points[index].Tag = start;
             index = mollierControlSettings.ChartType == ChartType.Mollier ? series.Points.AddXY(end.HumidityRatio * 1000, Mollier.Query.DiagramTemperature(end)) : series.Points.AddXY(end.DryBulbTemperature, end.HumidityRatio);
             series.Points[index].Tag = end;
-            series.ToolTip = Query.ToolTipText(start, end, mollierControlSettings.ChartType, Query.FullProcessName(UI_MollierProcess));
+            series.ToolTip = Query.ToolTipText(start, end, mollierControlSettings.ChartType, Query.FullProcessName(uIMollierProcess));
 
             //creating series for Room air condition point 
             Series seriesRoomPoint = MollierChart.Series.Add(Guid.NewGuid().ToString());
@@ -1100,9 +1099,9 @@ namespace SAM.Core.Mollier.UI.Controls
             double Y = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(end) : end.HumidityRatio;
             seriesRoomPoint.Points.AddXY(X, Y);
             seriesRoomPoint.Points[0].ToolTip = Query.ToolTipText(end, mollierControlSettings.ChartType, "ROOM");
-            if (!string.IsNullOrWhiteSpace(UI_MollierProcess?.UIMollierAppearance_Start?.Label))
+            if (!string.IsNullOrWhiteSpace(uIMollierProcess?.UIMollierAppearance_Start?.Label))
             {
-                createSeries_ProcessesPoints(start, UI_MollierProcess, MollierControlSettings.ChartType);
+                createSeries_ProcessesPoints(start, uIMollierProcess, MollierControlSettings.ChartType);
             }
 
         }
