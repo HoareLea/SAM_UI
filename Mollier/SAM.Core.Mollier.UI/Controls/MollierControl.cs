@@ -2334,6 +2334,15 @@ namespace SAM.Core.Mollier.UI.Controls
             double x_Max = System.Math.Max((double)ax.PixelPositionToValue(mup.X), (double)ax.PixelPositionToValue(mdown.X));
             double y_Min = System.Math.Min((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y));
             double y_Max = System.Math.Max((double)ay.PixelPositionToValue(mup.Y), (double)ay.PixelPositionToValue(mdown.Y));
+
+			//Rounding MD 2023-06-26
+            //y_Min = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Round(y_Min) : System.Math.Round(y_Min * 1000) / 1000;
+            //y_Max = mollierControlSettings.ChartType == ChartType.Mollier ? System.Math.Round(y_Max) : System.Math.Round(y_Max * 1000) / 1000;
+            //x_Min = System.Math.Round(x_Min);
+            //x_Max = System.Math.Round(x_Max);
+			//
+
+
             double x_Difference = x_Max - x_Min;
             double y_Difference = mollierControlSettings.ChartType == ChartType.Mollier ? y_Max - y_Min : (y_Max - y_Min) * 1000;
             if (x_Difference < 1 || y_Difference < 1)
