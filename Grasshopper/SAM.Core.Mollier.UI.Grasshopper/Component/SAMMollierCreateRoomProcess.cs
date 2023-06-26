@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.1";
+        public override string LatestComponentVersion => "1.0.2";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -44,6 +44,19 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_latentLoad", NickName = "_latentLoad", Description = "Latent Load [kW]", Access = GH_ParamAccess.item, Optional = false };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
+
+                global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
+                param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
+                result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));
+                global::Grasshopper.Kernel.Parameters.Param_String param_Label = null;
+                param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "startLabel_", NickName = "startLabel_", Description = "Start Label", Access = GH_ParamAccess.item, Optional = true };
+                result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
+
+                param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "processLabel_", NickName = "processLabel_", Description = "Process Label", Access = GH_ParamAccess.item, Optional = true };
+                result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
+
+                param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "endLabel_", NickName = "endLabel_", Description = "End Label", Access = GH_ParamAccess.item, Optional = true };
+                result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
 
                 return result.ToArray();
             }
@@ -129,11 +142,38 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
+            Color color = Color.Empty;
+
+            index = Params.IndexOfInputParam("_color_");
+            if (index != -1)
+            {
+                dataAccess.GetData(index, ref color);
+            }
+
+            string startLabel = null;
+            index = Params.IndexOfInputParam("startLabel_");
+            if (index != -1)
+            {
+                dataAccess.GetData(index, ref startLabel);
+            }
+            string processLabel = null;
+            index = Params.IndexOfInputParam("processLabel_");
+            if (index != -1)
+            {
+                dataAccess.GetData(index, ref processLabel);
+            }
+            string endLabel = null;
+            index = Params.IndexOfInputParam("endLabel_");
+            if (index != -1)
+            {
+                dataAccess.GetData(index, ref endLabel);
+            }
+
             UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(start, airFlow, sensibleLoad * 1000, latentLoad * 1000);
             index = Params.IndexOfOutputParam("roomProcess");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierProcess(undefinedProcess, Color.Empty, null, null, null));
+                dataAccess.SetData(index, new GooMollierProcess(undefinedProcess, color, startLabel, processLabel, endLabel));
             }
             else
             {
