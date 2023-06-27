@@ -167,7 +167,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
             if(dryBulbTemperature < ((flowTemperature + returnTemperature) / 2))
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Your cooling is below ADP.  \nConsider lowering you flow and return temperature");
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Your cooling end point is below ADP.  \nConsider lowering you flow and return temperature to get efficiency below 95%");
             }
 
             CoolingProcess coolingProcess = Mollier.Create.CoolingProcess_ByMediumAndDryBulbTemperature(mollierPoint, flowTemperature, returnTemperature, dryBulbTemperature);
