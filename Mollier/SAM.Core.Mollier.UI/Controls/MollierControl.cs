@@ -1483,6 +1483,12 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void generate_graph_mollier()
         {
+
+            if(mollierControlSettings == null || !mollierControlSettings.IsValid())
+            {
+                mollierControlSettings = new MollierControlSettings();
+            }
+
             //INITIAL SIZES
             double pressure = mollierControlSettings.Pressure;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;

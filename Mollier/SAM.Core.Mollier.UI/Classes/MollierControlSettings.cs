@@ -75,6 +75,43 @@ namespace SAM.Core.Mollier.UI
             FromJObject(jObject);
         }
 
+        public bool IsValid()
+        {
+            if (double.IsNaN(Pressure) ||
+                double.IsInfinity(Pressure) ||
+                Pressure == double.MaxValue ||
+                Pressure == double.MinValue ||
+                double.IsNaN(HumidityRatio_Min) ||
+                double.IsInfinity(HumidityRatio_Min) ||
+                HumidityRatio_Min == double.MaxValue ||
+                HumidityRatio_Min == double.MinValue ||
+                double.IsNaN(HumidityRatio_Max) ||
+                double.IsInfinity(HumidityRatio_Max) ||
+                HumidityRatio_Max == double.MaxValue ||
+                HumidityRatio_Max == double.MinValue ||
+                double.IsNaN(HumidityRatio_Interval) ||
+                double.IsInfinity(HumidityRatio_Interval) ||
+                HumidityRatio_Interval == double.MaxValue ||
+                HumidityRatio_Interval == double.MinValue ||
+                double.IsNaN(Temperature_Min) ||
+                double.IsInfinity(Temperature_Min) ||
+                Temperature_Min == double.MaxValue ||
+                Temperature_Min == double.MinValue ||
+                double.IsNaN(Temperature_Max) ||
+                double.IsInfinity(Temperature_Max) ||
+                Temperature_Max == double.MaxValue ||
+                Temperature_Max == double.MinValue ||
+                double.IsNaN(Temperature_Interval) ||
+                double.IsInfinity(Temperature_Interval) ||
+                Temperature_Interval == double.MaxValue ||
+                Temperature_Interval == double.MinValue)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         //loading from file
         public bool FromJObject(JObject jObject)
         {
