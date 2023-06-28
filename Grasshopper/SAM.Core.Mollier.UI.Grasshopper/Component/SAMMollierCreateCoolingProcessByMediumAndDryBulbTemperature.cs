@@ -165,7 +165,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            if(dryBulbTemperature < ((flowTemperature + returnTemperature) / 2))
+            if(dryBulbTemperature < Core.Query.LogarithmicMeanTemperatureDifference(mollierPoint.DryBulbTemperature, dryBulbTemperature, flowTemperature, returnTemperature))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Your cooling end point is below ADP.  \nConsider lowering you flow and return temperature to get efficiency below 95%");
             }
