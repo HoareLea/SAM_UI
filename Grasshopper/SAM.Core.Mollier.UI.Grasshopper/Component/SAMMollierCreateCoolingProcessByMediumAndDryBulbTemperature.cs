@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this components
         /// </summary>
-        public override string LatestComponentVersion => "1.0.2";
+        public override string LatestComponentVersion => "1.0.3";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -75,7 +75,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// Updates PanelTypes for AdjacencyCluster
         /// </summary>
         public SAMMollierCreateCoolingProcessByMediumAndDryBulbTemperature()
-          : base("SAMMollier.CoolingProcessByMediumAndDryBulbTemperature", "SAMMollier.CoolingProcessByMediumAndDryBulbTemperature",
+          : base("SAMMollier.CreateCoolingProcessByMediumAndDryBulbTemperature", "SAMMollier.CreateCoolingProcessByMediumAndDryBulbTemperature",
               "Creates CoolingProcess By Medium And (End Process) Dry Bulb Temperature",
               "SAM", "Mollier")
         {
