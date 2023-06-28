@@ -195,7 +195,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.SetData(index, color);
             }
 
-            double efficiency = Mollier.Query.Efficiency(mollierPoint.DryBulbTemperature, dryBulbTemperature, flowTemperature, returnTemperature);
+            double efficiency = Mollier.Query.Efficiency(mollierPoint.DryBulbTemperature, end.DryBulbTemperature, flowTemperature, returnTemperature);
             index = Params.IndexOfOutputParam("efficiency");
             if (index != -1)
             {
