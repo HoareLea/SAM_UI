@@ -837,7 +837,7 @@ namespace SAM.Core.Mollier.UI
             double sensibleHeatRatio = double.NaN;
             using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Sensible Heat Ratio", "Sensible Heat Ratio (SHR) [0-1]"))
             {
-                textBoxForm.Value = 0.5;
+                textBoxForm.Value = 0.85;
                 if (textBoxForm.ShowDialog() != DialogResult.OK)
                 {
                     return;
