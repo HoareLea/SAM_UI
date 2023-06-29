@@ -284,6 +284,7 @@ namespace SAM.Core.Mollier.UI
             {
                 return false;
             }
+
             MollierControl_Main.AddProcesses(mollierProcesses, checkPressure);
             return true;
         }
@@ -317,9 +318,16 @@ namespace SAM.Core.Mollier.UI
             blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
             grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
             blueBlackToolStripMenuItem.Checked = mollierControlSettings.Color == "blue-black";
-            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            if(MollierControl_Main != null)
+            {
+                MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            }
 
-            TextBox_Pressure.Text = MollierControlSettings.Pressure.ToString();
+            MollierControlSettings mollierControlSettings_Temp = MollierControlSettings;
+            if(mollierControlSettings_Temp != null)
+            {
+                TextBox_Pressure.Text = mollierControlSettings_Temp.Pressure.ToString();
+            }
         }
 
         //buttons which enable to change color, chart or disable line
@@ -499,12 +507,15 @@ namespace SAM.Core.Mollier.UI
         {
             get
             {
-                return MollierControl_Main.MollierControlSettings;
+                return MollierControl_Main?.MollierControlSettings;
             }
 
             set
             {
-                MollierControl_Main.MollierControlSettings = value;
+                if(MollierControl_Main != null)
+                {
+                    MollierControl_Main.MollierControlSettings = value;
+                }
             }
         }
 
@@ -806,6 +817,55 @@ namespace SAM.Core.Mollier.UI
         private void Button_Reset_Click(object sender, EventArgs e)
         {
             Reset();
+        }
+
+        private void Button_Test_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected_New;
+        }
+
+        private void MollierControl_Main_MollierPointSelected_New(object sender, MollierPointSelectedEventArgs e)
+        {
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_New;
+
+            MollierPoint mollierPoint = e.MollierPoint;
+            if(mollierPoint == null)
+            {
+                return;
+            }
+
+            double sensibleHeatRatio = double.NaN;
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Sensible Heat Ratio", "Sensible Heat Ratio (SHR) [0-1]"))
+            {
+                textBoxForm.Value = 0.5;
+                if (textBoxForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                sensibleHeatRatio = textBoxForm.Value;
+            }
+
+            if (double.IsNaN(sensibleHeatRatio))
+            {
+                return;
+            }
+
+            MollierControlSettings mollierControlSettings = MollierControlSettings;
+            if(mollierControlSettings == null)
+            {
+                mollierControlSettings = new MollierControlSettings();
+            }
+
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess(mollierPoint, sensibleHeatRatio, 1005, mollierControlSettings.Temperature_Max, mollierControlSettings.Temperature_Min);
+            if(undefinedProcess == null)
+            {
+                return;
+            }
+
+            UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
+            
+            AddProcesses(new IMollierProcess[] { uIMollierProcess}, false);
         }
     }
 }
