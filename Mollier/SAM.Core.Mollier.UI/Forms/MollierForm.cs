@@ -857,7 +857,7 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings = new MollierControlSettings();
             }
 
-            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_BySensibleHeatRatio(mollierPoint, sensibleHeatRatio, mollierControlSettings.Temperature_Max, mollierControlSettings.Temperature_Min);
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_BySensibleHeatRatio(mollierPoint, sensibleHeatRatio, mollierControlSettings.Temperature_Min, mollierControlSettings.Temperature_Max, mollierControlSettings.HumidityRatio_Min / 1000, mollierControlSettings.HumidityRatio_Max / 1000);
             if(undefinedProcess == null)
             {
                 return;

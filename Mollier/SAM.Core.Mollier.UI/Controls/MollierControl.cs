@@ -204,7 +204,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void create_density_line(ChartType chartType, double density_Min, double density_Max, double pressure)
         {
-            Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.DensityLine(density_Min, density_Max, pressure);
+            Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.ConstantDensityPoints(density_Min, density_Max, pressure);
             if (dictionary == null)
             {
                 return;
@@ -244,7 +244,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void create_enthalpy_line(ChartType chartType, double enthalpy_Min, double enthalpy_Max, double pressure)
         {
-            Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.EnthalpyLine(chartType, enthalpy_Min, enthalpy_Max, pressure);
+            Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.ConstantEnthalpyPoints(chartType, enthalpy_Min, enthalpy_Max, pressure);
             if (dictionary == null)
             {
                 return;
@@ -271,7 +271,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 double humidityRatio_Min = Mollier.Query.HumidityRatio_ByEnthalpy(-20, enthalpy_Min * 1000);
 
                 double humidityRatio_1 = Mollier.Query.HumidityRatio_ByEnthalpy(100, enthalpy_Min * 1000);
-                double temperature_1 = Mollier.Query.DryBulbTemperature(enthalpy_Min * 1000, humidityRatio_1);
+                double temperature_1 = Mollier.Query.DryBulbTemperature(enthalpy_Min * 1000, humidityRatio_1, pressure);
                 double temperature_2 = Mollier.Query.DryBulbTemperature_ByEnthalpy(enthalpy_Min * 1000, 100, pressure);
                 double humidityRatio_2 = Mollier.Query.HumidityRatio(temperature_2, 100, pressure);
 
@@ -302,7 +302,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void create_Wet_Bulb_Temperature_line(ChartType chartType, double temperature_Max, double wetBulbTemperature_Min, double wetBulbTemperature_Max, double pressure)
         {
-            Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.WetBulbTemperatureLine(wetBulbTemperature_Min, wetBulbTemperature_Max, pressure);
+            Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.ConstantWetBulbTemperaturePoints(wetBulbTemperature_Min, wetBulbTemperature_Max, pressure);
             if (dictionary == null)
             {
                 return;
@@ -347,7 +347,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void create_specific_volume_line(ChartType chartType, double specific_volume_Min, double specific_volume_Max, double pressure)
         {
-            Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.SpecificVolumeLine(specific_volume_Min, specific_volume_Max, pressure);
+            Dictionary<double, List<MollierPoint>> dictionary = Mollier.Query.ConstantSpecificVolumePoints(specific_volume_Min, specific_volume_Max, pressure);
             if (dictionary == null || dictionary.Count == 0)
             {
                 return;
