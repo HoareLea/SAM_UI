@@ -9,7 +9,7 @@
             double humidityRatio = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
 
             X = chartType == ChartType.Mollier ? humidityRatio * 1000 : dryBulbTemperature;
-            Y = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(dryBulbTemperature, humidityRatio, pressure) : humidityRatio;
+            Y = chartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(dryBulbTemperature, humidityRatio) : humidityRatio;
 
             return orientation == "X" ? X : Y;
         }
