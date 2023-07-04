@@ -58,7 +58,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 for (int j = temperature_Min; j <= temperature_Max; j++)
                 {
                     double humidity_ratio = Mollier.Query.HumidityRatio(j, relative_humidity, pressure);
-                    double diagram_temperature = Mollier.Query.DiagramTemperature(j, humidity_ratio);
+                    double diagram_temperature = Mollier.Query.DiagramTemperature(j, humidity_ratio, pressure);
                     if (humidity_ratio_points[j - index].Count == 0)
                         humidity_ratio_points[j - index].Add(new Point2D(0, j));
                     relative_humidity_points.Add(new Point2D(humidity_ratio * 1000, diagram_temperature));
@@ -1514,7 +1514,7 @@ namespace SAM.Core.Mollier.UI.Controls
             //checking whether creating a new graph has sense with this pressure
 
             double val = Mollier.Query.DryBulbTemperature_ByHumidityRatio(0.01, 100, pressure);
-            double di = Mollier.Query.DiagramTemperature(val, 0.01);
+            double di = Mollier.Query.DiagramTemperature(val, 0.01, pressure);
             double RH = Mollier.Query.RelativeHumidity(val, 0.01, pressure);
 
             if (MinPressure > pressure || pressure > MaxPressure)
@@ -2529,7 +2529,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double chartY = MollierChart.ChartAreas[0].AxisY.PixelPositionToValue(y);
 
             double humidityRatio = mollierControlSettings.ChartType == ChartType.Mollier ? chartX / 1000 : chartY;
-            double dryBulbTemperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DryBulbTemperature_ByDiagramTemperature(chartY, humidityRatio) : chartX;
+            double dryBulbTemperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DryBulbTemperature_ByDiagramTemperature(chartY, humidityRatio, mollierControlSettings.Pressure) : chartX;
 
             MollierPoint result = new MollierPoint(dryBulbTemperature, humidityRatio, mollierControlSettings.Pressure);
             return result;
