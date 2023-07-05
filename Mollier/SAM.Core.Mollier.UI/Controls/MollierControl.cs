@@ -1651,9 +1651,9 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.ChartAreas[0].AxisX2.Enabled = AxisEnabled.False;
             MollierChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.True;
             MollierChart.ChartAreas[0].AxisY2.Title = "Humidity Ratio  x [kg/kg]";
-            MollierChart.ChartAreas[0].AxisY2.Maximum = humidityRatio_Max / 1000;
-            MollierChart.ChartAreas[0].AxisY2.Minimum = humidityRatio_Min / 1000;
-            MollierChart.ChartAreas[0].AxisY2.Interval = humidityRatio_interval / 1000;
+            MollierChart.ChartAreas[0].AxisY2.Maximum = humidityRatio_Max; //divide by /1000 if want to have kg/kg
+            MollierChart.ChartAreas[0].AxisY2.Minimum = humidityRatio_Min;
+            MollierChart.ChartAreas[0].AxisY2.Interval = humidityRatio_interval;
             MollierChart.ChartAreas[0].AxisY2.MajorGrid.LineColor = Color.Gray;
             MollierChart.ChartAreas[0].AxisY2.MinorGrid.Interval = 0.001;
             MollierChart.ChartAreas[0].AxisY2.MinorGrid.Enabled = true;
