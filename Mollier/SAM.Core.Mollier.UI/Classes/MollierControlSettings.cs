@@ -13,7 +13,7 @@ namespace SAM.Core.Mollier.UI
         public double Temperature_Max { get; set; } = 50;
         public double Temperature_Min { get; set; } = -20;
         public double Temperature_Interval { get; set; } = 5;
-        public double P_w_Interval { get; set; } = 1;
+        public double P_w_Interval { get; set; } = 0.5;
         public bool Density_line { get; set; } = true;
         public bool Enthalpy_line { get; set; } = true;
         public bool SpecificVolume_line { get; set; } = true;

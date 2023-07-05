@@ -662,14 +662,18 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisY.LabelStyle.Font = area.AxisY.LabelStyle.Font;
             areaAxisAxisY.Minimum = System.Math.Round(P_w_Min, 4);
             areaAxisAxisY.Maximum = System.Math.Round(P_w_Max, 4);
-            areaAxisAxisY.Interval = mollierControlSettings.P_w_Interval / 1000;
-            areaAxisAxisY.Title = "P_w  x [kPa]";
+            areaAxisAxisY.Interval = mollierControlSettings.P_w_Interval;
+            areaAxisAxisY.Title = "Partial Vapour Pressure pW [kPa]";
 
             areaAxis.AxisX2.Title = "";
 
             // Adjust area position
             areaAxis.Position.X = axisX;
             areaAxis.InnerPlotPosition.X += labelsSize;
+
+            areaAxisAxisY.MinorTickMark.Enabled = true;
+            areaAxisAxisY.MinorGrid.Enabled = false;
+            areaAxisAxisY.MinorTickMark.Interval = 0.1;
         }
 
         public void CreateXAxis(Chart chart, ChartArea area, Series series, float axisY, float axisHeight, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
@@ -700,6 +704,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaSeries.AxisX.MajorTickMark.Enabled = false;
             areaSeries.AxisX.LabelStyle.Enabled = false;
             areaSeries.AxisX.IsStartedFromZero = area.AxisX.IsStartedFromZero;
+            
             // associate series with new ca
             series.ChartArea = areaSeries.Name;
 
@@ -719,8 +724,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.BorderColor = Color.Transparent;
             RectangleF oRect = area.Position.ToRectangleF();
             areaAxis.Position = new ElementPosition(oRect.X, oRect.Y, oRect.Width, axisHeight);
-            areaAxis.InnerPlotPosition
-                    .FromRectangleF(areaSeries.InnerPlotPosition.ToRectangleF());
+            areaAxis.InnerPlotPosition.FromRectangleF(areaSeries.InnerPlotPosition.ToRectangleF());
 
             // Create a copy of specified series
             Series seriesCopy = chart.Series.Add("Mollier P_w_copy" + x.ToString());
@@ -763,6 +767,10 @@ namespace SAM.Core.Mollier.UI.Controls
             // Adjust area position
             areaAxis.Position.Y = axisY;
             areaAxis.InnerPlotPosition.Y += labelsSize;
+
+            areaAxisAxisX.MinorTickMark.Enabled = true;
+            areaAxisAxisX.MinorGrid.Enabled = false;
+            areaAxisAxisX.MinorTickMark.Interval = 0.1;
         }
 
 
@@ -1652,8 +1660,8 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.ChartAreas[0].AxisY2.MinorGrid.LineColor = Color.LightGray;
             MollierChart.ChartAreas[0].AxisY2.LabelStyle.Format = "0.###";
             MollierChart.ChartAreas[0].AxisY2.LabelStyle.Font = ca.AxisY.LabelStyle.Font;
-            double P_w_Min = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Min / 1000, temperature_Min, pressure) / 1000000;
-            double P_w_Max = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Max / 1000, temperature_Max, pressure) / 1000000;
+            double P_w_Min = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Min / 1000, temperature_Min, pressure) / 1000;
+            double P_w_Max = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Max / 1000, temperature_Max, pressure) / 1000;
             //AXIS X
             Axis axisX = chartArea.AxisX;
             axisX.Title = "Dry Bulb Temperature t [°C]";
