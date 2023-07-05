@@ -956,7 +956,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             double humidityRatio = double.NaN;
-            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Humidity Ratio", "Humidity Ratio [g/kg]"))
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Humidity Ratio", "Humidity Ratio [g/kg] at which process ends \n*process line length"))
             {
                 textBoxForm.Value = 10;
                 if (textBoxForm.ShowDialog() != DialogResult.OK)
