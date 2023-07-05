@@ -46,6 +46,9 @@
 
                 case UI.ChartDataType.WetBulbTemperature:
                     return Units.UnitType.Celsius;
+
+                case UI.ChartDataType.Enthalpy:
+                    return Units.UnitType.KilojulePerKilogram;
             }
 
             return Units.UnitType.Undefined;

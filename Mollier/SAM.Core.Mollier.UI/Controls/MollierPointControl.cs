@@ -8,7 +8,7 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierPointControl : UserControl
     {
-        private List<ChartDataType> chartDataTypes = new List<ChartDataType>() { ChartDataType.DryBulbTemperature, ChartDataType.RelativeHumidity, ChartDataType.HumidityRatio, ChartDataType.WetBulbTemperature, ChartDataType.DewPointTemperature};
+        private List<ChartDataType> chartDataTypes = new List<ChartDataType>() { ChartDataType.DryBulbTemperature, ChartDataType.RelativeHumidity, ChartDataType.HumidityRatio, ChartDataType.WetBulbTemperature, ChartDataType.DewPointTemperature, ChartDataType.Enthalpy };
 
         public event SelectMollierPointEventHandler SelectMollierPoint;
 
@@ -97,7 +97,8 @@ namespace SAM.Core.Mollier.UI.Controls
             double wetBulbTemperature = double.NaN;
             double dewPointTemperature = double.NaN;
             double pressure = Standard.Pressure;
-            
+            double enthalpy = double.NaN;
+
             ChartDataType chartDataType = Core.Query.Enum<ChartDataType>(ComboBox_FirstParameter.Text);
             switch (chartDataType)
             {
@@ -115,6 +116,9 @@ namespace SAM.Core.Mollier.UI.Controls
                     break;
                 case ChartDataType.WetBulbTemperature:
                     wetBulbTemperature = NumberBoxControl_FirstParameter.Value;
+                    break;
+                case ChartDataType.Enthalpy:
+                    enthalpy = NumberBoxControl_FirstParameter.Value;
                     break;
             }
 
@@ -136,6 +140,9 @@ namespace SAM.Core.Mollier.UI.Controls
                 case ChartDataType.WetBulbTemperature:
                     wetBulbTemperature = NumberBoxControl_SecondParameter.Value;
                     break;
+                case ChartDataType.Enthalpy:
+                    enthalpy = NumberBoxControl_SecondParameter.Value;
+                    break;
             }
 
             pressure = NumberBoxControl_Pressure.Value;
@@ -145,7 +152,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 humidityRatio /= 1000;
             }
 
-            MollierPoint result = Query.MollierPointByTwoParameters(pressure: pressure, humidityRatio: humidityRatio, dryBulbTemperature: dryBulbTemperature, relativeHumidity: relativeHumidity, wetBulbTemperature: wetBulbTemperature, dewPointTemperature: dewPointTemperature);
+            if (!double.IsNaN(enthalpy))
+            {
+                enthalpy /= 1000;
+            }
+
+            MollierPoint result = Query.MollierPointByTwoParameters(pressure: pressure, humidityRatio: humidityRatio, dryBulbTemperature: dryBulbTemperature, relativeHumidity: relativeHumidity, wetBulbTemperature: wetBulbTemperature, dewPointTemperature: dewPointTemperature, enthalpy: enthalpy);
 
             return result;
         }

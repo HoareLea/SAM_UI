@@ -20,7 +20,7 @@
             return mollierPoint;
         }
 
-        public static MollierPoint MollierPointByTwoParameters(double pressure = Standard.Pressure, double humidityRatio = double.NaN, double dryBulbTemperature = double.NaN, double relativeHumidity = double.NaN, double wetBulbTemperature = double.NaN, double dewPointTemperature = double.NaN)
+        public static MollierPoint MollierPointByTwoParameters(double pressure = Standard.Pressure, double humidityRatio = double.NaN, double dryBulbTemperature = double.NaN, double relativeHumidity = double.NaN, double wetBulbTemperature = double.NaN, double dewPointTemperature = double.NaN, double enthalpy = double.NaN)
         {
             //checking if there are good number of data - dew point or 2 of the others
 
@@ -31,14 +31,15 @@
                 dataNumber = !double.IsNaN(humidityRatio) ? dataNumber + 1 : dataNumber;
                 dataNumber = !double.IsNaN(relativeHumidity) ? dataNumber + 1 : dataNumber;
                 dataNumber = !double.IsNaN(wetBulbTemperature) ? dataNumber + 1 : dataNumber;
-                if(dataNumber != 2)
+                dataNumber = !double.IsNaN(enthalpy) ? dataNumber + 1 : dataNumber;
+                if (dataNumber != 2)
                 {
                     return null;
                 }
             }
             else
             {
-                if (!double.IsNaN(dryBulbTemperature) || !double.IsNaN(humidityRatio) || !double.IsNaN(relativeHumidity) || !double.IsNaN(wetBulbTemperature))
+                if (!double.IsNaN(dryBulbTemperature) || !double.IsNaN(humidityRatio) || !double.IsNaN(relativeHumidity) || !double.IsNaN(wetBulbTemperature) || !double.IsNaN(enthalpy))
                 {
                     return null;
                 }
@@ -50,52 +51,54 @@
                 dryBulbTemperature = dewPointTemperature;
                 relativeHumidity = 100;
                 humidityRatio = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
-                wetBulbTemperature = Mollier.Query.WetBulbTemperature(dryBulbTemperature, relativeHumidity, pressure);
             }
             else if (!double.IsNaN(dryBulbTemperature) && !double.IsNaN(humidityRatio))
             {
-                relativeHumidity = Mollier.Query.RelativeHumidity(dryBulbTemperature, humidityRatio, pressure);
-                wetBulbTemperature = Mollier.Query.WetBulbTemperature(dryBulbTemperature, relativeHumidity, pressure);
-                dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //relativeHumidity = Mollier.Query.RelativeHumidity(dryBulbTemperature, humidityRatio, pressure);
+                //wetBulbTemperature = Mollier.Query.WetBulbTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
             }
             else if (!double.IsNaN(dryBulbTemperature) && !double.IsNaN(relativeHumidity))
             {
                 humidityRatio = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
-                wetBulbTemperature = Mollier.Query.WetBulbTemperature(dryBulbTemperature, relativeHumidity, pressure);
-                dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //wetBulbTemperature = Mollier.Query.WetBulbTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
             }
             else if (!double.IsNaN(dryBulbTemperature) && !double.IsNaN(wetBulbTemperature))
             {
                 humidityRatio = Mollier.Query.HumidityRatio_ByWetBulbTemperature(dryBulbTemperature, wetBulbTemperature, pressure);
-                relativeHumidity = Mollier.Query.RelativeHumidity(dryBulbTemperature, humidityRatio, pressure);
-                dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //relativeHumidity = Mollier.Query.RelativeHumidity(dryBulbTemperature, humidityRatio, pressure);
+                //dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
             }
             else if (!double.IsNaN(humidityRatio) && !double.IsNaN(relativeHumidity))
             {
                 dryBulbTemperature = Mollier.Query.DryBulbTemperature_ByHumidityRatio(humidityRatio, relativeHumidity, pressure);
-                wetBulbTemperature = Mollier.Query.WetBulbTemperature(dryBulbTemperature, relativeHumidity, pressure);
-                dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //wetBulbTemperature = Mollier.Query.WetBulbTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
             }
             else if (!double.IsNaN(humidityRatio) && !double.IsNaN(wetBulbTemperature))
             {
                 dryBulbTemperature = Mollier.Query.DryBulbTemperature_ByWetBulbTemperatureAndHumidityRatio(wetBulbTemperature, humidityRatio, pressure);
-                relativeHumidity = Mollier.Query.RelativeHumidity(dryBulbTemperature, humidityRatio, pressure);
-                dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //relativeHumidity = Mollier.Query.RelativeHumidity(dryBulbTemperature, humidityRatio, pressure);
+                //dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
             }
             else if (!double.IsNaN(relativeHumidity) && !double.IsNaN(wetBulbTemperature))
             {
                 dryBulbTemperature = Mollier.Query.DryBulbTemperature_ByWetBulbTemperature(wetBulbTemperature, relativeHumidity, pressure);
                 humidityRatio = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
-                dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
+                //dewPointTemperature = Mollier.Query.DewPointTemperature(dryBulbTemperature, relativeHumidity, pressure);
+            }
+            else if (!double.IsNaN(enthalpy) && !double.IsNaN(humidityRatio))
+            {
+                dryBulbTemperature = Mollier.Query.DryBulbTemperature(enthalpy, humidityRatio, pressure);
             }
 
+                //if (double.IsNaN(dryBulbTemperature) || double.IsNaN(humidityRatio) || double.IsNaN(relativeHumidity) || double.IsNaN(wetBulbTemperature) || double.IsNaN(dewPointTemperature))
+                //{
+                //    return null;
+                //}
 
-            //if (double.IsNaN(dryBulbTemperature) || double.IsNaN(humidityRatio) || double.IsNaN(relativeHumidity) || double.IsNaN(wetBulbTemperature) || double.IsNaN(dewPointTemperature))
-            //{
-            //    return null;
-            //}
-
-            MollierPoint result = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
+                MollierPoint result = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
 
             return result;
         }
