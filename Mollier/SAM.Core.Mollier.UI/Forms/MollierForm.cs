@@ -826,10 +826,15 @@ namespace SAM.Core.Mollier.UI
 
         private void MollierControl_Main_MollierPointSelected_New(object sender, MollierPointSelectedEventArgs e)
         {
+            AddProcess_ByEpsilon(e);
+        }
+
+        private void AddProcess_BySensibleHeatRatio(MollierPointSelectedEventArgs e)
+        {
             MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_New;
 
             MollierPoint mollierPoint = e.MollierPoint;
-            if(mollierPoint == null)
+            if (mollierPoint == null)
             {
                 return;
             }
@@ -852,20 +857,75 @@ namespace SAM.Core.Mollier.UI
             }
 
             MollierControlSettings mollierControlSettings = MollierControlSettings;
-            if(mollierControlSettings == null)
+            if (mollierControlSettings == null)
             {
                 mollierControlSettings = new MollierControlSettings();
             }
 
             UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_BySensibleHeatRatio(mollierPoint, sensibleHeatRatio, mollierControlSettings.Temperature_Min, mollierControlSettings.Temperature_Max, mollierControlSettings.HumidityRatio_Min / 1000, mollierControlSettings.HumidityRatio_Max / 1000);
-            if(undefinedProcess == null)
+            if (undefinedProcess == null)
             {
                 return;
             }
 
             UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
-            
-            AddProcesses(new IMollierProcess[] { uIMollierProcess}, false);
+
+            AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+        }
+
+        private void AddProcess_ByEpsilon(MollierPointSelectedEventArgs e)
+        {
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_New;
+
+            MollierPoint mollierPoint = e.MollierPoint;
+            if (mollierPoint == null)
+            {
+                return;
+            }
+
+            double epsilon = double.NaN;
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Epsilon", "Epsilon (ε=Δh/Δx)"))
+            {
+                textBoxForm.Value = 2501;
+                if (textBoxForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                epsilon = textBoxForm.Value;
+            }
+
+            if (double.IsNaN(epsilon))
+            {
+                return;
+            }
+
+            double enthalpyDifference = double.NaN;
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Enthalpy Difference", "Enthalpy Difference (kJ/kg)"))
+            {
+                textBoxForm.Value = 1;
+                if (textBoxForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                enthalpyDifference = textBoxForm.Value;
+            }
+
+            if (double.IsNaN(enthalpyDifference))
+            {
+                return;
+            }
+
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilon(mollierPoint, epsilon, enthalpyDifference);
+            if (undefinedProcess == null)
+            {
+                return;
+            }
+
+            UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
+
+            AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
         }
     }
 }

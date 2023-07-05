@@ -39,7 +39,7 @@
             {
                 return null;
             }
-            string mask = "Δt = {0} °C\nΔx = {1} {3}\nΔh = {2} kJ/kg\nΔε = {4} kJ/kg";
+            string mask = "Δt = {0} °C\nΔx = {1} {3}\nΔh = {2} kJ/kg\nε = {4} kJ/kg\n*ε=Δh/Δx";
             if (name != null && name != "")
             {
                 mask = string.Format("{0}\n{1}", name, mask);
