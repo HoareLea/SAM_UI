@@ -627,8 +627,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.BorderColor = Color.Transparent;
             RectangleF oRect = area.Position.ToRectangleF();
             areaAxis.Position = new ElementPosition(oRect.X, oRect.Y, axisWidth, oRect.Height);
-            areaAxis.InnerPlotPosition
-                    .FromRectangleF(areaSeries.InnerPlotPosition.ToRectangleF());
+            areaAxis.InnerPlotPosition.FromRectangleF(areaSeries.InnerPlotPosition.ToRectangleF());
 
             // Create a copy of specified series
             Series seriesCopy = chart.Series.Add("Psychrometric_P_w_copy" + x.ToString());
@@ -671,7 +670,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.Position.X = axisX;
             areaAxis.InnerPlotPosition.X += labelsSize;
 
-            areaAxisAxisY.MinorTickMark.Enabled = true;
+            areaAxisAxisY.MinorTickMark.Enabled = false;
             areaAxisAxisY.MinorGrid.Enabled = false;
             areaAxisAxisY.MinorTickMark.Interval = 0.1;
         }
@@ -1497,6 +1496,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 mollierControlSettings = new MollierControlSettings();
             }
 
+            MollierChart.ChartAreas[0].AxisY2.MinorTickMark.Enabled = false;
+            MollierChart.ChartAreas[0].AxisY2.MinorGrid.Enabled = false;
+
+            MollierChart.ChartAreas[0].AxisY.MinorTickMark.Enabled = false;
+            MollierChart.ChartAreas[0].AxisY.MinorGrid.Enabled = false;
+
             //INITIAL SIZES
             double pressure = mollierControlSettings.Pressure;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
@@ -1557,6 +1562,8 @@ namespace SAM.Core.Mollier.UI.Controls
             //AXIS Y
             MollierChart.ChartAreas[0].AxisY2.Enabled = AxisEnabled.False;
             Axis axisY = chartArea.AxisY;
+            axisY.MinorTickMark.Enabled = false;
+            axisY.MinorGrid.Enabled = false;
             axisY.Enabled = AxisEnabled.True;
             axisY.Title = "Dry Bulb Temperature t [°C]";
             axisY.TextOrientation = TextOrientation.Rotated270;
@@ -1565,6 +1572,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.Interval = temperature_interval;
             axisY.LabelStyle.Format = "0.##";
             axisY.LabelStyle.Font = ca.AxisY.LabelStyle.Font;
+            //axisY.MinorTickMark.Enabled = false;
 
             //CREATING RELATIVE HUMIDITY AND DIAGRAM TEMPERATURE LINES
             // create_relative_humidity_line_New(System.Convert.ToInt32(temperature_Min), System.Convert.ToInt32(temperature_Max), pressure);
@@ -1643,6 +1651,10 @@ namespace SAM.Core.Mollier.UI.Controls
             ChartType chartType = mollierControlSettings.ChartType;
 
             //BASE CHART INITIALIZATION
+
+            MollierChart.ChartAreas[0].AxisY2.MinorTickMark.Enabled = false;
+            MollierChart.ChartAreas[0].AxisY2.MinorGrid.Enabled = false;
+
             MollierChart.Series?.Clear();
             ChartArea chartArea = MollierChart.ChartAreas[0];
             ChartArea ca = MollierChart.ChartAreas[0];
@@ -1675,6 +1687,10 @@ namespace SAM.Core.Mollier.UI.Controls
             axisX.LabelStyle.Font = ca.AxisY.LabelStyle.Font;
             //AXIS Y - P_w AXIS
             Axis axisY = chartArea.AxisY;
+
+            axisY.MinorTickMark.Enabled = false;
+            axisY.MinorGrid.Enabled = false;
+
             axisY.Enabled = AxisEnabled.False;
             axisY.Title = "Partial Vapour Pressure pW [kPa]";
             axisY.TextOrientation = TextOrientation.Rotated270;
@@ -1687,6 +1703,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.MinorGrid.Interval = 0.1;
             axisY.MinorGrid.Enabled = false;
             axisY.MinorGrid.LineColor = Color.LightGray;
+            //axisY.MinorTickMark.Enabled = true;
 
 
             Series series1 = MollierChart.Series.Add("Partial Vapour Pressure pW [kPa]");
