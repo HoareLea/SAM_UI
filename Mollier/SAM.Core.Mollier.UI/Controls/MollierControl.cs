@@ -1576,7 +1576,7 @@ namespace SAM.Core.Mollier.UI.Controls
             if (specific_volume_line)
                 create_specific_volume_line(ChartType.Mollier, specific_volume_Min, specific_volume_Max, pressure);
             //CREATING P_w AXIS
-            Series series1 = MollierChart.Series.Add("Partial Vapour Pressure P_w [kPa]");
+            Series series1 = MollierChart.Series.Add("Partial Vapour Pressure pW [kPa]");
             series1.Points.AddXY(P_w_min, 0);
             series1.Points.AddXY(P_w_max, 0);
             series1.ChartType = SeriesChartType.Spline;
@@ -1668,7 +1668,7 @@ namespace SAM.Core.Mollier.UI.Controls
             //AXIS Y - P_w AXIS
             Axis axisY = chartArea.AxisY;
             axisY.Enabled = AxisEnabled.False;
-            axisY.Title = "Partial Vapour Pressure P_w [kPa]";
+            axisY.Title = "Partial Vapour Pressure pW [kPa]";
             axisY.TextOrientation = TextOrientation.Rotated270;
             axisY.Maximum = humidityRatio_Max / 1000;
             //axisY.Minimum = humidityRatio_Min > humidityRatio_Max ? 0 : humidityRatio_Min / 1000;
@@ -1681,7 +1681,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.MinorGrid.LineColor = Color.LightGray;
 
 
-            Series series1 = MollierChart.Series.Add("P_w_Psychro x [kPa]");
+            Series series1 = MollierChart.Series.Add("Partial Vapour Pressure pW [kPa]");
             series1.Points.AddXY(0, P_w_Min);
             series1.Points.AddXY(0, P_w_Max);
             series1.ChartType = SeriesChartType.Spline;
