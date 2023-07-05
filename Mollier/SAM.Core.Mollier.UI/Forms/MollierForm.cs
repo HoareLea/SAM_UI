@@ -826,7 +826,7 @@ namespace SAM.Core.Mollier.UI
 
         private void MollierControl_Main_MollierPointSelected_New(object sender, MollierPointSelectedEventArgs e)
         {
-            AddProcess_ByEpsilon(e);
+            AddProcess_ByEpsilonAndHumidityRatioDifference(e);
         }
 
         private void AddProcess_BySensibleHeatRatio(MollierPointSelectedEventArgs e)
@@ -873,7 +873,7 @@ namespace SAM.Core.Mollier.UI
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
         }
 
-        private void AddProcess_ByEpsilon(MollierPointSelectedEventArgs e)
+        private void AddProcess_ByEpsilonAndEnthalpyDifference(MollierPointSelectedEventArgs e)
         {
             MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_New;
 
@@ -884,7 +884,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             double epsilon = double.NaN;
-            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Epsilon", "Epsilon (ε=Δh/Δx)"))
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Epsilon", "Epsilon [ε=Δh/Δx]"))
             {
                 textBoxForm.Value = 2501;
                 if (textBoxForm.ShowDialog() != DialogResult.OK)
@@ -917,7 +917,62 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilon(mollierPoint, epsilon, enthalpyDifference * 1000);
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilonAndEnthalpyDifference(mollierPoint, epsilon, enthalpyDifference * 1000);
+            if (undefinedProcess == null)
+            {
+                return;
+            }
+
+            UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
+
+            AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+        }
+
+        private void AddProcess_ByEpsilonAndHumidityRatioDifference(MollierPointSelectedEventArgs e)
+        {
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_New;
+
+            MollierPoint mollierPoint = e.MollierPoint;
+            if (mollierPoint == null)
+            {
+                return;
+            }
+
+            double epsilon = double.NaN;
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Epsilon", "Epsilon [ε=Δh/Δx]"))
+            {
+                textBoxForm.Value = 2501;
+                if (textBoxForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                epsilon = textBoxForm.Value;
+            }
+
+            if (double.IsNaN(epsilon))
+            {
+                return;
+            }
+
+            double humidityRatio = double.NaN;
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Humidity Ratio", "Humidity Ratio [g/kg]"))
+            {
+                textBoxForm.Value = 10;
+                if (textBoxForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                humidityRatio = textBoxForm.Value;
+            }
+
+            if (double.IsNaN(humidityRatio))
+            {
+                return;
+            }
+
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio);
             if (undefinedProcess == null)
             {
                 return;
