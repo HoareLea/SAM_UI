@@ -1655,7 +1655,7 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.ChartAreas[0].AxisY2.Minimum = humidityRatio_Min;
             MollierChart.ChartAreas[0].AxisY2.Interval = humidityRatio_interval;
             MollierChart.ChartAreas[0].AxisY2.MajorGrid.LineColor = Color.Gray;
-            MollierChart.ChartAreas[0].AxisY2.MinorGrid.Interval = 0.001;
+            MollierChart.ChartAreas[0].AxisY2.MinorGrid.Interval = 1;
             MollierChart.ChartAreas[0].AxisY2.MinorGrid.Enabled = true;
             MollierChart.ChartAreas[0].AxisY2.MinorGrid.LineColor = Color.LightGray;
             MollierChart.ChartAreas[0].AxisY2.LabelStyle.Format = "0.###";
@@ -1681,10 +1681,10 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.Maximum = humidityRatio_Max / 1000;
             //axisY.Minimum = humidityRatio_Min > humidityRatio_Max ? 0 : humidityRatio_Min / 1000;
             axisY.Minimum = humidityRatio_Min / 1000; //TODO: Fix Range
-            axisY.Interval = humidityRatio_interval / 1000;
+            axisY.Interval = humidityRatio_interval;
             axisY.MajorGrid.Enabled = false;
             axisY.MajorGrid.LineColor = Color.Gray;
-            axisY.MinorGrid.Interval = 0.001;
+            axisY.MinorGrid.Interval = 0.1;
             axisY.MinorGrid.Enabled = false;
             axisY.MinorGrid.LineColor = Color.LightGray;
 
