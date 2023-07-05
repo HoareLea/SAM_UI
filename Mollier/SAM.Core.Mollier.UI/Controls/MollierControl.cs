@@ -1528,8 +1528,8 @@ namespace SAM.Core.Mollier.UI.Controls
             ChartArea ca = MollierChart.ChartAreas["ChartArea1"];
             ca.Position = new ElementPosition(2, 2, 95, 95);//define sizes of chart
             ca.InnerPlotPosition = new ElementPosition(7, 6, 88, 88);
-            double P_w_max = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Max / 1000, pressure) / 1000;
-            double P_w_min = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Min / 1000, pressure) / 1000;
+            double P_w_max = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Max / 1000, temperature_Max, pressure) / 1000;
+            double P_w_min = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Min / 1000, temperature_Min, pressure) / 1000;
 
 
             //AXIS X
@@ -1652,8 +1652,8 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.ChartAreas[0].AxisY2.MinorGrid.LineColor = Color.LightGray;
             MollierChart.ChartAreas[0].AxisY2.LabelStyle.Format = "0.###";
             MollierChart.ChartAreas[0].AxisY2.LabelStyle.Font = ca.AxisY.LabelStyle.Font;
-            double P_w_Min = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Min / 1000, pressure) / 1000000;
-            double P_w_Max = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Max / 1000, pressure) / 1000000;
+            double P_w_Min = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Min / 1000, temperature_Min, pressure) / 1000000;
+            double P_w_Max = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatio_Max / 1000, temperature_Max, pressure) / 1000000;
             //AXIS X
             Axis axisX = chartArea.AxisX;
             axisX.Title = "Dry Bulb Temperature t [°C]";
