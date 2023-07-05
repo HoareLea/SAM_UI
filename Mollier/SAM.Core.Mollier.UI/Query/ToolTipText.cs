@@ -51,7 +51,7 @@
                     return string.Format(mask, System.Math.Round(System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), 2), System.Math.Round(System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2), 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg", System.Math.Round(Mollier.Query.Epsilon(start, end), 0));
                 
                 case ChartType.Psychrometric:
-                    return string.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round(System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5), 5), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "kg/kg", System.Math.Round(Mollier.Query.Epsilon(start, end), 0));
+                    return string.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round((System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5)) * 1000, 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg", System.Math.Round(Mollier.Query.Epsilon(start, end), 0));
             }
 
             return null;
