@@ -903,7 +903,7 @@ namespace SAM.Core.Mollier.UI
             double enthalpyDifference = double.NaN;
             using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Enthalpy Difference", "Enthalpy Difference (kJ/kg)"))
             {
-                textBoxForm.Value = 1;
+                textBoxForm.Value = 10;
                 if (textBoxForm.ShowDialog() != DialogResult.OK)
                 {
                     return;
@@ -917,7 +917,7 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilon(mollierPoint, epsilon, enthalpyDifference);
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilon(mollierPoint, epsilon, enthalpyDifference * 1000);
             if (undefinedProcess == null)
             {
                 return;

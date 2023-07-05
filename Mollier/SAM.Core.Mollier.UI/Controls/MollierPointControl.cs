@@ -154,7 +154,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (!double.IsNaN(enthalpy))
             {
-                enthalpy /= 1000;
+                enthalpy *= 1000;
             }
 
             MollierPoint result = Query.MollierPointByTwoParameters(pressure: pressure, humidityRatio: humidityRatio, dryBulbTemperature: dryBulbTemperature, relativeHumidity: relativeHumidity, wetBulbTemperature: wetBulbTemperature, dewPointTemperature: dewPointTemperature, enthalpy: enthalpy);
