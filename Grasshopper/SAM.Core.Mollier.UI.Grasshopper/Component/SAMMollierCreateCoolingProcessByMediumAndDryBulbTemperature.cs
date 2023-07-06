@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this components
         /// </summary>
-        public override string LatestComponentVersion => "1.0.4";
+        public override string LatestComponentVersion => "1.0.5";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -67,6 +67,8 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "efficiency", NickName = "efficiency", Description = "Efficiency [%] \n*If value larger than 85-90% review flow/return temperatures.", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "lmtd", NickName = "lmtd", Description = "Log-Mean temperature difference [C]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "color", NickName = "color", Description = "Color", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
+                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "epsilon", NickName = "epsilon", Description = "Epsilon", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
+
                 return result.ToArray();
             }
         }
@@ -207,6 +209,12 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             if (index != -1)
             {
                 dataAccess.SetData(index, lMTD);
+            }
+
+            index = Params.IndexOfOutputParam("epsilon");
+            if (index != -1)
+            {
+                dataAccess.SetData(index, coolingProcess.Epsilon());
             }
         }
 
