@@ -41,7 +41,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 global::Grasshopper.Kernel.Parameters.Param_Number param_Number;
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_epsilon", NickName = "_epsilon", Description = "Epsilon [kJ/kg]", Access = GH_ParamAccess.item, Optional = true };
-                param_Boolean.SetPersistentData(2501);
+                param_Number.SetPersistentData(2501);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_humidityRatio", NickName = "_humidityRatio", Description = "Humidity Ratio of second point [g/kg]", Access = GH_ParamAccess.item};
