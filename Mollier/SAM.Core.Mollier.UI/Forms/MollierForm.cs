@@ -796,7 +796,7 @@ namespace SAM.Core.Mollier.UI
 
         private void MollierForm_ResizeEnd(object sender, EventArgs e)
         {
-            MollierControl_Main.generate_graph();
+            MollierControl_Main.GenerateGraph();
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
