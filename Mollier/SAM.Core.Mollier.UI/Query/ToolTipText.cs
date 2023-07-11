@@ -16,7 +16,7 @@
                 return null;
             }
 
-            string mask = "t = {3} °C\nx = {1}{2}\nφ = {0} %\nt_wb = {6} °C\nt_tao = {12} °C\nh = {5} kJ/kg\nρ = {8} kg/m³\nv = {7} m³/kg\np = {4} Pa\npS = {9}Pa\npW = {10}Pa\npL = {11}Pa";
+            string mask = "t = {3} °C\nx = {1}{2}\nφ = {0} %\nt_wb = {6} °C\nt_tau = {12} °C (DewPoint)\nh = {5} kJ/kg\nρ = {8} kg/m³\nv = {7} m³/kg\np = {4} Pa\npS = {9}Pa\npW = {10}Pa\npL = {11}Pa";
             if (name != null && name != "")
             {
                 mask = string.Format("{0}\n{1}", name, mask);
@@ -25,10 +25,10 @@
             switch (chartType)
             {
                 case ChartType.Psychrometric:
-                    return string.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.1), Core.Query.Round(mollierPoint.HumidityRatio*1000, 0.01), " g/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy / 1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.001), Core.Query.Round(mollierPoint.Density(), 0.001), Core.Query.Round(mollierPoint.SaturationVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialDryAirPressure(), 0.1), Core.Query.Round(mollierPoint.SaturationTemperature(), 0.1));
+                    return string.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.1), Core.Query.Round(mollierPoint.HumidityRatio*1000, 0.01), " g/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy / 1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.001), Core.Query.Round(mollierPoint.Density(), 0.001), Core.Query.Round(mollierPoint.SaturationVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialDryAirPressure(), 0.1), Core.Query.Round(mollierPoint.DewPointTemperature(), 0.1));
 
                 case ChartType.Mollier:
-                    return string.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.1), Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.01), " g/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy / 1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.001), Core.Query.Round(mollierPoint.Density(), 0.001), Core.Query.Round(mollierPoint.SaturationVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialDryAirPressure(), 0.1), Core.Query.Round(mollierPoint.SaturationTemperature(), 0.1));
+                    return string.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.1), Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.01), " g/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy / 1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.001), Core.Query.Round(mollierPoint.Density(), 0.001), Core.Query.Round(mollierPoint.SaturationVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialDryAirPressure(), 0.1), Core.Query.Round(mollierPoint.DewPointTemperature(), 0.1));
             }
             return null;
         }
