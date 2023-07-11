@@ -60,7 +60,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     double humidity_ratio = Mollier.Query.HumidityRatio(j, relative_humidity, pressure);
                     double diagram_temperature = Mollier.Query.DiagramTemperature(j, humidity_ratio, pressure);
                     if (humidity_ratio_points[j - index].Count == 0)
-                        humidity_ratio_points[j - index].Add(new Point2D(0, j));
+                        humidity_ratio_points[j - index].Add(new Point2D(0, Mollier.Query.DiagramTemperature(j, 0, pressure)));//MD 2023-07-11 temp change for diagram temp to start higher
                     relative_humidity_points.Add(new Point2D(humidity_ratio * 1000, diagram_temperature));
                     humidity_ratio_points[j - index].Add(new Point2D(humidity_ratio * 1000, diagram_temperature));
                 }
@@ -127,7 +127,9 @@ namespace SAM.Core.Mollier.UI.Controls
                 point2Ds_humidity = humidity_ratio_points[i];
                 for (int j = 0; j < point2Ds_humidity.Count; j++)
                 {
-                    series_1.Points.AddXY(point2Ds_humidity[j].X, point2Ds_humidity[j].Y);
+                    double temperature = point2Ds_humidity[j].Y;
+                    double humidityRatio = point2Ds_humidity[j].X;
+                    series_1.Points.AddXY(humidityRatio, temperature);
                 }
                 if (i % 5 == 0)//bolds every 5th line 
                 {
@@ -519,11 +521,11 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (prefix == "Enthalpy" && System.Math.Round(mollierPoints[0].Enthalpy, 2) % 10000 == 0 && chartType == ChartType.Mollier)
             {
-                double temperature_1 = Mollier.Query.DiagramTemperature(mollierPoints[0]);
+                double temperature_1 = mollierPoints[0].DryBulbTemperature; //Mollier.Query.DiagramTemperature(mollierPoints[0]);
                 double humidityRatio_1 = mollierPoints[0].HumidityRatio * 1000;
                 result.Points.AddXY(humidityRatio_1, temperature_1);
 
-                double temperature_2 = Mollier.Query.DiagramTemperature(mollierPoints[1]);
+                double temperature_2 = mollierPoints[1].DryBulbTemperature; //Mollier.Query.DiagramTemperature(mollierPoints[1]);
                 double humidityRatio_2 = mollierPoints[1].HumidityRatio * 1000;
                 Point2D Point_1 = new Point2D(humidityRatio_1, temperature_1);
                 Point2D Point_2 = new Point2D(humidityRatio_2, temperature_2);
@@ -1970,6 +1972,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     uniqueNames.Add("[HumidityRatio]");
                     uniqueNames.Add("[RelativeHumidity]");
                     uniqueNames.Add("[WetBulbTemperature]");
+                    uniqueNames.Add("[SaturationTemperature]");
                     uniqueNames.Add("[Enthalpy]");
                     uniqueNames.Add("[Density]");
                     uniqueNames.Add("[AtmosphericPressure]");
@@ -1978,7 +1981,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     uniqueNames.Add("[deltaT]");
                     uniqueNames.Add("[deltaX]");
                     uniqueNames.Add("[deltaH]");
-                    int numberOfData = 13;
+                    int numberOfData = 14;
                     int columnIndex_Min = 100;
                     int rowIndex_Min = 100;
                     Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
@@ -2091,28 +2094,32 @@ namespace SAM.Core.Mollier.UI.Controls
                                             value_2 = System.Math.Round(end.HumidityRatio * 1000, 2).ToString();
                                             break;
                                         case "[RelativeHumidity]":
-                                            value_1 = System.Math.Round(start.RelativeHumidity, 2).ToString();
-                                            value_2 = System.Math.Round(end.RelativeHumidity, 2).ToString();
+                                            value_1 = System.Math.Round(start.RelativeHumidity, 1).ToString();
+                                            value_2 = System.Math.Round(end.RelativeHumidity, 1).ToString();
                                             break;
                                         case "[WetBulbTemperature]":
                                             value_1 = System.Math.Round(start.WetBulbTemperature(), 2).ToString();
                                             value_2 = System.Math.Round(end.WetBulbTemperature(), 2).ToString();
+                                            break;
+                                        case "[SaturationTemperature]":
+                                            value_1 = System.Math.Round(start.SaturationTemperature(), 2).ToString();
+                                            value_2 = System.Math.Round(end.SaturationTemperature(), 2).ToString();
                                             break;
                                         case "[Enthalpy]":
                                             value_1 = System.Math.Round(start.Enthalpy / 1000, 2).ToString();
                                             value_2 = System.Math.Round(end.Enthalpy / 1000, 2).ToString();
                                             break;
                                         case "[SpecificVolume]":
-                                            value_1 = System.Math.Round(start.SpecificVolume(), 2).ToString();
-                                            value_2 = System.Math.Round(end.SpecificVolume(), 2).ToString();
+                                            value_1 = System.Math.Round(start.SpecificVolume(), 3).ToString();
+                                            value_2 = System.Math.Round(end.SpecificVolume(), 3).ToString();
                                             break;
                                         case "[Density]":
-                                            value_1 = System.Math.Round(start.Density(), 2).ToString();
-                                            value_2 = System.Math.Round(end.Density(), 2).ToString();
+                                            value_1 = System.Math.Round(start.Density(), 3).ToString();
+                                            value_2 = System.Math.Round(end.Density(), 3).ToString();
                                             break;
                                         case "[AtmosphericPressure]":
-                                            value_1 = System.Math.Round(start.Pressure, 2).ToString();
-                                            value_2 = System.Math.Round(end.Pressure, 2).ToString();
+                                            value_1 = System.Math.Round(start.Pressure, 1).ToString();
+                                            value_2 = System.Math.Round(end.Pressure, 1).ToString();
                                             break;
                                         case "[ProcessName]":
                                             value_2 = Query.FullProcessName(UI_MollierProcess);
