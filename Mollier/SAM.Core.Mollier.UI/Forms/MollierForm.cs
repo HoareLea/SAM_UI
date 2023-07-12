@@ -169,21 +169,22 @@ namespace SAM.Core.Mollier.UI
 
             double dryBulbTemperature = 35;
             double relativeHumidity = 50;
+            double humidityRatio = double.NaN;
 
-            if(previousUIMollierPoint != null)
+            if(previousUIMollierPoint != null && previousUIMollierPoint.MollierPoint != null && previousUIMollierPoint.MollierPoint.IsValid())
             {
                 if(!double.IsNaN(previousUIMollierPoint.MollierPoint.DryBulbTemperature))
                 {
                     dryBulbTemperature = previousUIMollierPoint.MollierPoint.DryBulbTemperature;
                 }
 
-                if (!double.IsNaN(previousUIMollierPoint.MollierPoint.RelativeHumidity))
+                if (!double.IsNaN(previousUIMollierPoint.MollierPoint.HumidityRatio))
                 {
-                    relativeHumidity = previousUIMollierPoint.MollierPoint.RelativeHumidity;
+                    humidityRatio = previousUIMollierPoint.MollierPoint.HumidityRatio;
                 }
             }
 
-            return Mollier.Create.MollierPoint_ByRelativeHumidity(dryBulbTemperature, relativeHumidity, pressure);
+            return double.IsNaN(humidityRatio) ? Mollier.Create.MollierPoint_ByRelativeHumidity(dryBulbTemperature, relativeHumidity, pressure) : new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
         }
 
         //operation of the add process and add point buttons
@@ -796,7 +797,7 @@ namespace SAM.Core.Mollier.UI
 
         private void MollierForm_ResizeEnd(object sender, EventArgs e)
         {
-            MollierControl_Main.generate_graph();
+            MollierControl_Main.GenerateGraph();
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)

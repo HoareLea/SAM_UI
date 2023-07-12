@@ -227,6 +227,7 @@
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\MollierPoint.cs" />
     <Compile Include="Query\Contains.cs" />
     <Compile Include="Query\ToolTipText.cs" />
     <Compile Include="Query\Value.cs" />
