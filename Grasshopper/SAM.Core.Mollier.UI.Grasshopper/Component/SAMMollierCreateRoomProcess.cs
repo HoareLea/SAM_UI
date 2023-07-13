@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.3";
+        public override string LatestComponentVersion => "1.0.4";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -36,7 +36,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
                 global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_airFlow", NickName = "_airflow", Description = "AirFlow [m3/s]", Access = GH_ParamAccess.item, Optional = false };
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_airMassFlow", NickName = "_airMassFlow", Description = "Air Mass Flow [kg/s]", Access = GH_ParamAccess.item, Optional = false };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_sensibleLoad", NickName = "_sensibleLoad", Description = "Sensible Load [kW]", Access = GH_ParamAccess.item, Optional = false };
@@ -70,7 +70,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "roomProcess", NickName = "roomProcess", Description = "Room Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "end", NickName = "end", Description = "End", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "sensibleHeatRatio", NickName = "sensibleHeatRatio", Description = "Sensible Heat Ratio [-]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "epsilon", NickName = "epsilon", Description = "Epsilon ε [kJ/kg]", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
+                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "epsilon", NickName = "epsilon", Description = "Slope coefficient Epsilon ε [kJ/kg]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
 
                 return result.ToArray();
             }
@@ -81,7 +81,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// </summary>
         public SAMMollierCreateRoomProcess()
           : base("SAMMollier.CreateRoomProcess", "SAMMollier.CreateRoomProcess",
-              "Creates Room Process",
+              "Creates Room Process by Sensible and Latent Gains/Load]",
               "SAM", "Mollier")
         {
         }
@@ -104,14 +104,14 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
-            index = Params.IndexOfInputParam("_airFlow");
+            index = Params.IndexOfInputParam("_airMassFlow");
             if (index == -1)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
-            double airFlow = double.NaN;
-            if (!dataAccess.GetData(index, ref airFlow) || double.IsNaN(airFlow))
+            double airMassFlow = double.NaN;
+            if (!dataAccess.GetData(index, ref airMassFlow) || double.IsNaN(airMassFlow))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
@@ -170,7 +170,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(start, airFlow, sensibleLoad * 1000, latentLoad * 1000);
+            UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(start, airMassFlow, sensibleLoad * 1000, latentLoad * 1000);
             index = Params.IndexOfOutputParam("roomProcess");
             if (index != -1)
             {
