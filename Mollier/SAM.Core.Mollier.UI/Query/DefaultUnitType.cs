@@ -25,29 +25,29 @@
 
         public static Units.UnitType DefaultUnitType(this ChartDataType chartDataType)
         {
-            if(chartDataType == UI.ChartDataType.Undefined)
+            if(chartDataType == Mollier.ChartDataType.Undefined)
             {
                 return Units.UnitType.Undefined;
             }
 
             switch(chartDataType)
             {
-                case UI.ChartDataType.DryBulbTemperature:
+                case Mollier.ChartDataType.DryBulbTemperature:
                     return Units.UnitType.Celsius;
 
-                case UI.ChartDataType.RelativeHumidity:
+                case Mollier.ChartDataType.RelativeHumidity:
                     return Units.UnitType.Percent;
 
-                case UI.ChartDataType.HumidityRatio:
+                case Mollier.ChartDataType.HumidityRatio:
                     return Units.UnitType.GramPerKilogram;
 
-                case UI.ChartDataType.DewPointTemperature:
+                case Mollier.ChartDataType.DewPointTemperature:
                     return Units.UnitType.Celsius;
 
-                case UI.ChartDataType.WetBulbTemperature:
+                case Mollier.ChartDataType.WetBulbTemperature:
                     return Units.UnitType.Celsius;
 
-                case UI.ChartDataType.Enthalpy:
+                case Mollier.ChartDataType.Enthalpy:
                     return Units.UnitType.KilojulePerKilogram;
             }
 

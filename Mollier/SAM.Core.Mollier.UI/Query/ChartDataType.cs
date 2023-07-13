@@ -9,35 +9,35 @@
         /// <returns>Returns type of process</returns>
         public static ChartDataType ChartDataType(this IMollierProcess mollierProcess)
         {
-            ChartDataType process = UI.ChartDataType.Undefined;
+            ChartDataType process = Mollier.ChartDataType.Undefined;
 
             if (mollierProcess is CoolingProcess)
             {
-                process = UI.ChartDataType.CoolingProcess;
+                process = Mollier.ChartDataType.CoolingProcess;
             }
             if (mollierProcess is HeatingProcess)
             {
-                process = UI.ChartDataType.HeatingProcess;
+                process = Mollier.ChartDataType.HeatingProcess;
             }
             if (mollierProcess is HeatRecoveryProcess)
             {
-                process = UI.ChartDataType.HeatRecoveryProcess;
+                process = Mollier.ChartDataType.HeatRecoveryProcess;
             }
             if (mollierProcess is MixingProcess)
             {
-                process = UI.ChartDataType.MixingProcess;
+                process = Mollier.ChartDataType.MixingProcess;
             }
             if (mollierProcess is SteamHumidificationProcess)
             {
-                process = UI.ChartDataType.SteamHumidificationProcess;
+                process = Mollier.ChartDataType.SteamHumidificationProcess;
             }
             if(mollierProcess is AdiabaticHumidificationProcess)
             {
-                process = UI.ChartDataType.AdiabaticHumidificationProcess;
+                process = Mollier.ChartDataType.AdiabaticHumidificationProcess;
             }
             if(mollierProcess is IsotermicHumidificationProcess)
             {
-                process = UI.ChartDataType.IsotermicHumidificationProcess;
+                process = Mollier.ChartDataType.IsotermicHumidificationProcess;
             }
             return process;
         }

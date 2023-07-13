@@ -178,7 +178,6 @@
     <Compile Include="Enums\ProcessParameterType.cs" />
     <Compile Include="Enums\ProcessCalculationType.cs" />
     <Compile Include="Enums\ChartExportType.cs" />
-    <Compile Include="Enums\ChartDataType.cs" />
     <Compile Include="Enums\ChartParameterType.cs" />
     <Compile Include="Forms\CustomizeProcessForm.cs">
       <SubType>Form</SubType>
