@@ -22,7 +22,7 @@ namespace SAM.Core.Mollier.UI
         {
             InitializeComponent();
 
-            MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null ;
+            MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null ;
             default_chart(mollierControlSettings);
         }
 
@@ -136,7 +136,7 @@ namespace SAM.Core.Mollier.UI
                     System.IO.Directory.CreateDirectory(directoryPath);
                 }
 
-                Convert.ToFile(mollierControlSettings, mollierControlSettingsPath);
+                Core.Convert.ToFile(mollierControlSettings, mollierControlSettingsPath);
             }
         }
         
@@ -678,7 +678,7 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            List<IMollierObject> mollierObjects = Convert.ToSAM<IMollierObject>(path);
+            List<IMollierObject> mollierObjects = Core.Convert.ToSAM<IMollierObject>(path);
             if(mollierObjects == null || mollierObjects.Count == 0)
             {
                 return;
@@ -698,7 +698,7 @@ namespace SAM.Core.Mollier.UI
             if (replace)
             {
                 Clear();
-                MollierControlSettings mollierControlSettings = System.IO.File.Exists(path) ? Convert.ToSAM<MollierControlSettings>(path).Find(x => x != null) : null;
+                MollierControlSettings mollierControlSettings = System.IO.File.Exists(path) ? Core.Convert.ToSAM<MollierControlSettings>(path).Find(x => x != null) : null;
                 if(mollierControlSettings != null)
                 {
                     MollierControl_Main.MollierControlSettings = mollierControlSettings;
@@ -746,7 +746,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             mollierObjects.Add(MollierControlSettings);
-            Convert.ToFile(mollierObjects, path);
+            Core.Convert.ToFile(mollierObjects, path);
         }
 
         public void LoadMollierObjects(IEnumerable<IMollierObject> mollierObjects)

@@ -6,14 +6,19 @@ namespace SAM.Core.Mollier.UI
     public class PointGradientVisibilitySetting : VisibilitySetting, IUserVisibilitySetting
     {
         public Color GradientColor { get; set; }
-        public ChartDataType ChartDataType { get; } = ChartDataType.Undefined;
-        public ChartParameterType ChartParameterType { get; } = ChartParameterType.Point;
+        public ChartDataType ChartDataType { get; set; } = ChartDataType.Undefined;
+        public ChartParameterType ChartParameterType { get; set; } = ChartParameterType.Point;
 
 
         public PointGradientVisibilitySetting(PointGradientVisibilitySetting pointGradientVisibilitySetting)
             :base(pointGradientVisibilitySetting)
         {
-            GradientColor = pointGradientVisibilitySetting.GradientColor;
+            if(pointGradientVisibilitySetting != null)
+            {
+                GradientColor = pointGradientVisibilitySetting.GradientColor;
+                ChartDataType = pointGradientVisibilitySetting.ChartDataType;
+                ChartParameterType = pointGradientVisibilitySetting.ChartParameterType;
+            }
         }
 
         public PointGradientVisibilitySetting(JObject jObject)
@@ -35,13 +40,6 @@ namespace SAM.Core.Mollier.UI
             {
                 return false;
             }
-            //if (jObject.ContainsKey("GradientColor"))
-            //{
-            //    if (Enum.TryParse(jObject.Value<string>("GradientColor"), out Color gradientColor))
-            //    {
-            //        GradientColor = gradientColor;
-            //    }
-            //}
 
             if (jObject.ContainsKey("GradientColor"))
             {
@@ -56,6 +54,15 @@ namespace SAM.Core.Mollier.UI
                 }
             }
 
+            if (jObject.ContainsKey("ChartParameterType"))
+            {
+                ChartParameterType = Core.Query.Enum<ChartParameterType>(jObject.Value<string>("ChartParameterType"));
+            }
+
+            if (jObject.ContainsKey("ChartDataType"))
+            {
+                ChartDataType = Core.Query.Enum<ChartDataType>(jObject.Value<string>("ChartDataType"));
+            }
 
             return true;
         }
@@ -73,7 +80,6 @@ namespace SAM.Core.Mollier.UI
                 jObject.Add("GradientColor", (new SAMColor(GradientColor)).ToJObject());
             }
 
-            //jObject.Add("GradientColor", GradientColor.ToString());//there is saves as "yellow" now alpha red etc, bad format
             jObject.Add("ChartParameterType", ChartParameterType.ToString());
             jObject.Add("ChartDataType", ChartDataType.ToString());
             return jObject;

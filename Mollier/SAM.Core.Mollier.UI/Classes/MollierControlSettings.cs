@@ -6,14 +6,14 @@ namespace SAM.Core.Mollier.UI
     public class MollierControlSettings : IJSAMObject
     {
         public double Pressure { get; set; } = 101325;
-        public double Elevation { get; set; } = 0;
-        public double HumidityRatio_Max { get; set; } = 35;
-        public double HumidityRatio_Min { get; set; } = 0;
-        public double HumidityRatio_Interval { get; set; } = 5;
+        public double Elevation { get; set; } = 0; //TODO: [MACIEK] Remove elevation or Pressure (one value is calculated from another)
+        public double HumidityRatio_Max { get; set; } = 35; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
+        public double HumidityRatio_Min { get; set; } = 0; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
+        public double HumidityRatio_Interval { get; set; } = 5; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
         public double Temperature_Max { get; set; } = 50;
         public double Temperature_Min { get; set; } = -20;
         public double Temperature_Interval { get; set; } = 5;
-        public double P_w_Interval { get; set; } = 0.5;
+        public double P_w_Interval { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
         public bool Density_line { get; set; } = true;
         public bool Enthalpy_line { get; set; } = true;
         public bool SpecificVolume_line { get; set; } = true;
@@ -24,12 +24,24 @@ namespace SAM.Core.Mollier.UI
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
         public bool FindPoint { get; set; } = false;
-        public double Percent { get; set; } = 0.4;
+        public double Percent { get; set; } = 0.4; //TODO: [MACIEK] Adjust value -> Percent 1-100% or factor 0-1
         public string FindPointType { get; set; } = "Enthalpy";
         public bool DivisionArea { get; set; } = false;
         public bool DivisionAreaLabels { get; set; } = true;
 
-        public PointGradientVisibilitySetting GradientColors { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
+        public double Density_Min { get; set; } = 0.45;
+        public double Density_Max { get; set; } = 1.41;
+        public double Density_Interval { get; set; } = 0.02;
+
+        public double Enthalpy_Min { get; set; } = -20000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
+        public double Enthalpy_Max { get; set; } = 140000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
+        public double Enthalpy_Interval { get; set; } = 1000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
+
+        public double SpecificVolume_Min { get; set; } = 0.65;
+        public double SpecificVolume_Max { get; set; } = 1.92;
+        public double SpecificVolume_Interval { get; set; } = 0.05;
+
+        public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
 
@@ -40,34 +52,52 @@ namespace SAM.Core.Mollier.UI
 
         public MollierControlSettings(MollierControlSettings mollierControlSettings)
         {
-            Pressure = mollierControlSettings.Pressure;
-            Elevation = mollierControlSettings.Elevation;
-            HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
-            HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
-            HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval;
-            Temperature_Max = mollierControlSettings.Temperature_Max;
-            Temperature_Min = mollierControlSettings.Temperature_Min;
-            Temperature_Interval = mollierControlSettings.Temperature_Interval;
-            P_w_Interval = mollierControlSettings.P_w_Interval;
-            Density_line = mollierControlSettings.Density_line;
-            Enthalpy_line = mollierControlSettings.Enthalpy_line;
-            SpecificVolume_line = mollierControlSettings.SpecificVolume_line;
-            WetBulbTemperature_line = mollierControlSettings.WetBulbTemperature_line;
-            ChartType = mollierControlSettings.ChartType;
-            Color = mollierControlSettings.Color;
-            VisibilitySettings = new VisibilitySettings(mollierControlSettings.VisibilitySettings);
+            if(mollierControlSettings != null)
+            {
+                Pressure = mollierControlSettings.Pressure;
+                Elevation = mollierControlSettings.Elevation;
+                HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
+                HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
+                HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval;
+                Temperature_Max = mollierControlSettings.Temperature_Max;
+                Temperature_Min = mollierControlSettings.Temperature_Min;
+                Temperature_Interval = mollierControlSettings.Temperature_Interval;
+                P_w_Interval = mollierControlSettings.P_w_Interval;
+                Density_line = mollierControlSettings.Density_line;
+                Enthalpy_line = mollierControlSettings.Enthalpy_line;
+                SpecificVolume_line = mollierControlSettings.SpecificVolume_line;
+                WetBulbTemperature_line = mollierControlSettings.WetBulbTemperature_line;
+                ChartType = mollierControlSettings.ChartType;
+                Color = mollierControlSettings.Color;
 
-            DisableUnits = mollierControlSettings.DisableUnits;
-            DisableLabels = mollierControlSettings.DisableLabels;
-            GradientColors = mollierControlSettings.GradientColors;
-            GradientPoint = mollierControlSettings.GradientPoint;
-            FindPoint = mollierControlSettings.FindPoint;
-            Percent = mollierControlSettings.Percent;
-            FindPointType = mollierControlSettings.FindPointType;
-            DivisionArea = mollierControlSettings.DivisionArea;
-            DivisionAreaLabels = mollierControlSettings.DivisionAreaLabels;
+                VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
+                VisibilitySettings = visibilitySettings == null ? null : new VisibilitySettings(visibilitySettings);
 
+                DisableUnits = mollierControlSettings.DisableUnits;
+                DisableLabels = mollierControlSettings.DisableLabels;
 
+                PointGradientVisibilitySetting pointGradientVisibilitySetting = mollierControlSettings.PointGradientVisibilitySetting;
+                PointGradientVisibilitySetting = pointGradientVisibilitySetting == null ? null : pointGradientVisibilitySetting;
+
+                GradientPoint = mollierControlSettings.GradientPoint;
+                FindPoint = mollierControlSettings.FindPoint;
+                Percent = mollierControlSettings.Percent;
+                FindPointType = mollierControlSettings.FindPointType;
+                DivisionArea = mollierControlSettings.DivisionArea;
+                DivisionAreaLabels = mollierControlSettings.DivisionAreaLabels;
+
+                Density_Max = mollierControlSettings.Density_Max;
+                Density_Min = mollierControlSettings.Density_Min;
+                Density_Interval = mollierControlSettings.Density_Interval;
+
+                Enthalpy_Max = mollierControlSettings.Enthalpy_Max;
+                Enthalpy_Min = mollierControlSettings.Enthalpy_Min;
+                Enthalpy_Interval = mollierControlSettings.Enthalpy_Interval;
+
+                SpecificVolume_Max = mollierControlSettings.SpecificVolume_Max;
+                SpecificVolume_Min = mollierControlSettings.SpecificVolume_Min;
+                SpecificVolume_Interval = mollierControlSettings.SpecificVolume_Interval;
+            }
         }
 
         public MollierControlSettings(JObject jObject)
@@ -77,6 +107,8 @@ namespace SAM.Core.Mollier.UI
 
         public bool IsValid()
         {
+            //TODO: [MACIEK] Add Density_Max, Density_Min, Density_Interval, Enthalpy_Min, Enthalpy_Max, Enthalpy_Interval,SpecificVolume_Min, SpecificVolume_Max, SpecificVolume_Interval
+
             if (double.IsNaN(Pressure) ||
                 double.IsInfinity(Pressure) ||
                 Pressure == double.MaxValue ||
@@ -186,6 +218,16 @@ namespace SAM.Core.Mollier.UI
                     VisibilitySettings = new VisibilitySettings(jObject_VisibilitySettings);
                 }
             }
+
+            if (jObject.ContainsKey("PointGradientVisibilitySetting"))
+            {
+                JObject jObject_PointGradientVisibilitySetting = jObject.Value<JObject>("PointGradientVisibilitySetting");
+                if (jObject_PointGradientVisibilitySetting != null)
+                {
+                    PointGradientVisibilitySetting = new PointGradientVisibilitySetting(jObject_PointGradientVisibilitySetting);
+                }
+            }
+
             if (jObject.ContainsKey("DisableUnits"))
             {
                 DisableUnits = jObject.Value<bool>("DisableUnits");
@@ -193,6 +235,48 @@ namespace SAM.Core.Mollier.UI
             if (jObject.ContainsKey("DisableLabels"))
             {
                 DisableLabels = jObject.Value<bool>("DisableLabels");
+            }
+
+            //Enthalpy
+            if (jObject.ContainsKey("Enthalpy_Max"))
+            {
+                Enthalpy_Max = jObject.Value<double>("Enthalpy_Max");
+            }
+            if (jObject.ContainsKey("Enthalpy_Min"))
+            {
+                Enthalpy_Min = jObject.Value<double>("Enthalpy_Min");
+            }
+            if (jObject.ContainsKey("Enthalpy_Interval"))
+            {
+                Enthalpy_Interval = jObject.Value<double>("Enthalpy_Interval");
+            }
+
+            //Density
+            if (jObject.ContainsKey("Density_Max"))
+            {
+                Density_Max = jObject.Value<double>("Density_Max");
+            }
+            if (jObject.ContainsKey("Density_Min"))
+            {
+                Density_Min = jObject.Value<double>("Density_Min");
+            }
+            if (jObject.ContainsKey("Density_Interval"))
+            {
+                Density_Interval = jObject.Value<double>("Density_Interval");
+            }
+
+            //SpecificVolume
+            if (jObject.ContainsKey("SpecificVolume_Max"))
+            {
+                SpecificVolume_Max = jObject.Value<double>("SpecificVolume_Max");
+            }
+            if (jObject.ContainsKey("SpecificVolume_Min"))
+            {
+                SpecificVolume_Min = jObject.Value<double>("SpecificVolume_Min");
+            }
+            if (jObject.ContainsKey("SpecificVolume_Interval"))
+            {
+                SpecificVolume_Interval = jObject.Value<double>("SpecificVolume_Interval");
             }
 
             return true;
@@ -253,7 +337,52 @@ namespace SAM.Core.Mollier.UI
                 result.Add("VisibilitySettings", VisibilitySettings.ToJObject());
             }
 
-            //result.Add("GradientColors", GradientColors.ToJObject()); TODO after change saving GradientColor
+            if(PointGradientVisibilitySetting != null)
+            {
+                result.Add("PointGradientVisibilitySetting", PointGradientVisibilitySetting.ToJObject());
+            }
+
+            //Density
+            if (!double.IsNaN(Density_Max))
+            {
+                result.Add("Density_Max", Density_Max);
+            }
+            if (!double.IsNaN(Density_Min))
+            {
+                result.Add("Density_Min", Density_Min);
+            }
+            if (!double.IsNaN(Density_Interval))
+            {
+                result.Add("Density_Interval", Density_Interval);
+            }
+
+            //Enthalpy
+            if (!double.IsNaN(Enthalpy_Max))
+            {
+                result.Add("Enthalpy_Max", Enthalpy_Max);
+            }
+            if (!double.IsNaN(Enthalpy_Min))
+            {
+                result.Add("Enthalpy_Min", Enthalpy_Min);
+            }
+            if (!double.IsNaN(Enthalpy_Interval))
+            {
+                result.Add("Enthalpy_Interval", Enthalpy_Interval);
+            }
+
+            //SpecificVolume
+            if (!double.IsNaN(SpecificVolume_Max))
+            {
+                result.Add("SpecificVolume_Max", SpecificVolume_Max);
+            }
+            if (!double.IsNaN(SpecificVolume_Min))
+            {
+                result.Add("SpecificVolume_Min", SpecificVolume_Min);
+            }
+            if (!double.IsNaN(SpecificVolume_Interval))
+            {
+                result.Add("SpecificVolume_Interval", SpecificVolume_Interval);
+            }
 
             return result;
         }
