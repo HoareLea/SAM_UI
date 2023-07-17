@@ -368,11 +368,14 @@ namespace SAM.Core.Mollier.UI.Controls
         private void addMollierPoints(ChartType chartType)
         {
             Series series = MollierChart.Series.ToList()?.Find(x => x.Name == "MollierPoints");
+            int index_Temp = -1;
             if(series == null)
             {
                 series = MollierChart.Series.Add("MollierPoints");
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Point;
+                index_Temp = series.Points.AddXY(1, 0); //HAs to bed added to properly show first point on HumidityRatio = 0
+                series.Points[index_Temp].MarkerSize = 0;
             }
             else
             {
@@ -454,6 +457,11 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
                 }
             }
+
+            //if(index_Temp != -1)
+            //{
+            //    series.Points.RemoveAt(index_Temp);
+            //}
         }
         private void add_MollierProcesses(ChartType chartType)
         {
