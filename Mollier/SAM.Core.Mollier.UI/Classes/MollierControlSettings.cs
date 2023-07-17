@@ -5,11 +5,11 @@ namespace SAM.Core.Mollier.UI
 {
     public class MollierControlSettings : IJSAMObject
     {
-        public double Pressure { get; set; } = 101325;
+        public double Pressure { get; set; } = Standard.Pressure;
         public double Elevation { get; set; } = 0; //TODO: [MACIEK] Remove elevation or Pressure (one value is calculated from another)
-        public double HumidityRatio_Max { get; set; } = 35; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
-        public double HumidityRatio_Min { get; set; } = 0; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
-        public double HumidityRatio_Interval { get; set; } = 5; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
+        public double HumidityRatio_Max { get; set; } = Default.HumidityRatio_Max; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
+        public double HumidityRatio_Min { get; set; } = Default.HumidityRatio_Min; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
+        public double HumidityRatio_Interval { get; set; } = Default.HumidityRatio_Interval; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
         public double Temperature_Max { get; set; } = 50;
         public double Temperature_Min { get; set; } = -20;
         public double Temperature_Interval { get; set; } = 5;
