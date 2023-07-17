@@ -9,7 +9,7 @@
             mollierControlSettings.Enthalpy_line = true;
             mollierControlSettings.SpecificVolume_line = false;
             mollierControlSettings.WetBulbTemperature_line = false;
-            mollierControlSettings.Color = "blue";
+            mollierControlSettings.DefaultTemplateName = "blue";
             mollierControlSettings.ChartType = ChartType.Mollier;
             return mollierControlSettings;
         }

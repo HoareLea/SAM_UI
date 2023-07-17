@@ -19,7 +19,7 @@ namespace SAM.Core.Mollier.UI
         public bool SpecificVolume_line { get; set; } = true;
         public bool WetBulbTemperature_line { get; set; } = true;
         public ChartType ChartType { get; set; } = ChartType.Mollier;
-        public string Color { get; set; } = "default";
+        public string DefaultTemplateName { get; set; } = "default";
         public bool DisableUnits { get; set; } = false;
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
@@ -68,7 +68,7 @@ namespace SAM.Core.Mollier.UI
                 SpecificVolume_line = mollierControlSettings.SpecificVolume_line;
                 WetBulbTemperature_line = mollierControlSettings.WetBulbTemperature_line;
                 ChartType = mollierControlSettings.ChartType;
-                Color = mollierControlSettings.Color;
+                DefaultTemplateName = mollierControlSettings.DefaultTemplateName;
 
                 VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
                 VisibilitySettings = visibilitySettings == null ? null : new VisibilitySettings(visibilitySettings);
@@ -201,7 +201,7 @@ namespace SAM.Core.Mollier.UI
             }
             if (jObject.ContainsKey("Color"))
             {
-                Color = jObject.Value<string>("Color");
+                DefaultTemplateName = jObject.Value<string>("Color");
             }
             if (jObject.ContainsKey("ChartType"))
             {
@@ -328,7 +328,7 @@ namespace SAM.Core.Mollier.UI
             result.Add("Enthalpy_line", Enthalpy_line);
             result.Add("SpecificVolume_line", SpecificVolume_line);
             result.Add("WetBulbTemperature_line", WetBulbTemperature_line);
-            result.Add("Color", Color);
+            result.Add("Color", DefaultTemplateName);
             result.Add("DisableUnits", DisableUnits);
             result.Add("DisableLabels", DisableLabels);
             result.Add("ChartType", ChartType.ToString());

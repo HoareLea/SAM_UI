@@ -12,6 +12,12 @@ namespace SAM.Core.Mollier.UI
                 return 0;
             }
 
+            ConstantValueCurve constantValueCurve = series.Tag as ConstantValueCurve;
+            if(constantValueCurve == null)
+            {
+                return 0;
+            }
+
             ChartType chartType = mollierControlSettings.ChartType;
 
             //takes series (line must be straight) and chartType and returns angle of label along the line
@@ -32,6 +38,21 @@ namespace SAM.Core.Mollier.UI
             }
 
             int result = System.Convert.ToInt32(vector.Angle(Vector2D.WorldX) * 180 / System.Math.PI);
+
+            if(chartType == ChartType.Psychrometric && constantValueCurve.ChartDataType == Mollier.ChartDataType.SpecificVolume)
+            {
+                while (result > 90)
+                {
+                    result -= 90;
+                }
+
+                while (result < -90)
+                {
+                    result += 90;
+                }
+
+                return result;
+            }
 
             return chartType == ChartType.Mollier ? result : 180 - result;
 

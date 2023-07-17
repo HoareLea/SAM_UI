@@ -531,7 +531,7 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Location = new System.Drawing.Point(10, 64);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
             mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
-            mollierControlSettings1.Color = "default";
+            mollierControlSettings1.DefaultTemplateName = "default";
             mollierControlSettings1.Density_line = true;
             mollierControlSettings1.DisableLabels = false;
             mollierControlSettings1.DisableUnits = false;

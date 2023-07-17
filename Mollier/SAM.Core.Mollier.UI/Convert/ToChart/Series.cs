@@ -49,6 +49,12 @@ namespace SAM.Core.Mollier.UI
                     result.BorderWidth = chartParameterType == ChartParameterType.Line ? 1 : 2;
                     break;
 
+                case ChartDataType.DryBulbTemperature:
+                    result.ChartType = SeriesChartType.Line;
+                    chartParameterType = constantValueCurve.Value % 10 != 0 ? ChartParameterType.Line : ChartParameterType.BoldLine;
+                    result.BorderWidth = chartParameterType == ChartParameterType.Line ? 1 : 2;
+                    break;
+
                 case ChartDataType.Enthalpy:
                     result.ChartType = SeriesChartType.Line;
                     chartParameterType = constantValueCurve.Value % 10000 != 0 ? ChartParameterType.Line : ChartParameterType.BoldLine;
@@ -61,7 +67,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             
-            result.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.Color, chartParameterType, chartDataType);
+            result.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, chartParameterType, chartDataType);
 
             ChartType chartType = mollierControlSettings.ChartType;
 

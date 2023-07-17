@@ -47,7 +47,7 @@ namespace SAM.Core.Mollier.UI
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
             {
-                List<BuiltInVisibilitySetting> builtInVisibilitySettings = visibilitySettings.GetVisibilitySettings<BuiltInVisibilitySetting>(mollierControlSettings.Color);
+                List<BuiltInVisibilitySetting> builtInVisibilitySettings = visibilitySettings.GetVisibilitySettings<BuiltInVisibilitySetting>(mollierControlSettings.DefaultTemplateName);
                 if(builtInVisibilitySettings != null)
                 {
                     foreach(BuiltInVisibilitySetting builtInVisibilitySetting in builtInVisibilitySettings)
@@ -328,7 +328,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             visibilitySettings.SetVisibilitySettings("User", visibilitySettingsList);
-            mollierControlSettings.Color = "User";
+            mollierControlSettings.DefaultTemplateName = "User";
 
             mollierControlSettings.VisibilitySettings = visibilitySettings;
 

@@ -309,16 +309,24 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings = new MollierControlSettings();
             }
 
+            if(mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.BoldLine, ChartDataType.DryBulbTemperature) == System.Drawing.Color.Empty)
+            {
+                MollierControlSettings mollierControlSettings_Default = new MollierControlSettings();
+
+                mollierControlSettings.VisibilitySettings.Add(mollierControlSettings.DefaultTemplateName, mollierControlSettings_Default.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, ChartDataType.DryBulbTemperature));
+                mollierControlSettings.VisibilitySettings.Add(mollierControlSettings.DefaultTemplateName, mollierControlSettings_Default.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.DefaultTemplateName, ChartParameterType.BoldLine, ChartDataType.DryBulbTemperature));
+            }
+
             ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier;
             ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric;
             ToolStripMenuItem_Density.Checked = mollierControlSettings.Density_line;
             ToolStripMenuItem_Enthalpy.Checked = mollierControlSettings.Enthalpy_line;
             ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.SpecificVolume_line;
             ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.WetBulbTemperature_line;
-            defaultToolStripMenuItem.Checked = mollierControlSettings.Color == "default";
-            blueToolStripMenuItem.Checked = mollierControlSettings.Color == "blue";
-            grayToolStripMenuItem.Checked = mollierControlSettings.Color == "gray";
-            blueBlackToolStripMenuItem.Checked = mollierControlSettings.Color == "blue-black";
+            defaultToolStripMenuItem.Checked = mollierControlSettings.DefaultTemplateName == "default";
+            blueToolStripMenuItem.Checked = mollierControlSettings.DefaultTemplateName == "blue";
+            grayToolStripMenuItem.Checked = mollierControlSettings.DefaultTemplateName == "gray";
+            blueBlackToolStripMenuItem.Checked = mollierControlSettings.DefaultTemplateName == "blue-black";
             if(MollierControl_Main != null)
             {
                 MollierControl_Main.MollierControlSettings = mollierControlSettings;
@@ -348,7 +356,7 @@ namespace SAM.Core.Mollier.UI
             }
             blueToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.Color = "blue";
+            mollierControlSettings.DefaultTemplateName = "blue";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         
@@ -368,7 +376,7 @@ namespace SAM.Core.Mollier.UI
             }
             grayToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.Color = "gray";
+            mollierControlSettings.DefaultTemplateName = "gray";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         
@@ -388,7 +396,7 @@ namespace SAM.Core.Mollier.UI
             }
             defaultToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.Color = "default";
+            mollierControlSettings.DefaultTemplateName = "default";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
        
@@ -408,7 +416,7 @@ namespace SAM.Core.Mollier.UI
             }
             blueBlackToolStripMenuItem.Checked = true;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.Color = "blue-black";
+            mollierControlSettings.DefaultTemplateName = "blue-black";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
        

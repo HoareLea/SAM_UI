@@ -74,6 +74,10 @@ namespace SAM.Core.Mollier.UI
                     return Mollier.Query.ConstantValueCurves_Enthalpy(new Range<double>(enthalpy_Min, enthalpy_Max), step, pressure);
 
                 case Mollier.ChartDataType.WetBulbTemperature:
+                    if (!mollierControlSettings.WetBulbTemperature_line)
+                    {
+                        return null;
+                    }
                     dryBulbTemperature_Min = mollierControlSettings.Temperature_Min;
                     dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
                     step = 5;
@@ -81,6 +85,11 @@ namespace SAM.Core.Mollier.UI
                     return Mollier.Query.ConstantValueCurves_WetBulbTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
 
                 case Mollier.ChartDataType.SpecificVolume:
+                    if (!mollierControlSettings.SpecificVolume_line)
+                    {
+                        return null;
+                    }
+
                     double specificVolume_Min = mollierControlSettings.SpecificVolume_Min;
                     double specificVolume_Max = mollierControlSettings.SpecificVolume_Max;
                     step = mollierControlSettings.SpecificVolume_Interval;

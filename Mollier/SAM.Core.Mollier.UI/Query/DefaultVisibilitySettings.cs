@@ -37,6 +37,9 @@
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.LightGray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.DarkGray));
 
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.LightGray));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.DarkGray));
+
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.CoolingProcess, System.Drawing.Color.Blue));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.HeatingProcess, System.Drawing.Color.Red));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.HeatRecoveryProcess, System.Drawing.Color.IndianRed));
