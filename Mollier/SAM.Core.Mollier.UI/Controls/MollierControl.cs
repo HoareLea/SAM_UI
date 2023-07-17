@@ -374,7 +374,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 series = MollierChart.Series.Add("MollierPoints");
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Point;
-                index_Temp = series.Points.AddXY(1, 0); //HAs to bed added to properly show first point on HumidityRatio = 0
+                index_Temp = series.Points.AddXY(1, 0); //Has to bed added to properly show first point on HumidityRatio = 0
                 series.Points[index_Temp].MarkerSize = 0;
             }
             else
@@ -413,6 +413,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 if(chartType == ChartType.Mollier)
                 {
+                    //diagramTemperature = dryBulbTemperature;
+
                     diagramTemperature = Mollier.Query.DiagramTemperature(mollierPoint);
                     if(mollierPoint.SaturationHumidityRatio() < humidityRatio)
                     {

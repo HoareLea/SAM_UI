@@ -89,7 +89,7 @@ namespace SAM.Core.Mollier.UI
                 int index = -1;
                 if (chartType == ChartType.Mollier)
                 {
-                    if(chartDataType != ChartDataType.DiagramTemperature && chartDataType != ChartDataType.Enthalpy)
+                    if(chartDataType != ChartDataType.DiagramTemperature)
                     {
                         temperature = Mollier.Query.DiagramTemperature(mollierPoint);
                         if (double.IsNaN(temperature) || double.IsInfinity(temperature))
