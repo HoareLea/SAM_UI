@@ -153,7 +153,7 @@ namespace SAM.Core.Mollier.UI
             int i = System.Convert.ToInt32(value / 10);
 
             int startIndex_Temp = startIndex;
-            while(count - (startIndex - 1) - i < 0)
+            while(count - (startIndex_Temp + 1) - i < 0)
             {
                 startIndex_Temp--;
             }
