@@ -11,33 +11,33 @@
 
             VisibilitySettings result = new VisibilitySettings();
 
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, Default.RelativeHumidity_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
            
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.Density, System.Drawing.Color.LightGreen));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.Density, Default.Density_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.Density, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.Density, System.Drawing.Color.Gray));
             
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.LightGray));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.Enthalpy, Default.Enthalpy_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.Black));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.Black));
 
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.SpecificVolume, System.Drawing.Color.LightPink));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.SpecificVolume, Default.SpecificVolume_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.SpecificVolume, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.SpecificVolume, System.Drawing.Color.Gray));
 
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.WetBulbTemperature, System.Drawing.Color.LightSalmon));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.WetBulbTemperature, Default.WetBulbTemperature_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
             //result.Add("default", new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Green));
 
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.LightGray));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DiagramTemperature, Default.DryBulbTemperature_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.DarkGray));
 
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.LightGray));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DryBulbTemperature, Default.DryBulbTemperature_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.DarkGray));
 
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.CoolingProcess, System.Drawing.Color.Blue));
