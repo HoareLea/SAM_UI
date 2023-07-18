@@ -1092,6 +1092,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.Interval = temperature_interval;
             axisY.LabelStyle.Format = "0.##";
             axisY.LabelStyle.Font = chartArea_New.AxisY.LabelStyle.Font;
+            axisY.MajorTickMark.Enabled = false;
             //axisY.MinorTickMark.Enabled = false;
 
             List<Series> seriesList = null;
@@ -1277,6 +1278,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.MinorGrid.Enabled = false;
             axisY.MinorGrid.LineColor = Color.LightGray;
             //axisY.MinorTickMark.Enabled = true;
+            axisY.MajorTickMark.Enabled = true;
 
 
             Series series1 = MollierChart.Series.Add("Partial Vapour Pressure pW [kPa]");

@@ -10,9 +10,9 @@ namespace SAM.Core.Mollier.UI
         public double HumidityRatio_Max { get; set; } = Default.HumidityRatio_Max; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
         public double HumidityRatio_Min { get; set; } = Default.HumidityRatio_Min; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
         public double HumidityRatio_Interval { get; set; } = Default.HumidityRatio_Interval; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
-        public double Temperature_Max { get; set; } = 50;
-        public double Temperature_Min { get; set; } = -20;
-        public double Temperature_Interval { get; set; } = 5;
+        public double Temperature_Max { get; set; } = Default.DryBulbTemperature_Max;
+        public double Temperature_Min { get; set; } = Default.DryBulbTemperature_Min;
+        public double Temperature_Interval { get; set; } = Default.DryBulbTemperature_Interval;
         public double P_w_Interval { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
         public bool Density_line { get; set; } = true;
         public bool Enthalpy_line { get; set; } = true;

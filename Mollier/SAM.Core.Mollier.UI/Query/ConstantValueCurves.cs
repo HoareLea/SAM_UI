@@ -59,6 +59,9 @@ namespace SAM.Core.Mollier.UI
                     dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
                     step = 10;
 
+                    dryBulbTemperature_Min = System.Math.Max(Default.DryBulbTemperature_Min, dryBulbTemperature_Min - 1);
+                    dryBulbTemperature_Max = System.Math.Min(Default.DryBulbTemperature_Max, dryBulbTemperature_Max + 1);
+
                     return Mollier.Query.ConstantValueCurves_RelativeHumidity(new Range<double>(0, 100), step, pressure, new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max));
 
                 case Mollier.ChartDataType.Enthalpy:
