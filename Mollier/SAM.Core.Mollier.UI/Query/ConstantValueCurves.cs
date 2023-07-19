@@ -29,7 +29,7 @@ namespace SAM.Core.Mollier.UI
                     dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
                     step = 1;
 
-                    return Mollier.Query.ConstantValueCurves_DryBulbTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
+                    return Mollier.Create.ConstantValueCurves_DryBulbTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
 
 
                 case Mollier.ChartDataType.DiagramTemperature:
@@ -37,7 +37,7 @@ namespace SAM.Core.Mollier.UI
                     dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
                     step = 1;
 
-                    return Mollier.Query.ConstantValueCurves_DiagramTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
+                    return Mollier.Create.ConstantValueCurves_DiagramTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
 
 
                 case Mollier.ChartDataType.Density:
@@ -52,7 +52,7 @@ namespace SAM.Core.Mollier.UI
 
                     Range<double> denistyRange = new Range<double>(denisty_Min, denisty_Max);
 
-                    return Mollier.Query.ConstantValueCurves_Density(denistyRange, step, pressure);
+                    return Mollier.Create.ConstantValueCurves_Density(denistyRange, step, pressure);
 
                 case Mollier.ChartDataType.RelativeHumidity:
                     dryBulbTemperature_Min = mollierControlSettings.Temperature_Min;
@@ -62,7 +62,7 @@ namespace SAM.Core.Mollier.UI
                     dryBulbTemperature_Min = System.Math.Max(Default.DryBulbTemperature_Min, dryBulbTemperature_Min - 1);
                     dryBulbTemperature_Max = System.Math.Min(Default.DryBulbTemperature_Max, dryBulbTemperature_Max + 1);
 
-                    return Mollier.Query.ConstantValueCurves_RelativeHumidity(new Range<double>(0, 100), step, pressure, new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max));
+                    return Mollier.Create.ConstantValueCurves_RelativeHumidity(new Range<double>(0, 100), step, pressure, new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max));
 
                 case Mollier.ChartDataType.Enthalpy:
                     if (!mollierControlSettings.Enthalpy_line)
@@ -74,7 +74,7 @@ namespace SAM.Core.Mollier.UI
                     double enthalpy_Max = mollierControlSettings.Enthalpy_Max;
                     step = mollierControlSettings.Enthalpy_Interval;
 
-                    return Mollier.Query.ConstantValueCurves_Enthalpy(new Range<double>(enthalpy_Min, enthalpy_Max), step, pressure);
+                    return Mollier.Create.ConstantValueCurves_Enthalpy(new Range<double>(enthalpy_Min, enthalpy_Max), step, pressure);
 
                 case Mollier.ChartDataType.WetBulbTemperature:
                     if (!mollierControlSettings.WetBulbTemperature_line)
@@ -85,7 +85,7 @@ namespace SAM.Core.Mollier.UI
                     dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
                     step = 5;
 
-                    return Mollier.Query.ConstantValueCurves_WetBulbTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
+                    return Mollier.Create.ConstantValueCurves_WetBulbTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
 
                 case Mollier.ChartDataType.SpecificVolume:
                     if (!mollierControlSettings.SpecificVolume_line)
@@ -97,7 +97,7 @@ namespace SAM.Core.Mollier.UI
                     double specificVolume_Max = mollierControlSettings.SpecificVolume_Max;
                     step = mollierControlSettings.SpecificVolume_Interval;
 
-                    return Mollier.Query.ConstantValueCurves_SpecificVolume(new Range<double>(specificVolume_Min, specificVolume_Max), step, pressure);
+                    return Mollier.Create.ConstantValueCurves_SpecificVolume(new Range<double>(specificVolume_Min, specificVolume_Max), step, pressure);
 
 
 
