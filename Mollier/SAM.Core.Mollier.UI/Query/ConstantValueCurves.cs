@@ -49,6 +49,7 @@ namespace SAM.Core.Mollier.UI
                     double denisty_Min = mollierControlSettings.Density_Min;
                     double denisty_Max = mollierControlSettings.Density_Max;
                     step = mollierControlSettings.Density_Interval;
+                    step = 0.01; //remove
 
                     Range<double> denistyRange = new Range<double>(denisty_Min, denisty_Max);
 
@@ -83,7 +84,7 @@ namespace SAM.Core.Mollier.UI
                     }
                     dryBulbTemperature_Min = mollierControlSettings.Temperature_Min;
                     dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
-                    step = 5;
+                    step = 1; //5
 
                     return Mollier.Create.ConstantValueCurves_WetBulbTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
 
@@ -96,6 +97,7 @@ namespace SAM.Core.Mollier.UI
                     double specificVolume_Min = mollierControlSettings.SpecificVolume_Min;
                     double specificVolume_Max = mollierControlSettings.SpecificVolume_Max;
                     step = mollierControlSettings.SpecificVolume_Interval;
+                    step = 0.01;//custom interval
 
                     return Mollier.Create.ConstantValueCurves_SpecificVolume(new Range<double>(specificVolume_Min, specificVolume_Max), step, pressure);
 

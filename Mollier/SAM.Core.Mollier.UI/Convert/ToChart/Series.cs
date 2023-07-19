@@ -37,10 +37,31 @@ namespace SAM.Core.Mollier.UI
 
             switch (chartDataType)
             {
+                //case ChartDataType.RelativeHumidity:
+                //    result.ChartType = SeriesChartType.Spline;
+                //    chartParameterType = constantValueCurve.Value != 100 && constantValueCurve.Value != 50 ? ChartParameterType.Line : ChartParameterType.BoldLine;
+                //    result.BorderWidth = chartParameterType == ChartParameterType.Line ? 1 : 2;
+                //    break;
+
                 case ChartDataType.RelativeHumidity:
                     result.ChartType = SeriesChartType.Spline;
-                    chartParameterType = constantValueCurve.Value != 100 ? ChartParameterType.Line : ChartParameterType.BoldLine;
-                    result.BorderWidth = chartParameterType == ChartParameterType.Line ? 1 : 2;
+
+                    if (constantValueCurve.Value == 50)
+                    {
+                        chartParameterType = ChartParameterType.MediumLine;
+                        result.BorderWidth = 1;  // rounding 1.5 up to 2
+                        //result.Color = Color.FromArgb(127, result.Color);  // make the color semi-transparent
+                    }
+                    else if (constantValueCurve.Value != 100 && constantValueCurve.Value != 50)
+                    {
+                        chartParameterType = ChartParameterType.Line;
+                        result.BorderWidth = 1;
+                    }
+                    else
+                    {
+                        chartParameterType = ChartParameterType.BoldLine;
+                        result.BorderWidth = 2;
+                    }
                     break;
 
                 case ChartDataType.DiagramTemperature:
@@ -58,7 +79,7 @@ namespace SAM.Core.Mollier.UI
                 case ChartDataType.Enthalpy:
                     result.ChartType = SeriesChartType.Line;
                     chartParameterType = constantValueCurve.Value % 10000 != 0 ? ChartParameterType.Line : ChartParameterType.BoldLine;
-                    result.BorderWidth = chartParameterType == ChartParameterType.Line ? 1 : 2;
+                    result.BorderWidth = 1;
                     break;
 
                 default:

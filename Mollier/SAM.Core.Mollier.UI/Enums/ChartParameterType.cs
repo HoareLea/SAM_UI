@@ -6,6 +6,7 @@
         Unit,
         Line,
         BoldLine,
+        MediumLine,
         Label,
         Point
     }
