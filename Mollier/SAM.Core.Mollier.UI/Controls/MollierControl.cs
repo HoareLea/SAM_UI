@@ -267,7 +267,6 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void addDivisionArea(ChartType chartType)
         {
-
             int deltaRelativeHumidity = 10;//RH interval from neighborhoodcount
             int deltaEnthalpy = 3;//enthalpy interval from neighborhoodcount
 
@@ -1186,6 +1185,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (mollierPoints != null && !mollierControlSettings.DivisionArea)
             {
+                //MollierChart.AddMollierPoints(mollierPoints, mollierControlSettings);
+
                 addMollierPoints(chartType);
             }
             if (mollierProcesses != null)

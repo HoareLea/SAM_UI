@@ -227,6 +227,7 @@
     <Compile Include="Interface\IMollierProcessControl.cs" />
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
+    <Compile Include="Modify\AddMollierPoints.cs" />
     <Compile Include="Modify\AddLabel.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
