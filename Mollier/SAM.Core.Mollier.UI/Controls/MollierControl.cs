@@ -31,8 +31,6 @@ namespace SAM.Core.Mollier.UI.Controls
             InitializeComponent();
 
             mollierControlSettings = new MollierControlSettings();
-
-
         }
 
         private void create_moved_label(ChartType chartType, double X, double Y, int Mollier_angle, int Psychrometric_angle, double Mollier_X, double Mollier_Y, double Psychrometric_X, double Psychrometric_Y, string LabelContent, ChartDataType chartDataType, ChartParameterType chartParameterType, bool IsDisabled = false, bool fontChange = false, Color? color = null, string tag = null)
