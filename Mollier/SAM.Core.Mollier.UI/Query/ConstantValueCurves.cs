@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -29,7 +28,7 @@ namespace SAM.Core.Mollier.UI
                     dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
                     step = 1;
 
-                    return Mollier.Create.ConstantValueCurves_DryBulbTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
+                    return Mollier.Create.ConstantTemperatureCurves_DryBulbTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure)?.ConvertAll(x => x as ConstantValueCurve);
 
 
                 case Mollier.ChartDataType.DiagramTemperature:
@@ -37,7 +36,7 @@ namespace SAM.Core.Mollier.UI
                     dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
                     step = 1;
 
-                    return Mollier.Create.ConstantValueCurves_DiagramTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure);
+                    return Mollier.Create.ConstantTemperatureCurves_DiagramTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure)?.ConvertAll(x => x as ConstantValueCurve);
 
 
                 case Mollier.ChartDataType.Density:
@@ -100,9 +99,6 @@ namespace SAM.Core.Mollier.UI
                     step = 0.01;//custom interval
 
                     return Mollier.Create.ConstantValueCurves_SpecificVolume(new Range<double>(specificVolume_Min, specificVolume_Max), step, pressure);
-
-
-
 
                 default:
                     return null;

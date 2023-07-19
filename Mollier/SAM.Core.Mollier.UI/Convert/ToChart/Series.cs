@@ -27,7 +27,16 @@ namespace SAM.Core.Mollier.UI
             
             ChartDataType chartDataType = constantValueCurve.ChartDataType;
 
-            string name = string.Format("{0} {1} [{2}]", Core.Query.Description(chartDataType), constantValueCurve.Value, Units.Query.Abbreviation(Query.DefaultUnitType(chartDataType)));
+            List<string> values = new List<string>();
+            values.Add(Core.Query.Description(chartDataType));
+            values.Add(string.Format("[{0}]", constantValueCurve.Value.ToString()));
+            values.Add(Units.Query.Abbreviation(Query.DefaultUnitType(chartDataType)));
+            if(constantValueCurve is ConstantTemperatureCurve)
+            {
+                values.Add(Core.Query.Description(((ConstantTemperatureCurve)constantValueCurve).Phase));
+            }
+
+            string name = string.Join(" ", values);
             Series result = chart.Series.Add(name);
             result.IsVisibleInLegend = false;
             result.Tag = constantValueCurve;
