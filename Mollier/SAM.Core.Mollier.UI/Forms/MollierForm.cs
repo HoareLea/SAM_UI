@@ -626,8 +626,9 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (DivisionAreaCheckBox.Checked)
             {
-                if (!MollierControl_Main.HasMollierPoints)
-                {
+                List<UIMollierPoint> mollierPoints = MollierControl_Main.UIMollierPoints;
+                if (mollierPoints == null || mollierPoints.Count == 0)
+                    {
                     MessageBox.Show("There are no points");
                     DivisionAreaCheckBox.Checked = false;
                     return;
