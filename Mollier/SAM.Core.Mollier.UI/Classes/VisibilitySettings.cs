@@ -152,30 +152,7 @@ namespace SAM.Core.Mollier.UI
                 result = visibilitySettings.Find(x => x is BuiltInVisibilitySetting && ((BuiltInVisibilitySetting)x).ChartParameterType == chartParameterType && ((BuiltInVisibilitySetting)x).ChartDataType == chartDataType);
             }
             return result;
-
-            //foreach (IVisibilitySetting x in visibilitySettings)
-            //{
-            //    if (!(x is BuiltInVisibilitySetting))
-            //    {
-            //        continue;
-            //    }
-
-            //    BuiltInVisibilitySetting BuiltInVisibilitySetting = (BuiltInVisibilitySetting)x;
-
-            //    if (BuiltInVisibilitySetting.ChartDataType != chartDataType)
-            //    {
-            //        continue;
-            //    }
-
-            //    if (BuiltInVisibilitySetting.ChartParameterType != chartParameterType)
-            //    {
-            //        continue;
-            //    }
-
-            //    return BuiltInVisibilitySetting;
-            //}
-
-            
+   
         }
 
         public System.Drawing.Color GetColor(string templateName,  ChartParameterType chartParameterType, ChartDataType chartDataType = ChartDataType.Undefined)

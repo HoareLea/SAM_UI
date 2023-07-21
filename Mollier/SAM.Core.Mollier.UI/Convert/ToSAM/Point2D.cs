@@ -16,6 +16,29 @@ namespace SAM.Core.Mollier.UI
 
             return new Point2D(dataPoint.XValue, dataPoint.YValues[indexY]);
         }
+        public static Point2D ToSAM(this MollierPoint mollierPoint, ChartType chartType)
+        {
+            double humidityRatio = mollierPoint.HumidityRatio;
+            double dryBulbTemperature = mollierPoint.DryBulbTemperature;
+            double diagramTemperature = double.NaN;
+
+            if (chartType == ChartType.Mollier)
+            {
+                diagramTemperature = Mollier.Query.DiagramTemperature(mollierPoint);
+                if (mollierPoint.SaturationHumidityRatio() < humidityRatio)
+                {
+                    if (Mollier.Query.TryFindDiagramTemperature(mollierPoint, out double diagramTemperature_Temp))
+                    {
+                        diagramTemperature = diagramTemperature_Temp;
+                    }
+                }
+            }
+
+            double x = chartType == ChartType.Mollier ? humidityRatio * 1000 : dryBulbTemperature;
+            double y = chartType == ChartType.Mollier ? diagramTemperature : humidityRatio;
+
+            return new Point2D(x, y);
+        }
 
     }
 }
