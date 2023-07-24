@@ -12,6 +12,9 @@ namespace SAM.Core.Mollier.UI
         {
             List<Series> seriesList = null;
 
+            //Temperature
+            seriesList = Convert.ToChart(ChartDataType.DryBulbTemperature, chart, mollierControlSettings);
+
             //Relative Humidity
             seriesList = Convert.ToChart(ChartDataType.RelativeHumidity, chart, mollierControlSettings);
             if (seriesList != null && seriesList.Count != 0)

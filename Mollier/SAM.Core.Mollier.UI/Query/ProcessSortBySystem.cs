@@ -8,6 +8,28 @@ namespace SAM.Core.Mollier.UI
         {
             List<List<UIMollierProcess>> result = new List<List<UIMollierProcess>>();
             List<List<int>> resultID = new List<List<int>>();//list 0 3 2 4 means that there should be processes in sequence are indexes 0 3 2 4 in mollierprocesses
+            List<int> nextProcessID = new List<int>();
+
+            int none = -1; 
+            for(int i=0; i<mollierProcesses.Count; i++)
+            {
+                MollierPoint end = mollierProcesses[i].End;
+                nextProcessID.Add(none);
+
+                if (end == null) continue;
+
+                for (int j = 0; j < mollierProcesses.Count; j++)
+                {
+                    MollierPoint start = mollierProcesses[j].Start;
+                    if (start == null || i == j) continue;
+
+                    if(start == end)
+                    {
+                        
+                    }
+                }
+            }
+
 
             for (int i=0; i<mollierProcesses.Count; i++)
             {
