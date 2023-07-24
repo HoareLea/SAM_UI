@@ -1,6 +1,4 @@
 ﻿using SAM.Geometry.Planar;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace SAM.Core.Mollier.UI
@@ -25,13 +23,6 @@ namespace SAM.Core.Mollier.UI
             if (chartType == ChartType.Mollier)
             {
                 diagramTemperature = Mollier.Query.DiagramTemperature(mollierPoint);
-                if (mollierPoint.SaturationHumidityRatio() < humidityRatio)
-                {
-                    if (Mollier.Query.TryFindDiagramTemperature(mollierPoint, out double diagramTemperature_Temp))
-                    {
-                        diagramTemperature = diagramTemperature_Temp;
-                    }
-                }
             }
 
             double x = chartType == ChartType.Mollier ? humidityRatio * 1000 : dryBulbTemperature;
