@@ -66,8 +66,15 @@ namespace SAM.Core.Mollier.UI
                 }
                 int index = result.Points.AddXY(point.X, point.Y);
 
-                bool test = dictionary.ContainsKey(mollierPoint); // JEST JAKIS BLAD : (12, 45) (12, 44) WYWALA
-                // Checking whether gradient point is activated TODO: może do przeniesienia
+                List<MollierPoint> testList = dictionary.Keys.ToList();
+
+                foreach(MollierPoint test in testList)
+                {
+                        bool boolean = test == mollierPoint; // TU POWINNO BYĆ W JAKIMS PRZYBLIZENIU SPRAWDZANE BO NIE ZNAJDUJE MIMO TYCH SAMYCH WSPOLRZEDNYCH
+                                                          // TODO: GRADIENT POINT BUG
+                }
+
+                // Checking whether gradient point is activated 
                 if (pointGradientVisibilitySetting != null)
                 {
                     double value = maxCount == 0 ? 0 : System.Convert.ToDouble(dictionary[mollierPoint]) / maxCount;

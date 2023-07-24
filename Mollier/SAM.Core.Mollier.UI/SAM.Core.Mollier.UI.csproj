@@ -234,7 +234,6 @@
     <Compile Include="Modify\AddMollierZones.cs" />
     <Compile Include="Modify\AddMollierPoints.cs" />
     <Compile Include="Modify\AddLabel.cs" />
-    <Compile Include="Modify\CreateMovedLabel.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\FindPoints.cs" />
