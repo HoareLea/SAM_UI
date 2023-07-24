@@ -13,14 +13,15 @@ namespace SAM.Core.Mollier.UI
             List<Series> seriesList = null;
 
             //Temperature
-            if(mollierControlSettings.ChartType == ChartType.Mollier)
-            {
-                seriesList = Convert.ToChart(ChartDataType.DiagramTemperature, chart, mollierControlSettings);
-            }
-            else
-            {
-                seriesList = Convert.ToChart(ChartDataType.DryBulbTemperature, chart, mollierControlSettings);
-            }
+            seriesList = Convert.ToChart(ChartDataType.DryBulbTemperature, chart, mollierControlSettings);
+            //if (mollierControlSettings.ChartType == ChartType.Mollier)
+            //{
+            //    seriesList = Convert.ToChart(ChartDataType.DiagramTemperature, chart, mollierControlSettings);
+            //}
+            //else
+            //{
+            //    seriesList = Convert.ToChart(ChartDataType.DryBulbTemperature, chart, mollierControlSettings);
+            //}
 
             //Relative Humidity
             seriesList = Convert.ToChart(ChartDataType.RelativeHumidity, chart, mollierControlSettings);
