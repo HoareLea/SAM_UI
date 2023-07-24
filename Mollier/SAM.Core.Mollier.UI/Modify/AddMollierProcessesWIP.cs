@@ -56,7 +56,7 @@ namespace SAM.Core.Mollier.UI
                 if (mollierProcess is CoolingProcess)
                 {
                     UIMollierPoint ADPPoint = createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
-                    processPointsToLabel.Add(ADPPoint);
+                    if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
                 }
             }
             labelProcessPoints(chart, control, processPointsToLabel, mollierProcesses, mollierControlSettings);
@@ -171,7 +171,7 @@ namespace SAM.Core.Mollier.UI
             MollierPoint start = mollierProcess.Start;
             MollierPoint end = mollierProcess.End;
 
-            if (mollierProcess == null || !(mollierProcess is CoolingProcess) ||start == null || end == null || start.HumidityRatio == end.HumidityRatio)
+            if (mollierProcess == null || !(mollierProcess is CoolingProcess) || start == null || end == null || start.HumidityRatio == end.HumidityRatio)
             {
                 return null; 
             }
