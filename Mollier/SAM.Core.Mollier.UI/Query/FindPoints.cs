@@ -1,5 +1,4 @@
-﻿using SAM.Geometry.Planar;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms.DataVisualization.Charting;
 using System;

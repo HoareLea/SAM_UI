@@ -1,7 +1,5 @@
-﻿using SAM.Geometry.Planar;
-using System.Windows.Forms.DataVisualization.Charting;
+﻿using System.Windows.Forms.DataVisualization.Charting;
 using System.Collections.Generic;
-using System.Linq;
 using System;
 
 namespace SAM.Core.Mollier.UI
@@ -10,6 +8,7 @@ namespace SAM.Core.Mollier.UI
     {
         [Obsolete("To be changed Maciek")] // TODO: Change (MollierProcess)
 
+        //TODO: [Maciek] Use/move to SAM.Core.Mollier.Default -> Remember to use SI units!
         // enthalpy in jules  * 1000
         // DO ZMIANY NA JAKIES CONSTY:
         private static int deltaRelativeHumidity = 10;//i interval from neighborhoodcount
@@ -35,6 +34,8 @@ namespace SAM.Core.Mollier.UI
             return createDivisionAreaSeries(chart, pointsInAreas, mollierControlSettings, maxPointsNumberInOneArea);
         }
 
+
+        //TODO: [Maciek] Change to  func inside AddDivisionArea
         private static List<Series> createDivisionAreaSeries(Chart chart, List<MollierPoint>[,] pointsInAreas, MollierControlSettings mollierControlSettings, double maxPointsNumberInOneArea)
         {
             List<Series> result = new List<Series>();
@@ -78,7 +79,9 @@ namespace SAM.Core.Mollier.UI
                 }
             }
             return result;
-        }  
+        }
+
+        //TODO: [Maciek] Change to  func inside AddDivisionArea
         private static Series labelDivisionAreas(Chart chart, List<MollierPoint>[,] pointsInAreas, MollierControlSettings mollierControlSettings, double relativeHumidity, double enthalpy )
         {
             ChartType chartType = mollierControlSettings.ChartType;
@@ -108,6 +111,7 @@ namespace SAM.Core.Mollier.UI
             return labelsSeries;
         }
 
+        //TODO: [Maciek] Change to  func inside AddDivisionArea
         private static Tuple<int, int> getAreaIndex(double relativeHumidity, double enthalpy)
         {
             // At the beginning we offset to positive numbers and then gitting index

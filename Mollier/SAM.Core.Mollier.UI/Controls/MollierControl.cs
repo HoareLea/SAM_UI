@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using SAM.Geometry.Planar;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
@@ -12,9 +10,9 @@ namespace SAM.Core.Mollier.UI.Controls
     {
         public event MollierPointSelectedEventHandler MollierPointSelected;
 
-        public static double MaxPressure = 400000;
-        public static double MinPressure = 35000;
-        
+        public static double MaxPressure = 400000;//TODO: [Maciek] Move do SAM.Core.Mollier.Default
+        public static double MinPressure = 35000;//TODO: [Maciek] Move do SAM.Core.Mollier.Default
+
         private Point mdown = Point.Empty;
         private bool selection = false;
         private MollierControlSettings mollierControlSettings;
@@ -30,6 +28,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
             mollierControlSettings = new MollierControlSettings();
         }
+
+        //TODO: [Maciek] Try make private
         public void CreateYAxis(Chart chart, ChartArea area, Series series, float axisX, float axisWidth, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
         {
 
@@ -126,6 +126,8 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisY.MinorGrid.Enabled = false;
             areaAxisAxisY.MinorTickMark.Interval = 0.1;
         }
+
+        //TODO: [Maciek] Try make private
         public void CreateXAxis(Chart chart, ChartArea area, Series series, float axisY, float axisHeight, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
         {
             long x = DateTime.Now.Ticks;
