@@ -22,7 +22,6 @@ namespace SAM.Core.Mollier.UI.Controls
         private List<UIMollierProcess> mollierProcesses;
         private List<MollierZone> mollierZones;
         private List<List<UIMollierProcess>> systems; // sorted systems of processes
-        private List<Tuple<MollierPoint, string>> created_points;
         private List<Tuple<Series, int>> seriesData = new List<Tuple<Series, int>>();
 
         public MollierControl()
@@ -249,10 +248,11 @@ namespace SAM.Core.Mollier.UI.Controls
             }
 
             Modify.AddLinesSeries(MollierChart, mollierControlSettings);
-            Modify.AddMollierPoints(MollierChart, mollierPoints, MollierControlSettings);
+            Modify.AddMollierPoints(MollierChart, mollierPoints, MollierControlSettings);  
             Modify.AddMollierZones(MollierChart, mollierZones, MollierControlSettings);
             Modify.AddDivisionArea(MollierChart, mollierPoints, mollierControlSettings);
-            mollierProcesses = Modify.AddMollierProcesses(this, MollierChart, mollierControlSettings, systems, mollierProcesses, created_points);
+            //mollierProcesses = Modify.AddMollierProcesses(this, MollierChart, mollierControlSettings, systems, mollierProcesses, created_points);
+            mollierProcesses = Modify.AddMollierProcesses(MollierChart, this, systems, mollierProcesses, mollierControlSettings);
             Query.FindPoints(this, MollierChart, mollierControlSettings, mollierPoints);
         }
         private void setAxisGraph_Mollier()

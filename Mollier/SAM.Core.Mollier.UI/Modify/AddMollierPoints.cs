@@ -66,6 +66,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 int index = result.Points.AddXY(point.X, point.Y);
 
+                bool test = dictionary.ContainsKey(mollierPoint); // JEST JAKIS BLAD : (12, 45) (12, 44) WYWALA
                 // Checking whether gradient point is activated TODO: może do przeniesienia
                 if (pointGradientVisibilitySetting != null)
                 {

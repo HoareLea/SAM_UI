@@ -11,7 +11,8 @@ namespace SAM.Core.Mollier.UI
     public static partial class Modify
     {
         [Obsolete("To be removed Maciek")] // TODO: Remove (MollierProcess)
-        public static List<UIMollierProcess> AddMollierProcesses(Control control, Chart chart, MollierControlSettings mollierControlSettings, List<List<UIMollierProcess>> systems,  List<UIMollierProcess> mollierProcesses, List<Tuple<MollierPoint, string>> created_points)
+        private static List<int> a;
+     /*   public static List<UIMollierProcess> AddMollierProcesses(Control control, Chart chart, MollierControlSettings mollierControlSettings, List<List<UIMollierProcess>> systems,  List<UIMollierProcess> mollierProcesses, List<Tuple<MollierPoint, string>> created_points)
         {
             if(mollierProcesses == null)
             {
@@ -47,8 +48,8 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
                 //creating series - processes points pattern
-                createSeries_ProcessesPoints(chart, start, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierAppearance_Start.Label);
-                createSeries_ProcessesPoints(chart, end, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierAppearance_End.Label);
+                createSeries_ProcessesPoints(chart, start, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierAppearance_Start?.Label);
+                createSeries_ProcessesPoints(chart, end, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierAppearance_End?.Label);
                 //add start and end point to the process series
                 int index;
                 series.ToolTip = Query.ToolTipText(start, end, chartType, Query.FullProcessName(uIMollierProcess));
@@ -327,7 +328,7 @@ namespace SAM.Core.Mollier.UI
                     }
                     if (is_space == true && !Query.Intersect(control, mollierControlSettings, mollierPoint_Moved, label, mollierProcesses))//we're creating because there is a space
                     {
-                        created_points.Add(new Tuple<MollierPoint, string>(mollierPoint_Moved, label));
+                        created_points.Add(new Tuple<MollierPoint, string>(new MollierPoint(mollierPoint_Moved.DryBulbTemperature - 1.4, mollierPoint_Moved.HumidityRatio, mollierPoint_Moved.Pressure), label));
                         continue;
                     }
                     else
@@ -478,6 +479,6 @@ namespace SAM.Core.Mollier.UI
                 CreateMovedLabel(chart, mollierControlSettings, X, Y, 0, 0, 0, 0, 0, 0, created_points[i].Item2, ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black);
             }
         }
-
+     */
     }
 }
