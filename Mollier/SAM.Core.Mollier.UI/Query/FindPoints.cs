@@ -66,8 +66,16 @@ namespace SAM.Core.Mollier.UI
                     double X_Temperature = mollierControlSettings.ChartType == ChartType.Mollier ? uIMollierPoint_Temperature.MollierPoint.HumidityRatio * 1000 : uIMollierPoint_Temperature.MollierPoint.DryBulbTemperature;
                     double Y_Temperature = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(uIMollierPoint_Temperature.MollierPoint) : uIMollierPoint_Temperature.MollierPoint.HumidityRatio;
                     series.Points.AddXY(X_Temperature, Y_Temperature);
-                    string name_Temperature = Query.ToolTipText(uIMollierPoint_Temperature.MollierPoint, mollierControlSettings.ChartType, "Temperature " + percent.ToString() + "%") + "\nUnmet hours: " + System.Math.Ceiling(percent / 100 * uIMollierPoints.Count).ToString();
-                    Modify.CreateMovedLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, -16 * Query.ScaleVector2D(control, mollierControlSettings).Y, 0, 0, name_Temperature, Mollier.ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, tag: "ColorPointLabel");
+                    string name_Temperature = ToolTipText(uIMollierPoint_Temperature.MollierPoint, mollierControlSettings.ChartType, "Temperature " + percent.ToString() + "%") + "\nUnmet hours: " + System.Math.Ceiling(percent / 100 * uIMollierPoints.Count).ToString();
+        
+                    if (mollierControlSettings.ChartType == ChartType.Mollier)
+                    {
+                        Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, name_Temperature, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
+                    }
+                    else
+                    {
+                        Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0,0.001 * -11 * Query.ScaleVector2D(control, mollierControlSettings).Y, name_Temperature, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
+                    }
                     break;
                 case "Enthalpy":
                     uIMollierPoints.Sort((x, y) => x.MollierPoint.Enthalpy.CompareTo(y.MollierPoint.Enthalpy));
@@ -76,8 +84,15 @@ namespace SAM.Core.Mollier.UI
                     double Y_Enthalpy = mollierControlSettings.ChartType == ChartType.Mollier ? Mollier.Query.DiagramTemperature(mollierPoint_Enthalpy) : mollierPoint_Enthalpy.HumidityRatio;
                     series.Points.AddXY(X_Enthalpy, Y_Enthalpy);
 
-                    string name_Enthalpy = Query.ToolTipText(mollierPoint_Enthalpy, mollierControlSettings.ChartType, "Enthalpy " + percent.ToString() + "%") + "\nUnmet hours: " + System.Math.Ceiling(percent / 100 * uIMollierPoints.Count).ToString();
-                    Modify.CreateMovedLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, -16 * Query.ScaleVector2D(control, mollierControlSettings).Y, 0, 0, name_Enthalpy, Mollier.ChartDataType.Undefined, ChartParameterType.Point, color: Color.Black, tag: "ColorPointLabel");
+                    string name_Enthalpy = ToolTipText(mollierPoint_Enthalpy, mollierControlSettings.ChartType, "Enthalpy " + percent.ToString() + "%") + "\nUnmet hours: " + System.Math.Ceiling(percent / 100 * uIMollierPoints.Count).ToString();
+                    if(mollierControlSettings.ChartType == ChartType.Mollier)
+                    {
+                        Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, name_Enthalpy, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
+                    }
+                    else
+                    {
+                        Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0.001 * -11 * Query.ScaleVector2D(control, mollierControlSettings).Y, name_Enthalpy, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
+                    }
                     break;
             }
         }

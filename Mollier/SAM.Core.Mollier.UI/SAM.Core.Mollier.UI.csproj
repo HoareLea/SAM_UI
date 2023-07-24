@@ -234,13 +234,10 @@
     <Compile Include="Modify\AddMollierZones.cs" />
     <Compile Include="Modify\AddMollierPoints.cs" />
     <Compile Include="Modify\AddLabel.cs" />
-    <Compile Include="Modify\CreateMovedLabel.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\FindPoints.cs" />
     <Compile Include="Query\Rectangle.cs" />
-    <Compile Include="Query\Intersect.cs" />
-    <Compile Include="Query\Overlaps.cs" />
     <Compile Include="Query\Angle.cs" />
     <Compile Include="Query\ConstantValueCurves.cs" />
     <Compile Include="Query\MollierPoint.cs" />
