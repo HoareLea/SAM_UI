@@ -225,38 +225,6 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisX.MinorTickMark.Interval = 0.1;
         }
       
-        public void ClearObjects()
-        {
-            mollierPoints?.Clear();
-            mollierProcesses?.Clear();
-            mollierZones?.Clear();
-            GenerateGraph();
-        }
-        public void GenerateGraph()
-        {
-            if (mollierControlSettings == null)
-            {
-                return;
-            }
-
-             
-            if (mollierControlSettings.ChartType == ChartType.Mollier)
-            {
-                setAxisGraph_Mollier(); 
-            }
-            else if (mollierControlSettings.ChartType == ChartType.Psychrometric)
-            {
-                setAxisGraph_Psychrometric();
-            }
-
-            Modify.AddLinesSeries(MollierChart, mollierControlSettings);
-            Modify.AddMollierPoints(MollierChart, mollierPoints, MollierControlSettings);  
-            Modify.AddMollierZones(MollierChart, mollierZones, MollierControlSettings);
-            Modify.AddDivisionArea(MollierChart, mollierPoints, mollierControlSettings);
-            //mollierProcesses = Modify.AddMollierProcesses(this, MollierChart, mollierControlSettings, systems, mollierProcesses, created_points);
-            mollierProcesses = Modify.AddMollierProcesses(MollierChart, this, systems, mollierProcesses, mollierControlSettings);
-            Query.FindPoints(this, MollierChart, mollierControlSettings, mollierPoints);
-        }
         private void setAxisGraph_Mollier()
         {
 
@@ -426,6 +394,40 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
 
+        public bool ClearObjects()
+        {
+            mollierPoints?.Clear();
+            mollierProcesses?.Clear();
+            mollierZones?.Clear();
+            systems?.Clear();
+            GenerateGraph();
+            return true;
+        }            
+        public void GenerateGraph()
+        {
+            if (mollierControlSettings == null)
+            {
+                return;
+            }
+
+             
+            if (mollierControlSettings.ChartType == ChartType.Mollier)
+            {
+                setAxisGraph_Mollier(); 
+            }
+            else if (mollierControlSettings.ChartType == ChartType.Psychrometric)
+            {
+                setAxisGraph_Psychrometric();
+            }
+
+            Modify.AddLinesSeries(MollierChart, mollierControlSettings);
+            Modify.AddMollierPoints(MollierChart, mollierPoints, MollierControlSettings);  
+            Modify.AddMollierZones(MollierChart, mollierZones, MollierControlSettings);
+            Modify.AddDivisionArea(MollierChart, mollierPoints, mollierControlSettings);
+            //mollierProcesses = Modify.AddMollierProcesses(this, MollierChart, mollierControlSettings, systems, mollierProcesses, created_points);
+            mollierProcesses = Modify.AddMollierProcesses(MollierChart, this, systems, mollierProcesses, mollierControlSettings);
+            Query.FindPoints(this, MollierChart, mollierControlSettings, mollierPoints);
+        }
         public List<UIMollierPoint> AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
         {
             if (mollierPoints == null)
@@ -538,13 +540,6 @@ namespace SAM.Core.Mollier.UI.Controls
             return true;
         }
 
-        public bool Clear()
-        {
-            mollierPoints?.Clear();
-            mollierProcesses?.Clear();
-            GenerateGraph();
-            return true;
-        }
         public bool Save(ChartExportType chartExportType, PageSize pageSize = PageSize.A4, PageOrientation pageOrientation = PageOrientation.Landscape, string path = null)
         {
             string pageType = string.Format("{0}_{1}", pageSize, pageOrientation);

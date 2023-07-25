@@ -152,7 +152,7 @@ namespace SAM.Core.Mollier.UI
         
         public bool Clear()
         {
-           return MollierControl_Main.Clear();
+            return MollierControl_Main.ClearObjects();       
         }
 
         public void SaveAs(string path)

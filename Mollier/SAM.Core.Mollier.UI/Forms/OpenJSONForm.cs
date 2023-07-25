@@ -32,7 +32,7 @@ namespace SAM.Core.Mollier.UI.Forms
 
         private void OpenJSONForm_Load(object sender, EventArgs e)
         {
-
+            
         }
     }
 }
