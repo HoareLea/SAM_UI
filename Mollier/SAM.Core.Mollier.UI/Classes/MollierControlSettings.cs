@@ -66,7 +66,7 @@ namespace SAM.Core.Mollier.UI
                 Temperature_Max = mollierControlSettings.Temperature_Max;
                 Temperature_Min = mollierControlSettings.Temperature_Min;
                 Temperature_Interval = mollierControlSettings.Temperature_Interval;
-                P_w_Interval = mollierControlSettings.P_w_Interval;
+                PartialVapourPressure = mollierControlSettings.PartialVapourPressure;
                 Density_line = mollierControlSettings.Density_line;
                 Enthalpy_line = mollierControlSettings.Enthalpy_line;
                 SpecificVolume_line = mollierControlSettings.SpecificVolume_line;
@@ -187,9 +187,9 @@ namespace SAM.Core.Mollier.UI
             {
                 Temperature_Interval = jObject.Value<double>("Temperature_Interval");
             }
-            if (jObject.ContainsKey("P_w_Interval"))
+            if (jObject.ContainsKey("PartialVapourPressure_Interval"))
             {
-                P_w_Interval = jObject.Value<double>("P_w_Interval");
+                PartialVapourPressure = jObject.Value<double>("PartialVapourPressure_Interval");
             }
             if (jObject.ContainsKey("Density_line"))
             {
@@ -328,9 +328,9 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("Temperature_Interval", Temperature_Interval);
             }
-            if (!double.IsNaN(P_w_Interval))
+            if (!double.IsNaN(PartialVapourPressure))
             {
-                result.Add("P_w_Interval", P_w_Interval);
+                result.Add("PartialVapourPressure_Interval", PartialVapourPressure);
             }
             result.Add("Density_line", Density_line);
             result.Add("Enthalpy_line", Enthalpy_line);

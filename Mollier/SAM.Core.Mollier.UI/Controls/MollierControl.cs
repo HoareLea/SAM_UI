@@ -112,7 +112,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisY.LabelStyle.Font = area.AxisY.LabelStyle.Font;
             areaAxisAxisY.Minimum = System.Math.Round(P_w_Min, 4);
             areaAxisAxisY.Maximum = System.Math.Round(P_w_Max, 4);
-            areaAxisAxisY.Interval = mollierControlSettings.P_w_Interval;
+            areaAxisAxisY.Interval = mollierControlSettings.PartialVapourPressure;
             areaAxisAxisY.Title = "Partial Vapour Pressure pW [kPa]";
 
             areaAxis.AxisX2.Title = "";
@@ -205,7 +205,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisX.Minimum = System.Math.Round(P_w_Min, 2);
             areaAxisAxisX.Maximum = System.Math.Round(P_w_Max, 2);
             areaAxisAxisX.LabelStyle.Font = area.AxisX.LabelStyle.Font;
-            areaAxisAxisX.Interval = mollierControlSettings.P_w_Interval;
+            areaAxisAxisX.Interval = mollierControlSettings.PartialVapourPressure;
 
             areaAxis.AxisY.Title = "";
 
