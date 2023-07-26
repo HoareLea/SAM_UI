@@ -835,19 +835,29 @@ namespace SAM.Core.Mollier.UI
             Reset();
         }
 
-        private void Button_Test_Click(object sender, EventArgs e)
+        private void Button_Epsilon_Click(object sender, EventArgs e)
         {
-            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected_New;
+            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected_Epsilon;
         }
 
-        private void MollierControl_Main_MollierPointSelected_New(object sender, MollierPointSelectedEventArgs e)
+        private void Button_SensibleHeatRatio_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected_SensibleHeatRatio;
+        }
+
+        private void MollierControl_Main_MollierPointSelected_Epsilon(object sender, MollierPointSelectedEventArgs e)
         {
             AddProcess_ByEpsilonAndHumidityRatioDifference(e);
         }
 
+        private void MollierControl_Main_MollierPointSelected_SensibleHeatRatio(object sender, MollierPointSelectedEventArgs e)
+        {
+            AddProcess_BySensibleHeatRatio(e);
+        }
+
         private void AddProcess_BySensibleHeatRatio(MollierPointSelectedEventArgs e)
         {
-            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_New;
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_Epsilon;
 
             MollierPoint mollierPoint = e.MollierPoint;
             if (mollierPoint == null)
@@ -891,7 +901,7 @@ namespace SAM.Core.Mollier.UI
 
         private void AddProcess_ByEpsilonAndEnthalpyDifference(MollierPointSelectedEventArgs e)
         {
-            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_New;
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_Epsilon;
 
             MollierPoint mollierPoint = e.MollierPoint;
             if (mollierPoint == null)
@@ -946,7 +956,7 @@ namespace SAM.Core.Mollier.UI
 
         private void AddProcess_ByEpsilonAndHumidityRatioDifference(MollierPointSelectedEventArgs e)
         {
-            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_New;
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_Epsilon;
 
             MollierPoint mollierPoint = e.MollierPoint;
             if (mollierPoint == null)
@@ -997,11 +1007,6 @@ namespace SAM.Core.Mollier.UI
             UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
 
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
-        }
-
-        private void MollierControl_Main_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }
