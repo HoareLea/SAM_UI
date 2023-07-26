@@ -24,7 +24,12 @@ namespace SAM.Core.Mollier.UI
             Temperature_Max = mollierControlSettings.Temperature_Max;
             Temperature_Min = mollierControlSettings.Temperature_Min;
             Temperature_Interval = mollierControlSettings.Temperature_Interval;
-            P_w_Interval = mollierControlSettings.P_w_Interval;
+            PartialVapourPressure = mollierControlSettings.PartialVapourPressure;
+            Density_Interval = mollierControlSettings.Density_Interval;
+            Enthalpy_Interval = mollierControlSettings.Enthalpy_Interval;
+            SpecificVolume_Interval = mollierControlSettings.SpecificVolume_Interval;
+            WetBulbTemperature_Interval = mollierControlSettings.WetBulbTemperature_Interval;
+
             GradientPoint = mollierControlSettings.GradientPoint;
             DisableUnits = mollierControlSettings.DisableUnits;
             DisableLabels = mollierControlSettings.DisableLabels;
@@ -57,7 +62,6 @@ namespace SAM.Core.Mollier.UI
                 }
             }
         }
-
 
         private void Button_Cancel_Click(object sender, EventArgs e)
         {
@@ -229,26 +233,109 @@ namespace SAM.Core.Mollier.UI
                 TemperatureIntervalTextbox.Text = value.ToString();
             }
         }
-        public double P_w_Interval
+        public double PartialVapourPressure
         {
             get
             {
-                if (!Core.Query.TryConvert(P_w_IntervalTextBox.Text, out double P_w_Interval))
+                if (!Core.Query.TryConvert(PartialVapourPressure_IntervalTextBox.Text, out double PartialVapourPressure))
                 {
                     return double.NaN;
                 }
-                if (P_w_Interval <= 0)
+                if (PartialVapourPressure <= 0)
                 {
                     MessageBox.Show("Wrong range\n Interval has to be positive!");
                     return double.NaN;
                 }
-                return P_w_Interval;
+                return PartialVapourPressure;
             }
             set
             {
-                P_w_IntervalTextBox.Text = value.ToString();
+                PartialVapourPressure_IntervalTextBox.Text = value.ToString();
             }
         }
+       
+        public double Density_Interval
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(DensityIntervalTextBox.Text, out double DensityInterval))
+                {
+                    return double.NaN;
+                }
+                if (DensityInterval <= 0)
+                {
+                    MessageBox.Show("Wrong range\n Interval has to be positive!");
+                    return double.NaN;
+                }
+                return DensityInterval;
+            }
+            set
+            {
+                DensityIntervalTextBox.Text = value.ToString();
+            }
+        }
+        public double Enthalpy_Interval
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(EnthalpyIntervalTextBox.Text, out double EnthalpyInterval))
+                {
+                    return double.NaN;
+                }
+                if (EnthalpyInterval <= 0)
+                {
+                    MessageBox.Show("Wrong range\n Interval has to be positive!");
+                    return double.NaN;
+                }
+                return EnthalpyInterval;
+            }
+            set
+            {
+                EnthalpyIntervalTextBox.Text = value.ToString();
+            }
+        }
+        public double SpecificVolume_Interval
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(SpecificVolumeIntervalTextBox.Text, out double SpecificVolumeInterval))
+                {
+                    return double.NaN;
+                }
+                if (SpecificVolumeInterval <= 0)
+                {
+                    MessageBox.Show("Wrong range\n Interval has to be positive!");
+                    return double.NaN;
+                }
+                return SpecificVolumeInterval;
+            }
+            set
+            {
+                SpecificVolumeIntervalTextBox.Text = value.ToString();
+            }
+        }
+        public double WetBulbTemperature_Interval
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(WetBulbTemperatureIntervalTextBox.Text, out double WetBulbTemperatureInterval))
+                {
+                    return double.NaN;
+                }
+                if (WetBulbTemperatureInterval <= 0)
+                {
+                    MessageBox.Show("Wrong range\n Interval has to be positive!");
+                    return double.NaN;
+                }
+                return WetBulbTemperatureInterval;
+            }
+            set
+            {
+                WetBulbTemperatureIntervalTextBox.Text = value.ToString();
+            }
+        }
+
+
         public bool GradientPoint
         {
             get
@@ -297,8 +384,16 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings.Temperature_Max = Temperature_Max;
             if(Temperature_Interval.ToString() != double.NaN.ToString())
                 mollierControlSettings.Temperature_Interval = Temperature_Interval;
-            if (P_w_Interval.ToString() != double.NaN.ToString())
-                mollierControlSettings.P_w_Interval = P_w_Interval;
+            if (PartialVapourPressure.ToString() != double.NaN.ToString())
+                mollierControlSettings.PartialVapourPressure = PartialVapourPressure;
+            if(Density_Interval.ToString() != double.NaN.ToString())
+                mollierControlSettings.Density_Interval = Density_Interval;
+            if (Enthalpy_Interval.ToString() != double.NaN.ToString())
+                mollierControlSettings.Enthalpy_Interval = Enthalpy_Interval;
+            if (SpecificVolume_Interval.ToString() != double.NaN.ToString())
+                mollierControlSettings.SpecificVolume_Interval = SpecificVolume_Interval;
+            if (WetBulbTemperature_Interval.ToString() != double.NaN.ToString())
+                mollierControlSettings.WetBulbTemperature_Interval = WetBulbTemperature_Interval;
 
             mollierControlSettings.DisableUnits = DisableUnits;
             mollierControlSettings.DisableLabels = DisableLabels;
@@ -418,9 +513,5 @@ namespace SAM.Core.Mollier.UI
             toolTip.Active = true;
         }
 
-        private void label9_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

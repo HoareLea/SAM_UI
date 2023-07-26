@@ -8,14 +8,23 @@ namespace SAM.Core.Mollier.UI
         {
             List<List<UIMollierProcess>> result = new List<List<UIMollierProcess>>();
             List<List<int>> resultID = new List<List<int>>();//list 0 3 2 4 means that there should be processes in sequence are indexes 0 3 2 4 in mollierprocesses
+          
             List<int> nextProcessID = new List<int>();
+            List<bool> visited = new List<bool>();
+            List<int> previousProcessCount = new List<int>();
 
             int none = -1; 
+            for (int i = 0; i < mollierProcesses.Count; i++)
+            {
+                nextProcessID.Add(none);
+                visited.Add(false);
+                previousProcessCount.Add(0);
+            }
+
+
             for(int i=0; i<mollierProcesses.Count; i++)
             {
                 MollierPoint end = mollierProcesses[i].End;
-                nextProcessID.Add(none);
-
                 if (end == null) continue;
 
                 for (int j = 0; j < mollierProcesses.Count; j++)
@@ -23,86 +32,69 @@ namespace SAM.Core.Mollier.UI
                     MollierPoint start = mollierProcesses[j].Start;
                     if (start == null || i == j) continue;
 
-                    if(start == end)
+                    if(start.DryBulbTemperature == end.DryBulbTemperature && 
+                        System.Math.Round(start.HumidityRatio, 5) == System.Math.Round(end.HumidityRatio, 5)) // do zminy zeby byla jakas odleglosc okreslona
                     {
-                        
+                        nextProcessID[i] = j;
+                        previousProcessCount[j]++;
+                        break;  
                     }
                 }
             }
 
+            List<int> startingProcessesID = new List<int>();
 
-            for (int i=0; i<mollierProcesses.Count; i++)
+            for(int i=0; i<mollierProcesses.Count; i++)
             {
-                //if there is no end that has the same value as my start then my start is start of the new process
-                MollierPoint start = mollierProcesses[i].Start;
-                if(start == null)
+                if (previousProcessCount[i] == 0)
                 {
-                    continue;
-                }
-                int count = 0;
-                for(int j=0; j<mollierProcesses.Count; j++)
-                {
-                    MollierPoint end = mollierProcesses[j].End;
-                    if (i == j || end == null)
-                    {
-                        continue;
-                    }
-                    if(System.Math.Round(start.HumidityRatio,6) == System.Math.Round(end.HumidityRatio, 6) && System.Math.Round(start.DryBulbTemperature, 2) == System.Math.Round(end.DryBulbTemperature, 2))
-                    {
-                        count++;
-                        break;
-                    }   
-                }
-                if(count != 0)
-                {
-                    continue;
-                }
-                resultID.Add(new List<int>());
-                result.Add(new List<UIMollierProcess>());
-                resultID[result.Count - 1].Add(i);
-            }
-            List<int> sonID = new List<int>();//son is the process which is after me
-            for(int i=0; i < mollierProcesses.Count; i++)
-            {
-                MollierPoint end = mollierProcesses[i].End;
-                if (mollierProcesses[i].MollierProcess is UndefinedProcess || end == null)
-                {
-                    sonID.Add(-1);
-                    continue;
-                }
-                int count = 0;
-                for(int j=0; j < mollierProcesses.Count; j++)
-                {
-                    MollierPoint start = mollierProcesses[j].Start;
-                    if(i == j || start == null)
-                    {
-                        continue;
-                    }
-                    if (System.Math.Round(start.HumidityRatio, 6) == System.Math.Round(end.HumidityRatio, 6) && System.Math.Round(start.DryBulbTemperature, 2) == System.Math.Round(end.DryBulbTemperature, 2))
-                    {
-                        sonID.Add(j);
-                        count++;
-                        break;
-                    }
-                }
-                if (count == 0)
-                {
-                    sonID.Add(-1);//it means that i dont have any sons
+                    startingProcessesID.Add(i);
                 }
             }
 
-            for(int i=0; i<result.Count; i++)
+            // wrap to one method those 2 below
+
+            for(int i=0; i< startingProcessesID.Count; i++)
             {
-                List<int> system = resultID[i];
-                result[i].Add(mollierProcesses[system[0]]);
-                int ID = sonID[system[0]];
-                while(ID != -1)
+                int startingProcessID = startingProcessesID[i];
+                if (visited[startingProcessID] == true) continue;
+
+                List<UIMollierProcess> newProcessSystem = new List<UIMollierProcess>();
+                int currentProcessID = startingProcessID;
+
+                while (visited[currentProcessID] == false)
                 {
-                    result[i].Add(mollierProcesses[ID]);
-                    ID = sonID[ID];
+                    newProcessSystem.Add(mollierProcesses[currentProcessID]);
+                    visited[currentProcessID] = true;
+
+                    if (nextProcessID[currentProcessID] == none) break;
+                    currentProcessID = nextProcessID[currentProcessID];
                 }
+                result.Add(newProcessSystem);
             }
+
+
+            for(int i=0; i<mollierProcesses.Count; i++)
+            {
+                if (visited[i] == true) continue;
+
+                List<UIMollierProcess> newProcessSystem = new List<UIMollierProcess>();
+                int currentProcessID = i;
+
+                while (visited[currentProcessID] == false)
+                {
+                    newProcessSystem.Add(mollierProcesses[currentProcessID]);
+                    visited[currentProcessID] = true;
+
+                    if (nextProcessID[currentProcessID] == none) break;
+                    currentProcessID = nextProcessID[currentProcessID];
+                }
+                result.Add(newProcessSystem);
+            }
+
             return result;
-        }    
+
+        }
+
     }
 }

@@ -203,7 +203,7 @@ namespace SAM.Core.Mollier.UI
             }
             else if (!mollierControlSettings.DisableUnits)
             {
-                series.Points[count - startIndex_Temp - i].Label = value.ToString();
+                series.Points[count - startIndex_Temp - i].Label = value.ToString() + "%";
             }
             series.Points[count - startIndex_Temp - i].LabelAngle = mollierControlSettings.ChartType == ChartType.Mollier ? - angle : angle - 180;
             series.Points[count - startIndex_Temp - i].LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Unit, ChartDataType.RelativeHumidity);

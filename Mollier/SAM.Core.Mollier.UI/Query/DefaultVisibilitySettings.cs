@@ -73,6 +73,10 @@
 
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
+            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.LightBlue));
+            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.LightBlue));
+
+
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
 
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.CoolingProcess, System.Drawing.Color.Blue));
@@ -108,6 +112,10 @@
 
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.Gray));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.Gray));
+
+
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
 
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.CoolingProcess, System.Drawing.Color.Blue));
@@ -142,6 +150,10 @@
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DryBulbTemperature, System.Drawing.Color.LightBlue));
+
+
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.CoolingProcess, System.Drawing.Color.Blue));

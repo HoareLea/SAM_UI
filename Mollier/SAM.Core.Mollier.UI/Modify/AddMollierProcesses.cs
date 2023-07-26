@@ -277,39 +277,50 @@ namespace SAM.Core.Mollier.UI
         {
             List<UIMollierProcess> labeledMollierProcesses = new List<UIMollierProcess>();
 
-            char name = 'A';
             for (int i = 0; i < systems.Count; i++)
             {
+                char name = 'A';
                 for (int j = 0; j < systems[i].Count; j++)
                 {
                     UIMollierProcess UI_MollierProcess = systems[i][j];
                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
-                    if (UI_MollierProcess.UIMollierAppearance_End?.Label == "SUP")
+
+                    // Set default values whether they're not set
+                    if(UI_MollierProcess.UIMollierAppearance_Start == null)
                     {
-                        UI_MollierProcess.UIMollierAppearance_End.Label = null;
+                        UI_MollierProcess.UIMollierAppearance_Start = new UIMollierAppearance(Color.Empty, null);
+                    }
+                    if(UI_MollierProcess.UIMollierAppearance_End == null)
+                    {
+                        UI_MollierProcess.UIMollierAppearance_End = new UIMollierAppearance(Color.Empty, null);
                     }
 
-                    if (UI_MollierProcess.UIMollierAppearance_Start.Label == null)
-                    {
-                        UI_MollierProcess.UIMollierAppearance_Start.Label = name + "1";
-                    }
-                    else if (UI_MollierProcess.UIMollierAppearance_Start.Label == null && systems[i].Count > 1 &&  j == 0)
+
+                    if (systems[i].Count > 1 &&  j == 0)
                     {
                         UI_MollierProcess.UIMollierAppearance_Start.Label = "OSA";
                     }
+                    else if (UI_MollierProcess.UIMollierAppearance_Start.Label == null)
+                    {
+                        UI_MollierProcess.UIMollierAppearance_Start.Label = name + "1";
+                    }
 
-                    if (UI_MollierProcess.UIMollierAppearance_End.Label == null && systems[i].Count > 1 && j == systems[i].Count - 2 && systems[i][j + 1].MollierProcess is UndefinedProcess)
+
+                    if (systems[i].Count > 1 && j == systems[i].Count - 2 && systems[i][j + 1].MollierProcess is UndefinedProcess)
                     {
                         UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
                     }
-                    else if (UI_MollierProcess.UIMollierAppearance_End.Label == null && systems[i].Count > 1 && j == systems[i].Count - 1)
+                    else if (systems[i].Count > 1 && j == systems[i].Count - 1)
                     {
                         UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
+                    }
+                    else if (UI_MollierProcess.UIMollierAppearance_End.Label == null)
+                    {
+                        UI_MollierProcess.UIMollierAppearance_End.Label = name + "2";
                     }
 
                     UI_MollierProcess.UIMollierAppearance.Label = UI_MollierProcess.UIMollierAppearance.Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.UIMollierAppearance.Label;
-                    UI_MollierProcess.UIMollierAppearance_End.Label = UI_MollierProcess.UIMollierAppearance_End.Label == null ? name + "2" : UI_MollierProcess.UIMollierAppearance_End.Label;
-
+                    
                     name++;
                     labeledMollierProcesses.Add(UI_MollierProcess);
                 }
@@ -326,7 +337,7 @@ namespace SAM.Core.Mollier.UI
 
             double offsetAngle = 180;
 
-            for(double angle=0; angle < 360; angle += offsetAngle)
+            for (double angle=0; angle < 360; angle += offsetAngle)
             {
                 double radians = ConvertDegreesToRadians(angle);
                 double offsetX = distanceFromCenter * System.Math.Sin(radians) * scaleVector.X * xDifference;
@@ -408,16 +419,15 @@ namespace SAM.Core.Mollier.UI
             double centerHeight = box.Height / 2;
             double centerWidth = box.Width / 2;
 
-            // TODO: uprościć sin, cos z vectora
-
             double angle = Vector2D.WorldY.Angle(offset);
+            double signX = offset.X > 0 ? 1 : -1;
 
-            double centerX = box.GetCentroid().X + offset.X + centerWidth * System.Math.Sin(angle);
+            double centerX = box.GetCentroid().X + offset.X + signX * centerWidth * System.Math.Sin(angle);
             double centerY = box.GetCentroid().Y + offset.Y + centerHeight * System.Math.Cos(angle);
 
             return createBoxByCenter(new Point2D(centerX, centerY), box.Width, box.Height);
-
         }
+        
         public static Dictionary<BoundingBox2D, Vector2D> FindSolution(IEnumerable<BoundingBox2D> boxes, List<Vector2D> offsets, double tolerance = Tolerance.Distance, List<Segment2D> segments = null)
         {
             Dictionary<BoundingBox2D, BoundingBox2D> shiftedBoxes = new Dictionary<BoundingBox2D, BoundingBox2D>();

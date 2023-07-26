@@ -13,7 +13,8 @@ namespace SAM.Core.Mollier.UI
         public double Temperature_Max { get; set; } = Default.DryBulbTemperature_Max;
         public double Temperature_Min { get; set; } = Default.DryBulbTemperature_Min;
         public double Temperature_Interval { get; set; } = Default.DryBulbTemperature_Interval;
-        public double P_w_Interval { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
+        public double PartialVapourPressure { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
+       
         public bool Density_line { get; set; } = true;
         public bool Enthalpy_line { get; set; } = true;
         public bool SpecificVolume_line { get; set; } = true;
@@ -29,18 +30,21 @@ namespace SAM.Core.Mollier.UI
         public bool DivisionArea { get; set; } = false;
         public bool DivisionAreaLabels { get; set; } = true;
 
-        public double Density_Min { get; set; } = 0.45;
-        public double Density_Max { get; set; } = 1.41;
-        public double Density_Interval { get; set; } = 0.02;
+        public double Density_Min { get; set; } = Default.Density_Min;
+        public double Density_Max { get; set; } = Default.Density_Max;
+        public double Density_Interval { get; set; } = Default.Density_Interval;
 
         public double Enthalpy_Min { get; set; } = -20000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
         public double Enthalpy_Max { get; set; } = 140000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
         public double Enthalpy_Interval { get; set; } = 1000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
 
-        public double SpecificVolume_Min { get; set; } = 0.65;
-        public double SpecificVolume_Max { get; set; } = 1.92;
-        public double SpecificVolume_Interval { get; set; } = 0.05;
+        public double SpecificVolume_Min { get; set; } = Default.SpecificVolume_Min;
+        public double SpecificVolume_Max { get; set; } = Default.SpecificVolume_Max;
+        public double SpecificVolume_Interval { get; set; } = Default.SpecificVolume_Interval;
 
+        public double WetBulbTemperature_Min { get; set; } = Default.WetBulbTemperature_Min;
+        public double WetBulbTemperature_Max { get; set; } = Default.WetBulbTemperature_Max;
+        public double WetBulbTemperature_Interval { get; set; } = Default.WetBulbTemperature_Interval;
         public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
@@ -97,6 +101,10 @@ namespace SAM.Core.Mollier.UI
                 SpecificVolume_Max = mollierControlSettings.SpecificVolume_Max;
                 SpecificVolume_Min = mollierControlSettings.SpecificVolume_Min;
                 SpecificVolume_Interval = mollierControlSettings.SpecificVolume_Interval;
+
+                WetBulbTemperature_Min = mollierControlSettings.WetBulbTemperature_Min;
+                WetBulbTemperature_Max = mollierControlSettings.WetBulbTemperature_Max;
+                WetBulbTemperature_Interval = mollierControlSettings.WetBulbTemperature_Interval;
             }
         }
 
