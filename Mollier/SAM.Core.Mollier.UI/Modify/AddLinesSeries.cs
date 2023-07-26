@@ -47,8 +47,9 @@ namespace SAM.Core.Mollier.UI
                     AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -1.2 : 4.5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 3.2 : -0.0018;
+                //Label location 
+                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -7.2 : 4.5;
+                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 18.2 : -0.0018;
 
                 Series series_Temp = seriesList[seriesList.Count / 2];
 
@@ -64,8 +65,8 @@ namespace SAM.Core.Mollier.UI
                     AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -1.25 : 4.5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 3.2 : -0.0018;
+                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -8.5 : 24.5;
+                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 21.2 : 0.0035;
 
                 Series series_Temp = seriesList[seriesList.Count / 2];
 
@@ -81,8 +82,8 @@ namespace SAM.Core.Mollier.UI
                     Modify.AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -3 : 5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 1 : -0.01;
+                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -12 : 5;
+                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 5 : -0.01;
 
                 Series series_Temp = seriesList[seriesList.Count / 2];
 

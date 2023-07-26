@@ -72,8 +72,8 @@ namespace SAM.Core.Mollier.UI
                     break;
 
                 case ChartDataType.Enthalpy:
-                    offset_X = chartType == ChartType.Mollier ? 0.3 : 0.2;
-                    offset_Y = chartType == ChartType.Mollier ? -0.2 : -0.0002;
+                    offset_X = chartType == ChartType.Mollier ? 0.3 : -0.8;
+                    offset_Y = chartType == ChartType.Mollier ? -2.2 : -0.0004;
                     value /= 1000;
                     if (value % 10 != 0)
                     {
