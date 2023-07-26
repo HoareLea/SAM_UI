@@ -12,6 +12,7 @@
             VisibilitySettings result = new VisibilitySettings();
 
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, Default.RelativeHumidity_Color));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.RelativeHumidity, Default.RelativeHumidity_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
            
@@ -51,6 +52,7 @@
 
 
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
+            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
 
@@ -90,6 +92,7 @@
 
 
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
 
@@ -128,6 +131,7 @@
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.UndefinedProcess, System.Drawing.Color.Gray));
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Black));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Black));
 
