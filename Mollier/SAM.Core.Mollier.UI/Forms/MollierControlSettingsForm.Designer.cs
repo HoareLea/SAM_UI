@@ -275,9 +275,9 @@ namespace SAM.Core.Mollier.UI
             this.PartialVapourPressureUnit.AutoSize = true;
             this.PartialVapourPressureUnit.Location = new System.Drawing.Point(372, 396);
             this.PartialVapourPressureUnit.Name = "PartialVapourPressureUnit";
-            this.PartialVapourPressureUnit.Size = new System.Drawing.Size(24, 16);
+            this.PartialVapourPressureUnit.Size = new System.Drawing.Size(31, 16);
             this.PartialVapourPressureUnit.TabIndex = 58;
-            this.PartialVapourPressureUnit.Text = "Pa";
+            this.PartialVapourPressureUnit.Text = "kPa";
             // 
             // SpecificVolumeIntervalLabel
             // 
@@ -378,7 +378,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.HumidityRatioIntervalLabel.AutoSize = true;
             this.HumidityRatioIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.HumidityRatioIntervalLabel.Location = new System.Drawing.Point(425, 161);
+            this.HumidityRatioIntervalLabel.Location = new System.Drawing.Point(422, 161);
             this.HumidityRatioIntervalLabel.Name = "HumidityRatioIntervalLabel";
             this.HumidityRatioIntervalLabel.Size = new System.Drawing.Size(50, 16);
             this.HumidityRatioIntervalLabel.TabIndex = 47;
@@ -408,7 +408,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.HumidityRatioAxisLabel.AutoSize = true;
             this.HumidityRatioAxisLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.HumidityRatioAxisLabel.Location = new System.Drawing.Point(257, 136);
+            this.HumidityRatioAxisLabel.Location = new System.Drawing.Point(257, 128);
             this.HumidityRatioAxisLabel.Name = "HumidityRatioAxisLabel";
             this.HumidityRatioAxisLabel.Size = new System.Drawing.Size(119, 16);
             this.HumidityRatioAxisLabel.TabIndex = 44;
@@ -455,7 +455,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.TemperatureMaximumValueLabel.AutoSize = true;
             this.TemperatureMaximumValueLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.TemperatureMaximumValueLabel.Location = new System.Drawing.Point(264, 49);
+            this.TemperatureMaximumValueLabel.Location = new System.Drawing.Point(257, 49);
             this.TemperatureMaximumValueLabel.Name = "TemperatureMaximumValueLabel";
             this.TemperatureMaximumValueLabel.Size = new System.Drawing.Size(102, 16);
             this.TemperatureMaximumValueLabel.TabIndex = 39;
@@ -474,7 +474,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.TemperatureMinimumValueLabel.AutoSize = true;
             this.TemperatureMinimumValueLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.TemperatureMinimumValueLabel.Location = new System.Drawing.Point(147, 49);
+            this.TemperatureMinimumValueLabel.Location = new System.Drawing.Point(145, 49);
             this.TemperatureMinimumValueLabel.Name = "TemperatureMinimumValueLabel";
             this.TemperatureMinimumValueLabel.Size = new System.Drawing.Size(98, 16);
             this.TemperatureMinimumValueLabel.TabIndex = 37;
@@ -484,7 +484,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.TemperatureAxisLabel.AutoSize = true;
             this.TemperatureAxisLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.TemperatureAxisLabel.Location = new System.Drawing.Point(257, 28);
+            this.TemperatureAxisLabel.Location = new System.Drawing.Point(256, 23);
             this.TemperatureAxisLabel.Name = "TemperatureAxisLabel";
             this.TemperatureAxisLabel.Size = new System.Drawing.Size(113, 16);
             this.TemperatureAxisLabel.TabIndex = 36;

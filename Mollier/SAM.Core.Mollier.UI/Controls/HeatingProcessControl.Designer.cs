@@ -45,9 +45,9 @@
             "Dry Bulb Temperature",
             "Enthalpy Difference",
             "Dry Bulb Temperature Difference"});
-            this.processCalculateType_ComboBox.Location = new System.Drawing.Point(207, 23);
+            this.processCalculateType_ComboBox.Location = new System.Drawing.Point(223, 34);
             this.processCalculateType_ComboBox.Name = "processCalculateType_ComboBox";
-            this.processCalculateType_ComboBox.Size = new System.Drawing.Size(266, 24);
+            this.processCalculateType_ComboBox.Size = new System.Drawing.Size(200, 24);
             this.processCalculateType_ComboBox.TabIndex = 0;
             this.processCalculateType_ComboBox.SelectedIndexChanged += new System.EventHandler(this.processCalculateType_ComboBox_SelectedIndexChanged);
             // 
@@ -55,7 +55,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label1.Location = new System.Drawing.Point(282, 0);
+            this.label1.Location = new System.Drawing.Point(234, 11);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(133, 20);
             this.label1.TabIndex = 4;
@@ -65,7 +65,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.label2.Location = new System.Drawing.Point(25, 0);
+            this.label2.Location = new System.Drawing.Point(3, 27);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(155, 20);
             this.label2.TabIndex = 7;
@@ -76,14 +76,14 @@
             this.flowLayoutPanel_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.flowLayoutPanel_Main.Location = new System.Drawing.Point(207, 53);
+            this.flowLayoutPanel_Main.Location = new System.Drawing.Point(223, 76);
             this.flowLayoutPanel_Main.Name = "flowLayoutPanel_Main";
-            this.flowLayoutPanel_Main.Size = new System.Drawing.Size(266, 177);
+            this.flowLayoutPanel_Main.Size = new System.Drawing.Size(296, 253);
             this.flowLayoutPanel_Main.TabIndex = 8;
             // 
             // MollierPointControl_Start
             // 
-            this.MollierPointControl_Start.Location = new System.Drawing.Point(3, 23);
+            this.MollierPointControl_Start.Location = new System.Drawing.Point(3, 50);
             this.MollierPointControl_Start.Name = "MollierPointControl_Start";
             this.MollierPointControl_Start.Pressure = double.NaN;
             this.MollierPointControl_Start.PressureEnabled = true;
@@ -101,7 +101,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.processCalculateType_ComboBox);
             this.Name = "HeatingProcessControl";
-            this.Size = new System.Drawing.Size(484, 243);
+            this.Size = new System.Drawing.Size(611, 356);
             this.ResumeLayout(false);
             this.PerformLayout();
 
