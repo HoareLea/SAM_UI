@@ -424,6 +424,11 @@ namespace SAM.Core.Mollier.UI.Controls
             //mollierProcesses = Modify.AddMollierProcesses(this, MollierChart, mollierControlSettings, systems, mollierProcesses, created_points);
             mollierProcesses = Modify.AddMollierProcesses(MollierChart, this, systems, mollierProcesses, mollierControlSettings);
             Query.FindPoints(this, MollierChart, mollierControlSettings, mollierPoints);
+
+            foreach(ChartArea chartArea in MollierChart.ChartAreas)
+            {
+                chartArea.Position = new ElementPosition(-2, chartArea.Position.Y, chartArea.Position.Width, chartArea.Position.Height);
+            }
         }
         public List<UIMollierPoint> AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
         {
