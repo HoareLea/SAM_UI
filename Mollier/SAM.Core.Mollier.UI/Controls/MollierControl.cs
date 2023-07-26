@@ -427,7 +427,15 @@ namespace SAM.Core.Mollier.UI.Controls
 
             foreach(ChartArea chartArea in MollierChart.ChartAreas)
             {
-                chartArea.Position = new ElementPosition(-2, chartArea.Position.Y, chartArea.Position.Width, chartArea.Position.Height);
+                if(mollierControlSettings.ChartType == ChartType.Mollier)
+                {
+                    chartArea.Position = new ElementPosition(-2, chartArea.Position.Y, chartArea.Position.Width + 8, chartArea.Position.Height);
+                }
+                else
+                {
+                    chartArea.Position = new ElementPosition(2, chartArea.Position.Y, chartArea.Position.Width + 2, chartArea.Position.Height);
+                }
+
             }
         }
         public List<UIMollierPoint> AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
