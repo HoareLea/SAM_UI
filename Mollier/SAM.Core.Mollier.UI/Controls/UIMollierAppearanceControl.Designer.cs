@@ -51,7 +51,7 @@ namespace SAM.Core.Mollier.UI.Controls
             this.Label_Color.AutoSize = true;
             this.Label_Color.Location = new System.Drawing.Point(3, 6);
             this.Label_Color.Name = "Label_Color";
-            this.Label_Color.Size = new System.Drawing.Size(45, 17);
+            this.Label_Color.Size = new System.Drawing.Size(42, 16);
             this.Label_Color.TabIndex = 1;
             this.Label_Color.Text = "Color:";
             // 
@@ -60,7 +60,7 @@ namespace SAM.Core.Mollier.UI.Controls
             this.Label_Label.AutoSize = true;
             this.Label_Label.Location = new System.Drawing.Point(3, 35);
             this.Label_Label.Name = "Label_Label";
-            this.Label_Label.Size = new System.Drawing.Size(47, 17);
+            this.Label_Label.Size = new System.Drawing.Size(44, 16);
             this.Label_Label.TabIndex = 2;
             this.Label_Label.Text = "Label:";
             // 
@@ -71,7 +71,7 @@ namespace SAM.Core.Mollier.UI.Controls
             this.TextBox_Label.Location = new System.Drawing.Point(54, 32);
             this.TextBox_Label.Name = "TextBox_Label";
             this.TextBox_Label.Size = new System.Drawing.Size(147, 22);
-            this.TextBox_Label.TabIndex = 3;
+            this.TextBox_Label.TabIndex = 1;
             // 
             // UIMollierAppearanceControl
             // 

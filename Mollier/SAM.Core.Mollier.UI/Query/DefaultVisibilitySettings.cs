@@ -23,7 +23,7 @@
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.Enthalpy, Default.Enthalpy_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.Black));
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.Black));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.Gray));
 
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.SpecificVolume, Default.SpecificVolume_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.SpecificVolume, System.Drawing.Color.Gray));
