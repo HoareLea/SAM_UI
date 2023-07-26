@@ -41,6 +41,9 @@
             this.MollierPointControl_Supply.Location = new System.Drawing.Point(0, 23);
             this.MollierPointControl_Supply.Name = "MollierPointControl_Supply";
             this.MollierPointControl_Supply.Pressure = 101325D;
+            this.MollierPointControl_Supply.PressureEnabled = true;
+            this.MollierPointControl_Supply.PressureVisible = true;
+            this.MollierPointControl_Supply.SelectMollierPointVisible = false;
             this.MollierPointControl_Supply.Size = new System.Drawing.Size(199, 220);
             this.MollierPointControl_Supply.TabIndex = 0;
             // 
@@ -49,6 +52,9 @@
             this.MollierPointControl_Return.Location = new System.Drawing.Point(205, 23);
             this.MollierPointControl_Return.Name = "MollierPointControl_Return";
             this.MollierPointControl_Return.Pressure = 101325D;
+            this.MollierPointControl_Return.PressureEnabled = true;
+            this.MollierPointControl_Return.PressureVisible = true;
+            this.MollierPointControl_Return.SelectMollierPointVisible = false;
             this.MollierPointControl_Return.Size = new System.Drawing.Size(191, 220);
             this.MollierPointControl_Return.TabIndex = 1;
             // 
@@ -76,18 +82,22 @@
             // 
             this.SensibleHeatRecoveryEfficiencyControl.Location = new System.Drawing.Point(402, 23);
             this.SensibleHeatRecoveryEfficiencyControl.Name = "SensibleHeatRecoveryEfficiencyControl";
+            this.SensibleHeatRecoveryEfficiencyControl.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.SensibleHeatRecoveryEfficiencyControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.SensibleHeatRecoveryEfficiencyControl.Size = new System.Drawing.Size(200, 51);
             this.SensibleHeatRecoveryEfficiencyControl.TabIndex = 16;
+            this.SensibleHeatRecoveryEfficiencyControl.UnitType = SAM.Units.UnitType.Undefined;
             this.SensibleHeatRecoveryEfficiencyControl.Value = 0D;
             // 
             // LatentHeatRecoveryEfficiencyControl
             // 
             this.LatentHeatRecoveryEfficiencyControl.Location = new System.Drawing.Point(402, 80);
             this.LatentHeatRecoveryEfficiencyControl.Name = "LatentHeatRecoveryEfficiencyControl";
+            this.LatentHeatRecoveryEfficiencyControl.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.LatentHeatRecoveryEfficiencyControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.LatentHeatRecoveryEfficiencyControl.Size = new System.Drawing.Size(200, 51);
             this.LatentHeatRecoveryEfficiencyControl.TabIndex = 17;
+            this.LatentHeatRecoveryEfficiencyControl.UnitType = SAM.Units.UnitType.Undefined;
             this.LatentHeatRecoveryEfficiencyControl.Value = 0D;
             // 
             // HeatRecoveryProcessControl
@@ -100,7 +110,7 @@
             this.Controls.Add(this.MollierPointControl_Return);
             this.Controls.Add(this.MollierPointControl_Supply);
             this.Name = "HeatRecoveryProcessControl";
-            this.Size = new System.Drawing.Size(707, 338);
+            this.Size = new System.Drawing.Size(639, 338);
             this.ResumeLayout(false);
             this.PerformLayout();
 

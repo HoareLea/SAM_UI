@@ -52,7 +52,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.processTypeLabel);
             this.splitContainer1.Panel1.Controls.Add(this.MollierProcessType_ComboBox);
-            this.splitContainer1.Size = new System.Drawing.Size(482, 405);
+            this.splitContainer1.Size = new System.Drawing.Size(595, 405);
             this.splitContainer1.SplitterDistance = 79;
             this.splitContainer1.TabIndex = 0;
             // 
@@ -80,14 +80,14 @@
             "Room Process"});
             this.MollierProcessType_ComboBox.Location = new System.Drawing.Point(110, 38);
             this.MollierProcessType_ComboBox.Name = "MollierProcessType_ComboBox";
-            this.MollierProcessType_ComboBox.Size = new System.Drawing.Size(234, 24);
+            this.MollierProcessType_ComboBox.Size = new System.Drawing.Size(270, 24);
             this.MollierProcessType_ComboBox.TabIndex = 0;
             this.MollierProcessType_ComboBox.SelectedIndexChanged += new System.EventHandler(this.MollierProcessType_ComboBox_SelectedIndexChanged);
             // 
             // Cancel_Button
             // 
             this.Cancel_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Cancel_Button.Location = new System.Drawing.Point(362, 411);
+            this.Cancel_Button.Location = new System.Drawing.Point(475, 411);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(108, 30);
             this.Cancel_Button.TabIndex = 2;
@@ -98,7 +98,7 @@
             // OK_Button
             // 
             this.OK_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OK_Button.Location = new System.Drawing.Point(248, 411);
+            this.OK_Button.Location = new System.Drawing.Point(361, 411);
             this.OK_Button.Name = "OK_Button";
             this.OK_Button.Size = new System.Drawing.Size(108, 30);
             this.OK_Button.TabIndex = 1;
@@ -109,7 +109,7 @@
             // Customize_Button
             // 
             this.Customize_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.Customize_Button.Location = new System.Drawing.Point(134, 411);
+            this.Customize_Button.Location = new System.Drawing.Point(247, 411);
             this.Customize_Button.Name = "Customize_Button";
             this.Customize_Button.Size = new System.Drawing.Size(108, 30);
             this.Customize_Button.TabIndex = 3;
@@ -120,7 +120,7 @@
             // MollierProcessForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(482, 453);
+            this.ClientSize = new System.Drawing.Size(595, 453);
             this.Controls.Add(this.Customize_Button);
             this.Controls.Add(this.Cancel_Button);
             this.Controls.Add(this.OK_Button);
