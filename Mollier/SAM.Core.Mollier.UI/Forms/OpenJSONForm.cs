@@ -5,29 +5,29 @@ namespace SAM.Core.Mollier.UI.Forms
 {
     public partial class OpenJSONForm : Form
     {
-        private bool replace = false;
+        public enum Action { Undefined, Replace, Merge}
+
+        private Action action = Action.Undefined;
+        public Action GetAction()
+        {
+            return action;
+        }
         public OpenJSONForm()
         {
             InitializeComponent();
         }
         private void MergeButton_Click(object sender, EventArgs e)
         {
-            replace = false;
+            DialogResult = DialogResult.OK;
+            action = Action.Merge;
             Close();
         }
 
         private void ReplaceButton_Click(object sender, EventArgs e)
         {
-            replace = true;
+            DialogResult = DialogResult.OK;
+            action = Action.Replace;
             Close();
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns>True whether file should be replaced and false if it should be merged</returns>
-        public bool ReplaceOrMerge()
-        {
-            return replace;
         }
 
         private void OpenJSONForm_Load(object sender, EventArgs e)

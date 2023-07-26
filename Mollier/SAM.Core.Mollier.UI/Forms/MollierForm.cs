@@ -692,19 +692,25 @@ namespace SAM.Core.Mollier.UI
             {
                 return;
             }
-            bool replace = false;
-            
+            Forms.OpenJSONForm.Action action = Forms.OpenJSONForm.Action.Undefined;
+
+
             using (Forms.OpenJSONForm openJSONForm = new Forms.OpenJSONForm())
             {
                 //DialogResult dialogResult = openJSONForm.ShowDialog();
-                if(openJSONForm.ShowDialog() == DialogResult.None)
+                if(openJSONForm.ShowDialog() != DialogResult.OK)
                 {
                     return;
                 }
-                replace = openJSONForm.ReplaceOrMerge();
+                action = openJSONForm.GetAction();
             }
 
-            if (replace)
+            if(action == Forms.OpenJSONForm.Action.Undefined)
+            {
+                return;
+            }
+
+            if (action == Forms.OpenJSONForm.Action.Replace)
             {
                 Clear();
                 MollierControlSettings mollierControlSettings = System.IO.File.Exists(path) ? Core.Convert.ToSAM<MollierControlSettings>(path).Find(x => x != null) : null;
@@ -991,6 +997,11 @@ namespace SAM.Core.Mollier.UI
             UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
 
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+        }
+
+        private void MollierControl_Main_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

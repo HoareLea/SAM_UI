@@ -100,7 +100,7 @@
             // 
             this.ToolStripMenuItem_Reset.Name = "ToolStripMenuItem_Reset";
             this.ToolStripMenuItem_Reset.Size = new System.Drawing.Size(227, 26);
-            this.ToolStripMenuItem_Reset.Text = "Reset";
+            this.ToolStripMenuItem_Reset.Text = "Zoom reset";
             this.ToolStripMenuItem_Reset.Click += new System.EventHandler(this.ToolStripMenuItem_Reset_Click);
             // 
             // MollierControl

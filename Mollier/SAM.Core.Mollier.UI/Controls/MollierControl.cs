@@ -29,8 +29,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierControlSettings = new MollierControlSettings();
         }
 
-        //TODO: [Maciek] Try make private
-        public void CreateYAxis(Chart chart, ChartArea area, Series series, float axisX, float axisWidth, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
+        private void CreateYAxis(Chart chart, ChartArea area, Series series, float axisX, float axisWidth, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
         {
 
             chart.ApplyPaletteColors();  // (*)
@@ -126,9 +125,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisY.MinorGrid.Enabled = false;
             areaAxisAxisY.MinorTickMark.Interval = 0.1;
         }
-
-        //TODO: [Maciek] Try make private
-        public void CreateXAxis(Chart chart, ChartArea area, Series series, float axisY, float axisHeight, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
+        private void CreateXAxis(Chart chart, ChartArea area, Series series, float axisY, float axisHeight, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
         {
             long x = DateTime.Now.Ticks;
 

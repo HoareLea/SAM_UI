@@ -122,7 +122,7 @@ namespace SAM.Core.Mollier.UI
             this.MenuStrip_Main.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip_Main.Name = "MenuStrip_Main";
             this.MenuStrip_Main.ShowItemToolTips = true;
-            this.MenuStrip_Main.Size = new System.Drawing.Size(1582, 30);
+            this.MenuStrip_Main.Size = new System.Drawing.Size(1582, 28);
             this.MenuStrip_Main.TabIndex = 20;
             this.MenuStrip_Main.Text = "MenuStrip_Main";
             // 
@@ -137,7 +137,7 @@ namespace SAM.Core.Mollier.UI
             this.saveAsEMFToolStripMenuItem,
             this.printToolStripMenuItem});
             this.ToolStripMenuItem_File.Name = "ToolStripMenuItem_File";
-            this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 26);
+            this.ToolStripMenuItem_File.Size = new System.Drawing.Size(46, 24);
             this.ToolStripMenuItem_File.Text = "File";
             // 
             // newToolStripMenuItem
@@ -233,7 +233,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_ChartType,
             this.colorThemeToolStripMenuItem});
             this.ToolStripMenuItem_View.Name = "ToolStripMenuItem_View";
-            this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 26);
+            this.ToolStripMenuItem_View.Size = new System.Drawing.Size(55, 24);
             this.ToolStripMenuItem_View.Text = "View";
             // 
             // ToolStripMenuItem_Density
@@ -317,28 +317,28 @@ namespace SAM.Core.Mollier.UI
             this.defaultToolStripMenuItem.Checked = true;
             this.defaultToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.defaultToolStripMenuItem.Name = "defaultToolStripMenuItem";
-            this.defaultToolStripMenuItem.Size = new System.Drawing.Size(162, 26);
+            this.defaultToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.defaultToolStripMenuItem.Text = "Default";
             this.defaultToolStripMenuItem.Click += new System.EventHandler(this.defaultToolStripMenuItem_Click);
             // 
             // blueToolStripMenuItem
             // 
             this.blueToolStripMenuItem.Name = "blueToolStripMenuItem";
-            this.blueToolStripMenuItem.Size = new System.Drawing.Size(162, 26);
+            this.blueToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.blueToolStripMenuItem.Text = "Blue";
             this.blueToolStripMenuItem.Click += new System.EventHandler(this.blueToolStripMenuItem_Click);
             // 
             // grayToolStripMenuItem
             // 
             this.grayToolStripMenuItem.Name = "grayToolStripMenuItem";
-            this.grayToolStripMenuItem.Size = new System.Drawing.Size(162, 26);
+            this.grayToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.grayToolStripMenuItem.Text = "Gray";
             this.grayToolStripMenuItem.Click += new System.EventHandler(this.grayToolStripMenuItem_Click);
             // 
             // blueBlackToolStripMenuItem
             // 
             this.blueBlackToolStripMenuItem.Name = "blueBlackToolStripMenuItem";
-            this.blueBlackToolStripMenuItem.Size = new System.Drawing.Size(162, 26);
+            this.blueBlackToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.blueBlackToolStripMenuItem.Text = "Blue-Black";
             this.blueBlackToolStripMenuItem.Click += new System.EventHandler(this.blueBlackToolStripMenuItem_Click);
             // 
@@ -347,7 +347,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItem_OpenSettings});
             this.ToolStripMenuItem_Settings.Name = "ToolStripMenuItem_Settings";
-            this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 26);
+            this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 24);
             this.ToolStripMenuItem_Settings.Text = "Settings";
             this.ToolStripMenuItem_Settings.Click += new System.EventHandler(this.ToolStripMenuItem_Settings_Click);
             // 
@@ -361,7 +361,7 @@ namespace SAM.Core.Mollier.UI
             // resetChartToolStripMenuItem
             // 
             this.resetChartToolStripMenuItem.Name = "resetChartToolStripMenuItem";
-            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(98, 26);
+            this.resetChartToolStripMenuItem.Size = new System.Drawing.Size(98, 24);
             this.resetChartToolStripMenuItem.Text = "Reset Chart";
             this.resetChartToolStripMenuItem.ToolTipText = "Reset all chart data to the default values";
             this.resetChartToolStripMenuItem.Click += new System.EventHandler(this.resetChartToolStripMenuItem_Click);
@@ -486,7 +486,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_Reset.Name = "Button_Reset";
             this.Button_Reset.Size = new System.Drawing.Size(116, 28);
             this.Button_Reset.TabIndex = 42;
-            this.Button_Reset.Text = "Reset";
+            this.Button_Reset.Text = "Default Reset";
             this.Button_Reset.UseVisualStyleBackColor = true;
             this.Button_Reset.Click += new System.EventHandler(this.Button_Reset_Click);
             // 
@@ -532,23 +532,32 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
             mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
             mollierControlSettings1.DefaultTemplateName = "default";
+            mollierControlSettings1.Density_Interval = 0.02D;
             mollierControlSettings1.Density_line = true;
+            mollierControlSettings1.Density_Max = 1.41D;
+            mollierControlSettings1.Density_Min = 0.45D;
             mollierControlSettings1.DisableLabels = false;
             mollierControlSettings1.DisableUnits = false;
             mollierControlSettings1.DivisionArea = false;
             mollierControlSettings1.DivisionAreaLabels = true;
             mollierControlSettings1.Elevation = 0D;
+            mollierControlSettings1.Enthalpy_Interval = 1000D;
             mollierControlSettings1.Enthalpy_line = true;
+            mollierControlSettings1.Enthalpy_Max = 140000D;
+            mollierControlSettings1.Enthalpy_Min = -20000D;
             mollierControlSettings1.FindPoint = false;
             mollierControlSettings1.FindPointType = "Enthalpy";
             mollierControlSettings1.GradientPoint = false;
             mollierControlSettings1.HumidityRatio_Interval = 5D;
             mollierControlSettings1.HumidityRatio_Max = 35D;
             mollierControlSettings1.HumidityRatio_Min = 0D;
-            mollierControlSettings1.P_w_Interval = 1D;
+            mollierControlSettings1.PartialVapourPressure = 1D;
             mollierControlSettings1.Percent = 0.4D;
             mollierControlSettings1.Pressure = 101325D;
+            mollierControlSettings1.SpecificVolume_Interval = 0.05D;
             mollierControlSettings1.SpecificVolume_line = true;
+            mollierControlSettings1.SpecificVolume_Max = 1.92D;
+            mollierControlSettings1.SpecificVolume_Min = 0.65D;
             mollierControlSettings1.Temperature_Interval = 5D;
             mollierControlSettings1.Temperature_Max = 50D;
             mollierControlSettings1.Temperature_Min = -20D;
@@ -558,6 +567,7 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(1547, 907);
             this.MollierControl_Main.TabIndex = 0;
+            this.MollierControl_Main.Load += new System.EventHandler(this.MollierControl_Main_Load);
             // 
             // MollierForm
             // 
