@@ -20,6 +20,7 @@ namespace SAM.Core.Mollier.UI
             Range<double> dryBulbTemperatureRange = mollierControlSettings.DryBulbTemperatureRange();
             Range<double> humidityRatioRange = mollierControlSettings.HumidityRatioRange();
 
+            
 
             double step = double.NaN;
 
@@ -55,8 +56,10 @@ namespace SAM.Core.Mollier.UI
 
                 case Mollier.ChartDataType.RelativeHumidity:
                     step = 10;
+                    
+                    Range<double> dryBulbTemperatureRange_RelativeHumidity = new Range<double>(Limit.DryBulbTemperature_Min, Limit.DryBulbTemperature_Max);
 
-                    return Mollier.Create.ConstantValueCurves_RelativeHumidity(new Range<double>(0, 100), step, pressure, dryBulbTemperatureRange, humidityRatioRange);
+                    return Mollier.Create.ConstantValueCurves_RelativeHumidity(new Range<double>(0, 100), step, pressure, dryBulbTemperatureRange_RelativeHumidity, humidityRatioRange);
 
                 case Mollier.ChartDataType.Enthalpy:
                     if (!mollierControlSettings.Enthalpy_line)
@@ -76,8 +79,11 @@ namespace SAM.Core.Mollier.UI
                         return null;
                     }
                     step = mollierControlSettings.WetBulbTemperature_Interval;
+                    
+                    Range<double> dryBulbTemperatureRange_WetBulbTemperature = new Range<double>(Limit.DryBulbTemperature_Min, Limit.DryBulbTemperature_Max);
+                    Range<double> humidityRatioRange_WetBulbTemperature = new Range<double>(Limit.HumidityRatio_Min / 1000, Limit.DryBulbTemperature_Max / 1000);
 
-                    return Mollier.Create.ConstantValueCurves_WetBulbTemperature(dryBulbTemperatureRange, humidityRatioRange, step, pressure);
+                    return Mollier.Create.ConstantValueCurves_WetBulbTemperature(dryBulbTemperatureRange_WetBulbTemperature, humidityRatioRange_WetBulbTemperature, step, pressure);
 
                 case Mollier.ChartDataType.SpecificVolume:
                     if (!mollierControlSettings.SpecificVolume_line)
