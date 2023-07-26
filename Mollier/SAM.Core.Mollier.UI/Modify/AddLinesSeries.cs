@@ -32,8 +32,8 @@ namespace SAM.Core.Mollier.UI
                     AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? 2 : 12.5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? -0.5 : 0.0035;
+                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? 2 : 11.5;
+                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? -1 : 0.0035;
 
                 AddLabel_Label(chart, seriesList[seriesList.Count / 2], mollierControlSettings, "Density ρ [kg/m³]", offset_X, offset_Y);
             }
@@ -65,8 +65,8 @@ namespace SAM.Core.Mollier.UI
                     AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -8.5 : 24.5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 21.2 : 0.0035;
+                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -5.5 : 24.5;
+                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 26.2 : 0.0012;
 
                 Series series_Temp = seriesList[seriesList.Count / 2];
 
