@@ -8,7 +8,7 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierPointControl : UserControl
     {
-        private List<ChartDataType> chartDataTypes = new List<ChartDataType>() { ChartDataType.DryBulbTemperature, ChartDataType.RelativeHumidity, ChartDataType.HumidityRatio, ChartDataType.WetBulbTemperature, ChartDataType.DewPointTemperature, ChartDataType.Enthalpy };
+        private List<ChartDataType> chartDataTypes = new List<ChartDataType>() { ChartDataType.DryBulbTemperature, ChartDataType.RelativeHumidity, ChartDataType.HumidityRatio, ChartDataType.WetBulbTemperature, ChartDataType.DewPointTemperature, ChartDataType.Enthalpy};
 
         public event SelectMollierPointEventHandler SelectMollierPoint;
 
@@ -29,7 +29,6 @@ namespace SAM.Core.Mollier.UI.Controls
             NumberBoxControl_FirstParameter.ValueChanged += NumberBoxControl_ValueChanged;
             NumberBoxControl_SecondParameter.ValueChanged += NumberBoxControl_ValueChanged;
             NumberBoxControl_Pressure.ValueChanged += NumberBoxControl_ValueChanged;
-
 
         }
 
@@ -74,7 +73,6 @@ namespace SAM.Core.Mollier.UI.Controls
 
             NumberBoxControl_FirstParameter.Value = value;
 
-
             chartDataType = Core.Query.Enum<ChartDataType>(ComboBox_SecondParameter.Text);
             value = mollierPoint.Value(chartDataType);
             if (!double.IsNaN(value))
@@ -88,7 +86,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             NumberBoxControl_SecondParameter.Value = value;
         }
-
+         
         private MollierPoint GetMollierPoint()
         {
             double dryBulbTemperature = double.NaN;
@@ -157,6 +155,15 @@ namespace SAM.Core.Mollier.UI.Controls
                 enthalpy *= 1000;
             }
 
+            if(!double.IsNaN(dewPointTemperature))
+            {
+                humidityRatio = double.NaN;
+                enthalpy = double.NaN;
+                dryBulbTemperature = double.NaN;
+                relativeHumidity = double.NaN;
+            }
+
+
             MollierPoint result = Query.MollierPointByTwoParameters(pressure: pressure, humidityRatio: humidityRatio, dryBulbTemperature: dryBulbTemperature, relativeHumidity: relativeHumidity, wetBulbTemperature: wetBulbTemperature, dewPointTemperature: dewPointTemperature, enthalpy: enthalpy);
 
             return result;
@@ -165,7 +172,7 @@ namespace SAM.Core.Mollier.UI.Controls
         private void ComboBox_FirstParameter_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox_SecondParameter.SelectedIndexChanged -= new EventHandler(ComboBox_SecondParameter_SelectedIndexChanged);
-            string text = ComboBox_SecondParameter.Text;
+            string text = ComboBox_SecondParameter.Text;    
             ComboBox_SecondParameter.Items.Clear();
             foreach (ChartDataType chartDataType in chartDataTypes)
             {
@@ -182,7 +189,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 ComboBox_SecondParameter.Visible = false;
                 NumberBoxControl_SecondParameter.Visible = false;
                 Label_SecondParameterUnit.Visible = false;
-                ComboBox_SecondParameter.Text = ComboBox_SecondParameter.Items[0].ToString();
+                ComboBox_SecondParameter.Text = ChartDataType.DewPointTemperature.Description();
             }
             else
             {
@@ -190,6 +197,11 @@ namespace SAM.Core.Mollier.UI.Controls
                 NumberBoxControl_SecondParameter.Visible = true;
                 Label_SecondParameterUnit.Visible = true;
 
+            }
+            
+            if(ComboBox_FirstParameter.Text == ChartDataType.Enthalpy.Description())
+            {
+                ComboBox_SecondParameter.Text = ChartDataType.HumidityRatio.Description();
             }
 
             UnitType unitType = Query.DefaultUnitType(ComboBox_FirstParameter.Text.Enum<ChartDataType>());
@@ -226,6 +238,11 @@ namespace SAM.Core.Mollier.UI.Controls
 
             ComboBox_FirstParameter.Text = text;
             ComboBox_FirstParameter.SelectedIndexChanged += new EventHandler(ComboBox_FirstParameter_SelectedIndexChanged);
+
+            if (ComboBox_SecondParameter.Text == ChartDataType.Enthalpy.Description())
+            {
+                ComboBox_FirstParameter.Text = ChartDataType.HumidityRatio.Description();
+            }
 
             UnitType unitType = Query.DefaultUnitType(ComboBox_SecondParameter.Text.Enum<ChartDataType>());
 

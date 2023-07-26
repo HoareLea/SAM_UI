@@ -33,6 +33,7 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_View = new System.Windows.Forms.TabPage();
             this.FlowLayoutPanel_BuiltInVisibilitySettings = new System.Windows.Forms.FlowLayoutPanel();
             this.TabPage_Ranges = new System.Windows.Forms.TabPage();
+            this.label11 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -81,7 +82,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.label11 = new System.Windows.Forms.Label();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
@@ -109,7 +109,7 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_View.Location = new System.Drawing.Point(4, 25);
             this.TabPage_View.Name = "TabPage_View";
             this.TabPage_View.Padding = new System.Windows.Forms.Padding(3);
-            this.TabPage_View.Size = new System.Drawing.Size(703, 429);
+            this.TabPage_View.Size = new System.Drawing.Size(689, 433);
             this.TabPage_View.TabIndex = 0;
             this.TabPage_View.Text = "View";
             this.TabPage_View.UseVisualStyleBackColor = true;
@@ -170,19 +170,29 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_Ranges.Text = "Ranges";
             this.TabPage_Ranges.UseVisualStyleBackColor = true;
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label11.Location = new System.Drawing.Point(274, 232);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(92, 16);
+            this.label11.TabIndex = 70;
+            this.label11.Text = "Other Intervals";
+            // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(479, 183);
+            this.label10.Location = new System.Drawing.Point(484, 183);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(41, 16);
+            this.label10.Size = new System.Drawing.Size(34, 16);
             this.label10.TabIndex = 69;
-            this.label10.Text = "kg/kg";
+            this.label10.Text = "g/kg";
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(225, 71);
+            this.label9.Location = new System.Drawing.Point(230, 71);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(20, 16);
             this.label9.TabIndex = 68;
@@ -191,7 +201,7 @@ namespace SAM.Core.Mollier.UI
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(340, 71);
+            this.label8.Location = new System.Drawing.Point(344, 71);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(20, 16);
             this.label8.TabIndex = 67;
@@ -200,7 +210,7 @@ namespace SAM.Core.Mollier.UI
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(455, 71);
+            this.label7.Location = new System.Drawing.Point(459, 71);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(20, 16);
             this.label7.TabIndex = 66;
@@ -209,25 +219,25 @@ namespace SAM.Core.Mollier.UI
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(343, 183);
+            this.label6.Location = new System.Drawing.Point(348, 183);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(41, 16);
+            this.label6.Size = new System.Drawing.Size(34, 16);
             this.label6.TabIndex = 65;
-            this.label6.Text = "kg/kg";
+            this.label6.Text = "g/kg";
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(204, 183);
+            this.label5.Location = new System.Drawing.Point(209, 183);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(41, 16);
+            this.label5.Size = new System.Drawing.Size(34, 16);
             this.label5.TabIndex = 64;
-            this.label5.Text = "kg/kg";
+            this.label5.Text = "g/kg";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(563, 298);
+            this.label2.Location = new System.Drawing.Point(567, 298);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(20, 16);
             this.label2.TabIndex = 63;
@@ -236,34 +246,34 @@ namespace SAM.Core.Mollier.UI
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(302, 298);
+            this.label4.Location = new System.Drawing.Point(286, 298);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(33, 16);
+            this.label4.Size = new System.Drawing.Size(40, 16);
             this.label4.TabIndex = 62;
-            this.label4.Text = "J/kg";
+            this.label4.Text = "kJ/kg";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(427, 298);
+            this.label3.Location = new System.Drawing.Point(431, 298);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(44, 16);
+            this.label3.Size = new System.Drawing.Size(41, 16);
             this.label3.TabIndex = 61;
-            this.label3.Text = "m3/kg";
+            this.label3.Text = "m³/kg";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(165, 298);
+            this.label1.Location = new System.Drawing.Point(152, 298);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 16);
+            this.label1.Size = new System.Drawing.Size(41, 16);
             this.label1.TabIndex = 59;
-            this.label1.Text = "kg/m3";
+            this.label1.Text = "kg/m³";
             // 
             // PartialVapourPressureUnit
             // 
             this.PartialVapourPressureUnit.AutoSize = true;
-            this.PartialVapourPressureUnit.Location = new System.Drawing.Point(368, 396);
+            this.PartialVapourPressureUnit.Location = new System.Drawing.Point(372, 396);
             this.PartialVapourPressureUnit.Name = "PartialVapourPressureUnit";
             this.PartialVapourPressureUnit.Size = new System.Drawing.Size(24, 16);
             this.PartialVapourPressureUnit.TabIndex = 58;
@@ -293,7 +303,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.EnthalpyIntervalLabel.AutoSize = true;
             this.EnthalpyIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.EnthalpyIntervalLabel.Location = new System.Drawing.Point(236, 260);
+            this.EnthalpyIntervalLabel.Location = new System.Drawing.Point(215, 260);
             this.EnthalpyIntervalLabel.Name = "EnthalpyIntervalLabel";
             this.EnthalpyIntervalLabel.Size = new System.Drawing.Size(59, 32);
             this.EnthalpyIntervalLabel.TabIndex = 55;
@@ -303,7 +313,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.DensityIntervalLabel.AutoSize = true;
             this.DensityIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.DensityIntervalLabel.Location = new System.Drawing.Point(114, 260);
+            this.DensityIntervalLabel.Location = new System.Drawing.Point(97, 260);
             this.DensityIntervalLabel.Name = "DensityIntervalLabel";
             this.DensityIntervalLabel.Size = new System.Drawing.Size(52, 32);
             this.DensityIntervalLabel.TabIndex = 54;
@@ -329,7 +339,7 @@ namespace SAM.Core.Mollier.UI
             // 
             // EnthalpyIntervalTextBox
             // 
-            this.EnthalpyIntervalTextBox.Location = new System.Drawing.Point(222, 295);
+            this.EnthalpyIntervalTextBox.Location = new System.Drawing.Point(201, 295);
             this.EnthalpyIntervalTextBox.Name = "EnthalpyIntervalTextBox";
             this.EnthalpyIntervalTextBox.Size = new System.Drawing.Size(82, 22);
             this.EnthalpyIntervalTextBox.TabIndex = 51;
@@ -338,7 +348,7 @@ namespace SAM.Core.Mollier.UI
             // 
             // DensityIntervalTextBox
             // 
-            this.DensityIntervalTextBox.Location = new System.Drawing.Point(83, 295);
+            this.DensityIntervalTextBox.Location = new System.Drawing.Point(66, 295);
             this.DensityIntervalTextBox.Name = "DensityIntervalTextBox";
             this.DensityIntervalTextBox.Size = new System.Drawing.Size(83, 22);
             this.DensityIntervalTextBox.TabIndex = 50;
@@ -636,16 +646,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.Text = "Apply";
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label11.Location = new System.Drawing.Point(274, 232);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(92, 16);
-            this.label11.TabIndex = 70;
-            this.label11.Text = "Other Intervals";
             // 
             // MollierControlSettingsForm
             // 

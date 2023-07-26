@@ -89,9 +89,9 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if (humidityRatio_Max > 50)
+                if (humidityRatio_Max > Limit.HumidityRatio_Max)
                 {
-                    MessageBox.Show("Wrong range\nMaximal Humidity Ratio is 50!");
+                    MessageBox.Show("Wrong range\nMaximal Humidity Ratio is " + Limit.HumidityRatio_Max + "!");
                     return double.NaN;
                 }
                 if (humidityRatio_Max <= System.Convert.ToDouble(HumidityRatioMinimumValueTextbox.Text))
@@ -115,9 +115,9 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if (humidityRatio_Min < 0)
+                if (humidityRatio_Min < Limit.HumidityRatio_Min)
                 {
-                    MessageBox.Show("Wrong range\nMinimal Humidity Ratio is 0!");
+                    MessageBox.Show("Wrong range\nMinimal Humidity Ratio is " + Limit.HumidityRatio_Min + "!"); // TODO: 
                     return double.NaN;
                 }
                 if(humidityRatio_Min >= System.Convert.ToDouble(HumidityRatioMaximumValueTextbox.Text))
@@ -287,11 +287,11 @@ namespace SAM.Core.Mollier.UI
                     MessageBox.Show("Wrong range\n Interval has to be positive!");
                     return double.NaN;
                 }
-                return EnthalpyInterval;
+                return EnthalpyInterval * 1000;
             }
             set
             {
-                EnthalpyIntervalTextBox.Text = value.ToString();
+                EnthalpyIntervalTextBox.Text = (value / 1000).ToString();
             }
         }
         public double SpecificVolume_Interval

@@ -126,7 +126,7 @@ namespace SAM.Core.Mollier.UI
                 angle = 90 - angle;
             }
 
-            return AddLabel(chart, mollierControlSettings, x, y, angle, offset_X, offset_Y, text, chartDataType, ChartParameterType.Unit, tag: series);
+            return AddLabel(chart, mollierControlSettings, x, y, angle, offset_X, offset_Y, text, chartDataType, ChartParameterType.Label, tag: series);
         }
 
         public static Series AddLabel_RelativeHumidity(this Series series, MollierControlSettings mollierControlSettings, int startIndex = 5)
@@ -193,7 +193,7 @@ namespace SAM.Core.Mollier.UI
                 string newLabel = string.Empty;
                 if (!mollierControlSettings.DisableUnits)
                 {
-                    newLabel += value.ToString();
+                    newLabel += value.ToString() + " %";
                 }
                 if (!mollierControlSettings.DisableLabels)
                 {
