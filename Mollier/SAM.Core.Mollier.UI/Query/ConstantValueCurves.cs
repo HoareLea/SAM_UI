@@ -92,7 +92,7 @@ namespace SAM.Core.Mollier.UI
                     double specificVolume_Max = mollierControlSettings.SpecificVolume_Max;
                     step = mollierControlSettings.SpecificVolume_Interval;
 
-                    return Mollier.Create.ConstantValueCurves_SpecificVolume(dryBulbTemperatureRange, new Range<double>(specificVolume_Min, specificVolume_Max), step, pressure);
+                    return Mollier.Create.ConstantValueCurves_SpecificVolume(dryBulbTemperatureRange, humidityRatioRange, new Range<double>(specificVolume_Min, specificVolume_Max), step, pressure);
 
                 default:
                     return null;
