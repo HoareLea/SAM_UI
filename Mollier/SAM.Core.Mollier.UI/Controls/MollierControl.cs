@@ -417,13 +417,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 setAxisGraph_Psychrometric();
             }
 
+
             Modify.AddLinesSeries(MollierChart, mollierControlSettings);
             Modify.AddMollierPoints(MollierChart, mollierPoints, MollierControlSettings);  
             Modify.AddMollierZones(MollierChart, mollierZones, MollierControlSettings);
             Modify.AddDivisionArea(MollierChart, mollierPoints, mollierControlSettings);
-            //mollierProcesses = Modify.AddMollierProcesses(this, MollierChart, mollierControlSettings, systems, mollierProcesses, created_points);
             mollierProcesses = Modify.AddMollierProcesses(MollierChart, this, systems, mollierProcesses, mollierControlSettings);
             Query.FindPoints(this, MollierChart, mollierControlSettings, mollierPoints);
+
 
             foreach(ChartArea chartArea in MollierChart.ChartAreas)
             {

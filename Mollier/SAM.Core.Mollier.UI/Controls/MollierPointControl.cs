@@ -163,12 +163,11 @@ namespace SAM.Core.Mollier.UI.Controls
                 relativeHumidity = double.NaN;
             }
 
-
-            MollierPoint result = Query.MollierPointByTwoParameters(pressure: pressure, humidityRatio: humidityRatio, dryBulbTemperature: dryBulbTemperature, relativeHumidity: relativeHumidity, wetBulbTemperature: wetBulbTemperature, dewPointTemperature: dewPointTemperature, enthalpy: enthalpy);
+            MollierPoint result = Query.MollierPointByTwoParametersOrDewPoint(pressure: pressure, humidityRatio: humidityRatio, dryBulbTemperature: dryBulbTemperature, relativeHumidity: relativeHumidity, wetBulbTemperature: wetBulbTemperature, dewPointTemperature: dewPointTemperature, enthalpy: enthalpy);
 
             return result;
         }
-
+        
         private void ComboBox_FirstParameter_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox_SecondParameter.SelectedIndexChanged -= new EventHandler(ComboBox_SecondParameter_SelectedIndexChanged);

@@ -115,8 +115,6 @@ namespace SAM.Core.Mollier.UI
 
         public bool IsValid()
         {
-            //TODO: [MACIEK] Add Density_Max, Density_Min, Density_Interval, Enthalpy_Min, Enthalpy_Max, Enthalpy_Interval,SpecificVolume_Min, SpecificVolume_Max, SpecificVolume_Interval
-
             if (double.IsNaN(Pressure) ||
                 double.IsInfinity(Pressure) ||
                 Pressure == double.MaxValue ||
