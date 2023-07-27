@@ -35,10 +35,6 @@ namespace SAM.Core.Mollier.UI
             {
                 values.Add(Core.Query.Description(((ConstantTemperatureCurve)constantValueCurve).Phase));
             }
-            else if (constantValueCurve is ConstantEnthalpyCurve)
-            {
-                values.Add(Core.Query.Description(((ConstantEnthalpyCurve)constantValueCurve).Phase));
-            }
 
             string name = string.Join(" ", values);
             Series result = chart.Series.Add(name);
