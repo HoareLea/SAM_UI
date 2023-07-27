@@ -193,7 +193,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if(temperature_Min < Limit.DryBulbTemperature_Min)
                 {
-                    MessageBox.Show("Wrong range\nMinimal possibly temperature is -30!");
+                    MessageBox.Show("Wrong range\nMinimal possibly temperature is " + Limit.DryBulbTemperature_Min + "!");
                     return double.NaN;
                 }
                 if (temperature_Min >= System.Convert.ToDouble(TemperatureMaximumValueTextbox.Text))

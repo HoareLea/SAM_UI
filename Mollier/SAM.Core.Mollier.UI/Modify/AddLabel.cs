@@ -40,7 +40,13 @@ namespace SAM.Core.Mollier.UI
 
             ChartDataType chartDataType = constantValueCurve.ChartDataType;
 
+
             ChartType chartType = mollierControlSettings.ChartType;
+            if(chartDataType == ChartDataType.Density && chartType == ChartType.Mollier)
+            {
+                x = System.Math.Min(series.Points[0].XValue, series.Points[1].XValue);
+                y = System.Math.Max(series.Points[0].YValues[0], series.Points[1].YValues[0]);
+            }
 
             double offset_X = 0;
             double offset_Y = 0;
@@ -123,6 +129,18 @@ namespace SAM.Core.Mollier.UI
             double y = series.Points[pointIndex].YValues[0];
 
             int angle = Query.Angle(series, mollierControlSettings);
+
+            if(chartDataType == ChartDataType.Enthalpy && mollierControlSettings.ChartType == ChartType.Mollier)
+            {
+                angle = 27;
+            }
+
+            if (chartDataType == ChartDataType.Enthalpy && mollierControlSettings.ChartType == ChartType.Psychrometric)
+            {
+                angle = 20;
+            }
+            //int angle = 10;
+            // int angle = 29;
             if (mollierControlSettings.ChartType == ChartType.Psychrometric && chartDataType == ChartDataType.SpecificVolume)
             {
                 angle = 90 - angle;
@@ -220,7 +238,7 @@ namespace SAM.Core.Mollier.UI
             int angle = 0;
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
-               angle =  - (90 - (System.Convert.ToInt32((vector2D.Angle(Vector2D.WorldX)) * 180 / System.Math.PI) % 90));
+                angle = - (90 - (System.Convert.ToInt32((vector2D.Angle(Vector2D.WorldX)) * 180 / System.Math.PI) % 90));
             }
             else
             {
