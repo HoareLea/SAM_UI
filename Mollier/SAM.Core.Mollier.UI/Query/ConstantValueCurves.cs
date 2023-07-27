@@ -32,14 +32,6 @@ namespace SAM.Core.Mollier.UI
                     return Mollier.Create.ConstantTemperatureCurves_DryBulbTemperature(dryBulbTemperatureRange, humidityRatioRange, step, pressure)?.ConvertAll(x => x as ConstantValueCurve);
 
 
-                //case Mollier.ChartDataType.DiagramTemperature:
-                //    dryBulbTemperature_Min = mollierControlSettings.Temperature_Min;
-                //    dryBulbTemperature_Max = mollierControlSettings.Temperature_Max;
-                //    step = 1;
-
-                //    return Mollier.Create.ConstantTemperatureCurves_DiagramTemperature(new Range<double>(dryBulbTemperature_Min, dryBulbTemperature_Max), step, pressure)?.ConvertAll(x => x as ConstantValueCurve);
-
-
                 case Mollier.ChartDataType.Density:
                     if(!mollierControlSettings.Density_line)
                     {
@@ -71,7 +63,7 @@ namespace SAM.Core.Mollier.UI
                     double enthalpy_Max = mollierControlSettings.Enthalpy_Max;
                     step = mollierControlSettings.Enthalpy_Interval;
 
-                    return Mollier.Create.ConstantValueCurves_Enthalpy(new Range<double>(enthalpy_Min, enthalpy_Max), step, pressure);
+                    return Mollier.Create.ConstantEnthalpyCurves(new Range<double>(enthalpy_Min, enthalpy_Max), pressure, step, dryBulbTemperatureRange, humidityRatioRange, Phase.Gas)?.ConvertAll(x => x as ConstantValueCurve);
 
                 case Mollier.ChartDataType.WetBulbTemperature:
                     if (!mollierControlSettings.WetBulbTemperature_line)

@@ -225,7 +225,7 @@ namespace SAM.Core.Mollier.UI
             result.SmartLabelStyle.Enabled = false;
             result.Points.AddXY(x + offset_X, y + offset_Y);
             result.Label = text;
-            result.LabelAngle = angle;
+            result.LabelAngle = angle % 90;
             result.LabelForeColor = color != null ? (Color)color : mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, chartParameterType, chartDataType);
             result.Tag = tag;
 

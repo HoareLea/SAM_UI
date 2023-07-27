@@ -14,12 +14,17 @@
             {
                 return null;
             }
-            
+
+            humidtyRatio_Min /= 1000;
+
+
             double humidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
             if(double.IsNaN(humidityRatio_Max))
             {
                 return null;
             }
+
+            humidityRatio_Max /= 1000;
 
             return new Range<double>(humidtyRatio_Min, humidityRatio_Max);
 
