@@ -2,6 +2,8 @@
 using System;
 using System.Windows.Forms.DataVisualization.Charting;
 using SAM.Geometry.Planar;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -10,12 +12,12 @@ namespace SAM.Core.Mollier.UI
 
         public static Series AddLabel_Unit(this Chart chart, Series series, MollierControlSettings mollierControlSettings)
         {
-            if(mollierControlSettings == null || chart == null)
+            if (mollierControlSettings == null || chart == null)
             {
                 return null;
             }
 
-            if(mollierControlSettings.DisableUnits)
+            if (mollierControlSettings.DisableUnits)
             {
                 return null;
             }
@@ -26,13 +28,13 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            if(series.Points == null || series.Points.Count == 0)
+            if (series.Points == null || series.Points.Count == 0 || series.Points.Count == 1)
             {
                 return null;
             }
 
-            double x = series.Points[0].XValue;
-            double y = series.Points[0].YValues[0];
+            double x = System.Math.Max(series.Points[0].XValue, series.Points[1].XValue);
+            double y = System.Math.Min(series.Points[0].YValues[0], series.Points[1].YValues[0]);
 
             double value = constantValueCurve.Value;
 
@@ -72,8 +74,8 @@ namespace SAM.Core.Mollier.UI
                     break;
 
                 case ChartDataType.Enthalpy:
-                    offset_X = chartType == ChartType.Mollier ? 0.3 : -0.8;
-                    offset_Y = chartType == ChartType.Mollier ? -2.2 : -0.0004;
+                    offset_X = chartType == ChartType.Mollier ? 1 : -0.8;
+                    offset_Y = chartType == ChartType.Mollier ? -4 : -0.0004;
                     value /= 1000;
                     if (value % 10 != 0)
                     {
@@ -129,9 +131,10 @@ namespace SAM.Core.Mollier.UI
             return AddLabel(chart, mollierControlSettings, x, y, angle, offset_X, offset_Y, text, chartDataType, ChartParameterType.Label, tag: series);
         }
 
-        public static Series AddLabel_RelativeHumidity(this Series series, MollierControlSettings mollierControlSettings, int startIndex = 5)
+        public static Series AddLabel_RelativeHumidity(this Series series, ChartArea chartArea, MollierControlSettings mollierControlSettings, int startIndex = 5)
         {
             ConstantValueCurve constantValueCurve = series?.Tag as ConstantValueCurve;
+            ChartType chartType = mollierControlSettings.ChartType;
             if (constantValueCurve == null || series.Points == null)
             {
                 return null;
@@ -150,9 +153,108 @@ namespace SAM.Core.Mollier.UI
             }
 
 
-            int i = System.Convert.ToInt32(value / 10);
+            double labelLocationPercent = 0.8;
+            int labelLocationIndex = System.Convert.ToInt32(count * labelLocationPercent); 
 
-            int startIndex_Temp = startIndex;
+            double xMin = chartArea.AxisX.Minimum;
+            double xMax = chartArea.AxisX.Maximum;
+            double yMin = chartArea.AxisY.Minimum;
+            double yMax = chartArea.AxisY.Maximum;
+
+
+            double xValue = xMin + labelLocationPercent * (xMax - xMin);
+
+            double min = double.MaxValue;
+
+            List<DataPoint> relativeHumidityPoints = new List<DataPoint>();
+            for (int i = 0; i < series.Points.Count; i++)
+            {
+                if (series.Points[i].XValue > xMax || series.Points[i].XValue < xMin || series.Points[i].YValues[0] < yMin || series.Points[i].YValues[0] > yMax)
+                {
+                    continue;
+                }
+                relativeHumidityPoints.Add(series.Points[i]);
+            }
+
+            if(relativeHumidityPoints.Count < 5)
+            {
+                return null;
+            }
+
+
+            
+            int index = value > 60 ? System.Convert.ToInt32(relativeHumidityPoints.Count - 3) : System.Convert.ToInt32(relativeHumidityPoints.Count - 4);
+
+            int ID = series.Points.ToList().IndexOf(relativeHumidityPoints[index]);
+
+   
+
+            Point2D point2 = new Point2D(series.Points[ID].XValue, series.Points[ID].YValues[0]);
+
+            Point2D point1 = ID == 0 ? point2 : new Point2D(series.Points[ID - 1].XValue, series.Points[ID - 1].YValues[0]);
+            Point2D point3 = ID == count - 1 ? point2 : new Point2D(series.Points[ID + 1].XValue, series.Points[ID + 1].YValues[0]);
+
+            Vector2D vector2D = null;
+            double range_difference = (mollierControlSettings.Temperature_Max - mollierControlSettings.Temperature_Min) / (mollierControlSettings.HumidityRatio_Max - mollierControlSettings.HumidityRatio_Min);
+            switch (mollierControlSettings.ChartType)
+            {
+                case ChartType.Mollier:
+                    range_difference *= 2;
+                    point1.X *= range_difference;
+                    point3.X *= range_difference;
+                    vector2D = new Vector2D(point3, point1);
+                    break;
+
+                case ChartType.Psychrometric:
+                    point3.X = 2 * point3.X - point1.X;
+                    point3.Y *= 1000 * range_difference;
+                    point1.Y *= 1000 * range_difference;
+                    vector2D = new Vector2D(point1, point3);
+                    break;
+            }
+            if (vector2D == null)
+            {
+                return null;
+            }
+
+            int angle = 0;
+            if (mollierControlSettings.ChartType == ChartType.Mollier)
+            {
+               angle =  - (90 - (System.Convert.ToInt32((vector2D.Angle(Vector2D.WorldX)) * 180 / System.Math.PI) % 90));
+            }
+            else
+            {
+                angle = -(System.Convert.ToInt32((vector2D.Angle(Vector2D.WorldX)) * 180 / System.Math.PI) ) % 90;
+            }
+            
+            string label = " Relative Humidity φ";
+            series.SmartLabelStyle.Enabled = false;
+            if (constantValueCurve.Value == 50)
+            {
+                string newLabel = string.Empty;
+                if (!mollierControlSettings.DisableUnits)
+                {
+                    newLabel += value.ToString() + " %";
+                }
+                if (!mollierControlSettings.DisableLabels)
+                {
+                    newLabel += label;
+                }
+                series.Points[ID].Label = newLabel;
+            }
+            else if (!mollierControlSettings.DisableUnits)
+            {
+                series.Points[ID].Label = value.ToString() + "%";
+            }
+            //  series.Points[ID].LabelAngle = mollierControlSettings.ChartType == ChartType.Mollier ? -angle : angle - 180;
+            series.Points[ID].LabelAngle = angle;
+            series.Points[ID].LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Unit, ChartDataType.RelativeHumidity);
+
+            return series;
+
+
+
+          /* int startIndex_Temp = startIndex;
             while(count - (startIndex_Temp + 1) - i < 0)
             {
                 startIndex_Temp--;
@@ -178,37 +280,9 @@ namespace SAM.Core.Mollier.UI
                     point2D_1.Y *= 1000 * range_difference;
                     vector2D = new Vector2D(point2D_1, point2D_2);
                     break;
-            }
+            }*/
 
-            if(vector2D == null)
-            {
-                return null;
-            }
 
-            int angle = System.Convert.ToInt32((vector2D.Angle(Vector2D.WorldX)) * 180 / System.Math.PI);
-            string label = " Relative Humidity φ";
-            series.SmartLabelStyle.Enabled = false;
-            if (i == 5)
-            {
-                string newLabel = string.Empty;
-                if (!mollierControlSettings.DisableUnits)
-                {
-                    newLabel += value.ToString() + " %";
-                }
-                if (!mollierControlSettings.DisableLabels)
-                {
-                    newLabel += label;
-                }
-                series.Points[count - startIndex_Temp - i].Label = newLabel;
-            }
-            else if (!mollierControlSettings.DisableUnits)
-            {
-                series.Points[count - startIndex_Temp - i].Label = value.ToString() + "%";
-            }
-            series.Points[count - startIndex_Temp - i].LabelAngle = mollierControlSettings.ChartType == ChartType.Mollier ? - angle : angle - 180;
-            series.Points[count - startIndex_Temp - i].LabelForeColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Unit, ChartDataType.RelativeHumidity);
-        
-            return series;
         }
 
         public static Series AddLabel(this Chart chart, MollierControlSettings mollierControlSettings, double x, double y, int angle, double offset_X, double offset_Y, string text, ChartDataType chartDataType, ChartParameterType chartParameterType, Color? color = null, object tag = null, Font font = null, SeriesChartType seriesChartType = SeriesChartType.Spline)

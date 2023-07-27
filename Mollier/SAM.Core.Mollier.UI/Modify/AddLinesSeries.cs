@@ -19,7 +19,7 @@ namespace SAM.Core.Mollier.UI
             {
                 foreach (Series series in seriesList)
                 {
-                    AddLabel_RelativeHumidity(series, mollierControlSettings, 5);
+                    AddLabel_RelativeHumidity(series, chart.ChartAreas[0], mollierControlSettings, 5);
                 }
             }
 
