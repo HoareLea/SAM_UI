@@ -228,7 +228,6 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Modify\AddLinesSeries.cs" />
-    <Compile Include="Modify\AddMollierProcesses_Legacy.cs" />
     <Compile Include="Modify\AddMollierProcesses.cs" />
     <Compile Include="Modify\AddDivisionArea.cs" />
     <Compile Include="Modify\AddMollierZones.cs" />
