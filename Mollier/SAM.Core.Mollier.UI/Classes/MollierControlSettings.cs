@@ -26,7 +26,7 @@ namespace SAM.Core.Mollier.UI
         public bool GradientPoint { get; set; } = false;
         public bool FindPoint { get; set; } = false;
         public double Percent { get; set; } = 0.4; //TODO: [MACIEK] Adjust value -> Percent 1-100% or factor 0-1
-        public string FindPointType { get; set; } = "Enthalpy";
+        public ChartDataType FindPointType { get; set; } = ChartDataType.Enthalpy;
         public bool DivisionArea { get; set; } = false;
         public bool DivisionAreaLabels { get; set; } = true;
 

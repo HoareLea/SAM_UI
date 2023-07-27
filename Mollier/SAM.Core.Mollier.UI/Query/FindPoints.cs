@@ -9,18 +9,16 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
-        // query -> znajdowanie punktu o percent : FindPoints( IEnumerable<MollierPoint>, MollierControlSettings, ChartDataType, double percent)
-        [Obsolete("To be changed Maciek")] // TODO: Change (MollierProcess)
+        [Obsolete("To be changed Maciek")]
         public static void FindPoints(Control control, Chart chart, MollierControlSettings mollierControlSettings, List<UIMollierPoint> mollierPoints)
         {
             bool generate = mollierControlSettings.FindPoint;
             double percent = mollierControlSettings.Percent;
-            string chartDataType = mollierControlSettings.FindPointType;
             ChartType chartType = mollierControlSettings.ChartType;
 
             foreach (Series series_Temp in chart.Series)
             {
-                if (series_Temp.Tag == "ColorPoint")
+                if (series_Temp.Tag == "FoundPoint")
                 {
                     series_Temp.Enabled = false;
                 }
@@ -44,7 +42,8 @@ namespace SAM.Core.Mollier.UI
             series.MarkerColor = Color.Red;
             series.MarkerSize = 10;
             series.MarkerStyle = MarkerStyle.Circle;
-            series.Tag = "ColorPoint";
+            series.Tag = "FoundPoint";
+
             Series series1 = chart.Series.Add(Guid.NewGuid().ToString());
             series1.IsVisibleInLegend = false;
             series1.ChartType = SeriesChartType.Point;
@@ -52,7 +51,7 @@ namespace SAM.Core.Mollier.UI
             series1.MarkerColor = Color.Red;
             series1.MarkerSize = 15;
             series1.MarkerStyle = MarkerStyle.Circle;
-            series1.Tag = "ColorPointLabelSquare"; // TODO: [MACIEK] zmienić nazwę, to jest ten opis k-tego, znalezionego punktu  
+            series1.Tag = "FoundPointToolTip"; 
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
                 series1.Points.AddXY((mollierControlSettings.HumidityRatio_Min + mollierControlSettings.HumidityRatio_Max) / 2, (mollierControlSettings.Temperature_Min + mollierControlSettings.Temperature_Max) / 4);
@@ -62,26 +61,27 @@ namespace SAM.Core.Mollier.UI
                 series1.Points.AddXY((mollierControlSettings.Temperature_Min + mollierControlSettings.Temperature_Max) / 4, (mollierControlSettings.HumidityRatio_Min + mollierControlSettings.HumidityRatio_Max) / 2000);
             }
 
-            switch (chartDataType)
+            switch (mollierControlSettings.FindPointType)
             {
-                case "Temperature":
+                case Mollier.ChartDataType.DryBulbTemperature:
                     uIMollierPoints.Sort((x, y) => x.MollierPoint.DryBulbTemperature.CompareTo(y.MollierPoint.DryBulbTemperature));
                     break;
-                case "Enthalpy":
+                case Mollier.ChartDataType.Enthalpy:
                     uIMollierPoints.Sort((x, y) => x.MollierPoint.Enthalpy.CompareTo(y.MollierPoint.Enthalpy));
                     break;
             }
+
             Point2D point = Convert.ToSAM(uIMollierPoints[index].MollierPoint, chartType);
             series.Points.AddXY(point.X, point.Y);
 
-            string colorPointLabel = ToolTipText(uIMollierPoints[index].MollierPoint, chartType);
+            string foundPointLabel = ToolTipText(uIMollierPoints[index].MollierPoint, chartType);
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
-                Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, colorPointLabel, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
+                Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, foundPointLabel, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
             }
             else
             {
-                Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0.001 * -11 * Query.ScaleVector2D(control, mollierControlSettings).Y, colorPointLabel, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
+                Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0.001 * -11 * Query.ScaleVector2D(control, mollierControlSettings).Y, foundPointLabel, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
             }
         }
     }
