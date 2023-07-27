@@ -79,11 +79,8 @@ namespace SAM.Core.Mollier.UI
                         return null;
                     }
                     step = mollierControlSettings.WetBulbTemperature_Interval;
-                    
-                    Range<double> dryBulbTemperatureRange_WetBulbTemperature = new Range<double>(Limit.DryBulbTemperature_Min, Limit.DryBulbTemperature_Max);
-                    Range<double> humidityRatioRange_WetBulbTemperature = new Range<double>(Limit.HumidityRatio_Min / 1000, Limit.DryBulbTemperature_Max / 1000);
 
-                    return Mollier.Create.ConstantValueCurves_WetBulbTemperature(dryBulbTemperatureRange_WetBulbTemperature, humidityRatioRange_WetBulbTemperature, step, pressure);
+                    return Mollier.Create.ConstantValueCurves_WetBulbTemperature(dryBulbTemperatureRange, humidityRatioRange, step, pressure);
 
                 case Mollier.ChartDataType.SpecificVolume:
                     if (!mollierControlSettings.SpecificVolume_line)
