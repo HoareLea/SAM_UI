@@ -547,7 +547,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings3.Enthalpy_Max = 140000D;
             mollierControlSettings3.Enthalpy_Min = -20000D;
             mollierControlSettings3.FindPoint = false;
-            mollierControlSettings3.FindPointType = "Enthalpy";
+            mollierControlSettings3.FindPointType = ChartDataType.Enthalpy;
             mollierControlSettings3.GradientPoint = false;
             mollierControlSettings3.HumidityRatio_Interval = 5D;
             mollierControlSettings3.HumidityRatio_Max = 35D;

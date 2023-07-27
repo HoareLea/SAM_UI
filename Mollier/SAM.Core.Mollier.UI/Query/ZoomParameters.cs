@@ -38,6 +38,7 @@ namespace SAM.Core.Mollier.UI
             y_Max = double.MinValue;
             foreach (DataPoint dataPoint in dataPoints)
             {
+                if (dataPoint == dataPoints[0]) continue; // it's first point that is hidden on (0, 1) that fixes AddPoints Method
                 if (dataPoint.XValue > x_Max)
                 {
                     x_Max = dataPoint.XValue;

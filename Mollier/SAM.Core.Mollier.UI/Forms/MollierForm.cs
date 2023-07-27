@@ -576,7 +576,7 @@ namespace SAM.Core.Mollier.UI
             {
                 mollierControlSettings.FindPoint = true;
                 mollierControlSettings.Percent = 0.4;
-                mollierControlSettings.FindPointType = "Enthalpy";
+                mollierControlSettings.FindPointType = ChartDataType.Enthalpy;
             }
             else
             {
@@ -617,7 +617,14 @@ namespace SAM.Core.Mollier.UI
         private void ColorPointComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.FindPointType = ColorPointComboBox.Text;
+            if(ColorPointComboBox.Text == "Enthalpy")
+            {
+                mollierControlSettings.FindPointType = ChartDataType.Enthalpy;
+            }
+            else if(ColorPointComboBox.Text == "Temperature")
+            {
+                mollierControlSettings.FindPointType = ChartDataType.DryBulbTemperature;
+            }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 

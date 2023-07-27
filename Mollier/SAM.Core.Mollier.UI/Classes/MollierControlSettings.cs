@@ -26,7 +26,7 @@ namespace SAM.Core.Mollier.UI
         public bool GradientPoint { get; set; } = false;
         public bool FindPoint { get; set; } = false;
         public double Percent { get; set; } = 0.4; //TODO: [MACIEK] Adjust value -> Percent 1-100% or factor 0-1
-        public string FindPointType { get; set; } = "Enthalpy";
+        public ChartDataType FindPointType { get; set; } = ChartDataType.Enthalpy;
         public bool DivisionArea { get; set; } = false;
         public bool DivisionAreaLabels { get; set; } = true;
 
@@ -115,8 +115,6 @@ namespace SAM.Core.Mollier.UI
 
         public bool IsValid()
         {
-            //TODO: [MACIEK] Add Density_Max, Density_Min, Density_Interval, Enthalpy_Min, Enthalpy_Max, Enthalpy_Interval,SpecificVolume_Min, SpecificVolume_Max, SpecificVolume_Interval
-
             if (double.IsNaN(Pressure) ||
                 double.IsInfinity(Pressure) ||
                 Pressure == double.MaxValue ||
@@ -144,7 +142,55 @@ namespace SAM.Core.Mollier.UI
                 double.IsNaN(Temperature_Interval) ||
                 double.IsInfinity(Temperature_Interval) ||
                 Temperature_Interval == double.MaxValue ||
-                Temperature_Interval == double.MinValue)
+                Temperature_Interval == double.MinValue ||
+                double.IsNaN(Density_Min) ||
+                double.IsInfinity(Density_Min) ||
+                Density_Min == double.MaxValue ||
+                Density_Min == double.MinValue ||
+                double.IsNaN(Density_Max) ||
+                double.IsInfinity(Density_Max) ||
+                Density_Max == double.MaxValue ||
+                Density_Max == double.MinValue ||
+                double.IsNaN(Density_Interval) ||
+                double.IsInfinity(Density_Interval) ||
+                Density_Interval == double.MaxValue ||
+                Density_Interval == double.MinValue ||
+                double.IsNaN(Enthalpy_Min) ||
+                double.IsInfinity(Enthalpy_Min) ||
+                Enthalpy_Min == double.MaxValue ||
+                Enthalpy_Min == double.MinValue ||
+                double.IsNaN(Enthalpy_Max) ||
+                double.IsInfinity(Enthalpy_Max) ||
+                Enthalpy_Max == double.MaxValue ||
+                Enthalpy_Max == double.MinValue ||
+                double.IsNaN(Enthalpy_Interval) ||
+                double.IsInfinity(Enthalpy_Interval) ||
+                Enthalpy_Interval == double.MaxValue ||
+                Enthalpy_Interval == double.MinValue ||
+                double.IsNaN(SpecificVolume_Min) ||
+                double.IsInfinity(SpecificVolume_Min) ||
+                SpecificVolume_Min == double.MaxValue ||
+                SpecificVolume_Min == double.MinValue ||
+                double.IsNaN(SpecificVolume_Max) ||
+                double.IsInfinity(SpecificVolume_Max) ||
+                SpecificVolume_Max == double.MaxValue ||
+                SpecificVolume_Max == double.MinValue ||
+                double.IsNaN(SpecificVolume_Interval) ||
+                double.IsInfinity(SpecificVolume_Interval) ||
+                SpecificVolume_Interval == double.MaxValue ||
+                SpecificVolume_Interval == double.MinValue ||
+                double.IsNaN(WetBulbTemperature_Min) ||
+                double.IsInfinity(WetBulbTemperature_Min) ||
+                WetBulbTemperature_Min == double.MaxValue ||
+                WetBulbTemperature_Min == double.MinValue ||
+                double.IsNaN(WetBulbTemperature_Max) ||
+                double.IsInfinity(WetBulbTemperature_Max) ||
+                WetBulbTemperature_Max == double.MaxValue ||
+                WetBulbTemperature_Max == double.MinValue ||
+                double.IsNaN(WetBulbTemperature_Interval) ||
+                double.IsInfinity(WetBulbTemperature_Interval) ||
+                WetBulbTemperature_Interval == double.MaxValue ||
+                WetBulbTemperature_Interval == double.MinValue)
             {
                 return false;
             }
