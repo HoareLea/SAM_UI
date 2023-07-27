@@ -99,7 +99,7 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            if (mollierControlSettings.DisableUnits)
+            if (mollierControlSettings.DisableLabels)
             {
                 return null;
             }

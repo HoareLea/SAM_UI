@@ -22,7 +22,7 @@ namespace SAM.Core.Mollier.UI
 
             foreach (Series series in series_List)
             {
-                if (!(series.Tag is IMollierProcess) && !(series.Tag is List<MollierPoint>) && !(series.Tag == "GradientZone"))
+                if (!(series.Tag is IMollierProcess) && !(series.Tag is List<UIMollierPoint>) && !(series.Tag is List<MollierPoint>) && !(series.Tag == "GradientZone"))
                 {
                     continue;
                 }
