@@ -55,7 +55,7 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            if (UI.Controls.MollierControl.MinPressure > pressure || pressure > UI.Controls.MollierControl.MaxPressure)
+            if (Limit.Pressure_Min > pressure || pressure > Limit.Pressure_Max)
             {
                 return;
             }

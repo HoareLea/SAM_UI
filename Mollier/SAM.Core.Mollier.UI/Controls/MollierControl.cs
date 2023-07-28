@@ -10,9 +10,6 @@ namespace SAM.Core.Mollier.UI.Controls
     {
         public event MollierPointSelectedEventHandler MollierPointSelected;
 
-        public static double MaxPressure = 400000;//TODO: [Maciek] Move do SAM.Core.Mollier.Default
-        public static double MinPressure = 35000;//TODO: [Maciek] Move do SAM.Core.Mollier.Default
-
         private Point mdown = Point.Empty;
         private bool selection = false;
         private MollierControlSettings mollierControlSettings;
@@ -246,7 +243,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             ChartType chartType = mollierControlSettings.ChartType;
 
-            if (MinPressure > pressure || pressure > MaxPressure)
+            if (Limit.Pressure_Min > pressure || pressure > Limit.Pressure_Max)
             {
                 return;
             }
@@ -316,7 +313,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double temperature_Max = mollierControlSettings.Temperature_Max;
             double temperature_interval = mollierControlSettings.Temperature_Interval;
 
-            if (MinPressure > pressure || pressure > MaxPressure)
+            if (Limit.Pressure_Min > pressure || pressure > Limit.Pressure_Max)
             {
                 return;
             }

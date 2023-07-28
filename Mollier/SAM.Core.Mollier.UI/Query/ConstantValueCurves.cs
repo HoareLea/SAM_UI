@@ -17,10 +17,11 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            Range<double> dryBulbTemperatureRange = mollierControlSettings.DryBulbTemperatureRange();
-            Range<double> humidityRatioRange = mollierControlSettings.HumidityRatioRange();
-
-            
+            MollierRange mollierRange = mollierControlSettings.MollierRange();
+            if(mollierRange == null || !mollierRange.IsValid())
+            {
+                return null;
+            }
 
             double step = double.NaN;
 
@@ -29,7 +30,7 @@ namespace SAM.Core.Mollier.UI
                 case Mollier.ChartDataType.DryBulbTemperature:
                     step = 1;
 
-                    return Mollier.Create.ConstantTemperatureCurves_DryBulbTemperature(dryBulbTemperatureRange, humidityRatioRange, step, pressure)?.ConvertAll(x => x as ConstantValueCurve);
+                    return Mollier.Create.ConstantTemperatureCurves_DryBulbTemperature(mollierRange, step, pressure)?.ConvertAll(x => x as ConstantValueCurve);
 
 
                 case Mollier.ChartDataType.Density:
@@ -44,14 +45,12 @@ namespace SAM.Core.Mollier.UI
 
                     Range<double> denistyRange = new Range<double>(denisty_Min, denisty_Max);
 
-                    return Mollier.Create.ConstantValueCurves_Density(denistyRange,humidityRatioRange, dryBulbTemperatureRange, step, pressure);
+                    return Mollier.Create.ConstantValueCurves_Density(mollierRange, denistyRange, step, pressure);
 
                 case Mollier.ChartDataType.RelativeHumidity:
                     step = 10;
                     
-                    Range<double> dryBulbTemperatureRange_RelativeHumidity = new Range<double>(Limit.DryBulbTemperature_Min, Limit.DryBulbTemperature_Max);
-
-                    return Mollier.Create.ConstantValueCurves_RelativeHumidity(new Range<double>(0, 100), step, pressure, dryBulbTemperatureRange_RelativeHumidity, humidityRatioRange);
+                    return Mollier.Create.ConstantValueCurves_RelativeHumidity(new MollierRange(Limit.DryBulbTemperature_Min, Limit.DryBulbTemperature_Max, mollierRange.HumidityRatio_Min, mollierRange.HumidityRatio_Max), new Range<double>(0, 100), step, pressure);
 
                 case Mollier.ChartDataType.Enthalpy:
                     if (!mollierControlSettings.Enthalpy_line)
@@ -63,7 +62,7 @@ namespace SAM.Core.Mollier.UI
                     double enthalpy_Max = mollierControlSettings.Enthalpy_Max;
                     step = mollierControlSettings.Enthalpy_Interval;
 
-                    return Mollier.Create.ConstantEnthalpyCurves(new Range<double>(enthalpy_Min, enthalpy_Max), pressure, step, dryBulbTemperatureRange, humidityRatioRange, Phase.Gas)?.ConvertAll(x => x as ConstantValueCurve);
+                    return Mollier.Create.ConstantEnthalpyCurves(mollierRange, new Range<double>(enthalpy_Min, enthalpy_Max), pressure, step, Phase.Gas)?.ConvertAll(x => x as ConstantValueCurve);
 
                 case Mollier.ChartDataType.WetBulbTemperature:
                     if (!mollierControlSettings.WetBulbTemperature_line)
@@ -72,7 +71,7 @@ namespace SAM.Core.Mollier.UI
                     }
                     step = mollierControlSettings.WetBulbTemperature_Interval;
 
-                    return Mollier.Create.ConstantValueCurves_WetBulbTemperature(dryBulbTemperatureRange, humidityRatioRange, step, pressure);
+                    return Mollier.Create.ConstantValueCurves_WetBulbTemperature(mollierRange, step, pressure);
 
                 case Mollier.ChartDataType.SpecificVolume:
                     if (!mollierControlSettings.SpecificVolume_line)
@@ -84,7 +83,7 @@ namespace SAM.Core.Mollier.UI
                     double specificVolume_Max = mollierControlSettings.SpecificVolume_Max;
                     step = mollierControlSettings.SpecificVolume_Interval;
 
-                    return Mollier.Create.ConstantValueCurves_SpecificVolume(dryBulbTemperatureRange, humidityRatioRange, new Range<double>(specificVolume_Min, specificVolume_Max), step, pressure);
+                    return Mollier.Create.ConstantValueCurves_SpecificVolume(mollierRange, new Range<double>(specificVolume_Min, specificVolume_Max), step, pressure);
 
                 default:
                     return null;
