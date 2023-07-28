@@ -35,7 +35,7 @@ namespace SAM.Core.Mollier.UI
         public double Density_Interval { get; set; } = Default.Density_Interval;
 
         public double Enthalpy_Min { get; set; } = -20000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
-        public double Enthalpy_Max { get; set; } = 140000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
+        public double Enthalpy_Max { get; set; } = 200000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
         public double Enthalpy_Interval { get; set; } = 1000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
 
         public double SpecificVolume_Min { get; set; } = Default.SpecificVolume_Min;

@@ -19,7 +19,7 @@ namespace SAM.Core.Mollier.UI
             {
                 foreach (Series series in seriesList)
                 {
-                    AddLabel_RelativeHumidity(series, mollierControlSettings, 5);
+                    AddLabel_RelativeHumidity(series, chart.ChartAreas[0], mollierControlSettings, 5);
                 }
             }
 
@@ -48,8 +48,8 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 //Label location 
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -7.2 : 4.5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 18.2 : -0.0018;
+                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -4.8 : 4.5;
+                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 11.5 : -0.002;
 
                 Series series_Temp = seriesList[seriesList.Count / 2];
 

@@ -166,9 +166,9 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if(temperature_Max > 50)
+                if(temperature_Max > Limit.DryBulbTemperature_Max)
                 {
-                    //MessageBox.Show("Wrong range\nMaximal possibly temperature is 50!");
+                    MessageBox.Show("Wrong range\nMaximal possibly temperature is " + Limit.DryBulbTemperature_Max + "!");
                     return double.NaN;
                 }
                 if (System.Convert.ToDouble(TemperatureMinimumValueTextbox.Text) >= temperature_Max)
@@ -191,9 +191,9 @@ namespace SAM.Core.Mollier.UI
                 {
                     return double.NaN;
                 }
-                if(temperature_Min < -20)
+                if(temperature_Min < Limit.DryBulbTemperature_Min)
                 {
-                    //MessageBox.Show("Wrong range\nMinimal possibly temperature is -20!");
+                    MessageBox.Show("Wrong range\nMinimal possibly temperature is " + Limit.DryBulbTemperature_Min + "!");
                     return double.NaN;
                 }
                 if (temperature_Min >= System.Convert.ToDouble(TemperatureMaximumValueTextbox.Text))

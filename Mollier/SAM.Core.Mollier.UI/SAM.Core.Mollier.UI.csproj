@@ -266,6 +266,7 @@
     <Compile Include="Query\DefaultUnitType.cs" />
     <Compile Include="Query\UnitCategory.cs" />
     <Compile Include="Query\ZoomParameters.cs" />
+    <Compile Include="Temporary\Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\AdiabaticHumidificationProcessControl.resx">
