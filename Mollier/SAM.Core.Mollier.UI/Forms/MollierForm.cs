@@ -712,21 +712,23 @@ namespace SAM.Core.Mollier.UI
                 action = openJSONForm.GetAction();
             }
 
-            if(action == Forms.OpenJSONForm.Action.Undefined)
+            switch(action)
             {
-                return;
+                case Forms.OpenJSONForm.Action.Undefined:
+                    return;
+
+                case Forms.OpenJSONForm.Action.Replace:
+                    Clear();
+                    break;
             }
 
-            if (action == Forms.OpenJSONForm.Action.Replace)
+            MollierControlSettings mollierControlSettings = System.IO.File.Exists(path) ? Core.Convert.ToSAM<MollierControlSettings>(path).Find(x => x != null) : null;
+            if (mollierControlSettings != null)
             {
-                Clear();
-                MollierControlSettings mollierControlSettings = System.IO.File.Exists(path) ? Core.Convert.ToSAM<MollierControlSettings>(path).Find(x => x != null) : null;
-                if(mollierControlSettings != null)
-                {
-                    MollierControl_Main.MollierControlSettings = mollierControlSettings;
-                    default_chart(mollierControlSettings);
-                }
+                MollierControl_Main.MollierControlSettings = mollierControlSettings;
+                default_chart(mollierControlSettings);
             }
+
             LoadMollierObjects(mollierObjects);
     
         }
