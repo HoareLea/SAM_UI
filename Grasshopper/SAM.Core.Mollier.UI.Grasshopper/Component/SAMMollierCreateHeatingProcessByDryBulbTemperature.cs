@@ -138,17 +138,36 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             index = Params.IndexOfOutputParam("heatingProcess");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierProcess(heatingProcess, color, startLabel, processLabel, endLabel));
+                if(heatingProcess != null)
+                {
+                    dataAccess.SetData(index, new GooMollierProcess(heatingProcess, color, startLabel, processLabel, endLabel));
+                }
+                else
+                {
+                    dataAccess.SetData(index, null);
+                }
+                
             }
             else
             {
                 return;
             }
-            MollierPoint end = new MollierPoint(heatingProcess.End);
+
+            
             index = Params.IndexOfOutputParam("end");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierPoint(end));
+                if (heatingProcess == null)
+                {
+                    dataAccess.SetData(index, mollierPoint);
+                }
+                else
+                {
+                    MollierPoint end = new MollierPoint(heatingProcess.End);
+                    dataAccess.SetData(index, new GooMollierPoint(end));
+                }
+
+                
             }
             index = Params.IndexOfOutputParam("color");
             if (index != -1)
@@ -159,7 +178,14 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             index = Params.IndexOfOutputParam("epsilon");
             if (index != -1)
             {
-                dataAccess.SetData(index, heatingProcess.Epsilon());
+                if (heatingProcess == null)
+                {
+                    dataAccess.SetData(index, null);
+                }
+                else
+                {
+                    dataAccess.SetData(index, heatingProcess.Epsilon());
+                }
             }
         }
 
