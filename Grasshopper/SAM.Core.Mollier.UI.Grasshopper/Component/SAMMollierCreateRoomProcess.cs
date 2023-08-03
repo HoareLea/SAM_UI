@@ -53,6 +53,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
 
                 param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "processLabel_", NickName = "processLabel_", Description = "Process Label", Access = GH_ParamAccess.item, Optional = true };
+                param_Label.SetPersistentData("Room");
                 result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
 
                 param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "endLabel_", NickName = "endLabel_", Description = "End Label", Access = GH_ParamAccess.item, Optional = true };
