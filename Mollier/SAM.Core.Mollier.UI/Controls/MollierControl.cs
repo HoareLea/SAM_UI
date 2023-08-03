@@ -653,7 +653,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     uniqueNames.Add("[deltaT]");
                     uniqueNames.Add("[deltaX]");
                     uniqueNames.Add("[deltaH]");
-                    int numberOfData = 14;
+                    uniqueNames.Add("[epsilon]");
+                    int numberOfData = 15;
                     int columnIndex_Min = 100;
                     int rowIndex_Min = 100;
                     Dictionary<string, NetOffice.ExcelApi.Range> dictionary = new Dictionary<string, NetOffice.ExcelApi.Range>();
@@ -681,7 +682,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                         columnIndex_Min = j;
                                         rowIndex_Min = i;
                                     }
-                                    dictionary.Add(name_Temp, worksheet.Cells[i, j]);
+                                    dictionary[name_Temp] = worksheet.Cells[i, j];
                                     break;
                                 }
                             }
@@ -805,6 +806,9 @@ namespace SAM.Core.Mollier.UI.Controls
                                         case "[deltaH]":
                                             value_2 = (System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2)).ToString();
                                             break;
+                                        case "[epsilon]":
+                                            value_2 = System.Math.Round(Mollier.Query.Epsilon(mollierProcess), 0).ToString();
+                                            break;
                                     }
 
 
@@ -817,7 +821,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                             worksheet.Cells[rowIndex + id, columnIndex].Value = value_1;
                                             id++;
                                         }
-                                        else if (key_Temp == "[ProcessName]" || key_Temp == "[deltaT]" || key_Temp == "[deltaX]" || key_Temp == "[deltaH]")
+                                        else if (key_Temp == "[ProcessName]" || key_Temp == "[deltaT]" || key_Temp == "[deltaX]" || key_Temp == "[deltaH]" || key_Temp == "[epsilon]")
                                         {
                                             //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                                             worksheet.Cells[rowIndex + id, columnIndex].Value = "-";
