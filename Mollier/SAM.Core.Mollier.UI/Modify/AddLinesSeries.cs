@@ -19,7 +19,7 @@ namespace SAM.Core.Mollier.UI
             {
                 foreach (Series series in seriesList)
                 {
-                    AddLabel_RelativeHumidity(series, chart.ChartAreas[0], mollierControlSettings, 5);
+                  //  AddLabel_RelativeHumidity(series, chart.ChartAreas[0], mollierControlSettings, 5);
                 }
             }
 
@@ -29,13 +29,13 @@ namespace SAM.Core.Mollier.UI
             {
                 foreach (Series series in seriesList)
                 {
-                    AddLabel_Unit(chart, series, mollierControlSettings);
+                  //  AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
                 double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? 2 : 11.5;
                 double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? -1 : 0.0035;
 
-                AddLabel_Label(chart, seriesList[seriesList.Count / 2], mollierControlSettings, "Density ρ [kg/m³]", offset_X, offset_Y);
+               // AddLabel_Label(chart, seriesList[seriesList.Count / 2], mollierControlSettings, "Density ρ [kg/m³]", offset_X, offset_Y);
             }
 
             //Enthalpy
@@ -44,7 +44,7 @@ namespace SAM.Core.Mollier.UI
             {
                 foreach (Series series in seriesList)
                 {
-                    AddLabel_Unit(chart, series, mollierControlSettings);
+                   // AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
                 //Label location 
@@ -53,7 +53,7 @@ namespace SAM.Core.Mollier.UI
 
                 Series series_Temp = seriesList[seriesList.Count / 2];
 
-                AddLabel_Label(chart, series_Temp, mollierControlSettings, "Enthalpy h [kJ/kg]", offset_X, offset_Y, series_Temp.Points.Count / 2);
+               // AddLabel_Label(chart, series_Temp, mollierControlSettings, "Enthalpy h [kJ/kg]", offset_X, offset_Y, series_Temp.Points.Count / 2);
             }
 
             //Wet Bulb Temperature
@@ -62,7 +62,7 @@ namespace SAM.Core.Mollier.UI
             {
                 foreach (Series series in seriesList)
                 {
-                    AddLabel_Unit(chart, series, mollierControlSettings);
+                   // AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
                 double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -5.5 : 24.5;
@@ -70,7 +70,7 @@ namespace SAM.Core.Mollier.UI
 
                 Series series_Temp = seriesList[seriesList.Count / 2];
 
-                AddLabel_Label(chart, series_Temp, mollierControlSettings, "Wet Bulb Temperature t_wb [°C]", offset_X, offset_Y, series_Temp.Points.Count - 1);
+               // AddLabel_Label(chart, series_Temp, mollierControlSettings, "Wet Bulb Temperature t_wb [°C]", offset_X, offset_Y, series_Temp.Points.Count - 1);
             }
 
             //Specific Volume
@@ -79,7 +79,7 @@ namespace SAM.Core.Mollier.UI
             {
                 foreach (Series series in seriesList)
                 {
-                    Modify.AddLabel_Unit(chart, series, mollierControlSettings);
+                  //  Modify.AddLabel_Unit(chart, series, mollierControlSettings);
                 }
 
                 double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -12 : 5;
@@ -87,7 +87,7 @@ namespace SAM.Core.Mollier.UI
 
                 Series series_Temp = seriesList[seriesList.Count / 2];
 
-                AddLabel_Label(chart, series_Temp, mollierControlSettings, "Specific volume v [m³/kg]", offset_X, offset_Y, series_Temp.Points.Count / 2);
+           //     AddLabel_Label(chart, series_Temp, mollierControlSettings, "Specific volume v [m³/kg]", offset_X, offset_Y, series_Temp.Points.Count / 2);
             }
         }
     }

@@ -68,12 +68,6 @@ namespace SAM.Core.Mollier.UI
 
                 List<MollierPoint> testList = dictionary.Keys.ToList();
 
-                foreach(MollierPoint test in testList)
-                {
-                        bool boolean = test == mollierPoint; // TU POWINNO BYĆ W JAKIMS PRZYBLIZENIU SPRAWDZANE BO NIE ZNAJDUJE MIMO TYCH SAMYCH WSPOLRZEDNYCH
-                                                          // TODO: GRADIENT POINT BUG
-                }
-
                 // Checking whether gradient point is activated 
                 if (pointGradientVisibilitySetting != null)
                 {

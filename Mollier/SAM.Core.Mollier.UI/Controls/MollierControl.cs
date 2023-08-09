@@ -422,6 +422,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierProcesses = Modify.AddMollierProcesses(MollierChart, this, systems, mollierProcesses, mollierControlSettings);
             Query.FindPoints(this, MollierChart, mollierControlSettings, mollierPoints);
 
+            Temporary2.AddLabels(this, MollierChart, mollierControlSettings);
             //Temporary.AddLinesLabels(MollierChart, mollierControlSettings);
 
             foreach (ChartArea chartArea in MollierChart.ChartAreas)

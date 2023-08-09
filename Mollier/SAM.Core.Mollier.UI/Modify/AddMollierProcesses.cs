@@ -58,7 +58,8 @@ namespace SAM.Core.Mollier.UI
                     if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
                 }
             }
-            labelProcessPoints(chart, control, processPointsToLabel, mollierProcesses, mollierControlSettings);
+            // Dictionary<Point2D, string> processLabelsLocations = labelProcessPoints(chart, control, processPointsToLabel, mollierProcesses, mollierControlSettings);
+
             return labeledMollierProcesses;
         }
 
@@ -152,7 +153,7 @@ namespace SAM.Core.Mollier.UI
             series.Color = (uImollierProcess.UIMollierAppearance.Color == Color.Empty) ?
                 mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)
                 : uImollierProcess.UIMollierAppearance.Color;
-            series.Tag = mollierProcess;
+            series.Tag = uImollierProcess;
 
             int index;
             series.ToolTip = Query.ToolTipText(start, end, chartType, Query.FullProcessName(mollierProcess));
@@ -229,7 +230,7 @@ namespace SAM.Core.Mollier.UI
         
         
         // ------------------POINTS-LABELS-------------------------------------
-        private static void labelProcessPoints(Chart chart, Control control, List<UIMollierPoint> pointsToLabel, List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)
+        private static Dictionary<Point2D, string> labelProcessPoints(Chart chart, Control control, List<UIMollierPoint> pointsToLabel, List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)
         {
             Dictionary<Point2D, string> labelsLocations = getLabelsLocations(control, pointsToLabel, 
                                                                 mollierProcesses, mollierControlSettings);
@@ -241,6 +242,7 @@ namespace SAM.Core.Mollier.UI
                 AddLabel(chart, mollierControlSettings, labelLocation.X, labelLocation.Y, 0, 0, 0, 
                         label, ChartDataType.Undefined, ChartParameterType.Point, Color.Black);
             }
+            return labelsLocations;
         }
       
         private static Dictionary<Point2D, string> getLabelsLocations(Control control, List<UIMollierPoint> pointToLabel, List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)

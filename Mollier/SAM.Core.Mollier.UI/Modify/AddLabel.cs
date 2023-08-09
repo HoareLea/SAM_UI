@@ -74,7 +74,8 @@ namespace SAM.Core.Mollier.UI
                     break;
 
                 case ChartDataType.Density:
-                    angle = Query.Angle(series, mollierControlSettings);
+                    return null;
+                    angle = Query.Angle(series, mollierControlSettings); 
                     offset_X = chartType == ChartType.Mollier ? 0.3 : 0.2;
                     offset_Y = chartType == ChartType.Mollier ? -0.7 : 0.0002;
                     break;
