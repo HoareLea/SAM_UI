@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.5";
+        public override string LatestComponentVersion => "1.0.6";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -40,8 +40,8 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0-1]", Access = GH_ParamAccess.item, Optional = true };
-                param_Number.SetPersistentData(1.0);
-                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
+                param_Number.SetPersistentData(0.85);
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
 

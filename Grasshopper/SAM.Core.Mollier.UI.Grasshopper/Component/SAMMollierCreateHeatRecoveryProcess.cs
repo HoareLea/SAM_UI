@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.4";
+        public override string LatestComponentVersion => "1.0.5";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -39,11 +39,11 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_sensibleHeatRecoveryEfficiency", NickName = "_sensibleHeatRecoveryEfficiency", Description = "Sensible Heat Recovery Efficiency [%]", Access = GH_ParamAccess.item, Optional = true };
                 param_Number.SetPersistentData(75);
-                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_latentHeatRecoveryEfficiency", NickName = "_latentHeatRecoveryEfficiency", Description = "Latent Heat Recovery Efficiency [%]", Access = GH_ParamAccess.item, Optional = true };
                 param_Number.SetPersistentData(0);
-                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
