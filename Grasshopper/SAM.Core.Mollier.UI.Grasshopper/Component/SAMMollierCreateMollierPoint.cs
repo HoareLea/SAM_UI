@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.4";
+        public override string LatestComponentVersion => "1.0.5";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -39,7 +39,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_relativeHumidity_", NickName = "_relativeHumidity_", Description = "Relative Humidity [%]", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_humidityRatio_", NickName = "_humidityRatio_", Description = "Humidity Ratio [kg_waterVapor/kg_dryAir]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_humidityRatio_", NickName = "_humidityRatio_", Description = "Humidity Ratio [g_waterVapor/kg_dryAir]", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_wetBulbTemperature_", NickName = "_wetBulbTemperature_", Description = "Wet Bulb Temperature[°C]", Access = GH_ParamAccess.item, Optional = true };
@@ -131,6 +131,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 nan++;
             }
+            humidityRatio = humidityRatio / 1000;
 
             index = Params.IndexOfInputParam("_relativeHumidity_");
             double relativeHumidity = double.NaN;
