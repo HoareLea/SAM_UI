@@ -10,17 +10,21 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Temporary2
     {
-       /* public static void Tests(Control control, Chart chart, MollierControlSettings mollierControlSettings)
+        public static void Tests(Control control, Chart chart, MollierControlSettings mollierControlSettings)
         {
             Rectangle2D rectangle = new Rectangle2D(2, 3);
             Circle2D circle = new Circle2D(new Point2D(1, 4), 2);
 
             Circle2D circle2 = new Circle2D(new Point2D(10, 14), 1);
 
+            Circle2D circle3 = new Circle2D(new Point2D(3, 4), System.Math.Sqrt(2) - 0.001);
+            Circle2D circle4 = new Circle2D(new Point2D(1, 1), 0.5);
             bool check = circle.InRange(rectangle);
             bool check2 = circle2.InRange(rectangle); // brakuje tej metody
-
-          /*foreach(Solver2DResult resultData in solver2DResults)
+            bool check3 = circle3.InRange(rectangle);
+            bool check4 = circle4.InRange(rectangle);
+            //bool check5 = rectangle.Inside(circle4);
+            /* foreach(Solver2DResult resultDa ta in solver2DResults)
             {
                 Solver2DData solver2DData = resultData.Solver2DData;
                 Rectangle2D labelShape = resultData.Closed2D<Rectangle2D>();
@@ -30,8 +34,10 @@ namespace SAM.Core.Mollier.UI
                 addToChartR(chart, labelShape, Color.Red, axesRatio.Y);
             }
             return new List<Series>();*/
-        /*}
-      /*  public static void addToChartR(Chart chart, Rectangle2D rectangle, Color color, double yTOX)
+
+
+        }
+     /*   public static void addToChartR(Chart chart, Rectangle2D rectangle, Color color, double yTOX)
         {
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;

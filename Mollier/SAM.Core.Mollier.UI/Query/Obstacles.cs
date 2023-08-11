@@ -35,10 +35,21 @@ namespace SAM.Core.Mollier.UI
             return result;
         }
 
+        private static List<IClosed2D> obstacles_Point(UIMollierPoint point, ChartType chartType, Vector2D scaleVector, double axesRatio)
+        {
+            List<IClosed2D> result = new List<IClosed2D>();
+            double pointRadius = chartType == ChartType.Mollier ? 0.1 * scaleVector.X : 0.1 * scaleVector.X;
+
+            Point2D center = Convert.ToSAM(point, chartType).GetScaledY(axesRatio);
+            Circle2D circle = new Circle2D(center, pointRadius);
+            result.Add(circle);
+
+            return result;
+        }
         private static List<IClosed2D> obstacles_Process(UIMollierProcess process, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<IClosed2D> result = new List<IClosed2D>();
-            double processWidth = 0.2 * scaleVector.X; //  To change ? bad look on psychrometrics
+            double processWidth = chartType == ChartType.Mollier ? 0.25 * scaleVector.X : 0.25 * scaleVector.X;
 
             Point2D start = Convert.ToSAM(process.Start, chartType);
             Point2D end = Convert.ToSAM(process.End, chartType);
@@ -48,19 +59,8 @@ namespace SAM.Core.Mollier.UI
 
             result.Add(processRectangle);
             // TODO: Start and end point circles
-            //result.Add(pointToIClosed2D(new UIMollierPoint(process.Start), chartType, scaleVector, axesRatio));
-            //result.Add(pointToIClosed2D(new UIMollierPoint(process.End), chartType, scaleVector, axesRatio));
-
-            return result;
-        }
-        private static List<IClosed2D> obstacles_Point(UIMollierPoint point, ChartType chartType, Vector2D scaleVector, double axesRatio)
-        {
-            List<IClosed2D> result = new List<IClosed2D>();
-            double pointRadius = 0.2 * scaleVector.Y;
-
-            Point2D center = Convert.ToSAM(point, chartType).GetScaled(axesRatio);
-            Circle2D circle = new Circle2D(center, pointRadius);
-            result.Add(circle);
+            result.AddRange(obstacles_Point(new UIMollierPoint(process.Start), chartType, scaleVector, axesRatio));
+            result.AddRange(obstacles_Point(new UIMollierPoint(process.End), chartType, scaleVector, axesRatio));
 
             return result;
         }
@@ -81,6 +81,7 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-
+    
+            
     }
 }

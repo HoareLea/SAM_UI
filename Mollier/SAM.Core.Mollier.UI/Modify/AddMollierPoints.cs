@@ -33,13 +33,13 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Points.Clear();
             }
-            result.Tag = uIMollierPoints;
 
             
             Dictionary<MollierPoint, int> dictionary = new Dictionary<MollierPoint, int>();
-            double maxCount = 0;
+            double maxCount = 0;        
             List<MollierPoint>[,] rectangles_points;
-            PointGradientVisibilitySetting pointGradientVisibilitySetting = mollierControlSettings.VisibilitySettings.GetVisibilitySetting("User", ChartParameterType.Point) as PointGradientVisibilitySetting;
+            PointGradientVisibilitySetting pointGradientVisibilitySetting = mollierControlSettings.VisibilitySettings.
+                                           GetVisibilitySetting("User", ChartParameterType.Point) as PointGradientVisibilitySetting;
             if (pointGradientVisibilitySetting != null)
             {
                 dictionary = Query.NeighborhoodCount((uIMollierPoints as List<UIMollierPoint>).ConvertAll(x => x.MollierPoint), out maxCount, out rectangles_points);
@@ -75,9 +75,10 @@ namespace SAM.Core.Mollier.UI
                     result.Points[index].Color = Core.Query.Lerp(pointGradientVisibilitySetting.Color, pointGradientVisibilitySetting.GradientColor, value);
                 }
                 result.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, null);
-                result.Points[index].Tag = mollierPoint;
                 result.Points[index].MarkerSize = 7; //TODO: Change size of marker and make it const
                 result.Points[index].MarkerStyle = MarkerStyle.Circle;
+                result.Points[index].Tag = new UIMollierPoint(mollierPoint, 
+                    new UIMollierAppearance(System.Drawing.Color.Black, uIMollierPoint.UIMollierAppearance.Label));
 
                 if (uIMollierPoint.UIMollierAppearance != null)
                 {
@@ -88,7 +89,7 @@ namespace SAM.Core.Mollier.UI
 
                     if (!string.IsNullOrWhiteSpace(uIMollierPoint.UIMollierAppearance.Label))
                     {
-                        result.Points[index].Label = uIMollierPoint.UIMollierAppearance.Label;
+                        //result.Points[index].Label = uIMollierPoint.UIMollierAppearance.Label;
                     }
                 }
 

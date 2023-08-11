@@ -422,7 +422,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierProcesses = MollierChart.AddMollierProcesses(systems, mollierProcesses, mollierControlSettings);
 
             MollierChart.AddLabels(mollierControlSettings);
-            
+            Temporary2.Tests(this, MollierChart, mollierControlSettings);
 
             foreach (ChartArea chartArea in MollierChart.ChartAreas)
             {

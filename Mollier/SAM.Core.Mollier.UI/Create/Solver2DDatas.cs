@@ -16,10 +16,16 @@ namespace SAM.Core.Mollier.UI
 
             foreach (Series series in chart.Series)
             {
-                if (series.Tag is UIMollierPoint)
+                if (series.Name == "MollierPoints")
                 {
-                    UIMollierPoint point = (UIMollierPoint)series.Tag;
-                    result.AddRange(solver2DDatas_Point(point, chartType, scaleVector, axesRatio));
+                    foreach(DataPoint dataPoint in series.Points)
+                    {
+                        if(dataPoint.Tag is UIMollierPoint)
+                        {
+                            UIMollierPoint point = (UIMollierPoint)dataPoint.Tag;
+                            result.AddRange(solver2DDatas_Point(point, chartType, scaleVector, axesRatio));
+                        }
+                    }
                 }
                 if (series.Tag is UIMollierProcess)
                 {
@@ -49,6 +55,9 @@ namespace SAM.Core.Mollier.UI
             Point2D point = Convert.ToSAM(mollierPoint, chartType);
             string text = mollierPoint.UIMollierAppearance.Label;
             Point2D labelCenter = getLabelCenter(point, chartType, scaleVector);
+
+            //Point2D labelCenter = getLabelCenter(point, chartType, scaleVector);
+            //labelCenter.Y += 0.5 * scaleVector.Y;
 
             Rectangle2D labelRectangle = textToRectangle(labelCenter, text, chartType, scaleVector, axesRatio);
 
