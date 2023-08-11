@@ -7,45 +7,43 @@ namespace SAM.Core.Mollier.UI
     public static partial class Modify
     {
 
-        public static void AddMollierZones(this Chart chart, IEnumerable<MollierZone> mollierZones, MollierControlSettings mollierControlSettings)
+        public static List<Series> AddMollierZones(this Chart chart, IEnumerable<MollierZone> mollierZones, MollierControlSettings mollierControlSettings)
         {
             if(mollierZones == null)
             {
-                return;
+                return null;
             }
+            List<Series> result = new List<Series>();
+            ChartType chartType = mollierControlSettings.ChartType;
 
             foreach (MollierZone mollierZone in mollierZones)
             {
+                UIMollierZone uIMollierZone = mollierZone is UIMollierZone ? (UIMollierZone)mollierZone 
+                : new UIMollierZone(mollierZone, mollierControlSettings.UIMollierZoneColor, mollierControlSettings.UIMollierZoneText);
+                
                 Series series = chart.Series.Add("Mollier Zone " + System.Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 2;
-                series.Color = System.Drawing.Color.Blue;
-                string zoneText = "";
+                series.Color = uIMollierZone.Color;
+                series.Tag = uIMollierZone;
 
-                if (mollierZone is MollierControlZone)
+                foreach(MollierPoint mollierPoint in mollierZone.MollierPoints)
                 {
-                    MollierControlZone mollierControlZone = (MollierControlZone)mollierZone;
-                    series.Color = mollierControlZone.Color;
-                    zoneText = mollierControlZone.Text;
-                }
-
-                List<MollierPoint> mollierPoints = mollierZone.MollierPoints;
-                ChartType chartType = mollierControlSettings.ChartType;
-                int size = mollierPoints.Count;
-                for (int i = 0; i < size; i++)
-                {
-                    MollierPoint mollierPoint = mollierPoints[i];
                     Point2D point = Convert.ToSAM(mollierPoint, chartType);
                     series.Points.AddXY(point.X, point.Y);
                 }
 
-                MollierPoint zoneCenterMollierPoint = mollierZone.GetCenter();
+                result.Add(series);
+              /*  MollierPoint zoneCenterMollierPoint = mollierZone.GetCenter();
                 Point2D coneCenterPoint = Convert.ToSAM(zoneCenterMollierPoint, chartType);
-
+                
+                // TODO: move to AddLabels
                 AddLabel(chart, mollierControlSettings, coneCenterPoint.X, coneCenterPoint.Y, 0, 0, 0, zoneText, ChartDataType.Undefined,
-                         ChartParameterType.Undefined, color: System.Drawing.Color.Black);
+                         ChartParameterType.Undefined, color: System.Drawing.Color.Black);*/
             }
+
+            return result;
         }
     }
 }

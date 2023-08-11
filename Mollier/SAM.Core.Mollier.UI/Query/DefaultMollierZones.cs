@@ -8,10 +8,10 @@ namespace SAM.Core.Mollier.UI
         /// Saves default values of mollier zones
         /// </summary>
         /// <returns>Returns default values of mollier zones</returns>
-        public static List<MollierControlZone> MollierZones()
+        public static List<UIMollierZone> MollierZones()
         {
             double pressure = 101235;
-            List<MollierControlZone> result = new List<MollierControlZone>();
+            List<UIMollierZone> result = new List<UIMollierZone>();
 
             List<MollierPoint> mollierPoints_1 = new List<MollierPoint>();
             mollierPoints_1.Add(new MollierPoint(20, 0.004336446, pressure));
@@ -30,8 +30,8 @@ namespace SAM.Core.Mollier.UI
             mollierPoints_2.Add(new MollierPoint(24, 0.005545342, pressure));
             MollierZone mollierZone_2 = new MollierZone(mollierPoints_2);
 
-            result.Add(new MollierControlZone(mollierZone_1, System.Drawing.Color.Blue, "Winter"));
-            result.Add(new MollierControlZone(mollierZone_2, System.Drawing.Color.Red, "Summer"));
+            result.Add(new UIMollierZone(mollierZone_1, System.Drawing.Color.Blue, "Winter"));
+            result.Add(new UIMollierZone(mollierZone_2, System.Drawing.Color.Red, "Summer"));
 
             return result;
         }

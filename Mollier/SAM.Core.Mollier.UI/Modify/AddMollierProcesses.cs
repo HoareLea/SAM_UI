@@ -10,12 +10,13 @@ namespace SAM.Core.Mollier.UI
     public static partial class Modify
     {
         // ------------------GENERAL-ADD-PROCESSES-METHOD----------------------
-        public static List<UIMollierProcess> AddMollierProcesses(this Chart chart, Control control, List<List<UIMollierProcess>> systems, List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)
+        public static List<UIMollierProcess> AddMollierProcesses(this Chart chart, List<List<UIMollierProcess>> systems, List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)
         {
             if(systems == null)
             {
                 return null;
             }
+            Control control = chart.Parent;
             ChartType chartType = mollierControlSettings.ChartType;
             List<UIMollierProcess> labeledMollierProcesses = generateLabelsForProcessesSystems(systems);
 
@@ -58,14 +59,13 @@ namespace SAM.Core.Mollier.UI
                     if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
                 }
             }
-            // Dictionary<Point2D, string> processLabelsLocations = labelProcessPoints(chart, control, processPointsToLabel, mollierProcesses, mollierControlSettings);
 
             return labeledMollierProcesses;
         }
 
         
         // ------------------SERIES--------------------------------------------
-        private static Series createDewPointDashLineSeries(this Chart chart, MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType, Color color, int borderWidth, ChartDashStyle borderDashStyle)
+        private static Series createDewPointDashLineSeries(Chart chart, MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType, Color color, int borderWidth, ChartDashStyle borderDashStyle)
         {
             // Create additional dash line in Cooling process to ADP 
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
@@ -88,7 +88,7 @@ namespace SAM.Core.Mollier.UI
 
             return series;
         }          
-        private static List<Series> createRoomProcessSeries(this Chart chart, UIMollierProcess uIMollierProcess, MollierControlSettings mollierControlSettings)
+        private static List<Series> createRoomProcessSeries(Chart chart, UIMollierProcess uIMollierProcess, MollierControlSettings mollierControlSettings)
         {
             List<Series> result = new List<Series>();
 
@@ -229,52 +229,7 @@ namespace SAM.Core.Mollier.UI
         }
         
         
-        // ------------------POINTS-LABELS-------------------------------------
-        private static Dictionary<Point2D, string> labelProcessPoints(Chart chart, Control control, List<UIMollierPoint> pointsToLabel, List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)
-        {
-            Dictionary<Point2D, string> labelsLocations = getLabelsLocations(control, pointsToLabel, 
-                                                                mollierProcesses, mollierControlSettings);
-            foreach(KeyValuePair<Point2D, string> pointLabelPair in labelsLocations)
-            {
-                Point2D labelLocation = pointLabelPair.Key;
-                string label = pointLabelPair.Value;
-
-                AddLabel(chart, mollierControlSettings, labelLocation.X, labelLocation.Y, 0, 0, 0, 
-                        label, ChartDataType.Undefined, ChartParameterType.Point, Color.Black);
-            }
-            return labelsLocations;
-        }
-      
-        private static Dictionary<Point2D, string> getLabelsLocations(Control control, List<UIMollierPoint> pointToLabel, List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)
-        {
-            List<Segment2D> chartLines = processesToChartLines(mollierProcesses, mollierControlSettings);
-            List<Tuple<BoundingBox2D, string>> labelsStartingView = 
-                getLabelsStartingView(control, pointToLabel, mollierControlSettings);  // bounding box represents shape of label on a chart
-            Vector2D scaleVector = Query.ScaleVector2D(control, mollierControlSettings);
-
-            double distanceFromCenter = mollierControlSettings.ChartType == ChartType.Mollier ? 1.4 : 0.0007;
-            double distanceFromEdge = mollierControlSettings.ChartType == ChartType.Mollier ? 1 : 0.0005;
-
-            List<BoundingBox2D> labelsStartingShapesLocations = new List<BoundingBox2D>();
-            foreach(Tuple<BoundingBox2D, string> labelStartingView in labelsStartingView)
-            {
-                labelsStartingShapesLocations.Add(labelStartingView.Item1);
-            }
-
-            List<Vector2D> offsets = generateCenterOffsets(scaleVector, mollierControlSettings.ChartType, distanceFromEdge); 
-
-            Dictionary<BoundingBox2D, Vector2D> labelsFoundShapesLocations = FindSolution(labelsStartingShapesLocations, offsets, distanceFromCenter, segments: chartLines);
-            Dictionary<BoundingBox2D, Point2D> labelsFoundView = labelsShapesToPoints(labelsFoundShapesLocations, distanceFromCenter, scaleVector);
-
-            Dictionary<Point2D, string> labelsLocations = new Dictionary<Point2D, string>();
-
-            foreach(KeyValuePair<BoundingBox2D, Point2D> labelFoundView in labelsFoundView) 
-            {
-                labelsLocations.Add(labelFoundView.Value, labelsStartingView.Find(el => el.Item1 == labelFoundView.Key).Item2);
-            }       
-
-            return labelsLocations;
-        }     
+        // General methods used above 
         private static List<UIMollierProcess> generateLabelsForProcessesSystems(List<List<UIMollierProcess>> systems)
         {
             List<UIMollierProcess> labeledMollierProcesses = new List<UIMollierProcess>();
@@ -330,170 +285,6 @@ namespace SAM.Core.Mollier.UI
 
             return labeledMollierProcesses;
         //  this.mollierProcesses = mollierProcesses;//used only to remember point name to show it in tooltip
-        }
-        private static List<Vector2D> generateCenterOffsets(Vector2D scaleVector, ChartType chartType, double distanceFromCenter, int offsetsNumber = 8)
-        {
-            double xDifference = chartType == ChartType.Mollier ? 0.25 : 1000; // 1 jednostka po y jest wizualnie równa 4 jednostki po x w mollierze
-            List<Vector2D> offsets = new List<Vector2D>();
-            //   double offsetAngle = 360 / offsetsNumber;
-
-            double offsetAngle = 180;
-
-            for (double angle=0; angle < 360; angle += offsetAngle)
-            {
-                double radians = ConvertDegreesToRadians(angle);
-                double offsetX = distanceFromCenter * System.Math.Sin(radians) * scaleVector.X * xDifference;
-                double offsetY = distanceFromCenter * System.Math.Cos(radians) * scaleVector.Y;
-
-                offsets.Add(new Vector2D(offsetX, offsetY));
-            }
-
-            offsetAngle = 90;
-
-            for (double angle = 0; angle < 360; angle += offsetAngle)
-            {
-                double radians = ConvertDegreesToRadians(angle);
-                double offsetX = distanceFromCenter * System.Math.Sin(radians) * scaleVector.X * xDifference;
-                double offsetY = distanceFromCenter * System.Math.Cos(radians) * scaleVector.Y;
-
-                offsets.Add(new Vector2D(offsetX, offsetY));
-            }
-
-            for (double angle = 45; angle < 360; angle += offsetAngle)
-            {
-                double radians = ConvertDegreesToRadians(angle);
-                double offsetX = distanceFromCenter * System.Math.Sin(radians) * scaleVector.X * xDifference;
-                double offsetY = distanceFromCenter * System.Math.Cos(radians) * scaleVector.Y;
-
-                offsets.Add(new Vector2D(offsetX, offsetY));
-            }
-            return offsets;
-        }
-        private static List<Tuple<BoundingBox2D, string>> getLabelsStartingView(Control control, List<UIMollierPoint> pointsToLabel, MollierControlSettings mollierControlSettings)
-        {
-            List<Tuple<BoundingBox2D, string>> labelsStartingView = new List<Tuple<BoundingBox2D, string>>();
-            Vector2D scaleVector = Query.ScaleVector2D(control, mollierControlSettings);
-            ChartType chartType = mollierControlSettings.ChartType;
-
-            double letterHeight = chartType == ChartType.Mollier ? 0.95 * scaleVector.Y : 0.00049 * scaleVector.Y;
-            double letterWidth = chartType == ChartType.Mollier ? 0.2 * scaleVector.X : 0.49 * scaleVector.X;
-
-
-            foreach (UIMollierPoint pointToLabel in pointsToLabel)
-            {
-                string label = pointToLabel.UIMollierAppearance.Label;
-                Point2D point2DToLabel = Convert.ToSAM(pointToLabel.MollierPoint, chartType);
-
-                BoundingBox2D labelShape = createBoxByCenter(point2DToLabel, label.Length * letterWidth, letterHeight);
-                labelsStartingView.Add(new Tuple<BoundingBox2D, string>(labelShape, label));
-            }
-
-            return labelsStartingView;
-        }   
-        private static List<Segment2D> processesToChartLines(List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)
-        {
-            List<Segment2D> lines = new List<Segment2D>();
-
-            foreach (UIMollierProcess process in mollierProcesses)
-            {
-                Point2D start = Convert.ToSAM(process.Start, mollierControlSettings.ChartType);
-                Point2D end = Convert.ToSAM(process.End, mollierControlSettings.ChartType);
-                lines.Add(new Segment2D(start, end));
-            }
-
-            return lines;
-        }
-        private static Dictionary<BoundingBox2D, Point2D> labelsShapesToPoints(Dictionary<BoundingBox2D, Vector2D> shapesLocations, double distanceFromCenter, Vector2D scaleVector)
-        {
-            Dictionary<BoundingBox2D, Point2D> labelsFoundView = new Dictionary<BoundingBox2D, Point2D>();
-
-            foreach(KeyValuePair<BoundingBox2D, Vector2D> shapeLocation in shapesLocations)
-            {
-                Point2D center = shapeLocation.Key.GetCentroid();
-                center.Move(shapeLocation.Value); 
-                labelsFoundView[shapeLocation.Key] = new Point2D(center.X, center.Y - (distanceFromCenter * scaleVector.Y));
-            }
-
-            return labelsFoundView;
-        }
-        private static BoundingBox2D shiftedBox(BoundingBox2D box, Vector2D offset)
-        {
-            double centerHeight = box.Height / 2;
-            double centerWidth = box.Width / 2;
-
-            double angle = Vector2D.WorldY.Angle(offset);
-            double signX = offset.X > 0 ? 1 : -1;
-
-            double centerX = box.GetCentroid().X + offset.X + signX * centerWidth * System.Math.Sin(angle);
-            double centerY = box.GetCentroid().Y + offset.Y + centerHeight * System.Math.Cos(angle);
-
-            return createBoxByCenter(new Point2D(centerX, centerY), box.Width, box.Height);
-        }
-        
-        public static Dictionary<BoundingBox2D, Vector2D> FindSolution(IEnumerable<BoundingBox2D> boxes, List<Vector2D> offsets, double tolerance = Tolerance.Distance, List<Segment2D> segments = null)
-        {
-            Dictionary<BoundingBox2D, BoundingBox2D> shiftedBoxes = new Dictionary<BoundingBox2D, BoundingBox2D>();
-
-            foreach(BoundingBox2D box in boxes)
-            {
-                foreach(Vector2D offset in offsets)
-                {
-                    BoundingBox2D boxToShift = shiftedBox(box, offset);
-
-                    if(isSeparated(boxToShift, shiftedBoxes.Values) && isSeparated(boxToShift, segments))
-                    {
-                        shiftedBoxes.Add(box, boxToShift);
-                        break;
-                    }
-                }
-
-            }
-
-            Dictionary<BoundingBox2D, Vector2D> result = new Dictionary<BoundingBox2D, Vector2D>();
-            
-             foreach(KeyValuePair<BoundingBox2D,BoundingBox2D> shiftedBox in shiftedBoxes)
-            {
-                result.Add(shiftedBox.Key, new Vector2D((shiftedBox.Value.Min.X - shiftedBox.Key.Min.X), 
-                                                        (shiftedBox.Value.Min.Y - shiftedBox.Key.Min.Y)));
-            }
-            return result;
-        }
-
-        
-        // General methods used above 
-        private static double ConvertDegreesToRadians(double angle)
-        {
-            return System.Math.PI * angle / 180;
-        }
-        private static bool isSeparated(BoundingBox2D box, IEnumerable<BoundingBox2D> boxes)
-        {
-            foreach (BoundingBox2D boxTemp in boxes)
-            {
-                if (box.InRange(boxTemp))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        private static bool isSeparated(BoundingBox2D box, List<Segment2D> segments, double tolerance = Tolerance.Distance)
-        {
-            foreach (Segment2D segment in segments)
-            {
-                if (Geometry.Planar.Query.Intersect(box, segment, tolerance))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-        private static BoundingBox2D createBoxByCenter(Point2D center, double width, double height)
-        {
-            // TODO: Move to SAM.Geometry.Planar.Create [JAKUB]
-            Point2D min = new Point2D(center.X - width / 2, center.Y - height / 2);
-            Point2D max = new Point2D(center.X + width / 2, center.Y + height / 2);
-
-            return new BoundingBox2D(min, max);
         }
         private static MollierPoint mollierPointsMid(MollierPoint mollierPoint1, MollierPoint mollierPoint2)
         {

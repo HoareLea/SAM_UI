@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -29,6 +30,8 @@ namespace SAM.Core.Mollier.UI
         public ChartDataType FindPointType { get; set; } = ChartDataType.Enthalpy;
         public bool DivisionArea { get; set; } = false;
         public bool DivisionAreaLabels { get; set; } = true;
+        public Color UIMollierZoneColor { get; set; } = Color.Red;
+        public string UIMollierZoneText { get; set; } = string.Empty;
 
         public double Density_Min { get; set; } = Default.Density_Min;
         public double Density_Max { get; set; } = Default.Density_Max;
@@ -89,6 +92,8 @@ namespace SAM.Core.Mollier.UI
                 FindPointType = mollierControlSettings.FindPointType;
                 DivisionArea = mollierControlSettings.DivisionArea;
                 DivisionAreaLabels = mollierControlSettings.DivisionAreaLabels;
+                UIMollierZoneColor = mollierControlSettings.UIMollierZoneColor;
+                UIMollierZoneText = mollierControlSettings.UIMollierZoneText;
 
                 Density_Max = mollierControlSettings.Density_Max;
                 Density_Min = mollierControlSettings.Density_Min;

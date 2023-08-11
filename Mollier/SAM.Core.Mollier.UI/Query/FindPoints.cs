@@ -10,7 +10,7 @@ namespace SAM.Core.Mollier.UI
     public static partial class Query
     {
         [Obsolete("To be changed Maciek")]
-        public static void FindPoints(Control control, Chart chart, MollierControlSettings mollierControlSettings, List<UIMollierPoint> mollierPoints)
+        public static void FindPoints(this Chart chart, MollierControlSettings mollierControlSettings, List<UIMollierPoint> mollierPoints)
         {
             bool generate = mollierControlSettings.FindPoint;
             double percent = mollierControlSettings.Percent;
@@ -77,11 +77,12 @@ namespace SAM.Core.Mollier.UI
             string foundPointLabel = ToolTipText(uIMollierPoints[index].MollierPoint, chartType);
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
-                Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, foundPointLabel, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
+                // TODO: mvoe it to AddLabels
+               // Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0, foundPointLabel, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
             }
             else
-            {
-                Modify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0.001 * -11 * Query.ScaleVector2D(control, mollierControlSettings).Y, foundPointLabel, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
+            {   // TODO move it to AddLAbels
+                //odify.AddLabel(chart, mollierControlSettings, series1.Points[0].XValue, series1.Points[0].YValues[0], 0, 0, 0.001 * -11 * Query.ScaleVector2D(control, mollierControlSettings).Y, foundPointLabel, Mollier.ChartDataType.Undefined, ChartParameterType.Point, Color.Black, "ColorPointLabel");
             }
         }
     }

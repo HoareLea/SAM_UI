@@ -403,8 +403,7 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 return;
             }
-
-             
+     
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
                 setAxisGraph_Mollier(); 
@@ -414,16 +413,16 @@ namespace SAM.Core.Mollier.UI.Controls
                 setAxisGraph_Psychrometric();
             }
 
+            MollierChart.AddLinesSeries(mollierControlSettings);
+            MollierChart.AddMollierPoints(mollierPoints, mollierControlSettings);
+            MollierChart.AddMollierZones(mollierZones, mollierControlSettings);
+            MollierChart.AddDivisionArea(mollierPoints, mollierControlSettings);
+            MollierChart.FindPoints(mollierControlSettings, mollierPoints);
 
-            Modify.AddLinesSeries(MollierChart, mollierControlSettings);
-            Modify.AddMollierPoints(MollierChart, mollierPoints, MollierControlSettings);  
-            Modify.AddMollierZones(MollierChart, mollierZones, MollierControlSettings);
-            Modify.AddDivisionArea(MollierChart, mollierPoints, mollierControlSettings);
-            mollierProcesses = Modify.AddMollierProcesses(MollierChart, this, systems, mollierProcesses, mollierControlSettings);
-            Query.FindPoints(this, MollierChart, mollierControlSettings, mollierPoints);
+            mollierProcesses = MollierChart.AddMollierProcesses(systems, mollierProcesses, mollierControlSettings);
 
-            Temporary2.AddLabels(this, MollierChart, mollierControlSettings);
-            //Temporary.AddLinesLabels(MollierChart, mollierControlSettings);
+            MollierChart.AddLabels(mollierControlSettings);
+            
 
             foreach (ChartArea chartArea in MollierChart.ChartAreas)
             {

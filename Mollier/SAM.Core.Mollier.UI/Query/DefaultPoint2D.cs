@@ -15,11 +15,6 @@ namespace SAM.Core.Mollier.UI
             Point2D start = Convert.ToSAM(curve.Start, chartType);
             Point2D end = Convert.ToSAM(curve.End, chartType);
 
-            /* if(curve.ChartDataType == Mollier.ChartDataType.Enthalpy)
-             {
-                 end = enthalpyEnd(curve, chartType);
-             }*/
-
             if (chartType == ChartType.Mollier)
             {
                 if (chartParameterType == ChartParameterType.Label)
@@ -27,7 +22,10 @@ namespace SAM.Core.Mollier.UI
                     switch (curve.ChartDataType)
                     {
                         case Mollier.ChartDataType.RelativeHumidity:
-                            return defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
+                            Point2D point = defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
+                            if (point == null) return point;
+                            point = new Point2D(point.X, Mollier.Query.DiagramTemperature(point.Y, point.X / 1000, mollierControlSettings.Pressure));
+                            return fix(start, end, point);
                         case Mollier.ChartDataType.Density:
                             return onSegment(start, end, 35);
                         case Mollier.ChartDataType.Enthalpy:
@@ -91,7 +89,8 @@ namespace SAM.Core.Mollier.UI
                     switch (curve.ChartDataType)
                     {
                         case Mollier.ChartDataType.RelativeHumidity:
-                            return fix(start, end, defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType));
+                            Point2D point = defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
+                            return fix(start, end, point);
                         case Mollier.ChartDataType.Density:
                             return start;
                         case Mollier.ChartDataType.Enthalpy:
@@ -110,6 +109,7 @@ namespace SAM.Core.Mollier.UI
                 }
             }
         }
+
 
         private static Point2D defaultRelativeHumidityLocations(double value, ChartType chartType, ChartParameterType chartParameterType)
         {
@@ -196,7 +196,6 @@ namespace SAM.Core.Mollier.UI
                 }
             }
         }
-
         private static Point2D shiftEnthalpyEnd(Point2D start, Point2D end)
         {
             double distanceFromEnd = 2.2;
@@ -220,9 +219,12 @@ namespace SAM.Core.Mollier.UI
             return new Point2D(x, a * x + b);
 
         }
-    
         private static Point2D fix(Point2D start, Point2D end, Point2D point)
         {
+            // Jeśli zwracany punkt jest poza linią to ta metoda
+            // przsuwa go odpowiednio do start lub end ;)
+            // TODO: dla psychrometric nie działa metoda, 
+            // point start, end maja Y w skali 0,001 a point ma normalnie 1
             if(point == null || start == null || end == null)
             {
                 return null;
