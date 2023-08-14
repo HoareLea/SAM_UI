@@ -51,6 +51,7 @@ namespace SAM.Core.Mollier.UI
 
 
             ChartType chartType = mollierControlSettings.ChartType;
+            result.Tag = uIMollierPoints;
             foreach(UIMollierPoint uIMollierPoint in uIMollierPoints)
             {
                 MollierPoint mollierPoint = uIMollierPoint?.MollierPoint;

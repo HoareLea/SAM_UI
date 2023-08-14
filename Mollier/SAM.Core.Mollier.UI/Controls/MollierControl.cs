@@ -434,7 +434,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     chartArea.Position = new ElementPosition(2, chartArea.Position.Y, chartArea.Position.Width + 2, chartArea.Position.Height);
                 }
-
             }
         }
         public List<UIMollierPoint> AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)

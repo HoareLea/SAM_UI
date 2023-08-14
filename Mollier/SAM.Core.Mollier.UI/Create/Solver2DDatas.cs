@@ -162,6 +162,7 @@ namespace SAM.Core.Mollier.UI
         }
 
 
+
         // TODO: [LABELS] Methods used above and to move from there
         private static Rectangle2D getLabelRectangle(Point2D point, Polyline2D polyline, string text, MollierControlSettings mollierControlSettings, Vector2D scaleVector, double axesRatio)
         {
@@ -242,9 +243,13 @@ namespace SAM.Core.Mollier.UI
             return !text.ToLower().Equals(text);
         }
 
-        // create tu COnstantValueCurve do SAM Mollier
         private static Polyline2D curveToPolyline(ConstantValueCurve curve, ChartType chartType, double axesRatio = 1)
         {
+            if(curve.MollierPoints == null || curve.MollierPoints.Count < 2)
+            {
+                return null;
+            }
+
             List<Segment2D> segments = new List<Segment2D>();
             for (int i = 0; i < curve.MollierPoints.Count - 1; i++)
             {

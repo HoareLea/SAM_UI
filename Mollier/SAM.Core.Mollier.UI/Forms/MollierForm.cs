@@ -719,18 +719,16 @@ namespace SAM.Core.Mollier.UI
 
                 case Forms.OpenJSONForm.Action.Replace:
                     Clear();
+                    MollierControlSettings mollierControlSettings = System.IO.File.Exists(path) ? Core.Convert.ToSAM<MollierControlSettings>(path).Find(x => x != null) : null;
+                    if (mollierControlSettings != null)
+                    {
+                        MollierControl_Main.MollierControlSettings = mollierControlSettings;
+                        default_chart(mollierControlSettings);
+                    }
                     break;
             }
 
-            MollierControlSettings mollierControlSettings = System.IO.File.Exists(path) ? Core.Convert.ToSAM<MollierControlSettings>(path).Find(x => x != null) : null;
-            if (mollierControlSettings != null)
-            {
-                MollierControl_Main.MollierControlSettings = mollierControlSettings;
-                default_chart(mollierControlSettings);
-            }
-
             LoadMollierObjects(mollierObjects);
-    
         }
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)

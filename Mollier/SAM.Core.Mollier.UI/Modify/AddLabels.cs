@@ -60,6 +60,8 @@ namespace SAM.Core.Mollier.UI
                 } 
                 else if (rectangle != null && point != null)
                 {
+                   // Rectangle2D r = solver2DData.Closed2D<Rectangle2D>();
+                   // addToChartR(chart, r, Color.Red, axesRatio);
                     solver.Add(rectangle, point, tag: solver2DData.Tag);
                 }
             }
@@ -72,7 +74,7 @@ namespace SAM.Core.Mollier.UI
             List<Solver2DResult> solver2DResults = solver.Solve(solver2DSettings);
             if (solver2DResults == null) return null;
 
-         /*   foreach (Solver2DResult solver2Result in solver2DResults)
+            /*foreach (Solver2DResult solver2Result in solver2DResults)
             {
                 Point2D closed = solver2Result.Solver2DData.Geometry2D<Point2D>();
                 if (closed != null)
@@ -80,7 +82,6 @@ namespace SAM.Core.Mollier.UI
                     Rectangle2D r = solver2Result.Closed2D<Rectangle2D>();
                     addToChartR(chart, r, Color.Black, axesRatio);
                 }
-
             }*/
 
             List<ChartLabel> labelsPositions = getChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio);
