@@ -190,7 +190,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             // Disable grid lines & tickmarks
             areaAxis.AxisY.LineWidth = 0;
-            areaAxis.AxisX.LineWidth = 1;
+            areaAxis.AxisX.LineWidth = 10;
             areaAxis.AxisY.MajorGrid.Enabled = false;
             areaAxis.AxisX.MajorGrid.Enabled = true;
             areaAxis.AxisY.MajorTickMark.Enabled = false;
@@ -203,6 +203,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxisAxisX.Minimum = System.Math.Round(P_w_Min, 2);
             areaAxisAxisX.Maximum = System.Math.Round(P_w_Max, 2);
             areaAxisAxisX.LabelStyle.Font = area.AxisX.LabelStyle.Font;
+            //areaAxisAxisX.LabelStyle.Enabled = false;
 
 
             areaAxis.AxisY.Title = "";
@@ -216,21 +217,22 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.InnerPlotPosition.Y += labelsSize;
 
 
-            areaAxisAxisX.Interval = mollierControlSettings.PartialVapourPressure;
+            areaAxisAxisX.Interval = 0;
             // areaAxisAxisX.IntervalType = 
             //           areaAxisAxisX.LabelStyle.Format;
 
             areaAxisAxisX.MinorTickMark.Enabled = true;
             areaAxisAxisX.MinorGrid.Enabled = false;
-            areaAxisAxisX.MinorTickMark.Interval = 1;
+            areaAxisAxisX.MinorTickMark.Interval = 0;
 
 
-            int interval = 1;
+            double interval = 1 * Query.ScaleVector2D(this, mollierControlSettings).X;
+            areaAxisAxisX.MinorTickMark.Interval = interval;
+
 
             for (double i = 0; i < areaAxisAxisX.Maximum; i += interval)
             {
-                // CustomLabel lbl = new CustomLabel(i - areaAxisAxisX.Maximum, i + areaAxisAxisX.Maximum, System.Convert.ToString(getVapourPressure(i, mollierControlSettings, areaAxisAxisX.Maximum)), 0, LabelMarkStyle.LineSideMark);
-                CustomLabel lbl = new CustomLabel(i - areaAxisAxisX.Maximum, i + areaAxisAxisX.Maximum, System.Convert.ToString(i), 0, LabelMarkStyle.LineSideMark);
+                CustomLabel lbl = new CustomLabel(i - areaAxisAxisX.Maximum, i + areaAxisAxisX.Maximum, System.Convert.ToString(getVapourPressure(i, mollierControlSettings, areaAxisAxisX.Maximum)), 0, LabelMarkStyle.LineSideMark);
                 areaAxisAxisX.CustomLabels.Add(lbl);
             }
 
@@ -241,9 +243,7 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             double humidityRatio = value / pressureMax * mollierControlSettings.HumidityRatio_Max;
 
-            return 2;
-            //TODO: ogarnąć jak zrobić query tylko po X
-            // return Mollier.Query.PartialVapourPressure(humidityRatio);
+            return System.Math.Round((Mollier.Query.PartialDryAirPressure_ByHumidityRatio(humidityRatio, mollierControlSettings.Pressure) / 1000), 2);
         }
         //--------------------------------------------------
 
@@ -548,6 +548,13 @@ namespace SAM.Core.Mollier.UI.Controls
                     mollierProcess = mollierProcess_Temp;
                 }
                 UIMollierProcess uIMollierProcess = new UIMollierProcess((UIMollierProcess)mollierProcess);
+
+
+                if (uIMollierProcess.UIMollierAppearance_End == null)
+                {
+                    uIMollierProcess.UIMollierAppearance_End = new UIMollierAppearance();
+                }
+
                 if (uIMollierProcess.MollierProcess is UndefinedProcess && uIMollierProcess.UIMollierAppearance_End.Label == null)
                 {
                     uIMollierProcess.UIMollierAppearance_End.Label = "ROOM";

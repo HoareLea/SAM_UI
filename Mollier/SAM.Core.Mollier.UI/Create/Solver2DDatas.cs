@@ -50,7 +50,7 @@ namespace SAM.Core.Mollier.UI
         private static List<Solver2DData> solver2DDatas_Point(UIMollierPoint mollierPoint, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<Solver2DData> result = new List<Solver2DData>();
-            if (mollierPoint == null) return result;
+            if (mollierPoint == null || mollierPoint.UIMollierAppearance.Label == null) return result;
 
             Point2D point = Convert.ToSAM(mollierPoint, chartType);
             string text = mollierPoint.UIMollierAppearance.Label;
