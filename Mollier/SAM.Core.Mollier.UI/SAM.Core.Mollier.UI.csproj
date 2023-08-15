@@ -173,6 +173,12 @@
     <Compile Include="Controls\UIMollierAppearanceControl.Designer.cs">
       <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ProcessCustomizeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ProcessCustomizeControl.Designer.cs">
+      <DependentUpon>ProcessCustomizeControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Convert\ToChart\DataPoint.cs" />
     <Compile Include="Convert\ToMollier\MollierPoint.cs" />
     <Compile Include="Convert\ToSAM\Point2D.cs" />
@@ -202,6 +208,12 @@
     </Compile>
     <Compile Include="Forms\MollierForm.Designer.cs">
       <DependentUpon>MollierForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MollierCustomizeObjectsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MollierCustomizeObjectsForm.Designer.cs">
+      <DependentUpon>MollierCustomizeObjectsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MollierPointForm.cs">
       <SubType>Form</SubType>
@@ -238,6 +250,7 @@
     <Compile Include="Modify\AddLabels.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Obstacles.cs" />
     <Compile Include="Query\AxesRatio.cs" />
     <Compile Include="Query\DefaultPoint2D.cs" />
@@ -321,6 +334,9 @@
     <EmbeddedResource Include="Controls\UIMollierAppearanceControl.resx">
       <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ProcessCustomizeControl.resx">
+      <DependentUpon>ProcessCustomizeControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\CustomizeProcessForm.resx">
       <DependentUpon>CustomizeProcessForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -329,6 +345,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierForm.resx">
       <DependentUpon>MollierForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MollierCustomizeObjectsForm.resx">
+      <DependentUpon>MollierCustomizeObjectsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierPointForm.resx">
       <DependentUpon>MollierPointForm.cs</DependentUpon>

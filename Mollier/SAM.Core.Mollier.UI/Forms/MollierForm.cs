@@ -13,7 +13,8 @@ namespace SAM.Core.Mollier.UI
 
         private Forms.MollierPointForm mollierPointForm = null;
         private Forms.MollierProcessForm mollierProcessForm = null;
-        
+        private Forms.MollierCustomizeObjectsForm mollierObjectsControlForm = null;
+
         private UIMollierPoint previousUIMollierPoint = null;
 
         public event MollierPointSelectedEventHandler MollierPointSelected;
@@ -533,7 +534,7 @@ namespace SAM.Core.Mollier.UI
             if (CheckBox_Zone.Checked)
             {
                 List<UIMollierZone> mollierZones = Query.MollierZones();
-                foreach (MollierZone zone in mollierZones)
+                foreach (UIMollierZone zone in mollierZones)
                 {
                     MollierControl_Main.AddZone(zone);
                 }
@@ -1014,6 +1015,36 @@ namespace SAM.Core.Mollier.UI
             UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
 
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+        }
+
+        private void customizeMollierObjectsButton_Click(object sender, EventArgs e)
+        {
+            if (mollierObjectsControlForm == null)
+            {
+                mollierObjectsControlForm = new Forms.MollierCustomizeObjectsForm(MollierControl_Main.UIMollierPoints, MollierControl_Main.UIMollierProcesses, 
+                                                                                  MollierControl_Main.UIMollierZones, MollierControlSettings);
+                mollierObjectsControlForm.MollierForm = this;
+                mollierObjectsControlForm.FormClosing += mollierObjectsControlForm_Closing;
+            }
+            mollierObjectsControlForm?.Show();
+        }
+
+        private void mollierObjectsControlForm_Closing(object sender, FormClosingEventArgs e)
+        {
+            if (mollierObjectsControlForm == null || mollierObjectsControlForm.DialogResult != DialogResult.OK)
+            {
+                mollierObjectsControlForm = null;
+                return;
+            }
+
+
+
+            mollierObjectsControlForm = null;
+        }
+    
+        public void RemoveProcess(IMollierProcess mollierProcess)
+        {
+            MollierControl_Main.RemoveProcess(mollierProcess);
         }
     }
 }

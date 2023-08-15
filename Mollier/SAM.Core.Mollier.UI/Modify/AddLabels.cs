@@ -16,29 +16,6 @@ namespace SAM.Core.Mollier.UI
 
             List<IClosed2D> obstacles = Query.Obstacles(chart, mollierControlSettings);
             List<Solver2DData> solverData = Create.Solver2DDatas(chart, mollierControlSettings);
-
-          /*  foreach(IClosed2D closed in obstacles)
-            {
-                if(closed is Rectangle2D)
-                {
-                    Rectangle2D rectangle = (Rectangle2D)closed;
-                    addToChartR(chart, rectangle, Color.Blue, axesRatio);
-                }
-            }
-
-            foreach (Solver2DData solver2Data in solverData)
-            {
-
-                Point2D closed = solver2Data.Geometry2D<Point2D>();
-                if(closed != null)
-                {
-                    Rectangle2D r = solver2Data.Closed2D<Rectangle2D>();
-                    addToChartR(chart, r, Color.Red, axesRatio);
-                }
-
-            }*/
-
-           // return null;
             
             Point2D chartMinPoint = new Point2D(chart.ChartAreas[0].AxisX.Minimum, chart.ChartAreas[0].AxisY.Minimum * axesRatio);
             Point2D chartMaxPoint = new Point2D(chart.ChartAreas[0].AxisX.Maximum, chart.ChartAreas[0].AxisY.Maximum * axesRatio);
@@ -60,8 +37,6 @@ namespace SAM.Core.Mollier.UI
                 } 
                 else if (rectangle != null && point != null)
                 {
-                   // Rectangle2D r = solver2DData.Closed2D<Rectangle2D>();
-                   // addToChartR(chart, r, Color.Red, axesRatio);
                     solver.Add(rectangle, point, tag: solver2DData.Tag);
                 }
             }
@@ -73,16 +48,6 @@ namespace SAM.Core.Mollier.UI
 
             List<Solver2DResult> solver2DResults = solver.Solve(solver2DSettings);
             if (solver2DResults == null) return null;
-
-            /*foreach (Solver2DResult solver2Result in solver2DResults)
-            {
-                Point2D closed = solver2Result.Solver2DData.Geometry2D<Point2D>();
-                if (closed != null)
-                {
-                    Rectangle2D r = solver2Result.Closed2D<Rectangle2D>();
-                    addToChartR(chart, r, Color.Black, axesRatio);
-                }
-            }*/
 
             List<ChartLabel> labelsPositions = getChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio);
             
@@ -118,8 +83,7 @@ namespace SAM.Core.Mollier.UI
             return result;
         }
 
-        // DEBUG methods
-
+        // DEBUG method
         public static void addToChartR(Chart chart, Rectangle2D rectangle, Color color, double yTOX)
         {
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
@@ -137,6 +101,9 @@ namespace SAM.Core.Mollier.UI
             series.Points.AddXY(resultPoints[0].X, resultPoints[0].Y / yTOX);
 
         }
+        
+        
+        
         // TODO: [LABELS] Methods used above and to move from there
         private static List<ChartLabel> getChartLabels(List<Solver2DResult> solver2DResults, MollierControlSettings mollierControlSettings, Vector2D scaleVector, double axesRatio)
         {
