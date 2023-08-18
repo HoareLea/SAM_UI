@@ -2,20 +2,15 @@
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-
-        public static Series AddMollierPoints(this Chart chart, IEnumerable<UIMollierPoint> uIMollierPoints, MollierControlSettings mollierControlSettings)
+        public static Series AddMollierPoints(this Chart chart, IEnumerable<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
-            if(uIMollierPoints == null || mollierControlSettings.DivisionArea) 
-            {
-                return null;
-            }
-
-            if (mollierControlSettings == null || chart == null)
+            if(mollierPoints == null || mollierControlSettings.DivisionArea) 
             {
                 return null;
             }
@@ -33,26 +28,12 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Points.Clear();
             }
-
-            
-            Dictionary<MollierPoint, int> dictionary = new Dictionary<MollierPoint, int>();
-            double maxCount = 0;        
-            List<MollierPoint>[,] rectangles_points;
-            PointGradientVisibilitySetting pointGradientVisibilitySetting = mollierControlSettings.VisibilitySettings.
-                                           GetVisibilitySetting("User", ChartParameterType.Point) as PointGradientVisibilitySetting;
-            if (pointGradientVisibilitySetting != null)
-            {
-                dictionary = Query.NeighborhoodCount((uIMollierPoints as List<UIMollierPoint>).ConvertAll(x => x.MollierPoint), out maxCount, out rectangles_points);
-            }
-            else
-            {
-                result.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Point, ChartDataType.Undefined);
-            }
-
-
             ChartType chartType = mollierControlSettings.ChartType;
-            result.Tag = uIMollierPoints;
-            foreach(UIMollierPoint uIMollierPoint in uIMollierPoints)
+            result.Tag = mollierPoints;
+
+            Dictionary<UIMollierPoint, Color> colorDictionary = mollierPoints.ColorDictionary(mollierControlSettings);
+
+            foreach(UIMollierPoint uIMollierPoint in mollierPoints)
             {
                 MollierPoint mollierPoint = uIMollierPoint?.MollierPoint;
                 if(mollierPoint == null)
@@ -65,38 +46,23 @@ namespace SAM.Core.Mollier.UI
                 {
                     continue;
                 }
+
                 int index = result.Points.AddXY(point.X, point.Y);
-
-                List<MollierPoint> testList = dictionary.Keys.ToList();
-
-                // Checking whether gradient point is activated 
-                if (pointGradientVisibilitySetting != null)
-                {
-                    double value = maxCount == 0 ? 0 : System.Convert.ToDouble(dictionary[mollierPoint]) / maxCount;
-                    result.Points[index].Color = Core.Query.Lerp(pointGradientVisibilitySetting.Color, pointGradientVisibilitySetting.GradientColor, value);
-                }
                 result.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, null);
-                result.Points[index].MarkerSize = 7; //TODO: Change size of marker and make it const
+                result.Points[index].MarkerSize = 7;
                 result.Points[index].MarkerStyle = MarkerStyle.Circle;
-                result.Points[index].Tag = new UIMollierPoint(mollierPoint, 
-                    new UIMollierAppearance(System.Drawing.Color.Black, uIMollierPoint.UIMollierAppearance.Label));
-
-                if (uIMollierPoint.UIMollierAppearance != null)
+                result.Points[index].Tag = new UIMollierPoint(mollierPoint, new UIMollierAppearance(Color.Black, uIMollierPoint.UIMollierAppearance.Label));
+                if (colorDictionary[uIMollierPoint] == Color.Empty)
                 {
-                    if (uIMollierPoint.UIMollierAppearance.Color != System.Drawing.Color.Empty)
-                    {
-                        result.Points[index].Color = uIMollierPoint.UIMollierAppearance.Color;
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(uIMollierPoint.UIMollierAppearance.Label))
-                    {
-                        //result.Points[index].Label = uIMollierPoint.UIMollierAppearance.Label;
-                    }
+                    result.Points[index].Color = uIMollierPoint.UIMollierAppearance.Color;
+                }
+                else
+                {
+                    result.Points[index].Color = colorDictionary[uIMollierPoint];
                 }
 
             }
-                return result;
-
+            return result;
         }
     }
 }

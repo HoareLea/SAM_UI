@@ -32,6 +32,13 @@ namespace SAM.Core.Mollier.UI.Controls
 
             chart.ApplyPaletteColors();  // (*)
             long x = DateTime.Now.Ticks;
+            double humidityRatioMin = chart.ChartAreas[0].AxisY.Minimum;
+            double humidityRatioMax = chart.ChartAreas[0].AxisY.Maximum;
+
+            double partialVapourPressureMin = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatioMin, 45, mollierControlSettings.Pressure) / 1000;
+            double partialVapourPressureMax = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatioMax, 45, mollierControlSettings.Pressure) / 1000;
+            double interval = mollierControlSettings.PartialVapourPressure;
+
 
             // Create new chart area for original series
             ChartArea areaSeries = new ChartArea();
@@ -75,7 +82,7 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.BackColor = Color.Transparent;
             areaAxis.BorderColor = Color.Transparent;
             RectangleF oRect = area.Position.ToRectangleF();
-            areaAxis.Position = new ElementPosition(oRect.X, oRect.Y, axisWidth, oRect.Height);
+            areaAxis.Position = new ElementPosition(oRect.X - 10, oRect.Y, axisWidth, oRect.Height);
             areaAxis.InnerPlotPosition.FromRectangleF(areaSeries.InnerPlotPosition.ToRectangleF());
 
             // Create a copy of specified series
@@ -104,13 +111,13 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.AxisX.LabelStyle.Enabled = false;
             areaAxis.AxisY.LabelStyle.Enabled = true;
 
-            Axis areaAxisAxisY = alignLeft ? areaAxis.AxisY : areaAxis.AxisY2;   // (**)
+            Axis areaAxisAxisY = alignLeft ? areaAxis.AxisY : areaAxis.AxisY2;  // (**)
             areaAxisAxisY.MajorGrid.Enabled = false;
             areaAxisAxisY.IsStartedFromZero = area.AxisY.IsStartedFromZero;
             areaAxisAxisY.LabelStyle.Font = area.AxisY.LabelStyle.Font;
-            areaAxisAxisY.Minimum = System.Math.Round(P_w_Min, 4);
-            areaAxisAxisY.Maximum = System.Math.Round(P_w_Max, 4);
-            areaAxisAxisY.Interval = mollierControlSettings.PartialVapourPressure;
+            areaAxisAxisY.Minimum = partialVapourPressureMin;
+            areaAxisAxisY.Maximum = partialVapourPressureMax;
+            areaAxisAxisY.Interval = interval;
             areaAxisAxisY.Title = "Partial Vapour Pressure pW [kPa]";
 
             areaAxis.AxisX2.Title = "";
@@ -121,16 +128,65 @@ namespace SAM.Core.Mollier.UI.Controls
 
             areaAxisAxisY.MinorTickMark.Enabled = false;
             areaAxisAxisY.MinorGrid.Enabled = false;
-            areaAxisAxisY.MinorTickMark.Interval = 0.1;
+
+
+            areaAxisAxisY.CustomLabels.Clear();
+
+
+
+
+
+          /*  Axis axis = chart.ChartAreas[0].AxisY;
+            axis.MajorGrid.Enabled = false;
+            axis.IsStartedFromZero = area.AxisY.IsStartedFromZero;
+            axis.LabelStyle.Font = area.AxisY.LabelStyle.Font;
+            axis.Minimum = partialVapourPressureMin;
+            axis.Maximum = partialVapourPressureMax;
+            axis.Interval = interval;
+            axis.Title = "Partial Vapour Pressure pW [kPa]";
+            axis.CustomLabels.Clear();*/
+
+
+            double xFactor = Query.ScaleVector2D(this, mollierControlSettings).X;
+            for (double i = 0; i < areaAxisAxisY.Maximum; i += interval)
+            {
+                if(i < areaAxisAxisY.Minimum)
+                {
+                    continue;
+                }
+
+                double labelPositionY = Mollier.Query.HumidityRatioByPartialVapourPressure(i * 1000, MollierControlSettings.Pressure);
+                double labelAxisPosition = partialVapourPressureMin + (labelPositionY) / (humidityRatioMax - humidityRatioMin) * (partialVapourPressureMax - partialVapourPressureMin);
+                CustomLabel lbl = new CustomLabel(labelAxisPosition - 1.6, labelAxisPosition + 1.6, i.ToString(), 0, LabelMarkStyle.LineSideMark);
+                areaAxisAxisY.CustomLabels.Add(lbl);
+
+                Series seriesTemp = chart.Series.Add(Guid.NewGuid() + "Pw minor Tick Mark Mollier");
+                seriesTemp.IsVisibleInLegend = false;
+                seriesTemp.ChartType = SeriesChartType.Line;
+                seriesTemp.Points.AddXY(chart.ChartAreas[0].AxisX.Minimum, labelPositionY);
+                seriesTemp.Points.AddXY(chart.ChartAreas[0].AxisX.Minimum + 0.5 * xFactor, labelPositionY);
+                seriesTemp.Color = Color.Black;
+
+            }
+
+            // todo change it, to enable = false
+            areaAxisAxisY.IntervalOffset = 10000; 
         }
-        private void CreateXAxis(Chart chart, ChartArea area, Series series, float axisY, float axisHeight, float labelsSize, bool alignLeft, double P_w_Min, double P_w_Max)
+        private void CreateXAxis(Chart chart, ChartArea area, Series series, float axisY, float axisHeight, float labelsSize, bool alignLeft)
         {
             long x = DateTime.Now.Ticks;
+            double humidityRatioMin = chart.ChartAreas[0].AxisX.Minimum / 1000;
+            double humidityRatioMax = chart.ChartAreas[0].AxisX.Maximum / 1000;
+
+            double partialVapourPressureMin = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatioMin, 45, mollierControlSettings.Pressure) / 1000;
+            double partialVapourPressureMax = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatioMax, 45, mollierControlSettings.Pressure) / 1000;
+
+
 
             chart.ApplyPaletteColors();  // (*)
             // Create new chart area for original series
             ChartArea areaSeries = new ChartArea();
-            if (MollierChart.ChartAreas.Count != 3)
+            if (MollierChart.ChartAreas.Count != 3) 
             {
                 areaSeries = chart.ChartAreas.Add("Mollier P_w" + x.ToString());
             }
@@ -200,8 +256,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
             Axis areaAxisAxisX = alignLeft ? areaAxis.AxisX : areaAxis.AxisX2;   // (**)
             areaAxisAxisX.MajorGrid.Enabled = false;
-            areaAxisAxisX.Minimum = System.Math.Round(P_w_Min, 2);
-            areaAxisAxisX.Maximum = System.Math.Round(P_w_Max, 2);
+            areaAxisAxisX.Minimum = partialVapourPressureMin;
+            areaAxisAxisX.Maximum = partialVapourPressureMax;
             areaAxisAxisX.LabelStyle.Font = area.AxisX.LabelStyle.Font;
             //areaAxisAxisX.LabelStyle.Enabled = false;
 
@@ -216,36 +272,43 @@ namespace SAM.Core.Mollier.UI.Controls
             areaAxis.Position.Y = axisY;
             areaAxis.InnerPlotPosition.Y += labelsSize;
 
-
-            areaAxisAxisX.Interval = 0;
-            // areaAxisAxisX.IntervalType = 
-            //           areaAxisAxisX.LabelStyle.Format;
-
             areaAxisAxisX.MinorTickMark.Enabled = true;
             areaAxisAxisX.MinorGrid.Enabled = false;
-            areaAxisAxisX.MinorTickMark.Interval = 0;
 
 
-            double interval = 1 * Query.ScaleVector2D(this, mollierControlSettings).X;
+            double interval = mollierControlSettings.PartialVapourPressure;
             areaAxisAxisX.MinorTickMark.Interval = interval;
+            areaAxisAxisX.CustomLabels.Clear();
 
 
+            double yFactor = Query.ScaleVector2D(this, mollierControlSettings).Y;
             for (double i = 0; i < areaAxisAxisX.Maximum; i += interval)
             {
-                CustomLabel lbl = new CustomLabel(i - areaAxisAxisX.Maximum, i + areaAxisAxisX.Maximum, System.Convert.ToString(getVapourPressure(i, mollierControlSettings, areaAxisAxisX.Maximum)), 0, LabelMarkStyle.LineSideMark);
+                if (i < areaAxisAxisX.Minimum)
+                {
+                    continue;
+                }
+
+                double labelPositionX = Mollier.Query.HumidityRatioByPartialVapourPressure(i * 1000, MollierControlSettings.Pressure);
+                double labelAxisPosition = partialVapourPressureMin + (labelPositionX) / (humidityRatioMax - humidityRatioMin) * (partialVapourPressureMax - partialVapourPressureMin);
+                CustomLabel lbl = new CustomLabel(labelAxisPosition - 1.6, labelAxisPosition + 1.6, i.ToString(), 0, LabelMarkStyle.LineSideMark);
                 areaAxisAxisX.CustomLabels.Add(lbl);
+                
+                // Pw minor tick mark series 
+                Series seriesTemp = chart.Series.Add(Guid.NewGuid() + "Pw minor Tick Mark Mollier");
+                seriesTemp.IsVisibleInLegend = false;
+                seriesTemp.ChartType = SeriesChartType.Line;
+                seriesTemp.Points.AddXY(labelPositionX * 1000, chart.ChartAreas[0].AxisY.Maximum);
+                seriesTemp.Points.AddXY(labelPositionX * 1000, chart.ChartAreas[0].AxisY.Maximum - 0.7 * yFactor);
+                seriesTemp.Color = Color.Black;
+
             }
 
-            // areaAxisAxisX.CustomLabels.Add(new CustomLabel(0, 1, "kkk", 0, LabelMarkStyle.LineSideMark));
 
+            //areaAxisAxisX.MinorTickMark.IntervalOffset = interval - (partialVapourPressureMin % interval);
+            areaAxisAxisX.MinorTickMark.IntervalOffset = 1000;
         }
-        private double getVapourPressure(double value, MollierControlSettings mollierControlSettings, double pressureMax)
-        {
-            double humidityRatio = value / pressureMax * mollierControlSettings.HumidityRatio_Max;
 
-            return System.Math.Round((Mollier.Query.PartialDryAirPressure_ByHumidityRatio(humidityRatio, mollierControlSettings.Pressure) / 1000), 2);
-        }
-        //--------------------------------------------------
 
 
         private void setAxisGraph_Mollier()
@@ -300,6 +363,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisX.IsReversed = false;
             axisX.LabelStyle.Format = "0.##";
             axisX.LabelStyle.Font = chartArea_New.AxisY.LabelStyle.Font;
+
             //areaAxisAxisY.LabelStyle.Font = area.AxisY.LabelStyle.Font;
 
             //OY AXIS
@@ -326,7 +390,10 @@ namespace SAM.Core.Mollier.UI.Controls
             series1.Color = Color.Transparent;
             series1.BorderColor = Color.Transparent;
             series1.IsVisibleInLegend = false;
-            CreateXAxis(MollierChart, chartArea_New, series1, 2, 80, 1, false, partialVapourPressure_min, partialVapourPressure_max);
+            if(mollierControlSettings.PartialVapourPressure_axis) // TODO: być może lepiej byłoby tworzyć X linie zawsze ale tick i labele tylko to by wlaczalo
+            {
+                CreateXAxis(MollierChart, chartArea_New, series1, 2, 80, 1, false);  
+            }
 
         }
         private void setAxisGraph_Psychrometric()
@@ -413,8 +480,14 @@ namespace SAM.Core.Mollier.UI.Controls
             series1.Color = Color.Transparent;
             series1.BorderColor = Color.Transparent;
             series1.IsVisibleInLegend = false;
-            CreateYAxis(MollierChart, ca, series1, 5, 12, 25, true, P_w_Min, P_w_Max);
+            if(MollierControlSettings.PartialVapourPressure_axis)
+            {
+                //TODO: fix this method
+              //  CreateYAxis(MollierChart, ca, series1, 5, 12, 25, true, P_w_Min, P_w_Max);
+            }
+
         }
+
 
 
         public bool ClearObjects()
@@ -446,7 +519,7 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.AddMollierPoints(mollierPoints, mollierControlSettings);
             MollierChart.AddMollierZones(mollierZones, mollierControlSettings);
             MollierChart.AddDivisionArea(mollierPoints, mollierControlSettings);
-            MollierChart.FindPoints(mollierControlSettings, mollierPoints);
+            MollierChart.AddColorPoint(mollierControlSettings, mollierPoints);
 
             mollierProcesses = MollierChart.AddMollierProcesses(systems, mollierProcesses, mollierControlSettings);
 
@@ -524,41 +597,40 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 this.mollierProcesses = new List<UIMollierProcess>();
             }
+
             List<UIMollierProcess> result = new List<UIMollierProcess>();
-            foreach (IMollierProcess mollierProcess_iteration in mollierProcesses)
+            foreach (IMollierProcess mollierProcess in mollierProcesses)
             {
-                IMollierProcess mollierProcess = mollierProcess_iteration;
                 if (mollierProcess.Start == null || mollierProcess.End == null)
                 {
                     continue;
                 }
-
                 if (checkPressure && !(mollierProcess.Start.Pressure.AlmostEqual(mollierControlSettings.Pressure)))
                 {
                     continue;
                 }
 
-                //if (checkPressure && !Core.Query.AlmostEqual(mollierProcess.Pressure, mollierControlSettings.Pressure, Tolerance.MacroDistance))
-                //{
-                //    return null;
-                //}
-                if (mollierProcess is MollierProcess)
+                UIMollierProcess uIMollierProcess;
+                if (mollierProcess is UIMollierProcess)
                 {
-                    UIMollierProcess mollierProcess_Temp = new UIMollierProcess((MollierProcess)mollierProcess, Color.Empty);
-                    mollierProcess = mollierProcess_Temp;
+                    uIMollierProcess = (UIMollierProcess)mollierProcess;
+                    Color processColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, uIMollierProcess.MollierProcess);
+                    
+                    if (uIMollierProcess.UIMollierAppearance_Start == null || uIMollierProcess.UIMollierAppearance_End == null)
+                    {
+                        uIMollierProcess = new UIMollierProcess(uIMollierProcess.MollierProcess, processColor);
+                    }
+                    if (uIMollierProcess.UIMollierAppearance.Color == Color.Empty)
+                    {
+                        uIMollierProcess.UIMollierAppearance.Color = processColor;
+                    }
                 }
-                UIMollierProcess uIMollierProcess = new UIMollierProcess((UIMollierProcess)mollierProcess);
-
-
-                if (uIMollierProcess.UIMollierAppearance_End == null)
+                else
                 {
-                    uIMollierProcess.UIMollierAppearance_End = new UIMollierAppearance();
+                    Color processColor = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, (MollierProcess)mollierProcess);
+                    uIMollierProcess = new UIMollierProcess((MollierProcess)mollierProcess, processColor);
                 }
 
-                if (uIMollierProcess.MollierProcess is UndefinedProcess && uIMollierProcess.UIMollierAppearance_End.Label == null)
-                {
-                    uIMollierProcess.UIMollierAppearance_End.Label = "ROOM";
-                }
                 this.mollierProcesses.Add(uIMollierProcess);
                 result.Add(uIMollierProcess);
             }
@@ -583,31 +655,42 @@ namespace SAM.Core.Mollier.UI.Controls
             GenerateGraph();
             return true;
         }
-
         public void RemoveProcess(IMollierProcess mollierProcess)
         {
-            if (mollierProcesses == null)
+            if (mollierProcess == null || mollierProcesses == null)
             {
                 return;
             }
 
             foreach(UIMollierProcess mollierProcessTemp in mollierProcesses) 
             {
-                if (isEqual(mollierProcess.Start, mollierProcessTemp.Start) && isEqual(mollierProcess.End, mollierProcessTemp.End))
-                {
-                    mollierProcesses.Remove(mollierProcessTemp);
-                    break;
-                }
+                  if (mollierProcessTemp.IsEqual(mollierProcess))
+                  {
+                      mollierProcesses.Remove(mollierProcessTemp);
+                      break;
+                  }
             }
             systems = Query.ProcessSortBySystem(this.mollierProcesses);
             GenerateGraph();
         }
-
-        private bool isEqual(MollierPoint mollierPoint1, MollierPoint mollierPoint2, double tolerance = Tolerance.Distance)
+        public void RemovePoint(IMollierPoint mollierPoint)
         {
-            return (mollierPoint2.HumidityRatio - mollierPoint1.HumidityRatio < tolerance) &&
-                   (mollierPoint2.DryBulbTemperature - mollierPoint1.DryBulbTemperature < tolerance);
+            if (mollierPoint == null || mollierPoints == null)
+            {
+                return;
+            }
+
+            foreach(UIMollierPoint mollierPointTemp in mollierPoints)
+            {
+                if (mollierPointTemp.IsEqual(mollierPoint))
+                {
+                    mollierPoints.Remove(mollierPointTemp);
+                    break;
+                }
+            }
+            GenerateGraph();
         }
+
 
         public bool Save(ChartExportType chartExportType, PageSize pageSize = PageSize.A4, PageOrientation pageOrientation = PageOrientation.Landscape, string path = null)
         {
@@ -992,7 +1075,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void ToolStripMenuItem_ProcessesAndPoints_Click(object sender, EventArgs e)
         {
-            if (mollierPoints == null && mollierProcesses == null)
+            if ((mollierPoints == null && mollierProcesses == null) || mollierControlSettings.DivisionArea)
             {
                 MessageBox.Show("There is no process or point to zoom");
                 return;

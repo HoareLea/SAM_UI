@@ -6,11 +6,10 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
-        public static void SaveAsPDF(Chart MollierChart, string path, int fontSize, string size, int newWidth, int newHeight, int chartWidth, int chartHeight)
+        public static void SaveAsPDF(Chart MollierChart, int fontSize, string size, int newWidth, int newHeight, int chartWidth, int chartHeight)
         {
             MollierChart.Visible = false;
             Document doc = size == "A3" ? new Document(iTextSharp.text.PageSize.A3, 0, 0, 0, 0) : new Document(iTextSharp.text.PageSize.A4, 0, 0, 0, 0);
-            PdfWriter wri = PdfWriter.GetInstance(doc, new FileStream(path, FileMode.Create));
 
             using (MemoryStream memoryStream = new MemoryStream())
             {

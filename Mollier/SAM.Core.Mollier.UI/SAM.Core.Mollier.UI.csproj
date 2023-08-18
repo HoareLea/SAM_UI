@@ -74,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
+    <Compile Include="Classes\EventArgs\MollierProcessRemovedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs - Copy.cs" />
     <Compile Include="Classes\EventArgs\MollierPointSelectedEventArgs.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
@@ -112,6 +113,12 @@
     </Compile>
     <Compile Include="Controls\HeatingProcessControl.Designer.cs">
       <DependentUpon>HeatingProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PointManageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PointManageControl.Designer.cs">
+      <DependentUpon>PointManageControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\RoomProcessControl.cs">
       <SubType>UserControl</SubType>
@@ -173,11 +180,11 @@
     <Compile Include="Controls\UIMollierAppearanceControl.Designer.cs">
       <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ProcessCustomizeControl.cs">
+    <Compile Include="Controls\ProcessManageControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ProcessCustomizeControl.Designer.cs">
-      <DependentUpon>ProcessCustomizeControl.cs</DependentUpon>
+    <Compile Include="Controls\ProcessManageControl.Designer.cs">
+      <DependentUpon>ProcessManageControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToChart\DataPoint.cs" />
     <Compile Include="Convert\ToMollier\MollierPoint.cs" />
@@ -185,6 +192,7 @@
     <Compile Include="Convert\ToChart\Series.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
+    <Compile Include="Delegates\MollierProcessRemovedEventHandler.cs" />
     <Compile Include="Delegates\MollierPointSelectedEventHandler.cs" />
     <Compile Include="Delegates\SelectMollierPointEventHandler.cs" />
     <Compile Include="Enums\ProcessParameterType.cs" />
@@ -209,11 +217,11 @@
     <Compile Include="Forms\MollierForm.Designer.cs">
       <DependentUpon>MollierForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\MollierCustomizeObjectsForm.cs">
+    <Compile Include="Forms\ManageMollierObjectsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\MollierCustomizeObjectsForm.Designer.cs">
-      <DependentUpon>MollierCustomizeObjectsForm.cs</DependentUpon>
+    <Compile Include="Forms\ManageMollierObjectsForm.Designer.cs">
+      <DependentUpon>ManageMollierObjectsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MollierPointForm.cs">
       <SubType>Form</SubType>
@@ -242,6 +250,7 @@
     <Compile Include="Interface\IMollierProcessControl.cs" />
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
+    <Compile Include="Modify\AddColorPoint.cs" />
     <Compile Include="Modify\AddLinesSeries.cs" />
     <Compile Include="Modify\AddMollierProcesses.cs" />
     <Compile Include="Modify\AddDivisionArea.cs" />
@@ -250,6 +259,7 @@
     <Compile Include="Modify\AddLabels.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\DivisionMollierZones.cs" />
     <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Obstacles.cs" />
     <Compile Include="Query\AxesRatio.cs" />
@@ -278,7 +288,7 @@
     <Compile Include="Query\ScaleVector2D.cs" />
     <Compile Include="Query\DefaultMollierZones.cs" />
     <Compile Include="Query\DefaultPointGradientVisibilitySetting.cs" />
-    <Compile Include="Query\NeighborhoodCount.cs" />
+    <Compile Include="Query\ColorDictionary.cs" />
     <Compile Include="Query\ChartDataType.cs" />
     <Compile Include="Query\DefaultPressure.cs" />
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
@@ -303,6 +313,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\HeatingProcessControl.resx">
       <DependentUpon>HeatingProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PointManageControl.resx">
+      <DependentUpon>PointManageControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\RoomProcessControl.resx">
       <DependentUpon>RoomProcessControl.cs</DependentUpon>
@@ -334,8 +347,8 @@
     <EmbeddedResource Include="Controls\UIMollierAppearanceControl.resx">
       <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ProcessCustomizeControl.resx">
-      <DependentUpon>ProcessCustomizeControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\ProcessManageControl.resx">
+      <DependentUpon>ProcessManageControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CustomizeProcessForm.resx">
       <DependentUpon>CustomizeProcessForm.cs</DependentUpon>
@@ -346,8 +359,8 @@
     <EmbeddedResource Include="Forms\MollierForm.resx">
       <DependentUpon>MollierForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MollierCustomizeObjectsForm.resx">
-      <DependentUpon>MollierCustomizeObjectsForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ManageMollierObjectsForm.resx">
+      <DependentUpon>ManageMollierObjectsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierPointForm.resx">
       <DependentUpon>MollierPointForm.cs</DependentUpon>

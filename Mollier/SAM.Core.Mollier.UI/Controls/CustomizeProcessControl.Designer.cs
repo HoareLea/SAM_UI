@@ -126,7 +126,6 @@
             this.Controls.Add(this.ProcessColor_button);
             this.Name = "CustomizeProcessControl";
             this.Size = new System.Drawing.Size(253, 146);
-            this.Load += new System.EventHandler(this.CustomizeProcessControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

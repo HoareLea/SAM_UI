@@ -67,7 +67,7 @@ namespace SAM.Core.Mollier.UI
         private static List<IClosed2D> obstacles_Zone(UIMollierZone zone, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<IClosed2D> result = new List<IClosed2D>();
-            double zoneWidth = 0.2 * scaleVector.Y;
+            double zoneWidth = 0.05 * scaleVector.Y;
 
             for (int i = 0; i < zone.MollierPoints.Count; i++)
             {
@@ -81,7 +81,6 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-    
-            
+      
     }
 }

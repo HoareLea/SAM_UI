@@ -221,10 +221,6 @@ namespace SAM.Core.Mollier.UI
         }
         private static Point2D fix(Point2D start, Point2D end, Point2D point)
         {
-            // Jeśli zwracany punkt jest poza linią to ta metoda
-            // przsuwa go odpowiednio do start lub end ;)
-            // TODO: dla psychrometric nie działa metoda, 
-            // point start, end maja Y w skali 0,001 a point ma normalnie 1
             if(point == null || start == null || end == null)
             {
                 return null;

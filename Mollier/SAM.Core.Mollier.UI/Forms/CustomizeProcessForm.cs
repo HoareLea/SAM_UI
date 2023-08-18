@@ -6,7 +6,7 @@ namespace SAM.Core.Mollier.UI.Forms
 {
     public partial class CustomizeProcessForm : Form
     {
-        UIMollierProcess UI_MollierProcess;
+        UIMollierProcess uIMollierProcess;
         private Color color = Color.Empty;
         private string start_Label;
         private string process_Label;
@@ -16,44 +16,22 @@ namespace SAM.Core.Mollier.UI.Forms
             InitializeComponent();
         }
 
-        public CustomizeProcessForm(UIMollierProcess UI_MollierProcess)
+        public CustomizeProcessForm(UIMollierProcess uIMollierProcess)
         {
             InitializeComponent();
-            this.UI_MollierProcess = UI_MollierProcess;
+            this.uIMollierProcess = uIMollierProcess;
+            customizeProcessControl1.InitializeControlElements(uIMollierProcess);
         }
+
+
         private void CustomizeForm_Load(object sender, EventArgs e)
         {
 
         }
-        public Color Color
-        {
-            get
-            {
-                return color;
-            }
-        }
-        public string Start_Label
-        {
-            get
-            {
-                return start_Label;
-            }
-        }
-
-        public string Process_Label
-        {
-            get
-            {
-                return process_Label;
-            }
-        }
-        public string End_Label
-        {
-            get
-            {
-                return end_Label;
-            }
-        }
+        public Color Color => color;
+        public string Start_Label => start_Label;
+        public string Process_Label => process_Label;
+        public string End_Label => end_Label;
 
         private void OK_Button_Click(object sender, EventArgs e)
         {
@@ -63,7 +41,6 @@ namespace SAM.Core.Mollier.UI.Forms
             end_Label = customizeProcessControl1.End_Label;
             DialogResult = DialogResult.OK;
         }
-
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;

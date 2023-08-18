@@ -35,12 +35,6 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 result.Add(series);
-              /*  MollierPoint zoneCenterMollierPoint = mollierZone.GetCenter();
-                Point2D coneCenterPoint = Convert.ToSAM(zoneCenterMollierPoint, chartType);
-                
-                // TODO: move to AddLabels
-                AddLabel(chart, mollierControlSettings, coneCenterPoint.X, coneCenterPoint.Y, 0, 0, 0, zoneText, ChartDataType.Undefined,
-                         ChartParameterType.Undefined, color: System.Drawing.Color.Black);*/
             }
 
             return result;

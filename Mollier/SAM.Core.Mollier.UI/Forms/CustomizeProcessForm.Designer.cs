@@ -35,16 +35,18 @@
             // 
             // customizeProcessControl1
             // 
-            this.customizeProcessControl1.Location = new System.Drawing.Point(12, 12);
+            this.customizeProcessControl1.Location = new System.Drawing.Point(14, 15);
+            this.customizeProcessControl1.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.customizeProcessControl1.Name = "customizeProcessControl1";
-            this.customizeProcessControl1.Size = new System.Drawing.Size(253, 146);
+            this.customizeProcessControl1.Size = new System.Drawing.Size(285, 182);
             this.customizeProcessControl1.TabIndex = 0;
             // 
             // Cancel_Button
             // 
-            this.Cancel_Button.Location = new System.Drawing.Point(224, 159);
+            this.Cancel_Button.Location = new System.Drawing.Point(252, 199);
+            this.Cancel_Button.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Cancel_Button.Name = "Cancel_Button";
-            this.Cancel_Button.Size = new System.Drawing.Size(102, 31);
+            this.Cancel_Button.Size = new System.Drawing.Size(115, 39);
             this.Cancel_Button.TabIndex = 2;
             this.Cancel_Button.Text = "Cancel";
             this.Cancel_Button.UseVisualStyleBackColor = true;
@@ -52,9 +54,10 @@
             // 
             // OK_Button
             // 
-            this.OK_Button.Location = new System.Drawing.Point(116, 159);
+            this.OK_Button.Location = new System.Drawing.Point(130, 199);
+            this.OK_Button.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.OK_Button.Name = "OK_Button";
-            this.OK_Button.Size = new System.Drawing.Size(102, 31);
+            this.OK_Button.Size = new System.Drawing.Size(115, 39);
             this.OK_Button.TabIndex = 3;
             this.OK_Button.Text = "OK";
             this.OK_Button.UseVisualStyleBackColor = true;
@@ -62,12 +65,13 @@
             // 
             // CustomizeProcessForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(338, 202);
+            this.ClientSize = new System.Drawing.Size(380, 252);
             this.Controls.Add(this.OK_Button);
             this.Controls.Add(this.Cancel_Button);
             this.Controls.Add(this.customizeProcessControl1);
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "CustomizeProcessForm";
             this.Text = "CustomizeForm";
             this.Load += new System.EventHandler(this.CustomizeForm_Load);

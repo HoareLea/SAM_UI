@@ -23,11 +23,7 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 return;
             }
-            color = UI_MollierProcess.UIMollierAppearance.Color;
-            start_Label = UI_MollierProcess.UIMollierAppearance_Start.Label;
-            process_Label = UI_MollierProcess.UIMollierAppearance.Label;
-            end_Label = UI_MollierProcess.UIMollierAppearance_End.Label;
-            ProcessColor_button.BackColor = color;
+            InitializeControlElements(UI_MollierProcess);
         }
 
         private void ProcessColor_button_Click(object sender, EventArgs e)
@@ -44,13 +40,20 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
 
-        public Color Color
+        public void InitializeControlElements(UIMollierProcess uIMollierProcess)
         {
-            get
-            {
-                return color;
-            }
+            color = uIMollierProcess.UIMollierAppearance.Color;
+            start_Label = uIMollierProcess.UIMollierAppearance_Start.Label;
+            process_Label = uIMollierProcess.UIMollierAppearance.Label;
+            end_Label = uIMollierProcess.UIMollierAppearance_End.Label;
+
+            ProcessColor_button.BackColor = color;
+            StartLabel_Value.Text = start_Label;
+            ProcessLabel_Value.Text = process_Label;
+            EndLabel_Value.Text = end_Label;
         }
+
+        public Color Color => color;
         public string Start_Label
         {
             get
@@ -58,26 +61,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 return start_Label;
             }
         }
+        
+        public string Process_Label => process_Label;
+        public string End_Label => end_Label;
 
-        public string Process_Label
-        {
-            get
-            {
-                return process_Label;
-            }
-        }
-        public string End_Label
-        {
-            get
-            {
-                return end_Label;
-            }
-        }
-
-        private void CustomizeProcessControl_Load(object sender, EventArgs e)
-        {
-            
-        }
 
         private void StartLabel_Value_TextChanged(object sender, EventArgs e)
         {

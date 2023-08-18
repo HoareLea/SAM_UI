@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Controls
 {
-    partial class ProcessCustomizeControl
+    partial class ProcessManageControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -33,8 +33,10 @@
             this.start_Y = new System.Windows.Forms.Label();
             this.end_X = new System.Windows.Forms.Label();
             this.end_Y = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.settingsButton = new System.Windows.Forms.Button();
             this.removeButton = new System.Windows.Forms.Button();
+            this.start_Name = new System.Windows.Forms.Label();
+            this.end_Name = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // processNameLabel
@@ -49,7 +51,7 @@
             // start_X
             // 
             this.start_X.AutoSize = true;
-            this.start_X.Location = new System.Drawing.Point(326, 27);
+            this.start_X.Location = new System.Drawing.Point(357, 27);
             this.start_X.Name = "start_X";
             this.start_X.Size = new System.Drawing.Size(14, 20);
             this.start_X.TabIndex = 1;
@@ -58,7 +60,7 @@
             // start_Y
             // 
             this.start_Y.AutoSize = true;
-            this.start_Y.Location = new System.Drawing.Point(383, 27);
+            this.start_Y.Location = new System.Drawing.Point(419, 27);
             this.start_Y.Name = "start_Y";
             this.start_Y.Size = new System.Drawing.Size(14, 20);
             this.start_Y.TabIndex = 2;
@@ -67,7 +69,7 @@
             // end_X
             // 
             this.end_X.AutoSize = true;
-            this.end_X.Location = new System.Drawing.Point(488, 27);
+            this.end_X.Location = new System.Drawing.Point(654, 27);
             this.end_X.Name = "end_X";
             this.end_X.Size = new System.Drawing.Size(14, 20);
             this.end_X.TabIndex = 3;
@@ -76,45 +78,65 @@
             // end_Y
             // 
             this.end_Y.AutoSize = true;
-            this.end_Y.Location = new System.Drawing.Point(545, 27);
+            this.end_Y.Location = new System.Drawing.Point(717, 27);
             this.end_Y.Name = "end_Y";
             this.end_Y.Size = new System.Drawing.Size(14, 20);
             this.end_Y.TabIndex = 4;
             this.end_Y.Text = "-";
             // 
-            // button1
+            // settingsButton
             // 
-            this.button1.Location = new System.Drawing.Point(657, 20);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(77, 34);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "settings";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.settingsButton.Location = new System.Drawing.Point(845, 20);
+            this.settingsButton.Name = "settingsButton";
+            this.settingsButton.Size = new System.Drawing.Size(77, 34);
+            this.settingsButton.TabIndex = 5;
+            this.settingsButton.Text = "settings";
+            this.settingsButton.UseVisualStyleBackColor = true;
+            this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
             // 
             // removeButton
             // 
             this.removeButton.BackColor = System.Drawing.Color.Firebrick;
-            this.removeButton.Location = new System.Drawing.Point(740, 20);
+            this.removeButton.Location = new System.Drawing.Point(928, 20);
             this.removeButton.Name = "removeButton";
             this.removeButton.Size = new System.Drawing.Size(50, 34);
             this.removeButton.TabIndex = 6;
             this.removeButton.UseVisualStyleBackColor = false;
             this.removeButton.Click += new System.EventHandler(this.removeButton_Click);
             // 
-            // ProcessCustomizeControl
+            // start_Name
+            // 
+            this.start_Name.AutoSize = true;
+            this.start_Name.Location = new System.Drawing.Point(300, 27);
+            this.start_Name.Name = "start_Name";
+            this.start_Name.Size = new System.Drawing.Size(14, 20);
+            this.start_Name.TabIndex = 7;
+            this.start_Name.Text = "-";
+            // 
+            // end_Name
+            // 
+            this.end_Name.AutoSize = true;
+            this.end_Name.Location = new System.Drawing.Point(594, 27);
+            this.end_Name.Name = "end_Name";
+            this.end_Name.Size = new System.Drawing.Size(14, 20);
+            this.end_Name.TabIndex = 8;
+            this.end_Name.Text = "-";
+            // 
+            // ProcessManageControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.end_Name);
+            this.Controls.Add(this.start_Name);
             this.Controls.Add(this.removeButton);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.settingsButton);
             this.Controls.Add(this.end_Y);
             this.Controls.Add(this.end_X);
             this.Controls.Add(this.start_Y);
             this.Controls.Add(this.start_X);
             this.Controls.Add(this.processNameLabel);
-            this.Name = "ProcessCustomizeControl";
-            this.Size = new System.Drawing.Size(836, 75);
+            this.Name = "ProcessManageControl";
+            this.Size = new System.Drawing.Size(990, 75);
             this.Load += new System.EventHandler(this.ProcessCustomizeControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -128,7 +150,9 @@
         private System.Windows.Forms.Label start_Y;
         private System.Windows.Forms.Label end_X;
         private System.Windows.Forms.Label end_Y;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button settingsButton;
         private System.Windows.Forms.Button removeButton;
+        private System.Windows.Forms.Label start_Name;
+        private System.Windows.Forms.Label end_Name;
     }
 }

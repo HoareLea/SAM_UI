@@ -20,6 +20,8 @@ namespace SAM.Core.Mollier.UI
         public bool Enthalpy_line { get; set; } = true;
         public bool SpecificVolume_line { get; set; } = true;
         public bool WetBulbTemperature_line { get; set; } = true;
+
+        public bool PartialVapourPressure_axis { get; set; } = true;
         public ChartType ChartType { get; set; } = ChartType.Mollier;
         public string DefaultTemplateName { get; set; } = "default";
         public bool DisableUnits { get; set; } = false;
@@ -48,6 +50,9 @@ namespace SAM.Core.Mollier.UI
         public double WetBulbTemperature_Min { get; set; } = Default.WetBulbTemperature_Min;
         public double WetBulbTemperature_Max { get; set; } = Default.WetBulbTemperature_Max;
         public double WetBulbTemperature_Interval { get; set; } = Default.WetBulbTemperature_Interval;
+
+        public int DivisionAreaEnthalpy_Interval { get; set; } = 3;
+        public int DivisionAreaRelativeHumidity_Interval { get; set; } = 10;
         public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
@@ -76,6 +81,10 @@ namespace SAM.Core.Mollier.UI
                 WetBulbTemperature_line = mollierControlSettings.WetBulbTemperature_line;
                 ChartType = mollierControlSettings.ChartType;
                 DefaultTemplateName = mollierControlSettings.DefaultTemplateName;
+                PartialVapourPressure_axis = mollierControlSettings.PartialVapourPressure_axis;
+
+                DivisionAreaEnthalpy_Interval = mollierControlSettings.DivisionAreaEnthalpy_Interval;
+                DivisionAreaRelativeHumidity_Interval = mollierControlSettings.DivisionAreaRelativeHumidity_Interval;
 
                 VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
                 VisibilitySettings = visibilitySettings == null ? null : new VisibilitySettings(visibilitySettings);
@@ -258,6 +267,10 @@ namespace SAM.Core.Mollier.UI
             {
                 WetBulbTemperature_line = jObject.Value<bool>("WetBulbTemperature_line");
             }
+            if (jObject.ContainsKey("WetBulbTemperature_line"))
+            {
+                PartialVapourPressure_axis = jObject.Value<bool>("PartialVapourPressure_axis");
+            }
             if (jObject.ContainsKey("Color"))
             {
                 DefaultTemplateName = jObject.Value<string>("Color");
@@ -285,6 +298,15 @@ namespace SAM.Core.Mollier.UI
                 {
                     PointGradientVisibilitySetting = new PointGradientVisibilitySetting(jObject_PointGradientVisibilitySetting);
                 }
+            }
+
+            if (jObject.ContainsKey("DivisionAreaEnthalpy_Interval"))
+            {
+                DivisionAreaEnthalpy_Interval = jObject.Value<int>("DivisionAreaEnthalpy_Interval");
+            }
+            if (jObject.ContainsKey("DivisionAreaRelativeHumidity_Interval"))
+            {
+                DivisionAreaRelativeHumidity_Interval = jObject.Value<int>("DivisionAreaRelativeHumidity_Interval");
             }
 
             if (jObject.ContainsKey("DisableUnits"))
@@ -387,6 +409,7 @@ namespace SAM.Core.Mollier.UI
             result.Add("Enthalpy_line", Enthalpy_line);
             result.Add("SpecificVolume_line", SpecificVolume_line);
             result.Add("WetBulbTemperature_line", WetBulbTemperature_line);
+            result.Add("PartialVapourPressure_axis", PartialVapourPressure_axis);
             result.Add("Color", DefaultTemplateName);
             result.Add("DisableUnits", DisableUnits);
             result.Add("DisableLabels", DisableLabels);
@@ -400,6 +423,9 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("PointGradientVisibilitySetting", PointGradientVisibilitySetting.ToJObject());
             }
+
+            result.Add("DivisionAreaEnthalpy_Interval", DivisionAreaEnthalpy_Interval);
+            result.Add("DivisionAreaRelativeHumidity_Interval", DivisionAreaRelativeHumidity_Interval);
 
             //Density
             if (!double.IsNaN(Density_Max))

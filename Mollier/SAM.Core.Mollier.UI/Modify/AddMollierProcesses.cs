@@ -84,7 +84,7 @@ namespace SAM.Core.Mollier.UI
             series.BorderWidth = borderWidth;
             series.ChartType = SeriesChartType.Spline;
             series.BorderDashStyle = borderDashStyle;
-            series.Tag = "dashLine";
+            series.Tag = new UIMollierProcess(Mollier.Create.UndefinedProcess(mollierPoint_1, mollierPoint_2), Color.Black);
 
             return series;
         }          
@@ -94,6 +94,7 @@ namespace SAM.Core.Mollier.UI
 
             //Defines the end label of the process
             MollierProcess mollierProcess = uIMollierProcess.MollierProcess;
+            uIMollierProcess.UIMollierAppearance_End.Label = "ROOM";
             //Specified the color of the Room air condition point
             Color color = uIMollierProcess.UIMollierAppearance.Color == Color.Empty ? Color.Gray : uIMollierProcess.UIMollierAppearance.Color;
             //Creating series for room process
@@ -103,7 +104,7 @@ namespace SAM.Core.Mollier.UI
             series.Color = color;
             series.BorderDashStyle = ChartDashStyle.Dash;
             series.BorderWidth = 3;
-            series.Tag = mollierProcess;
+            series.Tag = uIMollierProcess;
             //add start and end point to the process series
             MollierPoint start = mollierProcess.Start;
             MollierPoint end = mollierProcess.End;
@@ -252,6 +253,10 @@ namespace SAM.Core.Mollier.UI
                         UI_MollierProcess.UIMollierAppearance_End = new UIMollierAppearance(Color.Empty, null);
                     }
 
+                    if(UI_MollierProcess is UndefinedProcess)
+                    {
+                        UI_MollierProcess.UIMollierAppearance_End.Label = "ROOM";
+                    }
 
                     if (systems[i].Count > 1 &&  j == 0)
                     {

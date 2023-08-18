@@ -16,6 +16,11 @@ namespace SAM.Core.Mollier.UI
 
             foreach (Series series in chart.Series)
             {
+                if (series.Tag is UIMollierZone)
+                {
+                    UIMollierZone zone = (UIMollierZone)series.Tag;
+                    result.AddRange(Solver2DDatas_Zone(zone, chartType, scaleVector, axesRatio));
+                }
                 if (series.Name == "MollierPoints")
                 {
                     foreach(DataPoint dataPoint in series.Points)
@@ -32,11 +37,6 @@ namespace SAM.Core.Mollier.UI
                     UIMollierProcess process = (UIMollierProcess)series.Tag;
                     result.AddRange(solver2DDatas_Process(process, chartType, scaleVector, axesRatio));
                 }
-                if (series.Tag is UIMollierZone)
-                {
-                    UIMollierZone zone = (UIMollierZone)series.Tag;
-                    result.AddRange(Solver2DDatas_Zone(zone, chartType, scaleVector, axesRatio));
-                }
                 if (series.Tag is ConstantValueCurve && !(series.Tag is ConstantTemperatureCurve))
                 {
                     ConstantValueCurve curve = (ConstantValueCurve)series.Tag;
@@ -50,14 +50,11 @@ namespace SAM.Core.Mollier.UI
         private static List<Solver2DData> solver2DDatas_Point(UIMollierPoint mollierPoint, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<Solver2DData> result = new List<Solver2DData>();
-            if (mollierPoint == null || mollierPoint.UIMollierAppearance.Label == null) return result;
+            if (mollierPoint == null || mollierPoint.UIMollierAppearance.Label == null || mollierPoint.UIMollierAppearance.Label == "") return result;
 
             Point2D point = Convert.ToSAM(mollierPoint, chartType);
             string text = mollierPoint.UIMollierAppearance.Label;
             Point2D labelCenter = getLabelCenter(point, chartType, scaleVector);
-
-            //Point2D labelCenter = getLabelCenter(point, chartType, scaleVector);
-            //labelCenter.Y += 0.5 * scaleVector.Y;
 
             Rectangle2D labelRectangle = textToRectangle(labelCenter, text, chartType, scaleVector, axesRatio);
 
@@ -71,13 +68,13 @@ namespace SAM.Core.Mollier.UI
         {
             List<Solver2DData> result = new List<Solver2DData>();
 
-            UIMollierPoint start = new UIMollierPoint(process.Start, process.UIMollierAppearance_Start);
-            result.AddRange(solver2DDatas_Point(start, chartType, scaleVector, axesRatio));
-
-            UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), process.UIMollierAppearance);
+            UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierAppearance(Color.Black, process.UIMollierAppearance.Label));
             result.AddRange(solver2DDatas_Point(mid, chartType, scaleVector, axesRatio));
 
-            UIMollierPoint end = new UIMollierPoint(process.End, process.UIMollierAppearance_End);
+            UIMollierPoint start = new UIMollierPoint(process.Start, new UIMollierAppearance(Color.Black, process.UIMollierAppearance_Start.Label));
+            result.AddRange(solver2DDatas_Point(start, chartType, scaleVector, axesRatio));
+
+            UIMollierPoint end = new UIMollierPoint(process.End, new UIMollierAppearance(Color.Black, process.UIMollierAppearance_End.Label));
             result.AddRange(solver2DDatas_Point(end, chartType, scaleVector, axesRatio));
 
             return result;
@@ -88,7 +85,20 @@ namespace SAM.Core.Mollier.UI
             if (zone == null) return result;
 
             UIMollierAppearance zoneCenterAppearance = new UIMollierAppearance(Color.Black, zone.Text);
-            UIMollierPoint zoneCenter = new UIMollierPoint(zone.GetCenter(), zoneCenterAppearance);
+            UIMollierPoint zoneCenter;
+            if(chartType == ChartType.Mollier)
+            {
+                MollierPoint center = new MollierPoint(zone.GetCenter().DryBulbTemperature - 0.8 * scaleVector.Y, zone.GetCenter().HumidityRatio, zone.GetCenter().Pressure);
+                zoneCenter = new UIMollierPoint(center, zoneCenterAppearance);
+            }
+            else
+            {
+                MollierPoint center = new MollierPoint(zone.GetCenter().DryBulbTemperature, zone.GetCenter().HumidityRatio - 0.0004 * scaleVector.X, zone.GetCenter().Pressure);
+                zoneCenter = new UIMollierPoint(zone.GetCenter(), zoneCenterAppearance);
+            }
+
+
+
             result.AddRange(solver2DDatas_Point(zoneCenter, chartType, scaleVector, axesRatio));
             return result;
         }
@@ -192,15 +202,17 @@ namespace SAM.Core.Mollier.UI
                 if (series.Tag is ConstantValueCurve && !(series.Tag is ConstantTemperatureCurve))
                 {
                     ConstantValueCurve curve = (ConstantValueCurve)series.Tag;
-                    if (!result.ContainsKey(curve.ChartDataType))
-                    {
-                        result.Add(curve.ChartDataType, new List<ConstantValueCurve>());
-                    }
                     if (onChart(curve, chart, chartType))
                     {
                         if (curve.ChartDataType == ChartDataType.Enthalpy && curve.Value % 10000 != 0) continue;
+
+                        if (!result.ContainsKey(curve.ChartDataType))
+                        {
+                            result.Add(curve.ChartDataType, new List<ConstantValueCurve>());
+                        }
                         result[curve.ChartDataType].Add(curve);
                     }
+
                 }
             }
 
@@ -212,19 +224,19 @@ namespace SAM.Core.Mollier.UI
             // Method returns point's label
             if (chartType == ChartType.Mollier)
             {
-                return new Point2D(point.X, point.Y + 0.95 * scaleVector.Y);
+                return new Point2D(point.X, point.Y + 0.8 * scaleVector.Y);
             }
             else
             {
-                return new Point2D(point.X, point.Y + 0.0005 * scaleVector.Y);
+                return new Point2D(point.X, point.Y + 0.0004 * scaleVector.Y);
             }
         }
 
         private static Rectangle2D textToRectangle(Point2D center, string text, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
-            double capitalLetterHeight = (chartType == ChartType.Mollier ? 1 : 0.00055) * scaleVector.Y;
-            double lowercaseHeight = (chartType == ChartType.Mollier ? 0.95 : 0.0005) * scaleVector.Y;
-            double letterWidth = (chartType == ChartType.Mollier ? 0.165 : 0.375) * scaleVector.X;
+            double capitalLetterHeight = (chartType == ChartType.Mollier ? 0.8 : 0.00035) * scaleVector.Y;
+            double lowercaseHeight = (chartType == ChartType.Mollier ? 0.75 : 0.0003) * scaleVector.Y;
+            double letterWidth = (chartType == ChartType.Mollier ? 0.1 : 0.25) * scaleVector.X;
 
             double width = letterWidth * text.Length;
             double height = containsCapitalLetter(text) ? capitalLetterHeight : lowercaseHeight;
