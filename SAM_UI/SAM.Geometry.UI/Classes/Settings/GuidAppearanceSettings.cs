@@ -208,6 +208,11 @@ namespace SAM.Geometry.UI
                 JArray jArray = new JArray();
                 foreach(KeyValuePair<Guid, List<IAppearance>> keyValuePair in appearanceDictionary)
                 {
+                    if(keyValuePair.Value == null)
+                    {
+                        continue;
+                    }
+
                     JObject jObject_Temp = new JObject();
                     jObject_Temp.Add("Guid", keyValuePair.Key);
 
