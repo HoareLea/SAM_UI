@@ -3,25 +3,25 @@ using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
 {
-    public class MollierControlZone : MollierZone
+    public class UIMollierZone : MollierZone
     {
         public Color Color { get; set; }
         public string Text { get; set; }
 
-        public MollierControlZone(MollierZone mollierZone, Color color, string text)
+        public UIMollierZone(MollierZone mollierZone, Color color, string text)
             :base(mollierZone)
         {
             Color = color;
             Text = text;
         }
 
-        public MollierControlZone(MollierControlZone mollierControlZone)
-            :base(mollierControlZone)
+        public UIMollierZone(UIMollierZone uIMollierZone)
+            :base(uIMollierZone)
         {
-            Color = mollierControlZone.Color;
-            Text = mollierControlZone.Text;
+            Color = uIMollierZone.Color;
+            Text = uIMollierZone.Text;
         }
-        public MollierControlZone(JObject jObject)
+        public UIMollierZone(JObject jObject)
             :base(jObject)
         {
 

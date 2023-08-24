@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Controls
 {
-    partial class CustomizeProcessControl
+    partial class UIMollierProcessControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -94,7 +94,6 @@
             this.ProcessLabel_Value.Name = "ProcessLabel_Value";
             this.ProcessLabel_Value.Size = new System.Drawing.Size(88, 22);
             this.ProcessLabel_Value.TabIndex = 10;
-            this.ProcessLabel_Value.TextChanged += new System.EventHandler(this.ProcessLabel_Value_TextChanged);
             // 
             // EndLabel_Value
             // 
@@ -102,7 +101,6 @@
             this.EndLabel_Value.Name = "EndLabel_Value";
             this.EndLabel_Value.Size = new System.Drawing.Size(88, 22);
             this.EndLabel_Value.TabIndex = 12;
-            this.EndLabel_Value.TextChanged += new System.EventHandler(this.EndLabel_Value_TextChanged);
             // 
             // StartLabel_Value
             // 
@@ -110,7 +108,6 @@
             this.StartLabel_Value.Name = "StartLabel_Value";
             this.StartLabel_Value.Size = new System.Drawing.Size(88, 22);
             this.StartLabel_Value.TabIndex = 13;
-            this.StartLabel_Value.TextChanged += new System.EventHandler(this.StartLabel_Value_TextChanged);
             // 
             // CustomizeProcessControl
             // 
@@ -126,7 +123,6 @@
             this.Controls.Add(this.ProcessColor_button);
             this.Name = "CustomizeProcessControl";
             this.Size = new System.Drawing.Size(253, 146);
-            this.Load += new System.EventHandler(this.CustomizeProcessControl_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

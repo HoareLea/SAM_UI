@@ -1,36 +1,43 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Forms
 {
-    public partial class CustomizeProcessForm : Form
+    public partial class CustomizePointForm : Form
     {
-        public CustomizeProcessForm()
+        public CustomizePointForm()
         {
             InitializeComponent();
         }
-        public CustomizeProcessForm(UIMollierProcess uIMollierProcess)
+        public CustomizePointForm(UIMollierPoint uIMollierPoint)
         {
             InitializeComponent();
-            if(uIMollierProcess == null)
+            if(uIMollierPoint == null)
             {
                 return;
             }
-            customizeProcessControl.UIMollierProcess = uIMollierProcess;
+            customizePointControl.UIMollierPoint = uIMollierPoint;
         }
-        
-        public UIMollierProcess UIMollierProcess
-        {
+
+        public UIMollierPoint UIMollierPoint
+        { 
             get
             {
-                return customizeProcessControl.UIMollierProcess;
+                return customizePointControl.UIMollierPoint;
             }
             set
             {
-                customizeProcessControl.UIMollierProcess = value;
+                customizePointControl.UIMollierPoint = value;
             }
         }
+
         private void OK_Button_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;

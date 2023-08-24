@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -13,12 +14,14 @@ namespace SAM.Core.Mollier.UI
         public double Temperature_Max { get; set; } = Default.DryBulbTemperature_Max;
         public double Temperature_Min { get; set; } = Default.DryBulbTemperature_Min;
         public double Temperature_Interval { get; set; } = Default.DryBulbTemperature_Interval;
-        public double PartialVapourPressure { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
-       
+        public double PartialVapourPressure_Interval { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
+
         public bool Density_line { get; set; } = true;
         public bool Enthalpy_line { get; set; } = true;
         public bool SpecificVolume_line { get; set; } = true;
         public bool WetBulbTemperature_line { get; set; } = true;
+
+        public bool PartialVapourPressure_axis { get; set; } = true;
         public ChartType ChartType { get; set; } = ChartType.Mollier;
         public string DefaultTemplateName { get; set; } = "default";
         public bool DisableUnits { get; set; } = false;
@@ -29,6 +32,8 @@ namespace SAM.Core.Mollier.UI
         public ChartDataType FindPointType { get; set; } = ChartDataType.Enthalpy;
         public bool DivisionArea { get; set; } = false;
         public bool DivisionAreaLabels { get; set; } = true;
+        public Color UIMollierZoneColor { get; set; } = Color.Red;
+        public string UIMollierZoneText { get; set; } = string.Empty;
 
         public double Density_Min { get; set; } = Default.Density_Min;
         public double Density_Max { get; set; } = Default.Density_Max;
@@ -45,6 +50,9 @@ namespace SAM.Core.Mollier.UI
         public double WetBulbTemperature_Min { get; set; } = Default.WetBulbTemperature_Min;
         public double WetBulbTemperature_Max { get; set; } = Default.WetBulbTemperature_Max;
         public double WetBulbTemperature_Interval { get; set; } = Default.WetBulbTemperature_Interval;
+
+        public int DivisionAreaEnthalpy_Interval { get; set; } = 3;
+        public int DivisionAreaRelativeHumidity_Interval { get; set; } = 10;
         public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
@@ -66,13 +74,17 @@ namespace SAM.Core.Mollier.UI
                 Temperature_Max = mollierControlSettings.Temperature_Max;
                 Temperature_Min = mollierControlSettings.Temperature_Min;
                 Temperature_Interval = mollierControlSettings.Temperature_Interval;
-                PartialVapourPressure = mollierControlSettings.PartialVapourPressure;
+                PartialVapourPressure_Interval = mollierControlSettings.PartialVapourPressure_Interval;
                 Density_line = mollierControlSettings.Density_line;
                 Enthalpy_line = mollierControlSettings.Enthalpy_line;
                 SpecificVolume_line = mollierControlSettings.SpecificVolume_line;
                 WetBulbTemperature_line = mollierControlSettings.WetBulbTemperature_line;
                 ChartType = mollierControlSettings.ChartType;
                 DefaultTemplateName = mollierControlSettings.DefaultTemplateName;
+                PartialVapourPressure_axis = mollierControlSettings.PartialVapourPressure_axis;
+
+                DivisionAreaEnthalpy_Interval = mollierControlSettings.DivisionAreaEnthalpy_Interval;
+                DivisionAreaRelativeHumidity_Interval = mollierControlSettings.DivisionAreaRelativeHumidity_Interval;
 
                 VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
                 VisibilitySettings = visibilitySettings == null ? null : new VisibilitySettings(visibilitySettings);
@@ -89,6 +101,8 @@ namespace SAM.Core.Mollier.UI
                 FindPointType = mollierControlSettings.FindPointType;
                 DivisionArea = mollierControlSettings.DivisionArea;
                 DivisionAreaLabels = mollierControlSettings.DivisionAreaLabels;
+                UIMollierZoneColor = mollierControlSettings.UIMollierZoneColor;
+                UIMollierZoneText = mollierControlSettings.UIMollierZoneText;
 
                 Density_Max = mollierControlSettings.Density_Max;
                 Density_Min = mollierControlSettings.Density_Min;
@@ -235,7 +249,7 @@ namespace SAM.Core.Mollier.UI
             }
             if (jObject.ContainsKey("PartialVapourPressure_Interval"))
             {
-                PartialVapourPressure = jObject.Value<double>("PartialVapourPressure_Interval");
+                PartialVapourPressure_Interval = jObject.Value<double>("PartialVapourPressure_Interval");
             }
             if (jObject.ContainsKey("Density_line"))
             {
@@ -252,6 +266,10 @@ namespace SAM.Core.Mollier.UI
             if (jObject.ContainsKey("WetBulbTemperature_line"))
             {
                 WetBulbTemperature_line = jObject.Value<bool>("WetBulbTemperature_line");
+            }
+            if (jObject.ContainsKey("WetBulbTemperature_line"))
+            {
+                PartialVapourPressure_axis = jObject.Value<bool>("PartialVapourPressure_axis");
             }
             if (jObject.ContainsKey("Color"))
             {
@@ -280,6 +298,15 @@ namespace SAM.Core.Mollier.UI
                 {
                     PointGradientVisibilitySetting = new PointGradientVisibilitySetting(jObject_PointGradientVisibilitySetting);
                 }
+            }
+
+            if (jObject.ContainsKey("DivisionAreaEnthalpy_Interval"))
+            {
+                DivisionAreaEnthalpy_Interval = jObject.Value<int>("DivisionAreaEnthalpy_Interval");
+            }
+            if (jObject.ContainsKey("DivisionAreaRelativeHumidity_Interval"))
+            {
+                DivisionAreaRelativeHumidity_Interval = jObject.Value<int>("DivisionAreaRelativeHumidity_Interval");
             }
 
             if (jObject.ContainsKey("DisableUnits"))
@@ -374,14 +401,15 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("Temperature_Interval", Temperature_Interval);
             }
-            if (!double.IsNaN(PartialVapourPressure))
+            if (!double.IsNaN(PartialVapourPressure_Interval))
             {
-                result.Add("PartialVapourPressure_Interval", PartialVapourPressure);
+                result.Add("PartialVapourPressure_Interval", PartialVapourPressure_Interval);
             }
             result.Add("Density_line", Density_line);
             result.Add("Enthalpy_line", Enthalpy_line);
             result.Add("SpecificVolume_line", SpecificVolume_line);
             result.Add("WetBulbTemperature_line", WetBulbTemperature_line);
+            result.Add("PartialVapourPressure_axis", PartialVapourPressure_axis);
             result.Add("Color", DefaultTemplateName);
             result.Add("DisableUnits", DisableUnits);
             result.Add("DisableLabels", DisableLabels);
@@ -395,6 +423,9 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("PointGradientVisibilitySetting", PointGradientVisibilitySetting.ToJObject());
             }
+
+            result.Add("DivisionAreaEnthalpy_Interval", DivisionAreaEnthalpy_Interval);
+            result.Add("DivisionAreaRelativeHumidity_Interval", DivisionAreaRelativeHumidity_Interval);
 
             //Density
             if (!double.IsNaN(Density_Max))

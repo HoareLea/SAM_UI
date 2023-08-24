@@ -6,89 +6,42 @@ namespace SAM.Core.Mollier.UI
     public static partial class Modify
     {
 
-        public static void AddLinesSeries(this Chart chart, MollierControlSettings mollierControlSettings)
+        public static List<Series> AddLinesSeries(this Chart chart, MollierControlSettings mollierControlSettings)
         {
-            List<Series> seriesList = null;
+            List<Series> result = new List<Series>();
 
-            //Temperature
-            seriesList = Convert.ToChart(ChartDataType.DryBulbTemperature, chart, mollierControlSettings);
-
-            //Relative Humidity
-            seriesList = Convert.ToChart(ChartDataType.RelativeHumidity, chart, mollierControlSettings);
-            if (seriesList != null && seriesList.Count != 0)
+            List<Series> dryBulbTemperatureSeries = Convert.ToChart(ChartDataType.DryBulbTemperature, chart, mollierControlSettings);
+            if(dryBulbTemperatureSeries != null)
             {
-                foreach (Series series in seriesList)
-                {
-                    AddLabel_RelativeHumidity(series, chart.ChartAreas[0], mollierControlSettings, 5);
-                }
+                result.AddRange(dryBulbTemperatureSeries);
+            }
+            List<Series> relativeHumiditySeries = Convert.ToChart(ChartDataType.RelativeHumidity, chart, mollierControlSettings);
+            if(relativeHumiditySeries != null)
+            {
+                result.AddRange(relativeHumiditySeries);
+            }
+            List<Series> densitySeries = Convert.ToChart(ChartDataType.Density, chart, mollierControlSettings);
+            if (densitySeries != null)
+            {
+                result.AddRange(densitySeries);
+            }
+            List<Series> enthalpySeries = Convert.ToChart(ChartDataType.Enthalpy, chart, mollierControlSettings);
+            if (enthalpySeries != null)
+            {
+                result.AddRange(enthalpySeries);
+            }
+            List<Series> specificVolumeSeries = Convert.ToChart(ChartDataType.SpecificVolume, chart, mollierControlSettings);
+            if (specificVolumeSeries != null)
+            {
+                result.AddRange(specificVolumeSeries);
+            }
+            List<Series> wetBulbTemperatureSeries = Convert.ToChart(ChartDataType.WetBulbTemperature, chart, mollierControlSettings);
+            if (wetBulbTemperatureSeries != null)
+            {
+                result.AddRange(wetBulbTemperatureSeries);
             }
 
-            //Density
-            seriesList = Convert.ToChart(ChartDataType.Density, chart, mollierControlSettings);
-            if (seriesList != null && seriesList.Count != 0)
-            {
-                foreach (Series series in seriesList)
-                {
-                    AddLabel_Unit(chart, series, mollierControlSettings);
-                }
-
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? 2 : 11.5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? -1 : 0.0035;
-
-                AddLabel_Label(chart, seriesList[seriesList.Count / 2], mollierControlSettings, "Density ρ [kg/m³]", offset_X, offset_Y);
-            }
-
-            //Enthalpy
-            seriesList = Convert.ToChart(ChartDataType.Enthalpy, chart, mollierControlSettings);
-            if (seriesList != null && seriesList.Count != 0)
-            {
-                foreach (Series series in seriesList)
-                {
-                    AddLabel_Unit(chart, series, mollierControlSettings);
-                }
-
-                //Label location 
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -4.8 : 4.5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 11.5 : -0.002;
-
-                Series series_Temp = seriesList[seriesList.Count / 2];
-
-                AddLabel_Label(chart, series_Temp, mollierControlSettings, "Enthalpy h [kJ/kg]", offset_X, offset_Y, series_Temp.Points.Count / 2);
-            }
-
-            //Wet Bulb Temperature
-            seriesList = Convert.ToChart(ChartDataType.WetBulbTemperature, chart, mollierControlSettings);
-            if (seriesList != null && seriesList.Count != 0)
-            {
-                foreach (Series series in seriesList)
-                {
-                    AddLabel_Unit(chart, series, mollierControlSettings);
-                }
-
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -5.5 : 24.5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 26.2 : 0.0012;
-
-                Series series_Temp = seriesList[seriesList.Count / 2];
-
-                AddLabel_Label(chart, series_Temp, mollierControlSettings, "Wet Bulb Temperature t_wb [°C]", offset_X, offset_Y, series_Temp.Points.Count - 1);
-            }
-
-            //Specific Volume
-            seriesList = Convert.ToChart(ChartDataType.SpecificVolume, chart, mollierControlSettings);
-            if (seriesList != null && seriesList.Count != 0)
-            {
-                foreach (Series series in seriesList)
-                {
-                    Modify.AddLabel_Unit(chart, series, mollierControlSettings);
-                }
-
-                double offset_X = mollierControlSettings.ChartType == ChartType.Mollier ? -12 : 5;
-                double offset_Y = mollierControlSettings.ChartType == ChartType.Mollier ? 5 : -0.01;
-
-                Series series_Temp = seriesList[seriesList.Count / 2];
-
-                AddLabel_Label(chart, series_Temp, mollierControlSettings, "Specific volume v [m³/kg]", offset_X, offset_Y, series_Temp.Points.Count / 2);
-            }
+            return result;
         }
     }
 }

@@ -104,10 +104,10 @@ namespace SAM.Core.Mollier.UI.Forms
                     return;
                 }
 
-                color = customizeProcessForm.Color;
-                start_Label = customizeProcessForm.Start_Label;
-                process_Label = customizeProcessForm.Process_Label;
-                end_Label = customizeProcessForm.End_Label;
+                color = customizeProcessForm.UIMollierProcess.UIMollierAppearance.Color;
+                start_Label = customizeProcessForm.UIMollierProcess.UIMollierAppearance_Start.Label;
+                process_Label = customizeProcessForm.UIMollierProcess.UIMollierAppearance.Label;
+                end_Label = customizeProcessForm.UIMollierProcess.UIMollierAppearance_End.Label;
             }
         }
 

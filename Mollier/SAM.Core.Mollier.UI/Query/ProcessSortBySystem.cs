@@ -4,7 +4,8 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
-        public static List<List<UIMollierProcess>> ProcessSortBySystem(List<UIMollierProcess> mollierProcesses)
+        // ui mollier gr, this i aIEnumerable element at
+        public static List<List<UIMollierProcess>> Group(this List<UIMollierProcess> mollierProcesses)
         {
             List<List<UIMollierProcess>> result = new List<List<UIMollierProcess>>();
             List<List<int>> resultID = new List<List<int>>();//list 0 3 2 4 means that there should be processes in sequence are indexes 0 3 2 4 in mollierprocesses

@@ -67,7 +67,7 @@ namespace SAM.Core.Mollier.UI
             return true;
         }
 
-        public JObject ToJObject()
+        public override JObject ToJObject()
         {
             JObject jObject = base.ToJObject();
             if (jObject == null)

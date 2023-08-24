@@ -1,4 +1,5 @@
 ﻿using SAM.Geometry.Planar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -31,6 +32,7 @@ namespace SAM.Core.Mollier.UI
             values.Add(Core.Query.Description(chartDataType));
             values.Add(string.Format("[{0}]", constantValueCurve.Value.ToString()));
             values.Add(Units.Query.Abbreviation(Query.DefaultUnitType(chartDataType)));
+            values.Add(Guid.NewGuid().ToString());
             if(constantValueCurve is ConstantTemperatureCurve)
             {
                 values.Add(Core.Query.Description(((ConstantTemperatureCurve)constantValueCurve).Phase));
