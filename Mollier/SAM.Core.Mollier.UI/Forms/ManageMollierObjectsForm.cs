@@ -18,125 +18,234 @@ namespace SAM.Core.Mollier.UI.Forms
         private MollierControlSettings mollierControlSettings;
 
         public event MollierProcessRemovedEventHandler MollierProcessRemoved;
-        public MollierForm MollierForm { get; set; }
+        public event MollierPointRemovedEventHandler MollierPointRemoved;
+        public event MollierProcessEditedEventHandler MollierProcessEdited;
+        public event MollierPointEditedEventHandler MollierPointEdited;
+
+        private double airflow = 0;
+        private string airFlowUnit = "m3/s";
 
         public ManageMollierObjectsForm()
         {
             InitializeComponent();
+
+            DataGridView_MollierProcesses.AutoGenerateColumns = false;
+            DataGridView_MollierPoints.AutoGenerateColumns = false;
         }
-        public ManageMollierObjectsForm(List<UIMollierPoint> mollierPoints, List<UIMollierProcess> mollierProcesses, List<UIMollierZone> mollierZones, MollierControlSettings mollierControlSettings)
+        public ManageMollierObjectsForm(List<UIMollierPoint> mollierPoints, List<UIMollierProcess> mollierProcesses, List<UIMollierZone> mollierZones, MollierControlSettings mollierControlSettings)   
         {
+            this.mollierControlSettings = mollierControlSettings;
+
             InitializeComponent();
+            DataGridView_MollierProcesses.AutoGenerateColumns = false;
+            DataGridView_MollierPoints.AutoGenerateColumns = false;
+
+            Refresh(mollierPoints, mollierProcesses, mollierZones);
+        }
+        public void Refresh(List<UIMollierPoint> mollierPoints = null, List<UIMollierProcess> mollierProcesses = null, List<UIMollierZone> mollierZones = null)
+        {
             this.uIMollierPoints = mollierPoints;
             this.uIMollierProcesses = mollierProcesses;
             this.uIMollierZones = mollierZones;
-            this.mollierControlSettings = mollierControlSettings;
 
-            if(uIMollierPoints != null)
-            {
-                foreach (UIMollierPoint uIMollierPoint in uIMollierPoints)
-                {
-                    Control pointCustomizeControl = new Controls.PointManageControl(uIMollierPoint, mollierControlSettings);
-                   // pointCustomizeControl.Pro
-                    pointCustomizeControl.Tag = uIMollierPoint;
-                    flowLayoutPanelPoints.Controls.Add(pointCustomizeControl);
-                }
-            }
-
-            if(uIMollierProcesses != null)
-            {
-                foreach(UIMollierProcess uIMollierProcess in uIMollierProcesses)
-                {
-                    Controls.ProcessManageControl processCustomizeControl = new Controls.ProcessManageControl(uIMollierProcess, mollierControlSettings);
-                    processCustomizeControl.MollierProcessRemoved += ProcessCustomizeControl_MollierProcessRemoved; 
-                    processCustomizeControl.Tag = uIMollierProcess;
-                    flowLayoutPanelProcesses.Controls.Add(processCustomizeControl);
-                }
-            }
+            generateDataGridViews();
         }
 
-        private void ProcessCustomizeControl_MollierProcessRemoved(object sender, MollierProcessRemovedEventArgs e) // sender - kto wysyła -> process manage control
-        {                                                                                                          // e - wiadomość -> mollierProcess
-            flowLayoutPanelProcesses.Controls.Remove((Controls.ProcessManageControl)sender);
-
-            uIMollierProcesses.Remove(e.MollierProcess);
-            MollierProcessRemoved.Invoke(this, e);
-        }
-
-        public void RemoveMollierProcess(UIMollierProcess mollierProcess)
+        private void ManageMollierObjectsForm_Load(object sender, EventArgs e)
         {
-            if (mollierProcess != null)
-            {
-                foreach (UIMollierProcess mollierProcessTemp in uIMollierProcesses)
-                {
-                    if(mollierProcess.Equals(mollierProcessTemp))
-                    {
-                        uIMollierProcesses.Remove(mollierProcessTemp);
-
-                        for(int i=0; i<flowLayoutPanelProcesses.Controls.Count; i++)
-                        {
-                            if(flowLayoutPanelProcesses.Controls[i].Tag == mollierProcessTemp)
-                            {
-                                flowLayoutPanelProcesses.Controls.RemoveAt(i);
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }  
-            }
+            SupplyAirflow_ComboBox.Text = "m3/s";
+            ExhaustAirflow_Combobox.Text = "m3/s";
         }
-        public void AddMollierProcess(UIMollierProcess mollierProcess)
+        private void SupplyAirFlow_TextBox_TextChanged(object sender, EventArgs e)
         {
-            if(mollierProcess == null)
+            if (!Core.Query.TryConvert(SupplyAirFlow_TextBox.Text, out double supplyAirFlow))
             {
                 return;
             }
 
-            Control processCustomizeControl = new Controls.ProcessManageControl(mollierProcess, mollierControlSettings);
-            processCustomizeControl.Tag = mollierProcess;
-            uIMollierProcesses.Add(mollierProcess);
-            flowLayoutPanelProcesses.Controls.Add(processCustomizeControl);
+            airflow = supplyAirFlow;
+            generateDataGridViews();
         }
-        public void RemoveMollierPoint(UIMollierPoint mollierPoint)
+        private void DataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (mollierPoint != null)
+            DataGridView dataGridView = sender as DataGridView;
+            if(dataGridView == null)
             {
-                foreach (UIMollierPoint mollierPointsTemp in uIMollierPoints)
-                {
-                    if (mollierPoint.Equals(mollierPointsTemp))
-                    {
-                        uIMollierPoints.Remove(mollierPointsTemp);
-
-                        for (int i = 0; i < flowLayoutPanelPoints.Controls.Count; i++)
-                        {
-                            if (flowLayoutPanelPoints.Controls[i].Tag == mollierPointsTemp)
-                            {
-                                flowLayoutPanelPoints.Controls.RemoveAt(i);
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
+                return;
             }
-        }
-        public void AddMollierPoint(UIMollierPoint mollierPoint)
-        {
-            if (mollierPoint == null)
+            DataGridViewButtonColumn dataGridViewButtonColumn = dataGridView.Columns[e.ColumnIndex] as DataGridViewButtonColumn;
+            if(dataGridViewButtonColumn == null || e.RowIndex < 0)
             {
                 return;
             }
 
-            Control pointCustomizeControl = new Controls.PointManageControl(mollierPoint, mollierControlSettings);
-            pointCustomizeControl.Tag = mollierPoint;
-            uIMollierPoints.Add(mollierPoint);
-            flowLayoutPanelPoints.Controls.Add(pointCustomizeControl);
+            DisplayUIMollierObject displayUIMollierObject = dataGridView?.Rows[e.RowIndex]?.DataBoundItem as DisplayUIMollierObject;
+
+            bool remove = dataGridViewButtonColumn.HeaderText == "Remove";
+            bool edit = dataGridViewButtonColumn.HeaderText == "Edit";
+
+            if(remove)
+            {
+                removeObject(displayUIMollierObject);
+            }
+            else if(edit)
+            {
+                editObject(displayUIMollierObject);
+            }
         }
-        private void acceptButton_Click(object sender, EventArgs e)
+        private void DataGridView_MollierProcesses_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            DialogResult = DialogResult.OK;
-            Close();
+
+        }
+        private void SupplyAirFlow_CheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            //For now there is no exhaust airflow but there'll be imlemented switching between ariflows
+            SupplyAirFlow_CheckBox.Checked = true;
+            return;
+        }
+        private void SupplyAirflow_ComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(SupplyAirFlow_CheckBox.Checked)
+            {
+                airFlowUnit = SupplyAirFlow_CheckBox.Text;
+            }
+        }
+        private void ToolStripMenuItem_Edit_Click(object sender, EventArgs e)
+        {
+            Point point = DataGridView_MollierProcesses.PointToClient(Cursor.Position);
+
+            DataGridView.HitTestInfo hitTestInfo = DataGridView_MollierProcesses.HitTest(point.X, point.Y);
+            if(hitTestInfo.RowIndex == -1)
+            {
+                return;
+            }
+
+            DataGridViewRow dataGridViewRow = DataGridView_MollierProcesses.Rows[hitTestInfo.RowIndex];
+            DisplayUIMollierObject displayUIMollierObject = dataGridViewRow?.DataBoundItem as DisplayUIMollierObject;
+
+            editObject(displayUIMollierObject);
+        }
+        private void ToolStripMenuItem_Remove_Click(object sender, EventArgs e)
+        {
+            Point point = DataGridView_MollierProcesses.PointToClient(Cursor.Position);
+
+            DataGridView.HitTestInfo hitTestInfo = DataGridView_MollierProcesses.HitTest(point.X, point.Y);
+            if (hitTestInfo.RowIndex == -1)
+            {
+                return;
+            }
+
+            DataGridViewRow dataGridViewRow = DataGridView_MollierProcesses.Rows[hitTestInfo.RowIndex];
+            DisplayUIMollierObject displayUIMollierObject = dataGridViewRow?.DataBoundItem as DisplayUIMollierObject;
+
+            removeObject(displayUIMollierObject);
+        }
+
+        private void generateDataGridViews()
+        {
+            Pressure_TextBox.Text = mollierControlSettings.Pressure.ToString();
+            //Column_MollierProcess_MassFlow.HeaderText += " [" + airFlowUnit + "]";
+
+
+            if (uIMollierPoints != null)
+            {
+                DataGridView_MollierPoints.DataSource = uIMollierPoints.ConvertAll(x => new DisplayUIMollierObject(x));
+            }
+            if (uIMollierProcesses != null)
+            {
+                List<DisplayUIMollierObject> displayAnalyticalObjects = new List<DisplayUIMollierObject>();
+                foreach (UIMollierProcess uIMollierProcess in uIMollierProcesses)
+                {
+                    displayAnalyticalObjects.Add(new DisplayUIMollierObject(uIMollierProcess, 0, airflow, airFlowUnit));
+                    displayAnalyticalObjects.Add(new DisplayUIMollierObject(uIMollierProcess, 1, airflow, airFlowUnit));
+                }
+                DataGridView_MollierProcesses.DataSource = displayAnalyticalObjects;
+            }
+        }
+        private void editObject(DisplayUIMollierObject displayUIMollierObject)
+        {
+            if (displayUIMollierObject == null)
+            {
+                return;
+            }
+
+            if (displayUIMollierObject.UIMollierObject is UIMollierProcess)
+            {
+                UIMollierProcess uIMollierProcess = (UIMollierProcess)displayUIMollierObject.UIMollierObject;
+                UIMollierProcess newUIMollierProcess = new UIMollierProcess(uIMollierProcess);
+
+                using (CustomizeProcessForm customizeProcessForm = new CustomizeProcessForm(uIMollierProcess))
+                {
+                    if (customizeProcessForm.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+
+                    newUIMollierProcess.UIMollierAppearance.Color = customizeProcessForm.Color;
+                    newUIMollierProcess.UIMollierAppearance_Start.Label = customizeProcessForm.Start_Label;
+                    newUIMollierProcess.UIMollierAppearance_End.Label = customizeProcessForm.End_Label;
+                    newUIMollierProcess.UIMollierAppearance.Label = customizeProcessForm.Process_Label;
+                }
+
+                MollierProcessEditedEventArgs mollierProcessEditedEventArgs = new MollierProcessEditedEventArgs(uIMollierProcess, newUIMollierProcess);
+                MollierProcessEdited.Invoke(this, mollierProcessEditedEventArgs);
+                uIMollierProcesses = mollierProcessEditedEventArgs.UIMollierProcesses;
+
+                generateDataGridViews();
+            }
+            else if (displayUIMollierObject.UIMollierObject is UIMollierPoint)
+            {
+                UIMollierPoint uIMollierPoint = (UIMollierPoint)displayUIMollierObject.UIMollierObject;
+                UIMollierPoint newUIMollierPoint = new UIMollierPoint(uIMollierPoint);
+
+                using (CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint))
+                {
+                    if (customizePointForm.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
+                    newUIMollierPoint.UIMollierAppearance.Color = customizePointForm.Color;
+                    newUIMollierPoint.UIMollierAppearance.Label = customizePointForm.Label;
+                }
+
+                MollierPointEdited.Invoke(this, new MollierPointEditedEventArgs(uIMollierPoint, newUIMollierPoint));
+                uIMollierPoints.Remove(uIMollierPoint);
+                uIMollierPoints.Add(newUIMollierPoint);
+
+                generateDataGridViews();
+            }
+        }
+        private void removeObject(DisplayUIMollierObject displayUIMollierObject)
+        {
+            if(displayUIMollierObject == null)
+            {
+                return;
+            }
+
+            var confirmResult = MessageBox.Show("Are you sure to delete this item ?", "Delete Confirmation",
+                                     MessageBoxButtons.YesNo);
+            if (confirmResult == DialogResult.No)
+            {
+                return;
+            }
+
+            if (displayUIMollierObject.UIMollierObject is UIMollierProcess)
+            {
+                UIMollierProcess uIMollierProcess = (UIMollierProcess)displayUIMollierObject.UIMollierObject;
+                MollierProcessRemovedEventArgs mollierProcessRemovedEventArgs = new MollierProcessRemovedEventArgs(uIMollierProcess);
+                MollierProcessRemoved.Invoke(this, mollierProcessRemovedEventArgs);
+
+                uIMollierProcesses = mollierProcessRemovedEventArgs.UIMollierProcesses;
+                generateDataGridViews();
+            }
+            else if (displayUIMollierObject.UIMollierObject is UIMollierPoint)
+            {
+                UIMollierPoint uIMollierPoint = (UIMollierPoint)displayUIMollierObject.UIMollierObject;
+                MollierPointRemoved.Invoke(this, new MollierPointRemovedEventArgs(uIMollierPoint));
+
+                uIMollierPoints.Remove(uIMollierPoint);
+                generateDataGridViews();
+            }
         }
 
     }

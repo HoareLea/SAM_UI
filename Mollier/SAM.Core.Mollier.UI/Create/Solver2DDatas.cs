@@ -234,8 +234,8 @@ namespace SAM.Core.Mollier.UI
 
         private static Rectangle2D textToRectangle(Point2D center, string text, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
-            double capitalLetterHeight = (chartType == ChartType.Mollier ? 0.8 : 0.00035) * scaleVector.Y;
-            double lowercaseHeight = (chartType == ChartType.Mollier ? 0.75 : 0.0003) * scaleVector.Y;
+            double capitalLetterHeight = (chartType == ChartType.Mollier ? 1 : 0.0006) * scaleVector.Y;
+            double lowercaseHeight = (chartType == ChartType.Mollier ? 1 : 0.00055) * scaleVector.Y;
             double letterWidth = (chartType == ChartType.Mollier ? 0.1 : 0.25) * scaleVector.X;
 
             double width = letterWidth * text.Length;

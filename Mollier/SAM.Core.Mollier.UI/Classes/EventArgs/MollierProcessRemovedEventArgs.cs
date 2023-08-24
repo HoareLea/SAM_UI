@@ -1,15 +1,19 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SAM.Core.Mollier.UI
 {
     public class MollierProcessRemovedEventArgs : EventArgs
     {
-        public UIMollierProcess MollierProcess { get; private set;}
+        public UIMollierProcess UIMollierProcess { get; private set;}
 
-        public MollierProcessRemovedEventArgs(UIMollierProcess mollierProcess)
+        public List<UIMollierProcess> UIMollierProcesses { get; set; }
+        public MollierProcessRemovedEventArgs(UIMollierProcess uIMollierProcess)
             :base()
         {
-            mollierProcess = mollierProcess;
+            UIMollierProcess = uIMollierProcess;
         }
+
+
     }
 }

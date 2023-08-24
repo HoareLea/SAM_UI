@@ -74,6 +74,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
+    <Compile Include="Classes\EventArgs\MollierPointRemovedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\MollierPointEditedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\MollierProcessEditedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\MollierProcessRemovedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs - Copy.cs" />
     <Compile Include="Classes\EventArgs\MollierPointSelectedEventArgs.cs" />
@@ -83,6 +86,7 @@
     <Compile Include="Classes\ChartLabel.cs" />
     <Compile Include="Classes\UIMollierZone.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
+    <Compile Include="Classes\DisplayAnalyticalObject.cs" />
     <Compile Include="Classes\VisibilitySettings.cs" />
     <Compile Include="Controls\AdiabaticHumidificationProcessControl.cs">
       <SubType>UserControl</SubType>
@@ -101,6 +105,12 @@
     </Compile>
     <Compile Include="Controls\CoolingProcessControl.Designer.cs">
       <DependentUpon>CoolingProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CustomizePointControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomizePointControl.Designer.cs">
+      <DependentUpon>CustomizePointControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\CustomizeProcessControl.cs">
       <SubType>UserControl</SubType>
@@ -180,11 +190,11 @@
     <Compile Include="Controls\UIMollierAppearanceControl.Designer.cs">
       <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ProcessManageControl.cs">
+    <Compile Include="Controls\UIMollierProcessControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ProcessManageControl.Designer.cs">
-      <DependentUpon>ProcessManageControl.cs</DependentUpon>
+    <Compile Include="Controls\UIMollierProcessControl.Designer.cs">
+      <DependentUpon>UIMollierProcessControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToChart\DataPoint.cs" />
     <Compile Include="Convert\ToMollier\MollierPoint.cs" />
@@ -192,6 +202,9 @@
     <Compile Include="Convert\ToChart\Series.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
+    <Compile Include="Delegates\MollierPointEditedEventHandler.cs" />
+    <Compile Include="Delegates\MollierProcessEditedEventHandler.cs" />
+    <Compile Include="Delegates\MollierPointRemovedEventHandler.cs" />
     <Compile Include="Delegates\MollierProcessRemovedEventHandler.cs" />
     <Compile Include="Delegates\MollierPointSelectedEventHandler.cs" />
     <Compile Include="Delegates\SelectMollierPointEventHandler.cs" />
@@ -199,6 +212,12 @@
     <Compile Include="Enums\ProcessCalculationType.cs" />
     <Compile Include="Enums\ChartExportType.cs" />
     <Compile Include="Enums\ChartParameterType.cs" />
+    <Compile Include="Forms\CustomizePointForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\CustomizePointForm.Designer.cs">
+      <DependentUpon>CustomizePointForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\CustomizeProcessForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -308,6 +327,9 @@
     <EmbeddedResource Include="Controls\CoolingProcessControl.resx">
       <DependentUpon>CoolingProcessControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CustomizePointControl.resx">
+      <DependentUpon>CustomizePointControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\CustomizeProcessControl.resx">
       <DependentUpon>CustomizeProcessControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -347,8 +369,11 @@
     <EmbeddedResource Include="Controls\UIMollierAppearanceControl.resx">
       <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ProcessManageControl.resx">
-      <DependentUpon>ProcessManageControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\UIMollierProcessControl.resx">
+      <DependentUpon>UIMollierProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\CustomizePointForm.resx">
+      <DependentUpon>CustomizePointForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CustomizeProcessForm.resx">
       <DependentUpon>CustomizeProcessForm.cs</DependentUpon>

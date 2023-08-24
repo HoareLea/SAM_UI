@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Forms
 {
-    partial class CustomizeProcessForm
+    partial class CustomizePointForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,58 +28,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.customizeProcessControl = new SAM.Core.Mollier.UI.Controls.CustomizeProcessControl();
-            this.Cancel_Button = new System.Windows.Forms.Button();
             this.OK_Button = new System.Windows.Forms.Button();
+            this.Cancel_Button = new System.Windows.Forms.Button();
+            this.customizePointControl = new SAM.Core.Mollier.UI.Controls.CustomizePointControl();
             this.SuspendLayout();
-            // 
-            // customizeProcessControl
-            // 
-            this.customizeProcessControl.Location = new System.Drawing.Point(12, 12);
-            this.customizeProcessControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.customizeProcessControl.Name = "customizeProcessControl";
-            this.customizeProcessControl.Size = new System.Drawing.Size(253, 146);
-            this.customizeProcessControl.TabIndex = 0;
-            // 
-            // Cancel_Button
-            // 
-            this.Cancel_Button.Location = new System.Drawing.Point(224, 159);
-            this.Cancel_Button.Name = "Cancel_Button";
-            this.Cancel_Button.Size = new System.Drawing.Size(102, 31);
-            this.Cancel_Button.TabIndex = 2;
-            this.Cancel_Button.Text = "Cancel";
-            this.Cancel_Button.UseVisualStyleBackColor = true;
-            this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
             // 
             // OK_Button
             // 
-            this.OK_Button.Location = new System.Drawing.Point(116, 159);
+            this.OK_Button.Location = new System.Drawing.Point(88, 104);
             this.OK_Button.Name = "OK_Button";
             this.OK_Button.Size = new System.Drawing.Size(102, 31);
-            this.OK_Button.TabIndex = 3;
+            this.OK_Button.TabIndex = 5;
             this.OK_Button.Text = "OK";
             this.OK_Button.UseVisualStyleBackColor = true;
             this.OK_Button.Click += new System.EventHandler(this.OK_Button_Click);
             // 
-            // CustomizeProcessForm
+            // Cancel_Button
+            // 
+            this.Cancel_Button.Location = new System.Drawing.Point(196, 104);
+            this.Cancel_Button.Name = "Cancel_Button";
+            this.Cancel_Button.Size = new System.Drawing.Size(102, 31);
+            this.Cancel_Button.TabIndex = 4;
+            this.Cancel_Button.Text = "Cancel";
+            this.Cancel_Button.UseVisualStyleBackColor = true;
+            this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
+            // 
+            // customizePointControl
+            // 
+            this.customizePointControl.Location = new System.Drawing.Point(12, 12);
+            this.customizePointControl.Name = "customizePointControl";
+            this.customizePointControl.Size = new System.Drawing.Size(237, 86);
+            this.customizePointControl.TabIndex = 6;
+            // 
+            // CustomizePointForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(338, 202);
+            this.ClientSize = new System.Drawing.Size(307, 149);
+            this.Controls.Add(this.customizePointControl);
             this.Controls.Add(this.OK_Button);
             this.Controls.Add(this.Cancel_Button);
-            this.Controls.Add(this.customizeProcessControl);
-            this.Name = "CustomizeProcessForm";
-            this.Text = "CustomizeForm";
-            this.Load += new System.EventHandler(this.CustomizeForm_Load);
+            this.Name = "CustomizePointForm";
+            this.Text = "CustomizePointForm";
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private Controls.CustomizeProcessControl customizeProcessControl;
-        private System.Windows.Forms.Button Cancel_Button;
         private System.Windows.Forms.Button OK_Button;
+        private System.Windows.Forms.Button Cancel_Button;
+        private Controls.CustomizePointControl customizePointControl;
     }
 }

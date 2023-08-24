@@ -2,7 +2,7 @@
 {
     public static partial class Query
     {
-        public static string FullProcessName(IMollierProcess mollierProcess)
+        public static string FullProcessName(this IMollierProcess mollierProcess)
         {
             if(mollierProcess is UIMollierProcess)
             {
@@ -11,23 +11,27 @@
             string processName = "";
             if (mollierProcess is HeatingProcess)
             {
-                processName = "Heating";
+                processName = "Heating Process";
             }
             if (mollierProcess is CoolingProcess)
             {
-                processName = "Cooling";
+                processName = "Cooling Process";
             }
             if (mollierProcess is MixingProcess)
             {
-                processName = "Mixing";
+                processName = "Mixing Process";
             }
             if (mollierProcess is SteamHumidificationProcess || mollierProcess is AdiabaticHumidificationProcess || mollierProcess is IsotermicHumidificationProcess)
             {
-                processName = "Humidification";
+                processName = "Humidification Process";
             }
             if (mollierProcess is HeatRecoveryProcess)
             {
-                processName = "Heat Recovery";
+                processName = "Heat Recovery Process";
+            }
+            if(mollierProcess is UndefinedProcess)
+            {
+                processName = "Room Process";
             }
             
             return processName;

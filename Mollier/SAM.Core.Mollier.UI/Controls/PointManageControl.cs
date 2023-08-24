@@ -63,10 +63,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 if (Parent?.Parent?.Parent?.Parent is Forms.ManageMollierObjectsForm)
                 {
                     Forms.ManageMollierObjectsForm mollierCustomizeObjectsForm = (Forms.ManageMollierObjectsForm)Parent.Parent.Parent.Parent;
-                    MollierForm mollierForm = mollierCustomizeObjectsForm.MollierForm;
+                  //  MollierForm mollierForm = mollierCustomizeObjectsForm.MollierForm;
 
-                    mollierForm.RemovePoint(uIMollierPoint);
-                    mollierCustomizeObjectsForm.RemoveMollierPoint(uIMollierPoint);
+                    //mollierForm.RemovePoint(uIMollierPoint);
+                    //mollierCustomizeObjectsForm.RemoveMollierPoint(uIMollierPoint);
                 }
             }
         }

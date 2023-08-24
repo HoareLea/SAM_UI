@@ -14,7 +14,7 @@ namespace SAM.Core.Mollier.UI
         public double Temperature_Max { get; set; } = Default.DryBulbTemperature_Max;
         public double Temperature_Min { get; set; } = Default.DryBulbTemperature_Min;
         public double Temperature_Interval { get; set; } = Default.DryBulbTemperature_Interval;
-        public double PartialVapourPressure { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
+        public double PartialVapourPressure_Interval { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
        
         public bool Density_line { get; set; } = true;
         public bool Enthalpy_line { get; set; } = true;
@@ -74,7 +74,7 @@ namespace SAM.Core.Mollier.UI
                 Temperature_Max = mollierControlSettings.Temperature_Max;
                 Temperature_Min = mollierControlSettings.Temperature_Min;
                 Temperature_Interval = mollierControlSettings.Temperature_Interval;
-                PartialVapourPressure = mollierControlSettings.PartialVapourPressure;
+                PartialVapourPressure_Interval = mollierControlSettings.PartialVapourPressure_Interval;
                 Density_line = mollierControlSettings.Density_line;
                 Enthalpy_line = mollierControlSettings.Enthalpy_line;
                 SpecificVolume_line = mollierControlSettings.SpecificVolume_line;
@@ -249,7 +249,7 @@ namespace SAM.Core.Mollier.UI
             }
             if (jObject.ContainsKey("PartialVapourPressure_Interval"))
             {
-                PartialVapourPressure = jObject.Value<double>("PartialVapourPressure_Interval");
+                PartialVapourPressure_Interval = jObject.Value<double>("PartialVapourPressure_Interval");
             }
             if (jObject.ContainsKey("Density_line"))
             {
@@ -401,9 +401,9 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("Temperature_Interval", Temperature_Interval);
             }
-            if (!double.IsNaN(PartialVapourPressure))
+            if (!double.IsNaN(PartialVapourPressure_Interval))
             {
-                result.Add("PartialVapourPressure_Interval", PartialVapourPressure);
+                result.Add("PartialVapourPressure_Interval", PartialVapourPressure_Interval);
             }
             result.Add("Density_line", Density_line);
             result.Add("Enthalpy_line", Enthalpy_line);

@@ -203,7 +203,7 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 previousUIMollierPoint = mollierPointForm.UIMollierPoint;
-                MollierControl_Main.AddPoints(new UIMollierPoint[] { previousUIMollierPoint });
+                AddPoints(new UIMollierPoint[] { previousUIMollierPoint });
             }
         }
         
@@ -290,10 +290,11 @@ namespace SAM.Core.Mollier.UI
 
             MollierControl_Main.AddProcesses(mollierProcesses, checkPressure);
 
-           /* if(manageMollierObjectsForm != null)
+            if(manageMollierObjectsForm != null)
             {
-                manageMollierObjects.AddProcesses(mollierProcesses);
-            }*/
+                manageMollierObjectsForm.Refresh(MollierControl_Main.UIMollierPoints, 
+                                         MollierControl_Main.UIMollierProcesses, MollierControl_Main.UIMollierZones);
+            }
 
             return true;
         }
@@ -306,6 +307,12 @@ namespace SAM.Core.Mollier.UI
             }
 
             MollierControl_Main.AddPoints(mollierPoints, checkPressure);
+
+            if (manageMollierObjectsForm != null)
+            {
+                manageMollierObjectsForm.Refresh(MollierControl_Main.UIMollierPoints,
+                                         MollierControl_Main.UIMollierProcesses, MollierControl_Main.UIMollierZones);
+            }
             return true;
         }
 
@@ -1049,18 +1056,40 @@ namespace SAM.Core.Mollier.UI
             {
                 manageMollierObjectsForm = new Forms.ManageMollierObjectsForm(MollierControl_Main.UIMollierPoints, MollierControl_Main.UIMollierProcesses, 
                                                                                   MollierControl_Main.UIMollierZones, MollierControlSettings);
-                manageMollierObjectsForm.MollierForm = this;
+                
                 manageMollierObjectsForm.FormClosing += manageMollierObjectsForm_Closing;
                 manageMollierObjectsForm.MollierProcessRemoved += ManageMollierObjectsForm_MollierProcessRemoved;
+                manageMollierObjectsForm.MollierPointRemoved += ManageMollierObjectsForm_MollierPointRemoved;
+                manageMollierObjectsForm.MollierProcessEdited += ManageMollierObjectsForm_MollierProcessEdited;
+                manageMollierObjectsForm.MollierPointEdited += ManageMollierObjectsForm_MollierPointEdited;
             }
             manageMollierObjectsForm?.Show();
         }
 
+        private void ManageMollierObjectsForm_MollierPointEdited(object sender, MollierPointEditedEventArgs e)
+        {
+            MollierControl_Main.RemovePoint(e.UIMollierPoint);
+            MollierControl_Main.AddPoints(new List<UIMollierPoint>() { e.EditedUIMollierPoint } );
+        }
+
+        private void ManageMollierObjectsForm_MollierProcessEdited(object sender, MollierProcessEditedEventArgs e)
+        {
+            MollierControl_Main.RemoveProcess(e.UIMollierProcess);
+            MollierControl_Main.AddProcesses(new List<UIMollierProcess>() { e.EditedUIMollierProcess });
+            e.UIMollierProcesses = MollierControl_Main.UIMollierProcesses;
+        }
         private void ManageMollierObjectsForm_MollierProcessRemoved(object sender, MollierProcessRemovedEventArgs e)
         {
-            UIMollierProcess mollierProcess = e.MollierProcess;
+            UIMollierProcess mollierProcess = e.UIMollierProcess;
             MollierControl_Main.RemoveProcess(mollierProcess);
+            e.UIMollierProcesses = MollierControl_Main.UIMollierProcesses;
         }
+        private void ManageMollierObjectsForm_MollierPointRemoved(object sender, MollierPointRemovedEventArgs e)
+        {
+            UIMollierPoint mollierPoint = e.UIMollierPoint;
+            MollierControl_Main.RemovePoint(mollierPoint);
+        }
+
 
         private void manageMollierObjectsForm_Closing(object sender, FormClosingEventArgs e)
         {
@@ -1069,8 +1098,6 @@ namespace SAM.Core.Mollier.UI
                 manageMollierObjectsForm = null;
                 return;
             }
-
-
 
             manageMollierObjectsForm = null;
         }
@@ -1087,5 +1114,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.PartialVapourPressure_axis = ToolStripMenuItem_PartialVapourPressure.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
+        
+
     }
 }

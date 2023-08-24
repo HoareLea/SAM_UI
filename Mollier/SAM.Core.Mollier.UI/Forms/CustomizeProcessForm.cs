@@ -20,9 +20,8 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             InitializeComponent();
             this.uIMollierProcess = uIMollierProcess;
-            customizeProcessControl1.InitializeControlElements(uIMollierProcess);
+            customizeProcessControl.InitializeControlElements(uIMollierProcess);
         }
-
 
         private void CustomizeForm_Load(object sender, EventArgs e)
         {
@@ -35,10 +34,10 @@ namespace SAM.Core.Mollier.UI.Forms
 
         private void OK_Button_Click(object sender, EventArgs e)
         {
-            color = customizeProcessControl1.Color;
-            start_Label = customizeProcessControl1.Start_Label;
-            process_Label = customizeProcessControl1.Process_Label;
-            end_Label = customizeProcessControl1.End_Label;
+            color = customizeProcessControl.Color;
+            start_Label = customizeProcessControl.Start_Label;
+            process_Label = customizeProcessControl.Process_Label;
+            end_Label = customizeProcessControl.End_Label;
             DialogResult = DialogResult.OK;
         }
         private void Cancel_Button_Click(object sender, EventArgs e)

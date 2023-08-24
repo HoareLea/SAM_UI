@@ -565,7 +565,9 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.DisableLabels = false;
             mollierControlSettings2.DisableUnits = false;
             mollierControlSettings2.DivisionArea = false;
+            mollierControlSettings2.DivisionAreaEnthalpy_Interval = 3;
             mollierControlSettings2.DivisionAreaLabels = true;
+            mollierControlSettings2.DivisionAreaRelativeHumidity_Interval = 10;
             mollierControlSettings2.Elevation = 0D;
             mollierControlSettings2.Enthalpy_Interval = 1000D;
             mollierControlSettings2.Enthalpy_line = true;
@@ -577,7 +579,8 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.HumidityRatio_Interval = 5D;
             mollierControlSettings2.HumidityRatio_Max = 35D;
             mollierControlSettings2.HumidityRatio_Min = 0D;
-            mollierControlSettings2.PartialVapourPressure = 1D;
+            mollierControlSettings2.PartialVapourPressure_axis = true;
+            mollierControlSettings2.PartialVapourPressure_Interval = 1D;
             mollierControlSettings2.Percent = 0.4D;
             mollierControlSettings2.Pressure = 101325D;
             mollierControlSettings2.SpecificVolume_Interval = 0.05D;
@@ -598,17 +601,17 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(2054, 1219);
             this.MollierControl_Main.TabIndex = 0;
-            // 
+            //
             // ToolStripMenuItem_PartialVapourPressure
             // 
             this.ToolStripMenuItem_PartialVapourPressure.Checked = true;
             this.ToolStripMenuItem_PartialVapourPressure.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ToolStripMenuItem_PartialVapourPressure.Name = "ToolStripMenuItem_PartialVapourPressure";
-            this.ToolStripMenuItem_PartialVapourPressure.Size = new System.Drawing.Size(294, 34);
+            this.ToolStripMenuItem_PartialVapourPressure.Size = new System.Drawing.Size(242, 26);
             this.ToolStripMenuItem_PartialVapourPressure.Text = "Partial Vapour Pressure";
             this.ToolStripMenuItem_PartialVapourPressure.ToolTipText = "Turn Partial Vapour Pressure axis on or off";
             this.ToolStripMenuItem_PartialVapourPressure.Click += new System.EventHandler(this.ToolStripMenuItem_PartialVapourPressure_Click);
-            // 
+            //          
             // MollierForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;

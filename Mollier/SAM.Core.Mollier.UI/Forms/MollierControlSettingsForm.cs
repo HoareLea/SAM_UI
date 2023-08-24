@@ -24,7 +24,7 @@ namespace SAM.Core.Mollier.UI
             Temperature_Max = mollierControlSettings.Temperature_Max;
             Temperature_Min = mollierControlSettings.Temperature_Min;
             Temperature_Interval = mollierControlSettings.Temperature_Interval;
-            PartialVapourPressure = mollierControlSettings.PartialVapourPressure;
+            PartialVapourPressure = mollierControlSettings.PartialVapourPressure_Interval;
             Density_Interval = mollierControlSettings.Density_Interval;
             Enthalpy_Interval = mollierControlSettings.Enthalpy_Interval;
             SpecificVolume_Interval = mollierControlSettings.SpecificVolume_Interval;
@@ -385,7 +385,7 @@ namespace SAM.Core.Mollier.UI
             if(Temperature_Interval.ToString() != double.NaN.ToString())
                 mollierControlSettings.Temperature_Interval = Temperature_Interval;
             if (PartialVapourPressure.ToString() != double.NaN.ToString())
-                mollierControlSettings.PartialVapourPressure = PartialVapourPressure;
+                mollierControlSettings.PartialVapourPressure_Interval = PartialVapourPressure;
             if(Density_Interval.ToString() != double.NaN.ToString())
                 mollierControlSettings.Density_Interval = Density_Interval;
             if (Enthalpy_Interval.ToString() != double.NaN.ToString())
