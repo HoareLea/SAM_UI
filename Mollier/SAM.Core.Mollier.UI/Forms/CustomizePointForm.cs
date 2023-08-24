@@ -12,8 +12,6 @@ namespace SAM.Core.Mollier.UI.Forms
 {
     public partial class CustomizePointForm : Form
     {
-        private Color color;
-        private string label;
         public CustomizePointForm()
         {
             InitializeComponent();
@@ -25,16 +23,23 @@ namespace SAM.Core.Mollier.UI.Forms
             {
                 return;
             }
-            customizePointControl.InitializeControlElements(uIMollierPoint);
+            customizePointControl.UIMollierPoint = uIMollierPoint;
         }
 
-        public Color Color => color;
-        public string Label => label;
+        public UIMollierPoint UIMollierPoint
+        { 
+            get
+            {
+                return customizePointControl.UIMollierPoint;
+            }
+            set
+            {
+                customizePointControl.UIMollierPoint = value;
+            }
+        }
+
         private void OK_Button_Click(object sender, EventArgs e)
         {
-            color = customizePointControl.Color;
-            label = customizePointControl.PointLabel;
-
             DialogResult = DialogResult.OK;
         }
         private void Cancel_Button_Click(object sender, EventArgs e)

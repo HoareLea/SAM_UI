@@ -23,7 +23,7 @@ namespace SAM.Core.Mollier.UI.Forms
         public event MollierPointEditedEventHandler MollierPointEdited;
 
         private double airflow = 0;
-        private string airFlowUnit = "m3/s";
+        private Units.UnitType airFlowUnit = Units.UnitType.CubicMeterPerSecond;
 
         public ManageMollierObjectsForm()
         {
@@ -107,45 +107,54 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             if(SupplyAirFlow_CheckBox.Checked)
             {
-                airFlowUnit = SupplyAirFlow_CheckBox.Text;
+                switch (SupplyAirFlow_CheckBox.Text)
+                {
+                    case "m3/s":
+                        airFlowUnit = Units.UnitType.CubicMeterPerSecond;
+                        break;
+                    case "m3/h":
+                        airFlowUnit = Units.UnitType.CubicMeterPerHour;
+                        break;
+                }
             }
         }
         private void ToolStripMenuItem_Edit_Click(object sender, EventArgs e)
         {
-            Point point = DataGridView_MollierProcesses.PointToClient(Cursor.Position);
-
-            DataGridView.HitTestInfo hitTestInfo = DataGridView_MollierProcesses.HitTest(point.X, point.Y);
-            if(hitTestInfo.RowIndex == -1)
+            DataGridViewRow dataGridViewRow = selectedRows()?.FirstOrDefault();
+            if (dataGridViewRow == null)
             {
                 return;
             }
 
-            DataGridViewRow dataGridViewRow = DataGridView_MollierProcesses.Rows[hitTestInfo.RowIndex];
             DisplayUIMollierObject displayUIMollierObject = dataGridViewRow?.DataBoundItem as DisplayUIMollierObject;
 
             editObject(displayUIMollierObject);
         }
+
+        private List<DataGridViewRow> selectedRows()
+        {
+            TabPage tabPage = customizeMollierObjectsTabControl.SelectedTab;
+            return (tabPage.Controls.Cast<Control>().ToList().Find(x => x is DataGridView) as DataGridView)?.SelectedRows?.Cast<DataGridViewRow>().ToList();
+        }
         private void ToolStripMenuItem_Remove_Click(object sender, EventArgs e)
         {
-            Point point = DataGridView_MollierProcesses.PointToClient(Cursor.Position);
-
-            DataGridView.HitTestInfo hitTestInfo = DataGridView_MollierProcesses.HitTest(point.X, point.Y);
-            if (hitTestInfo.RowIndex == -1)
+            DataGridViewRow dataGridViewRow = selectedRows()?.FirstOrDefault();
+            if(dataGridViewRow == null)
             {
                 return;
             }
 
-            DataGridViewRow dataGridViewRow = DataGridView_MollierProcesses.Rows[hitTestInfo.RowIndex];
+
             DisplayUIMollierObject displayUIMollierObject = dataGridViewRow?.DataBoundItem as DisplayUIMollierObject;
 
             removeObject(displayUIMollierObject);
         }
 
+
         private void generateDataGridViews()
         {
             Pressure_TextBox.Text = mollierControlSettings.Pressure.ToString();
             //Column_MollierProcess_MassFlow.HeaderText += " [" + airFlowUnit + "]";
-
 
             if (uIMollierPoints != null)
             {
@@ -181,10 +190,7 @@ namespace SAM.Core.Mollier.UI.Forms
                         return;
                     }
 
-                    newUIMollierProcess.UIMollierAppearance.Color = customizeProcessForm.Color;
-                    newUIMollierProcess.UIMollierAppearance_Start.Label = customizeProcessForm.Start_Label;
-                    newUIMollierProcess.UIMollierAppearance_End.Label = customizeProcessForm.End_Label;
-                    newUIMollierProcess.UIMollierAppearance.Label = customizeProcessForm.Process_Label;
+                    newUIMollierProcess = customizeProcessForm.UIMollierProcess; 
                 }
 
                 MollierProcessEditedEventArgs mollierProcessEditedEventArgs = new MollierProcessEditedEventArgs(uIMollierProcess, newUIMollierProcess);
@@ -204,8 +210,7 @@ namespace SAM.Core.Mollier.UI.Forms
                     {
                         return;
                     }
-                    newUIMollierPoint.UIMollierAppearance.Color = customizePointForm.Color;
-                    newUIMollierPoint.UIMollierAppearance.Label = customizePointForm.Label;
+                    newUIMollierPoint = customizePointForm.UIMollierPoint;
                 }
 
                 MollierPointEdited.Invoke(this, new MollierPointEditedEventArgs(uIMollierPoint, newUIMollierPoint));

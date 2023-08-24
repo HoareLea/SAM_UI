@@ -31,8 +31,8 @@ namespace SAM.Core.Mollier.UI.Controls
             ChartArea chartArea = MollierChart.ChartAreas[0];
             Axis axisY = chartArea.AxisY;
 
-            double humidityRatioMin = chartArea.AxisY2.Minimum;
-            double humidityRatioMax = chartArea.AxisY2.Maximum;
+            double humidityRatioMin = mollierControlSettings.HumidityRatio_Min / 1000;
+            double humidityRatioMax = mollierControlSettings.HumidityRatio_Max / 1000;
 
             double partialVapourPressureMin = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatioMin, 45, mollierControlSettings.Pressure) / 1000;
             double partialVapourPressureMax = Mollier.Query.PartialVapourPressure_ByHumidityRatio(humidityRatioMax, 45, mollierControlSettings.Pressure) / 1000;
@@ -66,15 +66,13 @@ namespace SAM.Core.Mollier.UI.Controls
             axisY.CustomLabels.Clear();
             for (double i = 0; i <= partialVapourPressureMax; i += axisY.Interval)
             {
-                if (i < axisY.Minimum)
+                if (i < partialVapourPressureMin)
                 {
                     continue;
                 }
 
                 double labelPositionY = Mollier.Query.HumidityRatio_ByPartialVapourPressure(i * 1000, MollierControlSettings.Pressure);
-                double ratio = (labelPositionY - humidityRatioMin) / (axisY.Maximum - axisY.Minimum);
-                double labelAxisPosition = partialVapourPressureMin + ratio * (axisY.Maximum - axisY.Minimum);
-                CustomLabel lbl = new CustomLabel(labelAxisPosition - 1.6, labelAxisPosition + 1.6, i.ToString(), 0, LabelMarkStyle.LineSideMark);
+                CustomLabel lbl = new CustomLabel(labelPositionY - 1.6, labelPositionY + 1.6, i.ToString(), 0, LabelMarkStyle.LineSideMark);
                 axisY.CustomLabels.Add(lbl);
 
                 // Partial vapour pressure axis minor tick mark series 

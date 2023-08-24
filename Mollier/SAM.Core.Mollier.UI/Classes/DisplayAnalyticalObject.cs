@@ -7,17 +7,17 @@ namespace SAM.Core.Mollier.UI
 {
     public class DisplayUIMollierObject
     {
-        public IUIMollierObject UIMollierObject;
-        public int Index;
+        public IUIMollierObject UIMollierObject { get; }
+        public int Index { get; }
         private double airFlow;
-        private string airFlowUnit;
+        private Units.UnitType airFlowUnit;
 
         public DisplayUIMollierObject(UIMollierPoint uIMollierPoint)
         {
             UIMollierObject = uIMollierPoint;
         }
 
-        public DisplayUIMollierObject(UIMollierProcess uIMollierProcess, int index, double airFlow, string airFlowUnit)
+        public DisplayUIMollierObject(UIMollierProcess uIMollierProcess, int index, double airFlow, Units.UnitType airFlowUnit)
         {
             UIMollierObject = uIMollierProcess;
             this.airFlow = airFlow;

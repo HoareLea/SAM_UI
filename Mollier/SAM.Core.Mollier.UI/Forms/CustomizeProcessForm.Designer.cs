@@ -71,7 +71,6 @@
             this.Controls.Add(this.customizeProcessControl);
             this.Name = "CustomizeProcessForm";
             this.Text = "CustomizeForm";
-            this.Load += new System.EventHandler(this.CustomizeForm_Load);
             this.ResumeLayout(false);
 
         }

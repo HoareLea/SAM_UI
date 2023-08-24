@@ -12,14 +12,12 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class CustomizePointControl : UserControl
     {
-        private Color pointColor;
-        private string pointLabel;
+        private UIMollierPoint uIMollierPoint;
         public CustomizePointControl()
         {
             InitializeComponent();
 
         }
-
         public CustomizePointControl(UIMollierPoint uIMollierPoint)
         {
             InitializeComponent();
@@ -27,15 +25,25 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 return;
             }
-            InitializeControlElements(uIMollierPoint);
+            setUIMollierPoint(uIMollierPoint);
         }
-        public void InitializeControlElements(UIMollierPoint uIMollierPoint)
-        {
-            pointLabel = uIMollierPoint.UIMollierAppearance.Label;
-            pointColor = uIMollierPoint.UIMollierAppearance.Color;
 
-            PointLabel_TextBox.Text = uIMollierPoint.UIMollierAppearance.Label;
-            PointColor_Button.BackColor = pointColor;
+        public UIMollierPoint UIMollierPoint
+        {
+            get
+            {
+                if(uIMollierPoint == null || uIMollierPoint.UIMollierAppearance == null)
+                {
+                    return null;
+                }
+                uIMollierPoint.UIMollierAppearance.Color = PointColor_Button.BackColor;
+                uIMollierPoint.UIMollierAppearance.Label = PointLabel_TextBox.Text;
+                return uIMollierPoint;
+            }
+            set
+            {
+                setUIMollierPoint(value);
+            }
         }
         private void PointColor_Button_Click(object sender, EventArgs e)
         {
@@ -46,15 +54,22 @@ namespace SAM.Core.Mollier.UI.Controls
                     return;
                 }
                 PointColor_Button.BackColor = colorDialog.Color;
-                pointColor = PointColor_Button.BackColor;
             }
         }
-        private void PointLabel_TextBox_TextChanged(object sender, EventArgs e)
+        private void setUIMollierPoint(UIMollierPoint uIMollierPoint)
         {
-            pointLabel = PointLabel_TextBox.Text;
-        }
+            if(uIMollierPoint == null)
+            {
+                return;
+            }
 
-        public Color Color => pointColor;
-        public string PointLabel => pointLabel;
+            this.uIMollierPoint = new UIMollierPoint(uIMollierPoint);
+
+            if(uIMollierPoint.UIMollierAppearance != null)
+            {
+                PointLabel_TextBox.Text = uIMollierPoint.UIMollierAppearance.Label;
+                PointColor_Button.BackColor = uIMollierPoint.UIMollierAppearance.Color;
+            }
+        }
     }
 }

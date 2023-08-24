@@ -40,7 +40,6 @@
             this.PointLabel_TextBox.Name = "PointLabel_TextBox";
             this.PointLabel_TextBox.Size = new System.Drawing.Size(88, 22);
             this.PointLabel_TextBox.TabIndex = 17;
-            this.PointLabel_TextBox.TextChanged += new System.EventHandler(this.PointLabel_TextBox_TextChanged);
             // 
             // PointLabel_Label
             // 

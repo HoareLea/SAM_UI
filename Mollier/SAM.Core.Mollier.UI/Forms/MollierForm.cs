@@ -154,7 +154,15 @@ namespace SAM.Core.Mollier.UI
         
         public bool Clear()
         {
-            return MollierControl_Main.ClearObjects();       
+            bool clear =  MollierControl_Main.ClearObjects();
+
+            if (manageMollierObjectsForm != null)
+            {
+                manageMollierObjectsForm.Refresh(MollierControl_Main.UIMollierPoints,
+                                         MollierControl_Main.UIMollierProcesses, MollierControl_Main.UIMollierZones);
+            }
+
+            return clear;
         }
 
         public void SaveAs(string path)

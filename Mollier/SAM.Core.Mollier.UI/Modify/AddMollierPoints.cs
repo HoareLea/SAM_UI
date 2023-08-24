@@ -8,9 +8,9 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-        public static Series AddMollierPoints(this Chart chart, IEnumerable<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
+        public static Series AddMollierPoints(this Chart chart, IEnumerable<UIMollierPoint> uIMollierPoints, MollierControlSettings mollierControlSettings)
         {
-            if(mollierPoints == null || mollierControlSettings.DivisionArea) 
+            if(uIMollierPoints == null || mollierControlSettings.DivisionArea) 
             {
                 return null;
             }
@@ -29,11 +29,11 @@ namespace SAM.Core.Mollier.UI
                 result.Points.Clear();
             }
             ChartType chartType = mollierControlSettings.ChartType;
-            result.Tag = mollierPoints;
+            result.Tag = uIMollierPoints;
 
-            Dictionary<UIMollierPoint, Color> colorDictionary = mollierPoints.ColorDictionary(mollierControlSettings);
+            Dictionary<UIMollierPoint, Color> colorDictionary = uIMollierPoints.ColorDictionary(mollierControlSettings);
 
-            foreach(UIMollierPoint uIMollierPoint in mollierPoints)
+            foreach(UIMollierPoint uIMollierPoint in uIMollierPoints)
             {
                 MollierPoint mollierPoint = uIMollierPoint?.MollierPoint;
                 if(mollierPoint == null)

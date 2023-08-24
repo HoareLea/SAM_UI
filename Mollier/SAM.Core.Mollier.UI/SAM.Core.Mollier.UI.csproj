@@ -190,12 +190,6 @@
     <Compile Include="Controls\UIMollierAppearanceControl.Designer.cs">
       <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\UIMollierProcessControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Controls\UIMollierProcessControl.Designer.cs">
-      <DependentUpon>UIMollierProcessControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Convert\ToChart\DataPoint.cs" />
     <Compile Include="Convert\ToMollier\MollierPoint.cs" />
     <Compile Include="Convert\ToSAM\Point2D.cs" />
@@ -368,9 +362,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UIMollierAppearanceControl.resx">
       <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Controls\UIMollierProcessControl.resx">
-      <DependentUpon>UIMollierProcessControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\CustomizePointForm.resx">
       <DependentUpon>CustomizePointForm.cs</DependentUpon>

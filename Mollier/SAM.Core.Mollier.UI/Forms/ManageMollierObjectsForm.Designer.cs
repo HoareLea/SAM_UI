@@ -134,6 +134,7 @@
             this.Column_Density,
             this.Column_Edit,
             this.Column_Remove});
+            this.DataGridView_MollierPoints.ContextMenuStrip = this.ContextMenuStrip_Main;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
             dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -156,6 +157,7 @@
             this.DataGridView_MollierPoints.RowHeadersVisible = false;
             this.DataGridView_MollierPoints.RowHeadersWidth = 62;
             this.DataGridView_MollierPoints.RowTemplate.Height = 28;
+            this.DataGridView_MollierPoints.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.DataGridView_MollierPoints.Size = new System.Drawing.Size(1507, 511);
             this.DataGridView_MollierPoints.TabIndex = 0;
             this.DataGridView_MollierPoints.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_CellContentClick);
