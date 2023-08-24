@@ -6,7 +6,7 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
-        public static List<IClosed2D> Obstacles(Chart chart, MollierControlSettings mollierControlSettings)
+        public static List<IClosed2D> Obstacles(this Chart chart, MollierControlSettings mollierControlSettings)
         {
             List<IClosed2D> result = new List<IClosed2D>();
             ChartType chartType = mollierControlSettings.ChartType;

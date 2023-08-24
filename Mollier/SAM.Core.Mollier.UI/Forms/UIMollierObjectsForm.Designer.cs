@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Forms
 {
-    partial class ManageMollierObjectsForm
+    partial class UIMollierObjectsForm
     {
         /// <summary>
         /// Required designer variable.

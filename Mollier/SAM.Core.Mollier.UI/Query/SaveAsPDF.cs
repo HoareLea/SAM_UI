@@ -6,39 +6,39 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
-        public static void SaveAsPDF(Chart MollierChart, int fontSize, string size, int newWidth, int newHeight, int chartWidth, int chartHeight)
+        public static void SaveAsPDF(this Chart mollierChart, int fontSize, string size, int newWidth, int newHeight, int chartWidth, int chartHeight)
         {
-            MollierChart.Visible = false;
+            mollierChart.Visible = false;
             Document doc = size == "A3" ? new Document(iTextSharp.text.PageSize.A3, 0, 0, 0, 0) : new Document(iTextSharp.text.PageSize.A4, 0, 0, 0, 0);
 
             using (MemoryStream memoryStream = new MemoryStream())
             {
-                MollierChart.Serializer.Save(memoryStream);
+                mollierChart.Serializer.Save(memoryStream);
 
                 Chart chart_new = new Chart();
                 chart_new.Serializer.Load(memoryStream);
             }
 
-            MollierChart.Visible = false;
+            mollierChart.Visible = false;
 
-            MollierChart.Width = newWidth;
-            MollierChart.Height = newHeight;
+            mollierChart.Width = newWidth;
+            mollierChart.Height = newHeight;
 
 
             //labels
-            MollierChart.ChartAreas[0].AxisX.LabelAutoFitMinFontSize = fontSize;
-            MollierChart.ChartAreas[0].AxisY.LabelAutoFitMinFontSize = fontSize;
-            MollierChart.ChartAreas[0].AxisX2.LabelAutoFitMinFontSize = fontSize;
-            MollierChart.ChartAreas[0].AxisY2.LabelAutoFitMinFontSize = fontSize;
-            MollierChart.ChartAreas[2].AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[2].AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", fontSize);
+            mollierChart.ChartAreas[0].AxisX.LabelAutoFitMinFontSize = fontSize;
+            mollierChart.ChartAreas[0].AxisY.LabelAutoFitMinFontSize = fontSize;
+            mollierChart.ChartAreas[0].AxisX2.LabelAutoFitMinFontSize = fontSize;
+            mollierChart.ChartAreas[0].AxisY2.LabelAutoFitMinFontSize = fontSize;
+            mollierChart.ChartAreas[2].AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", fontSize);
+            mollierChart.ChartAreas[2].AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", fontSize);
             //titles
-            MollierChart.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[0].AxisY.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[2].AxisX2.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[2].AxisY.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            MollierChart.ChartAreas[0].AxisY2.TitleFont = new System.Drawing.Font("Arial", fontSize);
-            foreach (Series series in MollierChart.Series)
+            mollierChart.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Arial", fontSize);
+            mollierChart.ChartAreas[0].AxisY.TitleFont = new System.Drawing.Font("Arial", fontSize);
+            mollierChart.ChartAreas[2].AxisX2.TitleFont = new System.Drawing.Font("Arial", fontSize);
+            mollierChart.ChartAreas[2].AxisY.TitleFont = new System.Drawing.Font("Arial", fontSize);
+            mollierChart.ChartAreas[0].AxisY2.TitleFont = new System.Drawing.Font("Arial", fontSize);
+            foreach (Series series in mollierChart.Series)
             {
                 series.Font = new System.Drawing.Font("Arial", fontSize);//change font to make it more visibility
                 if (series.Tag is MollierProcess || series.Tag == "ColorPoint")
@@ -57,7 +57,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (series.Tag == "ColorPointLabel")
                 {
-                    series.Points[0].YValues[0] = MollierChart.ChartAreas[0].AxisY.Maximum > 0.1 ? series.Points[0].YValues[0] + 5 : series.Points[0].YValues[0];
+                    series.Points[0].YValues[0] = mollierChart.ChartAreas[0].AxisY.Maximum > 0.1 ? series.Points[0].YValues[0] + 5 : series.Points[0].YValues[0];
                 }
                 if (series.Tag == "ColorPointLabelSquare")
                 {
@@ -67,8 +67,8 @@ namespace SAM.Core.Mollier.UI
             doc.Open();
             var chartimagepath = new MemoryStream();
 
-            MollierChart.AntiAliasing = AntiAliasingStyles.All;
-            MollierChart.SaveImage(chartimagepath, ChartImageFormat.Tiff);
+            mollierChart.AntiAliasing = AntiAliasingStyles.All;
+            mollierChart.SaveImage(chartimagepath, ChartImageFormat.Tiff);
             var Chart_Image = Image.GetInstance(chartimagepath.GetBuffer());
 
             Chart_Image.Rotation = (float)(System.Math.PI / 2);
@@ -77,9 +77,9 @@ namespace SAM.Core.Mollier.UI
 
             //RETURN CHART TO DEFAULT VALUES
 
-            MollierChart.Width = chartWidth;
-            MollierChart.Height = chartHeight;
-            foreach (Series series in MollierChart.Series)
+            mollierChart.Width = chartWidth;
+            mollierChart.Height = chartHeight;
+            foreach (Series series in mollierChart.Series)
             {
                 series.Font = new System.Drawing.Font("Arial", 8);//change font to make it more visibility
                 if (series.Tag is MollierProcess || series.Tag == "ColorPoint")
@@ -98,7 +98,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (series.Tag == "ColorPointLabel")
                 {
-                    series.Points[0].YValues[0] = MollierChart.ChartAreas[0].AxisY.Maximum > 0.1 ? series.Points[0].YValues[0] - 5 : series.Points[0].YValues[0];
+                    series.Points[0].YValues[0] = mollierChart.ChartAreas[0].AxisY.Maximum > 0.1 ? series.Points[0].YValues[0] - 5 : series.Points[0].YValues[0];
                 }
                 if (series.Tag == "ColorPointLabelSquare")
                 {
@@ -107,21 +107,21 @@ namespace SAM.Core.Mollier.UI
 
             }
             //titles
-            MollierChart.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[0].AxisY.TitleFont = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[2].AxisX2.TitleFont = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[2].AxisY.TitleFont = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[0].AxisY2.TitleFont = new System.Drawing.Font("Arial", 8);
+            mollierChart.ChartAreas[0].AxisX.TitleFont = new System.Drawing.Font("Arial", 8);
+            mollierChart.ChartAreas[0].AxisY.TitleFont = new System.Drawing.Font("Arial", 8);
+            mollierChart.ChartAreas[2].AxisX2.TitleFont = new System.Drawing.Font("Arial", 8);
+            mollierChart.ChartAreas[2].AxisY.TitleFont = new System.Drawing.Font("Arial", 8);
+            mollierChart.ChartAreas[0].AxisY2.TitleFont = new System.Drawing.Font("Arial", 8);
             //labels
-            MollierChart.ChartAreas[0].AxisX.LabelAutoFitMinFontSize = 6;
-            MollierChart.ChartAreas[0].AxisY.LabelAutoFitMinFontSize = 6;
-            MollierChart.ChartAreas[0].AxisX2.LabelAutoFitMinFontSize = 6;
-            MollierChart.ChartAreas[0].AxisY2.LabelAutoFitMinFontSize = 6;
-            MollierChart.ChartAreas[2].AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8);
-            MollierChart.ChartAreas[2].AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8);
-            MollierChart.Visible = true;
+            mollierChart.ChartAreas[0].AxisX.LabelAutoFitMinFontSize = 6;
+            mollierChart.ChartAreas[0].AxisY.LabelAutoFitMinFontSize = 6;
+            mollierChart.ChartAreas[0].AxisX2.LabelAutoFitMinFontSize = 6;
+            mollierChart.ChartAreas[0].AxisY2.LabelAutoFitMinFontSize = 6;
+            mollierChart.ChartAreas[2].AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8);
+            mollierChart.ChartAreas[2].AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8);
+            mollierChart.Visible = true;
             doc.Add(Chart_Image);
-            MollierChart.Visible = true;
+            mollierChart.Visible = true;
             doc.Close();
         }
     }

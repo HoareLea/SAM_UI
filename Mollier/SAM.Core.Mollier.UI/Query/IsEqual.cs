@@ -6,6 +6,10 @@ namespace SAM.Core.Mollier.UI
     {
         public static bool IsEqual(this IMollierProcess mollierProcess1, IMollierProcess mollierProcess2, double tolerance = Tolerance.Distance)
         {
+            if(mollierProcess1 == null && mollierProcess2 == null)
+            {
+                return true;
+            }
             if(mollierProcess1 == null || mollierProcess2 == null)
             {
                 return false;
@@ -38,6 +42,10 @@ namespace SAM.Core.Mollier.UI
     
         public static bool IsEqual(this IMollierPoint mollierPoint1, IMollierPoint mollierPoint2, double tolerance = Tolerance.Distance)
         {
+            if(mollierPoint1 == null && mollierPoint2 == null)
+            {
+                return true;
+            }
             if(mollierPoint1 == null || mollierPoint2 == null)
             {
                 return false;

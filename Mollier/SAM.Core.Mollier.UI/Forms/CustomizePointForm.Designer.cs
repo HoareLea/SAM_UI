@@ -30,7 +30,7 @@
         {
             this.OK_Button = new System.Windows.Forms.Button();
             this.Cancel_Button = new System.Windows.Forms.Button();
-            this.customizePointControl = new SAM.Core.Mollier.UI.Controls.CustomizePointControl();
+            this.customizePointControl = new SAM.Core.Mollier.UI.Controls.UIMollierPointControl();
             this.SuspendLayout();
             // 
             // OK_Button
@@ -78,6 +78,6 @@
 
         private System.Windows.Forms.Button OK_Button;
         private System.Windows.Forms.Button Cancel_Button;
-        private Controls.CustomizePointControl customizePointControl;
+        private Controls.UIMollierPointControl customizePointControl;
     }
 }

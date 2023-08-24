@@ -106,17 +106,17 @@
     <Compile Include="Controls\CoolingProcessControl.Designer.cs">
       <DependentUpon>CoolingProcessControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CustomizePointControl.cs">
+    <Compile Include="Controls\UIMollierPointControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\CustomizePointControl.Designer.cs">
-      <DependentUpon>CustomizePointControl.cs</DependentUpon>
+    <Compile Include="Controls\UIMollierPointControl.Designer.cs">
+      <DependentUpon>UIMollierPointControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CustomizeProcessControl.cs">
+    <Compile Include="Controls\UIMollierProcessControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\CustomizeProcessControl.Designer.cs">
-      <DependentUpon>CustomizeProcessControl.cs</DependentUpon>
+    <Compile Include="Controls\UIMollierProcessControl.Designer.cs">
+      <DependentUpon>UIMollierProcessControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\HeatingProcessControl.cs">
       <SubType>UserControl</SubType>
@@ -230,11 +230,11 @@
     <Compile Include="Forms\MollierForm.Designer.cs">
       <DependentUpon>MollierForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ManageMollierObjectsForm.cs">
+    <Compile Include="Forms\UIMollierObjectsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\ManageMollierObjectsForm.Designer.cs">
-      <DependentUpon>ManageMollierObjectsForm.cs</DependentUpon>
+    <Compile Include="Forms\UIMollierObjectsForm.Designer.cs">
+      <DependentUpon>UIMollierObjectsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\MollierPointForm.cs">
       <SubType>Form</SubType>
@@ -321,11 +321,11 @@
     <EmbeddedResource Include="Controls\CoolingProcessControl.resx">
       <DependentUpon>CoolingProcessControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\CustomizePointControl.resx">
-      <DependentUpon>CustomizePointControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\UIMollierPointControl.resx">
+      <DependentUpon>UIMollierPointControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\CustomizeProcessControl.resx">
-      <DependentUpon>CustomizeProcessControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\UIMollierProcessControl.resx">
+      <DependentUpon>UIMollierProcessControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\HeatingProcessControl.resx">
       <DependentUpon>HeatingProcessControl.cs</DependentUpon>
@@ -375,8 +375,8 @@
     <EmbeddedResource Include="Forms\MollierForm.resx">
       <DependentUpon>MollierForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\ManageMollierObjectsForm.resx">
-      <DependentUpon>ManageMollierObjectsForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\UIMollierObjectsForm.resx">
+      <DependentUpon>UIMollierObjectsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MollierPointForm.resx">
       <DependentUpon>MollierPointForm.cs</DependentUpon>

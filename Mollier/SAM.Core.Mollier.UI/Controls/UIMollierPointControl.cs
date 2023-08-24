@@ -10,15 +10,15 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
-    public partial class CustomizePointControl : UserControl
+    public partial class UIMollierPointControl : UserControl
     {
         private UIMollierPoint uIMollierPoint;
-        public CustomizePointControl()
+        public UIMollierPointControl()
         {
             InitializeComponent();
 
         }
-        public CustomizePointControl(UIMollierPoint uIMollierPoint)
+        public UIMollierPointControl(UIMollierPoint uIMollierPoint)
         {
             InitializeComponent();
             if(uIMollierPoint == null)

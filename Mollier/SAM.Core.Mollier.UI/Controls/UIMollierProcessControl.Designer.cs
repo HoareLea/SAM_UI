@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Controls
 {
-    partial class CustomizeProcessControl
+    partial class UIMollierProcessControl
     {
         /// <summary> 
         /// Required designer variable.

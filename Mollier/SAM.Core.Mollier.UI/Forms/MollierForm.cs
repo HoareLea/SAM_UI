@@ -13,7 +13,7 @@ namespace SAM.Core.Mollier.UI
 
         private Forms.MollierPointForm mollierPointForm = null;
         private Forms.MollierProcessForm mollierProcessForm = null;
-        private Forms.ManageMollierObjectsForm manageMollierObjectsForm = null;
+        private Forms.UIMollierObjectsForm manageMollierObjectsForm = null;
 
         private UIMollierPoint previousUIMollierPoint = null;
 
@@ -1062,7 +1062,7 @@ namespace SAM.Core.Mollier.UI
         {
             if (manageMollierObjectsForm == null)
             {
-                manageMollierObjectsForm = new Forms.ManageMollierObjectsForm(MollierControl_Main.UIMollierPoints, MollierControl_Main.UIMollierProcesses, 
+                manageMollierObjectsForm = new Forms.UIMollierObjectsForm(MollierControl_Main.UIMollierPoints, MollierControl_Main.UIMollierProcesses, 
                                                                                   MollierControl_Main.UIMollierZones, MollierControlSettings);
                 
                 manageMollierObjectsForm.FormClosing += manageMollierObjectsForm_Closing;

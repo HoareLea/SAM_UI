@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Controls
 {
-    partial class CustomizePointControl
+    partial class UIMollierPointControl
     {
         /// <summary> 
         /// Required designer variable.

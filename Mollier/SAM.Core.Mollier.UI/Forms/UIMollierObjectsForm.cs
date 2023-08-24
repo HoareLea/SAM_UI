@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Forms
 {
-    public partial class ManageMollierObjectsForm : Form
+    public partial class UIMollierObjectsForm : Form
     {
         private List<UIMollierPoint> uIMollierPoints;
         private List<UIMollierProcess> uIMollierProcesses;
@@ -25,14 +25,14 @@ namespace SAM.Core.Mollier.UI.Forms
         private double airflow = 0;
         private Units.UnitType airFlowUnit = Units.UnitType.CubicMeterPerSecond;
 
-        public ManageMollierObjectsForm()
+        public UIMollierObjectsForm()
         {
             InitializeComponent();
 
             DataGridView_MollierProcesses.AutoGenerateColumns = false;
             DataGridView_MollierPoints.AutoGenerateColumns = false;
         }
-        public ManageMollierObjectsForm(List<UIMollierPoint> mollierPoints, List<UIMollierProcess> mollierProcesses, List<UIMollierZone> mollierZones, MollierControlSettings mollierControlSettings)   
+        public UIMollierObjectsForm(List<UIMollierPoint> mollierPoints, List<UIMollierProcess> mollierProcesses, List<UIMollierZone> mollierZones, MollierControlSettings mollierControlSettings)   
         {
             this.mollierControlSettings = mollierControlSettings;
 

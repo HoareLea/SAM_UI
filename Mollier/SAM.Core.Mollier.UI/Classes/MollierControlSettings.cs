@@ -15,7 +15,7 @@ namespace SAM.Core.Mollier.UI
         public double Temperature_Min { get; set; } = Default.DryBulbTemperature_Min;
         public double Temperature_Interval { get; set; } = Default.DryBulbTemperature_Interval;
         public double PartialVapourPressure_Interval { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
-       
+
         public bool Density_line { get; set; } = true;
         public bool Enthalpy_line { get; set; } = true;
         public bool SpecificVolume_line { get; set; } = true;
