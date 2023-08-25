@@ -18,9 +18,9 @@ namespace SAM.Core.Mollier.UI
             InitializeComponent();
             this.mollierControl = mollierControl;
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
-            HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
-            HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
-            HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval;
+            HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max * 1000;
+            HumidityRatio_Min = mollierControlSettings.HumidityRatio_Min * 1000;
+            HumidityRatio_Interval = mollierControlSettings.HumidityRatio_Interval * 1000;
             Temperature_Max = mollierControlSettings.Temperature_Max;
             Temperature_Min = mollierControlSettings.Temperature_Min;
             Temperature_Interval = mollierControlSettings.Temperature_Interval;
@@ -91,7 +91,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (humidityRatio_Max > Limit.HumidityRatio_Max)
                 {
-                    MessageBox.Show("Wrong range\nMaximal Humidity Ratio is " + Limit.HumidityRatio_Max + "!");
+                    MessageBox.Show("Wrong range\nMaximal Humidity Ratio is " + Limit.HumidityRatio_Max * 1000 + "!");
                     return double.NaN;
                 }
                 if (humidityRatio_Max <= System.Convert.ToDouble(HumidityRatioMinimumValueTextbox.Text))
@@ -99,7 +99,7 @@ namespace SAM.Core.Mollier.UI
                     MessageBox.Show("Wrong range\nMaximal Humidity Ratio must be greater than minimal Humidity Ratio!");
                     return double.NaN;
                 }
-                return humidityRatio_Max;
+                return humidityRatio_Max / 1000;
             }
 
             set
@@ -117,7 +117,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (humidityRatio_Min < Limit.HumidityRatio_Min)
                 {
-                    MessageBox.Show("Wrong range\nMinimal Humidity Ratio is " + Limit.HumidityRatio_Min + "!"); // TODO: 
+                    MessageBox.Show("Wrong range\nMinimal Humidity Ratio is " + Limit.HumidityRatio_Min * 1000 + "!");
                     return double.NaN;
                 }
                 if(humidityRatio_Min >= System.Convert.ToDouble(HumidityRatioMaximumValueTextbox.Text))
@@ -126,7 +126,7 @@ namespace SAM.Core.Mollier.UI
                     return double.NaN;
                 }
 
-                return humidityRatio_Min;
+                return humidityRatio_Min / 1000;
             }
             set
             {
@@ -151,7 +151,7 @@ namespace SAM.Core.Mollier.UI
                     MessageBox.Show("Wrong range\nInterval can not be greater than the axis lenght!");
                     return double.NaN;
                 }
-                return humidityRatio_Interval;
+                return humidityRatio_Interval / 1000;
             }
             set
             {

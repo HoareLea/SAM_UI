@@ -16,6 +16,10 @@ namespace SAM.Core.Mollier.UI
         }
         public static Point2D ToSAM(this MollierPoint mollierPoint, ChartType chartType)
         {
+            if(mollierPoint == null)
+            {
+                return null;
+            }
             double humidityRatio = mollierPoint.HumidityRatio;
             double dryBulbTemperature = mollierPoint.DryBulbTemperature;
             double diagramTemperature = double.NaN;
@@ -26,7 +30,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             double x = chartType == ChartType.Mollier ? humidityRatio * 1000 : dryBulbTemperature;
-            double y = chartType == ChartType.Mollier ? diagramTemperature : humidityRatio;
+            double y = chartType == ChartType.Mollier ? diagramTemperature : humidityRatio * 1000;
 
             return new Point2D(x, y);
         }

@@ -1,10 +1,13 @@
 ﻿using SAM.Geometry.Planar;
+using System;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace SAM.Core.Mollier.UI
 {
+
     public static partial class Query
     {
+        [Obsolete("To remove")] 
         public static int Angle(Series series, MollierControlSettings mollierControlSettings)
         {
             if(series == null || mollierControlSettings == null)

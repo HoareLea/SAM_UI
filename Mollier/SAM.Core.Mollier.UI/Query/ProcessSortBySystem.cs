@@ -34,7 +34,7 @@ namespace SAM.Core.Mollier.UI
                     if (start == null || i == j) continue;
 
                     if(start.DryBulbTemperature == end.DryBulbTemperature && 
-                        System.Math.Round(start.HumidityRatio, 5) == System.Math.Round(end.HumidityRatio, 5)) // do zminy zeby byla jakas odleglosc okreslona
+                        System.Math.Round(start.HumidityRatio, 5) == System.Math.Round(end.HumidityRatio, 5))
                     {
                         nextProcessID[i] = j;
                         previousProcessCount[j]++;

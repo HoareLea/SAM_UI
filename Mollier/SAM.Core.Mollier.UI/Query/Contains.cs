@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms.DataVisualization.Charting;
+using SAM.Geometry.Planar;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -13,7 +14,8 @@ namespace SAM.Core.Mollier.UI
 
             foreach(DataPoint dataPoint in series.Points)
             {
-                MollierPoint mollierPoint_Temp = MollierPoint(dataPoint.XValue, dataPoint.YValues[0], mollierPoint.Pressure, chartType);
+                Point2D point2D = new Point2D(dataPoint.XValue, dataPoint.YValues[0]);
+                MollierPoint mollierPoint_Temp = Convert.ToMollier(point2D, chartType, mollierPoint.Pressure);
                 if(mollierPoint.DryBulbTemperature.AlmostEqual(mollierPoint_Temp.DryBulbTemperature, tolerance) && mollierPoint.HumidityRatio.AlmostEqual(mollierPoint_Temp.HumidityRatio, tolerance))
                 {
                     return true;

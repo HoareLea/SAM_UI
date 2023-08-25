@@ -11,7 +11,7 @@ namespace SAM.Core.Mollier.UI
         public double HumidityRatio_Max { get; set; } = Default.HumidityRatio_Max; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
         public double HumidityRatio_Min { get; set; } = Default.HumidityRatio_Min; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
         public double HumidityRatio_Interval { get; set; } = Default.HumidityRatio_Interval; //TODO: [MACIEK] Update Units Humidity Ratio [kg_waterVapor/kg_dryAir]
-        public double Temperature_Max { get; set; } = Default.DryBulbTemperature_Max;
+        public double Temperature_Max { get; set; } = Default.DryBulbTemperature_Max; 
         public double Temperature_Min { get; set; } = Default.DryBulbTemperature_Min;
         public double Temperature_Interval { get; set; } = Default.DryBulbTemperature_Interval;
         public double PartialVapourPressure_Interval { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
@@ -28,7 +28,7 @@ namespace SAM.Core.Mollier.UI
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
         public bool FindPoint { get; set; } = false;
-        public double FindPoint_Factor { get; set; } = 0.4; //TODO: [MACIEK] Adjust value -> Percent 1-100% or factor 0-1
+        public double FindPoint_Factor { get; set; } = 0.4; //TODO: percent again
         public ChartDataType FindPointType { get; set; } = ChartDataType.Enthalpy;
         public bool DivisionArea { get; set; } = false;
         public bool DivisionAreaLabels { get; set; } = true;
@@ -39,9 +39,9 @@ namespace SAM.Core.Mollier.UI
         public double Density_Max { get; set; } = Default.Density_Max;
         public double Density_Interval { get; set; } = Default.Density_Interval;
 
-        public double Enthalpy_Min { get; set; } = -20000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
-        public double Enthalpy_Max { get; set; } = 200000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
-        public double Enthalpy_Interval { get; set; } = 1000; //TODO: [MACIEK] Implement Enthalpy, use SI units [J/kg]
+        public double Enthalpy_Min { get; set; } = Default.Enthalpy_Min;
+        public double Enthalpy_Max { get; set; } = Default.Enthalpy_Max;
+        public double Enthalpy_Interval { get; set; } = Default.Enthalpy_Interval;
 
         public double SpecificVolume_Min { get; set; } = Default.SpecificVolume_Min;
         public double SpecificVolume_Max { get; set; } = Default.SpecificVolume_Max;
