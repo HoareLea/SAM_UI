@@ -39,7 +39,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             axisY.Minimum = chartArea.AxisY2.Minimum / 1000;
             axisY.Maximum = chartArea.AxisY2.Maximum / 1000;
-            if (!mollierControlSettings.PartialVapourPressure_axis)
+            if (!mollierControlSettings.PartialVapourPressure_Axis)
             {
                 axisY.MinorTickMark.Enabled = false;
                 axisY.MinorGrid.Enabled = false;
@@ -99,7 +99,7 @@ namespace SAM.Core.Mollier.UI.Controls
             Axis axisX = MollierChart.ChartAreas[0].AxisX;
             Axis axisY = MollierChart.ChartAreas[0].AxisY;
 
-            if (!mollierControlSettings.PartialVapourPressure_axis)
+            if (!mollierControlSettings.PartialVapourPressure_Axis)
             {
                 axisX2.Enabled = AxisEnabled.True;
                 axisX2.LabelStyle.Enabled = false;

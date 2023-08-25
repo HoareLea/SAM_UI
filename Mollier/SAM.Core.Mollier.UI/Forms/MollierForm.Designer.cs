@@ -559,7 +559,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.ChartType = SAM.Core.Mollier.ChartType.Mollier;
             mollierControlSettings2.DefaultTemplateName = "default";
             mollierControlSettings2.Density_Interval = 0.02D;
-            mollierControlSettings2.Density_line = true;
+            mollierControlSettings2.Density_Line = true;
             mollierControlSettings2.Density_Max = 1.41D;
             mollierControlSettings2.Density_Min = 0.45D;
             mollierControlSettings2.DisableLabels = false;
@@ -570,7 +570,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.DivisionAreaRelativeHumidity_Interval = 10;
             mollierControlSettings2.Elevation = 0D;
             mollierControlSettings2.Enthalpy_Interval = 1000D;
-            mollierControlSettings2.Enthalpy_line = true;
+            mollierControlSettings2.Enthalpy_Line = true;
             mollierControlSettings2.Enthalpy_Max = 140000D;
             mollierControlSettings2.Enthalpy_Min = -20000D;
             mollierControlSettings2.FindPoint = false;
@@ -579,12 +579,12 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.HumidityRatio_Interval = 5D;
             mollierControlSettings2.HumidityRatio_Max = 35D;
             mollierControlSettings2.HumidityRatio_Min = 0D;
-            mollierControlSettings2.PartialVapourPressure_axis = true;
+            mollierControlSettings2.PartialVapourPressure_Axis = true;
             mollierControlSettings2.PartialVapourPressure_Interval = 1D;
-            mollierControlSettings2.Percent = 0.4D;
+            mollierControlSettings2.FindPoint_Factor = 0.4D;
             mollierControlSettings2.Pressure = 101325D;
             mollierControlSettings2.SpecificVolume_Interval = 0.05D;
-            mollierControlSettings2.SpecificVolume_line = true;
+            mollierControlSettings2.SpecificVolume_Line = true;
             mollierControlSettings2.SpecificVolume_Max = 1.92D;
             mollierControlSettings2.SpecificVolume_Min = 0.65D;
             mollierControlSettings2.Temperature_Interval = 5D;
@@ -594,7 +594,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.UIMollierZoneText = "";
             mollierControlSettings2.VisibilitySettings = visibilitySettings2;
             mollierControlSettings2.WetBulbTemperature_Interval = 5D;
-            mollierControlSettings2.WetBulbTemperature_line = true;
+            mollierControlSettings2.WetBulbTemperature_Line = true;
             mollierControlSettings2.WetBulbTemperature_Max = 30D;
             mollierControlSettings2.WetBulbTemperature_Min = -10D;
             this.MollierControl_Main.MollierControlSettings = mollierControlSettings2;

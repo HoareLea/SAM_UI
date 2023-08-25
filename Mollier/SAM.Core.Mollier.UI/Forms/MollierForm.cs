@@ -342,11 +342,11 @@ namespace SAM.Core.Mollier.UI
 
             ChartToolStripMenuItem_Mollier.Checked = mollierControlSettings.ChartType == ChartType.Mollier;
             ChartToolStripMenuItem_Psychrometric.Checked = mollierControlSettings.ChartType == ChartType.Psychrometric;
-            ToolStripMenuItem_Density.Checked = mollierControlSettings.Density_line;
-            ToolStripMenuItem_Enthalpy.Checked = mollierControlSettings.Enthalpy_line;
-            ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.SpecificVolume_line;
-            ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.WetBulbTemperature_line;
-            ToolStripMenuItem_PartialVapourPressure.Checked = mollierControlSettings.PartialVapourPressure_axis;
+            ToolStripMenuItem_Density.Checked = mollierControlSettings.Density_Line;
+            ToolStripMenuItem_Enthalpy.Checked = mollierControlSettings.Enthalpy_Line;
+            ToolStripMenuItem_SpecificVolume.Checked = mollierControlSettings.SpecificVolume_Line;
+            ToolStripMenuItem_WetBulbTemperature.Checked = mollierControlSettings.WetBulbTemperature_Line;
+            ToolStripMenuItem_PartialVapourPressure.Checked = mollierControlSettings.PartialVapourPressure_Axis;
             defaultToolStripMenuItem.Checked = mollierControlSettings.DefaultTemplateName == "default";
             blueToolStripMenuItem.Checked = mollierControlSettings.DefaultTemplateName == "blue";
             grayToolStripMenuItem.Checked = mollierControlSettings.DefaultTemplateName == "gray";
@@ -507,7 +507,7 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_Density.Checked = !ToolStripMenuItem_Density.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.Density_line = ToolStripMenuItem_Density.Checked;
+            mollierControlSettings.Density_Line = ToolStripMenuItem_Density.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         
@@ -515,7 +515,7 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_Enthalpy.Checked = !ToolStripMenuItem_Enthalpy.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.Enthalpy_line = ToolStripMenuItem_Enthalpy.Checked;
+            mollierControlSettings.Enthalpy_Line = ToolStripMenuItem_Enthalpy.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         
@@ -523,7 +523,7 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_SpecificVolume.Checked = !ToolStripMenuItem_SpecificVolume.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.SpecificVolume_line = ToolStripMenuItem_SpecificVolume.Checked;
+            mollierControlSettings.SpecificVolume_Line = ToolStripMenuItem_SpecificVolume.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         
@@ -531,7 +531,7 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_WetBulbTemperature.Checked = !ToolStripMenuItem_WetBulbTemperature.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.WetBulbTemperature_line = ToolStripMenuItem_WetBulbTemperature.Checked;
+            mollierControlSettings.WetBulbTemperature_Line = ToolStripMenuItem_WetBulbTemperature.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
@@ -612,7 +612,7 @@ namespace SAM.Core.Mollier.UI
                 else
                 {
                     mollierControlSettings.FindPoint = true;
-                    mollierControlSettings.Percent = 0.4;
+                    mollierControlSettings.FindPoint_Factor = 0.4;
                     mollierControlSettings.FindPointType = ChartDataType.Enthalpy;
                     PercentPointsTextBox.Visible = true;
                     PointsLabel.Visible = true;
@@ -649,7 +649,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (Core.Query.TryConvert(PercentPointsTextBox.Text, out double value))
             {
-                mollierControlSettings.Percent = value;
+                mollierControlSettings.FindPoint_Factor = value;
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
             
@@ -1119,7 +1119,7 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_PartialVapourPressure.Checked = !ToolStripMenuItem_PartialVapourPressure.Checked;
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            mollierControlSettings.PartialVapourPressure_axis = ToolStripMenuItem_PartialVapourPressure.Checked;
+            mollierControlSettings.PartialVapourPressure_Axis = ToolStripMenuItem_PartialVapourPressure.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
         
