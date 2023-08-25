@@ -5,10 +5,10 @@
         public static MollierControlSettings DefaultMollierControlSettings()
         {
             MollierControlSettings mollierControlSettings = new MollierControlSettings();
-            mollierControlSettings.Density_line = false;
-            mollierControlSettings.Enthalpy_line = true;
-            mollierControlSettings.SpecificVolume_line = false;
-            mollierControlSettings.WetBulbTemperature_line = false;
+            mollierControlSettings.Density_Line = false;
+            mollierControlSettings.Enthalpy_Line = true;
+            mollierControlSettings.SpecificVolume_Line = false;
+            mollierControlSettings.WetBulbTemperature_Line = false;
             mollierControlSettings.DefaultTemplateName = "blue";
             mollierControlSettings.ChartType = ChartType.Mollier;
             return mollierControlSettings;

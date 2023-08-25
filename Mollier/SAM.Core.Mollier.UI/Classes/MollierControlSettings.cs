@@ -16,19 +16,19 @@ namespace SAM.Core.Mollier.UI
         public double Temperature_Interval { get; set; } = Default.DryBulbTemperature_Interval;
         public double PartialVapourPressure_Interval { get; set; } = 0.5; //TODO: [MACIEK] rename to CodeName PartialVapourPressure, use SI units [Pa]
 
-        public bool Density_line { get; set; } = true;
-        public bool Enthalpy_line { get; set; } = true;
-        public bool SpecificVolume_line { get; set; } = true;
-        public bool WetBulbTemperature_line { get; set; } = true;
+        public bool Density_Line { get; set; } = true;
+        public bool Enthalpy_Line { get; set; } = true;
+        public bool SpecificVolume_Line { get; set; } = true;
+        public bool WetBulbTemperature_Line { get; set; } = true;
 
-        public bool PartialVapourPressure_axis { get; set; } = true;
+        public bool PartialVapourPressure_Axis { get; set; } = true;
         public ChartType ChartType { get; set; } = ChartType.Mollier;
         public string DefaultTemplateName { get; set; } = "default";
         public bool DisableUnits { get; set; } = false;
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
         public bool FindPoint { get; set; } = false;
-        public double Percent { get; set; } = 0.4; //TODO: [MACIEK] Adjust value -> Percent 1-100% or factor 0-1
+        public double FindPoint_Factor { get; set; } = 0.4; //TODO: [MACIEK] Adjust value -> Percent 1-100% or factor 0-1
         public ChartDataType FindPointType { get; set; } = ChartDataType.Enthalpy;
         public bool DivisionArea { get; set; } = false;
         public bool DivisionAreaLabels { get; set; } = true;
@@ -75,13 +75,13 @@ namespace SAM.Core.Mollier.UI
                 Temperature_Min = mollierControlSettings.Temperature_Min;
                 Temperature_Interval = mollierControlSettings.Temperature_Interval;
                 PartialVapourPressure_Interval = mollierControlSettings.PartialVapourPressure_Interval;
-                Density_line = mollierControlSettings.Density_line;
-                Enthalpy_line = mollierControlSettings.Enthalpy_line;
-                SpecificVolume_line = mollierControlSettings.SpecificVolume_line;
-                WetBulbTemperature_line = mollierControlSettings.WetBulbTemperature_line;
+                Density_Line = mollierControlSettings.Density_Line;
+                Enthalpy_Line = mollierControlSettings.Enthalpy_Line;
+                SpecificVolume_Line = mollierControlSettings.SpecificVolume_Line;
+                WetBulbTemperature_Line = mollierControlSettings.WetBulbTemperature_Line;
                 ChartType = mollierControlSettings.ChartType;
                 DefaultTemplateName = mollierControlSettings.DefaultTemplateName;
-                PartialVapourPressure_axis = mollierControlSettings.PartialVapourPressure_axis;
+                PartialVapourPressure_Axis = mollierControlSettings.PartialVapourPressure_Axis;
 
                 DivisionAreaEnthalpy_Interval = mollierControlSettings.DivisionAreaEnthalpy_Interval;
                 DivisionAreaRelativeHumidity_Interval = mollierControlSettings.DivisionAreaRelativeHumidity_Interval;
@@ -97,7 +97,7 @@ namespace SAM.Core.Mollier.UI
 
                 GradientPoint = mollierControlSettings.GradientPoint;
                 FindPoint = mollierControlSettings.FindPoint;
-                Percent = mollierControlSettings.Percent;
+                FindPoint_Factor = mollierControlSettings.FindPoint_Factor;
                 FindPointType = mollierControlSettings.FindPointType;
                 DivisionArea = mollierControlSettings.DivisionArea;
                 DivisionAreaLabels = mollierControlSettings.DivisionAreaLabels;
@@ -251,25 +251,25 @@ namespace SAM.Core.Mollier.UI
             {
                 PartialVapourPressure_Interval = jObject.Value<double>("PartialVapourPressure_Interval");
             }
-            if (jObject.ContainsKey("Density_line"))
+            if (jObject.ContainsKey("Density_Line"))
             {
-                Density_line = jObject.Value<bool>("Density_line");
+                Density_Line = jObject.Value<bool>("Density_Line");
             }
-            if (jObject.ContainsKey("Enthalpy_line"))
+            if (jObject.ContainsKey("Enthalpy_Line"))
             {
-                Enthalpy_line = jObject.Value<bool>("Enthalpy_line");
+                Enthalpy_Line = jObject.Value<bool>("Enthalpy_Line");
             }
-            if (jObject.ContainsKey("SpecificVolume_line"))
+            if (jObject.ContainsKey("SpecificVolume_Line"))
             {
-                SpecificVolume_line = jObject.Value<bool>("SpecificVolume_line");
+                SpecificVolume_Line = jObject.Value<bool>("SpecificVolume_Line");
             }
-            if (jObject.ContainsKey("WetBulbTemperature_line"))
+            if (jObject.ContainsKey("WetBulbTemperature_Line"))
             {
-                WetBulbTemperature_line = jObject.Value<bool>("WetBulbTemperature_line");
+                WetBulbTemperature_Line = jObject.Value<bool>("WetBulbTemperature_Line");
             }
-            if (jObject.ContainsKey("WetBulbTemperature_line"))
+            if (jObject.ContainsKey("WetBulbTemperature_Line"))
             {
-                PartialVapourPressure_axis = jObject.Value<bool>("PartialVapourPressure_axis");
+                PartialVapourPressure_Axis = jObject.Value<bool>("PartialVapourPressure_Axis");
             }
             if (jObject.ContainsKey("Color"))
             {
@@ -405,11 +405,11 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("PartialVapourPressure_Interval", PartialVapourPressure_Interval);
             }
-            result.Add("Density_line", Density_line);
-            result.Add("Enthalpy_line", Enthalpy_line);
-            result.Add("SpecificVolume_line", SpecificVolume_line);
-            result.Add("WetBulbTemperature_line", WetBulbTemperature_line);
-            result.Add("PartialVapourPressure_axis", PartialVapourPressure_axis);
+            result.Add("Density_Line", Density_Line);
+            result.Add("Enthalpy_Line", Enthalpy_Line);
+            result.Add("SpecificVolume_Line", SpecificVolume_Line);
+            result.Add("WetBulbTemperature_Line", WetBulbTemperature_Line);
+            result.Add("PartialVapourPressure_Axis", PartialVapourPressure_Axis);
             result.Add("Color", DefaultTemplateName);
             result.Add("DisableUnits", DisableUnits);
             result.Add("DisableLabels", DisableLabels);

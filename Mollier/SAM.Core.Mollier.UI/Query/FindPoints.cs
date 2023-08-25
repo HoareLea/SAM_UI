@@ -12,7 +12,7 @@ namespace SAM.Core.Mollier.UI
         public static Point2D FindPoint(this List<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
             bool generate = mollierControlSettings.FindPoint;
-            double percent = mollierControlSettings.Percent;
+            double percent = mollierControlSettings.FindPoint_Factor;
             ChartType chartType = mollierControlSettings.ChartType;
 
             if (mollierPoints == null || mollierPoints.Count < 4 || generate == false || percent > 100 || percent < 0)

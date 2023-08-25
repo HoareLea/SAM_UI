@@ -34,7 +34,7 @@ namespace SAM.Core.Mollier.UI
 
 
                 case Mollier.ChartDataType.Density:
-                    if(!mollierControlSettings.Density_line)
+                    if(!mollierControlSettings.Density_Line)
                     {
                         return null;
                     }
@@ -53,7 +53,7 @@ namespace SAM.Core.Mollier.UI
                     return Mollier.Create.ConstantValueCurves_RelativeHumidity(new MollierRange(Limit.DryBulbTemperature_Min, Limit.DryBulbTemperature_Max, mollierRange.HumidityRatio_Min, mollierRange.HumidityRatio_Max), new Range<double>(0, 100), step, pressure);
 
                 case Mollier.ChartDataType.Enthalpy:
-                    if (!mollierControlSettings.Enthalpy_line)
+                    if (!mollierControlSettings.Enthalpy_Line)
                     {
                         return null;
                     }
@@ -65,7 +65,7 @@ namespace SAM.Core.Mollier.UI
                     return Mollier.Create.ConstantEnthalpyCurves(mollierRange, new Range<double>(enthalpy_Min, enthalpy_Max), pressure, step, Phase.Gas)?.ConvertAll(x => x as ConstantValueCurve);
 
                 case Mollier.ChartDataType.WetBulbTemperature:
-                    if (!mollierControlSettings.WetBulbTemperature_line)
+                    if (!mollierControlSettings.WetBulbTemperature_Line)
                     {
                         return null;
                     }
@@ -74,7 +74,7 @@ namespace SAM.Core.Mollier.UI
                     return Mollier.Create.ConstantValueCurves_WetBulbTemperature(mollierRange, step, pressure);
 
                 case Mollier.ChartDataType.SpecificVolume:
-                    if (!mollierControlSettings.SpecificVolume_line)
+                    if (!mollierControlSettings.SpecificVolume_Line)
                     {
                         return null;
                     }
