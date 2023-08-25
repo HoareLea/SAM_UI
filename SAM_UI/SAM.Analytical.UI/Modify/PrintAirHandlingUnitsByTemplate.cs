@@ -199,7 +199,7 @@ namespace SAM.Analytical.UI
                     using (MollierControl mollierControl = new MollierControl() { Visible = false })
                     {
                         MollierControlSettings mollierControlSettings = new MollierControlSettings();
-                        mollierControlSettings.HumidityRatio_Max = 25;
+                        mollierControlSettings.HumidityRatio_Max = 0.025;
                         mollierControlSettings.ChartType = ChartType.Mollier;
                         mollierControl.MollierControlSettings = mollierControlSettings;
 
@@ -211,7 +211,7 @@ namespace SAM.Analytical.UI
                         mollierControl.Save(ChartExportType.EMF, path: path);
 
 
-                        mollierControlSettings.HumidityRatio_Max = 30;
+                        mollierControlSettings.HumidityRatio_Max = 0.03;
                         mollierControl.Size = new Size(System.Convert.ToInt32(width_2 * 2), System.Convert.ToInt32(height_2 * 2));
                         mollierControlSettings.ChartType = ChartType.Psychrometric; 
                         mollierControl.MollierControlSettings = mollierControlSettings;

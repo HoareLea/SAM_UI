@@ -93,8 +93,8 @@ namespace SAM.Core.Mollier.UI
             }
             else
             {
-                MollierPoint center = new MollierPoint(zone.GetCenter().DryBulbTemperature, zone.GetCenter().HumidityRatio - 0.0004 * scaleVector.X, zone.GetCenter().Pressure);
-                zoneCenter = new UIMollierPoint(zone.GetCenter(), zoneCenterAppearance);
+                MollierPoint center = new MollierPoint(zone.GetCenter().DryBulbTemperature, zone.GetCenter().HumidityRatio - 0.4 * scaleVector.X, zone.GetCenter().Pressure);
+                zoneCenter = new UIMollierPoint(center, zoneCenterAppearance);
             }
 
 
@@ -115,7 +115,7 @@ namespace SAM.Core.Mollier.UI
             string text = getCurveUnitText(curve);
             Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Unit, curve.ChartDataType);
 
-            Point2D defaultPoint2D = Query.DefaultPoint2D(chart, mollierControlSettings, curve, chartType);
+            Point2D defaultPoint2D = Query.DefaultLabelPoint2D(mollierControlSettings, curve, chartType);
             if (defaultPoint2D == null) return result;
 
             Polyline2D polyline = curveToPolyline(curve, chartType, axesRatio);
@@ -151,13 +151,19 @@ namespace SAM.Core.Mollier.UI
                 ConstantValueCurve curve = curves.Value[curves.Value.Count / 2];
                 string text = getCurveNameText(chartDataType);
 
-                Point2D defaultPoint2D = Query.DefaultPoint2D(chart, mollierControlSettings, curve, chartType, ChartParameterType.Label);
+                Point2D defaultPoint2D = Query.DefaultLabelPoint2D(mollierControlSettings, curve, chartType, ChartParameterType.Label);
                 if (defaultPoint2D == null)
                 {
                     return result;
                 }
                 Polyline2D polyline = curveToPolyline(curve, chartType, axesRatio);
                 Rectangle2D rectangle = getLabelRectangle(defaultPoint2D, polyline, text, mollierControlSettings, scaleVector, axesRatio);
+
+                // -------DEBUG-----------
+                Point2D p1 = defaultPoint2D;
+                Point2D p2 = rectangle.GetCentroid();
+               // double dist = System.Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y));
+                //          (p1.Y - p2.Y) * axesRatio);
 
                 Solver2DData solver2DData = new Solver2DData(rectangle, polyline);
 
@@ -228,15 +234,15 @@ namespace SAM.Core.Mollier.UI
             }
             else
             {
-                return new Point2D(point.X, point.Y + 0.0004 * scaleVector.Y);
+                return new Point2D(point.X, point.Y + 0.5 * scaleVector.Y);
             }
         }
 
         private static Rectangle2D textToRectangle(Point2D center, string text, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
-            double capitalLetterHeight = (chartType == ChartType.Mollier ? 1 : 0.0006) * scaleVector.Y;
-            double lowercaseHeight = (chartType == ChartType.Mollier ? 1 : 0.00055) * scaleVector.Y;
-            double letterWidth = (chartType == ChartType.Mollier ? 0.1 : 0.25) * scaleVector.X;
+            double capitalLetterHeight = (chartType == ChartType.Mollier ? 1 : 0.6) * scaleVector.Y;
+            double lowercaseHeight = (chartType == ChartType.Mollier ? 1 : 0.55) * scaleVector.Y;
+            double letterWidth = (chartType == ChartType.Mollier ? 0.1 : 0.2) * scaleVector.X;
 
             double width = letterWidth * text.Length;
             double height = containsCapitalLetter(text) ? capitalLetterHeight : lowercaseHeight;

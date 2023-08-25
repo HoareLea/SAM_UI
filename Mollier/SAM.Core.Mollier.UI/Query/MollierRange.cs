@@ -27,19 +27,13 @@
                 return null;
             }
 
-            humidtyRatio_Min /= 1000;
-
-
             double humidityRatio_Max = mollierControlSettings.HumidityRatio_Max;
             if (double.IsNaN(humidityRatio_Max))
             {
                 return null;
             }
 
-            humidityRatio_Max /= 1000;
-
             return new MollierRange(dryBulbTemperature_Min, dryBulbTemperature_Max, humidtyRatio_Min, humidityRatio_Max);
-
         }
     }
 }

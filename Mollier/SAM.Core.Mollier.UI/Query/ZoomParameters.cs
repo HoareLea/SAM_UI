@@ -18,6 +18,7 @@ namespace SAM.Core.Mollier.UI
         /// <param name="y_Factor">Y scale of zoom</param>
         public static void ZoomParameters(IEnumerable<Series> series_List, ChartType chartType, out double x_Min, out double x_Max, out double y_Min, out double y_Max, double x_Factor = 5, double y_Factor = 5)
         {
+            // Xmax - YMax humidityRatio
             List<DataPoint> dataPoints = new List<DataPoint>();
 
             foreach (Series series in series_List)
@@ -57,15 +58,22 @@ namespace SAM.Core.Mollier.UI
                     y_Min = dataPoint.YValues[0];
                 }
             }
-            if(chartType == ChartType.Psychrometric)
-            {
-                y_Max *= 1000;
-                y_Min *= 1000;
-            }
+
             x_Min = x_Min % x_Factor == 0 ? System.Math.Floor(x_Min / x_Factor) * x_Factor - x_Factor : System.Math.Floor(x_Min / x_Factor) * x_Factor;
             x_Max = x_Max % x_Factor == 0 ? System.Math.Ceiling(x_Max / x_Factor) * x_Factor + x_Factor : System.Math.Ceiling(x_Max / x_Factor) * x_Factor;
             y_Min = y_Min % y_Factor == 0 ? System.Math.Floor(y_Min / y_Factor) * y_Factor - y_Factor : System.Math.Floor(y_Min / y_Factor) * y_Factor;
             y_Max = y_Max % y_Factor == 0 ? System.Math.Ceiling(y_Max / y_Factor) * y_Factor + y_Factor : System.Math.Ceiling(y_Max / y_Factor) * y_Factor;
+
+            if(chartType == ChartType.Mollier)
+            {
+                x_Min /= 1000;
+                x_Max /= 1000;
+            }
+            else
+            {
+                y_Min /= 1000;
+                y_Max /= 1000;
+            }
         }
     }
 }

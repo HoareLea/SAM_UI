@@ -284,7 +284,6 @@
     <Compile Include="Query\Rectangle.cs" />
     <Compile Include="Query\Angle.cs" />
     <Compile Include="Query\ConstantValueCurves.cs" />
-    <Compile Include="Query\MollierPoint.cs" />
     <Compile Include="Query\Contains.cs" />
     <Compile Include="Query\ToolTipText.cs" />
     <Compile Include="Query\Value.cs" />
@@ -297,7 +296,6 @@
     <Compile Include="Query\FindDivisionAreaCornerPoint.cs" />
     <Compile Include="Query\FullProcessName.cs" />
     <Compile Include="Query\ProcessSortBySystem.cs" />
-    <Compile Include="Query\SaveAsPDF.cs" />
     <Compile Include="Query\ScaleVector2D.cs" />
     <Compile Include="Query\DefaultMollierZones.cs" />
     <Compile Include="Query\DefaultPointGradientVisibilitySetting.cs" />
