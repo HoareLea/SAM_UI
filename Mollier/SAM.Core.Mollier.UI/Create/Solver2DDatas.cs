@@ -159,12 +159,6 @@ namespace SAM.Core.Mollier.UI
                 Polyline2D polyline = curveToPolyline(curve, chartType, axesRatio);
                 Rectangle2D rectangle = getLabelRectangle(defaultPoint2D, polyline, text, mollierControlSettings, scaleVector, axesRatio);
 
-                // -------DEBUG-----------
-                Point2D p1 = defaultPoint2D;
-                Point2D p2 = rectangle.GetCentroid();
-               // double dist = System.Math.Sqrt((p1.X - p2.X) * (p1.X - p2.X) + (p1.Y - p2.Y));
-                //          (p1.Y - p2.Y) * axesRatio);
-
                 Solver2DData solver2DData = new Solver2DData(rectangle, polyline);
 
                 Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Label, curve.ChartDataType);
@@ -184,20 +178,23 @@ namespace SAM.Core.Mollier.UI
         {
             ChartType chartType = mollierControlSettings.ChartType;
             Point2D labelCenter = getLabelCenter(point, chartType, scaleVector);
+            Point2D scaledPoint = point.GetScaledY(axesRatio);
 
             Rectangle2D rectangleShape = textToRectangle(labelCenter, text, chartType, scaleVector, axesRatio);
             if (rectangleShape == null) return null;
 
-            List<Segment2D> segments = polyline.ClosestSegment2Ds(point.GetScaledY(axesRatio));
+            List<Segment2D> segments = polyline.ClosestSegment2Ds(scaledPoint);
             if (segments == null) return null;
 
             Segment2D curveSegment = segments[0];
             double distance = rectangleShape.GetCentroid().Y - point.GetScaledY(axesRatio).Y;
             bool clockwise = curveSegment.Direction.GetPerpendicular().Y < 0;
 
-            Rectangle2D result = Geometry.Planar.Query.MoveToSegment2D(rectangleShape, curveSegment, point.GetScaledY(axesRatio), distance, clockwise);
+            Rectangle2D result = Geometry.Planar.Query.MoveToSegment2D(rectangleShape, curveSegment, scaledPoint, distance, clockwise);
             return fixRectangleShape(result, rectangleShape);
         }
+
+
 
         private static Dictionary<ChartDataType, List<ConstantValueCurve>> orderCurves(Chart chart, ChartType chartType)
         {
@@ -230,18 +227,18 @@ namespace SAM.Core.Mollier.UI
             // Method returns point's label
             if (chartType == ChartType.Mollier)
             {
-                return new Point2D(point.X, point.Y + 0.8 * scaleVector.Y);
+                return new Point2D(point.X, point.Y + 0.7 * scaleVector.Y);
             }
             else
             {
-                return new Point2D(point.X, point.Y + 0.5 * scaleVector.Y);
+                return new Point2D(point.X, point.Y + 0.35 * scaleVector.Y);
             }
         }
 
         private static Rectangle2D textToRectangle(Point2D center, string text, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
-            double capitalLetterHeight = (chartType == ChartType.Mollier ? 1 : 0.6) * scaleVector.Y;
-            double lowercaseHeight = (chartType == ChartType.Mollier ? 1 : 0.55) * scaleVector.Y;
+            double capitalLetterHeight = (chartType == ChartType.Mollier ? 0.8 : 0.45) * scaleVector.Y;
+            double lowercaseHeight = (chartType == ChartType.Mollier ? 0.8 : 0.4) * scaleVector.Y;
             double letterWidth = (chartType == ChartType.Mollier ? 0.1 : 0.2) * scaleVector.X;
 
             double width = letterWidth * text.Length;

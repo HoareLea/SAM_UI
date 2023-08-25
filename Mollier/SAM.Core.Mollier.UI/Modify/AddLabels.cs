@@ -39,8 +39,8 @@ namespace SAM.Core.Mollier.UI
                 {
                     solver.Add(rectangle, point, tag: solver2DData.Tag);
                 }
-                //if (rectangle != null)
-                //{
+                //if (rectangle != null) // debug
+                //{ 
                 //    addToChartR(chart, rectangle, Color.Red, axesRatio);
                 //}
             }
@@ -142,7 +142,7 @@ namespace SAM.Core.Mollier.UI
         {
             if (rectangle == null) return null;
 
-            double distanceFromCenter = (chartType == ChartType.Mollier ? 1 : 0.55) * scaleVector.Y;
+            double distanceFromCenter = (chartType == ChartType.Mollier ? 0.8  : 0.4) * scaleVector.Y;
             Point2D center = rectangle.GetCentroid().GetScaledY(1 / axesRatio); // re-scaled point
             Point2D point = new Point2D(center.X, center.Y - distanceFromCenter);
 
