@@ -832,6 +832,10 @@ namespace SAM.Core.Mollier.UI
                 {
                     mollierPoints.Add((IMollierPoint)mollierObject);
                 }
+                else if(mollierObject is IMollierGroup)
+                {
+                    LoadMollierObjects((IMollierGroup)mollierObject);
+                }
             }
 
             double pressure = Query.DefaultPressure(mollierPoints, mollierProcesses);
