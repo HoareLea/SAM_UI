@@ -61,7 +61,7 @@ namespace SAM.Core.Mollier.UI
             }
             else
             {
-                result.Points.AddXY(0, 0.015);
+                result.Points.AddXY(0, 15); // TODO: Changed
             }
             string pointLabel = Query.ToolTipText(colorPoint.ToMollier(chartType, mollierControlSettings.Pressure), chartType);
             result.Label = pointLabel;

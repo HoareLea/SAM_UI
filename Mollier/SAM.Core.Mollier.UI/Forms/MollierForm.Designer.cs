@@ -576,8 +576,8 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.FindPoint = false;
             mollierControlSettings2.FindPointType = SAM.Core.Mollier.ChartDataType.Enthalpy;
             mollierControlSettings2.GradientPoint = false;
-            mollierControlSettings2.HumidityRatio_Interval = 5D;
-            mollierControlSettings2.HumidityRatio_Max = 35D;
+            mollierControlSettings2.HumidityRatio_Interval = 0.005D;
+            mollierControlSettings2.HumidityRatio_Max = 0.035D;
             mollierControlSettings2.HumidityRatio_Min = 0D;
             mollierControlSettings2.PartialVapourPressure_Axis = true;
             mollierControlSettings2.PartialVapourPressure_Interval = 1D;

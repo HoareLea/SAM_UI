@@ -123,24 +123,13 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 int index = -1;
-                if (chartType == ChartType.Mollier)
-                {
-                    if(chartDataType != ChartDataType.DiagramTemperature)
-                    {
-                        temperature = Mollier.Query.DiagramTemperature(mollierPoint);
-                        if (double.IsNaN(temperature) || double.IsInfinity(temperature))
-                        {
-                            continue;
-                        }
-                    }
 
-                    humidityRatio = humidityRatio * 1000;
-                    index = result.Points.AddXY(humidityRatio, temperature);
-                }
-                else
+                Point2D point2D = ToSAM(new MollierPoint(temperature, humidityRatio, mollierControlSettings.Pressure), chartType);
+                if(point2D == null)
                 {
-                    index = result.Points.AddXY(temperature, humidityRatio);
+                    continue;
                 }
+                index = result.Points.AddXY(point2D.X, point2D.Y);
 
                 if(index != -1)
                 {

@@ -6,7 +6,18 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
-        public static Point2D DefaultPoint2D(Chart chart, MollierControlSettings mollierControlSettings, ConstantValueCurve curve, ChartType chartType, ChartParameterType chartParameterType = ChartParameterType.Unit)
+        /// <summary>
+        /// Returns default position of label for constant value
+        /// curve depends on chart parameter type.
+        /// </summary>
+        /// <param name="mollierControlSettings"></param>
+        /// <param name="curve"></param>
+        /// <param name="chartType"></param>
+        /// <param name="chartParameterType"></param>
+        /// <returns>Default position of curve label</returns>
+        /// <exception cref="NotSupportedException"></exception>
+        /// <exception cref="NotImplementedException"></exception>
+        public static Point2D DefaultLabelPoint2D(MollierControlSettings mollierControlSettings, ConstantValueCurve curve, ChartType chartType, ChartParameterType chartParameterType = ChartParameterType.Unit)
         {
             if (curve == null)
             {
@@ -158,7 +169,7 @@ namespace SAM.Core.Mollier.UI
             {
                 if (chartParameterType == ChartParameterType.Label)
                 {
-                    return new Point2D(45, 30.88/1000);
+                    return new Point2D(45, 30.88);
                 }
                 else if (chartParameterType == ChartParameterType.Unit)
                 {
@@ -167,25 +178,25 @@ namespace SAM.Core.Mollier.UI
                         case 0:
                             return null;
                         case 10:
-                            return new Point2D(47.5, 6.76 / 1000);
+                            return new Point2D(47.5, 6.76);
                         case 20:
-                            return new Point2D(47, 13.31 / 1000);
+                            return new Point2D(47, 13.31);
                         case 30:
-                            return new Point2D(46, 19.15 / 1000);
+                            return new Point2D(46, 19.15);
                         case 40:
-                            return new Point2D(44.5, 23.81 / 1000);
+                            return new Point2D(44.5, 23.81);
                         case 50:
-                            return new Point2D(42.5, 26.96 / 1000);
+                            return new Point2D(42.5, 26.96);
                         case 60:
-                            return new Point2D(40, 28.41 / 1000);
+                            return new Point2D(40, 28.41);
                         case 70:
-                            return new Point2D(38, 29.84 / 1000);
+                            return new Point2D(38, 29.84);
                         case 80:
-                            return new Point2D(36.2, 30.97 / 1000);
+                            return new Point2D(36.2, 30.97);
                         case 90:
-                            return new Point2D(34.5, 31.76 / 1000);
+                            return new Point2D(34.5, 31.76);
                         case 100:
-                            return new Point2D(33, 32.5 / 1000);
+                            return new Point2D(33, 32.5);
                         default:
                             return null;
                     }
