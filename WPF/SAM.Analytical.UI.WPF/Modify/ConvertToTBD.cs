@@ -1,4 +1,5 @@
-﻿using SAM.Core;
+﻿using Microsoft.Win32.SafeHandles;
+using SAM.Core;
 using SAM.Core.Tas;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
@@ -69,6 +70,8 @@ namespace SAM.Analytical.UI.WPF
 
             bool createSAP = convertToTBDWindow.CreateSAP;
             bool createTM59 = convertToTBDWindow.CreateTM59;
+
+            bool sizing = convertToTBDWindow.Sizing;
 
             SolarCalculationMethod solarCalculationMethod = convertToTBDWindow.SolarCalculationMethod;
             bool updateConstructionLayersByPanelType = true;
@@ -226,7 +229,7 @@ namespace SAM.Analytical.UI.WPF
                     updateZones_Workflow = true;
                 }
 
-                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, weatherData_Workflow, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, updateZones_Workflow, simulate_From, simulate_To);
+                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, weatherData_Workflow, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, updateZones_Workflow, simulate_From, simulate_To);
 
                 if (printRoomDataSheets && analyticalModel != null)
                 {

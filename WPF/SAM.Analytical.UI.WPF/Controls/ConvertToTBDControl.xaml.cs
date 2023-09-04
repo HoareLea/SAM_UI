@@ -239,6 +239,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public bool Sizing
+        {
+            get
+            {
+                return checkBox_Sizing.IsChecked != null && checkBox_Sizing.IsChecked.HasValue && checkBox_Sizing.IsChecked.Value;
+            }
+
+            set
+            {
+                checkBox_Sizing.IsChecked = value;
+            }
+        }
+
         public string SelectedZoneCategory
         {
             get

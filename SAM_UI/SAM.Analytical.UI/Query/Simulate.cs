@@ -33,6 +33,7 @@ namespace SAM.Analytical.UI
             bool fullYearSimulation = false;
             int fullYearSimulation_From = -1;
             int fullYearSimulation_To = -1;
+            bool sizing = true;
 
             SolarCalculationMethod solarCalculationMethod = SolarCalculationMethod.None;
             bool updateConstructionLayersByPanelType = false;
@@ -48,6 +49,7 @@ namespace SAM.Analytical.UI
                 projectName = simulateForm.ProjectName;
                 outputDirectory = simulateForm.OutputDirectory;
                 unmetHours = simulateForm.UnmetHours;
+                sizing = simulateForm.Sizing;
                 weatherData = simulateForm.WeatherData;
                 solarCalculationMethod = simulateForm.SolarCalculationMethod;
                 updateConstructionLayersByPanelType = simulateForm.UpdateConstructionLayersByPanelType;
@@ -187,7 +189,7 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, null, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, false, simulate_From, simulate_To);
+            analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, null, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, false, simulate_From, simulate_To);
 
             analyticalModel.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weatherData);
 

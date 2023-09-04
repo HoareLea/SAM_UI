@@ -15,6 +15,18 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
+        public bool Sizing
+        {
+            get
+            {
+                return convertToTBDControl.Sizing;
+            }
+            set
+            {
+                convertToTBDControl.Sizing = value;
+            }
+        }
+
         public WeatherData WeatherData
         {
             get

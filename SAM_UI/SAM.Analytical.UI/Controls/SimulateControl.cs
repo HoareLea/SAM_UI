@@ -127,6 +127,14 @@ namespace SAM.Analytical.UI.Controls
             }
         }
 
+        public bool Sizing
+        {
+            get
+            {
+                return CheckBox_Sizing.Checked;
+            }
+        }
+
         public bool UpdateConstructionLayersByPanelType
         {
             get

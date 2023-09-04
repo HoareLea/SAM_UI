@@ -139,6 +139,14 @@ namespace SAM.Analytical.UI.Forms
             }
         }
 
+        public bool Sizing
+        {
+            get
+            {
+                return SimulateControl_Main.Sizing;
+            }
+        }
+
         public bool UpdateConstructionLayersByPanelType
         {
             get
