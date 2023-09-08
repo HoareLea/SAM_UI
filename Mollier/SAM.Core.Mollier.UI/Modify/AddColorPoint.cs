@@ -8,7 +8,7 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-        public static List<Series> AddColorPoint(this Chart chart, MollierControlSettings mollierControlSettings, List<UIMollierPoint> mollierPoints)
+        public static List<Series> AddColorPoint(this Chart chart, List<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
             if(mollierPoints == null || mollierControlSettings.FindPoint == false)
             {
@@ -26,6 +26,17 @@ namespace SAM.Core.Mollier.UI
             result.Add(chart.addColorPointLabel(colorPoint, mollierControlSettings));
 
             return result; 
+        }
+        public static List<Series> AddColorPoint(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
+        {
+            if (mollierModel == null)
+            {
+                return null;
+            }
+
+            List<UIMollierPoint> uIMollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>();
+
+            return chart.AddColorPoint(uIMollierPoints, mollierControlSettings);
         }
     
         private static Series addColorPoint(this Chart chart, Point2D colorPoint, MollierControlSettings mollierControlSettings)

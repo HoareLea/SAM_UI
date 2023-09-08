@@ -31,6 +31,17 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
+        public static List<Series> AddDivisionArea(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
+        {
+            if (mollierModel == null)
+            {
+                return null;
+            }
+
+            List<UIMollierPoint> uIMollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>();
+
+            return chart.AddDivisionArea(uIMollierPoints, mollierControlSettings);
+        }
         private static Series addDivisionArea(this Chart chart, UIMollierZone divisionArea, MollierControlSettings mollierControlSettings)
         {
             if (divisionArea == null || divisionArea.MollierPoints == null || divisionArea.MollierPoints.Count < 4)

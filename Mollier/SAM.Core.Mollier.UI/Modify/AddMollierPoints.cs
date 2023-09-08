@@ -64,5 +64,17 @@ namespace SAM.Core.Mollier.UI
             }
             return result;
         }
+    
+        public static Series AddMollierPoints(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
+        {
+            if(mollierModel == null)
+            {
+                return null;
+            }
+
+            List<UIMollierPoint> uIMollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>();
+
+            return chart.AddMollierPoints(uIMollierPoints, mollierControlSettings);
+        }
     }
 }

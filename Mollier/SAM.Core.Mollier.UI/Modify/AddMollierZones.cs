@@ -7,7 +7,7 @@ namespace SAM.Core.Mollier.UI
     public static partial class Modify
     {
 
-        public static List<Series> AddMollierZones(this Chart chart, IEnumerable<MollierZone> mollierZones, MollierControlSettings mollierControlSettings)
+        public static List<Series> AddMollierZones(this Chart chart, IEnumerable<UIMollierZone> mollierZones, MollierControlSettings mollierControlSettings)
         {
             if(mollierZones == null)
             {
@@ -38,6 +38,18 @@ namespace SAM.Core.Mollier.UI
             }
 
             return result;
+        }
+    
+        public static List<Series> AddMollierZones(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
+        {
+            if (mollierModel == null)
+            {
+                return null;
+            }
+
+            List<UIMollierZone> uIMollierZones = mollierModel.GetMollierObjects<UIMollierZone>();
+
+            return chart.AddMollierZones(uIMollierZones, mollierControlSettings);
         }
     }
 }

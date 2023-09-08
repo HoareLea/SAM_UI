@@ -63,6 +63,17 @@ namespace SAM.Core.Mollier.UI
             return labeledMollierProcesses;
         }
 
+        public static List<UIMollierProcess> AddMollierProcesses(this Chart chart, List<List<UIMollierProcess>> systems, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
+        {
+            if (mollierModel == null)
+            {
+                return null;
+            }
+
+            List<UIMollierProcess> uIMollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
+
+            return chart.AddMollierProcesses(systems, uIMollierProcesses, mollierControlSettings);
+        }
         
         // ------------------SERIES--------------------------------------------
         private static Series createDewPointDashLineSeries(Chart chart, MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType, Color color, int borderWidth, ChartDashStyle borderDashStyle)
