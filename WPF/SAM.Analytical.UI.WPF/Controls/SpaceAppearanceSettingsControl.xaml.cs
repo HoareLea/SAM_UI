@@ -153,6 +153,11 @@ namespace SAM.Analytical.UI.WPF
             }
 
             Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, new string[] { "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type" });
+        
+            if(comboBox_ParameterName.Visibility != Visibility.Hidden && comboBox_ParameterName.Items.Contains("Name"))
+            {
+                comboBox_ParameterName.Text = "Name";
+            }
         }
 
         private void SetZoneTypeVisibility()
