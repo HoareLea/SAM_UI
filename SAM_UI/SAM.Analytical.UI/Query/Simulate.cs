@@ -189,7 +189,7 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, null, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, false, simulate_From, simulate_To);
+            analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, null, null, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, false, false, simulate_From, simulate_To);
 
             analyticalModel.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weatherData);
 

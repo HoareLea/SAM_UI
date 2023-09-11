@@ -563,6 +563,7 @@ namespace SAM.Analytical.UI
                         }
                     }
 
+                    double spaceEdgeOffset = twoDimensionalViewSettings.SpaceEdgeOffset;
 
                     foreach (KeyValuePair<Space, List<Face3D>> keyValuePair in dictionary_Space)
                     {
@@ -577,8 +578,17 @@ namespace SAM.Analytical.UI
                         List<Face3D> face3Ds_Offset = new List<Face3D>();
                         foreach (Face3D face3D in face3Ds)
                         {
-                            List<Face3D> face3Ds_Offset_Temp = face3D.Offset(-0.08);
-                            if (face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
+                            if(face3D == null || !face3D.IsValid())
+                            {
+                                continue;
+                            }
+
+                            List<Face3D> face3Ds_Offset_Temp = face3D.Offset(spaceEdgeOffset);
+                            if(face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
+                            {
+                                face3Ds_Offset_Temp = new List<Face3D>() { face3D };
+                            }
+                            else if (face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
                             {
                                 continue;
                             }

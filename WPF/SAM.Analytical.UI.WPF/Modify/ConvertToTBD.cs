@@ -229,7 +229,7 @@ namespace SAM.Analytical.UI.WPF
                     updateZones_Workflow = true;
                 }
 
-                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, weatherData_Workflow, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, updateZones_Workflow, simulate_From, simulate_To);
+                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, weatherData_Workflow, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, updateZones_Workflow, false, simulate_From, simulate_To);
 
                 if (printRoomDataSheets && analyticalModel != null)
                 {

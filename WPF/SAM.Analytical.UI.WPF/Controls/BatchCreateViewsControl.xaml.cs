@@ -42,7 +42,7 @@ namespace SAM.Analytical.UI.WPF
         {
             spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
 
-            spaceAppearanceSettingsControl.SpaceAppearanceSettings = new SpaceAppearanceSettings("Color");
+            spaceAppearanceSettingsControl.SpaceAppearanceSettings = new SpaceAppearanceSettings("Name");
 
             checkBox_Visibilty_Aperture.IsChecked = true;
             checkBox_Visibilty_Panel.IsChecked = true;

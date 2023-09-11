@@ -19,7 +19,7 @@
         </GroupBox>
         <ListBox x:Name="listBox_Levels" HorizontalAlignment="Left" Height="157" Margin="10,35,0,0" VerticalAlignment="Top" Width="217" SelectionMode="Multiple"/>
         <Label Content="Levels:" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_Offset" HorizontalAlignment="Left" Height="23" Margin="107,197,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="textBox_Offset" HorizontalAlignment="Left" Height="23" Margin="107,197,0,0" TextWrapping="Wrap" Text="0.1" VerticalAlignment="Top" Width="120"/>
         <Label Content="Offset [m]:" HorizontalAlignment="Left" Margin="10,193,0,0" VerticalAlignment="Top"/>
 
     </Grid>

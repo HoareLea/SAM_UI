@@ -7,6 +7,8 @@ namespace SAM.Geometry.UI
 {
     public class TwoDimensionalViewSettings : ViewSettings
     {
+        private double spaceEdgeOffset = -0.08;
+        
         private Plane plane;
         private TextAppearance textAppearance;
 
@@ -86,6 +88,14 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public double SpaceEdgeOffset
+        {
+            get
+            {
+                return spaceEdgeOffset;
+            }
+        }
+
         public override bool FromJObject(JObject jObject)
         {
             if(!base.FromJObject(jObject))
@@ -101,6 +111,11 @@ namespace SAM.Geometry.UI
             if (jObject.ContainsKey("TextAppearance"))
             {
                 textAppearance = new TextAppearance(jObject.Value<JObject>("TextAppearance"));
+            }
+
+            if (jObject.ContainsKey("SpaceEdgeOffset"))
+            {
+                spaceEdgeOffset = jObject.Value<double>("SpaceEdgeOffset");
             }
 
             return true;
@@ -122,6 +137,11 @@ namespace SAM.Geometry.UI
             if (textAppearance != null)
             {
                 jObject.Add("TextAppearance", textAppearance.ToJObject());
+            }
+
+            if(!double.IsNaN(spaceEdgeOffset))
+            {
+                jObject.Add("SpaceEdgeOffset", spaceEdgeOffset);
             }
 
             return jObject;
