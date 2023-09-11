@@ -154,7 +154,7 @@ namespace SAM.Core.Mollier.UI
         
         public bool Clear()
         {
-            bool clear =  MollierControl_Main.ClearObjects();
+            bool clear = MollierControl_Main.ClearObjects();
 
             if (manageMollierObjectsForm != null)
             {
@@ -264,7 +264,7 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            MollierControl_Main.AddPoints(new MollierPoint[] { mollierPoint });
+            MollierControl_Main.AddMollierObjects(new MollierPoint[] { mollierPoint });
         }
 
         //disable some function for data reading only
@@ -296,7 +296,7 @@ namespace SAM.Core.Mollier.UI
                 return false;
             }
 
-            MollierControl_Main.AddProcesses(mollierProcesses, checkPressure);
+            MollierControl_Main.AddMollierObjects(mollierProcesses, checkPressure);
 
             if(manageMollierObjectsForm != null)
             {
@@ -314,7 +314,7 @@ namespace SAM.Core.Mollier.UI
                 return false;
             }
 
-            MollierControl_Main.AddPoints(mollierPoints, checkPressure);
+            MollierControl_Main.AddMollierObjects(mollierPoints, checkPressure);
 
             if (manageMollierObjectsForm != null)
             {
@@ -560,12 +560,16 @@ namespace SAM.Core.Mollier.UI
                 List<UIMollierZone> mollierZones = Query.MollierZones();
                 foreach (UIMollierZone zone in mollierZones)
                 {
-                    MollierControl_Main.AddZone(zone);
+                    MollierControl_Main.AddMollierObjects(new List<UIMollierZone>() { zone });
                 }
             }
             else
             {
-                MollierControl_Main.AddZone(null);
+                List<UIMollierZone> mollierZones = Query.MollierZones();
+                foreach (UIMollierZone zone in mollierZones)
+                {
+                    MollierControl_Main.RemoveZone(zone);
+                }
             }
         }
 
@@ -1066,6 +1070,7 @@ namespace SAM.Core.Mollier.UI
         {
             if (manageMollierObjectsForm == null)
             {
+                List<UIMollierProcess> processesTest = MollierControl_Main.UIMollierProcesses;
                 manageMollierObjectsForm = new Forms.UIMollierObjectsForm(MollierControl_Main.UIMollierPoints, MollierControl_Main.UIMollierProcesses, 
                                                                                   MollierControl_Main.UIMollierZones, MollierControlSettings);
                 
@@ -1081,13 +1086,14 @@ namespace SAM.Core.Mollier.UI
         private void ManageMollierObjectsForm_MollierPointEdited(object sender, MollierPointEditedEventArgs e)
         {
             MollierControl_Main.RemovePoint(e.UIMollierPoint);
-            MollierControl_Main.AddPoints(new List<UIMollierPoint>() { e.EditedUIMollierPoint } );
+            MollierControl_Main.AddMollierObjects(new List<UIMollierPoint>() { e.EditedUIMollierPoint } );
         }
 
         private void ManageMollierObjectsForm_MollierProcessEdited(object sender, MollierProcessEditedEventArgs e)
         {
             MollierControl_Main.RemoveProcess(e.UIMollierProcess);
-            MollierControl_Main.AddProcesses(new List<UIMollierProcess>() { e.EditedUIMollierProcess });
+            MollierControl_Main.AddMollierObjects(new List<UIMollierProcess>() { e.EditedUIMollierProcess });
+            List<UIMollierProcess> test = MollierControl_Main.UIMollierProcesses;
             e.UIMollierProcesses = MollierControl_Main.UIMollierProcesses;
         }
         private void ManageMollierObjectsForm_MollierProcessRemoved(object sender, MollierProcessRemovedEventArgs e)

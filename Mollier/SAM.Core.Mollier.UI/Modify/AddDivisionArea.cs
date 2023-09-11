@@ -44,7 +44,11 @@ namespace SAM.Core.Mollier.UI
         }
         private static Series addDivisionArea(this Chart chart, UIMollierZone divisionArea, MollierControlSettings mollierControlSettings)
         {
-            if (divisionArea == null || divisionArea.MollierPoints == null || divisionArea.MollierPoints.Count < 4)
+            if (divisionArea == null || divisionArea.MollierZone == null)
+            {
+                return null;
+            }
+            if(divisionArea.MollierZone.MollierPoints == null || divisionArea.MollierZone.MollierPoints.Count < 4)
             {
                 return null;
             }
@@ -53,20 +57,21 @@ namespace SAM.Core.Mollier.UI
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
             series.BorderWidth = 3;
-            series.Color = divisionArea.Color;
+            series.Color = divisionArea.UIMollierAppearance.Color;
 
             if(!mollierControlSettings.DivisionAreaLabels)
             {
-                divisionArea.Text = "";
+                string text = "";
+                divisionArea.UIMollierAppearance = new UIMollierAppearance(divisionArea.UIMollierAppearance.Color, text);
             }
             series.Tag = divisionArea;
 
-            foreach (MollierPoint mollierPoint in divisionArea.MollierPoints)
+            foreach (MollierPoint mollierPoint in divisionArea.MollierZone.MollierPoints)
             {
                 Point2D point = mollierPoint.ToSAM(mollierControlSettings.ChartType);
                 series.Points.AddXY(point.X, point.Y);
             }
-            Point2D closingPoint = divisionArea.MollierPoints[0].ToSAM(mollierControlSettings.ChartType);
+            Point2D closingPoint = divisionArea.MollierZone.MollierPoints[0].ToSAM(mollierControlSettings.ChartType);
             series.Points.AddXY(closingPoint.X, closingPoint.Y);
 
             return series;

@@ -64,16 +64,17 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-        private static List<IClosed2D> obstacles_Zone(UIMollierZone zone, ChartType chartType, Vector2D scaleVector, double axesRatio)
+        private static List<IClosed2D> obstacles_Zone(UIMollierZone uIMollierZone, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<IClosed2D> result = new List<IClosed2D>();
             double zoneWidth = 0.05 * scaleVector.Y;
 
-            for (int i = 0; i < zone.MollierPoints.Count; i++)
+            MollierZone mollierZone = uIMollierZone.MollierZone;
+            for (int i = 0; i < mollierZone.MollierPoints.Count; i++)
             {
-                int previousPointID = i == 0 ? zone.MollierPoints.Count - 1 : i - 1;
-                Point2D start = Convert.ToSAM(zone.MollierPoints[i], chartType);
-                Point2D end = Convert.ToSAM(zone.MollierPoints[previousPointID], chartType);
+                int previousPointID = i == 0 ? mollierZone.MollierPoints.Count - 1 : i - 1;
+                Point2D start = Convert.ToSAM(mollierZone.MollierPoints[i], chartType);
+                Point2D end = Convert.ToSAM(mollierZone.MollierPoints[previousPointID], chartType);
                 Segment2D zoneSegment = new Segment2D(start, end);
 
                 result.Add(Geometry.Planar.Create.Rectangle2D(zoneSegment, zoneWidth, axesRatio));

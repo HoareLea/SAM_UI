@@ -79,21 +79,22 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-        private static List<Solver2DData> Solver2DDatas_Zone(UIMollierZone zone, ChartType chartType, Vector2D scaleVector, double axesRatio)
+        private static List<Solver2DData> Solver2DDatas_Zone(UIMollierZone uIMollierZone, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<Solver2DData> result = new List<Solver2DData>();
-            if (zone == null) return result;
+            if (uIMollierZone == null) return result;
+            MollierZone mollierZone = uIMollierZone.MollierZone;
 
-            UIMollierAppearance zoneCenterAppearance = new UIMollierAppearance(Color.Black, zone.Text);
+            UIMollierAppearance zoneCenterAppearance = new UIMollierAppearance(Color.Black, uIMollierZone.UIMollierAppearance.Label);
             UIMollierPoint zoneCenter;
             if(chartType == ChartType.Mollier)
             {
-                MollierPoint center = new MollierPoint(zone.GetCenter().DryBulbTemperature - 0.8 * scaleVector.Y, zone.GetCenter().HumidityRatio, zone.GetCenter().Pressure);
+                MollierPoint center = new MollierPoint(mollierZone.GetCenter().DryBulbTemperature - 0.8 * scaleVector.Y, mollierZone.GetCenter().HumidityRatio, mollierZone.GetCenter().Pressure);
                 zoneCenter = new UIMollierPoint(center, zoneCenterAppearance);
             }
             else
             {
-                MollierPoint center = new MollierPoint(zone.GetCenter().DryBulbTemperature, zone.GetCenter().HumidityRatio - 0.4 * scaleVector.X, zone.GetCenter().Pressure);
+                MollierPoint center = new MollierPoint(mollierZone.GetCenter().DryBulbTemperature, mollierZone.GetCenter().HumidityRatio - 0.4 * scaleVector.X, mollierZone.GetCenter().Pressure);
                 zoneCenter = new UIMollierPoint(center, zoneCenterAppearance);
             }
 

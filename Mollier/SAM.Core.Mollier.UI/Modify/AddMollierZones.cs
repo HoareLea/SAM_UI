@@ -16,19 +16,16 @@ namespace SAM.Core.Mollier.UI
             List<Series> result = new List<Series>();
             ChartType chartType = mollierControlSettings.ChartType;
 
-            foreach (MollierZone mollierZone in mollierZones)
-            {
-                UIMollierZone uIMollierZone = mollierZone is UIMollierZone ? (UIMollierZone)mollierZone 
-                : new UIMollierZone(mollierZone, mollierControlSettings.UIMollierZoneColor, mollierControlSettings.UIMollierZoneText);
-                
+            foreach (UIMollierZone uIMollierZone in mollierZones)
+            {            
                 Series series = chart.Series.Add("Mollier Zone " + System.Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
                 series.ChartType = SeriesChartType.Line;
                 series.BorderWidth = 2;
-                series.Color = uIMollierZone.Color;
+                series.Color = uIMollierZone.UIMollierAppearance.Color;
                 series.Tag = uIMollierZone;
 
-                foreach(MollierPoint mollierPoint in mollierZone.MollierPoints)
+                foreach(MollierPoint mollierPoint in uIMollierZone.MollierZone.MollierPoints)
                 {
                     Point2D point = Convert.ToSAM(mollierPoint, chartType);
                     series.Points.AddXY(point.X, point.Y);
