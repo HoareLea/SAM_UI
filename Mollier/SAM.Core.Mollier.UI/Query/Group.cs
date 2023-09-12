@@ -9,7 +9,7 @@ namespace SAM.Core.Mollier.UI
         public static List<IMollierGroup> Group(this IEnumerable<IMollierProcess> mollierProcesses, double tolerance = Tolerance.MacroDistance)
         {
             List<IMollierGroup> result = new List<IMollierGroup>();
-          
+            
             List<int> nextProcessID = new List<int>();
             List<bool> visited = new List<bool>();
             List<int> previousProcessCount = new List<int>();

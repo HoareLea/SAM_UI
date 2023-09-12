@@ -14,7 +14,7 @@ namespace SAM.Core.Mollier.UI.Controls
         private Point mdown = Point.Empty;
         private bool selection = false;
         private MollierControlSettings mollierControlSettings;
-        private MollierModel mollierModel;
+        private MollierModel mollierModel = new MollierModel();
         private List<Tuple<Series, int>> seriesData = new List<Tuple<Series, int>>();
 
         public MollierControl()
@@ -283,18 +283,24 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            //double pressure = mollierControlSettings.Pressure;
+            double pressure = mollierControlSettings.Pressure;
 
-            //MollierPoint mollierPoint1 = new MollierPoint(10, 0.01, pressure);
-            //MollierPoint mollierPoint2 = new MollierPoint(15, 0.015, pressure);
-            //UIMollierProcess uIMollierProcess1 = new UIMollierProcess(Mollier.Create.HeatingProcess(mollierPoint1, 20), Color.Red);
-            //UIMollierProcess uIMollierProcess2 = new UIMollierProcess(Mollier.Create.HeatingProcess(mollierPoint2, 25), Color.Blue);
-            //List<UIMollierProcess> mollierProcesses = new List<UIMollierProcess>() { uIMollierProcess1, uIMollierProcess2 };
+            MollierPoint mollierPoint1 = new MollierPoint(10, 0.01, pressure);
+            MollierPoint mollierPoint2 = new MollierPoint(15, 0.015, pressure);
+            UIMollierProcess uIMollierProcess1 = new UIMollierProcess(Mollier.Create.HeatingProcess(mollierPoint1, 20), Color.Red);
+            UIMollierProcess uIMollierProcess2 = new UIMollierProcess(Mollier.Create.HeatingProcess(mollierPoint2, 25), Color.Blue);
+            List<UIMollierProcess> mollierProcesses = new List<UIMollierProcess>() { uIMollierProcess1, uIMollierProcess2 };
 
-            //List<IMollierGroup> mollierGroups = Mollier.Query.Group(mollierProcesses);
+            List<IMollierGroup> mollierGroups = Mollier.Query.Group(mollierProcesses);
+
+
+            //mollierModel = new MollierModel();
+            //mollierModel.AddRange(mollierGroups);
+            //mollierModel.Clear();
+
             //mollierGroups = Query.Group(mollierProcesses);
             // mollierProcesses.Add(new UIMollierProcess();
-           // Query.Group()
+            // Query.Group()
 
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
@@ -450,7 +456,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 if(mollierProcess is UIMollierProcess)
                 {
                     mollierProcess1 = ((UIMollierProcess)mollierProcess).MollierProcess;
-                    color = ((UIMollierProcess)mollierProcess).UIMollierAppearance.Color;
+                    if(((UIMollierProcess)mollierProcess).UIMollierAppearance.Color != Color.Empty)
+                    {
+                        color = ((UIMollierProcess)mollierProcess).UIMollierAppearance.Color;
+                    }
                     label = ((UIMollierProcess)mollierProcess).UIMollierAppearance?.Label;
                 }
                 else if(mollierProcess1 is MollierProcess)
@@ -480,9 +489,9 @@ namespace SAM.Core.Mollier.UI.Controls
                     uIMollierProcess.UIMollierAppearance_End = new UIMollierAppearance(endColor, endLabel);
                 }
 
-                mollierModel.GroupMollierProcess(uIMollierProcess);
                 result.Add(uIMollierProcess);
             }
+            mollierModel.GroupMollierProcesses(result);
             
             return result;
         }
@@ -529,39 +538,50 @@ namespace SAM.Core.Mollier.UI.Controls
             return result;
         }
         
+
+        public void RemoveProcesses(IEnumerable<IMollierProcess> mollierProcesses)
+        {
+            if (mollierProcesses == null || mollierModel == null)
+            {
+                return;
+            }
+
+            foreach(IMollierProcess mollierProcess in mollierProcesses)
+            {
+                mollierModel.Remove(mollierProcess);
+            }
+            mollierModel.RegroupProcesses();
+            GenerateGraph();
+        }
+        public void RemovePoints(IEnumerable<IMollierPoint> mollierPoints)
+        {
+            if (mollierPoints == null || mollierModel == null)
+            {
+                return;
+            }
+
+            foreach(IMollierPoint mollierPoint in mollierPoints)
+            {
+                mollierModel.Remove(mollierPoint);
+            }
+            // regroup w modify dodać
+            mollierModel.RegroupProcesses();
+            GenerateGraph();
+        }
+        public void RemoveZones(IEnumerable<IMollierZone> mollierZones)
+        {
+            if(mollierZones == null || mollierModel == null)
+            {
+                return;
+            }
+
+            foreach(IMollierZone mollierZone in mollierZones)
+            {
+                mollierModel.Remove(mollierZone);
+            }
+            GenerateGraph();
+        }
         
-        
-        public void RemoveProcess(IMollierProcess mollierProcess)
-        {
-            if (mollierProcess == null || mollierModel == null)
-            {
-                return;
-            }
-
-            mollierModel.Remove(mollierProcess);
-            GenerateGraph();
-        }
-        public void RemovePoint(IMollierPoint mollierPoint)
-        {
-            if (mollierPoint == null || mollierModel == null)
-            {
-                return;
-            }
-
-            mollierModel.Remove(mollierPoint);
-            GenerateGraph();
-        }
-
-        public void RemoveZone(IMollierZone mollierZone)
-        {
-            if(mollierZone == null || mollierModel == null)
-            {
-                return;
-            }
-
-            mollierModel.Remove(mollierZone);
-            GenerateGraph();
-        }
         public bool Save(ChartExportType chartExportType, PageSize pageSize = PageSize.A4, PageOrientation pageOrientation = PageOrientation.Landscape, string path = null)
         {
             string pageType = string.Format("{0}_{1}", pageSize, pageOrientation);
