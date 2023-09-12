@@ -10,7 +10,7 @@ namespace SAM.Core.Mollier.UI
     public static partial class Modify
     {
         // ------------------GENERAL-ADD-PROCESSES-METHOD----------------------
-        public static List<Series> AddMollierProcesses(this Chart chart, List<MollierGroup> groups, MollierControlSettings mollierControlSettings)
+        public static List<Series> AddMollierProcesses(this Chart chart, List<IMollierGroup> groups, MollierControlSettings mollierControlSettings)
         {
             List<Series> result = new List<Series>();
             if(groups == null)
@@ -71,7 +71,12 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            List<MollierGroup> groups = mollierModel.GetMollierObjects<MollierGroup>();
+            List<IMollierGroup> groups = mollierModel.GetMollierObjects<IMollierGroup>();
+            List<UIMollierProcess> mollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
+            if(groups != null && mollierProcesses != null)
+            {
+                groups.AddRange(Mollier.Query.Group(mollierProcesses));
+            }
 
             return chart.AddMollierProcesses(groups, mollierControlSettings);
         }
@@ -248,7 +253,7 @@ namespace SAM.Core.Mollier.UI
         
         
         // General methods used above 
-        private static List<UIMollierProcess> generateLabelsForProcessesSystems(List<MollierGroup> groups)
+        private static List<UIMollierProcess> generateLabelsForProcessesSystems(List<IMollierGroup> groups)
         {
             List<UIMollierProcess> labeledMollierProcesses = new List<UIMollierProcess>();
 

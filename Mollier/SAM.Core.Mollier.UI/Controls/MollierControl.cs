@@ -415,10 +415,10 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint1, new UIMollierAppearance(color, label));
 
-                mollierModel.Add(uIMollierPoint);
                 result.Add(uIMollierPoint);
             }
 
+            mollierModel.AddRange(result);
             return result;
         }
         private List<UIMollierProcess> AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
@@ -491,8 +491,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 result.Add(uIMollierProcess);
             }
-            mollierModel.GroupMollierProcesses(result);
-            
+            mollierModel.AddRange(result);            
             return result;
         }
 
@@ -531,10 +530,10 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 UIMollierZone uIMollierZone = new UIMollierZone(mollierZone1, new UIMollierAppearance(color, label));
 
-                mollierModel.Add(uIMollierZone);
                 result.Add(uIMollierZone);
             }
 
+            mollierModel.AddRange(result);
             return result;
         }
         
@@ -548,9 +547,9 @@ namespace SAM.Core.Mollier.UI.Controls
 
             foreach(IMollierProcess mollierProcess in mollierProcesses)
             {
-                mollierModel.Remove(mollierProcess);
+                mollierModel.Remove(mollierProcess, false);
             }
-            mollierModel.RegroupProcesses();
+
             GenerateGraph();
         }
         public void RemovePoints(IEnumerable<IMollierPoint> mollierPoints)
@@ -562,10 +561,9 @@ namespace SAM.Core.Mollier.UI.Controls
 
             foreach(IMollierPoint mollierPoint in mollierPoints)
             {
-                mollierModel.Remove(mollierPoint);
+                mollierModel.Remove(mollierPoint, false);
             }
-            // regroup w modify dodać
-            mollierModel.RegroupProcesses();
+
             GenerateGraph();
         }
         public void RemoveZones(IEnumerable<IMollierZone> mollierZones)
@@ -577,7 +575,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             foreach(IMollierZone mollierZone in mollierZones)
             {
-                mollierModel.Remove(mollierZone);
+                mollierModel.Remove(mollierZone, false);
             }
             GenerateGraph();
         }
