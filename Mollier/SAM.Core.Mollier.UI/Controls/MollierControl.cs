@@ -338,13 +338,9 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         public List<IUIMollierObject> AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true) where T : IMollierObject
         {
-            if(mollierObjects == null || mollierObjects.Count() == 0)
+            if (mollierObjects == null || mollierObjects.Count() == 0 || mollierModel == null)
             {
                 return null;
-            }
-            if(mollierModel == null)
-            {
-                mollierModel = new MollierModel();
             }
 
             List<IUIMollierObject> result = new List<IUIMollierObject>();
@@ -358,10 +354,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     result.AddRange(AddProcesses(new List<IMollierProcess>() { (IMollierProcess)mollierObject }));
                 }
-                //else if(mollierObject is IMollierGroup) TODO : create UIMollierGroup then we can implement addition here
-                //{
-                //    result.AddRange(AddGroups(new List<IMollierGroup>() { (IMollierGroup)mollierObject }));
-                //}
+                else if (mollierObject is IMollierGroup)
+                {
+                    result.AddRange(AddGroups(new List<IMollierGroup>() { (IMollierGroup)mollierObject }));
+                }
                 else if(mollierObject is IMollierZone)
                 {
                     result.AddRange(AddZones(new List<IMollierZone>() { (IMollierZone)mollierObject }));
@@ -373,14 +369,9 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private List<UIMollierPoint> AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
         {
-            if (mollierPoints == null)
+            if (mollierPoints == null || mollierModel == null)
             {
                 return null;
-            }
-
-            if (this.mollierModel == null)
-            {
-                this.mollierModel = new MollierModel();
             }
 
             List<UIMollierPoint> result = new List<UIMollierPoint>();
@@ -423,13 +414,9 @@ namespace SAM.Core.Mollier.UI.Controls
         }
         private List<UIMollierProcess> AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
         {
-            if (mollierProcesses == null)
+            if (mollierProcesses == null || mollierModel == null)
             {
                 return null;
-            }
-            if (mollierModel == null)
-            {
-                mollierModel = new MollierModel();
             }
 
             List<UIMollierProcess> result = new List<UIMollierProcess>();
@@ -493,21 +480,47 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             mollierModel.AddRange(result);            
             return result;
+            }
+        private List<UIMollierGroup> AddGroups(IEnumerable<IMollierGroup> mollierGroups, bool checkPressure = true)
+        {
+            if(mollierGroups == null || mollierModel == null)
+            {
+                return null;
+            }
+
+            List<UIMollierGroup> result = new List<UIMollierGroup>();
+            foreach(IMollierGroup mollierGroup in mollierGroups)
+            {
+                Color color = Color.Empty;
+                string name = string.Empty;
+                MollierGroup mollierGroup1 = null;
+                if(mollierGroup is UIMollierGroup)
+                {
+                    if(((UIMollierGroup)mollierGroup).UIMollierAppearance != null)
+                    {
+                        color = ((UIMollierGroup)mollierGroup).UIMollierAppearance.Color;
+                        name = ((UIMollierGroup)mollierGroup).UIMollierAppearance.Label;
+                    }
+                    mollierGroup1 = ((UIMollierGroup)mollierGroup).MollierGroup;
+                }
+                else if(mollierGroup is MollierGroup)
+                {
+                    mollierGroup1 = (MollierGroup)mollierGroup;
+                }
+
+                UIMollierGroup uIMollierGroup = new UIMollierGroup(mollierGroup1, new UIMollierAppearance(color, name));
+
+                result.Add(uIMollierGroup);
+            }
+
+            mollierModel.AddRange(result);
+            return result;
         }
-
-        //private List<MollierGroup> AddGroups(IEnumerable<IMollierGroup> mollierGroups, bool checkPressure = true)
-        //{
-
-        //
         private List<UIMollierZone> AddZones(IEnumerable<IMollierZone> mollierZones)
         {
-            if (mollierZones == null || mollierZones.Count() == 0)
+            if (mollierZones == null || mollierZones.Count() == 0 || mollierModel == null)
             {
-                GenerateGraph();
-            }
-            if (mollierModel == null)
-            {
-                mollierModel = new MollierModel();
+                return null;
             }
 
             List<UIMollierZone> result = new List<UIMollierZone>();

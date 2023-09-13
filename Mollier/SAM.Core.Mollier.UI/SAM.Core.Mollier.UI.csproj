@@ -193,6 +193,7 @@
     <Compile Include="Convert\ToMollier\MollierPoint.cs" />
     <Compile Include="Convert\ToSAM\Point2D.cs" />
     <Compile Include="Convert\ToChart\Series.cs" />
+    <Compile Include="Convert\ToSAM_UI\IMollierObject.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
     <Compile Include="Delegates\MollierPointEditedEventHandler.cs" />
