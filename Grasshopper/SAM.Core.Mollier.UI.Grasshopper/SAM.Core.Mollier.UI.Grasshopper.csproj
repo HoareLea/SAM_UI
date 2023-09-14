@@ -75,6 +75,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\MollierObjects.cs" />
     <Compile Include="Query\MollierPoints.cs" />
     <Compile Include="Query\MollierProcesses.cs" />
     <Compile Include="Component\SAMMollierCreateAdiabaticHumidificationProcessByHumidityRatioDifference.cs" />

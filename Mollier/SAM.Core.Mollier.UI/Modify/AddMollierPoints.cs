@@ -8,6 +8,13 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
+        /// <summary>
+        /// Creates series for all the points on the chart
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="uIMollierPoints">Mollier points</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
         public static Series AddMollierPoints(this Chart chart, IEnumerable<UIMollierPoint> uIMollierPoints, MollierControlSettings mollierControlSettings)
         {
             if(uIMollierPoints == null || mollierControlSettings.DivisionArea) 
@@ -73,6 +80,22 @@ namespace SAM.Core.Mollier.UI
             }
 
             List<UIMollierPoint> uIMollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>();
+
+            List<IMollierGroup> mollierGroups = mollierModel.GetMollierObjects<IMollierGroup>();
+            if(mollierGroups != null)
+            {
+                foreach(IMollierGroup mollierGroup in mollierGroups)
+                {
+                    if(mollierGroup is UIMollierGroup)
+                    {
+                        uIMollierPoints.AddRange(((UIMollierGroup)mollierGroup).GetObjects<UIMollierPoint>());
+                    }
+                    else if(mollierGroup is MollierGroup)
+                    {
+                        uIMollierPoints.AddRange(((MollierGroup)mollierGroup).GetObjects<UIMollierPoint>());
+                    }
+                }
+            }
 
             return chart.AddMollierPoints(uIMollierPoints, mollierControlSettings);
         }

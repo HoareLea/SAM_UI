@@ -122,6 +122,12 @@ namespace SAM.Core.Mollier.UI.Forms
             return controlCollection[0];
         }
 
+
+
+
+
+
+
         private Control CreateControl()
         {
             MollierProcessType mollierProcessType = Core.Query.Enum<MollierProcessType>(MollierProcessType_ComboBox.Text); 

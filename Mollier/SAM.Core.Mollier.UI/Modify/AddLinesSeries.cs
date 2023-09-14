@@ -5,7 +5,12 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-
+        /// <summary>
+        /// Creates series for all the chart base lines
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
         public static List<Series> AddLinesSeries(this Chart chart, MollierControlSettings mollierControlSettings)
         {
             List<Series> result = new List<Series>();

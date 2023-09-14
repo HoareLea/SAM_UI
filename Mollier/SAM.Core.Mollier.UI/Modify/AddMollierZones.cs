@@ -6,7 +6,13 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-
+        /// <summary>
+        /// Creates series for all the zones 
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="mollierZones">Mollier zones</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
         public static List<Series> AddMollierZones(this Chart chart, IEnumerable<UIMollierZone> mollierZones, MollierControlSettings mollierControlSettings)
         {
             if(mollierZones == null)
@@ -36,7 +42,14 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-    
+
+        /// <summary>
+        /// Creates series for all the zones 
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="mollierModel">Mollier model</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
         public static List<Series> AddMollierZones(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
         {
             if (mollierModel == null)

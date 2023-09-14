@@ -307,6 +307,21 @@ namespace SAM.Core.Mollier.UI
             return true;
         }
         
+        public bool AddMollierObjects(IEnumerable<IMollierObject> mollierObjects, bool checkPressure = true)
+        {
+            if(mollierObjects == null)
+            {
+                return false;
+            }
+
+            MollierControl_Main.AddMollierObjects(mollierObjects, checkPressure);
+            if (manageMollierObjectsForm != null)
+            {
+                manageMollierObjectsForm.Refresh(MollierControl_Main.UIMollierPoints,
+                                         MollierControl_Main.UIMollierProcesses, MollierControl_Main.UIMollierZones);
+            }
+            return true;
+        }
         public bool AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
         {
             if (mollierPoints == null)

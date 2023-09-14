@@ -2,6 +2,10 @@
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Returns default mollier control settings values
+        /// </summary>
+        /// <returns>Default mollier control settings</returns>
         public static MollierControlSettings DefaultMollierControlSettings()
         {
             MollierControlSettings mollierControlSettings = new MollierControlSettings();

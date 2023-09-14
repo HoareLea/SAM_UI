@@ -6,6 +6,12 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Calculates color of points depends on their density on the chart
+        /// </summary>
+        /// <param name="mollierPoints">Mollier points</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>Dictionary with color for all points</returns>
         public static Dictionary<UIMollierPoint, Color> ColorDictionary(this IEnumerable<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
             if(mollierPoints == null)

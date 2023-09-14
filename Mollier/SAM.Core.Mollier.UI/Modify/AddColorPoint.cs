@@ -8,6 +8,14 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
+        /// <summary>
+        /// Highlights and created series for calculated point by % of enthalpy or temperature
+        /// on the chart
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="mollierPoints">Mollier Points on chart</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
         public static List<Series> AddColorPoint(this Chart chart, List<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
             if(mollierPoints == null || mollierControlSettings.FindPoint == false)
@@ -27,6 +35,14 @@ namespace SAM.Core.Mollier.UI
 
             return result; 
         }
+        /// <summary>
+        /// Highlights and created series for calculated point by % of enthalpy or temperature
+        /// on the chart
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="mollierModel">Mollier points on chart</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns></returns>
         public static List<Series> AddColorPoint(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
         {
             if (mollierModel == null)

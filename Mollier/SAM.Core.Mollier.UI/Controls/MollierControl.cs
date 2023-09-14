@@ -321,7 +321,7 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.AddColorPoint(mollierModel, mollierControlSettings);
 
             MollierChart.AddLabels(mollierControlSettings);
-            Temporary2.Tests(this, MollierChart, mollierControlSettings);
+            //Temporary2.Tests(this, MollierChart, mollierControlSettings);
 
 
             foreach (ChartArea chartArea in MollierChart.ChartAreas)
@@ -501,14 +501,12 @@ namespace SAM.Core.Mollier.UI.Controls
                         color = ((UIMollierGroup)mollierGroup).UIMollierAppearance.Color;
                         name = ((UIMollierGroup)mollierGroup).UIMollierAppearance.Label;
                     }
-                    mollierGroup1 = ((UIMollierGroup)mollierGroup).MollierGroup;
                 }
-                else if(mollierGroup is MollierGroup)
-                {
-                    mollierGroup1 = (MollierGroup)mollierGroup;
-                }
+                mollierGroup1 = (MollierGroup)mollierGroup;
 
                 UIMollierGroup uIMollierGroup = new UIMollierGroup(mollierGroup1, new UIMollierAppearance(color, name));
+
+                uIMollierGroup = mollierGroup1.ToSAM_UI(true); // TODO: move it / change it
 
                 result.Add(uIMollierGroup);
             }
@@ -549,7 +547,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierModel.AddRange(result);
             return result;
         }
-        
+
 
         public void RemoveProcesses(IEnumerable<IMollierProcess> mollierProcesses)
         {
@@ -1155,16 +1153,35 @@ namespace SAM.Core.Mollier.UI.Controls
                 GenerateGraph();
             }
         }
+
         public List<UIMollierPoint> UIMollierPoints
         {
             get
             {
-                if (mollierModel == null || mollierModel.GetMollierObjects<UIMollierPoint>() == null)
+                if (mollierModel == null)
                 {
                     return null;
                 }
 
-                return mollierModel.GetMollierObjects<UIMollierPoint>().ConvertAll(x => x?.Clone());
+                List<UIMollierPoint> result = new List<UIMollierPoint>();
+                List<UIMollierPoint> mollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>().ConvertAll(x => x?.Clone());
+
+                if(mollierPoints != null)
+                {
+                    result.AddRange(mollierPoints);
+                }
+
+                List<MollierGroup> mollierGroups = mollierModel.GetMollierObjects<MollierGroup>();
+                foreach (MollierGroup mollierGroup in mollierGroups)
+                {
+                    mollierPoints = mollierGroup.GetObjects<UIMollierPoint>().ConvertAll(x => x?.Clone());
+                    if (mollierPoints != null)
+                    {
+                        result.AddRange(mollierPoints);
+                    }
+                }
+
+                return result;
             }
         }
         public List<UIMollierProcess> UIMollierProcesses
@@ -1200,24 +1217,42 @@ namespace SAM.Core.Mollier.UI.Controls
         { 
             get
             {
-                if (mollierModel == null || mollierModel.GetMollierObjects<UIMollierZone>() == null)
+                if (mollierModel == null)
                 {
                     return null;
                 }
 
-                return mollierModel.GetMollierObjects<UIMollierZone>().ConvertAll(x => x?.Clone());
+                List<UIMollierZone> result = new List<UIMollierZone>();
+                List<UIMollierZone> mollierZones = mollierModel.GetMollierObjects<UIMollierZone>().ConvertAll(x => x?.Clone());
+
+                if (mollierZones != null)
+                {
+                    result.AddRange(mollierZones);
+                }
+
+                List<MollierGroup> mollierGroups = mollierModel.GetMollierObjects<MollierGroup>();
+                foreach (MollierGroup mollierGroup in mollierGroups)
+                {
+                    mollierZones = mollierGroup.GetObjects<UIMollierZone>().ConvertAll(x => x?.Clone());
+                    if (mollierZones != null)
+                    {
+                        result.AddRange(mollierZones);
+                    }
+                }
+
+                return result;
             }
         }
-        public List<MollierGroup> MollierGroups
+        public List<UIMollierGroup> UIMollierGroups
         {
             get
             {
-                if (mollierModel == null || mollierModel.GetMollierObjects<MollierGroup>() == null)
+                if (mollierModel == null || mollierModel.GetMollierObjects<UIMollierGroup>() == null)
                 {
                     return null;
                 }
 
-                return mollierModel.GetMollierObjects<MollierGroup>().ConvertAll(x => x?.Clone());
+                return mollierModel.GetMollierObjects<UIMollierGroup>().ConvertAll(x => x?.Clone());
             }
         }
         public MollierPoint GetMollierPoint(int x, int y)

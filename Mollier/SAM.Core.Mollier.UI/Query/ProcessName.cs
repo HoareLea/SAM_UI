@@ -2,6 +2,11 @@
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Saves short process name value
+        /// </summary>
+        /// <param name="mollierProcess">Mollier process</param>
+        /// <returns>Process name</returns>
         public static string ProcessName(IMollierProcess mollierProcess)
         {
             if(mollierProcess is UIMollierProcess)

@@ -10,6 +10,13 @@ namespace SAM.Core.Mollier.UI
     public static partial class Modify
     {
         // ------------------GENERAL-ADD-PROCESSES-METHOD----------------------
+        /// <summary>
+        /// Creates series for all the processes on the chart
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="groups">Mollier groups of processes</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
         public static List<Series> AddMollierProcesses(this Chart chart, List<IMollierGroup> groups, MollierControlSettings mollierControlSettings)
         {
             List<Series> result = new List<Series>();
@@ -64,6 +71,13 @@ namespace SAM.Core.Mollier.UI
             return result;
         }
 
+        /// <summary>
+        /// Creates series for all the processes on the chart
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="mollierModel">Mollier model</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
         public static List<Series> AddMollierProcesses(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
         {
             if (mollierModel == null)
@@ -72,6 +86,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             List<IMollierGroup> groups = mollierModel.GetMollierObjects<IMollierGroup>();
+
             List<UIMollierProcess> mollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
             if(groups != null && mollierProcesses != null)
             {
@@ -257,11 +272,19 @@ namespace SAM.Core.Mollier.UI
         {
             List<UIMollierProcess> labeledMollierProcesses = new List<UIMollierProcess>();
 
-            foreach(MollierGroup group in groups)
+            foreach(IMollierGroup group in groups)
             {
+                MollierGroup mollierGroup = (MollierGroup)group;
+                if(mollierGroup == null)
+                {
+                    continue;
+                }
                 char name = 'A';
-                List<IMollierProcess> processList = group.GetMollierProcesses().Sort(0.001);
-
+                List<IMollierProcess> processList = mollierGroup.GetMollierProcesses();
+                if(processList == null)
+                {
+                    continue;
+                }
                 for (int j = 0; j < processList.Count; j++)
                 {
                     UIMollierProcess UI_MollierProcess = (UIMollierProcess)processList[j];

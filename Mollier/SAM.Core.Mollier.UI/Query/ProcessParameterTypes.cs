@@ -4,7 +4,11 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
-
+        /// <summary>
+        /// Convert process calculation type into process parameter type
+        /// </summary>
+        /// <param name="processCalculationType">Process calculation type</param>
+        /// <returns>Process parameter type</returns>
         public static List<ProcessParameterType> ProcessParameterTypes(this ProcessCalculationType processCalculationType)
         {
             switch(processCalculationType)

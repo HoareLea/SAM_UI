@@ -6,12 +6,18 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Calculates all the obstacles on the chart
+        /// </summary>
+        /// <param name="chart">Chart</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of Iclosed2D obstacles</returns>
         public static List<IClosed2D> Obstacles(this Chart chart, MollierControlSettings mollierControlSettings)
         {
             List<IClosed2D> result = new List<IClosed2D>();
             ChartType chartType = mollierControlSettings.ChartType;
-            Vector2D scaleVector = Query.ScaleVector2D(chart.Parent, mollierControlSettings);
-            double axesRatio = Query.AxesRatio(chart, mollierControlSettings);
+            Vector2D scaleVector = ScaleVector2D(chart.Parent, mollierControlSettings);
+            double axesRatio = AxesRatio(chart, mollierControlSettings);
 
             foreach (Series series in chart.Series)
             {

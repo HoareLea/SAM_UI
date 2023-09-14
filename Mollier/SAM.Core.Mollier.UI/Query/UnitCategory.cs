@@ -2,7 +2,11 @@
 {
     public static partial class Query
     {
-
+        /// <summary>
+        /// Returns unit category by process parameter type
+        /// </summary>
+        /// <param name="processParameterType"></param>
+        /// <returns>Unit category</returns>
         public static Units.UnitCategory UnitCategory(this ProcessParameterType processParameterType)
         {
             switch (processParameterType) 

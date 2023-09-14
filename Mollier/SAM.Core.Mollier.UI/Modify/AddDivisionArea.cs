@@ -31,6 +31,14 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
+        /// <summary>
+        /// Creates series for division area lines
+        /// More about division area in Query.DivisionArea
+        /// </summary>
+        /// <param name="chart"></param>
+        /// <param name="mollierModel"></param>
+        /// <param name="mollierControlSettings"></param>
+        /// <returns>List of created series</returns>
         public static List<Series> AddDivisionArea(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
         {
             if (mollierModel == null)

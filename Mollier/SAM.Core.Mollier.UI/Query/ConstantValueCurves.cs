@@ -4,6 +4,12 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Calculates constant value curve depends on type
+        /// </summary>
+        /// <param name="chartDataType">Chart data type</param>
+        /// <param name="mollierControlSettings">mollier control settings</param>
+        /// <returns>Constant value curve</returns>
         public static List<ConstantValueCurve> ConstantValueCurves(this ChartDataType chartDataType, MollierControlSettings mollierControlSettings)
         {
             if(mollierControlSettings == null)

@@ -2,7 +2,11 @@
 {
     public static partial class Query
     {
-
+        /// <summary>
+        /// Returns default unit type for parameter type
+        /// </summary>
+        /// <param name="processParameterType">Process parameter type</param>
+        /// <returns>Default unit</returns>
         public static Units.UnitType DefaultUnitType(this ProcessParameterType processParameterType)
         {
             switch (processParameterType)
@@ -23,6 +27,11 @@
             return Units.Query.UnitType(Units.UnitStyle.SI, UnitCategory(processParameterType));
         }
 
+        /// <summary>
+        /// Returns default unit type for chart data type
+        /// </summary>
+        /// <param name="chartDataType">Chart data type</param>
+        /// <returns>Default unit</returns>
         public static Units.UnitType DefaultUnitType(this ChartDataType chartDataType)
         {
             if(chartDataType == Mollier.ChartDataType.Undefined)

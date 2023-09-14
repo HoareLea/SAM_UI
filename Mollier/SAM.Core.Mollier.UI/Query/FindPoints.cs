@@ -9,6 +9,13 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Sorts points by enthalpy or temperature depends on find point type in mollier control settings
+        /// Then returns a point that is in % position in the sequence 
+        /// </summary>
+        /// <param name="mollierPoints">Mollier points</param>
+        /// <param name="mollierControlSettings">mollier control settings</param>
+        /// <returns>Found point</returns>
         public static Point2D FindPoint(this List<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
             bool generate = mollierControlSettings.FindPoint;
