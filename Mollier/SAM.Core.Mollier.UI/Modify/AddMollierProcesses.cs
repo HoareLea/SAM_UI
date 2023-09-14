@@ -26,7 +26,7 @@ namespace SAM.Core.Mollier.UI
             }
             Control control = chart.Parent;
             ChartType chartType = mollierControlSettings.ChartType;
-            List<UIMollierProcess> labeledMollierProcesses = generateLabelsForProcessesSystems(groups);
+            List<UIMollierProcess> labeledMollierProcesses = generateLabels(groups);
 
             labeledMollierProcesses?.Sort((x, y) => System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio).CompareTo(System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio)));
             List<UIMollierPoint> processPointsToLabel = new List<UIMollierPoint>();
@@ -268,7 +268,7 @@ namespace SAM.Core.Mollier.UI
         
         
         // General methods used above 
-        private static List<UIMollierProcess> generateLabelsForProcessesSystems(List<IMollierGroup> groups)
+        private static List<UIMollierProcess> generateLabels(List<IMollierGroup> groups)
         {
             List<UIMollierProcess> labeledMollierProcesses = new List<UIMollierProcess>();
 

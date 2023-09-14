@@ -572,19 +572,11 @@ namespace SAM.Core.Mollier.UI
         {
             if (CheckBox_Zone.Checked)
             {
-                List<UIMollierZone> mollierZones = Query.MollierZones();
-                foreach (UIMollierZone zone in mollierZones)
-                {
-                    MollierControl_Main.AddMollierObjects(new List<UIMollierZone>() { zone });
-                }
+                MollierControl_Main.AddMollierObjects(Query.MollierZones());
             }
             else
             {
-                List<UIMollierZone> mollierZones = Query.MollierZones();
-                foreach (UIMollierZone zone in mollierZones)
-                {
-                    MollierControl_Main.RemoveZones(new List<IMollierZone>() { zone });
-                }
+                MollierControl_Main.RemoveZones(Query.MollierZones());
             }
         }
 

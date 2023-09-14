@@ -119,8 +119,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 if (mollierObject == null)
                 {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
-                    return;
+                    continue;
                 }
                 
                 IUIMollierObject uIMollierObject2 = mollierObject.ToSAM_UI();
