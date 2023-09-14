@@ -49,6 +49,9 @@
             this.Column_Density = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_Edit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.Column_Remove = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.ContextMenuStrip_Main = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ToolStripMenuItem_Edit = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_Remove = new System.Windows.Forms.ToolStripMenuItem();
             this.tabCustomizeProcessesPage = new System.Windows.Forms.TabPage();
             this.ExhaustAirflow_CheckBox = new System.Windows.Forms.CheckBox();
             this.SupplyAirFlow_CheckBox = new System.Windows.Forms.CheckBox();
@@ -75,15 +78,12 @@
             this.Column_MollierProcess_LatentLoad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_MollierProcess_Edit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.Column_MollierProcess_Remove = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.ContextMenuStrip_Main = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.ToolStripMenuItem_Edit = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItem_Remove = new System.Windows.Forms.ToolStripMenuItem();
             this.customizeMollierObjectsTabControl.SuspendLayout();
             this.tabCustomizePointPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_MollierPoints)).BeginInit();
+            this.ContextMenuStrip_Main.SuspendLayout();
             this.tabCustomizeProcessesPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_MollierProcesses)).BeginInit();
-            this.ContextMenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
             // customizeMollierObjectsTabControl
@@ -99,10 +99,10 @@
             // tabCustomizePointPage
             // 
             this.tabCustomizePointPage.Controls.Add(this.DataGridView_MollierPoints);
-            this.tabCustomizePointPage.Location = new System.Drawing.Point(4, 25);
+            this.tabCustomizePointPage.Location = new System.Drawing.Point(4, 29);
             this.tabCustomizePointPage.Name = "tabCustomizePointPage";
             this.tabCustomizePointPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCustomizePointPage.Size = new System.Drawing.Size(1513, 517);
+            this.tabCustomizePointPage.Size = new System.Drawing.Size(1513, 513);
             this.tabCustomizePointPage.TabIndex = 0;
             this.tabCustomizePointPage.Text = "Points";
             this.tabCustomizePointPage.UseVisualStyleBackColor = true;
@@ -112,7 +112,7 @@
             this.DataGridView_MollierPoints.AllowUserToAddRows = false;
             this.DataGridView_MollierPoints.AllowUserToDeleteRows = false;
             this.DataGridView_MollierPoints.AllowUserToResizeRows = false;
-            this.DataGridView_MollierPoints.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            this.DataGridView_MollierPoints.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -158,7 +158,7 @@
             this.DataGridView_MollierPoints.RowHeadersWidth = 62;
             this.DataGridView_MollierPoints.RowTemplate.Height = 28;
             this.DataGridView_MollierPoints.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DataGridView_MollierPoints.Size = new System.Drawing.Size(1507, 511);
+            this.DataGridView_MollierPoints.Size = new System.Drawing.Size(1507, 507);
             this.DataGridView_MollierPoints.TabIndex = 0;
             this.DataGridView_MollierPoints.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_CellContentClick);
             // 
@@ -169,7 +169,7 @@
             this.Column_Label.MinimumWidth = 8;
             this.Column_Label.Name = "Column_Label";
             this.Column_Label.ReadOnly = true;
-            this.Column_Label.Width = 72;
+            this.Column_Label.Width = 84;
             // 
             // Column_DryBulbTemperature
             // 
@@ -178,7 +178,7 @@
             this.Column_DryBulbTemperature.MinimumWidth = 8;
             this.Column_DryBulbTemperature.Name = "Column_DryBulbTemperature";
             this.Column_DryBulbTemperature.ReadOnly = true;
-            this.Column_DryBulbTemperature.Width = 116;
+            this.Column_DryBulbTemperature.Width = 134;
             // 
             // Column_HumidityRatio
             // 
@@ -187,7 +187,7 @@
             this.Column_HumidityRatio.MinimumWidth = 8;
             this.Column_HumidityRatio.Name = "Column_HumidityRatio";
             this.Column_HumidityRatio.ReadOnly = true;
-            this.Column_HumidityRatio.Width = 117;
+            this.Column_HumidityRatio.Width = 134;
             // 
             // Column_RelativeHumidity
             // 
@@ -196,7 +196,7 @@
             this.Column_RelativeHumidity.MinimumWidth = 8;
             this.Column_RelativeHumidity.Name = "Column_RelativeHumidity";
             this.Column_RelativeHumidity.ReadOnly = true;
-            this.Column_RelativeHumidity.Width = 136;
+            this.Column_RelativeHumidity.Width = 154;
             // 
             // Column_WetBulbTemperature
             // 
@@ -205,7 +205,7 @@
             this.Column_WetBulbTemperature.MinimumWidth = 8;
             this.Column_WetBulbTemperature.Name = "Column_WetBulbTemperature";
             this.Column_WetBulbTemperature.ReadOnly = true;
-            this.Column_WetBulbTemperature.Width = 159;
+            this.Column_WetBulbTemperature.Width = 182;
             // 
             // Column_DewPointTemperature
             // 
@@ -214,7 +214,7 @@
             this.Column_DewPointTemperature.MinimumWidth = 8;
             this.Column_DewPointTemperature.Name = "Column_DewPointTemperature";
             this.Column_DewPointTemperature.ReadOnly = true;
-            this.Column_DewPointTemperature.Width = 141;
+            this.Column_DewPointTemperature.Width = 162;
             // 
             // Column_SpecificVolume
             // 
@@ -223,7 +223,7 @@
             this.Column_SpecificVolume.MinimumWidth = 8;
             this.Column_SpecificVolume.Name = "Column_SpecificVolume";
             this.Column_SpecificVolume.ReadOnly = true;
-            this.Column_SpecificVolume.Width = 128;
+            this.Column_SpecificVolume.Width = 146;
             // 
             // Column_Enthalpy
             // 
@@ -232,6 +232,7 @@
             this.Column_Enthalpy.MinimumWidth = 8;
             this.Column_Enthalpy.Name = "Column_Enthalpy";
             this.Column_Enthalpy.ReadOnly = true;
+            this.Column_Enthalpy.Width = 115;
             // 
             // Column_Density
             // 
@@ -240,7 +241,7 @@
             this.Column_Density.MinimumWidth = 8;
             this.Column_Density.Name = "Column_Density";
             this.Column_Density.ReadOnly = true;
-            this.Column_Density.Width = 92;
+            this.Column_Density.Width = 105;
             // 
             // Column_Edit
             // 
@@ -248,7 +249,7 @@
             this.Column_Edit.MinimumWidth = 8;
             this.Column_Edit.Name = "Column_Edit";
             this.Column_Edit.ReadOnly = true;
-            this.Column_Edit.Width = 38;
+            this.Column_Edit.Width = 43;
             // 
             // Column_Remove
             // 
@@ -256,7 +257,30 @@
             this.Column_Remove.MinimumWidth = 8;
             this.Column_Remove.Name = "Column_Remove";
             this.Column_Remove.ReadOnly = true;
-            this.Column_Remove.Width = 66;
+            this.Column_Remove.Width = 74;
+            // 
+            // ContextMenuStrip_Main
+            // 
+            this.ContextMenuStrip_Main.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.ContextMenuStrip_Main.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItem_Edit,
+            this.ToolStripMenuItem_Remove});
+            this.ContextMenuStrip_Main.Name = "ContextMenuStrip_Main";
+            this.ContextMenuStrip_Main.Size = new System.Drawing.Size(149, 68);
+            // 
+            // ToolStripMenuItem_Edit
+            // 
+            this.ToolStripMenuItem_Edit.Name = "ToolStripMenuItem_Edit";
+            this.ToolStripMenuItem_Edit.Size = new System.Drawing.Size(148, 32);
+            this.ToolStripMenuItem_Edit.Text = "Edit";
+            this.ToolStripMenuItem_Edit.Click += new System.EventHandler(this.ToolStripMenuItem_Edit_Click);
+            // 
+            // ToolStripMenuItem_Remove
+            // 
+            this.ToolStripMenuItem_Remove.Name = "ToolStripMenuItem_Remove";
+            this.ToolStripMenuItem_Remove.Size = new System.Drawing.Size(148, 32);
+            this.ToolStripMenuItem_Remove.Text = "Remove";
+            this.ToolStripMenuItem_Remove.Click += new System.EventHandler(this.ToolStripMenuItem_Remove_Click);
             // 
             // tabCustomizeProcessesPage
             // 
@@ -269,10 +293,10 @@
             this.tabCustomizeProcessesPage.Controls.Add(this.SupplyAirFlow_TextBox);
             this.tabCustomizeProcessesPage.Controls.Add(this.Pressure_Label);
             this.tabCustomizeProcessesPage.Controls.Add(this.DataGridView_MollierProcesses);
-            this.tabCustomizeProcessesPage.Location = new System.Drawing.Point(4, 25);
+            this.tabCustomizeProcessesPage.Location = new System.Drawing.Point(4, 29);
             this.tabCustomizeProcessesPage.Name = "tabCustomizeProcessesPage";
             this.tabCustomizeProcessesPage.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCustomizeProcessesPage.Size = new System.Drawing.Size(1513, 517);
+            this.tabCustomizeProcessesPage.Size = new System.Drawing.Size(1513, 513);
             this.tabCustomizeProcessesPage.TabIndex = 1;
             this.tabCustomizeProcessesPage.Text = "Processes";
             this.tabCustomizeProcessesPage.UseVisualStyleBackColor = true;
@@ -282,7 +306,7 @@
             this.ExhaustAirflow_CheckBox.AutoSize = true;
             this.ExhaustAirflow_CheckBox.Location = new System.Drawing.Point(604, 19);
             this.ExhaustAirflow_CheckBox.Name = "ExhaustAirflow_CheckBox";
-            this.ExhaustAirflow_CheckBox.Size = new System.Drawing.Size(117, 20);
+            this.ExhaustAirflow_CheckBox.Size = new System.Drawing.Size(142, 24);
             this.ExhaustAirflow_CheckBox.TabIndex = 10;
             this.ExhaustAirflow_CheckBox.Text = "Exhaust airflow";
             this.ExhaustAirflow_CheckBox.UseVisualStyleBackColor = true;
@@ -295,7 +319,7 @@
             this.SupplyAirFlow_CheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
             this.SupplyAirFlow_CheckBox.Location = new System.Drawing.Point(277, 19);
             this.SupplyAirFlow_CheckBox.Name = "SupplyAirFlow_CheckBox";
-            this.SupplyAirFlow_CheckBox.Size = new System.Drawing.Size(112, 20);
+            this.SupplyAirFlow_CheckBox.Size = new System.Drawing.Size(132, 24);
             this.SupplyAirFlow_CheckBox.TabIndex = 9;
             this.SupplyAirFlow_CheckBox.Text = "Supply airflow";
             this.SupplyAirFlow_CheckBox.UseVisualStyleBackColor = true;
@@ -310,7 +334,7 @@
             "m3/h"});
             this.SupplyAirflow_ComboBox.Location = new System.Drawing.Point(469, 15);
             this.SupplyAirflow_ComboBox.Name = "SupplyAirflow_ComboBox";
-            this.SupplyAirflow_ComboBox.Size = new System.Drawing.Size(61, 24);
+            this.SupplyAirflow_ComboBox.Size = new System.Drawing.Size(61, 28);
             this.SupplyAirflow_ComboBox.TabIndex = 8;
             this.SupplyAirflow_ComboBox.SelectedIndexChanged += new System.EventHandler(this.SupplyAirflow_ComboBox_SelectedIndexChanged);
             // 
@@ -323,7 +347,7 @@
             "m3/h"});
             this.ExhaustAirflow_Combobox.Location = new System.Drawing.Point(801, 15);
             this.ExhaustAirflow_Combobox.Name = "ExhaustAirflow_Combobox";
-            this.ExhaustAirflow_Combobox.Size = new System.Drawing.Size(62, 24);
+            this.ExhaustAirflow_Combobox.Size = new System.Drawing.Size(62, 28);
             this.ExhaustAirflow_Combobox.TabIndex = 7;
             this.ExhaustAirflow_Combobox.Visible = false;
             // 
@@ -331,7 +355,7 @@
             // 
             this.ExhaustAirFlow_TextBox.Location = new System.Drawing.Point(727, 17);
             this.ExhaustAirFlow_TextBox.Name = "ExhaustAirFlow_TextBox";
-            this.ExhaustAirFlow_TextBox.Size = new System.Drawing.Size(68, 22);
+            this.ExhaustAirFlow_TextBox.Size = new System.Drawing.Size(68, 26);
             this.ExhaustAirFlow_TextBox.TabIndex = 6;
             this.ExhaustAirFlow_TextBox.Text = "0";
             this.ExhaustAirFlow_TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -342,7 +366,7 @@
             this.Pressure_TextBox.Location = new System.Drawing.Point(137, 17);
             this.Pressure_TextBox.Name = "Pressure_TextBox";
             this.Pressure_TextBox.ReadOnly = true;
-            this.Pressure_TextBox.Size = new System.Drawing.Size(68, 22);
+            this.Pressure_TextBox.Size = new System.Drawing.Size(68, 26);
             this.Pressure_TextBox.TabIndex = 4;
             this.Pressure_TextBox.Text = "0";
             this.Pressure_TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -351,7 +375,7 @@
             // 
             this.SupplyAirFlow_TextBox.Location = new System.Drawing.Point(395, 17);
             this.SupplyAirFlow_TextBox.Name = "SupplyAirFlow_TextBox";
-            this.SupplyAirFlow_TextBox.Size = new System.Drawing.Size(68, 22);
+            this.SupplyAirFlow_TextBox.Size = new System.Drawing.Size(68, 26);
             this.SupplyAirFlow_TextBox.TabIndex = 3;
             this.SupplyAirFlow_TextBox.Text = "0";
             this.SupplyAirFlow_TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -362,7 +386,7 @@
             this.Pressure_Label.AutoSize = true;
             this.Pressure_Label.Location = new System.Drawing.Point(70, 20);
             this.Pressure_Label.Name = "Pressure_Label";
-            this.Pressure_Label.Size = new System.Drawing.Size(61, 16);
+            this.Pressure_Label.Size = new System.Drawing.Size(72, 20);
             this.Pressure_Label.TabIndex = 1;
             this.Pressure_Label.Text = "Pressure";
             // 
@@ -373,7 +397,7 @@
             this.DataGridView_MollierProcesses.AllowUserToOrderColumns = true;
             this.DataGridView_MollierProcesses.AllowUserToResizeColumns = false;
             this.DataGridView_MollierProcesses.AllowUserToResizeRows = false;
-            this.DataGridView_MollierProcesses.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.ColumnHeader;
+            this.DataGridView_MollierProcesses.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -409,7 +433,8 @@
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.DataGridView_MollierProcesses.DefaultCellStyle = dataGridViewCellStyle5;
-            this.DataGridView_MollierProcesses.Location = new System.Drawing.Point(6, 45);
+            this.DataGridView_MollierProcesses.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.DataGridView_MollierProcesses.Location = new System.Drawing.Point(3, 48);
             this.DataGridView_MollierProcesses.Name = "DataGridView_MollierProcesses";
             dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
@@ -435,7 +460,7 @@
             this.Column_MollierProcess_Name.MinimumWidth = 8;
             this.Column_MollierProcess_Name.Name = "Column_MollierProcess_Name";
             this.Column_MollierProcess_Name.ReadOnly = true;
-            this.Column_MollierProcess_Name.Width = 74;
+            this.Column_MollierProcess_Name.Width = 87;
             // 
             // Column_MollierProcess_Label
             // 
@@ -444,7 +469,7 @@
             this.Column_MollierProcess_Label.MinimumWidth = 8;
             this.Column_MollierProcess_Label.Name = "Column_MollierProcess_Label";
             this.Column_MollierProcess_Label.ReadOnly = true;
-            this.Column_MollierProcess_Label.Width = 72;
+            this.Column_MollierProcess_Label.Width = 84;
             // 
             // Column_MollierProcess_DryBulbTemperature
             // 
@@ -453,7 +478,7 @@
             this.Column_MollierProcess_DryBulbTemperature.MinimumWidth = 8;
             this.Column_MollierProcess_DryBulbTemperature.Name = "Column_MollierProcess_DryBulbTemperature";
             this.Column_MollierProcess_DryBulbTemperature.ReadOnly = true;
-            this.Column_MollierProcess_DryBulbTemperature.Width = 116;
+            this.Column_MollierProcess_DryBulbTemperature.Width = 134;
             // 
             // Column_MollierProcessHumidityRatio
             // 
@@ -462,7 +487,7 @@
             this.Column_MollierProcessHumidityRatio.MinimumWidth = 8;
             this.Column_MollierProcessHumidityRatio.Name = "Column_MollierProcessHumidityRatio";
             this.Column_MollierProcessHumidityRatio.ReadOnly = true;
-            this.Column_MollierProcessHumidityRatio.Width = 117;
+            this.Column_MollierProcessHumidityRatio.Width = 134;
             // 
             // Column_MollierProcessRelativeHumidity
             // 
@@ -471,7 +496,7 @@
             this.Column_MollierProcessRelativeHumidity.MinimumWidth = 8;
             this.Column_MollierProcessRelativeHumidity.Name = "Column_MollierProcessRelativeHumidity";
             this.Column_MollierProcessRelativeHumidity.ReadOnly = true;
-            this.Column_MollierProcessRelativeHumidity.Width = 136;
+            this.Column_MollierProcessRelativeHumidity.Width = 154;
             // 
             // Column_MollierProcess_WetBulbTemperature
             // 
@@ -480,7 +505,7 @@
             this.Column_MollierProcess_WetBulbTemperature.MinimumWidth = 8;
             this.Column_MollierProcess_WetBulbTemperature.Name = "Column_MollierProcess_WetBulbTemperature";
             this.Column_MollierProcess_WetBulbTemperature.ReadOnly = true;
-            this.Column_MollierProcess_WetBulbTemperature.Width = 159;
+            this.Column_MollierProcess_WetBulbTemperature.Width = 182;
             // 
             // Column_MollierProcess_DewPointTemperature
             // 
@@ -489,7 +514,7 @@
             this.Column_MollierProcess_DewPointTemperature.MinimumWidth = 8;
             this.Column_MollierProcess_DewPointTemperature.Name = "Column_MollierProcess_DewPointTemperature";
             this.Column_MollierProcess_DewPointTemperature.ReadOnly = true;
-            this.Column_MollierProcess_DewPointTemperature.Width = 141;
+            this.Column_MollierProcess_DewPointTemperature.Width = 162;
             // 
             // Column_MollierProcess_SpecificVolume
             // 
@@ -498,7 +523,7 @@
             this.Column_MollierProcess_SpecificVolume.MinimumWidth = 8;
             this.Column_MollierProcess_SpecificVolume.Name = "Column_MollierProcess_SpecificVolume";
             this.Column_MollierProcess_SpecificVolume.ReadOnly = true;
-            this.Column_MollierProcess_SpecificVolume.Width = 128;
+            this.Column_MollierProcess_SpecificVolume.Width = 146;
             // 
             // Column_MollierPoint_Enthalpy
             // 
@@ -507,6 +532,7 @@
             this.Column_MollierPoint_Enthalpy.MinimumWidth = 8;
             this.Column_MollierPoint_Enthalpy.Name = "Column_MollierPoint_Enthalpy";
             this.Column_MollierPoint_Enthalpy.ReadOnly = true;
+            this.Column_MollierPoint_Enthalpy.Width = 115;
             // 
             // Column_MollierProcess_Density
             // 
@@ -515,7 +541,7 @@
             this.Column_MollierProcess_Density.MinimumWidth = 8;
             this.Column_MollierProcess_Density.Name = "Column_MollierProcess_Density";
             this.Column_MollierProcess_Density.ReadOnly = true;
-            this.Column_MollierProcess_Density.Width = 92;
+            this.Column_MollierProcess_Density.Width = 105;
             // 
             // Column_MollierProcess_MassFlow
             // 
@@ -524,7 +550,7 @@
             this.Column_MollierProcess_MassFlow.MinimumWidth = 8;
             this.Column_MollierProcess_MassFlow.Name = "Column_MollierProcess_MassFlow";
             this.Column_MollierProcess_MassFlow.ReadOnly = true;
-            this.Column_MollierProcess_MassFlow.Width = 91;
+            this.Column_MollierProcess_MassFlow.Width = 107;
             // 
             // Column_MollierProcess_TotalLoad
             // 
@@ -533,15 +559,16 @@
             this.Column_MollierProcess_TotalLoad.MinimumWidth = 8;
             this.Column_MollierProcess_TotalLoad.Name = "Column_MollierProcess_TotalLoad";
             this.Column_MollierProcess_TotalLoad.ReadOnly = true;
+            this.Column_MollierProcess_TotalLoad.Width = 115;
             // 
             // Column_MollierProcess_SensibleLoad
             // 
             this.Column_MollierProcess_SensibleLoad.DataPropertyName = "SensibleLoad";
-            this.Column_MollierProcess_SensibleLoad.HeaderText = "Sensible load\n Qsens [kW]";
+            this.Column_MollierProcess_SensibleLoad.HeaderText = "Sensible Load [kW]";
             this.Column_MollierProcess_SensibleLoad.MinimumWidth = 8;
             this.Column_MollierProcess_SensibleLoad.Name = "Column_MollierProcess_SensibleLoad";
             this.Column_MollierProcess_SensibleLoad.ReadOnly = true;
-            this.Column_MollierProcess_SensibleLoad.Width = 122;
+            this.Column_MollierProcess_SensibleLoad.Width = 108;
             // 
             // Column_MollierProcess_LatentLoad
             // 
@@ -550,7 +577,7 @@
             this.Column_MollierProcess_LatentLoad.MinimumWidth = 8;
             this.Column_MollierProcess_LatentLoad.Name = "Column_MollierProcess_LatentLoad";
             this.Column_MollierProcess_LatentLoad.ReadOnly = true;
-            this.Column_MollierProcess_LatentLoad.Width = 109;
+            this.Column_MollierProcess_LatentLoad.Width = 127;
             // 
             // Column_MollierProcess_Edit
             // 
@@ -559,7 +586,7 @@
             this.Column_MollierProcess_Edit.Name = "Column_MollierProcess_Edit";
             this.Column_MollierProcess_Edit.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Column_MollierProcess_Edit.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Column_MollierProcess_Edit.Width = 61;
+            this.Column_MollierProcess_Edit.Width = 73;
             // 
             // Column_MollierProcess_Remove
             // 
@@ -568,50 +595,26 @@
             this.Column_MollierProcess_Remove.Name = "Column_MollierProcess_Remove";
             this.Column_MollierProcess_Remove.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Column_MollierProcess_Remove.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Column_MollierProcess_Remove.Width = 89;
+            this.Column_MollierProcess_Remove.Width = 104;
             // 
-            // ContextMenuStrip_Main
-            // 
-            this.ContextMenuStrip_Main.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.ContextMenuStrip_Main.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItem_Edit,
-            this.ToolStripMenuItem_Remove});
-            this.ContextMenuStrip_Main.Name = "ContextMenuStrip_Main";
-            this.ContextMenuStrip_Main.Size = new System.Drawing.Size(133, 52);
-            // 
-            // ToolStripMenuItem_Edit
-            // 
-            this.ToolStripMenuItem_Edit.Name = "ToolStripMenuItem_Edit";
-            this.ToolStripMenuItem_Edit.Size = new System.Drawing.Size(132, 24);
-            this.ToolStripMenuItem_Edit.Text = "Edit";
-            this.ToolStripMenuItem_Edit.Click += new System.EventHandler(this.ToolStripMenuItem_Edit_Click);
-            // 
-            // ToolStripMenuItem_Remove
-            // 
-            this.ToolStripMenuItem_Remove.Name = "ToolStripMenuItem_Remove";
-            this.ToolStripMenuItem_Remove.Size = new System.Drawing.Size(132, 24);
-            this.ToolStripMenuItem_Remove.Text = "Remove";
-            this.ToolStripMenuItem_Remove.Click += new System.EventHandler(this.ToolStripMenuItem_Remove_Click);
-            // 
-            // ManageMollierObjectsForm
+            // UIMollierObjectsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1523, 552);
             this.Controls.Add(this.customizeMollierObjectsTabControl);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ManageMollierObjectsForm";
+            this.Name = "UIMollierObjectsForm";
             this.ShowIcon = false;
             this.Text = "Edit / Remove";
             this.Load += new System.EventHandler(this.ManageMollierObjectsForm_Load);
             this.customizeMollierObjectsTabControl.ResumeLayout(false);
             this.tabCustomizePointPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_MollierPoints)).EndInit();
+            this.ContextMenuStrip_Main.ResumeLayout(false);
             this.tabCustomizeProcessesPage.ResumeLayout(false);
             this.tabCustomizeProcessesPage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_MollierProcesses)).EndInit();
-            this.ContextMenuStrip_Main.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -626,22 +629,6 @@
         private System.Windows.Forms.TextBox SupplyAirFlow_TextBox;
         private System.Windows.Forms.Label Pressure_Label;
         private System.Windows.Forms.TextBox Pressure_TextBox;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Label;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_DryBulbTemperature;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcessHumidityRatio;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcessRelativeHumidity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_WetBulbTemperature;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_DewPointTemperature;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_SpecificVolume;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierPoint_Enthalpy;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Density;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_MassFlow;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_TotalLoad;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_SensibleLoad;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_LatentLoad;
-        private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Edit;
-        private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Remove;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Label;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_DryBulbTemperature;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_HumidityRatio;
@@ -661,5 +648,21 @@
         private System.Windows.Forms.ContextMenuStrip ContextMenuStrip_Main;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Edit;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Remove;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Name;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Label;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_DryBulbTemperature;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcessHumidityRatio;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcessRelativeHumidity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_WetBulbTemperature;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_DewPointTemperature;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_SpecificVolume;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierPoint_Enthalpy;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Density;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_MassFlow;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_TotalLoad;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_SensibleLoad;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_LatentLoad;
+        private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Edit;
+        private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Remove;
     }
 }
