@@ -49,8 +49,8 @@ namespace SAM.Core.Mollier.UI
             int maxPointsNumberInOneArea = 0;
             foreach (UIMollierPoint uImollierPoint in mollierPoints)
             {
-                double enthalpy = uImollierPoint.MollierPoint.Enthalpy / 1000;
-                double relativeHumidity = uImollierPoint.MollierPoint.RelativeHumidity;
+                double enthalpy = uImollierPoint.Enthalpy / 1000;
+                double relativeHumidity = uImollierPoint.RelativeHumidity;
                 if(enthalpy == enthalpyMax)
                 {
                     enthalpy -= enthalpyInterval;

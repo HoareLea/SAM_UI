@@ -27,7 +27,7 @@ namespace SAM.Core.Mollier.UI.Forms
 
             set
             {
-                MollierPoint = value?.MollierPoint;
+                MollierPoint = value;
                 UIMollierAppearance = value?.UIMollierAppearance;
             }
         }

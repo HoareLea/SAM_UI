@@ -130,7 +130,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (UIMollierObject is UIMollierPoint)
                 {
-                    return Core.Query.Round(((UIMollierPoint)UIMollierObject).MollierPoint.Density(), 0.01);
+                    return Core.Query.Round(((UIMollierPoint)UIMollierObject).Density(), 0.01);
                 }
                 return default;
             }
@@ -145,7 +145,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (UIMollierObject is UIMollierPoint)
                 {
-                    return Core.Query.Round(((UIMollierPoint)UIMollierObject).MollierPoint.SpecificVolume(), 0.01);
+                    return Core.Query.Round(((UIMollierPoint)UIMollierObject).SpecificVolume(), 0.01);
                 }
                 return default;
             }
@@ -160,7 +160,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (UIMollierObject is UIMollierPoint)
                 {
-                    return Core.Query.Round(((UIMollierPoint)UIMollierObject).MollierPoint.WetBulbTemperature(), 0.01);
+                    return Core.Query.Round(((UIMollierPoint)UIMollierObject).WetBulbTemperature(), 0.01);
                 }
                 return default;
             }
@@ -175,7 +175,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (UIMollierObject is UIMollierPoint)
                 {
-                    return Core.Query.Round(((UIMollierPoint)UIMollierObject).MollierPoint.WetBulbTemperature(), 0.01);
+                    return Core.Query.Round(((UIMollierPoint)UIMollierObject).WetBulbTemperature(), 0.01);
                 }
                 return default;
             }

@@ -42,7 +42,7 @@ namespace SAM.Core.Mollier.UI
 
             foreach(UIMollierPoint uIMollierPoint in uIMollierPoints)
             {
-                MollierPoint mollierPoint = uIMollierPoint?.MollierPoint;
+                MollierPoint mollierPoint = uIMollierPoint;
                 if(mollierPoint == null)
                 {
                     continue;

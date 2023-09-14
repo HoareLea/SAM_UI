@@ -31,7 +31,7 @@ namespace SAM.Core.Mollier.UI
                 series.Color = uIMollierZone.UIMollierAppearance.Color;
                 series.Tag = uIMollierZone;
 
-                foreach(MollierPoint mollierPoint in uIMollierZone.MollierZone.MollierPoints)
+                foreach(MollierPoint mollierPoint in uIMollierZone.MollierPoints)
                 {
                     Point2D point = Convert.ToSAM(mollierPoint, chartType);
                     series.Points.AddXY(point.X, point.Y);

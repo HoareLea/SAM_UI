@@ -75,12 +75,11 @@ namespace SAM.Core.Mollier.UI
             List<IClosed2D> result = new List<IClosed2D>();
             double zoneWidth = 0.05 * scaleVector.Y;
 
-            MollierZone mollierZone = uIMollierZone.MollierZone;
-            for (int i = 0; i < mollierZone.MollierPoints.Count; i++)
+            for (int i = 0; i < uIMollierZone.MollierPoints.Count; i++)
             {
-                int previousPointID = i == 0 ? mollierZone.MollierPoints.Count - 1 : i - 1;
-                Point2D start = Convert.ToSAM(mollierZone.MollierPoints[i], chartType);
-                Point2D end = Convert.ToSAM(mollierZone.MollierPoints[previousPointID], chartType);
+                int previousPointID = i == 0 ? uIMollierZone.MollierPoints.Count - 1 : i - 1;
+                Point2D start = Convert.ToSAM(uIMollierZone.MollierPoints[i], chartType);
+                Point2D end = Convert.ToSAM(uIMollierZone.MollierPoints[previousPointID], chartType);
                 Segment2D zoneSegment = new Segment2D(start, end);
 
                 result.Add(Geometry.Planar.Create.Rectangle2D(zoneSegment, zoneWidth, axesRatio));

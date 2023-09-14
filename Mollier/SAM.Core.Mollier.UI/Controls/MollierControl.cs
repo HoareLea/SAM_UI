@@ -387,21 +387,16 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
 
                 Color color = Color.Blue; 
-                string label = ""; 
-                MollierPoint mollierPoint1 = null;
+                string label = "";
+                MollierPoint mollierPoint1 = mollierPoint as MollierPoint;
 
-                if(mollierPoint is UIMollierPoint)
+                if (mollierPoint is UIMollierPoint)
                 {
-                    mollierPoint1 = ((UIMollierPoint)mollierPoint).MollierPoint;
                     if (((UIMollierPoint)mollierPoint).UIMollierAppearance != null)
                     {
                         color = ((UIMollierPoint)mollierPoint).UIMollierAppearance.Color;
                         label = ((UIMollierPoint)mollierPoint).UIMollierAppearance.Label;
                     }
-                }
-                else if(mollierPoint is MollierPoint)
-                {
-                    mollierPoint1 = (MollierPoint)mollierPoint;
                 }
 
                 UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint1, new UIMollierAppearance(color, label));
@@ -525,18 +520,13 @@ namespace SAM.Core.Mollier.UI.Controls
             foreach(IMollierZone mollierZone in mollierZones)
             {
                 Color color = Color.Blue; 
-                string label = ""; 
-                MollierZone mollierZone1 = null;
+                string label = "";
+                MollierZone mollierZone1 = mollierZone as MollierZone;
 
                 if(mollierZone is UIMollierZone)
                 {
                     color = ((UIMollierZone)mollierZone).UIMollierAppearance.Color;
                     label = ((UIMollierZone)mollierZone).UIMollierAppearance.Label;
-                    mollierZone1 = ((UIMollierZone)mollierZone).MollierZone;
-                }
-                else if(mollierZone is MollierZone)
-                {
-                    mollierZone1 = (MollierZone)mollierZone;
                 }
 
                 UIMollierZone uIMollierZone = new UIMollierZone(mollierZone1, new UIMollierAppearance(color, label));

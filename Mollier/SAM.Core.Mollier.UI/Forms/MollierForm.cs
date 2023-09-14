@@ -181,16 +181,16 @@ namespace SAM.Core.Mollier.UI
             double relativeHumidity = 50;
             double humidityRatio = double.NaN;
 
-            if(previousUIMollierPoint != null && previousUIMollierPoint.MollierPoint != null && previousUIMollierPoint.MollierPoint.IsValid())
+            if(previousUIMollierPoint != null && previousUIMollierPoint != null && previousUIMollierPoint.IsValid())
             {
-                if(!double.IsNaN(previousUIMollierPoint.MollierPoint.DryBulbTemperature))
+                if(!double.IsNaN(previousUIMollierPoint.DryBulbTemperature))
                 {
-                    dryBulbTemperature = previousUIMollierPoint.MollierPoint.DryBulbTemperature;
+                    dryBulbTemperature = previousUIMollierPoint.DryBulbTemperature;
                 }
 
-                if (!double.IsNaN(previousUIMollierPoint.MollierPoint.HumidityRatio))
+                if (!double.IsNaN(previousUIMollierPoint.HumidityRatio))
                 {
-                    humidityRatio = previousUIMollierPoint.MollierPoint.HumidityRatio;
+                    humidityRatio = previousUIMollierPoint.HumidityRatio;
                 }
             }
 
