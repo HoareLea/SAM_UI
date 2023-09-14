@@ -1,24 +1,24 @@
 ﻿using Grasshopper.Kernel;
+using SAM.Core.Mollier.UI.Grasshopper.Properties;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
-using SAM.Core.Mollier.UI.Grasshopper.Properties;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
-    public class SAMMollierCreateHeatRecoveryProcess : MollierDiagramComponent
+    public class SAMMollierCreateRoomProcessByEndPoint : MollierDiagramComponent
     {
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("e2fe1d14-6c75-4ae8-bd76-b18a3fa27363");
+        public override Guid ComponentGuid => new Guid("0a8891fb-bb82-4a13-8e0b-1d87e1b8e2b4");
 
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.5";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -32,28 +32,28 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             get
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
-                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_supply", NickName = "_supply", Description = "MollierPoint for supply air parameters", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_return", NickName = "_return", Description = "MollierPoint for return air parameters", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_end", NickName = "_end", Description = "MollierPoint for end - room point", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_sensibleHeatRecoveryEfficiency", NickName = "_sensibleHeatRecoveryEfficiency", Description = "Sensible Heat Recovery Efficiency [%]", Access = GH_ParamAccess.item, Optional = true };
-                param_Number.SetPersistentData(75);
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_airMassFlow", NickName = "_airMassFlow", Description = "Air Mass Flow [kg/s]", Access = GH_ParamAccess.item, Optional = false };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_latentHeatRecoveryEfficiency", NickName = "_latentHeatRecoveryEfficiency", Description = "Latent Heat Recovery Efficiency [%]", Access = GH_ParamAccess.item, Optional = true };
-                param_Number.SetPersistentData(0);
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_sensibleLoad", NickName = "_sensibleLoad", Description = "Sensible Load [kW]", Access = GH_ParamAccess.item, Optional = false };
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
+
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_latentLoad", NickName = "_latentLoad", Description = "Latent Load [kW]", Access = GH_ParamAccess.item, Optional = false };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));
-
                 global::Grasshopper.Kernel.Parameters.Param_String param_Label = null;
                 param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "startLabel_", NickName = "startLabel_", Description = "Start Label", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
 
                 param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "processLabel_", NickName = "processLabel_", Description = "Process Label", Access = GH_ParamAccess.item, Optional = true };
+                param_Label.SetPersistentData("Room");
                 result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
 
                 param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "endLabel_", NickName = "endLabel_", Description = "End Label", Access = GH_ParamAccess.item, Optional = true };
@@ -68,12 +68,10 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             get
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
-                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "heatRecoveryProcess", NickName = "heatRecoveryProcess", Description = "Heat Recovery Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "end", NickName = "end", Description = "End", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "heatRecoveryProcessExhaust", NickName = "heatRecoveryProcessExhaust", Description = "Heat Recovery Process Exhaust", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "endExhaust", NickName = "endExhaust", Description = "Exhaust Process End", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "color", NickName = "color", Description = "Color", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "epsilon", NickName = "epsilon", Description = "Epsilon", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
+                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "roomProcess", NickName = "roomProcess", Description = "Room Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "start", NickName = "start", Description = "Start", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "sensibleHeatRatio", NickName = "sensibleHeatRatio", Description = "Sensible Heat Ratio [-]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "epsilon", NickName = "epsilon", Description = "Slope coefficient Epsilon ε [kJ/kg]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
 
                 return result.ToArray();
             }
@@ -82,9 +80,9 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// Updates PanelTypes for AdjacencyCluster
         /// </summary>
-        public SAMMollierCreateHeatRecoveryProcess()
-          : base("SAMMollier.CreateHeatRecoveryProcess", "SAMMollier.CreateHeatRecoveryProcess",
-              "Creates HeatRecoveryProcess",
+        public SAMMollierCreateRoomProcessByEndPoint()
+          : base("SAMMollier.CreateRoomProcessByEndPoint", "SAMMollier.CreateRoomProcessByEndPoint",
+              "Creates Room Process by Room point Sensible and Latent Gains/Load]",
               "SAM", "Mollier")
         {
         }
@@ -93,54 +91,54 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         {
             int index;
 
-            index = Params.IndexOfInputParam("_supply");
+            index = Params.IndexOfInputParam("_end");
             if (index == -1)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            MollierPoint supply = null;
-            if (!dataAccess.GetData(index, ref supply) || supply == null)
+            MollierPoint end = null;
+            if (!dataAccess.GetData(index, ref end) || end == null)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            index = Params.IndexOfInputParam("_return");
+            index = Params.IndexOfInputParam("_airMassFlow");
             if (index == -1)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
-            MollierPoint @return = null;
-            if (!dataAccess.GetData(index, ref @return) || supply == null)
+            double airMassFlow = double.NaN;
+            if (!dataAccess.GetData(index, ref airMassFlow) || double.IsNaN(airMassFlow))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            index = Params.IndexOfInputParam("_sensibleHeatRecoveryEfficiency");
+            index = Params.IndexOfInputParam("_sensibleLoad");
             if (index == -1)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
-            double sensibleHeatRecoveryEfficiency = double.NaN;
-            if (!dataAccess.GetData(index, ref sensibleHeatRecoveryEfficiency) || double.IsNaN(sensibleHeatRecoveryEfficiency))
+            double sensibleLoad = double.NaN;
+            if (!dataAccess.GetData(index, ref sensibleLoad) || double.IsNaN(sensibleLoad))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            index = Params.IndexOfInputParam("_latentHeatRecoveryEfficiency");
+            index = Params.IndexOfInputParam("_latentLoad");
             if (index == -1)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
-            double latentHeatRecoveryEfficiency = double.NaN;
-            if (!dataAccess.GetData(index, ref latentHeatRecoveryEfficiency) || double.IsNaN(latentHeatRecoveryEfficiency))
+            double latentLoad = double.NaN;
+            if (!dataAccess.GetData(index, ref latentLoad) || double.IsNaN(latentLoad))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
@@ -173,57 +171,40 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            HeatRecoveryProcess heatRecoveryProcess = Core.Mollier.Create.HeatRecoveryProcess_Supply(supply, @return, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
-            index = Params.IndexOfOutputParam("heatRecoveryProcess");
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEnd(end, airMassFlow, sensibleLoad * 1000, latentLoad * 1000);
+            index = Params.IndexOfOutputParam("roomProcess");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierProcess(heatRecoveryProcess, color, startLabel, processLabel, endLabel));
-            }
-            else
-            {
-                return;
-            }
-            MollierPoint end = new MollierPoint(heatRecoveryProcess.End);
-            index = Params.IndexOfOutputParam("end");
-            if (index != -1)
-            {
-                dataAccess.SetData(index, new GooMollierPoint(end));
-            }
-
-            HeatRecoveryProcess heatRecoveryProcessExhaust = Core.Mollier.Create.HeatRecoveryProcess_Extract(@return, supply, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
-            index = Params.IndexOfOutputParam("heatRecoveryProcessExhaust");
-            if (index != -1)
-            {
-                dataAccess.SetData(index, new GooMollierProcess(heatRecoveryProcessExhaust, color, startLabel, processLabel, endLabel));
+                dataAccess.SetData(index, new GooMollierProcess(undefinedProcess, color, startLabel, processLabel, endLabel));
             }
             else
             {
                 return;
             }
 
-            MollierPoint endExhaust = new MollierPoint(heatRecoveryProcessExhaust.End);
-            index = Params.IndexOfOutputParam("endExhaust");
+            MollierPoint start = new MollierPoint(undefinedProcess.Start);
+            index = Params.IndexOfOutputParam("start");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierPoint(endExhaust));
+                dataAccess.SetData(index, new GooMollierPoint(start));
             }
 
-            index = Params.IndexOfOutputParam("color");
+            index = Params.IndexOfOutputParam("sensibleHeatRatio");
             if (index != -1)
             {
-                dataAccess.SetData(index, color);
+                dataAccess.SetData(index, Mollier.Query.SensibleHeatRatio(sensibleLoad, latentLoad));
             }
 
             index = Params.IndexOfOutputParam("epsilon");
             if (index != -1)
             {
-                dataAccess.SetData(index, heatRecoveryProcess.Epsilon());
+                dataAccess.SetData(index, undefinedProcess.Epsilon());
             }
         }
 
         protected override IEnumerable<IGH_Param> GetMollierDiagramParameters()
         {
-            return new IGH_Param[] { Params.Output.Find(x => x.Name == "heatRecoveryProcess") };
+            return new IGH_Param[] { Params.Output.Find(x => x.Name == "roomProcess") };
         }
     }
 }

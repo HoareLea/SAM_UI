@@ -39,25 +39,20 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
 
             if (mollierForm == null)
+
+
             {
                 mollierForm = new MollierForm();
                 mollierForm.FormClosing += MollierForm_FormClosing;
                 mollierForm.MollierControlSettings = GetMollierControlSettings();
             }
-
+            
             mollierForm.Clear();
 
-
-            List<IMollierProcess> mollierProcesses = Query.MollierProcesses<IMollierProcess>(gH_Params);
-            if (mollierProcesses != null && mollierProcesses.Count != 0)
+            List<IMollierObject> mollierObjects = Query.MollierObjects(gH_Params);
+            if(mollierObjects != null && mollierObjects.Count != 0)
             {
-                mollierForm.AddProcesses(mollierProcesses, false);
-            }
-
-            List<IMollierPoint> mollierPoints = Query.MollierPoints(gH_Params);
-            if (mollierPoints != null && mollierPoints.Count != 0)
-            {
-                mollierForm.AddPoints(mollierPoints, false);
+                mollierForm.AddMollierObjects(mollierObjects);
             }
 
             mollierForm.Show();

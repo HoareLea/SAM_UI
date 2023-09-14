@@ -6,6 +6,12 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Calculates color of points depends on their density on the chart
+        /// </summary>
+        /// <param name="mollierPoints">Mollier points</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>Dictionary with color for all points</returns>
         public static Dictionary<UIMollierPoint, Color> ColorDictionary(this IEnumerable<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
             if(mollierPoints == null)
@@ -43,8 +49,8 @@ namespace SAM.Core.Mollier.UI
             int maxPointsNumberInOneArea = 0;
             foreach (UIMollierPoint uImollierPoint in mollierPoints)
             {
-                double enthalpy = uImollierPoint.MollierPoint.Enthalpy / 1000;
-                double relativeHumidity = uImollierPoint.MollierPoint.RelativeHumidity;
+                double enthalpy = uImollierPoint.Enthalpy / 1000;
+                double relativeHumidity = uImollierPoint.RelativeHumidity;
                 if(enthalpy == enthalpyMax)
                 {
                     enthalpy -= enthalpyInterval;

@@ -6,7 +6,7 @@ namespace SAM.Core.Mollier.UI
     public static partial class Query
     {
         /// <summary>
-        /// Returns OX axis to OY axis ratio
+        /// Returns OX axis to OY axis length ratio
         /// </summary>
         /// <param name="chart"></param>
         /// <param name="mollierControlSettings"></param>

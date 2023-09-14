@@ -10,15 +10,23 @@ namespace SAM.Core.Mollier.UI
     public static partial class Modify
     {
         // ------------------GENERAL-ADD-PROCESSES-METHOD----------------------
-        public static List<UIMollierProcess> AddMollierProcesses(this Chart chart, List<List<UIMollierProcess>> systems, List<UIMollierProcess> mollierProcesses, MollierControlSettings mollierControlSettings)
+        /// <summary>
+        /// Creates series for all the processes on the chart
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="groups">Mollier groups of processes</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
+        public static List<Series> AddMollierProcesses(this Chart chart, List<IMollierGroup> groups, MollierControlSettings mollierControlSettings)
         {
-            if(systems == null)
+            List<Series> result = new List<Series>();
+            if(groups == null)
             {
                 return null;
             }
             Control control = chart.Parent;
             ChartType chartType = mollierControlSettings.ChartType;
-            List<UIMollierProcess> labeledMollierProcesses = generateLabelsForProcessesSystems(systems);
+            List<UIMollierProcess> labeledMollierProcesses = generateLabels(groups);
 
             labeledMollierProcesses?.Sort((x, y) => System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio).CompareTo(System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio)));
             List<UIMollierPoint> processPointsToLabel = new List<UIMollierPoint>();
@@ -60,9 +68,33 @@ namespace SAM.Core.Mollier.UI
                 }
             }
 
-            return labeledMollierProcesses;
+            return result;
         }
 
+        /// <summary>
+        /// Creates series for all the processes on the chart
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="mollierModel">Mollier model</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
+        public static List<Series> AddMollierProcesses(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
+        {
+            if (mollierModel == null)
+            {
+                return null;
+            }
+
+            List<IMollierGroup> groups = mollierModel.GetMollierObjects<IMollierGroup>();
+
+            List<UIMollierProcess> mollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
+            if(groups != null && mollierProcesses != null)
+            {
+                groups.AddRange(Mollier.Query.Group(mollierProcesses));
+            }
+
+            return chart.AddMollierProcesses(groups, mollierControlSettings);
+        }
         
         // ------------------SERIES--------------------------------------------
         private static Series createDewPointDashLineSeries(Chart chart, MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType, Color color, int borderWidth, ChartDashStyle borderDashStyle)
@@ -236,26 +268,36 @@ namespace SAM.Core.Mollier.UI
         
         
         // General methods used above 
-        private static List<UIMollierProcess> generateLabelsForProcessesSystems(List<List<UIMollierProcess>> systems)
+        private static List<UIMollierProcess> generateLabels(List<IMollierGroup> groups)
         {
             List<UIMollierProcess> labeledMollierProcesses = new List<UIMollierProcess>();
 
-            for (int i = 0; i < systems.Count; i++)
+            foreach(IMollierGroup group in groups)
             {
-                char name = 'A';
-                for (int j = 0; j < systems[i].Count; j++)
+                MollierGroup mollierGroup = (MollierGroup)group;
+                if(mollierGroup == null)
                 {
-                    UIMollierProcess UI_MollierProcess = systems[i][j];
+                    continue;
+                }
+                char name = 'A';
+                List<IMollierProcess> processList = mollierGroup.GetMollierProcesses();
+                if(processList == null)
+                {
+                    continue;
+                }
+                for (int j = 0; j < processList.Count; j++)
+                {
+                    UIMollierProcess UI_MollierProcess = (UIMollierProcess)processList[j];
                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
 
                     // Set default values whether they're not set
-                    if(UI_MollierProcess.UIMollierAppearance_Start == null)
+                    if(UI_MollierProcess.UIMollierAppearance_Start == null || UI_MollierProcess.UIMollierAppearance_Start.Label == null)
                     {
-                        UI_MollierProcess.UIMollierAppearance_Start = new UIMollierAppearance(Color.Empty, null);
+                        UI_MollierProcess.UIMollierAppearance_Start = new UIMollierAppearance(Color.Empty, "");
                     }
-                    if(UI_MollierProcess.UIMollierAppearance_End == null)
+                    if(UI_MollierProcess.UIMollierAppearance_End == null || UI_MollierProcess.UIMollierAppearance_End.Label == null)
                     {
-                        UI_MollierProcess.UIMollierAppearance_End = new UIMollierAppearance(Color.Empty, null);
+                        UI_MollierProcess.UIMollierAppearance_End = new UIMollierAppearance(Color.Empty, "");
                     }
 
                     if(UI_MollierProcess is UndefinedProcess)
@@ -263,25 +305,25 @@ namespace SAM.Core.Mollier.UI
                         UI_MollierProcess.UIMollierAppearance_End.Label = "ROOM";
                     }
 
-                    if (systems[i].Count > 1 &&  j == 0)
+                    if (processList.Count > 1 && j == 0)
                     {
                         UI_MollierProcess.UIMollierAppearance_Start.Label = "OSA";
                     }
-                    else if (UI_MollierProcess.UIMollierAppearance_Start.Label == null)
+                    else if (UI_MollierProcess.UIMollierAppearance_Start.Label == "")
                     {
                         UI_MollierProcess.UIMollierAppearance_Start.Label = name + "1";
                     }
 
 
-                    if (systems[i].Count > 1 && j == systems[i].Count - 2 && systems[i][j + 1].MollierProcess is UndefinedProcess)
+                    if (processList.Count > 1 && j == processList.Count - 2 && ((UIMollierProcess)processList[j + 1]).MollierProcess is UndefinedProcess)
                     {
                         UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
                     }
-                    else if (systems[i].Count > 1 && j == systems[i].Count - 1)
+                    else if (processList.Count > 1 && j == processList.Count - 1)
                     {
                         UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
                     }
-                    else if (UI_MollierProcess.UIMollierAppearance_End.Label == null)
+                    else if (UI_MollierProcess.UIMollierAppearance_End.Label == "")
                     {
                         UI_MollierProcess.UIMollierAppearance_End.Label = name + "2";
                     }
@@ -289,7 +331,7 @@ namespace SAM.Core.Mollier.UI
                     UI_MollierProcess.UIMollierAppearance.Label = UI_MollierProcess.UIMollierAppearance.Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.UIMollierAppearance.Label;
                     
                     name++;
-                    labeledMollierProcesses.Add(UI_MollierProcess);
+                    labeledMollierProcesses.Add(new UIMollierProcess(UI_MollierProcess));
                 }
             }
 

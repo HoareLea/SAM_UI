@@ -9,6 +9,13 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Sorts points by enthalpy or temperature depends on find point type in mollier control settings
+        /// Then returns a point that is in % position in the sequence 
+        /// </summary>
+        /// <param name="mollierPoints">Mollier points</param>
+        /// <param name="mollierControlSettings">mollier control settings</param>
+        /// <returns>Found point</returns>
         public static Point2D FindPoint(this List<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
             bool generate = mollierControlSettings.FindPoint;
@@ -30,14 +37,14 @@ namespace SAM.Core.Mollier.UI
             switch (mollierControlSettings.FindPointType)
             {
                 case Mollier.ChartDataType.DryBulbTemperature:
-                    uIMollierPoints.Sort((x, y) => x.MollierPoint.DryBulbTemperature.CompareTo(y.MollierPoint.DryBulbTemperature));
+                    uIMollierPoints.Sort((x, y) => x.DryBulbTemperature.CompareTo(y.DryBulbTemperature));
                     break;
                 case Mollier.ChartDataType.Enthalpy:
-                    uIMollierPoints.Sort((x, y) => x.MollierPoint.Enthalpy.CompareTo(y.MollierPoint.Enthalpy));
+                    uIMollierPoints.Sort((x, y) => x.Enthalpy.CompareTo(y.Enthalpy));
                     break;
             }
 
-            return Convert.ToSAM(uIMollierPoints[index].MollierPoint, chartType);
+            return Convert.ToSAM(uIMollierPoints[index], chartType);
         }
     }
 }

@@ -2,6 +2,12 @@
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Returns value of point depends on chart data type
+        /// </summary>
+        /// <param name="mollierPoint">Mollier point</param>
+        /// <param name="chartDataType">Chart data type</param>
+        /// <returns>Value of point</returns>
         public static double Value(this MollierPoint mollierPoint, ChartDataType chartDataType)
         {
             if(mollierPoint == null || chartDataType == Mollier.ChartDataType.Undefined)

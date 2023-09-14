@@ -6,7 +6,7 @@ namespace SAM.Core.Mollier.UI
     public static partial class Query
     {
         /// <summary>
-        /// 
+        /// Zoom to processes and points 
         /// </summary>
         /// <param name="series_List">List of all series added to the chart</param>
         /// <param name="chartType">Type of the chart</param>

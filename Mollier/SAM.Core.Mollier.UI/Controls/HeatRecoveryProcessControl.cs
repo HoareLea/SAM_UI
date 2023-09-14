@@ -74,7 +74,7 @@ namespace SAM.Core.Mollier.UI.Controls
             double sensibleHeatRecoveryEfficiency = SensibleHeatRecoveryEfficiencyControl.Value;
             double latentHeatRecoveryEfficiency = LatentHeatRecoveryEfficiencyControl.Value;
 
-            MollierProcess mollierProcess = Mollier.Create.HeatRecoveryProcess(supplyPoint, returnPoint, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
+            MollierProcess mollierProcess = Mollier.Create.HeatRecoveryProcess_Supply(supplyPoint, returnPoint, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
             return new UIMollierProcess(mollierProcess, Color.Empty);
         }
         public MollierPoint Supply

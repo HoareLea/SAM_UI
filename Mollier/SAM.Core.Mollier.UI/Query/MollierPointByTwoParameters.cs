@@ -3,23 +3,16 @@
     public static partial class Query
     {
         /// <summary>
-        /// Calculate point by 2 parameters of 5 possible - (DryBulbTemperature
+        /// Calculates mollier point by 2 given parameters or dew point parameter
         /// </summary>
-        /// <param name="name_1"></param>
-        /// <param name="value_1"></param>
-        /// <param name="name_2"></param>
-        /// <param name="value_2"></param>
-        /// <returns>MollierPoint</returns>
-        public static MollierPoint MollierPointByTwoParameters(string name_1, double value_1, string name_2, double value_2)
-        {
-            if (name_1 == null || name_2 == null || value_1 == double.NaN || value_2 == double.NaN)
-            {
-                return null;
-            }
-            MollierPoint mollierPoint = null;
-            return mollierPoint;
-        }
-
+        /// <param name="pressure">Pressure</param>
+        /// <param name="humidityRatio">Humidity ratio</param>
+        /// <param name="dryBulbTemperature">Dry bulb temperature</param>
+        /// <param name="relativeHumidity">Relative humidity</param>
+        /// <param name="wetBulbTemperature">Wet bulb temperature</param>
+        /// <param name="dewPointTemperature">Dew point temperature</param>
+        /// <param name="enthalpy">Enthalpy</param>
+        /// <returns>Calculated mollier point</returns>
         public static MollierPoint MollierPointByTwoParametersOrDewPoint(double pressure = Standard.Pressure, double humidityRatio = double.NaN, double dryBulbTemperature = double.NaN, double relativeHumidity = double.NaN, double wetBulbTemperature = double.NaN, double dewPointTemperature = double.NaN, double enthalpy = double.NaN)
         {
             //checking if there are good number of data - dew point or 2 of the others

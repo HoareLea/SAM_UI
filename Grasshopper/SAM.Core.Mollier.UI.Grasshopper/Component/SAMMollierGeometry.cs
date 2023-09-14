@@ -24,7 +24,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.5";
+        public override string LatestComponentVersion => "1.0.6";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -39,7 +39,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
 
-                result.Add(new GH_SAMParam(new GooMollierChartObjectParam() { Name = "MollierGeometry Lines", NickName = "MollierGeometry Lines", Description = "MollierGeometry Lines, Base of your Chart - select lines you want to display on your chart,\n *output from .CreateMollierDiagram ", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierChartObjectParam() { Name = "_mollierGeometryLines", NickName = "_mollierGeometryLines", Description = "MollierGeometry Lines, Base of your Chart - select lines you want to display on your chart,\n *output from .CreateMollierDiagram ", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
 
                 // global::Grasshopper.Kernel.Parameters.Param_Curve curves = null;
                 //curves = new global::Grasshopper.Kernel.Parameters.Param_Curve() { Name = "Mollier Chart", NickName = "Inspect Mollier Lines", Description = "Base of Chart - output from InspectMollierDiagram output ", Access = GH_ParamAccess.list, Optional = true };
@@ -50,9 +50,8 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Bool.SetPersistentData(true);
                 result.Add(new GH_SAMParam(param_Bool, ParamVisibility.Binding));
 
-                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "Mollier Points", NickName = "Mollier Points", Description = "Mollier Points", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierObjectParam() { Name = "_mollierObjects", NickName = "_mollierObjects", Description = "Mollier Objects", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
 
-                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "Mollier Processes", NickName = "Mollier Processes", Description = "Mollier Processes", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
 
                 param_Bool = new Param_Boolean() { Name = "_coolingLineRealistic_", NickName = "_coolingLineRealistic_", Description = "This option will represent Cooling with dehumidification process in 'more' realistic curve - estimation", Access = GH_ParamAccess.item, Optional = true };
                 param_Bool.SetPersistentData(false);
@@ -86,25 +85,18 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         protected override void SolveInstance(IGH_DataAccess dataAccess)
         {
 
-            int index = Params.IndexOfInputParam("MollierGeometry Lines");
+            int index = Params.IndexOfInputParam("_mollierGeometryLines");
             List<MollierChartObject> mollierChartObjects = new List<MollierChartObject>();
             if (index != -1)
             {
                 dataAccess.GetDataList(index, mollierChartObjects);
             }
 
-            index = Params.IndexOfInputParam("Mollier Points");
-            List<IMollierPoint> mollierPoints = new List<IMollierPoint>();
+            index = Params.IndexOfInputParam("_mollierObjects");
+            List<IMollierObject> mollierObjects = new List<IMollierObject>();
             if (index != -1)
             {
-                dataAccess.GetDataList(index, mollierPoints);
-            }
-
-            index = Params.IndexOfInputParam("Mollier Processes");
-            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
-            if (index != -1)
-            {
-                dataAccess.GetDataList(index, mollierProcesses);
+                dataAccess.GetDataList(index, mollierObjects);
             }
 
             index = Params.IndexOfInputParam("_chartType_");
@@ -123,64 +115,23 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref coolingLineRealistic);
             }
 
-            foreach (IMollierProcess mollierProcess in mollierProcesses)
+            foreach (IMollierObject mollierObject in mollierObjects)
             {
-                if (mollierProcess == null)
+                if (mollierObject == null)
+                {
+                    continue;
+                }
+                
+                IUIMollierObject uIMollierObject2 = mollierObject.ToSAM_UI();
+                if(uIMollierObject2 == null)
                 {
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                     return;
                 }
 
-                MollierProcess mollierProcess_Temp = mollierProcess is UIMollierProcess ? ((UIMollierProcess)mollierProcess).MollierProcess : mollierProcess as MollierProcess;
-                if(mollierProcess_Temp == null)
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
-                    return;
-                }
-
-                System.Drawing.Color color = Mollier.Query.Color(mollierProcess);
-
-                MollierChartObject mollierChartObject = null;
-
-                if (mollierProcess_Temp is CoolingProcess)
-                {
-                    mollierChartObject = new MollierChartObject(new UICoolingProcess((CoolingProcess)mollierProcess_Temp, color, coolingLineRealistic), chartType, 0);
-                }
-                else
-                {
-                    mollierChartObject = new MollierChartObject(new UIMollierProcess(mollierProcess_Temp, color), chartType, 0);
-                }
-
-                if (mollierChartObject != null)
-                {
-                    mollierChartObjects.Add(mollierChartObject);
-                }
+                MollierChartObject mollierChartObject2 = new MollierChartObject(uIMollierObject2, chartType, 0);
+                mollierChartObjects.Add(mollierChartObject2);
             }
-
-            foreach (IMollierPoint mollierPoint in mollierPoints)
-            {
-                if (mollierPoint == null)
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
-                    return;
-                }
-
-                MollierPoint mollierPoint_Temp = mollierPoint is UIMollierPoint ? ((UIMollierPoint)mollierPoint).MollierPoint : mollierPoint as MollierPoint;
-                if (mollierPoint_Temp == null)
-                {
-                    AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
-                    return;
-                }
-
-                System.Drawing.Color color = Mollier.Query.Color(mollierPoint);
-
-                MollierChartObject mollierChartObject = new MollierChartObject(new UIMollierPoint(mollierPoint_Temp, color), chartType, 0);
-                if (mollierChartObject != null)
-                {
-                    mollierChartObjects.Add(mollierChartObject);
-                }
-            }
-
 
             index = Params.IndexOfOutputParam("MollierGeometry");
 
@@ -196,14 +147,8 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             
             IGH_Param gH_Param = null;
 
-            gH_Param = Params.Input?.Find(x => x.Name == "Mollier Processes");
+            gH_Param = Params.Input?.Find(x => x.Name == "_mollierObjects");
             if(gH_Param != null)
-            {
-                result.Add(gH_Param);
-            }
-
-            gH_Param = Params.Input?.Find(x => x.Name == "Mollier Points");
-            if (gH_Param != null)
             {
                 result.Add(gH_Param);
             }

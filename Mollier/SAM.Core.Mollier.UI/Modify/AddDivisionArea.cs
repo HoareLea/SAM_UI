@@ -31,9 +31,32 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
+        /// <summary>
+        /// Creates series for division area lines
+        /// More about division area in Query.DivisionArea
+        /// </summary>
+        /// <param name="chart"></param>
+        /// <param name="mollierModel"></param>
+        /// <param name="mollierControlSettings"></param>
+        /// <returns>List of created series</returns>
+        public static List<Series> AddDivisionArea(this Chart chart, MollierModel mollierModel, MollierControlSettings mollierControlSettings)
+        {
+            if (mollierModel == null)
+            {
+                return null;
+            }
+
+            List<UIMollierPoint> uIMollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>();
+
+            return chart.AddDivisionArea(uIMollierPoints, mollierControlSettings);
+        }
         private static Series addDivisionArea(this Chart chart, UIMollierZone divisionArea, MollierControlSettings mollierControlSettings)
         {
-            if (divisionArea == null || divisionArea.MollierPoints == null || divisionArea.MollierPoints.Count < 4)
+            if (divisionArea == null || divisionArea == null)
+            {
+                return null;
+            }
+            if(divisionArea.MollierPoints == null || divisionArea.MollierPoints.Count < 4)
             {
                 return null;
             }
@@ -42,11 +65,12 @@ namespace SAM.Core.Mollier.UI
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
             series.BorderWidth = 3;
-            series.Color = divisionArea.Color;
+            series.Color = divisionArea.UIMollierAppearance.Color;
 
             if(!mollierControlSettings.DivisionAreaLabels)
             {
-                divisionArea.Text = "";
+                string text = "";
+                divisionArea.UIMollierAppearance = new UIMollierAppearance(divisionArea.UIMollierAppearance.Color, text);
             }
             series.Tag = divisionArea;
 

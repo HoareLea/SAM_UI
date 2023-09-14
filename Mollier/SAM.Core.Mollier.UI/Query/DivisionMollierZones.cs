@@ -7,6 +7,13 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Creates mollier zones in place of points with color that depends on their density
+        /// in a given area
+        /// </summary>
+        /// <param name="mollierPoints">Mollier points</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of divided zones</returns>
         public static List<UIMollierZone> DivisionMollierZones(this IEnumerable<UIMollierPoint> mollierPoints, MollierControlSettings mollierControlSettings)
         {
             if(mollierPoints == null || mollierControlSettings == null)

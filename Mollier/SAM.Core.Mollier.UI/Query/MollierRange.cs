@@ -2,6 +2,11 @@
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Calculates mollier range for given axes length from settings 
+        /// </summary>
+        /// <param name="mollierControlSettings"></param>
+        /// <returns>Mollier range</returns>
         public static MollierRange MollierRange(this MollierControlSettings mollierControlSettings)
         {
             if(mollierControlSettings == null)

@@ -84,7 +84,6 @@
     <Compile Include="Classes\MollierPointEventArgs.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
     <Compile Include="Classes\ChartLabel.cs" />
-    <Compile Include="Classes\UIMollierZone.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
     <Compile Include="Classes\DisplayAnalyticalObject.cs" />
     <Compile Include="Classes\VisibilitySettings.cs" />
@@ -194,6 +193,8 @@
     <Compile Include="Convert\ToMollier\MollierPoint.cs" />
     <Compile Include="Convert\ToSAM\Point2D.cs" />
     <Compile Include="Convert\ToChart\Series.cs" />
+    <Compile Include="Convert\ToSAM_UI\UIMollierGroup.cs" />
+    <Compile Include="Convert\ToSAM_UI\IMollierObject.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
     <Compile Include="Delegates\MollierPointEditedEventHandler.cs" />
@@ -273,16 +274,12 @@
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\DivisionMollierZones.cs" />
-    <Compile Include="Query\IsEqual.cs" />
     <Compile Include="Query\Obstacles.cs" />
     <Compile Include="Query\AxesRatio.cs" />
     <Compile Include="Query\DefaultPoint2D.cs" />
     <Compile Include="Query\MollierRange.cs" />
-    <Compile Include="Query\HumidityRatioRange.cs" />
-    <Compile Include="Query\DryBulbTemperatureRange.cs" />
     <Compile Include="Query\FindPoints.cs" />
     <Compile Include="Query\Rectangle.cs" />
-    <Compile Include="Query\Angle.cs" />
     <Compile Include="Query\ConstantValueCurves.cs" />
     <Compile Include="Query\Contains.cs" />
     <Compile Include="Query\ToolTipText.cs" />
@@ -293,9 +290,7 @@
     <Compile Include="Query\DewPoint.cs" />
     <Compile Include="Query\MollierPointByTwoParameters.cs" />
     <Compile Include="Query\ShapeSizeFactor.cs" />
-    <Compile Include="Query\FindDivisionAreaCornerPoint.cs" />
     <Compile Include="Query\FullProcessName.cs" />
-    <Compile Include="Query\ProcessSortBySystem.cs" />
     <Compile Include="Query\ScaleVector2D.cs" />
     <Compile Include="Query\DefaultMollierZones.cs" />
     <Compile Include="Query\DefaultPointGradientVisibilitySetting.cs" />
@@ -307,7 +302,6 @@
     <Compile Include="Query\DefaultUnitType.cs" />
     <Compile Include="Query\UnitCategory.cs" />
     <Compile Include="Query\ZoomParameters.cs" />
-    <Compile Include="Temporary\Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\AdiabaticHumidificationProcessControl.resx">
@@ -402,6 +396,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Temporary\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

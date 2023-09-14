@@ -6,12 +6,18 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
+        /// <summary>
+        /// Calculates all the obstacles on the chart
+        /// </summary>
+        /// <param name="chart">Chart</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of Iclosed2D obstacles</returns>
         public static List<IClosed2D> Obstacles(this Chart chart, MollierControlSettings mollierControlSettings)
         {
             List<IClosed2D> result = new List<IClosed2D>();
             ChartType chartType = mollierControlSettings.ChartType;
-            Vector2D scaleVector = Query.ScaleVector2D(chart.Parent, mollierControlSettings);
-            double axesRatio = Query.AxesRatio(chart, mollierControlSettings);
+            Vector2D scaleVector = ScaleVector2D(chart.Parent, mollierControlSettings);
+            double axesRatio = AxesRatio(chart, mollierControlSettings);
 
             foreach (Series series in chart.Series)
             {
@@ -64,16 +70,16 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-        private static List<IClosed2D> obstacles_Zone(UIMollierZone zone, ChartType chartType, Vector2D scaleVector, double axesRatio)
+        private static List<IClosed2D> obstacles_Zone(UIMollierZone uIMollierZone, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<IClosed2D> result = new List<IClosed2D>();
             double zoneWidth = 0.05 * scaleVector.Y;
 
-            for (int i = 0; i < zone.MollierPoints.Count; i++)
+            for (int i = 0; i < uIMollierZone.MollierPoints.Count; i++)
             {
-                int previousPointID = i == 0 ? zone.MollierPoints.Count - 1 : i - 1;
-                Point2D start = Convert.ToSAM(zone.MollierPoints[i], chartType);
-                Point2D end = Convert.ToSAM(zone.MollierPoints[previousPointID], chartType);
+                int previousPointID = i == 0 ? uIMollierZone.MollierPoints.Count - 1 : i - 1;
+                Point2D start = Convert.ToSAM(uIMollierZone.MollierPoints[i], chartType);
+                Point2D end = Convert.ToSAM(uIMollierZone.MollierPoints[previousPointID], chartType);
                 Segment2D zoneSegment = new Segment2D(start, end);
 
                 result.Add(Geometry.Planar.Create.Rectangle2D(zoneSegment, zoneWidth, axesRatio));

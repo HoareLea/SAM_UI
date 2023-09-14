@@ -9,6 +9,12 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
+        /// <summary>
+        /// Creates series for labels of all mollier objects that exist on the chart.
+        /// </summary>
+        /// <param name="chart">Mollier chart</param>
+        /// <param name="mollierControlSettings">Mollier control settings</param>
+        /// <returns>List of created series</returns>
         public static List<Series> AddLabels(this Chart chart, MollierControlSettings mollierControlSettings)
         {
             Vector2D scaleVector = Query.ScaleVector2D(chart.Parent, mollierControlSettings);
