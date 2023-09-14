@@ -417,7 +417,7 @@ namespace SAM.Core.Mollier.UI.Controls
             List<UIMollierProcess> result = new List<UIMollierProcess>();
             foreach (IMollierProcess mollierProcess in mollierProcesses)
             {
-                if (mollierProcess.Start == null || mollierProcess.End == null)
+                if (mollierProcess == null || mollierProcess.Start == null || mollierProcess.End == null)
                 {
                     continue;
                 }
@@ -426,8 +426,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     continue;
                 }
 
-                Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, ((UIMollierProcess)mollierProcess).MollierProcess);
-                string label = ""; 
+                Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess);
+                string label = Query.ProcessName(mollierProcess); 
                 MollierProcess mollierProcess1 = null;
 
                 Color startColor = Color.Black;
@@ -444,7 +444,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
                     label = ((UIMollierProcess)mollierProcess).UIMollierAppearance?.Label;
                 }
-                else if(mollierProcess1 is MollierProcess)
+                else if(mollierProcess is MollierProcess)
                 {
                     mollierProcess1 = (MollierProcess)mollierProcess;
                     color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess1);
