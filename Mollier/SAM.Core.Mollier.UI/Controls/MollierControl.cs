@@ -501,7 +501,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 UIMollierGroup uIMollierGroup = new UIMollierGroup(mollierGroup1, new UIMollierAppearance(color, name));
 
-                uIMollierGroup = mollierGroup1.ToSAM_UI(true); // TODO: move it / change it
+                uIMollierGroup = mollierGroup1.ToSAM_UI(true, mollierControlSettings); // TODO: move it / change it
 
                 result.Add(uIMollierGroup);
             }

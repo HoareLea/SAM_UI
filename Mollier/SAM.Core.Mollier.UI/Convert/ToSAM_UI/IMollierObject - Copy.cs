@@ -4,7 +4,7 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Convert
     {
-        public static UIMollierGroup ToSAM_UI(this MollierGroup mollierGroup, bool includeNestedObjects = true)
+        public static UIMollierGroup ToSAM_UI(this MollierGroup mollierGroup, bool includeNestedObjects = true, MollierControlSettings mollierControlSettings = null)
         {
             UIMollierGroup result = new UIMollierGroup(new MollierGroup(mollierGroup.Name));
             for(int i = mollierGroup.Count - 1; i >= 0; i--)
@@ -26,6 +26,10 @@ namespace SAM.Core.Mollier.UI
                     {
                         MollierProcess mollierProcess = (MollierProcess)mollierGroupable;
                         Color color = mollierProcess.Color();
+                        if(mollierControlSettings != null)
+                        {
+                            color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess);
+                        }
                         result.Add(new UIMollierProcess(mollierProcess, color));
                     }
                     else if(mollierGroupable is MollierZone)
