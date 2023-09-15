@@ -67,7 +67,7 @@ namespace SAM.Analytical.UI
                 mollierGroup = airHandlingUnitResult.GetValue<MollierGroup>(AirHandlingUnitResultParameter.Processes);
             }
 
-            List<IMollierProcess> mollierProcesses = mollierGroup?.GetMollierProcesses();
+            List<IMollierProcess> mollierProcesses = mollierGroup?.GetObjects<IMollierProcess>();
 
             double pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
 

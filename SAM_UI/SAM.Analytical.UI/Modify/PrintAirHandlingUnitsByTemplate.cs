@@ -204,7 +204,7 @@ namespace SAM.Analytical.UI
                         mollierControl.MollierControlSettings = mollierControlSettings;
 
                         //mollierProcesses?.ForEach(x => mollierControl.AddProcess(x, false));
-                        mollierControl.AddMollierObjects(mollierGroup.GetMollierProcesses(), false);
+                        mollierControl.AddMollierObjects(mollierGroup.GetObjects<UIMollierProcess>(), false);
 
                         mollierControl.Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
                         mollierControl.Refresh();

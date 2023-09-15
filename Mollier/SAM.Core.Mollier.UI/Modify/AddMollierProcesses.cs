@@ -280,7 +280,7 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
                 char name = 'A';
-                List<IMollierProcess> processList = mollierGroup.GetMollierProcesses();
+                List<IMollierProcess> processList = mollierGroup.GetObjects<IMollierProcess>();
                 if(processList == null)
                 {
                     continue;
@@ -331,7 +331,10 @@ namespace SAM.Core.Mollier.UI
                     UI_MollierProcess.UIMollierAppearance.Label = UI_MollierProcess.UIMollierAppearance.Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.UIMollierAppearance.Label;
                     
                     name++;
-                    labeledMollierProcesses.Add(new UIMollierProcess(UI_MollierProcess));
+                    if (UI_MollierProcess.UIMollierAppearance.Visible == true)
+                    {
+                        labeledMollierProcesses.Add(new UIMollierProcess(UI_MollierProcess));
+                    }
                 }
             }
 

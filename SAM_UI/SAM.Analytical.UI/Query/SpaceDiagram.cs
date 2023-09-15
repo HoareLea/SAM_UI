@@ -86,7 +86,7 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            List<IMollierProcess> mollierProcesses = mollierGroup?.GetMollierProcesses();
+            List<IMollierProcess> mollierProcesses = mollierGroup?.GetObjects<IMollierProcess>();
             if(mollierProcesses == null)
             {
                 return;

@@ -164,7 +164,7 @@ namespace SAM.Analytical.UI.Grasshopper
                         {
                             MollierGroup  mollierGroup = airHandlingUnitResult.GetValue<MollierGroup>(AirHandlingUnitResultParameter.Processes);
 
-                            List<IMollierProcess> mollierProcesses = mollierGroup?.GetMollierProcesses();
+                            List<IMollierProcess> mollierProcesses = mollierGroup?.GetObjects<IMollierProcess>();
 
                             double pressure = Standard.Pressure;
 

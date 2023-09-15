@@ -23,7 +23,7 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             InitializeComponent();
             this.mollierControl = mollierControl;
-            List<UIMollierProcess> mollierProcesses = mollierControl.UIMollierProcesses;
+            List<UIMollierProcess> mollierProcesses = mollierControl.UIMollierObjects<UIMollierProcess>();
             if(mollierProcesses == null)
             {
                 return;
