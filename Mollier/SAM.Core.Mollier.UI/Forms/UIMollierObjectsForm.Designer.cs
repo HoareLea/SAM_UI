@@ -38,17 +38,6 @@
             this.customizeMollierObjectsTabControl = new System.Windows.Forms.TabControl();
             this.tabCustomizePointPage = new System.Windows.Forms.TabPage();
             this.DataGridView_MollierPoints = new System.Windows.Forms.DataGridView();
-            this.Column_Label = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_DryBulbTemperature = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_HumidityRatio = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_RelativeHumidity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_WetBulbTemperature = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_DewPointTemperature = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_SpecificVolume = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_Enthalpy = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_Density = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column_Edit = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.Column_Remove = new System.Windows.Forms.DataGridViewButtonColumn();
             this.ContextMenuStrip_Main = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.ToolStripMenuItem_Edit = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_Remove = new System.Windows.Forms.ToolStripMenuItem();
@@ -62,6 +51,7 @@
             this.SupplyAirFlow_TextBox = new System.Windows.Forms.TextBox();
             this.Pressure_Label = new System.Windows.Forms.Label();
             this.DataGridView_MollierProcesses = new System.Windows.Forms.DataGridView();
+            this.VisibleProcess_Column = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Column_MollierProcess_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_MollierProcess_Label = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_MollierProcess_DryBulbTemperature = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -78,6 +68,18 @@
             this.Column_MollierProcess_LatentLoad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_MollierProcess_Edit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.Column_MollierProcess_Remove = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Visible_Column = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.Column_Label = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_DryBulbTemperature = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_HumidityRatio = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_RelativeHumidity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_WetBulbTemperature = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_DewPointTemperature = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_SpecificVolume = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_Enthalpy = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_Density = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column_Edit = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Column_Remove = new System.Windows.Forms.DataGridViewButtonColumn();
             this.customizeMollierObjectsTabControl.SuspendLayout();
             this.tabCustomizePointPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_MollierPoints)).BeginInit();
@@ -123,6 +125,7 @@
             this.DataGridView_MollierPoints.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.DataGridView_MollierPoints.ColumnHeadersHeight = 66;
             this.DataGridView_MollierPoints.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Visible_Column,
             this.Column_Label,
             this.Column_DryBulbTemperature,
             this.Column_HumidityRatio,
@@ -161,103 +164,6 @@
             this.DataGridView_MollierPoints.Size = new System.Drawing.Size(1507, 507);
             this.DataGridView_MollierPoints.TabIndex = 0;
             this.DataGridView_MollierPoints.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_CellContentClick);
-            // 
-            // Column_Label
-            // 
-            this.Column_Label.DataPropertyName = "Label";
-            this.Column_Label.HeaderText = "Label";
-            this.Column_Label.MinimumWidth = 8;
-            this.Column_Label.Name = "Column_Label";
-            this.Column_Label.ReadOnly = true;
-            this.Column_Label.Width = 84;
-            // 
-            // Column_DryBulbTemperature
-            // 
-            this.Column_DryBulbTemperature.DataPropertyName = "DryBulbTemperature";
-            this.Column_DryBulbTemperature.HeaderText = "Dry bulb temperature t [°C]";
-            this.Column_DryBulbTemperature.MinimumWidth = 8;
-            this.Column_DryBulbTemperature.Name = "Column_DryBulbTemperature";
-            this.Column_DryBulbTemperature.ReadOnly = true;
-            this.Column_DryBulbTemperature.Width = 134;
-            // 
-            // Column_HumidityRatio
-            // 
-            this.Column_HumidityRatio.DataPropertyName = "HumidityRatio";
-            this.Column_HumidityRatio.HeaderText = "Humidity ratio \nx [g/kg]";
-            this.Column_HumidityRatio.MinimumWidth = 8;
-            this.Column_HumidityRatio.Name = "Column_HumidityRatio";
-            this.Column_HumidityRatio.ReadOnly = true;
-            this.Column_HumidityRatio.Width = 134;
-            // 
-            // Column_RelativeHumidity
-            // 
-            this.Column_RelativeHumidity.DataPropertyName = "RelativeHumidity";
-            this.Column_RelativeHumidity.HeaderText = "Relative humidity \n φ [%]";
-            this.Column_RelativeHumidity.MinimumWidth = 8;
-            this.Column_RelativeHumidity.Name = "Column_RelativeHumidity";
-            this.Column_RelativeHumidity.ReadOnly = true;
-            this.Column_RelativeHumidity.Width = 154;
-            // 
-            // Column_WetBulbTemperature
-            // 
-            this.Column_WetBulbTemperature.DataPropertyName = "WetBulbTemperature";
-            this.Column_WetBulbTemperature.HeaderText = "Wet bulb temperature\n t_wb [°C]";
-            this.Column_WetBulbTemperature.MinimumWidth = 8;
-            this.Column_WetBulbTemperature.Name = "Column_WetBulbTemperature";
-            this.Column_WetBulbTemperature.ReadOnly = true;
-            this.Column_WetBulbTemperature.Width = 182;
-            // 
-            // Column_DewPointTemperature
-            // 
-            this.Column_DewPointTemperature.DataPropertyName = "DewPointTemperature";
-            this.Column_DewPointTemperature.HeaderText = "Dew point temperature t_tao [°C]";
-            this.Column_DewPointTemperature.MinimumWidth = 8;
-            this.Column_DewPointTemperature.Name = "Column_DewPointTemperature";
-            this.Column_DewPointTemperature.ReadOnly = true;
-            this.Column_DewPointTemperature.Width = 162;
-            // 
-            // Column_SpecificVolume
-            // 
-            this.Column_SpecificVolume.DataPropertyName = "SpecificVolume";
-            this.Column_SpecificVolume.HeaderText = "Specific volume \nv [m3/kg]";
-            this.Column_SpecificVolume.MinimumWidth = 8;
-            this.Column_SpecificVolume.Name = "Column_SpecificVolume";
-            this.Column_SpecificVolume.ReadOnly = true;
-            this.Column_SpecificVolume.Width = 146;
-            // 
-            // Column_Enthalpy
-            // 
-            this.Column_Enthalpy.DataPropertyName = "Enthalpy";
-            this.Column_Enthalpy.HeaderText = "Enthalpy h [kJ/kg*K]";
-            this.Column_Enthalpy.MinimumWidth = 8;
-            this.Column_Enthalpy.Name = "Column_Enthalpy";
-            this.Column_Enthalpy.ReadOnly = true;
-            this.Column_Enthalpy.Width = 115;
-            // 
-            // Column_Density
-            // 
-            this.Column_Density.DataPropertyName = "Density";
-            this.Column_Density.HeaderText = "Density\n p [kg/m3]";
-            this.Column_Density.MinimumWidth = 8;
-            this.Column_Density.Name = "Column_Density";
-            this.Column_Density.ReadOnly = true;
-            this.Column_Density.Width = 105;
-            // 
-            // Column_Edit
-            // 
-            this.Column_Edit.HeaderText = "Edit";
-            this.Column_Edit.MinimumWidth = 8;
-            this.Column_Edit.Name = "Column_Edit";
-            this.Column_Edit.ReadOnly = true;
-            this.Column_Edit.Width = 43;
-            // 
-            // Column_Remove
-            // 
-            this.Column_Remove.HeaderText = "Remove";
-            this.Column_Remove.MinimumWidth = 8;
-            this.Column_Remove.Name = "Column_Remove";
-            this.Column_Remove.ReadOnly = true;
-            this.Column_Remove.Width = 74;
             // 
             // ContextMenuStrip_Main
             // 
@@ -408,6 +314,7 @@
             this.DataGridView_MollierProcesses.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.DataGridView_MollierProcesses.ColumnHeadersHeight = 66;
             this.DataGridView_MollierProcesses.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.VisibleProcess_Column,
             this.Column_MollierProcess_Name,
             this.Column_MollierProcess_Label,
             this.Column_MollierProcess_DryBulbTemperature,
@@ -451,7 +358,14 @@
             this.DataGridView_MollierProcesses.Size = new System.Drawing.Size(1507, 462);
             this.DataGridView_MollierProcesses.TabIndex = 0;
             this.DataGridView_MollierProcesses.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_CellContentClick);
-            this.DataGridView_MollierProcesses.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.DataGridView_MollierProcesses_CellPainting);
+            // 
+            // VisibleProcess_Column
+            // 
+            this.VisibleProcess_Column.DataPropertyName = "Visible";
+            this.VisibleProcess_Column.HeaderText = "Visible";
+            this.VisibleProcess_Column.MinimumWidth = 8;
+            this.VisibleProcess_Column.Name = "VisibleProcess_Column";
+            this.VisibleProcess_Column.Width = 61;
             // 
             // Column_MollierProcess_Name
             // 
@@ -597,6 +511,111 @@
             this.Column_MollierProcess_Remove.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.Column_MollierProcess_Remove.Width = 104;
             // 
+            // Visible_Column
+            // 
+            this.Visible_Column.DataPropertyName = "Visible";
+            this.Visible_Column.HeaderText = "Visible";
+            this.Visible_Column.MinimumWidth = 8;
+            this.Visible_Column.Name = "Visible_Column";
+            this.Visible_Column.Width = 61;
+            // 
+            // Column_Label
+            // 
+            this.Column_Label.DataPropertyName = "Label";
+            this.Column_Label.HeaderText = "Label";
+            this.Column_Label.MinimumWidth = 8;
+            this.Column_Label.Name = "Column_Label";
+            this.Column_Label.ReadOnly = true;
+            this.Column_Label.Width = 84;
+            // 
+            // Column_DryBulbTemperature
+            // 
+            this.Column_DryBulbTemperature.DataPropertyName = "DryBulbTemperature";
+            this.Column_DryBulbTemperature.HeaderText = "Dry bulb temperature t [°C]";
+            this.Column_DryBulbTemperature.MinimumWidth = 8;
+            this.Column_DryBulbTemperature.Name = "Column_DryBulbTemperature";
+            this.Column_DryBulbTemperature.ReadOnly = true;
+            this.Column_DryBulbTemperature.Width = 134;
+            // 
+            // Column_HumidityRatio
+            // 
+            this.Column_HumidityRatio.DataPropertyName = "HumidityRatio";
+            this.Column_HumidityRatio.HeaderText = "Humidity ratio \nx [g/kg]";
+            this.Column_HumidityRatio.MinimumWidth = 8;
+            this.Column_HumidityRatio.Name = "Column_HumidityRatio";
+            this.Column_HumidityRatio.ReadOnly = true;
+            this.Column_HumidityRatio.Width = 134;
+            // 
+            // Column_RelativeHumidity
+            // 
+            this.Column_RelativeHumidity.DataPropertyName = "RelativeHumidity";
+            this.Column_RelativeHumidity.HeaderText = "Relative humidity \n φ [%]";
+            this.Column_RelativeHumidity.MinimumWidth = 8;
+            this.Column_RelativeHumidity.Name = "Column_RelativeHumidity";
+            this.Column_RelativeHumidity.ReadOnly = true;
+            this.Column_RelativeHumidity.Width = 154;
+            // 
+            // Column_WetBulbTemperature
+            // 
+            this.Column_WetBulbTemperature.DataPropertyName = "WetBulbTemperature";
+            this.Column_WetBulbTemperature.HeaderText = "Wet bulb temperature\n t_wb [°C]";
+            this.Column_WetBulbTemperature.MinimumWidth = 8;
+            this.Column_WetBulbTemperature.Name = "Column_WetBulbTemperature";
+            this.Column_WetBulbTemperature.ReadOnly = true;
+            this.Column_WetBulbTemperature.Width = 182;
+            // 
+            // Column_DewPointTemperature
+            // 
+            this.Column_DewPointTemperature.DataPropertyName = "DewPointTemperature";
+            this.Column_DewPointTemperature.HeaderText = "Dew point temperature t_tao [°C]";
+            this.Column_DewPointTemperature.MinimumWidth = 8;
+            this.Column_DewPointTemperature.Name = "Column_DewPointTemperature";
+            this.Column_DewPointTemperature.ReadOnly = true;
+            this.Column_DewPointTemperature.Width = 162;
+            // 
+            // Column_SpecificVolume
+            // 
+            this.Column_SpecificVolume.DataPropertyName = "SpecificVolume";
+            this.Column_SpecificVolume.HeaderText = "Specific volume \nv [m3/kg]";
+            this.Column_SpecificVolume.MinimumWidth = 8;
+            this.Column_SpecificVolume.Name = "Column_SpecificVolume";
+            this.Column_SpecificVolume.ReadOnly = true;
+            this.Column_SpecificVolume.Width = 146;
+            // 
+            // Column_Enthalpy
+            // 
+            this.Column_Enthalpy.DataPropertyName = "Enthalpy";
+            this.Column_Enthalpy.HeaderText = "Enthalpy h [kJ/kg*K]";
+            this.Column_Enthalpy.MinimumWidth = 8;
+            this.Column_Enthalpy.Name = "Column_Enthalpy";
+            this.Column_Enthalpy.ReadOnly = true;
+            this.Column_Enthalpy.Width = 115;
+            // 
+            // Column_Density
+            // 
+            this.Column_Density.DataPropertyName = "Density";
+            this.Column_Density.HeaderText = "Density\n p [kg/m3]";
+            this.Column_Density.MinimumWidth = 8;
+            this.Column_Density.Name = "Column_Density";
+            this.Column_Density.ReadOnly = true;
+            this.Column_Density.Width = 105;
+            // 
+            // Column_Edit
+            // 
+            this.Column_Edit.HeaderText = "Edit";
+            this.Column_Edit.MinimumWidth = 8;
+            this.Column_Edit.Name = "Column_Edit";
+            this.Column_Edit.ReadOnly = true;
+            this.Column_Edit.Width = 43;
+            // 
+            // Column_Remove
+            // 
+            this.Column_Remove.HeaderText = "Remove";
+            this.Column_Remove.MinimumWidth = 8;
+            this.Column_Remove.Name = "Column_Remove";
+            this.Column_Remove.ReadOnly = true;
+            this.Column_Remove.Width = 74;
+            // 
             // UIMollierObjectsForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -629,17 +648,6 @@
         private System.Windows.Forms.TextBox SupplyAirFlow_TextBox;
         private System.Windows.Forms.Label Pressure_Label;
         private System.Windows.Forms.TextBox Pressure_TextBox;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_Label;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_DryBulbTemperature;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_HumidityRatio;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_RelativeHumidity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_WetBulbTemperature;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_DewPointTemperature;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_SpecificVolume;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_Enthalpy;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Column_Density;
-        private System.Windows.Forms.DataGridViewButtonColumn Column_Edit;
-        private System.Windows.Forms.DataGridViewButtonColumn Column_Remove;
         private System.Windows.Forms.TextBox ExhaustAirFlow_TextBox;
         private System.Windows.Forms.ComboBox SupplyAirflow_ComboBox;
         private System.Windows.Forms.ComboBox ExhaustAirflow_Combobox;
@@ -648,6 +656,7 @@
         private System.Windows.Forms.ContextMenuStrip ContextMenuStrip_Main;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Edit;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Remove;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn VisibleProcess_Column;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Name;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Label;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_DryBulbTemperature;
@@ -664,5 +673,17 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_LatentLoad;
         private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Edit;
         private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Remove;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Visible_Column;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_Label;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_DryBulbTemperature;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_HumidityRatio;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_RelativeHumidity;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_WetBulbTemperature;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_DewPointTemperature;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_SpecificVolume;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_Enthalpy;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column_Density;
+        private System.Windows.Forms.DataGridViewButtonColumn Column_Edit;
+        private System.Windows.Forms.DataGridViewButtonColumn Column_Remove;
     }
 }

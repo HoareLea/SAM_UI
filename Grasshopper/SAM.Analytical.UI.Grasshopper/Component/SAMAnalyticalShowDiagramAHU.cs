@@ -184,7 +184,7 @@ namespace SAM.Analytical.UI.Grasshopper
                 mollierForm.Clear();
             }
 
-            List<IMollierProcess> mollierProcesses = mollierGroup?.GetMollierProcesses();
+            List<IMollierProcess> mollierProcesses = mollierGroup?.GetObjects<IMollierProcess>();
 
             double pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
 

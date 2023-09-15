@@ -59,6 +59,7 @@ namespace SAM.Core.Mollier.UI
 
             List<UIMollierZone> uIMollierZones = mollierModel.GetMollierObjects<UIMollierZone>();
 
+            uIMollierZones = uIMollierZones?.FindAll(x => x.UIMollierAppearance.Visible == true);
             return chart.AddMollierZones(uIMollierZones, mollierControlSettings);
         }
     }

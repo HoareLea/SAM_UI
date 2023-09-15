@@ -24,7 +24,13 @@ namespace SAM.Core.Mollier.UI
             this.airFlowUnit = airFlowUnit;
             Index = index;
         }
-
+        public bool Visible
+        { 
+            get
+            {
+                return UIMollierObject.UIMollierAppearance.Visible;
+            }
+        }
         public string Name
         { 
             get

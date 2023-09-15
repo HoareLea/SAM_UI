@@ -97,6 +97,7 @@ namespace SAM.Core.Mollier.UI
                 }
             }
 
+            uIMollierPoints = uIMollierPoints?.FindAll(x => x.UIMollierAppearance.Visible == true);
             return chart.AddMollierPoints(uIMollierPoints, mollierControlSettings);
         }
     }

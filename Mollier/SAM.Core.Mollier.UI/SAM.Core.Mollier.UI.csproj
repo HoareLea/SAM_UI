@@ -74,10 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
-    <Compile Include="Classes\EventArgs\MollierPointRemovedEventArgs.cs" />
-    <Compile Include="Classes\EventArgs\MollierPointEditedEventArgs.cs" />
-    <Compile Include="Classes\EventArgs\MollierProcessEditedEventArgs.cs" />
-    <Compile Include="Classes\EventArgs\MollierProcessRemovedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\MollierModelEditedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs - Copy.cs" />
     <Compile Include="Classes\EventArgs\MollierPointSelectedEventArgs.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
@@ -197,10 +194,7 @@
     <Compile Include="Convert\ToSAM_UI\IMollierObject.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
-    <Compile Include="Delegates\MollierPointEditedEventHandler.cs" />
-    <Compile Include="Delegates\MollierProcessEditedEventHandler.cs" />
-    <Compile Include="Delegates\MollierPointRemovedEventHandler.cs" />
-    <Compile Include="Delegates\MollierProcessRemovedEventHandler.cs" />
+    <Compile Include="Delegates\MollierModelEditedEventHandler.cs" />
     <Compile Include="Delegates\MollierPointSelectedEventHandler.cs" />
     <Compile Include="Delegates\SelectMollierPointEventHandler.cs" />
     <Compile Include="Enums\ProcessParameterType.cs" />
