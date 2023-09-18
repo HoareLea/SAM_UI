@@ -81,22 +81,6 @@ namespace SAM.Core.Mollier.UI
 
             List<UIMollierPoint> uIMollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>();
 
-            List<IMollierGroup> mollierGroups = mollierModel.GetMollierObjects<IMollierGroup>();
-            if(mollierGroups != null)
-            {
-                foreach(IMollierGroup mollierGroup in mollierGroups)
-                {
-                    if(mollierGroup is UIMollierGroup)
-                    {
-                        uIMollierPoints.AddRange(((UIMollierGroup)mollierGroup).GetObjects<UIMollierPoint>());
-                    }
-                    else if(mollierGroup is MollierGroup)
-                    {
-                        uIMollierPoints.AddRange(((MollierGroup)mollierGroup).GetObjects<UIMollierPoint>());
-                    }
-                }
-            }
-
             uIMollierPoints = uIMollierPoints?.FindAll(x => x.UIMollierAppearance.Visible == true);
             return chart.AddMollierPoints(uIMollierPoints, mollierControlSettings);
         }

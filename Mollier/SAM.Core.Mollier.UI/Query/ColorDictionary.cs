@@ -30,7 +30,10 @@ namespace SAM.Core.Mollier.UI
                     {
                         point.UIMollierAppearance.Color = color;
                     }
-                    result.Add(point, Color.Empty);
+                    if(!result.ContainsKey(point))
+                    {
+                        result.Add(point, Color.Empty);
+                    }
                 }
                 return result;
             }

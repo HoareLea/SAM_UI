@@ -304,7 +304,6 @@ namespace SAM.Core.Mollier.UI
 
             return true;
         }
-        
         public bool AddMollierObjects(IEnumerable<IMollierObject> mollierObjects, bool checkPressure = true)
         {
             if(mollierObjects == null)
@@ -1077,8 +1076,14 @@ namespace SAM.Core.Mollier.UI
                 
                 manageMollierObjectsForm.FormClosing += manageMollierObjectsForm_Closing;
                 manageMollierObjectsForm.MollierModelEdited += ManageMollierObjectsForm_MollierModelEdited;
+                manageMollierObjectsForm.MollierObjectSelected += ManageMollierObjectsForm_MollierObjectSelected;
             }
             manageMollierObjectsForm?.Show();
+        }
+
+        private void ManageMollierObjectsForm_MollierObjectSelected(object sender, MollierObjectSelectedArgs e)
+        {
+            MollierControl_Main.Select(e.MollierObject);
         }
 
         private void ManageMollierObjectsForm_MollierModelEdited(object sender, MollierModelEditedEventArgs e)
@@ -1095,11 +1100,6 @@ namespace SAM.Core.Mollier.UI
             }
 
             manageMollierObjectsForm = null;
-        }
-    
-        public void RemovePoint(IMollierPoint mollierPoint)
-        {
-            MollierControl_Main.RemovePoints(new List<IMollierPoint>() { mollierPoint });
         }
 
         private void ToolStripMenuItem_PartialVapourPressure_Click(object sender, EventArgs e)

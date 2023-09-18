@@ -16,6 +16,7 @@ namespace SAM.Core.Mollier.UI.Forms
         private MollierControlSettings mollierControlSettings;
 
         public event MollierModelEditedEventHandler MollierModelEdited;
+        public event MollierObjectSelectedEventHandler MollierObjectSelected;
 
         private double airflow = 0;
         private Units.UnitType airFlowUnit = Units.UnitType.CubicMeterPerSecond;
@@ -35,6 +36,17 @@ namespace SAM.Core.Mollier.UI.Forms
             DataGridView_MollierProcesses.AutoGenerateColumns = false;
             DataGridView_MollierPoints.AutoGenerateColumns = false;
 
+            List<MollierGroup> mollierGroups = mollierModel.GetMollierObjects<MollierGroup>(false);
+            GroupSelection_ComboBox.Items.Add("All");
+            GroupSelection_ComboBox.SelectedItem = GroupSelection_ComboBox.Items[0];
+            mollierGroups?.ForEach(x =>
+            {
+                if (!string.IsNullOrEmpty(x.Name))
+                {
+                    GroupSelection_ComboBox.Items.Add(x.Name);
+                }
+            });
+
             Refresh(mollierModel);
         }
         public void Refresh(MollierModel mollierModel = null)
@@ -43,6 +55,41 @@ namespace SAM.Core.Mollier.UI.Forms
 
             generateDataGridViews();
         }
+        private void generateDataGridViews()
+        {
+            Pressure_TextBox.Text = mollierControlSettings.Pressure.ToString();
+            //Column_MollierProcess_MassFlow.HeaderText += " [" + airFlowUnit + "]";
+
+            List<UIMollierPoint> uIMollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>();
+            List<UIMollierProcess> uIMollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
+            List<MollierGroup> mollierGroups = mollierModel.GetMollierObjects<MollierGroup>();
+
+            if (uIMollierPoints != null)
+            {
+                DataGridView_MollierPoints.DataSource = uIMollierPoints.ConvertAll(x => new DisplayUIMollierObject(x));
+            }
+            if (uIMollierProcesses != null)
+            {
+                uIMollierProcesses = uIMollierProcesses.SortByGroup().ConvertAll(x => (UIMollierProcess)x);
+
+                List<DisplayUIMollierObject> displayAnalyticalObjects = new List<DisplayUIMollierObject>();
+                foreach (UIMollierProcess uIMollierProcess in uIMollierProcesses)
+                {
+                    string groupName = "";
+                    //mollierGroups[0]
+                    displayAnalyticalObjects.Add(new DisplayUIMollierObject(uIMollierProcess, 0, airflow, airFlowUnit));
+                    displayAnalyticalObjects.Add(new DisplayUIMollierObject(uIMollierProcess, 1, airflow, airFlowUnit));
+                }
+                DataGridView_MollierProcesses.DataSource = displayAnalyticalObjects;
+            }
+
+            // Width of text is the width of first line
+            // TODO: wrap all headers into one method and name it there instead of form
+            initializeColumnHeaders();
+
+        }
+
+
 
         private void ManageMollierObjectsForm_Load(object sender, EventArgs e)
         {
@@ -183,7 +230,6 @@ namespace SAM.Core.Mollier.UI.Forms
             TabPage tabPage = customizeMollierObjectsTabControl.SelectedTab;
             return (tabPage.Controls.Cast<Control>().ToList().Find(x => x is DataGridView) as DataGridView)?.SelectedRows?.Cast<DataGridViewRow>().ToList();
         }
-
         private void modifyRow(DataGridViewRow dataGridViewRow, IUIMollierObject mollierObject)
         {
             if(mollierObject == null)
@@ -241,29 +287,24 @@ namespace SAM.Core.Mollier.UI.Forms
 
             return newMollierObject;
         }
-        private void generateDataGridViews()
+
+        private void initializeColumnHeaders()
         {
-            Pressure_TextBox.Text = mollierControlSettings.Pressure.ToString();
-            //Column_MollierProcess_MassFlow.HeaderText += " [" + airFlowUnit + "]";
-
-            List<UIMollierPoint> uIMollierPoints = mollierModel.GetMollierObjects<UIMollierPoint>();
-            List<UIMollierProcess> uIMollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
-
-            if (uIMollierPoints != null)
-            {
-                DataGridView_MollierPoints.DataSource = uIMollierPoints.ConvertAll(x => new DisplayUIMollierObject(x));
-            }
-            if (uIMollierProcesses != null)
-            {
-                List<DisplayUIMollierObject> displayAnalyticalObjects = new List<DisplayUIMollierObject>();
-                foreach (UIMollierProcess uIMollierProcess in uIMollierProcesses)
-                {
-                    displayAnalyticalObjects.Add(new DisplayUIMollierObject(uIMollierProcess, 0, airflow, airFlowUnit));
-                    displayAnalyticalObjects.Add(new DisplayUIMollierObject(uIMollierProcess, 1, airflow, airFlowUnit));
-                }
-                DataGridView_MollierProcesses.DataSource = displayAnalyticalObjects;
-            }
-            DataGridViewColumn test = DataGridView_MollierProcesses.Columns[0];
+            DataGridView_MollierProcesses.Columns[0].HeaderText = "Visible";
+            DataGridView_MollierProcesses.Columns[1].HeaderText = "Name";
+            DataGridView_MollierProcesses.Columns[2].HeaderText = "Label";
+            DataGridView_MollierProcesses.Columns[3].HeaderText = "Dry Bulb   \ntemperature\nt [X]";
+            DataGridView_MollierProcesses.Columns[4].HeaderText = "Humidity\nratio\nx [x/xx]";
+            DataGridView_MollierProcesses.Columns[5].HeaderText = "Relative\nhumidity\nx [X]";
+            DataGridView_MollierProcesses.Columns[6].HeaderText = "Wet bulb   \ntemperature\nt_wb [X]";
+            DataGridView_MollierProcesses.Columns[7].HeaderText = "Dew point  \ntemperature\nt_tao [X]";
+            DataGridView_MollierProcesses.Columns[8].HeaderText = "Specific \nvolume \nv [m3/kg]";
+            DataGridView_MollierProcesses.Columns[9].HeaderText = "Enthalpy  \nh[kJ/kg*K]";
+            DataGridView_MollierProcesses.Columns[10].HeaderText = "Density\np[kg/s3]";
+            DataGridView_MollierProcesses.Columns[11].HeaderText = "Mass flow\nm [kg/s]";
+            DataGridView_MollierProcesses.Columns[12].HeaderText = "Total load  \r\nQtot [kW]";
+            DataGridView_MollierProcesses.Columns[13].HeaderText = "Sensible load \nQsens [kW]";
+            DataGridView_MollierProcesses.Columns[14].HeaderText = "Latent load\nQl [kW]";
         }
         private void editObject(IUIMollierObject mollierObject, IUIMollierObject newMollierObject)
         {
@@ -295,6 +336,25 @@ namespace SAM.Core.Mollier.UI.Forms
             MollierModelEditedEventArgs mollierModelEditedEventArgs = new MollierModelEditedEventArgs(mollierModel);
             MollierModelEdited.Invoke(this, mollierModelEditedEventArgs);
             generateDataGridViews();
+        }
+        private void DataGridView_SelectionChanged(object sender, EventArgs e)
+        {
+            DataGridView dataGridView = (DataGridView)sender;
+            if (dataGridView.SelectedRows == null || dataGridView.SelectedRows.Count == 0)
+            {
+                return;
+            }
+
+            DataGridViewRow row = dataGridView.SelectedRows[0];
+            DisplayUIMollierObject displayUIMollierObject = row?.DataBoundItem as DisplayUIMollierObject;
+
+            if (displayUIMollierObject.UIMollierObject == null)
+            {
+                return;
+            }
+
+            MollierObjectSelectedArgs mollierObjectSelectedArgs = new MollierObjectSelectedArgs(displayUIMollierObject.UIMollierObject);
+            MollierObjectSelected?.Invoke(this, mollierObjectSelectedArgs);
         }
     }
 }
