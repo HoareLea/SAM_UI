@@ -85,15 +85,12 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            List<IMollierGroup> groups = mollierModel.GetMollierObjects<IMollierGroup>();
+            List<UIMollierProcess> uIMollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
+            uIMollierProcesses = uIMollierProcesses?.FindAll(x => x.UIMollierAppearance.Visible == true);
 
-            List<UIMollierProcess> mollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
-            if(groups != null && mollierProcesses != null)
-            {
-                groups.AddRange(Mollier.Query.Group(mollierProcesses));
-            }
+            List<IMollierGroup> mollierGroups = uIMollierProcesses.Group();
 
-            return chart.AddMollierProcesses(groups, mollierControlSettings);
+            return chart.AddMollierProcesses(mollierGroups, mollierControlSettings);
         }
         
         // ------------------SERIES--------------------------------------------
@@ -305,25 +302,27 @@ namespace SAM.Core.Mollier.UI
                         UI_MollierProcess.UIMollierAppearance_End.Label = "ROOM";
                     }
 
-                    if (processList.Count > 1 && j == 0)
-                    {
-                        UI_MollierProcess.UIMollierAppearance_Start.Label = "OSA";
-                    }
-                    else if (UI_MollierProcess.UIMollierAppearance_Start.Label == "")
+                    //if (processList.Count > 1 && j == 0)
+                    //{
+                    //    UI_MollierProcess.UIMollierAppearance_Start.Label = "OSA";
+                    //}
+                    //else 
+                    if (UI_MollierProcess.UIMollierAppearance_Start.Label == "")
                     {
                         UI_MollierProcess.UIMollierAppearance_Start.Label = name + "1";
                     }
 
 
-                    if (processList.Count > 1 && j == processList.Count - 2 && ((UIMollierProcess)processList[j + 1]).MollierProcess is UndefinedProcess)
-                    {
-                        UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
-                    }
-                    else if (processList.Count > 1 && j == processList.Count - 1)
-                    {
-                        UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
-                    }
-                    else if (UI_MollierProcess.UIMollierAppearance_End.Label == "")
+                    //if (processList.Count > 1 && j == processList.Count - 2 && ((UIMollierProcess)processList[j + 1]).MollierProcess is UndefinedProcess)
+                    //{
+                    //    UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
+                    //}
+                    //else if (processList.Count > 1 && j == processList.Count - 1)
+                    //{
+                    //    UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
+                    //}
+                    //  else;
+                    if (UI_MollierProcess.UIMollierAppearance_End.Label == "")
                     {
                         UI_MollierProcess.UIMollierAppearance_End.Label = name + "2";
                     }
