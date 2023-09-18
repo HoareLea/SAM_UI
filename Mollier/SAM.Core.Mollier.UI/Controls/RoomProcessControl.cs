@@ -102,16 +102,16 @@ namespace SAM.Core.Mollier.UI.Controls
 
         public UIMollierProcess GetUIMollierProcess()
         {
-            UndefinedProcess undefinedProcess = GetUndefinedProcess();
-            if(undefinedProcess == null)
+            RoomProcess RoomProcess = GetRoomProcess();
+            if(RoomProcess == null)
             {
                 return null;
             }
 
-            return new UIMollierProcess(undefinedProcess, Color.Empty);
+            return new UIMollierProcess(RoomProcess, Color.Empty);
         }
 
-        public UndefinedProcess GetUndefinedProcess()
+        public RoomProcess GetRoomProcess()
         {
             mollierPointControl_Room.MollierPoint = null;
 
@@ -140,12 +140,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 return null;
             }
 
-            return Mollier.Create.UndefinedProcess(start, airFlow, sensibleLoad * 1000, latentHeat * 1000);
+            return Mollier.Create.RoomProcess(start, airFlow, sensibleLoad * 1000, latentHeat * 1000);
         }
 
         public void CalculateRoomMollierPoint()
         {
-            MollierPoint mollierPoint = GetUndefinedProcess()?.End;
+            MollierPoint mollierPoint = GetRoomProcess()?.End;
 
             mollierPointControl_Room.MollierPoint = mollierPoint;
             ParameterControl_HumidityRatio_Room.Value = mollierPoint == null ? double.NaN : Core.Query.Round(mollierPoint.HumidityRatio * 1000, Tolerance.MacroDistance);

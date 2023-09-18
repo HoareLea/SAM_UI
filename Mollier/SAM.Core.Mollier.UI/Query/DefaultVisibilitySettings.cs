@@ -88,7 +88,7 @@
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.AdiabaticHumidificationProcess, System.Drawing.Color.Purple));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.IsotermicHumidificationProcess, System.Drawing.Color.MediumPurple));
-            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.UndefinedProcess, System.Drawing.Color.Gray));
+            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
 
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
@@ -128,7 +128,7 @@
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.IsotermicHumidificationProcess, System.Drawing.Color.MediumPurple));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.AdiabaticHumidificationProcess, System.Drawing.Color.Purple));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.UndefinedProcess, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
@@ -167,7 +167,7 @@
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.IsotermicHumidificationProcess, System.Drawing.Color.MediumPurple));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.AdiabaticHumidificationProcess, System.Drawing.Color.Purple));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.UndefinedProcess, System.Drawing.Color.Gray));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
             return result;
         }

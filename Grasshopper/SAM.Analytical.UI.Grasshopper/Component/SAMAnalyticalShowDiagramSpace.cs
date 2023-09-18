@@ -213,10 +213,10 @@ namespace SAM.Analytical.UI.Grasshopper
 
                             //if (mollierPoint_SupplyFan != null && mollierPoint_Room != null)
                             //{
-                            //    UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(mollierPoint_SupplyFan, mollierPoint_Room);
-                            //    if (undefinedProcess != null)
+                            //    RoomProcess RoomProcess = Core.Mollier.Create.RoomProcess(mollierPoint_SupplyFan, mollierPoint_Room);
+                            //    if (RoomProcess != null)
                             //    {
-                            //        mollierProcesses.Add(undefinedProcess);
+                            //        mollierProcesses.Add(RoomProcess);
                             //    }
                             //}
 

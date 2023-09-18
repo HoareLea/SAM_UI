@@ -171,18 +171,18 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(start, airMassFlow, sensibleLoad * 1000, latentLoad * 1000);
+            RoomProcess RoomProcess = Core.Mollier.Create.RoomProcess(start, airMassFlow, sensibleLoad * 1000, latentLoad * 1000);
             index = Params.IndexOfOutputParam("roomProcess");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierProcess(undefinedProcess, color, startLabel, processLabel, endLabel));
+                dataAccess.SetData(index, new GooMollierProcess(RoomProcess, color, startLabel, processLabel, endLabel));
             }
             else
             {
                 return;
             }
 
-            MollierPoint end = new MollierPoint(undefinedProcess.End);
+            MollierPoint end = new MollierPoint(RoomProcess.End);
             index = Params.IndexOfOutputParam("end");
             if (index != -1)
             {
@@ -198,7 +198,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             index = Params.IndexOfOutputParam("epsilon");
             if (index != -1)
             {
-                dataAccess.SetData(index, undefinedProcess.Epsilon());
+                dataAccess.SetData(index, RoomProcess.Epsilon());
             }
         }
 

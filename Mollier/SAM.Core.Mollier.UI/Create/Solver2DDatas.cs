@@ -357,7 +357,7 @@ namespace SAM.Core.Mollier.UI
                 case ChartDataType.SteamHumidificationProcess:
                     return 1;
 
-                case ChartDataType.UndefinedProcess:
+                case ChartDataType.RoomProcess:
                     return 1;
 
                 case ChartDataType.RelativeHumidity:

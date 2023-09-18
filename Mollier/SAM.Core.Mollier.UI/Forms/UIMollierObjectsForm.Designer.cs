@@ -29,14 +29,16 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.customizeMollierObjectsTabControl = new System.Windows.Forms.TabControl();
             this.tabCustomizePointPage = new System.Windows.Forms.TabPage();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.PressurePoints_Label = new System.Windows.Forms.Label();
             this.DataGridView_MollierPoints = new System.Windows.Forms.DataGridView();
             this.Visible_Column = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Column_Label = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -54,6 +56,8 @@
             this.ToolStripMenuItem_Edit = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_Remove = new System.Windows.Forms.ToolStripMenuItem();
             this.tabCustomizeProcessesPage = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.GroupSelectionProcesses_ComboBox = new System.Windows.Forms.ComboBox();
             this.ExhaustAirflow_CheckBox = new System.Windows.Forms.CheckBox();
             this.SupplyAirFlow_CheckBox = new System.Windows.Forms.CheckBox();
             this.SupplyAirflow_ComboBox = new System.Windows.Forms.ComboBox();
@@ -80,10 +84,8 @@
             this.Column_MollierProcess_LatentLoad = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column_MollierProcess_Edit = new System.Windows.Forms.DataGridViewButtonColumn();
             this.Column_MollierProcess_Remove = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.PressurePoints_Label = new System.Windows.Forms.Label();
-            this.GroupSelection_ComboBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.GroupSelectionPoints_ComboBox = new System.Windows.Forms.ComboBox();
             this.customizeMollierObjectsTabControl.SuspendLayout();
             this.tabCustomizePointPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView_MollierPoints)).BeginInit();
@@ -107,6 +109,8 @@
             // 
             // tabCustomizePointPage
             // 
+            this.tabCustomizePointPage.Controls.Add(this.label2);
+            this.tabCustomizePointPage.Controls.Add(this.GroupSelectionPoints_ComboBox);
             this.tabCustomizePointPage.Controls.Add(this.textBox1);
             this.tabCustomizePointPage.Controls.Add(this.PressurePoints_Label);
             this.tabCustomizePointPage.Controls.Add(this.DataGridView_MollierPoints);
@@ -118,20 +122,39 @@
             this.tabCustomizePointPage.Text = "Points";
             this.tabCustomizePointPage.UseVisualStyleBackColor = true;
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(148, 17);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(68, 26);
+            this.textBox1.TabIndex = 6;
+            this.textBox1.Text = "0";
+            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // PressurePoints_Label
+            // 
+            this.PressurePoints_Label.AutoSize = true;
+            this.PressurePoints_Label.Location = new System.Drawing.Point(70, 20);
+            this.PressurePoints_Label.Name = "PressurePoints_Label";
+            this.PressurePoints_Label.Size = new System.Drawing.Size(72, 20);
+            this.PressurePoints_Label.TabIndex = 5;
+            this.PressurePoints_Label.Text = "Pressure";
+            // 
             // DataGridView_MollierPoints
             // 
             this.DataGridView_MollierPoints.AllowUserToAddRows = false;
             this.DataGridView_MollierPoints.AllowUserToDeleteRows = false;
             this.DataGridView_MollierPoints.AllowUserToResizeRows = false;
             this.DataGridView_MollierPoints.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView_MollierPoints.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridView_MollierPoints.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.DataGridView_MollierPoints.ColumnHeadersHeight = 66;
             this.DataGridView_MollierPoints.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Visible_Column,
@@ -147,24 +170,24 @@
             this.Column_Edit,
             this.Column_Remove});
             this.DataGridView_MollierPoints.ContextMenuStrip = this.ContextMenuStrip_Main;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DataGridView_MollierPoints.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DataGridView_MollierPoints.DefaultCellStyle = dataGridViewCellStyle5;
             this.DataGridView_MollierPoints.Location = new System.Drawing.Point(3, 48);
             this.DataGridView_MollierPoints.Name = "DataGridView_MollierPoints";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView_MollierPoints.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridView_MollierPoints.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.DataGridView_MollierPoints.RowHeadersVisible = false;
             this.DataGridView_MollierPoints.RowHeadersWidth = 62;
             this.DataGridView_MollierPoints.RowTemplate.Height = 28;
@@ -305,7 +328,7 @@
             // tabCustomizeProcessesPage
             // 
             this.tabCustomizeProcessesPage.Controls.Add(this.label1);
-            this.tabCustomizeProcessesPage.Controls.Add(this.GroupSelection_ComboBox);
+            this.tabCustomizeProcessesPage.Controls.Add(this.GroupSelectionProcesses_ComboBox);
             this.tabCustomizeProcessesPage.Controls.Add(this.ExhaustAirflow_CheckBox);
             this.tabCustomizeProcessesPage.Controls.Add(this.SupplyAirFlow_CheckBox);
             this.tabCustomizeProcessesPage.Controls.Add(this.SupplyAirflow_ComboBox);
@@ -322,6 +345,24 @@
             this.tabCustomizeProcessesPage.TabIndex = 1;
             this.tabCustomizeProcessesPage.Text = "Processes";
             this.tabCustomizeProcessesPage.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(263, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(54, 20);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Group";
+            // 
+            // GroupSelectionProcesses_ComboBox
+            // 
+            this.GroupSelectionProcesses_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.GroupSelectionProcesses_ComboBox.Location = new System.Drawing.Point(323, 16);
+            this.GroupSelectionProcesses_ComboBox.Name = "GroupSelectionProcesses_ComboBox";
+            this.GroupSelectionProcesses_ComboBox.Size = new System.Drawing.Size(129, 28);
+            this.GroupSelectionProcesses_ComboBox.TabIndex = 11;
+            this.GroupSelectionProcesses_ComboBox.SelectedValueChanged += new System.EventHandler(this.GroupSelectionProcesses_ComboBox_SelectedValueChanged);
             // 
             // ExhaustAirflow_CheckBox
             // 
@@ -420,14 +461,14 @@
             this.DataGridView_MollierProcesses.AllowUserToResizeColumns = false;
             this.DataGridView_MollierProcesses.AllowUserToResizeRows = false;
             this.DataGridView_MollierProcesses.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView_MollierProcesses.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridView_MollierProcesses.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             this.DataGridView_MollierProcesses.ColumnHeadersHeight = 66;
             this.DataGridView_MollierProcesses.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.VisibleProcess_Column,
@@ -448,24 +489,24 @@
             this.Column_MollierProcess_Edit,
             this.Column_MollierProcess_Remove});
             this.DataGridView_MollierProcesses.ContextMenuStrip = this.ContextMenuStrip_Main;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DataGridView_MollierProcesses.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DataGridView_MollierProcesses.DefaultCellStyle = dataGridViewCellStyle8;
             this.DataGridView_MollierProcesses.Location = new System.Drawing.Point(3, 48);
             this.DataGridView_MollierProcesses.Name = "DataGridView_MollierProcesses";
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView_MollierProcesses.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridView_MollierProcesses.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
             this.DataGridView_MollierProcesses.RowHeadersVisible = false;
             this.DataGridView_MollierProcesses.RowHeadersWidth = 62;
             this.DataGridView_MollierProcesses.RowTemplate.Height = 28;
@@ -627,41 +668,23 @@
             this.Column_MollierProcess_Remove.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.Column_MollierProcess_Remove.Width = 104;
             // 
-            // textBox1
+            // label2
             // 
-            this.textBox1.Location = new System.Drawing.Point(148, 17);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(68, 26);
-            this.textBox1.TabIndex = 6;
-            this.textBox1.Text = "0";
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(265, 20);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(54, 20);
+            this.label2.TabIndex = 14;
+            this.label2.Text = "Group";
             // 
-            // PressurePoints_Label
+            // GroupSelectionPoints_ComboBox
             // 
-            this.PressurePoints_Label.AutoSize = true;
-            this.PressurePoints_Label.Location = new System.Drawing.Point(70, 20);
-            this.PressurePoints_Label.Name = "PressurePoints_Label";
-            this.PressurePoints_Label.Size = new System.Drawing.Size(72, 20);
-            this.PressurePoints_Label.TabIndex = 5;
-            this.PressurePoints_Label.Text = "Pressure";
-            // 
-            // GroupSelection_ComboBox
-            // 
-            this.GroupSelection_ComboBox.FormattingEnabled = true;
-            this.GroupSelection_ComboBox.Location = new System.Drawing.Point(323, 16);
-            this.GroupSelection_ComboBox.Name = "GroupSelection_ComboBox";
-            this.GroupSelection_ComboBox.Size = new System.Drawing.Size(129, 28);
-            this.GroupSelection_ComboBox.TabIndex = 11;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(263, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(54, 20);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "Group";
+            this.GroupSelectionPoints_ComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.GroupSelectionPoints_ComboBox.Location = new System.Drawing.Point(325, 17);
+            this.GroupSelectionPoints_ComboBox.Name = "GroupSelectionPoints_ComboBox";
+            this.GroupSelectionPoints_ComboBox.Size = new System.Drawing.Size(129, 28);
+            this.GroupSelectionPoints_ComboBox.TabIndex = 13;
+            this.GroupSelectionPoints_ComboBox.SelectedValueChanged += new System.EventHandler(this.GroupSelectionPoints_ComboBox_SelectedValueChanged);
             // 
             // UIMollierObjectsForm
             // 
@@ -674,7 +697,6 @@
             this.Name = "UIMollierObjectsForm";
             this.ShowIcon = false;
             this.Text = "Edit / Remove";
-            this.Load += new System.EventHandler(this.ManageMollierObjectsForm_Load);
             this.customizeMollierObjectsTabControl.ResumeLayout(false);
             this.tabCustomizePointPage.ResumeLayout(false);
             this.tabCustomizePointPage.PerformLayout();
@@ -737,6 +759,8 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Label PressurePoints_Label;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox GroupSelection_ComboBox;
+        private System.Windows.Forms.ComboBox GroupSelectionProcesses_ComboBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox GroupSelectionPoints_ComboBox;
     }
 }

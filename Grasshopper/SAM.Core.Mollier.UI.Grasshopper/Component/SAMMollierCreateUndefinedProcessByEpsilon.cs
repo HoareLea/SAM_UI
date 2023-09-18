@@ -8,7 +8,7 @@ using SAM.Core.Grasshopper.Mollier;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
-    public class SAMMollierCreateUndefinedProcessByEpsilon : MollierDiagramComponent
+    public class SAMMollierCreateRoomProcessByEpsilon : MollierDiagramComponent
     {
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
@@ -71,7 +71,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             get
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
-                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "undefinedProcess", NickName = "undefinedProcess", Description = "Undefined Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "RoomProcess", NickName = "RoomProcess", Description = "Undefined Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "color", NickName = "color", Description = "Color", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "epsilon", NickName = "epsilon", Description = "Epsilon", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
 
@@ -82,9 +82,9 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// Updates PanelTypes for AdjacencyCluster
         /// </summary>
-        public SAMMollierCreateUndefinedProcessByEpsilon()
-          : base("SAMMollier.CreateUndefinedProcessByEpsilon", "SAMMollier.CreateUndefinedProcessByEpsilon",
-              "Creates UndefinedProcess",
+        public SAMMollierCreateRoomProcessByEpsilon()
+          : base("SAMMollier.CreateRoomProcessByEpsilon", "SAMMollier.CreateRoomProcessByEpsilon",
+              "Creates RoomProcess",
               "SAM", "Mollier")
         {
         }
@@ -163,13 +163,13 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio, start);
+            RoomProcess RoomProcess = Mollier.Create.RoomProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio, start);
 
 
-            index = Params.IndexOfOutputParam("undefinedProcess");
+            index = Params.IndexOfOutputParam("RoomProcess");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierProcess(undefinedProcess, color, startLabel, processLabel, endLabel)); ;
+                dataAccess.SetData(index, new GooMollierProcess(RoomProcess, color, startLabel, processLabel, endLabel)); ;
             }
 
             index = Params.IndexOfOutputParam("color");
@@ -181,7 +181,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             index = Params.IndexOfOutputParam("epsilon");
             if (index != -1)
             {
-                dataAccess.SetData(index, undefinedProcess.Epsilon());
+                dataAccess.SetData(index, RoomProcess.Epsilon());
             }
         }
 

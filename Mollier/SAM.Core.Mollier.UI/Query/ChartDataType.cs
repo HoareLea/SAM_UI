@@ -11,6 +11,11 @@
         {
             ChartDataType process = Mollier.ChartDataType.Undefined;
 
+            if(mollierProcess is UIMollierProcess)
+            {
+                return ((UIMollierProcess)mollierProcess).ChartDataType;
+            }
+
             if (mollierProcess is CoolingProcess)
             {
                 process = Mollier.ChartDataType.CoolingProcess;

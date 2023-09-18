@@ -34,7 +34,7 @@
             {
                 processName = "Heat Recovery Process";
             }
-            if(mollierProcess is UndefinedProcess)
+            if(mollierProcess is RoomProcess)
             {
                 processName = "Room Process";
             }
