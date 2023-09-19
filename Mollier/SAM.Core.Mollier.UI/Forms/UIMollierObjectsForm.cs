@@ -48,7 +48,8 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             DataGridView_MollierProcesses.AutoGenerateColumns = false;
             DataGridView_MollierPoints.AutoGenerateColumns = false;
-            Pressure_TextBox.Text = mollierControlSettings.Pressure.ToString();
+            PressurePoints_TextBox.Text = mollierControlSettings.Pressure.ToString();
+            PressureProcesses_TextBox.Text = mollierControlSettings.Pressure.ToString();
             initializeColumnsHeaders();
 
             // Initializing Air flow
@@ -122,7 +123,7 @@ namespace SAM.Core.Mollier.UI.Forms
                 {
                     continue;
                 }
-                dataGridViewElements.Add(new DisplayUIMollierObject(uIMollierPoint, name));
+                dataGridViewElements.Add(new DisplayUIMollierObject(uIMollierPoint));
             }
 
             DataGridView_MollierPoints.DataSource = dataGridViewElements;
@@ -145,8 +146,8 @@ namespace SAM.Core.Mollier.UI.Forms
                 {
                     continue;
                 }
-                dataGridViewElements.Add(new DisplayUIMollierObject(uIMollierProcess, 0, airflow, airFlowUnit, name));
-                dataGridViewElements.Add(new DisplayUIMollierObject(uIMollierProcess, 1 , airflow, airFlowUnit, name));
+                dataGridViewElements.Add(new DisplayUIMollierObject(uIMollierProcess, 0, airflow, airFlowUnit));
+                dataGridViewElements.Add(new DisplayUIMollierObject(uIMollierProcess, 1 , airflow, airFlowUnit));
             }
 
             DataGridView_MollierProcesses.DataSource = dataGridViewElements;
@@ -399,5 +400,6 @@ namespace SAM.Core.Mollier.UI.Forms
             TabPage tabPage = customizeMollierObjectsTabControl.SelectedTab;
             return (tabPage.Controls.Cast<Control>().ToList().Find(x => x is DataGridView) as DataGridView)?.SelectedRows?.Cast<DataGridViewRow>().ToList();
         }
+
     }
 }

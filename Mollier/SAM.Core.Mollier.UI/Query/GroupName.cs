@@ -8,7 +8,7 @@ namespace SAM.Core.Mollier.UI
     {
         public static string GroupName(IMollierObject mollierObject, IEnumerable<MollierGroup> mollierGroups)
         {
-            string result = "";
+            string result = string.Empty;
             if (mollierObject == null || mollierGroups == null)
             {
                 return result;

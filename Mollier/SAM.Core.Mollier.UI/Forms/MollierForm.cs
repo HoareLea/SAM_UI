@@ -1057,13 +1057,13 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            RoomProcess RoomProcess = Mollier.Create.RoomProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio);
-            if (RoomProcess == null)
+            RoomProcess roomProcess = Mollier.Create.RoomProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio);
+            if (roomProcess == null)
             {
                 return;
             }
 
-            UIMollierProcess uIMollierProcess = new UIMollierProcess(RoomProcess, System.Drawing.Color.LightGray);
+            UIMollierProcess uIMollierProcess = new UIMollierProcess(roomProcess, System.Drawing.Color.LightGray);
 
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
         }

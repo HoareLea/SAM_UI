@@ -8,24 +8,21 @@ namespace SAM.Core.Mollier.UI
     public class DisplayUIMollierObject
     {
         public IUIMollierObject UIMollierObject { get; }
-        public string GroupName { get; }
         public int Index { get; }
         private double airFlow;
         private Units.UnitType airFlowUnit;
 
-        public DisplayUIMollierObject(UIMollierPoint uIMollierPoint, string groupName = "")
+        public DisplayUIMollierObject(UIMollierPoint uIMollierPoint)
         {
             UIMollierObject = uIMollierPoint;
-            GroupName = groupName;
         }
 
-        public DisplayUIMollierObject(UIMollierProcess uIMollierProcess, int index, double airFlow, Units.UnitType airFlowUnit, string groupName = "")
+        public DisplayUIMollierObject(UIMollierProcess uIMollierProcess, int index, double airFlow, Units.UnitType airFlowUnit)
         {
             UIMollierObject = uIMollierProcess;
             this.airFlow = airFlow;
             this.airFlowUnit = airFlowUnit;
             Index = index;
-            GroupName = groupName;
         }
         public bool Visible
         { 
