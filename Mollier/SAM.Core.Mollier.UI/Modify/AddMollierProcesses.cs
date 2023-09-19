@@ -42,7 +42,7 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
 
-                if (mollierProcess is UndefinedProcess)
+                if (mollierProcess is RoomProcess)
                 {
                     createRoomProcessSeries(chart, uIMollierProcess, mollierControlSettings);
                     continue;
@@ -109,7 +109,7 @@ namespace SAM.Core.Mollier.UI
             series.BorderWidth = borderWidth;
             series.ChartType = SeriesChartType.Spline;
             series.BorderDashStyle = borderDashStyle;
-            series.Tag = new UIMollierProcess(Mollier.Create.UndefinedProcess(mollierPoint_1, mollierPoint_2), Color.Black);
+            series.Tag = new UIMollierProcess(Mollier.Create.RoomProcess(mollierPoint_1, mollierPoint_2), Color.Black);
 
             return series;
         }          
@@ -297,7 +297,7 @@ namespace SAM.Core.Mollier.UI
                         UI_MollierProcess.UIMollierAppearance_End = new UIMollierAppearance(Color.Empty, "");
                     }
 
-                    if(UI_MollierProcess is UndefinedProcess)
+                    if(UI_MollierProcess is RoomProcess)
                     {
                         UI_MollierProcess.UIMollierAppearance_End.Label = "ROOM";
                     }
@@ -313,7 +313,7 @@ namespace SAM.Core.Mollier.UI
                     }
 
 
-                    //if (processList.Count > 1 && j == processList.Count - 2 && ((UIMollierProcess)processList[j + 1]).MollierProcess is UndefinedProcess)
+                    //if (processList.Count > 1 && j == processList.Count - 2 && ((UIMollierProcess)processList[j + 1]).MollierProcess is RoomProcess)
                     //{
                     //    UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
                     //}

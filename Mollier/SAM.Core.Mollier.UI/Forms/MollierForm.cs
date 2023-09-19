@@ -947,13 +947,13 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings = new MollierControlSettings();
             }
 
-            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_BySensibleHeatRatio(mollierPoint, sensibleHeatRatio, mollierControlSettings.Temperature_Min, mollierControlSettings.Temperature_Max, mollierControlSettings.HumidityRatio_Min / 1000, mollierControlSettings.HumidityRatio_Max / 1000);
-            if (undefinedProcess == null)
+            RoomProcess roomProcess = Mollier.Create.RoomProcess_BySensibleHeatRatio(mollierPoint, sensibleHeatRatio, mollierControlSettings.Temperature_Min, mollierControlSettings.Temperature_Max, mollierControlSettings.HumidityRatio_Min / 1000, mollierControlSettings.HumidityRatio_Max / 1000);
+            if (roomProcess == null)
             {
                 return;
             }
 
-            UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
+            UIMollierProcess uIMollierProcess = new UIMollierProcess(roomProcess, System.Drawing.Color.LightGray);
 
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
         }
@@ -1002,13 +1002,13 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilonAndEnthalpyDifference(mollierPoint, epsilon, enthalpyDifference * 1000);
-            if (undefinedProcess == null)
+            RoomProcess roomProcess = Mollier.Create.RoomProcess_ByEpsilonAndEnthalpyDifference(mollierPoint, epsilon, enthalpyDifference * 1000);
+            if (roomProcess == null)
             {
                 return;
             }
 
-            UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
+            UIMollierProcess uIMollierProcess = new UIMollierProcess(roomProcess, System.Drawing.Color.LightGray);
 
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
         }
@@ -1057,13 +1057,13 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio);
-            if (undefinedProcess == null)
+            RoomProcess roomProcess = Mollier.Create.RoomProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio);
+            if (roomProcess == null)
             {
                 return;
             }
 
-            UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
+            UIMollierProcess uIMollierProcess = new UIMollierProcess(roomProcess, System.Drawing.Color.LightGray);
 
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
         }

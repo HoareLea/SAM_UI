@@ -18,6 +18,10 @@
             {
                 processName = "HTG";
             }
+            if(mollierProcess is FanProcess)
+            {
+                processName = "FAN";
+            }
             if (mollierProcess is CoolingProcess)
             {
                 processName = "CLG";
@@ -33,6 +37,10 @@
             if (mollierProcess is HeatRecoveryProcess)
             {
                 processName = "HR";
+            }
+            if(mollierProcess is RoomProcess)
+            {
+                processName = "ROOM";
             }
             return processName;
         }

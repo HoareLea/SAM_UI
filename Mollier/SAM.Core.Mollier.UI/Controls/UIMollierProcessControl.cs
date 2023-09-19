@@ -47,10 +47,10 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 return;
             }
-       
-            this.uIMollierProcess = new UIMollierProcess(uIMollierProcess);
 
-            if(uIMollierProcess.UIMollierAppearance != null)
+            this.uIMollierProcess = uIMollierProcess;
+
+            if (uIMollierProcess.UIMollierAppearance != null)
             {
                 ProcessColor_button.BackColor = uIMollierProcess.UIMollierAppearance.Color;
                 StartLabel_Value.Text = uIMollierProcess.UIMollierAppearance_Start.Label;

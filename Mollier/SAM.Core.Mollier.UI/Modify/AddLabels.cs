@@ -45,10 +45,10 @@ namespace SAM.Core.Mollier.UI
                 {
                     solver.Add(rectangle, point, tag: solver2DData.Tag);
                 }
-                //if (rectangle != null) // debug
-                //{ 
-                //    addToChartR(chart, rectangle, Color.Red, axesRatio);
-                //}
+                if (rectangle != null) // debug
+                {
+                    addToChartR(chart, rectangle, Color.Red, axesRatio);
+                }
             }
 
             if (solverData == null || solverData.Count == 0)

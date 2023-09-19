@@ -63,9 +63,9 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            this.uIMollierPoint = new UIMollierPoint(uIMollierPoint);
+            this.uIMollierPoint = uIMollierPoint;
 
-            if(uIMollierPoint.UIMollierAppearance != null)
+            if (uIMollierPoint.UIMollierAppearance != null)
             {
                 PointLabel_TextBox.Text = uIMollierPoint.UIMollierAppearance.Label;
                 PointColor_Button.BackColor = uIMollierPoint.UIMollierAppearance.Color;
