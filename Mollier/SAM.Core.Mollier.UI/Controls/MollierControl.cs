@@ -72,7 +72,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     continue;
                 }
 
-                double labelPositionY = Mollier.Query.HumidityRatio_ByPartialVapourPressure(i * 1000, MollierControlSettings.Pressure) * 1000;
+                double labelPositionY = Mollier.Query.HumidityRatio_ByPartialVapourPressure(i * 1000, mollierControlSettings.Pressure) * 1000;
                 CustomLabel lbl = new CustomLabel(labelPositionY - 1.6, labelPositionY + 1.6, i.ToString(), 0, LabelMarkStyle.LineSideMark);
                 axisY.CustomLabels.Add(lbl);
 
@@ -130,7 +130,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     continue;
                 }
 
-                double labelPositionX = Mollier.Query.HumidityRatio_ByPartialVapourPressure(i * 1000, MollierControlSettings.Pressure) * 1000;
+                double labelPositionX = Mollier.Query.HumidityRatio_ByPartialVapourPressure(i * 1000, mollierControlSettings.Pressure) * 1000;
                 double ratio = (labelPositionX - axisX.Minimum) / (axisX.Maximum - axisX.Minimum);
                 double labelAxisPosition = partialVapourPressureMin + ratio * (axisX2.Maximum - axisX2.Minimum);
                 CustomLabel lbl = new CustomLabel(labelAxisPosition - 1.6, labelAxisPosition + 1.6, i.ToString(), 0, LabelMarkStyle.LineSideMark);

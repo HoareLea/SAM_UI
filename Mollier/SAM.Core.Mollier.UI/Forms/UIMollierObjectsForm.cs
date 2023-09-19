@@ -117,7 +117,7 @@ namespace SAM.Core.Mollier.UI.Forms
 
             foreach (UIMollierPoint uIMollierPoint in mollierPoints)
             {
-                string name = getGroupName(uIMollierPoint, mollierGroups);
+                string name = Query.GroupName(uIMollierPoint, mollierGroups);
                 if (actualGroup != defaultGroup && name != actualGroup)
                 {
                     continue;
@@ -140,7 +140,7 @@ namespace SAM.Core.Mollier.UI.Forms
 
             foreach (UIMollierProcess uIMollierProcess in mollierProcesses)
             {
-                string name = getGroupName(uIMollierProcess, mollierGroups);
+                string name = Query.GroupName(uIMollierProcess, mollierGroups);
                 if (actualGroup != defaultGroup && name != actualGroup)
                 {
                     continue;
@@ -185,9 +185,9 @@ namespace SAM.Core.Mollier.UI.Forms
                 }
             }
         }
-        #endregion  
+        #endregion
 
-        #region Groups Selection
+        #region Group Selection
         private void GroupSelectionPoints_ComboBox_SelectedValueChanged(object sender, EventArgs e)
         {
             List<UIMollierPoint> uIMollierPoints = mollierModel?.GetMollierObjects<UIMollierPoint>();
@@ -202,7 +202,7 @@ namespace SAM.Core.Mollier.UI.Forms
             // Change visibility of points from different groups
             foreach(UIMollierPoint uIMollierPoint in uIMollierPoints)
             {
-                string groupName = getGroupName(uIMollierPoint, mollierGroups);
+                string groupName = Query.GroupName(uIMollierPoint, mollierGroups);
                 if(selectedGroup == defaultGroup || selectedGroup == groupName)
                 {
                     uIMollierPoint.UIMollierAppearance.Visible = true;
@@ -211,8 +211,8 @@ namespace SAM.Core.Mollier.UI.Forms
                 {
                     uIMollierPoint.UIMollierAppearance.Visible = false;
                 }
-                editObject(uIMollierPoint, uIMollierPoint);
             }
+            editObject();
 
             regenerateDataGridView_Points(uIMollierPoints, mollierGroups);
         }
@@ -230,7 +230,7 @@ namespace SAM.Core.Mollier.UI.Forms
             // Change visibility of processes from different groups
             foreach (UIMollierProcess uIMollierProcess in uIMollierProcesses)
             {
-                string groupName = getGroupName(uIMollierProcess, mollierGroups);
+                string groupName = Query.GroupName(uIMollierProcess, mollierGroups);
                 if (selectedGroup == defaultGroup || selectedGroup == groupName)
                 {
                     uIMollierProcess.UIMollierAppearance.Visible = true;
@@ -239,11 +239,11 @@ namespace SAM.Core.Mollier.UI.Forms
                 {
                     uIMollierProcess.UIMollierAppearance.Visible = false;
                 }
-                editObject(uIMollierProcess, uIMollierProcess);
             }
 
+            editObject();
             regenerateDataGridView_Processes(uIMollierProcesses, mollierGroups);
-        }
+        }   
         #endregion
 
         #region Object Edited
@@ -257,17 +257,11 @@ namespace SAM.Core.Mollier.UI.Forms
 
             DisplayUIMollierObject displayUIMollierObject = dataGridViewRow?.DataBoundItem as DisplayUIMollierObject;
 
-            IUIMollierObject newMollierObject = getCustomObject(displayUIMollierObject.UIMollierObject);
-            editObject(displayUIMollierObject.UIMollierObject, newMollierObject);
+            displayUIMollierObject.UIMollierObject.Update();
+            editObject();
         }
-        private void editObject(IUIMollierObject mollierObject, IUIMollierObject newMollierObject)
+        private void editObject()
         {
-            if (mollierObject == null || newMollierObject == null)
-            {
-                return;
-            }
-
-            mollierModel.Update(mollierObject, newMollierObject);
             MollierModelEditedEventArgs mollierModelEditedEventArgs = new MollierModelEditedEventArgs(mollierModel);
             MollierModelEdited.Invoke(this, mollierModelEditedEventArgs);
             regenerateDataGridViews();
@@ -305,7 +299,6 @@ namespace SAM.Core.Mollier.UI.Forms
             MollierModelEdited.Invoke(this, mollierModelEditedEventArgs);
             regenerateDataGridViews();
         }
-
         #endregion
 
         #region Cells Selection
@@ -361,7 +354,7 @@ namespace SAM.Core.Mollier.UI.Forms
                     cell2.Value = !(bool)cell2.Value;
                 }
                 displayUIMollierObject.UIMollierObject.UIMollierAppearance.Visible = !displayUIMollierObject.UIMollierObject.UIMollierAppearance.Visible;
-                editObject(displayUIMollierObject.UIMollierObject, displayUIMollierObject.UIMollierObject);
+                editObject();
 
                 return;
             }
@@ -376,8 +369,8 @@ namespace SAM.Core.Mollier.UI.Forms
             }
             else if(edit)
             {
-                IUIMollierObject newMollierObject = getCustomObject(displayUIMollierObject.UIMollierObject);
-                editObject(displayUIMollierObject.UIMollierObject, newMollierObject);
+                displayUIMollierObject.UIMollierObject.Update();
+                editObject();
             }
         }
         private void DataGridView_SelectionChanged(object sender, EventArgs e)
@@ -399,94 +392,8 @@ namespace SAM.Core.Mollier.UI.Forms
             MollierObjectSelectedArgs mollierObjectSelectedArgs = new MollierObjectSelectedArgs(displayUIMollierObject.UIMollierObject);
             MollierObjectSelected?.Invoke(this, mollierObjectSelectedArgs);
         }
-
         #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-        // To move it from here
-
-        // Ienumerable MollierGroup -> do query GroupName
-        private string getGroupName(IMollierObject mollierObject, List<MollierGroup> mollierGroups)
-        {
-            string result = "";
-            if (mollierObject == null || mollierGroups == null)
-            {
-                return result;
-            }
-
-            if(mollierObject is UIMollierPoint)
-            {
-                foreach(MollierGroup mollierGroup in mollierGroups)
-                {
-                    if(mollierGroup.GetObjects<UIMollierPoint>().Find(x => x == (UIMollierPoint)mollierObject) != null)
-                    {
-                        result = mollierGroup.Name;
-                        break;
-                    }      
-                }
-            }
-            else if(mollierObject is UIMollierProcess)
-            {
-                foreach (MollierGroup mollierGroup in mollierGroups)
-                {
-                    if (mollierGroup.GetObjects<UIMollierProcess>().Find(x => x == (UIMollierProcess)mollierObject) != null)
-                    {
-                        result = mollierGroup.Name;
-                        break;
-                    }
-                }
-            }
-            return result;
-        }
         
-        // Update() -> jeśli ten sam obiekt to modify wpp. query | jeśli modify to zwrocic bool a mollierObject by się zmieniał
-        private IUIMollierObject getCustomObject(IUIMollierObject mollierObject)
-        {
-            IUIMollierObject newMollierObject = null;
-
-            if (mollierObject is UIMollierPoint)
-            {
-                UIMollierPoint uIMollierPoint = (UIMollierPoint)mollierObject;
-                UIMollierPoint newUIMollierPoint = new UIMollierPoint(uIMollierPoint);
-
-                using (CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint))
-                {
-                    if (customizePointForm.ShowDialog() != DialogResult.OK)
-                    {
-                        return mollierObject;
-                    }
-                    newUIMollierPoint = customizePointForm.UIMollierPoint;
-                }
-                newMollierObject = newUIMollierPoint;
-            }
-            else
-            {
-                UIMollierProcess uIMollierProcess = (UIMollierProcess)mollierObject;
-                UIMollierProcess newUIMollierProcess = new UIMollierProcess(uIMollierProcess);
-
-                using (CustomizeProcessForm customizeProcessForm = new CustomizeProcessForm(uIMollierProcess))
-                {
-                    if (customizeProcessForm.ShowDialog() != DialogResult.OK)
-                    {
-                        return mollierObject;
-                    }
-                    newUIMollierProcess = customizeProcessForm.UIMollierProcess;
-                }
-                newMollierObject = newUIMollierProcess;
-            }
-
-            return newMollierObject;
-        }
         private List<DataGridViewRow> selectedRows()
         {
             TabPage tabPage = customizeMollierObjectsTabControl.SelectedTab;
