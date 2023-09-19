@@ -261,6 +261,7 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Modify\AddColorPoint.cs" />
+    <Compile Include="Modify\Update.cs" />
     <Compile Include="Modify\AddLinesSeries.cs" />
     <Compile Include="Modify\AddMollierProcesses.cs" />
     <Compile Include="Modify\AddDivisionArea.cs" />
@@ -269,6 +270,7 @@
     <Compile Include="Modify\AddLabels.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\GroupName.cs" />
     <Compile Include="Query\SortByGroup.cs" />
     <Compile Include="Query\DivisionMollierZones.cs" />
     <Compile Include="Query\Obstacles.cs" />

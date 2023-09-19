@@ -33,7 +33,6 @@
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
-            //result.Add("default", new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Green));
 
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.DiagramTemperature, Default.DryBulbTemperature_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.DiagramTemperature, System.Drawing.Color.DarkGray));
@@ -48,7 +47,7 @@
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.AdiabaticHumidificationProcess, System.Drawing.Color.Purple));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.IsotermicHumidificationProcess, System.Drawing.Color.MediumPurple));
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.UndefinedProcess, System.Drawing.Color.Gray));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
 
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));

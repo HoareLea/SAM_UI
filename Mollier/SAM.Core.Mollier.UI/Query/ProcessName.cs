@@ -34,6 +34,10 @@
             {
                 processName = "HR";
             }
+            if(mollierProcess is RoomProcess)
+            {
+                processName = "ROOM";
+            }
             return processName;
         }
     }
