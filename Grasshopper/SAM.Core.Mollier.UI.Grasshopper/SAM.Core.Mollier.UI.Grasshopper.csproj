@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\MollierDiagramComponent.cs" />
+    <Compile Include="Component\SAMMollierCreateFanProcess.cs" />
     <Compile Include="Component\SAMMollierCreateIsotermicHumidificationProcessByHumidityRatioDifference.cs" />
     <Compile Include="Component\SAMMollierCreateIsotermicHumidificationProcessByRelativeHumidity.cs" />
     <Compile Include="Component\SAMMollierCreateMixingProcess.cs" />
