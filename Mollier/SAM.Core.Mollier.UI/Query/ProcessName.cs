@@ -18,6 +18,10 @@
             {
                 processName = "HTG";
             }
+            if(mollierProcess is FanProcess)
+            {
+                processName = "FAN";
+            }
             if (mollierProcess is CoolingProcess)
             {
                 processName = "CLG";

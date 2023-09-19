@@ -12,23 +12,42 @@ namespace SAM.Core.Mollier.UI
         /// <returns>Returns Vector which contains the scale</returns>
         public static Geometry.Planar.Vector2D ScaleVector2D(Control control, MollierControlSettings mollierControlSettings)
         {
-            //double widthFactor = 1500, heightFactor = 725; dpi 96
-            //double xFactor_2 = 1339 yFactor = 907 120
-
-            Form form = control.FindForm();
-            if(form == null)
+            if(control == null)
             {
-                return new SAM.Geometry.Planar.Vector2D(1, 1);
+                return new Geometry.Planar.Vector2D(1, 1);
             }
+            System.Drawing.Rectangle defaultResolution = new System.Drawing.Rectangle(0, 0, 3840, 2160);
+            // System.Drawing.Rectangle resolution = Screen.PrimaryScreen.Bounds;
+            
+            Screen myScreen = Screen.FromControl(control);
+            System.Drawing.Rectangle resolution = myScreen.Bounds;
 
-            System.Drawing.Rectangle defaultResolution = new System.Drawing.Rectangle(0, 0, 2560, 1440);
-            System.Drawing.Rectangle resolution = Screen.PrimaryScreen.Bounds;
 
-            double screenWidth = Screen.GetWorkingArea(form).Width;
-            double screenHeight = Screen.GetWorkingArea(form).Height;
+            //double screenWidth = Screen.GetWorkingArea(form).Width;
+            //double screenHeight = Screen.GetWorkingArea(form).Height;
 
-            double widthFactor = (form.ClientSize.Width / screenWidth) * ((double)defaultResolution.Width / resolution.Width);
-            double heightFactor = (form.ClientSize.Height / screenHeight) * ((double)defaultResolution.Height / resolution.Height);
+            //double widthFactor = (form.ClientSize.Width / screenWidth) * ((double)defaultResolution.Width / resolution.Width);
+            //double heightFactor = (form.ClientSize.Height / screenHeight) * ((double)defaultResolution.Height / resolution.Height);
+
+            double widthFactor = ((double)defaultResolution.Width / resolution.Width);
+            double heightFactor = ((double)defaultResolution.Height / resolution.Height);
+
+            var defaultDPI = 96;
+            var programScale = 1.5;
+            var currentDPI = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Control Panel\\Desktop", "LogPixels", 96);
+            var currentScale = (double)currentDPI / defaultDPI;
+            var scaling = (double)currentScale / programScale;
+
+
+            // IF GRASHOPPER OPENED HASH THIS
+            widthFactor *= scaling;
+            heightFactor *= scaling;
+
+            //double widthFactor = System.Math.Max(2525.0 / (double)k.Width, 1);
+            //double heightFactor = System.Math.Max(1299.0 / (double)k.Height, 1);
+
+            //widthFactor *= scaling;
+            //heightFactor *= scaling;
 
 
             MollierControlSettings mollierControlSettings_Default = new MollierControlSettings();
@@ -57,7 +76,6 @@ namespace SAM.Core.Mollier.UI
                 yFactor_Temp *= constant;
             }
 
-            //return new Geometry.Planar.Vector2D(1, 1);
             return new Geometry.Planar.Vector2D(xFactor_Temp, yFactor_Temp);
         }
     }
