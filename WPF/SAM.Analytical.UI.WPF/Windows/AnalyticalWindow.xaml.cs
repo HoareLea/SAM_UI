@@ -1518,7 +1518,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Wiki_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM/wiki/00-Home");
+            System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM_UI/wiki");
         }
 
         private void SelectByFilter()
