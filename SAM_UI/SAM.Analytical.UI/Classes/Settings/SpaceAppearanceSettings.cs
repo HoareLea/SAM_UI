@@ -35,6 +35,18 @@ namespace SAM.Analytical.UI
 
         }
 
+        public SpaceAppearanceSettings(HeatingSystemAppearanceSettings heatingSystemAppearanceSettings)
+    : base(heatingSystemAppearanceSettings)
+        {
+
+        }
+
+        public SpaceAppearanceSettings(CoolingSystemAppearanceSettings coolingSystemAppearanceSettings)
+    : base(coolingSystemAppearanceSettings)
+        {
+
+        }
+
         public SpaceAppearanceSettings(JObject jObject)
             :base(jObject)
         {

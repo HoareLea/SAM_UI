@@ -114,6 +114,54 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
+                    else if (appearanceSettings is HeatingSystemAppearanceSettings)
+                    {
+                        List<HeatingSystem> heatingSystems = adjacencyCluster.GetRelatedObjects<HeatingSystem>(space);
+
+                        HeatingSystem heatingSystem = heatingSystems?.FirstOrDefault();
+                        if (heatingSystem == null)
+                        {
+                            return false;
+                        }
+
+                        if (Core.Query.TryGetValue(heatingSystem, parameterName, out value))
+                        {
+                            if (parameterName == "Color")
+                            {
+                                text = heatingSystem.Name;
+                            }
+                            else
+                            {
+                                text = value?.ToString();
+                            }
+
+                            return true;
+                        }
+                    }
+                    else if (appearanceSettings is CoolingSystemAppearanceSettings)
+                    {
+                        List<CoolingSystem> coolingSystems = adjacencyCluster.GetRelatedObjects<CoolingSystem>(space);
+
+                        CoolingSystem coolingSystem = coolingSystems?.FirstOrDefault();
+                        if (coolingSystem == null)
+                        {
+                            return false;
+                        }
+
+                        if (Core.Query.TryGetValue(coolingSystem, parameterName, out value))
+                        {
+                            if (parameterName == "Color")
+                            {
+                                text = coolingSystem.Name;
+                            }
+                            else
+                            {
+                                text = value?.ToString();
+                            }
+
+                            return true;
+                        }
+                    }
                 }
             }
 

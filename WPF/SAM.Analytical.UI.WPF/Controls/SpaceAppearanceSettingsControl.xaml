@@ -7,13 +7,15 @@
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="300">
     <Grid>
-        <GroupBox Header="Element" Margin="10,10,140,10" VerticalAlignment="Top" HorizontalAlignment="Left">
+        <GroupBox Header="Element" Margin="10,10,0,5" HorizontalAlignment="Left" Width="140">
             <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20,0.4,-0.2">
                 <RadioButton x:Name="radioButton_Default" Content="Default" Height="25" Click="RadioButton_Click"/>
                 <RadioButton x:Name="radioButton_Space" Content="Space" Height="25" Click="RadioButton_Click"/>
                 <RadioButton x:Name="radioButton_Zone" Content="Zone" Height="25" Click="RadioButton_Click" IsChecked="True"/>
                 <RadioButton x:Name="radioButton_InternalCondition" Content="Internal Condition" Height="25" Click="RadioButton_Click"/>
                 <RadioButton x:Name="radioButton_VentilationSystem" Content="Ventilation System" Height="25" Click="RadioButton_Click"/>
+                <RadioButton x:Name="radioButton_HeatingSystem" Content="Heating System" Height="25" Click="RadioButton_Click"/>
+                <RadioButton x:Name="radioButton_CoolingSystem" Content="Cooling System" Height="25" Click="RadioButton_Click"/>
             </StackPanel>
         </GroupBox>
         <Label  x:Name="label_ParameterName" Content="Parameter Name:" HorizontalAlignment="Left" Margin="170,20,0,0" VerticalAlignment="Top"/>

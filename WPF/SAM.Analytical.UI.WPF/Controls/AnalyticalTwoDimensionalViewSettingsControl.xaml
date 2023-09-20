@@ -5,17 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="450">
+             d:DesignHeight="500" d:DesignWidth="450">
     <Grid>
-        <GroupBox Header="Visiblity" Height="180" Margin="10,207,0,13" VerticalAlignment="Stretch" HorizontalAlignment="Left" Width="109">
+        <GroupBox Header="Visiblity" Margin="10,232,0,10" HorizontalAlignment="Left" Width="109">
             <StackPanel>
                 <CheckBox x:Name="checkBox_Visibilty_Space" Content="Space" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Visibilty_Space_Click"/>
                 <CheckBox x:Name="checkBox_Visibilty_Panel" Content="Panel" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
                 <CheckBox x:Name="checkBox_Visibilty_Aperture" Content="Aperture" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox x:Name="groupBox_ColorScheme"  Header="Color Scheme" HorizontalAlignment="Stretch" Height="180" Margin="124,207,4.6,13" VerticalAlignment="Stretch">
-            <local:SpaceAppearanceSettingsControl x:Name="spaceAppearanceSettingsControl" HorizontalAlignment="Left" Height="157" VerticalAlignment="Top" Width="301" Margin="0,0,0,-0.2"/>
+        <GroupBox x:Name="groupBox_ColorScheme"  Header="Color Scheme" Margin="124,232,5,10">
+            <local:SpaceAppearanceSettingsControl x:Name="spaceAppearanceSettingsControl" Margin="5,5,5,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         </GroupBox>
         <Label x:Name="label_Name" Content="View Name:" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="20" Margin="89,22,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="209"/>

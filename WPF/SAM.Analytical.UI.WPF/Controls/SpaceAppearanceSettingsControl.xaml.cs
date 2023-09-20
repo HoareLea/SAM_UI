@@ -151,6 +151,40 @@ namespace SAM.Analytical.UI.WPF
                 }
                 type = typeof(VentilationSystem);
             }
+            else if (radioButton_HeatingSystem.IsChecked.HasValue && radioButton_HeatingSystem.IsChecked.Value)
+            {
+                IEnumerable<HeatingSystem> heatingSystems = adjacencyCluster.GetMechanicalSystems<HeatingSystem>();
+                if (heatingSystems != null)
+                {
+                    foreach (HeatingSystem heatingSystem in heatingSystems)
+                    {
+                        if (heatingSystem == null)
+                        {
+                            continue;
+                        }
+
+                        objects.Add(heatingSystem);
+                    }
+                }
+                type = typeof(HeatingSystem);
+            }
+            else if (radioButton_CoolingSystem.IsChecked.HasValue && radioButton_CoolingSystem.IsChecked.Value)
+            {
+                IEnumerable<CoolingSystem> coolingSystems = adjacencyCluster.GetMechanicalSystems<CoolingSystem>();
+                if (coolingSystems != null)
+                {
+                    foreach (CoolingSystem coolingSystem in coolingSystems)
+                    {
+                        if (coolingSystem == null)
+                        {
+                            continue;
+                        }
+
+                        objects.Add(coolingSystem);
+                    }
+                }
+                type = typeof(CoolingSystem);
+            }
 
             Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, new string[] { "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type" });
         
@@ -212,6 +246,14 @@ namespace SAM.Analytical.UI.WPF
             {
                 return new SpaceAppearanceSettings(new VentilationSystemAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
             }
+            else if (radioButton_HeatingSystem.IsChecked.HasValue && radioButton_HeatingSystem.IsChecked.Value)
+            {
+                return new SpaceAppearanceSettings(new HeatingSystemAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
+            }
+            else if (radioButton_CoolingSystem.IsChecked.HasValue && radioButton_CoolingSystem.IsChecked.Value)
+            {
+                return new SpaceAppearanceSettings(new CoolingSystemAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
+            }
 
             return null;
         }
@@ -255,6 +297,14 @@ namespace SAM.Analytical.UI.WPF
             else if (appearanceSettings is VentilationSystemAppearanceSettings)
             {
                 radioButton_VentilationSystem.IsChecked = true;
+            }
+            else if (appearanceSettings is HeatingSystemAppearanceSettings)
+            {
+                radioButton_HeatingSystem.IsChecked = true;
+            }
+            else if (appearanceSettings is CoolingSystemAppearanceSettings)
+            {
+                radioButton_CoolingSystem.IsChecked = true;
             }
             else 
             {
