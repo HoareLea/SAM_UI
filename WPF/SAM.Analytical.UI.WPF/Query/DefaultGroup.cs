@@ -31,6 +31,18 @@ namespace SAM.Analytical.UI.WPF
                     {
                         values.Add("Space");
                     }
+                    else if (appearanceSettings is VentilationSystemAppearanceSettings)
+                    {
+                        values.Add("Ventilation System");
+                    }
+                    else if (appearanceSettings is HeatingSystemAppearanceSettings)
+                    {
+                        values.Add("Heating System");
+                    }
+                    else if (appearanceSettings is CoolingSystemAppearanceSettings)
+                    {
+                        values.Add("Cooling System");
+                    }
 
                     appearanceSettings = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>();
                 }
