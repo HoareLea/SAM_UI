@@ -24,12 +24,12 @@ namespace SAM.Analytical.UI
                 result.Add(new UINumberFilter(string.Format("{0} Elevation", type.Name), type, new SpaceElevationFilter(NumberComparisonType.Greater, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Area", type.Name), type, new SpaceAreaFilter(NumberComparisonType.Greater, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Volume", type.Name), type, new SpaceVolumeFilter(NumberComparisonType.Greater, 0)));
-                result.Add(new UITextFilter(string.Format("{0} Ventilation System Type Name", type.Name), type, new SpaceVentilationSystemTypeNameFilter(TextComparisonType.StartsWith, string.Empty)));
-                result.Add(new UITextFilter(string.Format("{0} Ventilation System Full Name", type.Name), type, new SpaceVentilationSystemFullNameFilter(TextComparisonType.StartsWith, string.Empty)));
-                result.Add(new UITextFilter(string.Format("{0} Heating System Type Name", type.Name), type, new SpaceHeatingSystemTypeNameFilter(TextComparisonType.StartsWith, string.Empty)));
-                result.Add(new UITextFilter(string.Format("{0} Heating System Full Name", type.Name), type, new SpaceHeatingSystemFullNameFilter(TextComparisonType.StartsWith, string.Empty)));
-                result.Add(new UITextFilter(string.Format("{0} Cooling System Type Name", type.Name), type, new SpaceCoolingSystemTypeNameFilter(TextComparisonType.StartsWith, string.Empty)));
-                result.Add(new UITextFilter(string.Format("{0} Cooling System Full Name", type.Name), type, new SpaceCoolingSystemFullNameFilter(TextComparisonType.StartsWith, string.Empty)));
+                result.Add(new UITextFilter("Ventilation System Type Name", type, new SpaceVentilationSystemTypeNameFilter(TextComparisonType.StartsWith, string.Empty)));
+                result.Add(new UITextFilter("Ventilation System Full Name", type, new SpaceVentilationSystemFullNameFilter(TextComparisonType.StartsWith, string.Empty)));
+                result.Add(new UITextFilter("Heating System Type Name", type, new SpaceHeatingSystemTypeNameFilter(TextComparisonType.StartsWith, string.Empty)));
+                result.Add(new UITextFilter("Heating System Full Name", type, new SpaceHeatingSystemFullNameFilter(TextComparisonType.StartsWith, string.Empty)));
+                result.Add(new UITextFilter("Cooling System Type Name", type, new SpaceCoolingSystemTypeNameFilter(TextComparisonType.StartsWith, string.Empty)));
+                result.Add(new UITextFilter("Cooling System Full Name",type, new SpaceCoolingSystemFullNameFilter(TextComparisonType.StartsWith, string.Empty)));
 
                 IUIFilters(typeof(Panel))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new SpacePanelsFilter(x))));
                 IUIFilters(typeof(InternalCondition))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new SpaceInternalConditionFilter(x))));
