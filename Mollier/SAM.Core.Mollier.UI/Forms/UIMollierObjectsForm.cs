@@ -50,7 +50,7 @@ namespace SAM.Core.Mollier.UI.Forms
             DataGridView_MollierPoints.AutoGenerateColumns = false;
             PressurePoints_TextBox.Text = mollierControlSettings.Pressure.ToString();
             PressureProcesses_TextBox.Text = mollierControlSettings.Pressure.ToString();
-            initializeColumnsHeaders();
+           // initializeColumnsHeaders();
 
             // Initializing Air flow
             SupplyAirflow_ComboBox.Text = "m3/s";

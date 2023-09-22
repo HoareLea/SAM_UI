@@ -27,6 +27,8 @@ namespace SAM.Core.Mollier.UI
         public bool DisableUnits { get; set; } = false;
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
+
+        public bool VisualizeSolver { get; set; } = false;
         public bool FindPoint { get; set; } = false;
         public double FindPoint_Factor { get; set; } = 0.4; //TODO: percent again
         public ChartDataType FindPointType { get; set; } = ChartDataType.Enthalpy;
@@ -89,6 +91,7 @@ namespace SAM.Core.Mollier.UI
                 VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
                 VisibilitySettings = visibilitySettings == null ? null : new VisibilitySettings(visibilitySettings);
 
+                VisualizeSolver = mollierControlSettings.VisualizeSolver;
                 DisableUnits = mollierControlSettings.DisableUnits;
                 DisableLabels = mollierControlSettings.DisableLabels;
 
@@ -309,6 +312,10 @@ namespace SAM.Core.Mollier.UI
                 DivisionAreaRelativeHumidity_Interval = jObject.Value<int>("DivisionAreaRelativeHumidity_Interval");
             }
 
+            if(jObject.ContainsKey("VisualizeSolver"))
+            {
+                VisualizeSolver = jObject.Value<bool>("VisualizeSolver");
+            }
             if (jObject.ContainsKey("DisableUnits"))
             {
                 DisableUnits = jObject.Value<bool>("DisableUnits");
@@ -411,6 +418,7 @@ namespace SAM.Core.Mollier.UI
             result.Add("WetBulbTemperature_Line", WetBulbTemperature_Line);
             result.Add("PartialVapourPressure_Axis", PartialVapourPressure_Axis);
             result.Add("Color", DefaultTemplateName);
+            result.Add("VisualizeSolver", VisualizeSolver);
             result.Add("DisableUnits", DisableUnits);
             result.Add("DisableLabels", DisableLabels);
             result.Add("ChartType", ChartType.ToString());

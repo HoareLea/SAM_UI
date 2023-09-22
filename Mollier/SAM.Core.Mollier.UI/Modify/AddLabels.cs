@@ -45,7 +45,7 @@ namespace SAM.Core.Mollier.UI
                 {
                     solver.Add(rectangle, point, tag: solver2DData.Tag);
                 }
-                if (rectangle != null) // debug
+                if (rectangle != null && mollierControlSettings.VisualizeSolver)
                 {
                     addToChartR(chart, rectangle, Color.Red, axesRatio);
                 }

@@ -29,8 +29,9 @@ namespace SAM.Core.Mollier.UI
         /// </summary>
         private void InitializeComponent()
         {
-            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings2 = new SAM.Core.Mollier.UI.MollierControlSettings();
-            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings2 = new SAM.Core.Mollier.UI.VisibilitySettings();
+            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings1 = new SAM.Core.Mollier.UI.MollierControlSettings();
+            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings1 = new SAM.Core.Mollier.UI.VisibilitySettings();
+            SAM.Core.Mollier.MollierModel mollierModel1 = new SAM.Core.Mollier.MollierModel();
             this.TextBox_Pressure = new System.Windows.Forms.TextBox();
             this.Label_Pressure = new System.Windows.Forms.Label();
             this.Button_AddPoint = new System.Windows.Forms.Button();
@@ -52,6 +53,7 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Enthalpy = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_SpecificVolume = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_WetBulbTemperature = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_PartialVapourPressure = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_ChartType = new System.Windows.Forms.ToolStripMenuItem();
             this.ChartToolStripMenuItem_Mollier = new System.Windows.Forms.ToolStripMenuItem();
             this.ChartToolStripMenuItem_Psychrometric = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,7 +82,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_SensibleHeatRatio = new System.Windows.Forms.Button();
             this.manageMollierObjectsButton = new System.Windows.Forms.Button();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
-            this.ToolStripMenuItem_PartialVapourPressure = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -195,7 +196,6 @@ namespace SAM.Core.Mollier.UI
             this.a4PortraitToolStripMenuItem.Name = "a4PortraitToolStripMenuItem";
             this.a4PortraitToolStripMenuItem.Size = new System.Drawing.Size(226, 34);
             this.a4PortraitToolStripMenuItem.Text = "A4_Portrait";
-            this.a4PortraitToolStripMenuItem.Visible = false;
             this.a4PortraitToolStripMenuItem.Click += new System.EventHandler(this.a4PortraitToolStripMenuItem_Click);
             // 
             // a4LandscapeToolStripMenuItem
@@ -203,7 +203,6 @@ namespace SAM.Core.Mollier.UI
             this.a4LandscapeToolStripMenuItem.Name = "a4LandscapeToolStripMenuItem";
             this.a4LandscapeToolStripMenuItem.Size = new System.Drawing.Size(226, 34);
             this.a4LandscapeToolStripMenuItem.Text = "A4_Landscape";
-            this.a4LandscapeToolStripMenuItem.Visible = false;
             this.a4LandscapeToolStripMenuItem.Click += new System.EventHandler(this.a4LandscapeToolStripMenuItem_Click);
             // 
             // saveAsJPGToolStripMenuItem
@@ -281,6 +280,16 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_WetBulbTemperature.ToolTipText = "Turn Wet-Bulb Temperature Line on or off";
             this.ToolStripMenuItem_WetBulbTemperature.Click += new System.EventHandler(this.ToolStripMenuItem_WetBulbTemperature_Click);
             // 
+            // ToolStripMenuItem_PartialVapourPressure
+            // 
+            this.ToolStripMenuItem_PartialVapourPressure.Checked = true;
+            this.ToolStripMenuItem_PartialVapourPressure.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ToolStripMenuItem_PartialVapourPressure.Name = "ToolStripMenuItem_PartialVapourPressure";
+            this.ToolStripMenuItem_PartialVapourPressure.Size = new System.Drawing.Size(294, 34);
+            this.ToolStripMenuItem_PartialVapourPressure.Text = "Partial Vapour Pressure";
+            this.ToolStripMenuItem_PartialVapourPressure.ToolTipText = "Turn Partial Vapour Pressure axis on or off";
+            this.ToolStripMenuItem_PartialVapourPressure.Click += new System.EventHandler(this.ToolStripMenuItem_PartialVapourPressure_Click);
+            // 
             // ToolStripMenuItem_ChartType
             // 
             this.ToolStripMenuItem_ChartType.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -295,14 +304,14 @@ namespace SAM.Core.Mollier.UI
             this.ChartToolStripMenuItem_Mollier.Checked = true;
             this.ChartToolStripMenuItem_Mollier.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ChartToolStripMenuItem_Mollier.Name = "ChartToolStripMenuItem_Mollier";
-            this.ChartToolStripMenuItem_Mollier.Size = new System.Drawing.Size(270, 34);
+            this.ChartToolStripMenuItem_Mollier.Size = new System.Drawing.Size(225, 34);
             this.ChartToolStripMenuItem_Mollier.Text = "Mollier";
             this.ChartToolStripMenuItem_Mollier.Click += new System.EventHandler(this.ChartToolStripMenuItem_Mollier_Click);
             // 
             // ChartToolStripMenuItem_Psychrometric
             // 
             this.ChartToolStripMenuItem_Psychrometric.Name = "ChartToolStripMenuItem_Psychrometric";
-            this.ChartToolStripMenuItem_Psychrometric.Size = new System.Drawing.Size(270, 34);
+            this.ChartToolStripMenuItem_Psychrometric.Size = new System.Drawing.Size(225, 34);
             this.ChartToolStripMenuItem_Psychrometric.Text = "Psychrometric";
             this.ChartToolStripMenuItem_Psychrometric.Click += new System.EventHandler(this.ChartToolStripMenuItem_Psychrometric_Click);
             // 
@@ -556,62 +565,53 @@ namespace SAM.Core.Mollier.UI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.MollierControl_Main.Location = new System.Drawing.Point(10, 64);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
-            mollierControlSettings2.ChartType = SAM.Core.Mollier.ChartType.Mollier;
-            mollierControlSettings2.DefaultTemplateName = "default";
-            mollierControlSettings2.Density_Interval = 0.02D;
-            mollierControlSettings2.Density_Line = true;
-            mollierControlSettings2.Density_Max = 1.41D;
-            mollierControlSettings2.Density_Min = 0.45D;
-            mollierControlSettings2.DisableLabels = false;
-            mollierControlSettings2.DisableUnits = false;
-            mollierControlSettings2.DivisionArea = false;
-            mollierControlSettings2.DivisionAreaEnthalpy_Interval = 3;
-            mollierControlSettings2.DivisionAreaLabels = true;
-            mollierControlSettings2.DivisionAreaRelativeHumidity_Interval = 10;
-            mollierControlSettings2.Elevation = 0D;
-            mollierControlSettings2.Enthalpy_Interval = 1000D;
-            mollierControlSettings2.Enthalpy_Line = true;
-            mollierControlSettings2.Enthalpy_Max = 140000D;
-            mollierControlSettings2.Enthalpy_Min = -20000D;
-            mollierControlSettings2.FindPoint = false;
-            mollierControlSettings2.FindPointType = SAM.Core.Mollier.ChartDataType.Enthalpy;
-            mollierControlSettings2.GradientPoint = false;
-            mollierControlSettings2.HumidityRatio_Interval = 0.005D;
-            mollierControlSettings2.HumidityRatio_Max = 0.035D;
-            mollierControlSettings2.HumidityRatio_Min = 0D;
-            mollierControlSettings2.PartialVapourPressure_Axis = true;
-            mollierControlSettings2.PartialVapourPressure_Interval = 1D;
-            mollierControlSettings2.FindPoint_Factor = 0.4D;
-            mollierControlSettings2.Pressure = 101325D;
-            mollierControlSettings2.SpecificVolume_Interval = 0.05D;
-            mollierControlSettings2.SpecificVolume_Line = true;
-            mollierControlSettings2.SpecificVolume_Max = 1.92D;
-            mollierControlSettings2.SpecificVolume_Min = 0.65D;
-            mollierControlSettings2.Temperature_Interval = 5D;
-            mollierControlSettings2.Temperature_Max = 50D;
-            mollierControlSettings2.Temperature_Min = -20D;
-            mollierControlSettings2.UIMollierZoneColor = System.Drawing.Color.Red;
-            mollierControlSettings2.UIMollierZoneText = "";
-            mollierControlSettings2.VisibilitySettings = visibilitySettings2;
-            mollierControlSettings2.WetBulbTemperature_Interval = 5D;
-            mollierControlSettings2.WetBulbTemperature_Line = true;
-            mollierControlSettings2.WetBulbTemperature_Max = 30D;
-            mollierControlSettings2.WetBulbTemperature_Min = -10D;
-            this.MollierControl_Main.MollierControlSettings = mollierControlSettings2;
+            mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
+            mollierControlSettings1.DefaultTemplateName = "default";
+            mollierControlSettings1.Density_Interval = 0.02D;
+            mollierControlSettings1.Density_Line = true;
+            mollierControlSettings1.Density_Max = 1.41D;
+            mollierControlSettings1.Density_Min = 0.45D;
+            mollierControlSettings1.DisableLabels = false;
+            mollierControlSettings1.DisableUnits = false;
+            mollierControlSettings1.DivisionArea = false;
+            mollierControlSettings1.DivisionAreaEnthalpy_Interval = 3;
+            mollierControlSettings1.DivisionAreaLabels = true;
+            mollierControlSettings1.DivisionAreaRelativeHumidity_Interval = 10;
+            mollierControlSettings1.Elevation = 0D;
+            mollierControlSettings1.Enthalpy_Interval = 1000D;
+            mollierControlSettings1.Enthalpy_Line = true;
+            mollierControlSettings1.Enthalpy_Max = 140000D;
+            mollierControlSettings1.Enthalpy_Min = -20000D;
+            mollierControlSettings1.FindPoint = false;
+            mollierControlSettings1.FindPoint_Factor = 0.4D;
+            mollierControlSettings1.FindPointType = SAM.Core.Mollier.ChartDataType.Enthalpy;
+            mollierControlSettings1.GradientPoint = false;
+            mollierControlSettings1.HumidityRatio_Interval = 0.005D;
+            mollierControlSettings1.HumidityRatio_Max = 0.035D;
+            mollierControlSettings1.HumidityRatio_Min = 0D;
+            mollierControlSettings1.PartialVapourPressure_Axis = true;
+            mollierControlSettings1.PartialVapourPressure_Interval = 1D;
+            mollierControlSettings1.Pressure = 101325D;
+            mollierControlSettings1.SpecificVolume_Interval = 0.05D;
+            mollierControlSettings1.SpecificVolume_Line = true;
+            mollierControlSettings1.SpecificVolume_Max = 1.92D;
+            mollierControlSettings1.SpecificVolume_Min = 0.65D;
+            mollierControlSettings1.Temperature_Interval = 5D;
+            mollierControlSettings1.Temperature_Max = 50D;
+            mollierControlSettings1.Temperature_Min = -20D;
+            mollierControlSettings1.UIMollierZoneColor = System.Drawing.Color.Red;
+            mollierControlSettings1.UIMollierZoneText = "";
+            mollierControlSettings1.VisibilitySettings = visibilitySettings1;
+            mollierControlSettings1.WetBulbTemperature_Interval = 5D;
+            mollierControlSettings1.WetBulbTemperature_Line = true;
+            mollierControlSettings1.WetBulbTemperature_Max = 30D;
+            mollierControlSettings1.WetBulbTemperature_Min = -10D;
+            this.MollierControl_Main.MollierControlSettings = mollierControlSettings1;
+            this.MollierControl_Main.MollierModel = mollierModel1;
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(2054, 1219);
             this.MollierControl_Main.TabIndex = 0;
-            //
-            // ToolStripMenuItem_PartialVapourPressure
             // 
-            this.ToolStripMenuItem_PartialVapourPressure.Checked = true;
-            this.ToolStripMenuItem_PartialVapourPressure.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ToolStripMenuItem_PartialVapourPressure.Name = "ToolStripMenuItem_PartialVapourPressure";
-            this.ToolStripMenuItem_PartialVapourPressure.Size = new System.Drawing.Size(242, 26);
-            this.ToolStripMenuItem_PartialVapourPressure.Text = "Partial Vapour Pressure";
-            this.ToolStripMenuItem_PartialVapourPressure.ToolTipText = "Turn Partial Vapour Pressure axis on or off";
-            this.ToolStripMenuItem_PartialVapourPressure.Click += new System.EventHandler(this.ToolStripMenuItem_PartialVapourPressure_Click);
-            //          
             // MollierForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;

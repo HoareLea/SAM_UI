@@ -33,6 +33,7 @@ namespace SAM.Core.Mollier.UI
             GradientPoint = mollierControlSettings.GradientPoint;
             DisableUnits = mollierControlSettings.DisableUnits;
             DisableLabels = mollierControlSettings.DisableLabels;
+            VisualizeSolver = mollierControlSettings.VisualizeSolver;
             PointGradientVisibilitySetting pointGradientVisibilitySetting = mollierControl.MollierControlSettings.VisibilitySettings.GetVisibilitySetting("User", ChartParameterType.Point) as PointGradientVisibilitySetting;
             if(pointGradientVisibilitySetting != null)
             {
@@ -369,6 +370,17 @@ namespace SAM.Core.Mollier.UI
                 CheckBox_DisableLabels.Checked = value;
             }
         }
+        public bool VisualizeSolver
+        {
+            get
+            {
+                return VisualizeSolver_Checkbox.Checked;
+            }
+            set
+            {
+                VisualizeSolver_Checkbox.Checked = value;
+            }
+        }
         private void Apply()
         {
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -397,7 +409,7 @@ namespace SAM.Core.Mollier.UI
 
             mollierControlSettings.DisableUnits = DisableUnits;
             mollierControlSettings.DisableLabels = DisableLabels;
-
+            mollierControlSettings.VisualizeSolver = VisualizeSolver;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
@@ -512,6 +524,5 @@ namespace SAM.Core.Mollier.UI
             toolTip.Active = false;
             toolTip.Active = true;
         }
-
     }
 }

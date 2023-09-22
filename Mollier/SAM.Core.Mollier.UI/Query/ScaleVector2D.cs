@@ -22,15 +22,22 @@ namespace SAM.Core.Mollier.UI
             Screen myScreen = Screen.FromControl(control);
             System.Drawing.Rectangle resolution = myScreen.Bounds;
 
+            Form form = control.FindForm();
+            if(form == null)
+            {
+                return new Geometry.Planar.Vector2D(1, 1);
+            }
+            //double widthFactor = 1;
+            //double heightFactor = 1;
 
-            //double screenWidth = Screen.GetWorkingArea(form).Width;
-            //double screenHeight = Screen.GetWorkingArea(form).Height;
+            double screenWidth = Screen.GetWorkingArea(form).Width;
+            double screenHeight = Screen.GetWorkingArea(form).Height;
 
-            //double widthFactor = (form.ClientSize.Width / screenWidth) * ((double)defaultResolution.Width / resolution.Width);
-            //double heightFactor = (form.ClientSize.Height / screenHeight) * ((double)defaultResolution.Height / resolution.Height);
+            double widthFactor = (screenWidth / (double)form.ClientSize.Width);
+            double heightFactor = (screenHeight / (double)form.ClientSize.Height);
 
-            double widthFactor = ((double)defaultResolution.Width / resolution.Width);
-            double heightFactor = ((double)defaultResolution.Height / resolution.Height);
+             widthFactor *= ((double)defaultResolution.Width / resolution.Width);
+             heightFactor *= ((double)defaultResolution.Height / resolution.Height);
 
             var defaultDPI = 96;
             var programScale = 1.5;
@@ -40,14 +47,15 @@ namespace SAM.Core.Mollier.UI
 
 
             // IF GRASHOPPER OPENED HASH THIS
-            widthFactor *= scaling;
-            heightFactor *= scaling;
+
+            //widthFactor /= programScale;
+            //heightFactor /= programScale;
 
             //double widthFactor = System.Math.Max(2525.0 / (double)k.Width, 1);
             //double heightFactor = System.Math.Max(1299.0 / (double)k.Height, 1);
 
-            //widthFactor *= scaling;
-            //heightFactor *= scaling;
+            widthFactor *= scaling;
+            heightFactor *= scaling;
 
 
             MollierControlSettings mollierControlSettings_Default = new MollierControlSettings();

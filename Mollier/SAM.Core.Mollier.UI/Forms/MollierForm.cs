@@ -1109,7 +1109,10 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.PartialVapourPressure_Axis = ToolStripMenuItem_PartialVapourPressure.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
-        
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            MollierControl_Main.EXPORTTEST();
+        }
     }
 }
