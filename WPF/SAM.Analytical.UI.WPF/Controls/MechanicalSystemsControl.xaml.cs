@@ -14,6 +14,7 @@ namespace SAM.Analytical.UI.WPF
         private AdjacencyCluster adjacencyCluster;
 
         public event SelectionChangedEventHandler MechanicalSystemCategorySelectionChanged;
+        public event AdjacencyClusterChangedEventHandler AdjacencyClusterChanged;
 
         public MechanicalSystemsControl()
         {
@@ -29,7 +30,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //LoadZoneCategories();
+            LoadMechanicalSystemCategories();
         }
 
         public SelectionMode SelectionMode
@@ -297,6 +298,8 @@ namespace SAM.Analytical.UI.WPF
 
             LoadMechanicalSystemCategories();
             LoadMechanicalSystems();
+
+            AdjacencyClusterChanged?.Invoke(this, new AdjacencyClusterChangedEventArgs(adjacencyCluster));
         }
 
         private void button_Add_Click(object sender, RoutedEventArgs e)
@@ -357,6 +360,8 @@ namespace SAM.Analytical.UI.WPF
                     break;
                 }
             }
+
+            AdjacencyClusterChanged?.Invoke(this, new AdjacencyClusterChangedEventArgs(adjacencyCluster));
         }
 
         private void listView_MechanicalSystems_SelectionChanged(object sender, SelectionChangedEventArgs e)

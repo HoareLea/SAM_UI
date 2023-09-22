@@ -123,6 +123,7 @@
     <Compile Include="Controls\DoubleRangeControl.xaml.cs">
       <DependentUpon>DoubleRangeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Query\Modal.cs" />
     <Compile Include="Windows\DoubleRangeWindow.xaml.cs">
       <DependentUpon>DoubleRangeWindow.xaml</DependentUpon>
     </Compile>

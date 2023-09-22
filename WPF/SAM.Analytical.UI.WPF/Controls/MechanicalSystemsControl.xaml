@@ -4,15 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
-             mc:Ignorable="d" Width="245" Height="350" Loaded="UserControl_Loaded">
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="250" 
+             Loaded="UserControl_Loaded">
     <Grid>
-        <Label x:Name="label_MechanicalSystemCategory" Content="Category:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <ComboBox x:Name="comboBox_MechanicalSystemCategory" HorizontalAlignment="Stretch" Margin="87,13,10,0" VerticalAlignment="Top" SelectionChanged="comboBox_MechanicalSystemCategory_SelectionChanged"/>
-        <ListView x:Name="listView_MechanicalSystems" HorizontalAlignment="Stretch" Margin="10,44,9.8,34.4" VerticalAlignment="Stretch" SelectionChanged="listView_MechanicalSystems_SelectionChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition />
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <Label x:Name="label_MechanicalSystemCategory" Content="Category:" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Center"/>
+        <ComboBox x:Name="comboBox_MechanicalSystemCategory" HorizontalAlignment="Stretch" Margin="65,0,5,0" VerticalAlignment="Center" SelectionChanged="comboBox_MechanicalSystemCategory_SelectionChanged"/>
+        <ListView Grid.Row="1" x:Name="listView_MechanicalSystems" HorizontalAlignment="Stretch" Margin="5,0,5,5" VerticalAlignment="Stretch" SelectionChanged="listView_MechanicalSystems_SelectionChanged">
             <ListViewItem>MV 1</ListViewItem>
         </ListView>
-        <Button x:Name="button_Add" Content="Add" HorizontalAlignment="Left" Margin="11,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Add_Click"/>
-        <Button x:Name="button_Remove" Content="Remove" HorizontalAlignment="Left" Margin="164,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Remove_Click"/>
-        <Button x:Name="button_Edit" Content="Edit" HorizontalAlignment="Left" Margin="87,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Edit_Click" IsEnabled="False"/>
+        <Button x:Name="button_Add" Grid.Row="2" Content="Add" HorizontalAlignment="Right" Margin="0,0,155,5" VerticalAlignment="Bottom" Width="70" Click="button_Add_Click"/>
+        <Button x:Name="button_Remove" Grid.Row="2" Content="Remove" HorizontalAlignment="Right" Margin="0,0,5,5" VerticalAlignment="Bottom" Width="70" Click="button_Remove_Click"/>
+        <Button x:Name="button_Edit" Grid.Row="2" Content="Edit" HorizontalAlignment="Right" Margin="0,0,80,5" VerticalAlignment="Bottom" Width="70" Click="button_Edit_Click" IsEnabled="False"/>
     </Grid>
 </UserControl>

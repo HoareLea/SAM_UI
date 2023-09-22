@@ -151,6 +151,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\EventArgs\AdjacencyClusterSelectionChangedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\AdjacencyClusterChangedEventArgs.cs" />
+    <Compile Include="Delegates\AdjacencyClusterSelectionChangedEventHandler.cs" />
+    <Compile Include="Delegates\AdjacencyClusterChangedEventHandler.cs" />
+    <Compile Include="Modify\AssignMechanicalSystems.cs" />
+    <Compile Include="Windows\AssignMechanicalSystemsWindow.xaml.cs">
+      <DependentUpon>AssignMechanicalSystemsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SpacesControl.xaml.cs">
+      <DependentUpon>SpacesControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ApertureAppearanceSettingsWindow.xaml.cs">
       <DependentUpon>ApertureAppearanceSettingsWindow.xaml</DependentUpon>
     </Compile>
@@ -449,6 +460,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\AssignMechanicalSystemsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SpacesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ApertureAppearanceSettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

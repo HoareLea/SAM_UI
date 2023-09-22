@@ -1,0 +1,26 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.AssignMechanicalSystemsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Mechanical Systems" Height="450" Width="500">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64*"></RowDefinition>
+            <RowDefinition Height="7*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <local:SpacesControl x:Name="SpacesControl_Main" Grid.Column="0"></local:SpacesControl>
+            <local:MechanicalSystemsControl x:Name="MechanicalSystemsControl_Main" Grid.Column="1"/>
+        </Grid>
+        <Button x:Name="Button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,10,10,10" Width="70" HorizontalAlignment="Right" Click="Button_Cancel_Click"></Button>
+        <Button x:Name="Button_OK" Content="OK" Grid.Row="1" Margin="0,10,85,10" HorizontalAlignment="Right" Width="70" Click="Button_OK_Click"/>
+        <Button x:Name="Button_Apply" Content="Apply" Grid.Row="1" Margin="0,10,160,10" HorizontalAlignment="Right" Width="70" Click="Button_Apply_Click"/>
+    </Grid>
+</Window>

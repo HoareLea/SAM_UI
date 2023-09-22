@@ -122,6 +122,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_EditLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
             RibbonButton_EditLibrary.Click += RibbonButton_EditLibrary_Click;
 
+            RibbonButton_AssignMechanicalSystems.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
+            RibbonButton_AssignMechanicalSystems.Click += RibbonButton_AssignMechanicalSystems_Click;
+
             RibbonButton_OpenT3D.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
             RibbonButton_OpenT3D.Click += RibbonButton_OpenT3D_Click;
 
@@ -220,6 +223,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_AssignMechanicalSystems_Click(object sender, RoutedEventArgs e)
+        {
+            List<Space> spaces = GetActiveViewportControl()?.SelectedSAMObjects<Space>();
+            if(spaces == null  || spaces.Count == 0)
+            {
+                spaces = null;
+            }
+            
+            uIAnalyticalModel?.AssignMechanicalSystems(spaces);
         }
 
         private void RibbonButton_ViewRange_Click(object sender, RoutedEventArgs e)
