@@ -164,6 +164,9 @@
             this.DataGridView_MollierPoints.AllowUserToAddRows = false;
             this.DataGridView_MollierPoints.AllowUserToDeleteRows = false;
             this.DataGridView_MollierPoints.AllowUserToResizeRows = false;
+            this.DataGridView_MollierPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.DataGridView_MollierPoints.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
@@ -477,6 +480,9 @@
             this.DataGridView_MollierProcesses.AllowUserToOrderColumns = true;
             this.DataGridView_MollierProcesses.AllowUserToResizeColumns = false;
             this.DataGridView_MollierProcesses.AllowUserToResizeRows = false;
+            this.DataGridView_MollierProcesses.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.DataGridView_MollierProcesses.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;

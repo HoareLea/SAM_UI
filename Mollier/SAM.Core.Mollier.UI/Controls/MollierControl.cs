@@ -719,6 +719,8 @@ namespace SAM.Core.Mollier.UI.Controls
                     mollierPoints?.ForEach(x => pointsGroup.Add(x));
 
                     List<MollierGroup> mollierGroups = mollierModel.GetMollierObjects<MollierGroup>();
+                    mollierGroups?.ForEach(x => x.SortGroup());
+
                     mollierGroups?.AddRange(processesGroups);
                     mollierGroups?.Add(pointsGroup);
 
@@ -827,8 +829,8 @@ namespace SAM.Core.Mollier.UI.Controls
                                             value_2 = String.Format("{0:#,0.00}", end.Density());
                                             break;
                                         case "[AtmosphericPressure]":
-                                            value_1 = String.Format("{0:#,0.0}", start.Pressure);
-                                            value_2 = String.Format("{0:#,0.0}", end.Pressure);
+                                            value_1 = start.Pressure.ToString();
+                                            value_2 = end.Pressure.ToString();
                                             break;
                                         case "[ProcessName]":
                                             value_2 = Query.FullProcessName(UI_MollierProcess);
