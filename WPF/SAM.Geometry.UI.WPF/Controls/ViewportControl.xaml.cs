@@ -25,6 +25,7 @@ namespace SAM.Geometry.UI.WPF
         public event ObjectHooveredEventHandler ObjectHoovered;
         public event ObjectDoubleClickedEventHandler ObjectDoubleClicked;
         public event ObjectContextMenuOpeningEventHandler ObjectContextMenuOpening;
+        public event ObjectSelectionChangedEventHandler ObjectSelectionChanged;
 
         public Guid Guid { get; set; }
 
@@ -247,25 +248,45 @@ namespace SAM.Geometry.UI.WPF
 
         public bool Select(SAMObject sAMObject)
         {
+            bool result = false;
+
             if (sAMObject == null)
             {
-                return actionManager.Cancel<SelectAction>();
+                result = actionManager.Cancel<SelectAction>();
+                if(result)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+                return result;
             }
 
             Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
             if (visual3D == null)
             {
-                return false;
+                return result;
             }
 
-            return actionManager.Apply(new SelectAction(visual3D));
+            result = actionManager.Apply(new SelectAction(visual3D));
+            if (result)
+            {
+                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+            }
+
+            return result;
         }
 
         public bool Select<T>(IEnumerable<T> sAMObjects) where T : SAMObject
         {
+            bool result = false;
+            
             if (sAMObjects == null)
             {
-                return actionManager.Cancel<SelectAction>();
+                result = actionManager.Cancel<SelectAction>();
+                if (result)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+                return result;
             }
 
             List<Visual3D> visual3Ds = new List<Visual3D>();
@@ -282,10 +303,22 @@ namespace SAM.Geometry.UI.WPF
 
             if (visual3Ds == null || visual3Ds.Count == 0)
             {
-                return actionManager.Cancel<SelectAction>();
+                result = actionManager.Cancel<SelectAction>();
+                if (result)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+
+                return result;
             }
 
-            return actionManager.Apply(new SelectAction(visual3Ds));
+            result = actionManager.Apply(new SelectAction(visual3Ds));
+            if (result)
+            {
+                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+            }
+
+            return result;
         }
 
         public List<T> SelectedSAMObjects<T>() where T : SAMObject
@@ -465,7 +498,12 @@ namespace SAM.Geometry.UI.WPF
             helixViewport3D.Lights.Children.Clear();
             helixViewport3D.Lights.Children.Add(new AmbientLight());
 
-            actionManager.Cancel();
+            bool cancelled = actionManager.Cancel();
+            if(cancelled)
+            {
+                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+            }
+
             int count = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) }).Count;
             if (count > 0)
             {
@@ -556,15 +594,22 @@ namespace SAM.Geometry.UI.WPF
             Point point_Current = e.GetPosition(helixViewport3D);
 
             RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point_Current, out ModelVisual3D modelVisual3D);
-            
+
+            bool cancelled = false;
             if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
             {
-                actionManager.Cancel<SelectAction>();
+                cancelled = actionManager.Cancel<SelectAction>();
             }
 
             if (rayMeshGeometry3DHitTestResult == null && modelVisual3D == null)
             {
                 e.Handled = true;
+
+                if(cancelled)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+
                 return;
             }
 
@@ -584,6 +629,7 @@ namespace SAM.Geometry.UI.WPF
             }
 
             actionManager.Apply(selectAction);
+            ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
 
         }
 
@@ -591,7 +637,11 @@ namespace SAM.Geometry.UI.WPF
         {
             if(e.Key == Key.Escape)
             {
-                actionManager.Cancel<SelectAction>();
+                bool cancelled = actionManager.Cancel<SelectAction>();
+                if(cancelled)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
             }
         }
 

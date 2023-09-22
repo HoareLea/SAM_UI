@@ -1935,6 +1935,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
                 viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
                 viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+                viewportControl.ObjectSelectionChanged += ViewportControl_ObjectSelectionChanged;
                 viewportControl.UndefinedLegendItem = UI.Query.UndefinedLegendItem();
                 tabItem.Content = viewportControl;
 
@@ -2010,6 +2011,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             return tabItem;
+        }
+
+        private void ViewportControl_ObjectSelectionChanged(object sender, ObjectSelectionChangedEventArgs e)
+        {
+            
         }
 
         private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs)

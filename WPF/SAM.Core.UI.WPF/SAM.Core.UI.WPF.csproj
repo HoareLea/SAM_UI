@@ -69,6 +69,7 @@
     <Compile Include="Classes\EventArgs\ObjectDoubleClickedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectContextMenuOpeningEventArgs.cs" />
     <Compile Include="Classes\EventArgs\FilterAddingEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\ObjectSelectionChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\RangeChangedEventArgs.cs" />
     <Compile Include="Classes\ProgressBarWindowManager.cs" />
     <Compile Include="Classes\EventArgs\TextChangedEventArgs.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="Delegates\FilterRemovingEventHandler.cs" />
     <Compile Include="Delegates\FilterChangedEventHandler.cs" />
     <Compile Include="Delegates\FilterAddingEventHandler.cs" />
+    <Compile Include="Delegates\ObjectSelectionChangedEventHandler.cs" />
     <Compile Include="Delegates\RangeChangedEventHandler.cs" />
     <Compile Include="Delegates\TextChangedEventHandler.cs" />
     <Compile Include="Controls\JsonControl.xaml.cs">
