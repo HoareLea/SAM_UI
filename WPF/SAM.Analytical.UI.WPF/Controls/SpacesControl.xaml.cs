@@ -207,8 +207,10 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void LoadSpaces()
+        private void LoadSpaces(bool selectAll = false)
         {
+            List<Space> selectedSpaces = GetSelectedSpaces();
+
             TreeView_Main.Items.Clear();
 
             if ((spaces == null || spaces.Count == 0) && adjacencyCluster == null)
@@ -276,6 +278,7 @@ namespace SAM.Analytical.UI.WPF
             foreach (KeyValuePair<string, List<Space>> keyValuePair in dictionary)
             {
                 CheckBox checkBox_ZoneCategory = new CheckBox() { Content = keyValuePair.Key };
+
                 checkBox_ZoneCategory.Checked += CheckBox_ZoneCategory_Changed;
                 checkBox_ZoneCategory.Unchecked += CheckBox_ZoneCategory_Changed;
 
@@ -284,6 +287,7 @@ namespace SAM.Analytical.UI.WPF
 
                 if (keyValuePair.Value != null)
                 {
+                    List<Tuple<CheckBox, bool>> tuples = new List<Tuple<CheckBox, bool>>();
                     foreach (Space space in keyValuePair.Value)
                     {
                         if (space == null)
@@ -294,18 +298,21 @@ namespace SAM.Analytical.UI.WPF
                         string name = string.IsNullOrWhiteSpace(space.Name) ? "???" : space.Name;
 
                         CheckBox checkBox_Space = new CheckBox() { Content = name };
-                        checkBox_Space.Checked += CheckBox_Space_Changed;
-                        checkBox_Space.Unchecked += CheckBox_Space_Changed;
 
                         TreeViewItem treeViewItem_Space = new TreeViewItem() { Header = checkBox_Space, Tag = space };
 
                         treeViewItem.Items.Add(treeViewItem_Space);
-                    }
-                }
 
-                if(treeViewItem.Items != null && treeViewItem.Items.Count != 0)
-                {
-                    checkBox_ZoneCategory.IsChecked = true;
+                        checkBox_Space.Checked += CheckBox_Space_Changed;
+                        checkBox_Space.Unchecked += CheckBox_Space_Changed;
+
+                        tuples.Add(new Tuple<CheckBox, bool>(checkBox_Space, selectAll || selectedSpaces == null || selectedSpaces.Find(x => x.Guid == space.Guid) != null));
+                    }
+
+                    foreach(Tuple<CheckBox, bool> tuple in tuples)
+                    {
+                        tuple.Item1.IsChecked = tuple.Item2;
+                    }
                 }
 
                 TreeView_Main.Items.Add(treeViewItem);
@@ -342,12 +349,48 @@ namespace SAM.Analytical.UI.WPF
                     continue;
                 }
 
-                checkBox_Temp.IsChecked = checkBox_Main.IsChecked;
+                if(checkBox_Temp.IsChecked != checkBox_Main.IsChecked)
+                {
+                    checkBox_Temp.Checked -= CheckBox_Space_Changed;
+                    checkBox_Temp.Unchecked -= CheckBox_Space_Changed;
+                    checkBox_Temp.IsChecked = checkBox_Main.IsChecked;
+                    checkBox_Temp.Checked += CheckBox_Space_Changed;
+                    checkBox_Temp.Unchecked += CheckBox_Space_Changed;
+                }
             }
         }
 
         private void CheckBox_Space_Changed(object sender, RoutedEventArgs e)
         {
+            CheckBox checkBox = sender as CheckBox;
+            if(checkBox == null)
+            {
+                return;
+            }
+
+            TreeViewItem treeViewItem_ZoneCategory = (checkBox?.Parent as TreeViewItem)?.Parent as TreeViewItem;
+
+            CheckBox checkBox_ZoneCategory = treeViewItem_ZoneCategory.Header as CheckBox;
+            if (checkBox_ZoneCategory != null)
+            {
+                if (AllChildsSelected(treeViewItem_ZoneCategory))
+                {
+                    checkBox_ZoneCategory.IsChecked = checkBox.IsChecked;
+                }
+                else
+                {
+                    if (checkBox_ZoneCategory.IsChecked != null && checkBox_ZoneCategory.IsChecked.Value)
+                    {
+                        checkBox_ZoneCategory.Checked -= CheckBox_ZoneCategory_Changed;
+                        checkBox_ZoneCategory.Unchecked -= CheckBox_ZoneCategory_Changed;
+                        checkBox_ZoneCategory.IsChecked = false;
+                        checkBox_ZoneCategory.Checked += CheckBox_ZoneCategory_Changed;
+                        checkBox_ZoneCategory.Unchecked += CheckBox_ZoneCategory_Changed;
+
+                    }
+                }
+            }
+
             AdjacencyClusterSelectionChanged.Invoke(this, new AdjacencyClusterSelectionChangedEventArgs<Space>(adjacencyCluster, GetSelectedSpaces()));
         }
 
@@ -418,6 +461,42 @@ namespace SAM.Analytical.UI.WPF
 
                 checkBox.IsChecked = selected;
             }
+        }
+    
+        private bool AllChildsSelected(TreeViewItem treeViewItem)
+        {
+            if(treeViewItem?.Items == null)
+            {
+                return false;
+            }
+
+            bool selected = false;
+
+            int count = 0;
+            foreach(object @object in treeViewItem.Items)
+            {
+                CheckBox checkBox = (@object as TreeViewItem).Header as CheckBox;
+                if (checkBox == null)
+                {
+                    continue;
+                }
+
+                bool selected_Current = checkBox.IsChecked != null && checkBox.IsChecked.Value;
+
+                if (count == 0)
+                {
+                    selected = selected_Current;
+                }
+
+                if (selected != selected_Current)
+                {
+                    return false;
+                }
+
+                count++;
+            }
+
+            return count > 0;
         }
     }
 }
