@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         mc:Ignorable="d"
         Title="Mechanical Systems" Height="450" Width="450" Topmost="True">
-    <Grid>
+    <Grid Loaded="Grid_Loaded">
         <Grid.RowDefinitions>
             <RowDefinition Height="64*"></RowDefinition>
             <RowDefinition Height="7*"></RowDefinition>

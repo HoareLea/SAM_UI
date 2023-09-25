@@ -13,13 +13,15 @@ namespace SAM.Analytical.UI.WPF
         public string OutputDirectory { get; set; } = null;
         public bool Simulate { get; set; } = true;
         public SolarCalculationMethod SolarCalculationMethod { get; set; } = SolarCalculationMethod.TAS;
-        public bool FullYearSimulation { get; set; } = true;
-        public bool UnmetHours { get; set; } = true;
-        public bool RoomDataSheets { get; set; } = true;
-        public bool CreateSAP { get; set; } = true;
+        public bool FullYearSimulation { get; set; } = false;
+        public bool UnmetHours { get; set; } = false;
+        public bool RoomDataSheets { get; set; } = false;
+        public bool CreateSAP { get; set; } = false;
         public bool CreateTPD { get; set; } = false;
-        public bool CreateTM59 { get; set; } = true;
+        public bool CreateTM59 { get; set; } = false;
         public bool UseWidths { get; set; } = false;
+        public bool Sizing { get; set; } = true;
+
         public TextMap TextMap { get; set; } = Analytical.Query.DefaultInternalConditionTextMap_TM59();
 
         public TBDConversionOptions()
@@ -45,6 +47,7 @@ namespace SAM.Analytical.UI.WPF
                 TextMap = tBDConversionOptions.TextMap == null ? null : tBDConversionOptions.TextMap;
                 UseWidths = tBDConversionOptions.UseWidths;
                 CreateTPD = tBDConversionOptions.CreateTPD;
+                Sizing = tBDConversionOptions.Sizing;
             }
         }
 
@@ -138,6 +141,11 @@ namespace SAM.Analytical.UI.WPF
                 CreateTPD = jObject.Value<bool>("CreateTPD");
             }
 
+            if (jObject.ContainsKey("Sizing"))
+            {
+                Sizing = jObject.Value<bool>("Sizing");
+            }
+
             return true;
         }
 
@@ -198,6 +206,8 @@ namespace SAM.Analytical.UI.WPF
             result.Add("CreateTPD", CreateTPD);
 
             result.Add("UseWidths", UseWidths);
+
+            result.Add("Sizing", Sizing);
 
             if (TextMap != null)
             {

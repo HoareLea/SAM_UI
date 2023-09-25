@@ -368,6 +368,7 @@ namespace SAM.Analytical.UI.WPF
                 CreateTM59 = CreateTM59,
                 UseWidths = UseWidths,
                 CreateTPD = CreateTPD,
+                Sizing = Sizing,
             };
 
             return result;
@@ -396,6 +397,8 @@ namespace SAM.Analytical.UI.WPF
 
             TextMap = tBDConversionOptions.TextMap;
             WeatherData = tBDConversionOptions.WeatherData;
+
+            Sizing = tBDConversionOptions.Sizing;
 
             return true;
         }

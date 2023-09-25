@@ -109,11 +109,12 @@ namespace SAM.Analytical.UI.WPF
         private void LoadMechanicalSystemCategories()
         {
             object selectedItem = comboBox_MechanicalSystemCategory.SelectedItem;
+            List<MechanicalSystem> selectedMechanicalSystems = SelectedMechanicalSystems;
 
             comboBox_MechanicalSystemCategory.Items.Clear();
             comboBox_MechanicalSystemCategory.Items.Add(string.Empty);
 
-            IEnumerable<MechanicalSystemCategory> mechanicalSystemCategories = System.Enum.GetValues(typeof( MechanicalSystemCategory)).Cast<MechanicalSystemCategory>();
+            IEnumerable<MechanicalSystemCategory> mechanicalSystemCategories = System.Enum.GetValues(typeof(MechanicalSystemCategory)).Cast<MechanicalSystemCategory>();
 
             foreach (MechanicalSystemCategory mechanicalSystemCategory in mechanicalSystemCategories)
             {
@@ -128,6 +129,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             comboBox_MechanicalSystemCategory.SelectedItem = selectedItem;
+            SelectedMechanicalSystems = selectedMechanicalSystems;
         }
 
         public List<MechanicalSystem> MechanicalSystems
@@ -316,7 +318,8 @@ namespace SAM.Analytical.UI.WPF
             MechanicalSystemType mechanicalSystemType = null;
             using (Core.Windows.Forms.ComboBoxForm<MechanicalSystemType> comboBoxForm = new Core.Windows.Forms.ComboBoxForm<MechanicalSystemType>("Select System Type", mechanicalSystemTypes, x => x.Name))
             {
-                if(comboBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                comboBoxForm.TopMost = true;
+                if (comboBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
                     return;
                 }

@@ -151,6 +151,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Windows\AddMechanicalSystemsWindow.xaml.cs">
+      <DependentUpon>AddMechanicalSystemsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AddMechanicalSystemsControl.xaml.cs">
+      <DependentUpon>AddMechanicalSystemsControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Classes\EventArgs\AdjacencyClusterSelectionChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\AdjacencyClusterChangedEventArgs.cs" />
     <Compile Include="Delegates\AdjacencyClusterSelectionChangedEventHandler.cs" />
@@ -461,6 +467,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\AddMechanicalSystemsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AddMechanicalSystemsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\AssignMechanicalSystemsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

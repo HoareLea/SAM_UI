@@ -261,6 +261,12 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
+            if(string.IsNullOrWhiteSpace(SelectedZoneCategory) && CreateSAP)
+            {
+                MessageBox.Show("You need to provide the Zone Category if create SAP selected");
+                return;
+            }
+
             DialogResult = true;
         }
 

@@ -40,7 +40,7 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 spaces = value;
-                LoadSpaces();
+                LoadSpaces(true);
             }
         }
 
@@ -318,6 +318,7 @@ namespace SAM.Analytical.UI.WPF
                 TreeView_Main.Items.Add(treeViewItem);
             }
 
+            //AdjacencyClusterSelectionChanged.Invoke(this, new AdjacencyClusterSelectionChangedEventArgs<Space>(adjacencyCluster, GetSelectedSpaces()));
         }
 
         private void CheckBox_ZoneCategory_Changed(object sender, RoutedEventArgs e)

@@ -88,6 +88,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            analyticalModel.Name = projectName;
+
             DateTime dateTime = DateTime.Now;
 
             string path_Xml = null;
@@ -337,7 +339,6 @@ namespace SAM.Analytical.UI.WPF
             string message = converted ? "Model successfuly converted." : "Model could not be converted.";
             message += string.Format("\n Time elapsed: {0}min{1}sec", timeSpan.Minutes, timeSpan.Seconds);
             MessageBox.Show(message);
-
 
             uIAnalyticalModel.SetJSAMObject(analyticalModel, new FullModification());
         }
