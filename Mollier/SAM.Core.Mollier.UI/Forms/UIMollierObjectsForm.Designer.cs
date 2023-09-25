@@ -657,20 +657,20 @@
             // Column_MollierProcess_SensibleLoad
             // 
             this.Column_MollierProcess_SensibleLoad.DataPropertyName = "SensibleLoad";
-            this.Column_MollierProcess_SensibleLoad.HeaderText = "Sensible Load [kW]";
+            this.Column_MollierProcess_SensibleLoad.HeaderText = "Sensible Load Qsens [kW]";
             this.Column_MollierProcess_SensibleLoad.MinimumWidth = 8;
             this.Column_MollierProcess_SensibleLoad.Name = "Column_MollierProcess_SensibleLoad";
             this.Column_MollierProcess_SensibleLoad.ReadOnly = true;
-            this.Column_MollierProcess_SensibleLoad.Width = 93;
+            this.Column_MollierProcess_SensibleLoad.Width = 120;
             // 
             // Column_MollierProcess_LatentLoad
             // 
             this.Column_MollierProcess_LatentLoad.DataPropertyName = "LatentLoad";
-            this.Column_MollierProcess_LatentLoad.HeaderText = "Latent\\r\\nLoad K";
+            this.Column_MollierProcess_LatentLoad.HeaderText = "Latent Load Qlat [kW]";
             this.Column_MollierProcess_LatentLoad.MinimumWidth = 8;
             this.Column_MollierProcess_LatentLoad.Name = "Column_MollierProcess_LatentLoad";
             this.Column_MollierProcess_LatentLoad.ReadOnly = true;
-            this.Column_MollierProcess_LatentLoad.Width = 131;
+            this.Column_MollierProcess_LatentLoad.Width = 95;
             // 
             // Column_MollierProcess_Edit
             // 
@@ -743,6 +743,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Density;
         private System.Windows.Forms.DataGridViewButtonColumn Column_Edit;
         private System.Windows.Forms.DataGridViewButtonColumn Column_Remove;
+        private System.Windows.Forms.TextBox PressurePoints_TextBox;
+        private System.Windows.Forms.Label PressurePoints_Label;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox GroupSelectionProcesses_ComboBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox GroupSelectionPoints_ComboBox;
         private System.Windows.Forms.DataGridViewCheckBoxColumn VisibleProcess_Column;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Name;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Label;
@@ -760,11 +766,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_LatentLoad;
         private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Edit;
         private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Remove;
-        private System.Windows.Forms.TextBox PressurePoints_TextBox;
-        private System.Windows.Forms.Label PressurePoints_Label;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox GroupSelectionProcesses_ComboBox;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox GroupSelectionPoints_ComboBox;
     }
 }

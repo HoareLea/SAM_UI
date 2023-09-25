@@ -32,9 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aspose.Imaging">
-      <HintPath>F:\EMFtoPDF\net5.0\Aspose.Imaging.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="SAM.Core, Version=1.0.8236.30908, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
