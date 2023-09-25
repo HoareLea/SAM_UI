@@ -916,7 +916,7 @@ namespace SAM.Core.Mollier.UI
 
         private void AddProcess_BySensibleHeatRatio(MollierPointSelectedEventArgs e)
         {
-            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_Epsilon;
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_SensibleHeatRatio;
 
             MollierPoint mollierPoint = e.MollierPoint;
             if (mollierPoint == null)
@@ -1041,9 +1041,12 @@ namespace SAM.Core.Mollier.UI
             }
 
             double humidityRatio = double.NaN;
-            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Humidity Ratio", "Humidity Ratio [g/kg] at which process ends \n*process line length"))
+            //using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Humidity Ratio", "Humidity Ratio [g/kg] at which process\nends process line length"))
+            using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Humidity Ratio", "Humidity Ratio [g/kg] of the end of the process"))
             {
                 textBoxForm.Value = 10;
+                textBoxForm.Size = new System.Drawing.Size((int)(textBoxForm.Size.Width * 1.2), textBoxForm.Size.Height);
+
                 if (textBoxForm.ShowDialog() != DialogResult.OK)
                 {
                     return;
@@ -1068,6 +1071,7 @@ namespace SAM.Core.Mollier.UI
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
         }
 
+       
         private void customizeMollierObjectsButton_Click(object sender, EventArgs e)
         {
             if (manageMollierObjectsForm == null)

@@ -28,6 +28,7 @@ namespace SAM.Core.Mollier.UI
             Rectangle2D chartArea = new Rectangle2D(new BoundingBox2D(chartMinPoint, chartMaxPoint));
 
             Solver2DSettings solver2DSettings = new Solver2DSettings();
+            // solver2DSettings.MoveDistancePoint = 0.01;
             Solver2D solver = new Solver2D(chartArea, obstacles);
 
             foreach (Solver2DData solver2DData in solverData)
