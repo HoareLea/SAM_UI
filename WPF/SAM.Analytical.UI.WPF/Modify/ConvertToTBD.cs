@@ -70,8 +70,11 @@ namespace SAM.Analytical.UI.WPF
 
             bool createSAP = convertToTBDWindow.CreateSAP;
             bool createTM59 = convertToTBDWindow.CreateTM59;
+            bool createTPD = convertToTBDWindow.CreateTPD;
 
             bool sizing = convertToTBDWindow.Sizing;
+
+            bool useWidths = convertToTBDWindow.UseWidths;
 
             SolarCalculationMethod solarCalculationMethod = convertToTBDWindow.SolarCalculationMethod;
             bool updateConstructionLayersByPanelType = true;
@@ -229,7 +232,7 @@ namespace SAM.Analytical.UI.WPF
                     updateZones_Workflow = true;
                 }
 
-                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, weatherData_Workflow, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, updateZones_Workflow, false, simulate_From, simulate_To);
+                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, weatherData_Workflow, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, updateZones_Workflow, useWidths, simulate_From, simulate_To);
 
                 if (printRoomDataSheets && analyticalModel != null)
                 {
@@ -312,6 +315,20 @@ namespace SAM.Analytical.UI.WPF
                             }
                         }
                     }
+                }
+            }
+
+            if(createTPD)
+            {
+                string directory = System.IO.Path.GetDirectoryName(path_TBD);
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(path_TBD);
+
+                string path_TSD = System.IO.Path.Combine(directory, string.Format("{0}.{1}", fileName, "tsd"));
+                if(System.IO.File.Exists(path_TSD))
+                {
+                    string path_TPD = System.IO.Path.Combine(directory, string.Format("{0}.{1}", fileName, "tpd"));
+
+                    Tas.Modify.CreateTPD(path_TPD, path_TSD, analyticalModel);
                 }
             }
 

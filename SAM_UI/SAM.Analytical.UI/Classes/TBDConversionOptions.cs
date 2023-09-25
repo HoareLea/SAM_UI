@@ -17,7 +17,9 @@ namespace SAM.Analytical.UI.WPF
         public bool UnmetHours { get; set; } = true;
         public bool RoomDataSheets { get; set; } = true;
         public bool CreateSAP { get; set; } = true;
+        public bool CreateTPD { get; set; } = false;
         public bool CreateTM59 { get; set; } = true;
+        public bool UseWidths { get; set; } = false;
         public TextMap TextMap { get; set; } = Analytical.Query.DefaultInternalConditionTextMap_TM59();
 
         public TBDConversionOptions()
@@ -41,6 +43,8 @@ namespace SAM.Analytical.UI.WPF
                 CreateSAP = tBDConversionOptions.CreateSAP;
                 CreateTM59 = tBDConversionOptions.CreateTM59;
                 TextMap = tBDConversionOptions.TextMap == null ? null : tBDConversionOptions.TextMap;
+                UseWidths = tBDConversionOptions.UseWidths;
+                CreateTPD = tBDConversionOptions.CreateTPD;
             }
         }
 
@@ -124,6 +128,16 @@ namespace SAM.Analytical.UI.WPF
                 TextMap = Core.Query.IJSAMObject<TextMap>(jObject.Value<JObject>("TextMap"));
             }
 
+            if (jObject.ContainsKey("UseWidths"))
+            {
+                UseWidths = jObject.Value<bool>("UseWidths");
+            }
+
+            if (jObject.ContainsKey("CreateTPD"))
+            {
+                CreateTPD = jObject.Value<bool>("CreateTPD");
+            }
+
             return true;
         }
 
@@ -181,7 +195,11 @@ namespace SAM.Analytical.UI.WPF
 
             result.Add("CreateTM59", CreateTM59);
 
-            if(TextMap != null)
+            result.Add("CreateTPD", CreateTPD);
+
+            result.Add("UseWidths", UseWidths);
+
+            if (TextMap != null)
             {
                 result.Add("TextMap", TextMap.ToJObject());
             }
