@@ -89,5 +89,16 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        private void button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
+
+        private void button_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
+        }
     }
 }
