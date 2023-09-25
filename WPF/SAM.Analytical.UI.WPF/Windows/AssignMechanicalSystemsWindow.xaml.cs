@@ -41,8 +41,9 @@ namespace SAM.Analytical.UI.WPF
         private void SpacesControl_Main_AdjacencyClusterSelectionChanged(object sender, AdjacencyClusterSelectionChangedEventArgs<Space> e)
         {
             List<Space> spaces = e.GetSAMObjects();
-        }
 
+            Modify.UpdateMechanicalSystemsSelection(MechanicalSystemsControl_Main, AdjacencyCluster, spaces);
+        }
         public AdjacencyCluster AdjacencyCluster
         {
             get

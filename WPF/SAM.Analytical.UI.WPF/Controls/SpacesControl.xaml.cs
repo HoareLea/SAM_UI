@@ -358,6 +358,8 @@ namespace SAM.Analytical.UI.WPF
                     checkBox_Temp.Unchecked += CheckBox_Space_Changed;
                 }
             }
+
+            AdjacencyClusterSelectionChanged.Invoke(this, new AdjacencyClusterSelectionChangedEventArgs<Space>(adjacencyCluster, GetSelectedSpaces()));
         }
 
         private void CheckBox_Space_Changed(object sender, RoutedEventArgs e)

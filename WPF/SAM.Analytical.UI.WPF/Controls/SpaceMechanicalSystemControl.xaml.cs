@@ -179,61 +179,14 @@ namespace SAM.Analytical.UI.WPF
 
         }
 
-        private void UpdateMechanicalSystemsSelection()
-        {
-            List<Space> spaces = SelectedSpaces;
-            if (spaces == null || spaces.Count == 0)
-            {
-                return;
-            }
-
-            List<MechanicalSystem> mechanicalSystems = mechanicalSystemControl.MechanicalSystems;
-            if (mechanicalSystems == null || mechanicalSystems.Count == 0)
-            {
-                return;
-            }
-
-            AdjacencyCluster adjacencyCluster = AdjacencyCluster;
-            if (adjacencyCluster == null)
-            {
-                return;
-            }
-
-
-            foreach (Space space in spaces)
-            {
-                List<MechanicalSystem> mechanicalSystems_temp = adjacencyCluster.MechanicalSystems(space);
-                if (mechanicalSystems_temp == null || mechanicalSystems_temp.Count == 0)
-                {
-                    mechanicalSystems = null;
-                    break;
-                }
-
-                for (int i = mechanicalSystems.Count - 1; i >= 0; i--)
-                {
-                    if (mechanicalSystems_temp.Find(x => x.Guid == mechanicalSystems[i].Guid) == null)
-                    {
-                        mechanicalSystems.RemoveAt(i);
-                    }
-                }
-
-                if (mechanicalSystems.Count == 0)
-                {
-                    break;
-                }
-            }
-
-            mechanicalSystemControl.SelectedMechanicalSystems = mechanicalSystems;
-        }
-
         private void ZonesControl_MechanicalSystemCategorySelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateMechanicalSystemsSelection();
+            Modify.UpdateMechanicalSystemsSelection(mechanicalSystemControl, AdjacencyCluster, SelectedSpaces);
         }
 
         private void listView_Spaces_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateMechanicalSystemsSelection();
+            Modify.UpdateMechanicalSystemsSelection(mechanicalSystemControl, AdjacencyCluster, SelectedSpaces);
         }
     }
 }

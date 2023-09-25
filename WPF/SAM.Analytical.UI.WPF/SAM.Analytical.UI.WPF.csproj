@@ -155,6 +155,7 @@
     <Compile Include="Classes\EventArgs\AdjacencyClusterChangedEventArgs.cs" />
     <Compile Include="Delegates\AdjacencyClusterSelectionChangedEventHandler.cs" />
     <Compile Include="Delegates\AdjacencyClusterChangedEventHandler.cs" />
+    <Compile Include="Modify\UpdateMechanicalSystemsSelection.cs" />
     <Compile Include="Modify\AssignMechanicalSystems.cs" />
     <Compile Include="Windows\AssignMechanicalSystemsWindow.xaml.cs">
       <DependentUpon>AssignMechanicalSystemsWindow.xaml</DependentUpon>
