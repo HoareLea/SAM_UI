@@ -81,6 +81,7 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 MechanicalSystemsControl_Main.MechanicalSystemCategory = value;
+                //Modify.UpdateMechanicalSystemsSelection(MechanicalSystemsControl_Main, AdjacencyCluster, GetSelectedSpaces());
             }
         }
 
@@ -143,6 +144,11 @@ namespace SAM.Analytical.UI.WPF
         private void Button_Apply_Click(object sender, RoutedEventArgs e)
         {
             Apply();
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            Modify.UpdateMechanicalSystemsSelection(MechanicalSystemsControl_Main, AdjacencyCluster, GetSelectedSpaces());
         }
     }
 }

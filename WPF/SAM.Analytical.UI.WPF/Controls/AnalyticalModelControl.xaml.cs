@@ -1087,6 +1087,16 @@ namespace SAM.Analytical.UI.WPF
                         TreeViewItem treeViewItem_MechanicalSystemType = new TreeViewItem() { Header = mechanicalSystemType.Name, Tag = mechanicalSystemType, AllowDrop = false};
                         treeViewItem_MechanicalSystems.Items.Add(treeViewItem_MechanicalSystemType);
 
+                        List<MechanicalSystem> mechanicalSystems = adjacencyCluster.GetMechanicalSystems(mechanicalSystemType);
+                        if(mechanicalSystems != null)
+                        {
+                            foreach(MechanicalSystem mechanicalSystem in mechanicalSystems)
+                            {
+                                TreeViewItem treeViewItem_MechanicalSystem = new TreeViewItem() { Header = mechanicalSystem.FullName, Tag = mechanicalSystem, AllowDrop = false };
+                                treeViewItem_MechanicalSystemType.Items.Add(treeViewItem_MechanicalSystem);
+                            }
+                        }
+
                         treeViewItem_MechanicalSystemType.IsExpanded = expandedTags.Find(x => x is MechanicalSystemType && ((MechanicalSystemType)x).Guid == mechanicalSystemType.Guid) != null;
                     }
                 }
