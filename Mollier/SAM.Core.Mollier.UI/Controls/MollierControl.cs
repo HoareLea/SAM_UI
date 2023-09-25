@@ -913,8 +913,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     Size size_Temp = Size;
                     Size formSize_Temp = form.Size;
-                    double widthDifference = formSize_Temp.Width - size_Temp.Width;
-                    double heightDifference = formSize_Temp.Height - size_Temp.Height;
+                    double widthDifference = (formSize_Temp.Width - size_Temp.Width) * 1.2;
+                    double heightDifference = (formSize_Temp.Height - size_Temp.Height) * 1.2;
 
                     if (pageSize == PageSize.A3)//a3 pdf
                     {
@@ -925,13 +925,13 @@ namespace SAM.Core.Mollier.UI.Controls
                         if (pageOrientation == PageOrientation.Landscape)
                         {
                             form.WindowState = FormWindowState.Normal;
-                            form.Size = new Size(System.Convert.ToInt32(width + widthDifference), System.Convert.ToInt32(height + heightDifference));
+                            form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2));
                             GenerateGraph();
                         }
                         else
                         {
                             form.WindowState = FormWindowState.Normal;
-                            form.Size = new Size(System.Convert.ToInt32(width + widthDifference), System.Convert.ToInt32(height + heightDifference)); 
+                            form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2)); 
                             GenerateGraph();
                         }
                     }
@@ -951,6 +951,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     //double shapeSizeFactor = Query.ShapeSizeFactor(DeviceDpi);
 
+                   
                     // A3 landscape
                     //if(pageSize == PageSize.A3)
                     //{
