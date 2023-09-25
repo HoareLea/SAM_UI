@@ -47,7 +47,7 @@ namespace SAM.Core.Mollier.UI
                 }
                 if (rectangle != null && mollierControlSettings.VisualizeSolver)
                 {
-                    addToChartR(chart, rectangle, Color.Red, axesRatio);
+                    visualizeRectangle(chart, rectangle, Color.Red, axesRatio);
                 }
             }
 
@@ -95,8 +95,8 @@ namespace SAM.Core.Mollier.UI
         }
 
 
-        // DEBUG method
-        public static void addToChartR(Chart chart, Rectangle2D rectangle, Color color, double yTOX)
+
+        private static void visualizeRectangle(Chart chart, Rectangle2D rectangle, Color color, double yTOX)
         {
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
@@ -113,8 +113,6 @@ namespace SAM.Core.Mollier.UI
             series.Points.AddXY(resultPoints[0].X, resultPoints[0].Y / yTOX);
 
         }
-        
-    
         
         // TODO: [LABELS] Methods used above and to move from there
         private static List<ChartLabel> getChartLabels(List<Solver2DResult> solver2DResults, MollierControlSettings mollierControlSettings, Vector2D scaleVector, double axesRatio)

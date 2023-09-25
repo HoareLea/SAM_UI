@@ -739,16 +739,16 @@ namespace SAM.Core.Mollier.UI.Controls
                         {
                             range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                             move_Temp++;
-                            for (int j = 0; j < mollierGroups[i].Count; j++)
+                            List<UIMollierProcess> processes = mollierGroups[i].GetObjects<UIMollierProcess>();
+                            for (int j = 0; j < processes.Count; j++)
                             {
-                                UIMollierProcess UI_MollierProcess = mollierGroups[i].GetObjects<UIMollierProcess>()[j];
-                                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
-                                if (UI_MollierProcess.UIMollierAppearance_Start.Label != null && UI_MollierProcess.UIMollierAppearance_Start.Label != "")
+                                UIMollierProcess mollierProcess = processes[j];
+                                if (mollierProcess.UIMollierAppearance_Start.Label != null && mollierProcess.UIMollierAppearance_Start.Label != "")
                                 {
                                     range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                                     move_Temp++;
                                 }
-                                if (UI_MollierProcess.UIMollierAppearance_End.Label != null && UI_MollierProcess.UIMollierAppearance_End.Label != "")
+                                if (mollierProcess.UIMollierAppearance_End.Label != null && mollierProcess.UIMollierAppearance_End.Label != "")
                                 {
                                     range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                                     move_Temp++;
@@ -776,15 +776,16 @@ namespace SAM.Core.Mollier.UI.Controls
 
                             for (int i = 0; i < mollierGroups.Count; i++)
                             {
-                                //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                                 worksheet.Cells[rowIndex + id, columnIndex].Value = "-------";
                                 id++;
-                                for (int j = 0; j < mollierGroups[i].Count; j++)
+                                List<UIMollierProcess> processes = mollierGroups[i].GetObjects<UIMollierProcess>();
+
+                                for (int j = 0; j < processes.Count; j++)
                                 {
                                     worksheet.Cells[rowIndex + id, columnIndex].Value = "------";
                                     id ++;
-                                    UIMollierProcess UI_MollierProcess = mollierGroups[i].GetObjects<UIMollierProcess>()[j];
-                                    MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
+                                    UIMollierProcess mollierProcess = processes[j];
+                                    
                                     MollierPoint start = mollierProcess.Start;
                                     MollierPoint end = mollierProcess.End;
                                     string value_1 = string.Empty;
@@ -792,8 +793,8 @@ namespace SAM.Core.Mollier.UI.Controls
                                     switch (key_Temp)
                                     {
                                         case "[ProcessPointName]":
-                                            value_1 = UI_MollierProcess.UIMollierAppearance_Start.Label;
-                                            value_2 = UI_MollierProcess.UIMollierAppearance_End.Label;
+                                            value_1 = mollierProcess.UIMollierAppearance_Start.Label;
+                                            value_2 = mollierProcess.UIMollierAppearance_End.Label;
                                             break;
                                         case "[DryBulbTemperature]":
                                             value_1 = String.Format("{0:#,0.00}", start.DryBulbTemperature);
@@ -833,7 +834,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                             value_2 = end.Pressure.ToString();
                                             break;
                                         case "[ProcessName]":
-                                            value_2 = Query.FullProcessName(UI_MollierProcess);
+                                            value_2 = Query.FullProcessName(mollierProcess);
                                             value_2 = value_2.Substring(0, value_2.Length - 8);
                                             break;
                                         case "[deltaT]":
@@ -846,13 +847,13 @@ namespace SAM.Core.Mollier.UI.Controls
                                             value_2 = (System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2)).ToString();
                                             break;
                                         case "[epsilon]":
-                                            value_2 = System.Math.Round(Mollier.Query.Epsilon(mollierProcess), 0).ToString();
+                                            value_2 = System.Math.Round(Mollier.Query.Epsilon(mollierProcess.MollierProcess), 0).ToString();
                                             break;
                                     }
 
 
 
-                                    if (UI_MollierProcess.UIMollierAppearance_Start.Label != null && UI_MollierProcess.UIMollierAppearance_Start.Label != "")
+                                    if (mollierProcess.UIMollierAppearance_Start.Label != null && mollierProcess.UIMollierAppearance_Start.Label != "")
                                     {
                                         if (value_1 != string.Empty)
                                         {
@@ -867,7 +868,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                             id++;
                                         }
                                     }
-                                    if (UI_MollierProcess.UIMollierAppearance_End.Label != null && UI_MollierProcess.UIMollierAppearance_End.Label != "")
+                                    if (mollierProcess.UIMollierAppearance_End.Label != null && mollierProcess.UIMollierAppearance_End.Label != "")
                                     {
                                         //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                                         if (value_2 != string.Empty)

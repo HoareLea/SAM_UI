@@ -70,6 +70,7 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureMaximumValueTextbox = new System.Windows.Forms.TextBox();
             this.TemperatureMinimumValueTextbox = new System.Windows.Forms.TextBox();
             this.TabPage_Tools = new System.Windows.Forms.TabPage();
+            this.VisualizeSolver_Checkbox = new System.Windows.Forms.CheckBox();
             this.Button_ToHover = new System.Windows.Forms.Button();
             this.Button_ToHover3 = new System.Windows.Forms.Button();
             this.Button_ToHover2 = new System.Windows.Forms.Button();
@@ -82,7 +83,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.VisualizeSolver_Checkbox = new System.Windows.Forms.CheckBox();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
@@ -174,10 +174,11 @@ namespace SAM.Core.Mollier.UI
             // label11
             // 
             this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.label11.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label11.Location = new System.Drawing.Point(274, 232);
+            this.label11.Location = new System.Drawing.Point(256, 233);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(92, 16);
+            this.label11.Size = new System.Drawing.Size(107, 16);
             this.label11.TabIndex = 70;
             this.label11.Text = "Other Intervals";
             // 
@@ -238,7 +239,7 @@ namespace SAM.Core.Mollier.UI
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(567, 298);
+            this.label2.Location = new System.Drawing.Point(573, 298);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(20, 16);
             this.label2.TabIndex = 63;
@@ -274,7 +275,7 @@ namespace SAM.Core.Mollier.UI
             // PartialVapourPressureUnit
             // 
             this.PartialVapourPressureUnit.AutoSize = true;
-            this.PartialVapourPressureUnit.Location = new System.Drawing.Point(372, 396);
+            this.PartialVapourPressureUnit.Location = new System.Drawing.Point(360, 396);
             this.PartialVapourPressureUnit.Name = "PartialVapourPressureUnit";
             this.PartialVapourPressureUnit.Size = new System.Drawing.Size(31, 16);
             this.PartialVapourPressureUnit.TabIndex = 58;
@@ -284,7 +285,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.SpecificVolumeIntervalLabel.AutoSize = true;
             this.SpecificVolumeIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.SpecificVolumeIntervalLabel.Location = new System.Drawing.Point(350, 260);
+            this.SpecificVolumeIntervalLabel.Location = new System.Drawing.Point(340, 260);
             this.SpecificVolumeIntervalLabel.Name = "SpecificVolumeIntervalLabel";
             this.SpecificVolumeIntervalLabel.Size = new System.Drawing.Size(107, 32);
             this.SpecificVolumeIntervalLabel.TabIndex = 57;
@@ -294,7 +295,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.WetBulbTemperatureIntervalLabel.AutoSize = true;
             this.WetBulbTemperatureIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.WetBulbTemperatureIntervalLabel.Location = new System.Drawing.Point(466, 260);
+            this.WetBulbTemperatureIntervalLabel.Location = new System.Drawing.Point(459, 260);
             this.WetBulbTemperatureIntervalLabel.Name = "WetBulbTemperatureIntervalLabel";
             this.WetBulbTemperatureIntervalLabel.Size = new System.Drawing.Size(142, 32);
             this.WetBulbTemperatureIntervalLabel.TabIndex = 56;
@@ -314,7 +315,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.DensityIntervalLabel.AutoSize = true;
             this.DensityIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.DensityIntervalLabel.Location = new System.Drawing.Point(97, 260);
+            this.DensityIntervalLabel.Location = new System.Drawing.Point(84, 260);
             this.DensityIntervalLabel.Name = "DensityIntervalLabel";
             this.DensityIntervalLabel.Size = new System.Drawing.Size(52, 32);
             this.DensityIntervalLabel.TabIndex = 54;
@@ -322,7 +323,7 @@ namespace SAM.Core.Mollier.UI
             // 
             // WetBulbTemperatureIntervalTextBox
             // 
-            this.WetBulbTemperatureIntervalTextBox.Location = new System.Drawing.Point(481, 295);
+            this.WetBulbTemperatureIntervalTextBox.Location = new System.Drawing.Point(487, 295);
             this.WetBulbTemperatureIntervalTextBox.Name = "WetBulbTemperatureIntervalTextBox";
             this.WetBulbTemperatureIntervalTextBox.Size = new System.Drawing.Size(83, 22);
             this.WetBulbTemperatureIntervalTextBox.TabIndex = 53;
@@ -360,7 +361,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.PartialVapourPressureIntervalLabel.AutoSize = true;
             this.PartialVapourPressureIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.PartialVapourPressureIntervalLabel.Location = new System.Drawing.Point(264, 358);
+            this.PartialVapourPressureIntervalLabel.Location = new System.Drawing.Point(245, 358);
             this.PartialVapourPressureIntervalLabel.Name = "PartialVapourPressureIntervalLabel";
             this.PartialVapourPressureIntervalLabel.Size = new System.Drawing.Size(149, 32);
             this.PartialVapourPressureIntervalLabel.TabIndex = 49;
@@ -368,7 +369,7 @@ namespace SAM.Core.Mollier.UI
             // 
             // PartialVapourPressure_IntervalTextBox
             // 
-            this.PartialVapourPressure_IntervalTextBox.Location = new System.Drawing.Point(270, 393);
+            this.PartialVapourPressure_IntervalTextBox.Location = new System.Drawing.Point(258, 393);
             this.PartialVapourPressure_IntervalTextBox.Name = "PartialVapourPressure_IntervalTextBox";
             this.PartialVapourPressure_IntervalTextBox.Size = new System.Drawing.Size(99, 22);
             this.PartialVapourPressure_IntervalTextBox.TabIndex = 48;
@@ -379,7 +380,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.HumidityRatioIntervalLabel.AutoSize = true;
             this.HumidityRatioIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.HumidityRatioIntervalLabel.Location = new System.Drawing.Point(422, 161);
+            this.HumidityRatioIntervalLabel.Location = new System.Drawing.Point(415, 159);
             this.HumidityRatioIntervalLabel.Name = "HumidityRatioIntervalLabel";
             this.HumidityRatioIntervalLabel.Size = new System.Drawing.Size(50, 16);
             this.HumidityRatioIntervalLabel.TabIndex = 47;
@@ -389,7 +390,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.HumidityRatioMaximumValueLabel.AutoSize = true;
             this.HumidityRatioMaximumValueLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.HumidityRatioMaximumValueLabel.Location = new System.Drawing.Point(264, 161);
+            this.HumidityRatioMaximumValueLabel.Location = new System.Drawing.Point(260, 159);
             this.HumidityRatioMaximumValueLabel.Name = "HumidityRatioMaximumValueLabel";
             this.HumidityRatioMaximumValueLabel.Size = new System.Drawing.Size(102, 16);
             this.HumidityRatioMaximumValueLabel.TabIndex = 46;
@@ -399,7 +400,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.HumidityRatioMinimumValueLabel.AutoSize = true;
             this.HumidityRatioMinimumValueLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.HumidityRatioMinimumValueLabel.Location = new System.Drawing.Point(129, 161);
+            this.HumidityRatioMinimumValueLabel.Location = new System.Drawing.Point(125, 159);
             this.HumidityRatioMinimumValueLabel.Name = "HumidityRatioMinimumValueLabel";
             this.HumidityRatioMinimumValueLabel.Size = new System.Drawing.Size(98, 16);
             this.HumidityRatioMinimumValueLabel.TabIndex = 45;
@@ -408,10 +409,11 @@ namespace SAM.Core.Mollier.UI
             // HumidityRatioAxisLabel
             // 
             this.HumidityRatioAxisLabel.AutoSize = true;
+            this.HumidityRatioAxisLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.HumidityRatioAxisLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.HumidityRatioAxisLabel.Location = new System.Drawing.Point(257, 128);
+            this.HumidityRatioAxisLabel.Location = new System.Drawing.Point(245, 128);
             this.HumidityRatioAxisLabel.Name = "HumidityRatioAxisLabel";
-            this.HumidityRatioAxisLabel.Size = new System.Drawing.Size(119, 16);
+            this.HumidityRatioAxisLabel.Size = new System.Drawing.Size(137, 16);
             this.HumidityRatioAxisLabel.TabIndex = 44;
             this.HumidityRatioAxisLabel.Text = "HumidityRatio Axis";
             // 
@@ -446,7 +448,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.TemperatureIntervalLabel.AutoSize = true;
             this.TemperatureIntervalLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.TemperatureIntervalLabel.Location = new System.Drawing.Point(396, 49);
+            this.TemperatureIntervalLabel.Location = new System.Drawing.Point(393, 47);
             this.TemperatureIntervalLabel.Name = "TemperatureIntervalLabel";
             this.TemperatureIntervalLabel.Size = new System.Drawing.Size(50, 16);
             this.TemperatureIntervalLabel.TabIndex = 40;
@@ -456,7 +458,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.TemperatureMaximumValueLabel.AutoSize = true;
             this.TemperatureMaximumValueLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.TemperatureMaximumValueLabel.Location = new System.Drawing.Point(257, 49);
+            this.TemperatureMaximumValueLabel.Location = new System.Drawing.Point(256, 47);
             this.TemperatureMaximumValueLabel.Name = "TemperatureMaximumValueLabel";
             this.TemperatureMaximumValueLabel.Size = new System.Drawing.Size(102, 16);
             this.TemperatureMaximumValueLabel.TabIndex = 39;
@@ -475,7 +477,7 @@ namespace SAM.Core.Mollier.UI
             // 
             this.TemperatureMinimumValueLabel.AutoSize = true;
             this.TemperatureMinimumValueLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.TemperatureMinimumValueLabel.Location = new System.Drawing.Point(145, 49);
+            this.TemperatureMinimumValueLabel.Location = new System.Drawing.Point(145, 47);
             this.TemperatureMinimumValueLabel.Name = "TemperatureMinimumValueLabel";
             this.TemperatureMinimumValueLabel.Size = new System.Drawing.Size(98, 16);
             this.TemperatureMinimumValueLabel.TabIndex = 37;
@@ -484,10 +486,11 @@ namespace SAM.Core.Mollier.UI
             // TemperatureAxisLabel
             // 
             this.TemperatureAxisLabel.AutoSize = true;
+            this.TemperatureAxisLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.TemperatureAxisLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.TemperatureAxisLabel.Location = new System.Drawing.Point(256, 23);
+            this.TemperatureAxisLabel.Location = new System.Drawing.Point(240, 21);
             this.TemperatureAxisLabel.Name = "TemperatureAxisLabel";
-            this.TemperatureAxisLabel.Size = new System.Drawing.Size(113, 16);
+            this.TemperatureAxisLabel.Size = new System.Drawing.Size(129, 16);
             this.TemperatureAxisLabel.TabIndex = 36;
             this.TemperatureAxisLabel.Text = "Temperature Axis";
             // 
@@ -526,6 +529,16 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_Tools.TabIndex = 2;
             this.TabPage_Tools.Text = "Tools";
             this.TabPage_Tools.UseVisualStyleBackColor = true;
+            // 
+            // VisualizeSolver_Checkbox
+            // 
+            this.VisualizeSolver_Checkbox.AutoSize = true;
+            this.VisualizeSolver_Checkbox.Location = new System.Drawing.Point(38, 145);
+            this.VisualizeSolver_Checkbox.Name = "VisualizeSolver_Checkbox";
+            this.VisualizeSolver_Checkbox.Size = new System.Drawing.Size(125, 20);
+            this.VisualizeSolver_Checkbox.TabIndex = 22;
+            this.VisualizeSolver_Checkbox.Text = "Visualize Solver";
+            this.VisualizeSolver_Checkbox.UseVisualStyleBackColor = true;
             // 
             // Button_ToHover
             // 
@@ -648,16 +661,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.Text = "Apply";
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
-            // 
-            // VisualizeSolver_Checkbox
-            // 
-            this.VisualizeSolver_Checkbox.AutoSize = true;
-            this.VisualizeSolver_Checkbox.Location = new System.Drawing.Point(38, 145);
-            this.VisualizeSolver_Checkbox.Name = "VisualizeSolver_Checkbox";
-            this.VisualizeSolver_Checkbox.Size = new System.Drawing.Size(125, 20);
-            this.VisualizeSolver_Checkbox.TabIndex = 22;
-            this.VisualizeSolver_Checkbox.Text = "Visualize Solver";
-            this.VisualizeSolver_Checkbox.UseVisualStyleBackColor = true;
             // 
             // MollierControlSettingsForm
             // 
