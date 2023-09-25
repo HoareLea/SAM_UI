@@ -185,6 +185,20 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public bool CreateTPD
+        {
+            get
+            {
+                return checkBox_CreateTPD.IsChecked != null && checkBox_CreateTPD.IsChecked.HasValue && checkBox_CreateTPD.IsChecked.Value;
+            }
+
+            set
+            {
+                checkBox_CreateTPD.IsChecked = value;
+                EnableTextMap();
+            }
+        }
+
         public bool FullYearSimulation
         {
             get
@@ -249,6 +263,19 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 checkBox_Sizing.IsChecked = value;
+            }
+        }
+
+        public bool UseWidths
+        {
+            get
+            {
+                return checkBox_UseWidths.IsChecked != null && checkBox_UseWidths.IsChecked.HasValue && checkBox_UseWidths.IsChecked.Value;
+            }
+
+            set
+            {
+                checkBox_UseWidths.IsChecked = value;
             }
         }
 
@@ -339,6 +366,8 @@ namespace SAM.Analytical.UI.WPF
                 RoomDataSheets = RoomDataSheets,
                 CreateSAP = CreateSAP,
                 CreateTM59 = CreateTM59,
+                UseWidths = UseWidths,
+                CreateTPD = CreateTPD,
             };
 
             return result;
@@ -361,6 +390,9 @@ namespace SAM.Analytical.UI.WPF
             RoomDataSheets = tBDConversionOptions.RoomDataSheets;
             CreateSAP = tBDConversionOptions.CreateSAP;
             CreateTM59 = tBDConversionOptions.CreateTM59;
+
+            UseWidths = tBDConversionOptions.UseWidths;
+            CreateTPD = tBDConversionOptions.CreateTPD;
 
             TextMap = tBDConversionOptions.TextMap;
             WeatherData = tBDConversionOptions.WeatherData;

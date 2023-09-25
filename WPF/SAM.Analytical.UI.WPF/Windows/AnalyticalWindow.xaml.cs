@@ -559,6 +559,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditMechanicalSystems(uIAnalyticalModel, spaces, MechanicalSystemCategory.Ventilation, selectedSpaces);
         }
 
+        private void AssignMechanicalSystems(IEnumerable<Space> spaces = null)
+        {
+            Modify.AssignMechanicalSystems(uIAnalyticalModel, spaces);
+        }
+
         private void EnableViewSettings(bool enabled)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -905,7 +910,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                 }
             }
 
-            EditMechanicalSystems(spaces, spaces);
+            //EditMechanicalSystems(spaces, spaces);
+            AssignMechanicalSystems(spaces);
         }
 
         private void MenuItem_MenuItem_MapInternalCondition_Click(object sender, RoutedEventArgs e)
