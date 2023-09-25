@@ -155,6 +155,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public bool UseWidths
+        {
+            get
+            {
+                return convertToTBDControl.UseWidths;
+            }
+
+            set
+            {
+                convertToTBDControl.UseWidths = value;
+            }
+        }
+
         public bool UnmetHours
         {
             get
@@ -204,6 +217,19 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 convertToTBDControl.CreateTM59 = value;
+            }
+        }
+
+        public bool CreateTPD
+        {
+            get
+            {
+                return convertToTBDControl.CreateTPD;
+            }
+
+            set
+            {
+                convertToTBDControl.CreateTPD = value;
             }
         }
 
