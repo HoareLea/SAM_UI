@@ -1274,9 +1274,5 @@ namespace SAM.Core.Mollier.UI.Controls
         }
 
 
-        public void EXPORTTEST()
-        {
-            MollierChart.Export(this, ChartExportType.JPG, mollierControlSettings);
-        }
     }
 }

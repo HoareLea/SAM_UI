@@ -1110,9 +1110,5 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            MollierControl_Main.EXPORTTEST();
-        }
     }
 }
