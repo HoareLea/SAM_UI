@@ -267,6 +267,12 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            if(SelectedWeatherData == null)
+            {
+                MessageBox.Show("Select Weather Data");
+                return;
+            }
+
             DialogResult = true;
         }
 

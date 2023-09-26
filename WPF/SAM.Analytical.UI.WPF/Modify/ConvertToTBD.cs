@@ -29,17 +29,17 @@ namespace SAM.Analytical.UI.WPF
 
             convertToTBDWindow.ProjectName = analyticalModel.Name;
 
-            if (analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.WeatherData, out WeatherData weatherData))
-            {
-                convertToTBDWindow.WeatherData = weatherData;
-            }
-
             if (!string.IsNullOrWhiteSpace(uIAnalyticalModel.Path))
             {
                 convertToTBDWindow.OutputDirectory = System.IO.Path.GetDirectoryName(uIAnalyticalModel.Path);
             }
 
             convertToTBDWindow.TBDConversionOptions = tBDConversionOptions;
+
+            if (analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.WeatherData, out WeatherData weatherData))
+            {
+                convertToTBDWindow.WeatherData = weatherData;
+            }
 
             //convertToTBDWindow.ZoneCategories = analyticalModel.GetZoneCategories()?.ToList();
             //convertToTBDWindow.TextMap = Analytical.Query.DefaultInternalConditionTextMap_TM59();

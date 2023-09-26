@@ -232,8 +232,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 spaces = null;
             }
-            
-            uIAnalyticalModel?.AssignMechanicalSystems(spaces);
+
+            //uIAnalyticalModel?.AssignMechanicalSystems(spaces);
+            uIAnalyticalModel?.AddMechanicalSystems(spaces);
         }
 
         private void RibbonButton_ViewRange_Click(object sender, RoutedEventArgs e)

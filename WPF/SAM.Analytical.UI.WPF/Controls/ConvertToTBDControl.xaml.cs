@@ -62,7 +62,8 @@ namespace SAM.Analytical.UI.WPF
             }
             set
             {
-                selectSAMObjectComboBoxControl_WeatherData.Add(InternalText, value);
+                WeatherData weatherData = value == null ? null : new WeatherData(value);
+                selectSAMObjectComboBoxControl_WeatherData.Add(InternalText, weatherData);
                 selectSAMObjectComboBoxControl_WeatherData.SelectedText = InternalText;
             }
         }
