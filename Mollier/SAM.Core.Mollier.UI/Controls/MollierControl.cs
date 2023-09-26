@@ -239,7 +239,7 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.Series?.Clear();
             ChartArea chartArea = MollierChart.ChartAreas[0];
             chartArea.Position = new ElementPosition(2, 2, 95, 95);//define sizes of chart
-            chartArea.InnerPlotPosition = new ElementPosition(8, 6, 85, 85);
+            chartArea.InnerPlotPosition = new ElementPosition(7, 6, 88, 88);
             chartArea.AxisX2.Enabled = AxisEnabled.False;
 
             // Humidity ratio axis
@@ -317,7 +317,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
                 else
                 {
-                    chartArea.Position = new ElementPosition(2, chartArea.Position.Y, chartArea.Position.Width + 2, chartArea.Position.Height);
+                    chartArea.Position = new ElementPosition(0, chartArea.Position.Y, chartArea.Position.Width + 2, chartArea.Position.Height);
                 }
             }
         }
@@ -619,7 +619,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     return false;
                 }
-                string fileName = pageOrientation == PageOrientation.Portrait ? "PDF_Print_AHU_Portrait.xlsx" : "PDF_Print_AHU.xlsx";
+                //string fileName = pageOrientation == PageOrientation.Portrait ? "PDF_Print_AHU_Portrait.xlsx" : "PDF_Print_AHU.xlsx";
+                string fileName = "PDF_Print_AHU.xlsx";
                 path_Template = System.IO.Path.Combine(path_Template, "AHU", fileName);
                 if (!System.IO.File.Exists(path_Template))
                 {
@@ -660,8 +661,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
 
                     HashSet<string> uniqueNames = new HashSet<string>();
-                    uniqueNames.Add("[ProcessPointName]");
-                    uniqueNames.Add("[DryBulbTemperature]");
+                    uniqueNames.Add("[ProcessPointName]"); 
+                    uniqueNames.Add("[DryBulbTemperature]"); 
                     uniqueNames.Add("[HumidityRatio]");
                     uniqueNames.Add("[RelativeHumidity]");
                     uniqueNames.Add("[WetBulbTemperature]");
@@ -710,7 +711,19 @@ namespace SAM.Core.Mollier.UI.Controls
                         }
                     }
 
+                    List<UIMollierProcess> mollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>(false);
+                    List<MollierGroup> processesGroups = Mollier.Query.Group(mollierProcesses)?.ConvertAll(x => (MollierGroup)x);
+
+                    List<MollierPoint> mollierPoints = mollierModel.GetMollierObjects<MollierPoint>(false);
+                    MollierGroup pointsGroup = new MollierGroup("MollierPoints");
+                    mollierPoints?.ForEach(x => pointsGroup.Add(x));
+
                     List<MollierGroup> mollierGroups = mollierModel.GetMollierObjects<MollierGroup>();
+                    mollierGroups?.ForEach(x => x.SortGroup());
+
+                    mollierGroups?.AddRange(processesGroups);
+                    mollierGroups?.Add(pointsGroup);
+
                     if (mollierGroups == null || mollierGroups.Count == 0)
                     {
                         for (int i = 0; i < numberOfData; i++)
@@ -726,16 +739,16 @@ namespace SAM.Core.Mollier.UI.Controls
                         {
                             range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                             move_Temp++;
-                            for (int j = 0; j < mollierGroups[i].Count; j++)
+                            List<UIMollierProcess> processes = mollierGroups[i].GetObjects<UIMollierProcess>();
+                            for (int j = 0; j < processes.Count; j++)
                             {
-                                UIMollierProcess UI_MollierProcess = mollierGroups[i].GetObjects<UIMollierProcess>()[j];
-                                MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
-                                if (UI_MollierProcess.UIMollierAppearance_Start.Label != null && UI_MollierProcess.UIMollierAppearance_Start.Label != "")
+                                UIMollierProcess mollierProcess = processes[j];
+                                if (mollierProcess.UIMollierAppearance_Start.Label != null && mollierProcess.UIMollierAppearance_Start.Label != "")
                                 {
                                     range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                                     move_Temp++;
                                 }
-                                if (UI_MollierProcess.UIMollierAppearance_End.Label != null && UI_MollierProcess.UIMollierAppearance_End.Label != "")
+                                if (mollierProcess.UIMollierAppearance_End.Label != null && mollierProcess.UIMollierAppearance_End.Label != "")
                                 {
                                     range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                                     move_Temp++;
@@ -763,13 +776,16 @@ namespace SAM.Core.Mollier.UI.Controls
 
                             for (int i = 0; i < mollierGroups.Count; i++)
                             {
-                                //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
-                                worksheet.Cells[rowIndex + id, columnIndex].Value = "----";
+                                worksheet.Cells[rowIndex + id, columnIndex].Value = "-------";
                                 id++;
-                                for (int j = 0; j < mollierGroups[i].Count; j++)
+                                List<UIMollierProcess> processes = mollierGroups[i].GetObjects<UIMollierProcess>();
+
+                                for (int j = 0; j < processes.Count; j++)
                                 {
-                                    UIMollierProcess UI_MollierProcess = mollierGroups[i].GetObjects<UIMollierProcess>()[j];
-                                    MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
+                                    worksheet.Cells[rowIndex + id, columnIndex].Value = "------";
+                                    id ++;
+                                    UIMollierProcess mollierProcess = processes[j];
+                                    
                                     MollierPoint start = mollierProcess.Start;
                                     MollierPoint end = mollierProcess.End;
                                     string value_1 = string.Empty;
@@ -777,47 +793,49 @@ namespace SAM.Core.Mollier.UI.Controls
                                     switch (key_Temp)
                                     {
                                         case "[ProcessPointName]":
-                                            value_1 = UI_MollierProcess.UIMollierAppearance_Start.Label;
-                                            value_2 = UI_MollierProcess.UIMollierAppearance_End.Label;
+                                            value_1 = mollierProcess.UIMollierAppearance_Start.Label;
+                                            value_2 = mollierProcess.UIMollierAppearance_End.Label;
                                             break;
                                         case "[DryBulbTemperature]":
-                                            value_1 = System.Math.Round(start.DryBulbTemperature, 2).ToString();
-                                            value_2 = System.Math.Round(end.DryBulbTemperature, 2).ToString();
+                                            value_1 = String.Format("{0:#,0.00}", start.DryBulbTemperature);
+                                            value_2 = String.Format("{0:#,0.00}", end.DryBulbTemperature);
                                             break;
+
                                         case "[HumidityRatio]":
-                                            value_1 = System.Math.Round(start.HumidityRatio * 1000, 2).ToString();
-                                            value_2 = System.Math.Round(end.HumidityRatio * 1000, 2).ToString();
+                                            value_1 = String.Format("{0:#,0.00}", (start.HumidityRatio * 1000));
+                                            value_2 = String.Format("{0:#,0.00}", (end.HumidityRatio * 1000));
                                             break;
                                         case "[RelativeHumidity]":
-                                            value_1 = System.Math.Round(start.RelativeHumidity, 1).ToString();
-                                            value_2 = System.Math.Round(end.RelativeHumidity, 1).ToString();
+                                            value_1 = String.Format("{0:#,0.00}", start.RelativeHumidity);
+                                            value_2 = String.Format("{0:#,0.00}", end.RelativeHumidity);
                                             break;
                                         case "[WetBulbTemperature]":
-                                            value_1 = System.Math.Round(start.WetBulbTemperature(), 2).ToString();
-                                            value_2 = System.Math.Round(end.WetBulbTemperature(), 2).ToString();
+                                            value_1 = String.Format("{0:#,0.00}", start.WetBulbTemperature());
+                                            value_2 = String.Format("{0:#,0.00}", end.WetBulbTemperature());
                                             break;
                                         case "[SaturationTemperature]":
-                                            value_1 = System.Math.Round(start.SaturationTemperature(), 2).ToString();
-                                            value_2 = System.Math.Round(end.SaturationTemperature(), 2).ToString();
+                                            value_1 = String.Format("{*:#,0.00}", start.SaturationTemperature());
+                                            value_2 = String.Format("{*:#,0.00}", end.SaturationTemperature());
                                             break;
                                         case "[Enthalpy]":
-                                            value_1 = System.Math.Round(start.Enthalpy / 1000, 2).ToString();
-                                            value_2 = System.Math.Round(end.Enthalpy / 1000, 2).ToString();
+                                            value_1 = String.Format("{0:#,0.00}", (start.Enthalpy / 1000));
+                                            value_2 = String.Format("{0:#,0.00}", (end.Enthalpy / 1000));
                                             break;
                                         case "[SpecificVolume]":
-                                            value_1 = System.Math.Round(start.SpecificVolume(), 3).ToString();
-                                            value_2 = System.Math.Round(end.SpecificVolume(), 3).ToString();
+                                            value_1 = String.Format("{0:#,0.000}", start.SpecificVolume());
+                                            value_2 = String.Format("{0:#,0.000}", end.SpecificVolume());
                                             break;
                                         case "[Density]":
-                                            value_1 = System.Math.Round(start.Density(), 3).ToString();
-                                            value_2 = System.Math.Round(end.Density(), 3).ToString();
+                                            value_1 = String.Format("{0:#,0.00}", start.Density());
+                                            value_2 = String.Format("{0:#,0.00}", end.Density());
                                             break;
                                         case "[AtmosphericPressure]":
-                                            value_1 = System.Math.Round(start.Pressure, 1).ToString();
-                                            value_2 = System.Math.Round(end.Pressure, 1).ToString();
+                                            value_1 = start.Pressure.ToString();
+                                            value_2 = end.Pressure.ToString();
                                             break;
                                         case "[ProcessName]":
-                                            value_2 = Query.FullProcessName(UI_MollierProcess);
+                                            value_2 = Query.FullProcessName(mollierProcess);
+                                            value_2 = value_2.Substring(0, value_2.Length - 8);
                                             break;
                                         case "[deltaT]":
                                             value_2 = (System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2)).ToString();
@@ -829,13 +847,13 @@ namespace SAM.Core.Mollier.UI.Controls
                                             value_2 = (System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2)).ToString();
                                             break;
                                         case "[epsilon]":
-                                            value_2 = System.Math.Round(Mollier.Query.Epsilon(mollierProcess), 0).ToString();
+                                            value_2 = System.Math.Round(Mollier.Query.Epsilon(mollierProcess.MollierProcess), 0).ToString();
                                             break;
                                     }
 
 
 
-                                    if (UI_MollierProcess.UIMollierAppearance_Start.Label != null && UI_MollierProcess.UIMollierAppearance_Start.Label != "")
+                                    if (mollierProcess.UIMollierAppearance_Start.Label != null && mollierProcess.UIMollierAppearance_Start.Label != "")
                                     {
                                         if (value_1 != string.Empty)
                                         {
@@ -850,7 +868,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                             id++;
                                         }
                                     }
-                                    if (UI_MollierProcess.UIMollierAppearance_End.Label != null && UI_MollierProcess.UIMollierAppearance_End.Label != "")
+                                    if (mollierProcess.UIMollierAppearance_End.Label != null && mollierProcess.UIMollierAppearance_End.Label != "")
                                     {
                                         //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                                         if (value_2 != string.Empty)
@@ -870,7 +888,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                 {
                                     int integer = 2;
                                 }
-                                worksheet.Cells[rowIndex + id, columnIndex].Value = "----";
+                                worksheet.Cells[rowIndex + id, columnIndex].Value = "------";
                                 id++;
                             }
 
@@ -891,8 +909,13 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     path_Temp = System.IO.Path.GetTempFileName();
 
+
+                    Form form = this.FindForm();
+
                     Size size_Temp = Size;
-                    //Size = new Size(System.Convert.ToInt32(width), System.Convert.ToInt32(height));
+                    Size formSize_Temp = form.Size;
+                    double widthDifference = (formSize_Temp.Width - size_Temp.Width) * 1.2;
+                    double heightDifference = (formSize_Temp.Height - size_Temp.Height) * 1.2;
 
                     if (pageSize == PageSize.A3)//a3 pdf
                     {
@@ -900,21 +923,62 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
                     else//a4 pdf
                     {
-                        Size = new Size(System.Convert.ToInt32(width * 2), System.Convert.ToInt32(height * 2));
+                        if (pageOrientation == PageOrientation.Landscape)
+                        {
+                            form.WindowState = FormWindowState.Normal;
+                            form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2));
+                            GenerateGraph();
+                        }
+                        else
+                        {
+                            form.WindowState = FormWindowState.Normal;
+                            form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2)); 
+                            GenerateGraph();
+                        }
                     }
                     Save(ChartExportType.EMF, path: path_Temp);
 
-                    Size = size_Temp;
-
+                    if(pageSize == PageSize.A4)
+                    {
+                        form.WindowState = FormWindowState.Maximized;
+                        form.Size = formSize_Temp;
+                    }
+                    else
+                    {
+                        Size = size_Temp;
+                    }
 
                     NetOffice.ExcelApi.Shape shape = worksheet.Shapes.AddPicture(path_Temp, NetOffice.OfficeApi.Enums.MsoTriState.msoFalse, NetOffice.OfficeApi.Enums.MsoTriState.msoCTrue, left, top, width, height);
 
                     //double shapeSizeFactor = Query.ShapeSizeFactor(DeviceDpi);
 
-                    shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * Query.ShapeSizeFactor(DeviceDpi, 0.81));
-                    shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * Query.ShapeSizeFactor(DeviceDpi, 0.78));
-                    shape.Width = width;
-                    shape.Height = height;
+                   
+                    // A3 landscape
+                    //if(pageSize == PageSize.A3)
+                    //{
+                    //    shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * Query.ShapeSizeFactor(DeviceDpi, 0.81));
+                    //    shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * Query.ShapeSizeFactor(DeviceDpi, 0.78));
+                    //    shape.Width = width;
+                    //    shape.Height = height;
+                    //}
+                    //else
+                    //{
+                    //    if(pageOrientation == PageOrientation.Landscape)
+                    //    {
+
+                    //        shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * Query.ShapeSizeFactor(DeviceDpi, 0.81));
+                    //        shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * Query.ShapeSizeFactor(DeviceDpi, 0.78));
+                    //        shape.Width = width + 150;
+                    //        shape.Height = height + 120;
+                    //    }
+                    //    else
+                    //    {
+                    //        shape.PictureFormat.Crop.ShapeHeight = (float)(shape.PictureFormat.Crop.ShapeHeight * Query.ShapeSizeFactor(DeviceDpi, 0.81));
+                    //        shape.PictureFormat.Crop.ShapeWidth = (float)(shape.PictureFormat.Crop.ShapeWidth * Query.ShapeSizeFactor(DeviceDpi, 0.78));
+                    //        shape.Width = width + 90;
+                    //        shape.Height = height + 220;
+                    //    }
+                    //}
                     range.Value = string.Empty;
 
                     workbook.SaveCopyAs(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), "TEST.xlsx"));
@@ -1209,5 +1273,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             return Convert.ToMollier(point2D, mollierControlSettings.ChartType, mollierControlSettings.Pressure);
         }
+
+
     }
 }

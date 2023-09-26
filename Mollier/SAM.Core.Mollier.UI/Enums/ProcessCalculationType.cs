@@ -4,7 +4,6 @@ namespace SAM.Core.Mollier.UI
 {
     public enum ProcessCalculationType
     {
-        //description identycznie do calculation type nazwy
         [Description("Undefined")] Undefined,
         [Description("Dry Bulb Temperature")] DryBulbTemperature,
         [Description("Dry Bulb Temperature Difference")] DryBulbTemperatureDifference,

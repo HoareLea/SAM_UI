@@ -29,12 +29,12 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.customizeMollierObjectsTabControl = new System.Windows.Forms.TabControl();
             this.tabCustomizePointPage = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
@@ -164,15 +164,18 @@
             this.DataGridView_MollierPoints.AllowUserToAddRows = false;
             this.DataGridView_MollierPoints.AllowUserToDeleteRows = false;
             this.DataGridView_MollierPoints.AllowUserToResizeRows = false;
+            this.DataGridView_MollierPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.DataGridView_MollierPoints.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView_MollierPoints.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridView_MollierPoints.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.DataGridView_MollierPoints.ColumnHeadersHeight = 66;
             this.DataGridView_MollierPoints.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Visible_Column,
@@ -188,24 +191,24 @@
             this.Column_Edit,
             this.Column_Remove});
             this.DataGridView_MollierPoints.ContextMenuStrip = this.ContextMenuStrip_Main;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DataGridView_MollierPoints.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DataGridView_MollierPoints.DefaultCellStyle = dataGridViewCellStyle2;
             this.DataGridView_MollierPoints.Location = new System.Drawing.Point(3, 48);
             this.DataGridView_MollierPoints.Name = "DataGridView_MollierPoints";
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView_MollierPoints.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridView_MollierPoints.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.DataGridView_MollierPoints.RowHeadersVisible = false;
             this.DataGridView_MollierPoints.RowHeadersWidth = 62;
             this.DataGridView_MollierPoints.RowTemplate.Height = 28;
@@ -477,15 +480,18 @@
             this.DataGridView_MollierProcesses.AllowUserToOrderColumns = true;
             this.DataGridView_MollierProcesses.AllowUserToResizeColumns = false;
             this.DataGridView_MollierProcesses.AllowUserToResizeRows = false;
+            this.DataGridView_MollierProcesses.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.DataGridView_MollierProcesses.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView_MollierProcesses.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridView_MollierProcesses.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle4;
             this.DataGridView_MollierProcesses.ColumnHeadersHeight = 66;
             this.DataGridView_MollierProcesses.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.VisibleProcess_Column,
@@ -506,24 +512,24 @@
             this.Column_MollierProcess_Edit,
             this.Column_MollierProcess_Remove});
             this.DataGridView_MollierProcesses.ContextMenuStrip = this.ContextMenuStrip_Main;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.DataGridView_MollierProcesses.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.DataGridView_MollierProcesses.DefaultCellStyle = dataGridViewCellStyle5;
             this.DataGridView_MollierProcesses.Location = new System.Drawing.Point(3, 48);
             this.DataGridView_MollierProcesses.Name = "DataGridView_MollierProcesses";
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.DataGridView_MollierProcesses.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.DataGridView_MollierProcesses.RowHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.DataGridView_MollierProcesses.RowHeadersVisible = false;
             this.DataGridView_MollierProcesses.RowHeadersWidth = 62;
             this.DataGridView_MollierProcesses.RowTemplate.Height = 28;
@@ -651,20 +657,20 @@
             // Column_MollierProcess_SensibleLoad
             // 
             this.Column_MollierProcess_SensibleLoad.DataPropertyName = "SensibleLoad";
-            this.Column_MollierProcess_SensibleLoad.HeaderText = "Sensible Load [kW]";
+            this.Column_MollierProcess_SensibleLoad.HeaderText = "Sensible Load Qsens [kW]";
             this.Column_MollierProcess_SensibleLoad.MinimumWidth = 8;
             this.Column_MollierProcess_SensibleLoad.Name = "Column_MollierProcess_SensibleLoad";
             this.Column_MollierProcess_SensibleLoad.ReadOnly = true;
-            this.Column_MollierProcess_SensibleLoad.Width = 93;
+            this.Column_MollierProcess_SensibleLoad.Width = 120;
             // 
             // Column_MollierProcess_LatentLoad
             // 
             this.Column_MollierProcess_LatentLoad.DataPropertyName = "LatentLoad";
-            this.Column_MollierProcess_LatentLoad.HeaderText = "Latent\\r\\nLoad K";
+            this.Column_MollierProcess_LatentLoad.HeaderText = "Latent Load Qlat [kW]";
             this.Column_MollierProcess_LatentLoad.MinimumWidth = 8;
             this.Column_MollierProcess_LatentLoad.Name = "Column_MollierProcess_LatentLoad";
             this.Column_MollierProcess_LatentLoad.ReadOnly = true;
-            this.Column_MollierProcess_LatentLoad.Width = 131;
+            this.Column_MollierProcess_LatentLoad.Width = 95;
             // 
             // Column_MollierProcess_Edit
             // 
@@ -737,6 +743,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_Density;
         private System.Windows.Forms.DataGridViewButtonColumn Column_Edit;
         private System.Windows.Forms.DataGridViewButtonColumn Column_Remove;
+        private System.Windows.Forms.TextBox PressurePoints_TextBox;
+        private System.Windows.Forms.Label PressurePoints_Label;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox GroupSelectionProcesses_ComboBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ComboBox GroupSelectionPoints_ComboBox;
         private System.Windows.Forms.DataGridViewCheckBoxColumn VisibleProcess_Column;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Name;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_Label;
@@ -754,11 +766,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column_MollierProcess_LatentLoad;
         private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Edit;
         private System.Windows.Forms.DataGridViewButtonColumn Column_MollierProcess_Remove;
-        private System.Windows.Forms.TextBox PressurePoints_TextBox;
-        private System.Windows.Forms.Label PressurePoints_Label;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox GroupSelectionProcesses_ComboBox;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox GroupSelectionPoints_ComboBox;
     }
 }

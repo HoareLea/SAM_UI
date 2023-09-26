@@ -39,12 +39,16 @@
             // 
             this.MollierPointControl_Start.Location = new System.Drawing.Point(0, 23);
             this.MollierPointControl_Start.Name = "MollierPointControl_Start";
+            this.MollierPointControl_Start.Pressure = double.NaN;
+            this.MollierPointControl_Start.PressureEnabled = true;
+            this.MollierPointControl_Start.PressureVisible = true;
+            this.MollierPointControl_Start.SelectMollierPointVisible = false;
             this.MollierPointControl_Start.Size = new System.Drawing.Size(199, 220);
             this.MollierPointControl_Start.TabIndex = 15;
             // 
             // flowLayoutPanel_Main
             // 
-            this.flowLayoutPanel_Main.Location = new System.Drawing.Point(261, 53);
+            this.flowLayoutPanel_Main.Location = new System.Drawing.Point(261, 55);
             this.flowLayoutPanel_Main.Name = "flowLayoutPanel_Main";
             this.flowLayoutPanel_Main.Size = new System.Drawing.Size(360, 177);
             this.flowLayoutPanel_Main.TabIndex = 14;
@@ -76,7 +80,7 @@
             this.processCalculateType_ComboBox.Items.AddRange(new object[] {
             "Humidity Ratio Difference",
             "Relative Humidity"});
-            this.processCalculateType_ComboBox.Location = new System.Drawing.Point(261, 23);
+            this.processCalculateType_ComboBox.Location = new System.Drawing.Point(261, 25);
             this.processCalculateType_ComboBox.Name = "processCalculateType_ComboBox";
             this.processCalculateType_ComboBox.Size = new System.Drawing.Size(266, 24);
             this.processCalculateType_ComboBox.TabIndex = 11;

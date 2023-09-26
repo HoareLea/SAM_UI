@@ -60,7 +60,7 @@
             // 
             this.processTypeLabel.AutoSize = true;
             this.processTypeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.processTypeLabel.Location = new System.Drawing.Point(170, 15);
+            this.processTypeLabel.Location = new System.Drawing.Point(170, 13);
             this.processTypeLabel.Name = "processTypeLabel";
             this.processTypeLabel.Size = new System.Drawing.Size(112, 20);
             this.processTypeLabel.TabIndex = 4;

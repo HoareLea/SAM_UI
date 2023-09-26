@@ -1,4 +1,5 @@
 ﻿using SAM.Geometry.Planar;
+using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace SAM.Core.Mollier.UI
@@ -23,7 +24,23 @@ namespace SAM.Core.Mollier.UI
             double xScale = OXRatio / realOXSize;
             double yScale = OYRatio / realOYSize;
 
-            return xScale / yScale;
+            Control control = chart.Parent;
+            Form form = control.FindForm();
+
+            if(form == null)
+            {
+                return 1;
+            }
+
+            double screenWidth = Screen.GetWorkingArea(form).Width;
+            double screenHeight = Screen.GetWorkingArea(form).Height;
+
+            double widthFactor = (screenWidth / (double)form.ClientSize.Width);
+            double heightFactor = (screenHeight / (double)form.ClientSize.Height);
+            double screenFactor = widthFactor / heightFactor;
+
+
+            return xScale / yScale * screenFactor;
         }
     }
 }

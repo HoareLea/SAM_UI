@@ -271,6 +271,7 @@
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\GroupName.cs" />
+    <Compile Include="Query\SortGroup.cs" />
     <Compile Include="Query\SortByGroup.cs" />
     <Compile Include="Query\DivisionMollierZones.cs" />
     <Compile Include="Query\Obstacles.cs" />
@@ -301,6 +302,7 @@
     <Compile Include="Query\DefaultUnitType.cs" />
     <Compile Include="Query\UnitCategory.cs" />
     <Compile Include="Query\ZoomParameters.cs" />
+    <Compile Include="Temporary\ExportPDF.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\AdiabaticHumidificationProcessControl.resx">
@@ -396,8 +398,6 @@
       <Version>13.0.2</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Temporary\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

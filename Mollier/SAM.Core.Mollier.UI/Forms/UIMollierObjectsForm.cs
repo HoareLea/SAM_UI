@@ -50,7 +50,7 @@ namespace SAM.Core.Mollier.UI.Forms
             DataGridView_MollierPoints.AutoGenerateColumns = false;
             PressurePoints_TextBox.Text = mollierControlSettings.Pressure.ToString();
             PressureProcesses_TextBox.Text = mollierControlSettings.Pressure.ToString();
-            initializeColumnsHeaders();
+           // initializeColumnsHeaders();
 
             // Initializing Air flow
             SupplyAirflow_ComboBox.Text = "m3/s";
@@ -75,24 +75,6 @@ namespace SAM.Core.Mollier.UI.Forms
                     GroupSelectionPoints_ComboBox.Items.Add(x.Name);
                 }
             });
-        }
-        private void initializeColumnsHeaders()
-        {
-            DataGridView_MollierProcesses.Columns[0].HeaderText = "Visible";
-            DataGridView_MollierProcesses.Columns[1].HeaderText = "Name";
-            DataGridView_MollierProcesses.Columns[2].HeaderText = "Label";
-            DataGridView_MollierProcesses.Columns[3].HeaderText = "Dry Bulb   \ntemperature\nt [X]";
-            DataGridView_MollierProcesses.Columns[4].HeaderText = "Humidity\nratio\nx [x/xx]";
-            DataGridView_MollierProcesses.Columns[5].HeaderText = "Relative\nhumidity\nx [X]";
-            DataGridView_MollierProcesses.Columns[6].HeaderText = "Wet bulb   \ntemperature\nt_wb [X]";
-            DataGridView_MollierProcesses.Columns[7].HeaderText = "Dew point  \ntemperature\nt_tao [X]";
-            DataGridView_MollierProcesses.Columns[8].HeaderText = "Specific \nvolume \nv [m3/kg]";
-            DataGridView_MollierProcesses.Columns[9].HeaderText = "Enthalpy  \nh[kJ/kg*K]";
-            DataGridView_MollierProcesses.Columns[10].HeaderText = "Density\np[kg/s3]";
-            DataGridView_MollierProcesses.Columns[11].HeaderText = "Mass flow\nm [kg/s]";
-            DataGridView_MollierProcesses.Columns[12].HeaderText = "Total load  \r\nQtot [kW]";
-            DataGridView_MollierProcesses.Columns[13].HeaderText = "Sensible load \nQsens [kW]";
-            DataGridView_MollierProcesses.Columns[14].HeaderText = "Latent load\nQl [kW]";
         }
         #endregion
 
