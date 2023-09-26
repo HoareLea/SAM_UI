@@ -1,9 +1,22 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI
 {
+
     public static partial class Query
     {
+        [DllImport("gdi32.dll")]
+        static extern int GetDeviceCaps(IntPtr hdc, int nIndex);
+        public enum DeviceCap
+        {
+            VERTRES = 10,
+            HORZRES = 11,
+            DESKTOPVERTRES = 117,
+            DESKTOPHORZRES = 118,
+        }
         /// <summary>
         /// Calculates the axis scales from the initial, default values
         /// </summary>
@@ -16,19 +29,27 @@ namespace SAM.Core.Mollier.UI
             {
                 return new Geometry.Planar.Vector2D(1, 1);
             }
-            System.Drawing.Rectangle defaultResolution = new System.Drawing.Rectangle(0, 0, 3840, 2160);
-            // System.Drawing.Rectangle resolution = Screen.PrimaryScreen.Bounds;
+
+            Graphics g = Graphics.FromHwnd(IntPtr.Zero);
+            IntPtr desktop = g.GetHdc();
+            int PhysicalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPVERTRES);
+            int PhysicalScrenWidth = GetDeviceCaps(desktop, (int)DeviceCap.DESKTOPHORZRES);
+            int LocalScreenHeight = GetDeviceCaps(desktop, (int)DeviceCap.VERTRES);
+            int LocalScreenWidth = GetDeviceCaps(desktop, (int)DeviceCap.HORZRES);
+
+            double defaultScalingFactor = 1.5;
+            double screenScalingFactor = (double)PhysicalScreenHeight / (double)LocalScreenHeight;
+            double scaling = screenScalingFactor / defaultScalingFactor;
             
-            Screen myScreen = Screen.FromControl(control);
-            System.Drawing.Rectangle resolution = myScreen.Bounds;
+            System.Drawing.Rectangle defaultResolution = new System.Drawing.Rectangle(0, 0, 3840, 2160);
+            System.Drawing.Rectangle screenResolution = new System.Drawing.Rectangle(0, 0, PhysicalScrenWidth, PhysicalScreenHeight);
 
             Form form = control.FindForm();
             if(form == null)
             {
                 return new Geometry.Planar.Vector2D(1, 1);
             }
-            //double widthFactor = 1;
-            //double heightFactor = 1;
+
 
             double screenWidth = Screen.GetWorkingArea(form).Width;
             double screenHeight = Screen.GetWorkingArea(form).Height;
@@ -36,15 +57,14 @@ namespace SAM.Core.Mollier.UI
             double widthFactor = (screenWidth / (double)form.ClientSize.Width);
             double heightFactor = (screenHeight / (double)form.ClientSize.Height);
 
-             widthFactor *= ((double)defaultResolution.Width / resolution.Width);
-             heightFactor *= ((double)defaultResolution.Height / resolution.Height);
+            widthFactor *= ((double)defaultResolution.Width / screenResolution.Width);
+            heightFactor *= ((double)defaultResolution.Height / screenResolution.Height);
 
-            var defaultDPI = 96;
-            var programScale = 1.5;
-            var currentDPI = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Control Panel\\Desktop", "LogPixels", 96);
-            var currentScale = (double)currentDPI / defaultDPI;
-            var scaling = (double)currentScale / programScale;
-
+            //var defaultDPI = 96;
+            //var programScale = 1.5;
+            //var currentDPI = (int)Microsoft.Win32.Registry.GetValue("HKEY_CURRENT_USER\\Control Panel\\Desktop", "LogPixels", 96);
+            //var currentScale = (double)currentDPI / defaultDPI;
+            //var scaling = (double)currentScale / programScale;
 
             // IF GRASHOPPER OPENED HASH THIS
 

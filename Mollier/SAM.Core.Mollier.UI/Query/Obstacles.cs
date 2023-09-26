@@ -44,7 +44,7 @@ namespace SAM.Core.Mollier.UI
         private static List<IClosed2D> obstacles_Point(UIMollierPoint point, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<IClosed2D> result = new List<IClosed2D>();
-            double pointRadius = chartType == ChartType.Mollier ? 0.1 * scaleVector.X : 0.1 * scaleVector.X;
+            double pointRadius = chartType == ChartType.Mollier ? 0.14 * scaleVector.X : 0.3 * scaleVector.X;
 
             Point2D center = Convert.ToSAM(point, chartType).GetScaledY(axesRatio);
             Circle2D circle = new Circle2D(center, pointRadius);
@@ -55,8 +55,8 @@ namespace SAM.Core.Mollier.UI
         private static List<IClosed2D> obstacles_Process(UIMollierProcess process, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<IClosed2D> result = new List<IClosed2D>();
-            //double processWidth = chartType == ChartType.Mollier ? 0.125 * scaleVector.X : 0.25 * scaleVector.X;
-            double processWidth = chartType == ChartType.Mollier ? 0.1 * scaleVector.X : 0.2 * scaleVector.X;
+            double processWidth = chartType == ChartType.Mollier ? 0.2 * scaleVector.X : 0.4 * scaleVector.X;
+           // double processWidth = chartType == ChartType.Mollier ? 0.125 * scaleVector.X : 0.25 * scaleVector.X;
 
             Point2D start = Convert.ToSAM(process.Start, chartType);
             Point2D end = Convert.ToSAM(process.End, chartType);
