@@ -55,7 +55,8 @@ namespace SAM.Core.Mollier.UI
         private static List<IClosed2D> obstacles_Process(UIMollierProcess process, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<IClosed2D> result = new List<IClosed2D>();
-            double processWidth = chartType == ChartType.Mollier ? 0.125 * scaleVector.X : 0.25 * scaleVector.X;
+            //double processWidth = chartType == ChartType.Mollier ? 0.125 * scaleVector.X : 0.25 * scaleVector.X;
+            double processWidth = chartType == ChartType.Mollier ? 0.1 * scaleVector.X : 0.2 * scaleVector.X;
 
             Point2D start = Convert.ToSAM(process.Start, chartType);
             Point2D end = Convert.ToSAM(process.End, chartType);

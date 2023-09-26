@@ -29,6 +29,7 @@ namespace SAM.Core.Mollier.UI
 
             Solver2DSettings solver2DSettings = new Solver2DSettings();
             // solver2DSettings.MoveDistancePoint = 0.01;
+            solver2DSettings.MaxStepPoint = 5;
             Solver2D solver = new Solver2D(chartArea, obstacles);
 
             foreach (Solver2DData solver2DData in solverData)
