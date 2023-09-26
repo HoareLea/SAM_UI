@@ -995,8 +995,16 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 Excel.Modify.Edit(path_Template, func);
 
-                System.Threading.Thread.Sleep(1000);
+               // System.Threading.Thread.Sleep(1000);
 
+                if (System.IO.File.Exists(path_Temp))
+                {
+                    if (Core.Query.WaitToUnlock(path_Temp))
+                    {
+                        System.IO.File.Delete(path_Temp);
+                    }
+                }
+                path_Temp = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), "TEST.xlsx");
                 if (System.IO.File.Exists(path_Temp))
                 {
                     if (Core.Query.WaitToUnlock(path_Temp))
