@@ -16,17 +16,22 @@ namespace SAM.Core.Mollier.UI
         {
             List<IClosed2D> result = new List<IClosed2D>();
             ChartType chartType = mollierControlSettings.ChartType;
+
             Vector2D scaleVector = ScaleVector2D(chart.Parent, mollierControlSettings);
             double axesRatio = AxesRatio(chart, mollierControlSettings);
 
+            bool addProcesses = true;
+            bool addPoints = true;
+            checkQuantity(chart, ref addProcesses, ref addPoints);
+
             foreach (Series series in chart.Series)
             {
-                if (series.Tag is UIMollierProcess)
+                if (addProcesses && series.Tag is UIMollierProcess)
                 {
                     UIMollierProcess process = (UIMollierProcess)series.Tag;
                     result.AddRange(obstacles_Process(process, chartType, scaleVector, axesRatio));
                 }
-                if (series.Tag is UIMollierPoint)
+                if (addPoints && series.Tag is UIMollierPoint)
                 {
                     UIMollierPoint point = (UIMollierPoint)series.Tag;
                     result.AddRange(obstacles_Point(point, chartType, scaleVector, axesRatio));
@@ -40,7 +45,6 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-
         private static List<IClosed2D> obstacles_Point(UIMollierPoint point, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<IClosed2D> result = new List<IClosed2D>();
@@ -56,7 +60,7 @@ namespace SAM.Core.Mollier.UI
         {
             List<IClosed2D> result = new List<IClosed2D>();
             double processWidth = chartType == ChartType.Mollier ? 0.2 * scaleVector.X : 0.4 * scaleVector.X;
-           // double processWidth = chartType == ChartType.Mollier ? 0.125 * scaleVector.X : 0.25 * scaleVector.X;
+            // double processWidth = chartType == ChartType.Mollier ? 0.125 * scaleVector.X : 0.25 * scaleVector.X;
 
             Point2D start = Convert.ToSAM(process.Start, chartType);
             Point2D end = Convert.ToSAM(process.End, chartType);
@@ -88,6 +92,24 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-      
+
+        private static void checkQuantity(Chart chart, ref bool addProcesses, ref bool addPoints)
+        {
+            int numberOfProcesses = 0;
+            int numberOfPoints = 0;
+            foreach (Series series in chart.Series)
+            {
+                if (series.Tag is UIMollierProcess)
+                {
+                    numberOfProcesses++;
+                }
+                if (series.Name == "MollierPoints")
+                {
+                    numberOfPoints++;
+                }
+            }
+            addProcesses = numberOfProcesses > 30 ? false : true;
+            addPoints = numberOfPoints > 30 ? false : true;
+        }
     }
 }

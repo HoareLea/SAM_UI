@@ -88,8 +88,19 @@ namespace SAM.Core.Mollier.UI
             List<UIMollierProcess> uIMollierProcesses = mollierModel.GetMollierObjects<UIMollierProcess>();
             uIMollierProcesses = uIMollierProcesses?.FindAll(x => x.UIMollierAppearance.Visible == true);
 
-            List<IMollierGroup> mollierGroups = uIMollierProcesses.Group();
+            List<IMollierGroup> mollierGroups = new List<IMollierGroup>();
 
+            if(uIMollierProcesses?.Count < 30)
+            {
+                mollierGroups = uIMollierProcesses?.Group();
+            }
+            else
+            {
+                MollierGroup mollierGroup = new MollierGroup("New Group");
+                uIMollierProcesses?.ForEach(x => mollierGroup.Add(x));
+                mollierGroups.Add(mollierGroup);
+            }
+                
             return chart.AddMollierProcesses(mollierGroups, mollierControlSettings);
         }
         
@@ -258,6 +269,10 @@ namespace SAM.Core.Mollier.UI
                 series.Tag = "SecondPoint";
             }
             series.MarkerStyle = MarkerStyle.Circle;
+            if(System.Math.Round(mollierPoint.DryBulbTemperature, 1) == 11.3 && System.Math.Round(mollierPoint.RelativeHumidity, 4) == 92.1575)
+            {
+                int q = 2;
+            }
             series.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, toolTipName);
 
             return series;

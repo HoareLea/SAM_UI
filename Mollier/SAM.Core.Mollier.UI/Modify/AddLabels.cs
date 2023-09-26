@@ -22,15 +22,8 @@ namespace SAM.Core.Mollier.UI
 
             List<IClosed2D> obstacles = Query.Obstacles(chart, mollierControlSettings);
 
-            //foreach(IClosed2D closed in obstacles)
-            //{
-            //    if(closed is Rectangle2D)
-            //    {
-            //        visualizeRectangle(chart, (Rectangle2D)closed, Color.Red, axesRatio);
-            //    }
-            //}
             List<Solver2DData> solverData = Create.Solver2DDatas(chart, mollierControlSettings);
-            
+
             Point2D chartMinPoint = new Point2D(chart.ChartAreas[0].AxisX.Minimum, chart.ChartAreas[0].AxisY.Minimum * axesRatio);
             Point2D chartMaxPoint = new Point2D(chart.ChartAreas[0].AxisX.Maximum, chart.ChartAreas[0].AxisY.Maximum * axesRatio);
             Rectangle2D chartArea = new Rectangle2D(new BoundingBox2D(chartMinPoint, chartMaxPoint));
@@ -69,14 +62,6 @@ namespace SAM.Core.Mollier.UI
 
             if (solver2DResults == null) return null;
 
-            //foreach(Solver2DResult solver2DResult in solver2DResults)
-            //{
-            //    Rectangle2D closed2D = solver2DResult.Closed2D<Rectangle2D>();
-            //    if(closed2D != null)
-            //    {
-            //        visualizeRectangle(chart, closed2D, Color.Black, axesRatio);
-            //    }
-            //}
             List<ChartLabel> labelsPositions = getChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio);
             
             labelsPositions.fixPositions(chart);

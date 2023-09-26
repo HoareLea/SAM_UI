@@ -20,6 +20,7 @@
             if (name != null && name != "")
             {
                 mask = string.Format("{0}\n{1}", name, mask);
+                return "";
             }
 
             switch (chartType)
