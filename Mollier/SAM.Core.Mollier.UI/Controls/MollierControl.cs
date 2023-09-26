@@ -933,9 +933,12 @@ namespace SAM.Core.Mollier.UI.Controls
                         else
                         {
                             form.WindowState = FormWindowState.Normal;
+
                             // form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2));
                             form.Size = new Size(System.Convert.ToInt32((width + widthDifference)), System.Convert.ToInt32((height + heightDifference)));
                             GenerateGraph();
+
+
                         }
                     }
                     Save(ChartExportType.EMF, path: path_Temp);

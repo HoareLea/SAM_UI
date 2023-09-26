@@ -41,8 +41,8 @@ namespace SAM.Core.Mollier.UI
             double screenScalingFactor = (double)PhysicalScreenHeight / (double)LocalScreenHeight;
             double scaling = screenScalingFactor / defaultScalingFactor;
             
-            System.Drawing.Rectangle defaultResolution = new System.Drawing.Rectangle(0, 0, 3840, 2160);
-            System.Drawing.Rectangle screenResolution = new System.Drawing.Rectangle(0, 0, PhysicalScrenWidth, PhysicalScreenHeight);
+            Rectangle defaultResolution = new Rectangle(0, 0, 3840, 2160);
+            Rectangle screenResolution = new Rectangle(0, 0, PhysicalScrenWidth, PhysicalScreenHeight);
 
             Form form = control.FindForm();
             if(form == null)
@@ -66,13 +66,6 @@ namespace SAM.Core.Mollier.UI
             //var currentScale = (double)currentDPI / defaultDPI;
             //var scaling = (double)currentScale / programScale;
 
-            // IF GRASHOPPER OPENED HASH THIS
-
-            //widthFactor /= programScale;
-            //heightFactor /= programScale;
-
-            //double widthFactor = System.Math.Max(2525.0 / (double)k.Width, 1);
-            //double heightFactor = System.Math.Max(1299.0 / (double)k.Height, 1);
 
             widthFactor *= scaling;
             heightFactor *= scaling;
