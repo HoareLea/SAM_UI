@@ -6,6 +6,7 @@ using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media;
 
@@ -568,6 +569,8 @@ namespace SAM.Analytical.UI
 
                     double spaceEdgeOffset = twoDimensionalViewSettings.SpaceEdgeOffset;
 
+
+                    Dictionary<Space, List<Face2D>> dictionary_Space_Temp = new Dictionary<Space, List<Face2D>>();
                     foreach (KeyValuePair<Space, List<Face2D>> keyValuePair in dictionary_Space)
                     {
                         Space space = keyValuePair.Key;
@@ -605,8 +608,11 @@ namespace SAM.Analytical.UI
                             continue;
                         }
 
-                        dictionary_Space[space] = face2Ds;
+                        dictionary_Space_Temp[space] = face2Ds;
                     }
+
+                    dictionary_Space = dictionary_Space_Temp;
+
 
                     //TODO: Currently we use InternalPoint form Shell section. However we should be able to define x,y location of space in UI
                     //and store this data as space.Location this will allow more control over where tags are placed
@@ -615,6 +621,11 @@ namespace SAM.Analytical.UI
                     foreach(KeyValuePair<Space, List<Face2D>> keyValuePair in dictionary_Space)
                     {
                         string name = keyValuePair.Key.Name;
+                        Space space = keyValuePair.Key;
+
+                        TextAppearance textAppearance = Query.TextAppearance(space, twoDimensionalViewSettings);
+                        double height = textAppearance.Height;
+                        double width = Core.Windows.Query.Width(name, new System.Drawing.Font(textAppearance.FontFamilyName, System.Convert.ToSingle(height)), height);
 
                         List<Face2D> face2Ds = keyValuePair.Value;
 
