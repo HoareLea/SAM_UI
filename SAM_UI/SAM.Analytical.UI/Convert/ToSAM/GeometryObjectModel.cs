@@ -1,8 +1,10 @@
 ﻿using SAM.Core;
 using SAM.Core.UI;
 using SAM.Geometry;
+using SAM.Geometry.Planar;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -48,7 +50,7 @@ namespace SAM.Analytical.UI
             bool legendUpdated = false;
 
             bool showSpaces = threeDimensionalViewSettings.IsValid(typeof(Space));
-            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Spaces = new Dictionary<System.Guid, GeometryObjectCollection>();
+            Dictionary<Guid, GeometryObjectCollection> dictionary_Spaces = new Dictionary<Guid, GeometryObjectCollection>();
             if (showSpaces)
             {
                 List<Space> spaces = adjacencyCluster.GetSpaces();
@@ -65,7 +67,7 @@ namespace SAM.Analytical.UI
 
                     bool editable = Query.Editable<SpaceAppearanceSettings>(threeDimensionalViewSettings);
 
-                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
+                    Dictionary<Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
                     if (legend != null)
                     {
                         if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
@@ -98,13 +100,13 @@ namespace SAM.Analytical.UI
                         }
 
                         SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new SurfaceAppearance(color.Value, ControlPaint.Dark(color.Value.ToDrawing()).ToMedia(), 0));
-                        if(surfaceAppearance == null || surfaceAppearance.Opacity == 0 || !surfaceAppearance.Visible)
+                        if (surfaceAppearance == null || surfaceAppearance.Opacity == 0 || !surfaceAppearance.Visible)
                         {
                             continue;
                         }
 
                         Shell shell = adjacencyCluster.Shell(space);
-                        if(shell == null)
+                        if (shell == null)
                         {
                             continue;
                         }
@@ -120,7 +122,7 @@ namespace SAM.Analytical.UI
                             shells = new List<Shell>() { shell };
                         }
 
-                        if(shells == null || shells.Count == 0)
+                        if (shells == null || shells.Count == 0)
                         {
                             continue;
                         }
@@ -134,7 +136,7 @@ namespace SAM.Analytical.UI
                         dictionary_Spaces[space.Guid] = geometryObjectCollection_Space;
                     }
 
-                    if(!legendUpdated)
+                    if (!legendUpdated)
                     {
                         if (legend != null)
                         {
@@ -158,7 +160,7 @@ namespace SAM.Analytical.UI
             }
 
             bool showPanels = threeDimensionalViewSettings.IsValid(typeof(Panel));
-            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Panels = new Dictionary<System.Guid, GeometryObjectCollection>();
+            Dictionary<Guid, GeometryObjectCollection> dictionary_Panels = new Dictionary<Guid, GeometryObjectCollection>();
             if (showPanels)
             {
                 List<Panel> panels = adjacencyCluster.GetPanels();
@@ -175,7 +177,7 @@ namespace SAM.Analytical.UI
 
                     bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
 
-                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
+                    Dictionary<Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
                     if (legend != null)
                     {
                         if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
@@ -239,12 +241,12 @@ namespace SAM.Analytical.UI
                             face3Ds = new List<Face3D>() { face3D };
                         }
 
-                        if(face3Ds == null || face3Ds.Count == 0)
+                        if (face3Ds == null || face3Ds.Count == 0)
                         {
                             continue;
                         }
 
-                        foreach(Face3D face3D_Temp in face3Ds)
+                        foreach (Face3D face3D_Temp in face3Ds)
                         {
                             geometryObjectCollection_Panel.Add(new Face3DObject(face3D_Temp, surfaceAppearance));
                         }
@@ -277,7 +279,7 @@ namespace SAM.Analytical.UI
             }
 
             bool showApertures = threeDimensionalViewSettings.IsValid(typeof(Aperture));
-            Dictionary<System.Guid, GeometryObjectCollection> dictionary_Apertures = new Dictionary<System.Guid, GeometryObjectCollection>();
+            Dictionary<Guid, GeometryObjectCollection> dictionary_Apertures = new Dictionary<Guid, GeometryObjectCollection>();
             if (showApertures)
             {
                 List<Aperture> apertures = adjacencyCluster.GetApertures();
@@ -294,7 +296,7 @@ namespace SAM.Analytical.UI
 
                     bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
 
-                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
+                    Dictionary<Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
                     if (legend != null)
                     {
                         if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
@@ -335,7 +337,7 @@ namespace SAM.Analytical.UI
                             surfaceAppearance_Pane = null;
                         }
 
-                        if(surfaceAppearance_Frame == null && surfaceAppearance_Pane == null)
+                        if (surfaceAppearance_Frame == null && surfaceAppearance_Pane == null)
                         {
                             continue;
                         }
@@ -345,7 +347,7 @@ namespace SAM.Analytical.UI
                         List<Face3D> face3Ds = null;
 
                         aperturePart = AperturePart.Frame;
-                        if(surfaceAppearance_Frame != null)
+                        if (surfaceAppearance_Frame != null)
                         {
                             face3Ds = aperture.GetFace3Ds(aperturePart);
                             if (face3Ds != null && face3Ds.Count != 0)
@@ -362,17 +364,17 @@ namespace SAM.Analytical.UI
                         }
 
                         aperturePart = AperturePart.Pane;
-                        if(surfaceAppearance_Pane != null)
+                        if (surfaceAppearance_Pane != null)
                         {
                             face3Ds = aperture.GetFace3Ds(aperturePart);
                             if (face3Ds != null && face3Ds.Count != 0)
                             {
-                                if(planes != null && planes.Count != 0)
+                                if (planes != null && planes.Count != 0)
                                 {
                                     face3Ds = face3Ds.Cut(planes);
                                     face3Ds = face3Ds.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.GetCentroid(), 0)));
                                 }
-                                
+
                                 face3Ds.ForEach(x => geometryObjectCollection_Aperture.Add(new Face3DObject(x, surfaceAppearance_Pane)));
                             }
                         }
@@ -405,24 +407,24 @@ namespace SAM.Analytical.UI
 
             if (dictionary_Panels != null && dictionary_Panels.Count != 0)
             {
-                if(dictionary_Apertures != null && dictionary_Apertures.Count != 0)
+                if (dictionary_Apertures != null && dictionary_Apertures.Count != 0)
                 {
-                    HashSet<System.Guid> guids = new HashSet<System.Guid>();
-                    foreach(KeyValuePair<System.Guid, GeometryObjectCollection> keyValuePair in dictionary_Apertures)
+                    HashSet<Guid> guids = new HashSet<Guid>();
+                    foreach (KeyValuePair<Guid, GeometryObjectCollection> keyValuePair in dictionary_Apertures)
                     {
                         Aperture aperture = adjacencyCluster.GetAperture(keyValuePair.Key);
-                        if(aperture == null)
+                        if (aperture == null)
                         {
                             continue;
                         }
 
                         Panel panel = adjacencyCluster.GetPanel(aperture);
-                        if(panel == null)
+                        if (panel == null)
                         {
                             continue;
                         }
 
-                        if(!dictionary_Panels.TryGetValue(panel.Guid, out GeometryObjectCollection geometryObjectCollection) || geometryObjectCollection == null)
+                        if (!dictionary_Panels.TryGetValue(panel.Guid, out GeometryObjectCollection geometryObjectCollection) || geometryObjectCollection == null)
                         {
                             continue;
                         }
@@ -431,14 +433,14 @@ namespace SAM.Analytical.UI
                         guids.Add(keyValuePair.Key);
                     }
 
-                    foreach(System.Guid guid in guids)
+                    foreach (Guid guid in guids)
                     {
                         dictionary_Apertures.Remove(guid);
                     }
                 }
             }
 
-            foreach(GeometryObjectCollection geometryObjectCollection in dictionary_Apertures.Values)
+            foreach (GeometryObjectCollection geometryObjectCollection in dictionary_Apertures.Values)
             {
                 result.Add(geometryObjectCollection);
             }
@@ -525,7 +527,7 @@ namespace SAM.Analytical.UI
 
                 if (spaces != null)
                 {
-                    Dictionary<Space, List<Face3D>> dictionary_Space = new Dictionary<Space, List<Face3D>>();
+                    Dictionary<Space, List<Face2D>> dictionary_Space = new Dictionary<Space, List<Face2D>>();
                     foreach (Space space in spaces)
                     {
                         Shell shell = adjacencyCluster?.Shell(space);
@@ -535,7 +537,7 @@ namespace SAM.Analytical.UI
                             continue;
                         }
 
-                        dictionary_Space[space] = face3Ds;
+                        dictionary_Space[space] = face3Ds.ConvertAll(x => plane.Convert(x));
                     }
 
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
@@ -550,7 +552,7 @@ namespace SAM.Analytical.UI
                     bool editable = Query.Editable<SpaceAppearanceSettings>(twoDimensionalViewSettings);
 
                     //Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(dictionary_Space.Keys, adjacencyCluster, twoDimensionalViewSettings, Query.UndefinedLegendItem());
-                    Dictionary<System.Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
+                    Dictionary<Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
                     if (legend != null)
                     {
                         if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
@@ -563,59 +565,81 @@ namespace SAM.Analytical.UI
                         }
                     }
 
+
                     double spaceEdgeOffset = twoDimensionalViewSettings.SpaceEdgeOffset;
 
-                    foreach (KeyValuePair<Space, List<Face3D>> keyValuePair in dictionary_Space)
+                    foreach (KeyValuePair<Space, List<Face2D>> keyValuePair in dictionary_Space)
                     {
                         Space space = keyValuePair.Key;
-                        List<Face3D> face3Ds = keyValuePair.Value;
+                        List<Face2D> face2Ds = keyValuePair.Value;
 
-                        if (face3Ds == null || face3Ds.Count == 0)
+                        if (face2Ds == null || face2Ds.Count == 0)
                         {
                             continue;
                         }
 
-                        List<Face3D> face3Ds_Offset = new List<Face3D>();
-                        foreach (Face3D face3D in face3Ds)
+                        List<Face2D> face2Ds_Offset = new List<Face2D>();
+                        foreach (Face2D face2D in face2Ds)
                         {
-                            if(face3D == null || !face3D.IsValid())
+                            if (face2D == null || !face2D.IsValid())
                             {
                                 continue;
                             }
 
-                            List<Face3D> face3Ds_Offset_Temp = face3D.Offset(spaceEdgeOffset);
-                            if(face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
+                            List<Face2D> face2Ds_Offset_Temp = face2D.Offset(spaceEdgeOffset);
+                            if (face2Ds_Offset_Temp == null || face2Ds_Offset_Temp.Count == 0)
                             {
-                                face3Ds_Offset_Temp = new List<Face3D>() { face3D };
+                                face2Ds_Offset_Temp = new List<Face2D>() { face2D };
                             }
-                            else if (face3Ds_Offset_Temp == null || face3Ds_Offset_Temp.Count == 0)
+                            else if (face2Ds_Offset_Temp == null || face2Ds_Offset_Temp.Count == 0)
                             {
                                 continue;
                             }
 
-                            face3Ds_Offset.AddRange(face3Ds_Offset_Temp);
+                            face2Ds_Offset.AddRange(face2Ds_Offset_Temp);
                         }
 
-                        face3Ds = face3Ds_Offset;
-                        if (face3Ds == null || face3Ds.Count == 0)
+                        face2Ds = face2Ds_Offset;
+                        if (face2Ds == null || face2Ds.Count == 0)
                         {
                             continue;
                         }
 
-                        //TODO: Currently we use InternalPoint form Shell section. However we should be able to defind x,y location of space in UI
-                        //and store this data as space.Location this will allow more control over where tags are placed
-                        //Point3D point3D = plane.Project(space.Location);
+                        dictionary_Space[space] = face2Ds;
+                    }
 
-                        Point3D point3D = null;
-                        if (point3D == null)
+                    //TODO: Currently we use InternalPoint form Shell section. However we should be able to define x,y location of space in UI
+                    //and store this data as space.Location this will allow more control over where tags are placed
+                    //Point3D point3D = plane.Project(space.Location);
+                    List<Tuple<Space, List<Face2D>, string, Point2D>> tuples = new List<Tuple<Space, List<Face2D>, string, Point2D>>();
+                    foreach(KeyValuePair<Space, List<Face2D>> keyValuePair in dictionary_Space)
+                    {
+                        string name = keyValuePair.Key.Name;
+
+                        List<Face2D> face2Ds = keyValuePair.Value;
+
+                        Point2D point2D = null;
+                        if (point2D == null)
                         {
-                            if(face3Ds.Count > 1)
+                            if (face2Ds.Count > 1)
                             {
-                                face3Ds.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
+                                face2Ds.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
                             }
 
-                            point3D = face3Ds[0].InternalPoint3D();
+                            point2D = face2Ds[0].InternalPoint2D();
                         }
+
+                        Tuple<Space, List<Face2D>, string, Point2D> tuple = new Tuple<Space, List<Face2D>, string, Point2D>(keyValuePair.Key, keyValuePair.Value, name, point2D);
+
+                        tuples.Add(tuple);
+                    }
+
+                    foreach (Tuple<Space, List<Face2D>, string, Point2D> tuple in tuples)
+                    {
+                        Space space = tuple.Item1;
+                        List<Face2D> face2Ds = tuple.Item2;
+
+                        Point3D point3D = plane.Convert(tuple.Item4);
 
                         Color? color = null;
 
@@ -638,17 +662,18 @@ namespace SAM.Analytical.UI
 
                         SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, color);
 
-                        face3Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(x, surfaceAppearance)));
+                        face2Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(plane.Convert(x), surfaceAppearance)));
 
                         Plane plane_Temp = new Plane(plane, point3D.GetMoved(new Vector3D(0, 0, 0.1)) as Point3D);
 
-                        if(twoDimensionalViewSettings.TextAppearance == null || twoDimensionalViewSettings.TextAppearance.Opacity != 0)
+                        if (twoDimensionalViewSettings.TextAppearance == null || twoDimensionalViewSettings.TextAppearance.Opacity != 0)
                         {
                             geometryObjectCollection_Space.Add(new Text3DObject(space.Name, plane_Temp, Query.TextAppearance(space, twoDimensionalViewSettings)) { Tag = space });
                         }
 
                         result.Add(geometryObjectCollection_Space);
                     }
+
 
                     if (!legendUpdated)
                     {
