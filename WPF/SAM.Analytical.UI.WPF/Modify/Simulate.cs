@@ -12,7 +12,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void ConvertToTBD(this UIAnalyticalModel uIAnalyticalModel)
+        public static void Simulate(this UIAnalyticalModel uIAnalyticalModel)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             if(analyticalModel == null)
@@ -20,70 +20,61 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ConvertToTBDWindow convertToTBDWindow = new ConvertToTBDWindow();
-            ActiveSetting.Setting.TryGetValue(AnalyticalSettingParameter.TBDConversionOptions, out TBDConversionOptions tBDConversionOptions);
-            if(tBDConversionOptions == null)
+            SimulateWindow simulateWindow = new SimulateWindow();
+            ActiveSetting.Setting.TryGetValue(AnalyticalSettingParameter.SimulateOptions, out SimulateOptions simulateOptions);
+            if(simulateOptions == null)
             {
-                tBDConversionOptions = Create.TBDConversionOptions(uIAnalyticalModel);
+                simulateOptions = Create.SimulateOptions(uIAnalyticalModel);
             }
 
-            convertToTBDWindow.ProjectName = analyticalModel.Name;
+            simulateWindow.ProjectName = analyticalModel.Name;
 
             if (!string.IsNullOrWhiteSpace(uIAnalyticalModel.Path))
             {
-                convertToTBDWindow.OutputDirectory = System.IO.Path.GetDirectoryName(uIAnalyticalModel.Path);
+                simulateWindow.OutputDirectory = System.IO.Path.GetDirectoryName(uIAnalyticalModel.Path);
             }
 
-            convertToTBDWindow.TBDConversionOptions = tBDConversionOptions;
+            simulateWindow.SimulateOptions = simulateOptions;
 
             if (analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.WeatherData, out WeatherData weatherData))
             {
-                convertToTBDWindow.WeatherData = weatherData;
+                simulateWindow.WeatherData = weatherData;
             }
 
-            //convertToTBDWindow.ZoneCategories = analyticalModel.GetZoneCategories()?.ToList();
-            //convertToTBDWindow.TextMap = Analytical.Query.DefaultInternalConditionTextMap_TM59();
-            //convertToTBDWindow.Simulate = true;
-            //convertToTBDWindow.SolarCalculationMethod = SolarCalculationMethod.TAS;
-            //convertToTBDWindow.FullYearSimulation = true;
-            //convertToTBDWindow.UnmetHours = true;
-            //convertToTBDWindow.RoomDataSheets = true;
-            //convertToTBDWindow.CreateSAP = true;
-            //convertToTBDWindow.CreateTM59 = true;
-
-            bool? showdialog = convertToTBDWindow.ShowDialog();
+            bool? showdialog = simulateWindow.ShowDialog();
             if(showdialog == null || !showdialog.HasValue || !showdialog.Value)
             {
                 return;
             }
 
-            ActiveSetting.Setting.SetValue(AnalyticalSettingParameter.TBDConversionOptions, convertToTBDWindow.TBDConversionOptions);
+            ActiveSetting.Setting.SetValue(AnalyticalSettingParameter.SimulateOptions, simulateWindow.SimulateOptions);
 
-            string projectName = convertToTBDWindow.ProjectName;
-            string outputDirectory = convertToTBDWindow.OutputDirectory;
-            bool unmetHours = convertToTBDWindow.UnmetHours;
-            bool printRoomDataSheets = convertToTBDWindow.RoomDataSheets;
+            string projectName = simulateWindow.ProjectName;
+            string outputDirectory = simulateWindow.OutputDirectory;
+            bool unmetHours = simulateWindow.UnmetHours;
+            bool printRoomDataSheets = simulateWindow.RoomDataSheets;
 
-            bool fullYearSimulation = convertToTBDWindow.FullYearSimulation;
-            int fullYearSimulation_From = convertToTBDWindow.FullYearSimulation_From;
-            int fullYearSimulation_To = convertToTBDWindow.FullYearSimulation_To;
+            bool fullYearSimulation = simulateWindow.FullYearSimulation;
+            int fullYearSimulation_From = simulateWindow.FullYearSimulation_From;
+            int fullYearSimulation_To = simulateWindow.FullYearSimulation_To;
 
-            bool createSAP = convertToTBDWindow.CreateSAP;
-            bool createTM59 = convertToTBDWindow.CreateTM59;
-            bool createTPD = convertToTBDWindow.CreateTPD;
+            bool createSAP = simulateWindow.CreateSAP;
+            bool createTM59 = simulateWindow.CreateTM59;
+            bool createTPD = simulateWindow.CreateTPD;
+            bool createPartL = simulateWindow.CreatePartL;
 
-            bool sizing = convertToTBDWindow.Sizing;
+            bool sizing = simulateWindow.Sizing;
 
-            bool useWidths = convertToTBDWindow.UseWidths;
+            bool useWidths = simulateWindow.UseWidths;
 
-            SolarCalculationMethod solarCalculationMethod = convertToTBDWindow.SolarCalculationMethod;
+            SolarCalculationMethod solarCalculationMethod = simulateWindow.SolarCalculationMethod;
             bool updateConstructionLayersByPanelType = true;
 
-            TextMap textMap = convertToTBDWindow.SelectedTextMap;
-            weatherData = convertToTBDWindow.SelectedWeatherData;
-            string zoneCategory = convertToTBDWindow.SelectedZoneCategory;
+            TextMap textMap = simulateWindow.SelectedTextMap;
+            weatherData = simulateWindow.SelectedWeatherData;
+            string zoneCategory = simulateWindow.SelectedZoneCategory;
 
-            if (!convertToTBDWindow.Simulate && !createSAP && !createTM59)
+            if (!simulateWindow.Simulate && !createSAP && !createTM59)
             {
                 return;
             }
@@ -109,7 +100,7 @@ namespace SAM.Analytical.UI.WPF
 
             bool converted = false;
 
-            if(convertToTBDWindow.Simulate)
+            if(simulateWindow.Simulate)
             {
                 using (Core.Windows.Forms.ProgressForm progressForm = new Core.Windows.Forms.ProgressForm("Preparing Model", 8))
                 {
@@ -250,7 +241,7 @@ namespace SAM.Analytical.UI.WPF
                 converted = true;
             }
 
-            if(createSAP || createTM59)
+            if(createSAP || createTM59 || createPartL)
             {
                 using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager("Convert to TBD", "Converting..."))
                 {
@@ -288,7 +279,6 @@ namespace SAM.Analytical.UI.WPF
                             analyticalModel = new AnalyticalModel(analyticalModel, adjacencyCluster);
                         }
 
-
                         if (createTM59)
                         {
                             if (Tas.TM59.Modify.TryCreatePath(path_TBD, out string path_TM59))
@@ -316,6 +306,11 @@ namespace SAM.Analytical.UI.WPF
 
                             }
                         }
+
+                        if(createPartL)
+                        {
+                            converted = Tas.Create.TBD_ByPartL(analyticalModel, path_TBD, out string path_TBD_Destination);
+                        }
                     }
                 }
             }
@@ -330,7 +325,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     string path_TPD = System.IO.Path.Combine(directory, string.Format("{0}.{1}", fileName, "tpd"));
 
-                    Tas.Modify.CreateTPD(path_TPD, path_TSD, analyticalModel);
+                    Tas.Create.TPD(path_TPD, path_TSD, analyticalModel);
                 }
             }
 

@@ -127,7 +127,7 @@
       <DependentUpon>SimulateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToSAM\GeometryObjectModel.cs" />
-    <Compile Include="Create\TBDConversionOptions.cs" />
+    <Compile Include="Create\SimulateOptions.cs" />
     <Compile Include="Enums\Parameter\AnalyticalModelParameter.cs" />
     <Compile Include="Enums\Position.cs" />
     <Compile Include="Enums\SolarCalculationMethod.cs" />

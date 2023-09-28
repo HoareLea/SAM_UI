@@ -143,8 +143,8 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_CleanAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
             RibbonButton_CleanAnalyticalModel.Click += RibbonButton_CleanAnalyticalModel_Click;
 
-            RibbonButton_CreateTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
-            RibbonButton_CreateTBD.Click += RibbonButton_CreateTBD_Click;
+            //RibbonButton_CreateTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
+            //RibbonButton_CreateTBD.Click += RibbonButton_CreateTBD_Click;
 
             RibbonButton_AddMissingObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AddMissingObjects);
             RibbonButton_AddMissingObjects.Click += RibbonButton_AddMissingObjects_Click;
@@ -1155,7 +1155,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_CreateTBD_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.ConvertToTBD();
+            uIAnalyticalModel?.Simulate();
         }
 
         private void RibbonButton_EditApertureConstructions_Click(object sender, RoutedEventArgs e)
@@ -1211,7 +1211,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_EnergySimulation_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EnergySimulation(windowHandle);
+            //uIAnalyticalModel?.EnergySimulation(windowHandle);
+            uIAnalyticalModel?.Simulate();
         }
 
         private void RibbonButton_ExportAnalyticalModel_Click(object sender, RoutedEventArgs e)
@@ -1725,7 +1726,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_OpenTBD.IsEnabled = false;
             RibbonButton_OpenTPD.IsEnabled = false;
             RibbonButton_OpenTSD.IsEnabled = false;
-            RibbonButton_CreateTBD.IsEnabled = false;
+            //RibbonButton_CreateTBD.IsEnabled = false;
             RibbonButton_EditLibrary.IsEnabled = false;
             RibbonButton_EnergySimulation.IsEnabled = false;
             RibbonButton_SolarSimulation.IsEnabled = false;
@@ -1788,7 +1789,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 RibbonButton_SaveAsAnalyticalModel.IsEnabled = true;
                 RibbonButton_SaveAnalyticalModel.IsEnabled = true;
                 RibbonButton_ExportAnalyticalModel.IsEnabled = true;
-                RibbonButton_CreateTBD.IsEnabled = true;
+                //RibbonButton_CreateTBD.IsEnabled = true;
                 RibbonButton_RemoveResults.IsEnabled = true;
 
                 List<AirHandlingUnit> airHandlingUnits = analyticalModel.AdjacencyCluster?.GetObjects<AirHandlingUnit>();

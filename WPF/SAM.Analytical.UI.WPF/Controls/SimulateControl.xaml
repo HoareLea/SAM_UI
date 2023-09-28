@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
-             xmlns:WPF="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF" x:Class="SAM.Analytical.UI.WPF.ConvertToTBDControl"
+             xmlns:WPF="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF" x:Class="SAM.Analytical.UI.WPF.SimulateControl"
              mc:Ignorable="d" 
              d:DesignHeight="630" d:DesignWidth="350">
     <Grid>
@@ -19,6 +19,7 @@
         <CheckBox x:Name="checkBox_CreateTM59" Content="Domestic Overheating" HorizontalAlignment="Left" Margin="10,0,0,134" VerticalAlignment="Bottom" Click="checkBox_CreateTM59_Click"/>
         <CheckBox x:Name="checkBox_UseWidths" Content="Use Widths" HorizontalAlignment="Left" Margin="10,0,0,185" VerticalAlignment="Bottom"/>
         <CheckBox x:Name="checkBox_CreateTPD" Content="Create TPD" HorizontalAlignment="Left" Margin="217,0,0,160" VerticalAlignment="Bottom"/>
+        <CheckBox x:Name="checkBox_CreatePartL" Content="Create Part L" HorizontalAlignment="Left" Margin="217,0,0,134" VerticalAlignment="Bottom"/>
         <Label x:Name="label_TextMap"  Content="Text Map:" HorizontalAlignment="Left" Margin="10,0,0,35.6" VerticalAlignment="Bottom"/>
         <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_TextMap" HorizontalAlignment="Stretch" Margin="10,0,10.4,13.6" VerticalAlignment="Bottom" Height="22"/>
         <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_WeatherData" HorizontalAlignment="Stretch" Margin="10,157,10.4,0" VerticalAlignment="Top" Height="22"/>
@@ -38,5 +39,6 @@
                 <TextBox x:Name="textBox_FullYearSimulation_To" HorizontalAlignment="Left" Height="23" Margin="262,105,0,0" TextWrapping="Wrap" Text="365" VerticalAlignment="Top" Width="30" PreviewTextInput="textBox_FullYearSimulation_To_PreviewTextInput"/>
             </Grid>
         </GroupBox>
+
     </Grid>
 </UserControl>

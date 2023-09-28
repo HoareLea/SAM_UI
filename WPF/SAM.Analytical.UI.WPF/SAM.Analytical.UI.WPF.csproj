@@ -222,8 +222,8 @@
     <Compile Include="Controls\MapTM59InternalConditionsControl.xaml.cs">
       <DependentUpon>MapTM59InternalConditionsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ConvertToTBDControl.xaml.cs">
-      <DependentUpon>ConvertToTBDControl.xaml</DependentUpon>
+    <Compile Include="Controls\SimulateControl.xaml.cs">
+      <DependentUpon>SimulateControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\InternalConditionControl.xaml.cs">
       <DependentUpon>InternalConditionControl.xaml</DependentUpon>
@@ -236,11 +236,11 @@
     </Compile>
     <Compile Include="Modify\RemoveResults.cs" />
     <Compile Include="Query\DayTypes.cs" />
-    <Compile Include="Windows\ConvertToTBDWindow.xaml.cs">
-      <DependentUpon>ConvertToTBDWindow.xaml</DependentUpon>
+    <Compile Include="Windows\SimulateWindow.xaml.cs">
+      <DependentUpon>SimulateWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\MapInternalConditionsByTM59.cs" />
-    <Compile Include="Modify\ConvertToTBD.cs" />
+    <Compile Include="Modify\Simulate.cs" />
     <Compile Include="Windows\MapTM59InternalConditionsWindow.xaml.cs">
       <DependentUpon>MapTM59InternalConditionsWindow.xaml</DependentUpon>
     </Compile>
@@ -544,7 +544,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\ConvertToTBDControl.xaml">
+    <Page Include="Controls\SimulateControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -556,7 +556,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\ConvertToTBDWindow.xaml">
+    <Page Include="Windows\SimulateWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
