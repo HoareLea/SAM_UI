@@ -456,12 +456,14 @@ namespace SAM.Analytical.UI.WPF
 
         private void EnableSimulate(bool enable)
         {
+            checkBox_UseWidths.IsEnabled = enable;
             label_SolarCalculationMethod.IsEnabled = enable;
             comboBox_SolarCalculationMethod.IsEnabled = enable;
+            checkBox_Sizing.IsEnabled = enable;
             checkBox_FullYearSimulation.IsEnabled = enable;
             EnableFullYearSimulation();
             checkBox_UnmetHours.IsEnabled = enable;
-            checkBox_RoomDataSheets.IsEnabled = enable;
+            checkBox_CreateTPD.IsEnabled = enable;
         }
 
         private void checkBox_Simulate_Click(object sender, System.Windows.RoutedEventArgs e)
