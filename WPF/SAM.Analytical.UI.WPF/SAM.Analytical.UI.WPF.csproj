@@ -152,6 +152,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Modify\AddMechanicalSystems.cs" />
+    <Compile Include="Modify\RemoveMechanicalSystems.cs" />
+    <Compile Include="Modify\RemoveZones.cs" />
     <Compile Include="Windows\AddMechanicalSystemsWindow.xaml.cs">
       <DependentUpon>AddMechanicalSystemsWindow.xaml</DependentUpon>
     </Compile>
