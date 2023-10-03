@@ -17,7 +17,7 @@
         <Label Content="Heating Riser Name:" HorizontalAlignment="Left" Margin="5,236,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TextBox_CoolingRiserName" Margin="5,321,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
         <Label Content="Cooling Riser Name:" HorizontalAlignment="Left" Margin="5,290,0,0" VerticalAlignment="Top"/>
-        <TextBlock Margin="10,10,10,0" TextWrapping="Wrap" Text="Michal to add very, (VERY!) smart text here so every one will understand how it works" VerticalAlignment="Top" Height="65" HorizontalAlignment="Stretch"/>
+        <TextBlock Margin="10,10,10,0" TextWrapping="Wrap" Text="The default mechanical system stored in the internal condition will be assigned to the selected space(s) or all spaces if none are selected." VerticalAlignment="Top" Height="65" HorizontalAlignment="Stretch"/>
 
     </Grid>
 </UserControl>
