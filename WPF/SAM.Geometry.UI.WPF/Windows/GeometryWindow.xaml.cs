@@ -15,6 +15,21 @@ namespace SAM.Geometry.UI.WPF
 
         public GeometryWindow()
         {
+
+        }
+
+        public GeometryWindow(StartupOptions startupOptions)
+        {
+            Initialize();
+
+            if(startupOptions != null)
+            {
+
+            }
+        }
+
+        private void Initialize()
+        {
             InitializeComponent();
 
             ribbonButton_General_OpenModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
@@ -25,7 +40,7 @@ namespace SAM.Geometry.UI.WPF
 
             jsonControl.TextChanged += JsonControl_TextChanged;
 
-            switch(viewportControl.Mode)
+            switch (viewportControl.Mode)
             {
                 case Mode.ThreeDimensional:
                     ribbonButton_View_Mode.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);

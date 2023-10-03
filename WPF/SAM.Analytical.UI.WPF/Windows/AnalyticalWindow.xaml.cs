@@ -33,6 +33,34 @@ namespace SAM.Analytical.UI.WPF.Windows
         
         public AnalyticalWindow()
         {
+            Initailize();
+        }
+
+        public AnalyticalWindow(StartupOptions startupOptions)
+        {
+            Initailize();
+
+            if (startupOptions != null)
+            {
+                string path = startupOptions.Path;
+                if(!string.IsNullOrWhiteSpace(path) && System.IO.File.Exists(path))
+                {
+                    bool opened = Open(path);
+                    if(startupOptions.TemporaryFile)
+                    {
+                        if(opened && uIAnalyticalModel != null)
+                        {
+                            uIAnalyticalModel.Path = null;
+                        }
+
+                        System.IO.File.Delete(path);
+                    }
+                }
+            }
+        }
+
+        private void Initailize()
+        {
             InitializeComponent();
 
             Title = titlePrefix;
@@ -1377,9 +1405,14 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
             path = openFileDialog.FileName;
 
+            Open(path);
+        }
+
+        private bool Open(string path)
+        {
             if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
             {
-                return;
+                return false;
             }
 
             uIAnalyticalModel = new UIAnalyticalModel();
@@ -1389,9 +1422,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
-            uIAnalyticalModel.Open();
-
-            //Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => );
+            return uIAnalyticalModel.Open();
         }
 
         private void RibbonButton_OpenMollierChart_Click(object sender, RoutedEventArgs e)

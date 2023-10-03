@@ -1,4 +1,5 @@
 ﻿using SAM.Analytical.UI.WPF.Windows;
+using SAM.Core;
 using System.Windows;
 
 namespace SAM.Analytical.UI.WPF
@@ -10,8 +11,11 @@ namespace SAM.Analytical.UI.WPF
     {
         void App_Startup(object sender, StartupEventArgs e)
         {
+
+            StartupOptions startupOptions = Core.Create.StartupOptions(e.Args);
+
             // Create main application window, starting minimized if specified
-            AnalyticalWindow mainWindow = new AnalyticalWindow();
+            AnalyticalWindow mainWindow = new AnalyticalWindow(startupOptions);
             mainWindow.Show();
         }
     }
