@@ -457,7 +457,7 @@
                     <RibbonButton x:Name="RibbonButton_MapInternalConditions" Label="Map IC" />
                     <RibbonButton x:Name="RibbonButton_MapInternalConditionsByTM59" Label="Map IC (TM59)" />
                     <RibbonButton x:Name="RibbonButton_EditInternalConditions" Label="Modify IC" />
-                    <RibbonButton x:Name="RibbonButton_AssignMechanicalSystems" Label="Mechanical Systems" />
+                    <RibbonButton x:Name="RibbonButton_AssignMechanicalSystems" Label="Add Mechanical Systems" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Simulate" Header="Simulate">

@@ -7,16 +7,17 @@
              mc:Ignorable="d" 
              d:DesignHeight="350" d:DesignWidth="200">
     <Grid>
-        <TextBox x:Name="TextBox_SupplyUnitName" HorizontalAlignment="Stretch" Margin="0,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
-        <Label Content="Supply Unit Name:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextBox_ExhaustUnitName" Margin="10,102,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
-        <Label Content="Exhaust Unit Name:" HorizontalAlignment="Left" Margin="10,71,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextBox_VentilationRiserName" Margin="10,164,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
-        <Label Content="Ventilation Riser Name:" HorizontalAlignment="Left" Margin="10,133,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextBox_HeatingRiserName" Margin="10,228,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
-        <Label Content="Heating Riser Name:" HorizontalAlignment="Left" Margin="10,197,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TextBox_CoolingRiserName" Margin="10,292,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
-        <Label Content="Cooling Riser Name:" HorizontalAlignment="Left" Margin="10,261,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_SupplyUnitName" Margin="5,101,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Supply Unit Name:" HorizontalAlignment="Left" Margin="5,70,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_ExhaustUnitName" Margin="5,157,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Exhaust Unit Name:" HorizontalAlignment="Left" Margin="5,126,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_VentilationRiserName" Margin="5,213,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Ventilation Riser Name:" HorizontalAlignment="Left" Margin="5,182,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_HeatingRiserName" Margin="5,267,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Heating Riser Name:" HorizontalAlignment="Left" Margin="5,236,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_CoolingRiserName" Margin="5,321,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Cooling Riser Name:" HorizontalAlignment="Left" Margin="5,290,0,0" VerticalAlignment="Top"/>
+        <TextBlock Margin="10,10,10,0" TextWrapping="Wrap" Text="Michal to add very, (VERY!) smart text here so every one will understand how it works" VerticalAlignment="Top" Height="65" HorizontalAlignment="Stretch"/>
 
     </Grid>
 </UserControl>
