@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Core.UI;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -79,7 +80,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new AnalyticalModelModification(sAMObjects));
+            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new FullModification());//, new AnalyticalModelModification(sAMObjects));
         }
     }
 }
