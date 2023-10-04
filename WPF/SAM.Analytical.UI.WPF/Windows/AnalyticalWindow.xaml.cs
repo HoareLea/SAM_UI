@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
+using SAM.Analytical.Tas;
 using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
+using SAM.Core.Windows.Forms;
 using SAM.Geometry;
 using SAM.Geometry.UI;
 using SAM.Geometry.UI.WPF;
@@ -1546,7 +1548,37 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
-            //throw new NotImplementedException();
+            string path = null;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "TAS TIC files (*.tic)|*.tic|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.RestoreDirectory = true;
+            if (openFileDialog.ShowDialog(this) == false)
+            {
+                return;
+            }
+            path = openFileDialog.FileName;
+
+            NCMNameCollection nCMNameCollection = null;
+
+            Action action = () =>
+            {
+
+                using (Core.Tas.SAMTICDocument sAMTICDocument = new Core.Tas.SAMTICDocument(path))
+                {
+                    nCMNameCollection = sAMTICDocument?.ToSAM();
+                }
+            };
+
+            MarqueeProgressForm.Show("Collecting data", action, windowHandle);
+
+            if (nCMNameCollection == null)
+            {
+                return;
+            }
+
+            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(nCMNameCollection);
+            nCMNameCollectionWindow.Show();
         }
 
         private void RibbonButton_TextMap_Click(object sender, RoutedEventArgs e)
