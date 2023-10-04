@@ -36,13 +36,19 @@ namespace SAM.Analytical.UI
         }
 
         public SpaceAppearanceSettings(HeatingSystemAppearanceSettings heatingSystemAppearanceSettings)
-    : base(heatingSystemAppearanceSettings)
+            : base(heatingSystemAppearanceSettings)
         {
 
         }
 
         public SpaceAppearanceSettings(CoolingSystemAppearanceSettings coolingSystemAppearanceSettings)
-    : base(coolingSystemAppearanceSettings)
+            : base(coolingSystemAppearanceSettings)
+        {
+
+        }
+
+        public SpaceAppearanceSettings(NCMDataAppearanceSettings nCMDataAppearanceSettings)
+            : base(nCMDataAppearanceSettings)
         {
 
         }
