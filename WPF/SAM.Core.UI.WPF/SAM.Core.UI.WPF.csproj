@@ -80,6 +80,9 @@
     <Compile Include="Controls\Filter\NumberFilterControl.xaml.cs">
       <DependentUpon>NumberFilterControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\SearchControl.xaml.cs">
+      <DependentUpon>SearchControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Create\IFilterControl.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
@@ -126,6 +129,9 @@
       <DependentUpon>DoubleRangeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Query\Modal.cs" />
+    <Compile Include="Windows\SearchWindow.xaml.cs">
+      <DependentUpon>SearchWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\DoubleRangeWindow.xaml.cs">
       <DependentUpon>DoubleRangeWindow.xaml</DependentUpon>
     </Compile>
@@ -236,6 +242,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\SearchControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\TextMapControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -273,6 +283,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DoubleRangeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SearchWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

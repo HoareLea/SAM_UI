@@ -170,6 +170,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Hydra.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Hydra);
             RibbonButton_Hydra.Click += RibbonButton_Hydra_Click;
 
+            RibbonButton_NCMNames.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
+            RibbonButton_NCMNames.Click += RibbonButton_NCMNames_Click;
+
             RibbonButton_CleanAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
             RibbonButton_CleanAnalyticalModel.Click += RibbonButton_CleanAnalyticalModel_Click;
 
@@ -253,6 +256,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_NCMNames_Click(object sender, RoutedEventArgs e)
+        {
+            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection());
+            nCMNameCollectionWindow.Show();
         }
 
         private void RibbonButton_AssignMechanicalSystems_Click(object sender, RoutedEventArgs e)
@@ -1548,8 +1557,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
-            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection());
-            nCMNameCollectionWindow.Show();
+            //SearchWindow searchWindow = new SearchWindow(new string[] {"absss", "Kubas", "KLUB" });
+            //searchWindow.ShowDialog();
         }
 
         private void RibbonButton_TextMap_Click(object sender, RoutedEventArgs e)

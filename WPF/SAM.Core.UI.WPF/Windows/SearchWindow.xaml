@@ -1,0 +1,22 @@
+﻿<Window x:Class="SAM.Core.UI.WPF.SearchWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Core.UI.WPF"
+        mc:Ignorable="d"
+        Title="Search" Height="450" Width="250">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,10,9.6,10" Width="70" HorizontalAlignment="Right" Grid.Column="1"></Button>
+        <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="0,10,84.6,10" HorizontalAlignment="Right" Width="70" Grid.Column="1"/>
+        <local:SearchControl x:Name="SearchControl_Main" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"/>
+    </Grid>
+</Window>

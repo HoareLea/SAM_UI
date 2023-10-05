@@ -493,6 +493,7 @@
                     <RibbonButton x:Name="RibbonButton_OpenMollierChart" Label="Mollier Diagram" />
                     <RibbonButton x:Name="RibbonButton_ViewGeometry" Label="View Geometry" />
                     <RibbonButton x:Name="RibbonButton_TextMap" Label="Text Map" />
+                    <RibbonButton x:Name="RibbonButton_NCMNames" Label="NCM Names" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Developer" Header="Developer">
                     <RibbonButton x:Name="RibbonButton_Test" Label="Test" />
