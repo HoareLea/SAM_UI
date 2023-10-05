@@ -23,7 +23,7 @@ namespace SAM.Core.UI.WPF
     {
         private SearchObjectWrapper searchObjectWrapper;
 
-        public MouseEventHandler MouseDoubleClick;
+        public new MouseEventHandler MouseDoubleClick;
 
         public EventHandler SelectedIndexChanged;
 
@@ -180,7 +180,7 @@ namespace SAM.Core.UI.WPF
 
         private void ListBox_Main_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            System.EventHandler eventHandler = SelectedIndexChanged;
+            EventHandler eventHandler = SelectedIndexChanged;
             if (eventHandler != null)
             {
                 eventHandler(this, e);

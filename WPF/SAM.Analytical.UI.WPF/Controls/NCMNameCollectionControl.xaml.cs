@@ -27,19 +27,25 @@ namespace SAM.Analytical.UI.WPF
         {
             InitializeComponent();
 
-            ListBox_Main.SelectionChanged += ListBox_Main_SelectionChanged;
+            SearchControl_Main.SelectionMode = SelectionMode.Single;
+
+            SearchControl_Main.SelectedIndexChanged += SearchControl_Main_SelectionChanged;
         }
 
-        public NCMNameCollectionControl(IEnumerable<NCMName> nCMNames)
+        public NCMNameCollectionControl(IEnumerable<NCMName> nCMNames, NCMNameCollectionOptions nCMNameCollectionOptions = null)
         {
             InitializeComponent();
+
+            SearchControl_Main.SelectionMode = SelectionMode.Single;
 
             this.nCMNames = nCMNames == null ? null : new List<NCMName>(nCMNames);
 
             SetGroups(this.nCMNames);
             SetNCMNames(this.nCMNames);
 
-            ListBox_Main.SelectionChanged += ListBox_Main_SelectionChanged;
+            SearchControl_Main.SelectedIndexChanged += SearchControl_Main_SelectionChanged;
+
+            SetNCMNameCollectionOptions(nCMNameCollectionOptions);
         }
 
         private void ListBox_Main_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -67,13 +73,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Label label = SelectedLabel;
-            if(label == null)
-            {
-                return;
-            }
-
-            label.Tag = GetNCMName();
+            SearchControl_Main.SearchObjectWrapper.Add(GetNCMName());
         }
 
         private NCMName GetNCMName()
@@ -81,43 +81,29 @@ namespace SAM.Analytical.UI.WPF
             return new NCMName(TextBox_Name.Text, TextBox_Version.Text, TextBox_Description.Text, TextBox_Group.Text);
         }
 
-        private Label SelectedLabel
+        private void SetNCMNameCollectionOptions(NCMNameCollectionOptions nCMNameCollectionOptions)
         {
-            get
+            if(nCMNameCollectionOptions == null)
             {
-                if (ListBox_Main.SelectedItems == null)
-                {
-                    return null;
-                }
-
-                foreach (object @object in ListBox_Main.SelectedItems)
-                {
-                    Label label = @object as Label;
-                    if (label == null)
-                    {
-                        continue;
-                    }
-
-                    NCMName nCMName = label.Tag as NCMName;
-                    if (nCMName == null)
-                    {
-                        continue;
-                    }
-
-                    return label;
-                }
-
-                return null;
+                return;
             }
 
+            TextBox_Description.IsEnabled = nCMNameCollectionOptions.Editable;
+            TextBox_Name.IsEnabled = nCMNameCollectionOptions.Editable;
+            TextBox_Group.IsEnabled = nCMNameCollectionOptions.Editable;
+            TextBox_Version.IsEnabled = nCMNameCollectionOptions.Editable;
+        }
+
+        public NCMNameCollectionOptions NCMNameCollectionOptions
+        {
+            set
+            {
+                SetNCMNameCollectionOptions(value);
+            }
         }
 
         private void SetNCMNames(IEnumerable<NCMName> nCMNames)
         {
-            string selectedText = (ListBox_Main.SelectedItem as Label)?.Content as string; 
-
-            ListBox_Main.Items.Clear();
-
             if (nCMNames == null || nCMNames.Count() == 0)
             {
                 return;
@@ -129,7 +115,7 @@ namespace SAM.Analytical.UI.WPF
                 group = null;
             }
 
-            Label selectedLabel = null;
+            List<NCMName> nCMNames_Temp = new List<NCMName>();
             foreach (NCMName nCMName in nCMNames)
             {
                 if (nCMName == null)
@@ -145,23 +131,10 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
-                string text = string.IsNullOrWhiteSpace(nCMName.FullName) ? "???" : nCMName.FullName;
-
-                text = text.Replace("_", "__");
-                Label label = new Label() { Content = text, Tag = nCMName };
-
-                ListBox_Main.Items.Add(label);
-
-                if(text == selectedText)
-                {
-                    selectedLabel = label;
-                }
+                nCMNames_Temp.Add(nCMName);
             }
 
-            if(selectedLabel != null)
-            {
-                ListBox_Main.SelectedItem = selectedLabel;
-            }
+            SearchControl_Main.SearchObjectWrapper = new SearchObjectWrapper(nCMNames_Temp, x => (x as NCMName)?.FullName, false);
         }
 
         private void SetGroups(IEnumerable<NCMName> nCMNames)
@@ -201,25 +174,13 @@ namespace SAM.Analytical.UI.WPF
 
         public NCMNameCollection GetNCMNameCollection()
         {
-            NCMNameCollection result = new NCMNameCollection();
-
-            foreach (object @object in ListBox_Main.Items)
+            List<NCMName> nCMNames = SearchControl_Main.GetSelectedItems<NCMName>();
+            if(nCMNames == null)
             {
-                Label label = @object as Label;
-                if (label == null)
-                {
-                    continue;
-                }
-
-                NCMName nCMName = label.Tag as NCMName;
-                if (nCMName == null)
-                {
-                    continue;
-                }
-
-                result.Add(nCMName);
+                return null;
             }
 
+            NCMNameCollection result = new NCMNameCollection(nCMNames);
             return result;
         }
 
@@ -227,7 +188,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return SelectedLabel?.Tag as NCMName;
+                return SearchControl_Main.GetSelectedItems<NCMName>()?.FirstOrDefault();
             }
         }
 
@@ -249,6 +210,11 @@ namespace SAM.Analytical.UI.WPF
         private void ComboBox_Group_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SetNCMNames(nCMNames);
+        }
+
+        private void SearchControl_Main_SelectionChanged(object sender, EventArgs e)
+        {
+            SetNCMName(GetNCMNameCollection()?.FirstOrDefault());
         }
     }
 }

@@ -260,8 +260,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_NCMNames_Click(object sender, RoutedEventArgs e)
         {
-            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection());
-            nCMNameCollectionWindow.Show();
+            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection(), new NCMNameCollectionOptions(false));
+            nCMNameCollectionWindow.ShowDialog();
         }
 
         private void RibbonButton_AssignMechanicalSystems_Click(object sender, RoutedEventArgs e)

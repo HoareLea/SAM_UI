@@ -29,11 +29,12 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
-        public NCMNameCollectionWindow(IEnumerable<NCMName> nCMNames)
+        public NCMNameCollectionWindow(IEnumerable<NCMName> nCMNames, NCMNameCollectionOptions nCMNameCollectionOptions = null)
         {
             InitializeComponent();
 
             NCMNameCollectionControl_Main.NCMNameCollection = nCMNames == null ? null : new NCMNameCollection(nCMNames);
+            NCMNameCollectionControl_Main.NCMNameCollectionOptions = nCMNameCollectionOptions;
         }
 
         private void button_Cancel_Click(object sender, RoutedEventArgs e)

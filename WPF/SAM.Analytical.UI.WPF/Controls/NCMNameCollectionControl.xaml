@@ -13,7 +13,7 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <ComboBox x:Name="ComboBox_Group" Grid.Column="0" Margin="5,5,5,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" SelectionChanged="ComboBox_Group_SelectionChanged"/>
-        <ListBox x:Name="ListBox_Main" Grid.Column="0" HorizontalAlignment="Stretch" Margin="5,35,5,5" VerticalAlignment="Stretch" />
+        <WPF:SearchControl x:Name="SearchControl_Main" Grid.Column="0" HorizontalAlignment="Stretch" Margin="0,30,0,0" VerticalAlignment="Stretch" />
         <Label Grid.Column="1" Margin="5,5,5,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Content="Name"></Label>
         <TextBox x:Name="TextBox_Name" Grid.Column="1" Margin="5,35,5,0" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
         <Label Grid.Column="1" Margin="5,60,5,0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Content="Version"></Label>
