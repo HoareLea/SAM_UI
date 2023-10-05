@@ -153,10 +153,17 @@
   <ItemGroup>
     <Compile Include="Classes\NCMNameCollectionOptions.cs" />
     <Compile Include="Modify\AddMechanicalSystems.cs" />
+    <Compile Include="Modify\EditNCMDatas.cs" />
     <Compile Include="Modify\RemoveMechanicalSystems.cs" />
     <Compile Include="Modify\RemoveZones.cs" />
     <Compile Include="Controls\NCMNameCollectionControl.xaml.cs">
       <DependentUpon>NCMNameCollectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NCMDataControl.xaml.cs">
+      <DependentUpon>NCMDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\NCMDataWindow.xaml.cs">
+      <DependentUpon>NCMDataWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\NCMNameCollectionWindow.xaml.cs">
       <DependentUpon>NCMNameCollectionWindow.xaml</DependentUpon>
@@ -481,6 +488,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\NCMNameCollectionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NCMDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\NCMDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2300,6 +2300,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
 
                     menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_ModifyNCMData";
+                    menuItem.Header = "Modify NCM";
+                    menuItem.Click += MenuItem_EditMCMDatas;
+                    menuItem.Tag = spaces;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_AssignInternalCondition";
                     menuItem.Header = "Assign IC";
                     menuItem.Click += MenuItem_AssignInternalCondition_Click;
@@ -2339,6 +2346,34 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
                 }
             }
+        }
+
+        private void MenuItem_EditMCMDatas(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            Modify.EditNCMDatas(uIAnalyticalModel, spaces);
         }
 
         private void MenuItem_Hide_Click(object sender, RoutedEventArgs e)
