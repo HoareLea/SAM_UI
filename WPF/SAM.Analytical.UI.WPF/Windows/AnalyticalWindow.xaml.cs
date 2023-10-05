@@ -1548,36 +1548,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
-            string path = null;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "TAS TIC files (*.tic)|*.tic|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
-            if (openFileDialog.ShowDialog(this) == false)
-            {
-                return;
-            }
-            path = openFileDialog.FileName;
-
-            NCMNameCollection nCMNameCollection = null;
-
-            Action action = () =>
-            {
-
-                using (Core.Tas.SAMTICDocument sAMTICDocument = new Core.Tas.SAMTICDocument(path))
-                {
-                    nCMNameCollection = sAMTICDocument?.ToSAM();
-                }
-            };
-
-            MarqueeProgressForm.Show("Collecting data", action, windowHandle);
-
-            if (nCMNameCollection == null)
-            {
-                return;
-            }
-
-            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(nCMNameCollection);
+            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection());
             nCMNameCollectionWindow.Show();
         }
 

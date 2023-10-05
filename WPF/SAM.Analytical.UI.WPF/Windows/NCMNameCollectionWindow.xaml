@@ -10,7 +10,14 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
         <local:NCMNameCollectionControl x:Name="NCMNameCollectionControl_Main" Margin="5,5,5,5"/>
-
+        <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Width="70" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,9.6,10.4" Height="19" Click="button_Cancel_Click"/>
+        <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="0,5.8,84.6,10.4" HorizontalAlignment="Right" Width="70" Click="button_OK_Click"/>
+        <Button x:Name="button_Open" Content="Open" Grid.Row="1" Margin="10,6,160,10" HorizontalAlignment="Left" Width="70" Click="button_Open_Click"/>
+        <Button x:Name="button_Save" Content="Save" Grid.Row="1" Margin="85,6,160,10" HorizontalAlignment="Left" Width="70" Click="button_Save_Click"/>
     </Grid>
 </Window>
