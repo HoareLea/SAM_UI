@@ -51,7 +51,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             NCMName nCMName = nCMNameCollectionWindow.SelectedNCMName;
-            Button_Name.Content = string.IsNullOrEmpty(nCMName?.FullName) ? "???" : nCMName.FullName;
+            Button_Name.Content = string.IsNullOrEmpty(nCMName?.FullName) ? "???" : nCMName.FullName.Replace("_", "__");
             Button_Name.Tag = nCMName;
         }
 
