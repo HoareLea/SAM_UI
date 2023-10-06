@@ -23,5 +23,28 @@ namespace SAM.Analytical.UI.WPF
         {
             InitializeComponent();
         }
+
+        public List<NCMData> NCMDatas
+        {
+            get
+            {
+                return NCMDataControl_Main.NCMDatas;
+            }
+
+            set
+            {
+                NCMDataControl_Main.NCMDatas = value;
+            }
+        }
+
+        private void button_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
+
+        private void button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+        }
     }
 }

@@ -177,7 +177,11 @@ namespace SAM.Analytical.UI
 
                         if (Core.Query.TryGetValue(nCMData, parameterName, out value))
                         {
-                            if (parameterName == "Color")
+                            if (value is System.Enum)
+                            {
+                                text = Core.Query.Description((System.Enum)value);
+                            }
+                            else if (parameterName == "Color")
                             {
                                 text = nCMData.Name;
                             }
