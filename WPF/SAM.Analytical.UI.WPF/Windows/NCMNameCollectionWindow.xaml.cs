@@ -100,5 +100,13 @@ namespace SAM.Analytical.UI.WPF
 
             Core.Convert.ToFile((IJSAMObject)nCMNameCollection, path);
         }
+
+        public NCMName SelectedNCMName
+        {
+            get
+            {
+                return NCMNameCollectionControl_Main.SelectedNCMName;
+            }
+        }
     }
 }

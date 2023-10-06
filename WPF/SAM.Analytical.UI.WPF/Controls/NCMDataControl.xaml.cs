@@ -49,27 +49,19 @@ namespace SAM.Analytical.UI.WPF
             {
                 return;
             }
+
+            NCMName nCMName = nCMNameCollectionWindow.SelectedNCMName;
+            Button_Name.Content = string.IsNullOrEmpty(nCMName?.Name) ? "???" : nCMName.Name;
+            Button_Name.Tag = nCMName;
         }
 
         private List<NCMData> GetNCMDatas()
         {
-            string value = null;
+            string @string = null;
 
-            string fullName = Button_Name.Content as string;
-            if (fullName != vary)
+            NCMName nCMName = Button_Name.Tag as NCMName;
+            if (nCMName != null)
             {
-                NCMNameCollection nCMNameCollection_Temp = nCMNameCollection;
-                if (nCMNameCollection_Temp == null)
-                {
-                    nCMNameCollection_Temp = Analytical.Query.DefaultNCMNameCollection();
-                }
-                
-                NCMName nCMName = nCMNameCollection_Temp.ToList().Find(x => x.FullName == fullName);
-                if(nCMName == null)
-                {
-                    nCMName = fullName;
-                }
-
                 for (int i = 0; i < nCMDatas.Count; i++)
                 {
                     if (nCMDatas[i] == null)
@@ -82,12 +74,12 @@ namespace SAM.Analytical.UI.WPF
             }
 
             //ComboBox_SystemType
-            value = ComboBox_SystemType.SelectedItem as string;
-            if(value != vary)
+            @string = ComboBox_SystemType.SelectedItem as string;
+            if (@string != vary)
             {
-                if(Core.Query.TryGetEnum(value, out NCMSystemType nCMSystemType))
+                if (Core.Query.TryGetEnum(@string, out NCMSystemType nCMSystemType))
                 {
-                    for(int i = 0; i < nCMDatas.Count; i++)
+                    for (int i = 0; i < nCMDatas.Count; i++)
                     {
                         if (nCMDatas[i] == null)
                         {
@@ -100,10 +92,10 @@ namespace SAM.Analytical.UI.WPF
             }
 
             //ComboBox_LightingOccupancyControls
-            value = ComboBox_LightingOccupancyControls.SelectedItem as string;
-            if (value != vary)
+            @string = ComboBox_LightingOccupancyControls.SelectedItem as string;
+            if (@string != vary)
             {
-                if (Core.Query.TryGetEnum(value, out LightingOccupancyControls lightingOccupancyControls))
+                if (Core.Query.TryGetEnum(@string, out LightingOccupancyControls lightingOccupancyControls))
                 {
                     for (int i = 0; i < nCMDatas.Count; i++)
                     {
@@ -118,10 +110,10 @@ namespace SAM.Analytical.UI.WPF
             }
 
             //ComboBox_LightingPhotoelectricControls
-            value = ComboBox_LightingPhotoelectricControls.SelectedItem as string;
-            if (value != vary)
+            @string = ComboBox_LightingPhotoelectricControls.SelectedItem as string;
+            if (@string != vary)
             {
-                if (Core.Query.TryGetEnum(value, out LightingPhotoelectricControls lightingPhotoelectricControls))
+                if (Core.Query.TryGetEnum(@string, out LightingPhotoelectricControls lightingPhotoelectricControls))
                 {
                     for (int i = 0; i < nCMDatas.Count; i++)
                     {
@@ -132,6 +124,118 @@ namespace SAM.Analytical.UI.WPF
 
                         nCMDatas[i].LightingPhotoelectricControls = lightingPhotoelectricControls;
                     }
+                }
+            }
+
+            bool? @bool = null;
+
+            //CheckBox_LightingPhotoelectricBackSpaceSensor
+            @bool = CheckBox_LightingPhotoelectricBackSpaceSensor.IsChecked;
+            if (@bool != null && @bool.HasValue)
+            {
+                for (int i = 0; i < nCMDatas.Count; i++)
+                {
+                    if (nCMDatas[i] == null)
+                    {
+                        nCMDatas[i] = new NCMData();
+                    }
+
+                    nCMDatas[i].LightingPhotoelectricBackSpaceSensor = @bool.Value;
+                }
+            }
+
+            //CheckBox_LightingPhotoelectricControlsTimeSwitch
+            @bool = CheckBox_LightingPhotoelectricControlsTimeSwitch.IsChecked;
+            if (@bool != null && @bool.HasValue)
+            {
+                for (int i = 0; i < nCMDatas.Count; i++)
+                {
+                    if (nCMDatas[i] == null)
+                    {
+                        nCMDatas[i] = new NCMData();
+                    }
+
+                    nCMDatas[i].LightingPhotoelectricControlsTimeSwitch = @bool.Value;
+                }
+            }
+
+            //CheckBox_LightingDaylightFactorMethod
+            @bool = CheckBox_LightingDaylightFactorMethod.IsChecked;
+            if (@bool != null && @bool.HasValue)
+            {
+                for (int i = 0; i < nCMDatas.Count; i++)
+                {
+                    if (nCMDatas[i] == null)
+                    {
+                        nCMDatas[i] = new NCMData();
+                    }
+
+                    nCMDatas[i].LightingDaylightFactorMethod = @bool.Value;
+                }
+            }
+
+            //CheckBox_IsMainsGasAvailable
+            @bool = CheckBox_IsMainsGasAvailable.IsChecked;
+            if (@bool != null && @bool.HasValue)
+            {
+                for (int i = 0; i < nCMDatas.Count; i++)
+                {
+                    if (nCMDatas[i] == null)
+                    {
+                        nCMDatas[i] = new NCMData();
+                    }
+
+                    nCMDatas[i].IsMainsGasAvailable = @bool.Value;
+                }
+            }
+
+            double @double = double.NaN;
+
+            //MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower
+            if (!MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower.VarySet)
+            {
+                if (Core.Query.TryConvert(MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower.Value, out @double) && !double.IsNaN(@double))
+                {
+                    for (int i = 0; i < nCMDatas.Count; i++)
+                    {
+                        if (nCMDatas[i] == null)
+                        {
+                            nCMDatas[i] = new NCMData();
+                        }
+
+                        nCMDatas[i].LightingPhotoelectricParasiticPower = @double;
+                    }
+                }
+            }
+
+            //MultipleValueTextBoxControl_AirPermeability
+            if (!MultipleValueTextBoxControl_AirPermeability.VarySet)
+            {
+                if (Core.Query.TryConvert(MultipleValueTextBoxControl_AirPermeability.Value, out @double) && !double.IsNaN(@double))
+                {
+                    for (int i = 0; i < nCMDatas.Count; i++)
+                    {
+                        if (nCMDatas[i] == null)
+                        {
+                            nCMDatas[i] = new NCMData();
+                        }
+
+                        nCMDatas[i].AirPermeability = @double;
+                    }
+                }
+            }
+
+            //MultipleValueTextBoxControl_Description
+            if (!MultipleValueTextBoxControl_Description.VarySet)
+            {
+                for (int i = 0; i < nCMDatas.Count; i++)
+                {
+                    if (nCMDatas[i] == null)
+                    {
+                        nCMDatas[i] = new NCMData();
+                    }
+
+                    nCMDatas[i].Description = MultipleValueTextBoxControl_AirPermeability.Value;
                 }
             }
 
@@ -146,7 +250,7 @@ namespace SAM.Analytical.UI.WPF
             List<bool?> bools = null;
 
             //Button_Name
-            strings = this.nCMDatas?.ConvertAll(x => x == null ? null : x.Name);
+            strings = this.nCMDatas?.ConvertAll(x => x == null ? null : x.NCMName?.FullName);
             strings = strings.Distinct().ToList();
             if (strings != null && strings.Count > 1)
             {
@@ -209,6 +313,7 @@ namespace SAM.Analytical.UI.WPF
                 ComboBox_LightingPhotoelectricControls.SelectedItem = strings[0];
             }
 
+            //CheckBox_LightingPhotoelectricBackSpaceSensor
             bools = this.nCMDatas?.ConvertAll(x => x == null ? null as bool? : x.LightingPhotoelectricBackSpaceSensor);
             bools = bools.Distinct().ToList();
 
@@ -221,6 +326,7 @@ namespace SAM.Analytical.UI.WPF
                 CheckBox_LightingPhotoelectricBackSpaceSensor.IsChecked = bools[0];
             }
 
+            //CheckBox_LightingPhotoelectricControlsTimeSwitch
             bools = this.nCMDatas?.ConvertAll(x => x == null ? null as bool? : x.LightingPhotoelectricControlsTimeSwitch);
             bools = bools.Distinct().ToList();
 
@@ -233,6 +339,7 @@ namespace SAM.Analytical.UI.WPF
                 CheckBox_LightingPhotoelectricControlsTimeSwitch.IsChecked = bools[0];
             }
 
+            //CheckBox_LightingDaylightFactorMethod
             bools = this.nCMDatas?.ConvertAll(x => x == null ? null as bool? : x.LightingDaylightFactorMethod);
             bools = bools.Distinct().ToList();
 
@@ -245,6 +352,7 @@ namespace SAM.Analytical.UI.WPF
                 CheckBox_LightingDaylightFactorMethod.IsChecked = bools[0];
             }
 
+            //CheckBox_IsMainsGasAvailable
             bools = this.nCMDatas?.ConvertAll(x => x == null ? null as bool? : x.IsMainsGasAvailable);
             bools = bools.Distinct().ToList();
 
@@ -257,6 +365,27 @@ namespace SAM.Analytical.UI.WPF
                 CheckBox_IsMainsGasAvailable.IsChecked = bools[0];
             }
 
+
+            //MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower
+            strings = this.nCMDatas?.ConvertAll(x => x == null ? null : x.LightingPhotoelectricParasiticPower.ToString());
+            strings = strings.Distinct().ToList();
+
+            MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower.Values = strings;
+            MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower.SetDefaultValue(strings);
+
+            //MultipleValueTextBoxControl_AirPermeability
+            strings = this.nCMDatas?.ConvertAll(x => x == null ? null : x.AirPermeability.ToString());
+            strings = strings.Distinct().ToList();
+
+            MultipleValueTextBoxControl_AirPermeability.Values = strings;
+            MultipleValueTextBoxControl_AirPermeability.SetDefaultValue(strings);
+
+            //MultipleValueTextBoxControl_Description
+            strings = this.nCMDatas?.ConvertAll(x => x == null ? null : x.Description);
+            strings = strings.Distinct().ToList();
+
+            MultipleValueTextBoxControl_Description.Values = strings;
+            MultipleValueTextBoxControl_Description.SetDefaultValue(strings);
         }
 
         public List<NCMData> NCMDatas
