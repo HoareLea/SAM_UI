@@ -457,7 +457,7 @@
                     <RibbonButton x:Name="RibbonButton_MapInternalConditions" Label="Map IC" />
                     <RibbonButton x:Name="RibbonButton_MapInternalConditionsByTM59" Label="Map IC (TM59)" />
                     <RibbonButton x:Name="RibbonButton_EditInternalConditions" Label="Modify IC" />
-                    <RibbonButton x:Name="RibbonButton_AssignMechanicalSystems" Label="Mechanical Systems" />
+                    <RibbonButton x:Name="RibbonButton_AssignMechanicalSystems" Label="Add Mechanical Systems" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Simulate" Header="Simulate">
@@ -484,7 +484,7 @@
                     <RibbonButton x:Name="RibbonButton_OpenTBD" Label="Open TBD" />
                     <RibbonButton x:Name="RibbonButton_OpenTSD" Label="Open TSD" />
                     <RibbonButton x:Name="RibbonButton_OpenTPD" Label="Open TPD" />
-                    <RibbonButton x:Name="RibbonButton_CreateTBD" Label="Create TBD" />
+                    <!-- <RibbonButton x:Name="RibbonButton_CreateTBD" Label="Create TBD" /> -->
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Hydra" Header="Hydra">
                     <RibbonButton x:Name="RibbonButton_Hydra" Label="Open Hydra" />
@@ -493,6 +493,7 @@
                     <RibbonButton x:Name="RibbonButton_OpenMollierChart" Label="Mollier Diagram" />
                     <RibbonButton x:Name="RibbonButton_ViewGeometry" Label="View Geometry" />
                     <RibbonButton x:Name="RibbonButton_TextMap" Label="Text Map" />
+                    <RibbonButton x:Name="RibbonButton_NCMNames" Label="NCM Names" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Developer" Header="Developer">
                     <RibbonButton x:Name="RibbonButton_Test" Label="Test" />

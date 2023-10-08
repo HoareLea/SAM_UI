@@ -108,6 +108,7 @@
     <Compile Include="Classes\Settings\AdjacencyClusterAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\CoolingSystemAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\HeatingSystemAppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\NCMDataAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\VentilationSystemAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\OpeningPropertiesAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ApertureConstructionAppearanceSettings.cs" />
@@ -127,7 +128,7 @@
       <DependentUpon>SimulateControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Convert\ToSAM\GeometryObjectModel.cs" />
-    <Compile Include="Create\TBDConversionOptions.cs" />
+    <Compile Include="Create\SimulateOptions.cs" />
     <Compile Include="Enums\Parameter\AnalyticalModelParameter.cs" />
     <Compile Include="Enums\Position.cs" />
     <Compile Include="Enums\SolarCalculationMethod.cs" />

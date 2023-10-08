@@ -162,6 +162,37 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
+                    else if(appearanceSettings is NCMDataAppearanceSettings)
+                    {
+                        InternalCondition internalCondition = space?.InternalCondition;
+                        if(internalCondition == null)
+                        {
+                            return false;
+                        }
+
+                        if(!internalCondition.TryGetValue(InternalConditionParameter.NCMData, out NCMData nCMData) || nCMData == null)
+                        {
+                            return false;
+                        }
+
+                        if (Core.Query.TryGetValue(nCMData, parameterName, out value))
+                        {
+                            if (value is System.Enum)
+                            {
+                                text = Core.Query.Description((System.Enum)value);
+                            }
+                            else if (parameterName == "Color")
+                            {
+                                text = nCMData.Name;
+                            }
+                            else
+                            {
+                                text = value?.ToString();
+                            }
+
+                            return true;
+                        }
+                    }
                 }
             }
 

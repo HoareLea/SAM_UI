@@ -20,7 +20,8 @@ namespace SAM.Analytical.UI
             Dictionary<double, string> dictionary_Doubles = new Dictionary<double, string>();
 
 
-            HashSet<string> strings = new HashSet<string>();
+            //HashSet<string> strings = new HashSet<string>();
+            Dictionary<string, List<LegendItemData>> dictionary_Strings = new Dictionary<string, List<LegendItemData>>();
 
             Dictionary<Guid, LegendItem> result = new Dictionary<Guid, LegendItem>();
             foreach (LegendItemData legendItemData in legendItemDatas)
@@ -35,7 +36,13 @@ namespace SAM.Analytical.UI
                 dictionary_Values[legendItemData] = @object;
                 if(@object is Enum)
                 {
-                    strings.Add(Core.Query.Description((Enum)@object));
+                    string value = Core.Query.Description((Enum)@object);
+                    if(!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
+                    {
+                        legendItemDatas_Temp = new List<LegendItemData>();
+                        dictionary_Strings[value] = legendItemDatas_Temp;
+                    }
+                    legendItemDatas_Temp.Add(legendItemData);
                 }
                 else if (Core.Query.IsNumeric(@object))
                 {
@@ -45,7 +52,13 @@ namespace SAM.Analytical.UI
                 }
                 else if (@object is string)
                 {
-                    strings.Add((string)@object);
+                    string value = (string)@object;
+                    if (!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
+                    {
+                        legendItemDatas_Temp = new List<LegendItemData>();
+                        dictionary_Strings[value] = legendItemDatas_Temp;
+                    }
+                    legendItemDatas_Temp.Add(legendItemData);
                 }
                 else if (Core.Query.TryConvert(@object, out Color color))
                 {
@@ -54,7 +67,12 @@ namespace SAM.Analytical.UI
                 else if (@object?.ToString() != null)
                 {
                     string value = @object?.ToString();
-                    strings.Add(value);
+                    if (!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
+                    {
+                        legendItemDatas_Temp = new List<LegendItemData>();
+                        dictionary_Strings[value] = legendItemDatas_Temp;
+                    }
+                    legendItemDatas_Temp.Add(legendItemData);
                     dictionary_Values[legendItemData] = value;
                 }
             }
@@ -131,17 +149,14 @@ namespace SAM.Analytical.UI
             }
 
             Random random = new Random();
-            if (strings != null && strings.Count != 0)
+            if (dictionary_Strings != null && dictionary_Strings.Count != 0)
             {
-                foreach (string @string in strings)
+                foreach (KeyValuePair<string, List<LegendItemData>> keyValuePair in dictionary_Strings)
                 {
                     Color color = System.Drawing.Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
-                    foreach (KeyValuePair<LegendItemData, object> keyValuePair in dictionary_Values)
+                    foreach (LegendItemData legendItemData in keyValuePair.Value)
                     {
-                        if (keyValuePair.Value?.ToString() == @string)
-                        {
-                            result[keyValuePair.Key.Guid] = new LegendItem(color, @string);
-                        }
+                        result[legendItemData.Guid] = new LegendItem(color, keyValuePair.Key);
                     }
                 }
             }

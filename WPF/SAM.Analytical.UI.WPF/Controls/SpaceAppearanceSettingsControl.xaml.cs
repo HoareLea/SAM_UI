@@ -185,6 +185,29 @@ namespace SAM.Analytical.UI.WPF
                 }
                 type = typeof(CoolingSystem);
             }
+            if (radioButton_NCMData.IsChecked.HasValue && radioButton_NCMData.IsChecked.Value)
+            {
+                IEnumerable<Space> spaces = adjacencyCluster.GetSpaces();
+                if (spaces != null)
+                {
+                    foreach (Space space in spaces)
+                    {
+                        InternalCondition internalCondition = space?.InternalCondition;
+                        if(internalCondition == null)
+                        {
+                            continue;
+                        }
+
+                        if(!internalCondition.TryGetValue(InternalConditionParameter.NCMData, out NCMData nCMData) || nCMData == null)
+                        {
+                            continue;
+                        }
+
+                        objects.Add(nCMData);
+                    }
+                }
+                type = typeof(NCMData);
+            }
 
             Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, new string[] { "ToString", "Location", "InternalCondition", "ToJObject", "ParameterSets", "HashCode", "Type" });
         
@@ -254,6 +277,10 @@ namespace SAM.Analytical.UI.WPF
             {
                 return new SpaceAppearanceSettings(new CoolingSystemAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
             }
+            else if (radioButton_NCMData.IsChecked.HasValue && radioButton_NCMData.IsChecked.Value)
+            {
+                return new SpaceAppearanceSettings(new NCMDataAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
+            }
 
             return null;
         }
@@ -305,6 +332,10 @@ namespace SAM.Analytical.UI.WPF
             else if (appearanceSettings is CoolingSystemAppearanceSettings)
             {
                 radioButton_CoolingSystem.IsChecked = true;
+            }
+            else if (appearanceSettings is NCMDataAppearanceSettings)
+            {
+                radioButton_NCMData.IsChecked = true;
             }
             else 
             {

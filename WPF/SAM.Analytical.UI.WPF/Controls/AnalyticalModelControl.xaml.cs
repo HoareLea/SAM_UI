@@ -94,6 +94,12 @@ namespace SAM.Analytical.UI.WPF
                 Modify.AssignSpaceInternalCondition(uIAnalyticalModel, (Space)targetObject, (InternalCondition)selectedObject);
                 e.EventResult = EventResult.Succeeded;
             }
+
+            if (selectedObject is Space && targetObject is Zone)
+            {
+                Modify.AssignSpaceZone(uIAnalyticalModel, (Space)selectedObject, (Zone)targetObject);
+                e.EventResult = EventResult.Succeeded;
+            }
         }
 
         private void DragDropManager_Views_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
@@ -417,6 +423,13 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = tuples.ConvertAll(x => x.Item2);
                 contextMenu_Model.Items.Add(menuItem);
 
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Remove";
+                menuItem.Header = "Remove";
+                menuItem.Click += MenuItem_Remove_Click;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
+                contextMenu_Model.Items.Add(menuItem);
+
                 if (singleSelection)
                 {
                     menuItem = new MenuItem();
@@ -444,6 +457,23 @@ namespace SAM.Analytical.UI.WPF
                     menuItem.Click += MenuItem_Duplicate_Click;
                     menuItem.Tag = jSAMObject;
                     contextMenu_Model.Items.Add(menuItem);
+
+                }
+            }
+            else if (jSAMObject is MechanicalSystem)
+            {
+                MenuItem menuItem = null;
+
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Remove";
+                menuItem.Header = "Remove";
+                menuItem.Click += MenuItem_Remove_Click;
+                menuItem.Tag = tuples.ConvertAll(x => x.Item2);
+                contextMenu_Model.Items.Add(menuItem);
+
+                if (singleSelection)
+                {
+
 
                 }
             }
@@ -831,9 +861,22 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            foreach(IMaterial material in jSAMObjects.FindAll(x => x is IMaterial))
+            List<IMaterial> materials = jSAMObjects?.FindAll(x => x is IMaterial).ConvertAll(x => (IMaterial)x);
+            if (materials != null && materials.Count != 0)
             {
-                UI.Modify.RemoveMaterial(uIAnalyticalModel, material);
+                materials.ForEach(x => UI.Modify.RemoveMaterial(uIAnalyticalModel, x));
+            }
+
+            List<Zone> zones = jSAMObjects?.FindAll(x => x is Zone).ConvertAll(x => (Zone)x);
+            if(zones != null && zones.Count != 0)
+            {
+                Modify.RemoveZones(uIAnalyticalModel, zones);
+            }
+
+            List<MechanicalSystem> mechanicalSystems = jSAMObjects?.FindAll(x => x is MechanicalSystem).ConvertAll(x => (MechanicalSystem)x);
+            if (mechanicalSystems != null && mechanicalSystems.Count != 0)
+            {
+                Modify.RemoveMechanicalSystems(uIAnalyticalModel, mechanicalSystems);
             }
         }
 

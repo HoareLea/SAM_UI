@@ -1,9 +1,11 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace SAM.Analytical.UI
 {
     public static partial class Modify
     {
+        [Obsolete("Use  SAM.Analytical.UI.WPF.Simulate Instead")]
         public static void EnergySimulation(this UIAnalyticalModel uIAnalyticalModel, IWin32Window owner = null)
         {
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;

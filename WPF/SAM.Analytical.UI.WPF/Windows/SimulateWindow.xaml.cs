@@ -8,9 +8,9 @@ namespace SAM.Analytical.UI.WPF
     /// <summary>
     /// Interaction logic for ConvertToTBDWindow.xaml
     /// </summary>
-    public partial class ConvertToTBDWindow : System.Windows.Window
+    public partial class SimulateWindow : System.Windows.Window
     {
-        public ConvertToTBDWindow()
+        public SimulateWindow()
         {
             InitializeComponent();
         }
@@ -19,11 +19,11 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.Sizing;
+                return simulateControl.Sizing;
             }
             set
             {
-                convertToTBDControl.Sizing = value;
+                simulateControl.Sizing = value;
             }
         }
 
@@ -31,11 +31,11 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.WeatherData;
+                return simulateControl.WeatherData;
             }
             set
             {
-                convertToTBDControl.WeatherData = value;
+                simulateControl.WeatherData = value;
             }
         }
 
@@ -43,7 +43,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.SelectedWeatherData;
+                return simulateControl.SelectedWeatherData;
             }
         }
 
@@ -51,11 +51,11 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.TextMap;
+                return simulateControl.TextMap;
             }
             set
             {
-                convertToTBDControl.TextMap = value;
+                simulateControl.TextMap = value;
             }
         }
 
@@ -63,7 +63,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.SelectedTextMap;
+                return simulateControl.SelectedTextMap;
             }
         }
 
@@ -71,12 +71,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.OutputDirectory;
+                return simulateControl.OutputDirectory;
             }
 
             set
             {
-                convertToTBDControl.OutputDirectory = value;
+                simulateControl.OutputDirectory = value;
             }
         }
 
@@ -84,12 +84,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.ProjectName;
+                return simulateControl.ProjectName;
             }
 
             set
             {
-                convertToTBDControl.ProjectName = value;
+                simulateControl.ProjectName = value;
             }
         }
 
@@ -97,12 +97,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.Simulate;
+                return simulateControl.Simulate;
             }
 
             set
             {
-                convertToTBDControl.Simulate = value;
+                simulateControl.Simulate = value;
             }
         }
 
@@ -110,12 +110,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.FullYearSimulation;
+                return simulateControl.FullYearSimulation;
             }
 
             set
             {
-                convertToTBDControl.FullYearSimulation = value;
+                simulateControl.FullYearSimulation = value;
             }
         }
 
@@ -123,7 +123,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.FullYearSimulation_From;
+                return simulateControl.FullYearSimulation_From;
             }
         }
 
@@ -131,7 +131,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.FullYearSimulation_To;
+                return simulateControl.FullYearSimulation_To;
             }
         }
 
@@ -139,7 +139,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.SelectedZoneCategory;
+                return simulateControl.SelectedZoneCategory;
             }
         }
 
@@ -147,11 +147,11 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.ZoneCategories;
+                return simulateControl.ZoneCategories;
             }
             set
             {
-                convertToTBDControl.ZoneCategories = value;
+                simulateControl.ZoneCategories = value;
             }
         }
 
@@ -159,12 +159,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.UseWidths;
+                return simulateControl.UseWidths;
             }
 
             set
             {
-                convertToTBDControl.UseWidths = value;
+                simulateControl.UseWidths = value;
             }
         }
 
@@ -172,12 +172,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.UnmetHours;
+                return simulateControl.UnmetHours;
             }
 
             set
             {
-                convertToTBDControl.UnmetHours = value;
+                simulateControl.UnmetHours = value;
             }
         }
 
@@ -185,12 +185,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.RoomDataSheets;
+                return simulateControl.RoomDataSheets;
             }
 
             set
             {
-                convertToTBDControl.RoomDataSheets = value;
+                simulateControl.RoomDataSheets = value;
             }
         }
 
@@ -198,12 +198,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.CreateSAP;
+                return simulateControl.CreateSAP;
             }
 
             set
             {
-                convertToTBDControl.CreateSAP = value;
+                simulateControl.CreateSAP = value;
             }
         }
 
@@ -211,12 +211,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.CreateTM59;
+                return simulateControl.CreateTM59;
             }
 
             set
             {
-                convertToTBDControl.CreateTM59 = value;
+                simulateControl.CreateTM59 = value;
             }
         }
 
@@ -224,12 +224,25 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.CreateTPD;
+                return simulateControl.CreateTPD;
             }
 
             set
             {
-                convertToTBDControl.CreateTPD = value;
+                simulateControl.CreateTPD = value;
+            }
+        }
+
+        public bool CreatePartL
+        {
+            get
+            {
+                return simulateControl.CreatePartL;
+            }
+
+            set
+            {
+                simulateControl.CreatePartL = value;
             }
         }
 
@@ -237,25 +250,25 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return convertToTBDControl.SolarCalculationMethod;
+                return simulateControl.SolarCalculationMethod;
             }
 
             set
             {
-                convertToTBDControl.SolarCalculationMethod = value;
+                simulateControl.SolarCalculationMethod = value;
             }
         }
 
-        public TBDConversionOptions TBDConversionOptions
+        public SimulateOptions SimulateOptions
         {
             get
             {
-                return convertToTBDControl.TBDConversionOptions;
+                return simulateControl.SimulateOptions;
             }
 
             set
             {
-                convertToTBDControl.TBDConversionOptions = value;
+                simulateControl.SimulateOptions = value;
             }
         }
 

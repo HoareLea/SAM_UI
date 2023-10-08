@@ -7,6 +7,6 @@ namespace SAM.Analytical.UI.WPF
     [AssociatedTypes(typeof(Setting)), Description("Analytical Setting Parameter")]
     public enum AnalyticalSettingParameter
     {
-        [ParameterProperties("TBD Conversion Options", "TBD Conversion Options"), SAMObjectParameterValue(typeof(TBDConversionOptions))] TBDConversionOptions,
+        [ParameterProperties("Simulate Options", "Simulate Options"), SAMObjectParameterValue(typeof(SimulateOptions))] SimulateOptions,
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         mc:Ignorable="d"
-        Title="Add Mechanical Systems" Height="400" Width="250">
+        Title="Add Mechanical Systems" Height="430" Width="250">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>

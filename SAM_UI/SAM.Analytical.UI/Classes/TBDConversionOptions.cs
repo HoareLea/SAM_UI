@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SAM.Analytical.UI.WPF
 {
-    public class TBDConversionOptions : IJSAMObject
+    public class SimulateOptions : IJSAMObject
     {
         public string ProjectName { get; set; } = null;
         public List<string> ZoneCategories { get; set; } = null;
@@ -19,39 +19,41 @@ namespace SAM.Analytical.UI.WPF
         public bool CreateSAP { get; set; } = false;
         public bool CreateTPD { get; set; } = false;
         public bool CreateTM59 { get; set; } = false;
+        public bool CreatePartL { get; set; } = false;
         public bool UseWidths { get; set; } = false;
         public bool Sizing { get; set; } = true;
 
         public TextMap TextMap { get; set; } = Analytical.Query.DefaultInternalConditionTextMap_TM59();
 
-        public TBDConversionOptions()
+        public SimulateOptions()
         {
 
         }
 
-        public TBDConversionOptions(TBDConversionOptions tBDConversionOptions)
+        public SimulateOptions(SimulateOptions simulateOptions)
         {
-            if(tBDConversionOptions != null)
+            if(simulateOptions != null)
             {
-                ProjectName = tBDConversionOptions.ProjectName;
-                ZoneCategories = tBDConversionOptions.ZoneCategories == null ? null : tBDConversionOptions.ZoneCategories;
-                WeatherData = tBDConversionOptions.WeatherData == null ? null : new WeatherData(tBDConversionOptions.WeatherData);
-                OutputDirectory = tBDConversionOptions.OutputDirectory;
-                Simulate = tBDConversionOptions.Simulate;
-                SolarCalculationMethod = tBDConversionOptions.SolarCalculationMethod;
-                FullYearSimulation = tBDConversionOptions.FullYearSimulation;
-                UnmetHours = tBDConversionOptions.UnmetHours;
-                RoomDataSheets = tBDConversionOptions.RoomDataSheets;
-                CreateSAP = tBDConversionOptions.CreateSAP;
-                CreateTM59 = tBDConversionOptions.CreateTM59;
-                TextMap = tBDConversionOptions.TextMap == null ? null : tBDConversionOptions.TextMap;
-                UseWidths = tBDConversionOptions.UseWidths;
-                CreateTPD = tBDConversionOptions.CreateTPD;
-                Sizing = tBDConversionOptions.Sizing;
+                ProjectName = simulateOptions.ProjectName;
+                ZoneCategories = simulateOptions.ZoneCategories == null ? null : simulateOptions.ZoneCategories;
+                WeatherData = simulateOptions.WeatherData == null ? null : new WeatherData(simulateOptions.WeatherData);
+                OutputDirectory = simulateOptions.OutputDirectory;
+                Simulate = simulateOptions.Simulate;
+                SolarCalculationMethod = simulateOptions.SolarCalculationMethod;
+                FullYearSimulation = simulateOptions.FullYearSimulation;
+                UnmetHours = simulateOptions.UnmetHours;
+                RoomDataSheets = simulateOptions.RoomDataSheets;
+                CreateSAP = simulateOptions.CreateSAP;
+                CreateTM59 = simulateOptions.CreateTM59;
+                TextMap = simulateOptions.TextMap == null ? null : simulateOptions.TextMap;
+                UseWidths = simulateOptions.UseWidths;
+                CreateTPD = simulateOptions.CreateTPD;
+                Sizing = simulateOptions.Sizing;
+                CreatePartL = simulateOptions.CreatePartL;
             }
         }
 
-        public TBDConversionOptions(JObject jObject)
+        public SimulateOptions(JObject jObject)
         {
             FromJObject(jObject);
         }
@@ -141,6 +143,11 @@ namespace SAM.Analytical.UI.WPF
                 CreateTPD = jObject.Value<bool>("CreateTPD");
             }
 
+            if (jObject.ContainsKey("CreatePartL"))
+            {
+                CreatePartL = jObject.Value<bool>("CreatePartL");
+            }
+
             if (jObject.ContainsKey("Sizing"))
             {
                 Sizing = jObject.Value<bool>("Sizing");
@@ -204,6 +211,8 @@ namespace SAM.Analytical.UI.WPF
             result.Add("CreateTM59", CreateTM59);
 
             result.Add("CreateTPD", CreateTPD);
+
+            result.Add("CreatePartL", CreatePartL);
 
             result.Add("UseWidths", UseWidths);
 

@@ -7,14 +7,14 @@ namespace SAM.Analytical.UI
 {
     public static partial class Create
     {
-        public static TBDConversionOptions TBDConversionOptions(this UIAnalyticalModel uIAnalyticalModel)
+        public static SimulateOptions SimulateOptions(this UIAnalyticalModel uIAnalyticalModel)
         {
             if(uIAnalyticalModel == null)
             {
                 return null;
             }
 
-            TBDConversionOptions result = new TBDConversionOptions();
+            SimulateOptions result = new SimulateOptions();
 
 
             if (!string.IsNullOrWhiteSpace(uIAnalyticalModel.Path))

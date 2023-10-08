@@ -1,7 +1,9 @@
 ﻿using Microsoft.Win32;
+using SAM.Analytical.Tas;
 using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
+using SAM.Core.Windows.Forms;
 using SAM.Geometry;
 using SAM.Geometry.UI;
 using SAM.Geometry.UI.WPF;
@@ -32,6 +34,34 @@ namespace SAM.Analytical.UI.WPF.Windows
         private DoubleRangeWindow doubleRangeWindow = null;
         
         public AnalyticalWindow()
+        {
+            Initailize();
+        }
+
+        public AnalyticalWindow(StartupOptions startupOptions)
+        {
+            Initailize();
+
+            if (startupOptions != null)
+            {
+                string path = startupOptions.Path;
+                if(!string.IsNullOrWhiteSpace(path) && System.IO.File.Exists(path))
+                {
+                    bool opened = Open(path);
+                    if(startupOptions.TemporaryFile)
+                    {
+                        if(opened && uIAnalyticalModel != null)
+                        {
+                            uIAnalyticalModel.Path = null;
+                        }
+
+                        System.IO.File.Delete(path);
+                    }
+                }
+            }
+        }
+
+        private void Initailize()
         {
             InitializeComponent();
 
@@ -140,11 +170,14 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_Hydra.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Hydra);
             RibbonButton_Hydra.Click += RibbonButton_Hydra_Click;
 
+            RibbonButton_NCMNames.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
+            RibbonButton_NCMNames.Click += RibbonButton_NCMNames_Click;
+
             RibbonButton_CleanAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
             RibbonButton_CleanAnalyticalModel.Click += RibbonButton_CleanAnalyticalModel_Click;
 
-            RibbonButton_CreateTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
-            RibbonButton_CreateTBD.Click += RibbonButton_CreateTBD_Click;
+            //RibbonButton_CreateTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
+            //RibbonButton_CreateTBD.Click += RibbonButton_CreateTBD_Click;
 
             RibbonButton_AddMissingObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AddMissingObjects);
             RibbonButton_AddMissingObjects.Click += RibbonButton_AddMissingObjects_Click;
@@ -223,6 +256,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_NCMNames_Click(object sender, RoutedEventArgs e)
+        {
+            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection(), new NCMNameCollectionOptions(false));
+            nCMNameCollectionWindow.ShowDialog();
         }
 
         private void RibbonButton_AssignMechanicalSystems_Click(object sender, RoutedEventArgs e)
@@ -1155,7 +1194,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_CreateTBD_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.ConvertToTBD();
+            uIAnalyticalModel?.Simulate();
         }
 
         private void RibbonButton_EditApertureConstructions_Click(object sender, RoutedEventArgs e)
@@ -1211,7 +1250,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_EnergySimulation_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.EnergySimulation(windowHandle);
+            //uIAnalyticalModel?.EnergySimulation(windowHandle);
+            uIAnalyticalModel?.Simulate();
         }
 
         private void RibbonButton_ExportAnalyticalModel_Click(object sender, RoutedEventArgs e)
@@ -1376,9 +1416,14 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
             path = openFileDialog.FileName;
 
+            Open(path);
+        }
+
+        private bool Open(string path)
+        {
             if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
             {
-                return;
+                return false;
             }
 
             uIAnalyticalModel = new UIAnalyticalModel();
@@ -1388,9 +1433,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
-            uIAnalyticalModel.Open();
-
-            //Core.Windows.Forms.MarqueeProgressForm.Show("Opening AnalyticalModel", () => );
+            return uIAnalyticalModel.Open();
         }
 
         private void RibbonButton_OpenMollierChart_Click(object sender, RoutedEventArgs e)
@@ -1514,7 +1557,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
-            //throw new NotImplementedException();
+            //SearchWindow searchWindow = new SearchWindow(new string[] {"absss", "Kubas", "KLUB" });
+            //searchWindow.ShowDialog();
         }
 
         private void RibbonButton_TextMap_Click(object sender, RoutedEventArgs e)
@@ -1725,7 +1769,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_OpenTBD.IsEnabled = false;
             RibbonButton_OpenTPD.IsEnabled = false;
             RibbonButton_OpenTSD.IsEnabled = false;
-            RibbonButton_CreateTBD.IsEnabled = false;
+            //RibbonButton_CreateTBD.IsEnabled = false;
             RibbonButton_EditLibrary.IsEnabled = false;
             RibbonButton_EnergySimulation.IsEnabled = false;
             RibbonButton_SolarSimulation.IsEnabled = false;
@@ -1788,7 +1832,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 RibbonButton_SaveAsAnalyticalModel.IsEnabled = true;
                 RibbonButton_SaveAnalyticalModel.IsEnabled = true;
                 RibbonButton_ExportAnalyticalModel.IsEnabled = true;
-                RibbonButton_CreateTBD.IsEnabled = true;
+                //RibbonButton_CreateTBD.IsEnabled = true;
                 RibbonButton_RemoveResults.IsEnabled = true;
 
                 List<AirHandlingUnit> airHandlingUnits = analyticalModel.AdjacencyCluster?.GetObjects<AirHandlingUnit>();
@@ -2256,6 +2300,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
 
                     menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_ModifyNCMData";
+                    menuItem.Header = "Modify NCM";
+                    menuItem.Click += MenuItem_EditMCMDatas;
+                    menuItem.Tag = spaces;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_AssignInternalCondition";
                     menuItem.Header = "Assign IC";
                     menuItem.Click += MenuItem_AssignInternalCondition_Click;
@@ -2295,6 +2346,34 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
                 }
             }
+        }
+
+        private void MenuItem_EditMCMDatas(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            Modify.EditNCMDatas(uIAnalyticalModel, spaces);
         }
 
         private void MenuItem_Hide_Click(object sender, RoutedEventArgs e)

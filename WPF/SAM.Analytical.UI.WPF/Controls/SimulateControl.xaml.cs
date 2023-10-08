@@ -11,11 +11,11 @@ namespace SAM.Analytical.UI.WPF
     /// <summary>
     /// Interaction logic for ConvertToTBDControl.xaml
     /// </summary>
-    public partial class ConvertToTBDControl : System.Windows.Controls.UserControl
+    public partial class SimulateControl : System.Windows.Controls.UserControl
     {
         public static string InternalText { get; set; } = Core.UI.WPF.Query.DefaultInternalText();
 
-        public ConvertToTBDControl()
+        public SimulateControl()
         {
             InitializeComponent();
 
@@ -200,6 +200,20 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public bool CreatePartL
+        {
+            get
+            {
+                return checkBox_CreatePartL.IsChecked != null && checkBox_CreatePartL.IsChecked.HasValue && checkBox_CreatePartL.IsChecked.Value;
+            }
+
+            set
+            {
+                checkBox_CreatePartL.IsChecked = value;
+                EnableTextMap();
+            }
+        }
+
         public bool FullYearSimulation
         {
             get
@@ -339,21 +353,21 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public TBDConversionOptions TBDConversionOptions
+        public SimulateOptions SimulateOptions
         {
             get
             {
-                return GetTBDConversionOptions();
+                return GetSimulateOptions();
             }
             set
             {
-                SetTBDConversionOptions(value);
+                SetSimulateOptions(value);
             }
         }
 
-        private TBDConversionOptions GetTBDConversionOptions()
+        private SimulateOptions GetSimulateOptions()
         {
-            TBDConversionOptions result = new TBDConversionOptions()
+            SimulateOptions result = new SimulateOptions()
             {
                 ProjectName = ProjectName,
                 ZoneCategories = ZoneCategories,
@@ -370,36 +384,38 @@ namespace SAM.Analytical.UI.WPF
                 UseWidths = UseWidths,
                 CreateTPD = CreateTPD,
                 Sizing = Sizing,
+                CreatePartL = CreatePartL
             };
 
             return result;
         }
 
-        private bool SetTBDConversionOptions(TBDConversionOptions tBDConversionOptions)
+        private bool SetSimulateOptions(SimulateOptions simulateOptions)
         {
-            if(tBDConversionOptions == null)
+            if(simulateOptions == null)
             {
                 return false;
             }
 
-            ProjectName = tBDConversionOptions.ProjectName;
-            ZoneCategories = tBDConversionOptions.ZoneCategories;
-            OutputDirectory = tBDConversionOptions.OutputDirectory;
-            Simulate = tBDConversionOptions.Simulate;
-            SolarCalculationMethod = tBDConversionOptions.SolarCalculationMethod;
-            FullYearSimulation = tBDConversionOptions.FullYearSimulation;
-            UnmetHours = tBDConversionOptions.UnmetHours;
-            RoomDataSheets = tBDConversionOptions.RoomDataSheets;
-            CreateSAP = tBDConversionOptions.CreateSAP;
-            CreateTM59 = tBDConversionOptions.CreateTM59;
+            ProjectName = simulateOptions.ProjectName;
+            ZoneCategories = simulateOptions.ZoneCategories;
+            OutputDirectory = simulateOptions.OutputDirectory;
+            Simulate = simulateOptions.Simulate;
+            SolarCalculationMethod = simulateOptions.SolarCalculationMethod;
+            FullYearSimulation = simulateOptions.FullYearSimulation;
+            UnmetHours = simulateOptions.UnmetHours;
+            RoomDataSheets = simulateOptions.RoomDataSheets;
+            CreateSAP = simulateOptions.CreateSAP;
+            CreateTM59 = simulateOptions.CreateTM59;
+            CreatePartL = CreatePartL;
 
-            UseWidths = tBDConversionOptions.UseWidths;
-            CreateTPD = tBDConversionOptions.CreateTPD;
+            UseWidths = simulateOptions.UseWidths;
+            CreateTPD = simulateOptions.CreateTPD;
 
-            TextMap = tBDConversionOptions.TextMap;
-            WeatherData = tBDConversionOptions.WeatherData;
+            TextMap = simulateOptions.TextMap;
+            WeatherData = simulateOptions.WeatherData;
 
-            Sizing = tBDConversionOptions.Sizing;
+            Sizing = simulateOptions.Sizing;
 
             return true;
         }
@@ -440,12 +456,14 @@ namespace SAM.Analytical.UI.WPF
 
         private void EnableSimulate(bool enable)
         {
+            checkBox_UseWidths.IsEnabled = enable;
             label_SolarCalculationMethod.IsEnabled = enable;
             comboBox_SolarCalculationMethod.IsEnabled = enable;
+            checkBox_Sizing.IsEnabled = enable;
             checkBox_FullYearSimulation.IsEnabled = enable;
             EnableFullYearSimulation();
             checkBox_UnmetHours.IsEnabled = enable;
-            checkBox_RoomDataSheets.IsEnabled = enable;
+            checkBox_CreateTPD.IsEnabled = enable;
         }
 
         private void checkBox_Simulate_Click(object sender, System.Windows.RoutedEventArgs e)
