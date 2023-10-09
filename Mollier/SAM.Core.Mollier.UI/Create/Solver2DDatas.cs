@@ -63,6 +63,13 @@ namespace SAM.Core.Mollier.UI
 
             Solver2DData solver2DData = new Solver2DData(labelRectangle, point.GetScaledY(axesRatio));
             solver2DData.Tag = mollierPoint;
+
+            Solver2DSettings solver2DSettings = new Solver2DSettings();
+            solver2DSettings.IterationCount = 10;
+            solver2DSettings.StartingDistance = 0.2;
+            solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
+            solver2DData.Solver2DSettings = solver2DSettings;
+
             result.Add(solver2DData);
 
             return result;
@@ -131,6 +138,12 @@ namespace SAM.Core.Mollier.UI
             Solver2DData solver2DData = new Solver2DData(rectangle, polyline);
             solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(rectangle.GetCentroid(), chartType, mollierControlSettings.Pressure), new UIMollierAppearance(color, text));
             solver2DData.Priority = getChartDataTypePriority(curve.ChartDataType);
+
+            Solver2DSettings solver2DSettings = new Solver2DSettings();
+            solver2DSettings.IterationCount = 100;
+            solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
+            solver2DData.Solver2DSettings = solver2DSettings;
+
             result.Add(solver2DData);
 
             return result;
@@ -165,6 +178,11 @@ namespace SAM.Core.Mollier.UI
                 Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Label, curve.ChartDataType);
                 solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(defaultPoint2D, chartType, mollierControlSettings.Pressure), new UIMollierAppearance(color, text));
                 solver2DData.Priority = getChartDataTypePriority(chartDataType);
+
+                Solver2DSettings solver2DSettings = new Solver2DSettings();
+                solver2DSettings.IterationCount = 100;
+                solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
+                solver2DData.Solver2DSettings = solver2DSettings;
 
                 result.Add(solver2DData);
             }

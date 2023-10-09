@@ -21,7 +21,6 @@ namespace SAM.Core.Mollier.UI
             double axesRatio = Query.AxesRatio(chart, mollierControlSettings);
 
             List<IClosed2D> obstacles = Query.Obstacles(chart, mollierControlSettings);
-
             List<Solver2DData> solverData = Create.Solver2DDatas(chart, mollierControlSettings);
 
             Point2D chartMinPoint = new Point2D(chart.ChartAreas[0].AxisX.Minimum, chart.ChartAreas[0].AxisY.Minimum * axesRatio);
@@ -29,28 +28,14 @@ namespace SAM.Core.Mollier.UI
             Rectangle2D chartArea = new Rectangle2D(new BoundingBox2D(chartMinPoint, chartMaxPoint));
 
             Solver2DSettings solver2DSettings = new Solver2DSettings();
-            solver2DSettings.MaxStepPoint = 5;
+            //solver2DSettings.MaxStepPoint = 5;
             Solver2D solver = new Solver2D(chartArea, obstacles);
 
-            foreach (Solver2DData solver2DData in solverData)
+            solver.AddRange(solverData);
+
+            if(mollierControlSettings.VisualizeSolver)
             {
-                Rectangle2D rectangle = solver2DData.Closed2D<Rectangle2D>();
-
-                Polyline2D polyline = solver2DData.Geometry2D<Polyline2D>();
-                Point2D point = solver2DData.Geometry2D<Point2D>();
-
-                if (rectangle != null && polyline != null)
-                {
-                    solver.Add(rectangle, polyline, tag: solver2DData.Tag);
-                } 
-                else if (rectangle != null && point != null)
-                {
-                    solver.Add(rectangle, point, tag: solver2DData.Tag);
-                }
-                if (rectangle != null && mollierControlSettings.VisualizeSolver)
-                {
-                    visualizeRectangle(chart, rectangle, Color.Red, axesRatio);
-                }
+                solverData.ForEach(x => visualizeRectangle(chart, x.Closed2D<Rectangle2D>(), Color.Red, axesRatio));
             }
 
             if (solverData == null || solverData.Count == 0)
@@ -58,29 +43,28 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            List<Solver2DResult> solver2DResults = solver.Solve(solver2DSettings);
-
+            List<Solver2DResult> solver2DResults = solver.Solve();
             if (solver2DResults == null) return null;
 
             List<ChartLabel> labelsPositions = getChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio);
             
             labelsPositions.fixPositions(chart);
-            List<Series> result = addChartLabels(chart, labelsPositions);
+            List<Series> result = addLabels(chart, labelsPositions);
 
             return result;
         }
-        private static List<Series> addChartLabels(Chart chart, List<ChartLabel> chartLabels)
+        private static List<Series> addLabels(Chart chart, List<ChartLabel> chartLabels)
         {
             List<Series> result = new List<Series>();
 
             foreach (ChartLabel chartLabel in chartLabels)
             {
-                result.Add(addChartLabel(chart, chartLabel));
+                result.Add(addLabel(chart, chartLabel));
             }
 
             return result;
         }
-        private static Series addChartLabel(Chart chart, ChartLabel chartLabel)
+        private static Series addLabel(Chart chart, ChartLabel chartLabel)
         {
             Series result = chart.Series.Add(Guid.NewGuid().ToString());
             result.SmartLabelStyle.Enabled = false;
@@ -100,19 +84,24 @@ namespace SAM.Core.Mollier.UI
 
         private static void visualizeRectangle(Chart chart, Rectangle2D rectangle, Color color, double yTOX)
         {
+            if(rectangle == null)
+            {
+                return;
+            }
+
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
             series.BorderWidth = 1;
             series.Color = color;
 
-            List<Point2D> resultPoints = rectangle.GetPoints();
-            foreach (Point2D point in resultPoints)
+            List<Point2D> cornerPoints = rectangle.GetPoints();
+            foreach (Point2D point in cornerPoints)
             {
                 series.Points.AddXY(point.X, point.Y / yTOX);
             }
 
-            series.Points.AddXY(resultPoints[0].X, resultPoints[0].Y / yTOX);
+            series.Points.AddXY(cornerPoints[0].X, cornerPoints[0].Y / yTOX);
 
         }
         

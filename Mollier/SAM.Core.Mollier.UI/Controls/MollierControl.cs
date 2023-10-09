@@ -286,8 +286,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            double pressure = mollierControlSettings.Pressure;
-
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
                 setAxisGraph_Mollier();
@@ -883,7 +881,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                         }
                                     }
                                 }
-                                //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
+
                                 if (key_Temp == "[ProcessName]")
                                 {
                                     int integer = 2;

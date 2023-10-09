@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Geometry.Planar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
@@ -947,13 +948,27 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings = new MollierControlSettings();
             }
 
-            RoomProcess roomProcess = Mollier.Create.RoomProcess_BySensibleHeatRatio(mollierPoint, sensibleHeatRatio, mollierControlSettings.Temperature_Min, mollierControlSettings.Temperature_Max, mollierControlSettings.HumidityRatio_Min / 1000, mollierControlSettings.HumidityRatio_Max / 1000);
-            if (roomProcess == null)
+            ChartType chartType = mollierControlSettings.ChartType;
+            double pressure = mollierControlSettings.Pressure;
+
+            double angle = System.Math.Atan(sensibleHeatRatio);
+            Line2D line2D = Geometry.Planar.Create.Line2D(mollierPoint.ToSAM(mollierControlSettings.ChartType), angle);
+            Rectangle2D chartArea = Geometry.Planar.Create.Rectangle2D(Query.CornerPoints(mollierControlSettings));
+
+            Segment2D processSegment = Geometry.Planar.Create.Segment2D(line2D, chartArea);
+            if(processSegment == null)
             {
                 return;
             }
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess(processSegment.Start.ToMollier(chartType, pressure), 
+                                                                                processSegment.End.ToMollier(chartType, pressure));
 
-            UIMollierProcess uIMollierProcess = new UIMollierProcess(roomProcess, System.Drawing.Color.LightGray);
+            if (undefinedProcess == null)
+            {
+                return;
+            }
+                
+            UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
 
             AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
         }

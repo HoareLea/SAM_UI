@@ -42,6 +42,12 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
 
+                if(mollierProcess is UndefinedProcess)
+                {
+                    createUndefinedProcessSeries(chart, uIMollierProcess, mollierControlSettings);
+                    continue;
+                }
+
                 if (mollierProcess is RoomProcess)
                 {
                     createRoomProcessSeries(chart, uIMollierProcess, mollierControlSettings);
@@ -61,7 +67,7 @@ namespace SAM.Core.Mollier.UI
                     new UIMollierAppearance(Color.Empty, uIMollierProcess.UIMollierAppearance.Label)));
 
                 //cooling process create one unique process with ADP point
-                if (mollierProcess is CoolingProcess)
+                if (labeledMollierProcesses.Count < 30 && mollierProcess is CoolingProcess)
                 {
                     UIMollierPoint ADPPoint = createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
                     if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
@@ -179,6 +185,35 @@ namespace SAM.Core.Mollier.UI
 
             result.Add(series);
             result.Add(seriesRoomPoint);
+            return result;
+        }
+        private static List<Series> createUndefinedProcessSeries(Chart chart, UIMollierProcess uIMollierProcess, MollierControlSettings mollierControlSettings)
+        {
+            List<Series> result = new List<Series>();
+
+            MollierProcess mollierProcess = uIMollierProcess.MollierProcess;
+            ChartType chartType = mollierControlSettings.ChartType;
+            // Specified the color of the Room air condition point
+            Color color = uIMollierProcess.UIMollierAppearance.Color == Color.Empty ? Color.Gray : uIMollierProcess.UIMollierAppearance.Color;
+            // Creating series for room process
+            Series series = chart.Series.Add(Guid.NewGuid().ToString());
+            series.IsVisibleInLegend = false;
+            series.ChartType = SeriesChartType.Line;
+            series.Color = color;
+            series.BorderDashStyle = ChartDashStyle.Dash;
+            series.BorderWidth = 3;
+            series.Tag = uIMollierProcess;
+
+            // Add start and end point to the process series
+            Point2D start = Convert.ToSAM(uIMollierProcess.Start, chartType);
+            Point2D end = Convert.ToSAM(uIMollierProcess.End, chartType);
+
+            int index;
+            index = series.Points.AddXY(start.X, start.Y);
+            series.Points[index].Tag = uIMollierProcess.Start;
+
+            index = series.Points.AddXY(end.X, end.Y);
+            series.Points[index].Tag = uIMollierProcess.End;
             return result;
         }
         private static Series createProcessSeries(Chart chart, UIMollierProcess uImollierProcess, MollierControlSettings mollierControlSettings)
