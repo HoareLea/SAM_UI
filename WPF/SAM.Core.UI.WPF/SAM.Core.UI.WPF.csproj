@@ -129,6 +129,12 @@
       <DependentUpon>DoubleRangeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Query\Modal.cs" />
+    <Compile Include="Controls\RelationClusterComplexReferenceControl.xaml.cs">
+      <DependentUpon>RelationClusterComplexReferenceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RelationClusterComplexReferenceWindow.xaml.cs">
+      <DependentUpon>RelationClusterComplexReferenceWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\SearchWindow.xaml.cs">
       <DependentUpon>SearchWindow.xaml</DependentUpon>
     </Compile>
@@ -283,6 +289,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DoubleRangeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RelationClusterComplexReferenceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\RelationClusterComplexReferenceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
