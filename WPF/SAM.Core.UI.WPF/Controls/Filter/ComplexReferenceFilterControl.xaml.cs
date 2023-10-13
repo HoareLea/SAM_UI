@@ -121,7 +121,9 @@ namespace SAM.Core.UI.WPF
 
             ComplexReferenceFilter complexReferenceFilter = uIComplexReferenceFilter.Filter;
 
+            TextBox_ComplexReference.TextChanged -= TextBox_ComplexReference_TextChanged;
             TextBox_ComplexReference.Text = complexReferenceFilter?.ComplexReference?.ToString();
+            TextBox_ComplexReference.TextChanged += TextBox_ComplexReference_TextChanged;
 
             if (complexReferenceFilter is ComplexReferenceNumberFilter)
             {
@@ -159,7 +161,36 @@ namespace SAM.Core.UI.WPF
 
         private void TextBox_ComplexReference_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+            ComplexReferenceFilter complexReferenceFilter = uIComplexReferenceFilter?.Filter;
+            if (complexReferenceFilter != null)
+            {
+                RelationCluster relationCluster = complexReferenceFilter.RelationCluster;
+                if (relationCluster != null)
+                {
+                    IComplexReference complexReference = Core.Convert.ComplexReference(TextBox_ComplexReference.Text);
+                    if (complexReference != null)
+                    {
+                        IFilterControl filterControl = null;
+
+                        UIElementCollection uIElementCollection = StackPanel_Filter.Children;
+                        if (uIElementCollection != null && uIElementCollection.Count != 0)
+                        {
+                            filterControl = uIElementCollection[0] as IFilterControl;
+                        }
+
+                        ComplexReferenceFilter complexReferenceFilter_Default = UI.Query.DefaultComplexReferenceFilter(complexReference, relationCluster);
+                        if (complexReferenceFilter_Default != null)
+                        {
+                            if (filterControl == null || complexReferenceFilter.GetType() != complexReferenceFilter_Default?.GetType())
+                            {
+                                UIComplexReferenceFilter = new UIComplexReferenceFilter(uIComplexReferenceFilter.Name, uIComplexReferenceFilter?.Type, complexReferenceFilter_Default);
+                            }
+                        }
+                    }
+                }
+            }
+
+             FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
         }
 
         private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
