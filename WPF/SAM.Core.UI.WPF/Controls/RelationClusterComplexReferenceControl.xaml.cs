@@ -232,5 +232,38 @@ namespace SAM.Core.UI.WPF
                 return (TreeView_Property.SelectedItem as TreeViewItem)?.Tag as IComplexReference;
             }
         }
+
+        public Type Type
+        {
+            get
+            {
+                return (ComboBox_Type.SelectedItem as ComboBoxItem)?.Tag as Type;
+            }
+
+            set
+            {
+                foreach(ComboBoxItem comboBoxItem in ComboBox_Type.Items)
+                {
+                    if(comboBoxItem.Tag as Type == value)
+                    {
+                        ComboBox_Type.SelectedItem = comboBoxItem;
+                        return;
+                    }
+                }
+            }
+        }
+
+        public bool TypesEnabled
+        {
+            get
+            {
+                return ComboBox_Type.IsEnabled;
+            }
+
+            set
+            {
+                ComboBox_Type.IsEnabled = value;
+            }
+        }
     }
 }

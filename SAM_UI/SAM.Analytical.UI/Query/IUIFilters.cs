@@ -6,7 +6,7 @@ namespace SAM.Analytical.UI
 {
     public static partial class Query
     {
-        public static List<IUIFilter> IUIFilters(this System.Type type)
+        public static List<IUIFilter> IUIFilters(this System.Type type, AdjacencyCluster adjacencyCluster)
         {
             if (type == null)
             {
@@ -31,9 +31,9 @@ namespace SAM.Analytical.UI
                 result.Add(new UITextFilter("Cooling System Type Name", type, new SpaceCoolingSystemTypeNameFilter(TextComparisonType.StartsWith, string.Empty)));
                 result.Add(new UITextFilter("Cooling System Full Name",type, new SpaceCoolingSystemFullNameFilter(TextComparisonType.StartsWith, string.Empty)));
 
-                IUIFilters(typeof(Panel))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new SpacePanelsFilter(x))));
-                IUIFilters(typeof(InternalCondition))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new SpaceInternalConditionFilter(x))));
-                IUIFilters(typeof(Zone))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new SpaceZonesFilter(x))));
+                IUIFilters(typeof(Panel), adjacencyCluster)?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new SpacePanelsFilter(x))));
+                IUIFilters(typeof(InternalCondition), adjacencyCluster)?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new SpaceInternalConditionFilter(x))));
+                IUIFilters(typeof(Zone), adjacencyCluster)?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new SpaceZonesFilter(x))));
             }
             else if (type.IsAssignableFrom(typeof(Panel)))
             {
@@ -47,8 +47,8 @@ namespace SAM.Analytical.UI
                 result.Add(new UINumberFilter(string.Format("{0} Max Elevation", type.Name), type, new PanelMaxElevationFilter(NumberComparisonType.Equals, 0)));
                 result.Add(new UINumberFilter(string.Format("Aperture Count", type.Name), type, new PanelApertureCountFilter(NumberComparisonType.Greater, 0)));
 
-                IUIFilters(typeof(Aperture))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new PanelAperturesFilter(x))));
-                IUIFilters(typeof(Construction))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new PanelConstructionFilter(x))));
+                IUIFilters(typeof(Aperture), adjacencyCluster)?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new PanelAperturesFilter(x))));
+                IUIFilters(typeof(Construction), adjacencyCluster)?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new PanelConstructionFilter(x))));
             }
             else if (type.IsAssignableFrom(typeof(Aperture)))
             {
@@ -57,14 +57,14 @@ namespace SAM.Analytical.UI
                 result.Add(new UINumberFilter(string.Format("{0} Frame Area", type.Name), type, new ApertureFrameAreaFilter(NumberComparisonType.Greater, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Azimuth", type.Name), type, new ApertureAzimuthFilter(NumberComparisonType.Equals, 0)));
 
-                IUIFilters(typeof(ApertureConstruction))?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new ApertureApertureConstructionFilter(x))));
+                IUIFilters(typeof(ApertureConstruction), adjacencyCluster)?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new ApertureApertureConstructionFilter(x))));
             }
 
             result.RemoveAll(x => x is UILogicalFilter);
 
-            if (result.Count > 0)
+            if (adjacencyCluster != null && adjacencyCluster.GetTypes().Contains(type))
             {
-                //result.Add(new UILogicalFilter(string.Format("{0} Logical And/Or", type.Name), type, new LogicalFilter(FilterLogicalOperator.Or)));
+                result.Add(new UIComplexReferenceFilter(string.Format("{0} Reference", type.Name), type, new ComplexReferenceTextFilter() { RelationCluster = adjacencyCluster, CaseSensitive = true, ComplexReference = new PropertyReference(type, "Name"), TextComparisonType = TextComparisonType.Contains }));
             }
 
             result.Sort((x, y) => x.Name.CompareTo(y.Name));

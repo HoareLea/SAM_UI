@@ -41,7 +41,7 @@ namespace SAM.Core.UI.WPF
         {
             get
             {
-                return uIComplexReferenceFilter;
+                return UIComplexReferenceFilter;
             }
         }
 
@@ -79,7 +79,7 @@ namespace SAM.Core.UI.WPF
             }
 
             UserControl userControl = uIElementCollection[0] as UserControl;
-            if (userControl != null)
+            if (userControl == null)
             {
                 return null;
             }
@@ -93,7 +93,7 @@ namespace SAM.Core.UI.WPF
                 INumberFilter numberFilter = numberFilterControl?.UINumberFilter?.Filter;
                 if (numberFilter != null)
                 {
-                    complexReferenceFilter = new ComplexReferenceNumberFilter() { ComplexReference = complexReference, Inverted = numberFilter.Inverted, NumberComparisonType = numberFilter.NumberComparisonType, Value = numberFilter.Value };
+                    complexReferenceFilter = new ComplexReferenceNumberFilter() { RelationCluster = complexReferenceFilter.RelationCluster, ComplexReference = complexReference, Inverted = numberFilter.Inverted, NumberComparisonType = numberFilter.NumberComparisonType, Value = numberFilter.Value };
                 }
             }
             else if (userControl is TextFilterControl)
@@ -102,7 +102,7 @@ namespace SAM.Core.UI.WPF
                 ITextFilter textFilter = textFilterControl?.UITextFilter?.Filter;
                 if (textFilter != null)
                 {
-                    complexReferenceFilter = new ComplexReferenceTextFilter() { ComplexReference = complexReference, Inverted = textFilter.Inverted, TextComparisonType = textFilter.TextComparisonType, Value = textFilter.Value };
+                    complexReferenceFilter = new ComplexReferenceTextFilter() { RelationCluster = complexReferenceFilter.RelationCluster, ComplexReference = complexReference, Inverted = textFilter.Inverted, TextComparisonType = textFilter.TextComparisonType, Value = textFilter.Value };
                 }
             }
 
@@ -184,7 +184,9 @@ namespace SAM.Core.UI.WPF
         {
             RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
             relationClusterComplexReferenceWindow.RelationCluster = UIComplexReferenceFilter?.Filter?.RelationCluster;
-            
+            relationClusterComplexReferenceWindow.Type = uIComplexReferenceFilter.Type;
+            relationClusterComplexReferenceWindow.TypesEnabled = false;
+
             bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
 
             if(dialogResult != null && dialogResult.HasValue && dialogResult.Value)

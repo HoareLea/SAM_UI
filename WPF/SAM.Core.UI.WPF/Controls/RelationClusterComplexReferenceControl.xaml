@@ -8,11 +8,11 @@
              d:DesignHeight="450" d:DesignWidth="350">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="35"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
-        <ComboBox x:Name="ComboBox_Type" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="5,5,5,5" SelectionChanged="ComboBox_Type_SelectionChanged"></ComboBox>
+        <ComboBox x:Name="ComboBox_Type" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" SelectionChanged="ComboBox_Type_SelectionChanged"></ComboBox>
         <TreeView x:Name="TreeView_Property" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,0,5,5" SelectedItemChanged="TreeView_Property_SelectedItemChanged"/>
         <TextBox x:Name="TextBox_Reference" Grid.Row="2" Margin="5,0,5,5" IsReadOnly="True" TextWrapping="WrapWithOverflow"/>
     </Grid>

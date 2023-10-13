@@ -32,5 +32,37 @@ namespace SAM.Core.UI.WPF
                 return RelationClusterComplexReferenceControl_Main.ComplexReference;
             }
         }
+
+        public System.Type Type
+        {
+            get
+            {
+                return RelationClusterComplexReferenceControl_Main.Type;
+            }
+
+            set
+            {
+                RelationClusterComplexReferenceControl_Main.Type = value;
+            }
+        }
+
+        public bool TypesEnabled
+        {
+            get
+            {
+                return RelationClusterComplexReferenceControl_Main.TypesEnabled;
+            }
+
+            set 
+            {
+                RelationClusterComplexReferenceControl_Main.TypesEnabled = value;
+            }
+        }
+
+        private void Button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+            Close();
+        }
     }
 }
