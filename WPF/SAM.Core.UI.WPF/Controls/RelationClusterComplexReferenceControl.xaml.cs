@@ -89,7 +89,7 @@ namespace SAM.Core.UI.WPF
                 return;
             }
 
-            List<object> objects = Core.Query.Values(complexReference, relationCluster);
+            List<object> objects = relationCluster?.GetValues(complexReference);
             if(objects == null || objects.Count == 0)
             {
                 return;
@@ -190,7 +190,7 @@ namespace SAM.Core.UI.WPF
             {
                 PathReference pathReference = treeViewItem_Temp.Tag as PathReference;
 
-                List<object> objects = Core.Query.Values(pathReference, relationCluster)?.FindAll(x => x is IJSAMObject);
+                List<object> objects = relationCluster.GetValues(pathReference)?.FindAll(x => x is IJSAMObject);
                 if (objects == null || objects.Count == 0)
                 {
                     continue;

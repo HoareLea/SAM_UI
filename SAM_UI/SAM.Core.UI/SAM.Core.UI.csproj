@@ -88,6 +88,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Query\DefaultComplexReferenceFilter.cs" />
     <Compile Include="Query\FilterDictionary.cs" />
     <Compile Include="Query\IUIFilters.cs" />
     <Compile Include="Query\Transform.cs" />
