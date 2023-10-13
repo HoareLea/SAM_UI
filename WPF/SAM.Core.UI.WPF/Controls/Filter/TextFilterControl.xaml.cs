@@ -70,7 +70,7 @@ namespace SAM.Core.UI.WPF
                 return result;
             }
 
-            TextFilter textFilter = result.Filter;
+            ITextFilter textFilter = result.Filter;
             if(textFilter == null)
             {
                 return null;
@@ -95,7 +95,7 @@ namespace SAM.Core.UI.WPF
 
             groupBox_Main.Header = uITextFilter.Name;
 
-            TextFilter textFilter = uITextFilter.Filter;
+            ITextFilter textFilter = uITextFilter.Filter;
             if (textFilter == null)
             {
                 return;

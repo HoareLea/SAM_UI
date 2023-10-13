@@ -3,9 +3,9 @@ using System;
 
 namespace SAM.Core.UI
 {
-    public class UINumberFilter : UIFilter<NumberFilter>
+    public class UINumberFilter : UIFilter<INumberFilter>
     {
-        public UINumberFilter(string name, Type type, NumberFilter numberFilter)
+        public UINumberFilter(string name, Type type, INumberFilter numberFilter)
             :base(name, type, numberFilter)
         {
 

@@ -74,6 +74,9 @@
     <Compile Include="Classes\ProgressBarWindowManager.cs" />
     <Compile Include="Classes\EventArgs\TextChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectHooveredEventArgs.cs" />
+    <Compile Include="Controls\Filter\ComplexReferenceFilterControl.xaml.cs">
+      <DependentUpon>ComplexReferenceFilterControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Filter\EnumFilterControl.xaml.cs">
       <DependentUpon>EnumFilterControl.xaml</DependentUpon>
     </Compile>
@@ -224,6 +227,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\Filter\ComplexReferenceFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Filter\EnumFilterControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

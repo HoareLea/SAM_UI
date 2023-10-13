@@ -3,9 +3,9 @@ using System;
 
 namespace SAM.Core.UI
 {
-    public class UITextFilter : UIFilter<TextFilter>
+    public class UITextFilter : UIFilter<ITextFilter>
     {
-        public UITextFilter(string name, Type type, TextFilter textFilter)
+        public UITextFilter(string name, Type type, ITextFilter textFilter)
             :base(name, type, textFilter)
         {
 

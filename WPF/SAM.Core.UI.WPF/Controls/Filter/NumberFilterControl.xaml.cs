@@ -70,7 +70,7 @@ namespace SAM.Core.UI.WPF
                 return result;
             }
 
-            NumberFilter numberFilter = result.Filter;
+            INumberFilter numberFilter = result.Filter;
             if(numberFilter == null)
             {
                 return null;
@@ -99,7 +99,7 @@ namespace SAM.Core.UI.WPF
 
             groupBox_Main.Header = uINumberFilter.Name;
 
-            NumberFilter textFilter = uINumberFilter.Filter;
+            INumberFilter textFilter = uINumberFilter.Filter;
             if (textFilter == null)
             {
                 return;

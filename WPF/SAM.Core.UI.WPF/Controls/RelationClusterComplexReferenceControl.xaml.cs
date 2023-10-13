@@ -222,7 +222,15 @@ namespace SAM.Core.UI.WPF
 
         private void TreeView_Property_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            TextBox_Reference.Text = ((TreeView_Property.SelectedItem as TreeViewItem)?.Tag as IComplexReference)?.ToString();
+            TextBox_Reference.Text = ComplexReference?.ToString();
+        }
+
+        public IComplexReference ComplexReference
+        {
+            get
+            {
+                return (TreeView_Property.SelectedItem as TreeViewItem)?.Tag as IComplexReference;
+            }
         }
     }
 }

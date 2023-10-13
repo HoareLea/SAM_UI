@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="SAM.Core.UI.WPF.ComplexReferenceFilterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Core.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="160" d:DesignWidth="270">
+    <Grid ContextMenuOpening="Grid_ContextMenuOpening">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" Content="Reference" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 5, 5, 5"/>
+        <TextBox x:Name="TextBox_ComplexReference" Grid.Row="0" VerticalAlignment="Top" Height="20" Margin="5, 30, 30, 10" TextChanged="TextBox_ComplexReference_TextChanged"/>
+        <Button Grid.Row="0" VerticalAlignment="Top" Content="..."  HorizontalAlignment="Right" Height="20"  Width="20" Margin="5, 30, 5, 10" Click="Button_Click"/>
+        <StackPanel x:Name="StackPanel_Filter"  Grid.Row="1" >
+            <local:TextFilterControl/>
+        </StackPanel>
+    </Grid>
+</UserControl>
