@@ -17,10 +17,11 @@
             }
 
             string mask = "t = {3} °C\nx = {1}{2}\nφ = {0} %\nt_wb = {6} °C\nt_tau = {12} °C (DewPoint)\nh = {5} kJ/kg\nρ = {8} kg/m³\nv = {7} m³/kg\np = {4} Pa\npS = {9}Pa\npW = {10}Pa\npL = {11}Pa";
-            if (name != null && name != "")
-            {
-                mask = string.Format("{0}\n{1}", name, mask);
-            }
+            //if (name != null && name != "")
+            //{
+            //    mask = string.Format("{0}\n{1}", name, mask);
+            //    return "";
+            //}
 
             switch (chartType)
             {

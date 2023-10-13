@@ -14,6 +14,9 @@ namespace SAM.Core.Mollier.UI
             Vector2D scaleVector = Query.ScaleVector2D(chart.Parent, mollierControlSettings);
             double axesRatio = Query.AxesRatio(chart, mollierControlSettings);
 
+            bool addProcesses = true;
+            bool addPoints = true;
+            checkQuantity(chart, ref addProcesses, ref addPoints);
             foreach (Series series in chart.Series)
             {
                 if (series.Tag is UIMollierZone)
@@ -21,7 +24,7 @@ namespace SAM.Core.Mollier.UI
                     UIMollierZone zone = (UIMollierZone)series.Tag;
                     result.AddRange(Solver2DDatas_Zone(zone, chartType, scaleVector, axesRatio));
                 }
-                if (series.Name == "MollierPoints")
+                if (addPoints && series.Name == "MollierPoints")
                 {
                     foreach(DataPoint dataPoint in series.Points)
                     {
@@ -32,7 +35,7 @@ namespace SAM.Core.Mollier.UI
                         }
                     }
                 }
-                if (series.Tag is UIMollierProcess)
+                if (addProcesses && series.Tag is UIMollierProcess)
                 {
                     UIMollierProcess process = (UIMollierProcess)series.Tag;
                     result.AddRange(solver2DDatas_Process(process, chartType, scaleVector, axesRatio));
@@ -60,6 +63,13 @@ namespace SAM.Core.Mollier.UI
 
             Solver2DData solver2DData = new Solver2DData(labelRectangle, point.GetScaledY(axesRatio));
             solver2DData.Tag = mollierPoint;
+
+            Solver2DSettings solver2DSettings = new Solver2DSettings();
+            solver2DSettings.IterationCount = 10;
+            solver2DSettings.StartingDistance = 0.2;
+            solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
+            solver2DData.Solver2DSettings = solver2DSettings;
+
             result.Add(solver2DData);
 
             return result;
@@ -128,6 +138,12 @@ namespace SAM.Core.Mollier.UI
             Solver2DData solver2DData = new Solver2DData(rectangle, polyline);
             solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(rectangle.GetCentroid(), chartType, mollierControlSettings.Pressure), new UIMollierAppearance(color, text));
             solver2DData.Priority = getChartDataTypePriority(curve.ChartDataType);
+
+            Solver2DSettings solver2DSettings = new Solver2DSettings();
+            solver2DSettings.IterationCount = 100;
+            solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
+            solver2DData.Solver2DSettings = solver2DSettings;
+
             result.Add(solver2DData);
 
             return result;
@@ -163,6 +179,11 @@ namespace SAM.Core.Mollier.UI
                 solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(defaultPoint2D, chartType, mollierControlSettings.Pressure), new UIMollierAppearance(color, text));
                 solver2DData.Priority = getChartDataTypePriority(chartDataType);
 
+                Solver2DSettings solver2DSettings = new Solver2DSettings();
+                solver2DSettings.IterationCount = 100;
+                solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
+                solver2DData.Solver2DSettings = solver2DSettings;
+
                 result.Add(solver2DData);
             }
 
@@ -170,6 +191,24 @@ namespace SAM.Core.Mollier.UI
         }
 
 
+        private static void checkQuantity(Chart chart, ref bool addProcesses, ref bool addPoints)
+        {
+            int numberOfProcesses = 0;
+            int numberOfPoints = 0;
+            foreach (Series series in chart.Series)
+            {
+                if (series.Tag is UIMollierProcess)
+                {
+                    numberOfProcesses++;
+                }
+                if (series.Name == "MollierPoints")
+                {
+                    numberOfPoints++;
+                }
+            }
+            addProcesses = numberOfProcesses > 30 ? false : true;
+            addPoints = numberOfPoints > 30 ? false : true;
+        }
 
         // TODO: [LABELS] Methods used above and to move from there
         private static Rectangle2D getLabelRectangle(Point2D point, Polyline2D polyline, string text, MollierControlSettings mollierControlSettings, Vector2D scaleVector, double axesRatio)

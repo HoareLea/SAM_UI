@@ -270,6 +270,7 @@
     <Compile Include="Modify\AddLabels.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\CornerPoints.cs" />
     <Compile Include="Query\GroupName.cs" />
     <Compile Include="Query\SortGroup.cs" />
     <Compile Include="Query\SortByGroup.cs" />

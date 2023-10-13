@@ -286,8 +286,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            double pressure = mollierControlSettings.Pressure;
-
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
                 setAxisGraph_Mollier();
@@ -883,7 +881,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                         }
                                     }
                                 }
-                                //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
+
                                 if (key_Temp == "[ProcessName]")
                                 {
                                     int integer = 2;
@@ -914,8 +912,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
                     Size size_Temp = Size;
                     Size formSize_Temp = form.Size;
-                    double widthDifference = (formSize_Temp.Width - size_Temp.Width) * 1.2;
-                    double heightDifference = (formSize_Temp.Height - size_Temp.Height) * 1.2;
+                    double widthDifference = (formSize_Temp.Width - size_Temp.Width);
+                    double heightDifference = (formSize_Temp.Height - size_Temp.Height);
 
                     if (pageSize == PageSize.A3)//a3 pdf
                     {
@@ -926,14 +924,19 @@ namespace SAM.Core.Mollier.UI.Controls
                         if (pageOrientation == PageOrientation.Landscape)
                         {
                             form.WindowState = FormWindowState.Normal;
-                            form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2));
+                            // form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2));
+                            form.Size = new Size(System.Convert.ToInt32((width + widthDifference)), System.Convert.ToInt32((height + heightDifference)));
                             GenerateGraph();
                         }
                         else
                         {
                             form.WindowState = FormWindowState.Normal;
-                            form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2)); 
+
+                            // form.Size = new Size(System.Convert.ToInt32((width + widthDifference) * 1.2), System.Convert.ToInt32((height + heightDifference) * 1.2));
+                            form.Size = new Size(System.Convert.ToInt32((width + widthDifference)), System.Convert.ToInt32((height + heightDifference)));
                             GenerateGraph();
+
+
                         }
                     }
                     Save(ChartExportType.EMF, path: path_Temp);
@@ -990,8 +993,16 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 Excel.Modify.Edit(path_Template, func);
 
-                System.Threading.Thread.Sleep(1000);
+               // System.Threading.Thread.Sleep(1000);
 
+                if (System.IO.File.Exists(path_Temp))
+                {
+                    if (Core.Query.WaitToUnlock(path_Temp))
+                    {
+                        System.IO.File.Delete(path_Temp);
+                    }
+                }
+                path_Temp = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(path), "TEST.xlsx");
                 if (System.IO.File.Exists(path_Temp))
                 {
                     if (Core.Query.WaitToUnlock(path_Temp))

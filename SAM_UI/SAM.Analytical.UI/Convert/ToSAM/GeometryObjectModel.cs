@@ -618,7 +618,11 @@ namespace SAM.Analytical.UI
                     //and store this data as space.Location this will allow more control over where tags are placed
                     //Point3D point3D = plane.Project(space.Location);
                     List<Tuple<Space, List<Face2D>, string, Point2D>> tuples = new List<Tuple<Space, List<Face2D>, string, Point2D>>();
-                    foreach(KeyValuePair<Space, List<Face2D>> keyValuePair in dictionary_Space)
+
+                    List<Solver2DData> solver2DDatas = new List<Solver2DData>();
+                    List<Point2D> points = new List<Point2D>();
+
+                    foreach (KeyValuePair<Space, List<Face2D>> keyValuePair in dictionary_Space)
                     {
                         string name = keyValuePair.Key.Name;
                         Space space = keyValuePair.Key;
@@ -640,10 +644,61 @@ namespace SAM.Analytical.UI
                             point2D = face2Ds[0].InternalPoint2D();
                         }
 
-                        Tuple<Space, List<Face2D>, string, Point2D> tuple = new Tuple<Space, List<Face2D>, string, Point2D>(keyValuePair.Key, keyValuePair.Value, name, point2D);
+                        double farthestPointDistance = 0;
+                        foreach (Point2D pointsTemp in face2Ds[0].Edge2Ds[0].Polygon2D().Points)
+                        {
+                            points.Add(pointsTemp);
+                            double distance = pointsTemp.Distance(point2D);
 
+                            farthestPointDistance = Math.Max(distance, farthestPointDistance);
+                        }
+                        Rectangle2D rectangle2D = new Rectangle2D(new Point2D(point2D.X + width/2, point2D.Y + height/2), width, height);
+
+                        Solver2DData solver2DData = new Solver2DData(rectangle2D, point2D);
+                        solver2DData.Tag = new Tuple<Space, List<Face2D>, string, Point2D>(keyValuePair.Key, keyValuePair.Value, name, point2D);
+
+                        Solver2DSettings solver2DSettings = new Solver2DSettings();
+                        solver2DSettings.IterationCount = 100;
+                        solver2DSettings.ShiftDistance = (farthestPointDistance - solver2DSettings.StartingDistance) / solver2DSettings.IterationCount;
+                        solver2DSettings.LimitArea = face2Ds[0];
+                        solver2DData.Solver2DSettings = solver2DSettings;
+
+                        solver2DDatas.Add(solver2DData);
+                    }
+
+                    // Maybe we should create bigger area
+                    Rectangle2D area = Geometry.Planar.Create.Rectangle2D(points);
+
+                    // Set the area as infinite so that the labels can extend beyond the faces
+                    area = new Rectangle2D(new Point2D(double.MinValue / 2, double.MinValue / 2), double.MaxValue, double.MaxValue);
+                    Solver2D solver2D = new Solver2D(area, new List<IClosed2D>());
+                    solver2D.AddRange(solver2DDatas);
+
+                    List<Solver2DResult> solver2DResults = solver2D.Solve();
+
+                    // Add shifted labels from solver2DResults to tuples
+                    foreach (Solver2DResult solver2DResult in solver2DResults)
+                    {
+                        Solver2DData solver2DData = solver2DResult.Solver2DData;
+                        Tuple<Space, List<Face2D>, string, Point2D> tuple = solver2DData.Tag as Tuple<Space, List<Face2D>, string, Point2D>;
+                        
+                        if(tuple == null)
+                        {
+                            continue;
+                        }
+
+                        Rectangle2D rectangle2D = solver2DResult.Closed2D<Rectangle2D>();
+                        if(rectangle2D != null)
+                        {
+                            tuple = new Tuple<Space, List<Face2D>, string, Point2D>(tuple.Item1, tuple.Item2, tuple.Item3, rectangle2D.GetCentroid());
+                        }
+                        else
+                        {
+                            tuple = new Tuple<Space, List<Face2D>, string, Point2D>(tuple.Item1, tuple.Item2, "", tuple.Item4);
+                        }
                         tuples.Add(tuple);
                     }
+
 
                     foreach (Tuple<Space, List<Face2D>, string, Point2D> tuple in tuples)
                     {
@@ -653,6 +708,8 @@ namespace SAM.Analytical.UI
                         Point3D point3D = plane.Convert(tuple.Item4);
 
                         Color? color = null;
+
+                        string text = tuple.Item3;
 
                         if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem))
                         {
@@ -679,7 +736,7 @@ namespace SAM.Analytical.UI
 
                         if (twoDimensionalViewSettings.TextAppearance == null || twoDimensionalViewSettings.TextAppearance.Opacity != 0)
                         {
-                            geometryObjectCollection_Space.Add(new Text3DObject(space.Name, plane_Temp, Query.TextAppearance(space, twoDimensionalViewSettings)) { Tag = space });
+                            geometryObjectCollection_Space.Add(new Text3DObject(text, plane_Temp, Query.TextAppearance(space, twoDimensionalViewSettings)) { Tag = space });
                         }
 
                         result.Add(geometryObjectCollection_Space);
