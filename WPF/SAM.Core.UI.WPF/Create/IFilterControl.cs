@@ -34,6 +34,11 @@
                 EnumFilterControl enumFilterControl = new EnumFilterControl((UIEnumFilter)uIFilter);
                 return enumFilterControl;
             }
+            else if (uIFilter is UIComplexReferenceFilter)
+            {
+                ComplexReferenceFilterControl complexReferenceFilterControl = new ComplexReferenceFilterControl((UIComplexReferenceFilter)uIFilter);
+                return complexReferenceFilterControl;
+            }
 
             return null;
         }

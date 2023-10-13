@@ -74,6 +74,9 @@
     <Compile Include="Classes\ProgressBarWindowManager.cs" />
     <Compile Include="Classes\EventArgs\TextChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectHooveredEventArgs.cs" />
+    <Compile Include="Controls\Filter\ComplexReferenceFilterControl.xaml.cs">
+      <DependentUpon>ComplexReferenceFilterControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Filter\EnumFilterControl.xaml.cs">
       <DependentUpon>EnumFilterControl.xaml</DependentUpon>
     </Compile>
@@ -129,6 +132,12 @@
       <DependentUpon>DoubleRangeControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Query\Modal.cs" />
+    <Compile Include="Controls\RelationClusterComplexReferenceControl.xaml.cs">
+      <DependentUpon>RelationClusterComplexReferenceControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RelationClusterComplexReferenceWindow.xaml.cs">
+      <DependentUpon>RelationClusterComplexReferenceWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\SearchWindow.xaml.cs">
       <DependentUpon>SearchWindow.xaml</DependentUpon>
     </Compile>
@@ -218,6 +227,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\Filter\ComplexReferenceFilterControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Filter\EnumFilterControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -283,6 +296,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\DoubleRangeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RelationClusterComplexReferenceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\RelationClusterComplexReferenceWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

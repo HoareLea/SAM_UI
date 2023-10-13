@@ -43,6 +43,10 @@ namespace SAM.Analytical.UI.WPF
                     {
                         values.Add("Cooling System");
                     }
+                    else if (appearanceSettings is NCMDataAppearanceSettings)
+                    {
+                        values.Add("NCM");
+                    }
 
                     appearanceSettings = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>();
                 }

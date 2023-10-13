@@ -55,6 +55,7 @@
     <Compile Include="Classes\Filter\UIParameterFilter.cs" />
     <Compile Include="Classes\Filter\UILogicalFilter.cs" />
     <Compile Include="Classes\Filter\UIEnumFilter.cs" />
+    <Compile Include="Classes\Filter\UIComplexReferenceFilter.cs" />
     <Compile Include="Classes\Filter\UITypeFilter.cs" />
     <Compile Include="Classes\Filter\UITextFilter.cs" />
     <Compile Include="Classes\Legend.cs" />

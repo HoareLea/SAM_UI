@@ -669,13 +669,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             e.Handled = true;
 
             Type type = e.Type;
-            List<IUIFilter> uIFilters = UI.Query.IUIFilters(type);
+            List<IUIFilter> uIFilters = UI.Query.IUIFilters(type, uIAnalyticalModel?.JSAMObject?.AdjacencyCluster);
             if (uIFilters == null || uIFilters.Count == 0)
             {
                 return;
             }
 
-            using (Core.Windows.Forms.SearchForm<IUIFilter> searchForm = new Core.Windows.Forms.SearchForm<IUIFilter>("Select Filter", uIFilters, x => x.Name))
+            using (SearchForm<IUIFilter> searchForm = new SearchForm<IUIFilter>("Select Filter", uIFilters, x => x.Name))
             {
                 searchForm.SelectionMode = System.Windows.Forms.SelectionMode.One;
                 if (searchForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
@@ -1557,6 +1557,15 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
+            RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
+            relationClusterComplexReferenceWindow.RelationCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+
+            bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
+            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
+            {
+                return;
+            }
+
             //SearchWindow searchWindow = new SearchWindow(new string[] {"absss", "Kubas", "KLUB" });
             //searchWindow.ShowDialog();
         }
@@ -1595,7 +1604,10 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             IUIFilter uIFilter = ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
+            UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+
             List<IUIFilter> uIFilters = ActiveManager.GetValue<SAMCollection<IUIFilter>>(Assembly.GetExecutingAssembly(), "UIFilters")?.Cast<IUIFilter>().ToList();
+            uIFilters.ForEach(x => UI.Modify.AssignAdjacencyCluster(x, adjacencyCluster));
 
             List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
             ViewportControl viewportControl = GetActiveViewportControl();
