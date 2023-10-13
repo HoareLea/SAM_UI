@@ -93,7 +93,7 @@ namespace SAM.Core.Mollier.UI
             return result;
         }
 
-        private static void checkQuantity(Chart chart, ref bool addProcesses, ref bool addPoints)
+        private static void checkQuantity(Chart chart, ref bool addProcesses, ref bool addPoints, int maxQuantity = 30)
         {
             int numberOfProcesses = 0;
             int numberOfPoints = 0;
@@ -108,8 +108,8 @@ namespace SAM.Core.Mollier.UI
                     numberOfPoints++;
                 }
             }
-            addProcesses = numberOfProcesses > 30 ? false : true;
-            addPoints = numberOfPoints > 30 ? false : true;
+            addProcesses = numberOfProcesses > maxQuantity ? false : true;
+            addPoints = numberOfPoints > maxQuantity ? false : true;
         }
     }
 }

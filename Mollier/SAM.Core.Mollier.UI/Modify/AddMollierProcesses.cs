@@ -304,10 +304,6 @@ namespace SAM.Core.Mollier.UI
                 series.Tag = "SecondPoint";
             }
             series.MarkerStyle = MarkerStyle.Circle;
-            if(System.Math.Round(mollierPoint.DryBulbTemperature, 1) == 11.3 && System.Math.Round(mollierPoint.RelativeHumidity, 4) == 92.1575)
-            {
-                int q = 2;
-            }
             series.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, toolTipName);
 
             return series;

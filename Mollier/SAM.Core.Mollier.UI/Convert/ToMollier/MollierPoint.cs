@@ -10,8 +10,8 @@ namespace SAM.Core.Mollier.UI
             double x = point2D.X;
             double y = point2D.Y;
 
-            double humidityRatio = chartType == ChartType.Mollier ? x / 1000 : y;
-            double dryBulbTemperature = chartType == ChartType.Mollier ? Mollier.Query.DryBulbTemperature_ByDiagramTemperature(y, humidityRatio, pressure) : x / 1000;
+            double humidityRatio = chartType == ChartType.Mollier ? x / 1000 : y / 1000;
+            double dryBulbTemperature = chartType == ChartType.Mollier ? Mollier.Query.DryBulbTemperature_ByDiagramTemperature(y, humidityRatio, pressure) : x;
 
             return new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
         }
