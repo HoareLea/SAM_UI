@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Core.UI;
 using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
@@ -49,6 +50,12 @@ namespace SAM.Analytical.UI
 
         public SpaceAppearanceSettings(NCMDataAppearanceSettings nCMDataAppearanceSettings)
             : base(nCMDataAppearanceSettings)
+        {
+
+        }
+
+        public SpaceAppearanceSettings(ComplexReferenceAppearanceSettings complexReferenceAppearanceSettings)
+            : base(complexReferenceAppearanceSettings)
         {
 
         }

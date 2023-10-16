@@ -1,4 +1,7 @@
-﻿using SAM.Geometry.UI;
+﻿using SAM.Core;
+using SAM.Core.UI;
+using SAM.Core.UI.WPF;
+using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -62,8 +65,20 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            if (radioButton_Default.IsChecked.HasValue && radioButton_Default.IsChecked.Value)
+            if(radioButton_ComplexRefernce.IsChecked.HasValue && radioButton_ComplexRefernce.IsChecked.Value)
             {
+                Button_ComplexReference.Visibility = Visibility.Visible;
+
+                comboBox_ParameterName.Visibility = Visibility.Hidden;
+                label_ParameterName.Visibility = Visibility.Visible;
+
+                comboBox_ZoneCategory.Visibility = Visibility.Hidden;
+                label_ZoneType.Visibility = Visibility.Hidden;
+            }
+            else if (radioButton_Default.IsChecked.HasValue && radioButton_Default.IsChecked.Value)
+            {
+                Button_ComplexReference.Visibility = Visibility.Hidden;
+
                 comboBox_ParameterName.Visibility = Visibility.Hidden;
                 label_ParameterName.Visibility = Visibility.Hidden;
 
@@ -73,11 +88,29 @@ namespace SAM.Analytical.UI.WPF
             }
             else
             {
+                Button_ComplexReference.Visibility = Visibility.Hidden;
+
                 comboBox_ParameterName.Visibility = Visibility.Visible;
                 label_ParameterName.Visibility = Visibility.Visible;
 
                 comboBox_ZoneCategory.Visibility = Visibility.Visible;
                 label_ZoneType.Visibility = Visibility.Visible;
+            }
+
+            if (radioButton_ComplexRefernce.IsChecked.HasValue && radioButton_ComplexRefernce.IsChecked.Value)
+            {
+                ComplexReferenceAppearanceSettings complexReferenceAppearanceSettings = GetSpaceAppearanceSettings()?.GetValueAppearanceSettings<ComplexReferenceAppearanceSettings>();
+                if (complexReferenceAppearanceSettings != null)
+                {
+                    IComplexReference complexReference = complexReferenceAppearanceSettings.ComplexReference;
+                    if (complexReference == null)
+                    {
+                        complexReference = new PropertyReference(typeof(Space), "Name");
+                    }
+
+                    Button_ComplexReference.Tag = complexReference;
+                    Button_ComplexReference.Content = complexReference.ShortText();
+                }
             }
 
             Type type = null;
@@ -185,7 +218,7 @@ namespace SAM.Analytical.UI.WPF
                 }
                 type = typeof(CoolingSystem);
             }
-            if (radioButton_NCMData.IsChecked.HasValue && radioButton_NCMData.IsChecked.Value)
+            else if (radioButton_NCMData.IsChecked.HasValue && radioButton_NCMData.IsChecked.Value)
             {
                 IEnumerable<Space> spaces = adjacencyCluster.GetSpaces();
                 if (spaces != null)
@@ -281,13 +314,17 @@ namespace SAM.Analytical.UI.WPF
             {
                 return new SpaceAppearanceSettings(new NCMDataAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
             }
+            else if (radioButton_ComplexRefernce.IsChecked.HasValue && radioButton_ComplexRefernce.IsChecked.Value)
+            {
+                return new SpaceAppearanceSettings(new ComplexReferenceAppearanceSettings() { ComplexReference = Button_ComplexReference.Tag as IComplexReference });
+            }
 
             return null;
         }
 
         private void SetSpaceAppearanceSettings(SpaceAppearanceSettings spaceAppearanceSettings)
         {
-            Core.UI.IAppearanceSettings appearanceSettings = spaceAppearanceSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>();
+            IAppearanceSettings appearanceSettings = spaceAppearanceSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>();
             if(appearanceSettings == null)
             {
                 radioButton_Default.IsChecked = true;
@@ -306,10 +343,10 @@ namespace SAM.Analytical.UI.WPF
                 parameterName = ((ITypeAppearanceSettings)appearanceSettings).GetValueAppearanceSettings<ParameterAppearanceSettings>()?.ParameterName;
             }
 
-            if(parameterName == null)
-            {
-                return;
-            }
+            //if(parameterName == null)
+            //{
+            //    return;
+            //}
 
             if(appearanceSettings is ZoneAppearanceSettings)
             {
@@ -337,6 +374,14 @@ namespace SAM.Analytical.UI.WPF
             {
                 radioButton_NCMData.IsChecked = true;
             }
+            else if (appearanceSettings is ComplexReferenceAppearanceSettings)
+            {
+                ComplexReferenceAppearanceSettings complexReferenceAppearanceSettings = ((ComplexReferenceAppearanceSettings)appearanceSettings);
+
+                radioButton_ComplexRefernce.IsChecked = true;
+                Button_ComplexReference.Tag = complexReferenceAppearanceSettings.ComplexReference;
+                Button_ComplexReference.Content = complexReferenceAppearanceSettings.ComplexReference?.ShortText();
+            }
             else 
             {
                 radioButton_Space.IsChecked = true;
@@ -356,6 +401,23 @@ namespace SAM.Analytical.UI.WPF
         private void comboBox_ZoneCategory_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ValueChanged?.Invoke(this, new EventArgs());
+        }
+
+        private void Button_ComplexReference_Click(object sender, RoutedEventArgs e)
+        {
+            RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
+            relationClusterComplexReferenceWindow.RelationCluster = adjacencyCluster;
+            relationClusterComplexReferenceWindow.Type = typeof(Space);
+            relationClusterComplexReferenceWindow.TypesEnabled = false;
+
+            bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
+            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
+            {
+                return;
+            }
+
+            Button_ComplexReference.Tag = relationClusterComplexReferenceWindow.ComplexReference;
+            Button_ComplexReference.Content = relationClusterComplexReferenceWindow.ComplexReference?.ShortText();
         }
     }
 }

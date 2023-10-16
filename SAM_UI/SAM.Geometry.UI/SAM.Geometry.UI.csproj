@@ -63,6 +63,8 @@
     <Compile Include="Classes\Mesh3DObject.cs" />
     <Compile Include="Classes\Modification\ViewSettingsModification.cs" />
     <Compile Include="Classes\BoundingBox3DObject.cs" />
+    <Compile Include="Classes\Settings\ComplexReferenceAppearanceSettings.cs" />
+    <Compile Include="Classes\Settings\RelationClusterAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ValueAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\TypeAppearanceSettings.cs" />
     <Compile Include="Classes\Triangle3DObject.cs" />

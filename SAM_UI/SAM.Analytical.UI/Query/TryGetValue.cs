@@ -1,4 +1,5 @@
-﻿using SAM.Core.UI;
+﻿using SAM.Core;
+using SAM.Core.UI;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,7 +91,7 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
-                    else if(appearanceSettings is VentilationSystemAppearanceSettings)
+                    else if (appearanceSettings is VentilationSystemAppearanceSettings)
                     {
                         List<VentilationSystem> ventilationSystems = adjacencyCluster.GetRelatedObjects<VentilationSystem>(space);
 
@@ -162,15 +163,15 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
-                    else if(appearanceSettings is NCMDataAppearanceSettings)
+                    else if (appearanceSettings is NCMDataAppearanceSettings)
                     {
                         InternalCondition internalCondition = space?.InternalCondition;
-                        if(internalCondition == null)
+                        if (internalCondition == null)
                         {
                             return false;
                         }
 
-                        if(!internalCondition.TryGetValue(InternalConditionParameter.NCMData, out NCMData nCMData) || nCMData == null)
+                        if (!internalCondition.TryGetValue(InternalConditionParameter.NCMData, out NCMData nCMData) || nCMData == null)
                         {
                             return false;
                         }
@@ -193,6 +194,26 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
+                }
+                else if (appearanceSettings is ComplexReferenceAppearanceSettings)
+                {
+                    ComplexReferenceAppearanceSettings complexReferenceAppearanceSettings = (ComplexReferenceAppearanceSettings)appearanceSettings;
+                    complexReferenceAppearanceSettings.RelationCluster = adjacencyCluster;
+
+                    IComplexReference complexReference = complexReferenceAppearanceSettings.ComplexReference;
+                    if(complexReference == null)
+                    {
+                        return false;
+                    }
+
+                    if (!complexReferenceAppearanceSettings.TryGetValue(space, out value))
+                    {
+                        return false;
+                    }
+
+                    text = value?.ToString();
+
+                    return true;
                 }
             }
 
@@ -275,6 +296,18 @@ namespace SAM.Analytical.UI
                     adjacencyClusterAppearanceSettings.AdjacencyCluster = adjacencyCluster;
 
                     if (adjacencyClusterAppearanceSettings.TryGetValue(panel, out object value_Temp))
+                    {
+                        value = value_Temp;
+                        text = value_Temp?.ToString();
+                        return true;
+                    }
+                }
+                else if (appearanceSettings is RelationClusterAppearanceSettings)
+                {
+                    RelationClusterAppearanceSettings relationClusterAppearanceSettings = (RelationClusterAppearanceSettings)appearanceSettings;
+                    relationClusterAppearanceSettings.RelationCluster = adjacencyCluster;
+
+                    if (relationClusterAppearanceSettings.TryGetValue(panel, out object value_Temp))
                     {
                         value = value_Temp;
                         text = value_Temp?.ToString();
