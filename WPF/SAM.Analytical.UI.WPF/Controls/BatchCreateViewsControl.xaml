@@ -14,8 +14,8 @@
                 <CheckBox x:Name="checkBox_Visibilty_Aperture" Content="Aperture" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
             </StackPanel>
         </GroupBox>
-        <GroupBox x:Name="groupBox_ColorScheme"  Header="Color Scheme" HorizontalAlignment="Stretch" Margin="10,245,10.4,5" VerticalAlignment="Stretch">
-            <local:SpaceAppearanceSettingsControl x:Name="spaceAppearanceSettingsControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="301" Margin="5,5,5,5"/>
+        <GroupBox x:Name="groupBox_ColorScheme"  Header="Color Scheme" HorizontalAlignment="Stretch" Margin="10,245,5,5" VerticalAlignment="Stretch">
+            <local:SpaceAppearanceSettingsControl x:Name="spaceAppearanceSettingsControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0"/>
         </GroupBox>
         <ListBox x:Name="listBox_Levels" HorizontalAlignment="Left" Height="157" Margin="10,35,0,0" VerticalAlignment="Top" Width="217" SelectionMode="Multiple"/>
         <Label Content="Levels:" HorizontalAlignment="Left" Margin="10,6,0,0" VerticalAlignment="Top"/>
