@@ -100,9 +100,16 @@ namespace SAM.Core.UI.WPF
 
             if (selectedTexts != null && selectedTexts.Count != 0)
             {
-                foreach (string selectedText in selectedTexts)
+                if(selectedTexts.Count == 1)
                 {
-                    ListBox_Main.SelectedItems.Add(selectedText);
+                    ListBox_Main.SelectedItem = selectedTexts[0];
+                }
+                else
+                {
+                    foreach (string selectedText in selectedTexts)
+                    {
+                        ListBox_Main.SelectedItems.Add(selectedText);
+                    }
                 }
             }
         }
