@@ -1,4 +1,5 @@
 ﻿using SAM.Core.UI.WPF;
+using SAM.Geometry.UI.WPF;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,22 +46,41 @@ namespace SAM.Analytical.UI.WPF
             }
 
             NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(nCMNameCollection_Temp, new NCMNameCollectionOptions() { Editable = false });
+            nCMNameCollectionWindow.NCMNameDoubleClicked += NCMNameCollectionWindow_NCMNameDoubleClicked;
             if (nCMNameCollectionWindow.ShowDialog() != true)
             {
                 return;
             }
 
             NCMName nCMName = nCMNameCollectionWindow.SelectedNCMName;
-            Button_Name.Content = string.IsNullOrEmpty(nCMName?.FullName) ? "???" : nCMName.FullName.Replace("_", "__");
-            Button_Name.Tag = nCMName;
+
+            //Button_Name.Content = string.IsNullOrEmpty(nCMName?.FullName) ? "???" : nCMName.FullName.Replace("_", "__");
+            //Button_Name.Tag = nCMName;
+            MultipleValueComboBoxControl_Name.Value = string.IsNullOrEmpty(nCMName?.FullName) ? "???" : nCMName.FullName;
+        }
+
+        private void NCMNameCollectionWindow_NCMNameDoubleClicked(object sender, MouseButtonEventArgs e)
+        {
+            NCMNameCollectionWindow nCMNameCollectionWindow = sender as NCMNameCollectionWindow;
+            if(nCMNameCollectionWindow == null)
+            {
+                return;
+            }
+
+            NCMName nCMName = nCMNameCollectionWindow.SelectedNCMName;
+            if(nCMName == null || string.IsNullOrWhiteSpace(nCMName))
+            {
+                return;
+            }
+
+            nCMNameCollectionWindow.DialogResult = true;
         }
 
         private List<NCMData> GetNCMDatas()
         {
             string @string = null;
 
-            NCMName nCMName = Button_Name.Tag as NCMName;
-            if (nCMName != null)
+            if(!MultipleValueComboBoxControl_Name.VarySet)
             {
                 for (int i = 0; i < nCMDatas.Count; i++)
                 {
@@ -69,9 +89,23 @@ namespace SAM.Analytical.UI.WPF
                         nCMDatas[i] = new NCMData();
                     }
 
-                    nCMDatas[i].NCMName = nCMName;
+                    nCMDatas[i].NCMName = MultipleValueComboBoxControl_Name.Value;
                 }
             }
+
+            //NCMName nCMName = Button_Name.Tag as NCMName;
+            //if (nCMName != null)
+            //{
+            //    for (int i = 0; i < nCMDatas.Count; i++)
+            //    {
+            //        if (nCMDatas[i] == null)
+            //        {
+            //            nCMDatas[i] = new NCMData();
+            //        }
+
+            //        nCMDatas[i].NCMName = nCMName;
+            //    }
+            //}
 
             //ComboBox_SystemType
             @string = ComboBox_SystemType.SelectedItem as string;
@@ -249,18 +283,28 @@ namespace SAM.Analytical.UI.WPF
             List<string> strings = null;
             List<bool?> bools = null;
 
-            //Button_Name
+            //MultipleValueComboBoxControl_Name
             strings = this.nCMDatas?.ConvertAll(x => x == null ? null : x.NCMName?.FullName);
-            strings = strings.Distinct().ToList();
-            if (strings != null && strings.Count > 1)
+            strings = strings?.Distinct().ToList();
+            if(strings != null)
             {
-                ComboBox_SystemType.Items.Insert(0, vary);
-                Button_Name.Content = vary;
+                if(MultipleValueComboBoxControl_Name.Values == null || MultipleValueComboBoxControl_Name.Values.Count == 0)
+                {
+                    MultipleValueComboBoxControl_Name.Values = strings;
+                }
+
+                MultipleValueComboBoxControl_Name.SetDefaultValue(strings);
             }
-            else
-            {
-                Button_Name.Content = strings[0];
-            }
+
+            //if (strings != null && strings.Count > 1)
+            //{
+            //    ComboBox_SystemType.Items.Insert(0, vary);
+            //    Button_Name.Content = vary;
+            //}
+            //else
+            //{
+            //    Button_Name.Content = strings[0];
+            //}
 
             //ComboBox_SystemType
             ComboBox_SystemType.Items.Clear();
@@ -411,6 +455,20 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 nCMNameCollection = value;
+            }
+        }
+
+        public List<string> AvailableNCMNames
+        {
+            set
+            {
+                MultipleValueComboBoxControl_Name.Values = value;
+
+            }
+
+            get
+            {
+                return MultipleValueComboBoxControl_Name.Values;
             }
         }
     }

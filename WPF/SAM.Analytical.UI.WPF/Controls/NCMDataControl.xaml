@@ -9,7 +9,8 @@
              d:DesignHeight="600" d:DesignWidth="300">
     <Grid>
         <Label Content="Name"  HorizontalAlignment="Stretch" Margin="0, 5, 0, 0" VerticalAlignment="Top"/>
-        <Button x:Name="Button_Name" HorizontalAlignment="Stretch" Margin="5, 35, 5, 0" VerticalAlignment="Top" Height="20" Click="Button_Name_Click"/>
+        <WPF:MultipleValueComboBoxControl x:Name="MultipleValueComboBoxControl_Name" HorizontalAlignment="Stretch" Margin="5, 35, 80, 0" VerticalAlignment="Top" Height="22"/>
+        <Button x:Name="Button_Name" HorizontalAlignment="Right" Margin="5, 35, 5, 0" Width="70" Content="Select" VerticalAlignment="Top" Height="22" Click="Button_Name_Click"/>
         <Label Content="System Type"  HorizontalAlignment="Stretch" Margin="0, 60, 0, 0" VerticalAlignment="Top"/>
         <ComboBox x:Name="ComboBox_SystemType" HorizontalAlignment="Stretch" Margin="5, 85, 5, 0" VerticalAlignment="Top"/>
         <Label Content="Lighting Occupancy Controls"  HorizontalAlignment="Stretch" Margin="0, 110, 0, 0" VerticalAlignment="Top"/>

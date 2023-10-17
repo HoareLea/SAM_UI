@@ -24,9 +24,13 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class NCMNameCollectionWindow : System.Windows.Window
     {
+        public event MouseButtonEventHandler NCMNameDoubleClicked;
+
         public NCMNameCollectionWindow()
         {
             InitializeComponent();
+
+            NCMNameCollectionControl_Main.NCMNameDoubleClicked += NCMNameCollectionControl_Main_NCMNameDoubleClicked;
         }
 
         public NCMNameCollectionWindow(IEnumerable<NCMName> nCMNames, NCMNameCollectionOptions nCMNameCollectionOptions = null)
@@ -35,6 +39,13 @@ namespace SAM.Analytical.UI.WPF
 
             NCMNameCollectionControl_Main.NCMNameCollection = nCMNames == null ? null : new NCMNameCollection(nCMNames);
             NCMNameCollectionControl_Main.NCMNameCollectionOptions = nCMNameCollectionOptions;
+
+            NCMNameCollectionControl_Main.NCMNameDoubleClicked += NCMNameCollectionControl_Main_NCMNameDoubleClicked;
+        }
+
+        private void NCMNameCollectionControl_Main_NCMNameDoubleClicked(object sender, MouseButtonEventArgs e)
+        {
+            NCMNameDoubleClicked?.Invoke(this, e);
         }
 
         private void button_Cancel_Click(object sender, RoutedEventArgs e)

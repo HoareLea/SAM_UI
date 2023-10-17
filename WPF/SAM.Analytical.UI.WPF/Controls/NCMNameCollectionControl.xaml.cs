@@ -21,6 +21,8 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class NCMNameCollectionControl : UserControl
     {
+        public event MouseButtonEventHandler NCMNameDoubleClicked;
+
         private List<NCMName> nCMNames;
 
         public NCMNameCollectionControl()
@@ -215,6 +217,11 @@ namespace SAM.Analytical.UI.WPF
         private void SearchControl_Main_SelectionChanged(object sender, EventArgs e)
         {
             SetNCMName(GetNCMNameCollection()?.FirstOrDefault());
+        }
+
+        private void SearchControl_Main_PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            NCMNameDoubleClicked?.Invoke(this, e);
         }
     }
 }
