@@ -82,6 +82,11 @@ namespace SAM.Analytical.UI
                     }
                 }
             }
+            else if (appearanceSettings is ComplexReferenceAppearanceSettings)
+            {
+                IComplexReference complexReference = ((ComplexReferenceAppearanceSettings)appearanceSettings).ComplexReference;
+                return complexReference.Text();
+            }
 
             return null;
         }

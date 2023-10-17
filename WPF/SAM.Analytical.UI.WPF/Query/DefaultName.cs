@@ -1,4 +1,5 @@
 ﻿using SAM.Architectural;
+using SAM.Core;
 using SAM.Core.UI;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
@@ -95,6 +96,15 @@ namespace SAM.Analytical.UI.WPF
                 {
                     ParameterAppearanceSettings parameterAppearanceSettings = (ParameterAppearanceSettings)appearanceSettings;
                     values.Add(parameterAppearanceSettings.ParameterName);
+                }
+
+                if (appearanceSettings is ComplexReferenceAppearanceSettings)
+                {
+                    IComplexReference complexReference = ((ComplexReferenceAppearanceSettings)appearanceSettings).ComplexReference;
+                    if(complexReference != null)
+                    {
+                        values.Add(Core.Query.Text(complexReference));
+                    }
                 }
             }
 
