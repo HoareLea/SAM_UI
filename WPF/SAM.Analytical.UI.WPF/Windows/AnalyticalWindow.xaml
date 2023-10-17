@@ -484,6 +484,7 @@
                     <RibbonButton x:Name="RibbonButton_OpenTBD" Label="Open TBD" />
                     <RibbonButton x:Name="RibbonButton_OpenTSD" Label="Open TSD" />
                     <RibbonButton x:Name="RibbonButton_OpenTPD" Label="Open TPD" />
+                    <RibbonButton x:Name="RibbonButton_OpenPartL" Label="Open PartL" />
                     <!-- <RibbonButton x:Name="RibbonButton_CreateTBD" Label="Create TBD" /> -->
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Hydra" Header="Hydra">

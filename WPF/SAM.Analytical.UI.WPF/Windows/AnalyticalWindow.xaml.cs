@@ -167,6 +167,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_OpenTPD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TPD);
             RibbonButton_OpenTPD.Click += RibbonButton_OpenTPD_Click;
 
+            RibbonButton_OpenPartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
+            RibbonButton_OpenPartL.Click += RibbonButton_OpenPartL_Click;
+
             RibbonButton_Hydra.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Hydra);
             RibbonButton_Hydra.Click += RibbonButton_Hydra_Click;
 
@@ -1486,6 +1489,18 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_OpenTSD_Click(object sender, RoutedEventArgs e)
         {
             string path = Core.Tas.Query.TSDPath();
+
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start(path);
+        }
+
+        private void RibbonButton_OpenPartL_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Core.Tas.Query.UKBRStudio2021Path();
 
             if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
             {
