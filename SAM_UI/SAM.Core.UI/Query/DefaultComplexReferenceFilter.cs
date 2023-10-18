@@ -14,7 +14,7 @@ namespace SAM.Core.UI
             }
 
             List<object> values = relationCluster.GetValues(complexReference)?.FindAll(x => x != null);
-            if (values != null && values.Count > 0 && values.TrueForAll(x => Core.Query.IsNumeric(x)))
+            if (values != null && values.Count > 0 && values.TrueForAll(x => Core.Query.IsNumeric(x) && !(x is System.Enum)))
             {
                 return new ComplexReferenceNumberFilter() { ComplexReference = complexReference, RelationCluster = relationCluster, NumberComparisonType = NumberComparisonType.Equals };
             }
