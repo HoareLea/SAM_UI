@@ -217,7 +217,7 @@ namespace SAM.Core.UI.WPF
             relationClusterComplexReferenceWindow.RelationCluster = UIComplexReferenceFilter?.Filter?.RelationCluster;
             relationClusterComplexReferenceWindow.Type = uIComplexReferenceFilter.Type;
             relationClusterComplexReferenceWindow.TypesEnabled = false;
-            relationClusterComplexReferenceWindow.Name
+            //relationClusterComplexReferenceWindow.Name
 
             bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
 
