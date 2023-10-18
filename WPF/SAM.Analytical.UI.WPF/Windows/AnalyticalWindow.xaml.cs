@@ -1619,10 +1619,16 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             IUIFilter uIFilter = ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
-            UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+            if(uIFilter != null)
+            {
+                UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+            }
 
             List<IUIFilter> uIFilters = ActiveManager.GetValue<SAMCollection<IUIFilter>>(Assembly.GetExecutingAssembly(), "UIFilters")?.Cast<IUIFilter>().ToList();
-            uIFilters.ForEach(x => UI.Modify.AssignAdjacencyCluster(x, adjacencyCluster));
+            if(uIFilters != null && uIFilters.Count != 0)
+            {
+                uIFilters.ForEach(x => UI.Modify.AssignAdjacencyCluster(x, adjacencyCluster));
+            }
 
             List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
             ViewportControl viewportControl = GetActiveViewportControl();

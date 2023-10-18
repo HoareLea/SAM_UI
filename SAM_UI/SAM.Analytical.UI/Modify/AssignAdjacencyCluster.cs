@@ -11,6 +11,7 @@ namespace SAM.Analytical.UI
             {
                 return;
             }
+
             if (filter is IUIFilter)
             {
                 AssignAdjacencyCluster((filter as dynamic).Filter, adjacencyCluster);
