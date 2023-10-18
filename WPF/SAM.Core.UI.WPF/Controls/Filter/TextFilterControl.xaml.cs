@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace SAM.Core.UI.WPF
@@ -78,7 +80,7 @@ namespace SAM.Core.UI.WPF
 
             textFilter.Inverted = checkBox_Inverted.IsChecked != null && checkBox_Inverted.IsChecked.HasValue && checkBox_Inverted.IsChecked.Value;
             textFilter.CaseSensitive = checkBox_CaseSensitive.IsChecked != null && checkBox_CaseSensitive.IsChecked.HasValue && checkBox_CaseSensitive.IsChecked.Value;
-            textFilter.Value = textBox_Value.Text;
+            textFilter.Value = comboBox_Value.Text;
             textFilter.TextComparisonType = Core.Query.Enum<TextComparisonType>(comboBox_TextComparisonType.SelectedItem.ToString());
 
             return result;
@@ -103,7 +105,7 @@ namespace SAM.Core.UI.WPF
 
             checkBox_Inverted.IsChecked = textFilter.Inverted;
             checkBox_CaseSensitive.IsChecked = textFilter.CaseSensitive;
-            textBox_Value.Text = textFilter.Value;
+            comboBox_Value.Text = textFilter.Value;
             comboBox_TextComparisonType.SelectedItem = Core.Query.Description(textFilter.TextComparisonType);
         }
 
@@ -143,6 +145,47 @@ namespace SAM.Core.UI.WPF
         private void MenuItem_Remove_Click(object sender, RoutedEventArgs e)
         {
             FilterRemoving?.Invoke(this, new FilterRemovingEventArgs(this));
+        }
+
+        public List<string> Values
+        {
+            get
+            {
+                List<string> result = new List<string>();
+                foreach(object item in comboBox_Value.Items)
+                {
+                    result.Add(item?.ToString());
+                }
+
+                return result;
+            }
+
+            set
+            {
+                comboBox_Value.Items.Clear();
+                if(value == null)
+                {
+                    return;
+                }
+
+                List<string> @strings = value.Distinct().ToList();
+                strings.Sort();
+
+                foreach(string @string in @strings)
+                {
+                    comboBox_Value.Items.Add(@string);
+                }
+            }
+        }
+
+        private void comboBox_Value_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
+
+        private void comboBox_Value_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
         }
     }
 }

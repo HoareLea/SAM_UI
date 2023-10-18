@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SAM.Core.UI.WPF
 {
@@ -129,6 +117,7 @@ namespace SAM.Core.UI.WPF
             {
                 ComplexReferenceNumberFilter complexReferenceNumberFilter = complexReferenceFilter as ComplexReferenceNumberFilter;
                 NumberFilterControl numberFilterControl = new NumberFilterControl(new UINumberFilter(uIComplexReferenceFilter.Name, uIComplexReferenceFilter.Type, complexReferenceNumberFilter));
+                numberFilterControl.Values = complexReferenceNumberFilter.RelationCluster?.GetValues(complexReferenceNumberFilter.ComplexReference).ConvertAll(x => x?.ToString());
                 numberFilterControl.FilterChanged += NumberFilterControl_FilterChanged;
                 numberFilterControl.FilterRemoving += NumberFilterControl_FilterRemoving;
 
@@ -138,6 +127,7 @@ namespace SAM.Core.UI.WPF
             {
                 ComplexReferenceTextFilter complexReferenceTextFilter = complexReferenceFilter as ComplexReferenceTextFilter;
                 TextFilterControl textFilterControl = new TextFilterControl(new UITextFilter(uIComplexReferenceFilter.Name, uIComplexReferenceFilter.Type, complexReferenceTextFilter));
+                textFilterControl.Values = complexReferenceTextFilter.RelationCluster?.GetValues(complexReferenceTextFilter.ComplexReference).ConvertAll(x => x?.ToString());
                 textFilterControl.FilterChanged += NumberFilterControl_FilterChanged;
                 textFilterControl.FilterRemoving += NumberFilterControl_FilterRemoving;
 
@@ -186,6 +176,16 @@ namespace SAM.Core.UI.WPF
                                 UIComplexReferenceFilter = new UIComplexReferenceFilter(uIComplexReferenceFilter.Name, uIComplexReferenceFilter?.Type, complexReferenceFilter_Default);
                             }
                         }
+
+                        if(filterControl is TextFilterControl)
+                        {
+                            ((TextFilterControl)filterControl).Values = complexReferenceFilter.RelationCluster?.GetValues(complexReference).ConvertAll(x => x?.ToString());
+                        }
+
+                        if (filterControl is NumberFilterControl)
+                        {
+                            ((NumberFilterControl)filterControl).Values = complexReferenceFilter.RelationCluster?.GetValues(complexReference).ConvertAll(x => x?.ToString());
+                        }
                     }
                 }
             }
@@ -217,6 +217,7 @@ namespace SAM.Core.UI.WPF
             relationClusterComplexReferenceWindow.RelationCluster = UIComplexReferenceFilter?.Filter?.RelationCluster;
             relationClusterComplexReferenceWindow.Type = uIComplexReferenceFilter.Type;
             relationClusterComplexReferenceWindow.TypesEnabled = false;
+            relationClusterComplexReferenceWindow.Name
 
             bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
 

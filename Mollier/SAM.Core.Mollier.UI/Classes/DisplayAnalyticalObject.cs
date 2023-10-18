@@ -1,9 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace SAM.Core.Mollier.UI
+﻿namespace SAM.Core.Mollier.UI
 {
     public class DisplayUIMollierObject
     {

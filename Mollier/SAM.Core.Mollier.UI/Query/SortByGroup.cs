@@ -1,6 +1,4 @@
-﻿using SAM.Geometry.Planar;
-using System.Collections.Generic;
-using System.Windows.Forms.DataVisualization.Charting;
+﻿using System.Collections.Generic;
 
 namespace SAM.Core.Mollier.UI
 {

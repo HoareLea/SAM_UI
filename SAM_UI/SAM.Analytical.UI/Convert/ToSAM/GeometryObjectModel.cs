@@ -6,7 +6,6 @@ using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Media;
 

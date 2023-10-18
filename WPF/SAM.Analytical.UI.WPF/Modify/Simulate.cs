@@ -1,5 +1,4 @@
-﻿using Microsoft.Win32.SafeHandles;
-using SAM.Core;
+﻿using SAM.Core;
 using SAM.Core.Tas;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;

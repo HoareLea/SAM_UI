@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 namespace SAM.Core.Mollier.UI
 {
     public static partial class Convert

@@ -1,7 +1,5 @@
 ﻿using SAM.Geometry.Planar;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 
 namespace SAM.Core.Mollier.UI
 {

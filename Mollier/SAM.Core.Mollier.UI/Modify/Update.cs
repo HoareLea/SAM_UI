@@ -1,6 +1,4 @@
-﻿using System.Windows.Forms.DataVisualization.Charting;
-using System.Collections.Generic;
-using SAM.Core.Mollier.UI.Forms;
+﻿using SAM.Core.Mollier.UI.Forms;
 using System.Windows.Forms;
 using System;
 

@@ -1,5 +1,8 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SAM.Core.UI.WPF
 {
@@ -78,7 +81,7 @@ namespace SAM.Core.UI.WPF
 
             numberFilter.Inverted = checkBox_Inverted.IsChecked != null && checkBox_Inverted.IsChecked.HasValue && checkBox_Inverted.IsChecked.Value;
 
-            if(Core.Query.TryConvert(textBox_Value.Text, out double value))
+            if(Core.Query.TryConvert(comboBox_Value.Text, out double value))
             {
                 numberFilter.Value = value;
             }
@@ -106,13 +109,8 @@ namespace SAM.Core.UI.WPF
             }
 
             checkBox_Inverted.IsChecked = textFilter.Inverted;
-            textBox_Value.Text = textFilter.Value.ToString();
+            comboBox_Value.Text = textFilter.Value.ToString();
             comboBox_NumberComparisonType.SelectedItem = Core.Query.Description(textFilter.NumberComparisonType);
-        }
-
-        private void textBox_Value_TextInput(object sender, System.Windows.Input.TextCompositionEventArgs e)
-        {
-            Windows.EventHandler.ControlText_NumberOnly(sender, e);
         }
 
         private void comboBox_NumberComparisonType_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -121,11 +119,6 @@ namespace SAM.Core.UI.WPF
         }
 
         private void checkBox_Inverted_Click(object sender, RoutedEventArgs e)
-        {
-            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
-        }
-
-        private void textBox_Value_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
         }
@@ -146,6 +139,52 @@ namespace SAM.Core.UI.WPF
         private void MenuItem_Remove_Click(object sender, RoutedEventArgs e)
         {
             FilterRemoving?.Invoke(this, new FilterRemovingEventArgs(this));
+        }
+
+        public List<string> Values
+        {
+            get
+            {
+                List<string> result = new List<string>();
+                foreach (object item in comboBox_Value.Items)
+                {
+                    result.Add(item?.ToString());
+                }
+
+                return result;
+            }
+
+            set
+            {
+                comboBox_Value.Items.Clear();
+                if (value == null)
+                {
+                    return;
+                }
+
+                List<string> @strings = value.Distinct().ToList();
+                strings.Sort();
+
+                foreach (string @string in @strings)
+                {
+                    comboBox_Value.Items.Add(@string);
+                }
+            }
+        }
+
+        private void comboBox_Value_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
+
+        private void comboBox_Value_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            FilterChanged?.Invoke(this, new FilterChangedEventArgs(UIFilter));
+        }
+
+        private void comboBox_Value_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            Windows.EventHandler.ControlText_NumberOnly(sender, e);
         }
     }
 }

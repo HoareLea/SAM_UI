@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-using SAM.Analytical.Tas;
 using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;

@@ -1,6 +1,4 @@
-﻿using SAM.Geometry.Planar;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 
 namespace SAM.Core.Mollier.UI

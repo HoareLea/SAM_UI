@@ -1,8 +1,5 @@
-﻿using SAM.Core;
-using SAM.Core.UI;
-using System;
+﻿using SAM.Core.UI;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SAM.Analytical.UI.WPF
 {

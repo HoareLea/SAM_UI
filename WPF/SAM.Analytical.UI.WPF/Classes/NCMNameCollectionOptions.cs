@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SAM.Analytical.UI.WPF
+﻿namespace SAM.Analytical.UI.WPF
 {
     public class NCMNameCollectionOptions
     {
