@@ -22,6 +22,8 @@ namespace SAM.Geometry.UI.WPF
         private System.Windows.Media.DoubleCollection strokeDashArray = new System.Windows.Media.DoubleCollection(new double[] { 2, 2 });
         private RectangularSelectorMode rectangularSelectorMode = RectangularSelectorMode.Extended;
 
+        private double minDistance = 5;
+
         private List<Line> lines;
 
         private Point? endPoint_Temp;
@@ -49,7 +51,7 @@ namespace SAM.Geometry.UI.WPF
                 return false;
             }
 
-            if(startPoint == endPoint)
+            if(startPoint == endPoint || Query.Distance(startPoint, endPoint) < minDistance)
             {
                 return false;
             }
