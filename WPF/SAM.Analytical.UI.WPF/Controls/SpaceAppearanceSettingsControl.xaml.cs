@@ -410,6 +410,7 @@ namespace SAM.Analytical.UI.WPF
             relationClusterComplexReferenceWindow.Type = typeof(Space);
             relationClusterComplexReferenceWindow.TypesEnabled = false;
 
+
             bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
             if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
             {
@@ -418,6 +419,15 @@ namespace SAM.Analytical.UI.WPF
 
             Button_ComplexReference.Tag = relationClusterComplexReferenceWindow.ComplexReference;
             Button_ComplexReference.Content = relationClusterComplexReferenceWindow.ComplexReference?.ShortText();
+        }
+
+        private void RelationClusterComplexReferenceWindow_ComplexReferenceDoubleClick(object sender, EventArgs e)
+        {
+            RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = sender as RelationClusterComplexReferenceWindow;
+            if(relationClusterComplexReferenceWindow != null)
+            {
+                relationClusterComplexReferenceWindow.DialogResult = true;
+            }
         }
     }
 }

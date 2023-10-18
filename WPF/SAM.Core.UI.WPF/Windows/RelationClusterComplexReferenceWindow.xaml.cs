@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace SAM.Core.UI.WPF
 {
@@ -10,6 +11,14 @@ namespace SAM.Core.UI.WPF
         public RelationClusterComplexReferenceWindow()
         {
             InitializeComponent();
+
+            RelationClusterComplexReferenceControl_Main.ComplexReferenceDoubleClick += RelationClusterComplexReferenceControl_Main_ComplexReferenceDoubleClick;
+        }
+
+        private void RelationClusterComplexReferenceControl_Main_ComplexReferenceDoubleClick(object sender, EventArgs e)
+        {
+            DialogResult = true;
+            Close();
         }
 
         public RelationCluster RelationCluster
@@ -64,5 +73,7 @@ namespace SAM.Core.UI.WPF
             DialogResult = true;
             Close();
         }
+
+
     }
 }

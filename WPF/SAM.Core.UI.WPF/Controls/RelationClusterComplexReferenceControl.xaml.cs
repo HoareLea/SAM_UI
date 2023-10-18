@@ -11,6 +11,8 @@ namespace SAM.Core.UI.WPF
     /// </summary>
     public partial class RelationClusterComplexReferenceControl : UserControl
     {
+        public event EventHandler ComplexReferenceDoubleClick;
+        
         private RelationCluster relationCluster;
 
         public RelationClusterComplexReferenceControl()
@@ -213,6 +215,30 @@ namespace SAM.Core.UI.WPF
         private void TreeView_Property_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             TextBox_Reference.Text = ComplexReference?.ToString();
+        }
+
+        private void TreeView_Property_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            TreeView treeView = sender as TreeView;
+            if (treeView == null)
+            {
+                return;
+            }
+
+
+            IInputElement inputElement = treeView.InputHitTest(e.GetPosition(treeView));
+            if (inputElement == null)
+            {
+                return;
+            }
+
+            if (!(inputElement is TextBlock))
+            {
+                return;
+            }
+
+            ComplexReferenceDoubleClick?.Invoke(this, EventArgs.Empty);
+
         }
 
         public IComplexReference ComplexReference

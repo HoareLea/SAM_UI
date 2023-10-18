@@ -217,7 +217,7 @@ namespace SAM.Analytical.UI.WPF
             //MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower
             if (!MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower.VarySet)
             {
-                if (Core.Query.TryConvert(MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower.Value, out @double) && !double.IsNaN(@double))
+                if (Core.Query.TryConvert(MultipleValueTextBoxControl_LightingPhotoelectricParasiticPower.NewValue, out @double) && !double.IsNaN(@double))
                 {
                     for (int i = 0; i < nCMDatas.Count; i++)
                     {
@@ -234,7 +234,7 @@ namespace SAM.Analytical.UI.WPF
             //MultipleValueTextBoxControl_AirPermeability
             if (!MultipleValueTextBoxControl_AirPermeability.VarySet)
             {
-                if (Core.Query.TryConvert(MultipleValueTextBoxControl_AirPermeability.Value, out @double) && !double.IsNaN(@double))
+                if (Core.Query.TryConvert(MultipleValueTextBoxControl_AirPermeability.NewValue, out @double) && !double.IsNaN(@double))
                 {
                     for (int i = 0; i < nCMDatas.Count; i++)
                     {
@@ -258,7 +258,7 @@ namespace SAM.Analytical.UI.WPF
                         nCMDatas[i] = new NCMData();
                     }
 
-                    nCMDatas[i].Description = MultipleValueTextBoxControl_AirPermeability.Value;
+                    nCMDatas[i].Description = MultipleValueTextBoxControl_AirPermeability.NewValue;
                 }
             }
 
