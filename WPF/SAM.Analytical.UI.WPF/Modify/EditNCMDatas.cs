@@ -57,28 +57,28 @@ namespace SAM.Analytical.UI.WPF
 
             NCMDataWindow nCMDataWindow = new NCMDataWindow();
 
-            List<Space> spaces_All = adjacencyCluster?.GetSpaces();
-            if(spaces_All != null)
-            {
-                HashSet<string> nCMNames = new HashSet<string>();
-                foreach (Space space in spaces_All)
-                {
-                    InternalCondition internalCondition = space?.InternalCondition;
-                    if(internalCondition == null)
-                    {
-                        continue;
-                    }
+            //List<Space> spaces_All = adjacencyCluster?.GetSpaces();
+            //if(spaces_All != null)
+            //{
+            //    HashSet<string> nCMNames = new HashSet<string>();
+            //    foreach (Space space in spaces_All)
+            //    {
+            //        InternalCondition internalCondition = space?.InternalCondition;
+            //        if(internalCondition == null)
+            //        {
+            //            continue;
+            //        }
 
-                    if (!internalCondition.TryGetValue(InternalConditionParameter.NCMData, out NCMData nCMData) || string.IsNullOrWhiteSpace(nCMData?.NCMName?.FullName))
-                    {
-                        continue;
-                    }
+            //        if (!internalCondition.TryGetValue(InternalConditionParameter.NCMData, out NCMData nCMData) || string.IsNullOrWhiteSpace(nCMData?.NCMName?.FullName))
+            //        {
+            //            continue;
+            //        }
 
-                    nCMNames.Add(nCMData.NCMName.FullName);
-                }
+            //        nCMNames.Add(nCMData.NCMName.FullName);
+            //    }
 
-                nCMDataWindow.AvailableNCMNames = nCMNames?.ToList();
-            }
+            //    nCMDataWindow.AvailableNCMNames = nCMNames?.ToList();
+            //}
 
             nCMDataWindow.NCMDatas = tuples.ConvertAll(x => x.Item2);
 

@@ -26,20 +26,6 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public List<string> AvailableNCMNames
-        {
-            set
-            {
-                NCMDataControl_Main.AvailableNCMNames = value;
-
-            }
-
-            get
-            {
-                return NCMDataControl_Main.AvailableNCMNames;
-            }
-        }
-
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;

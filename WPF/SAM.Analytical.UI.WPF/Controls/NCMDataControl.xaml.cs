@@ -277,12 +277,17 @@ namespace SAM.Analytical.UI.WPF
             strings = strings?.Distinct().ToList();
             if(strings != null)
             {
-                if(MultipleValueComboBoxControl_Name.Values == null || MultipleValueComboBoxControl_Name.Values.Count == 0)
+                if (MultipleValueComboBoxControl_Name.Values == null || MultipleValueComboBoxControl_Name.Values.Count == 0)
                 {
                     MultipleValueComboBoxControl_Name.Values = strings;
                 }
 
                 MultipleValueComboBoxControl_Name.SetDefaultValue(strings);
+
+                if(strings.Count == 1)
+                {
+                    MultipleValueComboBoxControl_Name.Value = strings[0];
+                }
             }
 
             //if (strings != null && strings.Count > 1)
@@ -444,20 +449,6 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 nCMNameCollection = value;
-            }
-        }
-
-        public List<string> AvailableNCMNames
-        {
-            set
-            {
-                MultipleValueComboBoxControl_Name.Values = value;
-
-            }
-
-            get
-            {
-                return MultipleValueComboBoxControl_Name.Values;
             }
         }
     }
