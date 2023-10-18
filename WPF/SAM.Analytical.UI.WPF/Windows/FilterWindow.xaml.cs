@@ -1,4 +1,5 @@
-﻿using SAM.Core;
+﻿using NetOffice.ExcelApi;
+using SAM.Core;
 using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,11 @@ namespace SAM.Analytical.UI.WPF
 
         private void FiltersControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            filterControl.UIFilter = filtersControl.SelectedUIFilter;
+            IUIFilter uIFilter = filtersControl.SelectedUIFilter;
+
+            UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+
+            filterControl.UIFilter = uIFilter;
         }
 
         private void FilterControl_FilterAdding(object sender, Core.UI.WPF.FilterAddingEventArgs e)
@@ -159,7 +164,7 @@ namespace SAM.Analytical.UI.WPF
 
         private List<IJSAMObject>  GetFilteredSAMObjects()
         {
-            IFilter filter = UIFilter.Transform();
+            Core.IFilter filter = UIFilter.Transform();
 
             UI.Modify.AssignAdjacencyCluster(filter, adjacencyCluster);
 
