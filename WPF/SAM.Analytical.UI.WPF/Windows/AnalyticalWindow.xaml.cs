@@ -166,10 +166,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_OpenTPD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TPD);
             RibbonButton_OpenTPD.Click += RibbonButton_OpenTPD_Click;
 
+            RibbonMenuButton_PartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
+
             RibbonButton_OpenPartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
             RibbonButton_OpenPartL.Click += RibbonButton_OpenPartL_Click;
 
-            RibbonButton_UpdateUKBRFile.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
+            RibbonButton_UpdateUKBRFile.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL_UKBR);
             RibbonButton_UpdateUKBRFile.Click += RibbonButton_UpdateUKBRFile_Click;
 
             RibbonButton_Hydra.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Hydra);

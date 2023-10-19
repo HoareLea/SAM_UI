@@ -273,6 +273,16 @@ namespace SAM.Analytical.UI.WPF.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap SAM_PartL_UKBR {
+            get {
+                object obj = ResourceManager.GetObject("SAM_PartL_UKBR", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SAM_PrintRDS {
             get {
                 object obj = ResourceManager.GetObject("SAM_PrintRDS", resourceCulture);
