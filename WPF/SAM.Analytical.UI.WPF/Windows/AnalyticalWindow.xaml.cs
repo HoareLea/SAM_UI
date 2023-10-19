@@ -169,6 +169,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_OpenPartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
             RibbonButton_OpenPartL.Click += RibbonButton_OpenPartL_Click;
 
+            RibbonButton_UpdateUKBRFile.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
+            RibbonButton_UpdateUKBRFile.Click += RibbonButton_UpdateUKBRFile_Click;
+
             RibbonButton_Hydra.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Hydra);
             RibbonButton_Hydra.Click += RibbonButton_Hydra_Click;
 
@@ -258,6 +261,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_UpdateUKBRFile_Click(object sender, RoutedEventArgs e)
+        {
+            bool result = Modify.UpdateUKBRFile(uIAnalyticalModel);
         }
 
         private void RibbonButton_NCMNames_Click(object sender, RoutedEventArgs e)
