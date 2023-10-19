@@ -13,9 +13,9 @@
         <Button x:Name="Button_Name" HorizontalAlignment="Right" Margin="5, 35, 5, 0" Width="70" Content="Select" VerticalAlignment="Top" Height="22" Click="Button_Name_Click"/>
         <Label Content="System Type"  HorizontalAlignment="Stretch" Margin="0, 60, 0, 0" VerticalAlignment="Top"/>
         <ComboBox x:Name="ComboBox_SystemType" HorizontalAlignment="Stretch" Margin="5, 85, 5, 0" VerticalAlignment="Top"/>
-        <Label Content="Lighting Occupancy Controls"  HorizontalAlignment="Stretch" Margin="0, 110, 0, 0" VerticalAlignment="Top"/>
+        <Label Content="Lighting Occupancy APD Controls"  HorizontalAlignment="Stretch" Margin="0, 110, 0, 0" VerticalAlignment="Top"/>
         <ComboBox x:Name="ComboBox_LightingOccupancyControls" HorizontalAlignment="Stretch" Margin="5, 140, 5, 0" VerticalAlignment="Top"/>
-        <Label Content="Lighting Photoelectric Controls"  HorizontalAlignment="Stretch" Margin="0, 165, 0, 0" VerticalAlignment="Top"/>
+        <Label Content="Lighting Photoelectric Daylight Controls"  HorizontalAlignment="Stretch" Margin="0, 165, 0, 0" VerticalAlignment="Top"/>
         <ComboBox x:Name="ComboBox_LightingPhotoelectricControls" HorizontalAlignment="Stretch" Margin="5, 195, 5, 0" VerticalAlignment="Top"/>
         <CheckBox x:Name="CheckBox_LightingPhotoelectricBackSpaceSensor" IsChecked="{x:Null}" Content="Lighting Photoelectric Back Space Sensor" Margin="5, 245, 5,0" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
         <CheckBox x:Name="CheckBox_LightingPhotoelectricControlsTimeSwitch" IsChecked="{x:Null}" Content="Lighting Photoelectric Controls Time Switch" Margin="5, 275, 5,0" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
