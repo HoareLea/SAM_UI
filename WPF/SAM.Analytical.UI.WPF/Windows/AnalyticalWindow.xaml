@@ -464,6 +464,8 @@
                 <RibbonGroup x:Name="RibbonGroup_Simulate_Simulate" Header="Simulate">
                     <RibbonButton x:Name="RibbonButton_SolarSimulation" Label="Solar Simulation" />
                     <RibbonButton x:Name="RibbonButton_EnergySimulation" Label="Energy Simulation" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Simulate_UKRegulations" Header="UK Regulations">
                     <RibbonMenuButton x:Name="RibbonMenuButton_PartL" Label="PartL" >
                         <RibbonButton x:Name="RibbonButton_OpenPartL" Label="Open Part L" />
                         <RibbonButton x:Name="RibbonButton_UpdateUKBRFile" Label="Update Lighting"/>
