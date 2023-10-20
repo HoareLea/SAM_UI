@@ -465,12 +465,6 @@
                     <RibbonButton x:Name="RibbonButton_SolarSimulation" Label="Solar Simulation" />
                     <RibbonButton x:Name="RibbonButton_EnergySimulation" Label="Energy Simulation" />
                 </RibbonGroup>
-                <RibbonGroup x:Name="RibbonGroup_Simulate_UKRegulations" Header="UK Regulations">
-                    <RibbonMenuButton x:Name="RibbonMenuButton_PartL" Label="PartL" >
-                        <RibbonButton x:Name="RibbonButton_OpenPartL" Label="Open Part L" />
-                        <RibbonButton x:Name="RibbonButton_UpdateUKBRFile" Label="Update Lighting"/>
-                    </RibbonMenuButton>
-                </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Results" Header="Results">
                 <RibbonGroup x:Name="RibbonGroup_Results_General" Header="General">
@@ -490,6 +484,10 @@
                     <RibbonButton x:Name="RibbonButton_OpenTBD" Label="Open TBD" />
                     <RibbonButton x:Name="RibbonButton_OpenTSD" Label="Open TSD" />
                     <RibbonButton x:Name="RibbonButton_OpenTPD" Label="Open TPD" />
+                    <RibbonMenuButton x:Name="RibbonMenuButton_PartL" Label="PartL" >
+                        <RibbonButton x:Name="RibbonButton_OpenPartL" Label="Open PartL" />
+                        <RibbonButton x:Name="RibbonButton_UpdateUKBRFile" Label="Update UKBR File"/>
+                    </RibbonMenuButton>
                     <!-- <RibbonButton x:Name="RibbonButton_CreateTBD" Label="Create TBD" /> -->
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Hydra" Header="Hydra">
