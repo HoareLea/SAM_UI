@@ -156,6 +156,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\NCMNameCollectionOptions.cs" />
+    <Compile Include="Controls\LayerThicknessCalculationDataControl.xaml.cs">
+      <DependentUpon>LayerThicknessCalculationDataControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\AddMechanicalSystems.cs" />
     <Compile Include="Modify\EditNCMDatas.cs" />
     <Compile Include="Modify\RemoveMechanicalSystems.cs" />
@@ -497,6 +500,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\NCMDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LayerThicknessCalculationDataControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
