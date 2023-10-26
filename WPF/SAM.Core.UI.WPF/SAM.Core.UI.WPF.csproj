@@ -89,6 +89,9 @@
     <Compile Include="Create\IFilterControl.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
+    <Compile Include="DataGridWindow.xaml.cs">
+      <DependentUpon>DataGridWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Delegates\FilterRemovingEventHandler.cs" />
     <Compile Include="Delegates\FilterChangedEventHandler.cs" />
     <Compile Include="Delegates\FilterAddingEventHandler.cs" />
@@ -300,6 +303,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\RelationClusterComplexReferenceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataGridWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

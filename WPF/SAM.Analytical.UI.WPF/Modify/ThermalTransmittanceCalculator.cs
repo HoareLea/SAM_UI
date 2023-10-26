@@ -40,10 +40,26 @@ namespace SAM.Analytical.UI.WPF
 
             ProgressBarWindowManager progressBarWindowManager = progressBarWindowManager = new ProgressBarWindowManager();
             progressBarWindowManager.Show("Calculate", "Calculating...");
-
             List<LayerThicknessCalculationResult> layerThicknessCalculationResults =  thermalTransmittanceCalculator.Calculate(layerThicknessCalculationDatas);
-            if(layerThicknessCalculationResults != null)
+            progressBarWindowManager.Close();
+
+            if (layerThicknessCalculationResults != null)
             {
+                LayerThicknessCalculationResultsWindow layerThicknessCalculationResultsWindow = new LayerThicknessCalculationResultsWindow();
+                layerThicknessCalculationResultsWindow.ConstructionManager = constructionManager;
+                layerThicknessCalculationResultsWindow.LayerThicknessCalculationResults = layerThicknessCalculationResults;
+                dialogResult = layerThicknessCalculationResultsWindow.ShowDialog();
+                if(dialogResult != true)
+                {
+                    return;
+                }
+
+                layerThicknessCalculationResults = layerThicknessCalculationResultsWindow.LayerThicknessCalculationResults;
+                if(layerThicknessCalculationResults == null || layerThicknessCalculationResults.Count == 0)
+                {
+                    return;
+                }
+
                 foreach (LayerThicknessCalculationResult layerThicknessCalculationResult in layerThicknessCalculationResults)
                 {
 
@@ -52,9 +68,6 @@ namespace SAM.Analytical.UI.WPF
 
                 analyticalModel = Analytical.Query.UpdateConstructionsByConstructionManager(analyticalModel, constructionManager);
             }
-
-            progressBarWindowManager.Close();
-
 
             uIAnalyticalModel.SetJSAMObject(analyticalModel, new FullModification());
         }

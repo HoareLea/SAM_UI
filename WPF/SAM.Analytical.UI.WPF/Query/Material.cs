@@ -25,6 +25,5 @@
 
             return Geometry.UI.Create.Material(Core.UI.Convert.ToMedia(color));
         }
-
     }
 }

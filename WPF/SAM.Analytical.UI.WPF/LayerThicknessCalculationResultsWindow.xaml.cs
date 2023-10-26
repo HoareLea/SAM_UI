@@ -1,0 +1,110 @@
+﻿using SAM.Analytical.Tas;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+namespace SAM.Analytical.UI.WPF
+{
+    /// <summary>
+    /// Interaction logic for LayerThicknessCalculationResultsWindow.xaml
+    /// </summary>
+    public partial class LayerThicknessCalculationResultsWindow : System.Windows.Window
+    {
+        public ConstructionManager ConstructionManager { get; set; }
+
+        public LayerThicknessCalculationResultsWindow()
+        {
+            InitializeComponent();
+
+            DataGridColumn_Select.Binding = new Binding("Selected");
+            DataGridColumn_Construction.Binding = new Binding("ConstructionName");
+            DataGridColumn_Material.Binding = new Binding("MaterialName");
+            DataGridColumn_ThermalTransmittance.Binding = new Binding("ThermalTransmittance");
+            DataGridColumn_CalculatedThermalTransmittance.Binding = new Binding("CalculatedThermalTransmittance");
+            DataGridColumn_Thickness.Binding = new Binding("Thickness");
+        }
+
+        public List<LayerThicknessCalculationResult> LayerThicknessCalculationResults
+        {
+            set
+            {
+                SetLayerThicknessCalculationResults(value);
+            }
+
+            get
+            {
+                return GetLayerThicknessCalculationResults();
+            }
+        }
+
+        private List<LayerThicknessCalculationResult> GetLayerThicknessCalculationResults()
+        {
+            IEnumerable enumerable = DataGrid_Main.ItemsSource;
+            if(enumerable == null)
+            {
+                return null;
+            }
+
+            List<LayerThicknessCalculationResult> result = new List<LayerThicknessCalculationResult>();
+            foreach(object @object in enumerable)
+            {
+                DisplayLayerThicknessCalculationResult displayLayerThicknessCalculationResult = @object as DisplayLayerThicknessCalculationResult;
+                if(displayLayerThicknessCalculationResult == null)
+                {
+                    continue;
+                }
+
+                if(!displayLayerThicknessCalculationResult.Selected)
+                {
+                    continue;
+                }
+
+                result.Add(displayLayerThicknessCalculationResult.LayerThicknessCalculationResult);
+            }
+
+            return result;
+        }
+
+        private void SetLayerThicknessCalculationResults(IEnumerable<LayerThicknessCalculationResult> layerThicknessCalculationResults)
+        {
+            if(layerThicknessCalculationResults == null)
+            {
+                DataGrid_Main.ItemsSource = null;
+                return;
+            }
+
+            List<DisplayLayerThicknessCalculationResult> displayLayerThicknessCalculationResults = new List<DisplayLayerThicknessCalculationResult>();
+            foreach(LayerThicknessCalculationResult layerThicknessCalculationResult in layerThicknessCalculationResults)
+            {
+                displayLayerThicknessCalculationResults.Add(new DisplayLayerThicknessCalculationResult(ConstructionManager, layerThicknessCalculationResult));
+            }
+
+            DataGrid_Main.ItemsSource = displayLayerThicknessCalculationResults;
+        }
+
+        private void Button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+
+            Close();
+        }
+
+        private void Button_Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+
+            Close();
+        }
+    }
+}
