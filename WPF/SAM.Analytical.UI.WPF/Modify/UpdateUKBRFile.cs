@@ -1,6 +1,4 @@
-﻿using SAM.Core;
-using SAM.Core.Tas;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF
 {

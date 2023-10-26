@@ -62,7 +62,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void SetLayerThicknessCalculationData(LayerThicknessCalculationData layerThicknessCalculationData)
         {
-            this.LayerThicknessCalculationData = layerThicknessCalculationData;
+            this.layerThicknessCalculationData = layerThicknessCalculationData;
 
             if (layerThicknessCalculationData == null)
             {
@@ -115,32 +115,34 @@ namespace SAM.Analytical.UI.WPF
         private LayerThicknessCalculationData GetLayerThicknessCalculationData()
         {
             LayerThicknessCalculationData result = layerThicknessCalculationData == null ? new LayerThicknessCalculationData() : new LayerThicknessCalculationData(layerThicknessCalculationData);
-            layerThicknessCalculationData.ConstructionName = TextBox_ConstructionName.Text;
-            layerThicknessCalculationData.LayerIndex = ListBox_ConstructionLayers.SelectedIndex;
+            result.ConstructionName = TextBox_ConstructionName.Text;
+            result.LayerIndex = ListBox_ConstructionLayers.SelectedIndex;
 
             if(Core.Query.TryConvert(TextBox_ThermalTransmittance.Text, out double thermalTransmittance))
             {
-                layerThicknessCalculationData.ThermalTransmittance = thermalTransmittance;
+                result.ThermalTransmittance = thermalTransmittance;
             }
 
             if (Core.Query.TryGetEnum(ComboBox_HeatFlowDirection.Text, out HeatFlowDirection heatFlowDirection))
             {
-                layerThicknessCalculationData.HeatFlowDirection = heatFlowDirection;
+                result.HeatFlowDirection = heatFlowDirection;
             }
 
-            layerThicknessCalculationData.External = CheckBox_External.IsChecked == null || !CheckBox_External.IsChecked.HasValue ? layerThicknessCalculationData.External : CheckBox_External.IsChecked.Value;
+            result.External = CheckBox_External.IsChecked == null || !CheckBox_External.IsChecked.HasValue ? layerThicknessCalculationData.External : CheckBox_External.IsChecked.Value;
 
-            double minThickness = layerThicknessCalculationData.ThicknessRange == null ? double.NaN : layerThicknessCalculationData.ThicknessRange.Min;
+            double minThickness = result.ThicknessRange == null ? double.NaN : layerThicknessCalculationData.ThicknessRange.Min;
             if (Core.Query.TryConvert(TextBox_MinThickness.Text, out double minThickness_Temp))
             {
                 minThickness = minThickness_Temp;
             }
 
-            double maxThickness = layerThicknessCalculationData.ThicknessRange == null ? double.NaN : layerThicknessCalculationData.ThicknessRange.Max;
+            double maxThickness = result.ThicknessRange == null ? double.NaN : layerThicknessCalculationData.ThicknessRange.Max;
             if (Core.Query.TryConvert(TextBox_MaxThickness.Text, out double maxThickness_Temp))
             {
                 maxThickness = maxThickness_Temp;
             }
+
+            result.ThicknessRange = new Core.Range<double>(minThickness, maxThickness);
 
             return result;
         }

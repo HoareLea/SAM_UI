@@ -166,6 +166,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_OpenTPD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TPD);
             RibbonButton_OpenTPD.Click += RibbonButton_OpenTPD_Click;
 
+            RibbonButton_ThermalTransmittanceCalculator.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
+            RibbonButton_ThermalTransmittanceCalculator.Click += RibbonButton_ThermalTransmittanceCalculator_Click;
+
             RibbonMenuButton_PartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
 
             RibbonButton_OpenPartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
@@ -263,6 +266,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_ThermalTransmittanceCalculator_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.ThermalTransmittanceCalculator(uIAnalyticalModel);
         }
 
         private void RibbonButton_UpdateUKBRFile_Click(object sender, RoutedEventArgs e)

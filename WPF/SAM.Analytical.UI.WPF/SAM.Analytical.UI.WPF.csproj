@@ -159,6 +159,13 @@
     <Compile Include="Controls\LayerThicknessCalculationDataControl.xaml.cs">
       <DependentUpon>LayerThicknessCalculationDataControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modify\ThermalTransmittanceCalculator.cs" />
+    <Compile Include="Windows\ThermalTransmittanceCalculatorWindow.xaml.cs">
+      <DependentUpon>ThermalTransmittanceCalculatorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\LayerThicknessCalculationDataWindow.xaml.cs">
+      <DependentUpon>LayerThicknessCalculationDataWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\AddMechanicalSystems.cs" />
     <Compile Include="Modify\EditNCMDatas.cs" />
     <Compile Include="Modify\RemoveMechanicalSystems.cs" />
@@ -170,6 +177,9 @@
       <DependentUpon>NCMDataControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\UpdateUKBRFile.cs" />
+    <Compile Include="Controls\ThermalTransmittanceCalculatorControl.xaml.cs">
+      <DependentUpon>ThermalTransmittanceCalculatorControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\NCMDataWindow.xaml.cs">
       <DependentUpon>NCMDataWindow.xaml</DependentUpon>
     </Compile>
@@ -504,6 +514,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LayerThicknessCalculationDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ThermalTransmittanceCalculatorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ThermalTransmittanceCalculatorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\LayerThicknessCalculationDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

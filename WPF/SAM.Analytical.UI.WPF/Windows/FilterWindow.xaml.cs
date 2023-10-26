@@ -1,5 +1,4 @@
-﻿using NetOffice.ExcelApi;
-using SAM.Core;
+﻿using SAM.Core;
 using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
