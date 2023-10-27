@@ -491,6 +491,7 @@ namespace SAM.Analytical.UI.WPF
                         internalCondition?.SetValue(InternalConditionParameter.Color, color);
                     }
                 }
+
                 if (checkBox_Occupancy.IsChecked.HasValue && checkBox_Occupancy.IsChecked.Value)
                 {
                     if (!multipleValueComboBoxControl_AreaPerPerson.VarySet)
@@ -507,7 +508,20 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
-                if(!multipleValueComboBoxControl_SpaceOccupancy.VarySet)
+                if (!multipleValueTextBoxControl_Description.VarySet)
+                {
+                    string value = multipleValueTextBoxControl_Description.NewValue;
+                    if(string.IsNullOrEmpty(value))
+                    {
+                        internalCondition?.RemoveValue(InternalConditionParameter.Description);
+                    }
+                    else
+                    {
+                        internalCondition?.SetValue(InternalConditionParameter.Description, value);
+                    }
+                }
+
+                if (!multipleValueComboBoxControl_SpaceOccupancy.VarySet)
                 {
                     string value = multipleValueComboBoxControl_SpaceOccupancy.Value;
                     if (Core.Query.TryConvert(value, out double value_Temp))
@@ -1020,6 +1034,9 @@ namespace SAM.Analytical.UI.WPF
 
             multipleValueComboBoxControl_Name.Values = internalConditionDatas_Temp?.ConvertAll(x => x?.Name);
             multipleValueComboBoxControl_Name.SetDefaultValue(internalConditions_Template?.ConvertAll(x => x?.Name).FindAll(x => x != null));
+
+            multipleValueTextBoxControl_Description.Values = internalConditionDatas_Temp.Texts(InternalConditionParameter.Description);
+            multipleValueTextBoxControl_Description.SetDefaultValue(internalConditions_Template?.Texts(InternalConditionParameter.Description));
 
             if (checkBox_Occupancy.IsChecked != null && checkBox_Occupancy.IsChecked.HasValue && checkBox_Occupancy.IsChecked.Value)
             {
