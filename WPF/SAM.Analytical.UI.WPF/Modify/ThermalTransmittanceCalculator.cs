@@ -67,6 +67,7 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 analyticalModel = Analytical.Query.UpdateConstructionsByConstructionManager(analyticalModel, constructionManager);
+                Tas.Modify.UpdateThermalParameters(analyticalModel);
             }
 
             uIAnalyticalModel.SetJSAMObject(analyticalModel, new FullModification());
