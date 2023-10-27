@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         mc:Ignorable="d"
-        Title="Create Views" Height="600" Width="350" ResizeMode="NoResize">
+        Title="Create Views" Height="600" Width="400" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>

@@ -25,6 +25,9 @@ namespace SAM.Core.UI.WPF
             }
 
             return taggable.Tag.GetValue<T>();
+
+
+
         }
     }
 }

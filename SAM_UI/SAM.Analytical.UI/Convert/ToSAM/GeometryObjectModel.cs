@@ -675,27 +675,31 @@ namespace SAM.Analytical.UI
 
                     List<Solver2DResult> solver2DResults = solver2D.Solve();
 
+                    // Check if solver2DResults is null
                     // Add shifted labels from solver2DResults to tuples
-                    foreach (Solver2DResult solver2DResult in solver2DResults)
+                    if(solver2DResults != null)
                     {
-                        Solver2DData solver2DData = solver2DResult.Solver2DData;
-                        Tuple<Space, List<Face2D>, string, Point2D> tuple = solver2DData.Tag as Tuple<Space, List<Face2D>, string, Point2D>;
+                        foreach (Solver2DResult solver2DResult in solver2DResults)
+                        {
+                            Solver2DData solver2DData = solver2DResult.Solver2DData;
+                            Tuple<Space, List<Face2D>, string, Point2D> tuple = solver2DData.Tag as Tuple<Space, List<Face2D>, string, Point2D>;
                         
-                        if(tuple == null)
-                        {
-                            continue;
-                        }
+                            if(tuple == null)
+                            {
+                                continue;
+                            }
 
-                        Rectangle2D rectangle2D = solver2DResult.Closed2D<Rectangle2D>();
-                        if(rectangle2D != null)
-                        {
-                            tuple = new Tuple<Space, List<Face2D>, string, Point2D>(tuple.Item1, tuple.Item2, tuple.Item3, rectangle2D.GetCentroid());
+                            Rectangle2D rectangle2D = solver2DResult.Closed2D<Rectangle2D>();
+                            if(rectangle2D != null)
+                            {
+                                tuple = new Tuple<Space, List<Face2D>, string, Point2D>(tuple.Item1, tuple.Item2, tuple.Item3, rectangle2D.GetCentroid());
+                            }
+                            else
+                            {
+                                tuple = new Tuple<Space, List<Face2D>, string, Point2D>(tuple.Item1, tuple.Item2, "", tuple.Item4);
+                            }
+                            tuples.Add(tuple);
                         }
-                        else
-                        {
-                            tuple = new Tuple<Space, List<Face2D>, string, Point2D>(tuple.Item1, tuple.Item2, "", tuple.Item4);
-                        }
-                        tuples.Add(tuple);
                     }
 
 

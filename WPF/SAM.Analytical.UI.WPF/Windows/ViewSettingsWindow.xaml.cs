@@ -13,7 +13,6 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             InitializeComponent();
         }
-
         public ViewSettingsWindow(IViewSettings viewSettings, AnalyticalModel analyticalModel)
         {
             InitializeComponent();
