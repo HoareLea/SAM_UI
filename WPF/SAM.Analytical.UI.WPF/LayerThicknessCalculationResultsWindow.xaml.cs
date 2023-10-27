@@ -30,9 +30,13 @@ namespace SAM.Analytical.UI.WPF
             DataGridColumn_Select.Binding = new Binding("Selected");
             DataGridColumn_Construction.Binding = new Binding("ConstructionName");
             DataGridColumn_Material.Binding = new Binding("MaterialName");
+            DataGridColumn_IntialMaterialThickness.Binding = new Binding("InitialThickness");
+            DataGridColumn_CalculatedMaterialThickness.Binding = new Binding("Thickness");
+            DataGridColumn_IntialConstructionThickness.Binding = new Binding("InitialConstructionThickness");
+            DataGridColumn_CalculatedConstructionThickness.Binding = new Binding("ConstructionThickness");
+            DataGridColumn_InitialThermalTransmittance.Binding = new Binding("InitialThermalTransmittance");
             DataGridColumn_ThermalTransmittance.Binding = new Binding("ThermalTransmittance");
             DataGridColumn_CalculatedThermalTransmittance.Binding = new Binding("CalculatedThermalTransmittance");
-            DataGridColumn_Thickness.Binding = new Binding("Thickness");
         }
 
         public List<LayerThicknessCalculationResult> LayerThicknessCalculationResults

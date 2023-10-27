@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         mc:Ignorable="d"
-        Title="Layer Thickness Calculation Results" Height="450" Width="700">
+        Title="Layer Thickness Calculation Results" Height="450" Width="1000">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -16,9 +16,13 @@
                 <DataGridCheckBoxColumn x:Name="DataGridColumn_Select" Header="Select"/>
                 <DataGridTextColumn x:Name="DataGridColumn_Construction" Header="Construction"/>
                 <DataGridTextColumn x:Name="DataGridColumn_Material" Header="Material"/>
-                <DataGridTextColumn x:Name="DataGridColumn_Thickness" Header="Thickness"/>
-                <DataGridTextColumn x:Name="DataGridColumn_ThermalTransmittance" Header="Selected U Value"/>
-                <DataGridTextColumn x:Name="DataGridColumn_CalculatedThermalTransmittance" Header="Calculated U Value"/>
+                <DataGridTextColumn x:Name="DataGridColumn_IntialMaterialThickness" Header="Initial Material&#x0a;Thickness"/>
+                <DataGridTextColumn x:Name="DataGridColumn_CalculatedMaterialThickness" Header="Calculated Material&#x0a;Thickness"/>
+                <DataGridTextColumn x:Name="DataGridColumn_IntialConstructionThickness" Header="Initial Construction&#x0a;Thickness"/>
+                <DataGridTextColumn x:Name="DataGridColumn_CalculatedConstructionThickness" Header="Calculated Construction&#x0a;Thickness"/>
+                <DataGridTextColumn x:Name="DataGridColumn_InitialThermalTransmittance" Header="Initial&#x0a;U Value"/>
+                <DataGridTextColumn x:Name="DataGridColumn_ThermalTransmittance" Header="Input&#x0a;U Value"/>
+                <DataGridTextColumn x:Name="DataGridColumn_CalculatedThermalTransmittance" Header="Calculated&#x0a;U Value"/>
             </DataGrid.Columns>
         </DataGrid>
         <Button x:Name="Button_Cancel" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Width="70" Content="Cancel" Margin="0,0,5,0" IsCancel="True" Click="Button_Cancel_Click"></Button>

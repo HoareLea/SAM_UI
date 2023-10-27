@@ -84,7 +84,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return double.IsNaN(layerThicknessCalculationResult.Thickness) ? (double?)null : SAM.Core.Query.Round(layerThicknessCalculationResult.Thickness, SAM.Core.Tolerance.MacroDistance);
+                return double.IsNaN(layerThicknessCalculationResult.Thickness) ? (double?)null : Core.Query.Round(layerThicknessCalculationResult.Thickness, SAM.Core.Tolerance.MacroDistance);
             }
         }
 
@@ -106,7 +106,15 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                throw new System.NotImplementedException();
+                Construction construction = layerThicknessCalculationResult?.Construction(constructionManager);
+                if (construction == null)
+                {
+                    return null;
+                }
+
+
+
+                return construction.GetThickness() - InitialThickness + Thickness;
             }
         }
 
