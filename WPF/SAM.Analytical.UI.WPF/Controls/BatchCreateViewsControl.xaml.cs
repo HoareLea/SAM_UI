@@ -47,6 +47,9 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Aperture.IsChecked = true;
             checkBox_Visibilty_Panel.IsChecked = true;
             checkBox_Visibilty_Space.IsChecked = true;
+            checkBox_TextVisibility.IsChecked = true;
+
+            textBox_TextSize.Text = Geometry.UI.Query.DefaultTextAppearance().Height.ToString();
 
             List<Level> levels = Analytical.Create.Levels(adjacencyCluster, false);
             levels?.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
@@ -157,6 +160,7 @@ namespace SAM.Analytical.UI.WPF
                 types.Add(typeof(Panel));
             }
 
+
             string group = Query.DefaultGroup(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
 
             List<TwoDimensionalViewSettings> result = new List<TwoDimensionalViewSettings>();
@@ -172,11 +176,27 @@ namespace SAM.Analytical.UI.WPF
                 twoDimensionalViewSettings.SetValue(ViewSettingsParameter.UseDefaultName, true);
                 twoDimensionalViewSettings.SetValue(ViewSettingsParameter.Group, group);
 
+                TextAppearance textAppearance = Geometry.UI.Query.DefaultTextAppearance();
+                textAppearance.Opacity = checkBox_TextVisibility.IsChecked != null && checkBox_TextVisibility.IsChecked.HasValue && checkBox_TextVisibility.IsChecked.Value ? 1 : 0;
+
+                if (Core.Query.TryConvert(textBox_TextSize.Text, out double textSize))
+                {
+                    textAppearance.Height = textSize;
+                }
+
+                twoDimensionalViewSettings.TextAppearance = textAppearance;
+
                 result.Add(twoDimensionalViewSettings);
             }
 
 
             return result;
+        }
+
+
+        private void textBox_TextSize_TextInput(object sender, TextCompositionEventArgs e)
+        {
+            Core.Windows.EventHandler.ControlText_NumberOnly(sender, e);
         }
     }
 }
