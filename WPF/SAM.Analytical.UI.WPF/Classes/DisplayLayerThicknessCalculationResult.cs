@@ -34,6 +34,22 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public string MaterialName
+        {
+            get
+            {
+                return GetMaterial()?.Name;
+            }
+        }
+
+        public double InitialThermalTransmittance
+        {
+            get
+            {
+                return layerThicknessCalculationResult.InitialThermalTransmittance;
+            }
+        }
+
         public double ThermalTransmittance
         {
             get
@@ -50,11 +66,17 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public string MaterialName
+        public double? InitialThickness
         {
             get
             {
-                return GetMaterial()?.Name;
+                ConstructionLayer constructionLayer = layerThicknessCalculationResult?.ConstructionLayer(constructionManager);
+                if(constructionLayer == null)
+                {
+                    return null;
+                }
+
+                return constructionLayer.Thickness;
             }
         }
 
@@ -63,6 +85,28 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 return double.IsNaN(layerThicknessCalculationResult.Thickness) ? (double?)null : SAM.Core.Query.Round(layerThicknessCalculationResult.Thickness, SAM.Core.Tolerance.MacroDistance);
+            }
+        }
+
+        public double? InitialConstructionThickness
+        {
+            get
+            {
+                Construction construction = layerThicknessCalculationResult?.Construction(constructionManager);
+                if(construction == null)
+                {
+                    return null;
+                }
+
+                return construction.GetThickness();
+            }
+        }
+
+        public double? ConstructionThickness
+        {
+            get
+            {
+                throw new System.NotImplementedException();
             }
         }
 
