@@ -66,7 +66,8 @@ namespace SAM.Analytical.UI.WPF
                     constructionManager.Update(layerThicknessCalculationResult);
                 }
 
-                analyticalModel = Analytical.Query.UpdateConstructionsByConstructionManager(analyticalModel, constructionManager);
+                analyticalModel = Analytical.Query.UpdateConstructions(analyticalModel, constructionManager);
+                analyticalModel = Analytical.Query.UpdateApertureConstructions(analyticalModel, constructionManager);
                 Tas.Modify.UpdateThermalParameters(analyticalModel);
             }
 
