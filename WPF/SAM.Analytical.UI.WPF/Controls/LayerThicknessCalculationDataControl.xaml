@@ -12,17 +12,18 @@
             <ColumnDefinition Width="150"/>
         </Grid.ColumnDefinitions>
         <ListBox x:Name="ListBox_ConstructionLayers" Grid.Column="0" Margin="5, 5, 5, 5"/>
-        <Label Content="Construction Name" Grid.Column="1" Margin="5, 5, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
-        <TextBox x:Name="TextBox_ConstructionName" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 30, 5, 5" Height="22"></TextBox>
-        <Label Content="Thermal Transmittance" Grid.Column="1" Margin="5, 60, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
-        <TextBox x:Name="TextBox_ThermalTransmittance" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 85, 5, 5" Height="22"/>
-        <Label Content="Heat Flow Direction" Grid.Column="1" Margin="5, 110, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
-        <ComboBox x:Name="ComboBox_HeatFlowDirection" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 135, 5, 5" Height="22"/>
-        <CheckBox x:Name="CheckBox_External" Grid.Column="1" Content="External" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 175, 5, 5"/>
-        <Label Content="Min Thickness" Grid.Column="1" Margin="5, 200, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
-        <TextBox x:Name="TextBox_MinThickness" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 225, 5, 5" Height="22"></TextBox>
-        <Label Content="Max Thickness" Grid.Column="1" Margin="5, 250, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
-        <TextBox x:Name="TextBox_MaxThickness" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 275, 5, 5" Height="22"></TextBox>
+        <Label Content="TARGET PARAMETERS" Grid.Column="1" Margin="5, 5, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontWeight="Bold"/>
+        <Label Content="Construction Name" Grid.Column="1" Margin="5, 25, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+        <TextBox x:Name="TextBox_ConstructionName" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 50, 5, 5" Height="22"></TextBox>
+        <Label Content="Thermal Transmittance" Grid.Column="1" Margin="5, 80, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+        <TextBox x:Name="TextBox_ThermalTransmittance" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 105, 5, 5" Height="22"/>
+        <Label Content="Heat Flow Direction" Grid.Column="1" Margin="5, 130, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+        <ComboBox x:Name="ComboBox_HeatFlowDirection" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 155, 5, 5" Height="22"/>
+        <CheckBox x:Name="CheckBox_External" Grid.Column="1" Content="External" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 195, 5, 5"/>
+        <Label Content="Min Thickness" Grid.Column="1" Margin="5, 220, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+        <TextBox x:Name="TextBox_MinThickness" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 245, 5, 5" Height="22"></TextBox>
+        <Label Content="Max Thickness" Grid.Column="1" Margin="5, 270, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+        <TextBox x:Name="TextBox_MaxThickness" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 295, 5, 5" Height="22"></TextBox>
 
     </Grid>
 </UserControl>

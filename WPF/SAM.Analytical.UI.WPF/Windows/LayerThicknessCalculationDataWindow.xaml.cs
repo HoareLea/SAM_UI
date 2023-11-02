@@ -22,6 +22,25 @@ namespace SAM.Analytical.UI.WPF
 
         private void Button_OK_Click(object sender, RoutedEventArgs e)
         {
+            LayerThicknessCalculationData layerThicknessCalculationData = LayerThicknessCalculationData;
+            if(layerThicknessCalculationData == null)
+            {
+                MessageBox.Show("Could not collect data.");
+                return;
+            }
+
+            if(string.IsNullOrWhiteSpace(layerThicknessCalculationData.ConstructionName))
+            {
+                MessageBox.Show("Provide construction name.");
+                return;
+            }
+
+            if (double.IsNaN(layerThicknessCalculationData.ThermalTransmittance))
+            {
+                MessageBox.Show("Provide thermal transmittance.");
+                return;
+            }
+
             DialogResult = true;
 
             Close();

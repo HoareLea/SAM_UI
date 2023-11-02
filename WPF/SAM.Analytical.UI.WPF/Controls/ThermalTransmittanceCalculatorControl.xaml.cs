@@ -173,6 +173,7 @@ namespace SAM.Analytical.UI.WPF
             if (layerThicknessCalculationData == null)
             {
                 layerThicknessCalculationData = Tas.Create.LayerThicknessCalculationData(construction, ConstructionManager?.MaterialLibrary);
+                layerThicknessCalculationData.ThermalTransmittance = double.NaN;
             }
 
             LayerThicknessCalculationDataWindow layerThicknessCalculationDataWindow = new LayerThicknessCalculationDataWindow();

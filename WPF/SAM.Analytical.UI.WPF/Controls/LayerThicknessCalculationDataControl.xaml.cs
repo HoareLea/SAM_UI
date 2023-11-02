@@ -91,7 +91,7 @@ namespace SAM.Analytical.UI.WPF
                 ListBox_ConstructionLayers.SelectedIndex = layerThicknessCalculationData.LayerIndex;
             }
 
-            TextBox_ThermalTransmittance.Text = layerThicknessCalculationData.ThermalTransmittance.ToString();
+            TextBox_ThermalTransmittance.Text = double.IsNaN(layerThicknessCalculationData.ThermalTransmittance) ? null : layerThicknessCalculationData.ThermalTransmittance.ToString();
 
             string string_HeatFlowDirection = Core.Query.Description(layerThicknessCalculationData.HeatFlowDirection);
             for (int i = 0; i < ComboBox_HeatFlowDirection.Items.Count; i++)
@@ -121,6 +121,10 @@ namespace SAM.Analytical.UI.WPF
             if(Core.Query.TryConvert(TextBox_ThermalTransmittance.Text, out double thermalTransmittance))
             {
                 result.ThermalTransmittance = thermalTransmittance;
+            }
+            else
+            {
+                result.ThermalTransmittance = double.NaN;
             }
 
             if (Core.Query.TryGetEnum(ComboBox_HeatFlowDirection.Text, out HeatFlowDirection heatFlowDirection))
