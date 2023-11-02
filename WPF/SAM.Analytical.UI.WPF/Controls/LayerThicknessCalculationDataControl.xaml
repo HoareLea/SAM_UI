@@ -24,6 +24,5 @@
         <TextBox x:Name="TextBox_MinThickness" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 245, 5, 5" Height="22"></TextBox>
         <Label Content="Max Thickness" Grid.Column="1" Margin="5, 270, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
         <TextBox x:Name="TextBox_MaxThickness" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 295, 5, 5" Height="22"></TextBox>
-
     </Grid>
 </UserControl>

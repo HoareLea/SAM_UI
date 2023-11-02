@@ -270,7 +270,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_ThermalTransmittanceCalculator_Click(object sender, RoutedEventArgs e)
         {
-            Modify.ThermalTransmittanceCalculator(uIAnalyticalModel);
+            Modify.ThermalTransmittanceCalculator_SingleConstruction(uIAnalyticalModel);
         }
 
         private void RibbonButton_UpdateUKBRFile_Click(object sender, RoutedEventArgs e)
