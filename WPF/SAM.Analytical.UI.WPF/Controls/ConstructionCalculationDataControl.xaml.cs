@@ -271,9 +271,9 @@ namespace SAM.Analytical.UI.WPF
                 HashSet<string> constructionNames = constructionCalculationData_Temp.ConstructionNames;
                 if(constructionNames != null && constructionNames.Count != 0)
                 {
-                    foreach(TreeViewItem treeViewItem in ListBox_Main.Items)
+                    foreach(ListBoxItem listBoxItem in ListBox_Main.Items)
                     {
-                        Construction construction = treeViewItem?.Tag as Construction;
+                        Construction construction = listBoxItem?.Tag as Construction;
                         if(construction == null)
                         {
                             continue;
@@ -284,7 +284,7 @@ namespace SAM.Analytical.UI.WPF
                             continue;
                         }
 
-                        ListBox_Main.SelectedItems.Add(treeViewItem);
+                        ListBox_Main.SelectedItems.Add(listBoxItem);
                     }
                 }
             }

@@ -4,6 +4,7 @@ using SAM.Core.UI;
 using SAM.Core.UI.WPF;
 using SAM.Core.Windows.Forms;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -23,24 +24,17 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<IAnalyticalObject> analyticalObjects = new List<IAnalyticalObject> ();
-
-            constructionManager.Constructions?.ForEach(x => analyticalObjects.Add(x));
-
-            System.Func<IAnalyticalObject, string> func_Text = new System.Func<IAnalyticalObject, string>(x => 
-            { 
-                return x is SAMObject ? ((SAMObject)x).Name :"???"; 
-            });
-
-            IAnalyticalObject analyticalObject = null;
-            using (ComboBoxForm<IAnalyticalObject> comboBoxForm = new ComboBoxForm<IAnalyticalObject>("Select Construction", analyticalObjects, func_Text))
+            SelectConstructionWindow selectConstructionWindow = new SelectConstructionWindow();
+            selectConstructionWindow.ConstructionManager = constructionManager;
+            if(selectConstructionWindow.ShowDialog() != true)
             {
-                if (comboBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
+                return;
+            }
 
-                analyticalObject = comboBoxForm.SelectedItem;
+            IAnalyticalObject analyticalObject = selectConstructionWindow.GetSelectedAnalyticalObject();
+            if(analyticalObject == null)
+            {
+                return;
             }
 
             IConstructionCalculationData constructionCalculationData = null;
@@ -59,41 +53,86 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ConstructionCalculationDataWindow constructionCalculationDataWindow = new ConstructionCalculationDataWindow();
-            constructionCalculationDataWindow.ConstructionManager = constructionManager;
-            constructionCalculationDataWindow.ConstructionCalculationData = constructionCalculationData;
-
-            bool? dialogResult = constructionCalculationDataWindow.ShowDialog();
-            if(dialogResult != true)
-            {
-                return;
-            }
-
-            constructionCalculationData = constructionCalculationDataWindow.ConstructionCalculationData;
-            if(constructionCalculationData == null)
-            {
-                return;
-            }
-
             ThermalTransmittanceCalculator thermalTransmittanceCalculator = new ThermalTransmittanceCalculator(constructionManager);
 
-            ProgressBarWindowManager progressBarWindowManager = progressBarWindowManager = new ProgressBarWindowManager();
-            progressBarWindowManager.Show("Calculate", "Calculating...");
-            List<IThermalTransmittanceCalculationResult> thermalTransmittanceCalculationResults = thermalTransmittanceCalculator.Calculate(new List<IThermalTransmittanceCalculationData>() { constructionCalculationData});
-            progressBarWindowManager.Close();
+            bool @continue = true;
 
-            if (thermalTransmittanceCalculationResults != null)
+            IThermalTransmittanceCalculationResult thermalTransmittanceCalculationResult = null;
+
+            while (@continue)
             {
-                foreach (IThermalTransmittanceCalculationResult thermalTransmittanceCalculationResult in thermalTransmittanceCalculationResults)
-                {
+                @continue = false;
 
-                    constructionManager.Update(thermalTransmittanceCalculationResult);
+                ConstructionCalculationDataWindow constructionCalculationDataWindow = new ConstructionCalculationDataWindow();
+                constructionCalculationDataWindow.ConstructionManager = constructionManager;
+                constructionCalculationDataWindow.ConstructionCalculationData = constructionCalculationData;
+
+                bool? dialogResult = constructionCalculationDataWindow.ShowDialog();
+                if (dialogResult != true)
+                {
+                    return;
                 }
 
-                analyticalModel = Analytical.Query.UpdateConstructions(analyticalModel, constructionManager);
-                analyticalModel = Analytical.Query.UpdateApertureConstructions(analyticalModel, constructionManager);
-                Tas.Modify.UpdateThermalParameters(analyticalModel);
+                constructionCalculationData = constructionCalculationDataWindow.ConstructionCalculationData;
+                if (constructionCalculationData == null)
+                {
+                    return;
+                }
+
+                ProgressBarWindowManager progressBarWindowManager = progressBarWindowManager = new ProgressBarWindowManager();
+                progressBarWindowManager.Show("Calculate", "Calculating...");
+
+                thermalTransmittanceCalculationResult = thermalTransmittanceCalculator.Calculate(constructionCalculationData);
+                progressBarWindowManager.Close();
+
+                if (thermalTransmittanceCalculationResult == null)
+                {
+                    MessageBox.Show("Could not calculate construction for given criteria.");
+                    @continue = true;
+                    continue;
+                }
+
+                if(thermalTransmittanceCalculationResult is ConstructionCalculationResult)
+                {
+                    if(double.IsNaN(((ConstructionCalculationResult)thermalTransmittanceCalculationResult).CalculatedThermalTransmittance))
+                    {
+                        MessageBox.Show("Could not calculate construction for given criteria.");
+                        @continue = true;
+                        continue;
+                    }
+                }
+                else if (thermalTransmittanceCalculationResult is LayerThicknessCalculationResult)
+                {
+                    if (double.IsNaN(((LayerThicknessCalculationResult)thermalTransmittanceCalculationResult).CalculatedThermalTransmittance))
+                    {
+                        MessageBox.Show("Could not calculate construction for given criteria.");
+                        @continue = true;
+                        continue;
+                    }
+                }
+
+                ConstructionCalculationResultWindow constructionCalculationResultWindow = new ConstructionCalculationResultWindow();
+                constructionCalculationResultWindow.ConstructionManager = constructionManager;
+                constructionCalculationResultWindow.ConstructionCalculationResult = thermalTransmittanceCalculationResult as IConstructionCalculationResult;
+
+                dialogResult = constructionCalculationResultWindow.ShowDialog();
+                if (dialogResult != true)
+                {
+                    @continue = true;
+                    continue;
+                }
             }
+
+            if(thermalTransmittanceCalculationResult == null)
+            {
+                return;
+            }
+
+            constructionManager.Update(thermalTransmittanceCalculationResult);
+
+            analyticalModel = Analytical.Query.UpdateConstructions(analyticalModel, constructionManager);
+            analyticalModel = Analytical.Query.UpdateApertureConstructions(analyticalModel, constructionManager);
+            Tas.Modify.UpdateThermalParameters(analyticalModel);
 
             uIAnalyticalModel.SetJSAMObject(analyticalModel, new FullModification());
         }

@@ -157,6 +157,18 @@
   <ItemGroup>
     <Compile Include="Classes\DisplayLayerThicknessCalculationResult.cs" />
     <Compile Include="Classes\NCMNameCollectionOptions.cs" />
+    <Compile Include="Windows\SelectConstructionWindow.xaml.cs">
+      <DependentUpon>SelectConstructionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ConstructionCalculationResultWindow.xaml.cs">
+      <DependentUpon>ConstructionCalculationResultWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ConstructionCalculationResultControl.xaml.cs">
+      <DependentUpon>ConstructionCalculationResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LayerThicknessCalculationResultControl.xaml.cs">
+      <DependentUpon>LayerThicknessCalculationResultControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\ThermalTransmittanceCalculator_SingleConstruction.cs" />
     <Compile Include="Windows\ConstructionCalculationDataWindow.xaml.cs">
       <DependentUpon>ConstructionCalculationDataWindow.xaml</DependentUpon>
@@ -517,6 +529,22 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Windows\SelectConstructionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ConstructionCalculationResultWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ConstructionCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LayerThicknessCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\ConstructionCalculationDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
