@@ -1,9 +1,6 @@
 ﻿using SAM.Analytical.Tas;
-using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
-using SAM.Core.Windows.Forms;
-using System.Collections.Generic;
 using System.Windows;
 
 namespace SAM.Analytical.UI.WPF
