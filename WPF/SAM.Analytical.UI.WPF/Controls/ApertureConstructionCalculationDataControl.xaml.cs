@@ -1,6 +1,8 @@
 ﻿using SAM.Analytical.Tas;
+using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -15,6 +17,21 @@ namespace SAM.Analytical.UI.WPF
         public ApertureConstructionCalculationDataControl()
         {
             InitializeComponent();
+
+            foreach (HeatFlowDirection heatFlowDirection in Enum.GetValues(typeof(HeatFlowDirection)))
+            {
+                if (heatFlowDirection == HeatFlowDirection.Undefined)
+                {
+                    continue;
+                }
+
+                ComboBox_HeatFlowDirection.Items.Add(Core.Query.Description(heatFlowDirection));
+            }
+
+            TextBox_PaneThermalTransmittance.PreviewTextInput += TextBox_PreviewTextInput_NumberOnly;
+            TextBox_FrameThermalTransmittance.PreviewTextInput += TextBox_PreviewTextInput_NumberOnly;
+            TextBox_MinThickness.PreviewTextInput += TextBox_PreviewTextInput_NumberOnly;
+            TextBox_MaxThickness.PreviewTextInput += TextBox_PreviewTextInput_NumberOnly;
         }
 
         public ApertureConstructionCalculationData ApertureConstructionCalculationData
@@ -163,6 +180,11 @@ namespace SAM.Analytical.UI.WPF
                 constructionManager = value;
                 SetApertureConstructionCalculationData(apertureConstructionCalculationData);
             }
+        }
+
+        private void TextBox_PreviewTextInput_NumberOnly(object sender, TextCompositionEventArgs e)
+        {
+            Core.Windows.EventHandler.ControlText_NumberOnly(sender, e);
         }
 
     }

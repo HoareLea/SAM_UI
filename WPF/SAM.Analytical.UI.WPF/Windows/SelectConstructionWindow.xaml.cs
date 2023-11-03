@@ -58,7 +58,10 @@ namespace SAM.Analytical.UI.WPF
                         name = "???";
                     }
 
-                    treeViewItem_Constructions.Items.Add(new TreeViewItem() { Header = name, Tag = construction });
+                    TreeViewItem treeViewItem = new TreeViewItem() { Header = name, Tag = construction };
+                    treeViewItem.MouseDoubleClick += TreeViewItem_MouseDoubleClick;
+
+                    treeViewItem_Constructions.Items.Add(treeViewItem);
                 }
 
                 treeViewItem_Constructions.IsExpanded = true;
@@ -85,9 +88,12 @@ namespace SAM.Analytical.UI.WPF
                         name = "???";
                     }
 
-                    TreeViewItem treeViewItem = apertureConstruction.ApertureType == ApertureType.Window ? treeViewItem_Windows : treeViewItem_Doors;
+                    TreeViewItem treeViewItem_Parent = apertureConstruction.ApertureType == ApertureType.Window ? treeViewItem_Windows : treeViewItem_Doors;
 
-                    treeViewItem.Items.Add(new TreeViewItem() { Header = name, Tag = apertureConstruction });
+                    TreeViewItem treeViewItem = new TreeViewItem() { Header = name, Tag = apertureConstruction };
+                    treeViewItem.MouseDoubleClick += TreeViewItem_MouseDoubleClick;
+
+                    treeViewItem_Parent.Items.Add(treeViewItem);
                 }
 
                 treeViewItem_Windows.IsExpanded = true;
@@ -96,6 +102,19 @@ namespace SAM.Analytical.UI.WPF
                 TreeView_Main.Items.Add(treeViewItem_Doors);
                 TreeView_Main.Items.Add(treeViewItem_Windows);
             }
+        }
+
+        private void TreeViewItem_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            IAnalyticalObject analyticalObject = GetSelectedAnalyticalObject();
+            if(analyticalObject == null)
+            {
+                return;
+            }
+
+            DialogResult = true;
+
+            Close();
         }
 
         private void Button_Cancel_Click(object sender, RoutedEventArgs e)

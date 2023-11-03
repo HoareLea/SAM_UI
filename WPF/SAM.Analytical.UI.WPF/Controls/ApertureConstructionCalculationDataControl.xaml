@@ -11,7 +11,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="200"/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name="ListBox_ApertureConstructions" Grid.Column="0" Margin="5, 5, 5, 5"/>
+        <ListBox x:Name="ListBox_ApertureConstructions" Grid.Column="0" Margin="5, 5, 5, 5" SelectionMode="Multiple"/>
         <Label Content="TARGET PARAMETERS" Grid.Column="1" Margin="5, 5, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch" FontWeight="Bold"/>
         <Label Content="Aperture Construction Name" Grid.Column="1" Margin="5, 25, 5, 5" VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
         <TextBox x:Name="TextBox_ApertureConstructionName" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Margin="5, 50, 5, 5" Height="22"></TextBox>

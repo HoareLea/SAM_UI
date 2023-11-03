@@ -8,7 +8,7 @@ namespace SAM.Analytical.UI.WPF
     public partial class ConstructionCalculationResultWindow : System.Windows.Window
     {
         private ConstructionManager constructionManager;
-        private IConstructionCalculationResult constructionCalculationResult;
+        private IThermalTransmittanceCalculationResult thermalTransmittanceCalculationResult;
 
         public ConstructionCalculationResultWindow()
         {
@@ -39,39 +39,43 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 constructionManager = value;
-                SetConstructionCalculationResult(constructionCalculationResult);
+                SetThermalTransmittanceCalculationResult(thermalTransmittanceCalculationResult);
             }
         }
 
-        public IConstructionCalculationResult ConstructionCalculationResult
+        public IThermalTransmittanceCalculationResult ThermalTransmittanceCalculationResult
         {
             get
             {
-                return constructionCalculationResult;
+                return thermalTransmittanceCalculationResult;
             }
 
             set
             {
-                SetConstructionCalculationResult(value);
+                SetThermalTransmittanceCalculationResult(value);
             }
         }
 
-        private void SetConstructionCalculationResult(IConstructionCalculationResult constructionCalculationResult)
+        private void SetThermalTransmittanceCalculationResult(IThermalTransmittanceCalculationResult thermalTransmittanceCalculationResult)
         {
             DockPanel_Main.Children.Clear();
 
-            if (constructionCalculationResult == null)
+            if (thermalTransmittanceCalculationResult == null)
             {
                 return;
             }
 
-            if(constructionCalculationResult is LayerThicknessCalculationResult)
+            if(thermalTransmittanceCalculationResult is LayerThicknessCalculationResult)
             {
-                DockPanel_Main.Children.Add(new LayerThicknessCalculationResultControl() { ConstructionManager = constructionManager, LayerThicknessCalculationResult = (LayerThicknessCalculationResult)constructionCalculationResult });
+                DockPanel_Main.Children.Add(new LayerThicknessCalculationResultControl() { ConstructionManager = constructionManager, LayerThicknessCalculationResult = (LayerThicknessCalculationResult)thermalTransmittanceCalculationResult });
             }
-            else if(constructionCalculationResult is ConstructionCalculationResult)
+            else if(thermalTransmittanceCalculationResult is ConstructionCalculationResult)
             {
-                DockPanel_Main.Children.Add(new ConstructionCalculationResultControl() { ConstructionManager = constructionManager, ConstructionCalculationResult = (ConstructionCalculationResult)constructionCalculationResult });
+                DockPanel_Main.Children.Add(new ConstructionCalculationResultControl() { ConstructionManager = constructionManager, ConstructionCalculationResult = (ConstructionCalculationResult)thermalTransmittanceCalculationResult });
+            }
+            else if(thermalTransmittanceCalculationResult is ApertureConstructionCalculationResult)
+            {
+                DockPanel_Main.Children.Add(new ApertureConstructionCalculationResultControl() { ConstructionManager = constructionManager, ApertureConstructionCalculationResult = (ApertureConstructionCalculationResult)thermalTransmittanceCalculationResult });
             }
         }
     }

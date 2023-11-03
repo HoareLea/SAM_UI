@@ -34,18 +34,28 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            IConstructionCalculationData constructionCalculationData = null;
+            IThermalTransmittanceCalculationData thermalTransmittanceCalculationData = null;
             if (analyticalObject is Construction)
             {
                 LayerThicknessCalculationData layerThicknessCalculationData = Tas.Create.LayerThicknessCalculationData((Construction)analyticalObject, constructionManager.MaterialLibrary);
                 if(layerThicknessCalculationData != null)
                 {
                     layerThicknessCalculationData.ThermalTransmittance = double.NaN;
-                    constructionCalculationData = layerThicknessCalculationData;
+                    thermalTransmittanceCalculationData = layerThicknessCalculationData;
+                }
+            }
+            else if(analyticalObject is ApertureConstruction)
+            {
+                ApertureConstructionCalculationData apertureConstructionCalculationData = Tas.Create.ApertureConstructionCalculationData((ApertureConstruction)analyticalObject, constructionManager);
+                if (apertureConstructionCalculationData != null)
+                {
+                    apertureConstructionCalculationData.PaneThermalTransmittance = double.NaN;
+                    apertureConstructionCalculationData.FrameThermalTransmittance = double.NaN;
+                    thermalTransmittanceCalculationData = apertureConstructionCalculationData;
                 }
             }
 
-            if(constructionCalculationData == null)
+            if(thermalTransmittanceCalculationData == null)
             {
                 return;
             }
@@ -60,18 +70,42 @@ namespace SAM.Analytical.UI.WPF
             {
                 @continue = false;
 
-                ConstructionCalculationDataWindow constructionCalculationDataWindow = new ConstructionCalculationDataWindow();
-                constructionCalculationDataWindow.ConstructionManager = constructionManager;
-                constructionCalculationDataWindow.ConstructionCalculationData = constructionCalculationData;
+                bool? dialogResult = null;
 
-                bool? dialogResult = constructionCalculationDataWindow.ShowDialog();
-                if (dialogResult != true)
+                if (thermalTransmittanceCalculationData is IConstructionCalculationData)
+                {
+                    ConstructionCalculationDataWindow constructionCalculationDataWindow = new ConstructionCalculationDataWindow();
+                    constructionCalculationDataWindow.ConstructionManager = constructionManager;
+                    constructionCalculationDataWindow.ConstructionCalculationData = (IConstructionCalculationData)thermalTransmittanceCalculationData;
+
+                    dialogResult = constructionCalculationDataWindow.ShowDialog();
+                    if (dialogResult != true)
+                    {
+                        return;
+                    }
+
+                    thermalTransmittanceCalculationData = constructionCalculationDataWindow.ConstructionCalculationData;
+                }
+                else if(thermalTransmittanceCalculationData is ApertureConstructionCalculationData)
+                {
+                    ApertureConstructionCalculationDataWindow apertureConstructionCalculationDataWindow = new ApertureConstructionCalculationDataWindow();
+                    apertureConstructionCalculationDataWindow.ConstructionManager = constructionManager;
+                    apertureConstructionCalculationDataWindow.ApertureConstructionCalculationData = (ApertureConstructionCalculationData)thermalTransmittanceCalculationData;
+
+                    dialogResult = apertureConstructionCalculationDataWindow.ShowDialog();
+                    if (dialogResult != true)
+                    {
+                        return;
+                    }
+
+                    thermalTransmittanceCalculationData = apertureConstructionCalculationDataWindow.ApertureConstructionCalculationData;
+                }
+                else
                 {
                     return;
                 }
 
-                constructionCalculationData = constructionCalculationDataWindow.ConstructionCalculationData;
-                if (constructionCalculationData == null)
+                if (thermalTransmittanceCalculationData == null)
                 {
                     return;
                 }
@@ -79,7 +113,7 @@ namespace SAM.Analytical.UI.WPF
                 ProgressBarWindowManager progressBarWindowManager = progressBarWindowManager = new ProgressBarWindowManager();
                 progressBarWindowManager.Show("Calculate", "Calculating...");
 
-                thermalTransmittanceCalculationResult = thermalTransmittanceCalculator.Calculate(constructionCalculationData);
+                thermalTransmittanceCalculationResult = thermalTransmittanceCalculator.Calculate(thermalTransmittanceCalculationData);
                 progressBarWindowManager.Close();
 
                 if (thermalTransmittanceCalculationResult == null)
@@ -110,7 +144,7 @@ namespace SAM.Analytical.UI.WPF
 
                 ConstructionCalculationResultWindow constructionCalculationResultWindow = new ConstructionCalculationResultWindow();
                 constructionCalculationResultWindow.ConstructionManager = constructionManager;
-                constructionCalculationResultWindow.ConstructionCalculationResult = thermalTransmittanceCalculationResult as IConstructionCalculationResult;
+                constructionCalculationResultWindow.ThermalTransmittanceCalculationResult = thermalTransmittanceCalculationResult;
 
                 dialogResult = constructionCalculationResultWindow.ShowDialog();
                 if (dialogResult != true)
