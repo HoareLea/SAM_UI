@@ -57,7 +57,7 @@ namespace SAM.Analytical.UI.WPF
             switch(constructionCalculationType)
             {
                 case ConstructionCalculationType.Constrcution:
-                    ListBox_Main.SelectionMode = SelectionMode.Multiple;
+                    ListBox_Main.SelectionMode = SelectionMode.Extended;
                     List<Construction> constructions = constructionManager?.Constructions;
                     if(constructions != null)
                     {
