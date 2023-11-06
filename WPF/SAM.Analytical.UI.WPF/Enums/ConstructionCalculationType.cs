@@ -21,6 +21,6 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>
         /// Construction
         /// </summary>
-        [Description("Constrcution")] Constrcution,
+        [Description("Construction")] Construction,
     }
 }

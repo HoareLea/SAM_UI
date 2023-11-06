@@ -56,7 +56,7 @@ namespace SAM.Analytical.UI.WPF
 
             switch(constructionCalculationType)
             {
-                case ConstructionCalculationType.Constrcution:
+                case ConstructionCalculationType.Construction:
                     ListBox_Main.SelectionMode = SelectionMode.Extended;
                     List<Construction> constructions = constructionManager?.Constructions;
                     if(constructions != null)
@@ -128,7 +128,7 @@ namespace SAM.Analytical.UI.WPF
 
             switch (ConstructionCalculationType)
             {
-                case ConstructionCalculationType.Constrcution:
+                case ConstructionCalculationType.Construction:
                     result = new ConstructionCalculationData();
                     break;
 
@@ -236,7 +236,7 @@ namespace SAM.Analytical.UI.WPF
         private void SetConstructionCalculationData(IConstructionCalculationData constructionCalculationData)
         {
             this.constructionCalculationData = constructionCalculationData;
-            ConstructionCalculationType = constructionCalculationData is ConstructionCalculationData ? ConstructionCalculationType.Constrcution : ConstructionCalculationType.LayerThickness;
+            ConstructionCalculationType = constructionCalculationData is ConstructionCalculationData ? ConstructionCalculationType.Construction : ConstructionCalculationType.LayerThickness;
 
             if(constructionCalculationData is ConstructionCalculationData)
             {
