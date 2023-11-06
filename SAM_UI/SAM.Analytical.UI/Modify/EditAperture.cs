@@ -48,7 +48,7 @@ namespace SAM.Analytical.UI
             {
                 panel.RemoveAperture(aperture.Guid);
                 panel.AddAperture(aperture);
-                adjacencyCluster.AddObject(aperture);
+                adjacencyCluster.AddObject(panel);
             }
 
             adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
