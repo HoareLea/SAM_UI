@@ -20,6 +20,14 @@ namespace SAM.Analytical.UI
                 return;
             }
 
+            if(jSAMObjects == null || jSAMObjects.Count == 0)
+            {
+                MessageBox.Show("No objects has been added");
+                return;
+            }
+
+            MessageBox.Show(jSAMObjects.Count == 1 ? string.Format("{0} object has been added to the model", jSAMObjects.Count) : string.Format("{0} objects have been added to the model", jSAMObjects.Count));
+
             uIAnalyticalModel.JSAMObject = analyticalModel;
         }
     }

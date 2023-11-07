@@ -1,4 +1,5 @@
-﻿using SAM.Core;
+﻿using SAM.Analytical.Windows;
+using SAM.Core;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI
@@ -13,7 +14,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            analyticalModel = Windows.Query.Import(analyticalModel, true, owner);
+            analyticalModel = Windows.Query.Import(analyticalModel, new ImportOptions(), owner);
             if(analyticalModel == null)
             {
                 return;
@@ -30,7 +31,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            analyticalModel = Windows.Query.Import<T>(analyticalModel, true, owner);
+            analyticalModel = Windows.Query.Import<T>(analyticalModel, new ImportOptions(), owner);
             if (analyticalModel == null)
             {
                 return;
