@@ -1,6 +1,8 @@
 ﻿using SAM.Analytical.Tas;
+using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
+using System.Linq;
 using System.Windows;
 
 namespace SAM.Analytical.UI.WPF
@@ -112,6 +114,30 @@ namespace SAM.Analytical.UI.WPF
 
                 ProgressBarWindowManager progressBarWindowManager = progressBarWindowManager = new ProgressBarWindowManager();
                 progressBarWindowManager.Show("Calculate", "Calculating...");
+
+                Log log = Tas.Create.Log(thermalTransmittanceCalculationData, constructionManager);
+                if(log != null && log.Count() != 0)
+                {
+                    Log log_Error = log.Filter(LogRecordType.Error);
+                    if(log_Error != null && log_Error.Count() != 0)
+                    {
+                        foreach(LogRecord logRecord in log)
+                        {
+                            if(string.IsNullOrWhiteSpace(logRecord?.Text))
+                            {
+                                continue;
+                            }
+
+                            progressBarWindowManager.Close();
+
+                            MessageBox.Show(string.Format("Calculations interrupted!\n{0}", logRecord.Text));
+                            break;
+                        }
+
+                        @continue = true;
+                        continue;
+                    }
+                }
 
                 thermalTransmittanceCalculationResult = thermalTransmittanceCalculator.Calculate(thermalTransmittanceCalculationData);
                 progressBarWindowManager.Close();
