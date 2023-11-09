@@ -64,6 +64,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\DependencyProperty.cs" />
+    <Compile Include="Classes\EventArgs\GettingTextEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\GettingCategoryEventArgs.cs" />
     <Compile Include="Classes\EventArgs\FilterRemovingEventArgs.cs" />
     <Compile Include="Classes\EventArgs\FilterChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectDoubleClickedEventArgs.cs" />
@@ -89,6 +91,14 @@
     <Compile Include="Create\IFilterControl.cs" />
     <Compile Include="Create\GeometryModel3D_Text.cs" />
     <Compile Include="Create\ModelVisual3D_Text.cs" />
+    <Compile Include="Delegates\GettingCategoryEventHandler.cs" />
+    <Compile Include="Delegates\GettingTextEventHandler.cs" />
+    <Compile Include="Controls\TreeViewControl.xaml.cs">
+      <DependentUpon>TreeViewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TreeViewWindow.xaml.cs">
+      <DependentUpon>TreeViewWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\DataGridWindow.xaml.cs">
       <DependentUpon>DataGridWindow.xaml</DependentUpon>
     </Compile>
@@ -303,6 +313,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\RelationClusterComplexReferenceControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TreeViewControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\TreeViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

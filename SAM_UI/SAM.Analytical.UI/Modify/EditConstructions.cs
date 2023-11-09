@@ -145,8 +145,6 @@ namespace SAM.Analytical.UI
                             document.save();
                         }
                     }
-
-
                 }
             }
             else
