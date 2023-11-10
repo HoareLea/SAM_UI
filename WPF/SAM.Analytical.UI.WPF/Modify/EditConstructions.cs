@@ -1,10 +1,13 @@
 ﻿using SAM.Analytical.Windows;
+using SAM.Analytical.Windows.Forms;
 using SAM.Core;
 using SAM.Core.Tas;
 using SAM.Core.Windows.Forms;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
+using TBD;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -29,10 +32,11 @@ namespace SAM.Analytical.UI.WPF
                 materialLibrary = new MaterialLibrary(string.Format("MaterialLibrary"));
             }
 
-            using (Analytical.Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Analytical.Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
+            using (ConstructionLibraryForm constructionLibraryForm = new Analytical.Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
             {
                 constructionLibraryForm.ConstructionManagerImporting += ConstructionLibraryForm_ConstructionManagerImporting;
                 constructionLibraryForm.ConstructionManagerExporting += ConstructionLibraryForm_ConstructionManagerExporting;
+                constructionLibraryForm.MultiSelect = true;
 
                 constructionLibraryForm.Text = "Constructions";
                 if (constructionLibraryForm.ShowDialog(owner) != DialogResult.OK)
@@ -105,10 +109,10 @@ namespace SAM.Analytical.UI.WPF
                     {
                         TCD.Document document = sAMTCDDocument.Document;
 
-                        List<IMaterial> materials = constructionManager.Materials;
+                        List<Core.IMaterial> materials = constructionManager.Materials;
                         if (materials != null)
                         {
-                            foreach (IMaterial material in materials)
+                            foreach (Core.IMaterial material in materials)
                             {
                                 if (!material.TryGetValue(ParameterizedSAMObjectParameter.Category, out Category category))
                                 {
@@ -210,6 +214,21 @@ namespace SAM.Analytical.UI.WPF
 
                 marqueeProgressForm.Close();
 
+                if (constructionManager?.Constructions == null || constructionManager?.Constructions.Count == 0)
+                {
+                    MessageBox.Show("Data could not be imported. No ApertureConstructions in source file.");
+                }
+
+                PanelType panelType = PanelType.Undefined;
+                using (ComboBoxForm<PanelType> comboBoxForm = new ComboBoxForm<PanelType>("PanelType", Enum.GetValues(typeof(PanelType)).Cast<PanelType>(), x => x == PanelType.Undefined ? string.Empty : x.Description()))
+                {
+                    comboBoxForm.SelectedItem = panelType;
+                    if (comboBoxForm.ShowDialog() == DialogResult.OK)
+                    {
+                        panelType = comboBoxForm.SelectedItem;
+                    }
+                }
+
                 Core.UI.WPF.TreeViewWindow treeViewWindow = new Core.UI.WPF.TreeViewWindow();
                 treeViewWindow.GettingCategory += TreeViewWindow_GettingCategory;
                 treeViewWindow.GettingText += TreeViewWindow_GettingText;
@@ -219,7 +238,18 @@ namespace SAM.Analytical.UI.WPF
                     return;
                 }
 
-                e.ConstructionManager = constructionManager.Filter(treeViewWindow.GetObjects<Construction>(), removeUnusedMaterials: true);
+                constructionManager = constructionManager.Filter(treeViewWindow.GetObjects<Construction>(), removeUnusedMaterials: true);
+                List<Construction> constructions = constructionManager?.Constructions;
+                if (constructions != null && panelType != PanelType.Undefined)
+                {
+                    foreach (Construction construction in constructions)
+                    {
+                        construction.SetValue(ConstructionParameter.DefaultPanelType, panelType);
+                        constructionManager.Add(construction);
+                    }
+                }
+
+                e.ConstructionManager = constructionManager;
             }
             else
             {
