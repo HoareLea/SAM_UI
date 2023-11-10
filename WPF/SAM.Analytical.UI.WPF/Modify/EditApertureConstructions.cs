@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace SAM.Analytical.UI
+namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
@@ -20,7 +20,7 @@ namespace SAM.Analytical.UI
 
             MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
 
-            using (Windows.Forms.ApertureConstructionLibraryForm apertureConstructionLibraryForm = new Windows.Forms.ApertureConstructionLibraryForm(materialLibrary, apertureConstructionLibrary))
+            using (Analytical.Windows.Forms.ApertureConstructionLibraryForm apertureConstructionLibraryForm = new Analytical.Windows.Forms.ApertureConstructionLibraryForm(materialLibrary, apertureConstructionLibrary))
             {
                 apertureConstructionLibraryForm.Text = "Aperture Constructions";
                 if (apertureConstructionLibraryForm.ShowDialog(owner) != DialogResult.OK)

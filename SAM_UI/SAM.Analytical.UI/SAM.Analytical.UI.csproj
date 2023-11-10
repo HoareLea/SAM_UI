@@ -173,7 +173,6 @@
     <Compile Include="Modify\DuplicateMaterial.cs" />
     <Compile Include="Modify\EditAddressAndLocation.cs" />
     <Compile Include="Modify\EditAperture.cs" />
-    <Compile Include="Modify\EditApertureConstructions.cs" />
     <Compile Include="Modify\EditInternalCondition.cs" />
     <Compile Include="Modify\EditInternalConditions.cs" />
     <Compile Include="Modify\EditLibrary.cs" />
