@@ -785,6 +785,62 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.AssignSpaceInternalCondition(uIAnalyticalModel, spaces);
         }
 
+        private void MenuItem_AssignConstruction_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = null;
+            if (menuItem.Tag is Panel)
+            {
+                panels = new List<Panel>() { (Panel)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                panels = new List<Panel>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Panel)
+                    {
+                        panels.Add((Panel)@object);
+                    }
+                }
+            }
+
+            Modify.AssignPanelConstruction(uIAnalyticalModel, panels);
+        }
+
+        private void MenuItem_AssignApertureApertureConstruction_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Aperture> apertures = null;
+            if (menuItem.Tag is Aperture)
+            {
+                apertures = new List<Aperture>() { (Aperture)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                apertures = new List<Aperture>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Aperture)
+                    {
+                        apertures.Add((Aperture)@object);
+                    }
+                }
+            }
+
+            Modify.AssignApertureApertureConstruction(uIAnalyticalModel, apertures);
+        }
+
         private void MenuItem_Close_TabItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -2389,10 +2445,28 @@ namespace SAM.Analytical.UI.WPF.Windows
                 if (apertures != null && apertures.Count > 0)
                 {
                     menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_AssignApertureConstruction";
+                    menuItem.Header = "Assign Aperture Consctruction";
+                    menuItem.Click += MenuItem_AssignApertureApertureConstruction_Click;
+                    menuItem.Tag = apertures;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_EditOpeningProperties";
                     menuItem.Header = "Opening Properties";
                     menuItem.Click += MenuItem_EditOpeningProperties_Click;
                     menuItem.Tag = apertures;
+                    contextMenu.Items.Add(menuItem);
+                }
+
+                List<Panel> panels = jSAMObjects.FindAll(x => x is Panel).ConvertAll(x => (Panel)x);
+                if (panels != null && panels.Count > 0)
+                {
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_AssignConstruction";
+                    menuItem.Header = "Assign Consctruction";
+                    menuItem.Click += MenuItem_AssignConstruction_Click;
+                    menuItem.Tag = panels;
                     contextMenu.Items.Add(menuItem);
                 }
             }
