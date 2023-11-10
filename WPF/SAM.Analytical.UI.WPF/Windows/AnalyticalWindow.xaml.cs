@@ -2446,7 +2446,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 {
                     menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_AssignApertureConstruction";
-                    menuItem.Header = "Assign Aperture Consctruction";
+                    menuItem.Header = "Assign Aperture Construction";
                     menuItem.Click += MenuItem_AssignApertureApertureConstruction_Click;
                     menuItem.Tag = apertures;
                     contextMenu.Items.Add(menuItem);
@@ -2464,7 +2464,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 {
                     menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_AssignConstruction";
-                    menuItem.Header = "Assign Consctruction";
+                    menuItem.Header = "Assign Construction";
                     menuItem.Click += MenuItem_AssignConstruction_Click;
                     menuItem.Tag = panels;
                     contextMenu.Items.Add(menuItem);
