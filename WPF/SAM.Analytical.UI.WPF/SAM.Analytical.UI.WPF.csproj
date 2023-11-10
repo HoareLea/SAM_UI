@@ -158,6 +158,7 @@
     <Compile Include="Controls\ApertureConstructionCalculationResultControl.xaml.cs">
       <DependentUpon>ApertureConstructionCalculationResultControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modify\EditConstructions.cs" />
     <Compile Include="Windows\ApertureConstructionCalculationDataWindow.xaml.cs">
       <DependentUpon>ApertureConstructionCalculationDataWindow.xaml</DependentUpon>
     </Compile>

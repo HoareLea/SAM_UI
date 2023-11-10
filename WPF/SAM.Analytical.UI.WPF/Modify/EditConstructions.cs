@@ -1,14 +1,12 @@
-﻿using SAM.Analytical.Tas;
-using SAM.Analytical.Windows;
+﻿using SAM.Analytical.Windows;
 using SAM.Core;
 using SAM.Core.Tas;
 using SAM.Core.Windows.Forms;
-using SAM.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-namespace SAM.Analytical.UI
+namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
@@ -31,7 +29,7 @@ namespace SAM.Analytical.UI
                 materialLibrary = new MaterialLibrary(string.Format("MaterialLibrary"));
             }
 
-            using (Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
+            using (Analytical.Windows.Forms.ConstructionLibraryForm constructionLibraryForm = new Analytical.Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
             {
                 constructionLibraryForm.ConstructionManagerImporting += ConstructionLibraryForm_ConstructionManagerImporting;
                 constructionLibraryForm.ConstructionManagerExporting += ConstructionLibraryForm_ConstructionManagerExporting;
@@ -173,7 +171,7 @@ namespace SAM.Analytical.UI
 
         }
 
-        private static void ConstructionLibraryForm_ConstructionManagerImporting(object sender, Windows.ConstructionManagerImportingEventArgs e)
+        private static void ConstructionLibraryForm_ConstructionManagerImporting(object sender, ConstructionManagerImportingEventArgs e)
         {
             IWin32Window win32Widnow = sender as IWin32Window;
 
@@ -208,18 +206,39 @@ namespace SAM.Analytical.UI
                 MarqueeProgressForm marqueeProgressForm = new MarqueeProgressForm("Importing");
                 marqueeProgressForm.Show();
 
-                e.ConstructionManager = Tas.Convert.ToSAM_ConstructionManager(path);
+                ConstructionManager constructionManager = Tas.Convert.ToSAM_ConstructionManager(path);
 
                 marqueeProgressForm.Close();
+
+                Core.UI.WPF.TreeViewWindow treeViewWindow = new Core.UI.WPF.TreeViewWindow();
+                treeViewWindow.GettingCategory += TreeViewWindow_GettingCategory;
+                treeViewWindow.GettingText += TreeViewWindow_GettingText;
+                treeViewWindow.SetObjects(constructionManager?.Constructions);
+                if(treeViewWindow.ShowDialog() != true)
+                {
+                    return;
+                }
+
+                e.ConstructionManager = constructionManager.Filter(treeViewWindow.GetObjects<Construction>(), removeUnusedMaterials: true);
             }
             else
             {
                 AnalyticalModel analyticalModel = new AnalyticalModel(Guid.NewGuid(), "Temporary AnalyticalModel");
                 Func<IJSAMObject, bool> func = new Func<IJSAMObject, bool>(x => { return x is Material || x is Construction; });
 
-                analyticalModel = Windows.Query.Import(analyticalModel, path, func, new ImportOptions() { UserSelection = false, SuppressMessages = false }, win32Widnow);
+                analyticalModel = Analytical.Windows.Query.Import(analyticalModel, path, func, new ImportOptions() { UserSelection = false, SuppressMessages = false }, win32Widnow);
                 e.ConstructionManager = analyticalModel?.ConstructionManager;
             }
+        }
+
+        private static void TreeViewWindow_GettingText(object sender, Core.UI.WPF.GettingTextEventArgs e)
+        {
+            e.Text = (e?.Object as Construction)?.Name;
+        }
+
+        private static void TreeViewWindow_GettingCategory(object sender, Core.UI.WPF.GettingCategoryEventArgs e)
+        {
+            e.Category = (e?.Object as Construction)?.GetValue<Category>(ParameterizedSAMObjectParameter.Category);
         }
     }
 }
