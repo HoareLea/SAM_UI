@@ -241,7 +241,12 @@ namespace SAM.Analytical.UI.WPF
                             continue;
                         }
 
-                        if(construction.TryGetValue(Tas.ConstructionParameter.AdditionalHeatTransfer, out double additionalHeatTransfer) && !double.IsNaN(additionalHeatTransfer) && additionalHeatTransfer != 0)
+                        if (construction.TryGetValue(ConstructionParameter.Description, out string description) && description != null)
+                        {
+                            apertureConstruction.SetValue(ApertureConstructionParameter.Description, description);
+                        }
+
+                        if (construction.TryGetValue(Tas.ConstructionParameter.AdditionalHeatTransfer, out double additionalHeatTransfer) && !double.IsNaN(additionalHeatTransfer) && additionalHeatTransfer != 0)
                         {
                             apertureConstruction.SetValue(Tas.ApertureConstructionParameter.AdditionalHeatTransfer, additionalHeatTransfer);
                         }
