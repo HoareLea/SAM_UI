@@ -1,4 +1,5 @@
-﻿using SAM.Analytical.Windows;
+﻿using SAM.Analytical.Tas;
+using SAM.Analytical.Windows;
 using SAM.Core;
 using SAM.Core.Tas;
 using SAM.Core.Windows.Forms;
@@ -106,10 +107,19 @@ namespace SAM.Analytical.UI.WPF
                         {
                             foreach (IMaterial material in materials)
                             {
+                                if(material == null)
+                                {
+                                    continue;
+                                }
+                                
                                 if (!material.TryGetValue(ParameterizedSAMObjectParameter.Category, out Category category))
                                 {
                                     category = new Category(document.materialRoot.name);
                                 }
+
+                                TCD.MaterialFolder materialFolder = Tas.Convert.ToTCD_MaterialFolder(category, document);
+
+                                material.ToTCD(materialFolder);
                             }
                         }
 
