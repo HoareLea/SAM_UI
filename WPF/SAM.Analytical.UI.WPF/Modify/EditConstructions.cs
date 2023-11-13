@@ -32,7 +32,7 @@ namespace SAM.Analytical.UI.WPF
                 materialLibrary = new MaterialLibrary(string.Format("MaterialLibrary"));
             }
 
-            using (ConstructionLibraryForm constructionLibraryForm = new Analytical.Windows.Forms.ConstructionLibraryForm(materialLibrary, constructionLibrary))
+            using (ConstructionLibraryForm constructionLibraryForm = new ConstructionLibraryForm(materialLibrary, constructionLibrary))
             {
                 constructionLibraryForm.ConstructionManagerImporting += ConstructionLibraryForm_ConstructionManagerImporting;
                 constructionLibraryForm.ConstructionManagerExporting += ConstructionLibraryForm_ConstructionManagerExporting;
@@ -210,7 +210,7 @@ namespace SAM.Analytical.UI.WPF
                 MarqueeProgressForm marqueeProgressForm = new MarqueeProgressForm("Importing");
                 marqueeProgressForm.Show();
 
-                ConstructionManager constructionManager = Tas.Convert.ToSAM_ConstructionManager(path);
+                ConstructionManager constructionManager = Tas.Convert.ToSAM_ConstructionManager(path, 0.0001);
 
                 marqueeProgressForm.Close();
 
