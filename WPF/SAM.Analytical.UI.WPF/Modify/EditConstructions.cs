@@ -118,6 +118,8 @@ namespace SAM.Analytical.UI.WPF
                                 if (!material.TryGetValue(ParameterizedSAMObjectParameter.Category, out Category category))
                                 {
                                     category = new Category(document.materialRoot.name);
+                                    MaterialType materialType = material.MaterialType();
+                                    category = Core.Create.Category(materialType.ToString(), category);
                                 }
 
                                 TCD.MaterialFolder materialFolder = Tas.Convert.ToTCD_MaterialFolder(category, document);
