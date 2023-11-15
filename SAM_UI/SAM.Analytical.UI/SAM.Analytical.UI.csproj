@@ -177,7 +177,6 @@
     <Compile Include="Modify\EditInternalConditions.cs" />
     <Compile Include="Modify\EditLibrary.cs" />
     <Compile Include="Modify\EditMaterial.cs" />
-    <Compile Include="Modify\EditMaterialLibrary.cs" />
     <Compile Include="Modify\EditPanel.cs" />
     <Compile Include="Modify\EditProfile.cs" />
     <Compile Include="Modify\EditProfileLibrary.cs" />

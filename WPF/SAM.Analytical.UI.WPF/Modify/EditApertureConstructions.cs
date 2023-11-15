@@ -46,7 +46,7 @@ namespace SAM.Analytical.UI.WPF
             uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
         }
 
-        private static void ApertureConstructionLibraryForm_ConstructionManagerExporting(object sender, Analytical.Windows.ConstructionManagerExportingEventArgs e)
+        private static void ApertureConstructionLibraryForm_ConstructionManagerExporting(object sender, ConstructionManagerExportingEventArgs e)
         {
             IWin32Window win32Widnow = sender as IWin32Window;
 
@@ -178,7 +178,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private static void ApertureConstructionLibraryForm_ConstructionManagerImporting(object sender, Analytical.Windows.ConstructionManagerImportingEventArgs e)
+        private static void ApertureConstructionLibraryForm_ConstructionManagerImporting(object sender, ConstructionManagerImportingEventArgs e)
         {
             IWin32Window win32Widnow = sender as IWin32Window;
 
@@ -233,8 +233,8 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 Core.UI.WPF.TreeViewWindow treeViewWindow = new Core.UI.WPF.TreeViewWindow();
-                treeViewWindow.GettingCategory += TreeViewWindow_GettingCategory;
-                treeViewWindow.GettingText += TreeViewWindow_GettingText;
+                treeViewWindow.GettingCategory += TreeViewWindow_GettingConstructionCategory;
+                treeViewWindow.GettingText += TreeViewWindow_GettingConstructionText;
                 treeViewWindow.SetObjects(constructionManager?.Constructions);
                 if (treeViewWindow.ShowDialog() != true)
                 {

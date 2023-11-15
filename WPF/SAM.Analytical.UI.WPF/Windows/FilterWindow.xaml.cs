@@ -163,7 +163,7 @@ namespace SAM.Analytical.UI.WPF
 
         private List<IJSAMObject>  GetFilteredSAMObjects()
         {
-            Core.IFilter filter = UIFilter.Transform();
+            IFilter filter = UIFilter.Transform();
 
             UI.Modify.AssignAdjacencyCluster(filter, adjacencyCluster);
 

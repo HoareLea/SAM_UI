@@ -162,6 +162,7 @@
     <Compile Include="Modify\AssignPanelConstruction.cs" />
     <Compile Include="Modify\EditApertureConstructions.cs" />
     <Compile Include="Modify\EditConstructions.cs" />
+    <Compile Include="Modify\EditMaterialLibrary.cs" />
     <Compile Include="Windows\ApertureConstructionCalculationDataWindow.xaml.cs">
       <DependentUpon>ApertureConstructionCalculationDataWindow.xaml</DependentUpon>
     </Compile>

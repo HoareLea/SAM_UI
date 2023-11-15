@@ -1214,7 +1214,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             List<AboutInfoType> abouInfoTypes = Enum.GetValues(typeof(AboutInfoType)).Cast<AboutInfoType>().ToList();
 
-            using (Core.Windows.Forms.ComboBoxForm<AboutInfoType> comboBoxForm = new Core.Windows.Forms.ComboBoxForm<AboutInfoType>("Info", abouInfoTypes, x => x.Description()))
+            using (ComboBoxForm<AboutInfoType> comboBoxForm = new ComboBoxForm<AboutInfoType>("Info", abouInfoTypes, x => x.Description()))
             {
                 if(comboBoxForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
@@ -1757,7 +1757,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            using (Core.Windows.Forms.TextBoxForm<string> textBoxControl = new Core.Windows.Forms.TextBoxForm<string>("Guid", "Insert Guids"))
+            using (TextBoxForm<string> textBoxControl = new TextBoxForm<string>("Guid", "Insert Guids"))
             {
                 if (textBoxControl.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
@@ -2668,7 +2668,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                     List<SAMObject> sAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
                     if (sAMObjects != null)
                     {
-                        using (Core.Windows.Forms.JsonForm<SAMObject> jsonForm = new Core.Windows.Forms.JsonForm<SAMObject>(sAMObjects))
+                        using (JsonForm<SAMObject> jsonForm = new JsonForm<SAMObject>(sAMObjects))
                         {
                             jsonForm.ShowDialog();
 

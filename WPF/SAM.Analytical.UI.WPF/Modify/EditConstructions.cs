@@ -237,8 +237,8 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 Core.UI.WPF.TreeViewWindow treeViewWindow = new Core.UI.WPF.TreeViewWindow();
-                treeViewWindow.GettingCategory += TreeViewWindow_GettingCategory;
-                treeViewWindow.GettingText += TreeViewWindow_GettingText;
+                treeViewWindow.GettingCategory += TreeViewWindow_GettingConstructionCategory;
+                treeViewWindow.GettingText += TreeViewWindow_GettingConstructionText;
                 treeViewWindow.SetObjects(constructionManager?.Constructions);
                 if(treeViewWindow.ShowDialog() != true)
                 {
@@ -268,12 +268,12 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private static void TreeViewWindow_GettingText(object sender, Core.UI.WPF.GettingTextEventArgs e)
+        private static void TreeViewWindow_GettingConstructionText(object sender, Core.UI.WPF.GettingTextEventArgs e)
         {
             e.Text = (e?.Object as Construction)?.Name;
         }
 
-        private static void TreeViewWindow_GettingCategory(object sender, Core.UI.WPF.GettingCategoryEventArgs e)
+        private static void TreeViewWindow_GettingConstructionCategory(object sender, Core.UI.WPF.GettingCategoryEventArgs e)
         {
             e.Category = (e?.Object as Construction)?.GetValue<Category>(ParameterizedSAMObjectParameter.Category);
         }

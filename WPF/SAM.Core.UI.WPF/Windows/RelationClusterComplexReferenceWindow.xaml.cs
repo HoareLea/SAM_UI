@@ -42,7 +42,7 @@ namespace SAM.Core.UI.WPF
             }
         }
 
-        public System.Type Type
+        public Type Type
         {
             get
             {
