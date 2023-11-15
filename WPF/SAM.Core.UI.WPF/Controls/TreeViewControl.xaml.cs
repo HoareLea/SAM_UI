@@ -126,7 +126,7 @@ namespace SAM.Core.UI.WPF
 
             foreach(TreeViewItem treeViewItem in itemCollection)
             {
-                if(treeViewItem == null)
+                if(treeViewItem == null || treeViewItem.Tag != null)
                 {
                     continue;
                 }
