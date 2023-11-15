@@ -39,11 +39,12 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 apertureConstructionLibrary = apertureConstructionLibraryForm.ApertureConstructionLibrary;
+                materialLibrary = apertureConstructionLibraryForm.MaterialLibrary;
             }
 
             adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
 
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster);
+            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
         }
 
         private static void ApertureConstructionLibraryForm_ConstructionManagerExporting(object sender, ConstructionManagerExportingEventArgs e)

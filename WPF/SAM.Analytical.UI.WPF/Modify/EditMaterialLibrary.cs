@@ -99,6 +99,7 @@ namespace SAM.Analytical.UI.WPF
                                 TCD.MaterialFolder materialFolder = Tas.Convert.ToTCD_MaterialFolder(category, document);
 
                                 material.ToTCD(materialFolder);
+                                result = true;
                             }
                         }
 
