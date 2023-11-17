@@ -73,6 +73,7 @@
     <Compile Include="Classes\EventArgs\FilterAddingEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectSelectionChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\RangeChangedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\CompareObjectsEventArgs.cs" />
     <Compile Include="Classes\ProgressBarWindowManager.cs" />
     <Compile Include="Classes\EventArgs\TextChangedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\ObjectHooveredEventArgs.cs" />
@@ -99,7 +100,8 @@
     <Compile Include="Controls\SingleSelectionTreeViewControl.xaml.cs">
       <DependentUpon>SingleSelectionTreeViewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SingleSelectionTreeViewWindow.xaml.cs">
+    <Compile Include="Delegates\CompareObjectsEventHandler.cs" />
+    <Compile Include="Windows\SingleSelectionTreeViewWindow.xaml.cs">
       <DependentUpon>SingleSelectionTreeViewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MultipleSelectionTreeViewWindow.xaml.cs">
@@ -330,7 +332,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SingleSelectionTreeViewWindow.xaml">
+    <Page Include="Windows\SingleSelectionTreeViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

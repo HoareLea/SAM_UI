@@ -10,6 +10,7 @@ namespace SAM.Core.UI.WPF
     {
         public event GettingTextEventHandler GettingText;
         public event GettingCategoryEventHandler GettingCategory;
+        public event CompareObjectsEventHandler CompareObjects;
 
         public SingleSelectionTreeViewWindow()
         {
@@ -17,6 +18,12 @@ namespace SAM.Core.UI.WPF
 
             SingleSelectionTreeViewControl_Main.GettingText += SingleSelectionTreeViewControl_Main_GettingText;
             SingleSelectionTreeViewControl_Main.GettingCategory += SingleSelectionTreeViewControl_Main_GettingCategory;
+            SingleSelectionTreeViewControl_Main.CompareObjects += SingleSelectionTreeViewControl_Main_CompareObjects;
+        }
+
+        private void SingleSelectionTreeViewControl_Main_CompareObjects(object sender, CompareObjectsEventArgs e)
+        {
+            CompareObjects?.Invoke(this, e);
         }
 
         private void SingleSelectionTreeViewControl_Main_GettingCategory(object sender, GettingCategoryEventArgs e)
@@ -45,7 +52,7 @@ namespace SAM.Core.UI.WPF
 
         public T GetObject<T>()
         {
-            return SingleSelectionTreeViewControl_Main.GetObject<T>();
+            return SingleSelectionTreeViewControl_Main.GetSlecledObject<T>();
         }
 
         public void SetObjects<T>(IEnumerable<T> objects)
@@ -64,6 +71,11 @@ namespace SAM.Core.UI.WPF
             {
                 SingleSelectionTreeViewControl_Main.UndefinedText = value;
             }
+        }
+
+        public bool ExpandAll(bool expand = true)
+        {
+            return SingleSelectionTreeViewControl_Main.ExpandAll(expand);
         }
     }
 }

@@ -158,6 +158,13 @@
     <Compile Include="Controls\ApertureConstructionCalculationResultControl.xaml.cs">
       <DependentUpon>ApertureConstructionCalculationResultControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\GlazingCalculationControl.xaml.cs">
+      <DependentUpon>GlazingCalculationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\CalculateGlazing.cs" />
+    <Compile Include="Windows\GlazingCalculationWindow.xaml.cs">
+      <DependentUpon>GlazingCalculationWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\AssignApertureApertureConstruction.cs" />
     <Compile Include="Modify\AssignPanelConstruction.cs" />
     <Compile Include="Modify\EditApertureConstructions.cs" />
@@ -544,6 +551,14 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\ApertureConstructionCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GlazingCalculationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\GlazingCalculationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

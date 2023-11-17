@@ -13,6 +13,7 @@ namespace SAM.Core.UI.WPF
 
         public event GettingTextEventHandler GettingText;
         public event GettingCategoryEventHandler GettingCategory;
+        public event CompareObjectsEventHandler CompareObjects;
 
         public SingleSelectionTreeViewControl()
         {
@@ -40,7 +41,7 @@ namespace SAM.Core.UI.WPF
                 {
                     GettingCategoryEventArgs gettingCategoryEventArgs = new GettingCategoryEventArgs(@object);
                     GettingCategory.Invoke(this, gettingCategoryEventArgs);
-                    treeViewItem = GetTreeViewItem(TreeView_Main.Items, gettingCategoryEventArgs.Category);
+                    treeViewItem = UpdateTreeViewItem(TreeView_Main.Items, gettingCategoryEventArgs.Category);
                 }
 
                 ItemCollection itemCollection = treeViewItem == null ? TreeView_Main.Items : treeViewItem.Items;
@@ -49,7 +50,7 @@ namespace SAM.Core.UI.WPF
                     continue;
                 }
 
-                TreeViewItem treeViewItem_New = GetTreeViewItem(@object);
+                TreeViewItem treeViewItem_New = UpdateTreeViewItem(@object);
                 if (treeViewItem_New == null)
                 {
                     continue;
@@ -59,7 +60,7 @@ namespace SAM.Core.UI.WPF
             }
         }
 
-        private TreeViewItem GetTreeViewItem(ItemCollection itemCollection, Category category)
+        private TreeViewItem UpdateTreeViewItem(ItemCollection itemCollection, Category category)
         {
             if (category == null || itemCollection == null)
             {
@@ -101,11 +102,11 @@ namespace SAM.Core.UI.WPF
             }
             else
             {
-                return GetTreeViewItem(result.Items, category.SubCategory);
+                return UpdateTreeViewItem(result.Items, category.SubCategory);
             }
         }
 
-        private TreeViewItem GetTreeViewItem(object @object)
+        private TreeViewItem UpdateTreeViewItem(object @object)
         {
             if (@object == null)
             {
@@ -133,11 +134,112 @@ namespace SAM.Core.UI.WPF
             return new TreeViewItem() { Header = text, Tag = @object };
         }
 
-        public T GetObject<T>()
+        public T GetSlecledObject<T>()
         {
             object @object = (TreeView_Main.SelectedItem as TreeViewItem)?.Tag;
 
             return @object is T ? (T)@object : default;
         }
+
+        public void SetSelectedObject<T>(T @object)
+        {
+            TreeViewItem treeViewItem = TreeView_Main.SelectedItem as TreeViewItem;
+            if(treeViewItem != null)
+            {
+                treeViewItem.IsSelected = false;
+            }
+
+            if(@object == null)
+            {
+                return;
+            }
+
+            treeViewItem = GetTreeViewItem(@object);
+            if(treeViewItem == null)
+            {
+                return;
+            }
+
+            treeViewItem.IsSelected = true;
+        }
+
+        public TreeViewItem GetTreeViewItem(object @object, ItemCollection itemCollection = null)
+        {
+            if(@object == null)
+            {
+                return null;
+            }
+
+            if(itemCollection == null)
+            {
+                itemCollection = TreeView_Main.Items;
+            }
+
+            if(itemCollection == null)
+            {
+                return null;
+            }
+
+            foreach(TreeViewItem treeViewItem in itemCollection)
+            {
+                if(treeViewItem.Tag != null)
+                {
+                    CompareObjectsEventArgs compareObjectsEventArgs = new CompareObjectsEventArgs(@object, treeViewItem.Tag);
+                    CompareObjects?.Invoke(this, compareObjectsEventArgs);
+                    if (compareObjectsEventArgs != null && compareObjectsEventArgs.Equals != null && compareObjectsEventArgs.Equals.HasValue)
+                    {
+                        if (compareObjectsEventArgs.Equals.Value)
+                        {
+                            return treeViewItem;
+                        }
+                    }
+                    else
+                    {
+                        if (treeViewItem.Tag == @object)
+                        {
+                            return treeViewItem;
+                        }
+                    }
+                }
+
+                if(treeViewItem.Items != null && treeViewItem.Items.Count != 0)
+                {
+                    TreeViewItem result = GetTreeViewItem(@object, treeViewItem.Items);
+                    if(result != null)
+                    {
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private bool ExpandAll(ItemCollection itemCollection, bool expand)
+        {
+            if(itemCollection == null)
+            {
+                return false;
+            }
+
+            foreach(TreeViewItem treeViewItem in itemCollection)
+            {
+                treeViewItem.IsExpanded = expand;
+
+                if(treeViewItem.Items != null && treeViewItem.Items.Count != 0)
+                {
+                    ExpandAll(treeViewItem.Items, expand);
+                }
+            }
+
+            return true;
+        }
+
+        public bool ExpandAll(bool expand = true)
+        {
+            return ExpandAll(TreeView_Main.Items, expand);
+        }
+
+
     }
 }
