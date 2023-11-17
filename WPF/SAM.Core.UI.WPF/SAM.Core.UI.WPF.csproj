@@ -93,11 +93,17 @@
     <Compile Include="Create\ModelVisual3D_Text.cs" />
     <Compile Include="Delegates\GettingCategoryEventHandler.cs" />
     <Compile Include="Delegates\GettingTextEventHandler.cs" />
-    <Compile Include="Controls\TreeViewControl.xaml.cs">
-      <DependentUpon>TreeViewControl.xaml</DependentUpon>
+    <Compile Include="Controls\MultipleSelectionTreeViewControl.xaml.cs">
+      <DependentUpon>MultipleSelectionTreeViewControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\TreeViewWindow.xaml.cs">
-      <DependentUpon>TreeViewWindow.xaml</DependentUpon>
+    <Compile Include="Controls\SingleSelectionTreeViewControl.xaml.cs">
+      <DependentUpon>SingleSelectionTreeViewControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SingleSelectionTreeViewWindow.xaml.cs">
+      <DependentUpon>SingleSelectionTreeViewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\MultipleSelectionTreeViewWindow.xaml.cs">
+      <DependentUpon>MultipleSelectionTreeViewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\DataGridWindow.xaml.cs">
       <DependentUpon>DataGridWindow.xaml</DependentUpon>
@@ -316,11 +322,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\TreeViewControl.xaml">
+    <Page Include="Controls\MultipleSelectionTreeViewControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\TreeViewWindow.xaml">
+    <Page Include="Controls\SingleSelectionTreeViewControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SingleSelectionTreeViewWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MultipleSelectionTreeViewWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

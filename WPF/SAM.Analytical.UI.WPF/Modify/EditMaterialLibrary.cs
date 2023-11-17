@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System;
 using System.Windows.Forms;
 using SAM.Core.UI.WPF;
-using System.Linq;
 using SAM.Analytical.Tas;
 using SAM.Core.Tas;
 
@@ -169,7 +168,7 @@ namespace SAM.Analytical.UI.WPF
                     MessageBox.Show("Data could not be imported. No Materials in source file.");
                 }
 
-                TreeViewWindow treeViewWindow = new TreeViewWindow();
+                MultipleSelectionTreeViewWindow treeViewWindow = new MultipleSelectionTreeViewWindow();
                 treeViewWindow.GettingCategory += TreeViewWindow_GettingMaterialCategory;
                 treeViewWindow.GettingText += TreeViewWindow_GettingMaterialText;
                 treeViewWindow.SetObjects(constructionManager?.Materials);

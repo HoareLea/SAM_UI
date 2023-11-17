@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace SAM.Core.UI.WPF
 {
     /// <summary>
-    /// Interaction logic for TreeViewControl.xaml
+    /// Interaction logic for MultipleSelectionTreeViewControl.xaml
     /// </summary>
-    public partial class TreeViewControl : UserControl
+    public partial class MultipleSelectionTreeViewControl : UserControl
     {
         public string UndefinedText { get; set; } = "???";
         
         public event GettingTextEventHandler GettingText;
         public event GettingCategoryEventHandler GettingCategory;
 
-        public TreeViewControl()
+        public MultipleSelectionTreeViewControl()
         {
             InitializeComponent();
         }
