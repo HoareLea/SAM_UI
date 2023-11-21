@@ -50,13 +50,13 @@ namespace SAM.Analytical.UI.WPF
                     double lightTransmittance_Min_Temp = glazingCalculationData.LightTransmittanceRange.Min;
                     if (!double.IsNaN(lightTransmittance_Min_Temp))
                     {
-                        lightTransmittance_Min = lightTransmittance + lightTransmittance_Min_Temp;
+                        lightTransmittance_Min = lightTransmittance_Min_Temp;
                     }
 
                     double lightTransmittance_Max_Temp = glazingCalculationData.LightTransmittanceRange.Max;
                     if (!double.IsNaN(lightTransmittance_Max_Temp))
                     {
-                        lightTransmittance_Max = lightTransmittance + lightTransmittance_Max_Temp;
+                        lightTransmittance_Max = lightTransmittance_Max_Temp;
                     }
                 }
 
@@ -76,13 +76,13 @@ namespace SAM.Analytical.UI.WPF
 
             if (!double.IsNaN(totalSolarEnergyTransmittance_Min) && !double.IsNaN(totalSolarEnergyTransmittance_Max) && !double.IsNaN(glazingCalculationResult.TotalSolarEnergyTransmittance))
             {
-                Range<double> range = new Range<double>(totalSolarEnergyTransmittance_Min, totalSolarEnergyTransmittance_Max);
+                Range<double> range = new Range<double>(totalSolarEnergyTransmittance + totalSolarEnergyTransmittance_Min, totalSolarEnergyTransmittance + totalSolarEnergyTransmittance_Max);
                 criterias[0] = range.In(glazingCalculationResult.TotalSolarEnergyTransmittance, tolerance);
             }
 
             if (!double.IsNaN(lightTransmittance_Min) && !double.IsNaN(lightTransmittance_Max) && !double.IsNaN(glazingCalculationResult.LightTransmittance))
             {
-                Range<double> range = new Range<double>(lightTransmittance_Min, lightTransmittance_Max);
+                Range<double> range = new Range<double>(lightTransmittance + lightTransmittance_Min, lightTransmittance + lightTransmittance_Max);
                 criterias[1] = range.In(glazingCalculationResult.LightTransmittance, tolerance);
             }
 

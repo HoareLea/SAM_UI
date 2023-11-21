@@ -37,7 +37,7 @@ namespace SAM.Analytical.UI.WPF
                     factor_Result_Temp = factor_Result_Nullable.Value;
                 }
 
-                double? factor_Data_Nullable = displayGlazingCalculationResult_Temp.GlazingCalculationResult?.Factor;
+                double? factor_Data_Nullable = displayGlazingCalculationResult_Temp.GlazingCalculationData?.Factor;
 
                 double factor_Data_Temp = double.NaN;
                 if (factor_Data_Nullable != null && factor_Data_Nullable.HasValue)
@@ -68,7 +68,7 @@ namespace SAM.Analytical.UI.WPF
                     if (tuples_Temp_Temp != null && tuples_Temp_Temp.Count != 0)
                     {
                         tuples_Temp.RemoveAll(x => tuples_Temp_Temp.Contains(x));
-                        tuples_Temp_Temp.Sort((x, y) => Math.Abs(x.Item1 - x.Item2).CompareTo(Math.Abs(y.Item1 - y.Item2)));
+                        tuples_Temp_Temp.Sort((x, y) => Math.Abs(y.Item1 - y.Item2).CompareTo(Math.Abs(x.Item1 - x.Item2)));
                         foreach (Tuple<double, double, Criteria, DisplayGlazingCalculationResult> tuple in tuples_Temp_Temp)
                         {
                             tuple.Item4.Index = index;
