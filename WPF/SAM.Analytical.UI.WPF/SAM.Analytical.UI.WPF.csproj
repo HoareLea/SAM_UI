@@ -15,6 +15,10 @@
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
   </PropertyGroup>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -155,15 +159,26 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DisplayGlazingCalculationResult.cs" />
     <Compile Include="Controls\ApertureConstructionCalculationResultControl.xaml.cs">
       <DependentUpon>ApertureConstructionCalculationResultControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\GlazingCalculationControl.xaml.cs">
-      <DependentUpon>GlazingCalculationControl.xaml</DependentUpon>
+    <Compile Include="Controls\GlazingCalculationDataControl.xaml.cs">
+      <DependentUpon>GlazingCalculationDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GlazingCalculationResultControl.xaml.cs">
+      <DependentUpon>GlazingCalculationResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Enums\Criteria.cs" />
+    <Compile Include="Modify\AssignIndexes.cs" />
+    <Compile Include="Modify\SortByIndex.cs" />
+    <Compile Include="Windows\GlazingCalculationResultWindow.xaml.cs">
+      <DependentUpon>GlazingCalculationResultWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\CalculateGlazing.cs" />
-    <Compile Include="Windows\GlazingCalculationWindow.xaml.cs">
-      <DependentUpon>GlazingCalculationWindow.xaml</DependentUpon>
+    <Compile Include="Query\Criteria.cs" />
+    <Compile Include="Windows\GlazingCalculationDataWindow.xaml.cs">
+      <DependentUpon>GlazingCalculationDataWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Modify\AssignApertureApertureConstruction.cs" />
     <Compile Include="Modify\AssignPanelConstruction.cs" />
@@ -554,11 +569,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\GlazingCalculationControl.xaml">
+    <Page Include="Controls\GlazingCalculationDataControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\GlazingCalculationWindow.xaml">
+    <Page Include="Controls\GlazingCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\GlazingCalculationResultWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\GlazingCalculationDataWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -112,7 +112,7 @@ namespace SAM.Analytical.UI.WPF
                     return;
                 }
 
-                ProgressBarWindowManager progressBarWindowManager = progressBarWindowManager = new ProgressBarWindowManager();
+                ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager();
                 progressBarWindowManager.Show("Calculate", "Calculating...");
 
                 Log log = Tas.Create.Log(thermalTransmittanceCalculationData, constructionManager);

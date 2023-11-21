@@ -6,9 +6,9 @@ namespace SAM.Analytical.UI.WPF
     /// <summary>
     /// Interaction logic for GlazingCalculationWindow.xaml
     /// </summary>
-    public partial class GlazingCalculationWindow : System.Windows.Window
+    public partial class GlazingCalculationDataWindow : System.Windows.Window
     {
-        public GlazingCalculationWindow()
+        public GlazingCalculationDataWindow()
         {
             InitializeComponent();
         }

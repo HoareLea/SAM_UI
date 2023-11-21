@@ -9,11 +9,11 @@ namespace SAM.Analytical.UI.WPF
     /// <summary>
     /// Interaction logic for GlazingCalculationControl.xaml
     /// </summary>
-    public partial class GlazingCalculationControl : UserControl
+    public partial class GlazingCalculationDataControl : UserControl
     {
         private ConstructionManager constructionManager;
 
-        public GlazingCalculationControl()
+        public GlazingCalculationDataControl()
         {
             InitializeComponent();
 
@@ -146,7 +146,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (Core.Query.TryConvert(TextBox_LightTransmittance.Text, out value))
             {
-                result.TotalSolarEnergyTransmittance = value;
+                result.LightTransmittance = value;
             }
 
             if (Core.Query.TryConvert(TextBox_LightTransmittance_ToleranceMax.Text, out max) && Core.Query.TryConvert(TextBox_LightTransmittance_ToleranceMin.Text, out min))
@@ -156,7 +156,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (Core.Query.TryConvert(TextBox_MaxThickness.Text, out max) && Core.Query.TryConvert(TextBox_MinThickness.Text, out min))
             {
-                result.LightTransmittanceRange = new Range<double>(-System.Math.Abs(min), max);
+                result.ThicknessRange = new Range<double>(-System.Math.Abs(min), max);
             }
 
             return result;
