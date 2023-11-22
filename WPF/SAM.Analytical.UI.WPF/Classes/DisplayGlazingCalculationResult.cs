@@ -244,5 +244,38 @@ namespace SAM.Analytical.UI.WPF
 
             return GlazingCalculationData.ConstructionGuid == guid;
         }
+
+        public double GetScore()
+        {
+            if(GlazingCalculationData == null || glazingCalculationResult == null)
+            {
+                return double.NaN;
+            }
+
+            if (double.IsNaN(GlazingCalculationData.LightTransmittance) && double.IsNaN(GlazingCalculationData.TotalSolarEnergyTransmittance))
+            {
+                return double.NaN;
+            }
+
+            if (double.IsNaN(glazingCalculationResult.LightTransmittance) && double.IsNaN(glazingCalculationResult.TotalSolarEnergyTransmittance))
+            {
+                return double.NaN;
+            }
+
+            double result = Math.Abs(GlazingCalculationData.Factor - glazingCalculationResult.Factor);
+
+            if(!double.IsNaN(GlazingCalculationData.LightTransmittance) && !double.IsNaN(glazingCalculationResult.LightTransmittance))
+            {
+                result *= 10;
+            }
+
+            if (!double.IsNaN(GlazingCalculationData.TotalSolarEnergyTransmittance) && !double.IsNaN(glazingCalculationResult.TotalSolarEnergyTransmittance))
+            {
+                result *= 10;
+            }
+
+            return result;
+
+        }
     }
 }
