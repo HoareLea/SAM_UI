@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<Tuple<double, double, Criteria, DisplayGlazingCalculationResult>> tuples = new List<Tuple<double, double, Criteria, DisplayGlazingCalculationResult>>();
+            List<Tuple<double, Criteria, DisplayGlazingCalculationResult>> tuples = new List<Tuple<double, Criteria, DisplayGlazingCalculationResult>>();
             foreach(DisplayGlazingCalculationResult displayGlazingCalculationResult_Temp in displayGlazingCalculationResults)
             {
                 if(displayGlazingCalculationResult_Temp == null)
@@ -29,23 +29,9 @@ namespace SAM.Analytical.UI.WPF
                     criteria_Temp = criteria_Nullable.Value;
                 }
 
-                double? factor_Result_Nullable= displayGlazingCalculationResult_Temp.GlazingCalculationResult?.Factor;
+                double score = displayGlazingCalculationResult_Temp.GetScore();
 
-                double factor_Result_Temp = double.NaN;
-                if(factor_Result_Nullable != null && factor_Result_Nullable.HasValue)
-                {
-                    factor_Result_Temp = factor_Result_Nullable.Value;
-                }
-
-                double? factor_Data_Nullable = displayGlazingCalculationResult_Temp.GlazingCalculationData?.Factor;
-
-                double factor_Data_Temp = double.NaN;
-                if (factor_Data_Nullable != null && factor_Data_Nullable.HasValue)
-                {
-                    factor_Data_Temp = factor_Data_Nullable.Value;
-                }
-
-                tuples.Add(new Tuple<double, double, Criteria, DisplayGlazingCalculationResult>(factor_Result_Temp, factor_Data_Temp, criteria_Temp, displayGlazingCalculationResult_Temp));
+                tuples.Add(new Tuple<double, Criteria, DisplayGlazingCalculationResult>(score, criteria_Temp, displayGlazingCalculationResult_Temp));
             }
 
             if(tuples == null || tuples.Count == 0)
@@ -55,30 +41,30 @@ namespace SAM.Analytical.UI.WPF
 
             int index = 0;
 
-            List<Tuple<double, double, Criteria, DisplayGlazingCalculationResult>> tuples_Temp = null;
+            List<Tuple<double, Criteria, DisplayGlazingCalculationResult>> tuples_Temp = null;
 
             foreach(Criteria criteria in new Criteria[] { Criteria.All, Criteria.NotAll, Criteria.None, Criteria.Undefined})
             {
-                tuples_Temp = tuples.FindAll(x => x.Item3 == criteria);
+                tuples_Temp = tuples.FindAll(x => x.Item2 == criteria);
                 if (tuples_Temp != null && tuples_Temp.Count != 0)
                 {
                     tuples.RemoveAll(x => tuples_Temp.Contains(x));
 
-                    List<Tuple<double, double, Criteria, DisplayGlazingCalculationResult>> tuples_Temp_Temp = tuples_Temp.FindAll(x => !double.IsNaN(x.Item1) && !double.IsNaN(x.Item2));
+                    List<Tuple<double, Criteria, DisplayGlazingCalculationResult>> tuples_Temp_Temp = tuples_Temp.FindAll(x => !double.IsNaN(x.Item1));
                     if (tuples_Temp_Temp != null && tuples_Temp_Temp.Count != 0)
                     {
                         tuples_Temp.RemoveAll(x => tuples_Temp_Temp.Contains(x));
-                        tuples_Temp_Temp.Sort((x, y) => Math.Abs(y.Item1 - y.Item2).CompareTo(Math.Abs(x.Item1 - x.Item2)));
-                        foreach (Tuple<double, double, Criteria, DisplayGlazingCalculationResult> tuple in tuples_Temp_Temp)
+                        tuples_Temp_Temp.Sort((x, y) => x.Item1.CompareTo(y.Item1));
+                        foreach (Tuple<double, Criteria, DisplayGlazingCalculationResult> tuple in tuples_Temp_Temp)
                         {
-                            tuple.Item4.Index = index;
+                            tuple.Item3.Index = index;
                             index++;
                         }
                     }
 
-                    foreach (Tuple<double, double, Criteria, DisplayGlazingCalculationResult> tuple in tuples_Temp)
+                    foreach (Tuple<double, Criteria, DisplayGlazingCalculationResult> tuple in tuples_Temp)
                     {
-                        tuple.Item4.Index = index;
+                        tuple.Item3.Index = index;
                         index++;
                     }
                 }

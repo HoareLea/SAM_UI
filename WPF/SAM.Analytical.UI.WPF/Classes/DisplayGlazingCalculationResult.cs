@@ -1,5 +1,6 @@
 ﻿using SAM.Analytical.Tas;
 using System;
+using System.Runtime.Remoting.Messaging;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -262,19 +263,24 @@ namespace SAM.Analytical.UI.WPF
                 return double.NaN;
             }
 
-            double result = Math.Abs(GlazingCalculationData.Factor - glazingCalculationResult.Factor);
+            double lightTransmitanceFactor = !double.IsNaN(GlazingCalculationData.LightTransmittance) && !double.IsNaN(glazingCalculationResult.LightTransmittance) ? 10 : 1;
+            double totalSolarEnergyTransmittanceFactor = !double.IsNaN(GlazingCalculationData.TotalSolarEnergyTransmittance) && !double.IsNaN(glazingCalculationResult.TotalSolarEnergyTransmittance) ? 10 : 1;
 
-            if(!double.IsNaN(GlazingCalculationData.LightTransmittance) && !double.IsNaN(glazingCalculationResult.LightTransmittance))
+            double? score_Data = Tas.Query.Score(GlazingCalculationData.TotalSolarEnergyTransmittance, GlazingCalculationData.LightTransmittance, totalSolarEnergyTransmittanceFactor, lightTransmitanceFactor);
+            if(score_Data == null || !score_Data.HasValue)
             {
-                result *= 10;
+                return double.NaN;
+            }
+            
+            double? score_Result = Tas.Query.Score(glazingCalculationResult.TotalSolarEnergyTransmittance, glazingCalculationResult.LightTransmittance, totalSolarEnergyTransmittanceFactor, lightTransmitanceFactor);
+            if (score_Result == null || !score_Result.HasValue)
+            {
+                return double.NaN;
             }
 
-            if (!double.IsNaN(GlazingCalculationData.TotalSolarEnergyTransmittance) && !double.IsNaN(glazingCalculationResult.TotalSolarEnergyTransmittance))
-            {
-                result *= 10;
-            }
 
-            return result;
+            return Math.Abs(score_Data.Value - score_Result.Value);
+
 
         }
     }
