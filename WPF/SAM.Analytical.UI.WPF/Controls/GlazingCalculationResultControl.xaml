@@ -20,7 +20,7 @@
                 <DataGridTextColumn Header="Lt Value" Binding="{Binding LightTransmittance}" Visibility="Visible"/>
                 <DataGridTextColumn Header="U Value" Binding="{Binding ThermalTransmittance}" Visibility="Visible"/>
                 <DataGridTextColumn Header="Thickness" Binding="{Binding Thickness}" Visibility="Visible"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Visibility="Visible" Width="100"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding TypeName}" Visibility="Visible" Width="100"/>
                 <DataGridTextColumn Header="Criteria" Binding="{Binding Criteria}" Visibility="Hidden"/>
             </DataGrid.Columns>
         </DataGrid>
@@ -33,7 +33,7 @@
                 <DataGridTextColumn Header="Lt Value" Binding="{Binding LightTransmittance}" Visibility="Visible"/>
                 <DataGridTextColumn Header="U Value" Binding="{Binding ThermalTransmittance}" Visibility="Visible"/>
                 <DataGridTextColumn Header="Thickness" Binding="{Binding Thickness}" Visibility="Visible"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Visibility="Visible" Width="100"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding TypeName}" Visibility="Visible" Width="100"/>
                 <DataGridTextColumn Header="Criteria" Binding="{Binding Criteria}" Visibility="Hidden"/>
             </DataGrid.Columns>
             <DataGrid.RowStyle>

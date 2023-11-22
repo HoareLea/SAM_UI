@@ -150,7 +150,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public Enum? Type
+        public Enum Type
         {
             get
             {
@@ -168,6 +168,20 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 return null;
+            }
+        }
+
+        public string TypeName
+        {
+            get
+            {
+                Enum type = Type;
+                if(type == null)
+                {
+                    return null;
+                }
+
+                return type.ToString();
             }
         }
 
