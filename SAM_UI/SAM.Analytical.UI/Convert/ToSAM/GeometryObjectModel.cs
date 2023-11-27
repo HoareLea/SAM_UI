@@ -212,33 +212,40 @@ namespace SAM.Analytical.UI
                             continue;
                         }
 
-                        Face3D face3D = panel.GetFace3D(true);
-
-                        List<Face3D> face3Ds_FixEdges = face3D.FixEdges();
-                        if (face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
-                        {
-                            if (face3Ds_FixEdges.Count != 1)
-                            {
-                                face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
-                            }
-
-                            face3D = face3Ds_FixEdges.Find(x => x.IsValid());
-                        }
-
-                        if (face3D == null || !face3D.IsValid())
+                        List<Face3D> face3Ds = panel.GetFace3Ds(true);
+                        if (face3Ds == null || face3Ds.Count == 0)
                         {
                             continue;
                         }
 
-                        List<Face3D> face3Ds = null;
+                        for (int i = 0; i < face3Ds.Count; i++)
+                        {
+                            List<Face3D> face3Ds_FixEdges = face3Ds[i].FixEdges();
+                            if (face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
+                            {
+                                if (face3Ds_FixEdges.Count != 1)
+                                {
+                                    face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
+                                }
+
+                                face3Ds[i] = face3Ds_FixEdges.Find(x => x.IsValid());
+                            }
+                        }
+
                         if (planes != null && planes.Count != 0)
                         {
-                            face3Ds = face3D.Cut(planes);
-                            face3Ds = face3Ds.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.GetCentroid(), 0)));
-                        }
-                        else
-                        {
-                            face3Ds = new List<Face3D>() { face3D };
+                            List<Face3D> face3Ds_Temp = new List<Face3D>();
+                            foreach (Face3D face3D in face3Ds)
+                            {
+                                List<Face3D> face3Ds_Cut = face3D.Cut(planes);
+                                face3Ds_Cut = face3Ds_Cut?.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.GetCentroid(), 0)));
+                                if(face3Ds_Cut != null && face3Ds_Cut.Count != 0)
+                                {
+                                    face3Ds_Temp.AddRange(face3Ds_Cut);
+                                }
+                            }
+
+                            face3Ds = face3Ds_Temp;
                         }
 
                         if (face3Ds == null || face3Ds.Count == 0)
