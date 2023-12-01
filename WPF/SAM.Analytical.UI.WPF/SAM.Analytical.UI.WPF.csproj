@@ -175,6 +175,7 @@
     <Compile Include="Controls\ThermalTransmittanceCalculationResultControl.xaml.cs">
       <DependentUpon>ThermalTransmittanceCalculationResultControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Modify\AssignApertureApertureConstructionByThermalTransmittance.cs" />
     <Compile Include="Modify\AssignPanelConstructionByThermalTransmittance.cs" />
     <Compile Include="Query\IsValid.cs" />
     <Compile Include="Windows\ThermalTransmittanceCalculationResultWindow.xaml.cs">

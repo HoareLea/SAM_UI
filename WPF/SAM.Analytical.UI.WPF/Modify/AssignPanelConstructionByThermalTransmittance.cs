@@ -43,7 +43,7 @@ namespace SAM.Analytical.UI.WPF
                     continue;
                 }
 
-                panels_Temp.Add(panel);
+                panels_Temp.Add(panel_Temp);
             }
 
             if(panels_Temp == null || panels_Temp.Count == 0)
