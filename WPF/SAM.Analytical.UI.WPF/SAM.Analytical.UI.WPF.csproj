@@ -159,7 +159,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ThermalTransmittanceFilter.cs" />
     <Compile Include="Classes\DisplayGlazingCalculationResult.cs" />
+    <Compile Include="Classes\DisplayThermalTransmittanceCalculationResult.cs" />
     <Compile Include="Controls\ApertureConstructionCalculationResultControl.xaml.cs">
       <DependentUpon>ApertureConstructionCalculationResultControl.xaml</DependentUpon>
     </Compile>
@@ -170,6 +172,14 @@
       <DependentUpon>GlazingCalculationResultControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Enums\Criteria.cs" />
+    <Compile Include="Controls\ThermalTransmittanceCalculationResultControl.xaml.cs">
+      <DependentUpon>ThermalTransmittanceCalculationResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\AssignPanelConstructionByThermalTransmittance.cs" />
+    <Compile Include="Query\IsValid.cs" />
+    <Compile Include="Windows\ThermalTransmittanceCalculationResultWindow.xaml.cs">
+      <DependentUpon>ThermalTransmittanceCalculationResultWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Modify\AssignIndexes.cs" />
     <Compile Include="Modify\SortByIndex.cs" />
     <Compile Include="Windows\GlazingCalculationResultWindow.xaml.cs">
@@ -574,6 +584,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\GlazingCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ThermalTransmittanceCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ThermalTransmittanceCalculationResultWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

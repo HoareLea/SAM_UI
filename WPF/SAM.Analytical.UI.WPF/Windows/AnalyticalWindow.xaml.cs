@@ -793,6 +793,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.AssignSpaceInternalCondition(uIAnalyticalModel, spaces);
         }
 
+        private void MenuItem_AssignConstructionByThermalTransmittance_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = null;
+            if (menuItem.Tag is Panel)
+            {
+                panels = new List<Panel>() { (Panel)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                panels = new List<Panel>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Panel)
+                    {
+                        panels.Add((Panel)@object);
+                    }
+                }
+            }
+
+            Modify.AssignPanelConstructionByThermalTransmittance(uIAnalyticalModel, panels);
+        }
+
         private void MenuItem_AssignConstruction_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
@@ -2474,6 +2502,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Name = "MenuItem_AssignConstruction";
                     menuItem.Header = "Assign Construction";
                     menuItem.Click += MenuItem_AssignConstruction_Click;
+                    menuItem.Tag = panels;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_AssignConstructionByThermalTransmittance";
+                    menuItem.Header = "Assign Construction By UValue";
+                    menuItem.Click += MenuItem_AssignConstructionByThermalTransmittance_Click; ;
                     menuItem.Tag = panels;
                     contextMenu.Items.Add(menuItem);
                 }
