@@ -12,8 +12,8 @@
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <local:GlazingCalculationResultControl x:Name="GlazingCalculationResultControl_Main" Grid.Row="0" Margin="0,0,0,0"></local:GlazingCalculationResultControl>
-        <RadioButton x:Name="RadioButton_Replace" Grid.Row="1" Content="Replace" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,5,180,5" IsChecked="True"/>
-        <RadioButton Grid.Row="1" Content="Apply Layers" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,5,250,5"/>
+        <RadioButton x:Name="RadioButton_Replace" Grid.Row="1" Content="Replace" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,5,180,5"/>
+        <RadioButton Grid.Row="1" Content="Apply Layers" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5,5,250,5" IsChecked="True"/>
         <Button x:Name="Button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,5,10,5" Width="70" HorizontalAlignment="Right" Click="Button_Cancel_Click"></Button>
         <Button x:Name="Button_OK" Content="OK" Grid.Row="1" Margin="0,5,85,5" HorizontalAlignment="Right" Width="70" Click="Button_OK_Click"/>        
     </Grid>
