@@ -5,13 +5,13 @@ namespace SAM.Analytical.UI.WPF
     public class ThermalTransmittanceFilter
     {
         public double LightTransmittance = double.NaN;
-        public Range<double> LightTransmittanceRange = new Range<double>(-0.2, 0.0);
+        public Range<double> LightTransmittanceRange = new Range<double>(-0.02, 0.0);
 
         public double TotalSolarEnergyTransmittance = double.NaN;
-        public Range<double> TotalSolarEnergyTransmittanceRange = new Range<double>(-0.2, 0.0);
+        public Range<double> TotalSolarEnergyTransmittanceRange = new Range<double>(-0.02, 0.0);
 
         public double ThermalTransmittance = double.NaN;
-        public Range<double> ThermalTransmittanceRange = new Range<double>(-0.2, 0.0);
+        public Range<double> ThermalTransmittanceRange = new Range<double>(-0.02, 0.0);
 
         public ThermalTransmittanceFilter()
         {
