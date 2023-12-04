@@ -1,5 +1,6 @@
 ﻿using SAM.Analytical.Tas;
 using System;
+using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -123,13 +124,21 @@ namespace SAM.Analytical.UI.WPF
                 Construction construction = Construction;
                 if (construction != null)
                 {
-                    PanelType panelType = construction.PanelType();
-                    if(panelType == PanelType.Undefined)
+                    bool transparent = construction.Transparent(ConstructionManager?.MaterialLibrary);
+                    if(transparent)
                     {
-                        panelType = PanelType.WallExternal;
+                        result = thermalTransmittanceCalculationResult?.GetTransparentThermalTransmittance();
                     }
+                    else
+                    {
+                        PanelType panelType = construction.PanelType();
+                        if (panelType == PanelType.Undefined)
+                        {
+                            panelType = PanelType.WallExternal;
+                        }
 
-                    result = thermalTransmittanceCalculationResult?.GetThermalTransmittance(panelType);
+                        result = thermalTransmittanceCalculationResult?.GetThermalTransmittance(panelType);
+                    } 
                 }
                 else
                 {
