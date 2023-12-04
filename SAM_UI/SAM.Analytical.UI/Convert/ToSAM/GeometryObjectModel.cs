@@ -212,33 +212,40 @@ namespace SAM.Analytical.UI
                             continue;
                         }
 
-                        Face3D face3D = panel.GetFace3D(true);
-
-                        List<Face3D> face3Ds_FixEdges = face3D.FixEdges();
-                        if (face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
-                        {
-                            if (face3Ds_FixEdges.Count != 1)
-                            {
-                                face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
-                            }
-
-                            face3D = face3Ds_FixEdges.Find(x => x.IsValid());
-                        }
-
-                        if (face3D == null || !face3D.IsValid())
+                        List<Face3D> face3Ds = panel.GetFace3Ds(true);
+                        if (face3Ds == null || face3Ds.Count == 0)
                         {
                             continue;
                         }
 
-                        List<Face3D> face3Ds = null;
+                        for (int i = 0; i < face3Ds.Count; i++)
+                        {
+                            List<Face3D> face3Ds_FixEdges = face3Ds[i].FixEdges();
+                            if (face3Ds_FixEdges != null && face3Ds_FixEdges.Count != 0)
+                            {
+                                if (face3Ds_FixEdges.Count != 1)
+                                {
+                                    face3Ds_FixEdges.Sort((x, y) => y.GetArea().CompareTo(x.GetArea()));
+                                }
+
+                                face3Ds[i] = face3Ds_FixEdges.Find(x => x.IsValid());
+                            }
+                        }
+
                         if (planes != null && planes.Count != 0)
                         {
-                            face3Ds = face3D.Cut(planes);
-                            face3Ds = face3Ds.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.GetCentroid(), 0)));
-                        }
-                        else
-                        {
-                            face3Ds = new List<Face3D>() { face3D };
+                            List<Face3D> face3Ds_Temp = new List<Face3D>();
+                            foreach (Face3D face3D in face3Ds)
+                            {
+                                List<Face3D> face3Ds_Cut = face3D.Cut(planes);
+                                face3Ds_Cut = face3Ds_Cut?.FindAll(x => planes.TrueForAll(y => Geometry.Spatial.Query.Above(y, x.GetCentroid(), 0)));
+                                if (face3Ds_Cut != null && face3Ds_Cut.Count != 0)
+                                {
+                                    face3Ds_Temp.AddRange(face3Ds_Cut);
+                                }
+                            }
+
+                            face3Ds = face3Ds_Temp;
                         }
 
                         if (face3Ds == null || face3Ds.Count == 0)
@@ -651,7 +658,7 @@ namespace SAM.Analytical.UI
 
                             farthestPointDistance = Math.Max(distance, farthestPointDistance);
                         }
-                        Rectangle2D rectangle2D = new Rectangle2D(new Point2D(point2D.X + width/2, point2D.Y + height/2), width, height);
+                        Rectangle2D rectangle2D = new Rectangle2D(new Point2D(point2D.X + width / 2, point2D.Y + height / 2), width, height);
 
                         Solver2DData solver2DData = new Solver2DData(rectangle2D, point2D);
                         solver2DData.Tag = new Tuple<Space, List<Face2D>, string, Point2D>(keyValuePair.Key, keyValuePair.Value, name, point2D);
@@ -677,20 +684,20 @@ namespace SAM.Analytical.UI
 
                     // Check if solver2DResults is null
                     // Add shifted labels from solver2DResults to tuples
-                    if(solver2DResults != null)
+                    if (solver2DResults != null)
                     {
                         foreach (Solver2DResult solver2DResult in solver2DResults)
                         {
                             Solver2DData solver2DData = solver2DResult.Solver2DData;
                             Tuple<Space, List<Face2D>, string, Point2D> tuple = solver2DData.Tag as Tuple<Space, List<Face2D>, string, Point2D>;
-                        
-                            if(tuple == null)
+
+                            if (tuple == null)
                             {
                                 continue;
                             }
 
                             Rectangle2D rectangle2D = solver2DResult.Closed2D<Rectangle2D>();
-                            if(rectangle2D != null)
+                            if (rectangle2D != null)
                             {
                                 tuple = new Tuple<Space, List<Face2D>, string, Point2D>(tuple.Item1, tuple.Item2, tuple.Item3, rectangle2D.GetCentroid());
                             }

@@ -793,6 +793,62 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.AssignSpaceInternalCondition(uIAnalyticalModel, spaces);
         }
 
+        private void MenuItem_AssignApertureConstruction_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Aperture> apertures = null;
+            if (menuItem.Tag is Aperture)
+            {
+                apertures = new List<Aperture>() { (Aperture)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                apertures = new List<Aperture>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Aperture)
+                    {
+                        apertures.Add((Aperture)@object);
+                    }
+                }
+            }
+
+            Modify.AssignApertureApertureConstruction(uIAnalyticalModel, apertures);
+        }
+        
+        private void MenuItem_AssignApertureConstructionByThermalTransmittance_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Aperture> apertures = null;
+            if (menuItem.Tag is Aperture)
+            {
+                apertures = new List<Aperture>() { (Aperture)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                apertures = new List<Aperture>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Aperture)
+                    {
+                        apertures.Add((Aperture)@object);
+                    }
+                }
+            }
+
+            Modify.AssignApertureApertureConstructionByThermalTransmittance(uIAnalyticalModel, apertures);
+        }
+
         private void MenuItem_AssignConstruction_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
@@ -821,7 +877,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.AssignPanelConstruction(uIAnalyticalModel, panels);
         }
 
-        private void MenuItem_AssignApertureApertureConstruction_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_AssignConstructionByThermalTransmittance_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
             if (menuItem == null)
@@ -829,24 +885,24 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            List<Aperture> apertures = null;
-            if (menuItem.Tag is Aperture)
+            List<Panel> panels = null;
+            if (menuItem.Tag is Panel)
             {
-                apertures = new List<Aperture>() { (Aperture)menuItem.Tag };
+                panels = new List<Panel>() { (Panel)menuItem.Tag };
             }
             else if (menuItem.Tag is IEnumerable)
             {
-                apertures = new List<Aperture>();
+                panels = new List<Panel>();
                 foreach (object @object in (IEnumerable)menuItem.Tag)
                 {
-                    if (@object is Aperture)
+                    if (@object is Panel)
                     {
-                        apertures.Add((Aperture)@object);
+                        panels.Add((Panel)@object);
                     }
                 }
             }
 
-            Modify.AssignApertureApertureConstruction(uIAnalyticalModel, apertures);
+            Modify.AssignPanelConstructionByThermalTransmittance(uIAnalyticalModel, panels);
         }
 
         private void MenuItem_Close_TabItem_Click(object sender, RoutedEventArgs e)
@@ -2455,7 +2511,14 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_AssignApertureConstruction";
                     menuItem.Header = "Assign Aperture Construction";
-                    menuItem.Click += MenuItem_AssignApertureApertureConstruction_Click;
+                    menuItem.Click += MenuItem_AssignApertureConstruction_Click;
+                    menuItem.Tag = apertures;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_AssignApertureConstructionByThermalTransmittance";
+                    menuItem.Header = "Assign Aperture Construction By gValue";
+                    menuItem.Click += MenuItem_AssignApertureConstructionByThermalTransmittance_Click; ;
                     menuItem.Tag = apertures;
                     contextMenu.Items.Add(menuItem);
 
@@ -2474,6 +2537,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Name = "MenuItem_AssignConstruction";
                     menuItem.Header = "Assign Construction";
                     menuItem.Click += MenuItem_AssignConstruction_Click;
+                    menuItem.Tag = panels;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_AssignConstructionByThermalTransmittance";
+                    menuItem.Header = "Assign Construction By UValue";
+                    menuItem.Click += MenuItem_AssignConstructionByThermalTransmittance_Click;
                     menuItem.Tag = panels;
                     contextMenu.Items.Add(menuItem);
                 }

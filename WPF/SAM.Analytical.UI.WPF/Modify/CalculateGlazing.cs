@@ -44,7 +44,7 @@ namespace SAM.Analytical.UI.WPF
             progressBarWindowManager.Show("Calculate", "Calculating...");
 
             ThermalTransmittanceCalculator thermalTransmittanceCalculator = new ThermalTransmittanceCalculator(constructionManager);
-            List<GlazingCalculationResult> glazingCalculationResults = thermalTransmittanceCalculator.Calculate();
+            List<GlazingCalculationResult> glazingCalculationResults = thermalTransmittanceCalculator.CalculateGlazing();
 
             progressBarWindowManager.Close();
 
