@@ -12,7 +12,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            using (Windows.Forms.AnalyticalModelForm analyticalModelForm = new Windows.Forms.AnalyticalModelForm(analyticalModel, Core.Query.Enums(typeof(Panel))))
+            using (Windows.Forms.AnalyticalModelForm analyticalModelForm = new Windows.Forms.AnalyticalModelForm(analyticalModel, Core.Query.Enums(typeof(AnalyticalModel))))
             {
                 if(analyticalModelForm.ShowDialog(owner) != DialogResult.OK)
                 {
