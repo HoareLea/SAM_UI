@@ -29,7 +29,7 @@
                 <ComboBox x:Name="comboBox_SolarCalculationMethod" Margin="10,60,10,0" VerticalAlignment="Top"/>
                 <CheckBox x:Name="checkBox_FullYearSimulation" Content="Full Year Simulation" HorizontalAlignment="Left" Margin="13,115,0,0" VerticalAlignment="Top" Checked="checkBox_FullYearSimulation_Checked" Unchecked="checkBox_FullYearSimulation_Unchecked"/>
                 <CheckBox x:Name="checkBox_UnmetHours" Content="Unmet Hours" HorizontalAlignment="Left" Margin="13,135,0,0" VerticalAlignment="Top"/>
-                <CheckBox x:Name="checkBox_CreateTPD" Content="Create TPD" HorizontalAlignment="Left" Margin="13,155,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkBox_CreateTPD" Content="Create TPD" HorizontalAlignment="Left" Margin="13,155,0,0" VerticalAlignment="Top" Checked="checkBox_CreateTPD_Checked" Unchecked="checkBox_CreateTPD_Unchecked"/>
                 <CheckBox x:Name="checkBox_Sizing" Content="Sizing" HorizontalAlignment="Left" Margin="13,95,0,0" VerticalAlignment="Top"/>
                 <CheckBox x:Name="checkBox_UseWidths" Content="Use Widths" HorizontalAlignment="Left" Margin="13,10,0,0" VerticalAlignment="Top"/>
                 <Label x:Name="label_FullYearSimulation_From" Content="From:" HorizontalAlignment="Left" Margin="171,109,0,0" VerticalAlignment="Top"/>

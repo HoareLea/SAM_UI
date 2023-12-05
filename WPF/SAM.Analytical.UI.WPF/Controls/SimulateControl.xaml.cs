@@ -521,5 +521,16 @@ namespace SAM.Analytical.UI.WPF
         {
             EnableFullYearSimulation();
         }
+
+        private void checkBox_CreateTPD_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            checkBox_FullYearSimulation.IsChecked = true;
+            checkBox_FullYearSimulation.IsEnabled = false;
+        }
+
+        private void checkBox_CreateTPD_Unchecked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            checkBox_FullYearSimulation.IsEnabled = true;
+        }
     }
 }
