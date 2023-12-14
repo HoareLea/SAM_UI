@@ -406,7 +406,7 @@ namespace SAM.Analytical.UI.WPF
         private void Button_ComplexReference_Click(object sender, RoutedEventArgs e)
         {
             RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
-            relationClusterComplexReferenceWindow.RelationCluster = adjacencyCluster;
+            relationClusterComplexReferenceWindow.RelationCluster = new RelationCluster(adjacencyCluster);
             relationClusterComplexReferenceWindow.Type = typeof(Space);
             relationClusterComplexReferenceWindow.TypesEnabled = false;
 

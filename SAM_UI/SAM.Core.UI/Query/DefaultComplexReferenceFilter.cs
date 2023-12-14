@@ -4,19 +4,19 @@ namespace SAM.Core.UI
 {
     public static partial class Query
     {
-        public static ComplexReferenceFilter DefaultComplexReferenceFilter(this IComplexReference complexReference, RelationCluster relationCluster)
+        public static ComplexReferenceFilter DefaultComplexReferenceFilter(this IComplexReference complexReference, ISAMObjectRelationCluster sAMObjectRelationCluster)
         {
-            ComplexReferenceFilter result = new ComplexReferenceTextFilter() { CaseSensitive = true, ComplexReference = complexReference, RelationCluster = relationCluster, TextComparisonType = TextComparisonType.Contains};
+            ComplexReferenceFilter result = new ComplexReferenceTextFilter() { CaseSensitive = true, ComplexReference = complexReference, TextComparisonType = TextComparisonType.Contains, SAMObjectRelationCluster = sAMObjectRelationCluster };
 
-            if (complexReference == null || relationCluster == null)
+            if (complexReference == null || sAMObjectRelationCluster == null)
             {
                 return result;
             }
 
-            List<object> values = relationCluster.GetValues(complexReference)?.FindAll(x => x != null);
+            List<object> values = sAMObjectRelationCluster.GetValues(complexReference)?.FindAll(x => x != null);
             if (values != null && values.Count > 0 && values.TrueForAll(x => Core.Query.IsNumeric(x) && !(x is System.Enum)))
             {
-                return new ComplexReferenceNumberFilter() { ComplexReference = complexReference, RelationCluster = relationCluster, NumberComparisonType = NumberComparisonType.Equals };
+                return new ComplexReferenceNumberFilter() { ComplexReference = complexReference, NumberComparisonType = NumberComparisonType.Equals, SAMObjectRelationCluster = sAMObjectRelationCluster };
             }
 
             return result;

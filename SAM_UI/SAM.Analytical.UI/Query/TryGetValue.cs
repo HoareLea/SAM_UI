@@ -198,7 +198,7 @@ namespace SAM.Analytical.UI
                 else if (appearanceSettings is ComplexReferenceAppearanceSettings)
                 {
                     ComplexReferenceAppearanceSettings complexReferenceAppearanceSettings = (ComplexReferenceAppearanceSettings)appearanceSettings;
-                    complexReferenceAppearanceSettings.RelationCluster = adjacencyCluster;
+                    complexReferenceAppearanceSettings.RelationCluster = new RelationCluster(adjacencyCluster);
 
                     IComplexReference complexReference = complexReferenceAppearanceSettings.ComplexReference;
                     if(complexReference == null)
@@ -305,7 +305,7 @@ namespace SAM.Analytical.UI
                 else if (appearanceSettings is RelationClusterAppearanceSettings)
                 {
                     RelationClusterAppearanceSettings relationClusterAppearanceSettings = (RelationClusterAppearanceSettings)appearanceSettings;
-                    relationClusterAppearanceSettings.RelationCluster = adjacencyCluster;
+                    relationClusterAppearanceSettings.RelationCluster = new RelationCluster(adjacencyCluster);
 
                     if (relationClusterAppearanceSettings.TryGetValue(panel, out object value_Temp))
                     {
