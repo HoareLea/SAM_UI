@@ -68,7 +68,8 @@
     <Compile Include="Component\SAMMollierCreateMollierPoint.cs" />
     <Compile Include="Component\SAMMollierCreateRoomProcessByEndPoint.cs" />
     <Compile Include="Component\SAMMollierCreateRoomProcess.cs" />
-    <Compile Include="Component\SAMMollierCreateUndefinedProcessByEpsilon.cs" />
+    <Compile Include="Component\SAMMollierCreateRoomProcessByEpsilon.cs" />
+    <Compile Include="Component\SAMMollierCreateMollierProcessByTwoPoints.cs" />
     <Compile Include="Component\SAMMollierGeometry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

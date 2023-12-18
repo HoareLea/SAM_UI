@@ -45,6 +45,10 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Number.SetPersistentData(0);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number.SetPersistentData(1);
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
+
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));
@@ -146,6 +150,16 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
+            double efficiency = 1;
+            index = Params.IndexOfInputParam("_efficiency_");
+            if (index != -1)
+            {
+                if (!dataAccess.GetData(index, ref efficiency))
+                {
+                    efficiency = 1;
+                }
+            }
+
             Color color = Color.Empty;
 
             index = Params.IndexOfInputParam("_color_");
@@ -173,7 +187,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            HeatRecoveryProcess heatRecoveryProcess = Core.Mollier.Create.HeatRecoveryProcess_Supply(supply, @return, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
+            HeatRecoveryProcess heatRecoveryProcess = Core.Mollier.Create.HeatRecoveryProcess_Supply(supply, @return, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency, efficiency);
             index = Params.IndexOfOutputParam("heatRecoveryProcess");
             if (index != -1)
             {
@@ -190,7 +204,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.SetData(index, new GooMollierPoint(end));
             }
 
-            HeatRecoveryProcess heatRecoveryProcessExhaust = Core.Mollier.Create.HeatRecoveryProcess_Extract(@return, supply, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
+            HeatRecoveryProcess heatRecoveryProcessExhaust = Core.Mollier.Create.HeatRecoveryProcess_Extract(@return, supply, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency, efficiency);
             index = Params.IndexOfOutputParam("heatRecoveryProcessExhaust");
             if (index != -1)
             {

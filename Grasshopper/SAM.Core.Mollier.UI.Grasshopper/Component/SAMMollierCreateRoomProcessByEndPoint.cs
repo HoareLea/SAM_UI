@@ -45,6 +45,10 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_latentLoad", NickName = "_latentLoad", Description = "Latent Load [kW]", Access = GH_ParamAccess.item, Optional = false };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number.SetPersistentData(1);
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
+
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));
@@ -144,6 +148,16 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
+            double efficiency = 1;
+            index = Params.IndexOfInputParam("_efficiency_");
+            if (index != -1)
+            {
+                if (!dataAccess.GetData(index, ref efficiency))
+                {
+                    efficiency = 1;
+                }
+            }
+
             Color color = Color.Empty;
 
             index = Params.IndexOfInputParam("_color_");
@@ -171,7 +185,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            RoomProcess RoomProcess = Mollier.Create.RoomProcess_ByEnd(end, airMassFlow, sensibleLoad * 1000, latentLoad * 1000);
+            RoomProcess RoomProcess = Mollier.Create.RoomProcess_ByEnd(end, airMassFlow, sensibleLoad * 1000, latentLoad * 1000, efficiency);
             index = Params.IndexOfOutputParam("roomProcess");
             if (index != -1)
             {

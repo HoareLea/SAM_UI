@@ -38,13 +38,16 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Boolean.SetPersistentData(true);
                 result.Add(new GH_SAMParam(param_Boolean, ParamVisibility.Voluntary));
 
-                global::Grasshopper.Kernel.Parameters.Param_Number param_Number;
-
+                global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_epsilon", NickName = "_epsilon", Description = "Epsilon [kJ/kg]", Access = GH_ParamAccess.item, Optional = true };
                 param_Number.SetPersistentData(2501);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_humidityRatio", NickName = "_humidityRatio", Description = "Humidity Ratio of second point [g/kg]", Access = GH_ParamAccess.item};
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
+
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number.SetPersistentData(1);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour;
@@ -134,6 +137,16 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
+            double efficiency = 1;
+            index = Params.IndexOfInputParam("_efficiency_");
+            if (index != -1)
+            {
+                if (!dataAccess.GetData(index, ref efficiency))
+                {
+                    efficiency = 1;
+                }
+            }
+
             Color color = Color.Empty;
 
             index = Params.IndexOfInputParam("_color_");
@@ -156,14 +169,14 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref processLabel);
             }
 
-            string endLabel = "ROOM";
+            string endLabel = null;
             index = Params.IndexOfInputParam("endLabel_");
             if (index != -1)
             {
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            RoomProcess roomProcess = Mollier.Create.RoomProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio, start);
+            RoomProcess roomProcess = Mollier.Create.RoomProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio, start, efficiency);
 
 
             index = Params.IndexOfOutputParam("roomProcess");

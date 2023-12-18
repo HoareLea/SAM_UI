@@ -34,6 +34,12 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_start", NickName = "_start", Description = "Start Mollier Point for MollierProcess", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_end", NickName = "_end", Description = "End Mollier Point for MollierProcess", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+
+                global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number.SetPersistentData(1);
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
+
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));
@@ -57,7 +63,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             get
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
-                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "roomProcess", NickName = "roomProcess", Description = "Room Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "undefinedProcess", NickName = "undefinedProcess", Description = "Undefined Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 //result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "end", NickName = "end", Description = "End", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "color", NickName = "color", Description = "Color", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "epsilon", NickName = "epsilon", Description = "Epsilon", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
@@ -106,6 +112,16 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
+            double efficiency = 1;
+            index = Params.IndexOfInputParam("_efficiency_");
+            if (index != -1)
+            {
+                if (!dataAccess.GetData(index, ref efficiency))
+                {
+                    efficiency = 1;
+                }
+            }
+
             Color color = Color.Empty;
 
             index = Params.IndexOfInputParam("_color_");
@@ -126,20 +142,19 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 dataAccess.GetData(index, ref processLabel);
             }
-            string endLabel = "ROOM";
+            string endLabel = null;
             index = Params.IndexOfInputParam("endLabel_");
             if (index != -1)
             {
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            RoomProcess roomProcess = Core.Mollier.Create.RoomProcess(start, end);
+            UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(start, end, efficiency);
 
-
-            index = Params.IndexOfOutputParam("roomProcess");
+            index = Params.IndexOfOutputParam("undefinedProcess");
             if (index != -1)
             {
-                dataAccess.SetData(index, new GooMollierProcess(roomProcess, color, startLabel, processLabel, endLabel)); ;
+                dataAccess.SetData(index, new GooMollierProcess(undefinedProcess, color, startLabel, processLabel, endLabel)); ;
             }
 
             index = Params.IndexOfOutputParam("color");
@@ -151,7 +166,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             index = Params.IndexOfOutputParam("epsilon");
             if (index != -1)
             {
-                dataAccess.SetData(index, roomProcess.Epsilon());
+                dataAccess.SetData(index, undefinedProcess.Epsilon());
             }
         }
 

@@ -48,6 +48,10 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 number.SetPersistentData(1.005);
                 result.Add(new GH_SAMParam(number, ParamVisibility.Voluntary));
 
+                global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number.SetPersistentData(1);
+                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
@@ -105,6 +109,16 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
+            }
+
+            double efficiency = 1;
+            index = Params.IndexOfInputParam("_efficiency_");
+            if (index != -1)
+            {
+                if (!dataAccess.GetData(index, ref efficiency))
+                {
+                    efficiency = 1;
+                }
             }
 
             index = Params.IndexOfInputParam("_sfp_");
@@ -172,7 +186,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 specificHeatCapacity = mollierPoint.SpecificHeatCapacity_Air();
             }
 
-            FanProcess fanProcess = Mollier.Create.FanProcess(mollierPoint, sfp, density, specificHeatCapacity);
+            FanProcess fanProcess = Mollier.Create.FanProcess(mollierPoint, sfp, density, specificHeatCapacity, efficiency);
 
 
             index = Params.IndexOfOutputParam("fanProcess");
