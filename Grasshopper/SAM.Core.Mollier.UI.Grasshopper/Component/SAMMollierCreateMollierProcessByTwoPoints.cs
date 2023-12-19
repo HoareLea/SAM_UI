@@ -94,7 +94,17 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
-            
+
+            double efficiency = 1;
+            index = Params.IndexOfInputParam("_efficiency_");
+            if (index != -1)
+            {
+                if (!dataAccess.GetData(index, ref efficiency))
+                {
+                    efficiency = 1;
+                }
+            }
+
             // Detecting what type of process is it
 
             MollierProcess mollierProcess = null;
@@ -104,26 +114,26 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 double humidityRatioDifference = end.HumidityRatio - start.HumidityRatio;
                 if (Math.Abs(end.Enthalpy - start.Enthalpy) < Tolerance.Distance) // Adiabactic
                 {
-                    mollierProcess = Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
+                    mollierProcess = Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference, efficiency);
                 }
                 else if (Math.Abs(end.DryBulbTemperature - start.DryBulbTemperature) < Tolerance.Distance) // Isothermic
                 {
-                    mollierProcess = Mollier.Create.IsotermicHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
+                    mollierProcess = Mollier.Create.IsotermicHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference, efficiency);
                 }
                 else
                 {
-                    mollierProcess = Mollier.Create.UndefinedProcess(start, end);
+                    mollierProcess = Mollier.Create.UndefinedProcess(start, end, efficiency);
                 }
             }
             else if (end.DryBulbTemperature > start.DryBulbTemperature) // Heating
             {
                 double temperatureDifference = end.DryBulbTemperature - start.DryBulbTemperature;
-                mollierProcess = Mollier.Create.HeatingProcess(start, temperatureDifference);
+                mollierProcess = Mollier.Create.HeatingProcess(start, temperatureDifference, efficiency);
             }
             else
             {
                 double temperatureDifference = start.DryBulbTemperature - end.DryBulbTemperature;
-                mollierProcess = Mollier.Create.CoolingProcess(start, temperatureDifference);
+                mollierProcess = Mollier.Create.CoolingProcess(start, temperatureDifference, efficiency);
             }
 
 
