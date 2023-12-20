@@ -65,6 +65,7 @@
     <Compile Include="Component\SAMMollierCreateIsotermicHumidificationProcessByHumidityRatioDifference.cs" />
     <Compile Include="Component\SAMMollierCreateIsotermicHumidificationProcessByRelativeHumidity.cs" />
     <Compile Include="Component\SAMMollierCreateMixingProcess.cs" />
+    <Compile Include="Component\SAMMollierCreateMollierPointByConst20C.cs" />
     <Compile Include="Component\SAMMollierCreateMollierPoint.cs" />
     <Compile Include="Component\SAMMollierCreateRoomProcessByEndPoint.cs" />
     <Compile Include="Component\SAMMollierCreateRoomProcess.cs" />
