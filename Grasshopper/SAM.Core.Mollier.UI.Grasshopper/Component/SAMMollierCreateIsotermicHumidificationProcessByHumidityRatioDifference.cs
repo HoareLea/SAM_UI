@@ -77,7 +77,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// </summary>
         public SAMMollierCreateIsotermicHumidificationProcessByHumidityRatioDifference()
           : base("SAMMollier.CreateIsotermicHumidificationProcessByHumidityRatioDifference", "SAMMollier.CreateIsotermicHumidificationProcessByHumidityRatioDifference",
-              "Creates IsotermicHumidificationProcess",
+              "Creates IsotermicHumidificationProcess. Steam Humidification",
               "SAM", "Mollier")
         {
         }

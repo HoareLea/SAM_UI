@@ -8,6 +8,7 @@ using SAM.Core.Mollier.UI.Grasshopper.Properties;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
+    [Obsolete("Obsolete since 2023.12.21")]
     public class SAMMollierCreateSteamHumidificationProcessByRelativeHumidity : MollierDiagramComponent
     {
         /// <summary>
@@ -25,7 +26,8 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// </summary>
         protected override Bitmap Icon => Resources.SAM_Mollier;
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        //public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.hidden;
 
         protected override GH_SAMParam[] Inputs
         {
