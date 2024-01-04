@@ -45,13 +45,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_latentLoad", NickName = "_latentLoad", Description = "Latent Load [kW]", Access = GH_ParamAccess.item, Optional = false };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
-<<<<<<< Updated upstream
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
-                param_Number.SetPersistentData(1);
-                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
-=======
->>>>>>> Stashed changes
-
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));

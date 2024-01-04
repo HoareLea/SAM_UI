@@ -37,14 +37,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_point_2", NickName = "_point_2", Description = "MollierPoint for second air flow", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_airflow_2", NickName = "_airflow_2", Description = "Second Airflow [m3/s]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
 
-<<<<<<< Updated upstream
-                global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
-                param_Number.SetPersistentData(1);
-                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
-
-=======
->>>>>>> Stashed changes
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));
