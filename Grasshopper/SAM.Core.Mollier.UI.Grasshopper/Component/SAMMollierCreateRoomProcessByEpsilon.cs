@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.1";
+        public override string LatestComponentVersion => "1.0.2";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -44,10 +44,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_humidityRatio", NickName = "_humidityRatio", Description = "Humidity Ratio of second point [g/kg]", Access = GH_ParamAccess.item};
-                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
-
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
-                param_Number.SetPersistentData(1);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour;
@@ -137,16 +133,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
-            double efficiency = 1;
-            index = Params.IndexOfInputParam("_efficiency_");
-            if (index != -1)
-            {
-                if (!dataAccess.GetData(index, ref efficiency))
-                {
-                    efficiency = 1;
-                }
-            }
-
             Color color = Color.Empty;
 
             index = Params.IndexOfInputParam("_color_");
@@ -176,7 +162,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            RoomProcess roomProcess = Mollier.Create.RoomProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio, start, efficiency);
+            RoomProcess roomProcess = Mollier.Create.RoomProcess_ByEpsilonAndHumidityRatioDifference(mollierPoint, epsilon, (humidityRatio / 1000) - mollierPoint.HumidityRatio, start);
 
 
             index = Params.IndexOfOutputParam("roomProcess");

@@ -19,7 +19,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.3";
+        public override string LatestComponentVersion => "1.0.4";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -36,11 +36,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_start", NickName = "_start", Description = "Start Mollier Point for MollierProcess", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_humidityRatioDifference", NickName = "_humidityRatioDifference", Description = "Humidity Ratio Difference x [g/kg]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-
-                global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
-                param_Number.SetPersistentData(1);
-                result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
@@ -113,16 +108,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
-            double efficiency = 1;
-            index = Params.IndexOfInputParam("_efficiency_");
-            if (index != -1)
-            {
-                if (!dataAccess.GetData(index, ref efficiency))
-                {
-                    efficiency = 1;
-                }
-            }
-
             Color color = Color.Empty;
 
             index = Params.IndexOfInputParam("_color_");
@@ -150,7 +135,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            SteamHumidificationProcess steamHumidificationProcess = Core.Mollier.Create.SteamHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000, efficiency);
+            SteamHumidificationProcess steamHumidificationProcess = Core.Mollier.Create.SteamHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
 
             if (steamHumidificationProcess != null && double.IsNaN(steamHumidificationProcess.End.RelativeHumidity))
             {

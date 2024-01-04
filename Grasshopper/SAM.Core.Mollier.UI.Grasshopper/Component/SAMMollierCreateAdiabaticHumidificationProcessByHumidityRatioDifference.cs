@@ -35,9 +35,12 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_start", NickName = "_start", Description = "Start Mollier Point for MollierProcess", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_humidityRatioDifference", NickName = "_humidityRatioDifference", Description = "Humidity Ratio Difference  x [g/kg]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
+<<<<<<< Updated upstream
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_efficiency_", NickName = "_efficiency_", Description = "Efficiency [0 - 1]", Access = GH_ParamAccess.item, Optional = true };
                 param_Number.SetPersistentData(1);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
+=======
+>>>>>>> Stashed changes
 
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
@@ -111,16 +114,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
-            double efficiency = 1;
-            index = Params.IndexOfInputParam("_efficiency_");
-            if (index != -1)
-            {
-                if (!dataAccess.GetData(index, ref efficiency))
-                {
-                    efficiency = 1;
-                }
-            }
-
             Color color = Color.Empty;
 
             index = Params.IndexOfInputParam("_color_");
@@ -148,7 +141,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            AdiabaticHumidificationProcess adiabaticHumidificationProcess = Core.Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000, efficiency);
+            AdiabaticHumidificationProcess adiabaticHumidificationProcess = Core.Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
 
             if (adiabaticHumidificationProcess != null && double.IsNaN(adiabaticHumidificationProcess.End.RelativeHumidity))
             {
