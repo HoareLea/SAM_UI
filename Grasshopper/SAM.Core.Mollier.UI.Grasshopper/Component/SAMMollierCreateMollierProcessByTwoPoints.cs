@@ -139,11 +139,11 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             if (end.HumidityRatio > start.HumidityRatio) // Humidification
             {
                 double humidityRatioDifference = end.HumidityRatio - start.HumidityRatio;
-                if (Math.Abs(end.Enthalpy - start.Enthalpy) < Tolerance.Distance) // Adiabactic
+                if (Math.Abs(Core.Query.Round(end.Enthalpy, 1) - Core.Query.Round(start.Enthalpy, 1) ) == 0) // Adiabactic
                 {
                     mollierProcess = Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
                 }
-                else if (Math.Abs(end.DryBulbTemperature - start.DryBulbTemperature) < Tolerance.Distance) // Isothermic
+                else if (Math.Abs(end.DryBulbTemperature - start.DryBulbTemperature) < Tolerance.MacroDistance) // Isothermic
                 {
                     mollierProcess = Mollier.Create.IsotermicHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
                 }
@@ -154,8 +154,15 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
             else if (end.DryBulbTemperature > start.DryBulbTemperature) // Heating
             {
-                double temperatureDifference = end.DryBulbTemperature - start.DryBulbTemperature;
-                mollierProcess = Mollier.Create.HeatingProcess(start, temperatureDifference);
+                double humidityRatioDifference = end.HumidityRatio - start.HumidityRatio;
+                if(humidityRatioDifference < 0.0001)
+                {
+                    mollierProcess = Mollier.Create.HeatingProcess(start, end.DryBulbTemperature);
+                }
+                else
+                {
+                    mollierProcess = Mollier.Create.UndefinedProcess(start, end);
+                }
             }
             else
             {

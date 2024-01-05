@@ -196,23 +196,14 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
         private void Bake(ChartType chartType)
         {
-            IGH_Param gHParam = null;
-
-            List<IMollierProcess> mollierProcesses = null;
-
-            gHParam = Params?.Input?.Find(x => x.Name == "Mollier Processes");
-            if (gHParam != null)
+            IGH_Param gHParam = Params?.Input?.Find(x => x.Name == "_mollierObjects");
+            if (gHParam == null)
             {
-                mollierProcesses = Query.MollierProcesses<IMollierProcess>(new IGH_Param[] { gHParam });
+                return;
             }
 
-            List<IMollierPoint> mollierPoints = null;
-
-            gHParam = Params?.Input?.Find(x => x.Name == "Mollier Points");
-            if (gHParam != null)
-            {
-                mollierPoints = Query.MollierPoints(new IGH_Param[] { gHParam });
-            }
+            List<IMollierProcess> mollierProcesses = Query.MollierProcesses<IMollierProcess>(new IGH_Param[] { gHParam }); ;
+            List<IMollierPoint> mollierPoints = Query.MollierPoints(new IGH_Param[] { gHParam });
 
             Core.Grasshopper.Mollier.Modify.BakeGeometry(RhinoDoc.ActiveDoc, chartType, mollierProcesses, mollierPoints);
 

@@ -1,5 +1,6 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
+using Grasshopper.Kernel.Types;
 using SAM.Core.Grasshopper.Mollier;
 using System.Collections.Generic;
 
@@ -17,19 +18,32 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             List<IMollierPoint> result = new List<IMollierPoint>();
             foreach (IGH_Param gH_Param in gH_Params)
             {
-                GooMollierPointParam gooMollierPointParam = gH_Param as GooMollierPointParam;
-                if (gooMollierPointParam == null)
+                if (!(gH_Param is GooMollierPointParam) && !(gH_Param is GooMollierObjectParam))
                 {
                     continue;
                 }
 
-                IGH_Structure gH_Structure = gooMollierPointParam.VolatileData;
+                IGH_Structure gH_Structure = gH_Param.VolatileData;
                 foreach (object @object in gH_Structure.AllData(true))
                 {
-                    IMollierPoint mollierPoint = (@object as GooMollierPoint)?.Value;
-                    if (mollierPoint != null)
+                    object object_Temp = @object is IGH_Goo ? (@object as dynamic)?.Value : @object;
+                    if (object_Temp == null)
                     {
-                        result.Add(mollierPoint);
+                        continue;
+                    }
+
+                    if (object_Temp is IMollierPoint)
+                    {
+                        result.Add((IMollierPoint)object_Temp);
+                    }
+                    else if (object_Temp is MollierGroup)
+                    {
+                        MollierGroup mollierGroup = object_Temp as MollierGroup;
+                        List<IMollierPoint> values = mollierGroup.GetObjects<IMollierPoint>(true);
+                        if (values != null)
+                        {
+                            result.AddRange(values);
+                        }
                     }
                 }
             }
