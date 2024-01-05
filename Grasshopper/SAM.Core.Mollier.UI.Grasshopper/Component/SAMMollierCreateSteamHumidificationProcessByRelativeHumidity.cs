@@ -8,6 +8,7 @@ using SAM.Core.Mollier.UI.Grasshopper.Properties;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
+    [Obsolete("Obsolete since 2023.12.21")]
     public class SAMMollierCreateSteamHumidificationProcessByRelativeHumidity : MollierDiagramComponent
     {
         /// <summary>
@@ -18,14 +19,15 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.5";
+        public override string LatestComponentVersion => "1.0.6";
 
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
         protected override Bitmap Icon => Resources.SAM_Mollier;
 
-        public override GH_Exposure Exposure => GH_Exposure.primary;
+        //public override GH_Exposure Exposure => GH_Exposure.primary;
+        public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.hidden;
 
         protected override GH_SAMParam[] Inputs
         {
@@ -34,6 +36,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_start", NickName = "_start", Description = "Start Mollier Point for MollierProcess", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_relativeHumidity", NickName = "_relativeHumidity", Description = "Relative Humidity RH[0 - 100] %", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));

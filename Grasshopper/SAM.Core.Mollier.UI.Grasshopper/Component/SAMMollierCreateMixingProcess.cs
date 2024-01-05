@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.4";
+        public override string LatestComponentVersion => "1.0.5";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -36,6 +36,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_airflow_1", NickName = "_airflow_1", Description = "First Airflow [m3/s]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_point_2", NickName = "_point_2", Description = "MollierPoint for second air flow", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_airflow_2", NickName = "_airflow_2", Description = "Second Airflow [m3/s]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Colour, ParamVisibility.Voluntary));

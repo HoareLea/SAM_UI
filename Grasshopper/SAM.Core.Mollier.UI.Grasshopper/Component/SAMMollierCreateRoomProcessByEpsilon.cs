@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.1";
+        public override string LatestComponentVersion => "1.0.2";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -38,8 +38,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Boolean.SetPersistentData(true);
                 result.Add(new GH_SAMParam(param_Boolean, ParamVisibility.Voluntary));
 
-                global::Grasshopper.Kernel.Parameters.Param_Number param_Number;
-
+                global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_epsilon", NickName = "_epsilon", Description = "Epsilon [kJ/kg]", Access = GH_ParamAccess.item, Optional = true };
                 param_Number.SetPersistentData(2501);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
@@ -156,7 +155,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref processLabel);
             }
 
-            string endLabel = "ROOM";
+            string endLabel = null;
             index = Params.IndexOfInputParam("endLabel_");
             if (index != -1)
             {

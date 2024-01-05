@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.0";
+        public override string LatestComponentVersion => "1.0.1";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -38,7 +38,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
                 number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_sfp_", NickName = "_sfp_", Description = "Specific Fan Power [W/l/s]", Access = GH_ParamAccess.item, Optional = true };
                 number.SetPersistentData(1.2);
-                result.Add(new GH_SAMParam(number, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(number, ParamVisibility.Voluntary));
 
                 number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_density_", NickName = "_density_", Description = "Moist Air Density ρ [kg_MoistAir/m3]", Access = GH_ParamAccess.item, Optional = true };
                 number.SetPersistentData(1.2);
@@ -48,6 +48,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 number.SetPersistentData(1.005);
                 result.Add(new GH_SAMParam(number, ParamVisibility.Voluntary));
 
+                global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };

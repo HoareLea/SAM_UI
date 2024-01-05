@@ -3,31 +3,30 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using SAM.Core.Grasshopper;
-using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
+using SAM.Core.Grasshopper.Mollier;
+using SAM.Core.Mollier.UI.Forms;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {
-    [Obsolete("Obsolete since 2023.12.21")]
-    public class SAMMollierCreateSteamHumidificationProcessByHumidityRatioDifference : MollierDiagramComponent
+    public class SAMMollierCreateMollierProcessByTwoPoints : MollierDiagramComponent
     {
         /// <summary>
         /// Gets the unique ID for this component. Do not change this ID after release.
         /// </summary>
-        public override Guid ComponentGuid => new Guid("4f1010c4-e6a2-41c5-8fec-e729d843ddc7");
+        public override Guid ComponentGuid => new Guid("f47d7b0a-7a73-4070-8a74-1dfb0fbdf9ff");
 
         /// <summary>
-        /// The latest version of this component
-        /// </summary>
-        public override string LatestComponentVersion => "1.0.4";
+        /// The latest version of this components
+        /// </summary>  
+        public override string LatestComponentVersion => "1.0.3";
 
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
         protected override Bitmap Icon => Resources.SAM_Mollier;
 
-        //public override GH_Exposure Exposure => GH_Exposure.primary;
-        public override GH_Exposure Exposure => GH_Exposure.tertiary | GH_Exposure.hidden;
+        public override GH_Exposure Exposure => GH_Exposure.primary;
 
         protected override GH_SAMParam[] Inputs
         {
@@ -35,7 +34,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
                 result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_start", NickName = "_start", Description = "Start Mollier Point for MollierProcess", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_humidityRatioDifference", NickName = "_humidityRatioDifference", Description = "Humidity Ratio Difference x [g/kg]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "_end", NickName = "_end", Description = "End Mollier Point for MollierProcess", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;
                 param_Colour = new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "_color_", NickName = "_color_", Description = "Colour RGB", Access = GH_ParamAccess.item, Optional = true };
@@ -45,6 +44,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
 
                 param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "processLabel_", NickName = "processLabel_", Description = "Process Label", Access = GH_ParamAccess.item, Optional = true };
+                param_Label.SetPersistentData("Room");
                 result.Add(new GH_SAMParam(param_Label, ParamVisibility.Voluntary));
 
                 param_Label = new global::Grasshopper.Kernel.Parameters.Param_String() { Name = "endLabel_", NickName = "endLabel_", Description = "End Label", Access = GH_ParamAccess.item, Optional = true };
@@ -59,11 +59,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             get
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
-                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "steamHumidificationProcess", NickName = "steamHumidificationProcess", Description = "SteamHumidificationProcess", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new GooMollierPointParam() { Name = "end", NickName = "end", Description = "End", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Colour() { Name = "color", NickName = "color", Description = "Color", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "epsilon", NickName = "epsilon", Description = "Epsilon", Access = GH_ParamAccess.item }, ParamVisibility.Voluntary));
-
+                result.Add(new GH_SAMParam(new GooMollierProcessParam() { Name = "mollierProcess", NickName = "mollierProcess", Description = "Mollier Process", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
                 return result.ToArray();
             }
         }
@@ -71,9 +67,9 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// Updates PanelTypes for AdjacencyCluster
         /// </summary>
-        public SAMMollierCreateSteamHumidificationProcessByHumidityRatioDifference()
-          : base("SAMMollier.CreateSteamHumidificationProcessByHumidityRatioDifference", "SAMMollier.CreateSteamHumidificationProcessByHumidityRatioDifference",
-              "Creates SteamHumidificationProcess",
+        public SAMMollierCreateMollierProcessByTwoPoints()
+          : base("SAMMollier.CreateMollierProcessByTwoPoints", "SAMMollier.CreateMollierProcessByTwoPoints",
+              "Creates mollier process that is detected by start and end points",
               "SAM", "Mollier")
         {
         }
@@ -88,21 +84,21 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
-            MollierPoint mollierPoint = null;
-            if (!dataAccess.GetData(index, ref mollierPoint) || mollierPoint == null)
+            MollierPoint start = null;
+            if (!dataAccess.GetData(index, ref start) || start == null)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
 
-            index = Params.IndexOfInputParam("_humidityRatioDifference");
+            index = Params.IndexOfInputParam("_end");
             if (index == -1)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
             }
-            double humidityRatioDifference = double.NaN;
-            if (!dataAccess.GetData(index, ref humidityRatioDifference) || double.IsNaN(humidityRatioDifference))
+            MollierPoint end = null;
+            if (!dataAccess.GetData(index, ref end) || end == null)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
@@ -135,45 +131,59 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            SteamHumidificationProcess steamHumidificationProcess = Core.Mollier.Create.SteamHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
 
-            if (steamHumidificationProcess != null && double.IsNaN(steamHumidificationProcess.End.RelativeHumidity))
+            // Detecting what type of process is it
+
+            MollierProcess mollierProcess = null;
+
+            if (end.HumidityRatio > start.HumidityRatio) // Humidification
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Your target RH is above 100%, range for Relative Humidity is 0 - 100%");
+                double humidityRatioDifference = end.HumidityRatio - start.HumidityRatio;
+                if (Math.Abs(Core.Query.Round(end.Enthalpy, 1) - Core.Query.Round(start.Enthalpy, 1) ) == 0) // Adiabactic
+                {
+                    mollierProcess = Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
+                }
+                else if (Math.Abs(end.DryBulbTemperature - start.DryBulbTemperature) < Tolerance.MacroDistance) // Isothermic
+                {
+                    mollierProcess = Mollier.Create.IsotermicHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
+                }
+                else
+                {
+                    mollierProcess = Mollier.Create.UndefinedProcess(start, end);
+                }
             }
-
-            index = Params.IndexOfOutputParam("steamHumidificationProcess");
-            if (index != -1)
+            else if (end.DryBulbTemperature > start.DryBulbTemperature) // Heating
             {
-                dataAccess.SetData(index, new GooMollierProcess(steamHumidificationProcess, color, startLabel, processLabel, endLabel));
+                double humidityRatioDifference = end.HumidityRatio - start.HumidityRatio;
+                if(humidityRatioDifference < 0.0001)
+                {
+                    mollierProcess = Mollier.Create.HeatingProcess(start, end.DryBulbTemperature);
+                }
+                else
+                {
+                    mollierProcess = Mollier.Create.UndefinedProcess(start, end);
+                }
             }
             else
             {
-                return;
-            }
-            MollierPoint end = new MollierPoint(steamHumidificationProcess.End);
-            index = Params.IndexOfOutputParam("end");
-            if (index != -1)
-            {
-                dataAccess.SetData(index, new GooMollierPoint(end));
-            }
-            
-            index = Params.IndexOfOutputParam("color");
-            if (index != -1)
-            {
-                dataAccess.SetData(index, color);
+                double temperatureDifference = start.DryBulbTemperature - end.DryBulbTemperature;
+                mollierProcess = Mollier.Create.CoolingProcess(start, temperatureDifference);
             }
 
-            index = Params.IndexOfOutputParam("epsilon");
+
+
+            index = Params.IndexOfOutputParam("mollierProcess");
             if (index != -1)
             {
-                dataAccess.SetData(index, steamHumidificationProcess.Epsilon());
+                dataAccess.SetData(index, new GooMollierProcess(mollierProcess, color, startLabel, processLabel, endLabel));
             }
+
         }
 
         protected override IEnumerable<IGH_Param> GetMollierDiagramParameters()
         {
-            return new IGH_Param[] { Params.Output.Find(x => x.Name == "steamHumidificationProcess") };
+            return Params.Output;
         }
+ 
     }
 }
