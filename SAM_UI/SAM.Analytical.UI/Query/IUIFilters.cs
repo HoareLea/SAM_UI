@@ -64,7 +64,7 @@ namespace SAM.Analytical.UI
 
             if (adjacencyCluster != null && adjacencyCluster.GetTypes().Contains(type))
             {
-                result.Add(new UIComplexReferenceFilter(string.Format("{0} Reference", type.Name), type, new ComplexReferenceTextFilter() { RelationCluster = adjacencyCluster, CaseSensitive = true, ComplexReference = new PropertyReference(type, "Name"), TextComparisonType = TextComparisonType.Contains }));
+                result.Add(new UIComplexReferenceFilter(string.Format("{0} Reference", type.Name), type, new ComplexReferenceTextFilter() { SAMObjectRelationCluster = adjacencyCluster, CaseSensitive = true, ComplexReference = new PropertyReference(type, "Name"), TextComparisonType = TextComparisonType.Contains }));
             }
 
             result.Sort((x, y) => x.Name.CompareTo(y.Name));

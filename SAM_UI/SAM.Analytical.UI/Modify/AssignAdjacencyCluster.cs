@@ -28,9 +28,9 @@ namespace SAM.Analytical.UI
                     AssignAdjacencyCluster((filter as dynamic).Filter, adjacencyCluster);
                 }
             }
-            else if (filter is IRelationClusterFilter)
+            else if (filter is ISAMObjectRelationClusterFilter)
             {
-                ((IRelationClusterFilter)filter).RelationCluster = adjacencyCluster;
+                ((ISAMObjectRelationClusterFilter)filter).SAMObjectRelationCluster = adjacencyCluster;
                 if (filter is IUIFilter)
                 {
                     AssignAdjacencyCluster((filter as dynamic).Filter, adjacencyCluster);

@@ -1710,7 +1710,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
             RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
-            relationClusterComplexReferenceWindow.RelationCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            relationClusterComplexReferenceWindow.RelationCluster = new RelationCluster(uIAnalyticalModel?.JSAMObject?.AdjacencyCluster);
 
             bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
             if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
