@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using SAM.Core.Attributes;
+using SAM.Geometry.Object;
 
 namespace SAM.Geometry.UI
 {

@@ -1,4 +1,4 @@
-﻿using SAM.Geometry.Spatial;
+﻿using SAM.Geometry.Object.Spatial;
 
 namespace SAM.Geometry.UI
 {

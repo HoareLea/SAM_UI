@@ -1,5 +1,6 @@
 ﻿using SAM.Core;
 using SAM.Geometry;
+using SAM.Geometry.Object;
 using System;
 
 namespace SAM.Analytical.UI

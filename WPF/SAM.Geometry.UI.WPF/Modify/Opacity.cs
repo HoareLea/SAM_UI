@@ -1,4 +1,5 @@
-﻿using System.Windows.Media.Media3D;
+﻿using SAM.Geometry.Object;
+using System.Windows.Media.Media3D;
 
 namespace SAM.Geometry.UI.WPF
 {

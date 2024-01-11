@@ -1,6 +1,6 @@
 ﻿using SAM.Core;
 using SAM.Core.UI;
-using SAM.Geometry;
+using SAM.Geometry.Object;
 using SAM.Geometry.Planar;
 using SAM.Geometry.Spatial;
 using SAM.Geometry.UI;

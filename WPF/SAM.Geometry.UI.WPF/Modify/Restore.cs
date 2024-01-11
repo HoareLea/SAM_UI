@@ -1,4 +1,6 @@
-﻿using SAM.Geometry.Spatial;
+﻿using SAM.Geometry.Object;
+using SAM.Geometry.Object.Spatial;
+using SAM.Geometry.Spatial;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Geometry.UI.WPF

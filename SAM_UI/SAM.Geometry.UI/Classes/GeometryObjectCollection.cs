@@ -1,7 +1,6 @@
-﻿
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using SAM.Core;
-using SAM.Geometry.Spatial;
+using SAM.Geometry.Object.Spatial;
 
 namespace SAM.Geometry.UI
 {
