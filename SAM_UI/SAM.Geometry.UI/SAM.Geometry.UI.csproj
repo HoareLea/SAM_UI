@@ -52,11 +52,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Appearance\Appearance.cs" />
-    <Compile Include="Classes\Appearance\CurveAppearance.cs" />
-    <Compile Include="Classes\Appearance\TextAppearance.cs" />
-    <Compile Include="Classes\Appearance\SurfaceAppearance.cs" />
-    <Compile Include="Classes\Appearance\PointAppearance.cs" />
     <Compile Include="Classes\SAMGeometry3DGroupObject.cs" />
     <Compile Include="Classes\ExtrusionObject.cs" />
     <Compile Include="Classes\Camera.cs" />
@@ -93,7 +88,6 @@
     <Compile Include="Interfaces\ICamera.cs" />
     <Compile Include="Interfaces\IViewSettings.cs" />
     <Compile Include="Interfaces\IText3DObject.cs" />
-    <Compile Include="Interfaces\IAppearance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Mode.cs" />
     <Compile Include="Query\DefaultTextAppearance.cs" />

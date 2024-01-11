@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using SAM.Core;
 using SAM.Core.UI;
+using SAM.Geometry.Object;
 using System;
 using System.Collections.Generic;
 using System.Linq;

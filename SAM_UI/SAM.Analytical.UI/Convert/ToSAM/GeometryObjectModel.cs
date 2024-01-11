@@ -99,7 +99,7 @@ namespace SAM.Analytical.UI
                             color = System.Drawing.Color.FromKnownColor(System.Drawing.KnownColor.LightGray).ToMedia();
                         }
 
-                        Geometry.UI.SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new Geometry.UI.SurfaceAppearance(color.Value, ControlPaint.Dark(color.Value.ToDrawing()).ToMedia(), 0));
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, threeDimensionalViewSettings, new SurfaceAppearance(color.Value.ToDrawing(), ControlPaint.Dark(color.Value.ToDrawing()), 0));
                         if (surfaceAppearance == null || surfaceAppearance.Opacity == 0 || !surfaceAppearance.Visible)
                         {
                             continue;
@@ -206,7 +206,7 @@ namespace SAM.Analytical.UI
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
 
-                        Geometry.UI.SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(panel, threeDimensionalViewSettings, color);
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(panel, threeDimensionalViewSettings, color);
                         if (surfaceAppearance == null || surfaceAppearance.Opacity == 0 || !surfaceAppearance.Visible)
                         {
                             continue;
@@ -332,13 +332,13 @@ namespace SAM.Analytical.UI
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
                         }
 
-                        Geometry.UI.SurfaceAppearance surfaceAppearance_Frame = Query.SurfaceAppearance(aperture, AperturePart.Frame, threeDimensionalViewSettings, color);
+                        SurfaceAppearance surfaceAppearance_Frame = Query.SurfaceAppearance(aperture, AperturePart.Frame, threeDimensionalViewSettings, color);
                         if (surfaceAppearance_Frame == null || surfaceAppearance_Frame.Opacity == 0 || !surfaceAppearance_Frame.Visible)
                         {
                             surfaceAppearance_Frame = null;
                         }
 
-                        Geometry.UI.SurfaceAppearance surfaceAppearance_Pane = Query.SurfaceAppearance(aperture, AperturePart.Pane, threeDimensionalViewSettings, color);
+                        SurfaceAppearance surfaceAppearance_Pane = Query.SurfaceAppearance(aperture, AperturePart.Pane, threeDimensionalViewSettings, color);
                         if (surfaceAppearance_Pane == null || surfaceAppearance_Pane.Opacity == 0 || !surfaceAppearance_Pane.Visible)
                         {
                             surfaceAppearance_Pane = null;
@@ -633,7 +633,7 @@ namespace SAM.Analytical.UI
                         string name = keyValuePair.Key.Name;
                         Space space = keyValuePair.Key;
 
-                        Geometry.UI.TextAppearance textAppearance = Query.TextAppearance(space, twoDimensionalViewSettings);
+                        TextAppearance textAppearance = Query.TextAppearance(space, twoDimensionalViewSettings);
                         double height = textAppearance.Height;
                         double width = Core.Windows.Query.Width(name, new System.Drawing.Font(textAppearance.FontFamilyName, System.Convert.ToSingle(height)), height);
 
@@ -738,7 +738,7 @@ namespace SAM.Analytical.UI
 
                         GeometryObjectCollection geometryObjectCollection_Space = new GeometryObjectCollection() { Tag = space };
 
-                        Geometry.UI.SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, color);
+                        SurfaceAppearance surfaceAppearance = Query.SurfaceAppearance(space, twoDimensionalViewSettings, color);
 
                         face2Ds.ForEach(x => geometryObjectCollection_Space.Add(new Face3DObject(plane.Convert(x), surfaceAppearance)));
 

@@ -1,4 +1,6 @@
-﻿namespace SAM.Geometry.UI
+﻿using SAM.Geometry.Object;
+
+namespace SAM.Geometry.UI
 {
     public static partial class Query
     {
@@ -6,7 +8,7 @@
         {
             CurveAppearance curveAppearance = DefaultCurveAppearance();
 
-            return new SurfaceAppearance(System.Windows.Media.Color.FromRgb(128, 128, 128), curveAppearance.Color, curveAppearance.Thickness);
+            return new SurfaceAppearance(System.Drawing.Color.FromArgb(128, 128, 128), curveAppearance.Color, curveAppearance.Thickness);
         }
 
     }

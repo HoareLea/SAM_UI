@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SAM.Core;
+using SAM.Geometry.Object;
 using SAM.Geometry.Object.Spatial;
 using SAM.Geometry.Spatial;
 using System.Windows.Media;
@@ -52,7 +53,7 @@ namespace SAM.Geometry.UI
             }
         }
 
-        public Face3DObject(Face3D face3D, Color surfaceColor, Color curveColor, double curveThickness)
+        public Face3DObject(Face3D face3D, System.Drawing.Color surfaceColor, System.Drawing.Color curveColor, double curveThickness)
             : base(face3D)
         {
             SurfaceAppearance = new SurfaceAppearance(surfaceColor, curveColor, curveThickness);

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SAM.Core;
+using SAM.Geometry.Object;
 using SAM.Geometry.Object.Spatial;
 using SAM.Geometry.Spatial;
 using System.Windows.Media;
@@ -52,7 +53,7 @@ namespace SAM.Geometry.UI
             }
         }
 
-        public ExtrusionObject(Extrusion extrusion, Color surfaceColor, Color curveColor, double curveThickness)
+        public ExtrusionObject(Extrusion extrusion, System.Drawing.Color surfaceColor, System.Drawing.Color curveColor, double curveThickness)
             : base(extrusion)
         {
             SurfaceAppearance = new SurfaceAppearance(surfaceColor, curveColor, curveThickness);

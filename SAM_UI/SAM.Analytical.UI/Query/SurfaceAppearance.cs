@@ -1,4 +1,5 @@
 ﻿using SAM.Core.UI;
+using SAM.Geometry.Object;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,7 +20,7 @@ namespace SAM.Analytical.UI
             Color color = Analytical.Query.Color(panel);
 
             //thickness 0.001
-            return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0.01);
+            return new SurfaceAppearance(color, ControlPaint.Dark(color), 0.01);
         }
 
         public static SurfaceAppearance SurfaceAppearance(this Aperture aperture, AperturePart aperturePart)
@@ -31,7 +32,7 @@ namespace SAM.Analytical.UI
 
             Color color = Analytical.Query.Color(aperture, aperturePart);
 
-            SurfaceAppearance result = new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0);
+            SurfaceAppearance result = new SurfaceAppearance(color, ControlPaint.Dark(color), 0);
             if(aperturePart == AperturePart.Pane)
             {
                 result.Opacity = 0.6;
@@ -63,7 +64,7 @@ namespace SAM.Analytical.UI
                 color = System.Drawing.Color.FromKnownColor(KnownColor.LightGray);
             }
 
-            return new SurfaceAppearance(Core.UI.Convert.ToMedia(color), Core.UI.Convert.ToMedia(ControlPaint.Dark(color)), 0);
+            return new SurfaceAppearance(color, ControlPaint.Dark(color), 0);
         }
 
         public static SurfaceAppearance SurfaceAppearance(this Panel panel, ViewSettings viewSettings, System.Windows.Media.Color? color)
@@ -71,7 +72,7 @@ namespace SAM.Analytical.UI
             SurfaceAppearance result = viewSettings.GetAppearances<SurfaceAppearance>(panel)?.FirstOrDefault();
             if (result == null && color != null)
             {
-                result = new SurfaceAppearance(color.Value, Core.UI.Convert.ToMedia(ControlPaint.Dark(color.Value.ToDrawing())), 0.01);
+                result = new SurfaceAppearance(color.Value.ToDrawing(), ControlPaint.Dark(color.Value.ToDrawing()), 0.01);
             }
 
             if (result == null)
@@ -98,7 +99,7 @@ namespace SAM.Analytical.UI
             SurfaceAppearance result = viewSettings.GetAppearances<SurfaceAppearance>(space)?.FirstOrDefault();
             if (result == null && color != null)
             {
-                result = new SurfaceAppearance(color.Value, Core.UI.Convert.ToMedia(ControlPaint.Dark(color.Value.ToDrawing())), 0.02);
+                result = new SurfaceAppearance(color.Value.ToDrawing(), ControlPaint.Dark(color.Value.ToDrawing()), 0.02);
             }
 
             if (result == null)
@@ -146,7 +147,7 @@ namespace SAM.Analytical.UI
 
             if(result == null && color != null)
             {
-                result = new SurfaceAppearance(color.Value, Core.UI.Convert.ToMedia(ControlPaint.Dark(color.Value.ToDrawing())), 0);
+                result = new SurfaceAppearance(color.Value.ToDrawing(), ControlPaint.Dark(color.Value.ToDrawing()), 0);
             }
 
             if (result == null)

@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using SAM.Geometry.Object;
 using SAM.Geometry.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -58,7 +59,7 @@ namespace SAM.Analytical.UI
                 List<SurfaceAppearance> surfaceAppearances = viewSettings.GetAppearances<SurfaceAppearance>(sAMObject.Guid);
                 if (surfaceAppearances == null)
                 {
-                    SurfaceAppearance surfaceAppearance = new SurfaceAppearance(System.Windows.Media.Color.FromRgb(0, 0, 0), System.Windows.Media.Color.FromRgb(0, 0, 0), 0);
+                    SurfaceAppearance surfaceAppearance = new SurfaceAppearance(System.Drawing.Color.FromArgb(0, 0, 0), System.Drawing.Color.FromArgb(0, 0, 0), 0);
 
                     surfaceAppearances = new List<SurfaceAppearance>() { surfaceAppearance };
                     if (sAMObject is Aperture)

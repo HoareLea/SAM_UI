@@ -1,4 +1,6 @@
-﻿namespace SAM.Geometry.UI.WPF
+﻿using SAM.Geometry.Object;
+
+namespace SAM.Geometry.UI.WPF
 {
     public static partial class Query
     {

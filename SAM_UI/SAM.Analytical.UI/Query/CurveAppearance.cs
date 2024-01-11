@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.UI;
+﻿using SAM.Geometry.Object;
+using SAM.Geometry.UI;
 using System.Linq;
 
 namespace SAM.Analytical.UI
@@ -12,7 +13,7 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            return new CurveAppearance(System.Windows.Media.Color.FromRgb(105, 105, 105), 0.04);
+            return new CurveAppearance(System.Drawing.Color.FromArgb(105, 105, 105), 0.04);
         }
 
         public static CurveAppearance CurveAppearance(this Panel panel, ViewSettings viewSettings)

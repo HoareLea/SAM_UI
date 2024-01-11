@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.UI;
+﻿using SAM.Geometry.Object;
+using SAM.Geometry.UI;
 using System.Linq;
 
 namespace SAM.Analytical.UI

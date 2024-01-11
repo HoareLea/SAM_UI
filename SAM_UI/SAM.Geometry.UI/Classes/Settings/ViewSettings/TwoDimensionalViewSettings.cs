@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using SAM.Geometry.Object;
 using SAM.Geometry.Spatial;
 using System;
 using System.Collections.Generic;

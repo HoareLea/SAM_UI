@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.Object;
+﻿using SAM.Core.UI;
+using SAM.Geometry.Object;
 using SAM.Geometry.Object.Spatial;
 using SAM.Geometry.Spatial;
 using System.Collections.Generic;
@@ -696,7 +697,7 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            SolidColorBrush solidColorBrush = new SolidColorBrush(textAppearance.Color);
+            SolidColorBrush solidColorBrush = new SolidColorBrush(textAppearance.Color.ToMedia());
             solidColorBrush.Opacity = textAppearance.Opacity;
 
             GeometryModel3D result = Core.UI.WPF.Create.GeometryModel3D_Text(text3DObject.Text, solidColorBrush, false, textAppearance.Height, plane.Origin.ToMedia3D(), true, plane.AxisX.ToMedia3D(), plane.AxisY.ToMedia3D(), textAppearance.FontFamilyName);
