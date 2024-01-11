@@ -50,7 +50,7 @@ namespace SAM.Analytical.UI.WPF
             checkBox_Visibilty_Space.IsChecked = true;
             checkBox_TextVisibility.IsChecked = true;
 
-            textBox_TextSize.Text = Geometry.UI.Query.DefaultTextAppearance().Height.ToString();
+            textBox_TextSize.Text = Geometry.Object.Query.DefaultTextAppearance().Height.ToString();
 
             List<Level> levels = Analytical.Create.Levels(adjacencyCluster, false);
             levels?.Sort((x, y) => x.Elevation.CompareTo(y.Elevation));
@@ -171,13 +171,13 @@ namespace SAM.Analytical.UI.WPF
 
                 string name = Query.DefaultName(level, elevation, spaceAppearanceSettingsControl.SpaceAppearanceSettings);
 
-                TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(Guid.NewGuid(), name, Geometry.Spatial.Create.Plane(elevation), null, types, Geometry.UI.Query.DefaultTextAppearance(), null);
+                TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(Guid.NewGuid(), name, Geometry.Spatial.Create.Plane(elevation), null, types, Geometry.Object.Query.DefaultTextAppearance(), null);
                 twoDimensionalViewSettings.Legend = new Core.UI.Legend(group);
                 twoDimensionalViewSettings.AddAppearanceSettings(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
                 twoDimensionalViewSettings.SetValue(ViewSettingsParameter.UseDefaultName, true);
                 twoDimensionalViewSettings.SetValue(ViewSettingsParameter.Group, group);
 
-                TextAppearance textAppearance = Geometry.UI.Query.DefaultTextAppearance();
+                TextAppearance textAppearance = Geometry.Object.Query.DefaultTextAppearance();
                 textAppearance.Opacity = checkBox_TextVisibility.IsChecked != null && checkBox_TextVisibility.IsChecked.HasValue && checkBox_TextVisibility.IsChecked.Value ? 1 : 0;
 
                 if (Core.Query.TryConvert(textBox_TextSize.Text, out double textSize))

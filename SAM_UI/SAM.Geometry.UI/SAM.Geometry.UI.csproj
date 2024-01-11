@@ -52,33 +52,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\SAMGeometry3DGroupObject.cs" />
-    <Compile Include="Classes\ExtrusionObject.cs" />
     <Compile Include="Classes\Camera.cs" />
-    <Compile Include="Classes\Mesh3DObject.cs" />
     <Compile Include="Classes\Modification\ViewSettingsModification.cs" />
-    <Compile Include="Classes\BoundingBox3DObject.cs" />
     <Compile Include="Classes\Settings\ComplexReferenceAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\RelationClusterAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ValueAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\TypeAppearanceSettings.cs" />
-    <Compile Include="Classes\Triangle3DObject.cs" />
-    <Compile Include="Classes\Rectangle3DObject.cs" />
-    <Compile Include="Classes\Polyline3DObject.cs" />
     <Compile Include="Classes\Settings\ParameterAppearanceSettings.cs" />
-    <Compile Include="Classes\SphereObject.cs" />
-    <Compile Include="Classes\Text3DObject.cs" />
-    <Compile Include="Classes\ShellObject.cs" />
-    <Compile Include="Classes\Point3DObject.cs" />
-    <Compile Include="Classes\Face3DObject.cs" />
-    <Compile Include="Classes\Polygon3DObject.cs" />
-    <Compile Include="Classes\Segment3DObject.cs" />
     <Compile Include="Classes\Settings\UIGeometrySettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\ThreeDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\TwoDimensionalViewSettings.cs" />
     <Compile Include="Classes\Settings\GuidAppearanceSettings.cs" />
     <Compile Include="Classes\Settings\ViewSettings\ViewSettings.cs" />
-    <Compile Include="Classes\GeometryObjectCollection.cs" />
     <Compile Include="Convert\ToSAM\ISAMGeometryObject.cs" />
     <Compile Include="Create\Material.cs" />
     <Compile Include="Enums\Mode.cs" />
@@ -87,13 +72,8 @@
     <Compile Include="Interfaces\ITypeAppearanceSettings.cs" />
     <Compile Include="Interfaces\ICamera.cs" />
     <Compile Include="Interfaces\IViewSettings.cs" />
-    <Compile Include="Interfaces\IText3DObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Mode.cs" />
-    <Compile Include="Query\DefaultTextAppearance.cs" />
-    <Compile Include="Query\DefaultSurfaceAppearance.cs" />
-    <Compile Include="Query\DefaultCurveAppearance.cs" />
-    <Compile Include="Query\DefaultPointAppearance.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">

@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            return Geometry.UI.Query.DefaultTextAppearance();
+            return Geometry.Object.Query.DefaultTextAppearance();
         }
 
         public static TextAppearance TextAppearance(this Space space, ViewSettings viewSettings)

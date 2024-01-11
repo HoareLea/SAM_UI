@@ -50,11 +50,11 @@ namespace SAM.Geometry.UI.WPF
 
             ModelVisual3D result = new ModelVisual3D();
             List<Model3D> model3Ds = new List<Model3D>();
-            if (sAMGeometryObject is GeometryObjectCollection)
+            if (sAMGeometryObject is Geometry3DObjectCollection)
             {
-                foreach(ISAMGeometry3DObject sAMGeometry3DObject in (GeometryObjectCollection)sAMGeometryObject)
+                foreach(ISAMGeometry3DObject sAMGeometry3DObject in (Geometry3DObjectCollection)sAMGeometryObject)
                 {
-                    if(sAMGeometry3DObject is GeometryObjectCollection)
+                    if(sAMGeometry3DObject is Geometry3DObjectCollection)
                     {
                         ModelVisual3D modelVisual3D = ToMedia3D(sAMGeometry3DObject);
                         if (modelVisual3D != null)

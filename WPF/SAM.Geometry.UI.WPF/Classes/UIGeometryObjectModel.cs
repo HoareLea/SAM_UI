@@ -113,7 +113,7 @@ namespace SAM.Geometry.UI.WPF
             {
                 foreach (ISAMGeometry sAMGeometry in sAMGeometries)
                 {
-                    ISAMGeometryObject sAMGeometryObject = UI.Convert.ToSAM_ISAMGeometryObject(sAMGeometry);
+                    ISAMGeometryObject sAMGeometryObject = Object.Convert.ToSAM_ISAMGeometryObject(sAMGeometry);
                     if (sAMGeometryObject == null)
                     {
                         continue;

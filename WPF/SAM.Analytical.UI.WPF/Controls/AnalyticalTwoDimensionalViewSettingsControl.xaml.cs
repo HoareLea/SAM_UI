@@ -111,7 +111,7 @@ namespace SAM.Analytical.UI.WPF
             TextAppearance textAppearance = twoDimensionalViewSettings.TextAppearance;
             if(textAppearance == null)
             {
-                textAppearance = Geometry.UI.Query.DefaultTextAppearance();
+                textAppearance = Geometry.Object.Query.DefaultTextAppearance();
             }
 
             checkBox_TextVisibility.IsChecked = textAppearance.Opacity != 0;
@@ -165,7 +165,7 @@ namespace SAM.Analytical.UI.WPF
 
             result.SetTypes(types);
 
-            TextAppearance textAppearance = Geometry.UI.Query.DefaultTextAppearance();
+            TextAppearance textAppearance = Geometry.Object.Query.DefaultTextAppearance();
             textAppearance.Opacity = checkBox_TextVisibility.IsChecked != null && checkBox_TextVisibility.IsChecked.HasValue && checkBox_TextVisibility.IsChecked.Value ? 1 : 0;
 
             if (Core.Query.TryConvert(textBox_TextSize.Text, out double textSize))

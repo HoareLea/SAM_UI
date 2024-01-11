@@ -1480,7 +1480,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) }, Geometry.UI.Query.DefaultTextAppearance(), null);
+            TwoDimensionalViewSettings twoDimensionalViewSettings = new TwoDimensionalViewSettings(Guid.NewGuid(), "New Section View", Geometry.Spatial.Create.Plane(0.0), null, new Type[] { typeof(Space), typeof(Panel), typeof(Aperture) }, Geometry.Object.Query.DefaultTextAppearance(), null);
             twoDimensionalViewSettings.AddAppearanceSettings(new SpaceAppearanceSettings("Name"));
 
             ViewSettingsWindow viewSettingsWindow = new ViewSettingsWindow(twoDimensionalViewSettings, analyticalModel);

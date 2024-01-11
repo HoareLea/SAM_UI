@@ -45,7 +45,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((Face3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new Face3DObject(value.Face3D, UI.Query.DefaultSurfaceAppearance()));
+                return Model3D(new Face3DObject(value.Face3D, Object.Query.DefaultSurfaceAppearance()));
             }
 
             //IMesh3DObject
@@ -58,7 +58,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((Mesh3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new Mesh3DObject(value.Mesh3D, UI.Query.DefaultSurfaceAppearance()));
+                return Model3D(new Mesh3DObject(value.Mesh3D, Object.Query.DefaultSurfaceAppearance()));
             }
 
             //IShellObject
@@ -71,7 +71,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((ShellObject)sAMGeometryObject);
                 }
 
-                return Model3D(new ShellObject(value.Shell, UI.Query.DefaultSurfaceAppearance()));
+                return Model3D(new ShellObject(value.Shell, Object.Query.DefaultSurfaceAppearance()));
             }
 
             //ISegment3DObject
@@ -84,7 +84,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((Segment3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new Segment3DObject(value.Segment3D, UI.Query.DefaultCurveAppearance()));
+                return Model3D(new Segment3DObject(value.Segment3D, Object.Query.DefaultCurveAppearance()));
             }
 
             //IPolygon3DObject
@@ -97,7 +97,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((Polygon3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new Polygon3DObject(value.Polygon3D, UI.Query.DefaultCurveAppearance()));
+                return Model3D(new Polygon3DObject(value.Polygon3D, Object.Query.DefaultCurveAppearance()));
             }
 
             //IPoint3DObject
@@ -110,7 +110,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((Point3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new Point3DObject(value.Point3D, UI.Query.DefaultPointAppearance()));
+                return Model3D(new Point3DObject(value.Point3D, Object.Query.DefaultPointAppearance()));
             }
 
             //IPolyline3DObject
@@ -123,7 +123,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((Polyline3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new Polyline3DObject(value.Polyline3D, UI.Query.DefaultCurveAppearance()));
+                return Model3D(new Polyline3DObject(value.Polyline3D, Object.Query.DefaultCurveAppearance()));
             }
 
             //IBoundingBox3DObject
@@ -136,7 +136,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((BoundingBox3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new BoundingBox3DObject(value.BoundingBox3D, UI.Query.DefaultCurveAppearance()));
+                return Model3D(new BoundingBox3DObject(value.BoundingBox3D, Object.Query.DefaultCurveAppearance()));
             }
 
             //IExtrusionObject
@@ -149,7 +149,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((ExtrusionObject)sAMGeometryObject);
                 }
 
-                return Model3D(new ExtrusionObject(value.Extrusion, UI.Query.DefaultSurfaceAppearance()));
+                return Model3D(new ExtrusionObject(value.Extrusion, Object.Query.DefaultSurfaceAppearance()));
             }
 
             //IRectangle3DObject
@@ -162,7 +162,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((Rectangle3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new Rectangle3DObject(value.Rectangle3D, UI.Query.DefaultCurveAppearance()));
+                return Model3D(new Rectangle3DObject(value.Rectangle3D, Object.Query.DefaultCurveAppearance()));
             }
 
             //ISphereObject
@@ -175,7 +175,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((SphereObject)sAMGeometryObject);
                 }
 
-                return Model3D(new SphereObject(value.Sphere, UI.Query.DefaultSurfaceAppearance()));
+                return Model3D(new SphereObject(value.Sphere, Object.Query.DefaultSurfaceAppearance()));
             }
 
             //ITriangle3DObject
@@ -188,7 +188,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((Triangle3DObject)sAMGeometryObject);
                 }
 
-                return Model3D(new Triangle3DObject(value.Triangle3D, UI.Query.DefaultCurveAppearance()));
+                return Model3D(new Triangle3DObject(value.Triangle3D, Object.Query.DefaultCurveAppearance()));
             }
 
             //ISAMGeometry3DGroup
@@ -201,7 +201,7 @@ namespace SAM.Geometry.UI.WPF
                     return Model3D((SAMGeometry3DGroupObject)sAMGeometryObject);
                 }
 
-                return Model3D(new SAMGeometry3DGroupObject(value.SAMGeometry3DGroup, UI.Query.DefaultPointAppearance(), UI.Query.DefaultCurveAppearance(), UI.Query.DefaultSurfaceAppearance()));
+                return Model3D(new SAMGeometry3DGroupObject(value.SAMGeometry3DGroup, Object.Query.DefaultPointAppearance(), Object.Query.DefaultCurveAppearance(), Object.Query.DefaultSurfaceAppearance()));
             }
 
             return null;
@@ -717,7 +717,7 @@ namespace SAM.Geometry.UI.WPF
             Model3DGroup result = new Model3DGroup();
             foreach (ISAMGeometry3D sAMGeometry3D in sAMGeometry3DGroupObject)
             {
-                ISAMGeometryObject sAMGeometryObject = UI.Convert.ToSAM_ISAMGeometryObject(sAMGeometry3D, sAMGeometry3DGroupObject.PointAppearance, sAMGeometry3DGroupObject.CurveAppearance, sAMGeometry3DGroupObject.SurfaceAppearance);
+                ISAMGeometryObject sAMGeometryObject = Object.Convert.ToSAM_ISAMGeometryObject(sAMGeometry3D, sAMGeometry3DGroupObject.PointAppearance, sAMGeometry3DGroupObject.CurveAppearance, sAMGeometry3DGroupObject.SurfaceAppearance);
                 if(sAMGeometryObject == null)
                 {
                     continue;
