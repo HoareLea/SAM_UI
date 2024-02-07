@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using HoneybeeSchema;
+using Microsoft.Win32;
 using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
@@ -190,6 +191,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_CleanAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
             RibbonButton_CleanAnalyticalModel.Click += RibbonButton_CleanAnalyticalModel_Click;
 
+            RibbonButton_RemoveAirMovementObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
+            RibbonButton_RemoveAirMovementObjects.Click += RibbonButton_RemoveAirMovementObjects_Click;
+
             //RibbonButton_CreateTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
             //RibbonButton_CreateTBD.Click += RibbonButton_CreateTBD_Click;
 
@@ -270,6 +274,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_RemoveAirMovementObjects_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.RemoveAirMovementObjects(uIAnalyticalModel);
         }
 
         private void RibbonButton_GlazingCalculator_Click(object sender, RoutedEventArgs e)
@@ -1965,6 +1974,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_MapInternalConditionsByTM59.IsEnabled = false;
             RibbonButton_ExportAnalyticalModel.IsEnabled = false;
             RibbonButton_RemoveResults.IsEnabled = false;
+            RibbonButton_EditInternalConditions.IsEnabled = false;
+            RibbonButton_AssignMechanicalSystems.IsEnabled = false;
+            RibbonButton_RemoveAirMovementObjects.IsEnabled = false;
 
             RibbonButton_OpenMollierChart.IsEnabled = true;
             RibbonButton_Wiki.IsEnabled = true;
@@ -1976,6 +1988,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_NewAnalyticalModel.IsEnabled = true;
             RibbonButton_OpenAnalyticalModel.IsEnabled = true;
             RibbonButton_EditLibrary.IsEnabled = true;
+
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
             if (analyticalModel != null)
@@ -2005,6 +2018,9 @@ namespace SAM.Analytical.UI.WPF.Windows
                 RibbonButton_ExportAnalyticalModel.IsEnabled = true;
                 //RibbonButton_CreateTBD.IsEnabled = true;
                 RibbonButton_RemoveResults.IsEnabled = true;
+                RibbonButton_EditInternalConditions.IsEnabled = true;
+                RibbonButton_AssignMechanicalSystems.IsEnabled = true;
+                RibbonButton_RemoveAirMovementObjects.IsEnabled = true;
 
                 List<AirHandlingUnit> airHandlingUnits = analyticalModel.AdjacencyCluster?.GetObjects<AirHandlingUnit>();
                 if (airHandlingUnits != null && airHandlingUnits.Count != 0)
