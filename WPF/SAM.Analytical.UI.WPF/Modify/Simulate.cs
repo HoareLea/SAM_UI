@@ -1,4 +1,5 @@
-﻿using SAM.Core;
+﻿using SAM.Analytical.Tas;
+using SAM.Core;
 using SAM.Core.Tas;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
@@ -224,7 +225,24 @@ namespace SAM.Analytical.UI.WPF
                     updateZones_Workflow = true;
                 }
 
-                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, path_TBD, path_Xml, weatherData_Workflow, heatingDesignDays, coolingDesignDays, surfaceOutputSpecs, unmetHours, simulate, sizing, updateZones_Workflow, useWidths, simulate_From, simulate_To);
+                WorkflowSettings workflowSettings = new WorkflowSettings()
+                {
+                    Path_TBD = path_TBD,
+                    Path_gbXML = path_Xml,
+                    WeatherData = weatherData_Workflow,
+                    DesignDays_Heating = heatingDesignDays,
+                    DesignDays_Cooling = coolingDesignDays,
+                    SurfaceOutputSpecs = surfaceOutputSpecs,
+                    UnmetHours = unmetHours,
+                    Simulate = simulate,
+                    Sizing = sizing,
+                    UpdateZones = updateZones_Workflow,
+                    UseWidths = useWidths,
+                    SimulateFrom = simulate_From,
+                    SimulateTo = simulate_To
+                };
+
+                analyticalModel = Tas.Modify.RunWorkflow(analyticalModel, workflowSettings);
 
                 if (printRoomDataSheets && analyticalModel != null)
                 {
