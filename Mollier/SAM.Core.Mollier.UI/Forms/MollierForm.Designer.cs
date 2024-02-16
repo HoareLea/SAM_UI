@@ -362,7 +362,6 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_Settings.Name = "ToolStripMenuItem_Settings";
             this.ToolStripMenuItem_Settings.Size = new System.Drawing.Size(76, 24);
             this.ToolStripMenuItem_Settings.Text = "Settings";
-            this.ToolStripMenuItem_Settings.Click += new System.EventHandler(this.ToolStripMenuItem_Settings_Click);
             // 
             // ToolStripMenuItem_OpenSettings
             // 

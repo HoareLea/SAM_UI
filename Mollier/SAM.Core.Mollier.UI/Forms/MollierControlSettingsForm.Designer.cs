@@ -83,6 +83,10 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.Label_WindowSize = new System.Windows.Forms.Label();
+            this.TextBox_WindowWidth = new System.Windows.Forms.TextBox();
+            this.TextBox_WindowHeight = new System.Windows.Forms.TextBox();
+            this.Label_SizeSperator = new System.Windows.Forms.Label();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
@@ -514,6 +518,10 @@ namespace SAM.Core.Mollier.UI
             // 
             // TabPage_Tools
             // 
+            this.TabPage_Tools.Controls.Add(this.Label_SizeSperator);
+            this.TabPage_Tools.Controls.Add(this.TextBox_WindowHeight);
+            this.TabPage_Tools.Controls.Add(this.TextBox_WindowWidth);
+            this.TabPage_Tools.Controls.Add(this.Label_WindowSize);
             this.TabPage_Tools.Controls.Add(this.VisualizeSolver_Checkbox);
             this.TabPage_Tools.Controls.Add(this.Button_ToHover);
             this.TabPage_Tools.Controls.Add(this.Button_ToHover3);
@@ -662,6 +670,38 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
             // 
+            // Label_WindowSize
+            // 
+            this.Label_WindowSize.AutoSize = true;
+            this.Label_WindowSize.Location = new System.Drawing.Point(35, 375);
+            this.Label_WindowSize.Name = "Label_WindowSize";
+            this.Label_WindowSize.Size = new System.Drawing.Size(87, 16);
+            this.Label_WindowSize.TabIndex = 23;
+            this.Label_WindowSize.Text = "Window Size:";
+            // 
+            // TextBox_WindowWidth
+            // 
+            this.TextBox_WindowWidth.Location = new System.Drawing.Point(128, 372);
+            this.TextBox_WindowWidth.Name = "TextBox_WindowWidth";
+            this.TextBox_WindowWidth.Size = new System.Drawing.Size(50, 22);
+            this.TextBox_WindowWidth.TabIndex = 24;
+            // 
+            // TextBox_WindowHeight
+            // 
+            this.TextBox_WindowHeight.Location = new System.Drawing.Point(203, 372);
+            this.TextBox_WindowHeight.Name = "TextBox_WindowHeight";
+            this.TextBox_WindowHeight.Size = new System.Drawing.Size(50, 22);
+            this.TextBox_WindowHeight.TabIndex = 25;
+            // 
+            // Label_SizeSperator
+            // 
+            this.Label_SizeSperator.AutoSize = true;
+            this.Label_SizeSperator.Location = new System.Drawing.Point(184, 375);
+            this.Label_SizeSperator.Name = "Label_SizeSperator";
+            this.Label_SizeSperator.Size = new System.Drawing.Size(13, 16);
+            this.Label_SizeSperator.TabIndex = 26;
+            this.Label_SizeSperator.Text = "x";
+            // 
             // MollierControlSettingsForm
             // 
             this.AcceptButton = this.Button_OK;
@@ -745,5 +785,9 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox VisualizeSolver_Checkbox;
+        private System.Windows.Forms.Label Label_WindowSize;
+        private System.Windows.Forms.TextBox TextBox_WindowHeight;
+        private System.Windows.Forms.TextBox TextBox_WindowWidth;
+        private System.Windows.Forms.Label Label_SizeSperator;
     }
 }

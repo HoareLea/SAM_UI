@@ -9,6 +9,7 @@ namespace SAM.Core.Mollier.UI
     public partial class MollierForm : Form
     {
         private static string mollierControlSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierControlSettings).Name);
+        private static string mollierFormSettingsPath = System.IO.Path.Combine(Core.Query.UserSAMTemporaryDirectory(), typeof(MollierFormSettings).Name);
 
         private ToolTip toolTip = new ToolTip();
 
@@ -25,7 +26,7 @@ namespace SAM.Core.Mollier.UI
         {
             InitializeComponent();
 
-            MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null ;
+            MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null;
             default_chart(mollierControlSettings);
         }
 
@@ -34,6 +35,8 @@ namespace SAM.Core.Mollier.UI
             ColorPointComboBox.Text = "Enthalpy";
 
             MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected;
+
+            LoadMollierFormSettings();
         }
 
         private void MollierControl_Main_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
@@ -116,16 +119,41 @@ namespace SAM.Core.Mollier.UI
 
         private void ToolStripMenuItem_OpenSettings_Click(object sender, EventArgs e)
         {
-            using (MollierControlSettingsForm mollierSettingsForm = new MollierControlSettingsForm(MollierControl_Main))
+            MollierFormSettings mollierFormSettings = System.IO.File.Exists(mollierFormSettingsPath) ? Core.Convert.ToSAM<MollierFormSettings>(mollierFormSettingsPath).FirstOrDefault() : new MollierFormSettings();
+
+            using (MollierControlSettingsForm mollierSettingsForm = new MollierControlSettingsForm(MollierControl_Main, mollierFormSettings))
             {
+                mollierSettingsForm.ApplyClicked += MollierSettingsForm_ApplyClicked;
                 if (mollierSettingsForm.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
                 }
+
+                mollierFormSettings = mollierSettingsForm.MollierFormSettings;
+
                 //TextBox_Pressure.Text = MollierControl_Main.MollierControlSettings.Pressure.ToString();
                 //TextBox_Elevation.Text = MollierControl_Main.MollierControlSettings.Elevation.ToString();
                 SaveMollierControlSettings();
             }
+
+            SaveMollierFormSettings(mollierFormSettings);
+
+            LoadMollierFormSettings(mollierFormSettings);
+        }
+
+        private void MollierSettingsForm_ApplyClicked(object sender, EventArgs e)
+        {
+            MollierControlSettingsForm mollierControlSettingsForm = sender as MollierControlSettingsForm;
+            if(mollierControlSettingsForm == null)
+            {
+                return;
+            }
+
+            MollierFormSettings mollierFormSettings = mollierControlSettingsForm.MollierFormSettings;
+
+            SaveMollierFormSettings(mollierFormSettings);
+
+            LoadMollierFormSettings(mollierFormSettings);
         }
 
         private void SaveMollierControlSettings()
@@ -142,15 +170,51 @@ namespace SAM.Core.Mollier.UI
                 Core.Convert.ToFile(mollierControlSettings, mollierControlSettingsPath);
             }
         }
-        
+
+        private void SaveMollierFormSettings(MollierFormSettings mollierFormSettings = null)
+        {
+            if(mollierFormSettings == null)
+            {
+                mollierFormSettings = System.IO.File.Exists(mollierFormSettingsPath) ? Core.Convert.ToSAM<MollierFormSettings>(mollierFormSettingsPath).FirstOrDefault() : new MollierFormSettings();
+                mollierFormSettings.Height = Size.Height;
+                mollierFormSettings.Width = Size.Width;
+            }
+            
+            string directoryPath = System.IO.Path.GetDirectoryName(mollierFormSettingsPath);
+            if (!System.IO.Directory.Exists(directoryPath))
+            {
+                System.IO.Directory.CreateDirectory(directoryPath);
+            }
+
+            Core.Convert.ToFile(mollierFormSettings, mollierFormSettingsPath);
+        }
+
+        private void LoadMollierFormSettings(MollierFormSettings mollierFormSettings = null)
+        {
+            if (mollierFormSettings == null)
+            {
+                mollierFormSettings = System.IO.File.Exists(mollierFormSettingsPath) ? Core.Convert.ToSAM<MollierFormSettings>(mollierFormSettingsPath).FirstOrDefault() : new MollierFormSettings();
+            }
+
+            int width = mollierFormSettings == null || mollierFormSettings.Width == -1 ? Size.Width : mollierFormSettings.Width;
+            int height = mollierFormSettings == null || mollierFormSettings.Height == -1 ? Size.Height : mollierFormSettings.Height;
+
+            if(mollierFormSettings.Width == -1 || mollierFormSettings.Height == -1)
+            {
+                WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+                WindowState = FormWindowState.Normal;
+            }
+
+            Size = new System.Drawing.Size(width, height);
+        }
+
         private void MollierForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveMollierControlSettings();
-        }
-        
-        private void ToolStripMenuItem_Settings_Click(object sender, EventArgs e)
-        {
-
+            SaveMollierFormSettings();
         }
         
         public bool Clear()
@@ -512,6 +576,13 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = new MollierControlSettings();
             mollierControlSettings.Pressure = MollierControl_Main.MollierControlSettings.Pressure;
             default_chart(mollierControlSettings);
+
+            MollierFormSettings mollierFormSettings = System.IO.File.Exists(mollierFormSettingsPath) ? Core.Convert.ToSAM<MollierFormSettings>(mollierFormSettingsPath).FirstOrDefault() : new MollierFormSettings();
+            mollierFormSettings.Height = -1;
+            mollierFormSettings.Width = -1;
+            SaveMollierFormSettings(mollierFormSettings);
+            LoadMollierFormSettings(mollierFormSettings);
+
         }
 
         private void ToolStripMenuItem_Density_Click(object sender, EventArgs e)

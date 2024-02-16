@@ -6,6 +6,10 @@ namespace SAM.Core.Mollier.UI
 {
     public partial class MollierControlSettingsForm : Form
     {
+        public event EventHandler ApplyClicked;
+
+        private MollierFormSettings mollierFormSettings;
+        
         private Controls.MollierControl mollierControl;
         private ToolTip toolTip = new ToolTip();
         public MollierControlSettingsForm()
@@ -13,9 +17,12 @@ namespace SAM.Core.Mollier.UI
             InitializeComponent();
         }
 
-        public MollierControlSettingsForm(Controls.MollierControl mollierControl)
+        public MollierControlSettingsForm(Controls.MollierControl mollierControl, MollierFormSettings mollierFormSettings)
         {
             InitializeComponent();
+
+            this.mollierFormSettings = mollierFormSettings;
+
             this.mollierControl = mollierControl;
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
             HumidityRatio_Max = mollierControlSettings.HumidityRatio_Max * 1000;
@@ -61,6 +68,45 @@ namespace SAM.Core.Mollier.UI
                         FlowLayoutPanel_BuiltInVisibilitySettings.Controls.Add(new Controls.BuiltInVisibilitySettingControl(builtInVisibilitySetting));
                     }
                 }
+            }
+
+            TextBox_WindowHeight.Text = mollierFormSettings?.Height == -1 ? string.Empty : mollierFormSettings.Height.ToString();
+            TextBox_WindowWidth.Text = mollierFormSettings?.Width == -1 ? string.Empty : mollierFormSettings.Width.ToString();
+
+            TextBox_WindowHeight.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+            TextBox_WindowWidth.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+        }
+
+        public MollierFormSettings MollierFormSettings
+        {
+            get
+            {
+                MollierFormSettings result = mollierFormSettings == null ? new MollierFormSettings() : new MollierFormSettings(mollierFormSettings);
+
+                if(Core.Query.TryConvert(TextBox_WindowHeight.Text, out int height))
+                {
+                    result.Height = height;
+                }
+                else
+                {
+                    result.Height = -1;
+                }
+
+                if (Core.Query.TryConvert(TextBox_WindowWidth.Text, out int width))
+                {
+                    result.Width = width;
+                }
+                else
+                {
+                    result.Width = -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                mollierFormSettings = value;
             }
         }
 
@@ -381,6 +427,7 @@ namespace SAM.Core.Mollier.UI
                 VisualizeSolver_Checkbox.Checked = value;
             }
         }
+
         private void Apply()
         {
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -440,6 +487,8 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.VisibilitySettings = visibilitySettings;
 
             mollierControl.MollierControlSettings = mollierControlSettings;
+
+            ApplyClicked.Invoke(this, EventArgs.Empty);
         }
 
         private void Button_LowIntensityColor_Click(object sender, EventArgs e)
