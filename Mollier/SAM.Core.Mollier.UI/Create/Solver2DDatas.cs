@@ -78,13 +78,13 @@ namespace SAM.Core.Mollier.UI
         {
             List<Solver2DData> result = new List<Solver2DData>();
 
-            UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierAppearance(Color.Black, process.UIMollierAppearance.Label));
+            UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierPointAppearance(Color.Black, process.UIMollierAppearance.Label));
             result.AddRange(solver2DDatas_Point(mid, chartType, scaleVector, axesRatio));
 
-            UIMollierPoint start = new UIMollierPoint(process.Start, new UIMollierAppearance(Color.Black, process.UIMollierAppearance_Start.Label));
+            UIMollierPoint start = new UIMollierPoint(process.Start, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_Start.Label));
             result.AddRange(solver2DDatas_Point(start, chartType, scaleVector, axesRatio));
 
-            UIMollierPoint end = new UIMollierPoint(process.End, new UIMollierAppearance(Color.Black, process.UIMollierAppearance_End.Label));
+            UIMollierPoint end = new UIMollierPoint(process.End, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_End.Label));
             result.AddRange(solver2DDatas_Point(end, chartType, scaleVector, axesRatio));
 
             return result;
@@ -94,7 +94,7 @@ namespace SAM.Core.Mollier.UI
             List<Solver2DData> result = new List<Solver2DData>();
             if (uIMollierZone == null) return result;
 
-            UIMollierAppearance zoneCenterAppearance = new UIMollierAppearance(Color.Black, uIMollierZone.UIMollierAppearance.Label);
+            UIMollierPointAppearance zoneCenterAppearance = new UIMollierPointAppearance(Color.Black, uIMollierZone.UIMollierAppearance.Label);
             UIMollierPoint zoneCenter;
             if(chartType == ChartType.Mollier)
             {
@@ -136,7 +136,7 @@ namespace SAM.Core.Mollier.UI
             if (rectangle == null) return result;
 
             Solver2DData solver2DData = new Solver2DData(rectangle, polyline);
-            solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(rectangle.GetCentroid(), chartType, mollierControlSettings.Pressure), new UIMollierAppearance(color, text));
+            solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(rectangle.GetCentroid(), chartType, mollierControlSettings.Pressure), new UIMollierPointAppearance(color, text));
             solver2DData.Priority = getChartDataTypePriority(curve.ChartDataType);
 
             Solver2DSettings solver2DSettings = new Solver2DSettings();
@@ -176,7 +176,7 @@ namespace SAM.Core.Mollier.UI
                 Solver2DData solver2DData = new Solver2DData(rectangle, polyline);
 
                 Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Label, curve.ChartDataType);
-                solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(defaultPoint2D, chartType, mollierControlSettings.Pressure), new UIMollierAppearance(color, text));
+                solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(defaultPoint2D, chartType, mollierControlSettings.Pressure), new UIMollierPointAppearance(color, text));
                 solver2DData.Priority = getChartDataTypePriority(chartDataType);
 
                 Solver2DSettings solver2DSettings = new Solver2DSettings();

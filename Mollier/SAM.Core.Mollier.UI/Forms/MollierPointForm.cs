@@ -22,7 +22,24 @@ namespace SAM.Core.Mollier.UI.Forms
         {
             get
             {
-                return new UIMollierPoint(MollierPoint, UIMollierAppearance);
+                UIMollierAppearance uIMollierAppearance = UIMollierAppearance;
+                if(uIMollierAppearance == null)
+                {
+                    return new UIMollierPoint(MollierPoint, null);
+                }
+                
+                if (uIMollierAppearance is UIMollierPointAppearance)
+                {
+                    return new UIMollierPoint(MollierPoint, (UIMollierPointAppearance)uIMollierAppearance);
+                }
+
+                if (uIMollierAppearance is UIMollierAppearance)
+                {
+                    return new UIMollierPoint(MollierPoint, new UIMollierPointAppearance(uIMollierAppearance));
+                }
+
+                return null;
+
             }
 
             set

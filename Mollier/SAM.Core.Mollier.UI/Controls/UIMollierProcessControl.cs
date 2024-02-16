@@ -29,9 +29,9 @@ namespace SAM.Core.Mollier.UI.Controls
                     return null;
                 }
                 uIMollierProcess.UIMollierAppearance.Color = ProcessColor_button.BackColor;
-                uIMollierProcess.UIMollierAppearance_Start.Label = StartLabel_Value.Text;
+                uIMollierProcess.UIMollierPointAppearance_Start.Label = StartLabel_Value.Text;
                 uIMollierProcess.UIMollierAppearance.Label = ProcessLabel_Value.Text;
-                uIMollierProcess.UIMollierAppearance_End.Label = EndLabel_Value.Text;
+                uIMollierProcess.UIMollierPointAppearance_End.Label = EndLabel_Value.Text;
                 return uIMollierProcess;
             }
             set
@@ -52,9 +52,9 @@ namespace SAM.Core.Mollier.UI.Controls
             if (uIMollierProcess.UIMollierAppearance != null)
             {
                 ProcessColor_button.BackColor = uIMollierProcess.UIMollierAppearance.Color;
-                StartLabel_Value.Text = uIMollierProcess.UIMollierAppearance_Start.Label;
+                StartLabel_Value.Text = uIMollierProcess.UIMollierPointAppearance_Start.Label;
                 ProcessLabel_Value.Text = uIMollierProcess.UIMollierAppearance.Label;
-                EndLabel_Value.Text = uIMollierProcess.UIMollierAppearance_End.Label;
+                EndLabel_Value.Text = uIMollierProcess.UIMollierPointAppearance_End.Label;
             }
         }
         private void ProcessColor_button_Click(object sender, EventArgs e)

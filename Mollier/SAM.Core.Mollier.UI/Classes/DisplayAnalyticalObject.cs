@@ -46,11 +46,11 @@
                 {
                     if(Index == 0)
                     {
-                        return ((UIMollierProcess)UIMollierObject)?.UIMollierAppearance_Start?.Label;
+                        return ((UIMollierProcess)UIMollierObject)?.UIMollierPointAppearance_Start?.Label;
                     }
                     else
                     {
-                        return ((UIMollierProcess)UIMollierObject)?.UIMollierAppearance_End?.Label;
+                        return ((UIMollierProcess)UIMollierObject)?.UIMollierPointAppearance_End?.Label;
                     }
                 }
                 if(UIMollierObject is UIMollierPoint)

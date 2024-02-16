@@ -384,7 +384,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
                 }
 
-                UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint1, new UIMollierAppearance(color, label));
+                UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint1, new UIMollierPointAppearance(color, label));
 
                 result.Add(uIMollierPoint);
             }
@@ -441,22 +441,22 @@ namespace SAM.Core.Mollier.UI.Controls
                 uIMollierProcess.UIMollierAppearance.Label = label;
                 uIMollierProcess.UIMollierAppearance.Visible = visible;
 
-                if (mollierProcess is UIMollierProcess && ((UIMollierProcess)mollierProcess).UIMollierAppearance_Start != null)
+                if (mollierProcess is UIMollierProcess && ((UIMollierProcess)mollierProcess).UIMollierPointAppearance_Start != null)
                 {
-                    uIMollierProcess.UIMollierAppearance_Start = ((UIMollierProcess)mollierProcess).UIMollierAppearance_Start;
+                    uIMollierProcess.UIMollierPointAppearance_Start = ((UIMollierProcess)mollierProcess).UIMollierPointAppearance_Start;
                 }
                 else
                 {
-                    uIMollierProcess.UIMollierAppearance_Start = new UIMollierAppearance(startColor, startLabel);
+                    uIMollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(startColor, startLabel);
                 }
 
-                if (mollierProcess is UIMollierProcess && ((UIMollierProcess)mollierProcess).UIMollierAppearance_End != null)
+                if (mollierProcess is UIMollierProcess && ((UIMollierProcess)mollierProcess).UIMollierPointAppearance_End != null)
                 {
-                    uIMollierProcess.UIMollierAppearance_End = ((UIMollierProcess)mollierProcess).UIMollierAppearance_End;
+                    uIMollierProcess.UIMollierPointAppearance_End = ((UIMollierProcess)mollierProcess).UIMollierPointAppearance_End;
                 }
                 else
                 {
-                    uIMollierProcess.UIMollierAppearance_End = new UIMollierAppearance(endColor, endLabel);
+                    uIMollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(endColor, endLabel);
                 }
 
                 result.Add(uIMollierProcess);
@@ -741,12 +741,12 @@ namespace SAM.Core.Mollier.UI.Controls
                             for (int j = 0; j < processes.Count; j++)
                             {
                                 UIMollierProcess mollierProcess = processes[j];
-                                if (mollierProcess.UIMollierAppearance_Start.Label != null && mollierProcess.UIMollierAppearance_Start.Label != "")
+                                if (mollierProcess.UIMollierPointAppearance_Start.Label != null && mollierProcess.UIMollierPointAppearance_Start.Label != "")
                                 {
                                     range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                                     move_Temp++;
                                 }
-                                if (mollierProcess.UIMollierAppearance_End.Label != null && mollierProcess.UIMollierAppearance_End.Label != "")
+                                if (mollierProcess.UIMollierPointAppearance_End.Label != null && mollierProcess.UIMollierPointAppearance_End.Label != "")
                                 {
                                     range_1.Copy(worksheet.Range(worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min], worksheet.Cells[rowIndex_Min + move_Temp, columnIndex_Min + numberOfData]));
                                     move_Temp++;
@@ -791,8 +791,8 @@ namespace SAM.Core.Mollier.UI.Controls
                                     switch (key_Temp)
                                     {
                                         case "[ProcessPointName]":
-                                            value_1 = mollierProcess.UIMollierAppearance_Start.Label;
-                                            value_2 = mollierProcess.UIMollierAppearance_End.Label;
+                                            value_1 = mollierProcess.UIMollierPointAppearance_Start.Label;
+                                            value_2 = mollierProcess.UIMollierPointAppearance_End.Label;
                                             break;
                                         case "[DryBulbTemperature]":
                                             value_1 = String.Format("{0:#,0.00}", start.DryBulbTemperature);
@@ -851,7 +851,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
 
 
-                                    if (mollierProcess.UIMollierAppearance_Start.Label != null && mollierProcess.UIMollierAppearance_Start.Label != "")
+                                    if (mollierProcess.UIMollierPointAppearance_Start.Label != null && mollierProcess.UIMollierPointAppearance_Start.Label != "")
                                     {
                                         if (value_1 != string.Empty)
                                         {
@@ -866,7 +866,7 @@ namespace SAM.Core.Mollier.UI.Controls
                                             id++;
                                         }
                                     }
-                                    if (mollierProcess.UIMollierAppearance_End.Label != null && mollierProcess.UIMollierAppearance_End.Label != "")
+                                    if (mollierProcess.UIMollierPointAppearance_End.Label != null && mollierProcess.UIMollierPointAppearance_End.Label != "")
                                     {
                                         //range_Temp.Copy(worksheet.Cells[rowIndex + id, columnIndex]);
                                         if (value_2 != string.Empty)

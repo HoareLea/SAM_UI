@@ -179,7 +179,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref label);
             }
 
-            UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint, new UIMollierAppearance(color, label));
+            UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint, new UIMollierPointAppearance(color, label));
 
 
             index = Params.IndexOfOutputParam("mollierPoint");

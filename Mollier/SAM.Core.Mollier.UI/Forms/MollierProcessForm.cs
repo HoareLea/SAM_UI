@@ -71,9 +71,9 @@ namespace SAM.Core.Mollier.UI.Forms
             }
 
             result.UIMollierAppearance.Color = color;
-            result.UIMollierAppearance_Start.Label = start_Label;
+            result.UIMollierPointAppearance_Start.Label = start_Label;
             result.UIMollierAppearance.Label = process_Label;
-            result.UIMollierAppearance_End.Label = end_Label;
+            result.UIMollierPointAppearance_End.Label = end_Label;
 
             return result;
         }
@@ -105,9 +105,9 @@ namespace SAM.Core.Mollier.UI.Forms
                 }
 
                 color = customizeProcessForm.UIMollierProcess.UIMollierAppearance.Color;
-                start_Label = customizeProcessForm.UIMollierProcess.UIMollierAppearance_Start.Label;
+                start_Label = customizeProcessForm.UIMollierProcess.UIMollierPointAppearance_Start.Label;
                 process_Label = customizeProcessForm.UIMollierProcess.UIMollierAppearance.Label;
-                end_Label = customizeProcessForm.UIMollierProcess.UIMollierAppearance_End.Label;
+                end_Label = customizeProcessForm.UIMollierProcess.UIMollierPointAppearance_End.Label;
             }
         }
 

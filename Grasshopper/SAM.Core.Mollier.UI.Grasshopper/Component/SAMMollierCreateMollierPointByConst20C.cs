@@ -126,7 +126,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 UIMollierPoint UIMollierPoint = (UIMollierPoint)mollierPoint;
                 MollierPoint mollierPointTemp = new MollierPoint(UIMollierPoint, vapourizationLatentHeat, specificHeat_WaterVapour, specificHeat_Air, specificHeat_Water);
-                mollierPoint = new UIMollierPoint(mollierPointTemp, UIMollierPoint.UIMollierAppearance);
+                mollierPoint = new UIMollierPoint(mollierPointTemp, UIMollierPoint.UIMollierAppearance as UIMollierPointAppearance);
             }
             else
             {
