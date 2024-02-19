@@ -364,27 +364,19 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     continue;
                 }
+                
                 if (checkPressure && !(mollierPoint.Pressure.AlmostEqual(mollierControlSettings.Pressure)))
                 {
                     continue;
                 }
 
-                Color color = Color.Blue;
-                string label = "";
-                bool visible = true;
-                MollierPoint mollierPoint1 = mollierPoint as MollierPoint;
-
-                if (mollierPoint is UIMollierPoint)
+                UIMollierPoint uIMollierPoint = mollierPoint as UIMollierPoint;
+                if(uIMollierPoint == null)
                 {
-                    if (((UIMollierPoint)mollierPoint).UIMollierAppearance != null)
-                    {
-                        color = ((UIMollierPoint)mollierPoint).UIMollierAppearance.Color;
-                        label = ((UIMollierPoint)mollierPoint).UIMollierAppearance.Label;
-                        visible = ((UIMollierPoint)mollierPoint).UIMollierAppearance.Visible;
-                    }
+                    MollierPoint mollierPoint_Temp = mollierPoint as MollierPoint;
+                    UIMollierPointAppearance uIMollierPointAppearance = Create.UIMollierPointAppearance(DisplayPointType.Default, string.Empty);
+                    uIMollierPoint = new UIMollierPoint(mollierPoint_Temp, uIMollierPointAppearance);
                 }
-
-                UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint1, new UIMollierPointAppearance(color, label));
 
                 result.Add(uIMollierPoint);
             }

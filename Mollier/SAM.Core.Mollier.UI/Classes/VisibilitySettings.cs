@@ -170,9 +170,9 @@ namespace SAM.Core.Mollier.UI
 
         public System.Drawing.Color GetColor(string templateName, ChartParameterType chartParameterType, IMollierProcess mollierProcess)
         {
-            ChartDataType process = mollierProcess.ChartDataType();
+            ChartDataType chartDataType = mollierProcess.ChartDataType();
 
-            IVisibilitySetting visibilitySetting = GetVisibilitySetting(templateName, chartParameterType, process);
+            IVisibilitySetting visibilitySetting = GetVisibilitySetting(templateName, chartParameterType, chartDataType);
             if(visibilitySetting == null)
             {
                 return System.Drawing.Color.Empty;

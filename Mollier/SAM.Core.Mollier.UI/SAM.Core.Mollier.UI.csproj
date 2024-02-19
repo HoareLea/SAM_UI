@@ -194,12 +194,14 @@
     <Compile Include="Convert\ToChart\Series.cs" />
     <Compile Include="Convert\ToSAM_UI\UIMollierGroup.cs" />
     <Compile Include="Convert\ToSAM_UI\IMollierObject.cs" />
+    <Compile Include="Create\UIMollierPointAppearance.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
     <Compile Include="Delegates\MollierObjectSelectedEventHandler.cs" />
     <Compile Include="Delegates\MollierModelEditedEventHandler.cs" />
     <Compile Include="Delegates\MollierPointSelectedEventHandler.cs" />
     <Compile Include="Delegates\SelectMollierPointEventHandler.cs" />
+    <Compile Include="Enums\DisplayPointType.cs" />
     <Compile Include="Enums\ProcessParameterType.cs" />
     <Compile Include="Enums\ProcessCalculationType.cs" />
     <Compile Include="Enums\ChartExportType.cs" />
@@ -262,6 +264,7 @@
     <Compile Include="Interface\IUserVisibilitySetting.cs" />
     <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Modify\AddColorPoint.cs" />
+    <Compile Include="Modify\AddMollierPoint.cs" />
     <Compile Include="Modify\Update.cs" />
     <Compile Include="Modify\AddLinesSeries.cs" />
     <Compile Include="Modify\AddMollierProcesses.cs" />

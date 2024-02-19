@@ -28,6 +28,11 @@ namespace SAM.Core.Mollier.UI
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
 
+        public bool DisableStartProcessPoint { get; set; } = false;
+        public bool DisableEndProcessPoint { get; set; } = false;
+        public bool DisablePointBoarder { get; set; } = false;
+        public int ProccessLineThickness { get; set; } = -1;
+
         public bool VisualizeSolver { get; set; } = false;
         public bool FindPoint { get; set; } = false;
         public double FindPoint_Factor { get; set; } = 0.4; //TODO: percent again
@@ -122,6 +127,11 @@ namespace SAM.Core.Mollier.UI
                 WetBulbTemperature_Min = mollierControlSettings.WetBulbTemperature_Min;
                 WetBulbTemperature_Max = mollierControlSettings.WetBulbTemperature_Max;
                 WetBulbTemperature_Interval = mollierControlSettings.WetBulbTemperature_Interval;
+
+                DisableStartProcessPoint = mollierControlSettings.DisableStartProcessPoint;
+                DisableEndProcessPoint = mollierControlSettings.DisableEndProcessPoint;
+                DisablePointBoarder = mollierControlSettings.DisablePointBoarder;
+                ProccessLineThickness = mollierControlSettings.ProccessLineThickness;
             }
         }
 
@@ -367,6 +377,26 @@ namespace SAM.Core.Mollier.UI
                 SpecificVolume_Interval = jObject.Value<double>("SpecificVolume_Interval");
             }
 
+            if (jObject.ContainsKey("DisableStartProcessPoint"))
+            {
+                DisableStartProcessPoint = jObject.Value<bool>("DisableStartProcessPoint");
+            }
+
+            if (jObject.ContainsKey("DisableEndProcessPoint"))
+            {
+                DisableEndProcessPoint = jObject.Value<bool>("DisableEndProcessPoint");
+            }
+
+            if (jObject.ContainsKey("DisablePointBoarder"))
+            {
+                DisablePointBoarder = jObject.Value<bool>("DisablePointBoarder");
+            }
+
+            if (jObject.ContainsKey("ProccessLineThickness"))
+            {
+                ProccessLineThickness = jObject.Value<int>("ProccessLineThickness");
+            }
+
             return true;
         }
 
@@ -476,6 +506,11 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("SpecificVolume_Interval", SpecificVolume_Interval);
             }
+
+            result.Add("DisableStartProcessPoint", DisableStartProcessPoint);
+            result.Add("DisableEndProcessPoint", DisableEndProcessPoint);
+            result.Add("DisablePointBoarder", DisablePointBoarder);
+            result.Add("ProccessLineThickness", ProccessLineThickness);
 
             return result;
         }

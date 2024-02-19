@@ -56,6 +56,10 @@ namespace SAM.Core.Mollier.UI
                 CheckBox_GradientPoint.Checked = false;
             }
 
+            DisableStartProcessPoint = mollierControlSettings.DisableStartProcessPoint;
+            DisableEndProcessPoint = mollierControlSettings.DisableEndProcessPoint;
+            DisablePointBoarder = mollierControlSettings.DisablePointBoarder;
+            ProccessLineThickness = mollierControlSettings.ProccessLineThickness;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
@@ -428,6 +432,58 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
+        public bool DisableStartProcessPoint
+        {
+            get
+            {
+                return !CheckBox_EnableStartProcessPoint.Checked;
+            }
+
+            set
+            {
+                CheckBox_EnableStartProcessPoint.Checked = !value;
+            }
+        }
+
+        public bool DisableEndProcessPoint
+        {
+            get
+            {
+                return !CheckBox_EnableEndProcessPoint.Checked;
+            }
+
+            set
+            {
+                CheckBox_EnableEndProcessPoint.Checked = !value;
+            }
+        }
+
+        public bool DisablePointBoarder
+        {
+            get
+            {
+                return !CheckBox_DisablePointBoarder.Checked;
+            }
+
+            set
+            {
+                CheckBox_DisablePointBoarder.Checked = !value;
+            }
+        }
+
+        public int ProccessLineThickness
+        {
+            get
+            {
+                return CheckBox_ProccessLineThickness.Checked ? 1 : -1;
+            }
+
+            set
+            {
+                CheckBox_ProccessLineThickness.Checked = value > 0;
+            }
+        }
+
         private void Apply()
         {
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -457,6 +513,11 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.DisableUnits = DisableUnits;
             mollierControlSettings.DisableLabels = DisableLabels;
             mollierControlSettings.VisualizeSolver = VisualizeSolver;
+
+            mollierControlSettings.DisableStartProcessPoint = DisableStartProcessPoint;
+            mollierControlSettings.DisableEndProcessPoint = DisableEndProcessPoint;
+            mollierControlSettings.DisablePointBoarder = DisablePointBoarder;
+            mollierControlSettings.ProccessLineThickness = ProccessLineThickness;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
