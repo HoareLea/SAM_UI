@@ -403,53 +403,32 @@ namespace SAM.Core.Mollier.UI.Controls
                     continue;
                 }
 
-                Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess);
+                if(mollierProcess is UIMollierProcess)
+                {
+                    result.Add((UIMollierProcess)mollierProcess);
+                    continue;
+                }
+
+                MollierProcess mollierProcess_Temp = (MollierProcess)mollierProcess;
+                if(mollierProcess_Temp == null)
+                {
+                    continue;
+                }
+
+
+                Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess_Temp);
                 string label = Query.ProcessName(mollierProcess);
                 bool visible = true;
-                MollierProcess mollierProcess1 = null;
 
-                Color startColor = Color.Black;
-                string startLabel = "";
-                Color endColor = Color.Black;
-                string endLabel = "";
+                UIMollierAppearance uIMollierAppearance = new UIMollierAppearance(color, label) { Visible = visible };
 
-                if (mollierProcess is UIMollierProcess)
-                {
-                    mollierProcess1 = ((UIMollierProcess)mollierProcess).MollierProcess;
-                    if (((UIMollierProcess)mollierProcess).UIMollierAppearance.Color != Color.Empty)
-                    {
-                        color = ((UIMollierProcess)mollierProcess).UIMollierAppearance.Color;
-                    }
-                    label = ((UIMollierProcess)mollierProcess).UIMollierAppearance.Label;
-                    visible = ((UIMollierProcess)mollierProcess).UIMollierAppearance.Visible;
-                }
-                else if (mollierProcess is MollierProcess)
-                {
-                    mollierProcess1 = (MollierProcess)mollierProcess;
-                    color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess1);
-                }
+                UIMollierProcess uIMollierProcess = new UIMollierProcess(mollierProcess_Temp, uIMollierAppearance);
+                UIMollierPointAppearance uIMollierPointAppearance = Create.UIMollierPointAppearance(DisplayPointType.Process);
+                uIMollierPointAppearance.Color = color;
+                uIMollierPointAppearance.BorderColor = Color.Gray;
 
-                UIMollierProcess uIMollierProcess = new UIMollierProcess(mollierProcess1, color);
-                uIMollierProcess.UIMollierAppearance.Label = label;
-                uIMollierProcess.UIMollierAppearance.Visible = visible;
-
-                if (mollierProcess is UIMollierProcess && ((UIMollierProcess)mollierProcess).UIMollierPointAppearance_Start != null)
-                {
-                    uIMollierProcess.UIMollierPointAppearance_Start = ((UIMollierProcess)mollierProcess).UIMollierPointAppearance_Start;
-                }
-                else
-                {
-                    uIMollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(startColor, startLabel);
-                }
-
-                if (mollierProcess is UIMollierProcess && ((UIMollierProcess)mollierProcess).UIMollierPointAppearance_End != null)
-                {
-                    uIMollierProcess.UIMollierPointAppearance_End = ((UIMollierProcess)mollierProcess).UIMollierPointAppearance_End;
-                }
-                else
-                {
-                    uIMollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(endColor, endLabel);
-                }
+                uIMollierProcess.UIMollierPointAppearance_Start = uIMollierPointAppearance;
+                uIMollierProcess.UIMollierPointAppearance_End = uIMollierPointAppearance;
 
                 result.Add(uIMollierProcess);
             }

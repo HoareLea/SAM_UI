@@ -2,7 +2,6 @@
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Drawing;
 using System;
-using NetOffice.Tools;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -41,6 +40,7 @@ namespace SAM.Core.Mollier.UI
 
             series.MarkerStyle = MarkerStyle.Circle;
             series.Points[index].ToolTip = Query.ToolTipText(uIMollierPoint, chartType, uIMollierPointAppearance.Label);
+            series.Tag = uIMollierPoint;
 
             return series;
         }
