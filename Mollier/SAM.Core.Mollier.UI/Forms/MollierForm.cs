@@ -314,8 +314,15 @@ namespace SAM.Core.Mollier.UI
                 MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null;
                 System.Drawing.Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, uIMollierProcess);
                 uIMollierProcess.UIMollierAppearance.Color = color;
-                uIMollierProcess.UIMollierPointAppearance_Start.Color = color;
-                uIMollierProcess.UIMollierPointAppearance_End.Color = color;
+                if (uIMollierProcess.UIMollierPointAppearance_Start.Color == System.Drawing.Color.Empty)
+                {
+                    uIMollierProcess.UIMollierPointAppearance_Start.Color = color;
+                }
+
+                if (uIMollierProcess.UIMollierPointAppearance_End.Color == System.Drawing.Color.Empty)
+                {
+                    uIMollierProcess.UIMollierPointAppearance_End.Color = color;
+                }
             }
 
             previousUIMollierPoint = uIMollierProcess.GetUIMollierPoint_End();
