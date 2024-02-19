@@ -23,8 +23,9 @@ namespace SAM.Core.Mollier.UI
 
             series.MarkerSize = uIMollierPointAppearance.Size == -1 ? series.MarkerSize : uIMollierPointAppearance.Size;
             series.Color = uIMollierPointAppearance.Color == Color.Empty ? series.Color : uIMollierPointAppearance.Color;
+            series.MarkerColor = uIMollierPointAppearance.Color == Color.Empty ? series.Color : uIMollierPointAppearance.Color;
 
-            if(disableBoarder)
+            if (disableBoarder)
             {
                 series.MarkerBorderWidth = 0;
                 series.MarkerBorderColor = Color.Empty;
