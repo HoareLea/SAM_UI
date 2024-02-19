@@ -365,16 +365,28 @@ namespace SAM.Core.Mollier.UI
                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
 
                     // Set default values whether they're not set
-                    if(UI_MollierProcess.UIMollierPointAppearance_Start == null || UI_MollierProcess.UIMollierPointAppearance_Start.Label == null)
+                    if(UI_MollierProcess.UIMollierPointAppearance_Start == null)
                     {
-                        UI_MollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(Color.Empty, "");
-                    }
-                    if(UI_MollierProcess.UIMollierPointAppearance_End == null || UI_MollierProcess.UIMollierPointAppearance_End.Label == null)
-                    {
-                        UI_MollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(Color.Empty, "");
+                        UI_MollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(Color.Empty, string.Empty);
                     }
 
-                    if(UI_MollierProcess is RoomProcess)
+                    if(UI_MollierProcess.UIMollierPointAppearance_Start.Label == null)
+                    {
+                        UI_MollierProcess.UIMollierPointAppearance_Start.Label = string.Empty;
+                    }
+
+
+                    if(UI_MollierProcess.UIMollierPointAppearance_End == null)
+                    {
+                        UI_MollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(Color.Empty, string.Empty);
+                    }
+
+                    if (UI_MollierProcess.UIMollierPointAppearance_End.Label == null)
+                    {
+                        UI_MollierProcess.UIMollierPointAppearance_End.Label = string.Empty;
+                    }
+
+                    if (UI_MollierProcess?.MollierProcess is RoomProcess)
                     {
                         UI_MollierProcess.UIMollierPointAppearance_End.Label = "ROOM";
                     }
@@ -384,7 +396,7 @@ namespace SAM.Core.Mollier.UI
                     //    UI_MollierProcess.UIMollierAppearance_Start.Label = "OSA";
                     //}
                     //else 
-                    if (UI_MollierProcess.UIMollierPointAppearance_Start.Label == "")
+                    if (UI_MollierProcess.UIMollierPointAppearance_Start.Label == string.Empty)
                     {
                         UI_MollierProcess.UIMollierPointAppearance_Start.Label = name + "1";
                     }
@@ -399,7 +411,7 @@ namespace SAM.Core.Mollier.UI
                     //    UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
                     //}
                     //  else;
-                    if (UI_MollierProcess.UIMollierPointAppearance_End.Label == "")
+                    if (UI_MollierProcess.UIMollierPointAppearance_End.Label == string.Empty)
                     {
                         UI_MollierProcess.UIMollierPointAppearance_End.Label = name + "2";
                     }
