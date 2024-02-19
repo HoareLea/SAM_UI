@@ -289,7 +289,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             mollierProcessForm.PreviousMollierPoint = GetMollierPoint();
-            mollierProcessForm.Show();          
+            mollierProcessForm.Show();
         }
 
         private void MollierProcessForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -308,6 +308,15 @@ namespace SAM.Core.Mollier.UI
             }
 
             mollierProcessForm = null;
+
+            if(uIMollierProcess.UIMollierAppearance.Color == System.Drawing.Color.Empty)
+            {
+                MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null;
+                System.Drawing.Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, uIMollierProcess);
+                uIMollierProcess.UIMollierAppearance.Color = color;
+                uIMollierProcess.UIMollierPointAppearance_Start.Color = color;
+                uIMollierProcess.UIMollierPointAppearance_End.Color = color;
+            }
 
             previousUIMollierPoint = uIMollierProcess.GetUIMollierPoint_End();
             List<IMollierProcess> mollierProcesses = new List<IMollierProcess>() { uIMollierProcess };

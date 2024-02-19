@@ -71,9 +71,13 @@ namespace SAM.Core.Mollier.UI.Forms
             }
 
             result.UIMollierAppearance.Color = color;
-            result.UIMollierPointAppearance_Start.Label = start_Label;
             result.UIMollierAppearance.Label = process_Label;
-            result.UIMollierPointAppearance_End.Label = end_Label;
+
+            result.UIMollierPointAppearance_Start = Create.UIMollierPointAppearance(DisplayPointType.Process, start_Label);
+            result.UIMollierPointAppearance_Start.Color = color;
+
+            result.UIMollierPointAppearance_End = Create.UIMollierPointAppearance(DisplayPointType.Process, end_Label);
+            result.UIMollierPointAppearance_End.Color = color;
 
             return result;
         }
