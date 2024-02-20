@@ -59,7 +59,7 @@
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.Density, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.Density, System.Drawing.Color.LightBlue));
 
-            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.LightBlue));
+            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.FromArgb(255,216,237,243)));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Unit, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Label, Mollier.ChartDataType.Enthalpy, System.Drawing.Color.LightBlue));
