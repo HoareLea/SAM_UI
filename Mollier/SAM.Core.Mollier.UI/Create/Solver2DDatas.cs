@@ -90,7 +90,7 @@ namespace SAM.Core.Mollier.UI
                 result.AddRange(solver2DDatas_Point(start, chartType, scaleVector, axesRatio));
             }
 
-            if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelStartProcessPoint))
+            if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelEndProcessPoint))
             {
                 UIMollierPoint end = new UIMollierPoint(process.End, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_End.Label));
                 result.AddRange(solver2DDatas_Point(end, chartType, scaleVector, axesRatio));
