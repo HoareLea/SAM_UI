@@ -40,6 +40,8 @@ namespace SAM.Core.Mollier.UI
         public Color PointColor { get; set; } = Color.Empty;
         public bool DisablePoint { get; set; } = false;
 
+        public bool DisableCoolingAuxiliaryProcesses { get; set; } = false;
+
 
         public bool VisualizeSolver { get; set; } = false;
         public bool FindPoint { get; set; } = false;
@@ -147,6 +149,8 @@ namespace SAM.Core.Mollier.UI
                 PointBorderColor = mollierControlSettings.PointBorderColor;
                 PointColor = mollierControlSettings.PointColor;
                 DisablePoint = mollierControlSettings.DisablePoint;
+
+                DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
             }
         }
 
@@ -442,6 +446,11 @@ namespace SAM.Core.Mollier.UI
                 DisablePoint = jObject.Value<bool>("DisablePoint");
             }
 
+            if (jObject.ContainsKey("DisableCoolingAuxiliaryProcesses"))
+            {
+                DisableCoolingAuxiliaryProcesses = jObject.Value<bool>("DisableCoolingAuxiliaryProcesses");
+            }
+
             return true;
         }
 
@@ -565,6 +574,8 @@ namespace SAM.Core.Mollier.UI
             result.Add("PointColor", new SAMColor(PointColor).ToJObject());
 
             result.Add("DisablePoint", DisablePoint);
+
+            result.Add("DisableCoolingAuxiliaryProcesses", DisableCoolingAuxiliaryProcesses);
 
             return result;
         }

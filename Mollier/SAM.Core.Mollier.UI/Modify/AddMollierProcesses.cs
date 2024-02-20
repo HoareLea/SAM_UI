@@ -80,11 +80,14 @@ namespace SAM.Core.Mollier.UI
                 //MollierPoint mid = mollierPointsMid(start, end);
                 //processPointsToLabel.Add(new UIMollierPoint(mid, new UIMollierPointAppearance(Color.Empty, uIMollierProcess.UIMollierAppearance.Label)));
 
-                //cooling process create one unique process with ADP point
-                if (labeledMollierProcesses.Count < 30 && mollierProcess is CoolingProcess)
+                if(!mollierControlSettings.DisableCoolingAuxiliaryProcesses)
                 {
-                    UIMollierPoint ADPPoint = createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
-                    //if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
+                    //cooling process create one unique process with ADP point
+                    if (labeledMollierProcesses.Count < 30 && mollierProcess is CoolingProcess)
+                    {
+                        UIMollierPoint ADPPoint = createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
+                        //if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
+                    }
                 }
             }
 

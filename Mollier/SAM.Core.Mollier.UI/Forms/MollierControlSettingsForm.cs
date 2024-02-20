@@ -72,6 +72,7 @@ namespace SAM.Core.Mollier.UI
             PointBoarderColor = mollierControlSettings.PointBorderColor;
             PointColor = mollierControlSettings.PointColor;
             DisablePoint = mollierControlSettings.DisablePoint;
+            DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
@@ -574,6 +575,19 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
+        public bool DisableCoolingAuxiliaryProcesses
+        {
+            get
+            {
+                return !CheckBox_EnableCoolingAuxiliaryProcesses.Checked;
+            }
+
+            set
+            {
+                CheckBox_EnableCoolingAuxiliaryProcesses.Checked = !value;
+            }
+        }
+
 
         private void Apply()
         {
@@ -617,6 +631,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.PointBorderColor = PointBoarderColor;
             mollierControlSettings.PointColor = PointColor;
             mollierControlSettings.DisablePoint = DisablePoint;
+            mollierControlSettings.DisableCoolingAuxiliaryProcesses = DisableCoolingAuxiliaryProcesses;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
