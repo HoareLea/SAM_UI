@@ -62,7 +62,7 @@ namespace SAM.Core.Mollier.UI
                 {
                     //createProcessPointsSeries(chart, start, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierPointAppearance_Start.Label);
                     UIMollierPoint uIMollierPoint_Start = uIMollierProcess.GetUIMollierPoint_Start();
-                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_Start, mollierControlSettings.DisablePointBoarder);
+                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_Start, mollierControlSettings);
                     //series_Temp.Tag = mollierProcess;
 
                     //processPointsToLabel.Add(uIMollierPoint_Start);
@@ -72,7 +72,7 @@ namespace SAM.Core.Mollier.UI
                 {
                     //createProcessPointsSeries(chart, end, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierPointAppearance_End.Label);
                     UIMollierPoint uIMollierPoint_End = uIMollierProcess.GetUIMollierPoint_End();
-                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_End, mollierControlSettings.DisablePointBoarder);
+                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_End, mollierControlSettings);
                     //series_Temp.Tag = mollierProcess;
                     //processPointsToLabel.Add(uIMollierPoint_End);
                 }
@@ -196,7 +196,7 @@ namespace SAM.Core.Mollier.UI
             {
                 UIMollierPoint uIMollierPoint = new UIMollierPoint(uIMollierProcess.Start, Create.UIMollierPointAppearance(DisplayPointType.Room));
                 
-                Series series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint, mollierControlSettings.DisablePointBoarder);
+                Series series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint, mollierControlSettings);
                 //series_Temp.Tag = mollierProcess;
                 //createProcessPointsSeries(chart, mollierPoint_Start, uIMollierProcess, mollierControlSettings.ChartType);
             }
@@ -280,13 +280,13 @@ namespace SAM.Core.Mollier.UI
 
             MollierPoint apparatusDewPoint = ((CoolingProcess)mollierProcess).ApparatusDewPoint();
             //createProcessPointsSeries(chart, apparatusDewMollierPoint, uIMollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
-            series = AddMollierPoint(chart, chartType, new UIMollierPoint(apparatusDewPoint, Create.UIMollierPointAppearance(DisplayPointType.Dew, DisplayPointType.Dew.Description())), mollierControlSettings.DisablePointBoarder);
+            series = AddMollierPoint(chart, chartType, new UIMollierPoint(apparatusDewPoint, Create.UIMollierPointAppearance(DisplayPointType.Dew, DisplayPointType.Dew.Description())), mollierControlSettings);
             //series.Tag = mollierProcess;
 
 
             MollierPoint dewPoint = ((CoolingProcess)mollierProcess).DewPoint();
             //createProcessPointsSeries(chart, secondPoint, uIMollierProcess, chartType, pointType: "SecondPoint");
-            series = AddMollierPoint(chart, chartType, new UIMollierPoint(dewPoint, Create.UIMollierPointAppearance(DisplayPointType.CoolingSaturation)), mollierControlSettings.DisablePointBoarder);
+            series = AddMollierPoint(chart, chartType, new UIMollierPoint(dewPoint, Create.UIMollierPointAppearance(DisplayPointType.CoolingSaturation)), mollierControlSettings);
             //series.Tag = mollierProcess;//"SecondPoint";
 
             int borderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 2;

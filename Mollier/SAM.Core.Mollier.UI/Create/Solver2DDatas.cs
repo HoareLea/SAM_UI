@@ -78,16 +78,19 @@ namespace SAM.Core.Mollier.UI
         {
             List<Solver2DData> result = new List<Solver2DData>();
 
-            UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierPointAppearance(Color.Black, process.UIMollierAppearance.Label));
-            result.AddRange(solver2DDatas_Point(mid, chartType, scaleVector, axesRatio));
+            if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelProcess))
+            {
+                UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierPointAppearance(Color.Black, process.UIMollierAppearance.Label));
+                result.AddRange(solver2DDatas_Point(mid, chartType, scaleVector, axesRatio));
+            }
 
-            if(mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableStartProcessPoint))
+            if(mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelStartProcessPoint))
             {
                 UIMollierPoint start = new UIMollierPoint(process.Start, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_Start.Label));
                 result.AddRange(solver2DDatas_Point(start, chartType, scaleVector, axesRatio));
             }
 
-            if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableEndProcessPoint))
+            if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelStartProcessPoint))
             {
                 UIMollierPoint end = new UIMollierPoint(process.End, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_End.Label));
                 result.AddRange(solver2DDatas_Point(end, chartType, scaleVector, axesRatio));

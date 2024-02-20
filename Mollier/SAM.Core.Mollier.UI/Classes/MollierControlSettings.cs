@@ -32,6 +32,14 @@ namespace SAM.Core.Mollier.UI
         public bool DisableEndProcessPoint { get; set; } = false;
         public bool DisablePointBoarder { get; set; } = false;
         public int ProccessLineThickness { get; set; } = -1;
+        
+        public bool DisableLabelStartProcessPoint { get; set; } = false;
+        public bool DisableLabelEndProcessPoint { get; set; } = false;
+        public bool DisableLabelProcess { get; set; } = false;
+        public Color PointBorderColor { get; set; } = Color.Empty;
+        public Color PointColor { get; set; } = Color.Empty;
+        public bool DisablePoint { get; set; } = false;
+
 
         public bool VisualizeSolver { get; set; } = false;
         public bool FindPoint { get; set; } = false;
@@ -132,6 +140,13 @@ namespace SAM.Core.Mollier.UI
                 DisableEndProcessPoint = mollierControlSettings.DisableEndProcessPoint;
                 DisablePointBoarder = mollierControlSettings.DisablePointBoarder;
                 ProccessLineThickness = mollierControlSettings.ProccessLineThickness;
+
+                DisableLabelStartProcessPoint = mollierControlSettings.DisableLabelStartProcessPoint;
+                DisableLabelEndProcessPoint = mollierControlSettings.DisableLabelEndProcessPoint;
+                DisableLabelProcess = mollierControlSettings.DisableLabelProcess;
+                PointBorderColor = mollierControlSettings.PointBorderColor;
+                PointColor = mollierControlSettings.PointColor;
+                DisablePoint = mollierControlSettings.DisablePoint;
             }
         }
 
@@ -397,6 +412,36 @@ namespace SAM.Core.Mollier.UI
                 ProccessLineThickness = jObject.Value<int>("ProccessLineThickness");
             }
 
+            if (jObject.ContainsKey("DisableLabelStartProcessPoint"))
+            {
+                DisableLabelStartProcessPoint = jObject.Value<bool>("DisableLabelStartProcessPoint");
+            }
+
+            if (jObject.ContainsKey("DisableLabelEndProcessPoint"))
+            {
+                DisableLabelEndProcessPoint = jObject.Value<bool>("DisableLabelEndProcessPoint");
+            }
+
+            if (jObject.ContainsKey("DisableLabelProcess"))
+            {
+                DisableLabelProcess = jObject.Value<bool>("DisableLabelProcess");
+            }
+
+            if (jObject.ContainsKey("PointBoarderColor"))
+            {
+                PointBorderColor = new SAMColor(jObject.Value<JObject>("PointBoarderColor")).ToColor();
+            }
+
+            if (jObject.ContainsKey("PointColor"))
+            {
+                PointColor = new SAMColor(jObject.Value<JObject>("PointColor")).ToColor();
+            }
+
+            if (jObject.ContainsKey("DisablePoint"))
+            {
+                DisablePoint = jObject.Value<bool>("DisablePoint");
+            }
+
             return true;
         }
 
@@ -511,6 +556,15 @@ namespace SAM.Core.Mollier.UI
             result.Add("DisableEndProcessPoint", DisableEndProcessPoint);
             result.Add("DisablePointBoarder", DisablePointBoarder);
             result.Add("ProccessLineThickness", ProccessLineThickness);
+
+            result.Add("DisableLabelStartProcessPoint", DisableLabelStartProcessPoint);
+            result.Add("DisableLabelEndProcessPoint", DisableLabelEndProcessPoint);
+            result.Add("DisableLabelProcess", DisableLabelProcess);
+
+            result.Add("PointBoarderColor", new SAMColor(PointBorderColor).ToJObject());
+            result.Add("PointColor", new SAMColor(PointColor).ToJObject());
+
+            result.Add("DisablePoint", DisablePoint);
 
             return result;
         }

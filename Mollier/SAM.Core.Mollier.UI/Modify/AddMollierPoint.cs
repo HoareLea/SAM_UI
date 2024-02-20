@@ -7,7 +7,7 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-        public static Series AddMollierPoint(this Chart chart, ChartType chartType, UIMollierPoint uIMollierPoint, bool disableBoarder = false)
+        public static Series AddMollierPoint(this Chart chart, ChartType chartType, UIMollierPoint uIMollierPoint, MollierControlSettings mollierControlSettings)
         {
             if(chart == null || chartType == ChartType.Undefined || uIMollierPoint == null)
             {
@@ -21,20 +21,58 @@ namespace SAM.Core.Mollier.UI
 
             UIMollierPointAppearance uIMollierPointAppearance = uIMollierPoint.UIMollierAppearance as UIMollierPointAppearance;
 
-            series.MarkerSize = uIMollierPointAppearance.Size == -1 ? series.MarkerSize : uIMollierPointAppearance.Size;
-            series.Color = uIMollierPointAppearance.Color == Color.Empty ? series.Color : uIMollierPointAppearance.Color;
-            series.MarkerColor = uIMollierPointAppearance.Color == Color.Empty ? series.Color : uIMollierPointAppearance.Color;
+            Color color = uIMollierPointAppearance.Color;
+            int size = uIMollierPointAppearance.Size;
+            if (mollierControlSettings != null && mollierControlSettings.PointColor != Color.Empty)
+            {
+                color = mollierControlSettings.PointColor;
+            }
 
-            if (disableBoarder)
+            if(color == Color.Empty)
             {
-                series.MarkerBorderWidth = 0;
-                series.MarkerBorderColor = Color.Empty;
+                color = series.Color;
             }
-            else
+
+            if(size < 1)
             {
-                series.MarkerBorderWidth = uIMollierPointAppearance.BorderSize == -1 ? series.MarkerSize : uIMollierPointAppearance.BorderSize;
-                series.MarkerBorderColor = uIMollierPointAppearance.BorderColor == Color.Empty ? series.MarkerBorderColor : uIMollierPointAppearance.BorderColor;
+                size = series.MarkerSize;
             }
+
+            if (mollierControlSettings != null && mollierControlSettings.DisablePoint)
+            {
+                color = Color.Empty;
+                size = 0;
+            }
+
+            series.MarkerSize = size;
+            series.MarkerColor = color;
+            series.Color = color;
+
+            Color borderColor = uIMollierPointAppearance.BorderColor;
+            int borderWidth = uIMollierPointAppearance.BorderSize;
+            if (mollierControlSettings != null && mollierControlSettings.PointBorderColor != Color.Empty)
+            {
+                borderColor = mollierControlSettings.PointBorderColor;
+            }
+
+            if(borderColor == Color.Empty)
+            {
+                borderColor = series.MarkerBorderColor;
+            }
+
+            if(borderWidth < 1)
+            {
+                borderWidth = series.MarkerBorderWidth;
+            }
+
+            if (mollierControlSettings != null && mollierControlSettings.DisablePointBoarder)
+            {
+                borderColor = Color.Empty;
+                borderWidth = 0;
+            }
+
+            series.MarkerBorderWidth = borderWidth;
+            series.MarkerColor = borderColor;
 
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Point;

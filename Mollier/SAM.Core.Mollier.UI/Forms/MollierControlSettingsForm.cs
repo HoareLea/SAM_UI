@@ -61,6 +61,13 @@ namespace SAM.Core.Mollier.UI
             DisablePointBoarder = mollierControlSettings.DisablePointBoarder;
             ProccessLineThickness = mollierControlSettings.ProccessLineThickness;
 
+            DisableLabelStartProcessPoint = mollierControlSettings.DisableLabelStartProcessPoint;
+            DisableLabelEndProcessPoint = mollierControlSettings.DisableLabelEndProcessPoint;
+            DisableLabelProcess = mollierControlSettings.DisableLabelProcess;
+            PointBoarderColor = mollierControlSettings.PointBorderColor;
+            PointColor = mollierControlSettings.PointColor;
+            DisablePoint = mollierControlSettings.DisablePoint;
+
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
             {
@@ -462,12 +469,12 @@ namespace SAM.Core.Mollier.UI
         {
             get
             {
-                return !CheckBox_DisablePointBoarder.Checked;
+                return !CheckBox_DisablePointBorder.Checked;
             }
 
             set
             {
-                CheckBox_DisablePointBoarder.Checked = !value;
+                CheckBox_DisablePointBorder.Checked = !value;
             }
         }
 
@@ -483,6 +490,85 @@ namespace SAM.Core.Mollier.UI
                 CheckBox_ProccessLineThickness.Checked = value > 0;
             }
         }
+
+        public bool DisableLabelStartProcessPoint
+        {
+            get
+            {
+                return !checkBox_EnableProcessStartPointLabel.Checked;
+            }
+
+            set
+            {
+                checkBox_EnableProcessStartPointLabel.Checked = !value;
+            }
+        }
+
+        public bool DisableLabelEndProcessPoint
+        {
+            get
+            {
+                return !checkBox_EnableProcessEndPointLabel.Checked;
+            }
+
+            set
+            {
+                checkBox_EnableProcessEndPointLabel.Checked = !value;
+            }
+        }
+
+        public bool DisableLabelProcess
+        {
+            get
+            {
+                return !CheckBox_EnableProcessLabel.Checked;
+            }
+
+            set
+            {
+                CheckBox_EnableProcessLabel.Checked = !value;
+            }
+        }
+
+        public System.Drawing.Color PointBoarderColor
+        {
+            get
+            {
+                return Button_PointBorderColor.BackColor;
+            }
+
+            set
+            {
+                Button_PointBorderColor.BackColor = value;
+            }
+        }
+
+        public System.Drawing.Color PointColor
+        {
+            get
+            {
+                return Button_PointColor.BackColor;
+            }
+
+            set
+            {
+                Button_PointColor.BackColor = value;
+            }
+        }
+
+        public bool DisablePoint
+        {
+            get
+            {
+                return !CheckBox_DisablePoint.Checked;
+            }
+
+            set
+            {
+                CheckBox_DisablePoint.Checked = !value;
+            }
+        }
+
 
         private void Apply()
         {
@@ -518,6 +604,14 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.DisableEndProcessPoint = DisableEndProcessPoint;
             mollierControlSettings.DisablePointBoarder = DisablePointBoarder;
             mollierControlSettings.ProccessLineThickness = ProccessLineThickness;
+
+
+            mollierControlSettings.DisableLabelStartProcessPoint = DisableLabelStartProcessPoint;
+            mollierControlSettings.DisableLabelEndProcessPoint = DisableLabelEndProcessPoint;
+            mollierControlSettings.DisableLabelProcess = DisableLabelProcess;
+            mollierControlSettings.PointBorderColor = PointBoarderColor;
+            mollierControlSettings.PointColor = PointColor;
+            mollierControlSettings.DisablePoint = DisablePoint;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
@@ -563,6 +657,7 @@ namespace SAM.Core.Mollier.UI
                 Button_LowIntensityColor.BackColor = colorDialog.Color;
             }
         }
+        
         private void Button_HighIntensityColor_Click(object sender, EventArgs e)
         {
             using (ColorDialog colorDialog = new ColorDialog())
@@ -633,6 +728,30 @@ namespace SAM.Core.Mollier.UI
         {
             toolTip.Active = false;
             toolTip.Active = true;
+        }
+
+        private void Button_PointColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                Button_PointColor.BackColor = colorDialog.Color;
+            }
+        }
+
+        private void Button_PointBorderColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                Button_PointBorderColor.BackColor = colorDialog.Color;
+            }
         }
     }
 }
