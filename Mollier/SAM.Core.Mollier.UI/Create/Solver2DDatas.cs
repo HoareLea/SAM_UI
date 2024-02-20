@@ -38,7 +38,7 @@ namespace SAM.Core.Mollier.UI
                 if (addProcesses && series.Tag is UIMollierProcess)
                 {
                     UIMollierProcess process = (UIMollierProcess)series.Tag;
-                    result.AddRange(solver2DDatas_Process(process, chartType, scaleVector, axesRatio));
+                    result.AddRange(solver2DDatas_Process(process, chartType, scaleVector, axesRatio, mollierControlSettings));
                 }
                 if (series.Tag is ConstantValueCurve && !(series.Tag is ConstantTemperatureCurve))
                 {
@@ -74,18 +74,24 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
-        private static List<Solver2DData> solver2DDatas_Process(UIMollierProcess process, ChartType chartType, Vector2D scaleVector, double axesRatio)
+        private static List<Solver2DData> solver2DDatas_Process(UIMollierProcess process, ChartType chartType, Vector2D scaleVector, double axesRatio, MollierControlSettings mollierControlSettings)
         {
             List<Solver2DData> result = new List<Solver2DData>();
 
             UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierPointAppearance(Color.Black, process.UIMollierAppearance.Label));
             result.AddRange(solver2DDatas_Point(mid, chartType, scaleVector, axesRatio));
 
-            UIMollierPoint start = new UIMollierPoint(process.Start, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_Start.Label));
-            result.AddRange(solver2DDatas_Point(start, chartType, scaleVector, axesRatio));
+            if(mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableStartProcessPoint))
+            {
+                UIMollierPoint start = new UIMollierPoint(process.Start, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_Start.Label));
+                result.AddRange(solver2DDatas_Point(start, chartType, scaleVector, axesRatio));
+            }
 
-            UIMollierPoint end = new UIMollierPoint(process.End, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_End.Label));
-            result.AddRange(solver2DDatas_Point(end, chartType, scaleVector, axesRatio));
+            if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableEndProcessPoint))
+            {
+                UIMollierPoint end = new UIMollierPoint(process.End, new UIMollierPointAppearance(Color.Black, process.UIMollierPointAppearance_End.Label));
+                result.AddRange(solver2DDatas_Point(end, chartType, scaleVector, axesRatio));
+            }
 
             return result;
         }
