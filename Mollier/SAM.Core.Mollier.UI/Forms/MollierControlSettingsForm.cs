@@ -12,6 +12,9 @@ namespace SAM.Core.Mollier.UI
         
         private Controls.MollierControl mollierControl;
         private ToolTip toolTip = new ToolTip();
+
+        private System.Drawing.Color initialColor = System.Drawing.Color.Empty;
+
         public MollierControlSettingsForm()
         {
             InitializeComponent();
@@ -20,6 +23,8 @@ namespace SAM.Core.Mollier.UI
         public MollierControlSettingsForm(Controls.MollierControl mollierControl, MollierFormSettings mollierFormSettings)
         {
             InitializeComponent();
+
+            initialColor = Button_PointColor.BackColor;
 
             this.mollierFormSettings = mollierFormSettings;
 
@@ -534,7 +539,7 @@ namespace SAM.Core.Mollier.UI
         {
             get
             {
-                return Button_PointBorderColor.BackColor;
+                return Button_PointBorderColor.BackColor == initialColor ? System.Drawing.Color.Empty : Button_PointBorderColor.BackColor;
             }
 
             set
@@ -547,7 +552,7 @@ namespace SAM.Core.Mollier.UI
         {
             get
             {
-                return Button_PointColor.BackColor;
+                return Button_PointColor.BackColor == initialColor ? System.Drawing.Color.Empty : Button_PointColor.BackColor;
             }
 
             set

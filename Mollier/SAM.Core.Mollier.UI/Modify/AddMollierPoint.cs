@@ -23,7 +23,7 @@ namespace SAM.Core.Mollier.UI
 
             Color color = uIMollierPointAppearance.Color;
             int size = uIMollierPointAppearance.Size;
-            if (mollierControlSettings != null && mollierControlSettings.PointColor != Color.Empty)
+            if (mollierControlSettings != null && !Core.Query.Similar(mollierControlSettings.PointColor, Color.Empty))
             {
                 color = mollierControlSettings.PointColor;
             }
@@ -44,13 +44,14 @@ namespace SAM.Core.Mollier.UI
                 size = 0;
             }
 
+            series.Color = color;
+
             series.MarkerSize = size;
             series.MarkerColor = color;
-            series.Color = color;
 
             Color borderColor = uIMollierPointAppearance.BorderColor;
             int borderWidth = uIMollierPointAppearance.BorderSize;
-            if (mollierControlSettings != null && mollierControlSettings.PointBorderColor != Color.Empty)
+            if (mollierControlSettings != null && !Core.Query.Similar(mollierControlSettings.PointBorderColor, Color.Empty))
             {
                 borderColor = mollierControlSettings.PointBorderColor;
             }
@@ -72,7 +73,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             series.MarkerBorderWidth = borderWidth;
-            series.MarkerColor = borderColor;
+            series.MarkerBorderColor = borderColor;
 
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Point;

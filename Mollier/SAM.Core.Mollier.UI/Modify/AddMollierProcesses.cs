@@ -77,7 +77,7 @@ namespace SAM.Core.Mollier.UI
                     //processPointsToLabel.Add(uIMollierPoint_End);
                 }
 
-                MollierPoint mid = mollierPointsMid(start, end);
+                //MollierPoint mid = mollierPointsMid(start, end);
                 //processPointsToLabel.Add(new UIMollierPoint(mid, new UIMollierPointAppearance(Color.Empty, uIMollierProcess.UIMollierAppearance.Label)));
 
                 //cooling process create one unique process with ADP point
