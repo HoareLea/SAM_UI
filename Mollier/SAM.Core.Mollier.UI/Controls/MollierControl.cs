@@ -424,8 +424,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 UIMollierProcess uIMollierProcess = new UIMollierProcess(mollierProcess_Temp, uIMollierAppearance);
                 UIMollierPointAppearance uIMollierPointAppearance = Create.UIMollierPointAppearance(DisplayPointType.Process);
-                uIMollierPointAppearance.Color = color;
-                uIMollierPointAppearance.BorderColor = Color.Gray;
+                //uIMollierPointAppearance.Color = color;
+                //uIMollierPointAppearance.BorderColor = Color.Gray;
 
                 uIMollierProcess.UIMollierPointAppearance_Start = uIMollierPointAppearance;
                 uIMollierProcess.UIMollierPointAppearance_End = uIMollierPointAppearance;
