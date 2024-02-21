@@ -3,6 +3,7 @@ using SAM.Analytical.UI.Grasshopper.Properties;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier;
+using SAM.Core.Mollier.UI;
 using System;
 using System.Collections.Generic;
 
@@ -138,8 +139,21 @@ namespace SAM.Analytical.UI.Grasshopper
 
 
             //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
-            mollierForm.AddProcesses(mollierProcesses, false);
-            mollierForm.AddPoints(mollierPoints, false);
+            //mollierForm.AddProcesses(mollierProcesses, false);
+            //mollierForm.AddPoints(mollierPoints, false);
+
+            List<IMollierObject> mollierObjects = new List<IMollierObject>();
+            if(mollierProcesses != null)
+            {
+                mollierObjects.AddRange(mollierProcesses);
+            }
+
+            if(mollierPoints != null)
+            {
+                mollierObjects.AddRange(mollierPoints);
+            }
+
+            mollierForm.AddMollierObjects(mollierObjects);
 
             mollierForm.Show();
         }

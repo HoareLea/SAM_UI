@@ -57,7 +57,7 @@ namespace SAM.Core.UI.WPF
 
         public void SetObjects<T>(IEnumerable<T> objects)
         {
-            SingleSelectionTreeViewControl_Main.SetObjects<T>(objects);
+            SingleSelectionTreeViewControl_Main.SetObjects(objects);
         }
 
         public string UndefinedText

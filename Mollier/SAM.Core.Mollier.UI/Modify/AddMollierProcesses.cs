@@ -29,7 +29,7 @@ namespace SAM.Core.Mollier.UI
             List<UIMollierProcess> labeledMollierProcesses = generateLabels(groups);
 
             labeledMollierProcesses?.Sort((x, y) => System.Math.Max(x.Start.HumidityRatio, x.End.HumidityRatio).CompareTo(System.Math.Max(y.Start.HumidityRatio, y.End.HumidityRatio)));
-            List<UIMollierPoint> processPointsToLabel = new List<UIMollierPoint>();
+            //List<UIMollierPoint> processPointsToLabel = new List<UIMollierPoint>();
 
             foreach(UIMollierProcess uIMollierProcess in labeledMollierProcesses)
             {
@@ -54,23 +54,40 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
 
+                Series series_Temp = null;
+
                 createProcessSeries(chart, uIMollierProcess, mollierControlSettings);
-                createProcessPointsSeries(chart, start, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierAppearance_Start.Label);
-                createProcessPointsSeries(chart, end, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierAppearance_End.Label);
 
-                MollierPoint mid = mollierPointsMid(start, end);
-                processPointsToLabel.Add(new UIMollierPoint(uIMollierProcess.Start,
-                    new UIMollierAppearance(uIMollierProcess.UIMollierAppearance_Start.Color, uIMollierProcess.UIMollierAppearance_Start.Label)));
-                processPointsToLabel.Add(new UIMollierPoint(uIMollierProcess.End, 
-                    new UIMollierAppearance(uIMollierProcess.UIMollierAppearance_End.Color, uIMollierProcess.UIMollierAppearance_End.Label)));
-                processPointsToLabel.Add(new UIMollierPoint(mid,
-                    new UIMollierAppearance(Color.Empty, uIMollierProcess.UIMollierAppearance.Label)));
-
-                //cooling process create one unique process with ADP point
-                if (labeledMollierProcesses.Count < 30 && mollierProcess is CoolingProcess)
+                if(!mollierControlSettings.DisableStartProcessPoint)
                 {
-                    UIMollierPoint ADPPoint = createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
-                    if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
+                    //createProcessPointsSeries(chart, start, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierPointAppearance_Start.Label);
+                    UIMollierPoint uIMollierPoint_Start = uIMollierProcess.GetUIMollierPoint_Start();
+                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_Start, mollierControlSettings);
+                    //series_Temp.Tag = mollierProcess;
+
+                    //processPointsToLabel.Add(uIMollierPoint_Start);
+                }
+
+                if (!mollierControlSettings.DisableEndProcessPoint)
+                {
+                    //createProcessPointsSeries(chart, end, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierPointAppearance_End.Label);
+                    UIMollierPoint uIMollierPoint_End = uIMollierProcess.GetUIMollierPoint_End();
+                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_End, mollierControlSettings);
+                    //series_Temp.Tag = mollierProcess;
+                    //processPointsToLabel.Add(uIMollierPoint_End);
+                }
+
+                //MollierPoint mid = mollierPointsMid(start, end);
+                //processPointsToLabel.Add(new UIMollierPoint(mid, new UIMollierPointAppearance(Color.Empty, uIMollierProcess.UIMollierAppearance.Label)));
+
+                if(!mollierControlSettings.DisableCoolingAuxiliaryProcesses)
+                {
+                    //cooling process create one unique process with ADP point
+                    if (labeledMollierProcesses.Count < 30 && mollierProcess is CoolingProcess)
+                    {
+                        UIMollierPoint ADPPoint = createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
+                        //if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
+                    }
                 }
             }
 
@@ -136,7 +153,7 @@ namespace SAM.Core.Mollier.UI
 
             //Defines the end label of the process
             MollierProcess mollierProcess = uIMollierProcess.MollierProcess;
-            uIMollierProcess.UIMollierAppearance_End.Label = "ROOM";
+            uIMollierProcess.UIMollierPointAppearance_End.Label = "ROOM";
             ChartType chartType = mollierControlSettings.ChartType;
             //Specified the color of the Room air condition point
             Color color = uIMollierProcess.UIMollierAppearance.Color == Color.Empty ? Color.Gray : uIMollierProcess.UIMollierAppearance.Color;
@@ -146,7 +163,7 @@ namespace SAM.Core.Mollier.UI
             series.ChartType = SeriesChartType.Line;
             series.Color = color;
             series.BorderDashStyle = ChartDashStyle.Dash;
-            series.BorderWidth = 3;
+            series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
             series.Tag = uIMollierProcess;
             //add start and end point to the process series
             MollierPoint mollierPoint_Start = mollierProcess.Start;
@@ -178,9 +195,13 @@ namespace SAM.Core.Mollier.UI
             seriesRoomPoint.Points.AddXY(point2D_End.X, point2D_End.Y);
             seriesRoomPoint.Points[0].ToolTip = Query.ToolTipText(mollierPoint_End, mollierControlSettings.ChartType, "ROOM");
 
-            if (!string.IsNullOrWhiteSpace(uIMollierProcess?.UIMollierAppearance_Start?.Label))
+            if (!string.IsNullOrWhiteSpace(uIMollierProcess?.UIMollierPointAppearance_Start?.Label))
             {
-                createProcessPointsSeries(chart, mollierPoint_Start, uIMollierProcess, mollierControlSettings.ChartType);
+                UIMollierPoint uIMollierPoint = new UIMollierPoint(uIMollierProcess.Start, Create.UIMollierPointAppearance(DisplayPointType.Room));
+                
+                Series series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint, mollierControlSettings);
+                //series_Temp.Tag = mollierProcess;
+                //createProcessPointsSeries(chart, mollierPoint_Start, uIMollierProcess, mollierControlSettings.ChartType);
             }
 
             result.Add(series);
@@ -201,7 +222,7 @@ namespace SAM.Core.Mollier.UI
             series.ChartType = SeriesChartType.Line;
             series.Color = color;
             series.BorderDashStyle = ChartDashStyle.Dash;
-            series.BorderWidth = 3;
+            series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
             series.Tag = uIMollierProcess;
 
             // Add start and end point to the process series
@@ -228,7 +249,7 @@ namespace SAM.Core.Mollier.UI
 
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
-            series.BorderWidth = 4;
+            series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 4;
             series.Color = (uImollierProcess.UIMollierAppearance.Color == Color.Empty) ?
                 mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)
                 : uImollierProcess.UIMollierAppearance.Color;
@@ -253,17 +274,29 @@ namespace SAM.Core.Mollier.UI
 
             if (mollierProcess == null || !(mollierProcess is CoolingProcess) || start == null || end == null || start.HumidityRatio == end.HumidityRatio)
             {
-                return null; 
+                return null;
             }
-            MollierPoint apparatusDewMollierPoint = ((CoolingProcess)mollierProcess).ApparatusDewPoint();
-            MollierPoint secondPoint = ((CoolingProcess)mollierProcess).DewPoint();
+            
 
-            createProcessPointsSeries(chart, apparatusDewMollierPoint, uIMollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
-            createProcessPointsSeries(chart, secondPoint, uIMollierProcess, chartType, pointType: "SecondPoint");
 
-            createDewPointDashLineSeries(chart, start, secondPoint, mollierProcess, chartType, Color.LightGray, 2, ChartDashStyle.Dash);
-            createDewPointDashLineSeries(chart, end, apparatusDewMollierPoint, mollierProcess, chartType, Color.LightGray, 2, ChartDashStyle.Dash);
-            createDewPointDashLineSeries(chart, end, secondPoint, mollierProcess, chartType, Color.LightGray, 2, ChartDashStyle.Dash);
+            Series series = null;
+
+            MollierPoint apparatusDewPoint = ((CoolingProcess)mollierProcess).ApparatusDewPoint();
+            //createProcessPointsSeries(chart, apparatusDewMollierPoint, uIMollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
+            series = AddMollierPoint(chart, chartType, new UIMollierPoint(apparatusDewPoint, Create.UIMollierPointAppearance(DisplayPointType.Dew, DisplayPointType.Dew.Description())), mollierControlSettings);
+            //series.Tag = mollierProcess;
+
+
+            MollierPoint dewPoint = ((CoolingProcess)mollierProcess).DewPoint();
+            //createProcessPointsSeries(chart, secondPoint, uIMollierProcess, chartType, pointType: "SecondPoint");
+            series = AddMollierPoint(chart, chartType, new UIMollierPoint(dewPoint, Create.UIMollierPointAppearance(DisplayPointType.CoolingSaturation)), mollierControlSettings);
+            //series.Tag = mollierProcess;//"SecondPoint";
+
+            int borderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 2;
+
+            createDewPointDashLineSeries(chart, start, dewPoint, mollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+            createDewPointDashLineSeries(chart, end, apparatusDewPoint, mollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+            createDewPointDashLineSeries(chart, end, dewPoint, mollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
 
             List<MollierPoint> mollierPoints = Mollier.Query.ProcessMollierPoints((CoolingProcess)mollierProcess);
             if (mollierPoints != null && mollierPoints.Count > 1)
@@ -274,40 +307,41 @@ namespace SAM.Core.Mollier.UI
                 }
             }
 
-            return new UIMollierPoint(apparatusDewMollierPoint, new UIMollierAppearance(Color.Empty, "ADP"));
+            return new UIMollierPoint(apparatusDewPoint, new UIMollierPointAppearance(Color.Empty, "ADP"));
         }
-        private static Series createProcessPointsSeries(this Chart chart, MollierPoint mollierPoint, UIMollierProcess UI_MollierProcess, ChartType chartType, string toolTipName = null, string pointType = "Default")
-        {
-            Series series = chart.Series.Add(Guid.NewGuid().ToString());
-            Point2D point2D = Convert.ToSAM(mollierPoint, chartType);
-            int index = series.Points.AddXY(point2D.X, point2D.Y);
-            switch (pointType)
-            {
-                case "Default":
-                    series.MarkerSize = 8;
-                    series.MarkerBorderWidth = 2;
-                    series.MarkerBorderColor = Color.Orange;
-                    break;
-                case "DewPoint":
-                    series.MarkerSize = 8;
-                    break;
-                case "SecondPoint":
-                    series.MarkerSize = 5;
-                    break;
-            }
-            series.Color = Color.Gray;
-            series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.Point;
-            series.Tag = UI_MollierProcess.MollierProcess;
-            if (pointType == "SecondPoint")
-            {
-                series.Tag = "SecondPoint";
-            }
-            series.MarkerStyle = MarkerStyle.Circle;
-            series.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, toolTipName);
 
-            return series;
-        }
+        //private static Series createProcessPointsSeries(this Chart chart, MollierPoint mollierPoint, UIMollierProcess UI_MollierProcess, ChartType chartType, string toolTipName = null, string pointType = "Default")
+        //{
+        //    Series series = chart.Series.Add(Guid.NewGuid().ToString());
+        //    Point2D point2D = Convert.ToSAM(mollierPoint, chartType);
+        //    int index = series.Points.AddXY(point2D.X, point2D.Y);
+        //    switch (pointType)
+        //    {
+        //        case "Default":
+        //            series.MarkerSize = 8;
+        //            series.MarkerBorderWidth = 2;
+        //            series.MarkerBorderColor = Color.Orange;
+        //            break;
+        //        case "DewPoint":
+        //            series.MarkerSize = 8;
+        //            break;
+        //        case "SecondPoint":
+        //            series.MarkerSize = 5;
+        //            break;
+        //    }
+        //    series.Color = Color.Gray;
+        //    series.IsVisibleInLegend = false;
+        //    series.ChartType = SeriesChartType.Point;
+        //    series.Tag = UI_MollierProcess.MollierProcess;
+        //    if (pointType == "SecondPoint")
+        //    {
+        //        series.Tag = "SecondPoint";
+        //    }
+        //    series.MarkerStyle = MarkerStyle.Circle;
+        //    series.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, toolTipName);
+
+        //    return series;
+        //}
         
         
         // General methods used above 
@@ -334,18 +368,30 @@ namespace SAM.Core.Mollier.UI
                     MollierProcess mollierProcess = UI_MollierProcess.MollierProcess;
 
                     // Set default values whether they're not set
-                    if(UI_MollierProcess.UIMollierAppearance_Start == null || UI_MollierProcess.UIMollierAppearance_Start.Label == null)
+                    if(UI_MollierProcess.UIMollierPointAppearance_Start == null)
                     {
-                        UI_MollierProcess.UIMollierAppearance_Start = new UIMollierAppearance(Color.Empty, "");
-                    }
-                    if(UI_MollierProcess.UIMollierAppearance_End == null || UI_MollierProcess.UIMollierAppearance_End.Label == null)
-                    {
-                        UI_MollierProcess.UIMollierAppearance_End = new UIMollierAppearance(Color.Empty, "");
+                        UI_MollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(Color.Empty, string.Empty);
                     }
 
-                    if(UI_MollierProcess is RoomProcess)
+                    if(UI_MollierProcess.UIMollierPointAppearance_Start.Label == null)
                     {
-                        UI_MollierProcess.UIMollierAppearance_End.Label = "ROOM";
+                        UI_MollierProcess.UIMollierPointAppearance_Start.Label = string.Empty;
+                    }
+
+
+                    if(UI_MollierProcess.UIMollierPointAppearance_End == null)
+                    {
+                        UI_MollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(Color.Empty, string.Empty);
+                    }
+
+                    if (UI_MollierProcess.UIMollierPointAppearance_End.Label == null)
+                    {
+                        UI_MollierProcess.UIMollierPointAppearance_End.Label = string.Empty;
+                    }
+
+                    if (UI_MollierProcess?.MollierProcess is RoomProcess)
+                    {
+                        UI_MollierProcess.UIMollierPointAppearance_End.Label = "ROOM";
                     }
 
                     //if (processList.Count > 1 && j == 0)
@@ -353,9 +399,9 @@ namespace SAM.Core.Mollier.UI
                     //    UI_MollierProcess.UIMollierAppearance_Start.Label = "OSA";
                     //}
                     //else 
-                    if (UI_MollierProcess.UIMollierAppearance_Start.Label == "")
+                    if (UI_MollierProcess.UIMollierPointAppearance_Start.Label == string.Empty)
                     {
-                        UI_MollierProcess.UIMollierAppearance_Start.Label = name + "1";
+                        UI_MollierProcess.UIMollierPointAppearance_Start.Label = name + "1";
                     }
 
 
@@ -368,9 +414,9 @@ namespace SAM.Core.Mollier.UI
                     //    UI_MollierProcess.UIMollierAppearance_End.Label = "SUP";
                     //}
                     //  else;
-                    if (UI_MollierProcess.UIMollierAppearance_End.Label == "")
+                    if (UI_MollierProcess.UIMollierPointAppearance_End.Label == string.Empty)
                     {
-                        UI_MollierProcess.UIMollierAppearance_End.Label = name + "2";
+                        UI_MollierProcess.UIMollierPointAppearance_End.Label = name + "2";
                     }
 
                     UI_MollierProcess.UIMollierAppearance.Label = UI_MollierProcess.UIMollierAppearance.Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.UIMollierAppearance.Label;

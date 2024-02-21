@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -8,6 +10,9 @@ namespace SAM.Core.Mollier.UI.Controls
     public partial class BuiltInVisibilitySettingControl : UserControl
     {
         private BuiltInVisibilitySetting builtInVisibilitySetting;
+        public event EventHandler ColorChanged;
+
+        public List<int> CustomColors { get; set; } = new List<int>();
 
         public BuiltInVisibilitySettingControl()
         {
@@ -25,17 +30,43 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             using (ColorDialog colorDialog = new ColorDialog())
             {
-                if(builtInVisibilitySetting != null)
+                if (builtInVisibilitySetting != null)
                 {
                     colorDialog.Color = builtInVisibilitySetting.Color;
                 }
+
+                colorDialog.FullOpen = true;
+                colorDialog.AnyColor = true;
+
+                if(CustomColors != null)
+                {
+                    int argb = colorDialog.Color.ToArgb();
+                    if (!CustomColors.Contains(argb))
+                    {
+                        CustomColors.Insert(0, argb);
+                    }
+                }
+
+                if (CustomColors != null)
+                {
+                    colorDialog.CustomColors = CustomColors.ToArray();
+                }
+
+                //System.Drawing.Color color;
+
 
                 if(colorDialog.ShowDialog() != DialogResult.OK)
                 {
                     return;
                 }
 
+                if(colorDialog.CustomColors != null)
+                {
+                    CustomColors = colorDialog.CustomColors.ToList();
+                }
+
                 Button_Color.BackColor = colorDialog.Color;
+                ColorChanged.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -61,6 +92,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 result.ChartDataType = (ChartDataType)ComboBox_ChartDataType.SelectedItem;
                 result.ChartParameterType = (ChartParameterType)ComboBox_ChartParameterType.SelectedItem;
                 result.Color = Button_Color.BackColor;
+                result.Visible = CheckBox_Visible.Checked;
 
                 return result;
             }
@@ -74,6 +106,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     ComboBox_ChartDataType.SelectedItem = builtInVisibilitySetting.ChartDataType;
                     ComboBox_ChartParameterType.SelectedItem = builtInVisibilitySetting.ChartParameterType;
                     Button_Color.BackColor = builtInVisibilitySetting.Color;
+                    CheckBox_Visible.Checked = builtInVisibilitySetting.Visible;
                 }
             }
         }

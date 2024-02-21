@@ -22,7 +22,7 @@ namespace SAM.Core.Mollier.UI
             PointGradientVisibilitySetting pointGradientVisibilitySetting = mollierControlSettings.VisibilitySettings.GetVisibilitySetting("User", ChartParameterType.Point) as PointGradientVisibilitySetting;
             if(pointGradientVisibilitySetting == null)
             {
-                Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Point, Mollier.ChartDataType.Undefined);
+                Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Point, ChartDataType.Undefined);
                 foreach (UIMollierPoint point in mollierPoints)
                 {
                     if(point.UIMollierAppearance.Color == Color.Empty)

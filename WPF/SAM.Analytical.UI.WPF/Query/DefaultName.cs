@@ -27,7 +27,7 @@ namespace SAM.Analytical.UI.WPF
                 Plane plane = twoDimensionalViewSettings.Plane;
                 if(plane != null)
                 {
-                    double elevation = Core.Query.Round(plane.Origin.Z, Core.Tolerance.MacroDistance);
+                    double elevation = Core.Query.Round(plane.Origin.Z, Tolerance.MacroDistance);
 
                     return string.Format("Section View ({0}m)", elevation);
                 }
@@ -47,7 +47,7 @@ namespace SAM.Analytical.UI.WPF
 
             if(!double.IsNaN(elevation))
             {
-                values.Add(string.Format("[{0}m]", Core.Query.Round(elevation, Core.Tolerance.MacroDistance).ToString()));
+                values.Add(string.Format("[{0}m]", Core.Query.Round(elevation, Tolerance.MacroDistance).ToString()));
             }
 
             if (spaceAppearanceSettings != null)

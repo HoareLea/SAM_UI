@@ -28,6 +28,21 @@ namespace SAM.Core.Mollier.UI
         public bool DisableLabels { get; set; } = false;
         public bool GradientPoint { get; set; } = false;
 
+        public bool DisableStartProcessPoint { get; set; } = false;
+        public bool DisableEndProcessPoint { get; set; } = false;
+        public bool DisablePointBoarder { get; set; } = false;
+        public int ProccessLineThickness { get; set; } = -1;
+        
+        public bool DisableLabelStartProcessPoint { get; set; } = false;
+        public bool DisableLabelEndProcessPoint { get; set; } = false;
+        public bool DisableLabelProcess { get; set; } = false;
+        public Color PointBorderColor { get; set; } = Color.Empty;
+        public Color PointColor { get; set; } = Color.Empty;
+        public bool DisablePoint { get; set; } = false;
+
+        public bool DisableCoolingAuxiliaryProcesses { get; set; } = false;
+
+
         public bool VisualizeSolver { get; set; } = false;
         public bool FindPoint { get; set; } = false;
         public double FindPoint_Factor { get; set; } = 0.4; //TODO: percent again
@@ -55,7 +70,7 @@ namespace SAM.Core.Mollier.UI
 
         public int DivisionAreaEnthalpy_Interval { get; set; } = 3;
         public int DivisionAreaRelativeHumidity_Interval { get; set; } = 10;
-        public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
+        public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(Color.Red, Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
 
@@ -122,6 +137,20 @@ namespace SAM.Core.Mollier.UI
                 WetBulbTemperature_Min = mollierControlSettings.WetBulbTemperature_Min;
                 WetBulbTemperature_Max = mollierControlSettings.WetBulbTemperature_Max;
                 WetBulbTemperature_Interval = mollierControlSettings.WetBulbTemperature_Interval;
+
+                DisableStartProcessPoint = mollierControlSettings.DisableStartProcessPoint;
+                DisableEndProcessPoint = mollierControlSettings.DisableEndProcessPoint;
+                DisablePointBoarder = mollierControlSettings.DisablePointBoarder;
+                ProccessLineThickness = mollierControlSettings.ProccessLineThickness;
+
+                DisableLabelStartProcessPoint = mollierControlSettings.DisableLabelStartProcessPoint;
+                DisableLabelEndProcessPoint = mollierControlSettings.DisableLabelEndProcessPoint;
+                DisableLabelProcess = mollierControlSettings.DisableLabelProcess;
+                PointBorderColor = mollierControlSettings.PointBorderColor;
+                PointColor = mollierControlSettings.PointColor;
+                DisablePoint = mollierControlSettings.DisablePoint;
+
+                DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
             }
         }
 
@@ -367,6 +396,61 @@ namespace SAM.Core.Mollier.UI
                 SpecificVolume_Interval = jObject.Value<double>("SpecificVolume_Interval");
             }
 
+            if (jObject.ContainsKey("DisableStartProcessPoint"))
+            {
+                DisableStartProcessPoint = jObject.Value<bool>("DisableStartProcessPoint");
+            }
+
+            if (jObject.ContainsKey("DisableEndProcessPoint"))
+            {
+                DisableEndProcessPoint = jObject.Value<bool>("DisableEndProcessPoint");
+            }
+
+            if (jObject.ContainsKey("DisablePointBoarder"))
+            {
+                DisablePointBoarder = jObject.Value<bool>("DisablePointBoarder");
+            }
+
+            if (jObject.ContainsKey("ProccessLineThickness"))
+            {
+                ProccessLineThickness = jObject.Value<int>("ProccessLineThickness");
+            }
+
+            if (jObject.ContainsKey("DisableLabelStartProcessPoint"))
+            {
+                DisableLabelStartProcessPoint = jObject.Value<bool>("DisableLabelStartProcessPoint");
+            }
+
+            if (jObject.ContainsKey("DisableLabelEndProcessPoint"))
+            {
+                DisableLabelEndProcessPoint = jObject.Value<bool>("DisableLabelEndProcessPoint");
+            }
+
+            if (jObject.ContainsKey("DisableLabelProcess"))
+            {
+                DisableLabelProcess = jObject.Value<bool>("DisableLabelProcess");
+            }
+
+            if (jObject.ContainsKey("PointBoarderColor"))
+            {
+                PointBorderColor = new SAMColor(jObject.Value<JObject>("PointBoarderColor")).ToColor();
+            }
+
+            if (jObject.ContainsKey("PointColor"))
+            {
+                PointColor = new SAMColor(jObject.Value<JObject>("PointColor")).ToColor();
+            }
+
+            if (jObject.ContainsKey("DisablePoint"))
+            {
+                DisablePoint = jObject.Value<bool>("DisablePoint");
+            }
+
+            if (jObject.ContainsKey("DisableCoolingAuxiliaryProcesses"))
+            {
+                DisableCoolingAuxiliaryProcesses = jObject.Value<bool>("DisableCoolingAuxiliaryProcesses");
+            }
+
             return true;
         }
 
@@ -476,6 +560,22 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("SpecificVolume_Interval", SpecificVolume_Interval);
             }
+
+            result.Add("DisableStartProcessPoint", DisableStartProcessPoint);
+            result.Add("DisableEndProcessPoint", DisableEndProcessPoint);
+            result.Add("DisablePointBoarder", DisablePointBoarder);
+            result.Add("ProccessLineThickness", ProccessLineThickness);
+
+            result.Add("DisableLabelStartProcessPoint", DisableLabelStartProcessPoint);
+            result.Add("DisableLabelEndProcessPoint", DisableLabelEndProcessPoint);
+            result.Add("DisableLabelProcess", DisableLabelProcess);
+
+            result.Add("PointBoarderColor", new SAMColor(PointBorderColor).ToJObject());
+            result.Add("PointColor", new SAMColor(PointColor).ToJObject());
+
+            result.Add("DisablePoint", DisablePoint);
+
+            result.Add("DisableCoolingAuxiliaryProcesses", DisableCoolingAuxiliaryProcesses);
 
             return result;
         }

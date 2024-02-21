@@ -135,7 +135,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            SteamHumidificationProcess steamHumidificationProcess = Core.Mollier.Create.SteamHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
+            SteamHumidificationProcess steamHumidificationProcess = Mollier.Create.SteamHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
 
             if (steamHumidificationProcess != null && double.IsNaN(steamHumidificationProcess.End.RelativeHumidity))
             {

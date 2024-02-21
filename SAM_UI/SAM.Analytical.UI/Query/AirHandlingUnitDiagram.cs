@@ -76,9 +76,10 @@ namespace SAM.Analytical.UI
                 mollierForm.Name = string.IsNullOrWhiteSpace(airHandlingUnit.Name) ? mollierForm.Name : airHandlingUnit.Name;
                 mollierForm.MollierControlSettings = Core.Mollier.UI.Query.DefaultMollierControlSettings();
                 mollierForm.Pressure = pressure;
-                mollierForm.AddProcesses(mollierProcesses, false);
+                //mollierForm.AddProcesses(mollierProcesses, false);
+                mollierForm.AddMollierObjects(mollierProcesses, false);
 
-                if(mollierForm.ShowDialog(owner) != DialogResult.OK)
+                if (mollierForm.ShowDialog(owner) != DialogResult.OK)
                 {
                     return;
                 }

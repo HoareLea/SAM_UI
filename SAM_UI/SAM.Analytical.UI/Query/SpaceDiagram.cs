@@ -92,7 +92,6 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-
             double pressure = Core.Mollier.UI.Query.DefaultPressure(null, mollierProcesses);
 
             using (MollierForm mollierForm = new MollierForm() { ReadOnly = true, WindowState = FormWindowState.Normal })
@@ -100,7 +99,8 @@ namespace SAM.Analytical.UI
                 mollierForm.Name = string.IsNullOrWhiteSpace(space.Name) ? mollierForm.Name : space.Name;
                 mollierForm.MollierControlSettings = Core.Mollier.UI.Query.DefaultMollierControlSettings();
                 mollierForm.Pressure = pressure;
-                mollierForm.AddProcesses(mollierProcesses, false);
+                //mollierForm.AddProcesses(mollierProcesses, false);
+                mollierForm.AddMollierObjects(mollierProcesses, false);
 
                 if(mollierForm.ShowDialog(owner) != DialogResult.OK)
                 {

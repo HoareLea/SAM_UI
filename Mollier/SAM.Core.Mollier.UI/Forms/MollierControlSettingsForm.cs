@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Core.Mollier.UI.Controls;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -10,16 +11,23 @@ namespace SAM.Core.Mollier.UI
 
         private MollierFormSettings mollierFormSettings;
         
-        private Controls.MollierControl mollierControl;
+        private MollierControl mollierControl;
         private ToolTip toolTip = new ToolTip();
+
+        private System.Drawing.Color initialColor = System.Drawing.Color.Empty;
+
+        public List<int> CustomColors { get; set; }  = new List<int>();
+
         public MollierControlSettingsForm()
         {
             InitializeComponent();
         }
 
-        public MollierControlSettingsForm(Controls.MollierControl mollierControl, MollierFormSettings mollierFormSettings)
+        public MollierControlSettingsForm(MollierControl mollierControl, MollierFormSettings mollierFormSettings)
         {
             InitializeComponent();
+
+            initialColor = Button_PointColor.BackColor;
 
             this.mollierFormSettings = mollierFormSettings;
 
@@ -56,6 +64,18 @@ namespace SAM.Core.Mollier.UI
                 CheckBox_GradientPoint.Checked = false;
             }
 
+            DisableStartProcessPoint = mollierControlSettings.DisableStartProcessPoint;
+            DisableEndProcessPoint = mollierControlSettings.DisableEndProcessPoint;
+            DisablePointBoarder = mollierControlSettings.DisablePointBoarder;
+            ProccessLineThickness = mollierControlSettings.ProccessLineThickness;
+
+            DisableLabelStartProcessPoint = mollierControlSettings.DisableLabelStartProcessPoint;
+            DisableLabelEndProcessPoint = mollierControlSettings.DisableLabelEndProcessPoint;
+            DisableLabelProcess = mollierControlSettings.DisableLabelProcess;
+            PointBoarderColor = mollierControlSettings.PointBorderColor;
+            PointColor = mollierControlSettings.PointColor;
+            DisablePoint = mollierControlSettings.DisablePoint;
+            DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
@@ -65,7 +85,10 @@ namespace SAM.Core.Mollier.UI
                 {
                     foreach(BuiltInVisibilitySetting builtInVisibilitySetting in builtInVisibilitySettings)
                     {
-                        FlowLayoutPanel_BuiltInVisibilitySettings.Controls.Add(new Controls.BuiltInVisibilitySettingControl(builtInVisibilitySetting));
+                        BuiltInVisibilitySettingControl builtInVisibilitySettingControl = new BuiltInVisibilitySettingControl(builtInVisibilitySetting);
+                        builtInVisibilitySettingControl.ColorChanged += BuiltInVisibilitySettingControl_ColorChanged;
+
+                        FlowLayoutPanel_BuiltInVisibilitySettings.Controls.Add(builtInVisibilitySettingControl);
                     }
                 }
             }
@@ -75,6 +98,27 @@ namespace SAM.Core.Mollier.UI
 
             TextBox_WindowHeight.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
             TextBox_WindowWidth.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+        }
+
+        private void BuiltInVisibilitySettingControl_ColorChanged(object sender, EventArgs e)
+        {
+            BuiltInVisibilitySettingControl builtInVisibilitySettingControl = sender as BuiltInVisibilitySettingControl;
+            if(builtInVisibilitySettingControl == null)
+            {
+                return;
+            }
+
+            CustomColors = builtInVisibilitySettingControl.CustomColors;
+            foreach(Control control in FlowLayoutPanel_BuiltInVisibilitySettings.Controls)
+            {
+                BuiltInVisibilitySettingControl builtInVisibilitySettingControl_Temp = control as BuiltInVisibilitySettingControl;
+                if(builtInVisibilitySettingControl_Temp == null)
+                {
+                    continue;
+                }
+
+                builtInVisibilitySettingControl_Temp.CustomColors = CustomColors;
+            }
         }
 
         public MollierFormSettings MollierFormSettings
@@ -428,6 +472,150 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
+        public bool DisableStartProcessPoint
+        {
+            get
+            {
+                return !CheckBox_EnableStartProcessPoint.Checked;
+            }
+
+            set
+            {
+                CheckBox_EnableStartProcessPoint.Checked = !value;
+            }
+        }
+
+        public bool DisableEndProcessPoint
+        {
+            get
+            {
+                return !CheckBox_EnableEndProcessPoint.Checked;
+            }
+
+            set
+            {
+                CheckBox_EnableEndProcessPoint.Checked = !value;
+            }
+        }
+
+        public bool DisablePointBoarder
+        {
+            get
+            {
+                return !CheckBox_DisablePointBorder.Checked;
+            }
+
+            set
+            {
+                CheckBox_DisablePointBorder.Checked = !value;
+            }
+        }
+
+        public int ProccessLineThickness
+        {
+            get
+            {
+                return CheckBox_ProccessLineThickness.Checked ? 1 : -1;
+            }
+
+            set
+            {
+                CheckBox_ProccessLineThickness.Checked = value > 0;
+            }
+        }
+
+        public bool DisableLabelStartProcessPoint
+        {
+            get
+            {
+                return !checkBox_EnableProcessStartPointLabel.Checked;
+            }
+
+            set
+            {
+                checkBox_EnableProcessStartPointLabel.Checked = !value;
+            }
+        }
+
+        public bool DisableLabelEndProcessPoint
+        {
+            get
+            {
+                return !checkBox_EnableProcessEndPointLabel.Checked;
+            }
+
+            set
+            {
+                checkBox_EnableProcessEndPointLabel.Checked = !value;
+            }
+        }
+
+        public bool DisableLabelProcess
+        {
+            get
+            {
+                return !CheckBox_EnableProcessLabel.Checked;
+            }
+
+            set
+            {
+                CheckBox_EnableProcessLabel.Checked = !value;
+            }
+        }
+
+        public System.Drawing.Color PointBoarderColor
+        {
+            get
+            {
+                return Button_PointBorderColor.BackColor == initialColor ? System.Drawing.Color.Empty : Button_PointBorderColor.BackColor;
+            }
+
+            set
+            {
+                Button_PointBorderColor.BackColor = value;
+            }
+        }
+
+        public System.Drawing.Color PointColor
+        {
+            get
+            {
+                return Button_PointColor.BackColor == initialColor ? System.Drawing.Color.Empty : Button_PointColor.BackColor;
+            }
+
+            set
+            {
+                Button_PointColor.BackColor = value;
+            }
+        }
+
+        public bool DisablePoint
+        {
+            get
+            {
+                return !CheckBox_DisablePoint.Checked;
+            }
+
+            set
+            {
+                CheckBox_DisablePoint.Checked = !value;
+            }
+        }
+
+        public bool DisableCoolingAuxiliaryProcesses
+        {
+            get
+            {
+                return !CheckBox_EnableCoolingAuxiliaryProcesses.Checked;
+            }
+
+            set
+            {
+                CheckBox_EnableCoolingAuxiliaryProcesses.Checked = !value;
+            }
+        }
+
+
         private void Apply()
         {
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -458,6 +646,20 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.DisableLabels = DisableLabels;
             mollierControlSettings.VisualizeSolver = VisualizeSolver;
 
+            mollierControlSettings.DisableStartProcessPoint = DisableStartProcessPoint;
+            mollierControlSettings.DisableEndProcessPoint = DisableEndProcessPoint;
+            mollierControlSettings.DisablePointBoarder = DisablePointBoarder;
+            mollierControlSettings.ProccessLineThickness = ProccessLineThickness;
+
+
+            mollierControlSettings.DisableLabelStartProcessPoint = DisableLabelStartProcessPoint;
+            mollierControlSettings.DisableLabelEndProcessPoint = DisableLabelEndProcessPoint;
+            mollierControlSettings.DisableLabelProcess = DisableLabelProcess;
+            mollierControlSettings.PointBorderColor = PointBoarderColor;
+            mollierControlSettings.PointColor = PointColor;
+            mollierControlSettings.DisablePoint = DisablePoint;
+            mollierControlSettings.DisableCoolingAuxiliaryProcesses = DisableCoolingAuxiliaryProcesses;
+
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
             {
@@ -467,7 +669,7 @@ namespace SAM.Core.Mollier.UI
             List<IVisibilitySetting> visibilitySettingsList = new List<IVisibilitySetting>();
             foreach(Control control in FlowLayoutPanel_BuiltInVisibilitySettings.Controls)
             {
-                Controls.BuiltInVisibilitySettingControl builtInVisibilitySettingControl = control as Controls.BuiltInVisibilitySettingControl;
+                BuiltInVisibilitySettingControl builtInVisibilitySettingControl = control as BuiltInVisibilitySettingControl;
                 if(builtInVisibilitySettingControl  == null)
                 {
                     continue;
@@ -502,6 +704,7 @@ namespace SAM.Core.Mollier.UI
                 Button_LowIntensityColor.BackColor = colorDialog.Color;
             }
         }
+        
         private void Button_HighIntensityColor_Click(object sender, EventArgs e)
         {
             using (ColorDialog colorDialog = new ColorDialog())
@@ -572,6 +775,30 @@ namespace SAM.Core.Mollier.UI
         {
             toolTip.Active = false;
             toolTip.Active = true;
+        }
+
+        private void Button_PointColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                Button_PointColor.BackColor = colorDialog.Color;
+            }
+        }
+
+        private void Button_PointBorderColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                Button_PointBorderColor.BackColor = colorDialog.Color;
+            }
         }
     }
 }

@@ -70,6 +70,22 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureMaximumValueTextbox = new System.Windows.Forms.TextBox();
             this.TemperatureMinimumValueTextbox = new System.Windows.Forms.TextBox();
             this.TabPage_Tools = new System.Windows.Forms.TabPage();
+            this.CheckBox_EnableProcessLabel = new System.Windows.Forms.CheckBox();
+            this.Label_PointBorderColor = new System.Windows.Forms.Label();
+            this.Button_PointBorderColor = new System.Windows.Forms.Button();
+            this.Label_PointColor = new System.Windows.Forms.Label();
+            this.Button_PointColor = new System.Windows.Forms.Button();
+            this.CheckBox_DisablePoint = new System.Windows.Forms.CheckBox();
+            this.CheckBox_DisablePointBorder = new System.Windows.Forms.CheckBox();
+            this.CheckBox_ProccessLineThickness = new System.Windows.Forms.CheckBox();
+            this.checkBox_EnableProcessEndPointLabel = new System.Windows.Forms.CheckBox();
+            this.CheckBox_EnableEndProcessPoint = new System.Windows.Forms.CheckBox();
+            this.checkBox_EnableProcessStartPointLabel = new System.Windows.Forms.CheckBox();
+            this.CheckBox_EnableStartProcessPoint = new System.Windows.Forms.CheckBox();
+            this.Label_SizeSperator = new System.Windows.Forms.Label();
+            this.TextBox_WindowHeight = new System.Windows.Forms.TextBox();
+            this.TextBox_WindowWidth = new System.Windows.Forms.TextBox();
+            this.Label_WindowSize = new System.Windows.Forms.Label();
             this.VisualizeSolver_Checkbox = new System.Windows.Forms.CheckBox();
             this.Button_ToHover = new System.Windows.Forms.Button();
             this.Button_ToHover3 = new System.Windows.Forms.Button();
@@ -83,10 +99,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.Label_WindowSize = new System.Windows.Forms.Label();
-            this.TextBox_WindowWidth = new System.Windows.Forms.TextBox();
-            this.TextBox_WindowHeight = new System.Windows.Forms.TextBox();
-            this.Label_SizeSperator = new System.Windows.Forms.Label();
+            this.CheckBox_EnableCoolingAuxiliaryProcesses = new System.Windows.Forms.CheckBox();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
@@ -518,6 +531,19 @@ namespace SAM.Core.Mollier.UI
             // 
             // TabPage_Tools
             // 
+            this.TabPage_Tools.Controls.Add(this.CheckBox_EnableCoolingAuxiliaryProcesses);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_EnableProcessLabel);
+            this.TabPage_Tools.Controls.Add(this.Label_PointBorderColor);
+            this.TabPage_Tools.Controls.Add(this.Button_PointBorderColor);
+            this.TabPage_Tools.Controls.Add(this.Label_PointColor);
+            this.TabPage_Tools.Controls.Add(this.Button_PointColor);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_DisablePoint);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_DisablePointBorder);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_ProccessLineThickness);
+            this.TabPage_Tools.Controls.Add(this.checkBox_EnableProcessEndPointLabel);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_EnableEndProcessPoint);
+            this.TabPage_Tools.Controls.Add(this.checkBox_EnableProcessStartPointLabel);
+            this.TabPage_Tools.Controls.Add(this.CheckBox_EnableStartProcessPoint);
             this.TabPage_Tools.Controls.Add(this.Label_SizeSperator);
             this.TabPage_Tools.Controls.Add(this.TextBox_WindowHeight);
             this.TabPage_Tools.Controls.Add(this.TextBox_WindowWidth);
@@ -537,6 +563,154 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_Tools.TabIndex = 2;
             this.TabPage_Tools.Text = "Tools";
             this.TabPage_Tools.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_EnableProcessLabel
+            // 
+            this.CheckBox_EnableProcessLabel.AutoSize = true;
+            this.CheckBox_EnableProcessLabel.Location = new System.Drawing.Point(378, 277);
+            this.CheckBox_EnableProcessLabel.Name = "CheckBox_EnableProcessLabel";
+            this.CheckBox_EnableProcessLabel.Size = new System.Drawing.Size(147, 20);
+            this.CheckBox_EnableProcessLabel.TabIndex = 34;
+            this.CheckBox_EnableProcessLabel.Text = "Show label process";
+            this.CheckBox_EnableProcessLabel.UseVisualStyleBackColor = true;
+            // 
+            // Label_PointBorderColor
+            // 
+            this.Label_PointBorderColor.AutoSize = true;
+            this.Label_PointBorderColor.Location = new System.Drawing.Point(375, 348);
+            this.Label_PointBorderColor.Name = "Label_PointBorderColor";
+            this.Label_PointBorderColor.Size = new System.Drawing.Size(72, 16);
+            this.Label_PointBorderColor.TabIndex = 33;
+            this.Label_PointBorderColor.Text = "circle color";
+            // 
+            // Button_PointBorderColor
+            // 
+            this.Button_PointBorderColor.Location = new System.Drawing.Point(449, 345);
+            this.Button_PointBorderColor.Name = "Button_PointBorderColor";
+            this.Button_PointBorderColor.Size = new System.Drawing.Size(75, 23);
+            this.Button_PointBorderColor.TabIndex = 32;
+            this.Button_PointBorderColor.UseVisualStyleBackColor = true;
+            this.Button_PointBorderColor.Click += new System.EventHandler(this.Button_PointBorderColor_Click);
+            // 
+            // Label_PointColor
+            // 
+            this.Label_PointColor.AutoSize = true;
+            this.Label_PointColor.Location = new System.Drawing.Point(375, 314);
+            this.Label_PointColor.Name = "Label_PointColor";
+            this.Label_PointColor.Size = new System.Drawing.Size(65, 16);
+            this.Label_PointColor.TabIndex = 33;
+            this.Label_PointColor.Text = "disk color";
+            // 
+            // Button_PointColor
+            // 
+            this.Button_PointColor.Location = new System.Drawing.Point(449, 311);
+            this.Button_PointColor.Name = "Button_PointColor";
+            this.Button_PointColor.Size = new System.Drawing.Size(75, 23);
+            this.Button_PointColor.TabIndex = 32;
+            this.Button_PointColor.UseVisualStyleBackColor = true;
+            this.Button_PointColor.Click += new System.EventHandler(this.Button_PointColor_Click);
+            // 
+            // CheckBox_DisablePoint
+            // 
+            this.CheckBox_DisablePoint.AutoSize = true;
+            this.CheckBox_DisablePoint.Location = new System.Drawing.Point(38, 313);
+            this.CheckBox_DisablePoint.Name = "CheckBox_DisablePoint";
+            this.CheckBox_DisablePoint.Size = new System.Drawing.Size(221, 20);
+            this.CheckBox_DisablePoint.TabIndex = 31;
+            this.CheckBox_DisablePoint.Text = "Show process all points first disk";
+            this.CheckBox_DisablePoint.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_DisablePointBorder
+            // 
+            this.CheckBox_DisablePointBorder.AutoSize = true;
+            this.CheckBox_DisablePointBorder.Location = new System.Drawing.Point(38, 347);
+            this.CheckBox_DisablePointBorder.Name = "CheckBox_DisablePointBorder";
+            this.CheckBox_DisablePointBorder.Size = new System.Drawing.Size(253, 20);
+            this.CheckBox_DisablePointBorder.TabIndex = 30;
+            this.CheckBox_DisablePointBorder.Text = "Show process all points second circle";
+            this.CheckBox_DisablePointBorder.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_ProccessLineThickness
+            // 
+            this.CheckBox_ProccessLineThickness.AutoSize = true;
+            this.CheckBox_ProccessLineThickness.Location = new System.Drawing.Point(38, 277);
+            this.CheckBox_ProccessLineThickness.Name = "CheckBox_ProccessLineThickness";
+            this.CheckBox_ProccessLineThickness.Size = new System.Drawing.Size(208, 20);
+            this.CheckBox_ProccessLineThickness.TabIndex = 29;
+            this.CheckBox_ProccessLineThickness.Text = "Turn off process thickness line";
+            this.CheckBox_ProccessLineThickness.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_EnableProcessEndPointLabel
+            // 
+            this.checkBox_EnableProcessEndPointLabel.AutoSize = true;
+            this.checkBox_EnableProcessEndPointLabel.Location = new System.Drawing.Point(378, 240);
+            this.checkBox_EnableProcessEndPointLabel.Name = "checkBox_EnableProcessEndPointLabel";
+            this.checkBox_EnableProcessEndPointLabel.Size = new System.Drawing.Size(153, 20);
+            this.checkBox_EnableProcessEndPointLabel.TabIndex = 28;
+            this.checkBox_EnableProcessEndPointLabel.Text = "Show label end point";
+            this.checkBox_EnableProcessEndPointLabel.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_EnableEndProcessPoint
+            // 
+            this.CheckBox_EnableEndProcessPoint.AutoSize = true;
+            this.CheckBox_EnableEndProcessPoint.Location = new System.Drawing.Point(38, 240);
+            this.CheckBox_EnableEndProcessPoint.Name = "CheckBox_EnableEndProcessPoint";
+            this.CheckBox_EnableEndProcessPoint.Size = new System.Drawing.Size(172, 20);
+            this.CheckBox_EnableEndProcessPoint.TabIndex = 28;
+            this.CheckBox_EnableEndProcessPoint.Text = "Show process end point";
+            this.CheckBox_EnableEndProcessPoint.UseVisualStyleBackColor = true;
+            // 
+            // checkBox_EnableProcessStartPointLabel
+            // 
+            this.checkBox_EnableProcessStartPointLabel.AutoSize = true;
+            this.checkBox_EnableProcessStartPointLabel.Location = new System.Drawing.Point(378, 203);
+            this.checkBox_EnableProcessStartPointLabel.Name = "checkBox_EnableProcessStartPointLabel";
+            this.checkBox_EnableProcessStartPointLabel.Size = new System.Drawing.Size(155, 20);
+            this.checkBox_EnableProcessStartPointLabel.TabIndex = 27;
+            this.checkBox_EnableProcessStartPointLabel.Text = "Show label start point";
+            this.checkBox_EnableProcessStartPointLabel.UseVisualStyleBackColor = true;
+            // 
+            // CheckBox_EnableStartProcessPoint
+            // 
+            this.CheckBox_EnableStartProcessPoint.AutoSize = true;
+            this.CheckBox_EnableStartProcessPoint.Location = new System.Drawing.Point(38, 203);
+            this.CheckBox_EnableStartProcessPoint.Name = "CheckBox_EnableStartProcessPoint";
+            this.CheckBox_EnableStartProcessPoint.Size = new System.Drawing.Size(174, 20);
+            this.CheckBox_EnableStartProcessPoint.TabIndex = 27;
+            this.CheckBox_EnableStartProcessPoint.Text = "Show process start point";
+            this.CheckBox_EnableStartProcessPoint.UseVisualStyleBackColor = true;
+            // 
+            // Label_SizeSperator
+            // 
+            this.Label_SizeSperator.AutoSize = true;
+            this.Label_SizeSperator.Location = new System.Drawing.Point(184, 394);
+            this.Label_SizeSperator.Name = "Label_SizeSperator";
+            this.Label_SizeSperator.Size = new System.Drawing.Size(13, 16);
+            this.Label_SizeSperator.TabIndex = 26;
+            this.Label_SizeSperator.Text = "x";
+            // 
+            // TextBox_WindowHeight
+            // 
+            this.TextBox_WindowHeight.Location = new System.Drawing.Point(203, 391);
+            this.TextBox_WindowHeight.Name = "TextBox_WindowHeight";
+            this.TextBox_WindowHeight.Size = new System.Drawing.Size(50, 22);
+            this.TextBox_WindowHeight.TabIndex = 25;
+            // 
+            // TextBox_WindowWidth
+            // 
+            this.TextBox_WindowWidth.Location = new System.Drawing.Point(128, 391);
+            this.TextBox_WindowWidth.Name = "TextBox_WindowWidth";
+            this.TextBox_WindowWidth.Size = new System.Drawing.Size(50, 22);
+            this.TextBox_WindowWidth.TabIndex = 24;
+            // 
+            // Label_WindowSize
+            // 
+            this.Label_WindowSize.AutoSize = true;
+            this.Label_WindowSize.Location = new System.Drawing.Point(35, 394);
+            this.Label_WindowSize.Name = "Label_WindowSize";
+            this.Label_WindowSize.Size = new System.Drawing.Size(87, 16);
+            this.Label_WindowSize.TabIndex = 23;
+            this.Label_WindowSize.Text = "Window Size:";
             // 
             // VisualizeSolver_Checkbox
             // 
@@ -670,37 +844,15 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
             // 
-            // Label_WindowSize
+            // CheckBox_EnableCoolingAuxiliaryProcesses
             // 
-            this.Label_WindowSize.AutoSize = true;
-            this.Label_WindowSize.Location = new System.Drawing.Point(35, 375);
-            this.Label_WindowSize.Name = "Label_WindowSize";
-            this.Label_WindowSize.Size = new System.Drawing.Size(87, 16);
-            this.Label_WindowSize.TabIndex = 23;
-            this.Label_WindowSize.Text = "Window Size:";
-            // 
-            // TextBox_WindowWidth
-            // 
-            this.TextBox_WindowWidth.Location = new System.Drawing.Point(128, 372);
-            this.TextBox_WindowWidth.Name = "TextBox_WindowWidth";
-            this.TextBox_WindowWidth.Size = new System.Drawing.Size(50, 22);
-            this.TextBox_WindowWidth.TabIndex = 24;
-            // 
-            // TextBox_WindowHeight
-            // 
-            this.TextBox_WindowHeight.Location = new System.Drawing.Point(203, 372);
-            this.TextBox_WindowHeight.Name = "TextBox_WindowHeight";
-            this.TextBox_WindowHeight.Size = new System.Drawing.Size(50, 22);
-            this.TextBox_WindowHeight.TabIndex = 25;
-            // 
-            // Label_SizeSperator
-            // 
-            this.Label_SizeSperator.AutoSize = true;
-            this.Label_SizeSperator.Location = new System.Drawing.Point(184, 375);
-            this.Label_SizeSperator.Name = "Label_SizeSperator";
-            this.Label_SizeSperator.Size = new System.Drawing.Size(13, 16);
-            this.Label_SizeSperator.TabIndex = 26;
-            this.Label_SizeSperator.Text = "x";
+            this.CheckBox_EnableCoolingAuxiliaryProcesses.AutoSize = true;
+            this.CheckBox_EnableCoolingAuxiliaryProcesses.Location = new System.Drawing.Point(378, 390);
+            this.CheckBox_EnableCoolingAuxiliaryProcesses.Name = "CheckBox_EnableCoolingAuxiliaryProcesses";
+            this.CheckBox_EnableCoolingAuxiliaryProcesses.Size = new System.Drawing.Size(210, 20);
+            this.CheckBox_EnableCoolingAuxiliaryProcesses.TabIndex = 35;
+            this.CheckBox_EnableCoolingAuxiliaryProcesses.Text = "Show realistic cooling process";
+            this.CheckBox_EnableCoolingAuxiliaryProcesses.UseVisualStyleBackColor = true;
             // 
             // MollierControlSettingsForm
             // 
@@ -789,5 +941,18 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.TextBox TextBox_WindowHeight;
         private System.Windows.Forms.TextBox TextBox_WindowWidth;
         private System.Windows.Forms.Label Label_SizeSperator;
+        private System.Windows.Forms.CheckBox CheckBox_ProccessLineThickness;
+        private System.Windows.Forms.CheckBox CheckBox_EnableEndProcessPoint;
+        private System.Windows.Forms.CheckBox CheckBox_EnableStartProcessPoint;
+        private System.Windows.Forms.CheckBox CheckBox_DisablePointBorder;
+        private System.Windows.Forms.CheckBox CheckBox_DisablePoint;
+        private System.Windows.Forms.Label Label_PointBorderColor;
+        private System.Windows.Forms.Button Button_PointBorderColor;
+        private System.Windows.Forms.Label Label_PointColor;
+        private System.Windows.Forms.Button Button_PointColor;
+        private System.Windows.Forms.CheckBox checkBox_EnableProcessEndPointLabel;
+        private System.Windows.Forms.CheckBox checkBox_EnableProcessStartPointLabel;
+        private System.Windows.Forms.CheckBox CheckBox_EnableProcessLabel;
+        private System.Windows.Forms.CheckBox CheckBox_EnableCoolingAuxiliaryProcesses;
     }
 }

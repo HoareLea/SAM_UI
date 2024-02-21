@@ -191,7 +191,8 @@ namespace SAM.Analytical.UI.Grasshopper
             mollierForm.Name = string.IsNullOrWhiteSpace(airHandlingUnit.Name) ? mollierForm.Name : airHandlingUnit.Name;
             mollierForm.MollierControlSettings = Core.Mollier.UI.Query.DefaultMollierControlSettings();
             mollierForm.Pressure = pressure;
-            mollierForm.AddProcesses(mollierProcesses, false);
+            mollierForm.AddMollierObjects(mollierProcesses, false);
+            //mollierForm.AddProcesses(mollierProcesses, false);
             //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
             mollierForm.Show();

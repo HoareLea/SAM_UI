@@ -10,26 +10,26 @@
         /// <returns>Value of point</returns>
         public static double Value(this MollierPoint mollierPoint, ChartDataType chartDataType)
         {
-            if(mollierPoint == null || chartDataType == Mollier.ChartDataType.Undefined)
+            if(mollierPoint == null || chartDataType == ChartDataType.Undefined)
             {
                 return double.NaN;
             }
 
             switch(chartDataType)
             {
-                case Mollier.ChartDataType.DryBulbTemperature:
+                case ChartDataType.DryBulbTemperature:
                     return mollierPoint.DryBulbTemperature;
 
-                case Mollier.ChartDataType.RelativeHumidity:
+                case ChartDataType.RelativeHumidity:
                     return mollierPoint.RelativeHumidity;
 
-                case Mollier.ChartDataType.HumidityRatio:
+                case ChartDataType.HumidityRatio:
                     return mollierPoint.HumidityRatio;
 
-                case Mollier.ChartDataType.DewPointTemperature:
+                case ChartDataType.DewPointTemperature:
                     return mollierPoint.DewPointTemperature();
 
-                case Mollier.ChartDataType.WetBulbTemperature:
+                case ChartDataType.WetBulbTemperature:
                     return mollierPoint.WetBulbTemperature();
             }
 

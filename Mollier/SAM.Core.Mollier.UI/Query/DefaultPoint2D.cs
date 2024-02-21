@@ -31,18 +31,18 @@ namespace SAM.Core.Mollier.UI
                 {
                     switch (curve.ChartDataType)
                     {
-                        case Mollier.ChartDataType.RelativeHumidity:
+                        case ChartDataType.RelativeHumidity:
                             Point2D point = defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
                             if (point == null) return point;
                             point = new Point2D(point.X, Mollier.Query.DiagramTemperature(point.Y, point.X / 1000, mollierControlSettings.Pressure));
                             return fix(start, end, point);
-                        case Mollier.ChartDataType.Density:
+                        case ChartDataType.Density:
                             return onSegment(start, end, 35);
-                        case Mollier.ChartDataType.Enthalpy:
+                        case ChartDataType.Enthalpy:
                             return onSegment(start, end, 50);
-                        case Mollier.ChartDataType.SpecificVolume:
+                        case ChartDataType.SpecificVolume:
                             return onSegment(start, end, 50);
-                        case Mollier.ChartDataType.WetBulbTemperature:
+                        case ChartDataType.WetBulbTemperature:
                             return onSegment(start, end, 50);
 
                         default: throw new NotSupportedException();
@@ -52,18 +52,18 @@ namespace SAM.Core.Mollier.UI
                 {
                     switch (curve.ChartDataType)
                     {
-                        case Mollier.ChartDataType.RelativeHumidity:
+                        case ChartDataType.RelativeHumidity:
                             Point2D point = defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType); // fix to diagram temperature
                             if (point == null) return point;
                             point = new Point2D(point.X, Mollier.Query.DiagramTemperature(point.Y, point.X / 1000, mollierControlSettings.Pressure));
                             return fix(start, end, point);
-                        case Mollier.ChartDataType.Density:
+                        case ChartDataType.Density:
                             return start;
-                        case Mollier.ChartDataType.Enthalpy:
+                        case ChartDataType.Enthalpy:
                             return shiftEnthalpyEnd(start, end);
-                        case Mollier.ChartDataType.SpecificVolume:
+                        case ChartDataType.SpecificVolume:
                             return onSegment(start, end, 50);
-                        case Mollier.ChartDataType.WetBulbTemperature:
+                        case ChartDataType.WetBulbTemperature:
                             return end;
 
                         default: throw new NotSupportedException();
@@ -80,15 +80,15 @@ namespace SAM.Core.Mollier.UI
                 {
                     switch (curve.ChartDataType)
                     {
-                        case Mollier.ChartDataType.RelativeHumidity:
+                        case ChartDataType.RelativeHumidity:
                             return defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
-                        case Mollier.ChartDataType.Density:
+                        case ChartDataType.Density:
                             return onSegment(start, end, 50);
-                        case Mollier.ChartDataType.Enthalpy:
+                        case ChartDataType.Enthalpy:
                             return onSegment(start, end, 50);
-                        case Mollier.ChartDataType.SpecificVolume:
+                        case ChartDataType.SpecificVolume:
                             return onSegment(start, end, 50);
-                        case Mollier.ChartDataType.WetBulbTemperature:
+                        case ChartDataType.WetBulbTemperature:
                             return onSegment(start, end, 50);
 
                         default: throw new NotSupportedException();
@@ -98,16 +98,16 @@ namespace SAM.Core.Mollier.UI
                 {
                     switch (curve.ChartDataType)
                     {
-                        case Mollier.ChartDataType.RelativeHumidity:
+                        case ChartDataType.RelativeHumidity:
                             Point2D point = defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
                             return fix(start, end, point);
-                        case Mollier.ChartDataType.Density:
+                        case ChartDataType.Density:
                             return start;
-                        case Mollier.ChartDataType.Enthalpy:
+                        case ChartDataType.Enthalpy:
                             return shiftEnthalpyEnd(start, end);
-                        case Mollier.ChartDataType.SpecificVolume:
+                        case ChartDataType.SpecificVolume:
                             return onSegment(start, end, 67);
-                        case Mollier.ChartDataType.WetBulbTemperature:
+                        case ChartDataType.WetBulbTemperature:
                             return end;
 
                         default: throw new NotSupportedException();

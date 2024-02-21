@@ -161,7 +161,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            MixingProcess mixingProcess = Core.Mollier.Create.MixingProcess(point_1, point_2, airflow_1, airflow_2);
+            MixingProcess mixingProcess = Mollier.Create.MixingProcess(point_1, point_2, airflow_1, airflow_2);
 
 
             index = Params.IndexOfOutputParam("mixingProcess");

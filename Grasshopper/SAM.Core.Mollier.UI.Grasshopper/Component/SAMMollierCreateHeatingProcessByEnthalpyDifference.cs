@@ -134,7 +134,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            HeatingProcess heatingProcess = Core.Mollier.Create.HeatingProcess_ByEnthalpyDifference(mollierPoint, enthalpyDifference * 1000);
+            HeatingProcess heatingProcess = Mollier.Create.HeatingProcess_ByEnthalpyDifference(mollierPoint, enthalpyDifference * 1000);
 
 
             index = Params.IndexOfOutputParam("heatingProcess");

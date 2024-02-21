@@ -44,7 +44,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 mollierForm = new MollierForm();
                 mollierForm.FormClosing += MollierForm_FormClosing;
-                mollierForm.MollierControlSettings = GetMollierControlSettings();
+                //mollierForm.MollierControlSettings = GetMollierControlSettings();
             }
             
             mollierForm.Clear();

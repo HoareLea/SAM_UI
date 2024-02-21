@@ -134,7 +134,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            UndefinedProcess undefinedProcess = Core.Mollier.Create.UndefinedProcess(start, end);
+            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess(start, end);
 
             index = Params.IndexOfOutputParam("undefinedProcess");
             if (index != -1)

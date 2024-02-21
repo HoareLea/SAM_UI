@@ -81,7 +81,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return double.IsNaN(layerThicknessCalculationResult.Thickness) ? (double?)null : Core.Query.Round(layerThicknessCalculationResult.Thickness, SAM.Core.Tolerance.MacroDistance);
+                return double.IsNaN(layerThicknessCalculationResult.Thickness) ? (double?)null : Core.Query.Round(layerThicknessCalculationResult.Thickness, Core.Tolerance.MacroDistance);
             }
         }
 

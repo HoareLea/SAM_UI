@@ -21,6 +21,7 @@ namespace SAM.Core.Mollier.UI
 
         public event MollierPointSelectedEventHandler MollierPointSelected;
 
+        private List<int> customColors = new List<int>();
 
         public MollierForm()
         {
@@ -124,10 +125,14 @@ namespace SAM.Core.Mollier.UI
             using (MollierControlSettingsForm mollierSettingsForm = new MollierControlSettingsForm(MollierControl_Main, mollierFormSettings))
             {
                 mollierSettingsForm.ApplyClicked += MollierSettingsForm_ApplyClicked;
+                mollierSettingsForm.CustomColors = customColors;
+
                 if (mollierSettingsForm.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
                 }
+
+                customColors = mollierSettingsForm.CustomColors;
 
                 mollierFormSettings = mollierSettingsForm.MollierFormSettings;
 
@@ -275,7 +280,8 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 previousUIMollierPoint = mollierPointForm.UIMollierPoint;
-                AddPoints(new UIMollierPoint[] { previousUIMollierPoint });
+                //AddPoints(new UIMollierPoint[] { previousUIMollierPoint });
+                AddMollierObjects(new UIMollierPoint[] { previousUIMollierPoint });
             }
         }
         
@@ -289,7 +295,7 @@ namespace SAM.Core.Mollier.UI
             }
 
             mollierProcessForm.PreviousMollierPoint = GetMollierPoint();
-            mollierProcessForm.Show();          
+            mollierProcessForm.Show();
         }
 
         private void MollierProcessForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -309,10 +315,27 @@ namespace SAM.Core.Mollier.UI
 
             mollierProcessForm = null;
 
+            if(uIMollierProcess.UIMollierAppearance.Color == System.Drawing.Color.Empty)
+            {
+                MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null;
+                System.Drawing.Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, uIMollierProcess);
+                uIMollierProcess.UIMollierAppearance.Color = color;
+                if (uIMollierProcess.UIMollierPointAppearance_Start.Color == System.Drawing.Color.Empty)
+                {
+                    uIMollierProcess.UIMollierPointAppearance_Start.Color = color;
+                }
+
+                if (uIMollierProcess.UIMollierPointAppearance_End.Color == System.Drawing.Color.Empty)
+                {
+                    uIMollierProcess.UIMollierPointAppearance_End.Color = color;
+                }
+            }
+
             previousUIMollierPoint = uIMollierProcess.GetUIMollierPoint_End();
             List<IMollierProcess> mollierProcesses = new List<IMollierProcess>() { uIMollierProcess };
 
-            AddProcesses(mollierProcesses);
+            //AddProcesses(mollierProcesses);
+            AddMollierObjects(mollierProcesses);
         }
 
         private void MollierPointForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -343,33 +366,23 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-        //adding processes or points to the chart
-        //public bool AddProcess(IMollierProcess mollierProcess, bool checkPressure = true)
+        //public bool AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
         //{
-        //    if(mollierProcess == null)
+        //    if(mollierProcesses == null)
         //    {
         //        return false;
         //    }
-        //    MollierControl_Main.AddProcess(mollierProcess, checkPressure);
+
+        //    MollierControl_Main.AddMollierObjects(mollierProcesses, checkPressure);
+
+        //    if(manageMollierObjectsForm != null)
+        //    {
+        //        manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
+        //    }
+
         //    return true;
         //}
-        public bool AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
-        {
-            if(mollierProcesses == null)
-            {
-                return false;
-            }
-
-            MollierControl_Main.AddMollierObjects(mollierProcesses, checkPressure);
-
-            if(manageMollierObjectsForm != null)
-            {
-                manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
-            }
-
-            return true;
-        }
-        public bool AddMollierObjects(IEnumerable<IMollierObject> mollierObjects, bool checkPressure = true)
+        public bool AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true) where T: IMollierObject
         {
             if(mollierObjects == null)
             {
@@ -383,21 +396,21 @@ namespace SAM.Core.Mollier.UI
             }
             return true;
         }
-        public bool AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
-        {
-            if (mollierPoints == null)
-            {
-                return false;
-            }
+        //public bool AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
+        //{
+        //    if (mollierPoints == null)
+        //    {
+        //        return false;
+        //    }
 
-            MollierControl_Main.AddMollierObjects(mollierPoints, checkPressure);
+        //    MollierControl_Main.AddMollierObjects(mollierPoints, checkPressure);
 
-            if (manageMollierObjectsForm != null)
-            {
-                manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
-            }
-            return true;
-        }
+        //    if (manageMollierObjectsForm != null)
+        //    {
+        //        manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
+        //    }
+        //    return true;
+        //}
 
         //function that sets all values from the control to the Form 
         public void default_chart(MollierControlSettings mollierControlSettings)
@@ -616,8 +629,6 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.WetBulbTemperature_Line = ToolStripMenuItem_WetBulbTemperature.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
         }
-
-
 
         public MollierControlSettings MollierControlSettings
         {
@@ -893,35 +904,37 @@ namespace SAM.Core.Mollier.UI
         public void LoadMollierObjects(IEnumerable<IMollierObject> mollierObjects)
         {
 
-            if(mollierObjects == null || mollierObjects.Count() == 0)
-            {
-                return;
-            }
+            //if(mollierObjects == null || mollierObjects.Count() == 0)
+            //{
+            //    return;
+            //}
 
-            List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
-            List<IMollierPoint> mollierPoints = new List<IMollierPoint>();
-            foreach(IMollierObject mollierObject in mollierObjects)
-            {
-                if(mollierObject is IMollierProcess)
-                {
-                    mollierProcesses.Add((IMollierProcess)mollierObject);
-                }
-                else if(mollierObject is IMollierPoint)
-                {
-                    mollierPoints.Add((IMollierPoint)mollierObject);
-                }
-                else if(mollierObject is IMollierGroup)
-                {
-                    LoadMollierObjects((IMollierGroup)mollierObject);
-                }
-            }
+            //List<IMollierProcess> mollierProcesses = new List<IMollierProcess>();
+            //List<IMollierPoint> mollierPoints = new List<IMollierPoint>();
+            //foreach(IMollierObject mollierObject in mollierObjects)
+            //{
+            //    if(mollierObject is IMollierProcess)
+            //    {
+            //        mollierProcesses.Add((IMollierProcess)mollierObject);
+            //    }
+            //    else if(mollierObject is IMollierPoint)
+            //    {
+            //        mollierPoints.Add((IMollierPoint)mollierObject);
+            //    }
+            //    else if(mollierObject is IMollierGroup)
+            //    {
+            //        LoadMollierObjects((IMollierGroup)mollierObject);
+            //    }
+            //}
 
-            double pressure = Query.DefaultPressure(mollierPoints, mollierProcesses);
+            //double pressure = Query.DefaultPressure(mollierPoints, mollierProcesses);
 
-            Pressure = double.IsNaN(pressure) ? Standard.Pressure : pressure;
+            //Pressure = double.IsNaN(pressure) ? Standard.Pressure : pressure;
 
-            AddProcesses(mollierProcesses, false);
-            AddPoints(mollierPoints, false);
+            //AddProcesses(mollierProcesses, false);
+            //AddPoints(mollierPoints, false);
+
+            AddMollierObjects(mollierObjects);
         }
 
         private void printToolStripMenuItem_Click(object sender, EventArgs e)
@@ -938,11 +951,6 @@ namespace SAM.Core.Mollier.UI
         private void PercentPointsTextBox_MouseLeave(object sender, EventArgs e)
         {
             toolTip.Active = false;
-        }
-
-        private void MollierForm_ResizeEnd(object sender, EventArgs e)
-        {
-            MollierControl_Main.GenerateGraph();
         }
 
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1041,7 +1049,8 @@ namespace SAM.Core.Mollier.UI
                 
             UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
 
-            AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+            //AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+            AddMollierObjects(new IMollierProcess[] { uIMollierProcess }, false);
         }
 
         private void AddProcess_ByEpsilonAndEnthalpyDifference(MollierPointSelectedEventArgs e)
@@ -1096,7 +1105,8 @@ namespace SAM.Core.Mollier.UI
 
             UIMollierProcess uIMollierProcess = new UIMollierProcess(roomProcess, System.Drawing.Color.LightGray);
 
-            AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+            //AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+            AddMollierObjects(new IMollierProcess[] { uIMollierProcess }, false);
         }
 
         private void AddProcess_ByEpsilonAndHumidityRatioDifference(MollierPointSelectedEventArgs e)
@@ -1154,7 +1164,8 @@ namespace SAM.Core.Mollier.UI
 
             UIMollierProcess uIMollierProcess = new UIMollierProcess(roomProcess, System.Drawing.Color.LightGray);
 
-            AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+            //AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
+            AddMollierObjects(new IMollierProcess[] { uIMollierProcess }, false);
         }
 
        
