@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Core.Mollier.UI.Controls;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -10,17 +11,19 @@ namespace SAM.Core.Mollier.UI
 
         private MollierFormSettings mollierFormSettings;
         
-        private Controls.MollierControl mollierControl;
+        private MollierControl mollierControl;
         private ToolTip toolTip = new ToolTip();
 
         private System.Drawing.Color initialColor = System.Drawing.Color.Empty;
+
+        public List<int> CustomColors { get; set; }  = new List<int>();
 
         public MollierControlSettingsForm()
         {
             InitializeComponent();
         }
 
-        public MollierControlSettingsForm(Controls.MollierControl mollierControl, MollierFormSettings mollierFormSettings)
+        public MollierControlSettingsForm(MollierControl mollierControl, MollierFormSettings mollierFormSettings)
         {
             InitializeComponent();
 
@@ -82,7 +85,10 @@ namespace SAM.Core.Mollier.UI
                 {
                     foreach(BuiltInVisibilitySetting builtInVisibilitySetting in builtInVisibilitySettings)
                     {
-                        FlowLayoutPanel_BuiltInVisibilitySettings.Controls.Add(new Controls.BuiltInVisibilitySettingControl(builtInVisibilitySetting));
+                        BuiltInVisibilitySettingControl builtInVisibilitySettingControl = new BuiltInVisibilitySettingControl(builtInVisibilitySetting);
+                        builtInVisibilitySettingControl.ColorChanged += BuiltInVisibilitySettingControl_ColorChanged;
+
+                        FlowLayoutPanel_BuiltInVisibilitySettings.Controls.Add(builtInVisibilitySettingControl);
                     }
                 }
             }
@@ -92,6 +98,27 @@ namespace SAM.Core.Mollier.UI
 
             TextBox_WindowHeight.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
             TextBox_WindowWidth.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+        }
+
+        private void BuiltInVisibilitySettingControl_ColorChanged(object sender, EventArgs e)
+        {
+            BuiltInVisibilitySettingControl builtInVisibilitySettingControl = sender as BuiltInVisibilitySettingControl;
+            if(builtInVisibilitySettingControl == null)
+            {
+                return;
+            }
+
+            CustomColors = builtInVisibilitySettingControl.CustomColors;
+            foreach(Control control in FlowLayoutPanel_BuiltInVisibilitySettings.Controls)
+            {
+                BuiltInVisibilitySettingControl builtInVisibilitySettingControl_Temp = control as BuiltInVisibilitySettingControl;
+                if(builtInVisibilitySettingControl_Temp == null)
+                {
+                    continue;
+                }
+
+                builtInVisibilitySettingControl_Temp.CustomColors = CustomColors;
+            }
         }
 
         public MollierFormSettings MollierFormSettings
@@ -642,7 +669,7 @@ namespace SAM.Core.Mollier.UI
             List<IVisibilitySetting> visibilitySettingsList = new List<IVisibilitySetting>();
             foreach(Control control in FlowLayoutPanel_BuiltInVisibilitySettings.Controls)
             {
-                Controls.BuiltInVisibilitySettingControl builtInVisibilitySettingControl = control as Controls.BuiltInVisibilitySettingControl;
+                BuiltInVisibilitySettingControl builtInVisibilitySettingControl = control as BuiltInVisibilitySettingControl;
                 if(builtInVisibilitySettingControl  == null)
                 {
                     continue;

@@ -109,10 +109,10 @@ namespace SAM.Analytical.UI.WPF
                     {
                         TCD.Document document = sAMTCDDocument.Document;
 
-                        List<Core.IMaterial> materials = constructionManager.Materials;
+                        List<IMaterial> materials = constructionManager.Materials;
                         if (materials != null)
                         {
-                            foreach (Core.IMaterial material in materials)
+                            foreach (IMaterial material in materials)
                             {
                                 if (!material.TryGetValue(ParameterizedSAMObjectParameter.Category, out Category category))
                                 {

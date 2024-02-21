@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -8,6 +10,9 @@ namespace SAM.Core.Mollier.UI.Controls
     public partial class BuiltInVisibilitySettingControl : UserControl
     {
         private BuiltInVisibilitySetting builtInVisibilitySetting;
+        public event EventHandler ColorChanged;
+
+        public List<int> CustomColors { get; set; } = new List<int>();
 
         public BuiltInVisibilitySettingControl()
         {
@@ -25,6 +30,13 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             using (ColorDialog colorDialog = new ColorDialog())
             {
+                if(CustomColors != null)
+                {
+                    colorDialog.CustomColors = CustomColors.ToArray();
+                }
+
+                System.Drawing.Color color;
+
                 if(builtInVisibilitySetting != null)
                 {
                     colorDialog.Color = builtInVisibilitySetting.Color;
@@ -35,7 +47,13 @@ namespace SAM.Core.Mollier.UI.Controls
                     return;
                 }
 
+                if(colorDialog.CustomColors != null)
+                {
+                    CustomColors = colorDialog.CustomColors.ToList();
+                }
+
                 Button_Color.BackColor = colorDialog.Color;
+                ColorChanged.Invoke(this, EventArgs.Empty);
             }
         }
 

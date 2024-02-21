@@ -21,6 +21,7 @@ namespace SAM.Core.Mollier.UI
 
         public event MollierPointSelectedEventHandler MollierPointSelected;
 
+        private List<int> customColors = new List<int>();
 
         public MollierForm()
         {
@@ -124,10 +125,14 @@ namespace SAM.Core.Mollier.UI
             using (MollierControlSettingsForm mollierSettingsForm = new MollierControlSettingsForm(MollierControl_Main, mollierFormSettings))
             {
                 mollierSettingsForm.ApplyClicked += MollierSettingsForm_ApplyClicked;
+                mollierSettingsForm.CustomColors = customColors;
+
                 if (mollierSettingsForm.ShowDialog(this) != DialogResult.OK)
                 {
                     return;
                 }
+
+                customColors = mollierSettingsForm.CustomColors;
 
                 mollierFormSettings = mollierSettingsForm.MollierFormSettings;
 

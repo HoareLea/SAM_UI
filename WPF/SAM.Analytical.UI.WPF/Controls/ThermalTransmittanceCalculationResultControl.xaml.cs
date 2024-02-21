@@ -168,7 +168,7 @@ namespace SAM.Analytical.UI.WPF
                 value_2 = double.NaN;
             }
 
-            result.TotalSolarEnergyTransmittanceRange = double.IsNaN(value_1) || double.IsNaN(value_2) ? null : new Core.Range<double>(-value_1, value_2);
+            result.TotalSolarEnergyTransmittanceRange = double.IsNaN(value_1) || double.IsNaN(value_2) ? null : new Range<double>(-value_1, value_2);
 
 
             if (!Core.Query.TryConvert(TextBox_LightTransmittance.Text, out value_1))
@@ -188,7 +188,7 @@ namespace SAM.Analytical.UI.WPF
                 value_2 = double.NaN;
             }
 
-            result.LightTransmittanceRange = double.IsNaN(value_1) || double.IsNaN(value_2) ? null : new Core.Range<double>(-value_1, value_2);
+            result.LightTransmittanceRange = double.IsNaN(value_1) || double.IsNaN(value_2) ? null : new Range<double>(-value_1, value_2);
 
 
             if (!Core.Query.TryConvert(TextBox_ThermalTransmittance.Text, out value_1))
@@ -208,7 +208,7 @@ namespace SAM.Analytical.UI.WPF
                 value_2 = double.NaN;
             }
 
-            result.ThermalTransmittanceRange = double.IsNaN(value_1) || double.IsNaN(value_2) ? null : new Core.Range<double>(-value_1, value_2);
+            result.ThermalTransmittanceRange = double.IsNaN(value_1) || double.IsNaN(value_2) ? null : new Range<double>(-value_1, value_2);
 
 
             return result;
