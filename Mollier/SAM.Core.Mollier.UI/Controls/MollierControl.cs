@@ -279,6 +279,7 @@ namespace SAM.Core.Mollier.UI.Controls
             GenerateGraph();
             return true;
         }
+
         public void GenerateGraph()
         {
             if (mollierControlSettings == null)
@@ -319,6 +320,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
+        
         public List<IUIMollierObject> AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true) where T : IMollierObject
         {
             if (mollierObjects == null || mollierObjects.Count() == 0 || mollierModel == null)
@@ -350,6 +352,7 @@ namespace SAM.Core.Mollier.UI.Controls
             GenerateGraph();
             return result;
         }
+        
         private List<UIMollierPoint> AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
         {
             if (mollierPoints == null || mollierModel == null)
@@ -384,6 +387,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierModel.AddRange(result);
             return result;
         }
+        
         private List<UIMollierProcess> AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
         {
             if (mollierProcesses == null || mollierModel == null)
@@ -435,6 +439,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierModel.AddRange(result);
             return result;
         }
+        
         private List<UIMollierGroup> AddGroups(IEnumerable<IMollierGroup> mollierGroups, bool checkPressure = true)
         {
             if (mollierGroups == null || mollierModel == null)
@@ -468,6 +473,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierModel.AddRange(result);
             return result;
         }
+        
         private List<UIMollierZone> AddZones(IEnumerable<IMollierZone> mollierZones)
         {
             if (mollierZones == null || mollierZones.Count() == 0 || mollierModel == null)
@@ -511,6 +517,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             GenerateGraph();
         }
+        
         public void RemovePoints(IEnumerable<IMollierPoint> mollierPoints)
         {
             if (mollierPoints == null || mollierModel == null)
@@ -525,6 +532,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             GenerateGraph();
         }
+        
         public void RemoveZones(IEnumerable<IMollierZone> mollierZones)
         {
             if (mollierZones == null || mollierModel == null)
@@ -1200,10 +1208,12 @@ namespace SAM.Core.Mollier.UI.Controls
 
             return result;
         }
+        
         public List<T> UIMollierObjects<T>(bool includeNestedObjects = true) where T : IUIMollierObject
         {
             return UIMollierObjects(typeof(T), includeNestedObjects)?.FindAll(x => x is T)?.ConvertAll(x => (T)(object)x);
         }
+        
         public MollierModel MollierModel
         {
             get
@@ -1247,6 +1257,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
         }
+        
         public MollierPoint GetMollierPoint(int x, int y)
         {
             double chart_X = MollierChart.ChartAreas[0].AxisX.PixelPositionToValue(x);

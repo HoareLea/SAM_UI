@@ -1,5 +1,8 @@
 ﻿using System.Windows.Forms.DataVisualization.Charting;
 using System.Collections.Generic;
+using System.Linq;
+using System;
+using System.Threading.Tasks;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -13,37 +16,34 @@ namespace SAM.Core.Mollier.UI
         /// <returns>List of created series</returns>
         public static List<Series> AddLinesSeries(this Chart chart, MollierControlSettings mollierControlSettings)
         {
-            List<Series> result = new List<Series>();
+            if(chart == null || mollierControlSettings == null)
+            {
+                return null;
+            }
 
-            List<Series> dryBulbTemperatureSeries = Convert.ToChart(ChartDataType.DryBulbTemperature, chart, mollierControlSettings);
-            if(dryBulbTemperatureSeries != null)
+            ChartDataType[] chartDataTypes = new ChartDataType[] { ChartDataType.DryBulbTemperature, ChartDataType.RelativeHumidity, ChartDataType.Density, ChartDataType.Enthalpy, ChartDataType.SpecificVolume, ChartDataType.WetBulbTemperature };
+            List<List<ConstantValueCurve>> constantValueCurvesList = Enumerable.Repeat<List<ConstantValueCurve>>(null, chartDataTypes.Length).ToList();
+
+            Parallel.For(0, chartDataTypes.Length, (int i) => 
             {
-                result.AddRange(dryBulbTemperatureSeries);
-            }
-            List<Series> relativeHumiditySeries = Convert.ToChart(ChartDataType.RelativeHumidity, chart, mollierControlSettings);
-            if(relativeHumiditySeries != null)
+                constantValueCurvesList[i] = Query.ConstantValueCurves(chartDataTypes[i], mollierControlSettings);
+            });
+
+            List<Series> result = new List<Series>();
+            foreach (List<ConstantValueCurve> constantValueCurves in constantValueCurvesList)
             {
-                result.AddRange(relativeHumiditySeries);
-            }
-            List<Series> densitySeries = Convert.ToChart(ChartDataType.Density, chart, mollierControlSettings);
-            if (densitySeries != null)
-            {
-                result.AddRange(densitySeries);
-            }
-            List<Series> enthalpySeries = Convert.ToChart(ChartDataType.Enthalpy, chart, mollierControlSettings);
-            if (enthalpySeries != null)
-            {
-                result.AddRange(enthalpySeries);
-            }
-            List<Series> specificVolumeSeries = Convert.ToChart(ChartDataType.SpecificVolume, chart, mollierControlSettings);
-            if (specificVolumeSeries != null)
-            {
-                result.AddRange(specificVolumeSeries);
-            }
-            List<Series> wetBulbTemperatureSeries = Convert.ToChart(ChartDataType.WetBulbTemperature, chart, mollierControlSettings);
-            if (wetBulbTemperatureSeries != null)
-            {
-                result.AddRange(wetBulbTemperatureSeries);
+                if(constantValueCurves == null)
+                {
+                    continue;
+                }
+
+                List<Series> series = Convert.ToChart(constantValueCurves, chart, mollierControlSettings);
+                if(series == null)
+                {
+                    continue;
+                }
+
+                result.AddRange(series);
             }
 
             return result;
