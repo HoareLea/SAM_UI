@@ -51,7 +51,7 @@ namespace SAM.Analytical.UI
 
             string id = Analytical.Create.Id(adjacencyCluster, mechanicalSystemType);
 
-            MechanicalSystem mechanicalSystem = SAM.Analytical.Create.MechanicalSystem(mechanicalSystemType, id);
+            MechanicalSystem mechanicalSystem = Analytical.Create.MechanicalSystem(mechanicalSystemType, id);
 
             using (Windows.Forms.MechanicalSystemForm mechanicalSystemForm = new Windows.Forms.MechanicalSystemForm(mechanicalSystem, uIAnalyticalModel.JSAMObject.AdjacencyCluster))
             {

@@ -171,7 +171,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            RoomProcess RoomProcess = Core.Mollier.Create.RoomProcess(start, airMassFlow, sensibleLoad * 1000, latentLoad * 1000);
+            RoomProcess RoomProcess = Mollier.Create.RoomProcess(start, airMassFlow, sensibleLoad * 1000, latentLoad * 1000);
             index = Params.IndexOfOutputParam("roomProcess");
             if (index != -1)
             {

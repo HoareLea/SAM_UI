@@ -119,7 +119,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 double elevation = double.NaN;
                 if (dataAccess.GetData(index, ref elevation) && !double.IsNaN(elevation))
                 {
-                    pressure = Core.Mollier.Query.Pressure(elevation);
+                    pressure = Mollier.Query.Pressure(elevation);
                 }
             }
 
@@ -152,7 +152,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
             else
             {
-                humidityRatio = Core.Mollier.Query.HumidityRatio_ByWetBulbTemperature(dryBulbTemperature, wetBulbTemperature, pressure);
+                humidityRatio = Mollier.Query.HumidityRatio_ByWetBulbTemperature(dryBulbTemperature, wetBulbTemperature, pressure);
             }
 
 

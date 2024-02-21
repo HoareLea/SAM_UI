@@ -32,10 +32,10 @@ namespace SAM.Core.Mollier.UI
             List<UIMollierPoint> uIMollierPoints = new List<UIMollierPoint>(mollierPoints);
             switch (mollierControlSettings.FindPointType)
             {
-                case Mollier.ChartDataType.DryBulbTemperature:
+                case ChartDataType.DryBulbTemperature:
                     uIMollierPoints.Sort((x, y) => x.DryBulbTemperature.CompareTo(y.DryBulbTemperature));
                     break;
-                case Mollier.ChartDataType.Enthalpy:
+                case ChartDataType.Enthalpy:
                     uIMollierPoints.Sort((x, y) => x.Enthalpy.CompareTo(y.Enthalpy));
                     break;
             }

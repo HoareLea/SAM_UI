@@ -85,7 +85,6 @@
     <Compile Include="Classes\ChartLabel.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
     <Compile Include="Classes\DisplayAnalyticalObject.cs" />
-    <Compile Include="Classes\VisibilitySettings.cs" />
     <Compile Include="Controls\AdiabaticHumidificationProcessControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -205,7 +204,6 @@
     <Compile Include="Enums\ProcessParameterType.cs" />
     <Compile Include="Enums\ProcessCalculationType.cs" />
     <Compile Include="Enums\ChartExportType.cs" />
-    <Compile Include="Enums\ChartParameterType.cs" />
     <Compile Include="Forms\CustomizePointForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -261,8 +259,6 @@
       <DependentUpon>PointListOptionForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\IMollierProcessControl.cs" />
-    <Compile Include="Interface\IUserVisibilitySetting.cs" />
-    <Compile Include="Interface\IVisibilitySetting.cs" />
     <Compile Include="Modify\AddColorPoint.cs" />
     <Compile Include="Modify\AddMollierPoint.cs" />
     <Compile Include="Modify\Update.cs" />
@@ -300,7 +296,6 @@
     <Compile Include="Query\DefaultMollierZones.cs" />
     <Compile Include="Query\DefaultPointGradientVisibilitySetting.cs" />
     <Compile Include="Query\ColorDictionary.cs" />
-    <Compile Include="Query\ChartDataType.cs" />
     <Compile Include="Query\DefaultPressure.cs" />
     <Compile Include="Query\DefaultVisibilitySettings.cs" />
     <Compile Include="Query\ProcessName.cs" />

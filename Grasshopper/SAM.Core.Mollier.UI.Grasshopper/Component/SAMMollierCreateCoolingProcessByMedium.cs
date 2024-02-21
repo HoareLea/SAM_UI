@@ -164,7 +164,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            CoolingProcess coolingProcess = Core.Mollier.Create.CoolingProcess_ByMedium(mollierPoint, flowTemperature, returnTemperature, efficiency);
+            CoolingProcess coolingProcess = Mollier.Create.CoolingProcess_ByMedium(mollierPoint, flowTemperature, returnTemperature, efficiency);
 
 
             index = Params.IndexOfOutputParam("coolingProcess");

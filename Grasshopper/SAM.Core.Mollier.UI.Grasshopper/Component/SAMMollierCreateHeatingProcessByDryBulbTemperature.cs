@@ -133,7 +133,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            HeatingProcess heatingProcess = Core.Mollier.Create.HeatingProcess(mollierPoint, dryBulbTemperature);
+            HeatingProcess heatingProcess = Mollier.Create.HeatingProcess(mollierPoint, dryBulbTemperature);
 
 
             index = Params.IndexOfOutputParam("heatingProcess");

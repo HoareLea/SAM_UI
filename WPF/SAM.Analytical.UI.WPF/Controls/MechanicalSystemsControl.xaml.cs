@@ -201,7 +201,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 if (mechanicalSystem != null)
                 {
-                    string mechanicalSystemCategory = SAM.Core.Query.Description(Analytical.Query.MechanicalSystemCategory(mechanicalSystem)); 
+                    string mechanicalSystemCategory = Core.Query.Description(Analytical.Query.MechanicalSystemCategory(mechanicalSystem)); 
 
                     if (comboBox_MechanicalSystemCategory.Items.Contains(mechanicalSystemCategory) && MechanicalSystemCategory != mechanicalSystemCategory)
                     {

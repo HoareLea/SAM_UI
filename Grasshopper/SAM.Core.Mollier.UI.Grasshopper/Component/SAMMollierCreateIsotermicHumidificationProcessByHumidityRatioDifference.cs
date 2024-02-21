@@ -134,7 +134,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            IsotermicHumidificationProcess isotermicHumidificationProcess = Core.Mollier.Create.IsotermicHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
+            IsotermicHumidificationProcess isotermicHumidificationProcess = Mollier.Create.IsotermicHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
 
             if (isotermicHumidificationProcess != null && double.IsNaN(isotermicHumidificationProcess.End.RelativeHumidity))
             {

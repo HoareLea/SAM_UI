@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
 {
-    public class BuiltInVisibilitySetting : VisibilitySetting
+    public class BuiltInVisibilitySetting : VisibilitySetting, IChartVisibilitySetting
     {
         public ChartParameterType ChartParameterType { get; set; }
         public ChartDataType ChartDataType { get; set; }

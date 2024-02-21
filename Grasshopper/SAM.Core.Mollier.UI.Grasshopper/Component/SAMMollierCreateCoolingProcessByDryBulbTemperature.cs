@@ -154,7 +154,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 }
             }
 
-            CoolingProcess coolingProcess = Core.Mollier.Create.CoolingProcess(mollierPoint, dryBulbTemperature, efficiency);
+            CoolingProcess coolingProcess = Mollier.Create.CoolingProcess(mollierPoint, dryBulbTemperature, efficiency);
 
             index = Params.IndexOfOutputParam("coolingProcess");
             if (index != -1)

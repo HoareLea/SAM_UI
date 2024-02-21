@@ -61,6 +61,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 result.ChartDataType = (ChartDataType)ComboBox_ChartDataType.SelectedItem;
                 result.ChartParameterType = (ChartParameterType)ComboBox_ChartParameterType.SelectedItem;
                 result.Color = Button_Color.BackColor;
+                result.Visible = CheckBox_Visible.Checked;
 
                 return result;
             }
@@ -74,6 +75,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     ComboBox_ChartDataType.SelectedItem = builtInVisibilitySetting.ChartDataType;
                     ComboBox_ChartParameterType.SelectedItem = builtInVisibilitySetting.ChartParameterType;
                     Button_Color.BackColor = builtInVisibilitySetting.Color;
+                    CheckBox_Visible.Checked = builtInVisibilitySetting.Visible;
                 }
             }
         }

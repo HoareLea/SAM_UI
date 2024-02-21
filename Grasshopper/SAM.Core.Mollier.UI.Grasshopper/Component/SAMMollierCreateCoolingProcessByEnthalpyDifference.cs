@@ -132,7 +132,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            CoolingProcess coolingProcess = Core.Mollier.Create.CoolingProcess_ByEnthalpyDifference(mollierPoint, enthalpyDifference * 1000);
+            CoolingProcess coolingProcess = Mollier.Create.CoolingProcess_ByEnthalpyDifference(mollierPoint, enthalpyDifference * 1000);
 
 
             index = Params.IndexOfOutputParam("coolingProcess");

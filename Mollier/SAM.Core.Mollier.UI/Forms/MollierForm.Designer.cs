@@ -30,7 +30,7 @@ namespace SAM.Core.Mollier.UI
         private void InitializeComponent()
         {
             SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings2 = new SAM.Core.Mollier.UI.MollierControlSettings();
-            SAM.Core.Mollier.UI.VisibilitySettings visibilitySettings2 = new SAM.Core.Mollier.UI.VisibilitySettings();
+            SAM.Core.Mollier.VisibilitySettings visibilitySettings2 = new SAM.Core.Mollier.VisibilitySettings();
             SAM.Core.Mollier.MollierModel mollierModel2 = new SAM.Core.Mollier.MollierModel();
             this.TextBox_Pressure = new System.Windows.Forms.TextBox();
             this.Label_Pressure = new System.Windows.Forms.Label();

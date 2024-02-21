@@ -5,7 +5,9 @@ namespace SAM.Core.Mollier.UI
 {
     public abstract class VisibilitySetting : IVisibilitySetting
     {
-        public Color Color { get; set; }
+        public Color Color { get; set; } = Color.Empty;
+
+        public bool Visible { get; set; } = true;
 
         public VisibilitySetting(Color color)
         {
@@ -15,6 +17,7 @@ namespace SAM.Core.Mollier.UI
         public VisibilitySetting(VisibilitySetting visibilitySetting)
         {
             Color = visibilitySetting.Color;
+            Visible = visibilitySetting.Visible;
         }
         public VisibilitySetting(JObject jObject)
         {
@@ -23,7 +26,7 @@ namespace SAM.Core.Mollier.UI
 
         public virtual bool FromJObject(JObject jObject)
         {
-            if(jObject == null)
+            if (jObject == null)
             {
                 return false;
             }
@@ -31,7 +34,7 @@ namespace SAM.Core.Mollier.UI
             if (jObject.ContainsKey("Color"))
             {
                 JObject jObject_Color = jObject.Value<JObject>("Color");
-                if(jObject_Color != null)
+                if (jObject_Color != null)
                 {
                     SAMColor sAMColor = new SAMColor(jObject_Color);
                     if (sAMColor != null)
@@ -39,6 +42,11 @@ namespace SAM.Core.Mollier.UI
                         Color = sAMColor.ToColor();
                     }
                 }
+            }
+
+            if (jObject.ContainsKey("Visible"))
+            {
+                Visible = jObject.Value<bool>("Visible");
             }
 
             return true;
@@ -53,6 +61,8 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Add("Color", (new SAMColor(Color)).ToJObject());
             }
+
+            result.Add("Visible", Visible);
 
             return result;
         }

@@ -133,7 +133,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
-            AdiabaticHumidificationProcess adiabaticHumidificationProcess = Core.Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
+            AdiabaticHumidificationProcess adiabaticHumidificationProcess = Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(mollierPoint, humidityRatioDifference / 1000);
 
             if (adiabaticHumidificationProcess != null && double.IsNaN(adiabaticHumidificationProcess.End.RelativeHumidity))
             {

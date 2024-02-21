@@ -70,7 +70,7 @@ namespace SAM.Core.Mollier.UI
 
         public int DivisionAreaEnthalpy_Interval { get; set; } = 3;
         public int DivisionAreaRelativeHumidity_Interval { get; set; } = 10;
-        public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(System.Drawing.Color.Red, System.Drawing.Color.Blue);
+        public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(Color.Red, Color.Blue);
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
 
