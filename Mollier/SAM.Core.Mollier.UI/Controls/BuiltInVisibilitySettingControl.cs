@@ -30,17 +30,30 @@ namespace SAM.Core.Mollier.UI.Controls
         {
             using (ColorDialog colorDialog = new ColorDialog())
             {
+                if (builtInVisibilitySetting != null)
+                {
+                    colorDialog.Color = builtInVisibilitySetting.Color;
+                }
+
+                colorDialog.FullOpen = true;
+                colorDialog.AnyColor = true;
+
                 if(CustomColors != null)
+                {
+                    int argb = colorDialog.Color.ToArgb();
+                    if (!CustomColors.Contains(argb))
+                    {
+                        CustomColors.Insert(0, argb);
+                    }
+                }
+
+                if (CustomColors != null)
                 {
                     colorDialog.CustomColors = CustomColors.ToArray();
                 }
 
-                System.Drawing.Color color;
+                //System.Drawing.Color color;
 
-                if(builtInVisibilitySetting != null)
-                {
-                    colorDialog.Color = builtInVisibilitySetting.Color;
-                }
 
                 if(colorDialog.ShowDialog() != DialogResult.OK)
                 {
