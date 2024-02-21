@@ -1184,7 +1184,6 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
 
                 mollierControlSettings = new MollierControlSettings(value);
-                GenerateGraph();
             }
         }
 

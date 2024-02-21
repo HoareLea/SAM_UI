@@ -27,17 +27,16 @@ namespace SAM.Core.Mollier.UI
         {
             InitializeComponent();
 
-            MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null;
-            default_chart(mollierControlSettings);
+            LoadMollierControlSettings();
+
+            LoadMollierFormSettings();
+
+            ColorPointComboBox.Text = "Enthalpy";
         }
 
         private void MollierForm_Load(object sender, EventArgs e)
         {
-            ColorPointComboBox.Text = "Enthalpy";
-
             MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected;
-
-            LoadMollierFormSettings();
         }
 
         private void MollierControl_Main_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
@@ -136,8 +135,6 @@ namespace SAM.Core.Mollier.UI
 
                 mollierFormSettings = mollierSettingsForm.MollierFormSettings;
 
-                //TextBox_Pressure.Text = MollierControl_Main.MollierControlSettings.Pressure.ToString();
-                //TextBox_Elevation.Text = MollierControl_Main.MollierControlSettings.Elevation.ToString();
                 SaveMollierControlSettings();
             }
 
@@ -280,7 +277,6 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 previousUIMollierPoint = mollierPointForm.UIMollierPoint;
-                //AddPoints(new UIMollierPoint[] { previousUIMollierPoint });
                 AddMollierObjects(new UIMollierPoint[] { previousUIMollierPoint });
             }
         }
@@ -334,7 +330,6 @@ namespace SAM.Core.Mollier.UI
             previousUIMollierPoint = uIMollierProcess.GetUIMollierPoint_End();
             List<IMollierProcess> mollierProcesses = new List<IMollierProcess>() { uIMollierProcess };
 
-            //AddProcesses(mollierProcesses);
             AddMollierObjects(mollierProcesses);
         }
 
@@ -366,22 +361,6 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-        //public bool AddProcesses(IEnumerable<IMollierProcess> mollierProcesses, bool checkPressure = true)
-        //{
-        //    if(mollierProcesses == null)
-        //    {
-        //        return false;
-        //    }
-
-        //    MollierControl_Main.AddMollierObjects(mollierProcesses, checkPressure);
-
-        //    if(manageMollierObjectsForm != null)
-        //    {
-        //        manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
-        //    }
-
-        //    return true;
-        //}
         public bool AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true) where T: IMollierObject
         {
             if(mollierObjects == null)
@@ -396,28 +375,13 @@ namespace SAM.Core.Mollier.UI
             }
             return true;
         }
-        //public bool AddPoints(IEnumerable<IMollierPoint> mollierPoints, bool checkPressure = true)
-        //{
-        //    if (mollierPoints == null)
-        //    {
-        //        return false;
-        //    }
-
-        //    MollierControl_Main.AddMollierObjects(mollierPoints, checkPressure);
-
-        //    if (manageMollierObjectsForm != null)
-        //    {
-        //        manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
-        //    }
-        //    return true;
-        //}
 
         //function that sets all values from the control to the Form 
-        public void default_chart(MollierControlSettings mollierControlSettings)
+        public void LoadMollierControlSettings(MollierControlSettings mollierControlSettings = null)
         {
             if (mollierControlSettings == null)
             {
-                mollierControlSettings = new MollierControlSettings();
+                mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : new MollierControlSettings();
             }
 
             if(mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.BoldLine, ChartDataType.DryBulbTemperature) == System.Drawing.Color.Empty)
@@ -588,7 +552,7 @@ namespace SAM.Core.Mollier.UI
         {
             MollierControlSettings mollierControlSettings = new MollierControlSettings();
             mollierControlSettings.Pressure = MollierControl_Main.MollierControlSettings.Pressure;
-            default_chart(mollierControlSettings);
+            LoadMollierControlSettings(mollierControlSettings);
 
             MollierFormSettings mollierFormSettings = System.IO.File.Exists(mollierFormSettingsPath) ? Core.Convert.ToSAM<MollierFormSettings>(mollierFormSettingsPath).FirstOrDefault() : new MollierFormSettings();
             mollierFormSettings.Height = -1;
@@ -853,7 +817,7 @@ namespace SAM.Core.Mollier.UI
                     if (mollierControlSettings != null)
                     {
                         MollierControl_Main.MollierControlSettings = mollierControlSettings;
-                        default_chart(mollierControlSettings);
+                        LoadMollierControlSettings(mollierControlSettings);
                     }
                     break;
             }

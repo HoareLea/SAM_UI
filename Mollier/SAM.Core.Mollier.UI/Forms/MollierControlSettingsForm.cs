@@ -689,6 +689,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.VisibilitySettings = visibilitySettings;
 
             mollierControl.MollierControlSettings = mollierControlSettings;
+            mollierControl.GenerateGraph();
 
             ApplyClicked.Invoke(this, EventArgs.Empty);
         }
