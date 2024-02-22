@@ -158,7 +158,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 // Partial vapour pressure axis minor tick mark series 
                 Series seriesTemp = MollierChart.Series.Add(Guid.NewGuid() + "Pw minor Tick Mark Mollier");
                 seriesTemp.IsVisibleInLegend = false;
-                seriesTemp.ChartType = SeriesChartType.FastLine;
+                seriesTemp.ChartType = SeriesChartType.Line;
                 double xFactor = Query.ScaleVector2D(this, mollierControlSettings).X;
                 seriesTemp.Points.AddXY(MollierChart.ChartAreas[0].AxisX.Minimum, labelPositionY);
                 seriesTemp.Points.AddXY(MollierChart.ChartAreas[0].AxisX.Minimum + 0.5 * xFactor, labelPositionY);
@@ -218,7 +218,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 // Partial vapour pressure axis minor tick mark series 
                 Series seriesTemp = MollierChart.Series.Add(Guid.NewGuid() + "Pw minor Tick Mark Mollier");
                 seriesTemp.IsVisibleInLegend = false;
-                seriesTemp.ChartType = SeriesChartType.FastLine;
+                seriesTemp.ChartType = SeriesChartType.Line;
                 double yFactor = Query.ScaleVector2D(this, mollierControlSettings).Y;
                 seriesTemp.Points.AddXY(labelPositionX, axisY.Maximum);
                 seriesTemp.Points.AddXY(labelPositionX, axisY.Maximum - 0.7 * yFactor);
@@ -399,6 +399,31 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     chartArea.Position = new ElementPosition(0, chartArea.Position.Y, chartArea.Position.Width + 2, chartArea.Position.Height);
                 }
+            }
+
+
+            //TODO: [MACIEK] Solve order issue, Organize Series Tags to allow easy way of filtering Items. in this case Spline (Relative Humidity series) have to be move to the top of series
+            List<Series> series = new List<Series>();
+            foreach(Series series_Temp in MollierChart.Series)
+            {
+                ConstantValueCurve constantValueCurve = series_Temp.Tag as ConstantValueCurve;
+                if(constantValueCurve == null)
+                {
+                    continue;
+                }
+
+                if(constantValueCurve.ChartDataType != ChartDataType.RelativeHumidity)
+                {
+                    continue;
+                }
+
+                series.Add(series_Temp);
+            }
+
+            foreach(Series series_Temp in series)
+            {
+                MollierChart.Series.Remove(series_Temp);
+                MollierChart.Series.Insert(0, series_Temp);
             }
 
             MollierChart.Series.ResumeUpdates();

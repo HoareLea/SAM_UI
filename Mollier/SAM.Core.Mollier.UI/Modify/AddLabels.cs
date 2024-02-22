@@ -107,7 +107,7 @@ namespace SAM.Core.Mollier.UI
 
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.FastLine;
+            series.ChartType = SeriesChartType.Line;
             series.BorderWidth = 1;
             series.Color = color;
 

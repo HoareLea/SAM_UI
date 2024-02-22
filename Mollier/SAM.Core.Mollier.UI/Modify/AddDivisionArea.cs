@@ -63,7 +63,7 @@ namespace SAM.Core.Mollier.UI
 
             Series series = chart.Series.Add("DivisionArea " + Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.FastLine;
+            series.ChartType = SeriesChartType.Line;
             series.BorderWidth = 3;
             series.Color = divisionArea.UIMollierAppearance.Color;
 

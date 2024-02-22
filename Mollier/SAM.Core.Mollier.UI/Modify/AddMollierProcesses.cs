@@ -160,7 +160,7 @@ namespace SAM.Core.Mollier.UI
             //Creating series for room process
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.FastLine;
+            series.ChartType = SeriesChartType.Line;
             series.Color = color;
             series.BorderDashStyle = ChartDashStyle.Dash;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
@@ -219,7 +219,7 @@ namespace SAM.Core.Mollier.UI
             // Creating series for room process
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.FastLine;
+            series.ChartType = SeriesChartType.Line;
             series.Color = color;
             series.BorderDashStyle = ChartDashStyle.Dash;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
@@ -237,10 +237,10 @@ namespace SAM.Core.Mollier.UI
             series.Points[index].Tag = uIMollierProcess.End;
             return result;
         }
-        private static Series createProcessSeries(Chart chart, UIMollierProcess uImollierProcess, MollierControlSettings mollierControlSettings)
+        private static Series createProcessSeries(Chart chart, UIMollierProcess uIMollierProcess, MollierControlSettings mollierControlSettings)
         {
             ChartType chartType = mollierControlSettings.ChartType;
-            MollierProcess mollierProcess = uImollierProcess.MollierProcess;
+            MollierProcess mollierProcess = uIMollierProcess.MollierProcess;
             MollierPoint mollierPoint_Start = mollierProcess.Start;
             Point2D point2D_Start = Convert.ToSAM(mollierPoint_Start, chartType);
             MollierPoint mollierPoint_End = mollierProcess.End;
@@ -248,12 +248,12 @@ namespace SAM.Core.Mollier.UI
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
 
             series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.FastLine;
+            series.ChartType = SeriesChartType.Line;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 4;
-            series.Color = (uImollierProcess.UIMollierAppearance.Color == Color.Empty) ?
+            series.Color = (uIMollierProcess.UIMollierAppearance.Color == Color.Empty) ?
                 mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)
-                : uImollierProcess.UIMollierAppearance.Color;
-            series.Tag = uImollierProcess;
+                : uIMollierProcess.UIMollierAppearance.Color;
+            series.Tag = uIMollierProcess;
 
             int index;
             series.ToolTip = Query.ToolTipText(mollierPoint_Start, mollierPoint_End, chartType, Query.FullProcessName(mollierProcess));
