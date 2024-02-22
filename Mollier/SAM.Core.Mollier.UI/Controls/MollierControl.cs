@@ -1314,7 +1314,5 @@ namespace SAM.Core.Mollier.UI.Controls
 
             return Convert.ToMollier(point2D, mollierControlSettings.ChartType, mollierControlSettings.Pressure);
         }
-
-
     }
 }
