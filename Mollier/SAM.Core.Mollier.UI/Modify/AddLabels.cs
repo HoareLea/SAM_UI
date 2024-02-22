@@ -79,19 +79,19 @@ namespace SAM.Core.Mollier.UI
             result.LabelForeColor = chartLabel.Color;
             result.Tag = "Label " + Guid.NewGuid().ToString();
 
-            Solver2DResult solver2DResult = chartLabel.Tag as Solver2DResult;
-            if(solver2DResult != null)
-            {
-                Solver2DData solver2DData = solver2DResult.Solver2DData;
-                if(solver2DData != null)
-                {
-                    if(solver2DData.Priority > 1)
-                    {
-                        chart.Series.Remove(result);
-                        chart.Series.Insert(0, result);
-                    }
-                }
-            }
+            //Solver2DResult solver2DResult = chartLabel.Tag as Solver2DResult;
+            //if(solver2DResult != null)
+            //{
+            //    Solver2DData solver2DData = solver2DResult.Solver2DData;
+            //    if(solver2DData != null)
+            //    {
+            //        if(solver2DData.Priority > 1)
+            //        {
+            //            chart.Series.Remove(result);
+            //            chart.Series.Insert(0, result);
+            //        }
+            //    }
+            //}
 
             return result;
         }
@@ -144,7 +144,8 @@ namespace SAM.Core.Mollier.UI
                     color = Color.Black;
                 }
 
-                result.Add(new ChartLabel(positionAngleLabel.Item1, text, positionAngleLabel.Item2, color) { Tag = solver2DResult});
+                //result.Add(new ChartLabel(positionAngleLabel.Item1, text, positionAngleLabel.Item2, color) { Tag = solver2DResult});
+                result.Add(new ChartLabel(positionAngleLabel.Item1, text, positionAngleLabel.Item2, color));
             }
 
             return result;

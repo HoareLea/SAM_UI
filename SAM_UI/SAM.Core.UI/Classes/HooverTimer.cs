@@ -7,7 +7,6 @@ namespace SAM.Core.UI
     {
         public event MouseEventHandler Update;
 
-
         private Timer timer = new Timer();
         private Control control;
 
@@ -83,7 +82,9 @@ namespace SAM.Core.UI
                 return;
             }
 
-            Update.Invoke(control, mouseEventArgs);
+            Update.Invoke(control, mouseEventArgs); 
+            timer.Stop();
+            timer.Enabled = false;
         }
 
         private void Control_MouseEnter(object sender, System.EventArgs e)
