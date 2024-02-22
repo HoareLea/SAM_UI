@@ -78,7 +78,6 @@
     <Compile Include="Classes\EventArgs\MollierModelEditedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs - Copy.cs" />
     <Compile Include="Classes\EventArgs\MollierPointSelectedEventArgs.cs" />
-    <Compile Include="Classes\MollierFormSettings.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
     <Compile Include="Classes\MollierPointEventArgs.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />

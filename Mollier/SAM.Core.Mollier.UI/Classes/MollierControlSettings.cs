@@ -72,6 +72,11 @@ namespace SAM.Core.Mollier.UI
         public int DivisionAreaRelativeHumidity_Interval { get; set; } = 10;
         public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(Color.Red, Color.Blue);
 
+        public int MollierWindowWidth { get; set; } = -1;
+        public int MollierWindowHeight { get; set; } = -1;
+        public int PsychrometricWindowWidth { get; set; } = -1;
+        public int PsychrometricWindowHeight { get; set; } = -1;
+
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
 
         public MollierControlSettings()
@@ -149,6 +154,11 @@ namespace SAM.Core.Mollier.UI
                 PointBorderColor = mollierControlSettings.PointBorderColor;
                 PointColor = mollierControlSettings.PointColor;
                 DisablePoint = mollierControlSettings.DisablePoint;
+
+                MollierWindowWidth = mollierControlSettings.MollierWindowWidth;
+                MollierWindowHeight = mollierControlSettings.MollierWindowHeight;
+                PsychrometricWindowWidth = mollierControlSettings.PsychrometricWindowWidth;
+                PsychrometricWindowHeight = mollierControlSettings.PsychrometricWindowHeight;
 
                 DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
             }
@@ -451,6 +461,26 @@ namespace SAM.Core.Mollier.UI
                 DisableCoolingAuxiliaryProcesses = jObject.Value<bool>("DisableCoolingAuxiliaryProcesses");
             }
 
+            if (jObject.ContainsKey("MollierWindowWidth"))
+            {
+                MollierWindowWidth = jObject.Value<int>("MollierWindowWidth");
+            }
+
+            if (jObject.ContainsKey("MollierWindowHeight"))
+            {
+                MollierWindowHeight = jObject.Value<int>("MollierWindowHeight");
+            }
+
+            if (jObject.ContainsKey("PsychrometricWindowWidth"))
+            {
+                PsychrometricWindowWidth = jObject.Value<int>("PsychrometricWindowWidth");
+            }
+
+            if (jObject.ContainsKey("PsychrometricWindowHeight"))
+            {
+                PsychrometricWindowHeight = jObject.Value<int>("PsychrometricWindowHeight");
+            }
+
             return true;
         }
 
@@ -576,6 +606,11 @@ namespace SAM.Core.Mollier.UI
             result.Add("DisablePoint", DisablePoint);
 
             result.Add("DisableCoolingAuxiliaryProcesses", DisableCoolingAuxiliaryProcesses);
+
+            result.Add("MollierWindowWidth", MollierWindowWidth);
+            result.Add("MollierWindowHeight", MollierWindowHeight);
+            result.Add("PsychrometricWindowWidth", PsychrometricWindowWidth);
+            result.Add("PsychrometricWindowHeight", PsychrometricWindowHeight);
 
             return result;
         }
