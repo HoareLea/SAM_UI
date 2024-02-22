@@ -43,7 +43,10 @@ namespace SAM.Core.Mollier.UI
             }
 
             List<Solver2DResult> solver2DResults = solver.Solve();
-            if (solver2DResults == null) return null;
+            if (solver2DResults == null)
+            {
+                return null;
+            }
 
             List<ChartLabel> labelsPositions = getChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio);
             

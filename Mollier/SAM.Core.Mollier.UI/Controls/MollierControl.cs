@@ -9,7 +9,7 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierControl : UserControl
     {
-        SAM.Core.UI.HooverTimer hooverTimer;
+        Core.UI.HooverTimer hooverTimer;
         
         public event MollierPointSelectedEventHandler MollierPointSelected;
 
@@ -331,6 +331,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
+            MollierChart.Series.SuspendUpdates();
+
             if (mollierControlSettings.ChartType == ChartType.Mollier)
             {
                 setAxisGraph_Mollier();
@@ -363,6 +365,9 @@ namespace SAM.Core.Mollier.UI.Controls
                     chartArea.Position = new ElementPosition(0, chartArea.Position.Y, chartArea.Position.Width + 2, chartArea.Position.Height);
                 }
             }
+
+            MollierChart.Series.ResumeUpdates();
+            MollierChart.Series.Invalidate();
         }
         
         public List<IUIMollierObject> AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true) where T : IMollierObject
