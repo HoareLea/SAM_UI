@@ -74,8 +74,10 @@ namespace SAM.Core.Mollier.UI
             this.TextBox_PointSize = new System.Windows.Forms.TextBox();
             this.CheckBox_EnableCoolingAuxiliaryProcesses = new System.Windows.Forms.CheckBox();
             this.CheckBox_EnableProcessLabel = new System.Windows.Forms.CheckBox();
+            this.Label_PointBorderSize = new System.Windows.Forms.Label();
             this.Label_PointBorderColor = new System.Windows.Forms.Label();
             this.Button_PointBorderColor = new System.Windows.Forms.Button();
+            this.Label_PointSize = new System.Windows.Forms.Label();
             this.Label_PointColor = new System.Windows.Forms.Label();
             this.Button_PointColor = new System.Windows.Forms.Button();
             this.CheckBox_DisablePoint = new System.Windows.Forms.CheckBox();
@@ -107,8 +109,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.Label_PointSize = new System.Windows.Forms.Label();
-            this.Label_PointBorderSize = new System.Windows.Forms.Label();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
@@ -584,14 +584,14 @@ namespace SAM.Core.Mollier.UI
             // 
             // TextBox_PointBorderSize
             // 
-            this.TextBox_PointBorderSize.Location = new System.Drawing.Point(614, 325);
+            this.TextBox_PointBorderSize.Location = new System.Drawing.Point(625, 325);
             this.TextBox_PointBorderSize.Name = "TextBox_PointBorderSize";
             this.TextBox_PointBorderSize.Size = new System.Drawing.Size(51, 22);
             this.TextBox_PointBorderSize.TabIndex = 36;
             // 
             // TextBox_PointSize
             // 
-            this.TextBox_PointSize.Location = new System.Drawing.Point(614, 292);
+            this.TextBox_PointSize.Location = new System.Drawing.Point(625, 292);
             this.TextBox_PointSize.Name = "TextBox_PointSize";
             this.TextBox_PointSize.Size = new System.Drawing.Size(51, 22);
             this.TextBox_PointSize.TabIndex = 36;
@@ -616,6 +616,15 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_EnableProcessLabel.Text = "Show label process";
             this.CheckBox_EnableProcessLabel.UseVisualStyleBackColor = true;
             // 
+            // Label_PointBorderSize
+            // 
+            this.Label_PointBorderSize.AutoSize = true;
+            this.Label_PointBorderSize.Location = new System.Drawing.Point(543, 331);
+            this.Label_PointBorderSize.Name = "Label_PointBorderSize";
+            this.Label_PointBorderSize.Size = new System.Drawing.Size(76, 16);
+            this.Label_PointBorderSize.TabIndex = 33;
+            this.Label_PointBorderSize.Text = "circle size 2";
+            // 
             // Label_PointBorderColor
             // 
             this.Label_PointBorderColor.AutoSize = true;
@@ -633,6 +642,15 @@ namespace SAM.Core.Mollier.UI
             this.Button_PointBorderColor.TabIndex = 32;
             this.Button_PointBorderColor.UseVisualStyleBackColor = true;
             this.Button_PointBorderColor.Click += new System.EventHandler(this.Button_PointBorderColor_Click);
+            // 
+            // Label_PointSize
+            // 
+            this.Label_PointSize.AutoSize = true;
+            this.Label_PointSize.Location = new System.Drawing.Point(543, 297);
+            this.Label_PointSize.Name = "Label_PointSize";
+            this.Label_PointSize.Size = new System.Drawing.Size(69, 16);
+            this.Label_PointSize.TabIndex = 33;
+            this.Label_PointSize.Text = "disk size 8";
             // 
             // Label_PointColor
             // 
@@ -927,24 +945,6 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.Text = "Apply";
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
-            // 
-            // Label_PointSize
-            // 
-            this.Label_PointSize.AutoSize = true;
-            this.Label_PointSize.Location = new System.Drawing.Point(543, 297);
-            this.Label_PointSize.Name = "Label_PointSize";
-            this.Label_PointSize.Size = new System.Drawing.Size(59, 16);
-            this.Label_PointSize.TabIndex = 33;
-            this.Label_PointSize.Text = "disk size";
-            // 
-            // Label_PointBorderSize
-            // 
-            this.Label_PointBorderSize.AutoSize = true;
-            this.Label_PointBorderSize.Location = new System.Drawing.Point(543, 331);
-            this.Label_PointBorderSize.Name = "Label_PointBorderSize";
-            this.Label_PointBorderSize.Size = new System.Drawing.Size(66, 16);
-            this.Label_PointBorderSize.TabIndex = 33;
-            this.Label_PointBorderSize.Text = "circle size";
             // 
             // MollierControlSettingsForm
             // 
