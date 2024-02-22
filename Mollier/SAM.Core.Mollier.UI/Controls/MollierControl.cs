@@ -22,14 +22,44 @@ namespace SAM.Core.Mollier.UI.Controls
         private int selectedObjectWidth_Process = 4;
         private int selectedObjectWidth_Default = 2;
 
+        public bool EnableHoover
+        {
+            get
+            {
+                return hooverTimer != null && hooverTimer.Enabled;
+            }
+
+            set
+            {
+                if(value)
+                {
+                    if(hooverTimer == null)
+                    {
+                        hooverTimer = new Core.UI.HooverTimer(MollierChart, 500);
+                        hooverTimer.Update += HooverTimer_Update;
+                    }
+
+                    hooverTimer.Enabled = value;
+                }
+                else
+                {
+                    if(hooverTimer != null)
+                    {
+                        hooverTimer.Update -= HooverTimer_Update;
+                        hooverTimer.Control = null;
+                        hooverTimer = null;
+                    }
+                }
+            }
+        }
+
         public MollierControl()
         {
             InitializeComponent();
 
             mollierControlSettings = new MollierControlSettings();
 
-            hooverTimer = new Core.UI.HooverTimer(MollierChart, 1000);
-            hooverTimer.Update += HooverTimer_Update;
+
         }
 
         private void HooverTimer_Update(object sender, MouseEventArgs e)
@@ -40,6 +70,11 @@ namespace SAM.Core.Mollier.UI.Controls
             }
 
             seriesData.Clear();
+
+            if(!hooverTimer.Enabled)
+            {
+                return;
+            }
 
             Point point = e.Location;
 
@@ -1105,12 +1140,17 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            foreach (Tuple<Series, int> seriesData_Temp in seriesData)
+            if (hooverTimer != null && hooverTimer.Enabled)
             {
-                seriesData_Temp.Item1.BorderWidth = seriesData_Temp.Item2;
+
+                foreach (Tuple<Series, int> seriesData_Temp in seriesData)
+                {
+                    seriesData_Temp.Item1.BorderWidth = seriesData_Temp.Item2;
+                }
+
+                seriesData.Clear();
             }
 
-            seriesData.Clear();
 
             //Point point = e.Location;
 

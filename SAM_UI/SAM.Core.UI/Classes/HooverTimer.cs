@@ -36,6 +36,19 @@ namespace SAM.Core.UI
             }
         }
 
+        public bool Enabled
+        {
+            get
+            {
+                return timer.Enabled;
+            }
+
+            set
+            {
+                timer.Enabled = value;
+            }
+        }
+
         public Control Control
         {
             get
@@ -51,10 +64,15 @@ namespace SAM.Core.UI
                     control.MouseLeave -= Control_MouseLeave;
                     control.MouseEnter -= Control_MouseEnter;
                 }
+
                 control = value;
-                control.MouseMove += Control_MouseMove;
-                control.MouseLeave += Control_MouseLeave;
-                control.MouseEnter += Control_MouseEnter;
+
+                if(control != null)
+                {
+                    control.MouseMove += Control_MouseMove;
+                    control.MouseLeave += Control_MouseLeave;
+                    control.MouseEnter += Control_MouseEnter;
+                }
             }
         }
 
@@ -82,7 +100,7 @@ namespace SAM.Core.UI
                 return;
             }
 
-            Update.Invoke(control, mouseEventArgs); 
+            Update?.Invoke(control, mouseEventArgs); 
             timer.Stop();
             timer.Enabled = false;
         }

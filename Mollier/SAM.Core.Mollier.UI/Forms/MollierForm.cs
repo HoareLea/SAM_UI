@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.Planar;
+﻿using SAM.Core.Mollier.UI.Controls;
+using SAM.Geometry.Planar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -622,16 +623,9 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-        private void CheckBox_Zone_CheckedChanged(object sender, EventArgs e)
+        private void CheckBox_Hoover_CheckedChanged(object sender, EventArgs e)
         {
-            if (CheckBox_Zone.Checked)
-            {
-                MollierControl_Main.AddMollierObjects(Query.MollierZones());
-            }
-            else
-            {
-                MollierControl_Main.RemoveZones(Query.MollierZones());
-            }
+            MollierControl_Main.EnableHoover = CheckBox_Hoover.Checked;
         }
 
         private void saveAsJPGToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1193,5 +1187,21 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.GenerateGraph();
         }
 
+        private void ToolStripMenuItem_ComfortZoners_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem_ComfortZones.Checked = !ToolStripMenuItem_ComfortZones.Checked;
+        }
+
+        private void ToolStripMenuItem_ComfortZones_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ToolStripMenuItem_ComfortZones.Checked)
+            {
+                MollierControl_Main.AddMollierObjects(Query.MollierZones());
+            }
+            else
+            {
+                MollierControl_Main.RemoveZones(Query.MollierZones());
+            }
+        }
     }
 }
