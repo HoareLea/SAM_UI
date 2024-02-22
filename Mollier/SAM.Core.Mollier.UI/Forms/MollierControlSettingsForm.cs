@@ -92,8 +92,17 @@ namespace SAM.Core.Mollier.UI
             TextBox_MollierWindowHeight.Text = mollierControlSettings?.MollierWindowHeight == -1 ? string.Empty : mollierControlSettings.MollierWindowHeight.ToString();
             TextBox_MollierWindowWidth.Text = mollierControlSettings?.MollierWindowWidth == -1 ? string.Empty : mollierControlSettings.MollierWindowWidth.ToString();
 
+            TextBox_PsychrometricWindowHeight.Text = mollierControlSettings?.PsychrometricWindowHeight == -1 ? string.Empty : mollierControlSettings.PsychrometricWindowHeight.ToString();
+            TextBox_PsychrometricWindowWidth.Text = mollierControlSettings?.PsychrometricWindowWidth == -1 ? string.Empty : mollierControlSettings.PsychrometricWindowWidth.ToString();
+
             TextBox_MollierWindowHeight.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
             TextBox_MollierWindowWidth.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+
+            TextBox_PsychrometricWindowHeight.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+            TextBox_PsychrometricWindowWidth.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+
+            TextBox_PointSize.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+            TextBox_PointBorderSize.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
         }
 
         private void BuiltInVisibilitySettingControl_ColorChanged(object sender, EventArgs e)
@@ -670,6 +679,52 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
+        public int PointSize
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_PointSize.Text, out int result))
+                {
+                    return -1;
+                }
+
+                if (result == 0)
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_PointSize.Text = value.ToString();
+            }
+        }
+
+        public int PointBorderSize
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_PointBorderSize.Text, out int result))
+                {
+                    return -1;
+                }
+
+                if (result == 0)
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_PointBorderSize.Text = value.ToString();
+            }
+        }
+
 
         private void Apply()
         {
@@ -720,6 +775,9 @@ namespace SAM.Core.Mollier.UI
 
             mollierControlSettings.PsychrometricWindowHeight = PsychrometricWindowHeight;
             mollierControlSettings.PsychrometricWindowWidth = PsychrometricWindowWidth;
+
+            mollierControlSettings.PointBorderSize = PointBorderSize;
+            mollierControlSettings.PointSize = PointSize;
 
 
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;

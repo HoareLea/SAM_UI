@@ -70,6 +70,8 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureMaximumValueTextbox = new System.Windows.Forms.TextBox();
             this.TemperatureMinimumValueTextbox = new System.Windows.Forms.TextBox();
             this.TabPage_Tools = new System.Windows.Forms.TabPage();
+            this.TextBox_PointBorderSize = new System.Windows.Forms.TextBox();
+            this.TextBox_PointSize = new System.Windows.Forms.TextBox();
             this.CheckBox_EnableCoolingAuxiliaryProcesses = new System.Windows.Forms.CheckBox();
             this.CheckBox_EnableProcessLabel = new System.Windows.Forms.CheckBox();
             this.Label_PointBorderColor = new System.Windows.Forms.Label();
@@ -83,9 +85,14 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_EnableEndProcessPoint = new System.Windows.Forms.CheckBox();
             this.checkBox_EnableProcessStartPointLabel = new System.Windows.Forms.CheckBox();
             this.CheckBox_EnableStartProcessPoint = new System.Windows.Forms.CheckBox();
+            this.Label_PsychrometricSizeSperator = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.Label_MollierSizeSperator = new System.Windows.Forms.Label();
+            this.TextBox_PsychrometricWindowHeight = new System.Windows.Forms.TextBox();
             this.TextBox_MollierWindowHeight = new System.Windows.Forms.TextBox();
+            this.TextBox_PsychrometricWindowWidth = new System.Windows.Forms.TextBox();
             this.TextBox_MollierWindowWidth = new System.Windows.Forms.TextBox();
+            this.Label_PsychromatricWindowSize = new System.Windows.Forms.Label();
             this.Label_MollierWindowSize = new System.Windows.Forms.Label();
             this.VisualizeSolver_Checkbox = new System.Windows.Forms.CheckBox();
             this.Button_ToHover = new System.Windows.Forms.Button();
@@ -100,11 +107,8 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.Button_Apply = new System.Windows.Forms.Button();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.Label_PsychromatricWindowSize = new System.Windows.Forms.Label();
-            this.TextBox_PsychrometricWindowHeight = new System.Windows.Forms.TextBox();
-            this.label13 = new System.Windows.Forms.Label();
-            this.Label_PsychrometricSizeSperator = new System.Windows.Forms.Label();
-            this.TextBox_PsychrometricWindowWidth = new System.Windows.Forms.TextBox();
+            this.Label_PointSize = new System.Windows.Forms.Label();
+            this.Label_PointBorderSize = new System.Windows.Forms.Label();
             this.TabControl_Main.SuspendLayout();
             this.TabPage_View.SuspendLayout();
             this.TabPage_Ranges.SuspendLayout();
@@ -536,10 +540,14 @@ namespace SAM.Core.Mollier.UI
             // 
             // TabPage_Tools
             // 
+            this.TabPage_Tools.Controls.Add(this.TextBox_PointBorderSize);
+            this.TabPage_Tools.Controls.Add(this.TextBox_PointSize);
             this.TabPage_Tools.Controls.Add(this.CheckBox_EnableCoolingAuxiliaryProcesses);
             this.TabPage_Tools.Controls.Add(this.CheckBox_EnableProcessLabel);
+            this.TabPage_Tools.Controls.Add(this.Label_PointBorderSize);
             this.TabPage_Tools.Controls.Add(this.Label_PointBorderColor);
             this.TabPage_Tools.Controls.Add(this.Button_PointBorderColor);
+            this.TabPage_Tools.Controls.Add(this.Label_PointSize);
             this.TabPage_Tools.Controls.Add(this.Label_PointColor);
             this.TabPage_Tools.Controls.Add(this.Button_PointColor);
             this.TabPage_Tools.Controls.Add(this.CheckBox_DisablePoint);
@@ -573,6 +581,20 @@ namespace SAM.Core.Mollier.UI
             this.TabPage_Tools.TabIndex = 2;
             this.TabPage_Tools.Text = "Tools";
             this.TabPage_Tools.UseVisualStyleBackColor = true;
+            // 
+            // TextBox_PointBorderSize
+            // 
+            this.TextBox_PointBorderSize.Location = new System.Drawing.Point(614, 325);
+            this.TextBox_PointBorderSize.Name = "TextBox_PointBorderSize";
+            this.TextBox_PointBorderSize.Size = new System.Drawing.Size(51, 22);
+            this.TextBox_PointBorderSize.TabIndex = 36;
+            // 
+            // TextBox_PointSize
+            // 
+            this.TextBox_PointSize.Location = new System.Drawing.Point(614, 292);
+            this.TextBox_PointSize.Name = "TextBox_PointSize";
+            this.TextBox_PointSize.Size = new System.Drawing.Size(51, 22);
+            this.TextBox_PointSize.TabIndex = 36;
             // 
             // CheckBox_EnableCoolingAuxiliaryProcesses
             // 
@@ -700,6 +722,24 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_EnableStartProcessPoint.Text = "Show process start point";
             this.CheckBox_EnableStartProcessPoint.UseVisualStyleBackColor = true;
             // 
+            // Label_PsychrometricSizeSperator
+            // 
+            this.Label_PsychrometricSizeSperator.AutoSize = true;
+            this.Label_PsychrometricSizeSperator.Location = new System.Drawing.Point(266, 401);
+            this.Label_PsychrometricSizeSperator.Name = "Label_PsychrometricSizeSperator";
+            this.Label_PsychrometricSizeSperator.Size = new System.Drawing.Size(13, 16);
+            this.Label_PsychrometricSizeSperator.TabIndex = 26;
+            this.Label_PsychrometricSizeSperator.Text = "x";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(184, 404);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(13, 16);
+            this.label13.TabIndex = 26;
+            this.label13.Text = "x";
+            // 
             // Label_MollierSizeSperator
             // 
             this.Label_MollierSizeSperator.AutoSize = true;
@@ -709,6 +749,13 @@ namespace SAM.Core.Mollier.UI
             this.Label_MollierSizeSperator.TabIndex = 26;
             this.Label_MollierSizeSperator.Text = "x";
             // 
+            // TextBox_PsychrometricWindowHeight
+            // 
+            this.TextBox_PsychrometricWindowHeight.Location = new System.Drawing.Point(285, 401);
+            this.TextBox_PsychrometricWindowHeight.Name = "TextBox_PsychrometricWindowHeight";
+            this.TextBox_PsychrometricWindowHeight.Size = new System.Drawing.Size(50, 22);
+            this.TextBox_PsychrometricWindowHeight.TabIndex = 25;
+            // 
             // TextBox_MollierWindowHeight
             // 
             this.TextBox_MollierWindowHeight.Location = new System.Drawing.Point(285, 368);
@@ -716,12 +763,29 @@ namespace SAM.Core.Mollier.UI
             this.TextBox_MollierWindowHeight.Size = new System.Drawing.Size(50, 22);
             this.TextBox_MollierWindowHeight.TabIndex = 25;
             // 
+            // TextBox_PsychrometricWindowWidth
+            // 
+            this.TextBox_PsychrometricWindowWidth.Location = new System.Drawing.Point(210, 401);
+            this.TextBox_PsychrometricWindowWidth.Name = "TextBox_PsychrometricWindowWidth";
+            this.TextBox_PsychrometricWindowWidth.Size = new System.Drawing.Size(50, 22);
+            this.TextBox_PsychrometricWindowWidth.TabIndex = 24;
+            // 
             // TextBox_MollierWindowWidth
             // 
             this.TextBox_MollierWindowWidth.Location = new System.Drawing.Point(210, 368);
             this.TextBox_MollierWindowWidth.Name = "TextBox_MollierWindowWidth";
             this.TextBox_MollierWindowWidth.Size = new System.Drawing.Size(50, 22);
             this.TextBox_MollierWindowWidth.TabIndex = 24;
+            // 
+            // Label_PsychromatricWindowSize
+            // 
+            this.Label_PsychromatricWindowSize.AutoSize = true;
+            this.Label_PsychromatricWindowSize.Location = new System.Drawing.Point(35, 404);
+            this.Label_PsychromatricWindowSize.Name = "Label_PsychromatricWindowSize";
+            this.Label_PsychromatricWindowSize.Size = new System.Drawing.Size(169, 16);
+            this.Label_PsychromatricWindowSize.TabIndex = 23;
+            this.Label_PsychromatricWindowSize.Text = "Psychrometric window size:";
+            this.Label_PsychromatricWindowSize.Click += new System.EventHandler(this.Label_PsychromatricWindowSize_Click);
             // 
             // Label_MollierWindowSize
             // 
@@ -864,47 +928,23 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
             // 
-            // Label_PsychromatricWindowSize
+            // Label_PointSize
             // 
-            this.Label_PsychromatricWindowSize.AutoSize = true;
-            this.Label_PsychromatricWindowSize.Location = new System.Drawing.Point(35, 404);
-            this.Label_PsychromatricWindowSize.Name = "Label_PsychromatricWindowSize";
-            this.Label_PsychromatricWindowSize.Size = new System.Drawing.Size(169, 16);
-            this.Label_PsychromatricWindowSize.TabIndex = 23;
-            this.Label_PsychromatricWindowSize.Text = "Psychrometric window size:";
-            this.Label_PsychromatricWindowSize.Click += new System.EventHandler(this.Label_PsychromatricWindowSize_Click);
+            this.Label_PointSize.AutoSize = true;
+            this.Label_PointSize.Location = new System.Drawing.Point(543, 297);
+            this.Label_PointSize.Name = "Label_PointSize";
+            this.Label_PointSize.Size = new System.Drawing.Size(59, 16);
+            this.Label_PointSize.TabIndex = 33;
+            this.Label_PointSize.Text = "disk size";
             // 
-            // TextBox_PsychrometricWindowHeight
+            // Label_PointBorderSize
             // 
-            this.TextBox_PsychrometricWindowHeight.Location = new System.Drawing.Point(285, 401);
-            this.TextBox_PsychrometricWindowHeight.Name = "TextBox_PsychrometricWindowHeight";
-            this.TextBox_PsychrometricWindowHeight.Size = new System.Drawing.Size(50, 22);
-            this.TextBox_PsychrometricWindowHeight.TabIndex = 25;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(184, 404);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(13, 16);
-            this.label13.TabIndex = 26;
-            this.label13.Text = "x";
-            // 
-            // Label_PsychrometricSizeSperator
-            // 
-            this.Label_PsychrometricSizeSperator.AutoSize = true;
-            this.Label_PsychrometricSizeSperator.Location = new System.Drawing.Point(266, 401);
-            this.Label_PsychrometricSizeSperator.Name = "Label_PsychrometricSizeSperator";
-            this.Label_PsychrometricSizeSperator.Size = new System.Drawing.Size(13, 16);
-            this.Label_PsychrometricSizeSperator.TabIndex = 26;
-            this.Label_PsychrometricSizeSperator.Text = "x";
-            // 
-            // TextBox_PsychrometricWindowWidth
-            // 
-            this.TextBox_PsychrometricWindowWidth.Location = new System.Drawing.Point(210, 401);
-            this.TextBox_PsychrometricWindowWidth.Name = "TextBox_PsychrometricWindowWidth";
-            this.TextBox_PsychrometricWindowWidth.Size = new System.Drawing.Size(50, 22);
-            this.TextBox_PsychrometricWindowWidth.TabIndex = 24;
+            this.Label_PointBorderSize.AutoSize = true;
+            this.Label_PointBorderSize.Location = new System.Drawing.Point(543, 331);
+            this.Label_PointBorderSize.Name = "Label_PointBorderSize";
+            this.Label_PointBorderSize.Size = new System.Drawing.Size(66, 16);
+            this.Label_PointBorderSize.TabIndex = 33;
+            this.Label_PointBorderSize.Text = "circle size";
             // 
             // MollierControlSettingsForm
             // 
@@ -1011,5 +1051,9 @@ namespace SAM.Core.Mollier.UI
         private System.Windows.Forms.TextBox TextBox_PsychrometricWindowHeight;
         private System.Windows.Forms.Label Label_PsychromatricWindowSize;
         private System.Windows.Forms.TextBox TextBox_PsychrometricWindowWidth;
+        private System.Windows.Forms.TextBox TextBox_PointBorderSize;
+        private System.Windows.Forms.TextBox TextBox_PointSize;
+        private System.Windows.Forms.Label Label_PointBorderSize;
+        private System.Windows.Forms.Label Label_PointSize;
     }
 }

@@ -39,6 +39,8 @@ namespace SAM.Core.Mollier.UI
         public Color PointBorderColor { get; set; } = Color.Empty;
         public Color PointColor { get; set; } = Color.Empty;
         public bool DisablePoint { get; set; } = false;
+        public int PointSize { get; set; } = -1;
+        public int PointBorderSize { get; set; } = -1;
 
         public bool DisableCoolingAuxiliaryProcesses { get; set; } = false;
 
@@ -161,6 +163,9 @@ namespace SAM.Core.Mollier.UI
                 PsychrometricWindowHeight = mollierControlSettings.PsychrometricWindowHeight;
 
                 DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
+
+                PointBorderSize = mollierControlSettings.PointBorderSize;
+                PointSize = mollierControlSettings.PointSize;
             }
         }
 
@@ -481,6 +486,16 @@ namespace SAM.Core.Mollier.UI
                 PsychrometricWindowHeight = jObject.Value<int>("PsychrometricWindowHeight");
             }
 
+            if (jObject.ContainsKey("PointBorderSize"))
+            {
+                PointBorderSize = jObject.Value<int>("PointBorderSize");
+            }
+
+            if (jObject.ContainsKey("PointSize"))
+            {
+                PointSize = jObject.Value<int>("PointSize");
+            }
+
             return true;
         }
 
@@ -611,6 +626,9 @@ namespace SAM.Core.Mollier.UI
             result.Add("MollierWindowHeight", MollierWindowHeight);
             result.Add("PsychrometricWindowWidth", PsychrometricWindowWidth);
             result.Add("PsychrometricWindowHeight", PsychrometricWindowHeight);
+
+            result.Add("PointBorderSize", PointBorderSize);
+            result.Add("PointSize", PointSize);
 
             return result;
         }
