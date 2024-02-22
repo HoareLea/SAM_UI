@@ -9,6 +9,8 @@ namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class MollierControl : UserControl
     {
+        SAM.Core.UI.HooverTimer hooverTimer;
+        
         public event MollierPointSelectedEventHandler MollierPointSelected;
 
         private Point mdown = Point.Empty;
@@ -25,6 +27,48 @@ namespace SAM.Core.Mollier.UI.Controls
             InitializeComponent();
 
             mollierControlSettings = new MollierControlSettings();
+
+            hooverTimer = new Core.UI.HooverTimer(MollierChart, 1000);
+            hooverTimer.Update += HooverTimer_Update;
+        }
+
+        private void HooverTimer_Update(object sender, MouseEventArgs e)
+        {
+            foreach (Tuple<Series, int> seriesData_Temp in seriesData)
+            {
+                seriesData_Temp.Item1.BorderWidth = seriesData_Temp.Item2;
+            }
+
+            seriesData.Clear();
+
+            Point point = e.Location;
+
+            HitTestResult[] hitTestResults = MollierChart?.HitTest(point.X, point.Y, false, ChartElementType.DataPoint);
+            if (hitTestResults == null)
+            {
+                return;
+            }
+
+            foreach (HitTestResult hitTestResult in hitTestResults)
+            {
+                Series series = hitTestResult?.Series;
+                if (series == null)
+                {
+                    continue;
+                }
+
+                seriesData.Add(new Tuple<Series, int>(series, series.BorderWidth));
+
+                if (series.Tag is MollierProcess)
+                {
+                    series.BorderWidth += selectedObjectWidth_Process;
+                }
+                else
+                {
+                    series.BorderWidth += selectedObjectWidth_Default;
+                }
+
+            }
         }
 
         private void CreateYAxis()
@@ -79,7 +123,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 // Partial vapour pressure axis minor tick mark series 
                 Series seriesTemp = MollierChart.Series.Add(Guid.NewGuid() + "Pw minor Tick Mark Mollier");
                 seriesTemp.IsVisibleInLegend = false;
-                seriesTemp.ChartType = SeriesChartType.Line;
+                seriesTemp.ChartType = SeriesChartType.FastLine;
                 double xFactor = Query.ScaleVector2D(this, mollierControlSettings).X;
                 seriesTemp.Points.AddXY(MollierChart.ChartAreas[0].AxisX.Minimum, labelPositionY);
                 seriesTemp.Points.AddXY(MollierChart.ChartAreas[0].AxisX.Minimum + 0.5 * xFactor, labelPositionY);
@@ -139,7 +183,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 // Partial vapour pressure axis minor tick mark series 
                 Series seriesTemp = MollierChart.Series.Add(Guid.NewGuid() + "Pw minor Tick Mark Mollier");
                 seriesTemp.IsVisibleInLegend = false;
-                seriesTemp.ChartType = SeriesChartType.Line;
+                seriesTemp.ChartType = SeriesChartType.FastLine;
                 double yFactor = Query.ScaleVector2D(this, mollierControlSettings).Y;
                 seriesTemp.Points.AddXY(labelPositionX, axisY.Maximum);
                 seriesTemp.Points.AddXY(labelPositionX, axisY.Maximum - 0.7 * yFactor);
@@ -1063,34 +1107,34 @@ namespace SAM.Core.Mollier.UI.Controls
 
             seriesData.Clear();
 
-            Point point = e.Location;
+            //Point point = e.Location;
 
-            HitTestResult[] hitTestResults = MollierChart?.HitTest(point.X, point.Y, false, ChartElementType.DataPoint);
-            if (hitTestResults == null)
-            {
-                return;
-            }
+            //HitTestResult[] hitTestResults = MollierChart?.HitTest(point.X, point.Y, false, ChartElementType.DataPoint);
+            //if (hitTestResults == null)
+            //{
+            //    return;
+            //}
 
-            foreach (HitTestResult hitTestResult in hitTestResults)
-            {
-                Series series = hitTestResult?.Series;
-                if (series == null)
-                {
-                    continue;
-                }
+            //foreach (HitTestResult hitTestResult in hitTestResults)
+            //{
+            //    Series series = hitTestResult?.Series;
+            //    if (series == null)
+            //    {
+            //        continue;
+            //    }
 
-                seriesData.Add(new Tuple<Series, int>(series, series.BorderWidth));
+            //    seriesData.Add(new Tuple<Series, int>(series, series.BorderWidth));
 
-                if (series.Tag is MollierProcess)
-                {
-                    series.BorderWidth += selectedObjectWidth_Process;
-                }
-                else
-                {
-                    series.BorderWidth += selectedObjectWidth_Default;
-                }
+            //    if (series.Tag is MollierProcess)
+            //    {
+            //        series.BorderWidth += selectedObjectWidth_Process;
+            //    }
+            //    else
+            //    {
+            //        series.BorderWidth += selectedObjectWidth_Default;
+            //    }
 
-            }
+            //}
         }
         private void MollierChart_MouseUp(object sender, MouseEventArgs e)
         {

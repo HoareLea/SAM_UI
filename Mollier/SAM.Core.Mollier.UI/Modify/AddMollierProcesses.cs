@@ -160,7 +160,7 @@ namespace SAM.Core.Mollier.UI
             //Creating series for room process
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.Line;
+            series.ChartType = SeriesChartType.FastLine;
             series.Color = color;
             series.BorderDashStyle = ChartDashStyle.Dash;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
@@ -219,7 +219,7 @@ namespace SAM.Core.Mollier.UI
             // Creating series for room process
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
             series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.Line;
+            series.ChartType = SeriesChartType.FastLine;
             series.Color = color;
             series.BorderDashStyle = ChartDashStyle.Dash;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
@@ -248,7 +248,7 @@ namespace SAM.Core.Mollier.UI
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
 
             series.IsVisibleInLegend = false;
-            series.ChartType = SeriesChartType.Line;
+            series.ChartType = SeriesChartType.FastLine;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 4;
             series.Color = (uImollierProcess.UIMollierAppearance.Color == Color.Empty) ?
                 mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)

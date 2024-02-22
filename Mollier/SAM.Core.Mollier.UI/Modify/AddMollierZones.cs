@@ -26,7 +26,7 @@ namespace SAM.Core.Mollier.UI
             {            
                 Series series = chart.Series.Add("Mollier Zone " + System.Guid.NewGuid().ToString());
                 series.IsVisibleInLegend = false;
-                series.ChartType = SeriesChartType.Line;
+                series.ChartType = SeriesChartType.FastLine;
                 series.BorderWidth = 2;
                 series.Color = uIMollierZone.UIMollierAppearance.Color;
                 series.Tag = uIMollierZone;

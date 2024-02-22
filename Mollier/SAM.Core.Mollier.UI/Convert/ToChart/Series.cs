@@ -70,22 +70,22 @@ namespace SAM.Core.Mollier.UI
                     break;
 
                 case ChartDataType.DiagramTemperature:
-                    result.ChartType = SeriesChartType.Line;
+                    result.ChartType = SeriesChartType.FastLine;
                     result.BorderWidth = chartParameterType == ChartParameterType.Line ? 1 : 2;
                     break;
 
                 case ChartDataType.DryBulbTemperature:
-                    result.ChartType = SeriesChartType.Line;
+                    result.ChartType = SeriesChartType.FastLine;
                     result.BorderWidth = chartParameterType == ChartParameterType.Line ? 1 : 2;
                     break;
 
                 case ChartDataType.Enthalpy:
-                    result.ChartType = SeriesChartType.Line;
+                    result.ChartType = SeriesChartType.FastLine;
                     result.BorderWidth = 1;
                     break;
 
                 default:
-                    result.ChartType = SeriesChartType.Line;
+                    result.ChartType = SeriesChartType.FastLine;
                     break;
             }
 

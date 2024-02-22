@@ -59,6 +59,7 @@
     <Compile Include="Classes\Filter\UITypeFilter.cs" />
     <Compile Include="Classes\Filter\UITextFilter.cs" />
     <Compile Include="Classes\Legend.cs" />
+    <Compile Include="Classes\HooverTimer.cs" />
     <Compile Include="Classes\LegendItemData.cs" />
     <Compile Include="Classes\LegendItem.cs" />
     <Compile Include="Classes\Modification\FullModification.cs" />
