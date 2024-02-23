@@ -674,7 +674,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    string name = mollierControlSettings.ChartType == ChartType.Mollier ? "Mollier" : "Psychrometric" + sufix;
+                    string name = string.Format("{0}{1}", mollierControlSettings.ChartType == ChartType.Mollier ? "Mollier" : "Psychrometric", sufix);
                     switch (chartExportType)
                     {
                         case ChartExportType.PDF:
