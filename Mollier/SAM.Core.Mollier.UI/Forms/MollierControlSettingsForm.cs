@@ -816,25 +816,27 @@ namespace SAM.Core.Mollier.UI
 
         private void Button_LowIntensityColor_Click(object sender, EventArgs e)
         {
-            using(ColorDialog colorDialog = new ColorDialog())
+            if (CustomColors == null)
             {
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                Button_LowIntensityColor.BackColor = colorDialog.Color;
+                CustomColors = new List<int>();
+            }
+
+            if (Query.TryGetColor(Button_LowIntensityColor.BackColor, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                Button_LowIntensityColor.BackColor = selectedColor;
             }
         }
         
         private void Button_HighIntensityColor_Click(object sender, EventArgs e)
         {
-            using (ColorDialog colorDialog = new ColorDialog())
+            if (CustomColors == null)
             {
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                Button_HighIntensityColor.BackColor = colorDialog.Color;
+                CustomColors = new List<int>();
+            }
+
+            if (Query.TryGetColor(Button_HighIntensityColor.BackColor, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                Button_HighIntensityColor.BackColor = selectedColor;
             }
         }
 
@@ -900,25 +902,27 @@ namespace SAM.Core.Mollier.UI
 
         private void Button_PointColor_Click(object sender, EventArgs e)
         {
-            using (ColorDialog colorDialog = new ColorDialog())
+            if(CustomColors == null)
             {
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                Button_PointColor.BackColor = colorDialog.Color;
+                CustomColors = new List<int>();
+            }
+
+            if(Query.TryGetColor(Button_PointColor.BackColor == initialColor ? (System.Drawing.Color?)null : Button_PointColor.BackColor, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                Button_PointColor.BackColor = selectedColor;
             }
         }
 
         private void Button_PointBorderColor_Click(object sender, EventArgs e)
         {
-            using (ColorDialog colorDialog = new ColorDialog())
+            if (CustomColors == null)
             {
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                Button_PointBorderColor.BackColor = colorDialog.Color;
+                CustomColors = new List<int>();
+            }
+
+            if (Query.TryGetColor(Button_PointBorderColor.BackColor == initialColor ? (System.Drawing.Color?)null : Button_PointBorderColor.BackColor, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                Button_PointBorderColor.BackColor = selectedColor;
             }
         }
 

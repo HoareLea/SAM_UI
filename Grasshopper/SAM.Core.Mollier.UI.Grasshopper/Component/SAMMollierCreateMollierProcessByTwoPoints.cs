@@ -5,7 +5,6 @@ using System.Drawing;
 using SAM.Core.Grasshopper;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
 using SAM.Core.Grasshopper.Mollier;
-using SAM.Core.Mollier.UI.Forms;
 
 namespace SAM.Core.Mollier.UI.Grasshopper
 {

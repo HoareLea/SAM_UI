@@ -1,7 +1,6 @@
 ﻿using System.Windows.Forms.DataVisualization.Charting;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 using System.Threading.Tasks;
 
 namespace SAM.Core.Mollier.UI
