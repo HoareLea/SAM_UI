@@ -404,26 +404,26 @@ namespace SAM.Core.Mollier.UI.Controls
 
             //TODO: [MACIEK] Solve order issue, Organize Series Tags to allow easy way of filtering Items. in this case Spline (Relative Humidity series) have to be move to the top of series
             List<Series> series = new List<Series>();
-            foreach(Series series_Temp in MollierChart.Series)
+            List<object> objects = new List<object>();
+            foreach (Series series_Temp in MollierChart.Series)
             {
                 ConstantValueCurve constantValueCurve = series_Temp.Tag as ConstantValueCurve;
-                if(constantValueCurve == null)
+                if (constantValueCurve != null && constantValueCurve.ChartDataType == ChartDataType.RelativeHumidity)
                 {
-                    continue;
+                    series.Add(series_Temp);
                 }
 
-                if(constantValueCurve.ChartDataType != ChartDataType.RelativeHumidity)
-                {
-                    continue;
-                }
-
-                series.Add(series_Temp);
+                objects.Add(series_Temp.Tag);
             }
+
+            object @object = objects.FindLast(x => x is ConstantValueCurve);
+
+            int index = objects.IndexOf(@object);
 
             foreach(Series series_Temp in series)
             {
                 MollierChart.Series.Remove(series_Temp);
-                MollierChart.Series.Insert(0, series_Temp);
+                MollierChart.Series.Insert(index, series_Temp);
             }
 
             MollierChart.Series.ResumeUpdates();
