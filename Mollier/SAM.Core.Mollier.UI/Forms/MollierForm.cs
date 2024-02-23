@@ -1232,5 +1232,10 @@ namespace SAM.Core.Mollier.UI
                 ShowPsychrometric();
             }
         }
+
+        private void ToolStripMenuItem_Wiki_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM_Mollier/wiki/HomeUI");
+        }
     }
 }
