@@ -217,8 +217,112 @@ namespace SAM.Core.Mollier.UI
             return double.IsNaN(humidityRatio) ? Mollier.Create.MollierPoint_ByRelativeHumidity(dryBulbTemperature, relativeHumidity, pressure) : new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
         }
 
-        //operation of the add process and add point buttons
-        private void Button_AddPoint_Click(object sender, EventArgs e)
+        private void ShowMollier()
+        {
+            if (ChartToolStripMenuItem_Mollier.Checked)
+            {
+                return;
+            }
+            ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Mollier.Checked;
+            ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Mollier.Checked;
+
+
+            MollierControl_Main.SizeChanged -= MollierControl_Main_SizeChanged;
+
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            if (ChartToolStripMenuItem_Mollier.Checked)
+            {
+                mollierControlSettings.ChartType = ChartType.Mollier;
+            }
+            else if (ChartToolStripMenuItem_Psychrometric.Checked)
+            {
+                mollierControlSettings.ChartType = ChartType.Psychrometric;
+            }
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            LoadMollierControlSettings(mollierControlSettings);
+
+            MollierControl_Main.SizeChanged += MollierControl_Main_SizeChanged;
+
+            MollierControl_Main.Regenerate();
+        }
+
+        private void ShowPsychrometric()
+        {
+            if (ChartToolStripMenuItem_Psychrometric.Checked)
+            {
+                return;
+            }
+            ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
+            ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
+
+            MollierControl_Main.SizeChanged -= MollierControl_Main_SizeChanged;
+
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            if (ChartToolStripMenuItem_Mollier.Checked)
+            {
+                mollierControlSettings.ChartType = ChartType.Mollier;
+            }
+            else if (ChartToolStripMenuItem_Psychrometric.Checked)
+            {
+                mollierControlSettings.ChartType = ChartType.Psychrometric;
+            }
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            LoadMollierControlSettings(mollierControlSettings);
+
+            MollierControl_Main.SizeChanged += MollierControl_Main_SizeChanged;
+
+            MollierControl_Main.Regenerate();
+        }
+
+        private void Reset()
+        {
+            MollierControlSettings mollierControlSettings = new MollierControlSettings();
+            mollierControlSettings.Pressure = MollierControl_Main.MollierControlSettings.Pressure;
+            LoadMollierControlSettings(mollierControlSettings);
+            MollierControl_Main.Regenerate();
+        }
+
+        private void Save()
+        {
+            List<IJSAMObject> mollierObjects = new List<IJSAMObject>();
+
+            List<UIMollierProcess> uIMollierProcesses = MollierControl_Main.UIMollierObjects<UIMollierProcess>();
+            if (uIMollierProcesses != null)
+            {
+                mollierObjects.AddRange(uIMollierProcesses.Cast<IMollierObject>());
+            }
+
+            List<UIMollierPoint> uIMollierPoints = MollierControl_Main.UIMollierObjects<UIMollierPoint>();
+            if (uIMollierPoints != null)
+            {
+                mollierObjects.AddRange(uIMollierPoints.Cast<IMollierObject>());
+            }
+
+            string path = null;
+
+            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+            {
+                saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
+                saveFileDialog.FilterIndex = 1;
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.FileName = MollierControl_Main.MollierControlSettings.ChartType == ChartType.Mollier ? "Mollier.json" : "Psychrometric.json";
+                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+                path = saveFileDialog.FileName;
+            }
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return;
+            }
+
+            mollierObjects.Add(MollierControlSettings);
+            Core.Convert.ToFile(mollierObjects, path);
+        }
+
+        private void AddPoint()
         {
             using (Forms.MollierPointForm mollierPointForm = new Forms.MollierPointForm())
             {
@@ -234,10 +338,10 @@ namespace SAM.Core.Mollier.UI
                 AddMollierObjects(new UIMollierPoint[] { previousUIMollierPoint });
             }
         }
-        
-        private void Button_AddProcess_Click(object sender, EventArgs e)
+
+        private void AddProcess()
         {
-            if(mollierProcessForm == null)
+            if (mollierProcessForm == null)
             {
                 mollierProcessForm = new Forms.MollierProcessForm();
                 mollierProcessForm.MollierForm = this;
@@ -246,6 +350,56 @@ namespace SAM.Core.Mollier.UI
 
             mollierProcessForm.PreviousMollierPoint = GetMollierPoint();
             mollierProcessForm.Show();
+        }
+
+        private void Edit()
+        {
+            if (manageMollierObjectsForm == null)
+            {
+                manageMollierObjectsForm = new Forms.UIMollierObjectsForm(MollierControl_Main.MollierModel, MollierControlSettings);
+
+                manageMollierObjectsForm.FormClosing += ManageMollierObjectsForm_Closing;
+                manageMollierObjectsForm.MollierModelEdited += ManageMollierObjectsForm_MollierModelEdited;
+                manageMollierObjectsForm.MollierObjectSelected += ManageMollierObjectsForm_MollierObjectSelected;
+            }
+            manageMollierObjectsForm?.Show();
+        }
+
+        private void Epsilon()
+        {
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_Epsilon;
+            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected_Epsilon;
+        }
+
+        private void SHR()
+        {
+            MollierControl_Main.MollierPointSelected -= MollierControl_Main_MollierPointSelected_SensibleHeatRatio;
+            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected_SensibleHeatRatio;
+        }
+
+        private void DivisionArea()
+        {
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            if (ToolStripMenuItem_DivisionArea.Checked)
+            {
+                List<UIMollierPoint> mollierPoints = MollierControl_Main.UIMollierObjects<UIMollierPoint>();
+                if (mollierPoints == null || mollierPoints.Count == 0)
+                {
+                    MessageBox.Show("There are no points");
+                    ToolStripMenuItem_DivisionArea.Checked = false;
+                    return;
+                }
+                mollierControlSettings.DivisionArea = true;
+                DivisionAreaLabels_CheckBox.Visible = true;
+            }
+            else
+            {
+
+                mollierControlSettings.DivisionArea = false;
+                DivisionAreaLabels_CheckBox.Visible = false;
+            }
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            MollierControl_Main.Regenerate();
         }
 
         private void MollierProcessForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -499,71 +653,6 @@ namespace SAM.Core.Mollier.UI
             ShowPsychrometric();
         }
 
-        private void ShowMollier()
-        {
-            if (ChartToolStripMenuItem_Mollier.Checked)
-            {
-                return;
-            }
-            ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Mollier.Checked;
-            ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Mollier.Checked;
-
-
-            MollierControl_Main.SizeChanged -= MollierControl_Main_SizeChanged;
-
-            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            if (ChartToolStripMenuItem_Mollier.Checked)
-            {
-                mollierControlSettings.ChartType = ChartType.Mollier;
-            }
-            else if (ChartToolStripMenuItem_Psychrometric.Checked)
-            {
-                mollierControlSettings.ChartType = ChartType.Psychrometric;
-            }
-            MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            LoadMollierControlSettings(mollierControlSettings);
-            
-            MollierControl_Main.SizeChanged += MollierControl_Main_SizeChanged;
-            
-            MollierControl_Main.Regenerate();
-        }
-
-        private void ShowPsychrometric()
-        {
-            if (ChartToolStripMenuItem_Psychrometric.Checked)
-            {
-                return;
-            }
-            ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
-            ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
-
-            MollierControl_Main.SizeChanged -= MollierControl_Main_SizeChanged;
-
-            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            if (ChartToolStripMenuItem_Mollier.Checked)
-            {
-                mollierControlSettings.ChartType = ChartType.Mollier;
-            }
-            else if (ChartToolStripMenuItem_Psychrometric.Checked)
-            {
-                mollierControlSettings.ChartType = ChartType.Psychrometric;
-            }
-            MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            LoadMollierControlSettings(mollierControlSettings);
-
-            MollierControl_Main.SizeChanged += MollierControl_Main_SizeChanged;
-            
-            MollierControl_Main.Regenerate();
-        }
-
-        private void Reset()
-        {
-            MollierControlSettings mollierControlSettings = new MollierControlSettings();
-            mollierControlSettings.Pressure = MollierControl_Main.MollierControlSettings.Pressure;
-            LoadMollierControlSettings(mollierControlSettings);
-            MollierControl_Main.Regenerate();
-        }
-
         private void ToolStripMenuItem_Density_Click(object sender, EventArgs e)
         {
             ToolStripMenuItem_Density.Checked = !ToolStripMenuItem_Density.Checked;
@@ -731,27 +820,7 @@ namespace SAM.Core.Mollier.UI
 
         private void DivisionAreaCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
-            if (DivisionAreaCheckBox.Checked)
-            {
-                List<UIMollierPoint> mollierPoints = MollierControl_Main.UIMollierObjects<UIMollierPoint>();
-                if (mollierPoints == null || mollierPoints.Count == 0)
-                    {
-                    MessageBox.Show("There are no points");
-                    DivisionAreaCheckBox.Checked = false;
-                    return;
-                }
-                mollierControlSettings.DivisionArea = true;
-                DivisionAreaLabels_CheckBox.Visible = true;
-            }
-            else
-            {
-
-                mollierControlSettings.DivisionArea = false;
-                DivisionAreaLabels_CheckBox.Visible = false;
-            }
-            MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.Regenerate();
+            DivisionArea();
         }
 
         private void DivisionAreaLabels_CheckBox_CheckedChanged(object sender, EventArgs e)
@@ -839,46 +908,6 @@ namespace SAM.Core.Mollier.UI
             Save();
         }
 
-        private void Save()
-        {
-            List<IJSAMObject> mollierObjects = new List<IJSAMObject>();
-
-            List<UIMollierProcess> uIMollierProcesses = MollierControl_Main.UIMollierObjects<UIMollierProcess>();
-            if (uIMollierProcesses != null)
-            {
-                mollierObjects.AddRange(uIMollierProcesses.Cast<IMollierObject>());
-            }
-
-            List<UIMollierPoint> uIMollierPoints = MollierControl_Main.UIMollierObjects<UIMollierPoint>();
-            if (uIMollierPoints != null)
-            {
-                mollierObjects.AddRange(uIMollierPoints.Cast<IMollierObject>());
-            }
-
-            string path = null;
-
-            using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-            {
-                saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                saveFileDialog.FilterIndex = 1;
-                saveFileDialog.RestoreDirectory = true;
-                saveFileDialog.FileName = MollierControl_Main.MollierControlSettings.ChartType == ChartType.Mollier ? "Mollier.json" : "Psychrometric.json";
-                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                {
-                    return;
-                }
-                path = saveFileDialog.FileName;
-            }
-
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                return;
-            }
-
-            mollierObjects.Add(MollierControlSettings);
-            Core.Convert.ToFile(mollierObjects, path);
-        }
-
         public void LoadMollierObjects(IEnumerable<IMollierObject> mollierObjects)
         {
 
@@ -950,16 +979,6 @@ namespace SAM.Core.Mollier.UI
         private void Button_Reset_Click(object sender, EventArgs e)
         {
             Reset();
-        }
-
-        private void Button_Epsilon_Click(object sender, EventArgs e)
-        {
-            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected_Epsilon;
-        }
-
-        private void Button_SensibleHeatRatio_Click(object sender, EventArgs e)
-        {
-            MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected_SensibleHeatRatio;
         }
 
         private void MollierControl_Main_MollierPointSelected_Epsilon(object sender, MollierPointSelectedEventArgs e)
@@ -1146,20 +1165,6 @@ namespace SAM.Core.Mollier.UI
             AddMollierObjects(new IMollierProcess[] { uIMollierProcess }, false);
         }
 
-       
-        private void customizeMollierObjectsButton_Click(object sender, EventArgs e)
-        {
-            if (manageMollierObjectsForm == null)
-            {
-                manageMollierObjectsForm = new Forms.UIMollierObjectsForm(MollierControl_Main.MollierModel, MollierControlSettings);
-                
-                manageMollierObjectsForm.FormClosing += ManageMollierObjectsForm_Closing;
-                manageMollierObjectsForm.MollierModelEdited += ManageMollierObjectsForm_MollierModelEdited;
-                manageMollierObjectsForm.MollierObjectSelected += ManageMollierObjectsForm_MollierObjectSelected;
-            }
-            manageMollierObjectsForm?.Show();
-        }
-
         private void ManageMollierObjectsForm_MollierObjectSelected(object sender, MollierObjectSelectedArgs e)
         {
             MollierControl_Main.Select(e.MollierObject);
@@ -1210,32 +1215,86 @@ namespace SAM.Core.Mollier.UI
 
         private void MollierForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Control && e.KeyCode == Keys.E)
+            if(e.Control)
             {
-                SaveAs(null);
-                return;
-            }
+                if (e.KeyCode == Keys.E)
+                {
+                    SaveAs(null);
+                    return;
+                }
 
-            if (e.Control && e.KeyCode == Keys.S)
-            {
-                Save();
-                return;
-            }
+                if (e.KeyCode == Keys.S)
+                {
+                    Save();
+                    return;
+                }
 
-            if(e.Control && e.KeyCode == Keys.M)
-            {
-                ShowMollier();
-            }
+                if (e.KeyCode == Keys.M)
+                {
+                    ShowMollier();
+                    return;
+                }
 
-            if (e.Control && e.KeyCode == Keys.P)
-            {
-                ShowPsychrometric();
+                if (e.KeyCode == Keys.P)
+                {
+                    ShowPsychrometric();
+                    return;
+                }
+
+                if (e.KeyCode == Keys.D)
+                {
+                    Edit();
+                    return;
+                }
+
+                if (e.KeyCode == Keys.R)
+                {
+                    AddProcess();
+                    return;
+                }
+
+                if (e.KeyCode == Keys.O)
+                {
+                    AddPoint();
+                    return;
+                }
             }
         }
 
         private void ToolStripMenuItem_Wiki_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM_Mollier/wiki/HomeUI");
+        }
+
+        private void ToolStripMenuItem_AddPoint_Click(object sender, EventArgs e)
+        {
+            AddPoint();
+        }
+
+        private void ToolStripMenuItem_AddProcess_Click(object sender, EventArgs e)
+        {
+            AddProcess();
+        }
+
+        private void ToolStripMenuItem_Edit_Click(object sender, EventArgs e)
+        {
+            Edit();
+        }
+
+        private void ToolStripMenuItem_Epsilon_Click(object sender, EventArgs e)
+        {
+            Epsilon();
+        }
+
+        private void ToolStripMenuItem_SHR_Click(object sender, EventArgs e)
+        {
+            SHR();
+        }
+
+        private void ToolStripMenuItem_DivisionArea_Click(object sender, EventArgs e)
+        {
+            ToolStripMenuItem_DivisionArea.Checked = !ToolStripMenuItem_DivisionArea.Checked;
+            DivisionArea();
         }
     }
 }
