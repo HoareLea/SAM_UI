@@ -811,10 +811,15 @@ namespace SAM.Core.Mollier.UI
 
         private void SaveToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Save();
+        }
+
+        private void Save()
+        {
             List<IJSAMObject> mollierObjects = new List<IJSAMObject>();
 
             List<UIMollierProcess> uIMollierProcesses = MollierControl_Main.UIMollierObjects<UIMollierProcess>();
-            if(uIMollierProcesses != null)
+            if (uIMollierProcesses != null)
             {
                 mollierObjects.AddRange(uIMollierProcesses.Cast<IMollierObject>());
             }
@@ -840,9 +845,9 @@ namespace SAM.Core.Mollier.UI
                 path = saveFileDialog.FileName;
             }
 
-            if(string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(path))
             {
-                return;    
+                return;
             }
 
             mollierObjects.Add(MollierControlSettings);
@@ -1174,6 +1179,31 @@ namespace SAM.Core.Mollier.UI
             else
             {
                 MollierControl_Main.RemoveZones(Query.MollierZones());
+            }
+        }
+
+        private void MollierForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Control && e.KeyCode == Keys.E)
+            {
+                SaveAs(null);
+                return;
+            }
+
+            if (e.Control && e.KeyCode == Keys.S)
+            {
+                Save();
+                return;
+            }
+
+            if(e.Control && e.KeyCode == Keys.M)
+            {
+                ShowMollier();
+            }
+
+            if (e.Control && e.KeyCode == Keys.P)
+            {
+                ShowPsychrometric();
             }
         }
     }

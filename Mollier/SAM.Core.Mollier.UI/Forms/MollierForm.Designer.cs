@@ -126,7 +126,7 @@ namespace SAM.Core.Mollier.UI
             this.MenuStrip_Main.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip_Main.Name = "MenuStrip_Main";
             this.MenuStrip_Main.ShowItemToolTips = true;
-            this.MenuStrip_Main.Size = new System.Drawing.Size(2089, 30);
+            this.MenuStrip_Main.Size = new System.Drawing.Size(2089, 28);
             this.MenuStrip_Main.TabIndex = 20;
             this.MenuStrip_Main.Text = "MenuStrip_Main";
             // 
@@ -560,6 +560,7 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.MollierControl_Main.EnableHoover = false;
             this.MollierControl_Main.Location = new System.Drawing.Point(10, 64);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
             mollierControlSettings2.ChartType = SAM.Core.Mollier.ChartType.Mollier;
@@ -594,12 +595,18 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings2.HumidityRatio_Interval = 0.005D;
             mollierControlSettings2.HumidityRatio_Max = 0.035D;
             mollierControlSettings2.HumidityRatio_Min = 0D;
+            mollierControlSettings2.MollierWindowHeight = -1;
+            mollierControlSettings2.MollierWindowWidth = -1;
             mollierControlSettings2.PartialVapourPressure_Axis = true;
             mollierControlSettings2.PartialVapourPressure_Interval = 0.5D;
             mollierControlSettings2.PointBorderColor = System.Drawing.Color.Empty;
+            mollierControlSettings2.PointBorderSize = -1;
             mollierControlSettings2.PointColor = System.Drawing.Color.Empty;
+            mollierControlSettings2.PointSize = -1;
             mollierControlSettings2.Pressure = 101325D;
             mollierControlSettings2.ProccessLineThickness = -1;
+            mollierControlSettings2.PsychrometricWindowHeight = -1;
+            mollierControlSettings2.PsychrometricWindowWidth = -1;
             mollierControlSettings2.SpecificVolume_Interval = 0.05D;
             mollierControlSettings2.SpecificVolume_Line = true;
             mollierControlSettings2.SpecificVolume_Max = 1.92D;
@@ -645,6 +652,7 @@ namespace SAM.Core.Mollier.UI
             this.Controls.Add(this.Label_Pressure);
             this.Controls.Add(this.MollierControl_Main);
             this.Controls.Add(this.MenuStrip_Main);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.MenuStrip_Main;
             this.Name = "MollierForm";
             this.ShowIcon = false;
@@ -652,6 +660,7 @@ namespace SAM.Core.Mollier.UI
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MollierForm_FormClosing);
             this.Load += new System.EventHandler(this.MollierForm_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MollierForm_KeyDown);
             this.MenuStrip_Main.ResumeLayout(false);
             this.MenuStrip_Main.PerformLayout();
             this.ResumeLayout(false);

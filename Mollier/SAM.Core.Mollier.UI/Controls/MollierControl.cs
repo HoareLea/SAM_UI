@@ -662,9 +662,17 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (string.IsNullOrEmpty(path))
             {
+                string sufix = string.Empty;
+
+                Form form = FindForm();
+                if(form != null)
+                {
+                    sufix = string.Format("{0}x{1}", form.Size.Width, form.Size.Height);
+                }
+
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
                 {
-                    string name = mollierControlSettings.ChartType == ChartType.Mollier ? "Mollier" : "Psychrometric";
+                    string name = mollierControlSettings.ChartType == ChartType.Mollier ? "Mollier" : "Psychrometric" + sufix;
                     switch (chartExportType)
                     {
                         case ChartExportType.PDF:
@@ -996,7 +1004,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     path_Temp = System.IO.Path.GetTempFileName();
 
 
-                    Form form = this.FindForm();
+                    Form form = FindForm();
 
                     Size size_Temp = Size;
                     Size formSize_Temp = form.Size;
