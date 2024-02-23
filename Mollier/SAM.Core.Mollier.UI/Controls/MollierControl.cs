@@ -378,7 +378,9 @@ namespace SAM.Core.Mollier.UI.Controls
                 setAxisGraph_Psychrometric();
             }
 
+            //Add Chart Lines
             MollierChart.AddLinesSeries(mollierControlSettings);
+            //Add Chart Lables : Missing
 
             MollierChart.AddMollierPoints(mollierModel, mollierControlSettings);
             MollierChart.AddMollierProcesses(mollierModel, mollierControlSettings);
@@ -402,7 +404,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
 
 
-            //TODO: [MACIEK] Solve order issue, Organize Series Tags to allow easy way of filtering Items. in this case Spline (Relative Humidity series) have to be move to the top of series
+            //TODO: [MACIEK] Solve order issue, Organize Series Tags to allow easy way of filtering Items. in this case Spline (Relative Humidity series) have to be move to the top of series 
             List<Series> series = new List<Series>();
             List<object> objects = new List<object>();
             foreach (Series series_Temp in MollierChart.Series)
