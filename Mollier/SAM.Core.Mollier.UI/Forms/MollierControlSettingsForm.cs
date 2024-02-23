@@ -809,7 +809,7 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.VisibilitySettings = visibilitySettings;
 
             mollierControl.MollierControlSettings = mollierControlSettings;
-            mollierControl.GenerateGraph();
+            mollierControl.Regenerate();
 
             ApplyClicked.Invoke(this, EventArgs.Empty);
         }

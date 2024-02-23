@@ -35,6 +35,15 @@ namespace SAM.Core.Mollier.UI
         private void MollierForm_Load(object sender, EventArgs e)
         {
             MollierControl_Main.MollierPointSelected += MollierControl_Main_MollierPointSelected;
+
+            MollierControl_Main.SizeChanged += MollierControl_Main_SizeChanged;
+
+            MollierControl_Main.Regenerate();
+        }
+
+        private void MollierControl_Main_SizeChanged(object sender, EventArgs e)
+        {
+            MollierControl_Main.Regenerate();
         }
 
         private void MollierControl_Main_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
@@ -166,7 +175,7 @@ namespace SAM.Core.Mollier.UI
         
         public bool Clear()
         {
-            bool clear = MollierControl_Main.ClearObjects();
+            bool clear = MollierControl_Main.ClearObjects(false);
 
             if (manageMollierObjectsForm != null)
             {
@@ -414,7 +423,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.DefaultTemplateName = "blue";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
         
         private void grayToolStripMenuItem_Click(object sender, EventArgs e)
@@ -435,7 +444,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.DefaultTemplateName = "gray";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
         
         private void defaultToolStripMenuItem_Click(object sender, EventArgs e)
@@ -456,7 +465,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.DefaultTemplateName = "default";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
        
         private void blueBlackToolStripMenuItem_Click(object sender, EventArgs e)
@@ -477,7 +486,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.DefaultTemplateName = "blue-black";
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
        
         private void ChartToolStripMenuItem_Mollier_Click(object sender, EventArgs e)
@@ -499,6 +508,9 @@ namespace SAM.Core.Mollier.UI
             ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Mollier.Checked;
             ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Mollier.Checked;
 
+
+            MollierControl_Main.SizeChanged -= MollierControl_Main_SizeChanged;
+
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (ChartToolStripMenuItem_Mollier.Checked)
             {
@@ -510,7 +522,10 @@ namespace SAM.Core.Mollier.UI
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
             LoadMollierControlSettings(mollierControlSettings);
-            MollierControl_Main.GenerateGraph();
+            
+            MollierControl_Main.SizeChanged += MollierControl_Main_SizeChanged;
+            
+            MollierControl_Main.Regenerate();
         }
 
         private void ShowPsychrometric()
@@ -522,6 +537,8 @@ namespace SAM.Core.Mollier.UI
             ChartToolStripMenuItem_Psychrometric.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
             ChartToolStripMenuItem_Mollier.Checked = !ChartToolStripMenuItem_Psychrometric.Checked;
 
+            MollierControl_Main.SizeChanged -= MollierControl_Main_SizeChanged;
+
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if (ChartToolStripMenuItem_Mollier.Checked)
             {
@@ -533,7 +550,10 @@ namespace SAM.Core.Mollier.UI
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
             LoadMollierControlSettings(mollierControlSettings);
-            MollierControl_Main.GenerateGraph();
+
+            MollierControl_Main.SizeChanged += MollierControl_Main_SizeChanged;
+            
+            MollierControl_Main.Regenerate();
         }
 
         private void Reset()
@@ -541,7 +561,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = new MollierControlSettings();
             mollierControlSettings.Pressure = MollierControl_Main.MollierControlSettings.Pressure;
             LoadMollierControlSettings(mollierControlSettings);
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
 
         private void ToolStripMenuItem_Density_Click(object sender, EventArgs e)
@@ -550,7 +570,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.Density_Line = ToolStripMenuItem_Density.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
         
         private void ToolStripMenuItem_Enthalpy_Click(object sender, EventArgs e)
@@ -559,7 +579,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.Enthalpy_Line = ToolStripMenuItem_Enthalpy.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
         
         private void ToolStripMenuItem_SpecificVolume_Click(object sender, EventArgs e)
@@ -568,7 +588,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.SpecificVolume_Line = ToolStripMenuItem_SpecificVolume.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
         
         private void ToolStripMenuItem_WetBulbTemperature_Click(object sender, EventArgs e)
@@ -577,7 +597,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.WetBulbTemperature_Line = ToolStripMenuItem_WetBulbTemperature.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
 
         public MollierControlSettings MollierControlSettings
@@ -659,7 +679,7 @@ namespace SAM.Core.Mollier.UI
                 ColorPointComboBox.Visible = false;
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
 
         }
         
@@ -685,12 +705,17 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings.FindPoint_Factor = value;
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
 
         }
 
         private void ColorPointComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if(!ColorPointComboBox.Visible)
+            {
+                return;
+            }
+
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             if(ColorPointComboBox.Text == "Enthalpy")
             {
@@ -701,7 +726,7 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings.FindPointType = ChartDataType.DryBulbTemperature;
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
 
         private void DivisionAreaCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -726,7 +751,7 @@ namespace SAM.Core.Mollier.UI
                 DivisionAreaLabels_CheckBox.Visible = false;
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
 
         private void DivisionAreaLabels_CheckBox_CheckedChanged(object sender, EventArgs e)
@@ -741,7 +766,7 @@ namespace SAM.Core.Mollier.UI
                 mollierControlSettings.DivisionAreaLabels = true;
             }
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
 
         private void saveAsEMFToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1143,6 +1168,7 @@ namespace SAM.Core.Mollier.UI
         private void ManageMollierObjectsForm_MollierModelEdited(object sender, MollierModelEditedEventArgs e)
         {
             MollierControl_Main.MollierModel = e.MollierModel;
+            MollierControl_Main.Regenerate();
         }
 
         private void ManageMollierObjectsForm_Closing(object sender, FormClosingEventArgs e)
@@ -1162,7 +1188,7 @@ namespace SAM.Core.Mollier.UI
             MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
             mollierControlSettings.PartialVapourPressure_Axis = ToolStripMenuItem_PartialVapourPressure.Checked;
             MollierControl_Main.MollierControlSettings = mollierControlSettings;
-            MollierControl_Main.GenerateGraph();
+            MollierControl_Main.Regenerate();
         }
 
         private void ToolStripMenuItem_ComfortZoners_Click(object sender, EventArgs e)

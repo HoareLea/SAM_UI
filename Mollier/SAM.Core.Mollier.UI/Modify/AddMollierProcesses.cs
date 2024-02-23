@@ -128,7 +128,7 @@ namespace SAM.Core.Mollier.UI
         }
         
         // ------------------SERIES--------------------------------------------
-        private static Series createDewPointDashLineSeries(Chart chart, MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, IMollierProcess mollierProcess, ChartType chartType, Color color, int borderWidth, ChartDashStyle borderDashStyle)
+        private static Series createDewPointDashLineSeries(Chart chart, MollierPoint mollierPoint_1, MollierPoint mollierPoint_2, UIMollierProcess uIMollierProcess, ChartType chartType, Color color, int borderWidth, ChartDashStyle borderDashStyle)
         {
             // Create additional dash line in Cooling process to ADP 
             Series series = chart.Series.Add(Guid.NewGuid().ToString());
@@ -141,9 +141,9 @@ namespace SAM.Core.Mollier.UI
             series.Color = color;
             series.IsVisibleInLegend = false;
             series.BorderWidth = borderWidth;
-            series.ChartType = SeriesChartType.Spline;
+            series.ChartType = SeriesChartType.Line; //SeriesChartType.Spline;
             series.BorderDashStyle = borderDashStyle;
-            series.Tag = new UIMollierProcess(Mollier.Create.RoomProcess(mollierPoint_1, mollierPoint_2), Color.Black);
+            series.Tag = uIMollierProcess;//new UIMollierProcess(Mollier.Create.RoomProcess(mollierPoint_1, mollierPoint_2), Color.Black);
 
             return series;
         }          
@@ -284,26 +284,26 @@ namespace SAM.Core.Mollier.UI
             MollierPoint apparatusDewPoint = ((CoolingProcess)mollierProcess).ApparatusDewPoint();
             //createProcessPointsSeries(chart, apparatusDewMollierPoint, uIMollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
             series = AddMollierPoint(chart, chartType, new UIMollierPoint(apparatusDewPoint, Create.UIMollierPointAppearance(DisplayPointType.Dew, DisplayPointType.Dew.Description())), mollierControlSettings);
-            //series.Tag = mollierProcess;
+            series.Tag = uIMollierProcess;
 
 
             MollierPoint dewPoint = ((CoolingProcess)mollierProcess).DewPoint();
             //createProcessPointsSeries(chart, secondPoint, uIMollierProcess, chartType, pointType: "SecondPoint");
             series = AddMollierPoint(chart, chartType, new UIMollierPoint(dewPoint, Create.UIMollierPointAppearance(DisplayPointType.CoolingSaturation)), mollierControlSettings);
-            //series.Tag = mollierProcess;//"SecondPoint";
+            series.Tag = uIMollierProcess;//"SecondPoint";
 
             int borderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 2;
 
-            createDewPointDashLineSeries(chart, start, dewPoint, mollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
-            createDewPointDashLineSeries(chart, end, apparatusDewPoint, mollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
-            createDewPointDashLineSeries(chart, end, dewPoint, mollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+            createDewPointDashLineSeries(chart, start, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+            createDewPointDashLineSeries(chart, end, apparatusDewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+            createDewPointDashLineSeries(chart, end, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
 
             List<MollierPoint> mollierPoints = Mollier.Query.ProcessMollierPoints((CoolingProcess)mollierProcess);
             if (mollierPoints != null && mollierPoints.Count > 1)
             {
                 for (int j = 0; j < mollierPoints.Count - 1; j++)
                 {
-                    createDewPointDashLineSeries(chart, mollierPoints[j], mollierPoints[j + 1], mollierProcess, chartType, Color.Gray, 3, ChartDashStyle.Solid);
+                    createDewPointDashLineSeries(chart, mollierPoints[j], mollierPoints[j + 1], uIMollierProcess, chartType, Color.Gray, 3, ChartDashStyle.Solid);
                 }
             }
 
