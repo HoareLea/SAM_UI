@@ -14,7 +14,7 @@ namespace SAM.Core.Mollier.UI.Controls
         public AdiabaticHumidificationProcessControl()
         {
             InitializeComponent();
-            processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[0].ToString();
+            processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[1].ToString();
 
             MollierPointControl_Start.SelectMollierPoint += MollierPointControl_Start_SelectMollierPoint; ;
         }
@@ -25,7 +25,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (MollierForm != null)
             {
-                MollierForm.MollierPointSelected += MollierForm_MollierPointSelected; ;
+                MollierForm.MollierPointSelected += MollierForm_MollierPointSelected;
             }
         }
 
