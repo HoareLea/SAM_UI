@@ -701,7 +701,7 @@ namespace SAM.Core.Mollier.UI
 
             set
             {
-                TextBox_PointSize.Text = value.ToString();
+                TextBox_PointSize.Text = value == -1 ? string.Empty : value.ToString();
             }
         }
 
@@ -724,7 +724,7 @@ namespace SAM.Core.Mollier.UI
 
             set
             {
-                TextBox_PointBorderSize.Text = value.ToString();
+                TextBox_PointBorderSize.Text = value == -1 ? string.Empty : value.ToString();
             }
         }
 
