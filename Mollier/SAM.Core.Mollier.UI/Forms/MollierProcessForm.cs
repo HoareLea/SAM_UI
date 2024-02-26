@@ -162,6 +162,7 @@ namespace SAM.Core.Mollier.UI.Forms
 
                 case MollierProcessType.AdiabaticHumidification:
                     AdiabaticHumidificationProcessControl adiabaticHumidificationProcessControl = new AdiabaticHumidificationProcessControl() { MollierForm = MollierForm, Start = previousMollierPoint };
+                    
                     adiabaticHumidificationProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
                     return adiabaticHumidificationProcessControl;
 

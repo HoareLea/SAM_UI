@@ -33,7 +33,12 @@ namespace SAM.Core.Mollier.UI
                 color = series.Color;
             }
 
-            if(size < 1)
+            if (mollierControlSettings != null && mollierControlSettings.PointSize != -1)
+            {
+                size = mollierControlSettings.PointSize;
+            }
+
+            if (size < 1)
             {
                 size = series.MarkerSize;
             }
@@ -61,7 +66,12 @@ namespace SAM.Core.Mollier.UI
                 borderColor = series.MarkerBorderColor;
             }
 
-            if(borderWidth < 1)
+            if (mollierControlSettings != null && mollierControlSettings.PointBorderSize != -1)
+            {
+                borderWidth = mollierControlSettings.PointBorderSize;
+            }
+
+            if (borderWidth < 1)
             {
                 borderWidth = series.MarkerBorderWidth;
             }

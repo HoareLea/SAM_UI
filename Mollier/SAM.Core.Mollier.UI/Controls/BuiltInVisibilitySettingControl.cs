@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -28,46 +27,56 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void Button_Color_Click(object sender, EventArgs e)
         {
-            using (ColorDialog colorDialog = new ColorDialog())
+            if(CustomColors == null)
             {
-                if (builtInVisibilitySetting != null)
-                {
-                    colorDialog.Color = builtInVisibilitySetting.Color;
-                }
-
-                colorDialog.FullOpen = true;
-                colorDialog.AnyColor = true;
-
-                if(CustomColors != null)
-                {
-                    int argb = colorDialog.Color.ToArgb();
-                    if (!CustomColors.Contains(argb))
-                    {
-                        CustomColors.Insert(0, argb);
-                    }
-                }
-
-                if (CustomColors != null)
-                {
-                    colorDialog.CustomColors = CustomColors.ToArray();
-                }
-
-                //System.Drawing.Color color;
-
-
-                if(colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-
-                if(colorDialog.CustomColors != null)
-                {
-                    CustomColors = colorDialog.CustomColors.ToList();
-                }
-
-                Button_Color.BackColor = colorDialog.Color;
-                ColorChanged.Invoke(this, EventArgs.Empty);
+                CustomColors = new List<int>();
             }
+
+            if(!Query.TryGetColor(builtInVisibilitySetting?.Color, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                return;
+            }
+
+            Button_Color.BackColor = selectedColor;
+            ColorChanged.Invoke(this, EventArgs.Empty);
+
+            //using (ColorDialog colorDialog = new ColorDialog())
+            //{
+            //    if (builtInVisibilitySetting != null)
+            //    {
+            //        colorDialog.Color = builtInVisibilitySetting.Color;
+            //    }
+
+            //    colorDialog.FullOpen = true;
+            //    colorDialog.AnyColor = true;
+
+            //    if(CustomColors != null)
+            //    {
+            //        int argb = colorDialog.Color.ToArgb();
+            //        if (!CustomColors.Contains(argb))
+            //        {
+            //            CustomColors.Insert(0, argb);
+            //        }
+            //    }
+
+            //    if (CustomColors != null)
+            //    {
+            //        colorDialog.CustomColors = CustomColors.ToArray();
+            //    }
+
+            //    if(colorDialog.ShowDialog() != DialogResult.OK)
+            //    {
+            //        return;
+            //    }
+
+            //    if(colorDialog.CustomColors != null)
+            //    {
+            //        CustomColors = colorDialog.CustomColors.ToList();
+            //    }
+
+            //    Button_Color.BackColor = colorDialog.Color;
+            //    ColorChanged.Invoke(this, EventArgs.Empty);
+            //}
         }
 
         private void BuiltInVisibilitySettingControl_Load(object sender, EventArgs e)

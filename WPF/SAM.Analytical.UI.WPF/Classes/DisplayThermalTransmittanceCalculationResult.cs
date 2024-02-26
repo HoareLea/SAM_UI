@@ -1,6 +1,5 @@
 ﻿using SAM.Analytical.Tas;
 using System;
-using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF
 {

@@ -110,7 +110,6 @@
             this.Controls.Add(this.MollierChart);
             this.Name = "MollierControl";
             this.Size = new System.Drawing.Size(816, 588);
-            this.SizeChanged += new System.EventHandler(this.MollierControl_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.MollierChart)).EndInit();
             this.ContextMenuStrip_Chart.ResumeLayout(false);
             this.ResumeLayout(false);

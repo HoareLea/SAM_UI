@@ -6,6 +6,8 @@ namespace SAM.Core.Mollier.UI
 {
     public class ChartLabel : IJSAMObject
     {
+        //public object Tag { get; set; }
+
         public Point2D Position { get; set; }
         public string Text { get; set; }
         public double Angle { get; set; }
@@ -14,6 +16,7 @@ namespace SAM.Core.Mollier.UI
         {
 
         }
+
         public ChartLabel(ChartLabel chartLabel)
         {
             Position = chartLabel.Position;

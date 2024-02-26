@@ -8,8 +8,6 @@ namespace SAM.Core.Mollier.UI
     public partial class MollierControlSettingsForm : Form
     {
         public event EventHandler ApplyClicked;
-
-        private MollierFormSettings mollierFormSettings;
         
         private MollierControl mollierControl;
         private ToolTip toolTip = new ToolTip();
@@ -23,13 +21,11 @@ namespace SAM.Core.Mollier.UI
             InitializeComponent();
         }
 
-        public MollierControlSettingsForm(MollierControl mollierControl, MollierFormSettings mollierFormSettings)
+        public MollierControlSettingsForm(MollierControl mollierControl)
         {
             InitializeComponent();
 
             initialColor = Button_PointColor.BackColor;
-
-            this.mollierFormSettings = mollierFormSettings;
 
             this.mollierControl = mollierControl;
             MollierControlSettings mollierControlSettings = mollierControl.MollierControlSettings;
@@ -77,6 +73,9 @@ namespace SAM.Core.Mollier.UI
             DisablePoint = mollierControlSettings.DisablePoint;
             DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
 
+            PointBorderSize = mollierControlSettings.PointBorderSize;
+            PointSize = mollierControlSettings.PointSize;
+
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
             {
@@ -93,11 +92,20 @@ namespace SAM.Core.Mollier.UI
                 }
             }
 
-            TextBox_WindowHeight.Text = mollierFormSettings?.Height == -1 ? string.Empty : mollierFormSettings.Height.ToString();
-            TextBox_WindowWidth.Text = mollierFormSettings?.Width == -1 ? string.Empty : mollierFormSettings.Width.ToString();
+            TextBox_MollierWindowHeight.Text = mollierControlSettings?.MollierWindowHeight == -1 ? string.Empty : mollierControlSettings.MollierWindowHeight.ToString();
+            TextBox_MollierWindowWidth.Text = mollierControlSettings?.MollierWindowWidth == -1 ? string.Empty : mollierControlSettings.MollierWindowWidth.ToString();
 
-            TextBox_WindowHeight.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
-            TextBox_WindowWidth.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+            TextBox_PsychrometricWindowHeight.Text = mollierControlSettings?.PsychrometricWindowHeight == -1 ? string.Empty : mollierControlSettings.PsychrometricWindowHeight.ToString();
+            TextBox_PsychrometricWindowWidth.Text = mollierControlSettings?.PsychrometricWindowWidth == -1 ? string.Empty : mollierControlSettings.PsychrometricWindowWidth.ToString();
+
+            TextBox_MollierWindowHeight.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+            TextBox_MollierWindowWidth.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+
+            TextBox_PsychrometricWindowHeight.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+            TextBox_PsychrometricWindowWidth.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+
+            TextBox_PointSize.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
+            TextBox_PointBorderSize.KeyPress += new KeyPressEventHandler(Windows.EventHandler.ControlText_IntegerOnly);
         }
 
         private void BuiltInVisibilitySettingControl_ColorChanged(object sender, EventArgs e)
@@ -118,39 +126,6 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 builtInVisibilitySettingControl_Temp.CustomColors = CustomColors;
-            }
-        }
-
-        public MollierFormSettings MollierFormSettings
-        {
-            get
-            {
-                MollierFormSettings result = mollierFormSettings == null ? new MollierFormSettings() : new MollierFormSettings(mollierFormSettings);
-
-                if(Core.Query.TryConvert(TextBox_WindowHeight.Text, out int height))
-                {
-                    result.Height = height;
-                }
-                else
-                {
-                    result.Height = -1;
-                }
-
-                if (Core.Query.TryConvert(TextBox_WindowWidth.Text, out int width))
-                {
-                    result.Width = width;
-                }
-                else
-                {
-                    result.Width = -1;
-                }
-
-                return result;
-            }
-
-            set
-            {
-                mollierFormSettings = value;
             }
         }
 
@@ -615,6 +590,144 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
+        public int MollierWindowWidth
+        {
+            get
+            {
+                if(!Core.Query.TryConvert(TextBox_MollierWindowWidth.Text, out int result))
+                {
+                    return -1;
+                }
+
+                if(result == 0)
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_MollierWindowWidth.Text = value.ToString();
+            }
+        }
+
+        public int MollierWindowHeight
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_MollierWindowHeight.Text, out int result))
+                {
+                    return -1;
+                }
+
+                if (result == 0)
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_MollierWindowHeight.Text = value.ToString();
+            }
+        }
+
+        public int PsychrometricWindowWidth
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_PsychrometricWindowWidth.Text, out int result))
+                {
+                    return -1;
+                }
+
+                if (result == 0)
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_PsychrometricWindowWidth.Text = value.ToString();
+            }
+        }
+
+        public int PsychrometricWindowHeight
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_PsychrometricWindowHeight.Text, out int result))
+                {
+                    return -1;
+                }
+
+                if (result == 0)
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_PsychrometricWindowHeight.Text = value.ToString();
+            }
+        }
+
+        public int PointSize
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_PointSize.Text, out int result))
+                {
+                    return -1;
+                }
+
+                if (result == 0)
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_PointSize.Text = value == -1 ? string.Empty : value.ToString();
+            }
+        }
+
+        public int PointBorderSize
+        {
+            get
+            {
+                if (!Core.Query.TryConvert(TextBox_PointBorderSize.Text, out int result))
+                {
+                    return -1;
+                }
+
+                if (result == 0)
+                {
+                    return -1;
+                }
+
+                return result;
+            }
+
+            set
+            {
+                TextBox_PointBorderSize.Text = value == -1 ? string.Empty : value.ToString();
+            }
+        }
+
 
         private void Apply()
         {
@@ -660,6 +773,16 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.DisablePoint = DisablePoint;
             mollierControlSettings.DisableCoolingAuxiliaryProcesses = DisableCoolingAuxiliaryProcesses;
 
+            mollierControlSettings.MollierWindowHeight = MollierWindowHeight;
+            mollierControlSettings.MollierWindowWidth = MollierWindowWidth;
+
+            mollierControlSettings.PsychrometricWindowHeight = PsychrometricWindowHeight;
+            mollierControlSettings.PsychrometricWindowWidth = PsychrometricWindowWidth;
+
+            mollierControlSettings.PointBorderSize = PointBorderSize;
+            mollierControlSettings.PointSize = PointSize;
+
+
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings;
             if(visibilitySettings == null)
             {
@@ -689,31 +812,34 @@ namespace SAM.Core.Mollier.UI
             mollierControlSettings.VisibilitySettings = visibilitySettings;
 
             mollierControl.MollierControlSettings = mollierControlSettings;
+            mollierControl.Regenerate();
 
             ApplyClicked.Invoke(this, EventArgs.Empty);
         }
 
         private void Button_LowIntensityColor_Click(object sender, EventArgs e)
         {
-            using(ColorDialog colorDialog = new ColorDialog())
+            if (CustomColors == null)
             {
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                Button_LowIntensityColor.BackColor = colorDialog.Color;
+                CustomColors = new List<int>();
+            }
+
+            if (Query.TryGetColor(Button_LowIntensityColor.BackColor, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                Button_LowIntensityColor.BackColor = selectedColor;
             }
         }
         
         private void Button_HighIntensityColor_Click(object sender, EventArgs e)
         {
-            using (ColorDialog colorDialog = new ColorDialog())
+            if (CustomColors == null)
             {
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                Button_HighIntensityColor.BackColor = colorDialog.Color;
+                CustomColors = new List<int>();
+            }
+
+            if (Query.TryGetColor(Button_HighIntensityColor.BackColor, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                Button_HighIntensityColor.BackColor = selectedColor;
             }
         }
 
@@ -779,26 +905,33 @@ namespace SAM.Core.Mollier.UI
 
         private void Button_PointColor_Click(object sender, EventArgs e)
         {
-            using (ColorDialog colorDialog = new ColorDialog())
+            if(CustomColors == null)
             {
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                Button_PointColor.BackColor = colorDialog.Color;
+                CustomColors = new List<int>();
+            }
+
+            if(Query.TryGetColor(Button_PointColor.BackColor == initialColor ? (System.Drawing.Color?)null : Button_PointColor.BackColor, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                Button_PointColor.BackColor = selectedColor;
             }
         }
 
         private void Button_PointBorderColor_Click(object sender, EventArgs e)
         {
-            using (ColorDialog colorDialog = new ColorDialog())
+            if (CustomColors == null)
             {
-                if (colorDialog.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-                Button_PointBorderColor.BackColor = colorDialog.Color;
+                CustomColors = new List<int>();
             }
+
+            if (Query.TryGetColor(Button_PointBorderColor.BackColor == initialColor ? (System.Drawing.Color?)null : Button_PointBorderColor.BackColor, CustomColors, out System.Drawing.Color selectedColor))
+            {
+                Button_PointBorderColor.BackColor = selectedColor;
+            }
+        }
+
+        private void Label_PsychromatricWindowSize_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

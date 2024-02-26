@@ -78,7 +78,6 @@
     <Compile Include="Classes\EventArgs\MollierModelEditedEventArgs.cs" />
     <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs - Copy.cs" />
     <Compile Include="Classes\EventArgs\MollierPointSelectedEventArgs.cs" />
-    <Compile Include="Classes\MollierFormSettings.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
     <Compile Include="Classes\MollierPointEventArgs.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
@@ -270,6 +269,7 @@
     <Compile Include="Modify\AddLabels.cs" />
     <Compile Include="Modify\SetParameterValue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\TryGetColor.cs" />
     <Compile Include="Query\CornerPoints.cs" />
     <Compile Include="Query\GroupName.cs" />
     <Compile Include="Query\SortGroup.cs" />
@@ -398,6 +398,11 @@
       <Version>13.0.2</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -17,33 +17,53 @@ namespace SAM.Core.Mollier.UI
             bool addProcesses = true;
             bool addPoints = true;
             checkQuantity(chart, ref addProcesses, ref addPoints);
+            List<UIMollierProcess> uIMollierProcesses = new List<UIMollierProcess>();
             foreach (Series series in chart.Series)
             {
                 if (series.Tag is UIMollierZone)
                 {
                     UIMollierZone zone = (UIMollierZone)series.Tag;
                     result.AddRange(Solver2DDatas_Zone(zone, chartType, scaleVector, axesRatio));
+                    continue;
                 }
+
                 if (addPoints && series.Name == "MollierPoints")
                 {
-                    foreach(DataPoint dataPoint in series.Points)
+                    foreach (DataPoint dataPoint in series.Points)
                     {
-                        if(dataPoint.Tag is UIMollierPoint)
+                        if (dataPoint.Tag is UIMollierPoint)
                         {
                             UIMollierPoint point = (UIMollierPoint)dataPoint.Tag;
                             result.AddRange(solver2DDatas_Point(point, chartType, scaleVector, axesRatio));
                         }
                     }
+                    continue;
                 }
+
                 if (addProcesses && series.Tag is UIMollierProcess)
                 {
-                    UIMollierProcess process = (UIMollierProcess)series.Tag;
-                    result.AddRange(solver2DDatas_Process(process, chartType, scaleVector, axesRatio, mollierControlSettings));
+                    UIMollierProcess uIMollierProcess = (UIMollierProcess)series.Tag;
+                    if (uIMollierProcess.MollierProcess is CoolingProcess && series.BorderDashStyle == ChartDashStyle.Dash)
+                    {
+                        continue;
+                    }
+
+                    if(uIMollierProcesses.Contains(uIMollierProcess))
+                    {
+                        continue;
+                    }
+
+                    uIMollierProcesses.Add(uIMollierProcess);
+
+                    result.AddRange(solver2DDatas_Process(uIMollierProcess, chartType, scaleVector, axesRatio, mollierControlSettings));
+                    continue;
                 }
+
                 if (series.Tag is ConstantValueCurve && !(series.Tag is ConstantTemperatureCurve))
                 {
                     ConstantValueCurve curve = (ConstantValueCurve)series.Tag;
                     result.AddRange(Solver2DDatas_CurveUnit(chart, curve, mollierControlSettings, scaleVector, axesRatio));
+                    continue;
                 }
             }
             result.AddRange(Solver2DDatas_CurveNames(chart, mollierControlSettings));

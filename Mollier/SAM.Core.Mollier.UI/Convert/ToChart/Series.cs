@@ -53,7 +53,7 @@ namespace SAM.Core.Mollier.UI
             switch (chartDataType)
             {
                 case ChartDataType.RelativeHumidity:
-                    result.ChartType = SeriesChartType.Spline;
+                    result.ChartType = SeriesChartType.Line; //SeriesChartType.Spline;
 
                     if (constantValueCurve.Value == 50)
                     {

@@ -1,6 +1,5 @@
 ﻿using SAM.Analytical.Tas;
 using System;
-using System.Runtime.Remoting.Messaging;
 
 namespace SAM.Analytical.UI.WPF
 {

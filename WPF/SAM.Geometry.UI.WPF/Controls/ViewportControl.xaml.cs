@@ -4,7 +4,6 @@ using SAM.Core.UI.WPF;
 using SAM.Geometry.Object;
 using SAM.Geometry.Object.Spatial;
 using SAM.Geometry.Planar;
-using SAM.Geometry.Spatial;
 using System;
 using System.Collections.Generic;
 using System.Linq;

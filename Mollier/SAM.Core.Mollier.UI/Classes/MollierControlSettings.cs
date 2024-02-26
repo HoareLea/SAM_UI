@@ -39,6 +39,8 @@ namespace SAM.Core.Mollier.UI
         public Color PointBorderColor { get; set; } = Color.Empty;
         public Color PointColor { get; set; } = Color.Empty;
         public bool DisablePoint { get; set; } = false;
+        public int PointSize { get; set; } = -1;
+        public int PointBorderSize { get; set; } = -1;
 
         public bool DisableCoolingAuxiliaryProcesses { get; set; } = false;
 
@@ -71,6 +73,11 @@ namespace SAM.Core.Mollier.UI
         public int DivisionAreaEnthalpy_Interval { get; set; } = 3;
         public int DivisionAreaRelativeHumidity_Interval { get; set; } = 10;
         public PointGradientVisibilitySetting PointGradientVisibilitySetting { get; set; } = new PointGradientVisibilitySetting(Color.Red, Color.Blue);
+
+        public int MollierWindowWidth { get; set; } = -1;
+        public int MollierWindowHeight { get; set; } = -1;
+        public int PsychrometricWindowWidth { get; set; } = -1;
+        public int PsychrometricWindowHeight { get; set; } = -1;
 
         public VisibilitySettings VisibilitySettings { get; set; } = Query.DefaultVisibilitySettings();
 
@@ -150,7 +157,15 @@ namespace SAM.Core.Mollier.UI
                 PointColor = mollierControlSettings.PointColor;
                 DisablePoint = mollierControlSettings.DisablePoint;
 
+                MollierWindowWidth = mollierControlSettings.MollierWindowWidth;
+                MollierWindowHeight = mollierControlSettings.MollierWindowHeight;
+                PsychrometricWindowWidth = mollierControlSettings.PsychrometricWindowWidth;
+                PsychrometricWindowHeight = mollierControlSettings.PsychrometricWindowHeight;
+
                 DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
+
+                PointBorderSize = mollierControlSettings.PointBorderSize;
+                PointSize = mollierControlSettings.PointSize;
             }
         }
 
@@ -451,6 +466,36 @@ namespace SAM.Core.Mollier.UI
                 DisableCoolingAuxiliaryProcesses = jObject.Value<bool>("DisableCoolingAuxiliaryProcesses");
             }
 
+            if (jObject.ContainsKey("MollierWindowWidth"))
+            {
+                MollierWindowWidth = jObject.Value<int>("MollierWindowWidth");
+            }
+
+            if (jObject.ContainsKey("MollierWindowHeight"))
+            {
+                MollierWindowHeight = jObject.Value<int>("MollierWindowHeight");
+            }
+
+            if (jObject.ContainsKey("PsychrometricWindowWidth"))
+            {
+                PsychrometricWindowWidth = jObject.Value<int>("PsychrometricWindowWidth");
+            }
+
+            if (jObject.ContainsKey("PsychrometricWindowHeight"))
+            {
+                PsychrometricWindowHeight = jObject.Value<int>("PsychrometricWindowHeight");
+            }
+
+            if (jObject.ContainsKey("PointBorderSize"))
+            {
+                PointBorderSize = jObject.Value<int>("PointBorderSize");
+            }
+
+            if (jObject.ContainsKey("PointSize"))
+            {
+                PointSize = jObject.Value<int>("PointSize");
+            }
+
             return true;
         }
 
@@ -576,6 +621,14 @@ namespace SAM.Core.Mollier.UI
             result.Add("DisablePoint", DisablePoint);
 
             result.Add("DisableCoolingAuxiliaryProcesses", DisableCoolingAuxiliaryProcesses);
+
+            result.Add("MollierWindowWidth", MollierWindowWidth);
+            result.Add("MollierWindowHeight", MollierWindowHeight);
+            result.Add("PsychrometricWindowWidth", PsychrometricWindowWidth);
+            result.Add("PsychrometricWindowHeight", PsychrometricWindowHeight);
+
+            result.Add("PointBorderSize", PointBorderSize);
+            result.Add("PointSize", PointSize);
 
             return result;
         }
