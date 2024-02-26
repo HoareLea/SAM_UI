@@ -73,6 +73,9 @@ namespace SAM.Core.Mollier.UI
             DisablePoint = mollierControlSettings.DisablePoint;
             DisableCoolingAuxiliaryProcesses = mollierControlSettings.DisableCoolingAuxiliaryProcesses;
 
+            PointBorderSize = mollierControlSettings.PointBorderSize;
+            PointSize = mollierControlSettings.PointSize;
+
             VisibilitySettings visibilitySettings = mollierControlSettings.VisibilitySettings; 
             if(visibilitySettings != null)
             {
