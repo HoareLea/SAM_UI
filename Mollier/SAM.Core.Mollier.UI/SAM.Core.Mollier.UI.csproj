@@ -260,6 +260,7 @@
     <Compile Include="Interface\IMollierProcessControl.cs" />
     <Compile Include="Modify\AddColorPoint.cs" />
     <Compile Include="Modify\AddMollierPoint.cs" />
+    <Compile Include="Modify\AddMollierLines.cs" />
     <Compile Include="Modify\Update.cs" />
     <Compile Include="Modify\AddLinesSeries.cs" />
     <Compile Include="Modify\AddMollierProcesses.cs" />

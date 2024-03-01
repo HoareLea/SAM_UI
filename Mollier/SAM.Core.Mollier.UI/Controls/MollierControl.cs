@@ -388,6 +388,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             MollierChart.AddMollierPoints(mollierModel, mollierControlSettings);
             MollierChart.AddMollierProcesses(mollierModel, mollierControlSettings);
+            MollierChart.AddMollierLines(mollierModel, mollierControlSettings);
             MollierChart.AddMollierZones(mollierModel, mollierControlSettings);
             MollierChart.AddDivisionArea(mollierModel, mollierControlSettings);
             MollierChart.AddColorPoint(mollierModel, mollierControlSettings);
@@ -474,6 +475,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 else if (mollierObject is IMollierZone)
                 {
                     result.AddRange(AddZones(new List<IMollierZone>() { (IMollierZone)mollierObject }));
+                }
+                else if (mollierObject is IMollierCurve)
+                {
+                    result.AddRange(AddCurves(new List<IMollierCurve>() { (IMollierCurve)mollierObject }));
                 }
             }
 
@@ -628,6 +633,35 @@ namespace SAM.Core.Mollier.UI.Controls
             }
 
             mollierModel.AddRange(result);
+            return result;
+        }
+
+        private List<UIMollierCurve> AddCurves(IEnumerable<IMollierCurve> mollierCurves)
+        {
+            if (mollierCurves == null || mollierModel == null)
+            {
+                return null;
+            }
+
+            List<UIMollierCurve> result = new List<UIMollierCurve>();
+            foreach(IMollierCurve mollierCurve in mollierCurves)
+            {
+                if(mollierCurve is UIMollierCurve)
+                {
+                    if(((UIMollierCurve)mollierCurve).MollierCurve is MollierLine)
+                    {
+                        result.Add((UIMollierCurve)mollierCurve);
+                    }
+
+                    continue;
+                }
+
+                if(mollierCurve is MollierLine)
+                {
+                    result.Add(new UIMollierCurve((MollierCurve)mollierCurve, Color.LightGray));
+                }
+            }
+
             return result;
         }
 

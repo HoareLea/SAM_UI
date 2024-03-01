@@ -1017,36 +1017,38 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
-            MollierControlSettings mollierControlSettings = MollierControlSettings;
-            if (mollierControlSettings == null)
-            {
-                mollierControlSettings = new MollierControlSettings();
-            }
+            MollierSensibleHeatRatioLine mollierSensibleHeatRatioLine = new MollierSensibleHeatRatioLine(mollierPoint, sensibleHeatRatio);
 
-            ChartType chartType = mollierControlSettings.ChartType;
-            double pressure = mollierControlSettings.Pressure;
+            //MollierControlSettings mollierControlSettings = MollierControlSettings;
+            //if (mollierControlSettings == null)
+            //{
+            //    mollierControlSettings = new MollierControlSettings();
+            //}
 
-            double angle = System.Math.Atan(sensibleHeatRatio);
-            Line2D line2D = Geometry.Planar.Create.Line2D(mollierPoint.ToSAM(mollierControlSettings.ChartType), angle);
-            Rectangle2D chartArea = Geometry.Planar.Create.Rectangle2D(Query.CornerPoints(mollierControlSettings));
+            //ChartType chartType = mollierControlSettings.ChartType;
+            //double pressure = mollierControlSettings.Pressure;
 
-            Segment2D processSegment = Geometry.Planar.Create.Segment2D(line2D, chartArea);
-            if(processSegment == null)
-            {
-                return;
-            }
-            UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess(processSegment.Start.ToMollier(chartType, pressure), 
-                                                                                processSegment.End.ToMollier(chartType, pressure));
+            //double angle = System.Math.Atan(sensibleHeatRatio);
+            //Line2D line2D = Geometry.Planar.Create.Line2D(mollierPoint.ToSAM(mollierControlSettings.ChartType), angle);
+            //Rectangle2D chartArea = Geometry.Planar.Create.Rectangle2D(Query.CornerPoints(mollierControlSettings));
 
-            if (undefinedProcess == null)
-            {
-                return;
-            }
+            //Segment2D processSegment = Geometry.Planar.Create.Segment2D(line2D, chartArea);
+            //if(processSegment == null)
+            //{
+            //    return;
+            //}
+            //UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess(processSegment.Start.ToMollier(chartType, pressure), 
+            //                                                                    processSegment.End.ToMollier(chartType, pressure));
+
+            //if (undefinedProcess == null)
+            //{
+            //    return;
+            //}
                 
-            UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
+            //UIMollierProcess uIMollierProcess = new UIMollierProcess(undefinedProcess, System.Drawing.Color.LightGray);
 
             //AddProcesses(new IMollierProcess[] { uIMollierProcess }, false);
-            AddMollierObjects(new IMollierProcess[] { uIMollierProcess }, false);
+            AddMollierObjects(new IMollierCurve[] { new UIMollierCurve(mollierSensibleHeatRatioLine, System.Drawing.Color.LightGray) }, false);
         }
 
         private void AddProcess_ByEpsilonAndEnthalpyDifference(MollierPointSelectedEventArgs e)
