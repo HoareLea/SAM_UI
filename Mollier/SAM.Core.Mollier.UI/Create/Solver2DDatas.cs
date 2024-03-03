@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.Planar;
+﻿using Microsoft.Win32;
+using SAM.Geometry.Planar;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -62,6 +63,12 @@ namespace SAM.Core.Mollier.UI
                 if (series.Tag is ConstantValueCurve && !(series.Tag is ConstantTemperatureCurve))
                 {
                     ConstantValueCurve curve = (ConstantValueCurve)series.Tag;
+
+                    bool visible = mollierControlSettings.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.DefaultTemplateName, ChartParameterType.Unit, curve.ChartDataType).Visible;
+                    if (!visible)
+                    {
+                        continue;
+                    }
                     result.AddRange(Solver2DDatas_CurveUnit(chart, curve, mollierControlSettings, scaleVector, axesRatio));
                     continue;
                 }
@@ -194,6 +201,11 @@ namespace SAM.Core.Mollier.UI
                 ConstantValueCurve curve = curves.Value[curves.Value.Count / 2];
                 string text = getCurveNameText(chartDataType);
 
+                bool visible = mollierControlSettings.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.DefaultTemplateName, ChartParameterType.Label, curve.ChartDataType).Visible;
+                if (!visible)
+                {
+                    continue;
+                }
                 Point2D defaultPoint2D = Query.DefaultLabelPoint2D(mollierControlSettings, curve, chartType, ChartParameterType.Label);
                 if (defaultPoint2D == null)
                 {

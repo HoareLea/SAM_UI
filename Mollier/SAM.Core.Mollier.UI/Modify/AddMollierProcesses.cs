@@ -41,8 +41,14 @@ namespace SAM.Core.Mollier.UI
                 {
                     continue;
                 }
+                bool visible = mollierControlSettings.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess.ChartDataType).Visible;
+                if (!visible)
+                {
+                    continue;
+                }
 
-                if(mollierProcess is UndefinedProcess)
+
+                if (mollierProcess is UndefinedProcess)
                 {
                     createUndefinedProcessSeries(chart, uIMollierProcess, mollierControlSettings);
                     continue;
@@ -250,9 +256,10 @@ namespace SAM.Core.Mollier.UI
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 4;
-            series.Color = (uIMollierProcess.UIMollierAppearance.Color == Color.Empty) ?
-                mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)
-                : uIMollierProcess.UIMollierAppearance.Color;
+            //series.Color = (uIMollierProcess.UIMollierAppearance.Color == Color.Empty) ?
+            //    mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)
+            //    : uIMollierProcess.UIMollierAppearance.Color;
+            series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess);
             series.Tag = uIMollierProcess;
 
             int index;
