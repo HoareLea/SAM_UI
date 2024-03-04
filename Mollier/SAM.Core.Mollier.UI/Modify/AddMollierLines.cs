@@ -55,10 +55,10 @@ namespace SAM.Core.Mollier.UI
                 double latentLoad = sensibleLoad * ((1 - sensibleHeatRatio) / sensibleHeatRatio);
                 if(double.IsInfinity(latentLoad))
                 {
-                    SteamHumidificationProcess steamHumidificationProcess = Mollier.Create.SteamHumidificationProcess_ByHumidityRatioDifference(mollierPoint, 0.001);
+                    IsotermicHumidificationProcess isotermicHumidificationProcess = Mollier.Create.IsotermicHumidificationProcess_ByRelativeHumidity(mollierPoint, 100);
 
-                    Point2D point2D_1 = Convert.ToSAM(steamHumidificationProcess.Start, chartType);
-                    Point2D point2D_2 = Convert.ToSAM(steamHumidificationProcess.End, chartType);
+                    Point2D point2D_1 = Convert.ToSAM(isotermicHumidificationProcess.Start, chartType);
+                    Point2D point2D_2 = Convert.ToSAM(isotermicHumidificationProcess.End, chartType);
 
                     line2D = new Line2D(point2D_1, new Vector2D(point2D_1, point2D_2));
                 }
