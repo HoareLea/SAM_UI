@@ -211,7 +211,7 @@ namespace SAM.Core.Mollier.UI
             double distanceFromEnd = 2.2;
             Vector2D vector = new Vector2D(start, end).Unit;
 
-            return end + vector * distanceFromEnd;
+            return end.GetMoved(vector * distanceFromEnd);
         }
         private static Point2D onSegment(Point2D point1, Point2D point2, double percent)
         {

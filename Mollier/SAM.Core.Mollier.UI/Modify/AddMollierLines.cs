@@ -50,14 +50,27 @@ namespace SAM.Core.Mollier.UI
 
                 double sensibleLoad = 1;
 
+                Line2D line2D = null;
+
                 double latentLoad = sensibleLoad * ((1 - sensibleHeatRatio) / sensibleHeatRatio);
+                if(double.IsInfinity(latentLoad))
+                {
+                    line2D = new Line2D(Convert.ToSAM(mollierPoint, chartType), Vector2D.WorldY);
+                }
+                else
+                {
+                    RoomProcess roomProcess_Temp = Mollier.Create.RoomProcess_ByEnd(mollierPoint, 1, sensibleLoad * 1000, latentLoad * 1000);
 
-                RoomProcess roomProcess_Temp = Mollier.Create.RoomProcess_ByEnd(mollierPoint, 1, sensibleLoad  * 1000, latentLoad * 1000);
+                    Point2D point2D_1 = Convert.ToSAM(roomProcess_Temp.Start, chartType);
+                    Point2D point2D_2 = Convert.ToSAM(roomProcess_Temp.End, chartType);
 
-                Point2D point_1 = Convert.ToSAM(roomProcess_Temp.Start, chartType);
-                Point2D point_2 = Convert.ToSAM(roomProcess_Temp.End, chartType);
+                    line2D = new Line2D(point2D_1, new Vector2D(point2D_1, point2D_2));
+                }
 
-                Line2D line2D = new Line2D(point_1, point_2);
+                if(line2D == null)
+                {
+                    continue;
+                }
 
                 ChartArea chartArea = chart.ChartAreas[series.ChartArea];
 
