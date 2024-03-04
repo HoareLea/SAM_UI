@@ -85,7 +85,7 @@ namespace SAM.Core.Mollier.UI
                     //cooling process create one unique process with ADP point
                     if (labeledMollierProcesses.Count < 30 && mollierProcess is CoolingProcess)
                     {
-                        UIMollierPoint ADPPoint = createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
+                        createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
                         //if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
                     }
                 }
@@ -276,9 +276,12 @@ namespace SAM.Core.Mollier.UI
             {
                 return null;
             }
+
+            if(System.Math.Abs(start.HumidityRatio - end.HumidityRatio) < 0.0005)
+            {
+                return null;
+            }
             
-
-
             Series series = null;
 
             MollierPoint apparatusDewPoint = ((CoolingProcess)mollierProcess).ApparatusDewPoint();
