@@ -300,7 +300,36 @@ namespace SAM.Core.Mollier.UI
 
             createDewPointDashLineSeries(chart, start, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
             createDewPointDashLineSeries(chart, end, apparatusDewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
-            createDewPointDashLineSeries(chart, end, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+            //createDewPointDashLineSeries(chart, end, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+
+            double dryBulbTemperatureStep = 0.5;
+
+            double dryBulbTemperature = dewPoint.DryBulbTemperature - dryBulbTemperatureStep;
+
+            double pressure = end.Pressure;
+
+            Series series_Temp = chart.Series.Add(Guid.NewGuid().ToString());
+
+            series_Temp.Color = Color.LightGray;
+            series_Temp.IsVisibleInLegend = false;
+            series_Temp.BorderWidth = borderWidth;
+            series_Temp.ChartType = SeriesChartType.Line; //SeriesChartType.Spline;
+            series_Temp.BorderDashStyle = ChartDashStyle.Dash;
+            series_Temp.Tag = uIMollierProcess;//new UIMollierProcess(Mollier.Create.RoomProcess(mollierPoint_1, mollierPoint_2), Color.Black);
+
+            while (dryBulbTemperature > end.DryBulbTemperature)
+            {
+                double humidityRatio_Temp = Mollier.Query.HumidityRatio(dryBulbTemperature, end.RelativeHumidity, pressure);
+                if (!double.IsNaN(humidityRatio_Temp))
+                {
+                    MollierPoint mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio_Temp, pressure);
+                    Point2D point2D = Convert.ToSAM(mollierPoint, chartType);
+
+                    series_Temp.Points.AddXY(point2D.X, point2D.Y);
+                }
+
+                dryBulbTemperature -= dryBulbTemperatureStep;
+            }
 
             List<MollierPoint> mollierPoints = Mollier.Query.ProcessMollierPoints((CoolingProcess)mollierProcess);
             if (mollierPoints != null && mollierPoints.Count > 1)
