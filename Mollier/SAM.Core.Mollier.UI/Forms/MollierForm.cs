@@ -421,17 +421,23 @@ namespace SAM.Core.Mollier.UI
             if(uIMollierProcess.UIMollierAppearance.Color == System.Drawing.Color.Empty)
             {
                 MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null;
-                System.Drawing.Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, uIMollierProcess);
-                uIMollierProcess.UIMollierAppearance.Color = color;
-                if (uIMollierProcess.UIMollierPointAppearance_Start.Color == System.Drawing.Color.Empty)
+                
+                
+                System.Drawing.Color? color = mollierControlSettings?.VisibilitySettings?.GetColor(mollierControlSettings?.DefaultTemplateName, ChartParameterType.Line, uIMollierProcess);
+                if(color != null && color.HasValue)
                 {
-                    uIMollierProcess.UIMollierPointAppearance_Start.Color = color;
+                    uIMollierProcess.UIMollierAppearance.Color = color.Value;
+                    if (uIMollierProcess.UIMollierPointAppearance_Start.Color == System.Drawing.Color.Empty)
+                    {
+                        uIMollierProcess.UIMollierPointAppearance_Start.Color = color.Value;
+                    }
+
+                    if (uIMollierProcess.UIMollierPointAppearance_End.Color == System.Drawing.Color.Empty)
+                    {
+                        uIMollierProcess.UIMollierPointAppearance_End.Color = color.Value;
+                    }
                 }
 
-                if (uIMollierProcess.UIMollierPointAppearance_End.Color == System.Drawing.Color.Empty)
-                {
-                    uIMollierProcess.UIMollierPointAppearance_End.Color = color;
-                }
             }
 
             previousUIMollierPoint = uIMollierProcess.GetUIMollierPoint_End();
