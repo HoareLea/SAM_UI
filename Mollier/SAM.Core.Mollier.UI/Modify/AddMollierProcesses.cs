@@ -277,7 +277,8 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            if(System.Math.Abs(start.HumidityRatio - end.HumidityRatio) < 0.0005)
+            //this is tolerance when we should not display real cooling line < 0.0005
+            if (System.Math.Abs(start.HumidityRatio - end.HumidityRatio) < 0.001)
             {
                 return null;
             }
