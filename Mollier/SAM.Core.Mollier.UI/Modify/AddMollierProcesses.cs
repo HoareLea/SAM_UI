@@ -91,7 +91,7 @@ namespace SAM.Core.Mollier.UI
                     //cooling process create one unique process with ADP point
                     if (labeledMollierProcesses.Count < 30 && mollierProcess is CoolingProcess)
                     {
-                        UIMollierPoint ADPPoint = createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
+                        createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
                         //if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
                     }
                 }
@@ -283,9 +283,13 @@ namespace SAM.Core.Mollier.UI
             {
                 return null;
             }
+
+            //this is tolerance when we should not display real cooling line < 0.0005
+            if (System.Math.Abs(start.HumidityRatio - end.HumidityRatio) < 0.001)
+            {
+                return null;
+            }
             
-
-
             Series series = null;
 
             MollierPoint apparatusDewPoint = ((CoolingProcess)mollierProcess).ApparatusDewPoint();
@@ -303,7 +307,41 @@ namespace SAM.Core.Mollier.UI
 
             createDewPointDashLineSeries(chart, start, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
             createDewPointDashLineSeries(chart, end, apparatusDewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
-            createDewPointDashLineSeries(chart, end, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+            //createDewPointDashLineSeries(chart, end, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
+
+            double pressure = end.Pressure;
+            double relativeHumidity = 99;
+            double dryBulbTemperatureStep = 0.5;
+
+            Series series_Temp = chart.Series.Add(Guid.NewGuid().ToString());
+
+            series_Temp.Color = Color.LightGray;
+            series_Temp.IsVisibleInLegend = false;
+            series_Temp.BorderWidth = borderWidth;
+            series_Temp.ChartType = SeriesChartType.Line; //SeriesChartType.Spline;
+            series_Temp.BorderDashStyle = ChartDashStyle.Dash;
+            series_Temp.Tag = uIMollierProcess;//new UIMollierProcess(Mollier.Create.RoomProcess(mollierPoint_1, mollierPoint_2), Color.Black);
+
+            double humidityRatio_Temp = Mollier.Query.HumidityRatio(dewPoint.DryBulbTemperature, relativeHumidity, pressure);
+            MollierPoint mollierPoint = new MollierPoint(dewPoint.DryBulbTemperature, humidityRatio_Temp, pressure);
+            Point2D point2D = Convert.ToSAM(mollierPoint, chartType);
+
+            series_Temp.Points.AddXY(point2D.X, point2D.Y);
+
+            double dryBulbTemperature = dewPoint.DryBulbTemperature - dryBulbTemperatureStep;
+            while (dryBulbTemperature > end.DryBulbTemperature)
+            {
+                humidityRatio_Temp = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
+                if (!double.IsNaN(humidityRatio_Temp))
+                {
+                    mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio_Temp, pressure);
+                    point2D = Convert.ToSAM(mollierPoint, chartType);
+
+                    series_Temp.Points.AddXY(point2D.X, point2D.Y);
+                }
+
+                dryBulbTemperature -= dryBulbTemperatureStep;
+            }
 
             List<MollierPoint> mollierPoints = Mollier.Query.ProcessMollierPoints((CoolingProcess)mollierProcess);
             if (mollierPoints != null && mollierPoints.Count > 1)

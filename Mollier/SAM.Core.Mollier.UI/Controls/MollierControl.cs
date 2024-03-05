@@ -662,6 +662,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
 
+            mollierModel.AddRange(result);
             return result;
         }
 

@@ -134,7 +134,7 @@ namespace SAM.Core.Mollier.UI
                     double factor = result.BorderWidth == 1 ? 2 : 3;
 
                     Vector2D vector2D = new Vector2D(point2D_1, point2D_2);
-                    point2D_2 = point2D_2 + (vector2D.Unit * factor);
+                    point2D_2 = point2D_2.GetMoved(vector2D.Unit * factor);
                     result.Points.Add(point2D_2.ToChart());
                 }
             }
