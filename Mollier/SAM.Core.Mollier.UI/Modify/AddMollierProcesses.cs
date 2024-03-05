@@ -302,11 +302,9 @@ namespace SAM.Core.Mollier.UI
             createDewPointDashLineSeries(chart, end, apparatusDewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
             //createDewPointDashLineSeries(chart, end, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
 
-            double dryBulbTemperatureStep = 0.5;
-
-            double dryBulbTemperature = dewPoint.DryBulbTemperature - dryBulbTemperatureStep;
-
             double pressure = end.Pressure;
+            double relativeHumidity = 99;
+            double dryBulbTemperatureStep = 0.5;
 
             Series series_Temp = chart.Series.Add(Guid.NewGuid().ToString());
 
@@ -317,13 +315,20 @@ namespace SAM.Core.Mollier.UI
             series_Temp.BorderDashStyle = ChartDashStyle.Dash;
             series_Temp.Tag = uIMollierProcess;//new UIMollierProcess(Mollier.Create.RoomProcess(mollierPoint_1, mollierPoint_2), Color.Black);
 
+            double humidityRatio_Temp = Mollier.Query.HumidityRatio(dewPoint.DryBulbTemperature, relativeHumidity, pressure);
+            MollierPoint mollierPoint = new MollierPoint(dewPoint.DryBulbTemperature, humidityRatio_Temp, pressure);
+            Point2D point2D = Convert.ToSAM(mollierPoint, chartType);
+
+            series_Temp.Points.AddXY(point2D.X, point2D.Y);
+
+            double dryBulbTemperature = dewPoint.DryBulbTemperature - dryBulbTemperatureStep;
             while (dryBulbTemperature > end.DryBulbTemperature)
             {
-                double humidityRatio_Temp = Mollier.Query.HumidityRatio(dryBulbTemperature, end.RelativeHumidity, pressure);
+                humidityRatio_Temp = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
                 if (!double.IsNaN(humidityRatio_Temp))
                 {
-                    MollierPoint mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio_Temp, pressure);
-                    Point2D point2D = Convert.ToSAM(mollierPoint, chartType);
+                    mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio_Temp, pressure);
+                    point2D = Convert.ToSAM(mollierPoint, chartType);
 
                     series_Temp.Points.AddXY(point2D.X, point2D.Y);
                 }
