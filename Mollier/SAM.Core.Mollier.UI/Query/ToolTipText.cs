@@ -40,7 +40,7 @@
             {
                 return null;
             }
-            string mask = "Δt = {0} °C\nΔx = {1} {3}\nΔh = {2} kJ/kg\nε = {4} kJ/kg\n*ε=Δh/Δx";
+            string mask = "Δt = {0} °C\nΔx = {1} {3}\nΔh = {2} kJ/kg\nε = {4} kJ/kg\n*ε=Δh/Δx\nSHR = {5}";
             if (name != null && name != "")
             {
                 mask = string.Format("{0}\n{1}", name, mask);
@@ -49,10 +49,10 @@
             switch (chartType)
             {
                 case ChartType.Mollier:
-                    return string.Format(mask, System.Math.Round(System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), 2), System.Math.Round(System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2), 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg", System.Math.Round(Mollier.Query.Epsilon(start, end), 0));
+                    return string.Format(mask, System.Math.Round(System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), 2), System.Math.Round(System.Math.Round(end.HumidityRatio * 1000, 2) - System.Math.Round(start.HumidityRatio * 1000, 2), 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg", System.Math.Round(Mollier.Query.Epsilon(start, end), 0), System.Math.Round(Mollier.Query.SensibleHeatRatio(start, end), 2));
                 
                 case ChartType.Psychrometric:
-                    return string.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round((System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5)) * 1000, 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg", System.Math.Round(Mollier.Query.Epsilon(start, end), 0));
+                    return string.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round((System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5)) * 1000, 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg", System.Math.Round(Mollier.Query.Epsilon(start, end), 0), System.Math.Round(Mollier.Query.SensibleHeatRatio(start, end), 2));
             }
 
             return null;
