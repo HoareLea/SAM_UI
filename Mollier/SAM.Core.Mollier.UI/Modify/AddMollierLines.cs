@@ -49,10 +49,9 @@ namespace SAM.Core.Mollier.UI
                 MollierPoint mollierPoint = mollierSensibleHeatRatioLine.MollierPoints[0];
 
                 double sensibleLoad = 1;
-
                 Line2D line2D = null;
 
-                double latentLoad = sensibleLoad * ((1 - sensibleHeatRatio) / sensibleHeatRatio);
+                double latentLoad = sensibleLoad * ((1 - System.Math.Abs(sensibleHeatRatio)) / System.Math.Abs(sensibleHeatRatio));
                 if(double.IsInfinity(latentLoad))
                 {
                     IsotermicHumidificationProcess isotermicHumidificationProcess = Mollier.Create.IsotermicHumidificationProcess_ByRelativeHumidity(mollierPoint, 100);
@@ -64,6 +63,10 @@ namespace SAM.Core.Mollier.UI
                 }
                 else
                 {
+                if (sensibleHeatRatio < 0)
+                    {
+                    sensibleLoad = -1;
+                }
                     RoomProcess roomProcess_Temp = Mollier.Create.RoomProcess_ByEnd(mollierPoint, 1, sensibleLoad * 1000, latentLoad * 1000);
 
                     Point2D point2D_1 = Convert.ToSAM(roomProcess_Temp.Start, chartType);

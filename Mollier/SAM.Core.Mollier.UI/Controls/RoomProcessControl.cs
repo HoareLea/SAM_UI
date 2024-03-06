@@ -121,11 +121,13 @@ namespace SAM.Core.Mollier.UI.Controls
                 return null;
             }
 
-            double airFlow = ParameterControl_Airflow.Value;
-            if (double.IsNaN(airFlow))
+            double airMassFlow = ParameterControl_Airflow.Value;
+            if (double.IsNaN(airMassFlow))
             {
                 return null;
             }
+
+            airMassFlow *= start.Density();
 
 
             double latentHeat = ParameterControl_LatentLoad.Value;
@@ -140,7 +142,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 return null;
             }
 
-            return Mollier.Create.RoomProcess(start, airFlow, sensibleLoad * 1000, latentHeat * 1000);
+            return Mollier.Create.RoomProcess(start, airMassFlow, sensibleLoad * 1000, latentHeat * 1000);
         }
 
         public void CalculateRoomMollierPoint()
