@@ -385,10 +385,11 @@ namespace SAM.Core.Mollier.UI.Controls
             //Add Chart Lines
             MollierChart.AddLinesSeries(mollierControlSettings);
             //Add Chart Lables : Missing
+            
+            MollierChart.AddMollierLines(mollierModel, mollierControlSettings);
 
             MollierChart.AddMollierPoints(mollierModel, mollierControlSettings);
             MollierChart.AddMollierProcesses(mollierModel, mollierControlSettings);
-            MollierChart.AddMollierLines(mollierModel, mollierControlSettings);
             MollierChart.AddMollierZones(mollierModel, mollierControlSettings);
             MollierChart.AddDivisionArea(mollierModel, mollierControlSettings);
             MollierChart.AddColorPoint(mollierModel, mollierControlSettings);
