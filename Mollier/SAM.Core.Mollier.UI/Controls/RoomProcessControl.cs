@@ -90,6 +90,11 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
+            if(latent < 0)
+            {
+                sensible = -sensible;
+            }
+
             ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(sensible / (System.Math.Abs(sensible) + System.Math.Abs(latent)), Tolerance.MacroDistance);
         }
 
