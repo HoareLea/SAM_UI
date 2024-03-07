@@ -24,7 +24,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.6";
+        public override string LatestComponentVersion => "1.0.7";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -52,6 +52,8 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
                 result.Add(new GH_SAMParam(new GooMollierObjectParam() { Name = "_mollierObjects", NickName = "_mollierObjects", Description = "Mollier Objects", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
 
+                param_Bool = new Param_Boolean() { Name = "refresh_", NickName = "refresh_", Description = "refresh", Access = GH_ParamAccess.item, Optional = true };
+                result.Add(new GH_SAMParam(param_Bool, ParamVisibility.Voluntary));
 
                 param_Bool = new Param_Boolean() { Name = "_coolingLineRealistic_", NickName = "_coolingLineRealistic_", Description = "This option will represent Cooling with dehumidification process in 'more' realistic curve - estimation", Access = GH_ParamAccess.item, Optional = true };
                 param_Bool.SetPersistentData(false);
