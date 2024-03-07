@@ -90,7 +90,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            ParameterControl_SensibleLoadRatio.Value = Mollier.Query.SensibleHeatRatio(sensible, latent);
+            ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(Mollier.Query.SensibleHeatRatio(sensible, latent), Tolerance.MacroDistance);
 
             //if (latent < 0)
             //{
