@@ -32,7 +32,14 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.mollierPointControl_Room = new SAM.Core.Mollier.UI.Controls.MollierPointControl();
+            this.ParameterControl_SensibleLoadRatio = new SAM.Core.Mollier.UI.Controls.ParameterControl();
+            this.ParameterControl_LatentLoad = new SAM.Core.Mollier.UI.Controls.ParameterControl();
+            this.ParameterControl_SensibleLoad = new SAM.Core.Mollier.UI.Controls.ParameterControl();
+            this.ParameterControl_HumidityRatio_Start = new SAM.Core.Mollier.UI.Controls.ParameterControl();
+            this.ParameterControl_Airflow = new SAM.Core.Mollier.UI.Controls.ParameterControl();
             this.MollierPointControl_Start = new SAM.Core.Mollier.UI.Controls.MollierPointControl();
+            this.ParameterControl_HumidityRatio_Room = new SAM.Core.Mollier.UI.Controls.ParameterControl();
+            this.ParameterControl_Epsilon = new SAM.Core.Mollier.UI.Controls.ParameterControl();
             this.SuspendLayout();
             // 
             // label2
@@ -77,6 +84,61 @@
             this.mollierPointControl_Room.Size = new System.Drawing.Size(168, 220);
             this.mollierPointControl_Room.TabIndex = 21;
             // 
+            // ParameterControl_SensibleLoadRatio
+            // 
+            this.ParameterControl_SensibleLoadRatio.Location = new System.Drawing.Point(227, 212);
+            this.ParameterControl_SensibleLoadRatio.Name = "ParameterControl_SensibleLoadRatio";
+            this.ParameterControl_SensibleLoadRatio.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_SensibleLoadRatio.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_SensibleLoadRatio.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_SensibleLoadRatio.TabIndex = 20;
+            this.ParameterControl_SensibleLoadRatio.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_SensibleLoadRatio.Value = 0D;
+            // 
+            // ParameterControl_LatentLoad
+            // 
+            this.ParameterControl_LatentLoad.Location = new System.Drawing.Point(227, 156);
+            this.ParameterControl_LatentLoad.Name = "ParameterControl_LatentLoad";
+            this.ParameterControl_LatentLoad.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_LatentLoad.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_LatentLoad.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_LatentLoad.TabIndex = 19;
+            this.ParameterControl_LatentLoad.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_LatentLoad.Value = 0D;
+            // 
+            // ParameterControl_SensibleLoad
+            // 
+            this.ParameterControl_SensibleLoad.Location = new System.Drawing.Point(227, 99);
+            this.ParameterControl_SensibleLoad.Name = "ParameterControl_SensibleLoad";
+            this.ParameterControl_SensibleLoad.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_SensibleLoad.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_SensibleLoad.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_SensibleLoad.TabIndex = 18;
+            this.ParameterControl_SensibleLoad.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_SensibleLoad.Value = 0D;
+            // 
+            // ParameterControl_HumidityRatio_Start
+            // 
+            this.ParameterControl_HumidityRatio_Start.Location = new System.Drawing.Point(12, 233);
+            this.ParameterControl_HumidityRatio_Start.Name = "ParameterControl_HumidityRatio_Start";
+            this.ParameterControl_HumidityRatio_Start.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_HumidityRatio_Start.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_HumidityRatio_Start.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_HumidityRatio_Start.TabIndex = 17;
+            this.ParameterControl_HumidityRatio_Start.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_HumidityRatio_Start.Value = 0D;
+            // 
+            // ParameterControl_Airflow
+            // 
+            this.ParameterControl_Airflow.Location = new System.Drawing.Point(227, 42);
+            this.ParameterControl_Airflow.Name = "ParameterControl_Airflow";
+            this.ParameterControl_Airflow.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_Airflow.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_Airflow.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_Airflow.TabIndex = 16;
+            this.ParameterControl_Airflow.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_Airflow.Value = 0D;
+            // 
             // MollierPointControl_Start
             // 
             this.MollierPointControl_Start.AutoSize = true;
@@ -89,17 +151,46 @@
             this.MollierPointControl_Start.Size = new System.Drawing.Size(168, 220);
             this.MollierPointControl_Start.TabIndex = 0;
             // 
+            // ParameterControl_HumidityRatio_Room
+            // 
+            this.ParameterControl_HumidityRatio_Room.Location = new System.Drawing.Point(401, 232);
+            this.ParameterControl_HumidityRatio_Room.Name = "ParameterControl_HumidityRatio_Room";
+            this.ParameterControl_HumidityRatio_Room.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_HumidityRatio_Room.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_HumidityRatio_Room.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_HumidityRatio_Room.TabIndex = 23;
+            this.ParameterControl_HumidityRatio_Room.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_HumidityRatio_Room.Value = 0D;
+            // 
+            // ParameterControl_Epsilon
+            // 
+            this.ParameterControl_Epsilon.Location = new System.Drawing.Point(227, 269);
+            this.ParameterControl_Epsilon.Name = "ParameterControl_Epsilon";
+            this.ParameterControl_Epsilon.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_Epsilon.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_Epsilon.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_Epsilon.TabIndex = 24;
+            this.ParameterControl_Epsilon.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_Epsilon.Value = 0D;
+            // 
             // RoomProcessControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoSize = true;
+            this.Controls.Add(this.ParameterControl_Epsilon);
+            this.Controls.Add(this.ParameterControl_HumidityRatio_Room);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.mollierPointControl_Room);
+            this.Controls.Add(this.ParameterControl_SensibleLoadRatio);
+            this.Controls.Add(this.ParameterControl_LatentLoad);
+            this.Controls.Add(this.ParameterControl_SensibleLoad);
+            this.Controls.Add(this.ParameterControl_HumidityRatio_Start);
+            this.Controls.Add(this.ParameterControl_Airflow);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.MollierPointControl_Start);
             this.Name = "RoomProcessControl";
-            this.Size = new System.Drawing.Size(579, 310);
+            this.Size = new System.Drawing.Size(579, 323);
             this.ResumeLayout(false);
             this.PerformLayout();
 
