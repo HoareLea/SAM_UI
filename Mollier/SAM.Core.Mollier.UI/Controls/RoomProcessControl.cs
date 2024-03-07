@@ -6,7 +6,7 @@ namespace SAM.Core.Mollier.UI.Controls
     public partial class RoomProcessControl : UserControl, IMollierProcessControl
     {
         private MollierForm mollierForm;
-        
+
         public event SelectMollierPointEventHandler SelectMollierPoint;
 
         public RoomProcessControl()
@@ -40,13 +40,17 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierPointControl_Start.ValueHanged += MollierPointControl_Start_ValueHanged;
             MollierPointControl_Start.SelectMollierPoint += MollierPointControl_Start_SelectMollierPoint;
             MollierPointControl_Start.SelectMollierPointVisible = false;
+
+            ParameterControl_Epsilon.Name = "Epsilon";
+            ParameterControl_Epsilon.UnitType = Units.UnitType.KilojulePerKilogram;
+            ParameterControl_Epsilon.Enabled = false;
         }
 
         private void MollierPointControl_Start_SelectMollierPoint(object sender, SelectMollierPointEventArgs e)
         {
             SelectMollierPoint?.Invoke(this, e);
 
-            if(MollierForm != null)
+            if (MollierForm != null)
             {
                 MollierForm.MollierPointSelected += MollierForm_MollierPointSelected;
             }
@@ -74,7 +78,7 @@ namespace SAM.Core.Mollier.UI.Controls
             ParameterControl_SensibleLoadRatio.Value = 0;
 
             double sensible = ParameterControl_SensibleLoad.Value;
-            if(double.IsNaN(sensible))
+            if (double.IsNaN(sensible))
             {
                 return;
             }
@@ -85,12 +89,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            if(sensible == 0 && latent == 0)
+            if (sensible == 0 && latent == 0)
             {
                 return;
             }
 
             ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(Mollier.Query.SensibleHeatRatio(sensible, latent), Tolerance.MacroDistance);
+
+            ParameterControl_Epsilon.Value = Core.Query.Round(Mollier.Query.Epsilon_BySensibleAndLatentGain(sensible, latent), 0);
 
             //if (latent < 0)
             //{
@@ -110,7 +116,7 @@ namespace SAM.Core.Mollier.UI.Controls
         public UIMollierProcess GetUIMollierProcess()
         {
             RoomProcess RoomProcess = GetRoomProcess();
-            if(RoomProcess == null)
+            if (RoomProcess == null)
             {
                 return null;
             }
@@ -135,7 +141,6 @@ namespace SAM.Core.Mollier.UI.Controls
             }
 
             airMassFlow *= start.Density();
-
 
             double latentHeat = ParameterControl_LatentLoad.Value;
             if (double.IsNaN(latentHeat))

@@ -39,6 +39,7 @@
             this.ParameterControl_Airflow = new SAM.Core.Mollier.UI.Controls.ParameterControl();
             this.MollierPointControl_Start = new SAM.Core.Mollier.UI.Controls.MollierPointControl();
             this.ParameterControl_HumidityRatio_Room = new SAM.Core.Mollier.UI.Controls.ParameterControl();
+            this.ParameterControl_Epsilon = new SAM.Core.Mollier.UI.Controls.ParameterControl();
             this.SuspendLayout();
             // 
             // label2
@@ -77,13 +78,15 @@
             this.mollierPointControl_Room.Location = new System.Drawing.Point(401, 32);
             this.mollierPointControl_Room.Name = "mollierPointControl_Room";
             this.mollierPointControl_Room.Pressure = 101325D;
+            this.mollierPointControl_Room.PressureEnabled = true;
             this.mollierPointControl_Room.PressureVisible = true;
+            this.mollierPointControl_Room.SelectMollierPointVisible = false;
             this.mollierPointControl_Room.Size = new System.Drawing.Size(168, 220);
             this.mollierPointControl_Room.TabIndex = 21;
             // 
             // ParameterControl_SensibleLoadRatio
             // 
-            this.ParameterControl_SensibleLoadRatio.Location = new System.Drawing.Point(227, 232);
+            this.ParameterControl_SensibleLoadRatio.Location = new System.Drawing.Point(227, 212);
             this.ParameterControl_SensibleLoadRatio.Name = "ParameterControl_SensibleLoadRatio";
             this.ParameterControl_SensibleLoadRatio.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.ParameterControl_SensibleLoadRatio.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -94,7 +97,7 @@
             // 
             // ParameterControl_LatentLoad
             // 
-            this.ParameterControl_LatentLoad.Location = new System.Drawing.Point(227, 176);
+            this.ParameterControl_LatentLoad.Location = new System.Drawing.Point(227, 156);
             this.ParameterControl_LatentLoad.Name = "ParameterControl_LatentLoad";
             this.ParameterControl_LatentLoad.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.ParameterControl_LatentLoad.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -105,7 +108,7 @@
             // 
             // ParameterControl_SensibleLoad
             // 
-            this.ParameterControl_SensibleLoad.Location = new System.Drawing.Point(227, 105);
+            this.ParameterControl_SensibleLoad.Location = new System.Drawing.Point(227, 99);
             this.ParameterControl_SensibleLoad.Name = "ParameterControl_SensibleLoad";
             this.ParameterControl_SensibleLoad.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.ParameterControl_SensibleLoad.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
@@ -142,7 +145,9 @@
             this.MollierPointControl_Start.Location = new System.Drawing.Point(12, 32);
             this.MollierPointControl_Start.Name = "MollierPointControl_Start";
             this.MollierPointControl_Start.Pressure = 101325D;
+            this.MollierPointControl_Start.PressureEnabled = true;
             this.MollierPointControl_Start.PressureVisible = true;
+            this.MollierPointControl_Start.SelectMollierPointVisible = false;
             this.MollierPointControl_Start.Size = new System.Drawing.Size(168, 220);
             this.MollierPointControl_Start.TabIndex = 0;
             // 
@@ -157,10 +162,22 @@
             this.ParameterControl_HumidityRatio_Room.UnitType = SAM.Units.UnitType.Undefined;
             this.ParameterControl_HumidityRatio_Room.Value = 0D;
             // 
+            // ParameterControl_Epsilon
+            // 
+            this.ParameterControl_Epsilon.Location = new System.Drawing.Point(227, 269);
+            this.ParameterControl_Epsilon.Name = "ParameterControl_Epsilon";
+            this.ParameterControl_Epsilon.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
+            this.ParameterControl_Epsilon.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.ParameterControl_Epsilon.Size = new System.Drawing.Size(168, 51);
+            this.ParameterControl_Epsilon.TabIndex = 24;
+            this.ParameterControl_Epsilon.UnitType = SAM.Units.UnitType.Undefined;
+            this.ParameterControl_Epsilon.Value = 0D;
+            // 
             // RoomProcessControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.AutoSize = true;
+            this.Controls.Add(this.ParameterControl_Epsilon);
             this.Controls.Add(this.ParameterControl_HumidityRatio_Room);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.mollierPointControl_Room);
@@ -173,7 +190,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.MollierPointControl_Start);
             this.Name = "RoomProcessControl";
-            this.Size = new System.Drawing.Size(579, 294);
+            this.Size = new System.Drawing.Size(579, 323);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,5 +209,6 @@
         private System.Windows.Forms.Label label3;
         private MollierPointControl mollierPointControl_Room;
         private ParameterControl ParameterControl_HumidityRatio_Room;
+        private ParameterControl ParameterControl_Epsilon;
     }
 }
