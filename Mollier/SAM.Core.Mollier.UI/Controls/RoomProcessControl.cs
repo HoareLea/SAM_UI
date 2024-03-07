@@ -94,16 +94,16 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(Mollier.Query.SensibleHeatRatio(sensible, latent), Tolerance.MacroDistance);
+            MollierPoint mollierPoint_Start = MollierPointControl_Start.MollierPoint;
+            MollierPoint mollierPoint_End = mollierPointControl_Room.MollierPoint;
 
-            ParameterControl_Epsilon.Value = Core.Query.Round(Mollier.Query.Epsilon_BySensibleAndLatentGain(sensible, latent), 0);
+            ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(Mollier.Query.SensibleHeatRatio(mollierPoint_Start, mollierPoint_End), Tolerance.MacroDistance);
 
-            //if (latent < 0)
-            //{
-            //    sensible = -sensible;
-            //}
+            ParameterControl_Epsilon.Value = System.Math.Round(Mollier.Query.Epsilon(mollierPoint_Start, mollierPoint_End), 0);
 
-            //ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(sensible / (System.Math.Abs(sensible) + System.Math.Abs(latent)), Tolerance.MacroDistance);
+            //ParameterControl_SensibleLoadRatio.Value = Core.Query.Round(Mollier.Query.SensibleHeatRatio(sensible, latent), Tolerance.MacroDistance);
+
+            //ParameterControl_Epsilon.Value = Core.Query.Round(Mollier.Query.Epsilon_BySensibleAndLatentGain(sensible, latent), 0);
         }
 
         private void MollierPointControl_Start_ValueHanged(object sender, System.EventArgs e)
