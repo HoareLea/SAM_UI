@@ -24,7 +24,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.7";
+        public override string LatestComponentVersion => "1.0.8";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -52,12 +52,9 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
                 result.Add(new GH_SAMParam(new GooMollierObjectParam() { Name = "_mollierObjects", NickName = "_mollierObjects", Description = "Mollier Objects", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
 
-                param_Bool = new Param_Boolean() { Name = "refresh_", NickName = "refresh_", Description = "refresh", Access = GH_ParamAccess.item, Optional = true };
-                result.Add(new GH_SAMParam(param_Bool, ParamVisibility.Voluntary));
-
-                param_Bool = new Param_Boolean() { Name = "_coolingLineRealistic_", NickName = "_coolingLineRealistic_", Description = "This option will represent Cooling with dehumidification process in 'more' realistic curve - estimation", Access = GH_ParamAccess.item, Optional = true };
-                param_Bool.SetPersistentData(false);
-                result.Add(new GH_SAMParam(param_Bool, ParamVisibility.Voluntary));
+                //param_Bool = new Param_Boolean() { Name = "_coolingLineRealistic_", NickName = "_coolingLineRealistic_", Description = "This option will represent Cooling with dehumidification process in 'more' realistic curve - estimation", Access = GH_ParamAccess.item, Optional = true };
+                //param_Bool.SetPersistentData(false);
+                //result.Add(new GH_SAMParam(param_Bool, ParamVisibility.Voluntary));
 
 
                 return result.ToArray();
@@ -110,12 +107,12 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
             ChartType chartType = chartType_input == true ? ChartType.Mollier : ChartType.Psychrometric;
 
-            index = Params.IndexOfInputParam("_coolingLineRealistic_");
-            bool coolingLineRealistic = false;
-            if (index != -1)
-            {
-                dataAccess.GetData(index, ref coolingLineRealistic);
-            }
+            //index = Params.IndexOfInputParam("_coolingLineRealistic_");
+            //bool coolingLineRealistic = false;
+            //if (index != -1)
+            //{
+            //    dataAccess.GetData(index, ref coolingLineRealistic);
+            //}
 
             foreach (IMollierObject mollierObject in mollierObjects)
             {
@@ -124,14 +121,14 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                     continue;
                 }
                 
-                IUIMollierObject uIMollierObject2 = mollierObject.ToSAM_UI();
-                if(uIMollierObject2 == null)
+                IUIMollierObject uIMollierObject = mollierObject.ToSAM_UI();
+                if(uIMollierObject == null)
                 {
                     AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                     return;
                 }
 
-                MollierChartObject mollierChartObject2 = new MollierChartObject(uIMollierObject2, chartType, 0);
+                MollierChartObject mollierChartObject2 = new MollierChartObject(uIMollierObject, chartType, 0);
                 mollierChartObjects.Add(mollierChartObject2);
             }
 
