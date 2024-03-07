@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.2";
+        public override string LatestComponentVersion => "1.0.3";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -82,7 +82,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// </summary>
         public SAMMollierCreateRoomProcessByEndPoint()
           : base("SAMMollier.CreateRoomProcessByEndPoint", "SAMMollier.CreateRoomProcessByEndPoint",
-              "Creates Room Process by Room point Sensible and Latent Gains/Load]",
+              "Creates Room Process by Room point Sensible and Latent Gains/Load] \n*where SpecificHeatCapacity_Air is calculated for End Point",
               "SAM", "Mollier")
         {
         }

@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.4";
+        public override string LatestComponentVersion => "1.0.5";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -84,7 +84,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// </summary>
         public SAMMollierCreateRoomProcessByEpsilon()
           : base("SAMMollier.CreateRoomProcessByEpsilon", "SAMMollier.CreateRoomProcessByEpsilon",
-              "Creates RoomProcess",
+              "Creates RoomProcess \n whew SpecificHeat_Air is used for Specific Heat of air vapour at constant pressure and temperature 0C (cp) 1010 J/kgK",
               "SAM", "Mollier")
         {
         }
