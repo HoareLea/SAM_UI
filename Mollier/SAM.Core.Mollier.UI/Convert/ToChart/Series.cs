@@ -57,15 +57,15 @@ namespace SAM.Core.Mollier.UI
 
                     if (constantValueCurve.Value == 50)
                     {
-                        result.BorderWidth = 1;  // rounding 1.5 up to 2
-                    }
-                    else if (constantValueCurve.Value != 100 && constantValueCurve.Value != 50)
-                    {
                         result.BorderWidth = 1;
+                    }
+                    else if (constantValueCurve.Value == 100)
+                    {
+                        result.BorderWidth = 2;
                     }
                     else
                     {
-                        result.BorderWidth = 2;
+                        result.BorderWidth = 1;
                     }
                     break;
 

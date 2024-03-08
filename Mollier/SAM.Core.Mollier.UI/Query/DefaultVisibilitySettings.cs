@@ -12,7 +12,7 @@
             VisibilitySettings result = new VisibilitySettings();
 
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RelativeHumidity, Default.RelativeHumidity_Color));
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.MediumLine, ChartDataType.RelativeHumidity, Default.RelativeHumidity_Color));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.MediumLine, ChartDataType.RelativeHumidity, Default.RelativeHumidity_MediumLine_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.RelativeHumidity, Default.RelativeHumidity_Color));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
