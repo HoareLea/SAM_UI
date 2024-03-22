@@ -29,9 +29,9 @@ namespace SAM.Core.Mollier.UI
         /// </summary>
         private void InitializeComponent()
         {
-            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings1 = new SAM.Core.Mollier.UI.MollierControlSettings();
-            SAM.Core.Mollier.VisibilitySettings visibilitySettings1 = new SAM.Core.Mollier.VisibilitySettings();
-            SAM.Core.Mollier.MollierModel mollierModel1 = new SAM.Core.Mollier.MollierModel();
+            SAM.Core.Mollier.UI.MollierControlSettings mollierControlSettings2 = new SAM.Core.Mollier.UI.MollierControlSettings();
+            SAM.Core.Mollier.VisibilitySettings visibilitySettings2 = new SAM.Core.Mollier.VisibilitySettings();
+            SAM.Core.Mollier.MollierModel mollierModel2 = new SAM.Core.Mollier.MollierModel();
             this.TextBox_Pressure = new System.Windows.Forms.TextBox();
             this.Label_Pressure = new System.Windows.Forms.Label();
             this.MenuStrip_Main = new System.Windows.Forms.MenuStrip();
@@ -69,6 +69,7 @@ namespace SAM.Core.Mollier.UI
             this.grayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blueBlackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_ComfortZones = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_DivisionArea = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_Settings = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_OpenSettings = new System.Windows.Forms.ToolStripMenuItem();
             this.resetChartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,7 +84,6 @@ namespace SAM.Core.Mollier.UI
             this.ColorPointComboBox = new System.Windows.Forms.ComboBox();
             this.DivisionAreaLabels_CheckBox = new System.Windows.Forms.CheckBox();
             this.MollierControl_Main = new SAM.Core.Mollier.UI.Controls.MollierControl();
-            this.ToolStripMenuItem_DivisionArea = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuStrip_Main.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -92,7 +92,7 @@ namespace SAM.Core.Mollier.UI
             this.TextBox_Pressure.Location = new System.Drawing.Point(273, 30);
             this.TextBox_Pressure.Name = "TextBox_Pressure";
             this.TextBox_Pressure.Size = new System.Drawing.Size(63, 22);
-            this.TextBox_Pressure.TabIndex = 12;
+            this.TextBox_Pressure.TabIndex = 2;
             this.TextBox_Pressure.Text = "101325";
             this.TextBox_Pressure.TextChanged += new System.EventHandler(this.TextBox_Pressure_TextChanged);
             // 
@@ -140,21 +140,21 @@ namespace SAM.Core.Mollier.UI
             // newToolStripMenuItem
             // 
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
-            this.newToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
+            this.newToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.newToolStripMenuItem.Text = "New";
             this.newToolStripMenuItem.Click += new System.EventHandler(this.newToolStripMenuItem_Click);
             // 
             // openFromJSONToolStripMenuItem
             // 
             this.openFromJSONToolStripMenuItem.Name = "openFromJSONToolStripMenuItem";
-            this.openFromJSONToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
+            this.openFromJSONToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.openFromJSONToolStripMenuItem.Text = "Open";
             this.openFromJSONToolStripMenuItem.Click += new System.EventHandler(this.OpenToolStripMenuItem_Click);
             // 
             // exportToJSONToolStripMenuItem
             // 
             this.exportToJSONToolStripMenuItem.Name = "exportToJSONToolStripMenuItem";
-            this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
+            this.exportToJSONToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.exportToJSONToolStripMenuItem.Text = "Save";
             this.exportToJSONToolStripMenuItem.Click += new System.EventHandler(this.SaveToolStripMenuItem_Click);
             // 
@@ -166,7 +166,7 @@ namespace SAM.Core.Mollier.UI
             this.a4PortraitToolStripMenuItem,
             this.a4LandscapeToolStripMenuItem});
             this.ToolStripMenuItem_Save.Name = "ToolStripMenuItem_Save";
-            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(173, 26);
+            this.ToolStripMenuItem_Save.Size = new System.Drawing.Size(224, 26);
             this.ToolStripMenuItem_Save.Text = "Save as PDF";
             // 
             // PdfA3_PortraitToolStripMenuItem
@@ -200,21 +200,21 @@ namespace SAM.Core.Mollier.UI
             // saveAsJPGToolStripMenuItem
             // 
             this.saveAsJPGToolStripMenuItem.Name = "saveAsJPGToolStripMenuItem";
-            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
+            this.saveAsJPGToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.saveAsJPGToolStripMenuItem.Text = "Save as JPG";
             this.saveAsJPGToolStripMenuItem.Click += new System.EventHandler(this.saveAsJPGToolStripMenuItem_Click);
             // 
             // saveAsEMFToolStripMenuItem
             // 
             this.saveAsEMFToolStripMenuItem.Name = "saveAsEMFToolStripMenuItem";
-            this.saveAsEMFToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
+            this.saveAsEMFToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.saveAsEMFToolStripMenuItem.Text = "Save as EMF";
             this.saveAsEMFToolStripMenuItem.Click += new System.EventHandler(this.saveAsEMFToolStripMenuItem_Click);
             // 
             // printToolStripMenuItem
             // 
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
-            this.printToolStripMenuItem.Size = new System.Drawing.Size(173, 26);
+            this.printToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.printToolStripMenuItem.Text = "Print";
             this.printToolStripMenuItem.Click += new System.EventHandler(this.printToolStripMenuItem_Click);
             // 
@@ -234,40 +234,40 @@ namespace SAM.Core.Mollier.UI
             // ToolStripMenuItem_AddPoint
             // 
             this.ToolStripMenuItem_AddPoint.Name = "ToolStripMenuItem_AddPoint";
-            this.ToolStripMenuItem_AddPoint.Size = new System.Drawing.Size(224, 26);
+            this.ToolStripMenuItem_AddPoint.Size = new System.Drawing.Size(173, 26);
             this.ToolStripMenuItem_AddPoint.Text = "Add Point";
             this.ToolStripMenuItem_AddPoint.Click += new System.EventHandler(this.ToolStripMenuItem_AddPoint_Click);
             // 
             // ToolStripMenuItem_AddProcess
             // 
             this.ToolStripMenuItem_AddProcess.Name = "ToolStripMenuItem_AddProcess";
-            this.ToolStripMenuItem_AddProcess.Size = new System.Drawing.Size(224, 26);
+            this.ToolStripMenuItem_AddProcess.Size = new System.Drawing.Size(173, 26);
             this.ToolStripMenuItem_AddProcess.Text = "Add Process";
             this.ToolStripMenuItem_AddProcess.Click += new System.EventHandler(this.ToolStripMenuItem_AddProcess_Click);
             // 
             // ToolStripMenuItem_Edit
             // 
             this.ToolStripMenuItem_Edit.Name = "ToolStripMenuItem_Edit";
-            this.ToolStripMenuItem_Edit.Size = new System.Drawing.Size(224, 26);
+            this.ToolStripMenuItem_Edit.Size = new System.Drawing.Size(173, 26);
             this.ToolStripMenuItem_Edit.Text = "Edit/Delete";
             this.ToolStripMenuItem_Edit.Click += new System.EventHandler(this.ToolStripMenuItem_Edit_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(221, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(170, 6);
             // 
             // ToolStripMenuItem_Epsilon
             // 
             this.ToolStripMenuItem_Epsilon.Name = "ToolStripMenuItem_Epsilon";
-            this.ToolStripMenuItem_Epsilon.Size = new System.Drawing.Size(224, 26);
+            this.ToolStripMenuItem_Epsilon.Size = new System.Drawing.Size(173, 26);
             this.ToolStripMenuItem_Epsilon.Text = "ε";
             this.ToolStripMenuItem_Epsilon.Click += new System.EventHandler(this.ToolStripMenuItem_Epsilon_Click);
             // 
             // ToolStripMenuItem_SHR
             // 
             this.ToolStripMenuItem_SHR.Name = "ToolStripMenuItem_SHR";
-            this.ToolStripMenuItem_SHR.Size = new System.Drawing.Size(224, 26);
+            this.ToolStripMenuItem_SHR.Size = new System.Drawing.Size(173, 26);
             this.ToolStripMenuItem_SHR.Text = "SHR";
             this.ToolStripMenuItem_SHR.Click += new System.EventHandler(this.ToolStripMenuItem_SHR_Click);
             // 
@@ -411,6 +411,13 @@ namespace SAM.Core.Mollier.UI
             this.ToolStripMenuItem_ComfortZones.CheckedChanged += new System.EventHandler(this.ToolStripMenuItem_ComfortZones_CheckedChanged);
             this.ToolStripMenuItem_ComfortZones.Click += new System.EventHandler(this.ToolStripMenuItem_ComfortZoners_Click);
             // 
+            // ToolStripMenuItem_DivisionArea
+            // 
+            this.ToolStripMenuItem_DivisionArea.Name = "ToolStripMenuItem_DivisionArea";
+            this.ToolStripMenuItem_DivisionArea.Size = new System.Drawing.Size(242, 26);
+            this.ToolStripMenuItem_DivisionArea.Text = "Division Area";
+            this.ToolStripMenuItem_DivisionArea.Click += new System.EventHandler(this.ToolStripMenuItem_DivisionArea_Click);
+            // 
             // ToolStripMenuItem_Settings
             // 
             this.ToolStripMenuItem_Settings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -464,7 +471,7 @@ namespace SAM.Core.Mollier.UI
             this.TextBox_Elevation.Location = new System.Drawing.Point(106, 30);
             this.TextBox_Elevation.Name = "TextBox_Elevation";
             this.TextBox_Elevation.Size = new System.Drawing.Size(63, 22);
-            this.TextBox_Elevation.TabIndex = 22;
+            this.TextBox_Elevation.TabIndex = 1;
             this.TextBox_Elevation.Text = "0";
             this.TextBox_Elevation.TextChanged += new System.EventHandler(this.TextBox_Elevation_TextChanged);
             // 
@@ -474,7 +481,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_Hoover.Location = new System.Drawing.Point(357, 32);
             this.CheckBox_Hoover.Name = "CheckBox_Hoover";
             this.CheckBox_Hoover.Size = new System.Drawing.Size(74, 20);
-            this.CheckBox_Hoover.TabIndex = 29;
+            this.CheckBox_Hoover.TabIndex = 3;
             this.CheckBox_Hoover.Text = "Hoover";
             this.CheckBox_Hoover.UseVisualStyleBackColor = true;
             this.CheckBox_Hoover.CheckedChanged += new System.EventHandler(this.CheckBox_Hoover_CheckedChanged);
@@ -485,7 +492,7 @@ namespace SAM.Core.Mollier.UI
             this.PointsCheckBox.Location = new System.Drawing.Point(437, 33);
             this.PointsCheckBox.Name = "PointsCheckBox";
             this.PointsCheckBox.Size = new System.Drawing.Size(95, 20);
-            this.PointsCheckBox.TabIndex = 30;
+            this.PointsCheckBox.TabIndex = 4;
             this.PointsCheckBox.Text = "Find Points";
             this.PointsCheckBox.UseVisualStyleBackColor = true;
             this.PointsCheckBox.CheckedChanged += new System.EventHandler(this.PointsCheckBox_CheckedChanged);
@@ -495,7 +502,7 @@ namespace SAM.Core.Mollier.UI
             this.PercentPointsTextBox.Location = new System.Drawing.Point(687, 31);
             this.PercentPointsTextBox.Name = "PercentPointsTextBox";
             this.PercentPointsTextBox.Size = new System.Drawing.Size(33, 22);
-            this.PercentPointsTextBox.TabIndex = 31;
+            this.PercentPointsTextBox.TabIndex = 6;
             this.PercentPointsTextBox.Text = "0.4";
             this.PercentPointsTextBox.Visible = false;
             this.PercentPointsTextBox.TextChanged += new System.EventHandler(this.PercentPointsTextBox_TextChanged);
@@ -523,7 +530,7 @@ namespace SAM.Core.Mollier.UI
             this.ColorPointComboBox.Location = new System.Drawing.Point(538, 30);
             this.ColorPointComboBox.Name = "ColorPointComboBox";
             this.ColorPointComboBox.Size = new System.Drawing.Size(143, 24);
-            this.ColorPointComboBox.TabIndex = 38;
+            this.ColorPointComboBox.TabIndex = 5;
             this.ColorPointComboBox.Visible = false;
             this.ColorPointComboBox.SelectedIndexChanged += new System.EventHandler(this.ColorPointComboBox_SelectedIndexChanged);
             // 
@@ -533,7 +540,7 @@ namespace SAM.Core.Mollier.UI
             this.DivisionAreaLabels_CheckBox.Location = new System.Drawing.Point(802, 34);
             this.DivisionAreaLabels_CheckBox.Name = "DivisionAreaLabels_CheckBox";
             this.DivisionAreaLabels_CheckBox.Size = new System.Drawing.Size(119, 20);
-            this.DivisionAreaLabels_CheckBox.TabIndex = 41;
+            this.DivisionAreaLabels_CheckBox.TabIndex = 7;
             this.DivisionAreaLabels_CheckBox.Text = "Turn Off Labels";
             this.DivisionAreaLabels_CheckBox.UseVisualStyleBackColor = true;
             this.DivisionAreaLabels_CheckBox.Visible = false;
@@ -547,77 +554,70 @@ namespace SAM.Core.Mollier.UI
             this.MollierControl_Main.EnableHoover = false;
             this.MollierControl_Main.Location = new System.Drawing.Point(10, 64);
             this.MollierControl_Main.Margin = new System.Windows.Forms.Padding(2);
-            mollierControlSettings1.ChartType = SAM.Core.Mollier.ChartType.Mollier;
-            mollierControlSettings1.DefaultTemplateName = "default";
-            mollierControlSettings1.Density_Interval = 0.05D;
-            mollierControlSettings1.Density_Line = true;
-            mollierControlSettings1.Density_Max = 1.41D;
-            mollierControlSettings1.Density_Min = 0.45D;
-            mollierControlSettings1.DisableCoolingAuxiliaryProcesses = false;
-            mollierControlSettings1.DisableEndProcessPoint = false;
-            mollierControlSettings1.DisableLabelEndProcessPoint = false;
-            mollierControlSettings1.DisableLabelProcess = false;
-            mollierControlSettings1.DisableLabels = false;
-            mollierControlSettings1.DisableLabelStartProcessPoint = false;
-            mollierControlSettings1.DisablePoint = false;
-            mollierControlSettings1.DisablePointBoarder = false;
-            mollierControlSettings1.DisableStartProcessPoint = false;
-            mollierControlSettings1.DisableUnits = false;
-            mollierControlSettings1.DivisionArea = false;
-            mollierControlSettings1.DivisionAreaEnthalpy_Interval = 3;
-            mollierControlSettings1.DivisionAreaLabels = true;
-            mollierControlSettings1.DivisionAreaRelativeHumidity_Interval = 10;
-            mollierControlSettings1.Elevation = 0D;
-            mollierControlSettings1.Enthalpy_Interval = 1000D;
-            mollierControlSettings1.Enthalpy_Line = true;
-            mollierControlSettings1.Enthalpy_Max = 140000D;
-            mollierControlSettings1.Enthalpy_Min = -20000D;
-            mollierControlSettings1.FindPoint = false;
-            mollierControlSettings1.FindPoint_Factor = 0.4D;
-            mollierControlSettings1.FindPointType = SAM.Core.Mollier.ChartDataType.Enthalpy;
-            mollierControlSettings1.GradientPoint = false;
-            mollierControlSettings1.HumidityRatio_Interval = 0.005D;
-            mollierControlSettings1.HumidityRatio_Max = 0.035D;
-            mollierControlSettings1.HumidityRatio_Min = 0D;
-            mollierControlSettings1.MollierWindowHeight = -1;
-            mollierControlSettings1.MollierWindowWidth = -1;
-            mollierControlSettings1.PartialVapourPressure_Axis = true;
-            mollierControlSettings1.PartialVapourPressure_Interval = 0.5D;
-            mollierControlSettings1.PointBorderColor = System.Drawing.Color.Empty;
-            mollierControlSettings1.PointBorderSize = -1;
-            mollierControlSettings1.PointColor = System.Drawing.Color.Empty;
-            mollierControlSettings1.PointSize = -1;
-            mollierControlSettings1.Pressure = 101325D;
-            mollierControlSettings1.ProccessLineThickness = -1;
-            mollierControlSettings1.PsychrometricWindowHeight = -1;
-            mollierControlSettings1.PsychrometricWindowWidth = -1;
-            mollierControlSettings1.SpecificVolume_Interval = 0.05D;
-            mollierControlSettings1.SpecificVolume_Line = true;
-            mollierControlSettings1.SpecificVolume_Max = 1.92D;
-            mollierControlSettings1.SpecificVolume_Min = 0.65D;
-            mollierControlSettings1.Temperature_Interval = 5D;
-            mollierControlSettings1.Temperature_Max = 50D;
-            mollierControlSettings1.Temperature_Min = -20D;
-            mollierControlSettings1.UIMollierZoneColor = System.Drawing.Color.Red;
-            mollierControlSettings1.UIMollierZoneText = "";
-            mollierControlSettings1.VisibilitySettings = visibilitySettings1;
-            mollierControlSettings1.VisualizeSolver = false;
-            mollierControlSettings1.WetBulbTemperature_Interval = 5D;
-            mollierControlSettings1.WetBulbTemperature_Line = true;
-            mollierControlSettings1.WetBulbTemperature_Max = 30D;
-            mollierControlSettings1.WetBulbTemperature_Min = -10D;
-            this.MollierControl_Main.MollierControlSettings = mollierControlSettings1;
-            this.MollierControl_Main.MollierModel = mollierModel1;
+            mollierControlSettings2.ChartType = SAM.Core.Mollier.ChartType.Mollier;
+            mollierControlSettings2.DefaultTemplateName = "default";
+            mollierControlSettings2.Density_Interval = 0.05D;
+            mollierControlSettings2.Density_Line = true;
+            mollierControlSettings2.Density_Max = 1.41D;
+            mollierControlSettings2.Density_Min = 0.45D;
+            mollierControlSettings2.DisableCoolingAuxiliaryProcesses = false;
+            mollierControlSettings2.DisableEndProcessPoint = false;
+            mollierControlSettings2.DisableLabelEndProcessPoint = false;
+            mollierControlSettings2.DisableLabelProcess = false;
+            mollierControlSettings2.DisableLabels = false;
+            mollierControlSettings2.DisableLabelStartProcessPoint = false;
+            mollierControlSettings2.DisablePoint = false;
+            mollierControlSettings2.DisablePointBoarder = false;
+            mollierControlSettings2.DisableStartProcessPoint = false;
+            mollierControlSettings2.DisableUnits = false;
+            mollierControlSettings2.DivisionArea = false;
+            mollierControlSettings2.DivisionAreaEnthalpy_Interval = 3;
+            mollierControlSettings2.DivisionAreaLabels = true;
+            mollierControlSettings2.DivisionAreaRelativeHumidity_Interval = 10;
+            mollierControlSettings2.Elevation = 0D;
+            mollierControlSettings2.Enthalpy_Interval = 1000D;
+            mollierControlSettings2.Enthalpy_Line = true;
+            mollierControlSettings2.Enthalpy_Max = 140000D;
+            mollierControlSettings2.Enthalpy_Min = -20000D;
+            mollierControlSettings2.FindPoint = false;
+            mollierControlSettings2.FindPoint_Factor = 0.4D;
+            mollierControlSettings2.FindPointType = SAM.Core.Mollier.ChartDataType.Enthalpy;
+            mollierControlSettings2.GradientPoint = false;
+            mollierControlSettings2.HumidityRatio_Interval = 0.005D;
+            mollierControlSettings2.HumidityRatio_Max = 0.035D;
+            mollierControlSettings2.HumidityRatio_Min = 0D;
+            mollierControlSettings2.MollierWindowHeight = -1;
+            mollierControlSettings2.MollierWindowWidth = -1;
+            mollierControlSettings2.PartialVapourPressure_Axis = true;
+            mollierControlSettings2.PartialVapourPressure_Interval = 0.5D;
+            mollierControlSettings2.PointBorderColor = System.Drawing.Color.Empty;
+            mollierControlSettings2.PointBorderSize = -1;
+            mollierControlSettings2.PointColor = System.Drawing.Color.Empty;
+            mollierControlSettings2.PointSize = -1;
+            mollierControlSettings2.Pressure = 101325D;
+            mollierControlSettings2.ProccessLineThickness = -1;
+            mollierControlSettings2.PsychrometricWindowHeight = -1;
+            mollierControlSettings2.PsychrometricWindowWidth = -1;
+            mollierControlSettings2.SpecificVolume_Interval = 0.05D;
+            mollierControlSettings2.SpecificVolume_Line = true;
+            mollierControlSettings2.SpecificVolume_Max = 1.92D;
+            mollierControlSettings2.SpecificVolume_Min = 0.65D;
+            mollierControlSettings2.Temperature_Interval = 5D;
+            mollierControlSettings2.Temperature_Max = 50D;
+            mollierControlSettings2.Temperature_Min = -20D;
+            mollierControlSettings2.UIMollierZoneColor = System.Drawing.Color.Red;
+            mollierControlSettings2.UIMollierZoneText = "";
+            mollierControlSettings2.VisibilitySettings = visibilitySettings2;
+            mollierControlSettings2.VisualizeSolver = false;
+            mollierControlSettings2.WetBulbTemperature_Interval = 5D;
+            mollierControlSettings2.WetBulbTemperature_Line = true;
+            mollierControlSettings2.WetBulbTemperature_Max = 30D;
+            mollierControlSettings2.WetBulbTemperature_Min = -10D;
+            this.MollierControl_Main.MollierControlSettings = mollierControlSettings2;
+            this.MollierControl_Main.MollierModel = mollierModel2;
             this.MollierControl_Main.Name = "MollierControl_Main";
             this.MollierControl_Main.Size = new System.Drawing.Size(2054, 1219);
             this.MollierControl_Main.TabIndex = 0;
-            // 
-            // ToolStripMenuItem_DivisionArea
-            // 
-            this.ToolStripMenuItem_DivisionArea.Name = "ToolStripMenuItem_DivisionArea";
-            this.ToolStripMenuItem_DivisionArea.Size = new System.Drawing.Size(242, 26);
-            this.ToolStripMenuItem_DivisionArea.Text = "Division Area";
-            this.ToolStripMenuItem_DivisionArea.Click += new System.EventHandler(this.ToolStripMenuItem_DivisionArea_Click);
             // 
             // MollierForm
             // 

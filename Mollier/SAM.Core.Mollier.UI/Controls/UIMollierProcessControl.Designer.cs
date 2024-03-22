@@ -44,7 +44,7 @@
             this.ProcessColor_button.Location = new System.Drawing.Point(143, 11);
             this.ProcessColor_button.Name = "ProcessColor_button";
             this.ProcessColor_button.Size = new System.Drawing.Size(88, 23);
-            this.ProcessColor_button.TabIndex = 0;
+            this.ProcessColor_button.TabIndex = 1;
             this.ProcessColor_button.UseVisualStyleBackColor = true;
             this.ProcessColor_button.Click += new System.EventHandler(this.ProcessColor_button_Click);
             // 
@@ -93,23 +93,23 @@
             this.ProcessLabel_Value.Location = new System.Drawing.Point(143, 71);
             this.ProcessLabel_Value.Name = "ProcessLabel_Value";
             this.ProcessLabel_Value.Size = new System.Drawing.Size(88, 22);
-            this.ProcessLabel_Value.TabIndex = 10;
+            this.ProcessLabel_Value.TabIndex = 3;
             // 
             // EndLabel_Value
             // 
             this.EndLabel_Value.Location = new System.Drawing.Point(143, 103);
             this.EndLabel_Value.Name = "EndLabel_Value";
             this.EndLabel_Value.Size = new System.Drawing.Size(88, 22);
-            this.EndLabel_Value.TabIndex = 12;
+            this.EndLabel_Value.TabIndex = 4;
             // 
             // StartLabel_Value
             // 
             this.StartLabel_Value.Location = new System.Drawing.Point(143, 43);
             this.StartLabel_Value.Name = "StartLabel_Value";
             this.StartLabel_Value.Size = new System.Drawing.Size(88, 22);
-            this.StartLabel_Value.TabIndex = 13;
+            this.StartLabel_Value.TabIndex = 2;
             // 
-            // CustomizeProcessControl
+            // UIMollierProcessControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -121,7 +121,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.ProcessColor_Label);
             this.Controls.Add(this.ProcessColor_button);
-            this.Name = "CustomizeProcessControl";
+            this.Name = "UIMollierProcessControl";
             this.Size = new System.Drawing.Size(253, 146);
             this.ResumeLayout(false);
             this.PerformLayout();

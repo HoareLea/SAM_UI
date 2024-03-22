@@ -45,7 +45,7 @@
             this.MollierPointControl_Supply.PressureVisible = true;
             this.MollierPointControl_Supply.SelectMollierPointVisible = false;
             this.MollierPointControl_Supply.Size = new System.Drawing.Size(199, 220);
-            this.MollierPointControl_Supply.TabIndex = 0;
+            this.MollierPointControl_Supply.TabIndex = 1;
             // 
             // MollierPointControl_Return
             // 
@@ -56,7 +56,7 @@
             this.MollierPointControl_Return.PressureVisible = true;
             this.MollierPointControl_Return.SelectMollierPointVisible = false;
             this.MollierPointControl_Return.Size = new System.Drawing.Size(191, 220);
-            this.MollierPointControl_Return.TabIndex = 1;
+            this.MollierPointControl_Return.TabIndex = 2;
             // 
             // label2
             // 
@@ -85,7 +85,7 @@
             this.SensibleHeatRecoveryEfficiencyControl.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.SensibleHeatRecoveryEfficiencyControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.SensibleHeatRecoveryEfficiencyControl.Size = new System.Drawing.Size(200, 51);
-            this.SensibleHeatRecoveryEfficiencyControl.TabIndex = 16;
+            this.SensibleHeatRecoveryEfficiencyControl.TabIndex = 3;
             this.SensibleHeatRecoveryEfficiencyControl.UnitType = SAM.Units.UnitType.Undefined;
             this.SensibleHeatRecoveryEfficiencyControl.Value = 0D;
             // 
@@ -96,7 +96,7 @@
             this.LatentHeatRecoveryEfficiencyControl.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.LatentHeatRecoveryEfficiencyControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.LatentHeatRecoveryEfficiencyControl.Size = new System.Drawing.Size(200, 51);
-            this.LatentHeatRecoveryEfficiencyControl.TabIndex = 17;
+            this.LatentHeatRecoveryEfficiencyControl.TabIndex = 4;
             this.LatentHeatRecoveryEfficiencyControl.UnitType = SAM.Units.UnitType.Undefined;
             this.LatentHeatRecoveryEfficiencyControl.Value = 0D;
             // 

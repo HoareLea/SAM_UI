@@ -50,7 +50,7 @@
             this.ComboBox_SecondParameter.Location = new System.Drawing.Point(0, 137);
             this.ComboBox_SecondParameter.Name = "ComboBox_SecondParameter";
             this.ComboBox_SecondParameter.Size = new System.Drawing.Size(152, 24);
-            this.ComboBox_SecondParameter.TabIndex = 3;
+            this.ComboBox_SecondParameter.TabIndex = 5;
             this.ComboBox_SecondParameter.SelectedIndexChanged += new System.EventHandler(this.ComboBox_SecondParameter_SelectedIndexChanged);
             this.ComboBox_SecondParameter.Click += new System.EventHandler(this.ComboBox_SecondParameter_Click);
             // 
@@ -63,7 +63,7 @@
             this.ComboBox_FirstParameter.Location = new System.Drawing.Point(0, 69);
             this.ComboBox_FirstParameter.Name = "ComboBox_FirstParameter";
             this.ComboBox_FirstParameter.Size = new System.Drawing.Size(152, 24);
-            this.ComboBox_FirstParameter.TabIndex = 1;
+            this.ComboBox_FirstParameter.TabIndex = 3;
             this.ComboBox_FirstParameter.SelectedIndexChanged += new System.EventHandler(this.ComboBox_FirstParameter_SelectedIndexChanged);
             this.ComboBox_FirstParameter.Click += new System.EventHandler(this.ComboBox_FirstParameter_Click);
             // 
@@ -117,7 +117,7 @@
             this.Button_SelectMollierPoint.Location = new System.Drawing.Point(120, 3);
             this.Button_SelectMollierPoint.Name = "Button_SelectMollierPoint";
             this.Button_SelectMollierPoint.Size = new System.Drawing.Size(25, 23);
-            this.Button_SelectMollierPoint.TabIndex = 9;
+            this.Button_SelectMollierPoint.TabIndex = 1;
             this.Button_SelectMollierPoint.Text = "...";
             this.Button_SelectMollierPoint.UseVisualStyleBackColor = true;
             this.Button_SelectMollierPoint.Visible = false;
@@ -134,7 +134,7 @@
             this.NumberBoxControl_SecondParameter.String_NaN = "";
             this.NumberBoxControl_SecondParameter.String_NegativeInfinity = "";
             this.NumberBoxControl_SecondParameter.String_PositiveInfinity = "";
-            this.NumberBoxControl_SecondParameter.TabIndex = 4;
+            this.NumberBoxControl_SecondParameter.TabIndex = 6;
             this.NumberBoxControl_SecondParameter.Tolerance = 0.001D;
             this.NumberBoxControl_SecondParameter.Value = double.NaN;
             // 
@@ -149,7 +149,7 @@
             this.NumberBoxControl_FirstParameter.String_NaN = "";
             this.NumberBoxControl_FirstParameter.String_NegativeInfinity = "";
             this.NumberBoxControl_FirstParameter.String_PositiveInfinity = "";
-            this.NumberBoxControl_FirstParameter.TabIndex = 2;
+            this.NumberBoxControl_FirstParameter.TabIndex = 4;
             this.NumberBoxControl_FirstParameter.Tolerance = 0.001D;
             this.NumberBoxControl_FirstParameter.Value = double.NaN;
             // 
@@ -164,7 +164,7 @@
             this.NumberBoxControl_Pressure.String_NaN = "";
             this.NumberBoxControl_Pressure.String_NegativeInfinity = "";
             this.NumberBoxControl_Pressure.String_PositiveInfinity = "";
-            this.NumberBoxControl_Pressure.TabIndex = 0;
+            this.NumberBoxControl_Pressure.TabIndex = 2;
             this.NumberBoxControl_Pressure.TabStop = false;
             this.NumberBoxControl_Pressure.Tolerance = 0.001D;
             this.NumberBoxControl_Pressure.Value = double.NaN;

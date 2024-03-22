@@ -39,14 +39,15 @@
             this.customizeProcessControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.customizeProcessControl.Name = "customizeProcessControl";
             this.customizeProcessControl.Size = new System.Drawing.Size(253, 146);
-            this.customizeProcessControl.TabIndex = 0;
+            this.customizeProcessControl.TabIndex = 1;
+            this.customizeProcessControl.UIMollierProcess = null;
             // 
             // Cancel_Button
             // 
             this.Cancel_Button.Location = new System.Drawing.Point(224, 159);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(102, 31);
-            this.Cancel_Button.TabIndex = 2;
+            this.Cancel_Button.TabIndex = 3;
             this.Cancel_Button.Text = "Cancel";
             this.Cancel_Button.UseVisualStyleBackColor = true;
             this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
@@ -56,7 +57,7 @@
             this.OK_Button.Location = new System.Drawing.Point(116, 159);
             this.OK_Button.Name = "OK_Button";
             this.OK_Button.Size = new System.Drawing.Size(102, 31);
-            this.OK_Button.TabIndex = 3;
+            this.OK_Button.TabIndex = 2;
             this.OK_Button.Text = "OK";
             this.OK_Button.UseVisualStyleBackColor = true;
             this.OK_Button.Click += new System.EventHandler(this.OK_Button_Click);

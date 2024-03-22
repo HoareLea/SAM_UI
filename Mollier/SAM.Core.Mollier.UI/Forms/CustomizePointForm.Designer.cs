@@ -38,7 +38,7 @@
             this.OK_Button.Location = new System.Drawing.Point(88, 104);
             this.OK_Button.Name = "OK_Button";
             this.OK_Button.Size = new System.Drawing.Size(102, 31);
-            this.OK_Button.TabIndex = 5;
+            this.OK_Button.TabIndex = 2;
             this.OK_Button.Text = "OK";
             this.OK_Button.UseVisualStyleBackColor = true;
             this.OK_Button.Click += new System.EventHandler(this.OK_Button_Click);
@@ -48,7 +48,7 @@
             this.Cancel_Button.Location = new System.Drawing.Point(196, 104);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(102, 31);
-            this.Cancel_Button.TabIndex = 4;
+            this.Cancel_Button.TabIndex = 3;
             this.Cancel_Button.Text = "Cancel";
             this.Cancel_Button.UseVisualStyleBackColor = true;
             this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
@@ -58,7 +58,8 @@
             this.customizePointControl.Location = new System.Drawing.Point(12, 12);
             this.customizePointControl.Name = "customizePointControl";
             this.customizePointControl.Size = new System.Drawing.Size(237, 86);
-            this.customizePointControl.TabIndex = 6;
+            this.customizePointControl.TabIndex = 1;
+            this.customizePointControl.UIMollierPoint = null;
             // 
             // CustomizePointForm
             // 

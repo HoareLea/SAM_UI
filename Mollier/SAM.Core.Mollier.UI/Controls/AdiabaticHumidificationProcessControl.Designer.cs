@@ -44,14 +44,14 @@
             this.MollierPointControl_Start.PressureVisible = true;
             this.MollierPointControl_Start.SelectMollierPointVisible = false;
             this.MollierPointControl_Start.Size = new System.Drawing.Size(199, 220);
-            this.MollierPointControl_Start.TabIndex = 15;
+            this.MollierPointControl_Start.TabIndex = 1;
             // 
             // flowLayoutPanel_Main
             // 
             this.flowLayoutPanel_Main.Location = new System.Drawing.Point(261, 55);
             this.flowLayoutPanel_Main.Name = "flowLayoutPanel_Main";
             this.flowLayoutPanel_Main.Size = new System.Drawing.Size(360, 177);
-            this.flowLayoutPanel_Main.TabIndex = 14;
+            this.flowLayoutPanel_Main.TabIndex = 3;
             // 
             // label2
             // 
@@ -83,7 +83,7 @@
             this.processCalculateType_ComboBox.Location = new System.Drawing.Point(261, 25);
             this.processCalculateType_ComboBox.Name = "processCalculateType_ComboBox";
             this.processCalculateType_ComboBox.Size = new System.Drawing.Size(266, 24);
-            this.processCalculateType_ComboBox.TabIndex = 11;
+            this.processCalculateType_ComboBox.TabIndex = 2;
             this.processCalculateType_ComboBox.SelectedIndexChanged += new System.EventHandler(this.processCalculateType_ComboBox_SelectedIndexChanged);
             // 
             // AdiabaticHumidificationProcessControl

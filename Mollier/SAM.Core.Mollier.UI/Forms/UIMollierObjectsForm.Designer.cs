@@ -137,7 +137,7 @@
             this.GroupSelectionPoints_ComboBox.Location = new System.Drawing.Point(325, 17);
             this.GroupSelectionPoints_ComboBox.Name = "GroupSelectionPoints_ComboBox";
             this.GroupSelectionPoints_ComboBox.Size = new System.Drawing.Size(129, 24);
-            this.GroupSelectionPoints_ComboBox.TabIndex = 13;
+            this.GroupSelectionPoints_ComboBox.TabIndex = 2;
             this.GroupSelectionPoints_ComboBox.SelectedValueChanged += new System.EventHandler(this.GroupSelectionPoints_ComboBox_SelectedValueChanged);
             // 
             // PressurePoints_TextBox
@@ -146,7 +146,7 @@
             this.PressurePoints_TextBox.Name = "PressurePoints_TextBox";
             this.PressurePoints_TextBox.ReadOnly = true;
             this.PressurePoints_TextBox.Size = new System.Drawing.Size(68, 22);
-            this.PressurePoints_TextBox.TabIndex = 6;
+            this.PressurePoints_TextBox.TabIndex = 1;
             this.PressurePoints_TextBox.Text = "0";
             this.PressurePoints_TextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -214,7 +214,7 @@
             this.DataGridView_MollierPoints.RowTemplate.Height = 28;
             this.DataGridView_MollierPoints.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.DataGridView_MollierPoints.Size = new System.Drawing.Size(1507, 458);
-            this.DataGridView_MollierPoints.TabIndex = 0;
+            this.DataGridView_MollierPoints.TabIndex = 3;
             this.DataGridView_MollierPoints.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_CellContentClick);
             this.DataGridView_MollierPoints.SelectionChanged += new System.EventHandler(this.DataGridView_SelectionChanged);
             // 

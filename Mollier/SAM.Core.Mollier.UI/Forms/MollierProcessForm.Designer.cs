@@ -81,7 +81,7 @@
             this.MollierProcessType_ComboBox.Location = new System.Drawing.Point(110, 38);
             this.MollierProcessType_ComboBox.Name = "MollierProcessType_ComboBox";
             this.MollierProcessType_ComboBox.Size = new System.Drawing.Size(270, 24);
-            this.MollierProcessType_ComboBox.TabIndex = 0;
+            this.MollierProcessType_ComboBox.TabIndex = 1;
             this.MollierProcessType_ComboBox.SelectedIndexChanged += new System.EventHandler(this.MollierProcessType_ComboBox_SelectedIndexChanged);
             // 
             // Cancel_Button
@@ -90,7 +90,7 @@
             this.Cancel_Button.Location = new System.Drawing.Point(475, 411);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(108, 30);
-            this.Cancel_Button.TabIndex = 2;
+            this.Cancel_Button.TabIndex = 4;
             this.Cancel_Button.Text = "Cancel";
             this.Cancel_Button.UseVisualStyleBackColor = true;
             this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
@@ -101,7 +101,7 @@
             this.OK_Button.Location = new System.Drawing.Point(361, 411);
             this.OK_Button.Name = "OK_Button";
             this.OK_Button.Size = new System.Drawing.Size(108, 30);
-            this.OK_Button.TabIndex = 1;
+            this.OK_Button.TabIndex = 3;
             this.OK_Button.Text = "OK";
             this.OK_Button.UseVisualStyleBackColor = true;
             this.OK_Button.Click += new System.EventHandler(this.OK_Button_Click);
@@ -112,7 +112,7 @@
             this.Customize_Button.Location = new System.Drawing.Point(247, 411);
             this.Customize_Button.Name = "Customize_Button";
             this.Customize_Button.Size = new System.Drawing.Size(108, 30);
-            this.Customize_Button.TabIndex = 3;
+            this.Customize_Button.TabIndex = 2;
             this.Customize_Button.Text = "Customize";
             this.Customize_Button.UseVisualStyleBackColor = true;
             this.Customize_Button.Click += new System.EventHandler(this.Customize_Button_Click);

@@ -42,7 +42,7 @@ namespace SAM.Core.Mollier.UI.Controls
             this.Button_Color.Location = new System.Drawing.Point(54, 3);
             this.Button_Color.Name = "Button_Color";
             this.Button_Color.Size = new System.Drawing.Size(147, 23);
-            this.Button_Color.TabIndex = 0;
+            this.Button_Color.TabIndex = 1;
             this.Button_Color.UseVisualStyleBackColor = true;
             this.Button_Color.Click += new System.EventHandler(this.Button_Color_Click);
             // 
@@ -71,7 +71,7 @@ namespace SAM.Core.Mollier.UI.Controls
             this.TextBox_Label.Location = new System.Drawing.Point(54, 32);
             this.TextBox_Label.Name = "TextBox_Label";
             this.TextBox_Label.Size = new System.Drawing.Size(147, 22);
-            this.TextBox_Label.TabIndex = 1;
+            this.TextBox_Label.TabIndex = 2;
             // 
             // UIMollierAppearanceControl
             // 

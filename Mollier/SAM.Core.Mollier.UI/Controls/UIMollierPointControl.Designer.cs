@@ -39,7 +39,7 @@
             this.PointLabel_TextBox.Location = new System.Drawing.Point(141, 44);
             this.PointLabel_TextBox.Name = "PointLabel_TextBox";
             this.PointLabel_TextBox.Size = new System.Drawing.Size(88, 22);
-            this.PointLabel_TextBox.TabIndex = 17;
+            this.PointLabel_TextBox.TabIndex = 2;
             // 
             // PointLabel_Label
             // 
@@ -66,11 +66,11 @@
             this.PointColor_Button.Location = new System.Drawing.Point(141, 12);
             this.PointColor_Button.Name = "PointColor_Button";
             this.PointColor_Button.Size = new System.Drawing.Size(88, 23);
-            this.PointColor_Button.TabIndex = 14;
+            this.PointColor_Button.TabIndex = 1;
             this.PointColor_Button.UseVisualStyleBackColor = true;
             this.PointColor_Button.Click += new System.EventHandler(this.PointColor_Button_Click);
             // 
-            // CustomizePointControl
+            // UIMollierPointControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -78,7 +78,7 @@
             this.Controls.Add(this.PointLabel_Label);
             this.Controls.Add(this.PointColor_Label);
             this.Controls.Add(this.PointColor_Button);
-            this.Name = "CustomizePointControl";
+            this.Name = "UIMollierPointControl";
             this.Size = new System.Drawing.Size(242, 85);
             this.ResumeLayout(false);
             this.PerformLayout();

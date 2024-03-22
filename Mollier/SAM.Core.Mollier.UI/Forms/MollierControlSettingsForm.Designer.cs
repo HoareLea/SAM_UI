@@ -352,7 +352,7 @@ namespace SAM.Core.Mollier.UI
             this.WetBulbTemperatureIntervalTextBox.Location = new System.Drawing.Point(487, 295);
             this.WetBulbTemperatureIntervalTextBox.Name = "WetBulbTemperatureIntervalTextBox";
             this.WetBulbTemperatureIntervalTextBox.Size = new System.Drawing.Size(83, 22);
-            this.WetBulbTemperatureIntervalTextBox.TabIndex = 53;
+            this.WetBulbTemperatureIntervalTextBox.TabIndex = 10;
             this.WetBulbTemperatureIntervalTextBox.Text = "1";
             this.WetBulbTemperatureIntervalTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -361,7 +361,7 @@ namespace SAM.Core.Mollier.UI
             this.SpecificVolumeIntervalTextBox.Location = new System.Drawing.Point(345, 295);
             this.SpecificVolumeIntervalTextBox.Name = "SpecificVolumeIntervalTextBox";
             this.SpecificVolumeIntervalTextBox.Size = new System.Drawing.Size(83, 22);
-            this.SpecificVolumeIntervalTextBox.TabIndex = 52;
+            this.SpecificVolumeIntervalTextBox.TabIndex = 9;
             this.SpecificVolumeIntervalTextBox.Text = "1";
             this.SpecificVolumeIntervalTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -370,7 +370,7 @@ namespace SAM.Core.Mollier.UI
             this.EnthalpyIntervalTextBox.Location = new System.Drawing.Point(201, 295);
             this.EnthalpyIntervalTextBox.Name = "EnthalpyIntervalTextBox";
             this.EnthalpyIntervalTextBox.Size = new System.Drawing.Size(82, 22);
-            this.EnthalpyIntervalTextBox.TabIndex = 51;
+            this.EnthalpyIntervalTextBox.TabIndex = 8;
             this.EnthalpyIntervalTextBox.Text = "1";
             this.EnthalpyIntervalTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -379,7 +379,7 @@ namespace SAM.Core.Mollier.UI
             this.DensityIntervalTextBox.Location = new System.Drawing.Point(66, 295);
             this.DensityIntervalTextBox.Name = "DensityIntervalTextBox";
             this.DensityIntervalTextBox.Size = new System.Drawing.Size(83, 22);
-            this.DensityIntervalTextBox.TabIndex = 50;
+            this.DensityIntervalTextBox.TabIndex = 7;
             this.DensityIntervalTextBox.Text = "1";
             this.DensityIntervalTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -398,7 +398,7 @@ namespace SAM.Core.Mollier.UI
             this.PartialVapourPressure_IntervalTextBox.Location = new System.Drawing.Point(258, 393);
             this.PartialVapourPressure_IntervalTextBox.Name = "PartialVapourPressure_IntervalTextBox";
             this.PartialVapourPressure_IntervalTextBox.Size = new System.Drawing.Size(99, 22);
-            this.PartialVapourPressure_IntervalTextBox.TabIndex = 48;
+            this.PartialVapourPressure_IntervalTextBox.TabIndex = 11;
             this.PartialVapourPressure_IntervalTextBox.Text = "1";
             this.PartialVapourPressure_IntervalTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -448,7 +448,7 @@ namespace SAM.Core.Mollier.UI
             this.HumidityRatioIntervalTextbox.Location = new System.Drawing.Point(399, 180);
             this.HumidityRatioIntervalTextbox.Name = "HumidityRatioIntervalTextbox";
             this.HumidityRatioIntervalTextbox.Size = new System.Drawing.Size(82, 22);
-            this.HumidityRatioIntervalTextbox.TabIndex = 43;
+            this.HumidityRatioIntervalTextbox.TabIndex = 6;
             this.HumidityRatioIntervalTextbox.Text = "5";
             this.HumidityRatioIntervalTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -457,7 +457,7 @@ namespace SAM.Core.Mollier.UI
             this.HumidityRatioMaximumValueTextbox.Location = new System.Drawing.Point(267, 180);
             this.HumidityRatioMaximumValueTextbox.Name = "HumidityRatioMaximumValueTextbox";
             this.HumidityRatioMaximumValueTextbox.Size = new System.Drawing.Size(78, 22);
-            this.HumidityRatioMaximumValueTextbox.TabIndex = 42;
+            this.HumidityRatioMaximumValueTextbox.TabIndex = 5;
             this.HumidityRatioMaximumValueTextbox.Text = "35";
             this.HumidityRatioMaximumValueTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -466,7 +466,7 @@ namespace SAM.Core.Mollier.UI
             this.HumidityRatioMinimumValueTextbox.Location = new System.Drawing.Point(132, 180);
             this.HumidityRatioMinimumValueTextbox.Name = "HumidityRatioMinimumValueTextbox";
             this.HumidityRatioMinimumValueTextbox.Size = new System.Drawing.Size(75, 22);
-            this.HumidityRatioMinimumValueTextbox.TabIndex = 41;
+            this.HumidityRatioMinimumValueTextbox.TabIndex = 4;
             this.HumidityRatioMinimumValueTextbox.Text = "0";
             this.HumidityRatioMinimumValueTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -495,7 +495,7 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureIntervalTextbox.Location = new System.Drawing.Point(375, 68);
             this.TemperatureIntervalTextbox.Name = "TemperatureIntervalTextbox";
             this.TemperatureIntervalTextbox.Size = new System.Drawing.Size(82, 22);
-            this.TemperatureIntervalTextbox.TabIndex = 38;
+            this.TemperatureIntervalTextbox.TabIndex = 3;
             this.TemperatureIntervalTextbox.Text = "5";
             this.TemperatureIntervalTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -525,7 +525,7 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureMaximumValueTextbox.Location = new System.Drawing.Point(267, 68);
             this.TemperatureMaximumValueTextbox.Name = "TemperatureMaximumValueTextbox";
             this.TemperatureMaximumValueTextbox.Size = new System.Drawing.Size(75, 22);
-            this.TemperatureMaximumValueTextbox.TabIndex = 35;
+            this.TemperatureMaximumValueTextbox.TabIndex = 2;
             this.TemperatureMaximumValueTextbox.Text = "50";
             this.TemperatureMaximumValueTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -534,7 +534,7 @@ namespace SAM.Core.Mollier.UI
             this.TemperatureMinimumValueTextbox.Location = new System.Drawing.Point(152, 68);
             this.TemperatureMinimumValueTextbox.Name = "TemperatureMinimumValueTextbox";
             this.TemperatureMinimumValueTextbox.Size = new System.Drawing.Size(75, 22);
-            this.TemperatureMinimumValueTextbox.TabIndex = 34;
+            this.TemperatureMinimumValueTextbox.TabIndex = 1;
             this.TemperatureMinimumValueTextbox.Text = "-20";
             this.TemperatureMinimumValueTextbox.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -587,14 +587,14 @@ namespace SAM.Core.Mollier.UI
             this.TextBox_PointBorderSize.Location = new System.Drawing.Point(625, 325);
             this.TextBox_PointBorderSize.Name = "TextBox_PointBorderSize";
             this.TextBox_PointBorderSize.Size = new System.Drawing.Size(51, 22);
-            this.TextBox_PointBorderSize.TabIndex = 36;
+            this.TextBox_PointBorderSize.TabIndex = 18;
             // 
             // TextBox_PointSize
             // 
             this.TextBox_PointSize.Location = new System.Drawing.Point(625, 292);
             this.TextBox_PointSize.Name = "TextBox_PointSize";
             this.TextBox_PointSize.Size = new System.Drawing.Size(51, 22);
-            this.TextBox_PointSize.TabIndex = 36;
+            this.TextBox_PointSize.TabIndex = 17;
             // 
             // CheckBox_EnableCoolingAuxiliaryProcesses
             // 
@@ -602,7 +602,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_EnableCoolingAuxiliaryProcesses.Location = new System.Drawing.Point(378, 370);
             this.CheckBox_EnableCoolingAuxiliaryProcesses.Name = "CheckBox_EnableCoolingAuxiliaryProcesses";
             this.CheckBox_EnableCoolingAuxiliaryProcesses.Size = new System.Drawing.Size(210, 20);
-            this.CheckBox_EnableCoolingAuxiliaryProcesses.TabIndex = 35;
+            this.CheckBox_EnableCoolingAuxiliaryProcesses.TabIndex = 19;
             this.CheckBox_EnableCoolingAuxiliaryProcesses.Text = "Show realistic cooling process";
             this.CheckBox_EnableCoolingAuxiliaryProcesses.UseVisualStyleBackColor = true;
             // 
@@ -612,7 +612,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_EnableProcessLabel.Location = new System.Drawing.Point(378, 257);
             this.CheckBox_EnableProcessLabel.Name = "CheckBox_EnableProcessLabel";
             this.CheckBox_EnableProcessLabel.Size = new System.Drawing.Size(147, 20);
-            this.CheckBox_EnableProcessLabel.TabIndex = 34;
+            this.CheckBox_EnableProcessLabel.TabIndex = 12;
             this.CheckBox_EnableProcessLabel.Text = "Show label process";
             this.CheckBox_EnableProcessLabel.UseVisualStyleBackColor = true;
             // 
@@ -640,6 +640,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_PointBorderColor.Name = "Button_PointBorderColor";
             this.Button_PointBorderColor.Size = new System.Drawing.Size(75, 23);
             this.Button_PointBorderColor.TabIndex = 32;
+            this.Button_PointBorderColor.TabStop = false;
             this.Button_PointBorderColor.UseVisualStyleBackColor = true;
             this.Button_PointBorderColor.Click += new System.EventHandler(this.Button_PointBorderColor_Click);
             // 
@@ -667,6 +668,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_PointColor.Name = "Button_PointColor";
             this.Button_PointColor.Size = new System.Drawing.Size(75, 23);
             this.Button_PointColor.TabIndex = 32;
+            this.Button_PointColor.TabStop = false;
             this.Button_PointColor.UseVisualStyleBackColor = true;
             this.Button_PointColor.Click += new System.EventHandler(this.Button_PointColor_Click);
             // 
@@ -676,7 +678,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_DisablePoint.Location = new System.Drawing.Point(38, 293);
             this.CheckBox_DisablePoint.Name = "CheckBox_DisablePoint";
             this.CheckBox_DisablePoint.Size = new System.Drawing.Size(221, 20);
-            this.CheckBox_DisablePoint.TabIndex = 31;
+            this.CheckBox_DisablePoint.TabIndex = 8;
             this.CheckBox_DisablePoint.Text = "Show process all points first disk";
             this.CheckBox_DisablePoint.UseVisualStyleBackColor = true;
             // 
@@ -686,7 +688,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_DisablePointBorder.Location = new System.Drawing.Point(38, 327);
             this.CheckBox_DisablePointBorder.Name = "CheckBox_DisablePointBorder";
             this.CheckBox_DisablePointBorder.Size = new System.Drawing.Size(253, 20);
-            this.CheckBox_DisablePointBorder.TabIndex = 30;
+            this.CheckBox_DisablePointBorder.TabIndex = 9;
             this.CheckBox_DisablePointBorder.Text = "Show process all points second circle";
             this.CheckBox_DisablePointBorder.UseVisualStyleBackColor = true;
             // 
@@ -696,7 +698,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_ProccessLineThickness.Location = new System.Drawing.Point(38, 257);
             this.CheckBox_ProccessLineThickness.Name = "CheckBox_ProccessLineThickness";
             this.CheckBox_ProccessLineThickness.Size = new System.Drawing.Size(208, 20);
-            this.CheckBox_ProccessLineThickness.TabIndex = 29;
+            this.CheckBox_ProccessLineThickness.TabIndex = 7;
             this.CheckBox_ProccessLineThickness.Text = "Turn off process thickness line";
             this.CheckBox_ProccessLineThickness.UseVisualStyleBackColor = true;
             // 
@@ -706,7 +708,7 @@ namespace SAM.Core.Mollier.UI
             this.checkBox_EnableProcessEndPointLabel.Location = new System.Drawing.Point(378, 220);
             this.checkBox_EnableProcessEndPointLabel.Name = "checkBox_EnableProcessEndPointLabel";
             this.checkBox_EnableProcessEndPointLabel.Size = new System.Drawing.Size(153, 20);
-            this.checkBox_EnableProcessEndPointLabel.TabIndex = 28;
+            this.checkBox_EnableProcessEndPointLabel.TabIndex = 11;
             this.checkBox_EnableProcessEndPointLabel.Text = "Show label end point";
             this.checkBox_EnableProcessEndPointLabel.UseVisualStyleBackColor = true;
             // 
@@ -716,7 +718,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_EnableEndProcessPoint.Location = new System.Drawing.Point(38, 220);
             this.CheckBox_EnableEndProcessPoint.Name = "CheckBox_EnableEndProcessPoint";
             this.CheckBox_EnableEndProcessPoint.Size = new System.Drawing.Size(172, 20);
-            this.CheckBox_EnableEndProcessPoint.TabIndex = 28;
+            this.CheckBox_EnableEndProcessPoint.TabIndex = 6;
             this.CheckBox_EnableEndProcessPoint.Text = "Show process end point";
             this.CheckBox_EnableEndProcessPoint.UseVisualStyleBackColor = true;
             // 
@@ -726,7 +728,7 @@ namespace SAM.Core.Mollier.UI
             this.checkBox_EnableProcessStartPointLabel.Location = new System.Drawing.Point(378, 183);
             this.checkBox_EnableProcessStartPointLabel.Name = "checkBox_EnableProcessStartPointLabel";
             this.checkBox_EnableProcessStartPointLabel.Size = new System.Drawing.Size(155, 20);
-            this.checkBox_EnableProcessStartPointLabel.TabIndex = 27;
+            this.checkBox_EnableProcessStartPointLabel.TabIndex = 10;
             this.checkBox_EnableProcessStartPointLabel.Text = "Show label start point";
             this.checkBox_EnableProcessStartPointLabel.UseVisualStyleBackColor = true;
             // 
@@ -736,7 +738,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_EnableStartProcessPoint.Location = new System.Drawing.Point(38, 183);
             this.CheckBox_EnableStartProcessPoint.Name = "CheckBox_EnableStartProcessPoint";
             this.CheckBox_EnableStartProcessPoint.Size = new System.Drawing.Size(174, 20);
-            this.CheckBox_EnableStartProcessPoint.TabIndex = 27;
+            this.CheckBox_EnableStartProcessPoint.TabIndex = 5;
             this.CheckBox_EnableStartProcessPoint.Text = "Show process start point";
             this.CheckBox_EnableStartProcessPoint.UseVisualStyleBackColor = true;
             // 
@@ -772,28 +774,28 @@ namespace SAM.Core.Mollier.UI
             this.TextBox_PsychrometricWindowHeight.Location = new System.Drawing.Point(285, 401);
             this.TextBox_PsychrometricWindowHeight.Name = "TextBox_PsychrometricWindowHeight";
             this.TextBox_PsychrometricWindowHeight.Size = new System.Drawing.Size(50, 22);
-            this.TextBox_PsychrometricWindowHeight.TabIndex = 25;
+            this.TextBox_PsychrometricWindowHeight.TabIndex = 16;
             // 
             // TextBox_MollierWindowHeight
             // 
             this.TextBox_MollierWindowHeight.Location = new System.Drawing.Point(285, 368);
             this.TextBox_MollierWindowHeight.Name = "TextBox_MollierWindowHeight";
             this.TextBox_MollierWindowHeight.Size = new System.Drawing.Size(50, 22);
-            this.TextBox_MollierWindowHeight.TabIndex = 25;
+            this.TextBox_MollierWindowHeight.TabIndex = 14;
             // 
             // TextBox_PsychrometricWindowWidth
             // 
             this.TextBox_PsychrometricWindowWidth.Location = new System.Drawing.Point(210, 401);
             this.TextBox_PsychrometricWindowWidth.Name = "TextBox_PsychrometricWindowWidth";
             this.TextBox_PsychrometricWindowWidth.Size = new System.Drawing.Size(50, 22);
-            this.TextBox_PsychrometricWindowWidth.TabIndex = 24;
+            this.TextBox_PsychrometricWindowWidth.TabIndex = 15;
             // 
             // TextBox_MollierWindowWidth
             // 
             this.TextBox_MollierWindowWidth.Location = new System.Drawing.Point(210, 368);
             this.TextBox_MollierWindowWidth.Name = "TextBox_MollierWindowWidth";
             this.TextBox_MollierWindowWidth.Size = new System.Drawing.Size(50, 22);
-            this.TextBox_MollierWindowWidth.TabIndex = 24;
+            this.TextBox_MollierWindowWidth.TabIndex = 13;
             // 
             // Label_PsychromatricWindowSize
             // 
@@ -820,7 +822,7 @@ namespace SAM.Core.Mollier.UI
             this.VisualizeSolver_Checkbox.Location = new System.Drawing.Point(38, 145);
             this.VisualizeSolver_Checkbox.Name = "VisualizeSolver_Checkbox";
             this.VisualizeSolver_Checkbox.Size = new System.Drawing.Size(125, 20);
-            this.VisualizeSolver_Checkbox.TabIndex = 22;
+            this.VisualizeSolver_Checkbox.TabIndex = 4;
             this.VisualizeSolver_Checkbox.Text = "Visualize Solver";
             this.VisualizeSolver_Checkbox.UseVisualStyleBackColor = true;
             // 
@@ -830,6 +832,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_ToHover.Name = "Button_ToHover";
             this.Button_ToHover.Size = new System.Drawing.Size(10, 23);
             this.Button_ToHover.TabIndex = 21;
+            this.Button_ToHover.TabStop = false;
             this.Button_ToHover.Text = "Disable";
             this.Button_ToHover.UseVisualStyleBackColor = true;
             this.Button_ToHover.Visible = false;
@@ -840,6 +843,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_ToHover3.Name = "Button_ToHover3";
             this.Button_ToHover3.Size = new System.Drawing.Size(10, 23);
             this.Button_ToHover3.TabIndex = 19;
+            this.Button_ToHover3.TabStop = false;
             this.Button_ToHover3.Text = "Disable";
             this.Button_ToHover3.UseVisualStyleBackColor = true;
             this.Button_ToHover3.Visible = false;
@@ -850,6 +854,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_ToHover2.Name = "Button_ToHover2";
             this.Button_ToHover2.Size = new System.Drawing.Size(10, 23);
             this.Button_ToHover2.TabIndex = 18;
+            this.Button_ToHover2.TabStop = false;
             this.Button_ToHover2.Text = "Disable";
             this.Button_ToHover2.UseVisualStyleBackColor = true;
             this.Button_ToHover2.Visible = false;
@@ -860,7 +865,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_DisableUnits.Location = new System.Drawing.Point(38, 73);
             this.CheckBox_DisableUnits.Name = "CheckBox_DisableUnits";
             this.CheckBox_DisableUnits.Size = new System.Drawing.Size(109, 20);
-            this.CheckBox_DisableUnits.TabIndex = 14;
+            this.CheckBox_DisableUnits.TabIndex = 2;
             this.CheckBox_DisableUnits.Text = "Disable Units";
             this.CheckBox_DisableUnits.UseVisualStyleBackColor = true;
             this.CheckBox_DisableUnits.MouseLeave += new System.EventHandler(this.CheckBox_DisableUnits_MouseLeave);
@@ -872,7 +877,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_DisableLabels.Location = new System.Drawing.Point(38, 109);
             this.CheckBox_DisableLabels.Name = "CheckBox_DisableLabels";
             this.CheckBox_DisableLabels.Size = new System.Drawing.Size(120, 20);
-            this.CheckBox_DisableLabels.TabIndex = 13;
+            this.CheckBox_DisableLabels.TabIndex = 3;
             this.CheckBox_DisableLabels.Text = "Disable Labels";
             this.CheckBox_DisableLabels.UseVisualStyleBackColor = true;
             this.CheckBox_DisableLabels.MouseLeave += new System.EventHandler(this.CheckBox_DisableLabels_MouseLeave);
@@ -884,6 +889,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_HighIntensityColor.Name = "Button_HighIntensityColor";
             this.Button_HighIntensityColor.Size = new System.Drawing.Size(146, 23);
             this.Button_HighIntensityColor.TabIndex = 12;
+            this.Button_HighIntensityColor.TabStop = false;
             this.Button_HighIntensityColor.UseVisualStyleBackColor = true;
             this.Button_HighIntensityColor.Click += new System.EventHandler(this.Button_HighIntensityColor_Click);
             this.Button_HighIntensityColor.MouseLeave += new System.EventHandler(this.Button_HighIntensityColor_MouseLeave);
@@ -895,6 +901,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_LowIntensityColor.Name = "Button_LowIntensityColor";
             this.Button_LowIntensityColor.Size = new System.Drawing.Size(163, 23);
             this.Button_LowIntensityColor.TabIndex = 11;
+            this.Button_LowIntensityColor.TabStop = false;
             this.Button_LowIntensityColor.UseVisualStyleBackColor = true;
             this.Button_LowIntensityColor.Click += new System.EventHandler(this.Button_LowIntensityColor_Click);
             this.Button_LowIntensityColor.MouseLeave += new System.EventHandler(this.Button_LowIntensityColor_MouseLeave);
@@ -906,7 +913,7 @@ namespace SAM.Core.Mollier.UI
             this.CheckBox_GradientPoint.Location = new System.Drawing.Point(38, 36);
             this.CheckBox_GradientPoint.Name = "CheckBox_GradientPoint";
             this.CheckBox_GradientPoint.Size = new System.Drawing.Size(113, 20);
-            this.CheckBox_GradientPoint.TabIndex = 10;
+            this.CheckBox_GradientPoint.TabIndex = 1;
             this.CheckBox_GradientPoint.Text = "Gradient Point";
             this.CheckBox_GradientPoint.UseVisualStyleBackColor = true;
             this.CheckBox_GradientPoint.MouseLeave += new System.EventHandler(this.CheckBox_GradientPoint_MouseLeave);
@@ -918,7 +925,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_OK.Location = new System.Drawing.Point(549, 480);
             this.Button_OK.Name = "Button_OK";
             this.Button_OK.Size = new System.Drawing.Size(75, 28);
-            this.Button_OK.TabIndex = 8;
+            this.Button_OK.TabIndex = 101;
             this.Button_OK.Text = "OK";
             this.Button_OK.UseVisualStyleBackColor = true;
             this.Button_OK.Click += new System.EventHandler(this.Button_OK_Click);
@@ -930,7 +937,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_Cancel.Location = new System.Drawing.Point(630, 480);
             this.Button_Cancel.Name = "Button_Cancel";
             this.Button_Cancel.Size = new System.Drawing.Size(75, 28);
-            this.Button_Cancel.TabIndex = 7;
+            this.Button_Cancel.TabIndex = 102;
             this.Button_Cancel.Text = "Cancel";
             this.Button_Cancel.UseVisualStyleBackColor = true;
             this.Button_Cancel.Click += new System.EventHandler(this.Button_Cancel_Click);
@@ -941,7 +948,7 @@ namespace SAM.Core.Mollier.UI
             this.Button_Apply.Location = new System.Drawing.Point(468, 480);
             this.Button_Apply.Name = "Button_Apply";
             this.Button_Apply.Size = new System.Drawing.Size(75, 28);
-            this.Button_Apply.TabIndex = 8;
+            this.Button_Apply.TabIndex = 100;
             this.Button_Apply.Text = "Apply";
             this.Button_Apply.UseVisualStyleBackColor = true;
             this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);

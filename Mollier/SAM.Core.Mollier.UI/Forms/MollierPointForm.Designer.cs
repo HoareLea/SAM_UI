@@ -41,7 +41,7 @@
             this.Button_OK.Location = new System.Drawing.Point(77, 308);
             this.Button_OK.Name = "Button_OK";
             this.Button_OK.Size = new System.Drawing.Size(75, 23);
-            this.Button_OK.TabIndex = 2;
+            this.Button_OK.TabIndex = 3;
             this.Button_OK.Text = "OK";
             this.Button_OK.UseVisualStyleBackColor = true;
             this.Button_OK.Click += new System.EventHandler(this.Button_OK_Click);
@@ -53,7 +53,7 @@
             this.Button_Cancel.Location = new System.Drawing.Point(158, 308);
             this.Button_Cancel.Name = "Button_Cancel";
             this.Button_Cancel.Size = new System.Drawing.Size(75, 23);
-            this.Button_Cancel.TabIndex = 3;
+            this.Button_Cancel.TabIndex = 4;
             this.Button_Cancel.Text = "Cancel";
             this.Button_Cancel.UseVisualStyleBackColor = true;
             this.Button_Cancel.Click += new System.EventHandler(this.Button_Cancel_Click);
@@ -68,7 +68,7 @@
             this.MollierPointControl_Main.PressureVisible = true;
             this.MollierPointControl_Main.SelectMollierPointVisible = false;
             this.MollierPointControl_Main.Size = new System.Drawing.Size(230, 202);
-            this.MollierPointControl_Main.TabIndex = 0;
+            this.MollierPointControl_Main.TabIndex = 1;
             // 
             // UIMollierAppearanceControl_Main
             // 
@@ -76,9 +76,11 @@
             this.UIMollierAppearanceControl_Main.Location = new System.Drawing.Point(3, 221);
             this.UIMollierAppearanceControl_Main.Name = "UIMollierAppearanceControl_Main";
             this.UIMollierAppearanceControl_Main.Size = new System.Drawing.Size(242, 57);
-            this.UIMollierAppearanceControl_Main.TabIndex = 1;
+            this.UIMollierAppearanceControl_Main.TabIndex = 2;
             uiMollierAppearance1.Color = System.Drawing.Color.Empty;
             uiMollierAppearance1.Label = "";
+            uiMollierAppearance1.Size = 1;
+            uiMollierAppearance1.Visible = true;
             this.UIMollierAppearanceControl_Main.UIMollierAppearance = uiMollierAppearance1;
             // 
             // MollierPointForm

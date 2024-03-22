@@ -63,7 +63,8 @@
             this.FirstAirflowControl.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.FirstAirflowControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.FirstAirflowControl.Size = new System.Drawing.Size(200, 51);
-            this.FirstAirflowControl.TabIndex = 17;
+            this.FirstAirflowControl.TabIndex = 2;
+            this.FirstAirflowControl.UnitType = SAM.Units.UnitType.Undefined;
             this.FirstAirflowControl.Value = 0D;
             // 
             // SecondAirflowControl
@@ -73,7 +74,8 @@
             this.SecondAirflowControl.ProcessParameterType = SAM.Core.Mollier.UI.ProcessParameterType.Undefined;
             this.SecondAirflowControl.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.SecondAirflowControl.Size = new System.Drawing.Size(200, 51);
-            this.SecondAirflowControl.TabIndex = 16;
+            this.SecondAirflowControl.TabIndex = 4;
+            this.SecondAirflowControl.UnitType = SAM.Units.UnitType.Undefined;
             this.SecondAirflowControl.Value = 0D;
             // 
             // MollierPointControl_SecondPoint
@@ -82,8 +84,11 @@
             this.MollierPointControl_SecondPoint.Location = new System.Drawing.Point(272, 27);
             this.MollierPointControl_SecondPoint.Name = "MollierPointControl_SecondPoint";
             this.MollierPointControl_SecondPoint.Pressure = 101325D;
+            this.MollierPointControl_SecondPoint.PressureEnabled = true;
+            this.MollierPointControl_SecondPoint.PressureVisible = true;
+            this.MollierPointControl_SecondPoint.SelectMollierPointVisible = false;
             this.MollierPointControl_SecondPoint.Size = new System.Drawing.Size(205, 206);
-            this.MollierPointControl_SecondPoint.TabIndex = 1;
+            this.MollierPointControl_SecondPoint.TabIndex = 3;
             // 
             // MollierPointControl_FirstPoint
             // 
@@ -91,8 +96,11 @@
             this.MollierPointControl_FirstPoint.Location = new System.Drawing.Point(0, 27);
             this.MollierPointControl_FirstPoint.Name = "MollierPointControl_FirstPoint";
             this.MollierPointControl_FirstPoint.Pressure = 101325D;
+            this.MollierPointControl_FirstPoint.PressureEnabled = true;
+            this.MollierPointControl_FirstPoint.PressureVisible = true;
+            this.MollierPointControl_FirstPoint.SelectMollierPointVisible = false;
             this.MollierPointControl_FirstPoint.Size = new System.Drawing.Size(205, 206);
-            this.MollierPointControl_FirstPoint.TabIndex = 0;
+            this.MollierPointControl_FirstPoint.TabIndex = 1;
             // 
             // MixingProcessControl
             // 

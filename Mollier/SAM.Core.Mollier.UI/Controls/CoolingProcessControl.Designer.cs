@@ -60,7 +60,7 @@
             this.processCalculateType_ComboBox.Location = new System.Drawing.Point(244, 30);
             this.processCalculateType_ComboBox.Name = "processCalculateType_ComboBox";
             this.processCalculateType_ComboBox.Size = new System.Drawing.Size(242, 24);
-            this.processCalculateType_ComboBox.TabIndex = 5;
+            this.processCalculateType_ComboBox.TabIndex = 2;
             this.processCalculateType_ComboBox.SelectedIndexChanged += new System.EventHandler(this.processCalculateType_ComboBox_SelectedIndexChanged);
             // 
             // label2
@@ -81,7 +81,7 @@
             this.flowLayoutPanel_Main.Location = new System.Drawing.Point(244, 60);
             this.flowLayoutPanel_Main.Name = "flowLayoutPanel_Main";
             this.flowLayoutPanel_Main.Size = new System.Drawing.Size(373, 290);
-            this.flowLayoutPanel_Main.TabIndex = 9;
+            this.flowLayoutPanel_Main.TabIndex = 3;
             // 
             // MollierPointControl_Start
             // 
@@ -92,7 +92,7 @@
             this.MollierPointControl_Start.PressureVisible = true;
             this.MollierPointControl_Start.SelectMollierPointVisible = false;
             this.MollierPointControl_Start.Size = new System.Drawing.Size(172, 220);
-            this.MollierPointControl_Start.TabIndex = 10;
+            this.MollierPointControl_Start.TabIndex = 1;
             // 
             // CoolingProcessControl
             // 
