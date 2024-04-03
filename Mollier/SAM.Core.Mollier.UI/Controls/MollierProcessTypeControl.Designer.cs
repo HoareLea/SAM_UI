@@ -41,7 +41,7 @@
             "Heat Recovery",
             "Mixing",
             "Adiabatic Humidification",
-            "Isotermic Humidification"});
+            "Isothermic Humidification"});
             this.MollierProcessType_ComboBox.Location = new System.Drawing.Point(53, 13);
             this.MollierProcessType_ComboBox.Name = "MollierProcessType_ComboBox";
             this.MollierProcessType_ComboBox.Size = new System.Drawing.Size(262, 24);

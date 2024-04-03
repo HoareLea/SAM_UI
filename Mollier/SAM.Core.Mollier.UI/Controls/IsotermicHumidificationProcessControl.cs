@@ -5,13 +5,13 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
-    public partial class IsotermicHumidificationProcessControl : UserControl, IMollierProcessControl
+    public partial class IsothermicHumidificationProcessControl : UserControl, IMollierProcessControl
     {
         private MollierForm mollierForm;
 
         public event SelectMollierPointEventHandler SelectMollierPoint;
 
-        public IsotermicHumidificationProcessControl()
+        public IsothermicHumidificationProcessControl()
         {
             InitializeComponent();
             processCalculateType_ComboBox.Text = processCalculateType_ComboBox.Items[1].ToString();
@@ -49,11 +49,11 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 case ProcessCalculationType.HumidityRatioDifference:
                     double humidityRatioDifference = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.HumidityRatioDifference);
-                    mollierProcess = Mollier.Create.IsotermicHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference/1000);
+                    mollierProcess = Mollier.Create.IsothermicHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference/1000);
                     break;
                 case ProcessCalculationType.RelativeHumidity:
                     double relativeHumidity = Query.ParameterValue<double>(flowLayoutPanel_Main, ProcessParameterType.RelativeHumidity);
-                    mollierProcess = Mollier.Create.IsotermicHumidificationProcess_ByRelativeHumidity(start, relativeHumidity);
+                    mollierProcess = Mollier.Create.IsothermicHumidificationProcess_ByRelativeHumidity(start, relativeHumidity);
                     break;
             }
             return new UIMollierProcess(mollierProcess, Color.Empty);

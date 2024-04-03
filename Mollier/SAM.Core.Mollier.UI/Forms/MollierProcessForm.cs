@@ -166,10 +166,10 @@ namespace SAM.Core.Mollier.UI.Forms
                     adiabaticHumidificationProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
                     return adiabaticHumidificationProcessControl;
 
-                case MollierProcessType.IsotermicHumidification:
-                    IsotermicHumidificationProcessControl isotermicHumidificationProcessControl = new IsotermicHumidificationProcessControl() { MollierForm = MollierForm, Start = previousMollierPoint };
-                    isotermicHumidificationProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
-                    return isotermicHumidificationProcessControl;
+                case MollierProcessType.IsothermicHumidification:
+                    IsothermicHumidificationProcessControl isothermicHumidificationProcessControl = new IsothermicHumidificationProcessControl() { MollierForm = MollierForm, Start = previousMollierPoint };
+                    isothermicHumidificationProcessControl.SelectMollierPoint += ProcessControl_SelectMollierPoint;
+                    return isothermicHumidificationProcessControl;
 
                 case MollierProcessType.Undefined:
                     RoomProcessControl roomProcessControl = new RoomProcessControl() { MollierForm = MollierForm, StartMollierPoint = previousMollierPoint };
