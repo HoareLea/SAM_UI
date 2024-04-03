@@ -1,7 +1,7 @@
-﻿using Microsoft.Win32;
-using SAM.Geometry.Planar;
+﻿using SAM.Geometry.Planar;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
 
 namespace SAM.Core.Mollier.UI
@@ -128,9 +128,12 @@ namespace SAM.Core.Mollier.UI
         private static List<Solver2DData> Solver2DDatas_Zone(UIMollierZone uIMollierZone, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<Solver2DData> result = new List<Solver2DData>();
-            if (uIMollierZone == null) return result;
+            if (uIMollierZone == null)
+            {
+                return result;
+            }
 
-            UIMollierPointAppearance zoneCenterAppearance = new UIMollierPointAppearance(Color.Black, uIMollierZone.UIMollierAppearance.Label);
+            UIMollierPointAppearance zoneCenterAppearance = new UIMollierPointAppearance(uIMollierZone.UIMollierAppearance.Color, uIMollierZone.UIMollierAppearance.Label);
             UIMollierPoint zoneCenter;
             if(chartType == ChartType.Mollier)
             {
@@ -139,7 +142,13 @@ namespace SAM.Core.Mollier.UI
             }
             else
             {
-                MollierPoint center = new MollierPoint(uIMollierZone.GetCenter().DryBulbTemperature, uIMollierZone.GetCenter().HumidityRatio - 0.4 * scaleVector.X, uIMollierZone.GetCenter().Pressure);
+                double pressure = uIMollierZone.MollierPoints[0].Pressure;
+                List<double> drybulbTemperatures = uIMollierZone.MollierPoints.ConvertAll(x => x.DryBulbTemperature);
+                List<double> humidityRatios = uIMollierZone.MollierPoints.ConvertAll(x => x.HumidityRatio);
+
+                MollierPoint center = new MollierPoint(drybulbTemperatures.Average(), humidityRatios.Average(), pressure);
+
+                //new MollierPoint(uIMollierZone.GetCenter().DryBulbTemperature, uIMollierZone.GetCenter().HumidityRatio - 0.4 * scaleVector.X, uIMollierZone.GetCenter().Pressure);
                 zoneCenter = new UIMollierPoint(center, zoneCenterAppearance);
             }
 
