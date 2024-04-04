@@ -29,7 +29,19 @@
                     return string.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.1), Core.Query.Round(mollierPoint.HumidityRatio*1000, 0.01), " g/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy / 1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.001), Core.Query.Round(mollierPoint.Density(), 0.001), Core.Query.Round(mollierPoint.SaturationVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialDryAirPressure(), 0.1), Core.Query.Round(mollierPoint.DewPointTemperature(), 0.1));
 
                 case ChartType.Mollier:
-                    return string.Format(mask, Core.Query.Round(mollierPoint.RelativeHumidity, 0.1), Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.01), " g/kg", Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, Core.Query.Round(mollierPoint.Enthalpy / 1000, 0.01), Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), Core.Query.Round(mollierPoint.SpecificVolume(), 0.001), Core.Query.Round(mollierPoint.Density(), 0.001), Core.Query.Round(mollierPoint.SaturationVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialVapourPressure(), 0.1), Core.Query.Round(mollierPoint.PartialDryAirPressure(), 0.1), Core.Query.Round(mollierPoint.DewPointTemperature(), 0.1));
+                    return string.Format(mask, 
+                        Core.Query.Round(mollierPoint.RelativeHumidity, 0.1), 
+                        Core.Query.Round(mollierPoint.HumidityRatio * 1000, 0.01), 
+                        " g/kg", 
+                        Core.Query.Round(mollierPoint.DryBulbTemperature, 0.01), mollierPoint.Pressure, 
+                        Core.Query.Round(mollierPoint.Enthalpy / 1000, 0.01), 
+                        Core.Query.Round(mollierPoint.WetBulbTemperature(), 0.01), 
+                        Core.Query.Round(mollierPoint.SpecificVolume(), 0.001), 
+                        Core.Query.Round(mollierPoint.Density(), 0.001), 
+                        Core.Query.Round(mollierPoint.SaturationVapourPressure(), 0.1), 
+                        Core.Query.Round(mollierPoint.PartialVapourPressure(), 0.1), 
+                        Core.Query.Round(mollierPoint.PartialDryAirPressure(), 0.1), 
+                        Core.Query.Round(mollierPoint.DewPointTemperature(), 0.1));
             }
             return null;
         }
