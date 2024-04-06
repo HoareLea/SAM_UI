@@ -41,7 +41,16 @@ namespace SAM.Core.Mollier.UI
                 {
                     continue;
                 }
-                bool visible = mollierControlSettings.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess.ChartDataType).Visible;
+
+
+                bool visible = true;
+
+                IVisibilitySetting visibilitySetting = mollierControlSettings.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess.ChartDataType);
+                if(visibilitySetting != null)
+                {
+                    visible = visibilitySetting.Visible;
+                }
+
                 if (!visible)
                 {
                     continue;
