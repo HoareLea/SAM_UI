@@ -143,9 +143,9 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 {
                     mollierProcess = Mollier.Create.AdiabaticHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
                 }
-                else if (Math.Abs(end.DryBulbTemperature - start.DryBulbTemperature) < Tolerance.MacroDistance) // Isothermic
+                else if (Math.Abs(end.DryBulbTemperature - start.DryBulbTemperature) < Tolerance.MacroDistance) // Isothermal
                 {
-                    mollierProcess = Mollier.Create.IsothermicHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
+                    mollierProcess = Mollier.Create.IsothermalHumidificationProcess_ByHumidityRatioDifference(start, humidityRatioDifference);
                 }
                 else
                 {

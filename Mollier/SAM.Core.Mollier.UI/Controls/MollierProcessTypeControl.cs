@@ -37,7 +37,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     break;
                 case "Adiabatic Humidification":
                     break;
-                case "Isothermic Humidification":
+                case "Isothermal Humidification":
                     break;
             }
         }

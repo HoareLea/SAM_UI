@@ -30,7 +30,7 @@
             {
                 processName = "MX";
             }
-            if (mollierProcess is SteamHumidificationProcess || mollierProcess is AdiabaticHumidificationProcess || mollierProcess is IsothermicHumidificationProcess)
+            if (mollierProcess is SteamHumidificationProcess || mollierProcess is AdiabaticHumidificationProcess || mollierProcess is IsothermalHumidificationProcess)
             {
                 processName = "HUM";
             }

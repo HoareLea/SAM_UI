@@ -76,7 +76,7 @@
             "Heat Recovery",
             "Mixing",
             "Adiabatic Humidification (by water spray)",
-            "Isothermic Humidification (by steam)",
+            "Isothermal Humidification (by steam)",
             "Room Process"});
             this.MollierProcessType_ComboBox.Location = new System.Drawing.Point(110, 38);
             this.MollierProcessType_ComboBox.Name = "MollierProcessType_ComboBox";

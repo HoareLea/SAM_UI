@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Controls
 {
-    partial class IsothermicHumidificationProcessControl
+    partial class IsothermalHumidificationProcessControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -86,7 +86,7 @@
             this.MollierPointControl_Start.Size = new System.Drawing.Size(199, 220);
             this.MollierPointControl_Start.TabIndex = 1;
             // 
-            // IsothermicHumidificationProcessControl
+            // IsothermalHumidificationProcessControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.Controls.Add(this.MollierPointControl_Start);
@@ -94,7 +94,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.processCalculateType_ComboBox);
-            this.Name = "IsothermicHumidificationProcessControl";
+            this.Name = "IsothermalHumidificationProcessControl";
             this.Size = new System.Drawing.Size(645, 280);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -47,7 +47,7 @@
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.MixingProcess, System.Drawing.Color.Green));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.AdiabaticHumidificationProcess, System.Drawing.Color.Purple));
-            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.IsothermicHumidificationProcess, System.Drawing.Color.MediumPurple));
+            result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.IsothermalHumidificationProcess, System.Drawing.Color.MediumPurple));
             result.Add("default", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
 
@@ -88,7 +88,7 @@
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.MixingProcess, System.Drawing.Color.Green));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.AdiabaticHumidificationProcess, System.Drawing.Color.Purple));
-            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.IsothermicHumidificationProcess, System.Drawing.Color.MediumPurple));
+            result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.IsothermalHumidificationProcess, System.Drawing.Color.MediumPurple));
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
 
@@ -128,7 +128,7 @@
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.HeatRecoveryProcess, System.Drawing.Color.IndianRed));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.MixingProcess, System.Drawing.Color.Green));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.IsothermicHumidificationProcess, System.Drawing.Color.MediumPurple));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.IsothermalHumidificationProcess, System.Drawing.Color.MediumPurple));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.AdiabaticHumidificationProcess, System.Drawing.Color.Purple));
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
@@ -168,7 +168,7 @@
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.HeatRecoveryProcess, System.Drawing.Color.IndianRed));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.MixingProcess, System.Drawing.Color.Green));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.SteamHumidificationProcess, System.Drawing.Color.LightBlue));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.IsothermicHumidificationProcess, System.Drawing.Color.MediumPurple));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.IsothermalHumidificationProcess, System.Drawing.Color.MediumPurple));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.AdiabaticHumidificationProcess, System.Drawing.Color.Purple));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
