@@ -58,21 +58,17 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
             }
 
-            List<IMollierObject> mollierObjects = Query.MollierObjects(gH_Params);
+            mollierForm.MollierControlSettings = mollierControlSettings;
 
+            List<IMollierObject> mollierObjects = Query.MollierObjects(gH_Params);
             if (mollierObjects != null && mollierObjects.Count != 0)
             {
                 HashSet<double> pressures = mollierObjects.Pressures();
-                if(pressures != null && pressures.Count != 0)
+                if (pressures != null && pressures.Count != 0)
                 {
-                    mollierControlSettings.Pressure = pressures.First();
+                    mollierForm.Pressure = pressures.First();
                 }
-            }
 
-            mollierForm.MollierControlSettings = mollierControlSettings;
-
-            if (mollierObjects != null && mollierObjects.Count != 0)
-            {
                 mollierForm.AddMollierObjects(mollierObjects);
             }
 
