@@ -304,25 +304,27 @@ namespace SAM.Core.Mollier.UI
             CoolingProcess coolingProcess = ((CoolingProcess)mollierProcess);
 
             MollierPoint apparatusDewPoint = coolingProcess.ApparatusDewPoint();
-            //createProcessPointsSeries(chart, apparatusDewMollierPoint, uIMollierProcess, chartType, toolTipName: "Dew Point", pointType: "DewPoint");
             series = AddMollierPoint(chart, chartType, new UIMollierPoint(apparatusDewPoint, Create.UIMollierPointAppearance(DisplayPointType.Dew, DisplayPointType.Dew.Description())), mollierControlSettings);
             series.Tag = uIMollierProcess;
 
 
             MollierPoint dewPoint = coolingProcess.DewPoint();
-            //createProcessPointsSeries(chart, secondPoint, uIMollierProcess, chartType, pointType: "SecondPoint");
             series = AddMollierPoint(chart, chartType, new UIMollierPoint(dewPoint, Create.UIMollierPointAppearance(DisplayPointType.CoolingSaturation)), mollierControlSettings);
-            series.Tag = uIMollierProcess;//"SecondPoint";
+            series.Tag = uIMollierProcess;
 
             int borderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 2;
 
             createDewPointDashLineSeries(chart, start, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
             createDewPointDashLineSeries(chart, end, apparatusDewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
-            //createDewPointDashLineSeries(chart, end, dewPoint, uIMollierProcess, chartType, Color.LightGray, borderWidth, ChartDashStyle.Dash);
 
             double pressure = end.Pressure;
             //double relativeHumidity = coolingProcess.Efficiency == 1 ? 99 : System.Math.Max(dewPoint.RelativeHumidity, end.RelativeHumidity);
-            double relativeHumidity = coolingProcess.Efficiency == 1 ? 99 : dewPoint.RelativeHumidity;
+
+            double shiftFactor = 0.992; //Shift factor from relative humidity 100%
+
+            double dryBulbTemperature = coolingProcess.Efficiency == 1 ? start.DryBulbTemperature - shiftFactor * (start.DryBulbTemperature - dewPoint.DryBulbTemperature) : dewPoint.DryBulbTemperature;
+            double relativeHumidity = coolingProcess.Efficiency == 1 ? Mollier.Query.RelativeHumidity(dryBulbTemperature, dewPoint.HumidityRatio, dewPoint.Pressure) : dewPoint.RelativeHumidity;
+
             double dryBulbTemperatureStep = 0.5;
 
             Series series_Temp = chart.Series.Add(Guid.NewGuid().ToString());
@@ -330,17 +332,17 @@ namespace SAM.Core.Mollier.UI
             series_Temp.Color = Color.LightGray;
             series_Temp.IsVisibleInLegend = false;
             series_Temp.BorderWidth = borderWidth;
-            series_Temp.ChartType = SeriesChartType.Line; //SeriesChartType.Spline;
+            series_Temp.ChartType = SeriesChartType.Line;
             series_Temp.BorderDashStyle = ChartDashStyle.Dash;
-            series_Temp.Tag = uIMollierProcess;//new UIMollierProcess(Mollier.Create.RoomProcess(mollierPoint_1, mollierPoint_2), Color.Black);
+            series_Temp.Tag = uIMollierProcess;
 
-            double humidityRatio_Temp = Mollier.Query.HumidityRatio(dewPoint.DryBulbTemperature, relativeHumidity, pressure);
-            MollierPoint mollierPoint = new MollierPoint(dewPoint.DryBulbTemperature, humidityRatio_Temp, pressure);
+            double humidityRatio_Temp = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
+            MollierPoint mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio_Temp, pressure);
             Point2D point2D = Convert.ToSAM(mollierPoint, chartType);
 
             series_Temp.Points.AddXY(point2D.X, point2D.Y);
 
-            double dryBulbTemperature = dewPoint.DryBulbTemperature - dryBulbTemperatureStep;
+            dryBulbTemperature = dewPoint.DryBulbTemperature;
             while (dryBulbTemperature > end.DryBulbTemperature)
             {
                 humidityRatio_Temp = Mollier.Query.HumidityRatio(dryBulbTemperature, relativeHumidity, pressure);
