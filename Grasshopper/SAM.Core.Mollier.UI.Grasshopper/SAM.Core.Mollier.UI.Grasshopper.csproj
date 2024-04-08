@@ -24,6 +24,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\build\SAM.Core.Mollier.UI.Grasshopper.xml</DocumentationFile>
+    <StartAction>Program</StartAction>
+	<StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

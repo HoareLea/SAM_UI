@@ -29,7 +29,11 @@ namespace SAM.Core.Mollier.UI
                 Color color = Mollier.Query.Color((IMollierProcess)mollierObject);
                 if (mollierObject is MollierProcess)
                 {
-                    return new UIMollierProcess((MollierProcess)mollierObject, color);
+                    UIMollierProcess result = new UIMollierProcess((MollierProcess)mollierObject, color);
+                    result.UIMollierPointAppearance_Start = Create.UIMollierPointAppearance(DisplayPointType.Process, null);
+                    result.UIMollierPointAppearance_End = Create.UIMollierPointAppearance(DisplayPointType.Process, null);
+
+                    return result;
                 }
                 else if (mollierObject is UIMollierProcess)
                 {
