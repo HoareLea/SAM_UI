@@ -75,25 +75,15 @@ namespace SAM.Core.Mollier.UI
 
                 if(!mollierControlSettings.DisableStartProcessPoint)
                 {
-                    //createProcessPointsSeries(chart, start, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierPointAppearance_Start.Label);
                     UIMollierPoint uIMollierPoint_Start = uIMollierProcess.GetUIMollierPoint_Start();
                     series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_Start, mollierControlSettings);
-                    //series_Temp.Tag = mollierProcess;
-
-                    //processPointsToLabel.Add(uIMollierPoint_Start);
                 }
 
                 if (!mollierControlSettings.DisableEndProcessPoint)
                 {
-                    //createProcessPointsSeries(chart, end, uIMollierProcess, chartType, toolTipName: uIMollierProcess.UIMollierPointAppearance_End.Label);
                     UIMollierPoint uIMollierPoint_End = uIMollierProcess.GetUIMollierPoint_End();
                     series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_End, mollierControlSettings);
-                    //series_Temp.Tag = mollierProcess;
-                    //processPointsToLabel.Add(uIMollierPoint_End);
                 }
-
-                //MollierPoint mid = mollierPointsMid(start, end);
-                //processPointsToLabel.Add(new UIMollierPoint(mid, new UIMollierPointAppearance(Color.Empty, uIMollierProcess.UIMollierAppearance.Label)));
 
                 if(!mollierControlSettings.DisableCoolingAuxiliaryProcesses)
                 {
@@ -101,7 +91,6 @@ namespace SAM.Core.Mollier.UI
                     if (labeledMollierProcesses.Count < 30 && mollierProcess is CoolingProcess)
                     {
                         createCoolingAdditionalLines(chart, uIMollierProcess, mollierControlSettings);
-                        //if(ADPPoint != null) processPointsToLabel.Add(ADPPoint);
                     }
                 }
             }
@@ -304,12 +293,12 @@ namespace SAM.Core.Mollier.UI
             CoolingProcess coolingProcess = ((CoolingProcess)mollierProcess);
 
             MollierPoint apparatusDewPoint = coolingProcess.ApparatusDewPoint();
-            series = AddMollierPoint(chart, chartType, new UIMollierPoint(apparatusDewPoint, Create.UIMollierPointAppearance(DisplayPointType.Dew, DisplayPointType.Dew.Description())), mollierControlSettings);
+            series = AddMollierPoint(chart, chartType, new UIMollierPoint(apparatusDewPoint, Create.UIMollierPointAppearance(DisplayPointType.Dew, DisplayPointType.Dew.Description())), null);
             series.Tag = uIMollierProcess;
 
 
             MollierPoint dewPoint = coolingProcess.DewPoint();
-            series = AddMollierPoint(chart, chartType, new UIMollierPoint(dewPoint, Create.UIMollierPointAppearance(DisplayPointType.CoolingSaturation)), mollierControlSettings);
+            series = AddMollierPoint(chart, chartType, new UIMollierPoint(dewPoint, Create.UIMollierPointAppearance(DisplayPointType.CoolingSaturation)), null);
             series.Tag = uIMollierProcess;
 
             int borderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 2;
