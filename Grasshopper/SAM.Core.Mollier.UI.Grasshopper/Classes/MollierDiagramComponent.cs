@@ -1,4 +1,5 @@
 ﻿using Grasshopper.Kernel;
+using Org.BouncyCastle.Utilities.Collections;
 using SAM.Core.Grasshopper;
 using System;
 using System.Collections.Generic;
@@ -39,18 +40,38 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             }
 
             if (mollierForm == null)
-
-
             {
                 mollierForm = new MollierForm();
                 mollierForm.FormClosing += MollierForm_FormClosing;
                 //mollierForm.MollierControlSettings = GetMollierControlSettings();
             }
-            
+
             mollierForm.Clear();
 
+            MollierControlSettings mollierControlSettings = mollierForm.MollierControlSettings;
+
+            ChartType? chartType = GetChartType();
+            if(chartType != null && chartType.HasValue)
+            {
+
+                mollierControlSettings.ChartType = chartType.Value;
+
+            }
+
             List<IMollierObject> mollierObjects = Query.MollierObjects(gH_Params);
-            if(mollierObjects != null && mollierObjects.Count != 0)
+
+            if (mollierObjects != null && mollierObjects.Count != 0)
+            {
+                HashSet<double> pressures = mollierObjects.Pressures();
+                if(pressures != null && pressures.Count != 0)
+                {
+                    mollierControlSettings.Pressure = pressures.First();
+                }
+            }
+
+            mollierForm.MollierControlSettings = mollierControlSettings;
+
+            if (mollierObjects != null && mollierObjects.Count != 0)
             {
                 mollierForm.AddMollierObjects(mollierObjects);
             }
@@ -61,6 +82,11 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         private void MollierForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             mollierForm = null;
+        }
+
+        protected virtual ChartType? GetChartType()
+        {
+            return null;
         }
     }
 }

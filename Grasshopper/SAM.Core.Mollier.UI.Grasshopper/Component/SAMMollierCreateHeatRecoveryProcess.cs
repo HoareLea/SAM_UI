@@ -174,6 +174,12 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
+            if (supply.Pressure != @return.Pressure)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Supply and return points have to refer to the same pressure");
+                return;
+            }
+
             HeatRecoveryProcess heatRecoveryProcess = Mollier.Create.HeatRecoveryProcess_Supply(supply, @return, sensibleHeatRecoveryEfficiency, latentHeatRecoveryEfficiency);
             index = Params.IndexOfOutputParam("heatRecoveryProcess");
             if (index != -1)

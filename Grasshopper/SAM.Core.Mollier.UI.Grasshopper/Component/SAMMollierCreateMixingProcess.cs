@@ -162,6 +162,12 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
+            if (point_1.Pressure != point_2.Pressure)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "point_1 and point_2 pressure have to be the same");
+                return;
+            }
+
             MixingProcess mixingProcess = Mollier.Create.MixingProcess(point_1, point_2, airflow_1, airflow_2);
 
 
