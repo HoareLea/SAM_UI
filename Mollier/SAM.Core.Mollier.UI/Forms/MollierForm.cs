@@ -401,6 +401,15 @@ namespace SAM.Core.Mollier.UI
             MollierControl_Main.Regenerate();
         }
 
+        private void CoolingAuxiliaryProcessesVisibility()
+        {
+            MollierControlSettings mollierControlSettings = MollierControl_Main.MollierControlSettings;
+            mollierControlSettings.DisableCoolingAuxiliaryProcesses = !mollierControlSettings.DisableCoolingAuxiliaryProcesses;
+
+            MollierControl_Main.MollierControlSettings = mollierControlSettings;
+            MollierControl_Main.Regenerate();
+        }
+
         private void MollierProcessForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             UIMollierProcess uIMollierProcess = mollierProcessForm?.GetUIMollierProcess();
@@ -1263,6 +1272,12 @@ namespace SAM.Core.Mollier.UI
                 if (e.KeyCode == Keys.O)
                 {
                     AddPoint();
+                    return;
+                }
+
+                if (e.KeyCode == Keys.C)
+                {
+                    CoolingAuxiliaryProcessesVisibility();
                     return;
                 }
             }
