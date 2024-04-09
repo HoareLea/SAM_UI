@@ -3,6 +3,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Collections.Generic;
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -10,7 +11,7 @@ namespace SAM.Core.Mollier.UI
     {
         public static List<Series> AddMollierLines(this Chart chart, IEnumerable<UIMollierCurve> uIMollierCurves, MollierControlSettings mollierControlSettings)
         {
-            if(uIMollierCurves == null)
+            if (uIMollierCurves == null)
             {
                 return null;
             }
@@ -21,15 +22,15 @@ namespace SAM.Core.Mollier.UI
 
 
             foreach (UIMollierCurve uIMollierCurve in uIMollierCurves)
-            {            
+            {
                 MollierLine mollierLine = uIMollierCurve?.MollierCurve as MollierLine;
-                if(mollierLine == null)
+                if (mollierLine == null)
                 {
                     continue;
                 }
 
                 MollierSensibleHeatRatioLine mollierSensibleHeatRatioLine = mollierLine as MollierSensibleHeatRatioLine;
-                if(mollierSensibleHeatRatioLine == null)
+                if (mollierSensibleHeatRatioLine == null)
                 {
                     continue;
                 }
@@ -44,7 +45,7 @@ namespace SAM.Core.Mollier.UI
                 series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
                 series.Tag = uIMollierCurve;
 
-                double sensibleHeatRatio = mollierSensibleHeatRatioLine.SensibleHeatRatio; 
+                double sensibleHeatRatio = mollierSensibleHeatRatioLine.SensibleHeatRatio;
 
                 MollierPoint mollierPoint = mollierSensibleHeatRatioLine.MollierPoints[0];
 
@@ -52,7 +53,7 @@ namespace SAM.Core.Mollier.UI
                 Line2D line2D = null;
 
                 double latentLoad = sensibleLoad * ((1 - System.Math.Abs(sensibleHeatRatio)) / System.Math.Abs(sensibleHeatRatio));
-                if(double.IsInfinity(latentLoad))
+                if (double.IsInfinity(latentLoad))
                 {
                     IsothermalHumidificationProcess isothermalHumidificationProcess = Mollier.Create.IsothermalHumidificationProcess_ByRelativeHumidity(mollierPoint, 100);
 
@@ -63,10 +64,10 @@ namespace SAM.Core.Mollier.UI
                 }
                 else
                 {
-                if (sensibleHeatRatio < 0)
+                    if (sensibleHeatRatio < 0)
                     {
-                    sensibleLoad = -1;
-                }
+                        sensibleLoad = -1;
+                    }
                     RoomProcess roomProcess_Temp = Mollier.Create.RoomProcess_ByEnd(mollierPoint, 1, sensibleLoad * 1000, latentLoad * 1000);
 
                     Point2D point2D_1 = Convert.ToSAM(roomProcess_Temp.Start, chartType);
@@ -75,7 +76,7 @@ namespace SAM.Core.Mollier.UI
                     line2D = new Line2D(point2D_1, new Vector2D(point2D_1, point2D_2));
                 }
 
-                if(line2D == null)
+                if (line2D == null)
                 {
                     continue;
                 }
@@ -84,12 +85,41 @@ namespace SAM.Core.Mollier.UI
 
                 BoundingBox2D boundingBox2D = new BoundingBox2D(new Point2D(chartArea.AxisX.Minimum, chartArea.AxisY.Minimum), new Point2D(chartArea.AxisX.Maximum, chartArea.AxisY.Maximum));
 
+
                 List<Point2D> point2Ds = boundingBox2D.Intersections(line2D);
                 if (point2Ds != null)
                 {
-                    foreach(Point2D point2D in point2Ds)
+                    Polyline2D polyline_1 = new Polyline2D(point2Ds);
+
+                    Polyline2D polyline2D_2 = null;
+                    foreach (Series series_Temp in chart.Series)
                     {
+                        ConstantValueCurve constantValueCurve = series_Temp.Tag as ConstantValueCurve;
+                        if (constantValueCurve == null)
+                        {
+                            continue;
+                        }
+
+                        if (constantValueCurve.ChartDataType == ChartDataType.RelativeHumidity && constantValueCurve.Value == 100)
+                        {
+                            polyline2D_2 = new Polyline2D(series_Temp.Points.ToList().ConvertAll(x => x.ToSAM()));
+                            break;
+                        }
+                    }
+
+                    List<Point2D> point2Ds_Intersection = polyline_1.Intersections((ISegmentable2D)polyline2D_2);
+                    if(point2Ds_Intersection != null && point2Ds_Intersection.Count != 0)
+                    {
+                        Point2D point2D = point2Ds.Find(x => x.X > point2Ds_Intersection[0].X);
                         series.Points.AddXY(point2D.X, point2D.Y);
+                        series.Points.AddXY(point2Ds_Intersection[0].X, point2Ds_Intersection[0].Y);
+                    }
+                    else
+                    {
+                        foreach (Point2D point2D in point2Ds)
+                        {
+                            series.Points.AddXY(point2D.X, point2D.Y);
+                        }
                     }
                 }
 
