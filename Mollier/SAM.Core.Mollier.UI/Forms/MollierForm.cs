@@ -1015,6 +1015,12 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
+            if(double.IsNaN(mollierPoint.RelativeHumidity))
+            {
+                MessageBox.Show("Select point with relative humidity less than 100%");
+                return;
+            }
+
             double sensibleHeatRatio = double.NaN;
             using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Sensible Heat Ratio", "Sensible Heat Ratio (SHR) [0-1]"))
             {
@@ -1129,6 +1135,12 @@ namespace SAM.Core.Mollier.UI
             MollierPoint mollierPoint = e.MollierPoint;
             if (mollierPoint == null)
             {
+                return;
+            }
+
+            if (double.IsNaN(mollierPoint.RelativeHumidity))
+            {
+                MessageBox.Show("Select point with relative humidity less than 100%");
                 return;
             }
 

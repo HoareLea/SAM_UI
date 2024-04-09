@@ -258,6 +258,16 @@ namespace SAM.Core.Mollier.UI
             //    mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)
             //    : uIMollierProcess.UIMollierAppearance.Color;
             series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess);
+            if(uIMollierProcess.UIMollierAppearance != null)
+            {
+                Color color = uIMollierProcess.UIMollierAppearance.Color;
+                if(color != Color.Empty)
+                {
+                    series.Color = color;
+                }
+            }
+
+
             series.Tag = uIMollierProcess;
 
             int index;
