@@ -1,6 +1,9 @@
 ﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Types;
 using Rhino;
+using Rhino.Commands;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
@@ -114,6 +117,13 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             //    dataAccess.GetData(index, ref coolingLineRealistic);
             //}
 
+            HashSet<double> pressures = mollierObjects?.Pressures();
+            if(pressures != null && pressures.Count != 1)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "All the precesses and points have to refer to the same pressure");
+                return;
+            }
+
             foreach (IMollierObject mollierObject in mollierObjects)
             {
                 if (mollierObject == null)
@@ -205,7 +215,31 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             List<IMollierPoint> mollierPoints = Query.MollierPoints(new IGH_Param[] { gHParam });
 
             Core.Grasshopper.Mollier.Modify.BakeGeometry(RhinoDoc.ActiveDoc, chartType, mollierProcesses, mollierPoints);
+        }
 
+        protected override ChartType? GetChartType()
+        {
+            IGH_Param gH_Param = Params?.Input?.Find(x => x.Name == "_chartType_");
+            if (gH_Param == null)
+            {
+                return null;
+            }
+
+            IGH_Structure gH_Structure = gH_Param.VolatileData;
+            foreach (object @object in gH_Structure.AllData(true))
+            {
+                object object_Temp = @object is IGH_Goo ? (@object as dynamic)?.Value : @object;
+                if (object_Temp == null)
+                {
+                    continue;
+                }
+                if (object_Temp is bool)
+                {
+                    return (bool)object_Temp ? ChartType.Mollier : ChartType.Psychrometric;
+                }
+            }
+
+            return null;
         }
     }
 }

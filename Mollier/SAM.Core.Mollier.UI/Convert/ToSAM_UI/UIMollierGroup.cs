@@ -23,13 +23,8 @@ namespace SAM.Core.Mollier.UI
                     }
                     else if(mollierGroupable is MollierProcess)
                     {
-                        MollierProcess mollierProcess = (MollierProcess)mollierGroupable;
-                        Color color = mollierProcess.Color();
-                        if(mollierControlSettings != null)
-                        {
-                            color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess);
-                        }
-                        result.Add(new UIMollierProcess(mollierProcess, color));
+                        IMollierGroupable mollierGroupable_Temp = ToSAM_UI(mollierGroupable) as IMollierGroupable;
+                        result.Add(mollierGroupable_Temp);
                     }
                     else if(mollierGroupable is MollierZone)
                     {

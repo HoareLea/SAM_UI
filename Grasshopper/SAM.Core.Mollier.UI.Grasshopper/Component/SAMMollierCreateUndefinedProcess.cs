@@ -135,6 +135,12 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref endLabel);
             }
 
+            if (start.Pressure != end.Pressure)
+            {
+                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "start and end pressure have to be the same");
+                return;
+            }
+
             UndefinedProcess undefinedProcess = Mollier.Create.UndefinedProcess(start, end);
 
             index = Params.IndexOfOutputParam("undefinedProcess");
