@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using System.Drawing;
 using System.Linq;
+using SAM.Geometry.Spatial;
+using SAM.Geometry;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -110,7 +112,9 @@ namespace SAM.Core.Mollier.UI
                     List<Point2D> point2Ds_Intersection = polyline_1.Intersections((ISegmentable2D)polyline2D_2);
                     if(point2Ds_Intersection != null && point2Ds_Intersection.Count != 0)
                     {
-                        Point2D point2D = point2Ds.Find(x => x.X > point2Ds_Intersection[0].X);
+                        //List<VerticalPosition> verticalPositions = point2Ds.ConvertAll(x => Geometry.Planar.Query.VerticalPosition(polyline2D_2, x));
+
+                        Point2D point2D = chartType == ChartType.Mollier ? point2Ds.Find(x => Geometry.Planar.Query.VerticalPosition(polyline2D_2, x) != VerticalPosition.Below) : point2Ds.Find(x => Geometry.Planar.Query.VerticalPosition(polyline2D_2, x) != VerticalPosition.Above);
                         series.Points.AddXY(point2D.X, point2D.Y);
                         series.Points.AddXY(point2Ds_Intersection[0].X, point2Ds_Intersection[0].Y);
                     }
