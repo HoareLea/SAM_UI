@@ -6,10 +6,16 @@ namespace SAM.Core.Mollier.UI.Controls
     public partial class UIMollierProcessControl : UserControl
     {
         private UIMollierProcess uIMollierProcess;
+        private System.Drawing.Color color_Empty = System.Drawing.Color.Empty;
+
+
         public UIMollierProcessControl()
         {
             InitializeComponent();
+
+            color_Empty = ProcessColor_button.BackColor;
         }
+
         public UIMollierProcessControl(UIMollierProcess uIMollierProcess)
         {
             InitializeComponent();
@@ -18,6 +24,8 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
             setUIMollierProcess(uIMollierProcess);
+
+            color_Empty = ProcessColor_button.BackColor;
         }
 
         public UIMollierProcess UIMollierProcess
@@ -28,7 +36,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     return null;
                 }
-                uIMollierProcess.UIMollierAppearance.Color = ProcessColor_button.BackColor;
+                uIMollierProcess.UIMollierAppearance.Color = ProcessColor_button.BackColor == color_Empty ? System.Drawing.Color.Empty : ProcessColor_button.BackColor;
                 uIMollierProcess.UIMollierPointAppearance_Start.Label = StartLabel_Value.Text;
                 uIMollierProcess.UIMollierAppearance.Label = ProcessLabel_Value.Text;
                 uIMollierProcess.UIMollierPointAppearance_End.Label = EndLabel_Value.Text;
@@ -51,7 +59,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (uIMollierProcess.UIMollierAppearance != null)
             {
-                ProcessColor_button.BackColor = uIMollierProcess.UIMollierAppearance.Color;
+                ProcessColor_button.BackColor = uIMollierProcess.UIMollierAppearance.Color == System.Drawing.Color.Empty ? color_Empty : uIMollierProcess.UIMollierAppearance.Color;
                 StartLabel_Value.Text = uIMollierProcess.UIMollierPointAppearance_Start.Label;
                 ProcessLabel_Value.Text = uIMollierProcess.UIMollierAppearance.Label;
                 EndLabel_Value.Text = uIMollierProcess.UIMollierPointAppearance_End.Label;
@@ -67,6 +75,11 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
                 ProcessColor_button.BackColor = colorDialog.Color;
             }
+        }
+
+        private void Button_Clear_Click(object sender, EventArgs e)
+        {
+            ProcessColor_button.BackColor = color_Empty;
         }
     }
 }

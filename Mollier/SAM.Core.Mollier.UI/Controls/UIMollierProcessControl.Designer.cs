@@ -37,13 +37,14 @@
             this.ProcessLabel_Value = new System.Windows.Forms.TextBox();
             this.EndLabel_Value = new System.Windows.Forms.TextBox();
             this.StartLabel_Value = new System.Windows.Forms.TextBox();
+            this.Button_Clear = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ProcessColor_button
             // 
             this.ProcessColor_button.Location = new System.Drawing.Point(143, 11);
             this.ProcessColor_button.Name = "ProcessColor_button";
-            this.ProcessColor_button.Size = new System.Drawing.Size(88, 23);
+            this.ProcessColor_button.Size = new System.Drawing.Size(59, 23);
             this.ProcessColor_button.TabIndex = 1;
             this.ProcessColor_button.UseVisualStyleBackColor = true;
             this.ProcessColor_button.Click += new System.EventHandler(this.ProcessColor_button_Click);
@@ -109,10 +110,22 @@
             this.StartLabel_Value.Size = new System.Drawing.Size(88, 22);
             this.StartLabel_Value.TabIndex = 2;
             // 
+            // Button_Clear
+            // 
+            this.Button_Clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_Clear.Location = new System.Drawing.Point(208, 11);
+            this.Button_Clear.Name = "Button_Clear";
+            this.Button_Clear.Size = new System.Drawing.Size(23, 23);
+            this.Button_Clear.TabIndex = 7;
+            this.Button_Clear.Text = "c";
+            this.Button_Clear.UseVisualStyleBackColor = true;
+            this.Button_Clear.Click += new System.EventHandler(this.Button_Clear_Click);
+            // 
             // UIMollierProcessControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.Button_Clear);
             this.Controls.Add(this.StartLabel_Value);
             this.Controls.Add(this.EndLabel_Value);
             this.Controls.Add(this.ProcessLabel_Value);
@@ -139,5 +152,6 @@
         private System.Windows.Forms.TextBox ProcessLabel_Value;
         private System.Windows.Forms.TextBox EndLabel_Value;
         private System.Windows.Forms.TextBox StartLabel_Value;
+        private System.Windows.Forms.Button Button_Clear;
     }
 }

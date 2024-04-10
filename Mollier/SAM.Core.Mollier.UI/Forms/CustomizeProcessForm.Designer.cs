@@ -67,11 +67,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(338, 202);
+            this.ControlBox = false;
             this.Controls.Add(this.OK_Button);
             this.Controls.Add(this.Cancel_Button);
             this.Controls.Add(this.customizeProcessControl);
             this.Name = "CustomizeProcessForm";
-            this.Text = "CustomizeForm";
+            this.ShowIcon = false;
+            this.Text = "Modify Process";
             this.ResumeLayout(false);
 
         }

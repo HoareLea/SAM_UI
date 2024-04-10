@@ -254,9 +254,6 @@ namespace SAM.Core.Mollier.UI
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 4;
-            //series.Color = (uIMollierProcess.UIMollierAppearance.Color == Color.Empty) ?
-            //    mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)
-            //    : uIMollierProcess.UIMollierAppearance.Color;
             series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess);
             if(uIMollierProcess.UIMollierAppearance != null)
             {
@@ -266,7 +263,6 @@ namespace SAM.Core.Mollier.UI
                     series.Color = color;
                 }
             }
-
 
             series.Tag = uIMollierProcess;
 
