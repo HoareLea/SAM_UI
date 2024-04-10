@@ -197,7 +197,7 @@ namespace SAM.Core.Mollier.UI
             //add Room air condition point to the series and create label for it
 
             seriesRoomPoint.Points.AddXY(point2D_End.X, point2D_End.Y);
-            seriesRoomPoint.Points[0].ToolTip = Query.ToolTipText(mollierPoint_End, mollierControlSettings.ChartType, "ROOM");
+            seriesRoomPoint.Points[0].ToolTip = Query.ToolTipText(mollierPoint_End, mollierControlSettings.ChartType);
 
             if (!string.IsNullOrWhiteSpace(uIMollierProcess?.UIMollierPointAppearance_Start?.Label))
             {

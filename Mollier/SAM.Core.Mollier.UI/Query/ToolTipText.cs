@@ -1,4 +1,6 @@
-﻿namespace SAM.Core.Mollier.UI
+﻿using NetOffice.ExcelApi;
+
+namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {
@@ -7,9 +9,8 @@
         /// </summary>
         /// <param name="mollierPoint"></param>
         /// <param name="chartType"></param>
-        /// <param name="name"></param>
         /// <returns></returns>
-        public static string ToolTipText(this MollierPoint mollierPoint, ChartType chartType, string name = null)
+        public static string ToolTipText(this MollierPoint mollierPoint, ChartType chartType)
         {
             if (mollierPoint == null)
             {
@@ -17,11 +18,6 @@
             }
 
             string mask = "t = {3} °C\nx = {1}{2}\nφ = {0} %\nt_wb = {6} °C\nt_tau = {12} °C (DewPoint)\nh = {5} kJ/kg\nρ = {8} kg/m³\nv = {7} m³/kg\np = {4} Pa\npS = {9} Pa\npW = {10} Pa\npL = {11} Pa";
-            //if (name != null && name != "")
-            //{
-            //    mask = string.Format("{0}\n{1}", name, mask);
-            //    return "";
-            //}
 
             switch (chartType)
             {
@@ -65,6 +61,27 @@
                 
                 case ChartType.Psychrometric:
                     return string.Format(mask, System.Math.Round(end.DryBulbTemperature, 2) - System.Math.Round(start.DryBulbTemperature, 2), System.Math.Round((System.Math.Round(end.HumidityRatio, 5) - System.Math.Round(start.HumidityRatio, 5)) * 1000, 2), System.Math.Round(System.Math.Round(end.Enthalpy / 1000, 2) - System.Math.Round(start.Enthalpy / 1000, 2), 2), "g/kg", System.Math.Round(Mollier.Query.Epsilon(start, end), 0), System.Math.Round(Mollier.Query.SensibleHeatRatio(start, end), 2));
+            }
+
+            return null;
+        }
+
+        public static string ToolTipText(this MollierSensibleHeatRatioLine mollierSensibleHeatRatioLine, ChartType chartType)
+        {
+            if(mollierSensibleHeatRatioLine == null)
+            {
+                return null;
+            }
+
+            string mask = "SHR = {0}";
+
+            switch (chartType)
+            {
+                case ChartType.Mollier:
+                    return string.Format(mask, System.Math.Round(mollierSensibleHeatRatioLine.SensibleHeatRatio, 2));
+
+                case ChartType.Psychrometric:
+                    return string.Format(mask, System.Math.Round(mollierSensibleHeatRatioLine.SensibleHeatRatio, 2));
             }
 
             return null;

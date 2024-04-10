@@ -46,6 +46,7 @@ namespace SAM.Core.Mollier.UI
                 series.BorderDashStyle = ChartDashStyle.Dash;
                 series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
                 series.Tag = uIMollierCurve;
+                series.ToolTip = Query.ToolTipText(mollierSensibleHeatRatioLine, chartType);
 
                 double sensibleHeatRatio = mollierSensibleHeatRatioLine.SensibleHeatRatio;
 

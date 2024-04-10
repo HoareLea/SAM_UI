@@ -89,7 +89,7 @@ namespace SAM.Core.Mollier.UI
             series.ChartType = SeriesChartType.Point;
 
             series.MarkerStyle = MarkerStyle.Circle;
-            series.Points[index].ToolTip = Query.ToolTipText(uIMollierPoint, chartType, uIMollierPointAppearance.Label);
+            series.Points[index].ToolTip = Query.ToolTipText(uIMollierPoint, chartType);
             series.Tag = uIMollierPoint;
 
             return series;
