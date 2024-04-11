@@ -73,15 +73,15 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            string mask = "SHR = {0}";
+            string mask = "ε = {0} kJ/kg\n*ε=Δh/Δx\nSHR = {1}";
 
             switch (chartType)
             {
                 case ChartType.Mollier:
-                    return string.Format(mask, System.Math.Round(mollierSensibleHeatRatioLine.SensibleHeatRatio, 2));
+                    return string.Format(mask, System.Math.Round(Mollier.Query.Epsilon(mollierSensibleHeatRatioLine), 0), System.Math.Round(mollierSensibleHeatRatioLine.SensibleHeatRatio, 2));
 
                 case ChartType.Psychrometric:
-                    return string.Format(mask, System.Math.Round(mollierSensibleHeatRatioLine.SensibleHeatRatio, 2));
+                    return string.Format(mask, System.Math.Round(Mollier.Query.Epsilon(mollierSensibleHeatRatioLine), 0), System.Math.Round(mollierSensibleHeatRatioLine.SensibleHeatRatio, 2));
             }
 
             return null;
