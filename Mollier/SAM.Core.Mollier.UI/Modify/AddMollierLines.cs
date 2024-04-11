@@ -118,7 +118,7 @@ namespace SAM.Core.Mollier.UI
                         for (int i = 0; i < point2Ds.Count - 1; i++)
                         {
                             VerticalPosition verticalPosition_Temp = Geometry.Planar.Query.VerticalPosition(polyline2D_RelativeHumidity, point2Ds[i].Mid(point2Ds[i + 1]));
-                            if (verticalPosition_Temp == verticalPosition)
+                            if (verticalPosition_Temp == verticalPosition || verticalPosition_Temp == VerticalPosition.Undefined)
                             {
                                 segment2Ds.Add(new Segment2D(point2Ds[i], point2Ds[i + 1]));
                             }
