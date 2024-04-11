@@ -20,6 +20,10 @@ namespace SAM.Core.Mollier.UI
             int index = series.Points.AddXY(point2D.X, point2D.Y);
 
             UIMollierPointAppearance uIMollierPointAppearance = uIMollierPoint.UIMollierAppearance as UIMollierPointAppearance;
+            if (displayPointType != DisplayPointType.Undefined)
+            {
+                uIMollierPointAppearance = Create.UIMollierPointAppearance(displayPointType, uIMollierPointAppearance.Label);
+            }
 
             Color color = uIMollierPointAppearance.Color;
             int size = uIMollierPointAppearance.Size;
@@ -41,15 +45,6 @@ namespace SAM.Core.Mollier.UI
             if (size < 1)
             {
                 size = series.MarkerSize;
-            }
-
-            if(displayPointType != DisplayPointType.Undefined)
-            {
-                UIMollierPointAppearance uIMollierPointAppearance_Temp = Create.UIMollierPointAppearance(displayPointType, uIMollierPointAppearance.Label);
-                if(uIMollierPointAppearance_Temp != null)
-                {
-                    color = uIMollierPointAppearance_Temp.Color;
-                }
             }
 
             if (mollierControlSettings != null && mollierControlSettings.DisablePoint)

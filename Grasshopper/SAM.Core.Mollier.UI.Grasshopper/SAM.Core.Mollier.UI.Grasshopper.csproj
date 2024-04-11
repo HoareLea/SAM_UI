@@ -25,7 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\build\SAM.Core.Mollier.UI.Grasshopper.xml</DocumentationFile>
     <StartAction>Program</StartAction>
-	<StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
+    <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -62,7 +62,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\GooMollierChartObject.cs" />
     <Compile Include="Classes\MollierDiagramComponent.cs" />
+    <Compile Include="Component\SAMMollierCreateDiagram.cs" />
     <Compile Include="Component\SAMMollierCreateFanProcess.cs" />
     <Compile Include="Component\SAMMollierCreateIsotermicHumidificationProcessByHumidityRatioDifference.cs" />
     <Compile Include="Component\SAMMollierCreateIsotermicHumidificationProcessByRelativeHumidity.cs" />
