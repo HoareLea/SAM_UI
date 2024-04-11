@@ -76,13 +76,13 @@ namespace SAM.Core.Mollier.UI
                 if(!mollierControlSettings.DisableStartProcessPoint)
                 {
                     UIMollierPoint uIMollierPoint_Start = uIMollierProcess.GetUIMollierPoint_Start();
-                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_Start, mollierControlSettings);
+                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_Start, mollierControlSettings, DisplayPointType.Process);
                 }
 
                 if (!mollierControlSettings.DisableEndProcessPoint)
                 {
                     UIMollierPoint uIMollierPoint_End = uIMollierProcess.GetUIMollierPoint_End();
-                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_End, mollierControlSettings);
+                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_End, mollierControlSettings, DisplayPointType.Process);
                 }
 
                 if(!mollierControlSettings.DisableCoolingAuxiliaryProcesses)

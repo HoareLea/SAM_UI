@@ -7,7 +7,7 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-        public static Series AddMollierPoint(this Chart chart, ChartType chartType, UIMollierPoint uIMollierPoint, MollierControlSettings mollierControlSettings)
+        public static Series AddMollierPoint(this Chart chart, ChartType chartType, UIMollierPoint uIMollierPoint, MollierControlSettings mollierControlSettings, DisplayPointType displayPointType = DisplayPointType.Undefined)
         {
             if(chart == null || chartType == ChartType.Undefined || uIMollierPoint == null)
             {
@@ -41,6 +41,15 @@ namespace SAM.Core.Mollier.UI
             if (size < 1)
             {
                 size = series.MarkerSize;
+            }
+
+            if(displayPointType != DisplayPointType.Undefined)
+            {
+                UIMollierPointAppearance uIMollierPointAppearance_Temp = Create.UIMollierPointAppearance(displayPointType, uIMollierPointAppearance.Label);
+                if(uIMollierPointAppearance_Temp != null)
+                {
+                    color = uIMollierPointAppearance_Temp.Color;
+                }
             }
 
             if (mollierControlSettings != null && mollierControlSettings.DisablePoint)

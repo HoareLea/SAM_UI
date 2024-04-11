@@ -22,6 +22,31 @@ namespace SAM.Core.Mollier.UI
 
             ChartType chartType = mollierControlSettings.ChartType;
 
+            Polyline2D polyline2D_RelativeHumidity = null;
+            foreach (Series series_Temp in chart.Series)
+            {
+                ConstantValueCurve constantValueCurve = series_Temp.Tag as ConstantValueCurve;
+                if (constantValueCurve == null)
+                {
+                    continue;
+                }
+
+                if (constantValueCurve.ChartDataType == ChartDataType.RelativeHumidity && constantValueCurve.Value == 100)
+                {
+                    polyline2D_RelativeHumidity = new Polyline2D(series_Temp.Points.ToList().ConvertAll(x => x.ToSAM()));
+                    break;
+                }
+            }
+
+            if (polyline2D_RelativeHumidity == null)
+            {
+                return null;
+            }
+
+            ChartArea chartArea = chart.ChartAreas[0];
+            BoundingBox2D boundingBox2D = new BoundingBox2D(new Point2D(chartArea.AxisX.Minimum, chartArea.AxisY.Minimum), new Point2D(chartArea.AxisX.Maximum, chartArea.AxisY.Maximum));
+
+            VerticalPosition verticalPosition = chartType == ChartType.Mollier ? VerticalPosition.Above : VerticalPosition.Below;
 
             foreach (UIMollierCurve uIMollierCurve in uIMollierCurves)
             {
@@ -38,15 +63,6 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 Color color = uIMollierCurve.UIMollierAppearance.Color == Color.Empty ? Color.Gray : uIMollierCurve.UIMollierAppearance.Color;
-
-                Series series = chart.Series.Add("Mollier Sensible Heat Ratio Line " + Guid.NewGuid().ToString());
-                series.IsVisibleInLegend = false;
-                series.ChartType = SeriesChartType.Line;
-                series.Color = color;
-                series.BorderDashStyle = ChartDashStyle.Dash;
-                series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
-                series.Tag = uIMollierCurve;
-                series.ToolTip = Query.ToolTipText(mollierSensibleHeatRatioLine, chartType);
 
                 double sensibleHeatRatio = mollierSensibleHeatRatioLine.SensibleHeatRatio;
 
@@ -84,51 +100,59 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
 
-                ChartArea chartArea = chart.ChartAreas[series.ChartArea];
-
-                BoundingBox2D boundingBox2D = new BoundingBox2D(new Point2D(chartArea.AxisX.Minimum, chartArea.AxisY.Minimum), new Point2D(chartArea.AxisX.Maximum, chartArea.AxisY.Maximum));
-
+                List<Segment2D> segment2Ds = new List<Segment2D>();
 
                 List<Point2D> point2Ds = boundingBox2D.Intersections(line2D);
-                if (point2Ds != null)
+                if (point2Ds != null && point2Ds.Count != 0)
                 {
                     Polyline2D polyline_1 = new Polyline2D(point2Ds);
 
-                    Polyline2D polyline2D_2 = null;
-                    foreach (Series series_Temp in chart.Series)
+                    List<Point2D> point2Ds_Intersection = polyline_1.Intersections((ISegmentable2D)polyline2D_RelativeHumidity);
+                    if (point2Ds_Intersection != null && point2Ds_Intersection.Count != 0)
                     {
-                        ConstantValueCurve constantValueCurve = series_Temp.Tag as ConstantValueCurve;
-                        if (constantValueCurve == null)
-                        {
-                            continue;
-                        }
+                        Point2D point2D_Start = point2Ds[0];
 
-                        if (constantValueCurve.ChartDataType == ChartDataType.RelativeHumidity && constantValueCurve.Value == 100)
+                        point2Ds.AddRange(point2Ds_Intersection);
+                        point2Ds.SortByDistance(point2D_Start);
+
+                        for (int i = 0; i < point2Ds.Count - 1; i++)
                         {
-                            polyline2D_2 = new Polyline2D(series_Temp.Points.ToList().ConvertAll(x => x.ToSAM()));
-                            break;
+                            VerticalPosition verticalPosition_Temp = Geometry.Planar.Query.VerticalPosition(polyline2D_RelativeHumidity, point2Ds[i].Mid(point2Ds[i + 1]));
+                            if (verticalPosition_Temp == verticalPosition)
+                            {
+                                segment2Ds.Add(new Segment2D(point2Ds[i], point2Ds[i + 1]));
+                            }
                         }
                     }
-
-                    List<Point2D> point2Ds_Intersection = polyline_1.Intersections((ISegmentable2D)polyline2D_2);
-                    if(point2Ds_Intersection != null && point2Ds_Intersection.Count != 0)
+                    else if (point2Ds.Count > 1)
                     {
-                        //List<VerticalPosition> verticalPositions = point2Ds.ConvertAll(x => Geometry.Planar.Query.VerticalPosition(polyline2D_2, x));
-
-                        Point2D point2D = chartType == ChartType.Mollier ? point2Ds.Find(x => Geometry.Planar.Query.VerticalPosition(polyline2D_2, x) != VerticalPosition.Below) : point2Ds.Find(x => Geometry.Planar.Query.VerticalPosition(polyline2D_2, x) != VerticalPosition.Above);
-                        series.Points.AddXY(point2D.X, point2D.Y);
-                        series.Points.AddXY(point2Ds_Intersection[0].X, point2Ds_Intersection[0].Y);
-                    }
-                    else
-                    {
-                        foreach (Point2D point2D in point2Ds)
+                        for (int i = 0; i < point2Ds.Count - 1; i++)
                         {
-                            series.Points.AddXY(point2D.X, point2D.Y);
+                            segment2Ds.Add(new Segment2D(point2Ds[i], point2Ds[i + 1]));
                         }
                     }
                 }
 
-                result.Add(series);
+                if(segment2Ds == null || segment2Ds.Count == 0)
+                {
+                    continue;
+                }
+
+                foreach(Segment2D segment2D in segment2Ds)
+                {
+                    Series series = chart.Series.Add("Mollier Sensible Heat Ratio Line " + Guid.NewGuid().ToString());
+                    series.IsVisibleInLegend = false;
+                    series.ChartType = SeriesChartType.Line;
+                    series.Color = color;
+                    series.BorderDashStyle = ChartDashStyle.Dash;
+                    series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 3;
+                    series.Tag = uIMollierCurve;
+                    series.ToolTip = Query.ToolTipText(mollierSensibleHeatRatioLine, chartType);
+                    series.Points.AddXY(segment2D[0].X, segment2D[0].Y);
+                    series.Points.AddXY(segment2D[1].X, segment2D[1].Y);
+
+                    result.Add(series);
+                }
             }
 
             return result;
