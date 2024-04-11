@@ -722,7 +722,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 Form form = FindForm();
                 if(form != null)
                 {
-                    sufix = string.Format("{0}x{1}", form.Size.Width, form.Size.Height);
+                    sufix = string.Format("{0}x{1}_{2}", form.Size.Width, form.Size.Height, mollierControlSettings.Pressure);
                 }
 
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog())
