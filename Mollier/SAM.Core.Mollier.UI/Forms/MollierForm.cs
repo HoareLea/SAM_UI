@@ -427,27 +427,27 @@ namespace SAM.Core.Mollier.UI
 
             mollierProcessForm = null;
 
-            if(uIMollierProcess.UIMollierAppearance.Color == System.Drawing.Color.Empty)
-            {
-                MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null;
+            //if(uIMollierProcess.UIMollierAppearance.Color == System.Drawing.Color.Empty)
+            //{
+            //    MollierControlSettings mollierControlSettings = System.IO.File.Exists(mollierControlSettingsPath) ? Core.Convert.ToSAM<MollierControlSettings>(mollierControlSettingsPath).FirstOrDefault() : null;
                 
                 
-                System.Drawing.Color? color = mollierControlSettings?.VisibilitySettings?.GetColor(mollierControlSettings?.DefaultTemplateName, ChartParameterType.Line, uIMollierProcess);
-                if(color != null && color.HasValue)
-                {
-                    uIMollierProcess.UIMollierAppearance.Color = color.Value;
-                    if (uIMollierProcess.UIMollierPointAppearance_Start.Color == System.Drawing.Color.Empty)
-                    {
-                        uIMollierProcess.UIMollierPointAppearance_Start.Color = color.Value;
-                    }
+            //    System.Drawing.Color? color = mollierControlSettings?.VisibilitySettings?.GetColor(mollierControlSettings?.DefaultTemplateName, ChartParameterType.Line, uIMollierProcess);
+            //    if(color != null && color.HasValue)
+            //    {
+            //        uIMollierProcess.UIMollierAppearance.Color = color.Value;
+            //        if (uIMollierProcess.UIMollierPointAppearance_Start.Color == System.Drawing.Color.Empty)
+            //        {
+            //            uIMollierProcess.UIMollierPointAppearance_Start.Color = color.Value;
+            //        }
 
-                    if (uIMollierProcess.UIMollierPointAppearance_End.Color == System.Drawing.Color.Empty)
-                    {
-                        uIMollierProcess.UIMollierPointAppearance_End.Color = color.Value;
-                    }
-                }
+            //        if (uIMollierProcess.UIMollierPointAppearance_End.Color == System.Drawing.Color.Empty)
+            //        {
+            //            uIMollierProcess.UIMollierPointAppearance_End.Color = color.Value;
+            //        }
+            //    }
 
-            }
+            //}
 
             previousUIMollierPoint = uIMollierProcess.GetUIMollierPoint_End();
             List<IMollierProcess> mollierProcesses = new List<IMollierProcess>() { uIMollierProcess };
@@ -1015,6 +1015,12 @@ namespace SAM.Core.Mollier.UI
                 return;
             }
 
+            if(double.IsNaN(mollierPoint.RelativeHumidity))
+            {
+                MessageBox.Show("Select point with relative humidity less than 100%");
+                return;
+            }
+
             double sensibleHeatRatio = double.NaN;
             using (Windows.Forms.TextBoxForm<double> textBoxForm = new Windows.Forms.TextBoxForm<double>("Sensible Heat Ratio", "Sensible Heat Ratio (SHR) [0-1]"))
             {
@@ -1129,6 +1135,12 @@ namespace SAM.Core.Mollier.UI
             MollierPoint mollierPoint = e.MollierPoint;
             if (mollierPoint == null)
             {
+                return;
+            }
+
+            if (double.IsNaN(mollierPoint.RelativeHumidity))
+            {
+                MessageBox.Show("Select point with relative humidity less than 100%");
                 return;
             }
 

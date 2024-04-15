@@ -26,10 +26,10 @@ namespace SAM.Core.Mollier.UI
             }
             else if(mollierObject is IMollierProcess)
             {
-                Color color = Mollier.Query.Color((IMollierProcess)mollierObject);
+                //Color color = Mollier.Query.Color((IMollierProcess)mollierObject);
                 if (mollierObject is MollierProcess)
                 {
-                    UIMollierProcess result = new UIMollierProcess((MollierProcess)mollierObject, color);
+                    UIMollierProcess result = new UIMollierProcess((MollierProcess)mollierObject, Color.Empty);
                     result.UIMollierPointAppearance_Start = Create.UIMollierPointAppearance(DisplayPointType.Process, null);
                     result.UIMollierPointAppearance_End = Create.UIMollierPointAppearance(DisplayPointType.Process, null);
 
@@ -43,10 +43,9 @@ namespace SAM.Core.Mollier.UI
             }
             else if(mollierObject is IMollierGroup)
             {
-                Color color = Color.Empty;
                 if (mollierObject is MollierGroup)
                 {
-                    return new UIMollierGroup((MollierGroup)mollierObject, color);
+                    return new UIMollierGroup((MollierGroup)mollierObject, Color.Empty);
                 }
                 else if (mollierObject is UIMollierGroup)
                 {

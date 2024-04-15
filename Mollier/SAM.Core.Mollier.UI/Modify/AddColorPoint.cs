@@ -90,8 +90,7 @@ namespace SAM.Core.Mollier.UI
             {
                 result.Points.AddXY(0, 15); // TODO: Changed
             }
-            string pointLabel = Query.ToolTipText(colorPoint.ToMollier(chartType, mollierControlSettings.Pressure), chartType);
-            result.Label = pointLabel;
+            result.Label = Query.ToolTipText(colorPoint.ToMollier(chartType, mollierControlSettings.Pressure), chartType);
 
             return result;
         }

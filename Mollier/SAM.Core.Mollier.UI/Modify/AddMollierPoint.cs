@@ -7,7 +7,7 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-        public static Series AddMollierPoint(this Chart chart, ChartType chartType, UIMollierPoint uIMollierPoint, MollierControlSettings mollierControlSettings)
+        public static Series AddMollierPoint(this Chart chart, ChartType chartType, UIMollierPoint uIMollierPoint, MollierControlSettings mollierControlSettings, DisplayPointType displayPointType = DisplayPointType.Undefined)
         {
             if(chart == null || chartType == ChartType.Undefined || uIMollierPoint == null)
             {
@@ -20,6 +20,10 @@ namespace SAM.Core.Mollier.UI
             int index = series.Points.AddXY(point2D.X, point2D.Y);
 
             UIMollierPointAppearance uIMollierPointAppearance = uIMollierPoint.UIMollierAppearance as UIMollierPointAppearance;
+            if (displayPointType != DisplayPointType.Undefined)
+            {
+                uIMollierPointAppearance = Create.UIMollierPointAppearance(displayPointType, uIMollierPointAppearance.Label);
+            }
 
             Color color = uIMollierPointAppearance.Color;
             int size = uIMollierPointAppearance.Size;
@@ -89,7 +93,7 @@ namespace SAM.Core.Mollier.UI
             series.ChartType = SeriesChartType.Point;
 
             series.MarkerStyle = MarkerStyle.Circle;
-            series.Points[index].ToolTip = Query.ToolTipText(uIMollierPoint, chartType, uIMollierPointAppearance.Label);
+            series.Points[index].ToolTip = Query.ToolTipText(uIMollierPoint, chartType);
             series.Tag = uIMollierPoint;
 
             return series;

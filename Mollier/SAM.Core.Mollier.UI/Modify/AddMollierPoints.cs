@@ -55,7 +55,7 @@ namespace SAM.Core.Mollier.UI
                 }
 
                 int index = result.Points.AddXY(point.X, point.Y);
-                result.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType, null);
+                result.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType);
                 result.Points[index].MarkerSize = 7;
                 result.Points[index].MarkerStyle = MarkerStyle.Circle;
                 result.Points[index].Tag = new UIMollierPoint(mollierPoint, new UIMollierPointAppearance(Color.Black, uIMollierPoint.UIMollierAppearance.Label));

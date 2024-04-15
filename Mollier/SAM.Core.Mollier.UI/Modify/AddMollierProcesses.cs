@@ -76,13 +76,13 @@ namespace SAM.Core.Mollier.UI
                 if(!mollierControlSettings.DisableStartProcessPoint)
                 {
                     UIMollierPoint uIMollierPoint_Start = uIMollierProcess.GetUIMollierPoint_Start();
-                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_Start, mollierControlSettings);
+                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_Start, mollierControlSettings, DisplayPointType.Process);
                 }
 
                 if (!mollierControlSettings.DisableEndProcessPoint)
                 {
                     UIMollierPoint uIMollierPoint_End = uIMollierProcess.GetUIMollierPoint_End();
-                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_End, mollierControlSettings);
+                    series_Temp = AddMollierPoint(chart, chartType, uIMollierPoint_End, mollierControlSettings, DisplayPointType.Process);
                 }
 
                 if(!mollierControlSettings.DisableCoolingAuxiliaryProcesses)
@@ -197,7 +197,7 @@ namespace SAM.Core.Mollier.UI
             //add Room air condition point to the series and create label for it
 
             seriesRoomPoint.Points.AddXY(point2D_End.X, point2D_End.Y);
-            seriesRoomPoint.Points[0].ToolTip = Query.ToolTipText(mollierPoint_End, mollierControlSettings.ChartType, "ROOM");
+            seriesRoomPoint.Points[0].ToolTip = Query.ToolTipText(mollierPoint_End, mollierControlSettings.ChartType);
 
             if (!string.IsNullOrWhiteSpace(uIMollierProcess?.UIMollierPointAppearance_Start?.Label))
             {
@@ -254,10 +254,16 @@ namespace SAM.Core.Mollier.UI
             series.IsVisibleInLegend = false;
             series.ChartType = SeriesChartType.Line;
             series.BorderWidth = mollierControlSettings.ProccessLineThickness != -1 ? mollierControlSettings.ProccessLineThickness : 4;
-            //series.Color = (uIMollierProcess.UIMollierAppearance.Color == Color.Empty) ?
-            //    mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess)
-            //    : uIMollierProcess.UIMollierAppearance.Color;
             series.Color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Line, mollierProcess);
+            if(uIMollierProcess.UIMollierAppearance != null)
+            {
+                Color color = uIMollierProcess.UIMollierAppearance.Color;
+                if(color != Color.Empty)
+                {
+                    series.Color = color;
+                }
+            }
+
             series.Tag = uIMollierProcess;
 
             int index;
