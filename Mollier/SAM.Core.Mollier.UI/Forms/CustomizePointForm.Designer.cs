@@ -35,7 +35,8 @@
             // 
             // OK_Button
             // 
-            this.OK_Button.Location = new System.Drawing.Point(88, 104);
+            this.OK_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OK_Button.Location = new System.Drawing.Point(42, 131);
             this.OK_Button.Name = "OK_Button";
             this.OK_Button.Size = new System.Drawing.Size(102, 31);
             this.OK_Button.TabIndex = 2;
@@ -45,7 +46,8 @@
             // 
             // Cancel_Button
             // 
-            this.Cancel_Button.Location = new System.Drawing.Point(196, 104);
+            this.Cancel_Button.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Cancel_Button.Location = new System.Drawing.Point(150, 131);
             this.Cancel_Button.Name = "Cancel_Button";
             this.Cancel_Button.Size = new System.Drawing.Size(102, 31);
             this.Cancel_Button.TabIndex = 3;
@@ -55,9 +57,12 @@
             // 
             // customizePointControl
             // 
+            this.customizePointControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.customizePointControl.Location = new System.Drawing.Point(12, 12);
             this.customizePointControl.Name = "customizePointControl";
-            this.customizePointControl.Size = new System.Drawing.Size(237, 86);
+            this.customizePointControl.Size = new System.Drawing.Size(240, 113);
             this.customizePointControl.TabIndex = 1;
             this.customizePointControl.UIMollierPoint = null;
             // 
@@ -65,12 +70,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(307, 149);
+            this.ClientSize = new System.Drawing.Size(264, 174);
+            this.ControlBox = false;
             this.Controls.Add(this.customizePointControl);
             this.Controls.Add(this.OK_Button);
             this.Controls.Add(this.Cancel_Button);
             this.Name = "CustomizePointForm";
-            this.Text = "CustomizePointForm";
+            this.Text = "Edit Mollier Point";
             this.ResumeLayout(false);
 
         }

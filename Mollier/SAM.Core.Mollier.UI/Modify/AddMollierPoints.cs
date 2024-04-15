@@ -58,7 +58,8 @@ namespace SAM.Core.Mollier.UI
                 result.Points[index].ToolTip = Query.ToolTipText(mollierPoint, chartType);
                 result.Points[index].MarkerSize = 7;
                 result.Points[index].MarkerStyle = MarkerStyle.Circle;
-                result.Points[index].Tag = new UIMollierPoint(mollierPoint, new UIMollierPointAppearance(Color.Black, uIMollierPoint.UIMollierAppearance.Label));
+                result.Points[index].Tag = new UIMollierPoint(uIMollierPoint);
+                //result.Points[index].Tag = new UIMollierPoint(mollierPoint, new UIMollierPointAppearance(Color.Black, uIMollierPoint.UIMollierAppearance.Label));
                 if (colorDictionary[uIMollierPoint] == Color.Empty)
                 {
                     result.Points[index].Color = uIMollierPoint.UIMollierAppearance.Color;

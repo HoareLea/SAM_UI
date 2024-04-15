@@ -135,18 +135,39 @@ namespace SAM.Core.Mollier.UI
             {
                 Solver2DData solver2DData = solver2DResult.Solver2DData;
                 Rectangle2D labelShape = solver2DResult.Closed2D<Rectangle2D>();
-                if (labelShape == null) continue;
-                if (!(solver2DData.Tag is UIMollierPoint)) continue;
-
-                Tuple<Point2D, double> positionAngleLabel = getPositionAngle(labelShape, chartType, scaleVector, axesRatio);
-                string text = ((UIMollierPoint)solver2DData.Tag).UIMollierAppearance.Label;
-                Color color = ((UIMollierPoint)solver2DData.Tag).UIMollierAppearance.Color;
-                if (color == Color.Empty)
+                if (labelShape == null)
                 {
-                    color = Color.Black;
+                    continue;
                 }
 
-                //result.Add(new ChartLabel(positionAngleLabel.Item1, text, positionAngleLabel.Item2, color) { Tag = solver2DResult});
+                UIMollierPoint uIMollierPoint = solver2DData.Tag as UIMollierPoint;
+                if(uIMollierPoint == null)
+                {
+                    continue;
+                }
+
+                Tuple<Point2D, double> positionAngleLabel = getPositionAngle(labelShape, chartType, scaleVector, axesRatio);
+
+                string text = null;
+                Color color = Color.Empty;
+
+                UIMollierAppearance uIMollierAppearance = uIMollierPoint.UIMollierAppearance;
+                if(uIMollierAppearance != null)
+                {
+                    text = uIMollierPoint.UIMollierAppearance.Label;
+                    color = uIMollierPoint.UIMollierAppearance.Color;
+
+                    if(uIMollierAppearance.UIMollierLabelAppearance != null)
+                    {
+                        color = uIMollierAppearance.UIMollierLabelAppearance.Color;
+                    }
+
+                    if (color == Color.Empty)
+                    {
+                        color = Color.Black;
+                    }
+                }
+
                 result.Add(new ChartLabel(positionAngleLabel.Item1, text, positionAngleLabel.Item2, color));
             }
 

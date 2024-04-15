@@ -36,10 +36,12 @@ namespace SAM.Core.Mollier.UI.Controls
                 {
                     return null;
                 }
+
                 uIMollierProcess.UIMollierAppearance.Color = ProcessColor_button.BackColor == color_Empty ? System.Drawing.Color.Empty : ProcessColor_button.BackColor;
                 uIMollierProcess.UIMollierPointAppearance_Start.Label = StartLabel_Value.Text;
                 uIMollierProcess.UIMollierAppearance.Label = ProcessLabel_Value.Text;
                 uIMollierProcess.UIMollierPointAppearance_End.Label = EndLabel_Value.Text;
+                
                 return uIMollierProcess;
             }
             set
