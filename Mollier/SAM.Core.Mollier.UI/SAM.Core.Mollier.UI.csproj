@@ -76,7 +76,7 @@
     <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
     <Compile Include="Classes\EventArgs\MollierObjectSelectedArgs.cs" />
     <Compile Include="Classes\EventArgs\MollierModelEditedEventArgs.cs" />
-    <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs - Copy.cs" />
+    <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs.cs" />
     <Compile Include="Classes\EventArgs\MollierPointSelectedEventArgs.cs" />
     <Compile Include="Classes\MollierControlSettings.cs" />
     <Compile Include="Classes\MollierPointEventArgs.cs" />
