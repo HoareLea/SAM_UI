@@ -4,6 +4,7 @@ using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using SAM.Core.Mollier.UI.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
@@ -165,6 +166,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 seriesTemp.Color = Color.Black;
             }
         }
+       
         private void CreateXAxis()
         {
             double humidityRatioMin = mollierControlSettings.HumidityRatio_Min;
@@ -226,6 +228,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
 
         }
+        
         private void setAxisGraph_Mollier()
         {
             if (mollierControlSettings == null || !mollierControlSettings.IsValid())
@@ -296,6 +299,7 @@ namespace SAM.Core.Mollier.UI.Controls
             CreateXAxis();
 
         }
+        
         private void setAxisGraph_Psychrometric()
         {
             //INITIAL SIZES
@@ -1166,6 +1170,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             return true;
         }
+        
         public bool Print()
         {
             PrintingManager printingManager = MollierChart?.Printing;
@@ -1193,10 +1198,12 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierControlSettings.Temperature_Max = chartType == ChartType.Mollier ? y_Max : x_Max;
             Regenerate();
         }
+        
         private void ToolStripMenuItem_Selection_Click(object sender, EventArgs e)
         {
             selection = true;
         }
+        
         private void ToolStripMenuItem_Reset_Click(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings_1 = new MollierControlSettings();
@@ -1206,6 +1213,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierControlSettings.Temperature_Max = mollierControlSettings_1.Temperature_Max;
             Regenerate();
         }
+        
         private void MollierChart_MouseDown(object sender, MouseEventArgs e)
         {
             if (!selection)
@@ -1214,6 +1222,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             mdown = e.Location;
         }
+        
         private void MollierChart_MouseMove(object sender, MouseEventArgs e)
         {
             if (selection)
@@ -1269,6 +1278,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             //}
         }
+        
         private void MollierChart_MouseUp(object sender, MouseEventArgs e)
         {
             if (!selection)
@@ -1325,13 +1335,13 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.Refresh();
             selection = false;
         }
+        
         private void MollierChart_MouseClick(object sender, MouseEventArgs e)
         {
             MollierPoint mollierPoint = GetMollierPoint(e.X, e.Y);
 
             MollierPointSelected?.Invoke(this, new MollierPointSelectedEventArgs(mollierPoint));
         }
-
 
         public MollierControlSettings MollierControlSettings
         {
@@ -1431,6 +1441,63 @@ namespace SAM.Core.Mollier.UI.Controls
             Geometry.Planar.Point2D point2D = new Geometry.Planar.Point2D(chart_X, chart_Y);
 
             return Convert.ToMollier(point2D, mollierControlSettings.ChartType, mollierControlSettings.Pressure);
+        }
+
+        private void MollierChart_DoubleClick(object sender, EventArgs e)
+        {
+            Point point = MollierChart.PointToClient(MousePosition);
+
+            HitTestResult[] hitTestResults = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
+            if (hitTestResults == null)
+            {
+                return;
+            }
+
+            UIMollierPoint uIMollierPoint = null;
+            foreach (HitTestResult hitTestResult in hitTestResults)
+            {
+                Series series = hitTestResult?.Series;
+                if (series == null)
+                {
+                    continue;
+                }
+
+                int index = hitTestResult.PointIndex;
+                if(index == -1)
+                {
+                    continue;
+                }
+
+                uIMollierPoint = series.Points[index].Tag as UIMollierPoint;
+                if(uIMollierPoint != null)
+                {
+                    break;
+                }
+            }
+
+            if(uIMollierPoint == null)
+            {
+                return;
+            }
+
+            using (CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint))
+            {
+                if(customizePointForm.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                uIMollierPoint = customizePointForm.UIMollierPoint;
+            }
+
+            if(uIMollierPoint == null)
+            {
+                return;
+            }
+
+            mollierModel.Update(uIMollierPoint, true);
+
+            Regenerate();
         }
     }
 }

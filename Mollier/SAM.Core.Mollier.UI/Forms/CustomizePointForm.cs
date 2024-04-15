@@ -12,6 +12,7 @@ namespace SAM.Core.Mollier.UI.Forms
         public CustomizePointForm(UIMollierPoint uIMollierPoint)
         {
             InitializeComponent();
+
             if(uIMollierPoint == null)
             {
                 return;
