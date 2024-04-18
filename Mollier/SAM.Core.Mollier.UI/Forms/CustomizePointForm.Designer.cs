@@ -71,15 +71,13 @@
             // CustomizePointForm
             // 
             this.AcceptButton = this.OK_Button;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.CancelButton = this.Cancel_Button;
-            this.ClientSize = new System.Drawing.Size(264, 208);
+            this.ClientSize = new System.Drawing.Size(260, 204);
             this.ControlBox = false;
             this.Controls.Add(this.CustomizePointControl_Main);
             this.Controls.Add(this.OK_Button);
             this.Controls.Add(this.Cancel_Button);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "CustomizePointForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
