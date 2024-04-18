@@ -258,6 +258,11 @@ namespace SAM.Core.Mollier.UI
                         color = uIMollierAppearance.UIMollierLabelAppearance.Color;
                     }
 
+                    //if (color == Color.Empty)
+                    //{
+                    //    color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Label, ChartDa);
+                    //}
+
                     if (color == Color.Empty)
                     {
                         color = Color.Black;

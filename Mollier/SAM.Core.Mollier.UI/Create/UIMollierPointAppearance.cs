@@ -17,7 +17,7 @@ namespace SAM.Core.Mollier.UI
                     return null;
 
                 case DisplayPointType.Default:
-                    return new UIMollierPointAppearance(System.Drawing.Color.Blue, label)
+                    return new UIMollierPointAppearance(System.Drawing.Color.Blue, System.Drawing.Color.Empty, label)
                     {
                         Size = -1,
                         BorderSize = -1,
@@ -25,7 +25,7 @@ namespace SAM.Core.Mollier.UI
                     };
 
                 case DisplayPointType.Process:
-                    return new UIMollierPointAppearance(System.Drawing.Color.Gray, label)
+                    return new UIMollierPointAppearance(System.Drawing.Color.Gray, System.Drawing.Color.Empty, label)
                     {
                         Size = 8,
                         BorderSize = 2,
@@ -33,7 +33,7 @@ namespace SAM.Core.Mollier.UI
                     };
 
                 case DisplayPointType.Dew:
-                    return new UIMollierPointAppearance(System.Drawing.Color.Gray, label)
+                    return new UIMollierPointAppearance(System.Drawing.Color.Gray, System.Drawing.Color.Empty, label)
                     {
                         Size = 8,
                         BorderSize = -1,
@@ -41,7 +41,7 @@ namespace SAM.Core.Mollier.UI
                     };
 
                 case DisplayPointType.CoolingSaturation:
-                    return new UIMollierPointAppearance(System.Drawing.Color.Gray, label)
+                    return new UIMollierPointAppearance(System.Drawing.Color.Gray, System.Drawing.Color.Empty, label)
                     {
                         Size = 5,
                         BorderSize = -1,
@@ -49,7 +49,7 @@ namespace SAM.Core.Mollier.UI
                     };
 
                 case DisplayPointType.Room:
-                    return new UIMollierPointAppearance(System.Drawing.Color.Gray, label)
+                    return new UIMollierPointAppearance(System.Drawing.Color.Gray, System.Drawing.Color.Empty, label)
                     {
                         Size = 8,
                         BorderSize = 2,

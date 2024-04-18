@@ -362,7 +362,7 @@ namespace SAM.Core.Mollier.UI
                 }
             }
 
-            return new UIMollierPoint(apparatusDewPoint, new UIMollierPointAppearance(Color.Empty, "ADP"));
+            return new UIMollierPoint(apparatusDewPoint, new UIMollierPointAppearance(System.Drawing.Color.Empty, Color.Empty, "ADP"));
         }
 
         //private static Series createProcessPointsSeries(this Chart chart, MollierPoint mollierPoint, UIMollierProcess UI_MollierProcess, ChartType chartType, string toolTipName = null, string pointType = "Default")
@@ -425,7 +425,7 @@ namespace SAM.Core.Mollier.UI
                     // Set default values whether they're not set
                     if(UI_MollierProcess.UIMollierPointAppearance_Start == null)
                     {
-                        UI_MollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(Color.Empty, string.Empty);
+                        UI_MollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(System.Drawing.Color.Empty, Color.Empty, string.Empty);
                     }
 
                     if(UI_MollierProcess.UIMollierPointAppearance_Start.Label == null)
@@ -436,7 +436,7 @@ namespace SAM.Core.Mollier.UI
 
                     if(UI_MollierProcess.UIMollierPointAppearance_End == null)
                     {
-                        UI_MollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(Color.Empty, string.Empty);
+                        UI_MollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(System.Drawing.Color.Empty, Color.Empty, string.Empty);
                     }
 
                     if (UI_MollierProcess.UIMollierPointAppearance_End.Label == null)
