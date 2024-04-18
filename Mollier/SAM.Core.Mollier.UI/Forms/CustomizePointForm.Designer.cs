@@ -80,9 +80,7 @@
             this.Controls.Add(this.Cancel_Button);
             this.Name = "CustomizePointForm";
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.Text = "Edit Mollier Point";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.CustomizePointForm_Load);
             this.ResumeLayout(false);
 
