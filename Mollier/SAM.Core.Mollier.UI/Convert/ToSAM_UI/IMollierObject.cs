@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Geometry.Mollier;
+using System;
 using System.Drawing;
 namespace SAM.Core.Mollier.UI
 {
@@ -13,7 +14,7 @@ namespace SAM.Core.Mollier.UI
 
             if(mollierObject is IMollierPoint)
             {
-                Color color = Mollier.Query.Color((IMollierPoint)mollierObject);
+                Color color = Geometry.Mollier.Query.Color((IMollierPoint)mollierObject);
                 if (mollierObject is MollierPoint)
                 {
                     return new UIMollierPoint((MollierPoint)mollierObject, color);

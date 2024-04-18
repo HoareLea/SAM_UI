@@ -1,4 +1,5 @@
 ﻿using SAM.Core.Mollier.UI.Controls;
+using SAM.Geometry.Mollier;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -71,7 +72,7 @@ namespace SAM.Core.Mollier.UI.Forms
             }
 
             result.UIMollierAppearance.Color = color;
-            result.UIMollierAppearance.Label = process_Label;
+            (result.UIMollierAppearance as UIMollierAppearance).Label = process_Label;
 
             result.UIMollierPointAppearance_Start = Create.UIMollierPointAppearance(DisplayPointType.Process, start_Label);
             //result.UIMollierPointAppearance_Start.Color = color;
@@ -110,7 +111,7 @@ namespace SAM.Core.Mollier.UI.Forms
 
                 color = customizeProcessForm.UIMollierProcess.UIMollierAppearance.Color;
                 start_Label = customizeProcessForm.UIMollierProcess.UIMollierPointAppearance_Start.Label;
-                process_Label = customizeProcessForm.UIMollierProcess.UIMollierAppearance.Label;
+                process_Label = (customizeProcessForm.UIMollierProcess.UIMollierAppearance as UIMollierAppearance).Label;
                 end_Label = customizeProcessForm.UIMollierProcess.UIMollierPointAppearance_End.Label;
             }
         }

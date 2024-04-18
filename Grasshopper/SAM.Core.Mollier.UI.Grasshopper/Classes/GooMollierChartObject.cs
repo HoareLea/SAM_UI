@@ -6,6 +6,8 @@ using Rhino.DocObjects;
 using Rhino.Geometry;
 using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
+using SAM.Geometry.Grasshopper.Mollier;
+using SAM.Geometry.Mollier;
 using System;
 using System.Collections.Generic;
 using System.Linq;

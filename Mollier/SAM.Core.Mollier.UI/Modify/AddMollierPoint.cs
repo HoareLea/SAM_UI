@@ -2,6 +2,7 @@
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Drawing;
 using System;
+using SAM.Geometry.Mollier;
 
 namespace SAM.Core.Mollier.UI
 {

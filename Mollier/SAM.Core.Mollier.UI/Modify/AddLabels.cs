@@ -3,6 +3,10 @@ using System;
 using System.Windows.Forms.DataVisualization.Charting;
 using SAM.Geometry.Planar;
 using System.Collections.Generic;
+using SAM.Geometry.Mollier;
+using SAM.Core.Mollier.UI.Classes;
+using System.Reflection;
+using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -50,10 +54,19 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            List<ChartLabel> labelsPositions = getChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio);
-            
-            labelsPositions.fixPositions(chart);
-            List<Series> result = addLabels(chart, labelsPositions);
+            List<ChartLabel> chartLabels = getChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio);
+
+
+            chartLabels.fixPositions(chart);
+
+            List<ChartLabel> chartLabels_Temp = GetChartLabels(chart, mollierControlSettings);
+            //if (chartLabels_Temp != null)
+            //{
+            //    chartLabels.AddRange(chartLabels_Temp);
+            //}
+
+
+            List<Series> result = addLabels(chart, chartLabels);
 
             return result;
         }
@@ -68,6 +81,89 @@ namespace SAM.Core.Mollier.UI
 
             return result;
         }
+
+        private static List<ChartLabel> GetChartLabels(Chart chart, MollierControlSettings mollierControlSettings)
+        {
+            ChartType chartType = mollierControlSettings.ChartType;
+            Vector2D scaleVector = Query.ScaleVector2D(chart.Parent, mollierControlSettings);
+            double axesRatio = Query.AxesRatio(chart, mollierControlSettings);
+
+            List<ChartLabel> result = new List<ChartLabel>();
+            foreach (Series series in chart.Series)
+            {
+                if (series.Name == "MollierPoints")
+                {
+
+                    foreach (DataPoint dataPoint in series.Points)
+                    {
+                        if (dataPoint.Tag is UIMollierPoint)
+                        {
+                            UIMollierPoint mollierPoint = (UIMollierPoint)dataPoint.Tag;
+
+                            UIMollierPointAppearance uIMollierPointAppearance = mollierPoint.UIMollierAppearance as UIMollierPointAppearance;
+                            if (uIMollierPointAppearance == null)
+                            {
+                                continue;
+                            }
+
+                            UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierPointAppearance.UIMollierLabelAppearance;
+                            if (uIMollierLabelAppearance == null)
+                            {
+                                continue;
+                            }
+
+                            Vector2D vector2D = uIMollierLabelAppearance.Vector2D;
+                            if (vector2D == null)
+                            {
+                                return result;
+                            }
+
+                            string text = uIMollierLabelAppearance.Text;
+                            if (string.IsNullOrEmpty(text))
+                            {
+                                continue;
+                            }
+
+
+
+                            Color color = uIMollierLabelAppearance.Color;
+                            if(color == Color.Empty)
+                            {
+                                color = Color.Black;
+                            }
+
+                            Point2D point = Convert.ToSAM(mollierPoint, chartType);
+                            point.Move(vector2D);
+
+                            point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
+
+                            Size size = TextRenderer.MeasureText(text, series.Font);
+
+                            point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y + size.Height));
+
+                            Series series_Label = chart.Series.Add(Guid.NewGuid().ToString());
+                            series_Label.SmartLabelStyle.Enabled = false;
+                            series_Label.IsVisibleInLegend = false;
+                            series_Label.Color = Color.Transparent;
+                            series_Label.ChartType = SeriesChartType.Point;
+                            series_Label.Points.AddXY(point.X, point.Y);
+                            series_Label.Label = text;
+                            series_Label.LabelAngle = 0;
+                            series_Label.LabelForeColor = color;
+                            series_Label.Tag = mollierPoint;
+
+                            ChartLabel chartLabel = new ChartLabel(point, text, 0, color);
+                            result.Add(chartLabel);
+                        }
+                    }
+                    return result;
+                }
+            }
+
+            return result;
+        }
+
+
         private static Series addLabel(Chart chart, ChartLabel chartLabel)
         {
             Series result = chart.Series.Add(Guid.NewGuid().ToString());
@@ -79,7 +175,7 @@ namespace SAM.Core.Mollier.UI
             result.Label = chartLabel.Text;
             result.LabelAngle = System.Convert.ToInt32(chartLabel.Angle) % 90;
             result.LabelForeColor = chartLabel.Color;
-            result.Tag = "Label " + Guid.NewGuid().ToString();
+            result.Tag = chartLabel.Tag;
 
             //Solver2DResult solver2DResult = chartLabel.Tag as Solver2DResult;
             //if(solver2DResult != null)
@@ -151,10 +247,10 @@ namespace SAM.Core.Mollier.UI
                 string text = null;
                 Color color = Color.Empty;
 
-                UIMollierAppearance uIMollierAppearance = uIMollierPoint.UIMollierAppearance;
+                UIMollierAppearance uIMollierAppearance = uIMollierPoint.UIMollierAppearance as UIMollierAppearance;
                 if(uIMollierAppearance != null)
                 {
-                    text = uIMollierPoint.UIMollierAppearance.Label;
+                    text = (uIMollierPoint.UIMollierAppearance as UIMollierAppearance).Label;
                     color = uIMollierPoint.UIMollierAppearance.Color;
 
                     if(uIMollierAppearance.UIMollierLabelAppearance != null)
@@ -168,7 +264,7 @@ namespace SAM.Core.Mollier.UI
                     }
                 }
 
-                result.Add(new ChartLabel(positionAngleLabel.Item1, text, positionAngleLabel.Item2, color));
+                result.Add(new ChartLabel(positionAngleLabel.Item1, text, positionAngleLabel.Item2, color) { Tag = uIMollierPoint });
             }
 
             return result;

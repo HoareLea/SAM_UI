@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.Planar;
+﻿using SAM.Geometry.Mollier;
+using SAM.Geometry.Planar;
 using System;
 using System.Collections.Generic;
 using System.Linq;

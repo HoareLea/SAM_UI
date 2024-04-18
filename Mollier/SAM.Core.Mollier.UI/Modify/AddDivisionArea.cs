@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System;
 using SAM.Geometry.Planar;
+using SAM.Geometry.Mollier;
 
 namespace SAM.Core.Mollier.UI
 {

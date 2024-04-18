@@ -81,6 +81,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Geometry.Mollier, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Geometry.SolarCalculator">
       <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Geometry.SolarCalculator.dll</HintPath>
     </Reference>
@@ -220,9 +224,9 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj">
       <Project>{FD5079BC-621D-44CE-8EAE-6E85510FE050}</Project>
-      <Name>SAM.Core.Mollier.UI</Name>
+      <Name>SAM.Analytical.Mollier.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
       <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>

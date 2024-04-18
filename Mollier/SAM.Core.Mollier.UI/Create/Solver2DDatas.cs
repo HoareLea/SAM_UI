@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.Planar;
+﻿using SAM.Geometry.Mollier;
+using SAM.Geometry.Planar;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -80,10 +81,32 @@ namespace SAM.Core.Mollier.UI
         private static List<Solver2DData> solver2DDatas_Point(UIMollierPoint mollierPoint, ChartType chartType, Vector2D scaleVector, double axesRatio)
         {
             List<Solver2DData> result = new List<Solver2DData>();
-            if (mollierPoint == null || mollierPoint.UIMollierAppearance.Label == null || mollierPoint.UIMollierAppearance.Label == "") return result;
+
+            UIMollierPointAppearance uIMollierPointAppearance = mollierPoint.UIMollierAppearance as UIMollierPointAppearance;
+            if(uIMollierPointAppearance == null)
+            {
+                return result;
+            }
+
+            UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierPointAppearance.UIMollierLabelAppearance;
+            if(uIMollierLabelAppearance == null)
+            {
+                return result;
+            }
+
+            string text = uIMollierLabelAppearance.Text;
+            if(string.IsNullOrEmpty(text))
+            {
+                return result;
+            }
+
+            if (uIMollierLabelAppearance.Vector2D != null)
+            {
+                return result;
+            }
 
             Point2D point = Convert.ToSAM(mollierPoint, chartType);
-            string text = mollierPoint.UIMollierAppearance.Label;
+
             Point2D labelCenter = getLabelCenter(point, chartType, scaleVector);
 
             Rectangle2D labelRectangle = textToRectangle(labelCenter, text, chartType, scaleVector, axesRatio);
@@ -107,7 +130,7 @@ namespace SAM.Core.Mollier.UI
 
             if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelProcess))
             {
-                UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierPointAppearance(Color.Black, process.UIMollierAppearance.Label));
+                UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierPointAppearance(Color.Black, (process.UIMollierAppearance as UIMollierAppearance).Label));
                 result.AddRange(solver2DDatas_Point(mid, chartType, scaleVector, axesRatio));
             }
 
@@ -133,7 +156,7 @@ namespace SAM.Core.Mollier.UI
                 return result;
             }
 
-            UIMollierPointAppearance zoneCenterAppearance = new UIMollierPointAppearance(uIMollierZone.UIMollierAppearance.Color, uIMollierZone.UIMollierAppearance.Label);
+            UIMollierPointAppearance zoneCenterAppearance = new UIMollierPointAppearance(uIMollierZone.UIMollierAppearance.Color, (uIMollierZone.UIMollierAppearance as UIMollierAppearance).Label);
             UIMollierPoint zoneCenter;
             if(chartType == ChartType.Mollier)
             {
@@ -280,8 +303,6 @@ namespace SAM.Core.Mollier.UI
             Rectangle2D result = Geometry.Planar.Query.MoveToSegment2D(rectangleShape, curveSegment, scaledPoint, distance, clockwise);
             return fixRectangleShape(result, rectangleShape);
         }
-
-
 
         private static Dictionary<ChartDataType, List<ConstantValueCurve>> orderCurves(Chart chart, ChartType chartType)
         {

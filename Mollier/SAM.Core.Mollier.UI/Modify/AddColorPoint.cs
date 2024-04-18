@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms.DataVisualization.Charting;
+using SAM.Geometry.Mollier;
 using SAM.Geometry.Planar;
 
 namespace SAM.Core.Mollier.UI

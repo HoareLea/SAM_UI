@@ -50,6 +50,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Geometry.Grasshopper.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Grasshopper.Mollier.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry.Mollier, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -101,9 +108,9 @@
     <Compile Include="Component\SAMMollierCreateUndefinedProcess.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj">
       <Project>{fd5079bc-621d-44ce-8eae-6e85510fe050}</Project>
-      <Name>SAM.Core.Mollier.UI</Name>
+      <Name>SAM.Analytical.Mollier.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

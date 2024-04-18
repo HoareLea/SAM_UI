@@ -52,6 +52,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Geometry.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Math, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Math.dll</HintPath>
@@ -195,6 +198,7 @@
     <Compile Include="Create\UIMollierPointAppearance.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
+    <Compile Include="Delegates\MollierPointSelectingEventHandler.cs" />
     <Compile Include="Delegates\MollierObjectSelectedEventHandler.cs" />
     <Compile Include="Delegates\MollierModelEditedEventHandler.cs" />
     <Compile Include="Delegates\MollierPointSelectedEventHandler.cs" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Geometry.Mollier;
+using System;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
@@ -39,7 +40,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 uIMollierProcess.UIMollierAppearance.Color = ProcessColor_button.BackColor == color_Empty ? System.Drawing.Color.Empty : ProcessColor_button.BackColor;
                 uIMollierProcess.UIMollierPointAppearance_Start.Label = StartLabel_Value.Text;
-                uIMollierProcess.UIMollierAppearance.Label = ProcessLabel_Value.Text;
+                (uIMollierProcess.UIMollierAppearance as UIMollierAppearance).Label = ProcessLabel_Value.Text;
                 uIMollierProcess.UIMollierPointAppearance_End.Label = EndLabel_Value.Text;
                 
                 return uIMollierProcess;
@@ -63,7 +64,7 @@ namespace SAM.Core.Mollier.UI.Controls
             {
                 ProcessColor_button.BackColor = uIMollierProcess.UIMollierAppearance.Color == System.Drawing.Color.Empty ? color_Empty : uIMollierProcess.UIMollierAppearance.Color;
                 StartLabel_Value.Text = uIMollierProcess.UIMollierPointAppearance_Start.Label;
-                ProcessLabel_Value.Text = uIMollierProcess.UIMollierAppearance.Label;
+                ProcessLabel_Value.Text = (uIMollierProcess.UIMollierAppearance as UIMollierAppearance).Label;
                 EndLabel_Value.Text = uIMollierProcess.UIMollierPointAppearance_End.Label;
             }
         }

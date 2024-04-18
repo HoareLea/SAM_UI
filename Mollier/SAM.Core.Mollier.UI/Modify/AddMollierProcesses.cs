@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System;
 using System.Windows.Forms;
+using SAM.Geometry.Mollier;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -473,7 +474,7 @@ namespace SAM.Core.Mollier.UI
                         UI_MollierProcess.UIMollierPointAppearance_End.Label = name + "2";
                     }
 
-                    UI_MollierProcess.UIMollierAppearance.Label = UI_MollierProcess.UIMollierAppearance.Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.UIMollierAppearance.Label;
+                    (UI_MollierProcess.UIMollierAppearance as UIMollierAppearance).Label = (UI_MollierProcess.UIMollierAppearance as UIMollierAppearance).Label == null ? Query.ProcessName(mollierProcess) : (UI_MollierProcess.UIMollierAppearance as UIMollierAppearance).Label;
                     
                     name++;
                     if (UI_MollierProcess.UIMollierAppearance.Visible == true)

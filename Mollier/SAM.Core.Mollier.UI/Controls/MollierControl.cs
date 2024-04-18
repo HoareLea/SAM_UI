@@ -5,6 +5,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using SAM.Core.Mollier.UI.Forms;
+using SAM.Geometry.Mollier;
+using SAM.Geometry.Planar;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
@@ -596,7 +598,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     if (((UIMollierGroup)mollierGroup).UIMollierAppearance != null)
                     {
                         color = ((UIMollierGroup)mollierGroup).UIMollierAppearance.Color;
-                        name = ((UIMollierGroup)mollierGroup).UIMollierAppearance.Label;
+                        name = (((UIMollierGroup)mollierGroup).UIMollierAppearance as UIMollierAppearance).Label;
                     }
                 }
                 mollierGroup1 = (MollierGroup)mollierGroup;
@@ -629,7 +631,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 if (mollierZone is UIMollierZone)
                 {
                     color = ((UIMollierZone)mollierZone).UIMollierAppearance.Color;
-                    label = ((UIMollierZone)mollierZone).UIMollierAppearance.Label;
+                    label = (((UIMollierZone)mollierZone).UIMollierAppearance as UIMollierAppearance).Label;
                 }
 
                 UIMollierZone uIMollierZone = new UIMollierZone(mollierZone1, new UIMollierAppearance(color, label));
@@ -1338,9 +1340,9 @@ namespace SAM.Core.Mollier.UI.Controls
         
         private void MollierChart_MouseClick(object sender, MouseEventArgs e)
         {
-            MollierPoint mollierPoint = GetMollierPoint(e.X, e.Y);
+            MollierPoint mollierPoint = GetMollierPoint(e.X, e.Y, out Point2D point2D);
 
-            MollierPointSelected?.Invoke(this, new MollierPointSelectedEventArgs(mollierPoint));
+            MollierPointSelected?.Invoke(this, new MollierPointSelectedEventArgs(mollierPoint, point2D));
         }
 
         public MollierControlSettings MollierControlSettings
@@ -1434,63 +1436,173 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
         
-        public MollierPoint GetMollierPoint(int x, int y)
+        public MollierPoint GetMollierPoint(int x, int y, out Point2D point2D)
         {
             double chart_X = MollierChart.ChartAreas[0].AxisX.PixelPositionToValue(x);
             double chart_Y = MollierChart.ChartAreas[0].AxisY.PixelPositionToValue(y);
-            Geometry.Planar.Point2D point2D = new Geometry.Planar.Point2D(chart_X, chart_Y);
+            point2D = new Point2D(chart_X, chart_Y);
 
             return Convert.ToMollier(point2D, mollierControlSettings.ChartType, mollierControlSettings.Pressure);
+        }
+
+        public Point2D GetPoint2D(MollierPoint mollierPoint)
+        {
+            if(mollierPoint == null)
+            {
+                return null;
+            }
+
+            Point2D point2D = Convert.ToSAM(mollierPoint, mollierControlSettings.ChartType);
+            if(point2D == null)
+            {
+                return null;
+            }
+
+            return new Point2D(MollierChart.ChartAreas[0].AxisX.ValueToPixelPosition(point2D.X), MollierChart.ChartAreas[0].AxisY.ValueToPixelPosition(point2D.Y));
+        }
+
+        public Point2D GetPixelPositionToValue(Point2D point2D)
+        {
+            if(point2D == null)
+            {
+                return null;
+            }
+
+            return new Point2D(MollierChart.ChartAreas[0].AxisX.PixelPositionToValue(point2D.X), MollierChart.ChartAreas[0].AxisY.PixelPositionToValue(point2D.Y));
+        }
+
+        public Point2D GetValueToPixelPosition(Point2D point2D)
+        {
+            if (point2D == null)
+            {
+                return null;
+            }
+
+            return new Point2D(MollierChart.ChartAreas[0].AxisX.ValueToPixelPosition(point2D.X), MollierChart.ChartAreas[0].AxisY.ValueToPixelPosition(point2D.Y));
         }
 
         private void MollierChart_DoubleClick(object sender, EventArgs e)
         {
             Point point = MollierChart.PointToClient(MousePosition);
 
-            HitTestResult[] hitTestResults = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
-            if (hitTestResults == null)
+            List<HitTestResult> hitTestResults = new List<HitTestResult>();
+
+            HitTestResult[] hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPointLabel);
+            if (hitTestResults_Temp != null)
+            {
+                hitTestResults.AddRange(hitTestResults_Temp);
+            }
+
+            if(hitTestResults.Count != 0)
+            {
+                hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
+                if (hitTestResults_Temp != null)
+                {
+                    hitTestResults.AddRange(hitTestResults_Temp);
+                }
+            }
+
+            if (hitTestResults != null && hitTestResults.Count != 0)
+            {
+                UIMollierPoint uIMollierPoint = null;
+                foreach (HitTestResult hitTestResult in hitTestResults)
+                {
+                    Series series = hitTestResult?.Series;
+                    if (series == null)
+                    {
+                        continue;
+                    }
+
+                    uIMollierPoint = series.Tag as UIMollierPoint;
+                    if (uIMollierPoint != null)
+                    {
+                        break;
+                    }
+
+                    int index = hitTestResult.PointIndex;
+                    if (index == -1)
+                    {
+                        continue;
+                    }
+
+                    uIMollierPoint = series.Points[index].Tag as UIMollierPoint;
+                    if (uIMollierPoint != null)
+                    {
+                        break;
+                    }
+                }
+
+                if (uIMollierPoint != null)
+                {
+                    if(mollierModel.GetUIMollierObject<UIMollierPoint>(uIMollierPoint.Guid, true) != null)
+                    {
+                        CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint)
+                        {
+                            MollierControl = this,
+                        };
+
+                        customizePointForm.FormClosing += CustomizePointForm_FormClosing;
+                        customizePointForm.Show();
+                    }
+                }
+            }
+
+            //hitTestResults = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
+            //if (hitTestResults != null)
+            //{
+            //    UIMollierPoint uIMollierPoint = null;
+            //    foreach (HitTestResult hitTestResult in hitTestResults)
+            //    {
+            //        Series series = hitTestResult?.Series;
+            //        if (series == null)
+            //        {
+            //            continue;
+            //        }
+
+            //        int index = hitTestResult.PointIndex;
+            //        if (index == -1)
+            //        {
+            //            continue;
+            //        }
+
+            //        uIMollierPoint = series.Points[index].Tag as UIMollierPoint;
+            //        if (uIMollierPoint != null)
+            //        {
+            //            break;
+            //        }
+            //    }
+
+            //    if (uIMollierPoint != null)
+            //    {
+            //        if (mollierModel.GetUIMollierObject<UIMollierPoint>(uIMollierPoint.Guid, true) != null)
+            //        {
+            //            CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint)
+            //            {
+            //                MollierControl = this,
+            //            };
+
+            //            customizePointForm.FormClosing += CustomizePointForm_FormClosing;
+            //            customizePointForm.Show();
+            //        }
+            //    }
+            //}
+        }
+
+        private void CustomizePointForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            CustomizePointForm customizePointForm = sender as CustomizePointForm;
+            if (customizePointForm == null)
             {
                 return;
             }
 
-            UIMollierPoint uIMollierPoint = null;
-            foreach (HitTestResult hitTestResult in hitTestResults)
-            {
-                Series series = hitTestResult?.Series;
-                if (series == null)
-                {
-                    continue;
-                }
-
-                int index = hitTestResult.PointIndex;
-                if(index == -1)
-                {
-                    continue;
-                }
-
-                uIMollierPoint = series.Points[index].Tag as UIMollierPoint;
-                if(uIMollierPoint != null)
-                {
-                    break;
-                }
-            }
-
-            if(uIMollierPoint == null)
+            if(customizePointForm.DialogResult != DialogResult.OK)
             {
                 return;
             }
 
-            using (CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint))
-            {
-                if(customizePointForm.ShowDialog() != DialogResult.OK)
-                {
-                    return;
-                }
-
-                uIMollierPoint = customizePointForm.UIMollierPoint;
-            }
-
-            if(uIMollierPoint == null)
+            UIMollierPoint uIMollierPoint = customizePointForm.UIMollierPoint;
+            if (uIMollierPoint == null)
             {
                 return;
             }

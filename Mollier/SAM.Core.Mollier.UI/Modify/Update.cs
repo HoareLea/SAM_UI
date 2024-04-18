@@ -1,6 +1,7 @@
 ﻿using SAM.Core.Mollier.UI.Forms;
 using System.Windows.Forms;
 using System;
+using SAM.Geometry.Mollier;
 
 namespace SAM.Core.Mollier.UI
 {

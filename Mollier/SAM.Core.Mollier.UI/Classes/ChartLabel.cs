@@ -2,16 +2,17 @@
 using Newtonsoft.Json.Linq;
 using SAM.Geometry.Planar;
 
-namespace SAM.Core.Mollier.UI
+namespace SAM.Core.Mollier.UI.Classes
 {
     public class ChartLabel : IJSAMObject
     {
-        //public object Tag { get; set; }
+        public object Tag { get; set; }
 
         public Point2D Position { get; set; }
         public string Text { get; set; }
         public double Angle { get; set; }
         public Color Color { get; set; }
+        
         public ChartLabel()
         {
 
@@ -41,7 +42,7 @@ namespace SAM.Core.Mollier.UI
             if (jObject.ContainsKey("Position"))
             {
                 JObject jObject_Position = jObject.Value<JObject>("Position");
-                if(jObject_Position != null)
+                if (jObject_Position != null)
                 {
                     Position = new Point2D(jObject_Position);
                 }
@@ -52,7 +53,7 @@ namespace SAM.Core.Mollier.UI
                 Text = jObject.Value<string>("Text");
             }
 
-            if(jObject.ContainsKey("Angle"))
+            if (jObject.ContainsKey("Angle"))
             {
                 Angle = jObject.Value<double>("Angle");
             }
@@ -77,22 +78,22 @@ namespace SAM.Core.Mollier.UI
             JObject result = new JObject();
             result.Add("_type", Core.Query.FullTypeName(this));
 
-            if(Position != null)
+            if (Position != null)
             {
                 result.Add("Position", new Point2D(Position).ToJObject());
             }
 
-            if(Text != null)
+            if (Text != null)
             {
                 result.Add("Text", Text);
             }
 
-            if(double.IsNaN(Angle))
+            if (double.IsNaN(Angle))
             {
                 result.Add("Angle", Angle);
             }
 
-            if(Color != Color.Empty)
+            if (Color != Color.Empty)
             {
                 result.Add("Color", new SAMColor(Color).ToJObject());
             }

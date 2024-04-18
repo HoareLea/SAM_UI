@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Geometry.Mollier;
+using System;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Forms

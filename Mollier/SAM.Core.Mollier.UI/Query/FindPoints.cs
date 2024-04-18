@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SAM.Geometry.Mollier;
 using SAM.Geometry.Planar;
 
 namespace SAM.Core.Mollier.UI
