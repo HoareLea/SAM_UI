@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using SAM.Core.Grasshopper;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
-using SAM.Core.Grasshopper.Mollier;
 using System.Drawing;
 using SAM.Geometry.Mollier;
 using SAM.Geometry.Grasshopper.Mollier;

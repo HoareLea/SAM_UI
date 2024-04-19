@@ -1,5 +1,4 @@
 ﻿using Grasshopper.Kernel;
-using Org.BouncyCastle.Utilities.Collections;
 using SAM.Core.Grasshopper;
 using System;
 using System.Collections.Generic;

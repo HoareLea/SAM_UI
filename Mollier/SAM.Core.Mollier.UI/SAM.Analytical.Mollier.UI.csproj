@@ -195,6 +195,7 @@
     <Compile Include="Convert\ToChart\Series.cs" />
     <Compile Include="Convert\ToSAM_UI\UIMollierGroup.cs" />
     <Compile Include="Convert\ToSAM_UI\IMollierObject.cs" />
+    <Compile Include="Create\ChartLabels.cs" />
     <Compile Include="Create\UIMollierPointAppearance.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
@@ -263,6 +264,7 @@
     </Compile>
     <Compile Include="Interface\IMollierProcessControl.cs" />
     <Compile Include="Modify\AddColorPoint.cs" />
+    <Compile Include="Modify\AddLabel.cs" />
     <Compile Include="Modify\AddMollierPoint.cs" />
     <Compile Include="Modify\AddMollierLines.cs" />
     <Compile Include="Modify\Update.cs" />

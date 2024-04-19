@@ -1,13 +1,10 @@
 ﻿using Grasshopper.Kernel;
-using SAM.Core.Grasshopper.Mollier.Properties;
 using System;
 using System.Collections.Generic;
-using SAM.Core.Mollier;
 using Grasshopper;
 using Grasshopper.Kernel.Data;
 using System.Linq;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
-using SAM.Core.Mollier.UI.Grasshopper;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
 using SAM.Geometry.Mollier;
