@@ -36,7 +36,7 @@ namespace SAM.Core.Mollier.UI
                         if (dataPoint.Tag is UIMollierPoint)
                         {
                             UIMollierPoint point = (UIMollierPoint)dataPoint.Tag;
-                            result.AddRange(solver2DDatas_Point(point, chartType, scaleVector, axesRatio));
+                            result.Add(Solver2DData(point, chartType, scaleVector, axesRatio));
                         }
                     }
                     continue;
@@ -57,7 +57,7 @@ namespace SAM.Core.Mollier.UI
 
                     uIMollierProcesses.Add(uIMollierProcess);
 
-                    result.AddRange(solver2DDatas_Process(uIMollierProcess, chartType, scaleVector, axesRatio, mollierControlSettings));
+                    result.AddRange(Solver2DDatas_Process(uIMollierProcess, chartType, scaleVector, axesRatio, mollierControlSettings));
                     continue;
                 }
 
@@ -78,72 +78,26 @@ namespace SAM.Core.Mollier.UI
             return result;
         }
     
-        private static List<Solver2DData> solver2DDatas_Point(UIMollierPoint mollierPoint, ChartType chartType, Vector2D scaleVector, double axesRatio)
-        {
-            List<Solver2DData> result = new List<Solver2DData>();
-
-            UIMollierPointAppearance uIMollierPointAppearance = mollierPoint.UIMollierAppearance as UIMollierPointAppearance;
-            if(uIMollierPointAppearance == null)
-            {
-                return result;
-            }
-
-            UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierPointAppearance.UIMollierLabelAppearance;
-            if(uIMollierLabelAppearance == null)
-            {
-                return result;
-            }
-
-            string text = uIMollierLabelAppearance.Text;
-            if(string.IsNullOrEmpty(text))
-            {
-                return result;
-            }
-
-            if (uIMollierLabelAppearance.Vector2D != null)
-            {
-                return result;
-            }
-
-            Point2D point = Convert.ToSAM(mollierPoint, chartType);
-
-            Point2D labelCenter = getLabelCenter(point, chartType, scaleVector);
-
-            Rectangle2D labelRectangle = textToRectangle(labelCenter, text, chartType, scaleVector, axesRatio);
-
-            Solver2DData solver2DData = new Solver2DData(labelRectangle, point.GetScaledY(axesRatio));
-            solver2DData.Tag = mollierPoint;
-
-            Solver2DSettings solver2DSettings = new Solver2DSettings();
-            solver2DSettings.IterationCount = 10;
-            solver2DSettings.StartingDistance = 0.2;
-            solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
-            solver2DData.Solver2DSettings = solver2DSettings;
-
-            result.Add(solver2DData);
-
-            return result;
-        }
-        private static List<Solver2DData> solver2DDatas_Process(UIMollierProcess process, ChartType chartType, Vector2D scaleVector, double axesRatio, MollierControlSettings mollierControlSettings)
+        private static List<Solver2DData> Solver2DDatas_Process(UIMollierProcess uIMollierProcess, ChartType chartType, Vector2D scaleVector, double axesRatio, MollierControlSettings mollierControlSettings)
         {
             List<Solver2DData> result = new List<Solver2DData>();
 
             if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelProcess))
             {
-                UIMollierPoint mid = new UIMollierPoint(getMidPoint(process.Start, process.End), new UIMollierPointAppearance(Color.Empty, Color.Black, (process.UIMollierAppearance as UIMollierAppearance).Label));
-                result.AddRange(solver2DDatas_Point(mid, chartType, scaleVector, axesRatio));
+                UIMollierPoint mid = new UIMollierPoint(getMidPoint(uIMollierProcess.Start, uIMollierProcess.End), new UIMollierPointAppearance(Color.Empty, Color.Black, (uIMollierProcess.UIMollierAppearance as UIMollierAppearance).Label));
+                result.Add(Solver2DData(mid, chartType, scaleVector, axesRatio));
             }
 
             if(mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelStartProcessPoint))
             {
-                UIMollierPoint start = new UIMollierPoint(process.Start, new UIMollierPointAppearance(Color.Empty, Color.Black, process.UIMollierPointAppearance_Start.Label));
-                result.AddRange(solver2DDatas_Point(start, chartType, scaleVector, axesRatio));
+                UIMollierPoint start = new UIMollierPoint(uIMollierProcess.Start, new UIMollierPointAppearance(Color.Empty, Color.Black, uIMollierProcess.UIMollierPointAppearance_Start.Label));
+                result.Add(Solver2DData(start, chartType, scaleVector, axesRatio));
             }
 
             if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelEndProcessPoint))
             {
-                UIMollierPoint end = new UIMollierPoint(process.End, new UIMollierPointAppearance(Color.Empty, Color.Black, process.UIMollierPointAppearance_End.Label));
-                result.AddRange(solver2DDatas_Point(end, chartType, scaleVector, axesRatio));
+                UIMollierPoint end = new UIMollierPoint(uIMollierProcess.End, new UIMollierPointAppearance(Color.Empty, Color.Black, uIMollierProcess.UIMollierPointAppearance_End.Label));
+                result.Add(Solver2DData(end, chartType, scaleVector, axesRatio));
             }
 
             return result;
@@ -175,7 +129,7 @@ namespace SAM.Core.Mollier.UI
                 zoneCenter = new UIMollierPoint(center, zoneCenterAppearance);
             }
 
-            result.AddRange(solver2DDatas_Point(zoneCenter, chartType, scaleVector, axesRatio));
+            result.Add(Solver2DData(zoneCenter, chartType, scaleVector, axesRatio));
             return result;
         }
         private static List<Solver2DData> Solver2DDatas_CurveUnit(Chart chart, ConstantValueCurve curve, MollierControlSettings mollierControlSettings, Vector2D scaleVector, double axesRatio)

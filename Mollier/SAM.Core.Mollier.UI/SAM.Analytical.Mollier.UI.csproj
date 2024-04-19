@@ -196,6 +196,7 @@
     <Compile Include="Convert\ToSAM_UI\UIMollierGroup.cs" />
     <Compile Include="Convert\ToSAM_UI\IMollierObject.cs" />
     <Compile Include="Create\ChartLabels.cs" />
+    <Compile Include="Create\Solver2DData.cs" />
     <Compile Include="Create\UIMollierPointAppearance.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />
     <Compile Include="Create\Controls.cs" />
