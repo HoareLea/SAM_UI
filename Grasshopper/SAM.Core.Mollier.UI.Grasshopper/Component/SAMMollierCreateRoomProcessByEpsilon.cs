@@ -18,7 +18,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// <summary>
         /// The latest version of this component
         /// </summary>
-        public override string LatestComponentVersion => "1.0.5";
+        public override string LatestComponentVersion => "1.0.6";
 
         /// <summary>
         /// Provides an Icon for the component.
@@ -43,7 +43,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 param_Number.SetPersistentData(2501);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_humidityRatio", NickName = "_humidityRatio", Description = "Humidity Ratio of second point [g/kg]", Access = GH_ParamAccess.item};
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_humidityRatio", NickName = "_humidityRatio", Description = "Humidity Ratio of second point [g/kg] \n *This is only used to define where line should be extended (above or below Point)", Access = GH_ParamAccess.item};
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour;
@@ -84,7 +84,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// </summary>
         public SAMMollierCreateRoomProcessByEpsilon()
           : base("SAMMollier.CreateRoomProcessByEpsilon", "SAMMollier.CreateRoomProcessByEpsilon",
-              "Creates RoomProcess \n whew SpecificHeat_Air is used for Specific Heat of air vapour at constant pressure and temperature 0C (cp) 1010 J/kgK",
+              "Creates RoomProcess by given epsilon [kJ/kg] \n provide x to define lenth of line\n constant pressure and temperature 0C (cp) 1010 J/kgK",
               "SAM", "Mollier")
         {
         }
