@@ -84,7 +84,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// </summary>
         public SAMMollierCreateRoomProcessByEpsilon()
           : base("SAMMollier.CreateRoomProcessByEpsilon", "SAMMollier.CreateRoomProcessByEpsilon",
-              "Creates RoomProcess by given epsilon [kJ/kg] \n provide x to define lenth of line\n constant pressure and temperature 0C (cp) 1010 J/kgK",
+              "Creates RoomProcess by given epsilon [kJ/kg] \n provide humidity ratio x to define length of line\n constant pressure and temperature 0C (cp) 1010 J/kgK",
               "SAM", "Mollier")
         {
         }
