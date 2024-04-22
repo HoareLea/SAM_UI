@@ -3,7 +3,7 @@
     public static partial class Query
     {
         /// <summary>
-        /// Saves the default colors
+        /// Saves the default colors stored in %LocalAppData%\Temp\SAM in file MollierControlSettings
         /// </summary>
         /// <returns>Returns default dictionary with color theme key and list of components with defualt colors</returns>
         public static VisibilitySettings DefaultVisibilitySettings()
@@ -92,33 +92,33 @@
             result.Add("blue", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RoomProcess, System.Drawing.Color.Gray));
 
 
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.MediumLine, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RelativeHumidity, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.MediumLine, ChartDataType.RelativeHumidity, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.RelativeHumidity, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.RelativeHumidity, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.RelativeHumidity, System.Drawing.Color.Silver));
 
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.Density, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.Density, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.Density, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.Density, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.Density, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.Density, System.Drawing.Color.Silver));
 
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.Enthalpy, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.Enthalpy, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.Enthalpy, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.Enthalpy, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.Enthalpy, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.Enthalpy, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.Enthalpy, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.Enthalpy, System.Drawing.Color.Silver));
 
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.SpecificVolume, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.SpecificVolume, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.SpecificVolume, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.SpecificVolume, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.SpecificVolume, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.SpecificVolume, System.Drawing.Color.Silver));
 
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.WetBulbTemperature, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.WetBulbTemperature, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.WetBulbTemperature, System.Drawing.Color.Silver));
 
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.DiagramTemperature, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.DiagramTemperature, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.DryBulbTemperature, System.Drawing.Color.Gray));
-            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.DryBulbTemperature, System.Drawing.Color.Gray));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.DiagramTemperature, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.DiagramTemperature, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.DryBulbTemperature, System.Drawing.Color.Silver));
+            result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.DryBulbTemperature, System.Drawing.Color.Silver));
 
 
             result.Add("gray", new BuiltInVisibilitySetting(ChartParameterType.Point, System.Drawing.Color.Blue));
@@ -135,25 +135,25 @@
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.MediumLine, ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.RelativeHumidity, System.Drawing.Color.LightBlue));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.RelativeHumidity, System.Drawing.Color.Black));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.RelativeHumidity, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.RelativeHumidity, System.Drawing.Color.Gray));
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.Density, System.Drawing.Color.LightBlue));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.Density, System.Drawing.Color.Black));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.Density, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.Density, System.Drawing.Color.Gray));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.Density, System.Drawing.Color.Gray));
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.Enthalpy, System.Drawing.Color.LightBlue));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.Enthalpy, System.Drawing.Color.LightBlue));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.Enthalpy, System.Drawing.Color.Black));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.Enthalpy, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.Enthalpy, System.Drawing.Color.Gray));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.Enthalpy, System.Drawing.Color.Gray));
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.SpecificVolume, System.Drawing.Color.LightBlue));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.SpecificVolume, System.Drawing.Color.Black));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.SpecificVolume, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.SpecificVolume, System.Drawing.Color.Gray));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.SpecificVolume, System.Drawing.Color.Gray));
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.WetBulbTemperature, System.Drawing.Color.LightBlue));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.WetBulbTemperature, System.Drawing.Color.Black));
-            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.WetBulbTemperature, System.Drawing.Color.Black));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Unit, ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
+            result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Label, ChartDataType.WetBulbTemperature, System.Drawing.Color.Gray));
 
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.Line, ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
             result.Add("blue-black", new BuiltInVisibilitySetting(ChartParameterType.BoldLine, ChartDataType.DiagramTemperature, System.Drawing.Color.LightBlue));
