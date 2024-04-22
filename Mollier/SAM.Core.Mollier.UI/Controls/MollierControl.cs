@@ -1526,6 +1526,13 @@ namespace SAM.Core.Mollier.UI.Controls
                     uIMollierPoint = series.Tag as UIMollierPoint;
                     if (uIMollierPoint != null)
                     {
+                        IReference reference = Create.Reference(uIMollierPoint);
+                        if (Geometry.Mollier.Query.UIMollierObject<IUIMollierObject>(mollierModel, reference) == null)
+                        {
+                            uIMollierPoint = null;
+                            continue;
+                        }
+
                         break;
                     }
 
