@@ -79,25 +79,51 @@ namespace SAM.Core.Mollier.UI
         }
     
         private static List<Solver2DData> Solver2DDatas_Process(UIMollierProcess uIMollierProcess, ChartType chartType, Vector2D scaleVector, double axesRatio, MollierControlSettings mollierControlSettings)
-        {
+        { 
             List<Solver2DData> result = new List<Solver2DData>();
-
+            if(uIMollierProcess == null)
+            {
+                return result;
+            }
+            
             if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelProcess))
             {
-                UIMollierPoint mid = new UIMollierPoint(getMidPoint(uIMollierProcess.Start, uIMollierProcess.End), new UIMollierPointAppearance(Color.Empty, Color.Black, (uIMollierProcess.UIMollierAppearance as UIMollierAppearance).Label));
-                result.Add(Solver2DData(mid, chartType, scaleVector, axesRatio));
+                UIMollierProcessPoint uIMollierProcessPoint = new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.Process);
+
+                Solver2DData solver2DData = Solver2DData(uIMollierProcessPoint, chartType, scaleVector, axesRatio);
+                if(solver2DData != null)
+                {
+                    solver2DData.Tag = uIMollierProcessPoint;
+                    result.Add(solver2DData);
+                }
+
             }
 
             if(mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelStartProcessPoint))
             {
-                UIMollierPoint start = new UIMollierPoint(uIMollierProcess.Start, new UIMollierPointAppearance(Color.Empty, Color.Black, uIMollierProcess.UIMollierPointAppearance_Start.Label));
-                result.Add(Solver2DData(start, chartType, scaleVector, axesRatio));
+                //UIMollierPoint start = new UIMollierPoint(uIMollierProcess.Start, new UIMollierPointAppearance(Color.Empty, Color.Black, uIMollierProcess.UIMollierPointAppearance_Start.Label));
+
+                UIMollierProcessPoint uIMollierProcessPoint = new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.Start);
+                Solver2DData solver2DData = Solver2DData(uIMollierProcessPoint, chartType, scaleVector, axesRatio);
+                
+                if(solver2DData != null)
+                {
+                    solver2DData.Tag = uIMollierProcessPoint;
+                    result.Add(solver2DData);
+                }
             }
 
             if (mollierControlSettings == null || (mollierControlSettings != null && !mollierControlSettings.DisableLabelEndProcessPoint))
             {
-                UIMollierPoint end = new UIMollierPoint(uIMollierProcess.End, new UIMollierPointAppearance(Color.Empty, Color.Black, uIMollierProcess.UIMollierPointAppearance_End.Label));
-                result.Add(Solver2DData(end, chartType, scaleVector, axesRatio));
+                //UIMollierPoint end = new UIMollierPoint(uIMollierProcess.End, new UIMollierPointAppearance(Color.Empty, Color.Black, uIMollierProcess.UIMollierPointAppearance_End.Label));
+
+                UIMollierProcessPoint uIMollierProcessPoint = new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.End);
+                Solver2DData solver2DData = Solver2DData(uIMollierProcessPoint, chartType, scaleVector, axesRatio);
+                if(solver2DData != null)
+                {
+                    solver2DData.Tag = uIMollierProcessPoint;
+                    result.Add(solver2DData);
+                }
             }
 
             return result;
@@ -337,15 +363,6 @@ namespace SAM.Core.Mollier.UI
             }
 
             return new Polyline2D(segments);
-        }
-
-        private static MollierPoint getMidPoint(MollierPoint mollierPoint1, MollierPoint mollierPoint2)
-        {
-            if (mollierPoint1 == null || mollierPoint2 == null) return null;
-            double dryBulbTemperature = mollierPoint1.DryBulbTemperature + (mollierPoint2.DryBulbTemperature - mollierPoint1.DryBulbTemperature) / 2;
-            double humidityRatio = mollierPoint1.HumidityRatio + (mollierPoint2.HumidityRatio - mollierPoint1.HumidityRatio) / 2;
-
-            return new MollierPoint(dryBulbTemperature, humidityRatio, mollierPoint1.Pressure);
         }
 
         private static string getCurveUnitText(ConstantValueCurve curve)

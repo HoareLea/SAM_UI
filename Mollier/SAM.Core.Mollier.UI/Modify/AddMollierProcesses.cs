@@ -270,10 +270,12 @@ namespace SAM.Core.Mollier.UI
             int index;
             series.ToolTip = Query.ToolTipText(mollierPoint_Start, mollierPoint_End, chartType, Query.FullProcessName(mollierProcess));
             index = series.Points.AddXY(point2D_Start.X, point2D_Start.Y);
-            series.Points[index].Tag = mollierPoint_Start;
+            series.Points[index].Tag = new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.Start); //uIMollierProcess.GetUIMollierPoint_Start();//mollierPoint_Start;
 
             index = series.Points.AddXY(point2D_End.X, point2D_End.Y);
-            series.Points[index].Tag = mollierPoint_End;
+            series.Points[index].Tag = new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.End); //uIMollierProcess.GetUIMollierPoint_End(); //mollierPoint_End;
+
+            AddMollierPoint(chart, chartType, new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.Process), mollierControlSettings);
 
             return series;
         }

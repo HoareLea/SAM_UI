@@ -85,6 +85,7 @@
     <Compile Include="Classes\MollierPointEventArgs.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
     <Compile Include="Classes\ChartLabel.cs" />
+    <Compile Include="Classes\UIMollierProcessPoint.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
     <Compile Include="Classes\DisplayAnalyticalObject.cs" />
     <Compile Include="Controls\AdiabaticHumidificationProcessControl.cs">
@@ -196,6 +197,7 @@
     <Compile Include="Convert\ToSAM_UI\UIMollierGroup.cs" />
     <Compile Include="Convert\ToSAM_UI\IMollierObject.cs" />
     <Compile Include="Create\ChartLabels.cs" />
+    <Compile Include="Create\Reference.cs" />
     <Compile Include="Create\Solver2DData.cs" />
     <Compile Include="Create\UIMollierPointAppearance.cs" />
     <Compile Include="Create\Solver2DDatas.cs" />

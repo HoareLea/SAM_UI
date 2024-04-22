@@ -25,7 +25,7 @@ namespace SAM.Core.Mollier.UI
             double axesRatio = Query.AxesRatio(chart, mollierControlSettings);
 
             List<IClosed2D> obstacles = Query.Obstacles(chart, mollierControlSettings);
-            List<Solver2DData> solverData = Create.Solver2DDatas(chart, mollierControlSettings);
+            List<Solver2DData> solver2DDatas = Create.Solver2DDatas(chart, mollierControlSettings);
 
             Point2D chartMinPoint = new Point2D(chart.ChartAreas[0].AxisX.Minimum, chart.ChartAreas[0].AxisY.Minimum * axesRatio);
             Point2D chartMaxPoint = new Point2D(chart.ChartAreas[0].AxisX.Maximum, chart.ChartAreas[0].AxisY.Maximum * axesRatio);
@@ -35,7 +35,7 @@ namespace SAM.Core.Mollier.UI
             //solver2DSettings.MaxStepPoint = 5;
             Solver2D solver = new Solver2D(chartArea, obstacles);
 
-            solver.AddRange(solverData);
+            solver.AddRange(solver2DDatas);
 
             if(mollierControlSettings.VisualizeSolver)
             {
@@ -56,10 +56,10 @@ namespace SAM.Core.Mollier.UI
                     series.Points.AddXY(cornerPoints[0].X, cornerPoints[0].Y / yTOX);
                 });
                 
-                solverData.ForEach(x => visualizeRectangle(x.Closed2D<Rectangle2D>(), Color.Red, axesRatio));
+                solver2DDatas.ForEach(x => visualizeRectangle(x.Closed2D<Rectangle2D>(), Color.Red, axesRatio));
             }
 
-            if (solverData == null || solverData.Count == 0)
+            if (solver2DDatas == null || solver2DDatas.Count == 0)
             {
                 return null;
             }
@@ -98,72 +98,80 @@ namespace SAM.Core.Mollier.UI
             Vector2D scaleVector = Query.ScaleVector2D(chart.Parent, mollierControlSettings);
             double axesRatio = Query.AxesRatio(chart, mollierControlSettings);
 
-            List<Series> result = new List<Series>();
+            List<Tuple<UIMollierPoint, Series>> tuples = new List<Tuple<UIMollierPoint, Series>>();
             foreach (Series series in chart.Series)
             {
-                if(series.Name != "MollierPoints")
+                if(series.Tag is IEnumerable<UIMollierPoint> || series.Tag is UIMollierProcess || series.Tag is UIMollierPoint)
+                {
+                    if (series.Tag is UIMollierPoint)
+                    {
+                        tuples.Add(new Tuple<UIMollierPoint, Series>((UIMollierPoint)series.Tag, series));
+                        continue;
+                    }
+
+                    foreach (DataPoint dataPoint in series.Points)
+                    {
+                        if (dataPoint.Tag is UIMollierPoint)
+                        {
+                            tuples.Add(new Tuple<UIMollierPoint, Series>((UIMollierPoint)dataPoint.Tag, series));
+                        }
+                    }
+                }
+            }
+
+            List<Series> result = new List<Series>();
+
+            foreach(Tuple<UIMollierPoint, Series> tuple in tuples)
+            {
+                UIMollierPoint uIMollierPoint = tuple.Item1;
+                Series series = tuple.Item2;
+
+                UIMollierPointAppearance uIMollierPointAppearance = uIMollierPoint.UIMollierAppearance as UIMollierPointAppearance;
+                if (uIMollierPointAppearance == null)
                 {
                     continue;
                 }
 
-                foreach (DataPoint dataPoint in series.Points)
+                UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierPointAppearance.UIMollierLabelAppearance;
+                if (uIMollierLabelAppearance == null)
                 {
-                    if (dataPoint.Tag is UIMollierPoint)
-                    {
-                        UIMollierPoint mollierPoint = (UIMollierPoint)dataPoint.Tag;
-
-                        UIMollierPointAppearance uIMollierPointAppearance = mollierPoint.UIMollierAppearance as UIMollierPointAppearance;
-                        if (uIMollierPointAppearance == null)
-                        {
-                            continue;
-                        }
-
-                        UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierPointAppearance.UIMollierLabelAppearance;
-                        if (uIMollierLabelAppearance == null)
-                        {
-                            continue;
-                        }
-
-                        Vector2D vector2D = uIMollierLabelAppearance.Vector2D;
-                        if (vector2D == null)
-                        {
-                            return result;
-                        }
-
-                        string text = uIMollierLabelAppearance.Text;
-                        if (string.IsNullOrEmpty(text))
-                        {
-                            continue;
-                        }
-
-
-
-                        Color color = uIMollierLabelAppearance.Color;
-                        if (color == Color.Empty)
-                        {
-                            color = Color.Black;
-                        }
-
-                        Point2D point = Convert.ToSAM(mollierPoint, chartType);
-                        point.Move(vector2D);
-
-                        point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
-
-                        Size size = TextRenderer.MeasureText(text, series.Font);
-
-                        point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y + size.Height));
-
-                        ChartLabel chartLabel = new ChartLabel(point, text, 0, color) { Tag = mollierPoint };
-
-                        Series series_Temp = AddLabel(chart, chartLabel);
-                        if(series_Temp != null)
-                        {
-                            result.Add(series_Temp);
-                        }
-
-                    }
+                    continue;
                 }
-                return result;
+
+                Vector2D vector2D = uIMollierLabelAppearance.Vector2D;
+                if (vector2D == null)
+                {
+                    continue;
+                }
+
+                string text = uIMollierLabelAppearance.Text;
+                if (string.IsNullOrEmpty(text))
+                {
+                    continue;
+                }
+
+                Color color = uIMollierLabelAppearance.Color;
+                if (color == Color.Empty)
+                {
+                    color = Color.Black;
+                }
+
+                Point2D point = Convert.ToSAM(uIMollierPoint, chartType);
+                point.Move(vector2D);
+
+                point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
+
+                Size size = TextRenderer.MeasureText(text, series.Font);
+
+                point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y + size.Height));
+
+                ChartLabel chartLabel = new ChartLabel(point, text, 0, color) { Tag = uIMollierPoint };
+
+                Series series_Temp = AddLabel(chart, chartLabel);
+                if (series_Temp != null)
+                {
+                    result.Add(series_Temp);
+                }
             }
 
             return result;

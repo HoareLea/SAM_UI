@@ -50,10 +50,16 @@ namespace SAM.Core.Mollier.UI.Controls
                     return null;
                 }
 
-                uIMollierPoint.UIMollierAppearance.Color = PointColor_Button.BackColor == color_Empty ? Color.Empty : PointColor_Button.BackColor;
-                (uIMollierPoint.UIMollierAppearance as UIMollierAppearance).Label = PointLabel_TextBox.Text;
+                UIMollierAppearance uIMollierAppearance = uIMollierPoint.UIMollierAppearance as UIMollierAppearance;
+
+                uIMollierAppearance.Color = PointColor_Button.BackColor == color_Empty ? Color.Empty : PointColor_Button.BackColor;
+                uIMollierAppearance.Label = PointLabel_TextBox.Text;
 
                 UIMollierLabelAppearance uIMollierLabelAppearance = (uIMollierPoint.UIMollierAppearance as UIMollierAppearance).UIMollierLabelAppearance;
+                if(Button_LabelLocation.Text != locationSetText)
+                {
+                    uIMollierLabelAppearance.Vector2D = null;
+                }
 
                 if (LabelColor_Button.BackColor == color_Empty)
                 {
@@ -70,8 +76,11 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
 
                     uIMollierLabelAppearance.Color = LabelColor_Button.BackColor;
-                    (uIMollierPoint.UIMollierAppearance as UIMollierAppearance).UIMollierLabelAppearance = uIMollierLabelAppearance;
                 }
+
+                uIMollierAppearance.UIMollierLabelAppearance = uIMollierLabelAppearance;
+
+                uIMollierPoint.UIMollierAppearance = uIMollierLabelAppearance;
 
                 return uIMollierPoint;
             }
@@ -185,7 +194,9 @@ namespace SAM.Core.Mollier.UI.Controls
                 uIMollierPoint.UIMollierAppearance = new UIMollierPointAppearance();
             }
 
-            UIMollierLabelAppearance uIMollierLabelAppearance = (uIMollierPoint.UIMollierAppearance as UIMollierAppearance)?.UIMollierLabelAppearance;
+            UIMollierAppearance uIMollierAppearance = uIMollierPoint.UIMollierAppearance as UIMollierAppearance;
+
+            UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierAppearance?.UIMollierLabelAppearance;
             if (uIMollierLabelAppearance == null)
             {
                 uIMollierLabelAppearance = new UIMollierLabelAppearance();
@@ -220,7 +231,13 @@ namespace SAM.Core.Mollier.UI.Controls
             //Point2D point2D_Selected = mollierControl.GetPoint2D(e.MollierPoint);
             //Point2D point2D = mollierControl.GetPoint2D(uIMollierPoint);
 
+
+
             uIMollierLabelAppearance.Vector2D = point2D_Selected - point2D;
+
+            uIMollierAppearance.UIMollierLabelAppearance = uIMollierLabelAppearance;
+
+            uIMollierPoint.UIMollierAppearance = uIMollierAppearance;
 
             Button_LabelLocation.Text = locationSetText;
         }

@@ -1513,6 +1513,16 @@ namespace SAM.Core.Mollier.UI.Controls
                         continue;
                     }
 
+                    if(series.Tag is IReference)
+                    {
+                        IReference reference = series.Tag as IReference;
+                        uIMollierPoint = Geometry.Mollier.Query.UIMollierObject<UIMollierPoint>(mollierModel, reference);
+                        if(uIMollierPoint != null)
+                        {
+                            break;
+                        }
+                    }
+
                     uIMollierPoint = series.Tag as UIMollierPoint;
                     if (uIMollierPoint != null)
                     {
@@ -1534,7 +1544,8 @@ namespace SAM.Core.Mollier.UI.Controls
 
                 if (uIMollierPoint != null)
                 {
-                    if(mollierModel.GetUIMollierObject<UIMollierPoint>(uIMollierPoint.Guid, true) != null)
+                    IReference reference = Create.Reference(uIMollierPoint);
+                    if(Geometry.Mollier.Query.UIMollierObject<IUIMollierObject>(mollierModel, reference) != null)
                     {
                         CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint)
                         {
@@ -1546,46 +1557,6 @@ namespace SAM.Core.Mollier.UI.Controls
                     }
                 }
             }
-
-            //hitTestResults = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
-            //if (hitTestResults != null)
-            //{
-            //    UIMollierPoint uIMollierPoint = null;
-            //    foreach (HitTestResult hitTestResult in hitTestResults)
-            //    {
-            //        Series series = hitTestResult?.Series;
-            //        if (series == null)
-            //        {
-            //            continue;
-            //        }
-
-            //        int index = hitTestResult.PointIndex;
-            //        if (index == -1)
-            //        {
-            //            continue;
-            //        }
-
-            //        uIMollierPoint = series.Points[index].Tag as UIMollierPoint;
-            //        if (uIMollierPoint != null)
-            //        {
-            //            break;
-            //        }
-            //    }
-
-            //    if (uIMollierPoint != null)
-            //    {
-            //        if (mollierModel.GetUIMollierObject<UIMollierPoint>(uIMollierPoint.Guid, true) != null)
-            //        {
-            //            CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint)
-            //            {
-            //                MollierControl = this,
-            //            };
-
-            //            customizePointForm.FormClosing += CustomizePointForm_FormClosing;
-            //            customizePointForm.Show();
-            //        }
-            //    }
-            //}
         }
 
         private void CustomizePointForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -1601,13 +1572,19 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
-            UIMollierPoint uIMollierPoint = customizePointForm.UIMollierPoint;
-            if (uIMollierPoint == null)
+            IUIMollierObject uIMollierObject = customizePointForm.UIMollierPoint;
+            if (uIMollierObject == null)
             {
                 return;
             }
 
-            mollierModel.Update(uIMollierPoint, true);
+            if(uIMollierObject is UIMollierProcessPoint)
+            {
+                UIMollierProcessPoint uIMollierProcessPoint = ((UIMollierProcessPoint)uIMollierObject);
+                uIMollierObject = ((UIMollierProcessPoint)uIMollierObject).UIMollierProcess;
+            }
+
+            mollierModel.Update(uIMollierObject, true);
 
             Regenerate();
         }
