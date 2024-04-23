@@ -1483,27 +1483,41 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void CustomizePointForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CustomizePointForm customizePointForm = sender as CustomizePointForm;
-            if (customizePointForm == null)
+            Form form = sender as Form;
+            if(form == null)
             {
                 return;
             }
 
-            if(customizePointForm.DialogResult != DialogResult.OK)
+            if (form.DialogResult != DialogResult.OK)
             {
                 return;
             }
 
-            IUIMollierObject uIMollierObject = customizePointForm.UIMollierPoint;
+            IUIMollierObject uIMollierObject = null;
+
+            if(form is UIMollierPointForm)
+            {
+                uIMollierObject = ((UIMollierPointForm)form).UIMollierPoint;
+
+                if (uIMollierObject is UIMollierProcessPoint)
+                {
+                    uIMollierObject = ((UIMollierProcessPoint)uIMollierObject).UIMollierProcess;
+                }
+            }
+            else if(form is UIMollierProcessForm)
+            {
+                uIMollierObject = ((UIMollierProcessForm)form).UIMollierProcess;
+            }
+            else
+            {
+                return;
+            }
+
+
             if (uIMollierObject == null)
             {
                 return;
-            }
-
-            if(uIMollierObject is UIMollierProcessPoint)
-            {
-                UIMollierProcessPoint uIMollierProcessPoint = ((UIMollierProcessPoint)uIMollierObject);
-                uIMollierObject = ((UIMollierProcessPoint)uIMollierObject).UIMollierProcess;
             }
 
             mollierModel.Update(uIMollierObject, true);
@@ -1523,7 +1537,6 @@ namespace SAM.Core.Mollier.UI.Controls
             ToolStripMenuItem_Edit.Tag = uIMollierObject;
             ToolStripMenuItem_Remove.Tag = uIMollierObject;
         }
-
 
         private IUIMollierObject GetUIMollierObject()
         {
@@ -1614,13 +1627,25 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if(uIMollierObject is UIMollierPoint)
             {
-                CustomizePointForm customizePointForm = new CustomizePointForm((UIMollierPoint)uIMollierObject)
+                UIMollierPointForm customizePointForm = new UIMollierPointForm((UIMollierPoint)uIMollierObject)
                 {
                     MollierControl = this,
                 };
 
                 customizePointForm.FormClosing += CustomizePointForm_FormClosing;
                 customizePointForm.Show();
+                return;
+            }
+
+            if(uIMollierObject is UIMollierProcess)
+            {
+                UIMollierProcessForm uIMollierProcessForm = new UIMollierProcessForm((UIMollierProcess)uIMollierObject)
+                {
+                    MollierControl = this,
+                };
+
+                uIMollierProcessForm.FormClosing += CustomizePointForm_FormClosing;
+                uIMollierProcessForm.Show();
                 return;
             }
         }

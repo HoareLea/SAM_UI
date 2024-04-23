@@ -1,88 +1,141 @@
 ﻿using SAM.Geometry.Mollier;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
     public partial class UIMollierProcessControl : UserControl
     {
-        private UIMollierProcess uIMollierProcess;
-        private System.Drawing.Color color_Empty = System.Drawing.Color.Empty;
+        private Color color_Empty = Color.Empty;
 
+        private UIMollierProcess uIMollierProcess;
+
+        public event MollierPointSelectingEventHandler MollierPointSelecting;
+        public event MollierPointSelectedEventHandler MollierPointSelected;
 
         public UIMollierProcessControl()
         {
             InitializeComponent();
 
-            color_Empty = ProcessColor_button.BackColor;
+            if (Button_ProcessColor != null)
+            {
+                color_Empty = Button_ProcessColor.BackColor;
+            }
+
+            UIMollierProcessPointControl_Start.MollierPointSelected += UIMollierProcessPointControl_MollierPointSelected;
+            UIMollierProcessPointControl_Process.MollierPointSelected += UIMollierProcessPointControl_MollierPointSelected;
+            UIMollierProcessPointControl_End.MollierPointSelected += UIMollierProcessPointControl_MollierPointSelected;
+
+            UIMollierProcessPointControl_Start.MollierPointSelecting += UIMollierProcessPointControl_MollierPointSelecting;
+            UIMollierProcessPointControl_Process.MollierPointSelecting += UIMollierProcessPointControl_MollierPointSelecting;
+            UIMollierProcessPointControl_End.MollierPointSelecting += UIMollierProcessPointControl_MollierPointSelecting;
         }
 
         public UIMollierProcessControl(UIMollierProcess uIMollierProcess)
         {
             InitializeComponent();
-            if(uIMollierProcess == null)
-            {
-                return;
-            }
-            setUIMollierProcess(uIMollierProcess);
 
-            color_Empty = ProcessColor_button.BackColor;
+            if (Button_ProcessColor != null)
+            {
+                color_Empty = Button_ProcessColor.BackColor;
+            }
+
+            UIMollierProcessPointControl_Start.MollierPointSelected += UIMollierProcessPointControl_MollierPointSelected;
+            UIMollierProcessPointControl_Process.MollierPointSelected += UIMollierProcessPointControl_MollierPointSelected;
+            UIMollierProcessPointControl_End.MollierPointSelected += UIMollierProcessPointControl_MollierPointSelected;
+
+            UIMollierProcessPointControl_Start.MollierPointSelecting += UIMollierProcessPointControl_MollierPointSelecting;
+            UIMollierProcessPointControl_Process.MollierPointSelecting += UIMollierProcessPointControl_MollierPointSelecting;
+            UIMollierProcessPointControl_End.MollierPointSelecting += UIMollierProcessPointControl_MollierPointSelecting;
+        }
+
+        private void UIMollierProcessPointControl_MollierPointSelecting(object sender, EventArgs e)
+        {
+            MollierPointSelecting?.Invoke(this, e);
+        }
+
+        private void UIMollierProcessPointControl_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
+        {
+            MollierPointSelected?.Invoke(this, e);
+        }
+
+        private void Button_ProcessColor_Click(object sender, EventArgs e)
+        {
+            using (ColorDialog colorDialog = new ColorDialog())
+            {
+                if (colorDialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                Button_ProcessColor.BackColor = colorDialog.Color;
+            }
         }
 
         public UIMollierProcess UIMollierProcess
         {
             get
             {
-                if(uIMollierProcess == null || uIMollierProcess.UIMollierAppearance == null)
-                {
-                    return null;
-                }
-
-                uIMollierProcess.UIMollierAppearance.Color = ProcessColor_button.BackColor == color_Empty ? System.Drawing.Color.Empty : ProcessColor_button.BackColor;
-                uIMollierProcess.UIMollierPointAppearance_Start.Label = StartLabel_Value.Text;
-                (uIMollierProcess.UIMollierAppearance as UIMollierAppearance).Label = ProcessLabel_Value.Text;
-                uIMollierProcess.UIMollierPointAppearance_End.Label = EndLabel_Value.Text;
-                
-                return uIMollierProcess;
+                return GetUIMollierProcess();
             }
+
             set
             {
-                setUIMollierProcess(value);
+                SetUIMollierProcess(value);
             }
         }
 
-        private void setUIMollierProcess(UIMollierProcess uIMollierProcess)
+        private UIMollierProcess GetUIMollierProcess()
         {
-            if(uIMollierProcess == null)
-            {
-                return;
-            }
+            UIMollierProcess result =  uIMollierProcess == null ? null : new UIMollierProcess(uIMollierProcess);
 
+            result.UIMollierPointAppearance_Start = UIMollierProcessPointControl_Start.UIMollierProcessPoint.UIMollierAppearance as UIMollierPointAppearance;
+            result.UIMollierAppearance = UIMollierProcessPointControl_Process.UIMollierProcessPoint.UIMollierAppearance;
+            result.UIMollierPointAppearance_End = UIMollierProcessPointControl_End.UIMollierProcessPoint.UIMollierAppearance as UIMollierPointAppearance;
+
+            result.UIMollierAppearance.Color = Button_ProcessColor.BackColor == color_Empty ? Color.Empty : Button_ProcessColor.BackColor;
+
+            return result;
+        }
+
+        private void SetUIMollierProcess(UIMollierProcess uIMollierProcess)
+        {
             this.uIMollierProcess = uIMollierProcess;
 
-            if (uIMollierProcess.UIMollierAppearance != null)
+            UIMollierProcessPointControl_Start.UIMollierProcessPoint = uIMollierProcess == null ? null : new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.Start);
+            UIMollierProcessPointControl_Process.UIMollierProcessPoint = uIMollierProcess == null ? null : new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.Process);
+            UIMollierProcessPointControl_End.UIMollierProcessPoint = uIMollierProcess == null ? null : new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.End);
+
+            Button_ProcessColor.BackColor = color_Empty;
+
+            UIMollierAppearance uIMollierAppearance = uIMollierProcess?.UIMollierAppearance as UIMollierAppearance;
+            if(uIMollierAppearance != null)
             {
-                ProcessColor_button.BackColor = uIMollierProcess.UIMollierAppearance.Color == System.Drawing.Color.Empty ? color_Empty : uIMollierProcess.UIMollierAppearance.Color;
-                StartLabel_Value.Text = uIMollierProcess.UIMollierPointAppearance_Start.Label;
-                ProcessLabel_Value.Text = (uIMollierProcess.UIMollierAppearance as UIMollierAppearance).Label;
-                EndLabel_Value.Text = uIMollierProcess.UIMollierPointAppearance_End.Label;
-            }
-        }
-        private void ProcessColor_button_Click(object sender, EventArgs e)
-        {
-            using(ColorDialog colorDialog = new ColorDialog())
-            {
-                if(colorDialog.ShowDialog() != DialogResult.OK)
+                if(uIMollierAppearance.Color != Color.Empty)
                 {
-                    return;
+                    Button_ProcessColor.BackColor = uIMollierAppearance.Color;
                 }
-                ProcessColor_button.BackColor = colorDialog.Color;
             }
         }
 
-        private void Button_Clear_Click(object sender, EventArgs e)
+        private void Button_ProcessColor_Clear_Click(object sender, EventArgs e)
         {
-            ProcessColor_button.BackColor = color_Empty;
+            Button_ProcessColor.BackColor = color_Empty;
+        }
+
+        public MollierControl MollierControl
+        {
+            get
+            {
+                return UIMollierProcessPointControl_Start.MollierControl;
+            }
+
+            set
+            {
+                UIMollierProcessPointControl_Start.MollierControl = value;
+                UIMollierProcessPointControl_Process.MollierControl = value;
+                UIMollierProcessPointControl_End.MollierControl = value;
+            }
         }
     }
 }

@@ -12,7 +12,7 @@ namespace SAM.Core.Mollier.UI
             if (mollierObject is UIMollierPoint)
             {
                 UIMollierPoint uIMollierPoint = (UIMollierPoint)mollierObject;
-                using (CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint))
+                using (UIMollierPointForm customizePointForm = new UIMollierPointForm(uIMollierPoint))
                 {
                     if (customizePointForm.ShowDialog() != DialogResult.OK)
                     {
@@ -24,7 +24,7 @@ namespace SAM.Core.Mollier.UI
             else if(mollierObject is UIMollierProcess)
             {
                 UIMollierProcess uIMollierProcess = (UIMollierProcess)mollierObject;
-                using (CustomizeProcessForm customizeProcessForm = new CustomizeProcessForm(uIMollierProcess))
+                using (UIMollierProcessForm_Limited customizeProcessForm = new UIMollierProcessForm_Limited(uIMollierProcess))
                 {
                     if (customizeProcessForm.ShowDialog() != DialogResult.OK)
                     {

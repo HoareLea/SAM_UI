@@ -5,13 +5,13 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Forms
 {
-    public partial class CustomizePointForm : Form
+    public partial class UIMollierPointForm : Form
     {
-        public CustomizePointForm()
+        public UIMollierPointForm()
         {
             InitializeComponent();
         }
-        public CustomizePointForm(UIMollierPoint uIMollierPoint)
+        public UIMollierPointForm(UIMollierPoint uIMollierPoint)
         {
             InitializeComponent();
 

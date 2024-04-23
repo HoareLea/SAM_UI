@@ -231,8 +231,6 @@ namespace SAM.Core.Mollier.UI.Controls
             //Point2D point2D_Selected = mollierControl.GetPoint2D(e.MollierPoint);
             //Point2D point2D = mollierControl.GetPoint2D(uIMollierPoint);
 
-
-
             uIMollierLabelAppearance.Vector2D = point2D_Selected - point2D;
 
             uIMollierAppearance.UIMollierLabelAppearance = uIMollierLabelAppearance;

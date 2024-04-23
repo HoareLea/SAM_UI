@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Forms
 {
-    partial class CustomizePointForm
+    partial class UIMollierPointForm
     {
         /// <summary>
         /// Required designer variable.

@@ -1,6 +1,6 @@
 ﻿namespace SAM.Core.Mollier.UI.Forms
 {
-    partial class CustomizeProcessForm
+    partial class UIMollierProcessForm_Limited
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.customizeProcessControl = new SAM.Core.Mollier.UI.Controls.UIMollierProcessControl();
+            this.customizeProcessControl = new SAM.Core.Mollier.UI.Controls.UIMollierProcessControl_Limited();
             this.Cancel_Button = new System.Windows.Forms.Button();
             this.OK_Button = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -80,7 +80,7 @@
 
         #endregion
 
-        private Controls.UIMollierProcessControl customizeProcessControl;
+        private Controls.UIMollierProcessControl_Limited customizeProcessControl;
         private System.Windows.Forms.Button Cancel_Button;
         private System.Windows.Forms.Button OK_Button;
     }

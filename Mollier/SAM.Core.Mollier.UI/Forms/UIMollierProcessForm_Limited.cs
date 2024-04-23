@@ -4,13 +4,13 @@ using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Forms
 {
-    public partial class CustomizeProcessForm : Form
+    public partial class UIMollierProcessForm_Limited : Form
     {
-        public CustomizeProcessForm()
+        public UIMollierProcessForm_Limited()
         {
             InitializeComponent();
         }
-        public CustomizeProcessForm(UIMollierProcess uIMollierProcess)
+        public UIMollierProcessForm_Limited(UIMollierProcess uIMollierProcess)
         {
             InitializeComponent();
             if(uIMollierProcess == null)

@@ -102,7 +102,7 @@ namespace SAM.Core.Mollier.UI.Forms
 
         private void Customize_Button_Click(object sender, EventArgs e)
         {
-            using (CustomizeProcessForm customizeProcessForm = new CustomizeProcessForm())
+            using (UIMollierProcessForm_Limited customizeProcessForm = new UIMollierProcessForm_Limited())
             {
                 if (customizeProcessForm.ShowDialog() != DialogResult.OK)
                 {
