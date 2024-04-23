@@ -1,6 +1,7 @@
 ﻿using SAM.Geometry.Mollier;
 using SAM.Geometry.Planar;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -37,7 +38,9 @@ namespace SAM.Core.Mollier.UI.Controls
             SetUIMollierProcessPoint(uIMollierProcessPoint);
         }
 
-
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public UIMollierProcessPoint UIMollierProcessPoint
         {
             get
@@ -65,13 +68,13 @@ namespace SAM.Core.Mollier.UI.Controls
                 uIMollierAppearance = new UIMollierAppearance();
             }
 
-            UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierAppearance.UIMollierLabelAppearance;
+            UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierAppearance?.UIMollierLabelAppearance;
             if(uIMollierLabelAppearance == null)
             {
                 uIMollierLabelAppearance = new UIMollierLabelAppearance();
             }
 
-            uIMollierLabelAppearance.Text = string.IsNullOrEmpty( TextBox_Label.Text) ? null : TextBox_Label.Text;
+            uIMollierLabelAppearance.Text = string.IsNullOrEmpty(TextBox_Label.Text) ? null : TextBox_Label.Text;
             uIMollierLabelAppearance.Color = Button_Color.BackColor == color_Empty ? Color.Empty : Button_Color.BackColor;
 
 
@@ -98,19 +101,18 @@ namespace SAM.Core.Mollier.UI.Controls
         private void SetUIMollierProcessPoint(UIMollierProcessPoint uIMollierProcessPoint)
         {
             this.uIMollierProcessPoint = uIMollierProcessPoint;
-
             if(uIMollierProcessPoint == null)
             {
                 return;
             }
 
-            UIMollierAppearance uIMollierAppearance = uIMollierProcessPoint.UIMollierAppearance as UIMollierAppearance;
+            UIMollierAppearance uIMollierAppearance = uIMollierProcessPoint?.UIMollierAppearance as UIMollierAppearance;
             if(uIMollierAppearance == null)
             {
                 return;
             }
 
-            UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierAppearance.UIMollierLabelAppearance;
+            UIMollierLabelAppearance uIMollierLabelAppearance = uIMollierAppearance?.UIMollierLabelAppearance;
             if(uIMollierLabelAppearance != null)
             {
                 TextBox_Label.Text = uIMollierLabelAppearance.Text;
@@ -186,6 +188,9 @@ namespace SAM.Core.Mollier.UI.Controls
             Button_Vector2D.Text = locationSetText;
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MollierControl MollierControl
         {
             get

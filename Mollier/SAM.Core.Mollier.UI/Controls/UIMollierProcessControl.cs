@@ -13,6 +13,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         public event MollierPointSelectingEventHandler MollierPointSelecting;
         public event MollierPointSelectedEventHandler MollierPointSelected;
+        private event EventHandler ApplyClicked;
 
         public UIMollierProcessControl()
         {
@@ -88,12 +89,14 @@ namespace SAM.Core.Mollier.UI.Controls
         private UIMollierProcess GetUIMollierProcess()
         {
             UIMollierProcess result =  uIMollierProcess == null ? null : new UIMollierProcess(uIMollierProcess);
+            if(result != null)
+            {
+                result.UIMollierPointAppearance_Start = UIMollierProcessPointControl_Start?.UIMollierProcessPoint?.UIMollierAppearance as UIMollierPointAppearance;
+                result.UIMollierAppearance = UIMollierProcessPointControl_Process?.UIMollierProcessPoint?.UIMollierAppearance;
+                result.UIMollierPointAppearance_End = UIMollierProcessPointControl_End?.UIMollierProcessPoint?.UIMollierAppearance as UIMollierPointAppearance;
 
-            result.UIMollierPointAppearance_Start = UIMollierProcessPointControl_Start.UIMollierProcessPoint.UIMollierAppearance as UIMollierPointAppearance;
-            result.UIMollierAppearance = UIMollierProcessPointControl_Process.UIMollierProcessPoint.UIMollierAppearance;
-            result.UIMollierPointAppearance_End = UIMollierProcessPointControl_End.UIMollierProcessPoint.UIMollierAppearance as UIMollierPointAppearance;
-
-            result.UIMollierAppearance.Color = Button_ProcessColor.BackColor == color_Empty ? Color.Empty : Button_ProcessColor.BackColor;
+                result.UIMollierAppearance.Color = Button_ProcessColor.BackColor == color_Empty ? Color.Empty : Button_ProcessColor.BackColor;
+            }
 
             return result;
         }

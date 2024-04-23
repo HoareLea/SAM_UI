@@ -28,19 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.UIMollierProcessControl_Main = new SAM.Core.Mollier.UI.Controls.UIMollierProcessControl();
             this.OK_Button = new System.Windows.Forms.Button();
             this.Cancel_Button = new System.Windows.Forms.Button();
+            this.Button_Apply = new System.Windows.Forms.Button();
+            this.UIMollierProcessControl_Main = new SAM.Core.Mollier.UI.Controls.UIMollierProcessControl();
             this.SuspendLayout();
-            // 
-            // UIMollierProcessControl_Main
-            // 
-            this.UIMollierProcessControl_Main.Location = new System.Drawing.Point(12, 12);
-            this.UIMollierProcessControl_Main.MollierControl = null;
-            this.UIMollierProcessControl_Main.Name = "UIMollierProcessControl_Main";
-            this.UIMollierProcessControl_Main.Size = new System.Drawing.Size(513, 174);
-            this.UIMollierProcessControl_Main.TabIndex = 0;
-            this.UIMollierProcessControl_Main.UIMollierProcess = null;
             // 
             // OK_Button
             // 
@@ -65,6 +57,26 @@
             this.Cancel_Button.UseVisualStyleBackColor = true;
             this.Cancel_Button.Click += new System.EventHandler(this.Cancel_Button_Click);
             // 
+            // Button_Apply
+            // 
+            this.Button_Apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_Apply.Location = new System.Drawing.Point(200, 204);
+            this.Button_Apply.Name = "Button_Apply";
+            this.Button_Apply.Size = new System.Drawing.Size(102, 31);
+            this.Button_Apply.TabIndex = 4;
+            this.Button_Apply.Text = "Apply";
+            this.Button_Apply.UseVisualStyleBackColor = true;
+            this.Button_Apply.Click += new System.EventHandler(this.Button_Apply_Click);
+            // 
+            // UIMollierProcessControl_Main
+            // 
+            this.UIMollierProcessControl_Main.Location = new System.Drawing.Point(12, 12);
+            this.UIMollierProcessControl_Main.MollierControl = null;
+            this.UIMollierProcessControl_Main.Name = "UIMollierProcessControl_Main";
+            this.UIMollierProcessControl_Main.Size = new System.Drawing.Size(513, 174);
+            this.UIMollierProcessControl_Main.TabIndex = 6;
+            this.UIMollierProcessControl_Main.UIMollierProcess = null;
+            // 
             // UIMollierProcessForm
             // 
             this.AcceptButton = this.OK_Button;
@@ -73,9 +85,10 @@
             this.CancelButton = this.Cancel_Button;
             this.ClientSize = new System.Drawing.Size(530, 247);
             this.ControlBox = false;
+            this.Controls.Add(this.UIMollierProcessControl_Main);
+            this.Controls.Add(this.Button_Apply);
             this.Controls.Add(this.OK_Button);
             this.Controls.Add(this.Cancel_Button);
-            this.Controls.Add(this.UIMollierProcessControl_Main);
             this.Name = "UIMollierProcessForm";
             this.ShowIcon = false;
             this.Text = "Mollier Process";
@@ -85,9 +98,9 @@
         }
 
         #endregion
-
-        private Controls.UIMollierProcessControl UIMollierProcessControl_Main;
         private System.Windows.Forms.Button OK_Button;
         private System.Windows.Forms.Button Cancel_Button;
+        private System.Windows.Forms.Button Button_Apply;
+        private Controls.UIMollierProcessControl UIMollierProcessControl_Main;
     }
 }

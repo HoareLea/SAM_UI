@@ -1494,9 +1494,14 @@ namespace SAM.Core.Mollier.UI.Controls
                 return;
             }
 
+            Apply(form);
+        }
+
+        public void Apply(Form form)
+        {
             IUIMollierObject uIMollierObject = null;
 
-            if(form is UIMollierPointForm)
+            if (form is UIMollierPointForm)
             {
                 uIMollierObject = ((UIMollierPointForm)form).UIMollierPoint;
 
@@ -1505,7 +1510,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     uIMollierObject = ((UIMollierProcessPoint)uIMollierObject).UIMollierProcess;
                 }
             }
-            else if(form is UIMollierProcessForm)
+            else if (form is UIMollierProcessForm)
             {
                 uIMollierObject = ((UIMollierProcessForm)form).UIMollierProcess;
             }

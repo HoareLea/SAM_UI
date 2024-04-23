@@ -1,6 +1,7 @@
 ﻿using SAM.Core.Mollier.UI.Controls;
 using SAM.Geometry.Mollier;
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI
@@ -19,24 +20,40 @@ namespace SAM.Core.Mollier.UI
             UIMollierProcess = uIMollierProcess;
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public UIMollierProcess UIMollierProcess
         {
             get
             {
+                if (UIMollierProcessControl_Main == null)
+                {
+                    return null;
+                }
+
                 return UIMollierProcessControl_Main.UIMollierProcess;
+                return null;
             }
 
             set
             {
-                UIMollierProcessControl_Main.UIMollierProcess = value;
+                if (UIMollierProcessControl_Main != null)
+                {
+                    UIMollierProcessControl_Main.UIMollierProcess = value;
+                }
             }
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MollierControl MollierControl
         {
             get
             {
                 return UIMollierProcessControl_Main.MollierControl;
+                return null;
             }
 
             set
@@ -73,6 +90,11 @@ namespace SAM.Core.Mollier.UI
         private void UIMollierProcessControl_Main_MollierPointSelected(object sender, MollierPointSelectedEventArgs e)
         {
             Show();
+        }
+
+        private void Button_Apply_Click(object sender, EventArgs e)
+        {
+            UIMollierProcessControl_Main.MollierControl.Apply(this);
         }
     }
 }

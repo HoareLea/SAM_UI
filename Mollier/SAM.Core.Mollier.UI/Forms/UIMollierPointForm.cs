@@ -1,6 +1,7 @@
 ﻿using SAM.Core.Mollier.UI.Controls;
 using SAM.Geometry.Mollier;
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Forms
@@ -22,6 +23,9 @@ namespace SAM.Core.Mollier.UI.Forms
             CustomizePointControl_Main.UIMollierPoint = uIMollierPoint;
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public UIMollierPoint UIMollierPoint
         { 
             get
@@ -34,6 +38,9 @@ namespace SAM.Core.Mollier.UI.Forms
             }
         }
 
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public MollierControl MollierControl
         {
             get
@@ -44,6 +51,7 @@ namespace SAM.Core.Mollier.UI.Forms
             set
             {
                 CustomizePointControl_Main.MollierControl = value;
+                Button_Apply.Visible = value != null;
             }
         }
 
@@ -75,6 +83,11 @@ namespace SAM.Core.Mollier.UI.Forms
             DialogResult = DialogResult.OK;
 
             Close();
+        }
+
+        private void Button_Apply_Click(object sender, EventArgs e)
+        {
+            CustomizePointControl_Main.MollierControl.Apply(this);
         }
     }
 }

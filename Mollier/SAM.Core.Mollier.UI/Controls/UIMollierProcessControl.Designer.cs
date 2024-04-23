@@ -92,7 +92,6 @@
             this.UIMollierProcessPointControl_Start.Name = "UIMollierProcessPointControl_Start";
             this.UIMollierProcessPointControl_Start.Size = new System.Drawing.Size(486, 30);
             this.UIMollierProcessPointControl_Start.TabIndex = 11;
-            this.UIMollierProcessPointControl_Start.UIMollierProcessPoint = null;
             // 
             // UIMollierProcessPointControl_Process
             // 
@@ -102,7 +101,6 @@
             this.UIMollierProcessPointControl_Process.Name = "UIMollierProcessPointControl_Process";
             this.UIMollierProcessPointControl_Process.Size = new System.Drawing.Size(486, 30);
             this.UIMollierProcessPointControl_Process.TabIndex = 12;
-            this.UIMollierProcessPointControl_Process.UIMollierProcessPoint = null;
             // 
             // UIMollierProcessPointControl_End
             // 
@@ -112,7 +110,6 @@
             this.UIMollierProcessPointControl_End.Name = "UIMollierProcessPointControl_End";
             this.UIMollierProcessPointControl_End.Size = new System.Drawing.Size(486, 30);
             this.UIMollierProcessPointControl_End.TabIndex = 13;
-            this.UIMollierProcessPointControl_End.UIMollierProcessPoint = null;
             // 
             // UIMollierProcessControl
             // 
