@@ -1481,91 +1481,6 @@ namespace SAM.Core.Mollier.UI.Controls
             return new Point2D(MollierChart.ChartAreas[0].AxisX.ValueToPixelPosition(point2D.X), MollierChart.ChartAreas[0].AxisY.ValueToPixelPosition(point2D.Y));
         }
 
-        private void MollierChart_DoubleClick(object sender, EventArgs e)
-        {
-            Point point = MollierChart.PointToClient(MousePosition);
-
-            List<HitTestResult> hitTestResults = new List<HitTestResult>();
-
-            HitTestResult[] hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPointLabel);
-            if (hitTestResults_Temp != null)
-            {
-                hitTestResults.AddRange(hitTestResults_Temp);
-            }
-
-            if(hitTestResults.Count != 0)
-            {
-                hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
-                if (hitTestResults_Temp != null)
-                {
-                    hitTestResults.AddRange(hitTestResults_Temp);
-                }
-            }
-
-            if (hitTestResults != null && hitTestResults.Count != 0)
-            {
-                UIMollierPoint uIMollierPoint = null;
-                foreach (HitTestResult hitTestResult in hitTestResults)
-                {
-                    Series series = hitTestResult?.Series;
-                    if (series == null)
-                    {
-                        continue;
-                    }
-
-                    if(series.Tag is IReference)
-                    {
-                        IReference reference = series.Tag as IReference;
-                        uIMollierPoint = Geometry.Mollier.Query.UIMollierObject<UIMollierPoint>(mollierModel, reference);
-                        if(uIMollierPoint != null)
-                        {
-                            break;
-                        }
-                    }
-
-                    uIMollierPoint = series.Tag as UIMollierPoint;
-                    if (uIMollierPoint != null)
-                    {
-                        IReference reference = Create.Reference(uIMollierPoint);
-                        if (Geometry.Mollier.Query.UIMollierObject<IUIMollierObject>(mollierModel, reference) == null)
-                        {
-                            uIMollierPoint = null;
-                            continue;
-                        }
-
-                        break;
-                    }
-
-                    int index = hitTestResult.PointIndex;
-                    if (index == -1)
-                    {
-                        continue;
-                    }
-
-                    uIMollierPoint = series.Points[index].Tag as UIMollierPoint;
-                    if (uIMollierPoint != null)
-                    {
-                        break;
-                    }
-                }
-
-                if (uIMollierPoint != null)
-                {
-                    IReference reference = Create.Reference(uIMollierPoint);
-                    if(Geometry.Mollier.Query.UIMollierObject<IUIMollierObject>(mollierModel, reference) != null)
-                    {
-                        CustomizePointForm customizePointForm = new CustomizePointForm(uIMollierPoint)
-                        {
-                            MollierControl = this,
-                        };
-
-                        customizePointForm.FormClosing += CustomizePointForm_FormClosing;
-                        customizePointForm.Show();
-                    }
-                }
-            }
-        }
-
         private void CustomizePointForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             CustomizePointForm customizePointForm = sender as CustomizePointForm;
@@ -1593,6 +1508,137 @@ namespace SAM.Core.Mollier.UI.Controls
 
             mollierModel.Update(uIMollierObject, true);
 
+            Regenerate();
+        }
+
+        private void ContextMenuStrip_Chart_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            IUIMollierObject uIMollierObject = GetUIMollierObject();
+
+
+            ToolStripMenuItem_Edit.Visible = uIMollierObject != null;
+            ToolStripMenuItem_Remove.Visible = uIMollierObject != null;
+            ToolStripSeparator_Edit.Visible = uIMollierObject != null;
+
+            ToolStripMenuItem_Edit.Tag = uIMollierObject;
+            ToolStripMenuItem_Remove.Tag = uIMollierObject;
+        }
+
+
+        private IUIMollierObject GetUIMollierObject()
+        {
+            Point point = MollierChart.PointToClient(MousePosition);
+
+            List<HitTestResult> hitTestResults = new List<HitTestResult>();
+
+            HitTestResult[] hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPointLabel);
+            if (hitTestResults_Temp != null)
+            {
+                hitTestResults.AddRange(hitTestResults_Temp.ToList().FindAll(x => x.Series != null));
+            }
+
+            if (hitTestResults.Count == 0)
+            {
+                hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
+                if (hitTestResults_Temp != null)
+                {
+                    hitTestResults.AddRange(hitTestResults_Temp.ToList().FindAll(x => x.Series != null));
+                }
+            }
+
+            if (hitTestResults == null || hitTestResults.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (HitTestResult hitTestResult in hitTestResults)
+            {
+                Series series = hitTestResult?.Series;
+                if (series == null)
+                {
+                    continue;
+                }
+
+                IUIMollierObject uIMollierObject = series.Tag as UIMollierProcess;
+                if (uIMollierObject != null)
+                {
+                    return uIMollierObject;
+                }
+
+                if (series.Tag is IReference)
+                {
+                    IReference reference = series.Tag as IReference;
+                    uIMollierObject = Geometry.Mollier.Query.UIMollierObject<UIMollierPoint>(mollierModel, reference);
+                    if (uIMollierObject != null)
+                    {
+                        return uIMollierObject;
+                    }
+                }
+
+                uIMollierObject = series.Tag as UIMollierPoint;
+                if (uIMollierObject != null)
+                {
+                    IReference reference = Create.Reference((UIMollierPoint)uIMollierObject);
+                    if (Geometry.Mollier.Query.UIMollierObject<IUIMollierObject>(mollierModel, reference) == null)
+                    {
+                        uIMollierObject = null;
+                        continue;
+                    }
+
+                    return uIMollierObject;
+                }
+
+                int index = hitTestResult.PointIndex;
+                if (index == -1)
+                {
+                    continue;
+                }
+
+                uIMollierObject = series.Points[index].Tag as UIMollierPoint;
+                if (uIMollierObject != null)
+                {
+                    return uIMollierObject;
+                }
+            }
+
+            return null;
+        }
+
+        private void ToolStripMenuItem_Edit_Click(object sender, EventArgs e)
+        {
+            IUIMollierObject uIMollierObject = ToolStripMenuItem_Remove.Tag as IUIMollierObject;
+            if (uIMollierObject == null)
+            {
+                return;
+            }
+
+            if(uIMollierObject is UIMollierPoint)
+            {
+                CustomizePointForm customizePointForm = new CustomizePointForm((UIMollierPoint)uIMollierObject)
+                {
+                    MollierControl = this,
+                };
+
+                customizePointForm.FormClosing += CustomizePointForm_FormClosing;
+                customizePointForm.Show();
+                return;
+            }
+        }
+
+        private void ToolStripMenuItem_Remove_Click(object sender, EventArgs e)
+        {
+            IUIMollierObject uIMollierObject = ToolStripMenuItem_Remove.Tag as IUIMollierObject;
+            if(uIMollierObject == null)
+            {
+                return;
+            }
+
+            if (MessageBox.Show("Are you sure to remove item?", "Remove", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return;
+            }
+
+            mollierModel.Remove(uIMollierObject);
             Regenerate();
         }
     }

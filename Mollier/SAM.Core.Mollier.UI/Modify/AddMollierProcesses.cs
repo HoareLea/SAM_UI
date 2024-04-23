@@ -489,12 +489,5 @@ namespace SAM.Core.Mollier.UI
             return labeledMollierProcesses;
         //  this.mollierProcesses = mollierProcesses;//used only to remember point name to show it in tooltip
         }
-        private static MollierPoint mollierPointsMid(MollierPoint mollierPoint1, MollierPoint mollierPoint2)
-        {
-            double dryBulbTemperature = (mollierPoint1.DryBulbTemperature + mollierPoint2.DryBulbTemperature) / 2;
-            double humidityRatio = (mollierPoint1.HumidityRatio + mollierPoint2.HumidityRatio) / 2;
-            return new MollierPoint(dryBulbTemperature, humidityRatio, Standard.Pressure);
-        }
-
     }
 }
