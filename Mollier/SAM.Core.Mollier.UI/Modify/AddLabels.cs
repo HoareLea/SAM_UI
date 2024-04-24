@@ -20,7 +20,7 @@ namespace SAM.Core.Mollier.UI
         public static List<Series> AddLabels(this Chart chart, MollierControlSettings mollierControlSettings)
         {
             Vector2D scaleVector = Query.ScaleVector2D(chart.Parent, mollierControlSettings);
-            scaleVector = new Vector2D(scaleVector.X, scaleVector.Y > 1 ? 1 : scaleVector.Y); //TEMPORARY ADDED by Jakub
+            //scaleVector = new Vector2D(scaleVector.X, scaleVector.Y > 1 ? 1 : scaleVector.Y); //TODO: [JAKUB] TEMPORARY ADDED
 
             double axesRatio = Query.AxesRatio(chart, mollierControlSettings);
 
