@@ -390,19 +390,19 @@ namespace SAM.Core.Mollier.UI
             switch (chartDataType)
             {
                 case ChartDataType.RelativeHumidity:
-                    return "Relative Humidity φ [%]";
+                    return "φ [%]";//"Relative Humidity φ [%]"
 
                 case ChartDataType.Density:
-                    return "Density ρ [kg/m³]";
+                    return "ρ [kg/m³]";//"Density ρ [kg/m³]"
 
                 case ChartDataType.Enthalpy:
-                    return "Enthalpy h [kJ/kg]";
+                    return "h [kJ/kg]";//"Enthalpy h [kJ/kg]"
 
                 case ChartDataType.SpecificVolume:
-                    return "Specific volume v [m³/kg]";
+                    return "v [m³/kg]";//Specific volume v [m³/kg]
 
                 case ChartDataType.WetBulbTemperature:
-                    return "Wet Bulb Temperature t_wb [°C]";
+                    return "t_wb [°C]";//"Wet Bulb Temperature t_wb [°C]"
 
                 default:
                     return "";

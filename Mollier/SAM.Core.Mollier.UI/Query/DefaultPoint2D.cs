@@ -52,13 +52,13 @@ namespace SAM.Core.Mollier.UI
                         //point = new Point2D(point.X, Mollier.Query.DiagramTemperature(point.Y, point.X / 1000, mollierControlSettings.Pressure));
                         //return fix(start, end, point);
                         case ChartDataType.Density:
-                            return onSegment(start, end, 35);
+                            return onSegment(start, end, 25);
                         case ChartDataType.Enthalpy:
-                            return onSegment(start, end, 50);
+                            return onSegment(start, end, 30);
                         case ChartDataType.SpecificVolume:
-                            return onSegment(start, end, 50);
+                            return onSegment(start, end, 20);
                         case ChartDataType.WetBulbTemperature:
-                            return onSegment(start, end, 50);
+                            return onSegment(start, end, 30);
 
                         default: throw new NotSupportedException();
                     }
@@ -129,11 +129,11 @@ namespace SAM.Core.Mollier.UI
                         case ChartDataType.Density:
                             return onSegment(start, end, 50);
                         case ChartDataType.Enthalpy:
-                            return onSegment(start, end, 50);
+                            return onSegment(start, end, 30);
                         case ChartDataType.SpecificVolume:
                             return onSegment(start, end, 50);
                         case ChartDataType.WetBulbTemperature:
-                            return onSegment(start, end, 50);
+                            return onSegment(start, end, 30);
 
                         default: throw new NotSupportedException();
                     }
@@ -186,7 +186,7 @@ namespace SAM.Core.Mollier.UI
             {
                 if (chartParameterType == ChartParameterType.Label)
                 {
-                    return new Point2D(24.7, 40.9);
+                    return new Point2D(21, 38.5);
                 }
                 else if (chartParameterType == ChartParameterType.Unit)
                 {
@@ -196,25 +196,25 @@ namespace SAM.Core.Mollier.UI
                             return null;
                         case 10:
                             //return new Point2D(4.6, 40.15);
-                            return new Point2D(4.6, 40.15);
+                            return new Point2D(6, 46);
                         case 20:
-                            return new Point2D(9.6, 40.81);
+                            return new Point2D(12, 46);
                         case 30:
-                            return new Point2D(14.4, 40.66);
+                            return new Point2D(18, 45.5);
                         case 40:
-                            return new Point2D(18.1, 39.45);
+                            return new Point2D(23, 44.5);
                         case 50:
-                            return new Point2D(21.3, 38.23);
+                            return new Point2D(27.5, 43);
                         case 60:
-                            return new Point2D(23.6, 36.7);
+                            return new Point2D(30, 41.0);
                         case 70:
-                            return new Point2D(25.5, 35.25);
+                            return new Point2D(31.5, 39.5);
                         case 80:
-                            return new Point2D(27.2, 33.95);
+                            return new Point2D(32.5, 37.5);
                         case 90:
-                            return new Point2D(28.5, 32.65);
+                            return new Point2D(33.25, 35.5);
                         case 100:
-                            return new Point2D(29.5, 31.37);
+                            return new Point2D(34, 34);
                         default:
                             return null;
                     }
@@ -237,23 +237,23 @@ namespace SAM.Core.Mollier.UI
                         case 0:
                             return null;
                         case 10:
-                            return new Point2D(47.5, 6.76);
+                            return new Point2D(48, 7);
                         case 20:
-                            return new Point2D(47, 13.31);
+                            return new Point2D(48, 14.1);
                         case 30:
-                            return new Point2D(46, 19.15);
+                            return new Point2D(48, 21.5);
                         case 40:
-                            return new Point2D(44.5, 23.81);
+                            return new Point2D(47, 27);
                         case 50:
-                            return new Point2D(42.5, 26.96);
+                            return new Point2D(44.2, 30);
                         case 60:
-                            return new Point2D(40, 28.41);
+                            return new Point2D(41.5, 31);
                         case 70:
-                            return new Point2D(38, 29.84);
+                            return new Point2D(39, 31.5);
                         case 80:
-                            return new Point2D(36.2, 30.97);
+                            return new Point2D(37, 32);
                         case 90:
-                            return new Point2D(34.5, 31.76);
+                            return new Point2D(35, 32.5);
                         case 100:
                             return new Point2D(33, 32.5);
                         default:
