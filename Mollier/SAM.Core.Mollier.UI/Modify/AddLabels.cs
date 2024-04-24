@@ -70,7 +70,7 @@ namespace SAM.Core.Mollier.UI
                 return null;
             }
 
-            List<ChartLabel> chartLabels = Create.ChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio);
+            List<ChartLabel> chartLabels = Create.ChartLabels(solver2DResults, mollierControlSettings, scaleVector, axesRatio, chart);
             for(int i=0; i < chartLabels.Count; i++)
             {
                 chartLabels[i].Position.Y = System.Math.Max(chartLabels[i].Position.Y, chart.ChartAreas[0].AxisY.Minimum);

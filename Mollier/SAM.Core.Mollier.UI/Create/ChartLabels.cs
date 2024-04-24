@@ -4,12 +4,13 @@ using SAM.Geometry.Planar;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace SAM.Core.Mollier.UI
 {
     public static partial class Create
     {
-        public static List<ChartLabel> ChartLabels(List<Solver2DResult> solver2DResults, MollierControlSettings mollierControlSettings, Vector2D scaleVector, double axesRatio)
+        public static List<ChartLabel> ChartLabels(List<Solver2DResult> solver2DResults, MollierControlSettings mollierControlSettings, Vector2D scaleVector, double axesRatio, Chart chart)
         {
             if (solver2DResults == null)
             {
@@ -30,18 +31,41 @@ namespace SAM.Core.Mollier.UI
                 return angle;
             });
 
+
+            //TODO: [JAKUB] Find better method to wait
+            bool valid = false;
+            try
+            {
+                chart.ChartAreas[0].AxisX.ValueToPixelPosition(0);
+                valid = true;
+            }
+            catch
+            {
+                valid = false;
+            }
+
+
+            while(!valid)
+            {
+                chart.Invalidate();
+                System.Threading.Thread.Sleep(1000);
+                try
+                {
+                    chart.ChartAreas[0].AxisX.ValueToPixelPosition(0);
+                    valid = true;
+                }
+                catch
+                {
+                    valid = false;
+                }
+            }
+
             Func<Rectangle2D, Tuple<Point2D, double>> getPositionAngle = new Func<Rectangle2D, Tuple<Point2D, double>>((Rectangle2D rectangle) => 
             {
                 if (rectangle == null)
                 {
                     return null;
                 }
-
-                //TODO: [Jakub] Implement pixel to value conversion
-                //point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
-                //Size size = TextRenderer.MeasureText(text, series.Font);
-                //point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y + size.Height));
-
 
                 double distanceFromCenter = (chartType == ChartType.Mollier ? 0.8 : 0.4) * scaleVector.Y;
                 Point2D center = rectangle.GetCentroid().GetScaledY(1 / axesRatio); // re-scaled point
@@ -55,8 +79,8 @@ namespace SAM.Core.Mollier.UI
             foreach (Solver2DResult solver2DResult in solver2DResults)
             {
                 Solver2DData solver2DData = solver2DResult.Solver2DData;
-                Rectangle2D labelShape = solver2DResult.Closed2D<Rectangle2D>();
-                if (labelShape == null)
+                Rectangle2D rectangle2D = solver2DResult.Closed2D<Rectangle2D>();
+                if (rectangle2D == null)
                 {
                     continue;
                 }
@@ -67,7 +91,19 @@ namespace SAM.Core.Mollier.UI
                     continue;
                 }
 
-                Tuple<Point2D, double> positionAngleLabel = getPositionAngle(labelShape);
+                Tuple<Point2D, double> positionAngleLabel = getPositionAngle(rectangle2D);
+
+                //START
+                Point2D point = rectangle2D.GetCentroid().GetScaledY(1 / axesRatio);
+
+                Vector2D vector2D = rectangle2D.HeightDirection * chart.Series[0].Font.Height;
+
+                point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
+                point = point.GetMoved(vector2D.GetNegated());
+                point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y));
+
+                positionAngleLabel = new Tuple<Point2D, double>(point, positionAngleLabel.Item2);
+                //END
 
                 string text = null;
                 Color color = Color.Empty;
