@@ -189,7 +189,8 @@ namespace SAM.Core.Mollier.UI
 
             Solver2DSettings solver2DSettings = new Solver2DSettings();
             solver2DSettings.IterationCount = 100;
-            solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
+            solver2DSettings.ShiftDistance = 0.05 * scaleVector.X;
+            //solver2DSettings.ShiftDistance = 0.1 * scaleVector.X;
             solver2DData.Solver2DSettings = solver2DSettings;
 
             result.Add(solver2DData);
