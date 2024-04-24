@@ -37,6 +37,12 @@ namespace SAM.Core.Mollier.UI
                     return null;
                 }
 
+                //TODO: [Jakub] Implement pixel to value conversion
+                //point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
+                //Size size = TextRenderer.MeasureText(text, series.Font);
+                //point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y + size.Height));
+
+
                 double distanceFromCenter = (chartType == ChartType.Mollier ? 0.8 : 0.4) * scaleVector.Y;
                 Point2D center = rectangle.GetCentroid().GetScaledY(1 / axesRatio); // re-scaled point
                 Point2D point = new Point2D(center.X, center.Y - distanceFromCenter);
