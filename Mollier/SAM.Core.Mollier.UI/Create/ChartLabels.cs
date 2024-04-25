@@ -96,10 +96,16 @@ namespace SAM.Core.Mollier.UI
                 //START
                 Point2D point = rectangle2D.GetCentroid().GetScaledY(1 / axesRatio);
 
-                Vector2D vector2D = rectangle2D.HeightDirection * (chart.Series[0].Font.Height  * 1.2); //* 1.5 <- On line
+                Vector2D direction = rectangle2D.Width > rectangle2D.Height ? rectangle2D.WidthDirection : rectangle2D.HeightDirection;
+                //if (direction.SmallestAngle(Vector2D.WorldX) < System.Math.PI / 2)
+                //{
+                //    direction = rectangle2D.HeightDirection;
+                //}
+
+                Vector2D vector2D = Vector2D.WorldY * (chart.Series[0].Font.Height  * 1.2); //* 1.5 <- On line
 
                 point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
-                point = point.GetMoved(vector2D.GetNegated());
+                point = point.GetMoved(vector2D);
                 point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y));
 
                 positionAngleLabel = new Tuple<Point2D, double>(point, positionAngleLabel.Item2);
