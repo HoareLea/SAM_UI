@@ -37,7 +37,9 @@ namespace SAM.Core.Mollier.UI
 
             MollierControl_Main.SizeChanged += MollierControl_Main_SizeChanged;
 
-            MollierControl_Main.Regenerate();
+            Shown += MollierForm_Shown;
+
+            //MollierControl_Main.Regenerate();
         }
 
         private void MollierControl_Main_SizeChanged(object sender, EventArgs e)
@@ -1329,6 +1331,11 @@ namespace SAM.Core.Mollier.UI
         {
             ToolStripMenuItem_DivisionArea.Checked = !ToolStripMenuItem_DivisionArea.Checked;
             DivisionArea();
+        }
+
+        private void MollierForm_Shown(object sender, EventArgs e)
+        {
+            MollierControl_Main.Regenerate();
         }
     }
 }
