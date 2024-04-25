@@ -33,32 +33,31 @@ namespace SAM.Core.Mollier.UI
 
 
             //TODO: [JAKUB] Find better method to wait
-            bool valid = false;
-            try
-            {
-                chart.ChartAreas[0].AxisX.ValueToPixelPosition(0);
-                valid = true;
-            }
-            catch
-            {
-                valid = false;
-            }
+            //bool valid = false;
+            //try
+            //{
+            //    chart.ChartAreas[0].AxisX.ValueToPixelPosition(0);
+            //    valid = true;
+            //}
+            //catch
+            //{
+            //    valid = false;
+            //}
 
-
-            while(!valid)
-            {
-                chart.Invalidate();
-                System.Threading.Thread.Sleep(1000);
-                try
-                {
-                    chart.ChartAreas[0].AxisX.ValueToPixelPosition(0);
-                    valid = true;
-                }
-                catch
-                {
-                    valid = false;
-                }
-            }
+            //while(!valid)
+            //{
+            //    chart.Invalidate();
+            //    System.Threading.Thread.Sleep(1000);
+            //    try
+            //    {
+            //        chart.ChartAreas[0].AxisX.ValueToPixelPosition(0);
+            //        valid = true;
+            //    }
+            //    catch
+            //    {
+            //        valid = false;
+            //    }
+            //}
 
             Func<Rectangle2D, Tuple<Point2D, double>> getPositionAngle = new Func<Rectangle2D, Tuple<Point2D, double>>((Rectangle2D rectangle) => 
             {
@@ -94,15 +93,15 @@ namespace SAM.Core.Mollier.UI
                 Tuple<Point2D, double> positionAngleLabel = getPositionAngle(rectangle2D);
 
                 //START
-                Point2D point = rectangle2D.GetCentroid().GetScaledY(1 / axesRatio);
+                //Point2D point = rectangle2D.GetCentroid().GetScaledY(1 / axesRatio);
 
-                Vector2D vector2D = rectangle2D.HeightDirection * chart.Series[0].Font.Height;
+                //Vector2D vector2D = rectangle2D.HeightDirection * chart.Series[0].Font.Height;
 
-                point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
-                point = point.GetMoved(vector2D.GetNegated());
-                point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y));
+                //point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
+                //point = point.GetMoved(vector2D.GetNegated());
+                //point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y));
 
-                positionAngleLabel = new Tuple<Point2D, double>(point, positionAngleLabel.Item2);
+                //positionAngleLabel = new Tuple<Point2D, double>(point, positionAngleLabel.Item2);
                 //END
 
                 string text = null;

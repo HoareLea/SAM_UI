@@ -52,11 +52,11 @@ namespace SAM.Core.Mollier.UI
                         //point = new Point2D(point.X, Mollier.Query.DiagramTemperature(point.Y, point.X / 1000, mollierControlSettings.Pressure));
                         //return fix(start, end, point);
                         case ChartDataType.Density:
-                            return onSegment(start, end, 25);
+                            return onSegment(start, end, 15);
                         case ChartDataType.Enthalpy:
                             return onSegment(start, end, 30);
                         case ChartDataType.SpecificVolume:
-                            return onSegment(start, end, 20);
+                            return onSegment(start, end, 70);
                         case ChartDataType.WetBulbTemperature:
                             return onSegment(start, end, 30);
 
@@ -127,7 +127,7 @@ namespace SAM.Core.Mollier.UI
                             return point;
                         //return defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
                         case ChartDataType.Density:
-                            return onSegment(start, end, 50);
+                            return onSegment(start, end, 15);
                         case ChartDataType.Enthalpy:
                             return onSegment(start, end, 30);
                         case ChartDataType.SpecificVolume:
@@ -237,7 +237,7 @@ namespace SAM.Core.Mollier.UI
                         case 0:
                             return null;
                         case 10:
-                            return new Point2D(48, 7);
+                            return new Point2D(48, 9);
                         case 20:
                             return new Point2D(48, 14.1);
                         case 30:
