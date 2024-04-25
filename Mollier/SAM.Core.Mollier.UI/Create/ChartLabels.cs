@@ -31,6 +31,7 @@ namespace SAM.Core.Mollier.UI
                 return angle;
             });
 
+            chart.Update();
 
             //TODO: [JAKUB] Find better method to wait
             //bool valid = false;
@@ -44,7 +45,7 @@ namespace SAM.Core.Mollier.UI
             //    valid = false;
             //}
 
-            //while(!valid)
+            //while (!valid)
             //{
             //    chart.Invalidate();
             //    System.Threading.Thread.Sleep(1000);
@@ -93,15 +94,15 @@ namespace SAM.Core.Mollier.UI
                 Tuple<Point2D, double> positionAngleLabel = getPositionAngle(rectangle2D);
 
                 //START
-                //Point2D point = rectangle2D.GetCentroid().GetScaledY(1 / axesRatio);
+                Point2D point = rectangle2D.GetCentroid().GetScaledY(1 / axesRatio);
 
-                //Vector2D vector2D = rectangle2D.HeightDirection * chart.Series[0].Font.Height;
+                Vector2D vector2D = rectangle2D.HeightDirection * (chart.Series[0].Font.Height  * 1.2); //* 1.5 <- On line
 
-                //point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
-                //point = point.GetMoved(vector2D.GetNegated());
-                //point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y));
+                point = new Point2D(chart.ChartAreas[0].AxisX.ValueToPixelPosition(point.X), chart.ChartAreas[0].AxisY.ValueToPixelPosition(point.Y));
+                point = point.GetMoved(vector2D.GetNegated());
+                point = new Point2D(chart.ChartAreas[0].AxisX.PixelPositionToValue(point.X), chart.ChartAreas[0].AxisY.PixelPositionToValue(point.Y));
 
-                //positionAngleLabel = new Tuple<Point2D, double>(point, positionAngleLabel.Item2);
+                positionAngleLabel = new Tuple<Point2D, double>(point, positionAngleLabel.Item2);
                 //END
 
                 string text = null;
