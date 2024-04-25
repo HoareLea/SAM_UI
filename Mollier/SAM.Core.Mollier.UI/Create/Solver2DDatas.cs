@@ -211,7 +211,7 @@ namespace SAM.Core.Mollier.UI
             foreach (KeyValuePair<ChartDataType, List<ConstantValueCurve>> curves in orderedCurves)
             {
                 ChartDataType chartDataType = curves.Key;
-                ConstantValueCurve curve = curves.Value[curves.Value.Count / 2];
+                ConstantValueCurve curve = curves.Value[curves.Value.Count / 2]; //MD here we define which line to label on chart
                 string text = getCurveNameText(chartDataType);
 
                 bool visible = mollierControlSettings.VisibilitySettings.GetVisibilitySetting(mollierControlSettings.DefaultTemplateName, ChartParameterType.Label, curve.ChartDataType).Visible;
