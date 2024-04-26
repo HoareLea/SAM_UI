@@ -482,7 +482,7 @@ namespace SAM.Geometry.UI.WPF
                 helixViewport3D.Orthographic = true;
                 helixViewport3D.ShowViewCube = false;
                 helixViewport3D.ShowCoordinateSystem = false;
-                helixViewport3D.Camera.LookDirection = new System.Windows.Media.Media3D.Vector3D(0, 0.0001, -0.9999);
+                helixViewport3D.Camera.LookDirection = new Vector3D(0, 0.0001, -0.9999);
                 helixViewport3D.Camera.NearPlaneDistance = -1000;
                 helixViewport3D.Camera.FarPlaneDistance = 1000;
                 helixViewport3D.ZoomAroundMouseDownPoint = false;

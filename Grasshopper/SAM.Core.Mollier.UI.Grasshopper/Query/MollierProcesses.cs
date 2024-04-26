@@ -2,6 +2,7 @@
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 using SAM.Core.Grasshopper.Mollier;
+using SAM.Geometry.Grasshopper.Mollier;
 using System.Collections.Generic;
 
 namespace SAM.Core.Mollier.UI.Grasshopper

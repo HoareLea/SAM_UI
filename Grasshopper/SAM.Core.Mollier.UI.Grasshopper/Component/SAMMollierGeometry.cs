@@ -3,7 +3,6 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino;
-using Rhino.Commands;
 using SAM.Core.Grasshopper;
 using SAM.Core.Grasshopper.Mollier;
 using SAM.Core.Mollier.UI.Grasshopper.Properties;
@@ -214,7 +213,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             List<IMollierProcess> mollierProcesses = Query.MollierProcesses<IMollierProcess>(new IGH_Param[] { gHParam }); ;
             List<IMollierPoint> mollierPoints = Query.MollierPoints(new IGH_Param[] { gHParam });
 
-            Core.Grasshopper.Mollier.Modify.BakeGeometry(RhinoDoc.ActiveDoc, chartType, mollierProcesses, mollierPoints);
+            Geometry.Grasshopper.Mollier.Modify.BakeGeometry(RhinoDoc.ActiveDoc, chartType, mollierProcesses, mollierPoints);
         }
 
         protected override ChartType? GetChartType()

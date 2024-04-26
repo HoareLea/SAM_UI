@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            SAM.Core.Mollier.UIMollierAppearance uiMollierAppearance1 = new SAM.Core.Mollier.UIMollierAppearance();
+            SAM.Geometry.Mollier.UIMollierAppearance uiMollierAppearance1 = new SAM.Geometry.Mollier.UIMollierAppearance();
             this.Button_OK = new System.Windows.Forms.Button();
             this.Button_Cancel = new System.Windows.Forms.Button();
             this.MollierPointControl_Main = new SAM.Core.Mollier.UI.Controls.MollierPointControl();

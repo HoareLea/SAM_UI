@@ -1,4 +1,6 @@
-﻿namespace SAM.Core.Mollier.UI
+﻿using SAM.Geometry.Mollier;
+
+namespace SAM.Core.Mollier.UI
 {
     public class DisplayUIMollierObject
     {
@@ -55,7 +57,7 @@
                 }
                 if(UIMollierObject is UIMollierPoint)
                 {
-                    return ((UIMollierPoint)UIMollierObject)?.UIMollierAppearance?.Label;
+                    return (((UIMollierPoint)UIMollierObject)?.UIMollierAppearance as UIMollierAppearance).Label;
                 }
                 return default;
             }

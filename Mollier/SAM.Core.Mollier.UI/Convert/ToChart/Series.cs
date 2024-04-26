@@ -131,7 +131,7 @@ namespace SAM.Core.Mollier.UI
                     Point2D point2D_1 = dataPoints[0].ToSAM();
                     Point2D point2D_2 = dataPoints[dataPoints.Count - 1].ToSAM();
 
-                    double factor = result.BorderWidth == 1 ? 2 : 3;
+                    double factor = result.BorderWidth == 1 ? 3 : 4;//extend all enthalpy line in UI
 
                     Vector2D vector2D = new Vector2D(point2D_1, point2D_2);
                     point2D_2 = point2D_2.GetMoved(vector2D.Unit * factor);

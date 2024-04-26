@@ -1,6 +1,4 @@
-﻿using NetOffice.ExcelApi;
-
-namespace SAM.Core.Mollier.UI
+﻿namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {

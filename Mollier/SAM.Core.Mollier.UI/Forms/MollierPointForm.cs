@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Geometry.Mollier;
+using System;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Forms
@@ -45,7 +46,7 @@ namespace SAM.Core.Mollier.UI.Forms
             set
             {
                 MollierPoint = value;
-                UIMollierAppearance = value?.UIMollierAppearance;
+                UIMollierAppearance = value?.UIMollierAppearance as UIMollierAppearance;
             }
         }
 

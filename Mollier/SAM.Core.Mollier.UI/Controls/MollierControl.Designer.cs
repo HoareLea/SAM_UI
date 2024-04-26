@@ -38,6 +38,9 @@
             this.ToolStripMenuItem_ProcessesAndPoints = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_Selection = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_Reset = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripSeparator_Edit = new System.Windows.Forms.ToolStripSeparator();
+            this.ToolStripMenuItem_Edit = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItem_Remove = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.MollierChart)).BeginInit();
             this.ContextMenuStrip_Chart.SuspendLayout();
             this.SuspendLayout();
@@ -68,9 +71,13 @@
             // 
             this.ContextMenuStrip_Chart.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.ContextMenuStrip_Chart.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ToolStripMenuItem_Zoom});
+            this.ToolStripMenuItem_Zoom,
+            this.ToolStripSeparator_Edit,
+            this.ToolStripMenuItem_Edit,
+            this.ToolStripMenuItem_Remove});
             this.ContextMenuStrip_Chart.Name = "ContextMenuStrip_Chart";
-            this.ContextMenuStrip_Chart.Size = new System.Drawing.Size(119, 28);
+            this.ContextMenuStrip_Chart.Size = new System.Drawing.Size(211, 110);
+            this.ContextMenuStrip_Chart.Opening += new System.ComponentModel.CancelEventHandler(this.ContextMenuStrip_Chart_Opening);
             // 
             // ToolStripMenuItem_Zoom
             // 
@@ -79,7 +86,7 @@
             this.ToolStripMenuItem_Selection,
             this.ToolStripMenuItem_Reset});
             this.ToolStripMenuItem_Zoom.Name = "ToolStripMenuItem_Zoom";
-            this.ToolStripMenuItem_Zoom.Size = new System.Drawing.Size(118, 24);
+            this.ToolStripMenuItem_Zoom.Size = new System.Drawing.Size(210, 24);
             this.ToolStripMenuItem_Zoom.Text = "Zoom";
             // 
             // ToolStripMenuItem_ProcessesAndPoints
@@ -103,6 +110,25 @@
             this.ToolStripMenuItem_Reset.Text = "Zoom reset";
             this.ToolStripMenuItem_Reset.Click += new System.EventHandler(this.ToolStripMenuItem_Reset_Click);
             // 
+            // ToolStripSeparator_Edit
+            // 
+            this.ToolStripSeparator_Edit.Name = "ToolStripSeparator_Edit";
+            this.ToolStripSeparator_Edit.Size = new System.Drawing.Size(207, 6);
+            // 
+            // ToolStripMenuItem_Edit
+            // 
+            this.ToolStripMenuItem_Edit.Name = "ToolStripMenuItem_Edit";
+            this.ToolStripMenuItem_Edit.Size = new System.Drawing.Size(210, 24);
+            this.ToolStripMenuItem_Edit.Text = "Edit";
+            this.ToolStripMenuItem_Edit.Click += new System.EventHandler(this.ToolStripMenuItem_Edit_Click);
+            // 
+            // ToolStripMenuItem_Remove
+            // 
+            this.ToolStripMenuItem_Remove.Name = "ToolStripMenuItem_Remove";
+            this.ToolStripMenuItem_Remove.Size = new System.Drawing.Size(210, 24);
+            this.ToolStripMenuItem_Remove.Text = "Remove";
+            this.ToolStripMenuItem_Remove.Click += new System.EventHandler(this.ToolStripMenuItem_Remove_Click);
+            // 
             // MollierControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -124,5 +150,8 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_ProcessesAndPoints;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Selection;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Reset;
+        private System.Windows.Forms.ToolStripSeparator ToolStripSeparator_Edit;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Edit;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_Remove;
     }
 }

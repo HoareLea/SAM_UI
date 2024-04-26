@@ -1,4 +1,6 @@
-﻿namespace SAM.Core.Mollier.UI
+﻿using SAM.Geometry.Mollier;
+
+namespace SAM.Core.Mollier.UI
 {
     public static partial class Query
     {

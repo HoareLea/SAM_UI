@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using SAM.Geometry.Spatial;
 using SAM.Geometry;
+using SAM.Geometry.Mollier;
 
 namespace SAM.Core.Mollier.UI
 {

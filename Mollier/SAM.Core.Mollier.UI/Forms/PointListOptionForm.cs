@@ -1,4 +1,5 @@
 ﻿using SAM.Core.Mollier.UI.Controls;
+using SAM.Geometry.Mollier;
 using System.Collections.Generic;
 using System.Windows.Forms;
 

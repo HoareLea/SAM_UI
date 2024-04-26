@@ -4,6 +4,9 @@ using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using SAM.Core.Mollier.UI.Forms;
+using SAM.Geometry.Mollier;
+using SAM.Geometry.Planar;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
@@ -165,6 +168,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 seriesTemp.Color = Color.Black;
             }
         }
+       
         private void CreateXAxis()
         {
             double humidityRatioMin = mollierControlSettings.HumidityRatio_Min;
@@ -226,6 +230,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
 
         }
+        
         private void setAxisGraph_Mollier()
         {
             if (mollierControlSettings == null || !mollierControlSettings.IsValid())
@@ -296,6 +301,7 @@ namespace SAM.Core.Mollier.UI.Controls
             CreateXAxis();
 
         }
+        
         private void setAxisGraph_Psychrometric()
         {
             //INITIAL SIZES
@@ -592,7 +598,7 @@ namespace SAM.Core.Mollier.UI.Controls
                     if (((UIMollierGroup)mollierGroup).UIMollierAppearance != null)
                     {
                         color = ((UIMollierGroup)mollierGroup).UIMollierAppearance.Color;
-                        name = ((UIMollierGroup)mollierGroup).UIMollierAppearance.Label;
+                        name = (((UIMollierGroup)mollierGroup).UIMollierAppearance as UIMollierAppearance).Label;
                     }
                 }
                 mollierGroup1 = (MollierGroup)mollierGroup;
@@ -625,7 +631,7 @@ namespace SAM.Core.Mollier.UI.Controls
                 if (mollierZone is UIMollierZone)
                 {
                     color = ((UIMollierZone)mollierZone).UIMollierAppearance.Color;
-                    label = ((UIMollierZone)mollierZone).UIMollierAppearance.Label;
+                    label = (((UIMollierZone)mollierZone).UIMollierAppearance as UIMollierAppearance).Label;
                 }
 
                 UIMollierZone uIMollierZone = new UIMollierZone(mollierZone1, new UIMollierAppearance(color, label));
@@ -1166,6 +1172,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             return true;
         }
+        
         public bool Print()
         {
             PrintingManager printingManager = MollierChart?.Printing;
@@ -1193,10 +1200,12 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierControlSettings.Temperature_Max = chartType == ChartType.Mollier ? y_Max : x_Max;
             Regenerate();
         }
+        
         private void ToolStripMenuItem_Selection_Click(object sender, EventArgs e)
         {
             selection = true;
         }
+        
         private void ToolStripMenuItem_Reset_Click(object sender, EventArgs e)
         {
             MollierControlSettings mollierControlSettings_1 = new MollierControlSettings();
@@ -1206,6 +1215,7 @@ namespace SAM.Core.Mollier.UI.Controls
             mollierControlSettings.Temperature_Max = mollierControlSettings_1.Temperature_Max;
             Regenerate();
         }
+        
         private void MollierChart_MouseDown(object sender, MouseEventArgs e)
         {
             if (!selection)
@@ -1214,6 +1224,7 @@ namespace SAM.Core.Mollier.UI.Controls
             }
             mdown = e.Location;
         }
+        
         private void MollierChart_MouseMove(object sender, MouseEventArgs e)
         {
             if (selection)
@@ -1269,6 +1280,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             //}
         }
+        
         private void MollierChart_MouseUp(object sender, MouseEventArgs e)
         {
             if (!selection)
@@ -1325,13 +1337,13 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.Refresh();
             selection = false;
         }
+        
         private void MollierChart_MouseClick(object sender, MouseEventArgs e)
         {
-            MollierPoint mollierPoint = GetMollierPoint(e.X, e.Y);
+            MollierPoint mollierPoint = GetMollierPoint(e.X, e.Y, out Point2D point2D);
 
-            MollierPointSelected?.Invoke(this, new MollierPointSelectedEventArgs(mollierPoint));
+            MollierPointSelected?.Invoke(this, new MollierPointSelectedEventArgs(mollierPoint, point2D));
         }
-
 
         public MollierControlSettings MollierControlSettings
         {
@@ -1424,13 +1436,240 @@ namespace SAM.Core.Mollier.UI.Controls
             }
         }
         
-        public MollierPoint GetMollierPoint(int x, int y)
+        public MollierPoint GetMollierPoint(int x, int y, out Point2D point2D)
         {
             double chart_X = MollierChart.ChartAreas[0].AxisX.PixelPositionToValue(x);
             double chart_Y = MollierChart.ChartAreas[0].AxisY.PixelPositionToValue(y);
-            Geometry.Planar.Point2D point2D = new Geometry.Planar.Point2D(chart_X, chart_Y);
+            point2D = new Point2D(chart_X, chart_Y);
 
             return Convert.ToMollier(point2D, mollierControlSettings.ChartType, mollierControlSettings.Pressure);
+        }
+
+        public Point2D GetPoint2D(MollierPoint mollierPoint)
+        {
+            if(mollierPoint == null)
+            {
+                return null;
+            }
+
+            Point2D point2D = Convert.ToSAM(mollierPoint, mollierControlSettings.ChartType);
+            if(point2D == null)
+            {
+                return null;
+            }
+
+            return new Point2D(MollierChart.ChartAreas[0].AxisX.ValueToPixelPosition(point2D.X), MollierChart.ChartAreas[0].AxisY.ValueToPixelPosition(point2D.Y));
+        }
+
+        public Point2D GetPixelPositionToValue(Point2D point2D)
+        {
+            if(point2D == null)
+            {
+                return null;
+            }
+
+            return new Point2D(MollierChart.ChartAreas[0].AxisX.PixelPositionToValue(point2D.X), MollierChart.ChartAreas[0].AxisY.PixelPositionToValue(point2D.Y));
+        }
+
+        public Point2D GetValueToPixelPosition(Point2D point2D)
+        {
+            if (point2D == null)
+            {
+                return null;
+            }
+
+            return new Point2D(MollierChart.ChartAreas[0].AxisX.ValueToPixelPosition(point2D.X), MollierChart.ChartAreas[0].AxisY.ValueToPixelPosition(point2D.Y));
+        }
+
+        private void CustomizePointForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Form form = sender as Form;
+            if(form == null)
+            {
+                return;
+            }
+
+            if (form.DialogResult != DialogResult.OK)
+            {
+                return;
+            }
+
+            Apply(form);
+        }
+
+        public void Apply(Form form)
+        {
+            IUIMollierObject uIMollierObject = null;
+
+            if (form is UIMollierPointForm)
+            {
+                uIMollierObject = ((UIMollierPointForm)form).UIMollierPoint;
+
+                if (uIMollierObject is UIMollierProcessPoint)
+                {
+                    uIMollierObject = ((UIMollierProcessPoint)uIMollierObject).UIMollierProcess;
+                }
+            }
+            else if (form is UIMollierProcessForm)
+            {
+                uIMollierObject = ((UIMollierProcessForm)form).UIMollierProcess;
+            }
+            else
+            {
+                return;
+            }
+
+
+            if (uIMollierObject == null)
+            {
+                return;
+            }
+
+            mollierModel.Update(uIMollierObject, true);
+
+            Regenerate();
+        }
+
+        private void ContextMenuStrip_Chart_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            IUIMollierObject uIMollierObject = GetUIMollierObject();
+
+
+            ToolStripMenuItem_Edit.Visible = uIMollierObject != null;
+            ToolStripMenuItem_Remove.Visible = uIMollierObject != null;
+            ToolStripSeparator_Edit.Visible = uIMollierObject != null;
+
+            ToolStripMenuItem_Edit.Tag = uIMollierObject;
+            ToolStripMenuItem_Remove.Tag = uIMollierObject;
+        }
+
+        private IUIMollierObject GetUIMollierObject()
+        {
+            Point point = MollierChart.PointToClient(MousePosition);
+
+            List<HitTestResult> hitTestResults = new List<HitTestResult>();
+
+            HitTestResult[] hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPointLabel);
+            if (hitTestResults_Temp != null)
+            {
+                hitTestResults.AddRange(hitTestResults_Temp.ToList().FindAll(x => x.Series != null));
+            }
+
+            if (hitTestResults.Count == 0)
+            {
+                hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
+                if (hitTestResults_Temp != null)
+                {
+                    hitTestResults.AddRange(hitTestResults_Temp.ToList().FindAll(x => x.Series != null));
+                }
+            }
+
+            if (hitTestResults == null || hitTestResults.Count == 0)
+            {
+                return null;
+            }
+
+            foreach (HitTestResult hitTestResult in hitTestResults)
+            {
+                Series series = hitTestResult?.Series;
+                if (series == null)
+                {
+                    continue;
+                }
+
+                IUIMollierObject uIMollierObject = series.Tag as UIMollierProcess;
+                if (uIMollierObject != null)
+                {
+                    return uIMollierObject;
+                }
+
+                if (series.Tag is IReference)
+                {
+                    IReference reference = series.Tag as IReference;
+                    uIMollierObject = Geometry.Mollier.Query.UIMollierObject<UIMollierPoint>(mollierModel, reference);
+                    if (uIMollierObject != null)
+                    {
+                        return uIMollierObject;
+                    }
+                }
+
+                uIMollierObject = series.Tag as UIMollierPoint;
+                if (uIMollierObject != null)
+                {
+                    IReference reference = Create.Reference((UIMollierPoint)uIMollierObject);
+                    if (Geometry.Mollier.Query.UIMollierObject<IUIMollierObject>(mollierModel, reference) == null)
+                    {
+                        uIMollierObject = null;
+                        continue;
+                    }
+
+                    return uIMollierObject;
+                }
+
+                int index = hitTestResult.PointIndex;
+                if (index == -1)
+                {
+                    continue;
+                }
+
+                uIMollierObject = series.Points[index].Tag as UIMollierPoint;
+                if (uIMollierObject != null)
+                {
+                    return uIMollierObject;
+                }
+            }
+
+            return null;
+        }
+
+        private void ToolStripMenuItem_Edit_Click(object sender, EventArgs e)
+        {
+            IUIMollierObject uIMollierObject = ToolStripMenuItem_Remove.Tag as IUIMollierObject;
+            if (uIMollierObject == null)
+            {
+                return;
+            }
+
+            if(uIMollierObject is UIMollierPoint)
+            {
+                UIMollierPointForm customizePointForm = new UIMollierPointForm((UIMollierPoint)uIMollierObject)
+                {
+                    MollierControl = this,
+                };
+
+                customizePointForm.FormClosing += CustomizePointForm_FormClosing;
+                customizePointForm.Show();
+                return;
+            }
+
+            if(uIMollierObject is UIMollierProcess)
+            {
+                UIMollierProcessForm uIMollierProcessForm = new UIMollierProcessForm((UIMollierProcess)uIMollierObject)
+                {
+                    MollierControl = this,
+                };
+
+                uIMollierProcessForm.FormClosing += CustomizePointForm_FormClosing;
+                uIMollierProcessForm.Show();
+                return;
+            }
+        }
+
+        private void ToolStripMenuItem_Remove_Click(object sender, EventArgs e)
+        {
+            IUIMollierObject uIMollierObject = ToolStripMenuItem_Remove.Tag as IUIMollierObject;
+            if(uIMollierObject == null)
+            {
+                return;
+            }
+
+            if (MessageBox.Show("Are you sure to remove item?", "Remove", MessageBoxButtons.YesNo) == DialogResult.No)
+            {
+                return;
+            }
+
+            mollierModel.Remove(uIMollierObject);
+            Regenerate();
         }
     }
 }

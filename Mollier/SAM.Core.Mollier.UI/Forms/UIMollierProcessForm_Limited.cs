@@ -1,36 +1,36 @@
-﻿using System;
+﻿using SAM.Geometry.Mollier;
+using System;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Forms
 {
-    public partial class CustomizePointForm : Form
+    public partial class UIMollierProcessForm_Limited : Form
     {
-        public CustomizePointForm()
+        public UIMollierProcessForm_Limited()
         {
             InitializeComponent();
         }
-        public CustomizePointForm(UIMollierPoint uIMollierPoint)
+        public UIMollierProcessForm_Limited(UIMollierProcess uIMollierProcess)
         {
             InitializeComponent();
-            if(uIMollierPoint == null)
+            if(uIMollierProcess == null)
             {
                 return;
             }
-            customizePointControl.UIMollierPoint = uIMollierPoint;
+            customizeProcessControl.UIMollierProcess = uIMollierProcess;
         }
-
-        public UIMollierPoint UIMollierPoint
-        { 
+        
+        public UIMollierProcess UIMollierProcess
+        {
             get
             {
-                return customizePointControl.UIMollierPoint;
+                return customizeProcessControl.UIMollierProcess;
             }
             set
             {
-                customizePointControl.UIMollierPoint = value;
+                customizeProcessControl.UIMollierProcess = value;
             }
         }
-
         private void OK_Button_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;

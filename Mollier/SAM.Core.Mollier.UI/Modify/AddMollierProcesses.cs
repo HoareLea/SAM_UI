@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System;
 using System.Windows.Forms;
+using SAM.Geometry.Mollier;
 
 namespace SAM.Core.Mollier.UI
 {
@@ -269,10 +270,12 @@ namespace SAM.Core.Mollier.UI
             int index;
             series.ToolTip = Query.ToolTipText(mollierPoint_Start, mollierPoint_End, chartType, Query.FullProcessName(mollierProcess));
             index = series.Points.AddXY(point2D_Start.X, point2D_Start.Y);
-            series.Points[index].Tag = mollierPoint_Start;
+            series.Points[index].Tag = new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.Start); //uIMollierProcess.GetUIMollierPoint_Start();//mollierPoint_Start;
 
             index = series.Points.AddXY(point2D_End.X, point2D_End.Y);
-            series.Points[index].Tag = mollierPoint_End;
+            series.Points[index].Tag = new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.End); //uIMollierProcess.GetUIMollierPoint_End(); //mollierPoint_End;
+
+            AddMollierPoint(chart, chartType, new UIMollierProcessPoint(uIMollierProcess, ProcessReferenceType.Process), mollierControlSettings);
 
             return series;
         }
@@ -361,7 +364,7 @@ namespace SAM.Core.Mollier.UI
                 }
             }
 
-            return new UIMollierPoint(apparatusDewPoint, new UIMollierPointAppearance(Color.Empty, "ADP"));
+            return new UIMollierPoint(apparatusDewPoint, new UIMollierPointAppearance(System.Drawing.Color.Empty, Color.Empty, "ADP"));
         }
 
         //private static Series createProcessPointsSeries(this Chart chart, MollierPoint mollierPoint, UIMollierProcess UI_MollierProcess, ChartType chartType, string toolTipName = null, string pointType = "Default")
@@ -424,7 +427,7 @@ namespace SAM.Core.Mollier.UI
                     // Set default values whether they're not set
                     if(UI_MollierProcess.UIMollierPointAppearance_Start == null)
                     {
-                        UI_MollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(Color.Empty, string.Empty);
+                        UI_MollierProcess.UIMollierPointAppearance_Start = new UIMollierPointAppearance(System.Drawing.Color.Empty, Color.Empty, string.Empty);
                     }
 
                     if(UI_MollierProcess.UIMollierPointAppearance_Start.Label == null)
@@ -435,7 +438,7 @@ namespace SAM.Core.Mollier.UI
 
                     if(UI_MollierProcess.UIMollierPointAppearance_End == null)
                     {
-                        UI_MollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(Color.Empty, string.Empty);
+                        UI_MollierProcess.UIMollierPointAppearance_End = new UIMollierPointAppearance(System.Drawing.Color.Empty, Color.Empty, string.Empty);
                     }
 
                     if (UI_MollierProcess.UIMollierPointAppearance_End.Label == null)
@@ -473,7 +476,7 @@ namespace SAM.Core.Mollier.UI
                         UI_MollierProcess.UIMollierPointAppearance_End.Label = name + "2";
                     }
 
-                    UI_MollierProcess.UIMollierAppearance.Label = UI_MollierProcess.UIMollierAppearance.Label == null ? Query.ProcessName(mollierProcess) : UI_MollierProcess.UIMollierAppearance.Label;
+                    (UI_MollierProcess.UIMollierAppearance as UIMollierAppearance).Label = (UI_MollierProcess.UIMollierAppearance as UIMollierAppearance).Label == null ? Query.ProcessName(mollierProcess) : (UI_MollierProcess.UIMollierAppearance as UIMollierAppearance).Label;
                     
                     name++;
                     if (UI_MollierProcess.UIMollierAppearance.Visible == true)
@@ -486,12 +489,5 @@ namespace SAM.Core.Mollier.UI
             return labeledMollierProcesses;
         //  this.mollierProcesses = mollierProcesses;//used only to remember point name to show it in tooltip
         }
-        private static MollierPoint mollierPointsMid(MollierPoint mollierPoint1, MollierPoint mollierPoint2)
-        {
-            double dryBulbTemperature = (mollierPoint1.DryBulbTemperature + mollierPoint2.DryBulbTemperature) / 2;
-            double humidityRatio = (mollierPoint1.HumidityRatio + mollierPoint2.HumidityRatio) / 2;
-            return new MollierPoint(dryBulbTemperature, humidityRatio, Standard.Pressure);
-        }
-
     }
 }

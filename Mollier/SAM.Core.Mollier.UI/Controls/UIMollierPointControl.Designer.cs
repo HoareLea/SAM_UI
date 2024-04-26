@@ -32,6 +32,13 @@
             this.PointLabel_Label = new System.Windows.Forms.Label();
             this.PointColor_Label = new System.Windows.Forms.Label();
             this.PointColor_Button = new System.Windows.Forms.Button();
+            this.Label_LabelColor = new System.Windows.Forms.Label();
+            this.LabelColor_Button = new System.Windows.Forms.Button();
+            this.Button_PointClear = new System.Windows.Forms.Button();
+            this.Button_LabelClear = new System.Windows.Forms.Button();
+            this.Button_LabelLocationClear = new System.Windows.Forms.Button();
+            this.Label_LabelLocation = new System.Windows.Forms.Label();
+            this.Button_LabelLocation = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // PointLabel_TextBox
@@ -63,23 +70,107 @@
             // 
             // PointColor_Button
             // 
+            this.PointColor_Button.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.PointColor_Button.Location = new System.Drawing.Point(141, 12);
             this.PointColor_Button.Name = "PointColor_Button";
-            this.PointColor_Button.Size = new System.Drawing.Size(88, 23);
+            this.PointColor_Button.Size = new System.Drawing.Size(59, 23);
             this.PointColor_Button.TabIndex = 1;
             this.PointColor_Button.UseVisualStyleBackColor = true;
             this.PointColor_Button.Click += new System.EventHandler(this.PointColor_Button_Click);
+            // 
+            // Label_LabelColor
+            // 
+            this.Label_LabelColor.AutoSize = true;
+            this.Label_LabelColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.Label_LabelColor.Location = new System.Drawing.Point(7, 72);
+            this.Label_LabelColor.Name = "Label_LabelColor";
+            this.Label_LabelColor.Size = new System.Drawing.Size(92, 20);
+            this.Label_LabelColor.TabIndex = 18;
+            this.Label_LabelColor.Text = "Label color";
+            // 
+            // LabelColor_Button
+            // 
+            this.LabelColor_Button.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.LabelColor_Button.Location = new System.Drawing.Point(141, 72);
+            this.LabelColor_Button.Name = "LabelColor_Button";
+            this.LabelColor_Button.Size = new System.Drawing.Size(59, 23);
+            this.LabelColor_Button.TabIndex = 17;
+            this.LabelColor_Button.UseVisualStyleBackColor = true;
+            this.LabelColor_Button.Click += new System.EventHandler(this.LabelColor_Button_Click);
+            // 
+            // Button_PointClear
+            // 
+            this.Button_PointClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_PointClear.Location = new System.Drawing.Point(206, 12);
+            this.Button_PointClear.Name = "Button_PointClear";
+            this.Button_PointClear.Size = new System.Drawing.Size(23, 23);
+            this.Button_PointClear.TabIndex = 19;
+            this.Button_PointClear.Text = "c";
+            this.Button_PointClear.UseVisualStyleBackColor = true;
+            this.Button_PointClear.Click += new System.EventHandler(this.Button_PointClear_Click);
+            // 
+            // Button_LabelClear
+            // 
+            this.Button_LabelClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_LabelClear.Location = new System.Drawing.Point(206, 72);
+            this.Button_LabelClear.Name = "Button_LabelClear";
+            this.Button_LabelClear.Size = new System.Drawing.Size(23, 23);
+            this.Button_LabelClear.TabIndex = 20;
+            this.Button_LabelClear.Text = "c";
+            this.Button_LabelClear.UseVisualStyleBackColor = true;
+            this.Button_LabelClear.Click += new System.EventHandler(this.Button_LabelClear_Click);
+            // 
+            // Button_LabelLocationClear
+            // 
+            this.Button_LabelLocationClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_LabelLocationClear.Location = new System.Drawing.Point(206, 101);
+            this.Button_LabelLocationClear.Name = "Button_LabelLocationClear";
+            this.Button_LabelLocationClear.Size = new System.Drawing.Size(23, 23);
+            this.Button_LabelLocationClear.TabIndex = 23;
+            this.Button_LabelLocationClear.Text = "c";
+            this.Button_LabelLocationClear.UseVisualStyleBackColor = true;
+            this.Button_LabelLocationClear.Click += new System.EventHandler(this.Button_LabelLocationClear_Click);
+            // 
+            // Label_LabelLocation
+            // 
+            this.Label_LabelLocation.AutoSize = true;
+            this.Label_LabelLocation.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.Label_LabelLocation.Location = new System.Drawing.Point(7, 101);
+            this.Label_LabelLocation.Name = "Label_LabelLocation";
+            this.Label_LabelLocation.Size = new System.Drawing.Size(113, 20);
+            this.Label_LabelLocation.TabIndex = 22;
+            this.Label_LabelLocation.Text = "Label location";
+            // 
+            // Button_LabelLocation
+            // 
+            this.Button_LabelLocation.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.Button_LabelLocation.Location = new System.Drawing.Point(141, 101);
+            this.Button_LabelLocation.Name = "Button_LabelLocation";
+            this.Button_LabelLocation.Size = new System.Drawing.Size(59, 23);
+            this.Button_LabelLocation.TabIndex = 21;
+            this.Button_LabelLocation.UseVisualStyleBackColor = true;
+            this.Button_LabelLocation.Click += new System.EventHandler(this.Button_LabelLocation_Click);
             // 
             // UIMollierPointControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.Button_LabelLocationClear);
+            this.Controls.Add(this.Label_LabelLocation);
+            this.Controls.Add(this.Button_LabelLocation);
+            this.Controls.Add(this.Button_LabelClear);
+            this.Controls.Add(this.Button_PointClear);
+            this.Controls.Add(this.Label_LabelColor);
+            this.Controls.Add(this.LabelColor_Button);
             this.Controls.Add(this.PointLabel_TextBox);
             this.Controls.Add(this.PointLabel_Label);
             this.Controls.Add(this.PointColor_Label);
             this.Controls.Add(this.PointColor_Button);
             this.Name = "UIMollierPointControl";
-            this.Size = new System.Drawing.Size(242, 85);
+            this.Size = new System.Drawing.Size(242, 137);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -91,5 +182,12 @@
         private System.Windows.Forms.Label PointLabel_Label;
         private System.Windows.Forms.Label PointColor_Label;
         private System.Windows.Forms.Button PointColor_Button;
+        private System.Windows.Forms.Label Label_LabelColor;
+        private System.Windows.Forms.Button LabelColor_Button;
+        private System.Windows.Forms.Button Button_PointClear;
+        private System.Windows.Forms.Button Button_LabelClear;
+        private System.Windows.Forms.Button Button_LabelLocationClear;
+        private System.Windows.Forms.Label Label_LabelLocation;
+        private System.Windows.Forms.Button Button_LabelLocation;
     }
 }

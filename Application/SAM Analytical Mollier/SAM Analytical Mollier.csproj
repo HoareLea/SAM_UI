@@ -93,9 +93,9 @@
     <Folder Include="Query\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj">
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj">
       <Project>{fd5079bc-621d-44ce-8eae-6e85510fe050}</Project>
-      <Name>SAM.Core.Mollier.UI</Name>
+      <Name>SAM.Analytical.Mollier.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

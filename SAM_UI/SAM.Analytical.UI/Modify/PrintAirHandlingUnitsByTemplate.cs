@@ -7,6 +7,7 @@ using SAM.Analytical.Mollier;
 using SAM.Core.Mollier;
 using SAM.Core.Mollier.UI;
 using SAM.Core.Mollier.UI.Controls;
+using SAM.Geometry.Mollier;
 
 namespace SAM.Analytical.UI
 {

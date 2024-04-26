@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SAM.Geometry.Mollier;
+using System;
 using System.Windows.Forms;
 
 namespace SAM.Core.Mollier.UI.Controls
@@ -21,7 +22,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
         private void PointManageControl_Load(object sender, EventArgs e)
         {
-            string pointLabel = uIMollierPoint.UIMollierAppearance.Label;
+            string pointLabel = (uIMollierPoint.UIMollierAppearance as UIMollierAppearance).Label;
             int maxNameLength = 5;
 
             label_Name.Text = pointLabel == string.Empty || pointLabel == null ? "-" : pointLabel.Substring(0, System.Math.Min(pointLabel.Length, maxNameLength));
