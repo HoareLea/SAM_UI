@@ -41,13 +41,23 @@ namespace SAM.Core.Mollier.UI
             {
                 Action<Rectangle2D, Color, double> visualizeRectangle = new Action<Rectangle2D, Color, double>((Rectangle2D rectangle2D, Color color, double yTOX) => 
                 {
+                    if(rectangle2D == null || double.IsNaN(yTOX))
+                    {
+                        return;
+                    }
+
                     Series series = chart.Series.Add(Guid.NewGuid().ToString());
                     series.IsVisibleInLegend = false;
                     series.ChartType = SeriesChartType.Line;
                     series.BorderWidth = 1;
                     series.Color = color;
 
-                    List<Point2D> cornerPoints = rectangle2D.GetPoints();
+                    List<Point2D> cornerPoints = rectangle2D?.GetPoints();
+                    if(cornerPoints == null)
+                    {
+                        return;
+                    }
+
                     foreach (Point2D point in cornerPoints)
                     {
                         series.Points.AddXY(point.X, point.Y / yTOX);
