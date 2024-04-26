@@ -46,7 +46,7 @@ namespace SAM.Core.Mollier.UI
 
                             MollierPoint mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
                             point = Convert.ToSAM(mollierPoint, chartType);
-                            return point;
+                            return fix(start, end, point);
                         //Point2D point = defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
                         //if (point == null) return point;
                         //point = new Point2D(point.X, Mollier.Query.DiagramTemperature(point.Y, point.X / 1000, mollierControlSettings.Pressure));
@@ -124,7 +124,7 @@ namespace SAM.Core.Mollier.UI
 
                             MollierPoint mollierPoint = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
                             point = Convert.ToSAM(mollierPoint, chartType);
-                            return point;
+                            return fix(start, end, point);
                         //return defaultRelativeHumidityLocations(curve.Value, chartType, chartParameterType);
                         case ChartDataType.Density:
                             return onSegment(start, end, 15);
