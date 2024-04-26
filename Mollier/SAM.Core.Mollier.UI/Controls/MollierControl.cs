@@ -7,7 +7,6 @@ using System.Windows.Forms.DataVisualization.Charting;
 using SAM.Core.Mollier.UI.Forms;
 using SAM.Geometry.Mollier;
 using SAM.Geometry.Planar;
-using iText.StyledXmlParser.Css.Validate.Impl.Datatype;
 
 namespace SAM.Core.Mollier.UI.Controls
 {
@@ -199,7 +198,7 @@ namespace SAM.Core.Mollier.UI.Controls
             axisX2.MajorTickMark.Enabled = false;
             axisX2.LabelStyle.Enabled = true;
             axisX2.LabelStyle.Font = axisY.LabelStyle.Font;
-            axisX2.Title = string.Empty;//" Partial Vapour Pressure pW [kPa]";
+            axisX2.Title = "Partial Vapour Pressure pW [kPa]";
             axisX2.Minimum = partialVapourPressureMin;
             axisX2.Maximum = partialVapourPressureMax;
             axisX2.Interval = partialVapourPressureMax;// To disable default labels 
@@ -234,10 +233,6 @@ namespace SAM.Core.Mollier.UI.Controls
         
         private void setAxisGraph_Mollier()
         {
-            Label_AxisX.Visible = true;
-            Label_AxisX2.Visible = true;
-            Label_AxisY.Visible = true;
-
             if (mollierControlSettings == null || !mollierControlSettings.IsValid())
             {
                 mollierControlSettings = new MollierControlSettings();
@@ -267,18 +262,12 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.Series.Clear();
             ChartArea chartArea = MollierChart.ChartAreas[0];
             ChartArea chartArea_New = MollierChart.ChartAreas["ChartArea1"];
-            chartArea_New.Position = new ElementPosition(0, 0, 100, 100);//define sizes of chart
-
-            float percentageWidth = (float)((80 / (float)Size.Width) * 100.0);
-            float percentageHeight = (float)((60 / (float)Size.Height) * 100.0);
-
-            chartArea_New.InnerPlotPosition = new ElementPosition(percentageWidth, percentageHeight, 100 - (float)(2.3 * percentageWidth), 100 - (float)(2 * percentageHeight));
-
-            ;
+            chartArea_New.Position = new ElementPosition(2, 2, 95, 95);//define sizes of chart
+            chartArea_New.InnerPlotPosition = new ElementPosition(7, 6, 88, 88);
 
             //OX AXIS
             Axis axisX = chartArea.AxisX;
-            axisX.Title = string.Empty;//"Humidity Ratio x [g/kg]";
+            axisX.Title = "Humidity Ratio x [g/kg]";
             axisX.Maximum = humidityRatio_Max * 1000;
             axisX.Minimum = humidityRatio_Min * 1000;
             axisX.Interval = humidityRatio_interval * 1000;
@@ -298,7 +287,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             axisY.MinorGrid.Enabled = false;
             axisY.Enabled = AxisEnabled.True;
-            axisY.Title = string.Empty; //"Dry Bulb Temperature t [°C]";
+            axisY.Title = "Dry Bulb Temperature t [°C]";
             axisY.TextOrientation = TextOrientation.Rotated270;
             axisY.Minimum = temperature_Min;
             axisY.Maximum = temperature_Max;
@@ -316,10 +305,6 @@ namespace SAM.Core.Mollier.UI.Controls
         private void setAxisGraph_Psychrometric()
         {
             //INITIAL SIZES
-
-            Label_AxisX.Visible = false;
-            Label_AxisX2.Visible = false;
-            Label_AxisY.Visible = false;
 
             double pressure = mollierControlSettings.Pressure;
             double humidityRatio_Min = mollierControlSettings.HumidityRatio_Min;
@@ -416,6 +401,7 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.AddColorPoint(mollierModel, mollierControlSettings);
 
             MollierChart.AddLabels(mollierControlSettings);
+
 
             foreach (ChartArea chartArea in MollierChart.ChartAreas)
             {

@@ -34,15 +34,6 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="SAM.Analytical, Version=1.0.8875.23834, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="SAM.Analytical.Mollier, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="SAM.Analytical.SolarCalculator, Version=1.0.8783.30823, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="SAM.Analytical.Tas, Version=1.0.8854.30004, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="SAM.Analytical.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\build\SAM.Analytical.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="SAM.Core, Version=1.0.8236.30908, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
@@ -54,7 +45,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core.Tas, Version=1.0.8860.29858, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="SAM.Core.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
@@ -66,8 +56,6 @@
     <Reference Include="SAM.Geometry.Mollier">
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Geometry.SolarCalculator, Version=1.0.8783.30822, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="SAM.Geometry.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="SAM.Math, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Math.dll</HintPath>
@@ -76,9 +64,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\SAM\build\SAM.Units.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Weather, Version=1.0.8875.23832, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="SAM.Weather.Tas, Version=1.0.8860.29859, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="SAM.Weather.Windows, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -105,9 +90,6 @@
     <Compile Include="Classes\MollierPointEventArgs.cs" />
     <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
     <Compile Include="Classes\ChartLabel.cs" />
-    <Compile Include="Classes\RotationLabel.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Classes\UIMollierProcessPoint.cs" />
     <Compile Include="Classes\VisibilitySetting.cs" />
     <Compile Include="Classes\DisplayAnalyticalObject.cs" />
