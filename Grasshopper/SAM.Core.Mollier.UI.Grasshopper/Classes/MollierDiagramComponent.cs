@@ -47,10 +47,25 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
             mollierForm.Clear();
 
+            mollierForm.Shown += MollierForm_Shown;
+
+            mollierForm.Show();
+        }
+
+        private void MollierForm_Shown(object sender, EventArgs e)
+        {
+            mollierForm.Shown -= MollierForm_Shown;
+
+            IEnumerable<IGH_Param> gH_Params = GetMollierDiagramParameters();
+            if (gH_Params == null || gH_Params.Count() == 0)
+            {
+                return;
+            }
+
             MollierControlSettings mollierControlSettings = mollierForm.MollierControlSettings;
 
             ChartType? chartType = GetChartType();
-            if(chartType != null && chartType.HasValue)
+            if (chartType != null && chartType.HasValue)
             {
 
                 mollierControlSettings.ChartType = chartType.Value;
@@ -70,8 +85,6 @@ namespace SAM.Core.Mollier.UI.Grasshopper
 
                 mollierForm.AddMollierObjects(mollierObjects);
             }
-
-            mollierForm.Show();
         }
 
         private void MollierForm_FormClosing(object sender, FormClosingEventArgs e)

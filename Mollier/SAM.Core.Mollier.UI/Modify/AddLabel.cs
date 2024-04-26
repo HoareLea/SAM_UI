@@ -17,7 +17,7 @@ namespace SAM.Core.Mollier.UI
             Series result = chart.Series.Add(Guid.NewGuid().ToString());
             result.SmartLabelStyle.Enabled = false;
             result.IsVisibleInLegend = false;
-            result.Color = Color.Red;//Color.Transparent;
+            result.Color = Color.Transparent; //Color.Red;
             result.ChartType = SeriesChartType.Point;
             result.Points.AddXY(chartLabel.Position.X, chartLabel.Position.Y);
             result.Label = chartLabel.Text;
