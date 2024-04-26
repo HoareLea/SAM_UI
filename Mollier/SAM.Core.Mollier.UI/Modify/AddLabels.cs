@@ -90,7 +90,7 @@ namespace SAM.Core.Mollier.UI
 
             foreach (ChartLabel chartLabel in chartLabels)
             {
-                result.Add(AddLabel(chart, chartLabel));
+                result.Add(AddLabel(chart, chartLabel, mollierControlSettings));
             }
 
             List<Series> seriesList = AddLabels_Moved(chart, mollierControlSettings);
@@ -177,7 +177,7 @@ namespace SAM.Core.Mollier.UI
 
                 ChartLabel chartLabel = new ChartLabel(point, text, 0, color) { Tag = uIMollierPoint };
 
-                Series series_Temp = AddLabel(chart, chartLabel);
+                Series series_Temp = AddLabel(chart, chartLabel, mollierControlSettings);
                 if (series_Temp != null)
                 {
                     result.Add(series_Temp);

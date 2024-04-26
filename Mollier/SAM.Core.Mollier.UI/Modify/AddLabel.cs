@@ -7,7 +7,7 @@ namespace SAM.Core.Mollier.UI
 {
     public static partial class Modify
     {
-        public static Series AddLabel(this Chart chart, ChartLabel chartLabel)
+        public static Series AddLabel(this Chart chart, ChartLabel chartLabel, MollierControlSettings mollierControlSettings)
         {
             if(chart == null || chartLabel == null)
             {
@@ -17,7 +17,7 @@ namespace SAM.Core.Mollier.UI
             Series result = chart.Series.Add(Guid.NewGuid().ToString());
             result.SmartLabelStyle.Enabled = false;
             result.IsVisibleInLegend = false;
-            result.Color = Color.Transparent; //Color.Red;
+            result.Color = mollierControlSettings != null && mollierControlSettings.VisualizeSolver ? Color.Red : Color.Transparent;
             result.ChartType = SeriesChartType.Point;
             result.Points.AddXY(chartLabel.Position.X, chartLabel.Position.Y);
             result.Label = chartLabel.Text;
