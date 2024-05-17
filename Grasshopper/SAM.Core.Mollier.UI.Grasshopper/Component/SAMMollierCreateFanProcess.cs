@@ -109,15 +109,14 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 return;
             }
 
+            double sfp = 1.2;
             index = Params.IndexOfInputParam("_sfp_");
-            if (index == -1)
+            if(index != -1)
             {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
-                return;
+                dataAccess.GetData(index, ref sfp);
             }
 
-            double sfp = double.NaN;
-            if (!dataAccess.GetData(index, ref sfp) || double.IsNaN(sfp))
+            if (double.IsNaN(sfp))
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Invalid data");
                 return;
