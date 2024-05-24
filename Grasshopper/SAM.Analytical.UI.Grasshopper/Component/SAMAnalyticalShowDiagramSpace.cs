@@ -168,61 +168,11 @@ namespace SAM.Analytical.UI.Grasshopper
 
                             double pressure = Standard.Pressure;
 
-                            //double sensibleLoad = double.NaN;
-                            //if (space.TryGetValue(SpaceParameter.DesignHeatingLoad, out double designHeatingLoad) && !double.IsNaN(designHeatingLoad))
-                            //{
-                            //    sensibleLoad = designHeatingLoad;
-                            //}
-
-                            //double latentLoad = space.CalculatedOccupancyLatentGain();
-
-                            //AirSupplyMethod airSupplyMethod = adjacencyCluster.AirSupplyMethod(space, out VentilationSystemType ventilationSystemType);
-                            //if (airSupplyMethod == AirSupplyMethod.Total)
-                            //{
-                            //    latentLoad += space.CalculatedEquipmentLatentGain();
-                            //}
-
-                            //airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanTemperature, out double winterSupplyFanTemperature);
-                            //airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.WinterSupplyFanRelativeHumidty, out double winterSupplyFanRelativeHumidity);
-
-                            //airHandlingUnitResult.TryGetValue(AirHandlingUnitResultParameter.SupplyAirFlow, out double supplyAirFlow);
-
-
-
-                            //MollierPoint mollierPoint_SupplyFan = Core.Mollier.Create.MollierPoint_ByRelativeHumidity(winterSupplyFanTemperature, winterSupplyFanRelativeHumidity, pressure);
-
-                            //double dryBulbTemperature = double.NaN;
-                            //if(double.IsNaN(sensibleLoad) || sensibleLoad < Core.Tolerance.Distance)
-                            //{
-                            //    dryBulbTemperature = space.HeatingDesignTemperature(analyticalModel);
-                            //}
-                            //else
-                            //{
-                            //    dryBulbTemperature = Core.Mollier.Query.DryBulbTemperature(mollierPoint_SupplyFan, sensibleLoad, supplyAirFlow);
-                            //}
-
-                            //MollierPoint mollierPoint_Room = null;
-                            //if (!double.IsNaN(dryBulbTemperature))
-                            //{
-                            //    double humidityRatio = Core.Mollier.Query.HumidityRatio(mollierPoint_SupplyFan, latentLoad, supplyAirFlow);
-                            //    if(!double.IsNaN(humidityRatio))
-                            //    {
-                            //        mollierPoint_Room = new MollierPoint(dryBulbTemperature, humidityRatio, pressure);
-                            //    }
-                            //}
-
-                            //if (mollierPoint_SupplyFan != null && mollierPoint_Room != null)
-                            //{
-                            //    RoomProcess RoomProcess = Core.Mollier.Create.RoomProcess(mollierPoint_SupplyFan, mollierPoint_Room);
-                            //    if (RoomProcess != null)
-                            //    {
-                            //        mollierProcesses.Add(RoomProcess);
-                            //    }
-                            //}
-
+                            bool regenerate = true;
                             if (mollierForm == null || mollierForm.IsDisposed)
                             {
                                 mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
+                                regenerate = false;
                             }
                             else
                             {
@@ -233,11 +183,9 @@ namespace SAM.Analytical.UI.Grasshopper
                             mollierForm.Name = string.IsNullOrWhiteSpace(space.Name) ? mollierForm.Name : space.Name;
                             mollierForm.MollierControlSettings = Core.Mollier.UI.Query.DefaultMollierControlSettings();
                             mollierForm.Pressure = pressure;
-                            mollierForm.AddMollierObjects(mollierProcesses, false);
-                            //mollierForm.AddProcesses(mollierProcesses, false);
-                            //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-                            //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
-                            mollierForm.Show();
+
+                            mollierForm.AddMollierObjects(mollierProcesses, false, regenerate);
+                            mollierForm.Show(!regenerate);
                         }
                     }
                 }

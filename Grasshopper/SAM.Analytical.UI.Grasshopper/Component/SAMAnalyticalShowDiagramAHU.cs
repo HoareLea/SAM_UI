@@ -174,10 +174,11 @@ namespace SAM.Analytical.UI.Grasshopper
                 mollierGroup = airHandlingUnitResult.GetValue<MollierGroup>(AirHandlingUnitResultParameter.Processes);
             }
 
-
+            bool regenerate = true;
             if (mollierForm == null  || mollierForm.IsDisposed)
             {
                 mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
+                regenerate = false;
             }
             else
             {
@@ -191,11 +192,9 @@ namespace SAM.Analytical.UI.Grasshopper
             mollierForm.Name = string.IsNullOrWhiteSpace(airHandlingUnit.Name) ? mollierForm.Name : airHandlingUnit.Name;
             mollierForm.MollierControlSettings = Core.Mollier.UI.Query.DefaultMollierControlSettings();
             mollierForm.Pressure = pressure;
-            mollierForm.AddMollierObjects(mollierProcesses, false);
-            //mollierForm.AddProcesses(mollierProcesses, false);
-            //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
-            mollierForm.Show();
+
+            mollierForm.AddMollierObjects(mollierProcesses, false, regenerate);
+            mollierForm.Show(!regenerate);
         }
     }
 }

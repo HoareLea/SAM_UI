@@ -457,7 +457,7 @@ namespace SAM.Core.Mollier.UI.Controls
             MollierChart.Series.Invalidate();
         }
         
-        public List<IUIMollierObject> AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true) where T : IMollierObject
+        public List<IUIMollierObject> AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true, bool regenerate = true) where T : IMollierObject
         {
             if (mollierObjects == null || mollierObjects.Count() == 0 || mollierModel == null)
             {
@@ -489,7 +489,10 @@ namespace SAM.Core.Mollier.UI.Controls
                 }
             }
 
-            Regenerate();
+            if(regenerate)
+            {
+                Regenerate();
+            }
             return result;
         }
         

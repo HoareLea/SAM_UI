@@ -106,37 +106,22 @@ namespace SAM.Analytical.UI.Grasshopper
                 dataAccess.GetDataList(index, mollierProcesses);
             }
 
+            bool regenerate = true;
             if (mollierForm == null || mollierForm.IsDisposed)
             {
                 mollierForm = new Core.Mollier.UI.MollierForm() { ReadOnly = true, WindowState = System.Windows.Forms.FormWindowState.Normal };
+                regenerate = false;
             }
             else
             {
                 mollierForm.Clear();
             }
 
-            //CreateDefault Grasshopper visibilitySettings
-
             double pressure = Core.Mollier.UI.Query.DefaultPressure(mollierPoints, mollierProcesses);
             mollierForm.Name = "Mollier Diagram";
             mollierForm.MollierControlSettings = Core.Mollier.UI.Query.DefaultMollierControlSettings();
             mollierForm.LoadMollierControlSettings(mollierForm.MollierControlSettings);
             mollierForm.Pressure = double.IsNaN(pressure) ? Standard.Pressure : pressure;
-            //mollierForm.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-            //mollierForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            //mollierForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-
-            //mollierForm.ClientSize = new System.Drawing.Size(723, 1501);
-
-            //mollierForm.AutoScaleDimensions = new System.Drawing.SizeF(6, 15);
-
-            //mollierForm.Bounds = new System.Drawing.Rectangle(23, 64, 1501, 723);
-
-            //mollierForm.ClientSize = new System.Drawing.Size(723, 1501);
-
-            //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
-            //mollierForm.AddProcesses(mollierProcesses, false);
-            //mollierForm.AddPoints(mollierPoints, false);
 
             List<IMollierObject> mollierObjects = new List<IMollierObject>();
             if(mollierProcesses != null)
@@ -150,9 +135,8 @@ namespace SAM.Analytical.UI.Grasshopper
                 mollierObjects.AddRange(mollierPoints);
             }
 
-            mollierForm.Show();
-
-            mollierForm.AddMollierObjects(mollierObjects);
+            mollierForm.AddMollierObjects(mollierObjects, regenerate: regenerate);
+            mollierForm.Show(!regenerate);
         }
     }
 }

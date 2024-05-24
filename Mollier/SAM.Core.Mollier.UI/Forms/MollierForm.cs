@@ -1,4 +1,5 @@
-﻿using SAM.Geometry.Mollier;
+﻿using NetOffice.Tools;
+using SAM.Geometry.Mollier;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -485,19 +486,46 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-        public bool AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true) where T: IMollierObject
+        public bool AddMollierObjects<T>(IEnumerable<T> mollierObjects, bool checkPressure = true, bool regenerate = true) where T: IMollierObject
         {
             if(mollierObjects == null)
             {
                 return false;
             }
 
-            MollierControl_Main.AddMollierObjects(mollierObjects, checkPressure);
+            if(regenerate)
+            {
+                MollierControl_Main.AddMollierObjects(mollierObjects, checkPressure);
+                if (manageMollierObjectsForm != null)
+                {
+                    manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
+                }
+            }
+
+            return true;
+        }
+
+        public void Show(bool regenerate)
+        {
+            if(regenerate)
+            {
+                Shown -= MollierForm_Shown_Regenerate;
+                Shown += MollierForm_Shown_Regenerate;
+            }
+
+            Show();
+        }
+
+        private void MollierForm_Shown_Regenerate(object sender, EventArgs e)
+        {
+            Shown -= MollierForm_Shown_Regenerate;
+
+            MollierControl_Main.Regenerate();
+
             if (manageMollierObjectsForm != null)
             {
                 manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
             }
-            return true;
         }
 
         //function that sets all values from the control to the Form 
