@@ -134,9 +134,6 @@ namespace SAM.Analytical.UI.Grasshopper
 
             //mollierForm.ClientSize = new System.Drawing.Size(723, 1501);
 
-
-
-
             //mollierProcesses?.ForEach(x => mollierForm.AddProcess(x, false));
             //mollierForm.AddProcesses(mollierProcesses, false);
             //mollierForm.AddPoints(mollierPoints, false);
@@ -149,12 +146,13 @@ namespace SAM.Analytical.UI.Grasshopper
 
             if(mollierPoints != null)
             {
+
                 mollierObjects.AddRange(mollierPoints);
             }
 
-            mollierForm.AddMollierObjects(mollierObjects);
-
             mollierForm.Show();
+
+            mollierForm.AddMollierObjects(mollierObjects);
         }
     }
 }
