@@ -493,13 +493,10 @@ namespace SAM.Core.Mollier.UI
                 return false;
             }
 
-            if(regenerate)
+            MollierControl_Main.AddMollierObjects(mollierObjects, checkPressure, regenerate);
+            if (regenerate && manageMollierObjectsForm != null)
             {
-                MollierControl_Main.AddMollierObjects(mollierObjects, checkPressure);
-                if (manageMollierObjectsForm != null)
-                {
-                    manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
-                }
+                manageMollierObjectsForm.Refresh(MollierControl_Main.MollierModel);
             }
 
             return true;
