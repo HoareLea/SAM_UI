@@ -1,0 +1,18 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.ZoneWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Zone" Height="200" Width="350" ResizeMode="NoResize" ShowInTaskbar="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64*"></RowDefinition>
+            <RowDefinition Height="21*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <local:ZoneControl x:Name="zoneControl" Grid.Row="0" Margin="0,0,0,0"></local:ZoneControl>
+        <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,10,10,10" Width="70" Click="button_Cancel_Click" HorizontalAlignment="Right"></Button>
+        <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="0,10,85,10" Click="button_OK_Click" HorizontalAlignment="Right" Width="70" />
+    </Grid>
+</Window>

@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.SpacesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition />
+            <RowDefinition Height="25"/>
+        </Grid.RowDefinitions>
+        <ComboBox Name="ComboBox_ZoneCategory" Margin="5,5,5,5" SelectionChanged="ComboBox_ZoneCategory_SelectionChanged"></ComboBox>
+        <TreeView Name="TreeView_Main"  Grid.Row="1" Margin="5,0,5,5">
+            <TreeViewItem >
+                <TreeViewItem.Header>
+                    <CheckBox Content="A"/>
+                </TreeViewItem.Header>
+                <TreeViewItem>
+                    <TreeViewItem.Header>
+                        <CheckBox Content="Space 1"/>
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+                <TreeViewItem>
+                    <TreeViewItem.Header>
+                        <CheckBox Content="Space 2"/>
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+            </TreeViewItem>
+            <TreeViewItem >
+                <TreeViewItem.Header>
+                    <CheckBox Content="B"/>
+                </TreeViewItem.Header>
+                <TreeViewItem>
+                    <TreeViewItem.Header>
+                        <CheckBox Content="Space 3"/>
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+                <TreeViewItem>
+                    <TreeViewItem.Header>
+                        <CheckBox Content="Space 4"/>
+                    </TreeViewItem.Header>
+                </TreeViewItem>
+            </TreeViewItem>
+        </TreeView>
+        <Button x:Name="Button_None" Content="None" Grid.Row="2" Margin="0,0,5,5" Width="75" HorizontalAlignment="Right" Click="Button_None_Click"></Button>
+        <Button x:Name="Button_All" Content="All" Grid.Row="2" Margin="0,0,85,5" HorizontalAlignment="Right" Width="75" Click="Button_All_Click" />
+    </Grid>
+</UserControl>

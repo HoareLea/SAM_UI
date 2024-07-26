@@ -1,0 +1,20 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.ConstructionCalculationResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Construction Calculation Result" Height="450" Width="420">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <DockPanel x:Name="DockPanel_Main">
+            <local:LayerThicknessCalculationResultControl Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></local:LayerThicknessCalculationResultControl>
+        </DockPanel>
+        <Button x:Name="Button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,5,10,5" Width="70" HorizontalAlignment="Right" Click="Button_Cancel_Click"></Button>
+        <Button x:Name="Button_OK" Content="OK" Grid.Row="1" Margin="0,5,85,5" HorizontalAlignment="Right" Width="70" Click="Button_OK_Click"/>
+    </Grid>
+</Window>

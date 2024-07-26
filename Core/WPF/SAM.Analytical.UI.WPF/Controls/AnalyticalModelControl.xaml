@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.AnalyticalModelControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="300" Loaded="UserControl_Loaded">
+    <Grid>
+        <TabControl VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="0,0,0,0" TabStripPlacement="Bottom">
+            <TabItem Header="Model">
+                <Grid Background="#FFE5E5E5">
+                    <TreeView Margin="0,0,0,0" Name="treeView_Model" ContextMenuOpening="treeView_Model_ContextMenuOpening" PreviewMouseDoubleClick="treeView_Model_PreviewMouseDoubleClick">
+                        <TreeView.ContextMenu>
+                            <ContextMenu Name ="contextMenu_Model"></ContextMenu>
+                        </TreeView.ContextMenu>
+                    </TreeView>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Views">
+                <Grid Background="#FFE5E5E5">
+                    <TreeView Margin="0,0,0,0" Name="treeView_Views" ContextMenuOpening="treeView_Views_ContextMenuOpening" AllowDrop="True">
+                        <TreeView.ContextMenu>
+                            <ContextMenu Name ="contextMenu_Views"></ContextMenu>
+                        </TreeView.ContextMenu>
+                    </TreeView>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

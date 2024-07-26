@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SAM.Weather.UI</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <OutputPath>..\..\build\</OutputPath>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>SAM.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SAM.Core">
+      <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather">
+      <HintPath>..\..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather.Windows">
+      <HintPath>..\..\..\..\SAM_Windows\Core\build\SAM.Weather.Windows.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SAM.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>set SAM_DIR=$(APPDATA)\SAM\
+if not exist "%25SAM_DIR%25" mkdir "%25SAM_DIR%25"
+
+xcopy "$(SolutionDir)\files\resources" "$(APPDATA)\SAM\resources" /Y/I/E/S
+xcopy "$(SolutionDir)\files\resources" "$(USERPROFILE)\Documents\SAM\resources" /Y/D/I/E/S
+
+copy "$(TargetDir)*.dll" "%25SAM_DIR%25"
+copy "$(TargetDir)*.exe" "%25SAM_DIR%25"
+copy "$(TargetDir)*.config" "%25SAM_DIR%25"</PostBuildEvent>
+  </PropertyGroup>
+</Project>

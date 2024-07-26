@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.AddMechanicalSystemsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="200">
+    <Grid>
+        <TextBox x:Name="TextBox_SupplyUnitName" Margin="5,101,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Supply Unit Name:" HorizontalAlignment="Left" Margin="5,70,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_ExhaustUnitName" Margin="5,157,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Exhaust Unit Name:" HorizontalAlignment="Left" Margin="5,126,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_VentilationRiserName" Margin="5,213,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Ventilation Riser Name:" HorizontalAlignment="Left" Margin="5,182,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_HeatingRiserName" Margin="5,267,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Heating Riser Name:" HorizontalAlignment="Left" Margin="5,236,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TextBox_CoolingRiserName" Margin="5,321,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="180"/>
+        <Label Content="Cooling Riser Name:" HorizontalAlignment="Left" Margin="5,290,0,0" VerticalAlignment="Top"/>
+        <TextBlock Margin="10,10,10,0" TextWrapping="Wrap" Text="The default mechanical system stored in the internal condition will be assigned to the selected space(s) or all spaces if none are selected." VerticalAlignment="Top" Height="65" HorizontalAlignment="Stretch"/>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,28 @@
+<mxfile host="app.diagrams.net" modified="2022-12-06T13:55:50.839Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36" version="20.6.0" etag="EHDbOoQMRQ6TUUCYVGj-" type="github">
+  <diagram id="cIdPpq73vcILfjHi9dJJ" name="Page-1">
+    <mxGraphModel dx="2574" dy="1443" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="O7jeQrv3PDx7XJx9KCzM-2" value="Space Appearance Settings" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.containers.window;align=left;verticalAlign=top;spacingLeft=8;strokeColor2=#008cff;strokeColor3=#c4c4c4;fontColor=#666666;mainText=;fontSize=17;labelBackgroundColor=none;" vertex="1" parent="1">
+          <mxGeometry x="30" y="30" width="496" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="O7jeQrv3PDx7XJx9KCzM-13" value="Space" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.forms.rrect;rSize=0;fillColor=#eeeeee;strokeColor=#999999;gradientColor=#cccccc;align=left;spacingLeft=4;fontSize=17;fontColor=#666666;labelPosition=right;" vertex="1" parent="1">
+          <mxGeometry x="50" y="90" width="15" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="O7jeQrv3PDx7XJx9KCzM-14" value="Zone" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.forms.rrect;rSize=0;fillColor=#eeeeee;strokeColor=#999999;gradientColor=#cccccc;align=left;spacingLeft=4;fontSize=17;fontColor=#666666;labelPosition=right;" vertex="1" parent="1">
+          <mxGeometry x="50" y="131.5" width="15" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="O7jeQrv3PDx7XJx9KCzM-17" value="Internal Condition" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.forms.rrect;rSize=0;fillColor=#eeeeee;strokeColor=#999999;gradientColor=#cccccc;align=left;spacingLeft=4;fontSize=17;fontColor=#666666;labelPosition=right;" vertex="1" parent="1">
+          <mxGeometry x="50" y="170" width="15" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="O7jeQrv3PDx7XJx9KCzM-20" value="Parameter Name:" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="370" y="81.5" width="110" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="O7jeQrv3PDx7XJx9KCzM-21" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="111.5" width="130" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

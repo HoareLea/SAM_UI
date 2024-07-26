@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.SpaceZoneControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="450" Loaded="UserControl_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="250"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Label x:Name="label_Spaces" Grid.Row="0" Grid.Column="0" Content="Spaces:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Width="50"/>
+        <ListView x:Name="listView_Spaces"  Grid.Row="0" Grid.Column="0" HorizontalAlignment="Stretch" Margin="10,36,9.8,10.6" VerticalAlignment="Stretch" SelectionChanged="listView_Spaces_SelectionChanged"/>
+        <local:ZonesControl x:Name="zonesControl" Grid.Column="1" Grid.Row="0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="2,0,2.6,0"></local:ZonesControl>
+    </Grid>
+</UserControl>

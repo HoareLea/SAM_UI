@@ -1,0 +1,35 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             xmlns:WPF="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF" x:Class="SAM.Analytical.UI.WPF.ApertureControl"
+             mc:Ignorable="d" 
+             d:DesignHeight="270" d:DesignWidth="300">
+    <Grid>
+        <Label Content="Construction:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_ConstructionName" HorizontalAlignment="Left" Height="23" Margin="95,10,0,0" VerticalAlignment="Top" Width="195"/>
+        <Label Content="Area:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
+        <WPF:MultipleValueTextBoxControl x:Name="multipleValueTextBoxControl_Area" HorizontalAlignment="Left" Height="23" Margin="95,41,0,0" VerticalAlignment="Top" Width="99"/>
+        <Label Content="Color:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="button_Color" Content="" HorizontalAlignment="Left" Margin="95,72,0,0" VerticalAlignment="Top" Width="195" Click="button_Color_Click"/>
+        <GroupBox HorizontalAlignment="Left" Height="157" Margin="10,103,0,0" VerticalAlignment="Top" Width="280">
+            <GroupBox.Header>
+                <CheckBox x:Name="checkBox_OpeningProperties" Content="Opening Properties" Click="checkBox_OpeningProperties_Click"/>
+            </GroupBox.Header>
+            <Grid Margin="2,2,2,2">
+                <Label Content="Discharge Coefficient:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_DischargeCoefficient" HorizontalAlignment="Left" Height="23" Margin="140,10,0,0" VerticalAlignment="Top" Width="114"/>
+                <Label Content="Function:" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_Function" HorizontalAlignment="Left" Height="23" Margin="89,38,0,0" VerticalAlignment="Top" Width="165"/>
+                <Label Content="Description:" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
+                <WPF:MultipleValueComboBoxControl x:Name="multipleValueComboBoxControl_Description" HorizontalAlignment="Left" Height="23" Margin="89,100,0,0" VerticalAlignment="Top" Width="165"/>
+                <Label x:Name="label_FunctionExample" Content="zdwno,0,19.00,21.00,99.00" HorizontalAlignment="Left" Margin="89,69,0,0" VerticalAlignment="Top" Cursor="Hand" PreviewMouseDoubleClick="label_FunctionExample_PreviewMouseDoubleClick"/>
+            </Grid>
+        </GroupBox>
+
+
+
+    </Grid>
+</UserControl>

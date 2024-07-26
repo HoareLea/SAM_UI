@@ -1,0 +1,38 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.AnalyticalTwoDimensionalViewSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="450">
+    <Grid>
+        <GroupBox Header="Visiblity" Margin="10,232,0,10" HorizontalAlignment="Left" Width="109">
+            <StackPanel>
+                <CheckBox x:Name="checkBox_Visibilty_Space" Content="Space" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Visibilty_Space_Click"/>
+                <CheckBox x:Name="checkBox_Visibilty_Panel" Content="Panel" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <CheckBox x:Name="checkBox_Visibilty_Aperture" Content="Aperture" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+            </StackPanel>
+        </GroupBox>
+        <GroupBox x:Name="groupBox_ColorScheme"  Header="Color Scheme" Margin="124,232,5,10">
+            <local:SpaceAppearanceSettingsControl x:Name="spaceAppearanceSettingsControl" Margin="5,5,5,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        </GroupBox>
+        <Label x:Name="label_Name" Content="View Name:" HorizontalAlignment="Left" Margin="10,18,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="20" Margin="89,22,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="209"/>
+        <GroupBox Header="Elevation" HorizontalAlignment="Left" Height="122" Margin="10,79,0,0" VerticalAlignment="Top" Width="317">
+            <local:ElevationControl x:Name="elevationControl" HorizontalAlignment="Stretch" Margin="0,1,-0.2,-0.8" VerticalAlignment="Stretch"/>
+        </GroupBox>
+        <CheckBox x:Name="checkBox_UseDefaultName" Content="Default Name" HorizontalAlignment="Left" Margin="331,24,0,0" VerticalAlignment="Top" Checked="checkBox_UseDefaultName_Checked" Unchecked="checkBox_UseDefaultName_Checked"/>
+        <Label x:Name="label_Group" Content="Group:" HorizontalAlignment="Left" Margin="10,45,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox_Group" HorizontalAlignment="Left" Margin="89,49,0,0" VerticalAlignment="Top" Width="209" Height="21" IsEditable="True"/>
+        <GroupBox HorizontalAlignment="Left" Height="122" Margin="332,79,0,0" VerticalAlignment="Top" Width="108">
+            <GroupBox.Header>
+                <CheckBox x:Name="checkBox_TextVisibility" Content="Text"/>
+            </GroupBox.Header>
+            <Grid>
+                <Label Content="Font Size:" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="10,19,0,0"/>
+                <TextBox x:Name="textBox_TextSize" HorizontalAlignment="Left" Height="20" Margin="10,50,0,0" TextWrapping="NoWrap" Text="1" VerticalAlignment="Top" Width="76" TextInput="textBox_TextSize_TextInput"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>
