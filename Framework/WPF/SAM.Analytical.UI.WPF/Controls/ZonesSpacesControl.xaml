@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.ZonesSpacesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" Width="245" Height="350" Loaded="UserControl_Loaded">
+    <Grid>
+        <Label x:Name="label_ZoneType" Content="Zone Type:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox_ZoneCategory" HorizontalAlignment="Stretch" Margin="87,13,10,0" VerticalAlignment="Top" SelectionChanged="comboBox_ZoneCategory_SelectionChanged"/>
+        <TreeView x:Name="treeView_Zones" HorizontalAlignment="Stretch" Margin="10,44,9.8,34.4" VerticalAlignment="Stretch">
+            <TreeViewItem Header="Zone 1"></TreeViewItem>
+        </TreeView>
+        <Button x:Name="button_Add" Content="Add" HorizontalAlignment="Left" Margin="11,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Add_Click"/>
+        <Button x:Name="button_Remove" Content="Remove" HorizontalAlignment="Left" Margin="164,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Remove_Click"/>
+        <Button x:Name="button_Edit" Content="Edit" HorizontalAlignment="Left" Margin="87,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Edit_Click"/>
+    </Grid>
+</UserControl>

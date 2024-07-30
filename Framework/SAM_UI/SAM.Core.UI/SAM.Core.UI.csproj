@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AD13B1AF-2B0B-4D82-80FA-01729D6BC73E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SAM.Core.UI</RootNamespace>
+    <AssemblyName>SAM.Core.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\build\SAM.Core.UI.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="SAM.Core">
+      <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\EventArgs\ClosedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\OpenedEventArgs.cs" />
+    <Compile Include="Classes\Filter\UIRelationFilter.cs" />
+    <Compile Include="Classes\Filter\UINumberFilter.cs" />
+    <Compile Include="Classes\Filter\UIParameterFilter.cs" />
+    <Compile Include="Classes\Filter\UILogicalFilter.cs" />
+    <Compile Include="Classes\Filter\UIEnumFilter.cs" />
+    <Compile Include="Classes\Filter\UIComplexReferenceFilter.cs" />
+    <Compile Include="Classes\Filter\UITypeFilter.cs" />
+    <Compile Include="Classes\Filter\UITextFilter.cs" />
+    <Compile Include="Classes\Legend.cs" />
+    <Compile Include="Classes\HooverTimer.cs" />
+    <Compile Include="Classes\LegendItemData.cs" />
+    <Compile Include="Classes\LegendItem.cs" />
+    <Compile Include="Classes\Modification\FullModification.cs" />
+    <Compile Include="Classes\Modification\Modification.cs" />
+    <Compile Include="Classes\EventArgs\ModifiedEventArgs.cs" />
+    <Compile Include="Classes\Filter\UIFilter.cs" />
+    <Compile Include="Classes\UIJSAMObject.cs" />
+    <Compile Include="Convert\ToDrawing\Color.cs" />
+    <Compile Include="Convert\ToMedia\Color.cs" />
+    <Compile Include="Create\LogicalFilter.cs" />
+    <Compile Include="Delegates\ClosedEventHandler.cs" />
+    <Compile Include="Delegates\OpenedEventHandler.cs" />
+    <Compile Include="Delegates\ModifiedEventHandler.cs" />
+    <Compile Include="Forms\WelcomeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\WelcomeForm.designer.cs">
+      <DependentUpon>WelcomeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\IModification.cs" />
+    <Compile Include="Interfaces\IAppearanceSettings.cs" />
+    <Compile Include="Interfaces\IUIFilter.cs" />
+    <Compile Include="Interfaces\IUISettings.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Query\DefaultComplexReferenceFilter.cs" />
+    <Compile Include="Query\FilterDictionary.cs" />
+    <Compile Include="Query\IUIFilters.cs" />
+    <Compile Include="Query\Transform.cs" />
+    <Compile Include="Query\Reduce.cs" />
+    <Compile Include="Query\Vary.cs" />
+    <Compile Include="Query\Brightness.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\WelcomeForm.resx">
+      <DependentUpon>WelcomeForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Enums\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

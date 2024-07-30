@@ -1,0 +1,25 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.SimulateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Convert to Tas TBD" Height="700" Width="350" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="253*"/>
+            <ColumnDefinition Width="91*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="0" Grid.Column="0" Height="auto" Width="auto" Grid.ColumnSpan="2" Margin="0,0,0,29.8" Grid.RowSpan="2" >
+            <local:SimulateControl x:Name="simulateControl" Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="341" FontFamily="Roboto Light"></local:SimulateControl>
+        </StackPanel>
+        <Button x:Name="button_OK" Grid.Row="1" Width="60" Height="20" Margin="0,0,80,3.8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="button_OK_Click" Grid.ColumnSpan="2">OK</Button>
+        <Button x:Name="button_Cancel" IsCancel="True" Grid.Row="1" Grid.Column="1" Width="60" Height="20" Margin="0,0,10,3.8" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="button_Cancel_Click">Cancel</Button>
+        <Label Content="* simulation using Tas EDSL" HorizontalAlignment="Left" Margin="10,0.2,0,0" Grid.Row="1" VerticalAlignment="Top" Width="189" FontFamily="Roboto Light" FontStyle="Italic" FontSize="11"/>
+    </Grid>
+</Window>

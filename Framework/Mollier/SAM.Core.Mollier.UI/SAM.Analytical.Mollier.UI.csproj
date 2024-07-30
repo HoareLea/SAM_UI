@@ -1,0 +1,450 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FD5079BC-621D-44CE-8EAE-6E85510FE050}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SAM.Core.Mollier.UI</RootNamespace>
+    <AssemblyName>SAM.Core.Mollier.UI</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\build\SAM.Core.Mollier.UI.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SAM.Core, Version=1.0.8236.30908, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Excel">
+      <HintPath>..\..\..\..\SAM_Excel\build\SAM.Core.Excel.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Mollier, Version=1.0.8236.24532, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry.Mollier">
+      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Math, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM\build\SAM.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Units, Version=1.0.8278.16260, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM\build\SAM.Units.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\BuiltInVisibilitySetting.cs" />
+    <Compile Include="Classes\EventArgs\MollierObjectSelectedArgs.cs" />
+    <Compile Include="Classes\EventArgs\MollierModelEditedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\SelectMollierPointEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\MollierPointSelectedEventArgs.cs" />
+    <Compile Include="Classes\MollierControlSettings.cs" />
+    <Compile Include="Classes\MollierPointEventArgs.cs" />
+    <Compile Include="Classes\PointGradientVisibilitySetting.cs" />
+    <Compile Include="Classes\ChartLabel.cs" />
+    <Compile Include="Classes\UIMollierProcessPoint.cs" />
+    <Compile Include="Classes\VisibilitySetting.cs" />
+    <Compile Include="Classes\DisplayAnalyticalObject.cs" />
+    <Compile Include="Controls\AdiabaticHumidificationProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AdiabaticHumidificationProcessControl.Designer.cs">
+      <DependentUpon>AdiabaticHumidificationProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BuiltInVisibilitySettingControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\BuiltInVisibilitySettingControl.Designer.cs">
+      <DependentUpon>BuiltInVisibilitySettingControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CoolingProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CoolingProcessControl.Designer.cs">
+      <DependentUpon>CoolingProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UIMollierPointControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UIMollierPointControl.Designer.cs">
+      <DependentUpon>UIMollierPointControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UIMollierProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UIMollierProcessControl.Designer.cs">
+      <DependentUpon>UIMollierProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UIMollierProcessControl_Limited.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UIMollierProcessControl_Limited.Designer.cs">
+      <DependentUpon>UIMollierProcessControl_Limited.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HeatingProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\HeatingProcessControl.Designer.cs">
+      <DependentUpon>HeatingProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PointManageControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\PointManageControl.Designer.cs">
+      <DependentUpon>PointManageControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\RoomProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\RoomProcessControl.Designer.cs">
+      <DependentUpon>RoomProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HeatRecoveryProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\HeatRecoveryProcessControl.Designer.cs">
+      <DependentUpon>HeatRecoveryProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\IsotermicHumidificationProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\IsotermicHumidificationProcessControl.Designer.cs">
+      <DependentUpon>IsotermicHumidificationProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ListPointsOptionControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ListPointsOptionControl.Designer.cs">
+      <DependentUpon>ListPointsOptionControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MixingProcessControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MixingProcessControl.Designer.cs">
+      <DependentUpon>MixingProcessControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MollierControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MollierControl.Designer.cs">
+      <DependentUpon>MollierControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MollierPointControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MollierPointControl.Designer.cs">
+      <DependentUpon>MollierPointControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MollierProcessTypeControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\MollierProcessTypeControl.Designer.cs">
+      <DependentUpon>MollierProcessTypeControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ParameterControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ParameterControl.Designer.cs">
+      <DependentUpon>ParameterControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UIMollierAppearanceControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UIMollierAppearanceControl.Designer.cs">
+      <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UIMollierProcessPointControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\UIMollierProcessPointControl.Designer.cs">
+      <DependentUpon>UIMollierProcessPointControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Convert\ToChart\DataPoint.cs" />
+    <Compile Include="Convert\ToMollier\MollierPoint.cs" />
+    <Compile Include="Convert\ToSAM\Point2D.cs" />
+    <Compile Include="Convert\ToChart\Series.cs" />
+    <Compile Include="Convert\ToSAM_UI\UIMollierGroup.cs" />
+    <Compile Include="Convert\ToSAM_UI\IMollierObject.cs" />
+    <Compile Include="Create\ChartLabels.cs" />
+    <Compile Include="Create\Reference.cs" />
+    <Compile Include="Create\Solver2DData.cs" />
+    <Compile Include="Create\UIMollierPointAppearance.cs" />
+    <Compile Include="Create\Solver2DDatas.cs" />
+    <Compile Include="Create\Controls.cs" />
+    <Compile Include="Delegates\MollierPointSelectingEventHandler.cs" />
+    <Compile Include="Delegates\MollierObjectSelectedEventHandler.cs" />
+    <Compile Include="Delegates\MollierModelEditedEventHandler.cs" />
+    <Compile Include="Delegates\MollierPointSelectedEventHandler.cs" />
+    <Compile Include="Delegates\SelectMollierPointEventHandler.cs" />
+    <Compile Include="Enums\DisplayPointType.cs" />
+    <Compile Include="Enums\ProcessParameterType.cs" />
+    <Compile Include="Enums\ProcessCalculationType.cs" />
+    <Compile Include="Enums\ChartExportType.cs" />
+    <Compile Include="Forms\UIMollierPointForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UIMollierPointForm.Designer.cs">
+      <DependentUpon>UIMollierPointForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UIMollierProcessForm_Limited.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UIMollierProcessForm_Limited.Designer.cs">
+      <DependentUpon>UIMollierProcessForm_Limited.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MollierControlSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MollierControlSettingsForm.Designer.cs">
+      <DependentUpon>MollierControlSettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MollierForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MollierForm.Designer.cs">
+      <DependentUpon>MollierForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\UIMollierObjectsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UIMollierObjectsForm.Designer.cs">
+      <DependentUpon>UIMollierObjectsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MollierPointForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MollierPointForm.Designer.cs">
+      <DependentUpon>MollierPointForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\MollierProcessForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MollierProcessForm.Designer.cs">
+      <DependentUpon>MollierProcessForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\OpenJSONForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\OpenJSONForm.Designer.cs">
+      <DependentUpon>OpenJSONForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PointListOptionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PointListOptionForm.Designer.cs">
+      <DependentUpon>PointListOptionForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\IMollierProcessControl.cs" />
+    <Compile Include="Modify\AddColorPoint.cs" />
+    <Compile Include="Modify\AddLabel.cs" />
+    <Compile Include="Modify\AddMollierPoint.cs" />
+    <Compile Include="Modify\AddMollierLines.cs" />
+    <Compile Include="Modify\Update.cs" />
+    <Compile Include="Modify\AddLinesSeries.cs" />
+    <Compile Include="Modify\AddMollierProcesses.cs" />
+    <Compile Include="Modify\AddDivisionArea.cs" />
+    <Compile Include="Modify\AddMollierZones.cs" />
+    <Compile Include="Modify\AddMollierPoints.cs" />
+    <Compile Include="Modify\AddLabels.cs" />
+    <Compile Include="Modify\SetParameterValue.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Query\TryGetColor.cs" />
+    <Compile Include="Query\CornerPoints.cs" />
+    <Compile Include="Query\GroupName.cs" />
+    <Compile Include="Query\SortGroup.cs" />
+    <Compile Include="Query\SortByGroup.cs" />
+    <Compile Include="Query\DivisionMollierZones.cs" />
+    <Compile Include="Query\Obstacles.cs" />
+    <Compile Include="Query\AxesRatio.cs" />
+    <Compile Include="Query\DefaultPoint2D.cs" />
+    <Compile Include="Query\MollierRange.cs" />
+    <Compile Include="Query\FindPoints.cs" />
+    <Compile Include="Query\Rectangle.cs" />
+    <Compile Include="Query\ConstantValueCurves.cs" />
+    <Compile Include="Query\Contains.cs" />
+    <Compile Include="Query\ToolTipText.cs" />
+    <Compile Include="Query\Value.cs" />
+    <Compile Include="Query\DefaultMollierControlSettings.cs" />
+    <Compile Include="Query\ParameterValue.cs" />
+    <Compile Include="Query\ProcessParameterTypes.cs" />
+    <Compile Include="Query\DewPoint.cs" />
+    <Compile Include="Query\MollierPointByTwoParameters.cs" />
+    <Compile Include="Query\ShapeSizeFactor.cs" />
+    <Compile Include="Query\FullProcessName.cs" />
+    <Compile Include="Query\ScaleVector2D.cs" />
+    <Compile Include="Query\DefaultMollierZones.cs" />
+    <Compile Include="Query\DefaultPointGradientVisibilitySetting.cs" />
+    <Compile Include="Query\ColorDictionary.cs" />
+    <Compile Include="Query\DefaultPressure.cs" />
+    <Compile Include="Query\DefaultVisibilitySettings.cs" />
+    <Compile Include="Query\ProcessName.cs" />
+    <Compile Include="Query\DefaultUnitType.cs" />
+    <Compile Include="Query\UnitCategory.cs" />
+    <Compile Include="Query\ZoomParameters.cs" />
+    <Compile Include="Temporary\ExportPDF.cs" />
+    <Compile Include="Forms\UIMollierProcessForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\UIMollierProcessForm.Designer.cs">
+      <DependentUpon>UIMollierProcessForm.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\AdiabaticHumidificationProcessControl.resx">
+      <DependentUpon>AdiabaticHumidificationProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\BuiltInVisibilitySettingControl.resx">
+      <DependentUpon>BuiltInVisibilitySettingControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CoolingProcessControl.resx">
+      <DependentUpon>CoolingProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UIMollierPointControl.resx">
+      <DependentUpon>UIMollierPointControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UIMollierProcessControl.resx">
+      <DependentUpon>UIMollierProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UIMollierProcessControl_Limited.resx">
+      <DependentUpon>UIMollierProcessControl_Limited.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\HeatingProcessControl.resx">
+      <DependentUpon>HeatingProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\PointManageControl.resx">
+      <DependentUpon>PointManageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\RoomProcessControl.resx">
+      <DependentUpon>RoomProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\HeatRecoveryProcessControl.resx">
+      <DependentUpon>HeatRecoveryProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\IsotermicHumidificationProcessControl.resx">
+      <DependentUpon>IsotermicHumidificationProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ListPointsOptionControl.resx">
+      <DependentUpon>ListPointsOptionControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MixingProcessControl.resx">
+      <DependentUpon>MixingProcessControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MollierControl.resx">
+      <DependentUpon>MollierControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MollierPointControl.resx">
+      <DependentUpon>MollierPointControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\MollierProcessTypeControl.resx">
+      <DependentUpon>MollierProcessTypeControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ParameterControl.resx">
+      <DependentUpon>ParameterControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UIMollierAppearanceControl.resx">
+      <DependentUpon>UIMollierAppearanceControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UIMollierProcessPointControl.resx">
+      <DependentUpon>UIMollierProcessPointControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UIMollierPointForm.resx">
+      <DependentUpon>UIMollierPointForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UIMollierProcessForm_Limited.resx">
+      <DependentUpon>UIMollierProcessForm_Limited.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MollierControlSettingsForm.resx">
+      <DependentUpon>MollierControlSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MollierForm.resx">
+      <DependentUpon>MollierForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UIMollierObjectsForm.resx">
+      <DependentUpon>UIMollierObjectsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MollierPointForm.resx">
+      <DependentUpon>MollierPointForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MollierProcessForm.resx">
+      <DependentUpon>MollierProcessForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\OpenJSONForm.resx">
+      <DependentUpon>OpenJSONForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PointListOptionForm.resx">
+      <DependentUpon>PointListOptionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UIMollierProcessForm.resx">
+      <DependentUpon>UIMollierProcessForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="itext7">
+      <Version>7.2.4</Version>
+    </PackageReference>
+    <PackageReference Include="iTextSharp">
+      <Version>5.5.13.3</Version>
+    </PackageReference>
+    <PackageReference Include="NetOfficeFw.Excel">
+      <Version>1.9.6</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

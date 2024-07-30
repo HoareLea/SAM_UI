@@ -1,0 +1,537 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.Windows.AnalyticalWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:s="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        xmlns:geometry="clr-namespace:SAM.Geometry.UI.WPF;assembly=SAM.Geometry.UI.WPF"
+        mc:Ignorable="d"
+        WindowState="Maximized"
+        WindowStyle="SingleBorderWindow" d:DesignWidth="800" d:DesignHeight="600" KeyDown="Window_KeyDown" Closing="Window_Closing">
+    <Window.Resources>
+        <Style TargetType="RibbonButton">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RibbonButton">
+                        <Border BorderThickness="{TemplateBinding Border.BorderThickness}" CornerRadius="{TemplateBinding RibbonControlService.CornerRadius}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}" Name="OuterBorder" SnapsToDevicePixels="True">
+                            <Border BorderThickness="{TemplateBinding Border.BorderThickness}" Padding="{TemplateBinding Control.Padding}" CornerRadius="{TemplateBinding RibbonControlService.CornerRadius}" BorderBrush="#00FFFFFF" Name="InnerBorder">
+                                <StackPanel Name="StackPanel">
+                                    <Image Source="{TemplateBinding RibbonControlService.LargeImageSource}" Name="PART_Image" Width="32" Height="32" Margin="{DynamicResource {ComponentResourceKey TypeInTargetAssembly=Ribbon, ResourceId=LargeImageMargin}}" HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}" VerticalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality" />
+                                    <Grid Name="Grid" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <RibbonTwoLineText TextAlignment="Center" LineHeight="13" LineStackingStrategy="BlockLineHeight" Text="{TemplateBinding RibbonControlService.Label}" Name="TwoLineText" Margin="1,1,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding Path=ControlSizeDefinition.ImageSize, RelativeSource={RelativeSource Mode=Self}}" Value="Large">
+                                <Setter Property="FrameworkElement.MinWidth">
+                                    <Setter.Value>
+                                        <s:Double>44</s:Double>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Height">
+                                    <Setter.Value>
+                                        <s:Double>66</s:Double>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.MinHeight" TargetName="Grid">
+                                    <Setter.Value>
+                                        <s:Double>26</s:Double>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="RibbonTwoLineText.HasTwoLines" TargetName="TwoLineText">
+                                    <Setter.Value>
+                                        <s:Boolean>True</s:Boolean>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=ControlSizeDefinition.ImageSize, RelativeSource={RelativeSource Mode=Self}}" Value="Small">
+                                <Setter Property="FrameworkElement.Height">
+                                    <Setter.Value>
+                                        <s:Double>22</s:Double>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Margin" TargetName="PART_Image">
+                                    <Setter.Value>
+                                        <Thickness>1,0,1,0</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Image.Source" TargetName="PART_Image">
+                                    <Setter.Value>
+                                        <Binding Path="SmallImageSource" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Width" TargetName="PART_Image">
+                                    <Setter.Value>
+                                        <s:Double>16</s:Double>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Height" TargetName="PART_Image">
+                                    <Setter.Value>
+                                        <s:Double>16</s:Double>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.HorizontalAlignment" TargetName="TwoLineText">
+                                    <Setter.Value>
+                                        <x:Static Member="HorizontalAlignment.Left" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="FrameworkElement.Margin" TargetName="TwoLineText">
+                                    <Setter.Value>
+                                        <Thickness>1,1,1,1</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="StackPanel.Orientation" TargetName="StackPanel">
+                                    <Setter.Value>
+                                        <x:Static Member="Orientation.Horizontal" />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=ControlSizeDefinition.ImageSize, RelativeSource={RelativeSource Mode=Self}}" Value="Small" />
+                                    <Condition Binding="{Binding Path=IsInQuickAccessToolBar, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="FrameworkElement.Height">
+                                    <Setter.Value>
+                                        <s:Double>NaN</s:Double>
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <DataTrigger Binding="{Binding Path=ControlSizeDefinition.IsLabelVisible, RelativeSource={RelativeSource Mode=Self}}" Value="False">
+                                <Setter Property="UIElement.Visibility" TargetName="TwoLineText">
+                                    <Setter.Value>
+                                        <x:Static Member="Visibility.Collapsed" />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path=ControlSizeDefinition.ImageSize, RelativeSource={RelativeSource Mode=Self}}" Value="Collapsed">
+                                <Setter Property="UIElement.Visibility" TargetName="PART_Image">
+                                    <Setter.Value>
+                                        <x:Static Member="Visibility.Collapsed" />
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <Trigger Property="UIElement.IsMouseOver">
+                                <Setter Property="Panel.Background" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <Binding Path="MouseOverBackground" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <Binding Path="MouseOverBorderBrush" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="InnerBorder">
+                                    <Setter.Value>
+                                        <SolidColorBrush>#80FFFFFF</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <s:Boolean>True</s:Boolean>
+                                </Trigger.Value>
+                            </Trigger>
+                            <Trigger Property="UIElement.IsKeyboardFocused">
+                                <Setter Property="Panel.Background" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <Binding Path="FocusedBackground" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <Binding Path="FocusedBorderBrush" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="InnerBorder">
+                                    <Setter.Value>
+                                        <SolidColorBrush>#80FFFFFF</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <s:Boolean>True</s:Boolean>
+                                </Trigger.Value>
+                            </Trigger>
+                            <Trigger Property="ButtonBase.IsPressed">
+                                <Setter Property="Panel.Background" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <Binding Path="PressedBackground" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <Binding Path="PressedBorderBrush" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="InnerBorder">
+                                    <Setter.Value>
+                                        <SolidColorBrush>#00FFFFFF</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <s:Boolean>True</s:Boolean>
+                                </Trigger.Value>
+                            </Trigger>
+                            <Trigger Property="RibbonControlService.IsInControlGroup">
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <Binding Path="Ribbon.BorderBrush" RelativeSource="{RelativeSource Mode=TemplatedParent}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderThickness" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <Thickness>0,0,1,0</Thickness>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.CornerRadius" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <CornerRadius>0,0,0,0</CornerRadius>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.CornerRadius" TargetName="InnerBorder">
+                                    <Setter.Value>
+                                        <CornerRadius>0,0,0,0</CornerRadius>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <s:Boolean>True</s:Boolean>
+                                </Trigger.Value>
+                            </Trigger>
+                            <Trigger Property="UIElement.IsEnabled">
+                                <Setter Property="UIElement.Opacity" TargetName="PART_Image">
+                                    <Setter.Value>
+                                        <s:Double>0.5</s:Double>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <SolidColorBrush>#FF9E9E9E</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Trigger.Value>
+                                    <s:Boolean>False</s:Boolean>
+                                </Trigger.Value>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True">
+                                <Setter Property="TextElement.Foreground" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.MenuTextBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Panel.Background" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <SolidColorBrush>#00FFFFFF</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <SolidColorBrush>#00FFFFFF</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.CornerRadius" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <CornerRadius>0,0,0,0</CornerRadius>
+                                    </Setter.Value>
+                                </Setter>
+                            </DataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=TemplatedParent}}" Value="True" />
+                                    <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.ControlLightBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=TemplatedParent}}" Value="True" />
+                                    <Condition Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False" />
+                                    <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource Mode=TemplatedParent}, FallbackValue=false}" Value="True" />
+                                    <Condition Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False" />
+                                    <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.ControlLightBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                    <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Panel.Background" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.HighlightBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.ControlLightBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.CornerRadius" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <CornerRadius>0,0,0,0</CornerRadius>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="InnerBorder">
+                                    <Setter.Value>
+                                        <SolidColorBrush>#00FFFFFF</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.HighlightTextBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsKeyboardFocused, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                    <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Panel.Background" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.HighlightBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.ControlLightBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.CornerRadius" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <CornerRadius>0,0,0,0</CornerRadius>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="InnerBorder">
+                                    <Setter.Value>
+                                        <SolidColorBrush>#00FFFFFF</SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.HighlightTextBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsPressed, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                    <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Panel.Background" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.HighlightBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.ControlDarkBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Border.CornerRadius" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <CornerRadius>0,0,0,0</CornerRadius>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="TextElement.Foreground" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.HighlightTextBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsInControlGroup, RelativeSource={RelativeSource Mode=Self}}" Value="True" />
+                                    <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="Border.BorderBrush" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.ControlLightLightBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding Path=IsEnabled, RelativeSource={RelativeSource Mode=Self}}" Value="False" />
+                                    <Condition Binding="{Binding Path=(SystemParameters.HighContrast)}" Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <Setter Property="TextElement.Foreground" TargetName="OuterBorder">
+                                    <Setter.Value>
+                                        <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
+                                    </Setter.Value>
+                                </Setter>
+                            </MultiDataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <DockPanel>
+        <Ribbon x:Name="Ribbon_Main" DockPanel.Dock="Top">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed">
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab x:Name="RibbonTab_File" Header="File">
+                <RibbonGroup x:Name="RibbonGroup_File_General" Header="General">
+                    <RibbonButton x:Name="RibbonButton_NewAnalyticalModel" Label="New" />
+                    <RibbonButton x:Name="RibbonButton_OpenAnalyticalModel" Label="Open" />
+                    <RibbonButton x:Name="RibbonButton_SaveAnalyticalModel" Label="Save" />
+                    <RibbonButton x:Name="RibbonButton_SaveAsAnalyticalModel" Label="Save As" />
+                    <RibbonButton x:Name="RibbonButton_CloseAnalyticalModel" Label="Close" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_File_ImportExport" Header="Import/Export">
+                    <RibbonButton x:Name="RibbonButton_ImportAnalyticalModel" Label="Import" />
+                    <RibbonButton x:Name="RibbonButton_ExportAnalyticalModel" Label="Export" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_View" Header="View">
+                <RibbonGroup x:Name="RibbonGroup_View_New" Header="New">
+                    <RibbonButton x:Name="RibbonButton_NewSectionViews" Label="Section Views" />
+                    <RibbonButton x:Name="RibbonButton_NewSectionView" Label="Section View" />
+                    <RibbonButton x:Name="RibbonButton_New3DView" Label="3D View" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_View_General" Header="General">
+                    <RibbonButton x:Name="RibbonButton_ViewSettings" Label="View Settings" />
+                    <RibbonButton x:Name="RibbonButton_CloseView" Label="Close View" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_View_Select" Header="Select in View">
+                    <RibbonButton x:Name="RibbonButton_SelectByFilter" Label="Select by Filter" />
+                    <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_View_Visibility" Header="Visiblity">
+                    <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Reveal Hidden" />
+                    <RibbonButton x:Name="RibbonButton_ViewRange" Label="View Range" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Edit" Header="Edit">
+                <RibbonGroup x:Name="RibbonGroup_Edit_WeatherData" Header="Weather Data">
+                    <RibbonButton x:Name="RibbonButton_EditWeatherData" Label="Weather Data" />
+                    <RibbonButton x:Name="RibbonButton_ImportWeatherData" Label="Import" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_General" Header="General">
+                    <RibbonButton x:Name="RibbonButton_AnalyticalModelLocation" Label="Location" />
+                    <RibbonButton x:Name="RibbonButton_AnalyticalModelProperties" Label="Properties" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_Import" Header="Import">
+                    <RibbonButton x:Name="RibbonButton_ImportObjects" Label="Import" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_Check" Header="Check">
+                    <RibbonButton x:Name="RibbonButton_AnalyticalModelCheck" Label="ModelCheck" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_ModelLibrary" Header="Model Library">
+                    <RibbonButton x:Name="RibbonButton_EditMaterialLibrary" Label="Materials" />
+                    <RibbonButton x:Name="RibbonButton_EditInternalConditionLibrary" Label="Internal Conditions" />
+                    <RibbonButton x:Name="RibbonButton_EditProfileLibrary" Label="Profiles" />
+                    <RibbonButton x:Name="RibbonButton_EditSpaces" Label="Spaces" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Edit_Constructions" Header="Constructions">
+                    <RibbonButton x:Name="RibbonButton_EditConstructions" Label="Constructions" />
+                    <RibbonButton x:Name="RibbonButton_EditApertureConstructions" Label="Aperture Constructions" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_AnalyticalModel" Header="Analytical Model">
+                    <RibbonButton x:Name="RibbonButton_CleanAnalyticalModel" Label="Clean" />
+                    <RibbonButton x:Name="RibbonButton_AddMissingObjects" Label="Missing Elements" />
+                    <RibbonButton x:Name="RibbonButton_PrintRoomDataSheets" Label="Print RDS" />
+                    <RibbonButton x:Name="RibbonButton_MapInternalConditions" Label="Map IC" />
+                    <RibbonButton x:Name="RibbonButton_MapInternalConditionsByTM59" Label="Map IC (TM59)" />
+                    <RibbonButton x:Name="RibbonButton_EditInternalConditions" Label="Modify IC" />
+                    <RibbonButton x:Name="RibbonButton_AssignMechanicalSystems" Label="Add Mechanical Systems" />
+                    <RibbonButton x:Name="RibbonButton_RemoveAirMovementObjects" Label="Remove IZAMs" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Simulate" Header="Simulate">
+                <RibbonGroup x:Name="RibbonGroup_Simulate_Simulate" Header="Simulate">
+                    <RibbonButton x:Name="RibbonButton_SolarSimulation" Label="Solar Simulation" />
+                    <RibbonButton x:Name="RibbonButton_EnergySimulation" Label="Energy Simulation" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Results" Header="Results">
+                <RibbonGroup x:Name="RibbonGroup_Results_General" Header="General">
+                    <RibbonButton x:Name="RibbonButton_RemoveResults" Label="Remove" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Results_Mollier" Header="Mollier Diagram">
+                    <RibbonButton x:Name="RibbonButton_AirHandlingUnitDiagram" Label="AHU" />
+                    <RibbonButton x:Name="RibbonButton_SpaceDiagram" Label="Space" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Tools" Header="Tools">
+                <RibbonGroup x:Name="RibbonGroup_Tools_Library" Header="Library">
+                    <RibbonButton x:Name="RibbonButton_EditLibrary" Label="Edit Library" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Tas" Header="Tas">
+                    <RibbonButton x:Name="RibbonButton_OpenT3D" Label="Open T3D" />
+                    <RibbonButton x:Name="RibbonButton_OpenTBD" Label="Open TBD" />
+                    <RibbonButton x:Name="RibbonButton_OpenTSD" Label="Open TSD" />
+                    <RibbonButton x:Name="RibbonButton_OpenTPD" Label="Open TPD" />
+                    <RibbonButton x:Name="RibbonButton_ThermalTransmittanceCalculator" Label="U Value Calculator" />
+                    <RibbonButton x:Name="RibbonButton_GlazingCalculator" Label="Glazing Calculator" />
+
+                    <RibbonMenuButton x:Name="RibbonMenuButton_PartL" Label="PartL" >
+                        <RibbonButton x:Name="RibbonButton_OpenPartL" Label="Open PartL" />
+                        <RibbonButton x:Name="RibbonButton_UpdateUKBRFile" Label="Update UKBR File"/>
+                    </RibbonMenuButton>
+                    <!-- <RibbonButton x:Name="RibbonButton_CreateTBD" Label="Create TBD" /> -->
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Hydra" Header="Hydra">
+                    <RibbonButton x:Name="RibbonButton_Hydra" Label="Open Hydra" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_SAM" Header="SAM">
+                    <RibbonButton x:Name="RibbonButton_OpenMollierChart" Label="Mollier Diagram" />
+                    <RibbonButton x:Name="RibbonButton_ViewGeometry" Label="View Geometry" />
+                    <RibbonButton x:Name="RibbonButton_TextMap" Label="Text Map" />
+                    <RibbonButton x:Name="RibbonButton_NCMNames" Label="NCM Names" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Developer" Header="Developer">
+                    <RibbonButton x:Name="RibbonButton_Test" Label="Test" />
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_Help" Header="Help">
+                <RibbonGroup x:Name="RibbonGroup_Help_General" Header="General">
+                    <RibbonButton x:Name="RibbonButton_Wiki" Label="Wiki" />
+                    <RibbonButton x:Name="RibbonButton_About" Label="About" />
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="461*" />
+                <ColumnDefinition Width="86*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
+            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" SelectionChanged="tabControl_SelectionChanged">
+                <TabItem Header="3D View">
+                    <geometry:ViewportControl x:Name="viewportControl" />
+                </TabItem>
+            </TabControl>
+
+            <local:AnalyticalModelControl x:Name="AnalyticalModelControl"  Grid.Column="0" Grid.Row="0" />
+        </Grid>
+    </DockPanel>
+</Window>

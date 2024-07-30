@@ -1,0 +1,44 @@
+﻿<Window x:Class="SAM.Geometry.UI.WPF.GeometryWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Geometry.UI.WPF"
+        xmlns:core="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF"
+        mc:Ignorable="d"
+        Title="SAM Geometry" Height="450" Width="800" WindowState="Maximized">
+    <DockPanel>
+        <Ribbon DockPanel.Dock="Top" x:Name="ribbon">
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu Visibility="Collapsed">
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <RibbonTab x:Name="RibbonTab_File" Header="File">
+                <RibbonGroup x:Name="RibbonGroup_File_General" Header="General">
+                    <RibbonButton x:Name="ribbonButton_General_OpenModel" Label="Open" Click="RibbonButton_General_OpenModel_Click"/>
+                    <RibbonButton x:Name="ribbonButton_General_CloseModel" Label="Close" Click="RibbonButton_General_CloseModel_Click"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <RibbonTab x:Name="RibbonTab_View" Header="View">
+                <RibbonGroup x:Name="RibbonGroup_View_Mode" Header="Mode">
+                    <RibbonButton x:Name="ribbonButton_View_Mode" Label="Mode" Click="RibbonButton_View_Mode_Click"/>
+                    <RibbonButton x:Name="ribbonButton_View_Json" Label="Json" Click="RibbonButton_View_Json_Click"/>
+                </RibbonGroup>
+            </RibbonTab>
+        </Ribbon>
+        <Grid x:Name="grid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="0"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <local:ViewportControl x:Name="viewportControl" Grid.Column="0" Grid.Row="0" Margin="0,0,-0.4,-0.4"/>
+            <GridSplitter x:Name="gridSplitter" Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            <core:JsonControl x:Name="jsonControl" Grid.Column="2" Grid.Row="0" Margin="0,0,-0.4,-0.4"/>
+        </Grid>
+    </DockPanel>
+
+</Window>
