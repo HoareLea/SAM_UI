@@ -333,7 +333,7 @@ ASALocalRun/
 .mfractor/
 
 #Include build only references
-!references_buildonly/**.*
+!**/references_buildonly/**.*
 
 #Include build only references
-!references/**.*
+!**/references/**.*
