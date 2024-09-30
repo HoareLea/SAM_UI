@@ -32,7 +32,7 @@ namespace SAM.Analytical.UI.Grasshopper
         public SAMAnalyticalPrintRDS()
           : base("SAMAnalytical.PrintRDS", "SAMAnalytical.PrintRDS",
               "Print Room Data Sheets",
-              "SAM", "Analytical")
+              "SAM", "UI")
         {
         }
 

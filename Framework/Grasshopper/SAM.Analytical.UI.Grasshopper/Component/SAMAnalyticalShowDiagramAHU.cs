@@ -38,7 +38,7 @@ namespace SAM.Analytical.UI.Grasshopper
         public SAMAnalyticalShowDiagramAHU()
           : base("SAMAnalytical.ShowDiagramAHU", "SAMAnalytical.ShowDiagramAHU",
               "Show AHU Diagram",
-              "SAM", "Analytical")
+              "SAM", "UI")
         {
         }
 

@@ -36,7 +36,7 @@ namespace SAM.Analytical.UI.Grasshopper
         public SAMAnalyticalShowDiagramSpace()
           : base("SAMAnalytical.ShowDiagramSpace", "SAMAnalytical.ShowDiagramSpace",
               "Show Space Diagram",
-              "SAM", "Analytical")
+              "SAM", "UI")
         {
         }
 
