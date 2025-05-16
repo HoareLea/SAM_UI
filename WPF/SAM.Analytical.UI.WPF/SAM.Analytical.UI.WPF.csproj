@@ -1,0 +1,863 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{12C02306-411F-4A08-A5B4-6446F4A4E6B8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SAM.Analytical.UI.WPF</RootNamespace>
+    <AssemblyName>SAM.Analytical.UI.WPF</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\build\SAM.Analytical.UI.WPF.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\build\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="gbXMLSerializer">
+      <HintPath>..\..\references\gbXMLSerializer.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TAS3D">
+      <HintPath>..\..\references_buildonly\Interop.TAS3D.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.TBD">
+      <HintPath>..\..\references_buildonly\Interop.TBD.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.TCD">
+      <HintPath>..\..\references_buildonly\Interop.TCD.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.TIC">
+      <HintPath>..\..\references_buildonly\Interop.TIC.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Interop.TSD">
+      <HintPath>..\..\references_buildonly\Interop.TSD.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SAM.Analytical, Version=1.0.8236.30910, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.gbXML">
+      <HintPath>..\..\..\..\SAM_gbXML\build\SAM.Analytical.gbXML.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.GEM">
+      <HintPath>..\..\..\..\SAM_GEM\build\SAM.Analytical.GEM.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.LadybugTools">
+      <HintPath>..\..\..\..\SAM_LadybugTools\build\SAM.Analytical.LadybugTools.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.SolarCalculator, Version=1.0.8342.29668, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_SolarCalculator\build\SAM.Analytical.SolarCalculator.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.Tas, Version=1.0.8405.29366, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Analytical.Tas.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.Tas.SAP">
+      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Analytical.Tas.SAP.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.Tas.TM59">
+      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Analytical.Tas.TM59.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Windows\\Framework\build\SAM.Analytical.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Architectural, Version=1.0.8383.18149, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM\build\SAM.Architectural.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core, Version=1.0.8969.29100, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.gbXML">
+      <HintPath>..\..\..\..\SAM_gbXML\build\SAM.Core.gbXML.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.SolarCalculator, Version=1.0.8342.29667, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_SolarCalculator\build\SAM.Core.SolarCalculator.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Tas, Version=1.0.8217.19574, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Tas.UKBR, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Core.Tas.UKBR.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Core.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry.SolarCalculator, Version=1.0.8342.29667, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_SolarCalculator\build\SAM.Geometry.SolarCalculator.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather, Version=1.0.8405.25694, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather.Tas, Version=1.0.8418.28734, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Weather.Tas.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Weather.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Classes\ThermalTransmittanceFilter.cs" />
+    <Compile Include="Classes\DisplayGlazingCalculationResult.cs" />
+    <Compile Include="Classes\DisplayThermalTransmittanceCalculationResult.cs" />
+    <Compile Include="Controls\ApertureConstructionCalculationResultControl.xaml.cs">
+      <DependentUpon>ApertureConstructionCalculationResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GlazingCalculationDataControl.xaml.cs">
+      <DependentUpon>GlazingCalculationDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\GlazingCalculationResultControl.xaml.cs">
+      <DependentUpon>GlazingCalculationResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Enums\Criteria.cs" />
+    <Compile Include="Controls\ThermalTransmittanceCalculationResultControl.xaml.cs">
+      <DependentUpon>ThermalTransmittanceCalculationResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\AssignApertureApertureConstructionByThermalTransmittance.cs" />
+    <Compile Include="Modify\AssignPanelConstructionByThermalTransmittance.cs" />
+    <Compile Include="Modify\RemoveAirMovementObjects.cs" />
+    <Compile Include="Query\IsValid.cs" />
+    <Compile Include="Windows\ThermalTransmittanceCalculationResultWindow.xaml.cs">
+      <DependentUpon>ThermalTransmittanceCalculationResultWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\AssignIndexes.cs" />
+    <Compile Include="Modify\SortByIndex.cs" />
+    <Compile Include="Windows\GlazingCalculationResultWindow.xaml.cs">
+      <DependentUpon>GlazingCalculationResultWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\CalculateGlazing.cs" />
+    <Compile Include="Query\Criteria.cs" />
+    <Compile Include="Windows\GlazingCalculationDataWindow.xaml.cs">
+      <DependentUpon>GlazingCalculationDataWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\AssignApertureApertureConstruction.cs" />
+    <Compile Include="Modify\AssignPanelConstruction.cs" />
+    <Compile Include="Modify\EditApertureConstructions.cs" />
+    <Compile Include="Modify\EditConstructions.cs" />
+    <Compile Include="Modify\EditMaterialLibrary.cs" />
+    <Compile Include="Windows\ApertureConstructionCalculationDataWindow.xaml.cs">
+      <DependentUpon>ApertureConstructionCalculationDataWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ApertureConstructionCalculationDataControl.xaml.cs">
+      <DependentUpon>ApertureConstructionCalculationDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\DisplayLayerThicknessCalculationResult.cs" />
+    <Compile Include="Classes\NCMNameCollectionOptions.cs" />
+    <Compile Include="Windows\SelectConstructionWindow.xaml.cs">
+      <DependentUpon>SelectConstructionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ConstructionCalculationResultWindow.xaml.cs">
+      <DependentUpon>ConstructionCalculationResultWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ConstructionCalculationResultControl.xaml.cs">
+      <DependentUpon>ConstructionCalculationResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LayerThicknessCalculationResultControl.xaml.cs">
+      <DependentUpon>LayerThicknessCalculationResultControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\ThermalTransmittanceCalculator_SingleConstruction.cs" />
+    <Compile Include="Windows\ConstructionCalculationDataWindow.xaml.cs">
+      <DependentUpon>ConstructionCalculationDataWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ConstructionCalculationDataControl.xaml.cs">
+      <DependentUpon>ConstructionCalculationDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\LayerThicknessCalculationDataControl.xaml.cs">
+      <DependentUpon>LayerThicknessCalculationDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Enums\ConstructionCalculationType.cs" />
+    <Compile Include="Windows\LayerThicknessCalculationResultsWindow.xaml.cs">
+      <DependentUpon>LayerThicknessCalculationResultsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\ThermalTransmittanceCalculator.cs" />
+    <Compile Include="Windows\ThermalTransmittanceCalculatorWindow.xaml.cs">
+      <DependentUpon>ThermalTransmittanceCalculatorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\LayerThicknessCalculationDataWindow.xaml.cs">
+      <DependentUpon>LayerThicknessCalculationDataWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\AddMechanicalSystems.cs" />
+    <Compile Include="Modify\EditNCMDatas.cs" />
+    <Compile Include="Modify\RemoveMechanicalSystems.cs" />
+    <Compile Include="Modify\RemoveZones.cs" />
+    <Compile Include="Controls\NCMNameCollectionControl.xaml.cs">
+      <DependentUpon>NCMNameCollectionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NCMDataControl.xaml.cs">
+      <DependentUpon>NCMDataControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\UpdateUKBRFile.cs" />
+    <Compile Include="Controls\ThermalTransmittanceCalculatorControl.xaml.cs">
+      <DependentUpon>ThermalTransmittanceCalculatorControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\NCMDataWindow.xaml.cs">
+      <DependentUpon>NCMDataWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\NCMNameCollectionWindow.xaml.cs">
+      <DependentUpon>NCMNameCollectionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AddMechanicalSystemsWindow.xaml.cs">
+      <DependentUpon>AddMechanicalSystemsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AddMechanicalSystemsControl.xaml.cs">
+      <DependentUpon>AddMechanicalSystemsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\EventArgs\AdjacencyClusterSelectionChangedEventArgs.cs" />
+    <Compile Include="Classes\EventArgs\AdjacencyClusterChangedEventArgs.cs" />
+    <Compile Include="Delegates\AdjacencyClusterSelectionChangedEventHandler.cs" />
+    <Compile Include="Delegates\AdjacencyClusterChangedEventHandler.cs" />
+    <Compile Include="Modify\UpdateMechanicalSystemsSelection.cs" />
+    <Compile Include="Modify\AssignMechanicalSystems.cs" />
+    <Compile Include="Windows\AssignMechanicalSystemsWindow.xaml.cs">
+      <DependentUpon>AssignMechanicalSystemsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SpacesControl.xaml.cs">
+      <DependentUpon>SpacesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ApertureAppearanceSettingsWindow.xaml.cs">
+      <DependentUpon>ApertureAppearanceSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\ApertureData.cs" />
+    <Compile Include="Controls\ApertureAppearanceSettingsControl.xaml.cs">
+      <DependentUpon>ApertureAppearanceSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MechanicalSystemsControl.xaml.cs">
+      <DependentUpon>MechanicalSystemsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SpaceMechanicalSystemControl.xaml.cs">
+      <DependentUpon>SpaceMechanicalSystemControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Enums\Parameter\AnalyticalSettingParameter.cs" />
+    <Compile Include="Manager\ActiveSettings.cs" />
+    <Compile Include="Modify\EditMechanicalSystems.cs" />
+    <Compile Include="Modify\RenameSpaces.cs" />
+    <Compile Include="Controls\PanelAppearanceSettingsControl.xaml.cs">
+      <DependentUpon>PanelAppearanceSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\PanelAppearanceSettingsWindow.xaml.cs">
+      <DependentUpon>PanelAppearanceSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\FilterWindow.xaml.cs">
+      <DependentUpon>FilterWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\InternalConditionWindow.xaml.cs">
+      <DependentUpon>InternalConditionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\EditOpeningProperties.cs" />
+    <Compile Include="Controls\RenameSpacesControl.xaml.cs">
+      <DependentUpon>RenameSpacesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RenameSpacesWindow.xaml.cs">
+      <DependentUpon>RenameSpacesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ApertureWindow.xaml.cs">
+      <DependentUpon>ApertureWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ApertureControl.xaml.cs">
+      <DependentUpon>ApertureControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\InternalConditionData.cs" />
+    <Compile Include="Controls\ZonesSpacesControl.xaml.cs">
+      <DependentUpon>ZonesSpacesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MapInternalConditionsControl.xaml.cs">
+      <DependentUpon>MapInternalConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MapTM59InternalConditionsControl.xaml.cs">
+      <DependentUpon>MapTM59InternalConditionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SimulateControl.xaml.cs">
+      <DependentUpon>SimulateControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\InternalConditionControl.xaml.cs">
+      <DependentUpon>InternalConditionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\EditInternalConditions.cs" />
+    <Compile Include="Query\Colors.cs" />
+    <Compile Include="Query\Texts.cs" />
+    <Compile Include="Windows\InternalConditionWithSpacesWindow.xaml.cs">
+      <DependentUpon>InternalConditionWithSpacesWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\RemoveResults.cs" />
+    <Compile Include="Query\DayTypes.cs" />
+    <Compile Include="Windows\SimulateWindow.xaml.cs">
+      <DependentUpon>SimulateWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\MapInternalConditionsByTM59.cs" />
+    <Compile Include="Modify\Simulate.cs" />
+    <Compile Include="Windows\MapTM59InternalConditionsWindow.xaml.cs">
+      <DependentUpon>MapTM59InternalConditionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\Import.cs" />
+    <Compile Include="Modify\Export.cs" />
+    <Compile Include="Modify\MapInternalConditions.cs" />
+    <Compile Include="Query\DefaultMapFunc.cs" />
+    <Compile Include="Query\DefaultGroupFunc.cs" />
+    <Compile Include="Windows\MapInternalConditionsWindow.xaml.cs">
+      <DependentUpon>MapInternalConditionsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\AllowTreeViewItemByType.cs" />
+    <Compile Include="Modify\AssignSpaceInternalCondition.cs" />
+    <Compile Include="Modify\AssignSpaceZone.cs" />
+    <Compile Include="Modify\SetGroup.cs" />
+    <Compile Include="Query\DefaultGroup.cs" />
+    <Compile Include="Windows\BatchCreateViewsWindow.xaml.cs">
+      <DependentUpon>BatchCreateViewsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\BatchCreateViewsControl.xaml.cs">
+      <DependentUpon>BatchCreateViewsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AnalyticalThreeDimensionalViewSettingsControl.xaml.cs">
+      <DependentUpon>AnalyticalThreeDimensionalViewSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AnalyticalTwoDimensionalViewSettingsControl.xaml.cs">
+      <DependentUpon>AnalyticalTwoDimensionalViewSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\AnalyticalModelControl.xaml.cs">
+      <DependentUpon>AnalyticalModelControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\ActivateViewSettings.cs" />
+    <Compile Include="Modify\RemoveSpaceZone.cs" />
+    <Compile Include="Modify\EditSpaceZone.cs" />
+    <Compile Include="Modify\DuplicateViewSettings.cs" />
+    <Compile Include="Modify\EnableViewSettings.cs" />
+    <Compile Include="Controls\ElevationControl.xaml.cs">
+      <DependentUpon>ElevationControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Modify\EditLegend.cs" />
+    <Compile Include="Modify\EditZone.cs" />
+    <Compile Include="Modify\SetActiveGuid.cs" />
+    <Compile Include="Modify\RemoveViewSettings.cs" />
+    <Compile Include="Modify\EditViewSettings.cs" />
+    <Compile Include="Modify\EditZones.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Query\ViewSettings.cs" />
+    <Compile Include="Query\HasLegend.cs" />
+    <Compile Include="Query\ZoneTypes.cs" />
+    <Compile Include="Query\DefaultName.cs" />
+    <Compile Include="Query\Material.cs" />
+    <Compile Include="Controls\SpaceZoneControl.xaml.cs">
+      <DependentUpon>SpaceZoneControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SpaceAppearanceSettingsControl.xaml.cs">
+      <DependentUpon>SpaceAppearanceSettingsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SpaceAppearanceSettingsWindow.xaml.cs">
+      <DependentUpon>SpaceAppearanceSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SpaceMechanicalSystemWindow.xaml.cs">
+      <DependentUpon>SpaceMechanicalSystemWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SpaceZoneWindow.xaml.cs">
+      <DependentUpon>SpaceZoneWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ViewSettingsWindow.xaml.cs">
+      <DependentUpon>ViewSettingsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\AnalyticalWindow.xaml.cs">
+      <DependentUpon>AnalyticalWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ZonesControl.xaml.cs">
+      <DependentUpon>ZonesControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ZoneControl.xaml.cs">
+      <DependentUpon>ZoneControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ZoneWindow.xaml.cs">
+      <DependentUpon>ZoneWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="HelixToolkit.Wpf">
+      <Version>2.25.0</Version>
+    </PackageReference>
+    <PackageReference Include="HoneybeeSchema">
+      <Version>1.51.5.1</Version>
+    </PackageReference>
+    <PackageReference Include="NetTopologySuite">
+      <Version>2.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_AddMissingObjects.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_AnalyticalModelProperties.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ApertureConstruction.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Clean.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ConstructionLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_EditLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_EnergySimulation.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Export.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Hydra.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Import.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_InternalCondition.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Location.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_MaterialLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ModelCheck.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_New.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_PrintRDS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_ProfileLibrary.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SaveAs.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SolarCalculator.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Space.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_T3D.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TBD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TPD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_TSD.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_WeatherData.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Wiki.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj">
+      <Project>{fd5079bc-621d-44ce-8eae-6e85510fe050}</Project>
+      <Name>SAM.Analytical.Mollier.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
+      <Project>{fb22aa02-a8b6-4e1a-9581-d660f6e322f8}</Project>
+      <Name>SAM.Analytical.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
+      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
+      <Name>SAM.Core.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Geometry.UI\SAM.Geometry.UI.csproj">
+      <Project>{c43850cf-3e58-44ec-8baf-3a7339749104}</Project>
+      <Name>SAM.Geometry.UI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SAM.Core.UI.WPF\SAM.Core.UI.WPF.csproj">
+      <Project>{4abd4416-11f4-46be-98ab-37e5dcfe79e1}</Project>
+      <Name>SAM.Core.UI.WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SAM.Geometry.UI.WPF\SAM.Geometry.UI.WPF.csproj">
+      <Project>{64178e8a-35e7-430b-ae4e-46a6c50bdd5e}</Project>
+      <Name>SAM.Geometry.UI.WPF</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\ApertureConstructionCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GlazingCalculationDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\GlazingCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ThermalTransmittanceCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ThermalTransmittanceCalculationResultWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\GlazingCalculationResultWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\GlazingCalculationDataWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ApertureConstructionCalculationDataWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ApertureConstructionCalculationDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SelectConstructionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ConstructionCalculationResultWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ConstructionCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LayerThicknessCalculationResultControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ConstructionCalculationDataWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ConstructionCalculationDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NCMNameCollectionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\NCMDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LayerThicknessCalculationDataControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ThermalTransmittanceCalculatorControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\LayerThicknessCalculationResultsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ThermalTransmittanceCalculatorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\LayerThicknessCalculationDataWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\NCMDataWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\NCMNameCollectionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AddMechanicalSystemsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AddMechanicalSystemsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AssignMechanicalSystemsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SpacesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ApertureAppearanceSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ApertureAppearanceSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MechanicalSystemsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SpaceMechanicalSystemControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\PanelAppearanceSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\PanelAppearanceSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\FilterWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\InternalConditionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\RenameSpacesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\RenameSpacesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ApertureWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ApertureControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ZonesSpacesControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\MapInternalConditionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\MapTM59InternalConditionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SimulateControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\InternalConditionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\InternalConditionWithSpacesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SimulateWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MapTM59InternalConditionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\MapInternalConditionsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\BatchCreateViewsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\BatchCreateViewsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AnalyticalThreeDimensionalViewSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AnalyticalTwoDimensionalViewSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\AnalyticalModelControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\SpaceZoneControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SpaceAppearanceSettingsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ElevationControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SpaceAppearanceSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\SpaceMechanicalSystemWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Windows\SpaceZoneWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ViewSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\AnalyticalWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\ZonesControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ZoneControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Windows\ZoneWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_AirHandlingUnitDiagram.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_MollierDiagram.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_SpaceDiagram.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controls\Filter\" />
+    <Folder Include="Convert\ToMedia3D\" />
+    <Folder Include="Create\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_Section.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_PartL.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SAM_PartL_UKBR.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
