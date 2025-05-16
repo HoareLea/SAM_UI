@@ -68,13 +68,13 @@
       <HintPath>..\..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.gbXML">
-      <HintPath>..\..\..\..\SAM_gbXML\build\SAM.Analytical.gbXML.dll</HintPath>
+      <HintPath>..\..\..\SAM_gbXML\build\SAM.Analytical.gbXML.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.GEM">
-      <HintPath>..\..\..\..\SAM_GEM\build\SAM.Analytical.GEM.dll</HintPath>
+      <HintPath>..\..\..\SAM_GEM\build\SAM.Analytical.GEM.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.LadybugTools">
-      <HintPath>..\..\..\..\SAM_LadybugTools\build\SAM.Analytical.LadybugTools.dll</HintPath>
+      <HintPath>..\..\..\SAM_LadybugTools\build\SAM.Analytical.LadybugTools.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.SolarCalculator, Version=1.0.8342.29668, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -85,10 +85,10 @@
       <HintPath>..\..\..\..\SAM_Tas\build\SAM.Analytical.Tas.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.Tas.SAP">
-      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Analytical.Tas.SAP.dll</HintPath>
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.SAP.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.Tas.TM59">
-      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Analytical.Tas.TM59.dll</HintPath>
+      <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.TM59.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -103,7 +103,7 @@
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.gbXML">
-      <HintPath>..\..\..\..\SAM_gbXML\build\SAM.Core.gbXML.dll</HintPath>
+      <HintPath>..\..\..\SAM_gbXML\build\SAM.Core.gbXML.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.SolarCalculator, Version=1.0.8342.29667, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

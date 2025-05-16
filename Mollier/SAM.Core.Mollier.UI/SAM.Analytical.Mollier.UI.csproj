@@ -39,30 +39,30 @@
       <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Excel">
-      <HintPath>..\..\..\..\SAM_Excel\build\SAM.Core.Excel.dll</HintPath>
+      <HintPath>..\..\..\SAM_Excel\build\SAM.Core.Excel.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Mollier, Version=1.0.8236.24532, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry.Mollier">
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Math, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Math.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Math.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Units, Version=1.0.8278.16260, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Units.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Units.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

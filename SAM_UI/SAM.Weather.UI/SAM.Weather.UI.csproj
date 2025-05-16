@@ -37,7 +37,10 @@
       <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Weather">
-      <HintPath>..\..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Weather.Windows">
+      <HintPath>..\..\..\SAM_Windows\Framework\build\SAM.Weather.Windows.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
