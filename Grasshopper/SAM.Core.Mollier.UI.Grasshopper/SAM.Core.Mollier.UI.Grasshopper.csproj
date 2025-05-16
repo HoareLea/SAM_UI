@@ -36,9 +36,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SAM.Core, Version=1.0.8560.29564, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    <Reference Include="SAM.Core">
+      <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Grasshopper">
       <HintPath>..\..\..\SAM\build\SAM.Core.Grasshopper.dll</HintPath>
@@ -46,16 +45,14 @@
     <Reference Include="SAM.Core.Grasshopper.Mollier">
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Grasshopper.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core.Mollier, Version=1.0.8563.18750, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
+    <Reference Include="SAM.Core.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry.Grasshopper.Mollier">
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Grasshopper.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Geometry.Mollier, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
+    <Reference Include="SAM.Geometry.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
