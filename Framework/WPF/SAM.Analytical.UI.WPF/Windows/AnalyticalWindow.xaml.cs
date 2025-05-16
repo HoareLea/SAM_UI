@@ -1409,7 +1409,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Hydra_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://hlhydra.azurewebsites.net/index.html");
+            Core.Query.StartProcess(Link.Hydra);
         }
 
         private void RibbonButton_ImportAnalyticalModel_Click(object sender, RoutedEventArgs e)
