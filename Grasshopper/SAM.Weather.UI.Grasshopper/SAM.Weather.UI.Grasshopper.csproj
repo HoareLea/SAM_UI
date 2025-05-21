@@ -9,6 +9,8 @@
 	  <RhinoPluginsDir>$([MSBuild]::ValueOrDefault('$(RhinoDebugPluginsDir)', '$(RhinoDefaultPluginsDir)'))</RhinoPluginsDir>
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <OutputType>Library</OutputType>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\build\</OutputPath>
@@ -24,24 +26,19 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SAM.Core.Grasshopper">
-      <HintPath>..\..\..\..\SAM\build\SAM.Core.Grasshopper.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Core.Grasshopper.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Grasshopper.Mollier">
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Core.Grasshopper.Mollier.dll</HintPath>
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Grasshopper.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core.Mollier, Version=1.0.8231.22718, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
-    </Reference>
-    <Reference Include="SAM.Weather, Version=1.0.8231.14869, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+    <Reference Include="SAM.Core.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Weather.Grasshopper">
-      <HintPath>..\..\..\..\SAM\build\SAM.Weather.Grasshopper.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Weather.Grasshopper.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Weather.Mollier">
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Weather.Mollier.dll</HintPath>
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Weather.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />

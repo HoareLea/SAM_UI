@@ -1,35 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FB22AA02-A8B6-4E1A-9581-D660F6E322F8}</ProjectGuid>
+	  <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SAM.Analytical.UI</RootNamespace>
-    <AssemblyName>SAM.Analytical.UI</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\build\SAM.Analytical.UI.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\..\build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.TBD">
@@ -40,7 +24,6 @@
       <HintPath>..\..\references_buildonly\Interop.TCD.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="SAM.Analytical">
       <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
     </Reference>
@@ -54,163 +37,51 @@
       <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Analytical.Windows">
-      <HintPath>..\..\..\SAM_Windows\Framework\build\SAM.Analytical.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Analytical.Windows.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Architectural, Version=1.0.8551.22422, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SAM.Architectural">
       <HintPath>..\..\..\SAM\build\SAM.Architectural.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core, Version=1.0.8236.21308, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
+    <Reference Include="SAM.Core">
+      <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Excel">
-      <HintPath>..\..\..\..\SAM_Excel\build\SAM.Core.Excel.dll</HintPath>
+      <HintPath>..\..\..\SAM_Excel\build\SAM.Core.Excel.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core.Mollier, Version=1.0.8265.16371, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
+    <Reference Include="SAM.Core.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Tas">
       <HintPath>..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Windows">
-      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Geometry, Version=1.0.8236.21309, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+    <Reference Include="SAM.Geometry">
+      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Geometry.Mollier, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
+    <Reference Include="SAM.Geometry.Mollier">
+      <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry.SolarCalculator">
       <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Geometry.SolarCalculator.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Weather, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Weather.dll</HintPath>
+    <Reference Include="SAM.Weather">
+      <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Weather.Tas">
       <HintPath>..\..\..\SAM_Tas\build\SAM.Weather.Tas.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Weather.Windows">
-      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Weather.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Weather.Windows.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\RenameSpaceOptions.cs" />
-    <Compile Include="Classes\Modification\AnalyticalModelModification.cs" />
-    <Compile Include="Classes\Settings\BoundaryTypeAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\AdjacencyClusterAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\CoolingSystemAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\HeatingSystemAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\NCMDataAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\VentilationSystemAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\OpeningPropertiesAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\ApertureConstructionAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\ConstructionAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\ApertureAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\PanelAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\SpaceAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\InternalConditionAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\ThermalTransmittanceAppearanceSettings.cs" />
-    <Compile Include="Classes\Settings\ZoneAppearanceSettings.cs" />
-    <Compile Include="Classes\TBDConversionOptions.cs" />
-    <Compile Include="Classes\UIAnalyticalModel.cs" />
-    <Compile Include="Controls\SimulateControl.cs">
+    <Compile Update="Controls\SimulateControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SimulateControl.designer.cs">
-      <DependentUpon>SimulateControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Convert\ToSAM\GeometryObjectModel.cs" />
-    <Compile Include="Create\SimulateOptions.cs" />
-    <Compile Include="Enums\Parameter\AnalyticalModelParameter.cs" />
-    <Compile Include="Enums\Position.cs" />
-    <Compile Include="Enums\SolarCalculationMethod.cs" />
-    <Compile Include="Forms\SimulateForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SimulateForm.designer.cs">
-      <DependentUpon>SimulateForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Interfaces\ISection3DObject.cs" />
-    <Compile Include="Modify\AssignAdjacencyCluster.cs" />
-    <Compile Include="Modify\Hide.cs" />
-    <Compile Include="Modify\RemoveOverrides.cs" />
-    <Compile Include="Modify\RenameSpace.cs" />
-    <Compile Include="Modify\RenameSpaces.cs" />
-    <Compile Include="Modify\DuplicateInternalCondition.cs" />
-    <Compile Include="Query\IUIFilters.cs" />
-    <Compile Include="Query\Guids.cs" />
-    <Compile Include="Query\IJSAMObject.cs" />
-    <Compile Include="Query\ViewSettings.cs" />
-    <Compile Include="Query\Editable.cs" />
-    <Compile Include="Query\UndefinedLegendItem.cs" />
-    <Compile Include="Query\LegendName.cs" />
-    <Compile Include="Query\LegendItemDictionary.cs" />
-    <Compile Include="Query\TryGetValue.cs" />
-    <Compile Include="Query\Color.cs" />
-    <Compile Include="Query\DefaultViewSettings.cs" />
-    <Compile Include="Query\CurveAppearance.cs" />
-    <Compile Include="Query\TextAppearance.cs" />
-    <Compile Include="Query\SurfaceAppearance.cs" />
-    <Compile Include="Query\SpaceDiagram.cs" />
-    <Compile Include="Query\AirHandlingUnitDiagram.cs" />
-    <Compile Include="Modify\Insert.cs" />
-    <Compile Include="Modify\AddMissingObjects.cs" />
-    <Compile Include="Modify\Check.cs" />
-    <Compile Include="Modify\Clean.cs" />
-    <Compile Include="Modify\CreateMechanicalSystem.cs" />
-    <Compile Include="Modify\DuplicateMaterial.cs" />
-    <Compile Include="Modify\EditAddressAndLocation.cs" />
-    <Compile Include="Modify\EditAperture.cs" />
-    <Compile Include="Modify\EditInternalCondition.cs" />
-    <Compile Include="Modify\EditInternalConditions.cs" />
-    <Compile Include="Modify\EditLibrary.cs" />
-    <Compile Include="Modify\EditMaterial.cs" />
-    <Compile Include="Modify\EditPanel.cs" />
-    <Compile Include="Modify\EditProfile.cs" />
-    <Compile Include="Modify\EditProfileLibrary.cs" />
-    <Compile Include="Modify\EditProperties.cs" />
-    <Compile Include="Modify\EditSpace.cs" />
-    <Compile Include="Modify\EditSpaces.cs" />
-    <Compile Include="Modify\EditWeatherData.cs" />
-    <Compile Include="Modify\EnergySimulation.cs" />
-    <Compile Include="Modify\Import.cs" />
-    <Compile Include="Modify\ImportWeatherData.cs" />
-    <Compile Include="Modify\New.cs" />
-    <Compile Include="Modify\PrintAirHandlingUnitsByTemplate.cs" />
-    <Compile Include="Modify\PrintAirHandlingUnits.cs" />
-    <Compile Include="Modify\PrintRoomDataSheets.cs" />
-    <Compile Include="Modify\RemoveMaterial.cs" />
-    <Compile Include="Modify\ReplaceApertureConstructions.cs" />
-    <Compile Include="Modify\ReplaceConstructions.cs" />
-    <Compile Include="Modify\SaveAs.cs" />
-    <Compile Include="Modify\SolarSimulation.cs" />
-    <Compile Include="Modify\UpdateApertureConstructions.cs" />
-    <Compile Include="Modify\UpdateConstructions.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Query\DayTypes.cs" />
-    <Compile Include="Query\Simulate.cs" />
-    <Compile Include="Query\TryGetWeatherData.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="itext7">
@@ -230,124 +101,8 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj">
-      <Project>{FD5079BC-621D-44CE-8EAE-6E85510FE050}</Project>
-      <Name>SAM.Analytical.Mollier.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj">
-      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
-      <Name>SAM.Core.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SAM.Geometry.UI\SAM.Geometry.UI.csproj">
-      <Project>{c43850cf-3e58-44ec-8baf-3a7339749104}</Project>
-      <Name>SAM.Geometry.UI</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj" />
+    <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj" />
+    <ProjectReference Include="..\SAM.Geometry.UI\SAM.Geometry.UI.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Controls\SimulateControl.resx">
-      <DependentUpon>SimulateControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SimulateForm.resx">
-      <DependentUpon>SimulateForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_AddMissingObjects.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_AnalyticalModelProperties.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_ApertureConstruction.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Clean.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_ConstructionLibrary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_EditLibrary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_EnergySimulation.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Export.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Hydra.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Import.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_InternalCondition.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Location.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_MaterialLibrary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_ModelCheck.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_New.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Open.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_PrintRDS.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_ProfileLibrary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Save.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_SaveAs.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Small.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_SolarCalculator.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Space.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_T3D.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_TBD.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_TPD.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_TSD.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_WeatherData.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Wiki.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

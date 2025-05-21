@@ -7,24 +7,26 @@
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <OutputPath>..\..\build\</OutputPath>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>SAM.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SAM.Analytical">
-      <HintPath>..\..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core">
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="SAM.Core.Windows">
-      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry">
-      <HintPath>..\..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
@@ -138,7 +140,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj" />
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj" />
     <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj" />
     <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj" />
     <ProjectReference Include="..\..\WPF\SAM.Analytical.UI.WPF\SAM.Analytical.UI.WPF.csproj" />

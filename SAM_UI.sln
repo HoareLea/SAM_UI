@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Core.UI", "SAM_UI\SAM.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Weather.UI", "SAM_UI\SAM.Weather.UI\SAM.Weather.UI.csproj", "{05F1A01E-D1FD-48C7-A405-C47BD06E688C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Analytical.Mollier.UI", "Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj", "{FD5079BC-621D-44CE-8EAE-6E85510FE050}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Core.Mollier.UI", "Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj", "{FD5079BC-621D-44CE-8EAE-6E85510FE050}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Analytical.UI.WPF", "WPF\SAM.Analytical.UI.WPF\SAM.Analytical.UI.WPF.csproj", "{12C02306-411F-4A08-A5B4-6446F4A4E6B8}"
 EndProject

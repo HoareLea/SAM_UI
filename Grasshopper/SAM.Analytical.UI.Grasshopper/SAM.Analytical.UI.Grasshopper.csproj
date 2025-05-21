@@ -10,6 +10,8 @@
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -80,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj" />
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj" />
     <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj" />
   </ItemGroup>
 	  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
