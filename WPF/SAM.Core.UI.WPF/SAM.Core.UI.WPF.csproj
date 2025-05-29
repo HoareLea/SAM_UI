@@ -33,6 +33,9 @@
       <Version>1.9.7</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net48-windows' ">
+    <PackageReference Include="System.Drawing.Common" Version="9.0.5" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj" />
   </ItemGroup>
