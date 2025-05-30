@@ -25,20 +25,6 @@
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Convert\**" />
-    <Compile Remove="Create\**" />
-    <Compile Remove="Interfaces\**" />
-    <EmbeddedResource Remove="Convert\**" />
-    <EmbeddedResource Remove="Create\**" />
-    <EmbeddedResource Remove="Interfaces\**" />
-    <None Remove="Convert\**" />
-    <None Remove="Create\**" />
-    <None Remove="Interfaces\**" />
-    <Page Remove="Convert\**" />
-    <Page Remove="Create\**" />
-    <Page Remove="Interfaces\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="gbXMLSerializer">
       <HintPath>..\..\references\gbXMLSerializer.dll</HintPath>
     </Reference>

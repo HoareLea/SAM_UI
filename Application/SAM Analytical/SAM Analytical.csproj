@@ -168,12 +168,6 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
-    <PackageReference Include="System.Drawing.Common" Version="9.0.5" GeneratePathProperty="true" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="$(PkgSystem_Drawing_Common)\lib\net8.0\System.Drawing.Common.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj" />
