@@ -18,6 +18,9 @@
     <ApplicationIcon>SAM.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
@@ -28,6 +31,6 @@
     <Resource Include="SAM.ico" />
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="set SAM_DIR=$(APPDATA)\SAM\&#xD;&#xA;if not exist &quot;%25SAM_DIR%25&quot; mkdir &quot;%25SAM_DIR%25&quot;&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\files\resources&quot; &quot;$(APPDATA)\SAM\resources&quot; /Y/I/E/S&#xD;&#xA;xcopy &quot;$(SolutionDir)\files\resources&quot; &quot;$(USERPROFILE)\Documents\SAM\resources&quot; /Y/D/I/E/S&#xD;&#xA;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR%25&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.exe&quot; &quot;%25SAM_DIR%25&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.config&quot; &quot;%25SAM_DIR%25&quot;" />
+    <Exec Command="set SAM_DIR=$(APPDATA)\SAM\&#xD;&#xA;if not exist &quot;%25SAM_DIR%25&quot; mkdir &quot;%25SAM_DIR%25&quot;&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\files\resources&quot; &quot;$(APPDATA)\SAM\resources&quot; /Y/I/E/S&#xD;&#xA;xcopy &quot;$(SolutionDir)\files\resources&quot; &quot;$(USERPROFILE)\Documents\SAM\resources&quot; /Y/D/I/E/S&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)&quot; &quot;%25SAM_DIR%25&quot; /Y/I/E/S&#xD;&#xA;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR%25&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.exe&quot; &quot;%25SAM_DIR%25&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.config&quot; &quot;%25SAM_DIR%25&quot;" />
   </Target>
 </Project>
