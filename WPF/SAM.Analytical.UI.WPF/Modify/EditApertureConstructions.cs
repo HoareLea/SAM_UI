@@ -261,7 +261,8 @@ namespace SAM.Analytical.UI.WPF
 
                         if (construction.TryGetValue(Tas.ConstructionParameter.AdditionalHeatTransfer, out double additionalHeatTransfer) && !double.IsNaN(additionalHeatTransfer) && additionalHeatTransfer != 0)
                         {
-                            apertureConstruction.SetValue(Tas.ApertureConstructionParameter.AdditionalHeatTransfer, additionalHeatTransfer);
+                            apertureConstruction.SetValue(ApertureConstructionParameter.PaneAdditionalHeatTransfer, additionalHeatTransfer);
+                            apertureConstruction.SetValue(ApertureConstructionParameter.FrameAdditionalHeatTransfer, additionalHeatTransfer);
                         }
 
                         constructionManager.Remove(construction);
