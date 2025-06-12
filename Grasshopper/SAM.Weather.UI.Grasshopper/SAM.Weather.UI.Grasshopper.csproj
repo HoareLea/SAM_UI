@@ -24,11 +24,6 @@
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Component\**" />
-    <EmbeddedResource Remove="Component\**" />
-    <None Remove="Component\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="SAM.Core.Grasshopper">
       <HintPath>..\..\..\SAM\build\SAM.Core.Grasshopper.dll</HintPath>
     </Reference>

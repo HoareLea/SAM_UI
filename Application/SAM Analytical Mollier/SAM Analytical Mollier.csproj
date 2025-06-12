@@ -16,11 +16,6 @@
     <ApplicationIcon>SAM.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Query\**" />
-    <EmbeddedResource Remove="Query\**" />
-    <None Remove="Query\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="SAM.Analytical.Mollier">
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Analytical.Mollier.dll</HintPath>
     </Reference>
