@@ -81,7 +81,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             Point point = e.Location;
 
-            HitTestResult[] hitTestResults = MollierChart?.HitTest(point.X, point.Y, false, ChartElementType.DataPoint);
+            HitTestResult[] hitTestResults = MollierChart?.HitTest(point.X, point.Y, false, ChartElementType.DataPoint)?.ToArray();
             if (hitTestResults == null)
             {
                 return;
@@ -1552,7 +1552,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             List<HitTestResult> hitTestResults = new List<HitTestResult>();
 
-            HitTestResult[] hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPointLabel);
+            HitTestResult[] hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPointLabel)?.ToArray();
             if (hitTestResults_Temp != null)
             {
                 hitTestResults.AddRange(hitTestResults_Temp.ToList().FindAll(x => x.Series != null));
@@ -1560,7 +1560,7 @@ namespace SAM.Core.Mollier.UI.Controls
 
             if (hitTestResults.Count == 0)
             {
-                hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint);
+                hitTestResults_Temp = MollierChart?.HitTest(point.X, point.Y, true, ChartElementType.DataPoint)?.ToArray();
                 if (hitTestResults_Temp != null)
                 {
                     hitTestResults.AddRange(hitTestResults_Temp.ToList().FindAll(x => x.Series != null));

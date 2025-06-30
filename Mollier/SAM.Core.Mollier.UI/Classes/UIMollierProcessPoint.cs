@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using SAM.Geometry.Mollier;
-using static iText.Svg.SvgConstants;
+//using static iText.Svg.SvgConstants;
 
 namespace SAM.Core.Mollier.UI
 {

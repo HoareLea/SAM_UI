@@ -1,180 +1,43 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{64178E8A-35E7-430B-AE4E-46A6C50BDD5E}</ProjectGuid>
-    <OutputType>library</OutputType>
-    <RootNamespace>SAM.Geometry.UI.WPF</RootNamespace>
-    <AssemblyName>SAM.Geometry.UI.WPF</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <Deterministic>true</Deterministic>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <TargetFramework Condition=" '$(Configuration)' == 'net48-windows' ">net48-windows</TargetFramework>
+    <TargetFramework Condition=" '$(Configuration)' != 'net48-windows' ">net8.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <OutputPath>..\..\build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	  <Configurations>Debug;Release;net48-windows</Configurations>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="SAM.Core">
-      <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Windows">
-      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry">
-      <HintPath>..\..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Controls.Ribbon" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Classes\ActionManager.cs" />
-    <Compile Include="Classes\Action\SelectAction.cs" />
-    <Compile Include="Classes\Action\HighlightAction.cs" />
-    <Compile Include="Classes\Action\Visual3DsAction.cs" />
-    <Compile Include="Classes\EventArgs\TreeViewItemHighlightedEventArgs.cs" />
-    <Compile Include="Classes\RectangularSelector.cs" />
-    <Compile Include="Classes\EventArgs\SelectionRequestedEventArgs.cs" />
-    <Compile Include="Classes\TreeViewHighlightManager.cs" />
-    <Compile Include="Classes\TreeViewDragDropManager.cs" />
-    <Compile Include="Classes\EventArgs\TreeViewItemDroppedEventArgs.cs" />
-    <Compile Include="Classes\EventArgs\ZoomRequestedEventArgs.cs" />
-    <Compile Include="Classes\UIGeometryObjectModel.cs" />
-    <Page Include="Controls\ViewportControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\GeometryWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Controls\ViewportControl.xaml.cs">
-      <DependentUpon>ViewportControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Convert\ToMedia3D\MeshGeometry3D.cs" />
-    <Compile Include="Convert\ToMedia3D\Point3D.cs" />
-    <Compile Include="Convert\ToMedia3D\ModelVisual3D.cs" />
-    <Compile Include="Convert\ToMedia3D\Vector3D.cs" />
-    <Compile Include="Convert\ToSAM\Point2D.cs" />
-    <Compile Include="Convert\ToSAM\Point3D.cs" />
-    <Compile Include="Convert\ToSAM\Vector3D.cs" />
-    <Compile Include="Create\Model3D.cs" />
-    <Compile Include="Create\Point3DCollection.cs" />
-    <Compile Include="Delegates\ObjectDoubleClickedEventHandler.cs" />
-    <Compile Include="Delegates\ObjectContextMenuOpeningEventHandler.cs" />
-    <Compile Include="Delegates\SelectionRequestedEventHandler.cs" />
-    <Compile Include="Delegates\TreeViewItemHighlightedEventHandler.cs" />
-    <Compile Include="Delegates\TreeViewItemDroppedEventHandler.cs" />
-    <Compile Include="Delegates\ZoomRequestedEventHandler.cs" />
-    <Compile Include="Delegates\ObjectHooveredEventHandler.cs" />
-    <Compile Include="Enums\EventResult.cs" />
-    <Compile Include="Enums\SelectionType.cs" />
-    <Compile Include="Enums\RectangularSelectorMode.cs" />
-    <Compile Include="Interfaces\IAction.cs" />
-    <Compile Include="Modify\Opacity.cs" />
-    <Compile Include="Modify\Select.cs" />
-    <Compile Include="Modify\Highlight.cs" />
-    <Compile Include="Modify\Restore.cs" />
-    <Compile Include="Modify\Rotate.cs" />
-    <Compile Include="Query\Distance.cs" />
-    <Compile Include="Query\SelectedVisual3Ds.cs" />
-    <Compile Include="Query\DoubleSided.cs" />
-    <Compile Include="Query\Bounds.cs" />
-    <Compile Include="Query\ContainsAny.cs" />
-    <Compile Include="Query\HighlightCurveAppearance.cs" />
-    <Compile Include="Query\SelectionSurfaceAppearance.cs" />
-    <Compile Include="Query\LookDirection.cs" />
-    <Compile Include="Query\Plane.cs" />
-    <Compile Include="Query\Window.cs" />
-    <Compile Include="Windows\GeometryWindow.xaml.cs">
-      <DependentUpon>GeometryWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HelixToolkit.Wpf">
-      <Version>2.25.0</Version>
+      <Version>2.27.0</Version>
+    </PackageReference>
+    <PackageReference Include="NetOfficeFw.Excel">
+      <Version>1.9.7</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
-      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
-      <Name>SAM.Core.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SAM_UI\SAM.Geometry.UI\SAM.Geometry.UI.csproj">
-      <Project>{c43850cf-3e58-44ec-8baf-3a7339749104}</Project>
-      <Name>SAM.Geometry.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SAM.Core.UI.WPF\SAM.Core.UI.WPF.csproj">
-      <Project>{4abd4416-11f4-46be-98ab-37e5dcfe79e1}</Project>
-      <Name>SAM.Core.UI.WPF</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj" />
+    <ProjectReference Include="..\..\SAM_UI\SAM.Geometry.UI\SAM.Geometry.UI.csproj" />
+    <ProjectReference Include="..\SAM.Core.UI.WPF\SAM.Core.UI.WPF.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\SAM_Open.png" />
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

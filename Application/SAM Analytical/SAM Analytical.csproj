@@ -1,120 +1,63 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E83588A3-BAAD-4B4F-B978-FEFCFF8C34C2}</ProjectGuid>
+	  <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
     <RootNamespace>SAM.Analytical.UI</RootNamespace>
-    <AssemblyName>SAM Analytical</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <OutputPath>..\..\build\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\build\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <Configurations>Debug;Release;net48-windows</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>SAM.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Interop.TAS3D">
+      <HintPath>..\..\references_buildonly\Interop.TAS3D.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TasConv">
+      <HintPath>..\..\references_buildonly\Interop.TasConv.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TBD">
+      <HintPath>..\..\references_buildonly\Interop.TBD.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TCD">
+      <HintPath>..\..\references_buildonly\Interop.TCD.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TCR">
+      <HintPath>..\..\references_buildonly\Interop.TCR.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TIC">
+      <HintPath>..\..\references_buildonly\Interop.TIC.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TPD">
+      <HintPath>..\..\references_buildonly\Interop.TPD.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TSD">
+      <HintPath>..\..\references_buildonly\Interop.TSD.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.TWD">
+      <HintPath>..\..\references_buildonly\Interop.TWD.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Analytical">
-      <HintPath>..\..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Analytical.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Analytical.Windows, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Analytical.Windows.dll</HintPath>
+    <Reference Include="SAM.Core">
+      <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core, Version=1.0.8181.22169, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM\build\SAM.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SAM.Core.Tas, Version=1.0.8182.19636, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\SAM_Tas\build\SAM.Core.Tas.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="SAM.Core.Windows">
-      <HintPath>..\..\..\..\SAM_Windows\Framework\build\SAM.Core.Windows.dll</HintPath>
+      <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry">
-      <HintPath>..\..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
+      <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="system.windows.controls.ribbon" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="UIAutomationTypes" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\SAM.png" />
@@ -211,29 +154,27 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HelixToolkit.Wpf">
-      <Version>2.25.0</Version>
+      <Version>2.27.0</Version>
+    </PackageReference>
+    <PackageReference Include="iTextSharp">
+      <Version>5.5.13.4</Version>
+    </PackageReference>
+    <PackageReference Include="NetOfficeFw.Excel">
+      <Version>1.9.7</Version>
+    </PackageReference>
+    <PackageReference Include="NetTopologySuite">
+      <Version>2.6.0</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Analytical.Mollier.UI.csproj">
-      <Project>{fd5079bc-621d-44ce-8eae-6e85510fe050}</Project>
-      <Name>SAM.Analytical.Mollier.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj">
-      <Project>{fb22aa02-a8b6-4e1a-9581-d660f6e322f8}</Project>
-      <Name>SAM.Analytical.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj">
-      <Project>{ad13b1af-2b0b-4d82-80fa-01729d6bc73e}</Project>
-      <Name>SAM.Core.UI</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\WPF\SAM.Analytical.UI.WPF\SAM.Analytical.UI.WPF.csproj">
-      <Project>{12c02306-411f-4a08-a5b4-6446f4a4e6b8}</Project>
-      <Name>SAM.Analytical.UI.WPF</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj" />
+    <ProjectReference Include="..\..\SAM_UI\SAM.Analytical.UI\SAM.Analytical.UI.csproj" />
+    <ProjectReference Include="..\..\SAM_UI\SAM.Core.UI\SAM.Core.UI.csproj" />
+    <ProjectReference Include="..\..\WPF\SAM.Analytical.UI.WPF\SAM.Analytical.UI.WPF.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="SAM.ico" />
@@ -247,17 +188,7 @@
   <ItemGroup>
     <Resource Include="Resources\SAM_MollierDiagram.PNG" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>set SAM_DIR=$(APPDATA)\SAM\
-if not exist "%25SAM_DIR%25" mkdir "%25SAM_DIR%25"
-
-xcopy "$(SolutionDir)\files\resources" "$(APPDATA)\SAM\resources" /Y/I/E/S
-xcopy "$(SolutionDir)\files\resources" "$(USERPROFILE)\Documents\SAM\resources" /Y/D/I/E/S
-
-copy "$(TargetDir)*.dll" "%25SAM_DIR%25"
-copy "$(TargetDir)*.exe" "%25SAM_DIR%25"
-copy "$(TargetDir)*.config" "%25SAM_DIR%25"</PostBuildEvent>
-  </PropertyGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="set SAM_DIR=$(APPDATA)\SAM\&#xD;&#xA;if not exist &quot;%25SAM_DIR%25&quot; mkdir &quot;%25SAM_DIR%25&quot;&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(SolutionDir)\files\resources&quot; &quot;$(APPDATA)\SAM\resources&quot; /Y/I/E/S&#xD;&#xA;xcopy &quot;$(SolutionDir)\files\resources&quot; &quot;$(USERPROFILE)\Documents\SAM\resources&quot; /Y/D/I/E/S&#xD;&#xA;&#xD;&#xA;xcopy &quot;$(TargetDir)&quot; &quot;%25SAM_DIR%25&quot; /Y/I/E/S&#xD;&#xA;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;%25SAM_DIR%25&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.exe&quot; &quot;%25SAM_DIR%25&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.config&quot; &quot;%25SAM_DIR%25&quot;" />
+  </Target>
 </Project>
