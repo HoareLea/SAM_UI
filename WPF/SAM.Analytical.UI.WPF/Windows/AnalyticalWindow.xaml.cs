@@ -172,6 +172,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_GlazingCalculator.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
             RibbonButton_GlazingCalculator.Click += RibbonButton_GlazingCalculator_Click;
 
+            RibbonButton_CreateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_CreateCases.Click += RibbonButton_CreateCases_Click;
+
             RibbonMenuButton_PartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
 
             RibbonButton_OpenPartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
@@ -272,6 +275,16 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_CreateCases_Click(object sender, RoutedEventArgs e)
+        {
+            if(uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
+            {
+                return;
+            }
+
+            AnalyticalModel? analyticalModel_Case = Create.AnalyticalModel_ByWindowSize(analyticalModel, uIAnalyticalModel.Path);
         }
 
         private void RibbonButton_RemoveAirMovementObjects_Click(object sender, RoutedEventArgs e)

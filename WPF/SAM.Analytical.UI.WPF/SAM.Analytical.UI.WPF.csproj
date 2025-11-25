@@ -25,6 +25,12 @@
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Controls\Filter\**" />
+    <EmbeddedResource Remove="Controls\Filter\**" />
+    <None Remove="Controls\Filter\**" />
+    <Page Remove="Controls\Filter\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="gbXMLSerializer">
       <HintPath>..\..\references\gbXMLSerializer.dll</HintPath>
     </Reference>
@@ -145,8 +151,5 @@
     <ProjectReference Include="..\..\SAM_UI\SAM.Geometry.UI\SAM.Geometry.UI.csproj" />
     <ProjectReference Include="..\SAM.Core.UI.WPF\SAM.Core.UI.WPF.csproj" />
     <ProjectReference Include="..\SAM.Geometry.UI.WPF\SAM.Geometry.UI.WPF.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controls\Filter\" />
   </ItemGroup>
 </Project>
