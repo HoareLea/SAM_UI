@@ -284,7 +284,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            AnalyticalModel? analyticalModel_Case = Create.AnalyticalModel_ByWindowSize(analyticalModel, uIAnalyticalModel.Path);
+            List<AnalyticalModel>? analyticalModel_Case = Create.AnalyticalModels(analyticalModel);
         }
 
         private void RibbonButton_RemoveAirMovementObjects_Click(object sender, RoutedEventArgs e)

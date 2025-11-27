@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Documents;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -12,16 +14,16 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
-        public double ApertureScaleFactor
+        public IEnumerable<WindowSizeCase>? WindowSizeCases
         {
             get
             {
-                return CreateCaseByWindowSizeUserControl_Main.ApertureScaleFactor;
+                return CreateCaseByWindowSizeControl_Main.WindowSizeCases;
             }
 
             set
             {
-                CreateCaseByWindowSizeUserControl_Main.ApertureScaleFactor = value;
+                CreateCaseByWindowSizeControl_Main.WindowSizeCases = value;
             }
         }
 
