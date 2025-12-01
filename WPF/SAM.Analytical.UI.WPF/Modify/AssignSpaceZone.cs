@@ -34,9 +34,9 @@ namespace SAM.Analytical.UI.WPF
 
             bool parallel = caseSimulationWindow.Parallel;
 
+            throw new System.NotImplementedException();
 
-
-            Analytical.Grasshopper.Tas.Modify.RunWorkflow(uIAnalyticalModel.JSAMObject, workflowSettings, directory, parallel);
+            //Analytical.Grasshopper.Tas.Modify.RunWorkflow(uIAnalyticalModel.JSAMObject, workflowSettings, directory, parallel);
 
         }
     }
