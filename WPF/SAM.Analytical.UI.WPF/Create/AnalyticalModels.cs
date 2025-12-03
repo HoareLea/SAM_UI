@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using SAM.Analytical.Classes;
 using System.Collections.Generic;
 using System.Windows;
 
@@ -16,7 +17,7 @@ namespace SAM.Analytical.UI.WPF
 
             CreateCaseByWindowSizeWindow createCaseByWindowSizeWindow = new()
             {
-                WindowSizeCases = [ new WindowSizeCase() { ApertureScaleFactor = 0.8 }]
+                WindowSizeCases = [ new WindowSizeCase(0.8, null)]
             };
 
             bool? dialogResult = null;

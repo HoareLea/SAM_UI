@@ -15,6 +15,7 @@ namespace SAM.Core.UI.WPF
         private class Item
         {
             public string Text { get; set; }
+            
             public IJSAMObject JSAMObject { get; set; }
 
             public Item(string text, IJSAMObject jSAMObject)

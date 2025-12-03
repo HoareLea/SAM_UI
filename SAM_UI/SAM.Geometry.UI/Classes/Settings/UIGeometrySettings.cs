@@ -3,7 +3,6 @@ using SAM.Core;
 using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SAM.Geometry.UI
 {

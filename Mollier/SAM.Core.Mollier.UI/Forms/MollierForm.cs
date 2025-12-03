@@ -1,5 +1,4 @@
-﻿using NetOffice.Tools;
-using SAM.Geometry.Mollier;
+﻿using SAM.Geometry.Mollier;
 using System;
 using System.Collections.Generic;
 using System.Linq;

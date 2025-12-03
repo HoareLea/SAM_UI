@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace SAM.Analytical.UI.WPF
 {
     public static partial class Query
     {
-        public static List<Color> Colors(this IEnumerable<InternalConditionData> internalConditionDatas)
+        public static List<Color>? Colors(this IEnumerable<InternalConditionData> internalConditionDatas)
         {
             if(internalConditionDatas == null)
             {
                 return null;
             }
 
-            HashSet<Color> hashSet = new HashSet<Color>();
+            HashSet<Color> hashSet = [];
             foreach(InternalConditionData internalConditionData in internalConditionDatas)
             {
                 if(internalConditionData == null)
@@ -30,7 +29,7 @@ namespace SAM.Analytical.UI.WPF
 
             }
 
-            return hashSet.ToList();
+            return [.. hashSet];
         }
     }
 }

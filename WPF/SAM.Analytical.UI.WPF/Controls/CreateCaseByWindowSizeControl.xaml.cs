@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using SAM.Analytical.Classes;
+using System.Collections.Generic;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
@@ -14,20 +13,20 @@ namespace SAM.Analytical.UI.WPF
         {
             InitializeComponent();
 
-            DataContext = new MainViewModel();
+            DataContext = new CreateCaseViewModel<WindowSizeCase>();
         }
 
         public IEnumerable<WindowSizeCase>? WindowSizeCases
         {
             get
             {
-                if (DataContext is not MainViewModel mainViewModel)
+                if (DataContext is not CreateCaseViewModel<WindowSizeCase> createCaseViewModel)
                 {
                     return null;
                 }
 
                 List<WindowSizeCase> result = [];
-                foreach(WindowSizeCase windowSizeCase in mainViewModel.Items)
+                foreach(WindowSizeCase windowSizeCase in createCaseViewModel.Items)
                 {
                     result.Add(windowSizeCase);
                 }
@@ -37,12 +36,12 @@ namespace SAM.Analytical.UI.WPF
 
             set
             {
-                if (DataContext is not MainViewModel mainViewModel)
+                if (DataContext is not CreateCaseViewModel<WindowSizeCase> createCaseViewModel)
                 {
                     return;
                 }
 
-                mainViewModel.Items.Clear();
+                createCaseViewModel.Items.Clear();
 
                 if (value == null)
                 {
@@ -51,43 +50,14 @@ namespace SAM.Analytical.UI.WPF
 
                 foreach(WindowSizeCase windowSizeCase in value)
                 {
-                    mainViewModel.Items.Add(windowSizeCase);
+                    createCaseViewModel.Items.Add(windowSizeCase);
                 }
             }
         }
-    }
 
-    public class WindowSizeCase : INotifyPropertyChanged
-    {
-        private double apertureScaleFactor;
-
-        public double ApertureScaleFactor
+        private void button_Selection_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            get
-            {
-                return apertureScaleFactor; 
-            }
 
-            set
-            {
-                apertureScaleFactor = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ApertureScaleFactor)));
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-    }
-
-    public class MainViewModel
-    {
-        public ObservableCollection<WindowSizeCase> Items { get; set; }
-
-        public MainViewModel()
-        {
-            Items = new ObservableCollection<WindowSizeCase>
-            {
-                new() { ApertureScaleFactor = 0.8 }
-            };
         }
     }
 }

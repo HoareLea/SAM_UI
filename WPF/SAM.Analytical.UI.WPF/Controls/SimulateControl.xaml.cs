@@ -25,6 +25,7 @@ namespace SAM.Analytical.UI.WPF
         public void Load()
         {
             selectSAMObjectComboBoxControl_TextMap.ValidateFunc = new Func<IJSAMObject, bool>(x => x is TextMap);
+            
             selectSAMObjectComboBoxControl_WeatherData.ValidateFunc = new Func<IJSAMObject, bool>(x => x is WeatherData);
             selectSAMObjectComboBoxControl_WeatherData.ReadFunc = new Func<string, IJSAMObject>(x => 
             {

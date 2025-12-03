@@ -1,29 +1,30 @@
 ﻿using SAM.Analytical.Classes;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Documents;
 
 namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
-    /// Interaction logic for CreateCaseByWindowSizeWindow.xaml
+    /// Interaction logic for CreateCaseByApertureConstructionWindow.xaml
     /// </summary>
-    public partial class CreateCaseByWindowSizeWindow : System.Windows.Window
+    public partial class CreateCaseByApertureConstructionWindow : System.Windows.Window
     {
-        public CreateCaseByWindowSizeWindow()
+        public CreateCaseByApertureConstructionWindow()
         {
             InitializeComponent();
         }
 
-        public IEnumerable<WindowSizeCase>? WindowSizeCases
+        public IEnumerable<ApertureConstructionCase>? ApertureConstructionCases
         {
             get
             {
-                return CreateCaseByWindowSizeControl_Main.WindowSizeCases;
+                return CreateCaseByApertureConstructionControl_Main.ApertureConstructionCases;
             }
 
             set
             {
-                CreateCaseByWindowSizeControl_Main.WindowSizeCases = value;
+                CreateCaseByApertureConstructionControl_Main.ApertureConstructionCases = value;
             }
         }
 
