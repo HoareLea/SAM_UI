@@ -17,6 +17,7 @@ namespace SAM.Analytical.UI.WPF
     public partial class CreateCaseByApertureConstructionControl : UserControl
     {
         private AnalyticalModel analyticalModel;
+        private CaseSelection caseSelection;
 
         public CreateCaseByApertureConstructionControl()
         {
@@ -52,7 +53,7 @@ namespace SAM.Analytical.UI.WPF
 
                     if (selectSAMObjectComboBoxControl.GetJSAMObject<ApertureConstruction>() is ApertureConstruction apertureConstruction)
                     {
-                        result.Add(new ApertureConstructionCase(apertureConstruction, null));
+                        result.Add(new ApertureConstructionCase(apertureConstruction, caseSelection));
                     }
                 }
 
@@ -83,6 +84,8 @@ namespace SAM.Analytical.UI.WPF
 
                     selectSAMObjectComboBoxControl.Add(apertureConstructionCase.ApertureConstruction?.Name, apertureConstructionCase.ApertureConstruction);
                     selectSAMObjectComboBoxControl.SelectedText = apertureConstructionCase.ApertureConstruction?.Name;
+
+                    caseSelection = apertureConstructionCase.CaseSelection;
                 }
             }
         }
@@ -190,12 +193,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            foreach (ApertureConstructionCase windowSizeCase in apertureConstructionCases)
-            {
-                windowSizeCase.CaseSelection = new FilterSelection(filterWindow.UIFilter);
-            }
-
-            ApertureConstructionCases = apertureConstructionCases;
+            caseSelection = new FilterSelection(filterWindow.UIFilter);
         }
 
         private void FilterWindow_FilterAdding(object sender, FilterAddingEventArgs e)

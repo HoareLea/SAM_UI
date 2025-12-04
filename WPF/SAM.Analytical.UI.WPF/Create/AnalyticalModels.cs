@@ -15,18 +15,31 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            CreateCaseByWindowSizeWindow createCaseByWindowSizeWindow = new()
+            bool? dialogResult;
+
+            CreateCasesWindow createCasesWindow = new()
             {
-                WindowSizeCases = [ new WindowSizeCase(0.8, null)]
+                AnalyticalModel = analyticalModel
             };
 
-            bool? dialogResult = null;
-
-            dialogResult = createCaseByWindowSizeWindow.ShowDialog();
+            dialogResult = createCasesWindow.ShowDialog();
             if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
             {
                 return null;
             }
+
+            List<Cases> cases = createCasesWindow.Cases;
+            if (cases is null)
+            {
+                return null;
+            }
+
+            List<AnalyticalModel> result = UI.Create.AnalyticalModels(analyticalModel, cases);
+            if(result == null || result.Count == 0)
+            {
+                return null;
+            }
+
 
             OpenFolderDialog openFolderDialog = new OpenFolderDialog();
             dialogResult = openFolderDialog.ShowDialog();
@@ -37,17 +50,9 @@ namespace SAM.Analytical.UI.WPF
 
             string directory = openFolderDialog.FolderName;
 
-            List<AnalyticalModel> result = [];
-
             int index = 1;
-            foreach(WindowSizeCase windowSizeCase in createCaseByWindowSizeWindow.WindowSizeCases)
+            foreach(AnalyticalModel analyticalModel_Temp in result)
             {
-                AnalyticalModel analyticalModel_Temp = Analytical.Create.AnalyticalModel_ByWindowSize(analyticalModel, windowSizeCase.ApertureScaleFactor);
-                if(analyticalModel_Temp == null)
-                {
-                    continue;
-                }
-
                 string name = index.ToString();
 
                 if(analyticalModel_Temp.TryGetValue("CaseDescription", out string caseDescription) && !string.IsNullOrWhiteSpace(caseDescription))

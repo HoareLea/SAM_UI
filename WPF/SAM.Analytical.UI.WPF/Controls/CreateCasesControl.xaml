@@ -11,7 +11,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="30"/>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="190"/>
         </Grid.ColumnDefinitions>
         
         <ListBox x:Name="ListBox_Cases" Grid.Column="0" Margin="5,5,5,5"/>
