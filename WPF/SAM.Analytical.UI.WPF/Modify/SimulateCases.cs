@@ -15,7 +15,10 @@ namespace SAM.Analytical.UI.WPF
 
             bool? dialogResult;
 
-            CreateCasesWindow createCasesWindow = new();
+            CreateCasesWindow createCasesWindow = new()
+            {
+                AnalyticalModel = analyticalModel
+            };
 
             dialogResult = createCasesWindow.ShowDialog();
             if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
@@ -29,7 +32,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<AnalyticalModel> analyticalModels = Analytical.Create.AnalyticalModels(analyticalModel, cases);
+            List<AnalyticalModel> analyticalModels = UI.Create.AnalyticalModels(analyticalModel, cases);
 
             CaseSimulationWindow caseSimulationWindow = new()
             {

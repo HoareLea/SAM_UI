@@ -14,6 +14,18 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
+        public AnalyticalModel? AnalyticalModel
+        {
+            get
+            {
+                return CreateCaseByWindowSizeControl_Main.AnalyticalModel;
+            }
+            set
+            {
+                CreateCaseByWindowSizeControl_Main.AnalyticalModel = value;
+            }
+        }
+
         public IEnumerable<WindowSizeCase>? WindowSizeCases
         {
             get
@@ -26,7 +38,7 @@ namespace SAM.Analytical.UI.WPF
                 CreateCaseByWindowSizeControl_Main.WindowSizeCases = value;
             }
         }
-
+        
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;

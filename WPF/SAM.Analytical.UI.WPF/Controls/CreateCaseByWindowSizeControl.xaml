@@ -18,7 +18,7 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <Button Grid.Row="1" x:Name="button_Selection" Content="Selection"  Margin="0,10,10,10" HorizontalAlignment="Right" Width="70" Click="button_Selection_Click" IsEnabled="False"/>
+        <Button Grid.Row="1" x:Name="button_Selection" Content="Selection"  Margin="0,10,10,10" HorizontalAlignment="Right" Width="70" Click="button_Selection_Click" IsEnabled="True"/>
 
     </Grid>
 </UserControl>

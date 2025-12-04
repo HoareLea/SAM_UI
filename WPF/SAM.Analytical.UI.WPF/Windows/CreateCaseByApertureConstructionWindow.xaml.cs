@@ -15,6 +15,18 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
+        public AnalyticalModel AnalyticalModel
+        {
+            get
+            {
+                return CreateCaseByApertureConstructionControl_Main.AnalyticalModel;
+            }
+            set
+            {
+                CreateCaseByApertureConstructionControl_Main.AnalyticalModel = value;
+            }
+        }
+
         public IEnumerable<ApertureConstructionCase>? ApertureConstructionCases
         {
             get

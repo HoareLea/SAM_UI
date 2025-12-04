@@ -1,6 +1,8 @@
 ﻿using SAM.Analytical.Classes;
 using SAM.Core;
+using SAM.Core.UI;
 using SAM.Core.UI.WPF;
+using SAM.Core.Windows.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,11 +16,26 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class CreateCaseByApertureConstructionControl : UserControl
     {
+        private AnalyticalModel analyticalModel;
+
         public CreateCaseByApertureConstructionControl()
         {
             InitializeComponent();
 
             Add();
+        }
+
+        public AnalyticalModel? AnalyticalModel
+        {
+            get
+            {
+                return analyticalModel;
+            }
+
+            set
+            {
+                analyticalModel = value;
+            }
         }
 
         public IEnumerable<ApertureConstructionCase>? ApertureConstructionCases
@@ -141,6 +158,67 @@ namespace SAM.Analytical.UI.WPF
             StackPanel_Main.Children.Add(result);
 
             return result;
+        }
+
+        private void button_Selection_Click(object sender, RoutedEventArgs e)
+        {
+            AdjacencyCluster? adjacencyCluster = analyticalModel?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            List<ApertureConstructionCase>? apertureConstructionCases = ApertureConstructionCases?.ToList();
+
+            IUIFilter? uIFilter = null;
+            if (apertureConstructionCases != null && apertureConstructionCases.Count != 0)
+            {
+                List<FilterSelection>? filterSelections = apertureConstructionCases.ConvertAll(x => x.CaseSelection as FilterSelection)?.Where(x => x != null)?.ToList();
+                if (filterSelections != null && filterSelections.Count != 0)
+                {
+                    uIFilter = filterSelections.Find(x => x.Filter is IUIFilter)?.Filter as IUIFilter;
+                }
+            }
+
+            List<IJSAMObject>? jSAMObjects = adjacencyCluster?.GetApertures()?.ConvertAll(x => x as IJSAMObject);
+
+            FilterWindow filterWindow = new FilterWindow() { Types = [typeof(Aperture)], Type = typeof(Aperture), UIFilter = uIFilter, UIFilters = null, JSAMObjects = jSAMObjects, AdjacencyCluster = adjacencyCluster };
+            filterWindow.FilterAdding += FilterWindow_FilterAdding;
+            bool? result = filterWindow.ShowDialog();
+            if (result == null || !result.HasValue || !result.Value)
+            {
+                return;
+            }
+
+            foreach (ApertureConstructionCase windowSizeCase in apertureConstructionCases)
+            {
+                windowSizeCase.CaseSelection = new FilterSelection(filterWindow.UIFilter);
+            }
+
+            ApertureConstructionCases = apertureConstructionCases;
+        }
+
+        private void FilterWindow_FilterAdding(object sender, FilterAddingEventArgs e)
+        {
+            e.Handled = true;
+
+            Type type = e.Type;
+            List<IUIFilter> uIFilters = UI.Query.IUIFilters(type, analyticalModel?.AdjacencyCluster);
+            if (uIFilters == null || uIFilters.Count == 0)
+            {
+                return;
+            }
+
+            using (SearchForm<IUIFilter> searchForm = new SearchForm<IUIFilter>("Select Filter", uIFilters, x => x.Name))
+            {
+                searchForm.SelectionMode = System.Windows.Forms.SelectionMode.One;
+                if (searchForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                e.UIFilter = searchForm.SelectedItems.FirstOrDefault();
+            }
         }
 
         private void SelectSAMObjectComboBoxControl_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -26,6 +26,18 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public AnalyticalModel? AnalyticalModel
+        {
+            get
+            {
+                return CreateCasesControl_Main.AnalyticalModel;
+            }
+            set
+            {
+                CreateCasesControl_Main.AnalyticalModel = value;
+            }
+        }
+
         private void button_Cancel_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DialogResult = false;

@@ -12,6 +12,8 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class CreateCasesControl : UserControl
     {
+        private AnalyticalModel analyticalModel;
+
         public CreateCasesControl()
         {
             InitializeComponent();
@@ -61,6 +63,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public AnalyticalModel AnalyticalModel
+        {
+            get
+            {
+                return analyticalModel;
+            }
+
+            set
+            {
+                analyticalModel = value;
+            }
+        }
+
         private void Add(Cases cases, int index = -1)
         {
             if (cases is null)
@@ -88,7 +103,11 @@ namespace SAM.Analytical.UI.WPF
 
         private void Add_ApertureConstructionCases(IEnumerable<ApertureConstructionCase>? apertureConstructionCases = null, int index = -1)
         {
-            CreateCaseByApertureConstructionWindow createCaseByApertureConstructionWindow = new();
+            CreateCaseByApertureConstructionWindow createCaseByApertureConstructionWindow = new()
+            {
+                AnalyticalModel = analyticalModel
+            };
+
             if (apertureConstructionCases is not null && apertureConstructionCases.Any())
             {
                 createCaseByApertureConstructionWindow.ApertureConstructionCases = apertureConstructionCases;
@@ -143,7 +162,8 @@ namespace SAM.Analytical.UI.WPF
 
             CreateCaseByWindowSizeWindow createCaseByWindowSizeWindow = new()
             {
-                WindowSizeCases = windowSizeCases
+                WindowSizeCases = windowSizeCases,
+                AnalyticalModel = analyticalModel
             };
 
             bool? dialogResult = null;
@@ -239,7 +259,7 @@ namespace SAM.Analytical.UI.WPF
 
             string? path = null;
 
-            using (System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog())
+            using (System.Windows.Forms.SaveFileDialog saveFileDialog = new())
             {
                 saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
                 saveFileDialog.FilterIndex = 1;
