@@ -28,7 +28,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 return "Aperture Construction Case";
             }
-            else if (type == typeof(ShadeCase))
+            else if (type == typeof(FinShadeCase))
             {
                 return "Shade Case";
             }

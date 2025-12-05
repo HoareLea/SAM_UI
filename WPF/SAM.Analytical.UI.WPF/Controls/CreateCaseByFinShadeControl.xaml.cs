@@ -6,22 +6,23 @@ using SAM.Core.Windows.Forms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
-    /// Interaction logic for CreateCaseByWindowSize.xaml
+    /// Interaction logic for CreateCaseByFinShadeControl.xaml
     /// </summary>
-    public partial class CreateCaseByWindowSizeControl : UserControl
+    public partial class CreateCaseByFinShadeControl : UserControl
     {
         private AnalyticalModel analyticalModel;
 
-        public CreateCaseByWindowSizeControl()
+        public CreateCaseByFinShadeControl()
         {
             InitializeComponent();
 
-            DataContext = new CreateCaseViewModel<WindowSizeCase>();
+            DataContext = new CreateCaseViewModel<FinShadeCase>();
         }
 
         public AnalyticalModel? AnalyticalModel
@@ -37,19 +38,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public IEnumerable<WindowSizeCase>? WindowSizeCases
+        public IEnumerable<FinShadeCase>? FinShadeCases
         {
             get
             {
-                if (DataContext is not CreateCaseViewModel<WindowSizeCase> createCaseViewModel)
+                if (DataContext is not CreateCaseViewModel<FinShadeCase> createCaseViewModel)
                 {
                     return null;
                 }
 
-                List<WindowSizeCase> result = [];
-                foreach(WindowSizeCase windowSizeCase in createCaseViewModel.Items)
+                List<FinShadeCase> result = [];
+                foreach (FinShadeCase finShadeCase in createCaseViewModel.Items)
                 {
-                    result.Add(windowSizeCase);
+                    result.Add(finShadeCase);
                 }
 
                 return result;
@@ -57,7 +58,7 @@ namespace SAM.Analytical.UI.WPF
 
             set
             {
-                if (DataContext is not CreateCaseViewModel<WindowSizeCase> createCaseViewModel)
+                if (DataContext is not CreateCaseViewModel<FinShadeCase> createCaseViewModel)
                 {
                     return;
                 }
@@ -69,14 +70,14 @@ namespace SAM.Analytical.UI.WPF
                     return;
                 }
 
-                foreach(WindowSizeCase windowSizeCase in value)
+                foreach (FinShadeCase finShadeCase in value)
                 {
-                    createCaseViewModel.Items.Add(windowSizeCase);
+                    createCaseViewModel.Items.Add(finShadeCase);
                 }
             }
         }
-        
-        private void button_Selection_Click(object sender, System.Windows.RoutedEventArgs e)
+
+        private void button_Selection_Click(object sender, RoutedEventArgs e)
         {
             AdjacencyCluster? adjacencyCluster = analyticalModel?.AdjacencyCluster;
             if (adjacencyCluster == null)
@@ -84,13 +85,13 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            List<WindowSizeCase>? windowSizeCases = WindowSizeCases?.ToList();
+            List<FinShadeCase>? finShadeCases = FinShadeCases?.ToList();
 
             IUIFilter? uIFilter = null;
-            if(windowSizeCases != null && windowSizeCases.Count != 0)
+            if (finShadeCases != null && finShadeCases.Count != 0)
             {
-                List<FilterSelection>? filterSelections = windowSizeCases.ConvertAll(x => x.CaseSelection as FilterSelection)?.Where(x => x != null)?.ToList();
-                if(filterSelections != null && filterSelections.Count != 0)
+                List<FilterSelection>? filterSelections = finShadeCases.ConvertAll(x => x.CaseSelection as FilterSelection)?.Where(x => x != null)?.ToList();
+                if (filterSelections != null && filterSelections.Count != 0)
                 {
                     uIFilter = filterSelections.Find(x => x.Filter is IUIFilter)?.Filter as IUIFilter;
                 }
@@ -106,12 +107,12 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            foreach(WindowSizeCase windowSizeCase in windowSizeCases)
+            foreach (FinShadeCase finShadeCase in finShadeCases)
             {
-                windowSizeCase.CaseSelection = new FilterSelection(filterWindow.UIFilter);
+                finShadeCase.CaseSelection = new FilterSelection(filterWindow.UIFilter);
             }
 
-            WindowSizeCases = windowSizeCases;
+            FinShadeCases = finShadeCases;
         }
 
         private void FilterWindow_FilterAdding(object sender, FilterAddingEventArgs e)

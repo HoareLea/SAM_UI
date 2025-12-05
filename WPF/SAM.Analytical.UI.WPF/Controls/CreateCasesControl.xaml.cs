@@ -33,6 +33,19 @@ namespace SAM.Analytical.UI.WPF
             ListBox_Cases.ContextMenu = contextMenu;
         }
 
+        public AnalyticalModel AnalyticalModel
+        {
+            get
+            {
+                return analyticalModel;
+            }
+
+            set
+            {
+                analyticalModel = value;
+            }
+        }
+
         public List<Cases> Cases
         {
             get
@@ -62,20 +75,6 @@ namespace SAM.Analytical.UI.WPF
                 SetCases(value);
             }
         }
-
-        public AnalyticalModel AnalyticalModel
-        {
-            get
-            {
-                return analyticalModel;
-            }
-
-            set
-            {
-                analyticalModel = value;
-            }
-        }
-
         private void Add(Cases cases, int index = -1)
         {
             if (cases is null)
@@ -127,6 +126,35 @@ namespace SAM.Analytical.UI.WPF
             }
 
             Add(Analytical.Create.Cases(apertureConstructionCases_Temp), index);
+        }
+
+        private void Add_FinShadeCases(IEnumerable<FinShadeCase>? finShadeCases = null, int index = -1)
+        {
+            if (finShadeCases is null)
+            {
+                finShadeCases = [new FinShadeCase(false, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, null)];
+            }
+
+            CreateCaseByFinShadeWindow createCaseByWindowSizeWindow = new()
+            {
+                FinShadeCases = finShadeCases,
+                AnalyticalModel = analyticalModel
+            };
+
+            bool? dialogResult = null;
+
+            dialogResult = createCaseByWindowSizeWindow.ShowDialog();
+            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
+            {
+                return;
+            }
+
+            if (createCaseByWindowSizeWindow.FinShadeCases is not IEnumerable<FinShadeCase> finShadeCases_Temp)
+            {
+                return;
+            }
+
+            Add(Analytical.Create.Cases(finShadeCases_Temp), index);
         }
 
         private void Add_WeatherDataCases(IEnumerable<WeatherDataCase>? weatherDataCases = null, int index = -1)
@@ -181,15 +209,14 @@ namespace SAM.Analytical.UI.WPF
 
             Add(Analytical.Create.Cases(windowSizeCases_Temp), index);
         }
-        
         private void Button_CaseByApertureConstruction_Click(object sender, RoutedEventArgs e)
         {
             Add_ApertureConstructionCases();
         }
 
-        private void Button_CaseByShade_Click(object sender, RoutedEventArgs e)
+        private void Button_CaseByFinShade_Click(object sender, RoutedEventArgs e)
         {
-
+            Add_FinShadeCases();
         }
 
         private void Button_CaseByWeatherData_Click(object sender, RoutedEventArgs e)
@@ -321,6 +348,12 @@ namespace SAM.Analytical.UI.WPF
             if (cases.GetCases<ApertureConstructionCase>() is IEnumerable<ApertureConstructionCase> apertureConstructionCase && apertureConstructionCase.Any())
             {
                 Add_ApertureConstructionCases(apertureConstructionCase, index);
+                return;
+            }
+
+            if (cases.GetCases<FinShadeCase>() is IEnumerable<FinShadeCase> finShadeCases && finShadeCases.Any())
+            {
+                Add_FinShadeCases(finShadeCases, index);
                 return;
             }
         }

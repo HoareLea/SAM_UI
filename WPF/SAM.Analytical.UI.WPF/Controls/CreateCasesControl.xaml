@@ -34,7 +34,7 @@
                 <Button x:Name="Button_CaseByWindowSize" Content="Add window size case" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,5,5,5" Click="Button_CaseByWindowSize_Click"/>
                 <Button x:Name="Button_CaseByApertureConstruction" Content="Add aperture construction case" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,5,5,5" Click="Button_CaseByApertureConstruction_Click"/>
                 <Button x:Name="Button_CaseByWeatherData" Content="Add weather data case" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,5,5,5" Click="Button_CaseByWeatherData_Click"/>
-                <Button x:Name="Button_CaseByShade" Content="Add shade case" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,5,5,5" Click="Button_CaseByShade_Click" IsEnabled="False"/>
+                <Button x:Name="Button_CaseByFinShade" Content="Add shade case" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5,5,5,5" Click="Button_CaseByFinShade_Click" IsEnabled="True"/>
             </StackPanel>
 
             <StackPanel Orientation="Vertical" Grid.Row="1" VerticalAlignment="Bottom">
