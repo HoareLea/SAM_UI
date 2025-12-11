@@ -1,0 +1,17 @@
+﻿<UserControl x:Class="SAM.Core.UI.WPF.TextBoxControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="60" d:DesignWidth="150">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label x:Name="Label_Text" Grid.Row="0" Content="" Margin="5,0,5,0" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+        <TextBox x:Name="TextBox_Value" Grid.Row="1" Text="" Margin="5,5,5,5" HorizontalAlignment="Stretch" DataObject.Pasting="TextBox_Value_Pasting"/>
+
+    </Grid>
+</UserControl>
