@@ -100,6 +100,34 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        private void Add_ApertureCases(IEnumerable<ApertureCase>? apertureCases = null, int index = -1)
+        {
+            CreateCaseByApertureWindow createCaseByApertureWindow = new()
+            {
+                AnalyticalModel = analyticalModel
+            };
+
+            if (apertureCases is not null && apertureCases.Any())
+            {
+                createCaseByApertureWindow.ApertureCases = apertureCases;
+            }
+
+            bool? dialogResult = null;
+
+            dialogResult = createCaseByApertureWindow.ShowDialog();
+            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
+            {
+                return;
+            }
+
+            if (createCaseByApertureWindow.ApertureCases is not IEnumerable<ApertureCase> apertureCases_Temp)
+            {
+                return;
+            }
+
+            Add(Analytical.Create.Cases(apertureCases_Temp), index);
+        }
+
         private void Add_ApertureConstructionCases(IEnumerable<ApertureConstructionCase>? apertureConstructionCases = null, int index = -1)
         {
             CreateCaseByApertureConstructionWindow createCaseByApertureConstructionWindow = new()
@@ -209,6 +237,11 @@ namespace SAM.Analytical.UI.WPF
 
             Add(Analytical.Create.Cases(windowSizeCases_Temp), index);
         }
+        private void Button_CaseByAperture_Click(object sender, RoutedEventArgs e)
+        {
+            Add_ApertureCases();
+        }
+
         private void Button_CaseByApertureConstruction_Click(object sender, RoutedEventArgs e)
         {
             Add_ApertureConstructionCases();
@@ -354,6 +387,12 @@ namespace SAM.Analytical.UI.WPF
             if (cases.GetCases<FinShadeCase>() is IEnumerable<FinShadeCase> finShadeCases && finShadeCases.Any())
             {
                 Add_FinShadeCases(finShadeCases, index);
+                return;
+            }
+
+            if (cases.GetCases<ApertureCase>() is IEnumerable<ApertureCase> apertureCases && apertureCases.Any())
+            {
+                Add_ApertureCases(apertureCases, index);
                 return;
             }
         }

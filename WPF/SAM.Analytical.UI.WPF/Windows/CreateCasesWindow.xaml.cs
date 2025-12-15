@@ -13,19 +13,6 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
         }
 
-        public List<Cases> Cases
-        {
-            get
-            {
-                return CreateCasesControl_Main.Cases;
-            }
-
-            set
-            {
-                CreateCasesControl_Main.Cases = value;
-            }
-        }
-
         public AnalyticalModel? AnalyticalModel
         {
             get
@@ -38,6 +25,18 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public List<Cases> Cases
+        {
+            get
+            {
+                return CreateCasesControl_Main.Cases;
+            }
+
+            set
+            {
+                CreateCasesControl_Main.Cases = value;
+            }
+        }
         private void button_Cancel_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             DialogResult = false;
@@ -48,6 +47,11 @@ namespace SAM.Analytical.UI.WPF
         {
             DialogResult = true;
             Close();
+        }
+
+        private void CreateCasesControl_Main_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+
         }
     }
 }
