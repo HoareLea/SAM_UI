@@ -107,6 +107,17 @@ namespace SAM.Analytical.UI.WPF
                 AnalyticalModel = analyticalModel
             };
 
+            if (apertureCases is null)
+            {
+                List<ApertureToPanelRatio> apertureToPanelRatios = new();
+                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(316, 44), 0.15, null));
+                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(45, 134), 0.2, null));
+                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(135, 225), 0.25, null));
+                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(226, 315), 0.2, null));
+
+                apertureCases = [new ApertureCase(new ApertureToPanelRatios(apertureToPanelRatios), true, 2.5, 0.85, 3, 0.1, false, null)];
+            }
+
             if (apertureCases is not null && apertureCases.Any())
             {
                 createCaseByApertureWindow.ApertureCases = apertureCases;

@@ -1,7 +1,6 @@
 ﻿using SAM.Analytical.Classes;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace SAM.Analytical.UI.WPF
 {

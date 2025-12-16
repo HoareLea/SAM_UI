@@ -32,6 +32,10 @@ namespace SAM.Analytical.UI.WPF
             {
                 return "Shade Case";
             }
+            else if (type == typeof(ApertureCase))
+            {
+                return "Aperture Case";
+            }
             else if (type == typeof(WeatherDataCase))
             {
                 return "Weather Data Case";

@@ -58,7 +58,7 @@ namespace SAM.Analytical.UI.WPF
                         continue;
                     }
 
-                    SelectSAMObjectComboBoxControl selectSAMObjectComboBoxControl = Add();
+                    SelectSAMObjectComboBoxControl? selectSAMObjectComboBoxControl = Add();
                     if(selectSAMObjectComboBoxControl is null)
                     {
                         continue;
@@ -70,7 +70,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private SelectSAMObjectComboBoxControl Add()
+        private SelectSAMObjectComboBoxControl? Add()
         {
             SelectSAMObjectComboBoxControl result = new()
             {
@@ -101,7 +101,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void SelectSAMObjectComboBoxControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Core.UI.WPF.SelectSAMObjectComboBoxControl? selectSAMObjectComboBoxControl = sender as Core.UI.WPF.SelectSAMObjectComboBoxControl;
+            SelectSAMObjectComboBoxControl? selectSAMObjectComboBoxControl = sender as SelectSAMObjectComboBoxControl;
             if (selectSAMObjectComboBoxControl == null)
             {
                 return;

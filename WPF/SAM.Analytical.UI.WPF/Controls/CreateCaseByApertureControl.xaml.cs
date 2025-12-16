@@ -3,6 +3,7 @@ using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
 using SAM.Core.Windows.Forms;
+using SAM.Weather;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,8 @@ namespace SAM.Analytical.UI.WPF
         public CreateCaseByApertureControl()
         {
             InitializeComponent();
+
+            DataContext = new CreateCaseViewModel<ApertureCase>();
         }
 
         public AnalyticalModel? AnalyticalModel
@@ -111,6 +114,35 @@ namespace SAM.Analytical.UI.WPF
             }
 
             ApertureCases = apertureCases;
+        }
+
+        private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ApertureCase? apertureCase = (sender as DataGrid)?.SelectedItem as ApertureCase;
+            if (apertureCase is null)
+            {
+                return;
+            }
+
+            ApertureToPanelRatiosWindow apertureToPanelRatiosWindow = new()
+            {
+                ApertureToPanelRatios = apertureCase.ApertureToPanelRatios
+            };
+
+            bool? dialogResult = null;
+
+            dialogResult = apertureToPanelRatiosWindow.ShowDialog();
+            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
+            {
+                return;
+            }
+
+            if (apertureToPanelRatiosWindow.ApertureToPanelRatios is not ApertureToPanelRatios apertureToPanelRatios)
+            {
+                return;
+            }
+
+            apertureCase.ApertureToPanelRatios = apertureToPanelRatios;
         }
 
         private void FilterWindow_FilterAdding(object sender, FilterAddingEventArgs e)

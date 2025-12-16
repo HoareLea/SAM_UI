@@ -146,7 +146,7 @@ namespace SAM.Analytical.UI.WPF
                     return apertureConstructions[0];
                 }
 
-                Core.Windows.Forms.SearchForm<ApertureConstruction> searchForm = new Core.Windows.Forms.SearchForm<ApertureConstruction>("Aperture Constructions", apertureConstructions, x => x?.Name, false);
+                SearchForm<ApertureConstruction> searchForm = new SearchForm<ApertureConstruction>("Aperture Constructions", apertureConstructions, x => x?.Name, false);
                 if(searchForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
                     return null;

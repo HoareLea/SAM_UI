@@ -19,7 +19,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="90"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="textBox_Directory" Grid.Column="0" Margin="0,0,0,0" VerticalAlignment="Center" IsEnabled="False"/>
+                <TextBox x:Name="textBox_Directory" Grid.Column="0" Margin="5,0,0,0" VerticalAlignment="Center" IsEnabled="False"/>
                 <Button x:Name="button_Browse" Content="Browse..." Grid.Column="1" Width="80" Margin="5,0,5,0" Click="button_Browse_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
             <Grid Grid.Row="2">
@@ -38,19 +38,19 @@
                     <ColumnDefinition Width="90"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Label Content="Add IZAMs" Grid.Row="0"/>
-                <CheckBox x:Name="checkBox_AddIZAMs" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="checkBox_AddIZAMs" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
                 <Label Content="Sizing" Grid.Row="1"/>
-                <CheckBox x:Name="checkBox_Sizing" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="checkBox_Sizing" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
                 <Label Content="Simulate" Grid.Row="2"/>
-                <CheckBox x:Name="checkBox_Simulate" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="checkBox_Simulate" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
                 <Label Content="Use BE thickness" Grid.Row="3"/>
-                <CheckBox x:Name="checkBox_UseBEThickness" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="checkBox_UseBEThickness" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
                 <Label Content="Run unmet hours" Grid.Row="4"/>
-                <CheckBox x:Name="checkBox_RunUnmetHours" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="checkBox_RunUnmetHours" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
                 <Label Content="Remove TBD" Grid.Row="5"/>
-                <CheckBox x:Name="checkBox_RemoveTBD" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="checkBox_RemoveTBD" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
                 <Label Content="Parallel" Grid.Row="6"/>
-                <CheckBox x:Name="checkBox_Parallel" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <CheckBox x:Name="checkBox_Parallel" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
             </Grid>
         </Grid>
 
