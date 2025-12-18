@@ -25,7 +25,7 @@ namespace SAM.Analytical.UI.WPF
                         Temperature = false
                     }],
                 UnmetHours = false,
-                Simulate = false,
+                Simulate = true,
                 Sizing = true,
                 UpdateZones = true,
                 UseWidths = false,

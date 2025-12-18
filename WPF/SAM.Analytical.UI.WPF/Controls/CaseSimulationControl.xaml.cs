@@ -26,6 +26,12 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 directory = value;
+                TextBox_Directory.Text = directory;
+
+                //TextBox_Directory.Focus();
+                //TextBox_Directory.CaretIndex = TextBox_Directory.Text.Length;
+                //TextBox_Directory.ScrollToEnd();
+
             }
         }
 
@@ -69,6 +75,12 @@ namespace SAM.Analytical.UI.WPF
             }
 
             directory = openFolderDialog.FolderName;
+            TextBox_Directory.Text = directory;
+
+            //TextBox_Directory.Focus();
+            //TextBox_Directory.CaretIndex = TextBox_Directory.Text.Length;
+            //TextBox_Directory.ScrollToEnd();
+
         }
     }
 }

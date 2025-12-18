@@ -1,5 +1,6 @@
 ﻿using SAM.Analytical.Classes;
 using SAM.Analytical.Tas;
+using SAM.Core.UI.WPF;
 using System.Collections.Generic;
 
 namespace SAM.Analytical.UI.WPF
@@ -32,6 +33,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            string? directory = uIAnalyticalModel.Path != null ? System.IO.Path.GetDirectoryName(uIAnalyticalModel.Path) : null;
+
             List<AnalyticalModel> analyticalModels = UI.Create.AnalyticalModels(analyticalModel, cases);
 
             CaseSimulationWindow caseSimulationWindow = new()
@@ -39,13 +42,18 @@ namespace SAM.Analytical.UI.WPF
                 WorkflowSettings = Query.DefaultWorkflowSettings()
             };
 
+            if(!string.IsNullOrWhiteSpace(directory))
+            {
+                caseSimulationWindow.Directory = System.IO.Path.Combine(directory, "cases");
+            }
+
             dialogResult = caseSimulationWindow.ShowDialog();
             if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
             {
                 return;
             }
 
-            string? directory = caseSimulationWindow.Directory;
+            directory = caseSimulationWindow.Directory;
             if (string.IsNullOrEmpty(directory))
             {
                 return;
@@ -59,7 +67,12 @@ namespace SAM.Analytical.UI.WPF
 
             bool parallel = caseSimulationWindow.Parallel;
 
-            Tas.Modify.RunWorkflow(analyticalModels, workflowSettings, directory, parallel);
+            using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager())
+            {
+                progressBarWindowManager.Show("Running", "Running...");
+                Tas.Modify.RunWorkflow(analyticalModels, workflowSettings, directory, parallel, true);
+                progressBarWindowManager.Close();
+            }
         }
     }
 }
