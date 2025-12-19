@@ -1,78 +1,62 @@
-﻿using SAM.Analytical.Classes;
-using SAM.Analytical.Tas;
+﻿using SAM.Analytical.Tas;
 using SAM.Core.UI.WPF;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void SimulateCases(this UIAnalyticalModel uIAnalyticalModel)
+        public static void SimulateCases()
         {
-            if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
-            {
-                return;
-            }
-
             bool? dialogResult;
 
-            CreateCasesWindow createCasesWindow = new()
-            {
-                AnalyticalModel = analyticalModel
-            };
-
-            dialogResult = createCasesWindow.ShowDialog();
-            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
-            {
-                return;
-            }
-
-            List<Cases> cases = createCasesWindow.Cases;
-            if(cases is null)
-            {
-                return;
-            }
-
-            string? directory = uIAnalyticalModel.Path != null ? System.IO.Path.GetDirectoryName(uIAnalyticalModel.Path) : null;
-
-            List<AnalyticalModel> analyticalModels = UI.Create.AnalyticalModels(analyticalModel, cases);
-
-            CaseSimulationWindow caseSimulationWindow = new()
+            MultipleCaseSimulationWindow multipleCaseSimulationWindow = new()
             {
                 WorkflowSettings = Query.DefaultWorkflowSettings()
             };
 
-            if(!string.IsNullOrWhiteSpace(directory))
-            {
-                caseSimulationWindow.Directory = System.IO.Path.Combine(directory, "cases");
-            }
-
-            dialogResult = caseSimulationWindow.ShowDialog();
+            dialogResult = multipleCaseSimulationWindow.ShowDialog();
             if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
             {
                 return;
             }
 
-            directory = caseSimulationWindow.Directory;
+            bool parallel = multipleCaseSimulationWindow.Parallel;
+
+            WorkflowSettings workflowSettings = multipleCaseSimulationWindow.WorkflowSettings;
+            if(workflowSettings is null)
+            {
+                return;
+            }
+
+            List<string> paths = multipleCaseSimulationWindow.Paths;
+            if(paths is null || paths.Count == 0)
+            {
+                return;
+            }
+
+            string? directory = multipleCaseSimulationWindow.Directory;
             if (string.IsNullOrEmpty(directory))
             {
                 return;
             }
 
-            WorkflowSettings workflowSettings = caseSimulationWindow.WorkflowSettings;
-            if (workflowSettings is null)
+            List<AnalyticalModel> analyticalModels = [];
+            foreach (string path in paths)
             {
-                return;
+                AnalyticalModel? analyticalModel = Core.Convert.ToSAM<AnalyticalModel>(path)?.FirstOrDefault();
+                if (analyticalModel != null)
+                {
+                    analyticalModels.Add(analyticalModel);
+                }
             }
 
-            bool parallel = caseSimulationWindow.Parallel;
+            using ProgressBarWindowManager progressBarWindowManager = new();
 
-            using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager())
-            {
-                progressBarWindowManager.Show("Running", "Running...");
-                Tas.Modify.RunWorkflow(analyticalModels, workflowSettings, directory, parallel, true);
-                progressBarWindowManager.Close();
-            }
+            progressBarWindowManager.Show("Running", "Running...");
+            Tas.Modify.RunWorkflow(analyticalModels, workflowSettings, directory, parallel, true);
+            progressBarWindowManager.Close();
         }
     }
 }

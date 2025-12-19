@@ -176,7 +176,10 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_CreateCases.Click += RibbonButton_CreateCases_Click;
 
             RibbonButton_SimulateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
-            RibbonButton_SimulateCases.Click += RibbonButton_SimulateCases_Click;
+            RibbonButton_SimulateCases.Click += RibbonButton_SimulateCases_Click; ;
+
+            RibbonButton_CreateSimulateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_CreateSimulateCases.Click += RibbonButton_CreateSimulateCases_Click;
 
             RibbonMenuButton_PartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
 
@@ -282,12 +285,17 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_SimulateCases_Click(object sender, RoutedEventArgs e)
         {
+            Modify.SimulateCases();
+        }
+
+        private void RibbonButton_CreateSimulateCases_Click(object sender, RoutedEventArgs e)
+        {
             if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
             {
                 return;
             }
 
-            Modify.SimulateCases(uIAnalyticalModel);
+            Modify.CreateSimulateCases(uIAnalyticalModel);
         }
 
         private void RibbonButton_CreateCases_Click(object sender, RoutedEventArgs e)

@@ -502,11 +502,15 @@
                     <RibbonButton x:Name="RibbonButton_ViewGeometry" Label="View Geometry" />
                     <RibbonButton x:Name="RibbonButton_TextMap" Label="Text Map" />
                     <RibbonButton x:Name="RibbonButton_NCMNames" Label="NCM Names" />
-                    <RibbonButton x:Name="RibbonButton_CreateCases" Label="Create Cases" />
-                    <RibbonButton x:Name="RibbonButton_SimulateCases" Label="Simulate Cases" />
+
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Developer" Header="Developer">
                     <RibbonButton x:Name="RibbonButton_Test" Label="Test" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Cases" Header="Cases">
+                    <RibbonButton x:Name="RibbonButton_CreateCases" Label="Create" />
+                    <RibbonButton x:Name="RibbonButton_SimulateCases" Label="Simulate" />
+                    <RibbonButton x:Name="RibbonButton_CreateSimulateCases" Label="Create Simulate" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">

@@ -51,6 +51,18 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
+                if(workflowSettings is null)
+                {
+                    workflowSettings = Query.DefaultWorkflowSettings();
+                }
+
+                workflowSettings.AddIZAMs = checkBox_AddIZAMs.IsChecked.Value;
+                workflowSettings.Sizing = checkBox_Sizing.IsChecked.Value;
+                workflowSettings.Simulate = checkBox_Simulate.IsChecked.Value;
+                workflowSettings.UseWidths = checkBox_UseBEThickness.IsChecked.Value;
+                workflowSettings.UnmetHours = checkBox_RunUnmetHours.IsChecked.Value;
+                workflowSettings.RemoveExistingTBD = checkBox_RemoveTBD.IsChecked.Value;
+               
                 return workflowSettings;
             }
 
@@ -62,6 +74,15 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 workflowSettings = value;
+                if(workflowSettings is not null)
+                {
+                    checkBox_AddIZAMs.IsChecked = workflowSettings.AddIZAMs;
+                    checkBox_Sizing.IsChecked = WorkflowSettings.Sizing;
+                    checkBox_Simulate.IsChecked = WorkflowSettings.Simulate;
+                    checkBox_UseBEThickness.IsChecked = WorkflowSettings.UseWidths;
+                    checkBox_RunUnmetHours.IsChecked = WorkflowSettings.UnmetHours;
+                    checkBox_RemoveTBD.IsChecked = WorkflowSettings.RemoveExistingTBD;
+                }
             }
         }
 
