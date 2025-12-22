@@ -5,23 +5,28 @@ namespace SAM.Analytical.UI.WPF
 {
     public class DisplayGlazingCalculationResult
     {
-        public ConstructionManager ConstructionManager { get; set; } = null;
-        public GlazingCalculationData GlazingCalculationData { get; set; } = null;
-        
         private GlazingCalculationResult glazingCalculationResult;
-
-        public int? Index { get; set; } = null;
-
+        
         public DisplayGlazingCalculationResult(GlazingCalculationResult glazingCalculationResult)
         {
             this.glazingCalculationResult = glazingCalculationResult;
         }
 
-        public GlazingCalculationResult GlazingCalculationResult
+        public ApertureConstruction ApertureConstruction
         {
             get
             {
-                return glazingCalculationResult;
+                if (glazingCalculationResult == null || ConstructionManager == null)
+                {
+                    return null;
+                }
+
+                if (!Guid.TryParse(glazingCalculationResult.Reference, out Guid guid))
+                {
+                    return null;
+                }
+
+                return ConstructionManager.ApertureConstructions?.Find(x => x.Guid == guid);
             }
         }
 
@@ -43,41 +48,33 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public ApertureConstruction ApertureConstruction
-        {
-            get
-            {
-                if (glazingCalculationResult == null || ConstructionManager == null)
-                {
-                    return null;
-                }
-
-                if (!Guid.TryParse(glazingCalculationResult.Reference, out Guid guid))
-                {
-                    return null;
-                }
-
-                return ConstructionManager.ApertureConstructions?.Find(x => x.Guid == guid);
-            }
-        }
-
+        public ConstructionManager? ConstructionManager { get; set; } = null;
+        
         public string ConstructionName
         {
             get
             {
                 Construction construction = Construction;
-                if(construction != null)
+                if (construction != null)
                 {
                     return construction.Name;
                 }
 
                 ApertureConstruction apertureConstruction = ApertureConstruction;
-                if(apertureConstruction != null)
+                if (apertureConstruction != null)
                 {
                     return apertureConstruction.Name;
                 }
 
                 return null;
+            }
+        }
+
+        public Criteria? Criteria
+        {
+            get
+            {
+                return GetCriteria();
             }
         }
 
@@ -101,19 +98,43 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public double? TotalSolarEnergyTransmittance
+        public GlazingCalculationData? GlazingCalculationData { get; set; } = null;
+        
+        public GlazingCalculationResult GlazingCalculationResult
         {
             get
             {
-                return glazingCalculationResult == null || double.IsNaN(glazingCalculationResult.TotalSolarEnergyTransmittance) ? null : SAM.Core.Query.Round(glazingCalculationResult.TotalSolarEnergyTransmittance, 0.001);
+                return glazingCalculationResult;
             }
         }
 
+        public int? Index { get; set; } = null;
         public double? LightTransmittance
         {
             get
             {
                 return glazingCalculationResult == null || double.IsNaN(glazingCalculationResult.LightTransmittance) ? null : SAM.Core.Query.Round(glazingCalculationResult.LightTransmittance, 0.001);
+            }
+        }
+
+        public PanelGroup? PanelGroup
+        {
+            get
+            {
+                Construction construction = Construction;
+                if (construction != null)
+                {
+                    PanelType panelType = construction.PanelType();
+                    return panelType == PanelType.Undefined ? null : panelType.PanelGroup();
+                }
+
+                ApertureConstruction apertureConstruction = ApertureConstruction;
+                if (apertureConstruction != null)
+                {
+                    return Analytical.PanelGroup.Undefined;
+                }
+
+                return null;
             }
         }
 
@@ -133,14 +154,14 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 Construction construction = Construction;
-                if(construction != null)
+                if (construction != null)
                 {
                     double result = construction.GetThickness();
                     return double.IsNaN(result) ? null : SAM.Core.Query.Round(result * 1000, 1);
                 }
 
                 ApertureConstruction apertureConstruction = ApertureConstruction;
-                if(apertureConstruction != null)
+                if (apertureConstruction != null)
                 {
                     double result = apertureConstruction.GetThickness(AperturePart.Pane);
                     return double.IsNaN(result) ? null : SAM.Core.Query.Round(result * 1000, 1);
@@ -150,6 +171,14 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public double? TotalSolarEnergyTransmittance
+        {
+            get
+            {
+                return glazingCalculationResult == null || double.IsNaN(glazingCalculationResult.TotalSolarEnergyTransmittance) ? null : SAM.Core.Query.Round(glazingCalculationResult.TotalSolarEnergyTransmittance, 0.001);
+            }
+        }
+        
         public Enum Type
         {
             get
@@ -184,70 +213,10 @@ namespace SAM.Analytical.UI.WPF
                 return type.ToString();
             }
         }
-
-        public PanelGroup? PanelGroup
-        {
-            get
-            {
-                Construction construction = Construction;
-                if (construction != null)
-                {
-                    PanelType panelType = construction.PanelType();
-                    return panelType == PanelType.Undefined ? null : panelType.PanelGroup();
-                }
-
-                ApertureConstruction apertureConstruction = ApertureConstruction;
-                if (apertureConstruction != null)
-                {
-                    return Analytical.PanelGroup.Undefined;
-                }
-
-                return null;
-            }
-        }
-
-        public Criteria? Criteria
-        {
-            get
-            {
-                return GetCriteria();
-            }
-        }
-
-        private Criteria? GetCriteria()
-        {
-            if(GlazingCalculationData == null || glazingCalculationResult == null || ConstructionManager == null)
-            {
-                return null;
-            }
-
-            Criteria result = Query.Criteria(ConstructionManager, GlazingCalculationData, glazingCalculationResult);
-            if(result == WPF.Criteria.Undefined)
-            {
-                return null;
-            }
-
-            return result;
-        }
-
-        public bool IsMain()
-        {
-            if(GlazingCalculationData == null || glazingCalculationResult == null)
-            {
-                return false;
-            }
-
-            if(!Guid.TryParse(glazingCalculationResult.Reference, out Guid guid))
-            {
-                return false;
-            }
-
-            return GlazingCalculationData.ConstructionGuid == guid;
-        }
-
+        
         public double GetScore()
         {
-            if(GlazingCalculationData == null || glazingCalculationResult == null)
+            if (GlazingCalculationData == null || glazingCalculationResult == null)
             {
                 return double.NaN;
             }
@@ -266,11 +235,11 @@ namespace SAM.Analytical.UI.WPF
             double totalSolarEnergyTransmittanceFactor = !double.IsNaN(GlazingCalculationData.TotalSolarEnergyTransmittance) && !double.IsNaN(glazingCalculationResult.TotalSolarEnergyTransmittance) ? 10 : 1;
 
             double? score_Data = Tas.Query.Score(GlazingCalculationData.TotalSolarEnergyTransmittance, GlazingCalculationData.LightTransmittance, totalSolarEnergyTransmittanceFactor, lightTransmitanceFactor);
-            if(score_Data == null || !score_Data.HasValue)
+            if (score_Data == null || !score_Data.HasValue)
             {
                 return double.NaN;
             }
-            
+
             double? score_Result = Tas.Query.Score(glazingCalculationResult.TotalSolarEnergyTransmittance, glazingCalculationResult.LightTransmittance, totalSolarEnergyTransmittanceFactor, lightTransmitanceFactor);
             if (score_Result == null || !score_Result.HasValue)
             {
@@ -281,6 +250,37 @@ namespace SAM.Analytical.UI.WPF
             return Math.Abs(score_Data.Value - score_Result.Value);
 
 
+        }
+
+        public bool IsMain()
+        {
+            if (GlazingCalculationData == null || glazingCalculationResult == null)
+            {
+                return false;
+            }
+
+            if (!Guid.TryParse(glazingCalculationResult.Reference, out Guid guid))
+            {
+                return false;
+            }
+
+            return GlazingCalculationData.ConstructionGuid == guid;
+        }
+
+        private Criteria? GetCriteria()
+        {
+            if(GlazingCalculationData == null || glazingCalculationResult == null || ConstructionManager == null)
+            {
+                return null;
+            }
+
+            Criteria result = Query.Criteria(ConstructionManager, GlazingCalculationData, glazingCalculationResult);
+            if(result == WPF.Criteria.Undefined)
+            {
+                return null;
+            }
+
+            return result;
         }
     }
 }
