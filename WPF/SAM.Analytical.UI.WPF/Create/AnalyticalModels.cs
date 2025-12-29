@@ -63,7 +63,7 @@ namespace SAM.Analytical.UI.WPF
                 string path = System.IO.Path.Combine(directory, string.Format("{0}.json", name));
 
                 Core.Convert.ToFile(analyticalModel_Temp, path);
-                result.Add(analyticalModel_Temp);
+                //result.Add(analyticalModel_Temp);
                 index++;
             }
 
