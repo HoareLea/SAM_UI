@@ -1,4 +1,7 @@
-﻿using System.Windows.Input;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using System.Windows.Input;
 using System.Windows.Media.Media3D;
 
 namespace SAM.Core.UI.WPF

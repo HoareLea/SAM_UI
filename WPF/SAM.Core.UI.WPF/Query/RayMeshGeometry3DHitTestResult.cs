@@ -1,4 +1,7 @@
-﻿using HelixToolkit.Wpf;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using HelixToolkit.Wpf;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
