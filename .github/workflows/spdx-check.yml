@@ -47,6 +47,14 @@ jobs:
           for f in "${files[@]}"; do
             echo "Checking: $f"
 
+            # Skip entire Properties folders (typically generated / designer-managed code)
+            case "$f" in
+              */Properties/*)
+                echo "  ⏭️ Skipping Properties/*"
+                continue
+                ;;
+            esac
+
             content_b64=$(gh api "repos/$REPO/contents/$f?ref=$HEAD_SHA" --jq '.content' 2>/dev/null || true)
             if [ -z "$content_b64" ]; then
               echo "  ❌ Could not fetch file content (deleted? submodule? path issue)"
@@ -54,10 +62,10 @@ jobs:
               continue
             fi
 
-            # Decode fully first, normalize CRLF, then take first 80 lines (no SIGPIPE with pipefail)
+            # Decode fully first (avoids SIGPIPE/broken pipe with pipefail),
+            # normalize CRLF, then take first 80 lines.
             decoded=$(printf '%s' "$content_b64" | base64 -d)
             headblock=$(printf '%s' "$decoded" | tr -d '\r' | sed -n '1,80p')
-
 
             if ! printf '%s' "$headblock" | grep -Eiq "$spdx_re"; then
               echo "  ❌ Missing SPDX line in first 80 lines"
