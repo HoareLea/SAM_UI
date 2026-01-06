@@ -1,7 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-or-later
-// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
-
-using SAM.Analytical.Tas;
+﻿using SAM.Analytical.Tas;
 using SAM.Core.Windows.Forms;
 using System;
 using System.Collections.Generic;
