@@ -1,4 +1,7 @@
-﻿using SAM.Analytical.UI.WPF.Windows;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Analytical.UI.WPF.Windows;
 using SAM.Core;
 using System.Windows;
 
