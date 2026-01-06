@@ -1,4 +1,7 @@
-﻿using Microsoft.Win32;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using Microsoft.Win32;
 using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
@@ -172,6 +175,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_GlazingCalculator.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
             RibbonButton_GlazingCalculator.Click += RibbonButton_GlazingCalculator_Click;
 
+            RibbonButton_CreateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_CreateCases.Click += RibbonButton_CreateCases_Click;
+
+            RibbonButton_SimulateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_SimulateCases.Click += RibbonButton_SimulateCases_Click; ;
+
+            RibbonButton_CreateSimulateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_CreateSimulateCases.Click += RibbonButton_CreateSimulateCases_Click;
+
             RibbonMenuButton_PartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
 
             RibbonButton_OpenPartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
@@ -272,6 +284,31 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_SimulateCases_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.SimulateCases();
+        }
+
+        private void RibbonButton_CreateSimulateCases_Click(object sender, RoutedEventArgs e)
+        {
+            if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
+            {
+                return;
+            }
+
+            Modify.CreateSimulateCases(uIAnalyticalModel);
+        }
+
+        private void RibbonButton_CreateCases_Click(object sender, RoutedEventArgs e)
+        {
+            if(uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
+            {
+                return;
+            }
+
+            List<AnalyticalModel>? analyticalModel_Case = Create.AnalyticalModels(analyticalModel);
         }
 
         private void RibbonButton_RemoveAirMovementObjects_Click(object sender, RoutedEventArgs e)

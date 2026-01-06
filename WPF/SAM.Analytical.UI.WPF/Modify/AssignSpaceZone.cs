@@ -1,4 +1,7 @@
-﻿using SAM.Core;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core;
 using SAM.Core.UI;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,9 +40,9 @@ namespace SAM.Analytical.UI.WPF
             List<SAMObject> sAMObjects = new List<SAMObject>();
 
             bool updated = false;
-            foreach(Space space in spaces)
+            foreach (Space space in spaces)
             {
-                if(space == null)
+                if (space == null)
                 {
                     continue;
                 }
@@ -75,12 +78,12 @@ namespace SAM.Analytical.UI.WPF
                 updated = true;
             }
 
-            if(!updated)
+            if (!updated)
             {
                 return;
             }
 
-            uIAnalyticalModel.SetJSAMObject( new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new FullModification());//, new AnalyticalModelModification(sAMObjects));
+            uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, profileLibrary), new FullModification());//, new AnalyticalModelModification(sAMObjects));
         }
     }
 }

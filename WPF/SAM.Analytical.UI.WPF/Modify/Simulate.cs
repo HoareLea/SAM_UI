@@ -1,4 +1,7 @@
-﻿using SAM.Analytical.Tas;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Analytical.Tas;
 using SAM.Core;
 using SAM.Core.Tas;
 using SAM.Core.UI;
@@ -24,7 +27,7 @@ namespace SAM.Analytical.UI.WPF
             ActiveSetting.Setting.TryGetValue(AnalyticalSettingParameter.SimulateOptions, out SimulateOptions simulateOptions);
             if(simulateOptions == null)
             {
-                simulateOptions = Create.SimulateOptions(uIAnalyticalModel);
+                simulateOptions = UI.Create.SimulateOptions(uIAnalyticalModel);
             }
 
             simulateWindow.ProjectName = analyticalModel.Name;

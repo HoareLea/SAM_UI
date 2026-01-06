@@ -1,0 +1,22 @@
+﻿<Window x:Class="SAM.Core.UI.WPF.TextBoxWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Core.UI.WPF"
+        mc:Ignorable="d"
+        Title="" Height="130" Width="250" ResizeMode="NoResize" WindowStyle="SingleBorderWindow">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="33"/>
+        </Grid.RowDefinitions>
+
+        <local:TextBoxControl x:Name="TextBoxControl_Main" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Text="" Value=""/>
+
+        <StackPanel Grid.Row="1" VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,5,5,5">
+            <Button x:Name="Button_OK" Content="OK" HorizontalAlignment="Right"  VerticalAlignment="Center" Width="70" Height="23" Margin="5,0,5,0" IsDefault="True" Click="Button_OK_Click"/>
+            <Button x:Name="Button_Cancel" Content="Cancel" HorizontalAlignment="Right"  VerticalAlignment="Center" Width="70" Height="23" Margin="5,0,5,0" IsCancel="True" Click="Button_Cancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

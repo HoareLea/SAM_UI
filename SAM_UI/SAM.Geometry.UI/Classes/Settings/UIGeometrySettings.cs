@@ -1,9 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using Newtonsoft.Json.Linq;
 using SAM.Core;
 using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SAM.Geometry.UI
 {

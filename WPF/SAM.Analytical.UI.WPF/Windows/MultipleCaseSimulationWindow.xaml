@@ -1,0 +1,18 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.MultipleCaseSimulationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Multiple Case Simulation" Height="600" Width="350" ResizeMode="NoResize" ShowInTaskbar="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <local:MultipleCaseSimulationControl x:Name="MultipleCaseSimulationControl_Main" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,0"/>
+        <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,10,10,10" Width="70" Click="button_Cancel_Click" HorizontalAlignment="Right"></Button>
+        <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="0,10,85,10" Click="button_OK_Click" HorizontalAlignment="Right" Width="70" />
+    </Grid>
+</Window>

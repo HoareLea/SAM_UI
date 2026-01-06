@@ -1,4 +1,7 @@
-﻿using SAM.Geometry.Mollier;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Geometry.Mollier;
 using SAM.Geometry.Planar;
 using System.Collections.Generic;
 using System.Drawing;
@@ -136,7 +139,7 @@ namespace SAM.Core.Mollier.UI
                 return result;
             }
 
-            UIMollierPointAppearance zoneCenterAppearance = new UIMollierPointAppearance(System.Drawing.Color.Empty, uIMollierZone.UIMollierAppearance.Color, (uIMollierZone.UIMollierAppearance as UIMollierAppearance).Label);
+            UIMollierPointAppearance zoneCenterAppearance = new UIMollierPointAppearance(Color.Empty, uIMollierZone.UIMollierAppearance.Color, (uIMollierZone.UIMollierAppearance as UIMollierAppearance).Label);
             UIMollierPoint zoneCenter;
             if(chartType == ChartType.Mollier)
             {
@@ -184,7 +187,7 @@ namespace SAM.Core.Mollier.UI
             if (rectangle == null) return result;
 
             Solver2DData solver2DData = new Solver2DData(rectangle, polyline);
-            solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(rectangle.GetCentroid(), chartType, mollierControlSettings.Pressure), new UIMollierPointAppearance(System.Drawing.Color.Empty, color, text));
+            solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(rectangle.GetCentroid(), chartType, mollierControlSettings.Pressure), new UIMollierPointAppearance(Color.Empty, color, text));
             solver2DData.Priority = getChartDataTypePriority(curve.ChartDataType);
 
             Solver2DSettings solver2DSettings = new Solver2DSettings();
@@ -229,7 +232,7 @@ namespace SAM.Core.Mollier.UI
                 Solver2DData solver2DData = new Solver2DData(rectangle, polyline);
 
                 Color color = mollierControlSettings.VisibilitySettings.GetColor(mollierControlSettings.DefaultTemplateName, ChartParameterType.Label, curve.ChartDataType);
-                solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(defaultPoint2D, chartType, mollierControlSettings.Pressure), new UIMollierPointAppearance(System.Drawing.Color.Empty, color, text));
+                solver2DData.Tag = new UIMollierPoint(Convert.ToMollier(defaultPoint2D, chartType, mollierControlSettings.Pressure), new UIMollierPointAppearance(Color.Empty, color, text));
                 solver2DData.Priority = getChartDataTypePriority(chartDataType);
 
                 Solver2DSettings solver2DSettings = new Solver2DSettings();

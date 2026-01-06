@@ -142,6 +142,9 @@
   <data name="SAM_ConstructionLibrary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_ConstructionLibrary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="SAM_CreateCases" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\SAM_CreateCases.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="SAM_EditLibrary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SAM_EditLibrary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

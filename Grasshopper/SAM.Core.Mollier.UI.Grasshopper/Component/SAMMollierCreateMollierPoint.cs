@@ -1,4 +1,7 @@
-﻿using Grasshopper.Kernel;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 using SAM.Core.Grasshopper;
@@ -180,7 +183,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 dataAccess.GetData(index, ref label);
             }
 
-            UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint, new UIMollierPointAppearance(System.Drawing.Color.Empty, color, label));
+            UIMollierPoint uIMollierPoint = new UIMollierPoint(mollierPoint, new UIMollierPointAppearance(Color.Empty, color, label));
 
 
             index = Params.IndexOfOutputParam("mollierPoint");
