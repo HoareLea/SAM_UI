@@ -55,6 +55,7 @@ jobs:
             'SAM_SolarCalculator'
             'SAM_Tas'
             'SAM_Excel'
+            'SAM_LadybugTools'
             'SAM_UI'
             $repo
           )
@@ -102,6 +103,7 @@ jobs:
             'SAM_SolarCalculator'
             'SAM_Tas'
             'SAM_Excel'
+            'SAM_LadybugTools'
             'SAM_UI'
             $repo
           )
