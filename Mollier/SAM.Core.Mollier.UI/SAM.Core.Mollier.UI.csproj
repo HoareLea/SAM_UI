@@ -12,14 +12,13 @@
 	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	  <Configurations>Debug;Release;net48-windows</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\build\</OutputPath>
-    <DocumentationFile>..\..\build\SAM.Core.Mollier.UI.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='net48-windows|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <OutputPath>..\..\build\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='net48-windows'">
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <ItemGroup>

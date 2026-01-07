@@ -5,20 +5,11 @@
     <OutputType>Library</OutputType>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
+    <OutputPath>..\..\build\</OutputPath>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	  <Configurations>Debug;Release;net48-windows</Configurations>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\build\</OutputPath>
-    <DocumentationFile>..\..\build\SAM.Core.UI.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\build\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='net48-windows|AnyCPU'">
-    <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SAM.Core">

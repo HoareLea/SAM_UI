@@ -10,14 +10,14 @@
 	  <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	  <OutputType>Library</OutputType>
 	  <Deterministic>false</Deterministic>
-      <UseWindowsForms>true</UseWindowsForms>
-      <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	  <Configurations>Debug;Release;net48-windows</Configurations>
+    <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\build\</OutputPath>
     <DocumentationFile>..\..\build\SAM.Core.Mollier.UI.Grasshopper.xml</DocumentationFile>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Rhino 8\System\Rhino.exe</StartProgram>

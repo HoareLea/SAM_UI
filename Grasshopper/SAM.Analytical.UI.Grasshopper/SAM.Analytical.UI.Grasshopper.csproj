@@ -13,6 +13,7 @@
 	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	  <Configurations>Debug;Release;net48-windows</Configurations>
+    <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>Library</OutputType>
@@ -20,16 +21,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartProgram>C:\Program Files\Rhino 7\System\Rhino.exe</StartProgram>
     <StartAction>Program</StartAction>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\..\build\</OutputPath>
-    <DocumentationFile>..\..\build\SAM.Analytical.UI.Grasshopper.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\..\build\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='net48-windows|AnyCPU'">
-    <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Query\**" />
