@@ -48,8 +48,10 @@ jobs:
           # Keep the current repo LAST.
           $buildOrder = @(
             'SAM'
+            'SAM_Systems'
             'SAM_Windows'
             'SAM_Mollier'
+            'SAM_gbXML'
             'SAM_SolarCalculator'
             'SAM_Tas'
             'SAM_Excel'
@@ -93,8 +95,10 @@ jobs:
           # Same build order as above (keep repo LAST)
           $buildOrder = @(
             'SAM'
+            'SAM_Systems'
             'SAM_Windows'
             'SAM_Mollier'
+            'SAM_gbXML'
             'SAM_SolarCalculator'
             'SAM_Tas'
             'SAM_Excel'
