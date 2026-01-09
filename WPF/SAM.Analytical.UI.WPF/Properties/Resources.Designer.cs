@@ -429,5 +429,17 @@ namespace SAM.Analytical.UI.WPF.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SAM_CreateCases
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("SAM_CreateCases", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

@@ -1,0 +1,75 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.MultipleCaseSimulationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="400">
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="200"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Content="Directory:" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0"/>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="90"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="TextBox_Directory" Grid.Column="0" Margin="5,0,0,0" VerticalAlignment="Center" IsEnabled="False"/>
+                <Button x:Name="button_Browse" Content="Browse..." Grid.Column="1" Width="80" Margin="5,0,5,0" Click="button_Browse_Click" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+            <Label Content="Files:" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0"/>
+            <ListBox x:Name="ListBox_Main" Grid.Row="3" Margin="5,5,5,5" SelectionMode="Extended"/>
+            <Grid Grid.Row="4" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <Button x:Name="button_Files" Content="Files" Grid.Column="1" Width="80" Height="23" Margin="5,0,5,0" Click="button_Files_Click" />
+                    <Button x:Name="button_Directory" Content="Directory" Grid.Column="1" Width="80" Height="23" Margin="5,0,5,0" Click="button_Directory_Click" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button x:Name="button_Remove" Content="Remove" Grid.Column="1" Width="80" Height="23" Margin="5,0,5,0" Click="button_Remove_Click" />
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Row="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="30"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="90"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Label Content="Add IZAMs" Grid.Row="0"/>
+                <CheckBox x:Name="checkBox_AddIZAMs" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
+                <Label Content="Sizing" Grid.Row="1"/>
+                <CheckBox x:Name="checkBox_Sizing" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
+                <Label Content="Simulate" Grid.Row="2"/>
+                <CheckBox x:Name="checkBox_Simulate" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
+                <Label Content="Use BE thickness" Grid.Row="3"/>
+                <CheckBox x:Name="checkBox_UseBEThickness" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="False"/>
+                <Label Content="Run unmet hours" Grid.Row="4"/>
+                <CheckBox x:Name="checkBox_RunUnmetHours" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="False"/>
+                <Label Content="Remove TBD" Grid.Row="5"/>
+                <CheckBox x:Name="checkBox_RemoveTBD" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
+                <Label Content="Parallel" Grid.Row="6"/>
+                <CheckBox x:Name="checkBox_Parallel" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" IsChecked="True"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

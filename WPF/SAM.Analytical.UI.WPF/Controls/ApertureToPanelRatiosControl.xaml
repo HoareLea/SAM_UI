@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.ApertureToPanelRatiosControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="400">
+    <Grid>
+        <DataGrid Grid.Row="0" ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" HeadersVisibility="Column" MouseDoubleClick="DataGrid_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Max&#10;azimuth" Binding="{Binding Max, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Min&#10;azimuth" Binding="{Binding Min, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Ratio" Binding="{Binding Ratio, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Aperture&#10;construction" Binding="{Binding ApertureConstructionName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

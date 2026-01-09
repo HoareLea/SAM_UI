@@ -1,0 +1,10 @@
+# CODEOWNERS
+# SAM-BIM – repository ownership definition
+# https://github.blog/2017-07-06-introducing-code-owners/
+
+# Default owners for the entire repository
+* @michaldengusiak @ZiolkowskiJakub
+
+# Governance & workflow files (always require both owners)
+ /CODEOWNERS @michaldengusiak @ZiolkowskiJakub
+ /.github/   @michaldengusiak @ZiolkowskiJakub

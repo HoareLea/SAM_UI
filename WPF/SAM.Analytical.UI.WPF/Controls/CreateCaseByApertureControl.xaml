@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.CreateCaseByApertureControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="250" d:DesignWidth="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <DataGrid Grid.Row="0" ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" HeadersVisibility="Column" MouseDoubleClick="DataGrid_MouseDoubleClick">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Aperture&#10;height" Binding="{Binding ApertureHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Horizontal&#10;separation" Binding="{Binding HorizontalSeparation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Keep separation&#10;distance" Binding="{Binding KeepSeparationDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Offset" Binding="{Binding Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Sill&#10;height" Binding="{Binding SillHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Subdivide" Binding="{Binding Subdivide, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Grid.Row="1" x:Name="button_Selection" Content="Selection"  Margin="0,10,10,10" HorizontalAlignment="Right" Width="70" Click="button_Selection_Click" IsEnabled="True"/>
+
+    </Grid>
+</UserControl>

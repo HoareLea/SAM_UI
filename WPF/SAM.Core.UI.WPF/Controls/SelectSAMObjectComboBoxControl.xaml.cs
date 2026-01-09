@@ -1,4 +1,7 @@
-﻿using System;
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -15,6 +18,7 @@ namespace SAM.Core.UI.WPF
         private class Item
         {
             public string Text { get; set; }
+            
             public IJSAMObject JSAMObject { get; set; }
 
             public Item(string text, IJSAMObject jSAMObject)

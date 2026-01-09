@@ -11,7 +11,10 @@
     <PublishSingleFile>true</PublishSingleFile>
     <Configurations>Debug;Release;net48-windows</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <OutputPath>..\..\build\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
