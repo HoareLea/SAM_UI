@@ -28,26 +28,22 @@
     <Reference Include="SAM.Core.Excel">
       <HintPath>..\..\..\SAM_Excel\build\SAM.Core.Excel.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Core.Mollier, Version=1.0.8236.24532, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SAM.Core.Mollier">
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Core.Mollier.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Core.Windows">
       <HintPath>..\..\..\SAM_Windows\build\SAM.Core.Windows.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Geometry, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SAM.Geometry">
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Geometry.Mollier">
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Math, Version=1.0.8236.30909, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SAM.Math">
       <HintPath>..\..\..\SAM\build\SAM.Math.dll</HintPath>
     </Reference>
-    <Reference Include="SAM.Units, Version=1.0.8278.16260, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="SAM.Units">
       <HintPath>..\..\..\SAM\build\SAM.Units.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms.DataVisualization" />
