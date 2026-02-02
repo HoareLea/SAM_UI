@@ -512,6 +512,9 @@
                     <RibbonButton x:Name="RibbonButton_SimulateCases" Label="Simulate" />
                     <RibbonButton x:Name="RibbonButton_CreateSimulateCases" Label="Create Simulate" />
                 </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Solver" Header="Solver">
+                    <RibbonButton x:Name="RibbonButton_Solve" Label="Solve" />
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">
                 <RibbonGroup x:Name="RibbonGroup_Help_General" Header="General">
