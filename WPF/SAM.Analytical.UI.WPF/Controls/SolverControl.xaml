@@ -43,7 +43,7 @@
                     <TextBlock Grid.Column="0" Grid.Row ="0" Text="Min area:" VerticalAlignment="Center" Margin="5,5,5,5"/>
                     <TextBox Grid.Column="1" Grid.Row ="0" Width="160" Margin="5,5,5,5" x:Name="textBox_MinArea" Text="0.015"/>
                     <TextBlock Grid.Column="0" Grid.Row ="1" Text="Min thinness ratio:" VerticalAlignment="Center" Margin="5,5,5,5"/>
-                    <TextBox Grid.Column="1" Grid.Row ="1" Width="160" Margin="5,5,5,5" x:Name="textBox_MinThinnessRatio" Text="0.9"/>
+                    <TextBox Grid.Column="1" Grid.Row ="1" Width="160" Margin="5,5,5,5" x:Name="textBox_MinThinnessRatio" Text="0.1"/>
                 </Grid>
             </GroupBox>
             <GroupBox Header="Solver settings" Margin="5,5,5,5">

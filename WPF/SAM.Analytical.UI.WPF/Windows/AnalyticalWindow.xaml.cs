@@ -2608,6 +2608,44 @@ namespace SAM.Analytical.UI.WPF.Windows
                     contextMenu.Items.Add(menuItem);
                 }
             }
+
+            if(jSAMObjects != null && jSAMObjects.Count > 0)
+            {
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Delete";
+                menuItem.Header = "Delete";
+                menuItem.Click += MenuItem_Delete_Click; ;
+                menuItem.Tag = jSAMObjects;
+                contextMenu.Items.Add(menuItem);
+            }
+        }
+
+        private void MenuItem_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Panel>? panels = null;
+            if (menuItem.Tag is Panel)
+            {
+                panels = [(Panel)menuItem.Tag];
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                panels = [];
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Panel)
+                    {
+                        panels.Add((Panel)@object);
+                    }
+                }
+            }
+
+            Modify.RemovePanels(uIAnalyticalModel, panels);
         }
 
         private void MenuItem_EditMCMDatas(object sender, RoutedEventArgs e)

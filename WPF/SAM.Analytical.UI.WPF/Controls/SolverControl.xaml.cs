@@ -9,6 +9,8 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class SolverControl : System.Windows.Controls.UserControl
     {
+        private List<double> levels = [];
+
         public SolverControl()
         {
             InitializeComponent();
@@ -33,7 +35,7 @@ namespace SAM.Analytical.UI.WPF
 
                 PanelGroup panelGroup = Analytical.Query.PanelGroup(panelType);
 
-                if (panelGroup != PanelGroup.Floor && panelGroup != PanelGroup.Roof)
+                if (panelGroup == PanelGroup.Floor || panelGroup == PanelGroup.Roof)
                 {
                     listBox_ExcludedPanelTypes.SelectedItems.Add(listBox_ExcludedPanelTypes.Items[index]);
                 }
@@ -59,7 +61,14 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_SelectLevels_Click(object sender, RoutedEventArgs e)
         {
+            SelectLevelsWindow selectLevelsWindow = new SelectLevelsWindow();
+            selectLevelsWindow.SetLevels(levels);
+            if(selectLevelsWindow.ShowDialog() != true)
+            {
+                return;
+            }
 
+            levels = selectLevelsWindow.GetLevels();
         }
 
         private void button_ExcludedPanels_Click(object sender, RoutedEventArgs e)
@@ -184,6 +193,19 @@ namespace SAM.Analytical.UI.WPF
                     result = double.NaN;
                 }
                 return result;
+            }
+        }
+
+        public List<double> Levels
+        {
+            get
+            {
+                return levels;
+            }
+
+            set
+            {
+                levels = value;
             }
         }
     }

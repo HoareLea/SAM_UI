@@ -60,6 +60,9 @@
     <Reference Include="SAM.Analytical.SolarCalculator">
       <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Analytical.SolarCalculator.dll</HintPath>
     </Reference>
+    <Reference Include="SAM.Analytical.Solver">
+      <HintPath>..\..\..\SAM_Solver\build\SAM.Analytical.Solver.dll</HintPath>
+    </Reference>
     <Reference Include="SAM.Analytical.Tas">
       <HintPath>..\..\..\SAM_Tas\build\SAM.Analytical.Tas.dll</HintPath>
     </Reference>
@@ -98,6 +101,9 @@
     </Reference>
     <Reference Include="SAM.Geometry.SolarCalculator">
       <HintPath>..\..\..\SAM_SolarCalculator\build\SAM.Geometry.SolarCalculator.dll</HintPath>
+    </Reference>
+    <Reference Include="SAM.Geometry.Solver">
+      <HintPath>..\..\..\SAM_Solver\build\SAM.Geometry.Solver.dll</HintPath>
     </Reference>
     <Reference Include="SAM.Weather">
       <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>

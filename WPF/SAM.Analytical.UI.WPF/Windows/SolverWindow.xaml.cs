@@ -26,6 +26,15 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
+            List<double> levels = SolverControl_Main.Levels;
+
+
+            if (levels is null || levels.Count < 2)
+            {
+                MessageBox.Show("Please select at least two levels");
+                return;
+            }
+            
             DialogResult = true;
             Close();
         }
@@ -117,6 +126,19 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 return SolverControl_Main.LevelOffset;
+            }
+        }
+
+        public List<double> Levels
+        {
+            get
+            {
+                return SolverControl_Main.Levels;
+            }
+
+            set
+            {
+                SolverControl_Main.Levels = value;
             }
         }
     }

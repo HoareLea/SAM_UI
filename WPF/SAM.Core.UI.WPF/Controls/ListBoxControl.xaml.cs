@@ -1,4 +1,7 @@
-﻿using System;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,6 +34,47 @@ namespace SAM.Core.UI.WPF
                 string text = namesFunc == null ? null : namesFunc.Invoke(value);
                 listBox.Items.Add(new ListBoxItem() { Content = text, Tag = value});
             }
+        }
+
+        public void SetSelection<T>(IEnumerable<T> values)
+        {
+            listBox.SelectionChanged -= listBox_SelectionChanged;
+
+            listBox.SelectedItems.Clear();
+
+            if(values is null)
+            {
+                return;
+            }
+
+            foreach(T value in values)
+            {
+                for(int i = 0; i < listBox.Items.Count; i++)
+                {
+                    ListBoxItem listBoxItem = listBox.Items[i] as ListBoxItem;
+                    if(listBoxItem is null)
+                    {
+                        continue;
+                    }
+
+                    if(value is null)
+                    {
+                        if(listBoxItem.Tag is null)
+                        {
+                            listBox.SelectedItems.Add(listBoxItem);
+                        }
+                    }
+                    else
+                    {
+                        if(value.Equals(listBoxItem.Tag))
+                        {
+                            listBox.SelectedItems.Add(listBoxItem);
+                        }
+                    }
+                }
+            }
+
+            listBox.SelectionChanged += listBox_SelectionChanged;
         }
 
         public void UpdateValue<T>(T value, Func<T, string> uniqueIdFunc)
@@ -122,7 +166,7 @@ namespace SAM.Core.UI.WPF
 
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectionChanged.Invoke(this, e);
+            SelectionChanged?.Invoke(this, e);
         }
 
         public SelectionMode SelectionMode
