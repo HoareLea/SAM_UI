@@ -199,14 +199,14 @@ namespace SAM.Analytical.UI.WPF
 
             List<Panel> panels_Roof = adjacencyCluster.GetPanels().FindAll(x => x.PanelGroup == PanelGroup.Roof);
 
+            List<Shell> shells_Roof = [];
+
             List<Shell> shells = Analytical.Query.Shells(panels_Filtered, 0.1, Tolerance.MacroDistance, Tolerance.Distance);
             if(shells is not null && shells.Count != 0)
             {
                 double length = boundingBox3D.Max.Z - boundingBox3D.Min.Z;
                 if(length > Tolerance.MacroDistance)
                 {
-                    List<Shell> shells_Roof = [];
-
                     Vector3D vector3D = Vector3D.WorldZ * length;
 
                     foreach (Panel panel_Roof in panels_Roof)
@@ -446,6 +446,36 @@ namespace SAM.Analytical.UI.WPF
 
                 }
             }
+
+            if(shells_Roof.Count > 0)
+            {
+                List<Panel> panels_Shade = adjacencyCluster_New.GetPanels().FindAll(x => x.PanelType == PanelType.Shade);
+                if (panels_Shade != null)
+                {
+                    foreach(Panel panel_Shade in panels_Shade)
+                    {
+                        Point3D point3D = panel_Shade?.GetInternalPoint3D();
+                        if (point3D is not null)
+                        {
+                            if (shells_Roof.Count != 0)
+                            {
+                                Shell? shell_Roof = shells_Roof.FindAll(x => x.GetBoundingBox().Inside(point3D, true, Tolerance.Distance))?.Find(x => x.Inside(point3D, Tolerance.Distance) && !x.On(point3D, Tolerance.Distance));
+                                if (shell_Roof is not null)
+                                {
+                                    dictionary[panel_Shade.Guid] = panel_Shade;
+                                    adjacencyCluster_New.RemoveObject(panel_Shade);
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+
+
+
 
 
             uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster_New), new AnalyticalModelModification(dictionary.Values));
