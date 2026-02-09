@@ -20,7 +20,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Grid.Row ="0" Text="Excluded panels:" VerticalAlignment="Center"/>
-                    <Button x:Name="button_ExcludedPanels" Grid.Column="1" Grid.Row ="0" Content="Select" Width="160" Margin="5,5,5,5" Click="button_ExcludedPanels_Click" />
+                    <Button x:Name="button_ExcludedPanels" Grid.Column="1" Grid.Row ="0" Content="Select" Width="160" Margin="5,5,5,5" Click="button_ExcludedPanels_Click" IsEnabled="False"/>
                     <TextBlock Grid.Column="0" Grid.Row ="1" Text="Excluded panel types:" VerticalAlignment="Center"/>
                     <ListBox x:Name="listBox_ExcludedPanelTypes" Grid.Column="1" Grid.Row ="1" Width="160" Height="140" Margin="5,5,5,5" SelectionMode="Multiple"/>
                     <TextBlock Grid.Column="0" Grid.Row ="2" Text="Remove panel internal edges:" VerticalAlignment="Center"/>

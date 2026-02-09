@@ -3,6 +3,7 @@
 using SAM.Analytical.Solver;
 using SAM.Architectural;
 using SAM.Core;
+using SAM.Core.UI.WPF;
 using SAM.Geometry.Object.Spatial;
 using SAM.Geometry.Spatial;
 using System;
@@ -15,7 +16,7 @@ namespace SAM.Analytical.UI.WPF
     {
         public static void Solve(UIAnalyticalModel uIAnalyticalModel)
         {
-            if(uIAnalyticalModel is null)
+            if (uIAnalyticalModel is null)
             {
                 return;
             }
@@ -36,7 +37,7 @@ namespace SAM.Analytical.UI.WPF
             List<double> elevations = panels_All.Levels()?.ConvertAll(x => x.Elevation) ?? [];
 
             BoundingBox3D boundingBox3D = panels_All.BoundingBox3D();
-            if(boundingBox3D is not null && !elevations.Contains(boundingBox3D.Max.Z))
+            if (boundingBox3D is not null && !elevations.Contains(boundingBox3D.Max.Z))
             {
                 elevations.Add(boundingBox3D.Max.Z);
             }
@@ -47,14 +48,18 @@ namespace SAM.Analytical.UI.WPF
             };
 
             bool? showDialogResult = solverWindow.ShowDialog();
-            if(!(showDialogResult is not null && showDialogResult.Value))
+            if (!(showDialogResult is not null && showDialogResult.Value))
             {
                 return;
             }
 
+            using ProgressBarWindowManager progressBarWindowManager = new();
+
+            progressBarWindowManager.Show("Solve", "Solving...");
+
             List<PanelType> panelTypes_Excluded = solverWindow.ExcludedPanelTypes;
             bool removePanelInternalEdges = solverWindow.RemovePanelInternalEdges;
-            
+
             bool filterPanels = solverWindow.FilterPanels;
             double minArea = filterPanels ? solverWindow.MinArea : double.NaN;
             double minThinnessRatio = filterPanels ? solverWindow.MinThinnessRatio : double.NaN;
@@ -67,7 +72,7 @@ namespace SAM.Analytical.UI.WPF
             elevations = solverWindow.Levels;
 
             List<Range<double>> ranges = [];
-            for(int i =0; i < elevations.Count - 1; i++)
+            for (int i = 0; i < elevations.Count - 1; i++)
             {
                 ranges.Add(new Range<double>(elevations[i], elevations[i + 1]));
             }
@@ -76,7 +81,7 @@ namespace SAM.Analytical.UI.WPF
 
             Dictionary<Guid, SAMObject> dictionary = [];
 
-            if(panels_Filtered != null && panels_Filtered.Count > 0)
+            if (panels_Filtered != null && panels_Filtered.Count > 0)
             {
                 if (filterPanels)
                 {
@@ -113,12 +118,12 @@ namespace SAM.Analytical.UI.WPF
                         Panel panel = panels_Filtered[i];
 
                         Face3D face3D = panel.GetFace3D();
-                        if(face3D is null)
+                        if (face3D is null)
                         {
                             continue;
                         }
 
-                        if(face3D.GetInternalEdge3Ds() is not List<IClosedPlanar3D> internalEdge3Ds || internalEdge3Ds.Count == 0)
+                        if (face3D.GetInternalEdge3Ds() is not List<IClosedPlanar3D> internalEdge3Ds || internalEdge3Ds.Count == 0)
                         {
                             continue;
                         }
@@ -135,7 +140,7 @@ namespace SAM.Analytical.UI.WPF
                 for (int i = 0; i < panels_Filtered.Count; i++)
                 {
                     Panel panel = panels_Filtered[i];
-                    if(panel is null)
+                    if (panel is null)
                     {
                         continue;
                     }
@@ -160,16 +165,16 @@ namespace SAM.Analytical.UI.WPF
 
             List<Panel> panels_New = solver.Execute(out List<Point3D> nakedPoint3Ds, bucketSize_MultipleLevel);
             Dictionary<Guid, Guid> dictionary_Guid = [];
-            if(panels_New is not null)
+            if (panels_New is not null)
             {
-                for(int i = 0; i < panels_New.Count; i++)
+                for (int i = 0; i < panels_New.Count; i++)
                 {
                     Guid guid = panels_New[i].Guid;
 
                     dictionary_Guid[guid] = guid;
 
                     List<Panel> panels_Guid = panels_New.FindAll(x => x.Guid == guid);
-                    while(panels_Guid != null && panels_Guid.Count > 1)
+                    while (panels_Guid != null && panels_Guid.Count > 1)
                     {
                         guid = Guid.NewGuid();
                         panels_New[i] = Analytical.Create.Panel(guid, panels_New[i]);
@@ -182,7 +187,7 @@ namespace SAM.Analytical.UI.WPF
                 panels_Filtered = panels_New;
             }
 
-            if(panels_Filtered is not null)
+            if (panels_Filtered is not null)
             {
                 foreach (Panel panel_Filtered in panels_Filtered)
                 {
@@ -202,10 +207,10 @@ namespace SAM.Analytical.UI.WPF
             List<Shell> shells_Roof = [];
 
             List<Shell> shells = Analytical.Query.Shells(panels_Filtered, 0.1, Tolerance.MacroDistance, Tolerance.Distance);
-            if(shells is not null && shells.Count != 0)
+            if (shells is not null && shells.Count != 0)
             {
                 double length = boundingBox3D.Max.Z - boundingBox3D.Min.Z;
-                if(length > Tolerance.MacroDistance)
+                if (length > Tolerance.MacroDistance)
                 {
                     Vector3D vector3D = Vector3D.WorldZ * length;
 
@@ -230,10 +235,10 @@ namespace SAM.Analytical.UI.WPF
                     }
 
                     List<Shell> shells_Result = [];
-                    foreach(Shell shell in shells)
+                    foreach (Shell shell in shells)
                     {
                         List<Shell> shells_Difference = Geometry.Spatial.Query.Difference(shell, shells_Roof);
-                        if(shells_Difference == null || shells_Difference.Count == 0)
+                        if (shells_Difference == null || shells_Difference.Count == 0)
                         {
                             shells_Result.Add(shell);
                         }
@@ -256,11 +261,11 @@ namespace SAM.Analytical.UI.WPF
             List<Tuple<Panel, Face3D>>? tuples_Rest = adjacencyCluster.GetPanels().FindAll(x => !guids_Filtered.Contains(x.Guid)).ConvertAll(x => new Tuple<Panel, Face3D>(x, x.GetFace3D()));
 
 
-            HashSet <Guid> guids = [];
-            for(int i =0; i < tuples_New.Count; i++)
+            HashSet<Guid> guids = [];
+            for (int i = 0; i < tuples_New.Count; i++)
             {
                 Point3D? point3D = tuples_New[i]?.Item2?.GetInternalPoint3D();
-                if(point3D is null)
+                if (point3D is null)
                 {
                     continue;
                 }
@@ -285,20 +290,20 @@ namespace SAM.Analytical.UI.WPF
 
                 tuples_New[i] = new Tuple<Panel, Face3D>(panel_Updated, tuples_New[i].Item2);
             }
-            
-            
+
+
             foreach (Panel panel in panels_All)
             {
                 List<Aperture>? apertures = panel?.Apertures;
-                if(apertures is null || apertures.Count == 0)
+                if (apertures is null || apertures.Count == 0)
                 {
                     continue;
                 }
 
-                foreach(Aperture aperture in apertures)
+                foreach (Aperture aperture in apertures)
                 {
                     Face3D? face3D = aperture?.GetFace3D();
-                    if(face3D is null)
+                    if (face3D is null)
                     {
                         continue;
                     }
@@ -312,17 +317,17 @@ namespace SAM.Analytical.UI.WPF
                     face3D = tuples_New[0].Item2.GetPlane().Project(face3D);
 
                     List<Aperture> apertures_New = Analytical.Modify.AddApertures(panel_Temp, aperture.ApertureConstruction, face3D, true, Tolerance.MacroDistance, 0.5);
-                    if(apertures_New != null && apertures_New.Count != 0)
+                    if (apertures_New != null && apertures_New.Count != 0)
                     {
                         guids.Add(panel_Temp.Guid);
                     }
                 }
             }
 
-            foreach(Guid guid in guids)
+            foreach (Guid guid in guids)
             {
                 Panel? panel = tuples_New.Find(x => x.Item1.Guid == guid)?.Item1;
-                if(panel is null)
+                if (panel is null)
                 {
                     continue;
                 }
@@ -334,18 +339,18 @@ namespace SAM.Analytical.UI.WPF
             Dictionary<Space, Shell> dictionary_Shells = adjacencyCluster_New.ShellDictionary();
 
             List<Panel> panels_Cut = [];
-            if(panels_Roof != null)
+            if (panels_Roof != null)
             {
                 panels_Cut.AddRange(panels_Roof);
             }
 
-            if(panels_Filtered != null)
+            if (panels_Filtered != null)
             {
                 panels_Cut.AddRange(panels_Filtered);
             }
 
             List<Panel> panels_Floor = adjacencyCluster.GetPanels().FindAll(x => x.PanelGroup == PanelGroup.Floor);
-            if(panels_Floor != null)
+            if (panels_Floor != null)
             {
                 panels_Cut.AddRange(panels_Floor);
             }
@@ -353,14 +358,14 @@ namespace SAM.Analytical.UI.WPF
             foreach (Panel panel in panels_Cut)
             {
                 Face3D? face3D = panel?.GetFace3D();
-                if(face3D is null)
+                if (face3D is null)
                 {
                     continue;
                 }
 
                 List<Face3D> face3Ds_Split = Geometry.Spatial.Query.Split(face3D, dictionary_Shells.Values, Tolerance.MacroDistance, Tolerance.Angle, Tolerance.Distance);
 
-                foreach(Face3D face3D_Split in face3Ds_Split)
+                foreach (Face3D face3D_Split in face3Ds_Split)
                 {
                     if (face3D_Split is null || face3D_Split.GetArea() < minArea)
                     {
@@ -375,13 +380,13 @@ namespace SAM.Analytical.UI.WPF
                     }
 
                     Point3D point3D = face3D_Split.GetInternalPoint3D();
-                    if(point3D is null)
+                    if (point3D is null)
                     {
                         continue;
                     }
 
                     Shell? shell = dictionary_Shells.Values.ToList()?.FindAll(x => x.GetBoundingBox().Inside(point3D, true, Tolerance.Distance))?.Find(x => x.Inside(point3D, Tolerance.Distance) || x.On(point3D, Tolerance.Distance));
-                    if(shell is null)
+                    if (shell is null)
                     {
                         Panel panel_New = Analytical.Create.Panel(panel!.Construction, PanelType.Shade, face3D_Split);
                         dictionary[panel_New.Guid] = panel_New;
@@ -392,19 +397,19 @@ namespace SAM.Analytical.UI.WPF
             }
 
             List<Space> spaces_Existing = adjacencyCluster.GetSpaces();
-            if(spaces_Existing != null && spaces_Existing.Count != 0)
+            if (spaces_Existing != null && spaces_Existing.Count != 0)
             {
-                foreach(Space space_Existing in spaces_Existing)
+                foreach (Space space_Existing in spaces_Existing)
                 {
                     Point3D? point3D = space_Existing?.Location?.GetMoved(new Vector3D(0, 0, 0.1)) as Point3D;
-                    if(point3D is null)
+                    if (point3D is null)
                     {
                         continue;
                     }
 
                     foreach (KeyValuePair<Space, Shell> keyValuePair in dictionary_Shells)
                     {
-                        if(keyValuePair.Value.GetBoundingBox().Inside(point3D) && (keyValuePair.Value.Inside(point3D) || keyValuePair.Value.On(point3D)))
+                        if (keyValuePair.Value.GetBoundingBox().Inside(point3D) && (keyValuePair.Value.Inside(point3D) || keyValuePair.Value.On(point3D)))
                         {
                             Space space = keyValuePair.Key;
 
@@ -421,12 +426,12 @@ namespace SAM.Analytical.UI.WPF
             }
 
             List<Tuple<Panel, Face3D>> tuples_Shade = adjacencyCluster_New.GetPanels().FindAll(x => x.PanelType == PanelType.Shade).ConvertAll(x => new Tuple<Panel, Face3D>(x, x.GetFace3D()));
-            if(tuples_Shade != null)
+            if (tuples_Shade != null)
             {
-                foreach(Tuple<Panel, Face3D> tuple in tuples_Shade)
+                foreach (Tuple<Panel, Face3D> tuple in tuples_Shade)
                 {
                     List<Face3D> face3Ds_Split = Geometry.Spatial.Query.Split(tuple.Item2, tuples_Shade.ConvertAll(x => x.Item2), Tolerance.MacroDistance, Tolerance.Angle, Tolerance.Distance).FindAll(x => x.GetArea() > Tolerance.MacroDistance);
-                    if(face3Ds_Split == null || face3Ds_Split.Count < 2)
+                    if (face3Ds_Split == null || face3Ds_Split.Count < 2)
                     {
                         continue;
                     }
@@ -436,7 +441,7 @@ namespace SAM.Analytical.UI.WPF
                     dictionary[panel.Guid] = panel;
                     adjacencyCluster_New.RemoveObject(panel);
 
-                    foreach(Face3D face3D_Split in face3Ds_Split)
+                    foreach (Face3D face3D_Split in face3Ds_Split)
                     {
                         Panel panel_New = Analytical.Create.Panel(panel.Construction, PanelType.Shade, face3D_Split);
 
@@ -447,12 +452,12 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            if(shells_Roof.Count > 0)
+            if (shells_Roof.Count > 0)
             {
                 List<Panel> panels_Shade = adjacencyCluster_New.GetPanels().FindAll(x => x.PanelType == PanelType.Shade);
                 if (panels_Shade != null)
                 {
-                    foreach(Panel panel_Shade in panels_Shade)
+                    foreach (Panel panel_Shade in panels_Shade)
                     {
                         Point3D point3D = panel_Shade?.GetInternalPoint3D();
                         if (point3D is not null)
@@ -474,7 +479,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
 
-
+            progressBarWindowManager.Close();
 
 
 
