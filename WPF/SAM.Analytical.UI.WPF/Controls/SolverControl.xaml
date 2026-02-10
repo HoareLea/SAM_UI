@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="550" d:DesignWidth="350">
+             d:DesignHeight="600" d:DesignWidth="350">
     <Grid>
         <StackPanel>
             <GroupBox Header="Excluded elements" Margin="5,5,5,5">
@@ -73,6 +73,9 @@
                     <TextBlock Grid.Column="0" Grid.Row ="5" Text="Level offset:" VerticalAlignment="Center" Margin="5,5,5,5"/>
                     <TextBox Grid.Column="1" Grid.Row ="5" Width="160" Margin="5,5,5,5" x:Name="textBox_LevelOffset" Text="0.25"/>
                 </Grid>
+            </GroupBox>
+            <GroupBox Header="Post processing" Margin="5,5,5,5">
+                <CheckBox x:Name="checkBox_RemoveUnassignedSpaces" Grid.Column="1" Grid.Row ="2" VerticalAlignment="Center" Margin="5,5,5,5" IsChecked="True" Content="Remove unused spaces"/>
             </GroupBox>
         </StackPanel>
     </Grid>

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Documents;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -16,6 +15,178 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
 
             Load();
+        }
+
+        public double BucketSize_MultipleLevel
+        {
+            get
+            {
+                if (!double.TryParse(textBox_BucketSize_MultipleLevel.Text, out double result))
+                {
+                    result = double.NaN;
+                }
+                return result;
+            }
+        }
+
+        public double BucketSize_SingleLevel
+        {
+            get
+            {
+                if (!double.TryParse(textBox_BucketSize_SingleLevel.Text, out double result))
+                {
+                    result = double.NaN;
+                }
+                return result;
+
+            }
+        }
+
+        public List<PanelType> ExcludedPanelTypes
+        {
+            get
+            {
+                List<PanelType> excludedPanelTypes = [];
+                foreach (var selectedItem in listBox_ExcludedPanelTypes.SelectedItems)
+                {
+                    string description = selectedItem.ToString() ?? string.Empty;
+                    PanelType panelType = Core.Query.Enum<PanelType>(description);
+                    excludedPanelTypes.Add(panelType);
+                }
+                return excludedPanelTypes;
+            }
+        }
+
+        public bool FilterPanels
+        {
+            get
+            {
+                return checkBox_Filter.IsChecked.HasValue && checkBox_Filter.IsChecked.Value;
+            }
+        }
+
+        public double LevelOffset
+        {
+            get
+            {
+                if (!double.TryParse(textBox_LevelOffset.Text, out double result))
+                {
+                    result = double.NaN;
+                }
+                return result;
+            }
+        }
+
+        public List<double> Levels
+        {
+            get
+            {
+                return levels;
+            }
+
+            set
+            {
+                levels = value;
+            }
+        }
+
+        public double MaxExtension
+        {
+            get
+            {
+                if (!double.TryParse(textBox_MaxExtension.Text, out double result))
+                {
+                    result = double.NaN;
+                }
+                return result;
+            }
+        }
+
+        public double MinArea
+        {
+            get
+            {
+                if (!FilterPanels || !double.TryParse(textBox_MinArea.Text, out double result))
+                {
+                    result = double.NaN;
+                }
+
+                return result;
+            }
+        }
+
+        public double MinThinnessRatio
+        {
+            get
+            {
+                if (!FilterPanels || !double.TryParse(textBox_MinThinnessRatio.Text, out double result))
+                {
+                    result = double.NaN;
+                }
+
+                return result;
+            }
+        }
+
+        public bool RemovePanelInternalEdges
+        {
+            get
+            {
+                return checkBox_RemovePanelInternalEdges.IsChecked.HasValue && checkBox_RemovePanelInternalEdges.IsChecked.Value;
+            }
+        }
+
+        public bool RemoveUnusedSpaces
+        {
+            get
+            {
+                if (checkBox_RemoveUnassignedSpaces.IsChecked is null)
+                {
+                    return false;
+                }
+
+                return checkBox_RemoveUnassignedSpaces.IsChecked.Value;
+            }
+
+            set
+            {
+                checkBox_RemoveUnassignedSpaces.IsChecked = value;
+            }
+        }
+
+        public double Weight
+        {
+            get
+            {
+                if (!double.TryParse(textBox_Weight.Text, out double result))
+                {
+                    result = double.NaN;
+                }
+                return result;
+            }
+
+        }
+
+        private void button_ExcludedPanels_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void button_SelectLevels_Click(object sender, RoutedEventArgs e)
+        {
+            SelectLevelsWindow selectLevelsWindow = new SelectLevelsWindow();
+            selectLevelsWindow.SetLevels(levels);
+            if (selectLevelsWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            levels = selectLevelsWindow.GetLevels();
+        }
+
+        private void checkBox_Filter_Click(object sender, RoutedEventArgs e)
+        {
+            SetFilter();
         }
 
         private void Load()
@@ -51,161 +222,6 @@ namespace SAM.Analytical.UI.WPF
             {
                 textBox_MinArea.IsEnabled = true;
                 textBox_MinThinnessRatio.IsEnabled = true;
-            }
-        }
-
-        private void checkBox_Filter_Click(object sender, RoutedEventArgs e)
-        {
-            SetFilter();
-        }
-
-        private void button_SelectLevels_Click(object sender, RoutedEventArgs e)
-        {
-            SelectLevelsWindow selectLevelsWindow = new SelectLevelsWindow();
-            selectLevelsWindow.SetLevels(levels);
-            if(selectLevelsWindow.ShowDialog() != true)
-            {
-                return;
-            }
-
-            levels = selectLevelsWindow.GetLevels();
-        }
-
-        private void button_ExcludedPanels_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        public List<PanelType> ExcludedPanelTypes
-        {
-            get
-            {
-                List<PanelType> excludedPanelTypes = [];
-                foreach (var selectedItem in listBox_ExcludedPanelTypes.SelectedItems)
-                {
-                    string description = selectedItem.ToString() ?? string.Empty;
-                    PanelType panelType = Core.Query.Enum<PanelType>(description);
-                    excludedPanelTypes.Add(panelType);
-                }
-                return excludedPanelTypes;
-            }
-        }
-
-        public bool RemovePanelInternalEdges
-        {
-            get
-            {
-                return checkBox_RemovePanelInternalEdges.IsChecked.HasValue && checkBox_RemovePanelInternalEdges.IsChecked.Value;
-            }
-        }
-
-        public bool FilterPanels
-        {
-            get
-            {
-                return checkBox_Filter.IsChecked.HasValue && checkBox_Filter.IsChecked.Value;
-            }
-        }
-
-        public double MinArea
-        {
-            get
-            {
-                if (!FilterPanels || !double.TryParse(textBox_MinArea.Text, out double result))
-                {
-                    result = double.NaN;
-                }
-
-                return result;
-            }
-        }
-
-        public double MinThinnessRatio
-        {
-            get
-            {
-                if (!FilterPanels || !double.TryParse(textBox_MinThinnessRatio.Text, out double result))
-                {
-                    result = double.NaN;
-                }
-
-                return result;
-            }
-        }
-
-        public double BucketSize_SingleLevel
-        {
-            get
-            {
-                if (!double.TryParse(textBox_BucketSize_SingleLevel.Text, out double result))
-                {
-                    result = double.NaN;
-                }
-                return result;
-
-            }
-        }
-
-
-        public double BucketSize_MultipleLevel
-        {
-            get
-            {
-                if (!double.TryParse(textBox_BucketSize_MultipleLevel.Text, out double result))
-                {
-                    result = double.NaN;
-                }
-                return result;
-            }
-        }
-
-        public double Weight
-        {
-            get
-            {
-                if (!double.TryParse(textBox_Weight.Text, out double result))
-                {
-                    result = double.NaN;
-                }
-                return result;
-            }
-
-        }
-
-        public double MaxExtension
-        {
-            get
-            {
-                if (!double.TryParse(textBox_MaxExtension.Text, out double result))
-                {
-                    result = double.NaN;
-                }
-                return result;
-            }
-        }
-
-        public double LevelOffset
-        {
-            get
-            {
-                if (!double.TryParse(textBox_LevelOffset.Text, out double result))
-                {
-                    result = double.NaN;
-                }
-                return result;
-            }
-        }
-
-        public List<double> Levels
-        {
-            get
-            {
-                return levels;
-            }
-
-            set
-            {
-                levels = value;
             }
         }
     }

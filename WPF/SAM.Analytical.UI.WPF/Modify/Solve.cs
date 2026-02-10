@@ -69,6 +69,8 @@ namespace SAM.Analytical.UI.WPF
             double maxExtension = solverWindow.MaxExtension;
             double levelOffset = solverWindow.LevelOffset;
 
+            bool removeUnusedSpaces = solverWindow.RemoveUnusedSpaces;
+
             elevations = solverWindow.Levels;
 
             List<Range<double>> ranges = [];
@@ -478,10 +480,21 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
+            if(removeUnusedSpaces)
+            {
+                List<Space> spaces = adjacencyCluster_New.GetSpaces();
+                foreach (Space space in spaces)
+                {
+                    List<Panel> panels = adjacencyCluster_New.GetPanels(space);
+                    if (panels is not null && panels.Count > 0)
+                    {
+                        adjacencyCluster_New.RemoveObject(space);
+                        dictionary[space.Guid] = space;
+                    }
+                }
+            }
 
             progressBarWindowManager.Close();
-
-
 
             uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster_New), new AnalyticalModelModification(dictionary.Values));
         }
