@@ -28,13 +28,11 @@ namespace SAM.Analytical.UI.WPF.Windows
     {
         private static string titlePrefix = "SAM Analytical";
 
+        private DoubleRangeWindow doubleRangeWindow = null;
         private ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager();
 
         private UIAnalyticalModel uIAnalyticalModel = null;
         private Core.Windows.WindowHandle windowHandle = null;
-
-        private DoubleRangeWindow doubleRangeWindow = null;
-        
         public AnalyticalWindow()
         {
             Initailize();
@@ -61,6 +59,384 @@ namespace SAM.Analytical.UI.WPF.Windows
                     }
                 }
             }
+        }
+
+        private void AnalyticalModelControl_SelectionRequested(object sender, SelectionRequestedEventArgs e)
+        {
+            List<SAMObject> sAMObjects = e.SAMObjects;
+            if (sAMObjects == null || sAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster != null)
+            {
+                for (int i = sAMObjects.Count - 1; i >= 0; i--)
+                {
+                    Zone zone = sAMObjects[i] as Zone;
+                    if (zone == null)
+                    {
+                        continue;
+                    }
+
+                    sAMObjects.RemoveAt(i);
+
+                    List<Space> spaces = adjacencyCluster.GetSpaces(zone);
+                    if (spaces == null || spaces.Count == 0)
+                    {
+                        return;
+                    }
+
+                    sAMObjects.AddRange(spaces);
+                }
+            }
+
+            viewportControl.Select(sAMObjects);
+        }
+
+        private void AnalyticalModelControl_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
+        {
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+        }
+
+        private void AnalyticalModelControl_ZoomRequested(object sender, ZoomRequestedEventArgs e)
+        {
+            List<SAMObject> sAMObjects = e.SAMObjects;
+            if (sAMObjects == null || sAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster != null)
+            {
+                for (int i = sAMObjects.Count - 1; i >= 0; i--)
+                {
+                    Zone zone = sAMObjects[i] as Zone;
+                    if (zone == null)
+                    {
+                        continue;
+                    }
+
+                    sAMObjects.RemoveAt(i);
+
+                    List<Space> spaces = adjacencyCluster.GetSpaces(zone);
+                    if (spaces == null || spaces.Count == 0)
+                    {
+                        return;
+                    }
+
+                    sAMObjects.AddRange(spaces);
+                }
+            }
+
+            viewportControl.Zoom(sAMObjects);
+        }
+
+        private void AssignMechanicalSystems(IEnumerable<Space> spaces = null)
+        {
+            Modify.AssignMechanicalSystems(uIAnalyticalModel, spaces);
+        }
+
+        private void DoubleRangeWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            doubleRangeWindow = null;
+        }
+
+        private void DoubleRangeWindow_RangeChanged(object sender, RangeChangedEventArgs<double> e)
+        {
+            Range<double> range = e.Range;
+            if (range == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                return;
+            }
+
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = uIGeometrySettings.GetViewSettings(viewportControl.Guid) as ThreeDimensionalViewSettings;
+            if (threeDimensionalViewSettings == null)
+            {
+                return;
+            }
+
+            List<Geometry.Spatial.Plane> planes = new List<Geometry.Spatial.Plane>();
+
+            if (doubleRangeWindow.Min != range.Min)
+            {
+                Geometry.Spatial.Plane plane_Min = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Min)) as Geometry.Spatial.Plane;
+
+                planes.Add(plane_Min);
+            }
+
+            if (doubleRangeWindow.Max != range.Max)
+            {
+                Geometry.Spatial.Plane plane_Max = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Max)) as Geometry.Spatial.Plane;
+                plane_Max.Reverse();
+
+                planes.Add(plane_Max);
+            }
+
+            if (planes.Count == 0)
+            {
+                planes = null;
+            }
+
+            threeDimensionalViewSettings.Planes = planes;
+
+            uIGeometrySettings.AddViewSettings(threeDimensionalViewSettings);
+
+            analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
+
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(threeDimensionalViewSettings, true));
+        }
+
+        private void DuplicateViewSettings(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            Modify.DuplicateViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void EditLegend()
+        {
+            Guid guid = GetActiveGuid();
+            if (guid == Guid.Empty)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            Modify.EditLegend(uIAnalyticalModel, guid);
+        }
+
+        private void EditMechanicalSystems(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
+        {
+            Modify.EditMechanicalSystems(uIAnalyticalModel, spaces, MechanicalSystemCategory.Ventilation, selectedSpaces);
+        }
+
+        private void EditViewSettings()
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            EditViewSettings(tabItem);
+        }
+
+        private void EditViewSettings(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void EditZones(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
+        {
+            string zoneCategory = null;
+
+            ViewSettings viewSettings = Query.ViewSettings<ViewSettings>(uIAnalyticalModel, GetActiveGuid());
+            if (viewSettings != null)
+            {
+                ZoneAppearanceSettings zoneAppearanceSettings = viewSettings.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault()?.GetValueAppearanceSettings<ZoneAppearanceSettings>();
+                if (zoneAppearanceSettings != null)
+                {
+                    zoneCategory = zoneAppearanceSettings.ZoneCategory;
+                }
+            }
+
+            //SetActiveGuid();
+            Modify.EditZones(uIAnalyticalModel, spaces, zoneCategory, selectedSpaces);
+        }
+
+        private void EnableViewSettings(bool enabled)
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            EnableViewSettings(tabItem, enabled);
+        }
+
+        private void EnableViewSettings(TabItem tabItem, bool enabled)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            Modify.EnableViewSettings(uIAnalyticalModel, new Guid[] { viewportControl.Guid }, enabled);
+        }
+
+        private void EnableViewSettings(IEnumerable<TabItem> tabItems, bool enabled)
+        {
+            if (tabItems == null || tabItems.Count() == 0)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+
+            List<Guid> guids = new List<Guid>();
+            foreach (TabItem tabItem in tabItems)
+            {
+                ViewportControl viewportControl = tabItem.Content as ViewportControl;
+                if (viewportControl == null)
+                {
+                    continue;
+                }
+
+                guids.Add(viewportControl.Guid);
+            }
+
+            Modify.EnableViewSettings(uIAnalyticalModel, guids, enabled);
+        }
+
+        private void FilterWindow_FilterAdding(object sender, FilterAddingEventArgs e)
+        {
+            e.Handled = true;
+
+            Type type = e.Type;
+            List<IUIFilter> uIFilters = UI.Query.IUIFilters(type, uIAnalyticalModel?.JSAMObject?.AdjacencyCluster);
+            if (uIFilters == null || uIFilters.Count == 0)
+            {
+                return;
+            }
+
+            using (SearchForm<IUIFilter> searchForm = new SearchForm<IUIFilter>("Select Filter", uIFilters, x => x.Name))
+            {
+                searchForm.SelectionMode = System.Windows.Forms.SelectionMode.One;
+                if (searchForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                e.UIFilter = searchForm.SelectedItems.FirstOrDefault();
+            }
+        }
+
+        private Guid GetActiveGuid()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return Guid.Empty;
+            }
+
+            return viewportControl.Guid;
+        }
+
+        private ViewportControl GetActiveViewportControl()
+        {
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return null;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return null;
+            }
+
+            return tabItem.Content as ViewportControl;
+        }
+
+        private IViewSettings GetActiveViewSettings()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return null;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return null;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                return null;
+            }
+
+            return uIGeometrySettings.GetViewSettings(viewportControl.Guid);
         }
 
         private void Initailize()
@@ -289,563 +665,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             SetEnabled();
         }
 
-        private void RibbonButton_Solve_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.Solve(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_SimulateCases_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.SimulateCases();
-        }
-
-        private void RibbonButton_CreateSimulateCases_Click(object sender, RoutedEventArgs e)
-        {
-            if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
-            {
-                return;
-            }
-
-            Modify.CreateSimulateCases(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_CreateCases_Click(object sender, RoutedEventArgs e)
-        {
-            if(uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
-            {
-                return;
-            }
-
-            List<AnalyticalModel>? analyticalModel_Case = Create.AnalyticalModels(analyticalModel);
-        }
-
-        private void RibbonButton_RemoveAirMovementObjects_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.RemoveAirMovementObjects(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_GlazingCalculator_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.CalculateGlazing(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_ThermalTransmittanceCalculator_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.ThermalTransmittanceCalculator_SingleConstruction(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_UpdateUKBRFile_Click(object sender, RoutedEventArgs e)
-        {
-            bool result = Modify.UpdateUKBRFile(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_NCMNames_Click(object sender, RoutedEventArgs e)
-        {
-            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection(), new NCMNameCollectionOptions(false));
-            nCMNameCollectionWindow.ShowDialog();
-        }
-
-        private void RibbonButton_AssignMechanicalSystems_Click(object sender, RoutedEventArgs e)
-        {
-            List<Space> spaces = GetActiveViewportControl()?.SelectedSAMObjects<Space>();
-            if(spaces == null  || spaces.Count == 0)
-            {
-                spaces = null;
-            }
-
-            //uIAnalyticalModel?.AssignMechanicalSystems(spaces);
-            uIAnalyticalModel?.AddMechanicalSystems(spaces);
-        }
-
-        private void RibbonButton_ViewRange_Click(object sender, RoutedEventArgs e)
-        {
-            ShowViewRange();
-        }
-
-        private void ShowViewRange()
-        {
-            if (doubleRangeWindow != null)
-            {
-                doubleRangeWindow.Close();
-                return;
-            }
-
-            double max = 0;
-            double min = 0;
-            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
-            if (range != null)
-            {
-                max = range.Max;
-                min = range.Min;
-            }
-
-            doubleRangeWindow = new DoubleRangeWindow(max, min);
-            doubleRangeWindow.ShowActivated = true;
-            doubleRangeWindow.Topmost = true;
-            doubleRangeWindow.RangeChanged += DoubleRangeWindow_RangeChanged;
-            doubleRangeWindow.Closing += DoubleRangeWindow_Closing;
-
-            RefreshDoubleRangeWindow();
-
-            doubleRangeWindow.Show();
-        }
-
-        private void DoubleRangeWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            doubleRangeWindow = null;
-        }
-
-        private void RefreshDoubleRangeWindow()
-        {
-            if(doubleRangeWindow == null)
-            {
-                return;
-            }
-            
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = GetActiveViewSettings() as ThreeDimensionalViewSettings;
-            if (threeDimensionalViewSettings == null)
-            {
-                return;
-            }
-
-            double max = 0;
-            double min = 0;
-            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
-            if (range != null)
-            {
-                max = range.Max;
-                min = range.Min;
-            }
-
-            range = new Range<double>(min, max);
-
-            List<Geometry.Spatial.Plane> planes = threeDimensionalViewSettings.Planes;
-            if (planes != null && planes.Count != 0)
-            {
-                if(planes.Count == 1)
-                {
-                    Geometry.Spatial.Plane plane = planes[0];
-
-                    if(plane.Normal.Z > 0)
-                    {
-                        range = new Range<double>(plane.Origin.Z, max);
-                    }
-                    else
-                    {
-                        range = new Range<double>(plane.Origin.Z, min);
-                    }
-                }
-                else
-                {
-                    List<double> values = planes.ConvertAll(x => x.Origin.Z);
-                    range = new Range<double>(values);
-                }
-            }
-
-            doubleRangeWindow.Range = range;
-        }
-
-        private void DoubleRangeWindow_RangeChanged(object sender, RangeChangedEventArgs<double> e)
-        {
-            Range<double> range = e.Range;
-            if(range == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = GetActiveViewportControl();
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
-            {
-                return;
-            }
-
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = uIGeometrySettings.GetViewSettings(viewportControl.Guid) as ThreeDimensionalViewSettings;
-            if(threeDimensionalViewSettings == null)
-            {
-                return;
-            }
-
-            List<Geometry.Spatial.Plane> planes = new List<Geometry.Spatial.Plane>();
-
-            if(doubleRangeWindow.Min != range.Min)
-            {
-                Geometry.Spatial.Plane plane_Min = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Min)) as Geometry.Spatial.Plane;
-
-                planes.Add(plane_Min);
-            }
-
-            if (doubleRangeWindow.Max != range.Max)
-            {
-                Geometry.Spatial.Plane plane_Max = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Max)) as Geometry.Spatial.Plane;
-                plane_Max.Reverse();
-
-                planes.Add(plane_Max);
-            }
-
-            if(planes.Count == 0)
-            {
-                planes = null;
-            }
-
-            threeDimensionalViewSettings.Planes = planes;
-
-            uIGeometrySettings.AddViewSettings(threeDimensionalViewSettings);
-
-            analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
-
-            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(threeDimensionalViewSettings, true));
-        }
-
-        private void AnalyticalModelControl_SelectionRequested(object sender, SelectionRequestedEventArgs e)
-        {
-            List<SAMObject> sAMObjects = e.SAMObjects;
-            if (sAMObjects == null || sAMObjects.Count == 0)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = GetActiveViewportControl();
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-            if (adjacencyCluster != null)
-            {
-                for (int i = sAMObjects.Count - 1; i >= 0; i--)
-                {
-                    Zone zone = sAMObjects[i] as Zone;
-                    if (zone == null)
-                    {
-                        continue;
-                    }
-
-                    sAMObjects.RemoveAt(i);
-
-                    List<Space> spaces = adjacencyCluster.GetSpaces(zone);
-                    if (spaces == null || spaces.Count == 0)
-                    {
-                        return;
-                    }
-
-                    sAMObjects.AddRange(spaces);
-                }
-            }
-
-            viewportControl.Select(sAMObjects);
-        }
-
-        private void AnalyticalModelControl_TreeViewItemDropped(object sender, TreeViewItemDroppedEventArgs e)
-        {
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-        }
-
-        private void AnalyticalModelControl_ZoomRequested(object sender, ZoomRequestedEventArgs e)
-        {
-            List<SAMObject> sAMObjects = e.SAMObjects;
-            if (sAMObjects == null || sAMObjects.Count == 0)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = GetActiveViewportControl();
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-            if (adjacencyCluster != null)
-            {
-                for (int i = sAMObjects.Count - 1; i >= 0; i--)
-                {
-                    Zone zone = sAMObjects[i] as Zone;
-                    if (zone == null)
-                    {
-                        continue;
-                    }
-
-                    sAMObjects.RemoveAt(i);
-
-                    List<Space> spaces = adjacencyCluster.GetSpaces(zone);
-                    if (spaces == null || spaces.Count == 0)
-                    {
-                        return;
-                    }
-
-                    sAMObjects.AddRange(spaces);
-                }
-            }
-
-            viewportControl.Zoom(sAMObjects);
-        }
-
-        private void DuplicateViewSettings(TabItem tabItem)
-        {
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            //SetActiveGuid();
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            Modify.DuplicateViewSettings(uIAnalyticalModel, viewportControl.Guid);
-        }
-
-        private void EditLegend()
-        {
-            Guid guid = GetActiveGuid();
-            if (guid == Guid.Empty)
-            {
-                return;
-            }
-
-            //SetActiveGuid();
-            Modify.EditLegend(uIAnalyticalModel, guid);
-        }
-
-        private void EditViewSettings()
-        {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            EditViewSettings(tabItem);
-        }
-
-        private void EditViewSettings(TabItem tabItem)
-        {
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            //SetActiveGuid();
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
-        }
-
-        private void EditZones(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
-        {
-            string zoneCategory = null;
-
-            ViewSettings viewSettings = Query.ViewSettings<ViewSettings>(uIAnalyticalModel, GetActiveGuid());
-            if (viewSettings != null)
-            {
-                ZoneAppearanceSettings zoneAppearanceSettings = viewSettings.GetValueAppearanceSettings<SpaceAppearanceSettings>()?.FirstOrDefault()?.GetValueAppearanceSettings<ZoneAppearanceSettings>();
-                if (zoneAppearanceSettings != null)
-                {
-                    zoneCategory = zoneAppearanceSettings.ZoneCategory;
-                }
-            }
-
-            //SetActiveGuid();
-            Modify.EditZones(uIAnalyticalModel, spaces, zoneCategory, selectedSpaces);
-        }
-
-        private void EditMechanicalSystems(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
-        {
-            Modify.EditMechanicalSystems(uIAnalyticalModel, spaces, MechanicalSystemCategory.Ventilation, selectedSpaces);
-        }
-
-        private void AssignMechanicalSystems(IEnumerable<Space> spaces = null)
-        {
-            Modify.AssignMechanicalSystems(uIAnalyticalModel, spaces);
-        }
-
-        private void EnableViewSettings(bool enabled)
-        {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            EnableViewSettings(tabItem, enabled);
-        }
-
-        private void EnableViewSettings(TabItem tabItem, bool enabled)
-        {
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            //SetActiveGuid();
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            Modify.EnableViewSettings(uIAnalyticalModel, new Guid[] { viewportControl.Guid }, enabled);
-        }
-
-        private void EnableViewSettings(IEnumerable<TabItem> tabItems, bool enabled)
-        {
-            if (tabItems == null || tabItems.Count() == 0)
-            {
-                return;
-            }
-
-            //SetActiveGuid();
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-
-            List<Guid> guids = new List<Guid>();
-            foreach (TabItem tabItem in tabItems)
-            {
-                ViewportControl viewportControl = tabItem.Content as ViewportControl;
-                if (viewportControl == null)
-                {
-                    continue;
-                }
-
-                guids.Add(viewportControl.Guid);
-            }
-
-            Modify.EnableViewSettings(uIAnalyticalModel, guids, enabled);
-        }
-
-        private void FilterWindow_FilterAdding(object sender, FilterAddingEventArgs e)
-        {
-            e.Handled = true;
-
-            Type type = e.Type;
-            List<IUIFilter> uIFilters = UI.Query.IUIFilters(type, uIAnalyticalModel?.JSAMObject?.AdjacencyCluster);
-            if (uIFilters == null || uIFilters.Count == 0)
-            {
-                return;
-            }
-
-            using (SearchForm<IUIFilter> searchForm = new SearchForm<IUIFilter>("Select Filter", uIFilters, x => x.Name))
-            {
-                searchForm.SelectionMode = System.Windows.Forms.SelectionMode.One;
-                if (searchForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    return;
-                }
-
-                e.UIFilter = searchForm.SelectedItems.FirstOrDefault();
-            }
-        }
-
-        private Guid GetActiveGuid()
-        {
-            ViewportControl viewportControl = GetActiveViewportControl();
-            if (viewportControl == null)
-            {
-                return Guid.Empty;
-            }
-
-            return viewportControl.Guid;
-        }
-
-        private ViewportControl GetActiveViewportControl()
-        {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return null;
-            }
-
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return null;
-            }
-
-            return tabItem.Content as ViewportControl;
-        }
-
-        private IViewSettings GetActiveViewSettings()
-        {
-            ViewportControl viewportControl = GetActiveViewportControl();
-            if (viewportControl == null)
-            {
-                return null;
-            }
-
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return null;
-            }
-
-            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
-            {
-                return null;
-            }
-
-            return uIGeometrySettings.GetViewSettings(viewportControl.Guid);
-        }
-
-        private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
-
-            List<Space> spaces = null;
-            if (menuItem.Tag is Space)
-            {
-                spaces = new List<Space>() { (Space)menuItem.Tag };
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                spaces = new List<Space>();
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is Space)
-                    {
-                        spaces.Add((Space)@object);
-                    }
-                }
-            }
-
-            Modify.AssignSpaceInternalCondition(uIAnalyticalModel, spaces);
-        }
-
         private void MenuItem_AssignApertureConstruction_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
@@ -873,7 +692,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             Modify.AssignApertureApertureConstruction(uIAnalyticalModel, apertures);
         }
-        
+
         private void MenuItem_AssignApertureConstructionByThermalTransmittance_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
@@ -958,6 +777,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.AssignPanelConstructionByThermalTransmittance(uIAnalyticalModel, panels);
         }
 
+        private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            Modify.AssignSpaceInternalCondition(uIAnalyticalModel, spaces);
+        }
+
         private void MenuItem_Close_TabItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -1012,6 +859,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EnableViewSettings(uIAnalyticalModel, false);
         }
 
+        private void MenuItem_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Panel>? panels = null;
+            if (menuItem.Tag is Panel)
+            {
+                panels = [(Panel)menuItem.Tag];
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                panels = [];
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Panel)
+                    {
+                        panels.Add((Panel)@object);
+                    }
+                }
+            }
+
+            Modify.RemovePanels(uIAnalyticalModel, panels);
+        }
+
         private void MenuItem_Duplicate_TabItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -1057,6 +932,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditInternalConditions(uIAnalyticalModel, spaces);
         }
 
+        private void MenuItem_EditMCMDatas(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            Modify.EditNCMDatas(uIAnalyticalModel, spaces);
+        }
+
         private void MenuItem_EditOpeningProperties_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
@@ -1085,12 +988,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditOpeningProperties(uIAnalyticalModel, apertures);
         }
 
-        private void MenuItem_Legend_Click(object sender, RoutedEventArgs e)
-        {
-            EditLegend();
-        }
-
-        private void MenuItem_ManageZones_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Hide_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
             if (menuItem == null)
@@ -1098,24 +996,42 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            List<Space> spaces = null;
-            if (menuItem.Tag is Space)
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
             {
-                spaces = new List<Space>() { (Space)menuItem.Tag };
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects = null;
+            if (menuItem.Tag is IJSAMObject)
+            {
+                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
             }
             else if (menuItem.Tag is IEnumerable)
             {
-                spaces = new List<Space>();
+                jSAMObjects = new List<IJSAMObject>();
                 foreach (object @object in (IEnumerable)menuItem.Tag)
                 {
-                    if (@object is Space)
+                    if (@object is IJSAMObject)
                     {
-                        spaces.Add((Space)@object);
+                        jSAMObjects.Add((IJSAMObject)@object);
                     }
                 }
             }
 
-            EditZones(spaces, spaces);
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        }
+
+        private void MenuItem_Legend_Click(object sender, RoutedEventArgs e)
+        {
+            EditLegend();
         }
 
         private void MenuItem_ManageMechanicalSystems_Click(object sender, RoutedEventArgs e)
@@ -1145,6 +1061,34 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             //EditMechanicalSystems(spaces, spaces);
             AssignMechanicalSystems(spaces);
+        }
+
+        private void MenuItem_ManageZones_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            EditZones(spaces, spaces);
         }
 
         private void MenuItem_MenuItem_MapInternalCondition_Click(object sender, RoutedEventArgs e)
@@ -1196,7 +1140,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 Space space = (Space)jSAMObject;
                 uIAnalyticalModel.EditSpace(space, windowHandle);
             }
-            else if(jSAMObject is Aperture)
+            else if (jSAMObject is Aperture)
             {
                 Aperture aperture = (Aperture)jSAMObject;
                 uIAnalyticalModel.EditAperture(aperture, windowHandle);
@@ -1236,6 +1180,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             //}
         }
 
+        private void MenuItem_SelectByConstructionName_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByConstructionName();
+        }
+
         private void MenuItem_SelectByFilter_Click(object sender, RoutedEventArgs e)
         {
             SelectByFilter();
@@ -1244,6 +1193,16 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void MenuItem_SelectByGuid_Click(object sender, RoutedEventArgs e)
         {
             SelectByGuid();
+        }
+
+        private void MenuItem_SelectByPanelGroup_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByPanelGroup();
+        }
+
+        private void MenuItem_SelectByPanelType_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByPanelType();
         }
 
         private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)
@@ -1266,6 +1225,73 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void MenuItem_ViewSettings_Click(object sender, RoutedEventArgs e)
         {
             EditViewSettings();
+        }
+
+        private bool Open(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
+            {
+                return false;
+            }
+
+            uIAnalyticalModel = new UIAnalyticalModel();
+            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
+            uIAnalyticalModel.Path = path;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
+            uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
+
+            return uIAnalyticalModel.Open();
+        }
+
+        private void RefreshDoubleRangeWindow()
+        {
+            if (doubleRangeWindow == null)
+            {
+                return;
+            }
+
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = GetActiveViewSettings() as ThreeDimensionalViewSettings;
+            if (threeDimensionalViewSettings == null)
+            {
+                return;
+            }
+
+            double max = 0;
+            double min = 0;
+            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
+            if (range != null)
+            {
+                max = range.Max;
+                min = range.Min;
+            }
+
+            range = new Range<double>(min, max);
+
+            List<Geometry.Spatial.Plane> planes = threeDimensionalViewSettings.Planes;
+            if (planes != null && planes.Count != 0)
+            {
+                if (planes.Count == 1)
+                {
+                    Geometry.Spatial.Plane plane = planes[0];
+
+                    if (plane.Normal.Z > 0)
+                    {
+                        range = new Range<double>(plane.Origin.Z, max);
+                    }
+                    else
+                    {
+                        range = new Range<double>(plane.Origin.Z, min);
+                    }
+                }
+                else
+                {
+                    List<double> values = planes.ConvertAll(x => x.Origin.Z);
+                    range = new Range<double>(values);
+                }
+            }
+
+            doubleRangeWindow.Range = range;
         }
 
         private void Reload(ModifiedEventArgs modifiedEventArgs)
@@ -1333,13 +1359,13 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             using (ComboBoxForm<AboutInfoType> comboBoxForm = new ComboBoxForm<AboutInfoType>("Info", abouInfoTypes, x => x.Description()))
             {
-                if(comboBoxForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (comboBoxForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     MessageBox.Show(Core.Query.AboutInfoTypeText(comboBoxForm.SelectedItem), "Info");
                 }
             }
         }
-        
+
         private void RibbonButton_AddMissingObjects_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.AddMissingObjects(windowHandle);
@@ -1365,6 +1391,18 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel?.EditProperties(windowHandle);
         }
 
+        private void RibbonButton_AssignMechanicalSystems_Click(object sender, RoutedEventArgs e)
+        {
+            List<Space> spaces = GetActiveViewportControl()?.SelectedSAMObjects<Space>();
+            if (spaces == null || spaces.Count == 0)
+            {
+                spaces = null;
+            }
+
+            //uIAnalyticalModel?.AssignMechanicalSystems(spaces);
+            uIAnalyticalModel?.AddMechanicalSystems(spaces);
+        }
+
         private void RibbonButton_CleanAnalyticalModel_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.Clean(windowHandle);
@@ -1383,6 +1421,26 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_CloseView_Click(object sender, RoutedEventArgs e)
         {
             EnableViewSettings(false);
+        }
+
+        private void RibbonButton_CreateCases_Click(object sender, RoutedEventArgs e)
+        {
+            if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
+            {
+                return;
+            }
+
+            List<AnalyticalModel>? analyticalModel_Case = Create.AnalyticalModels(analyticalModel);
+        }
+
+        private void RibbonButton_CreateSimulateCases_Click(object sender, RoutedEventArgs e)
+        {
+            if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
+            {
+                return;
+            }
+
+            Modify.CreateSimulateCases(uIAnalyticalModel);
         }
 
         private void RibbonButton_CreateTBD_Click(object sender, RoutedEventArgs e)
@@ -1452,6 +1510,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.Export(uIAnalyticalModel);
         }
 
+        private void RibbonButton_GlazingCalculator_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.CalculateGlazing(uIAnalyticalModel);
+        }
+
         private void RibbonButton_Hydra_Click(object sender, RoutedEventArgs e)
         {
             Core.Query.StartProcess(Link.Hydra);
@@ -1480,6 +1543,12 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_MapInternalConditionsByTM59_Click(object sender, RoutedEventArgs e)
         {
             Modify.MapInternalConditionsByTM59(uIAnalyticalModel);
+        }
+
+        private void RibbonButton_NCMNames_Click(object sender, RoutedEventArgs e)
+        {
+            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection(), new NCMNameCollectionOptions(false));
+            nCMNameCollectionWindow.ShowDialog();
         }
 
         private void RibbonButton_New3DView_Click(object sender, RoutedEventArgs e)
@@ -1612,23 +1681,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             Open(path);
         }
 
-        private bool Open(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
-            {
-                return false;
-            }
-
-            uIAnalyticalModel = new UIAnalyticalModel();
-            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
-            uIAnalyticalModel.Path = path;
-            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-            uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
-            uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
-
-            return uIAnalyticalModel.Open();
-        }
-
         private void RibbonButton_OpenMollierChart_Click(object sender, RoutedEventArgs e)
         {
             using (Core.Mollier.UI.MollierForm mollierForm = new Core.Mollier.UI.MollierForm())
@@ -1638,6 +1690,18 @@ namespace SAM.Analytical.UI.WPF.Windows
                     return;
                 }
             }
+        }
+
+        private void RibbonButton_OpenPartL_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Core.Tas.Query.UKBRStudio2021Path();
+
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            {
+                return;
+            }
+
+            System.Diagnostics.Process.Start(path);
         }
 
         private void RibbonButton_OpenT3D_Click(object sender, RoutedEventArgs e)
@@ -1688,26 +1752,37 @@ namespace SAM.Analytical.UI.WPF.Windows
             System.Diagnostics.Process.Start(path);
         }
 
-        private void RibbonButton_OpenPartL_Click(object sender, RoutedEventArgs e)
-        {
-            string path = Core.Tas.Query.UKBRStudio2021Path();
-
-            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
-            {
-                return;
-            }
-
-            System.Diagnostics.Process.Start(path);
-        }
-
         private void RibbonButton_PrintRoomDataSheets_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.PrintRoomDataSheets(windowHandle);
         }
 
+        private void RibbonButton_RemoveAirMovementObjects_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.RemoveAirMovementObjects(uIAnalyticalModel);
+        }
+
         private void RibbonButton_RemoveResults_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel.RemoveResults();
+        }
+
+        private void RibbonButton_RevealHidden_Click(object sender, RoutedEventArgs e)
+        {
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.RemoveOverrides(uIAnalyticalModel, viewportControl.Guid);
         }
 
         private void RibbonButton_SaveAnalyticalModel_Click(object sender, RoutedEventArgs e)
@@ -1750,11 +1825,21 @@ namespace SAM.Analytical.UI.WPF.Windows
             SelectByGuid();
         }
 
+        private void RibbonButton_SimulateCases_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.SimulateCases();
+        }
+
         private void RibbonButton_SolarSimulation_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.SolarSimulation(windowHandle);
         }
 
+        private void RibbonButton_Solve_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.Solve(uIAnalyticalModel);
+        }
+       
         private void RibbonButton_SpaceDiagram_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.SpaceDiagram(windowHandle);
@@ -1784,10 +1869,24 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
+        private void RibbonButton_ThermalTransmittanceCalculator_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.ThermalTransmittanceCalculator_SingleConstruction(uIAnalyticalModel);
+        }
+
+        private void RibbonButton_UpdateUKBRFile_Click(object sender, RoutedEventArgs e)
+        {
+            bool result = Modify.UpdateUKBRFile(uIAnalyticalModel);
+        }
         private void RibbonButton_ViewGeometry_Click(object sender, RoutedEventArgs e)
         {
             GeometryWindow geometryWindow = new GeometryWindow();
             geometryWindow.Show();
+        }
+
+        private void RibbonButton_ViewRange_Click(object sender, RoutedEventArgs e)
+        {
+            ShowViewRange();
         }
 
         private void RibbonButton_ViewSettings_Click(object sender, RoutedEventArgs e)
@@ -1800,6 +1899,66 @@ namespace SAM.Analytical.UI.WPF.Windows
             System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM_UI/wiki");
         }
 
+        private void SelectByConstructionName()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+
+            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            HashSet<string> constructionNames = [];
+            foreach (Panel panel in panels)
+            {
+                if (panel is null)
+                {
+                    continue;
+                }
+
+                string? constructionName = panel?.Construction?.Name;
+                if (string.IsNullOrWhiteSpace(constructionName))
+                {
+                    constructionName = string.Empty;
+                }
+
+                constructionNames.Add(constructionName);
+            }
+
+            panels = [];
+
+            List<Panel> panels_All = adjacencyCluster.GetPanels();
+            foreach (Panel panel in panels_All)
+            {
+                if (panel == null)
+                {
+                    continue;
+                }
+
+                string? constructionName = panel?.Construction?.Name;
+                if (string.IsNullOrWhiteSpace(constructionName))
+                {
+                    constructionName = string.Empty;
+                }
+
+                if (!constructionNames.Contains(constructionName))
+                {
+                    continue;
+                }
+
+                panels.Add(panel);
+            }
+
+            viewportControl.Select(panels);
+        }
+
         private void SelectByFilter()
         {
             AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
@@ -1809,13 +1968,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             IUIFilter uIFilter = ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
-            if(uIFilter != null)
+            if (uIFilter != null)
             {
                 UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
             }
 
             List<IUIFilter> uIFilters = ActiveManager.GetValue<SAMCollection<IUIFilter>>(Assembly.GetExecutingAssembly(), "UIFilters")?.Cast<IUIFilter>().ToList();
-            if(uIFilters != null && uIFilters.Count != 0)
+            if (uIFilters != null && uIFilters.Count != 0)
             {
                 uIFilters.ForEach(x => UI.Modify.AssignAdjacencyCluster(x, adjacencyCluster));
             }
@@ -1855,7 +2014,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             viewportControl?.Select(jSAMObjects_Filtered?.FindAll(x => x is SAMObject)?.Cast<SAMObject>());
         }
-        
+
         private void SelectByGuid()
         {
             string value = null;
@@ -1917,7 +2076,93 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             viewportControl.Select(sAMObjects);
         }
-        
+
+        private void SelectByPanelGroup()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+
+            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            HashSet<PanelGroup> panelGroups = [];
+            foreach (Panel panel in panels)
+            {
+                if (panel is null)
+                {
+                    continue;
+                }
+
+                panelGroups.Add(panel.PanelGroup);
+            }
+
+            panels = [];
+
+            List<Panel> panels_All = adjacencyCluster.GetPanels();
+            foreach (Panel panel in panels_All)
+            {
+                if (!panelGroups.Contains(panel.PanelGroup))
+                {
+                    continue;
+                }
+
+                panels.Add(panel);
+            }
+
+            viewportControl.Select(panels);
+        }
+
+        private void SelectByPanelType()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+
+            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster == null)
+            {
+                return;
+            }
+
+            HashSet<PanelType> panelTypes = [];
+            foreach (Panel panel in panels)
+            {
+                if (panel is null)
+                {
+                    continue;
+                }
+
+                panelTypes.Add(panel.PanelType);
+            }
+
+            panels = [];
+
+            List<Panel> panels_All = adjacencyCluster.GetPanels();
+            foreach (Panel panel in panels_All)
+            {
+                if (!panelTypes.Contains(panel.PanelType))
+                {
+                    continue;
+                }
+
+                panels.Add(panel);
+            }
+
+            viewportControl.Select(panels);
+        }
+
         private void SetActiveGuid()
         {
             Guid guid = GetActiveGuid();
@@ -2083,6 +2328,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
+        private void ShowViewRange()
+        {
+            if (doubleRangeWindow != null)
+            {
+                doubleRangeWindow.Close();
+                return;
+            }
+
+            double max = 0;
+            double min = 0;
+            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
+            if (range != null)
+            {
+                max = range.Max;
+                min = range.Min;
+            }
+
+            doubleRangeWindow = new DoubleRangeWindow(max, min);
+            doubleRangeWindow.ShowActivated = true;
+            doubleRangeWindow.Topmost = true;
+            doubleRangeWindow.RangeChanged += DoubleRangeWindow_RangeChanged;
+            doubleRangeWindow.Closing += DoubleRangeWindow_Closing;
+
+            RefreshDoubleRangeWindow();
+
+            doubleRangeWindow.Show();
+        }
+        
         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Guid guid = GetActiveGuid();
@@ -2294,11 +2567,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             return tabItem;
         }
 
-        private void ViewportControl_ObjectSelectionChanged(object sender, ObjectSelectionChangedEventArgs e)
-        {
-            
-        }
-
         private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs)
         {
             if (tabControl == null)
@@ -2438,23 +2706,23 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem.IsEnabled = uIAnalyticalModel.HasLegend(GetActiveGuid());
             contextMenu.Items.Add(menuItem);
 
-            menuItem = new MenuItem();
-            menuItem.Name = "MenuItem_Select";
-            menuItem.Header = "Select";
+            MenuItem menuItem_Select = new MenuItem();
+            menuItem_Select.Name = "MenuItem_Select";
+            menuItem_Select.Header = "Select";
 
             MenuItem menuItem_SelectByFilter = new MenuItem();
             menuItem_SelectByFilter.Name = "MenuItem_SelectByFilter";
             menuItem_SelectByFilter.Header = "By Filter";
             menuItem_SelectByFilter.Click += MenuItem_SelectByFilter_Click;
-            menuItem.Items.Add(menuItem_SelectByFilter);
+            menuItem_Select.Items.Add(menuItem_SelectByFilter);
 
             MenuItem menuItem_SelectByGuid = new MenuItem();
             menuItem_SelectByGuid.Name = "MenuItem_SelectByGuid";
             menuItem_SelectByGuid.Header = "By Guid";
             menuItem_SelectByGuid.Click += MenuItem_SelectByGuid_Click;
-            menuItem.Items.Add(menuItem_SelectByGuid);
+            menuItem_Select.Items.Add(menuItem_SelectByGuid);
 
-            contextMenu.Items.Add(menuItem);
+            contextMenu.Items.Add(menuItem_Select);
 
             contextMenu.IsOpen = true;
 
@@ -2606,10 +2874,28 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Click += MenuItem_AssignConstructionByThermalTransmittance_Click;
                     menuItem.Tag = panels;
                     contextMenu.Items.Add(menuItem);
+
+                    MenuItem menuItem_SelectByPanelType = new MenuItem();
+                    menuItem_SelectByPanelType.Name = "MenuItem_SelectByPanelType";
+                    menuItem_SelectByPanelType.Header = "By PanelType";
+                    menuItem_SelectByPanelType.Click += MenuItem_SelectByPanelType_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByPanelType);
+
+                    MenuItem menuItem_SelectByConstructionName = new MenuItem();
+                    menuItem_SelectByConstructionName.Name = "MenuItem_SelectByConstructionName";
+                    menuItem_SelectByConstructionName.Header = "By Construction Name";
+                    menuItem_SelectByConstructionName.Click += MenuItem_SelectByConstructionName_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByConstructionName);
+
+                    MenuItem menuItem_SelectByPanelGroup = new MenuItem();
+                    menuItem_SelectByPanelGroup.Name = "MenuItem_SelectByPanelGroup";
+                    menuItem_SelectByPanelGroup.Header = "By PanelGroup";
+                    menuItem_SelectByPanelGroup.Click += MenuItem_SelectByPanelGroup_Click; ;
+                    menuItem_Select.Items.Add(menuItem_SelectByPanelGroup);
                 }
             }
 
-            if(jSAMObjects != null && jSAMObjects.Count > 0)
+            if (jSAMObjects != null && jSAMObjects.Count > 0)
             {
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Delete";
@@ -2618,121 +2904,6 @@ namespace SAM.Analytical.UI.WPF.Windows
                 menuItem.Tag = jSAMObjects;
                 contextMenu.Items.Add(menuItem);
             }
-        }
-
-        private void MenuItem_Delete_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
-
-            List<Panel>? panels = null;
-            if (menuItem.Tag is Panel)
-            {
-                panels = [(Panel)menuItem.Tag];
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                panels = [];
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is Panel)
-                    {
-                        panels.Add((Panel)@object);
-                    }
-                }
-            }
-
-            Modify.RemovePanels(uIAnalyticalModel, panels);
-        }
-
-        private void MenuItem_EditMCMDatas(object sender, RoutedEventArgs e)
-        {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
-
-            List<Space> spaces = null;
-            if (menuItem.Tag is Space)
-            {
-                spaces = new List<Space>() { (Space)menuItem.Tag };
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                spaces = new List<Space>();
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is Space)
-                    {
-                        spaces.Add((Space)@object);
-                    }
-                }
-            }
-
-            Modify.EditNCMDatas(uIAnalyticalModel, spaces);
-        }
-
-        private void MenuItem_Hide_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
-
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            List<IJSAMObject> jSAMObjects = null;
-            if (menuItem.Tag is IJSAMObject)
-            {
-                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                jSAMObjects = new List<IJSAMObject>();
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is IJSAMObject)
-                    {
-                        jSAMObjects.Add((IJSAMObject)@object);
-                    }
-                }
-            }
-
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
-        }
-
-        private void RibbonButton_RevealHidden_Click(object sender, RoutedEventArgs e)
-        {
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            UI.Modify.RemoveOverrides(uIAnalyticalModel, viewportControl.Guid);
         }
 
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
@@ -2786,7 +2957,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 uIAnalyticalModel.EditAperture(aperture, new Core.Windows.WindowHandle(this));
             }
         }
-        
+
         private void ViewportControl_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;
@@ -2828,6 +2999,20 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
+        private void ViewportControl_ObjectSelectionChanged(object sender, ObjectSelectionChangedEventArgs e)
+        {
+            
+        }
+        
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (doubleRangeWindow != null)
+            {
+                doubleRangeWindow.Close();
+                doubleRangeWindow = null;
+            }
+        }
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.F)
@@ -2853,15 +3038,6 @@ namespace SAM.Analytical.UI.WPF.Windows
 
                 }
                 return;
-            }
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if(doubleRangeWindow != null)
-            {
-                doubleRangeWindow.Close();
-                doubleRangeWindow = null;
             }
         }
     }
