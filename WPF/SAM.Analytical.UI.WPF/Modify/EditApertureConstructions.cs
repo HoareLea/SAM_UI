@@ -21,7 +21,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             List<ApertureConstruction> apertureConstructions = adjacencyCluster.GetApertureConstructions();
-            ApertureConstructionLibrary apertureConstructionLibrary = new ApertureConstructionLibrary(uIAnalyticalModel.JSAMObject.Name);
+            ApertureConstructionLibrary apertureConstructionLibrary = new ApertureConstructionLibrary(uIAnalyticalModel?.JSAMObject?.Name ?? string.Empty);
             apertureConstructions?.ForEach(x => apertureConstructionLibrary.Add(x));
 
             MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;

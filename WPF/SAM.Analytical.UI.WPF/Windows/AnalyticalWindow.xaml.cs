@@ -1878,6 +1878,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             bool result = Modify.UpdateUKBRFile(uIAnalyticalModel);
         }
+        
         private void RibbonButton_ViewGeometry_Click(object sender, RoutedEventArgs e)
         {
             GeometryWindow geometryWindow = new GeometryWindow();
