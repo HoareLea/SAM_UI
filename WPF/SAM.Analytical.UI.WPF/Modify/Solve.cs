@@ -44,7 +44,8 @@ namespace SAM.Analytical.UI.WPF
 
             SolverWindow solverWindow = new()
             {
-                Levels = [.. elevations.Distinct()]
+                Levels = [.. elevations.Distinct()],
+                Languages = ActiveManager.GetSpecialCharacterMapNames()
             };
 
             bool? showDialogResult = solverWindow.ShowDialog();
@@ -68,6 +69,9 @@ namespace SAM.Analytical.UI.WPF
             double weight = solverWindow.Weight;
             double maxExtension = solverWindow.MaxExtension;
             double levelOffset = solverWindow.LevelOffset;
+            
+            bool replaceNameSpecialCharacters = solverWindow.ReplaceNameSpecialCharacters;
+            string language = solverWindow.SelectedLanguage;
 
             bool removeUnusedSpaces = solverWindow.RemoveUnusedSpaces;
 
@@ -486,12 +490,17 @@ namespace SAM.Analytical.UI.WPF
                 foreach (Space space in spaces)
                 {
                     List<Panel> panels = adjacencyCluster_New.GetPanels(space);
-                    if (panels is not null && panels.Count > 0)
+                    if (panels == null || panels.Count == 0)
                     {
                         adjacencyCluster_New.RemoveObject(space);
                         dictionary[space.Guid] = space;
                     }
                 }
+            }
+
+            if(replaceNameSpecialCharacters && !string.IsNullOrWhiteSpace(language))
+            {
+                adjacencyCluster_New.ReplaceNameSpecialCharacters(language);
             }
 
             progressBarWindowManager.Close();

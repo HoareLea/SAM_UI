@@ -577,6 +577,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_NCMNames.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
             RibbonButton_NCMNames.Click += RibbonButton_NCMNames_Click;
 
+            RibbonButton_FixNames.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
+            RibbonButton_FixNames.Click += RibbonButton_FixNames_Click;
+
             RibbonButton_CleanAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
             RibbonButton_CleanAnalyticalModel.Click += RibbonButton_CleanAnalyticalModel_Click;
 
@@ -663,6 +666,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_FixNames_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel.ReplaceNameSpecialCharacters(windowHandle);
         }
 
         private void MenuItem_AssignApertureConstruction_Click(object sender, RoutedEventArgs e)

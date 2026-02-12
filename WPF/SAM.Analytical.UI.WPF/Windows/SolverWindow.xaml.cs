@@ -45,6 +45,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public IEnumerable<string> Languages
+        {
+            get
+            {
+                return SolverControl_Main.Languages;
+            }
+
+            set
+            {
+                SolverControl_Main.Languages = value;
+            }
+        }
+
         public double LevelOffset
         {
             get
@@ -65,7 +78,7 @@ namespace SAM.Analytical.UI.WPF
                 SolverControl_Main.Levels = value;
             }
         }
-
+        
         public double MaxExtension
         {
             get
@@ -95,6 +108,27 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 return SolverControl_Main.RemovePanelInternalEdges;
+            }
+        }
+
+        public string SelectedLanguage
+        {
+            get
+            {
+                return SolverControl_Main.SelectedLanguage;
+            }
+        }
+
+        public bool ReplaceNameSpecialCharacters
+        {
+            get
+            {
+                return SolverControl_Main.ReplaceNameSpecialCharacters;
+            }
+
+            set
+            {
+                SolverControl_Main.ReplaceNameSpecialCharacters = value;
             }
         }
 

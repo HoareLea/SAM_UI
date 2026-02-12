@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 namespace SAM.Analytical.UI.WPF
@@ -62,6 +63,38 @@ namespace SAM.Analytical.UI.WPF
             get
             {
                 return checkBox_Filter.IsChecked.HasValue && checkBox_Filter.IsChecked.Value;
+            }
+        }
+
+        public IEnumerable<string> Languages
+        {
+            get
+            {
+                if (comboBox_ReplaceNameSpecialCharacters.Items.Count == 0)
+                {
+                    return new List<string>();
+                }
+
+                return comboBox_ReplaceNameSpecialCharacters.Items.Cast<string>();
+            }
+
+            set
+            {
+                comboBox_ReplaceNameSpecialCharacters.Items.Clear();
+                if (value == null)
+                {
+                    return;
+                }
+
+                foreach (string language in value)
+                {
+                    comboBox_ReplaceNameSpecialCharacters.Items.Add(language);
+                }
+
+                if(value.Contains("ISO"))
+                {
+                    comboBox_ReplaceNameSpecialCharacters.SelectedItem = "ISO";
+                }
             }
         }
 
@@ -167,6 +200,29 @@ namespace SAM.Analytical.UI.WPF
 
         }
 
+        public string SelectedLanguage
+        {
+            get
+            {
+                return comboBox_ReplaceNameSpecialCharacters.SelectedItem?.ToString();
+            }
+        }
+
+        public bool ReplaceNameSpecialCharacters
+        {
+            get
+            {
+                return checkBox_ReplaceNameSpecialCharacters.IsChecked != null && checkBox_ReplaceNameSpecialCharacters.IsChecked.Value;
+            }
+
+            set
+            {
+                checkBox_ReplaceNameSpecialCharacters.IsChecked = value;
+                comboBox_ReplaceNameSpecialCharacters.IsEnabled = value;
+            }
+        }
+
+
         private void button_ExcludedPanels_Click(object sender, RoutedEventArgs e)
         {
 
@@ -224,5 +280,6 @@ namespace SAM.Analytical.UI.WPF
                 textBox_MinThinnessRatio.IsEnabled = true;
             }
         }
+
     }
 }

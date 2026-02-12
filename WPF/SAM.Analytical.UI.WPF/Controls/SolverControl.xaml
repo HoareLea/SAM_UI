@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="350">
+             d:DesignHeight="650" d:DesignWidth="350">
     <Grid>
         <StackPanel>
             <GroupBox Header="Excluded elements" Margin="5,5,5,5">
@@ -75,7 +75,19 @@
                 </Grid>
             </GroupBox>
             <GroupBox Header="Post processing" Margin="5,5,5,5">
-                <CheckBox x:Name="checkBox_RemoveUnassignedSpaces" Grid.Column="1" Grid.Row ="2" VerticalAlignment="Center" Margin="5,5,5,5" IsChecked="True" Content="Remove unused spaces"/>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="170"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="checkBox_RemoveUnassignedSpaces" Grid.Column="0" Grid.Row ="0" VerticalAlignment="Center" Margin="5,5,5,5" IsChecked="True" Content="Remove unused spaces"/>
+                    <CheckBox x:Name="checkBox_ReplaceNameSpecialCharacters" Grid.Column="0" Grid.Row ="1" VerticalAlignment="Center" Margin="5,5,5,5" IsChecked="True" Content="Fix names"/>
+                    <ComboBox x:Name="comboBox_ReplaceNameSpecialCharacters" Grid.Column="1" Grid.Row ="1" VerticalAlignment="Center" Margin="5,5,5,5" IsEditable="True" IsReadOnly="True"/>
+                </Grid>
             </GroupBox>
         </StackPanel>
     </Grid>
