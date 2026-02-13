@@ -459,6 +459,7 @@
                     <RibbonButton x:Name="RibbonButton_EditInternalConditions" Label="Modify IC" />
                     <RibbonButton x:Name="RibbonButton_AssignMechanicalSystems" Label="Add Mechanical Systems" />
                     <RibbonButton x:Name="RibbonButton_RemoveAirMovementObjects" Label="Remove IZAMs" />
+                    <RibbonButton x:Name="RibbonButton_SetDefaultLayers" Label="Set Default Layers" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Simulate" Header="Simulate">

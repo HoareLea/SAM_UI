@@ -530,6 +530,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_EditLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
             RibbonButton_EditLibrary.Click += RibbonButton_EditLibrary_Click;
 
+            RibbonButton_SetDefaultLayers.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ConstructionLibrary);
+            RibbonButton_SetDefaultLayers.Click += RibbonButton_SetDefaultLayers_Click;
+
             RibbonButton_AssignMechanicalSystems.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
             RibbonButton_AssignMechanicalSystems.Click += RibbonButton_AssignMechanicalSystems_Click;
 
@@ -666,6 +669,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void RibbonButton_SetDefaultLayers_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel.SetDefaultLayers(windowHandle);
         }
 
         private void RibbonButton_FixNames_Click(object sender, RoutedEventArgs e)
