@@ -1715,12 +1715,11 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_OpenT3D_Click(object sender, RoutedEventArgs e)
         {
             string path = Core.Tas.Query.TAS3DPath();
-
             if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
             {
+                MessageBox.Show("TAS3D executable not found.", "Error");
                 return;
             }
-
             System.Diagnostics.Process.Start(path);
         }
 
@@ -1939,13 +1938,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                     continue;
                 }
 
-                string? constructionName = panel?.Construction?.Name;
-                if (string.IsNullOrWhiteSpace(constructionName))
-                {
-                    constructionName = string.Empty;
-                }
-
-                constructionNames.Add(constructionName);
+                constructionNames.Add(panel?.Construction?.Name ?? string.Empty);
             }
 
             panels = [];
@@ -1958,13 +1951,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                     continue;
                 }
 
-                string? constructionName = panel?.Construction?.Name;
-                if (string.IsNullOrWhiteSpace(constructionName))
-                {
-                    constructionName = string.Empty;
-                }
-
-                if (!constructionNames.Contains(constructionName))
+                if (!constructionNames.Contains(panel?.Construction?.Name ?? string.Empty))
                 {
                     continue;
                 }
