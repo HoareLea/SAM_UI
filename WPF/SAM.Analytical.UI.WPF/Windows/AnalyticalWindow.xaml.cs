@@ -35,12 +35,12 @@ namespace SAM.Analytical.UI.WPF.Windows
         private Core.Windows.WindowHandle windowHandle = null;
         public AnalyticalWindow()
         {
-            Initailize();
+            InitializeWindow();
         }
 
         public AnalyticalWindow(StartupOptions startupOptions)
         {
-            Initailize();
+            InitializeWindow();
 
             if (startupOptions != null)
             {
@@ -439,7 +439,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             return uIGeometrySettings.GetViewSettings(viewportControl.Guid);
         }
 
-        private void Initailize()
+        private void InitializeWindow()
         {
             InitializeComponent();
 
