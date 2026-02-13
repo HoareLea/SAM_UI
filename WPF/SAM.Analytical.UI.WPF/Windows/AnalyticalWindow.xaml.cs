@@ -1931,40 +1931,42 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
-
-            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-            if (adjacencyCluster == null)
+            if (panels != null && panels.Count != 0)
             {
-                return;
-            }
-
-            HashSet<string> constructionNames = [];
-            foreach (Panel panel in panels)
-            {
-                if (panel is null)
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
                 {
-                    continue;
+                    return;
                 }
 
-                constructionNames.Add(panel?.Construction?.Name ?? string.Empty);
-            }
-
-            panels = [];
-
-            List<Panel> panels_All = adjacencyCluster.GetPanels();
-            foreach (Panel panel in panels_All)
-            {
-                if (panel == null)
+                HashSet<string> constructionNames = [];
+                foreach (Panel panel in panels)
                 {
-                    continue;
+                    if (panel is null)
+                    {
+                        continue;
+                    }
+
+                    constructionNames.Add(panel?.Construction?.Name ?? string.Empty);
                 }
 
-                if (!constructionNames.Contains(panel?.Construction?.Name ?? string.Empty))
-                {
-                    continue;
-                }
+                panels = [];
 
-                panels.Add(panel);
+                List<Panel> panels_All = adjacencyCluster.GetPanels();
+                foreach (Panel panel in panels_All)
+                {
+                    if (panel == null)
+                    {
+                        continue;
+                    }
+
+                    if (!constructionNames.Contains(panel?.Construction?.Name ?? string.Empty))
+                    {
+                        continue;
+                    }
+
+                    panels.Add(panel);
+                }
             }
 
             viewportControl.Select(panels);
@@ -2097,35 +2099,37 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
-
-            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-            if (adjacencyCluster == null)
+            if(panels != null && panels.Count != 0)
             {
-                return;
-            }
-
-            HashSet<PanelGroup> panelGroups = [];
-            foreach (Panel panel in panels)
-            {
-                if (panel is null)
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
                 {
-                    continue;
+                    return;
                 }
 
-                panelGroups.Add(panel.PanelGroup);
-            }
-
-            panels = [];
-
-            List<Panel> panels_All = adjacencyCluster.GetPanels();
-            foreach (Panel panel in panels_All)
-            {
-                if (!panelGroups.Contains(panel.PanelGroup))
+                HashSet<PanelGroup> panelGroups = [];
+                foreach (Panel panel in panels)
                 {
-                    continue;
+                    if (panel is null)
+                    {
+                        continue;
+                    }
+
+                    panelGroups.Add(panel.PanelGroup);
                 }
 
-                panels.Add(panel);
+                panels = [];
+
+                List<Panel> panels_All = adjacencyCluster.GetPanels();
+                foreach (Panel panel in panels_All)
+                {
+                    if (!panelGroups.Contains(panel.PanelGroup))
+                    {
+                        continue;
+                    }
+
+                    panels.Add(panel);
+                }
             }
 
             viewportControl.Select(panels);
@@ -2140,35 +2144,37 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
-
-            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
-            if (adjacencyCluster == null)
+            if (panels != null && panels.Count != 0) 
             {
-                return;
-            }
-
-            HashSet<PanelType> panelTypes = [];
-            foreach (Panel panel in panels)
-            {
-                if (panel is null)
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
                 {
-                    continue;
+                    return;
                 }
 
-                panelTypes.Add(panel.PanelType);
-            }
-
-            panels = [];
-
-            List<Panel> panels_All = adjacencyCluster.GetPanels();
-            foreach (Panel panel in panels_All)
-            {
-                if (!panelTypes.Contains(panel.PanelType))
+                HashSet<PanelType> panelTypes = [];
+                foreach (Panel panel in panels)
                 {
-                    continue;
+                    if (panel is null)
+                    {
+                        continue;
+                    }
+
+                    panelTypes.Add(panel.PanelType);
                 }
 
-                panels.Add(panel);
+                panels = [];
+
+                List<Panel> panels_All = adjacencyCluster.GetPanels();
+                foreach (Panel panel in panels_All)
+                {
+                    if (!panelTypes.Contains(panel.PanelType))
+                    {
+                        continue;
+                    }
+
+                    panels.Add(panel);
+                }
             }
 
             viewportControl.Select(panels);
