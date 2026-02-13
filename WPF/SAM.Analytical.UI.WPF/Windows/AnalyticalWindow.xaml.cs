@@ -1905,7 +1905,14 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Wiki_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM_UI/wiki");
+            try
+            {
+                Core.Query.StartProcess("https://github.com/HoareLea/SAM_UI/wiki");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open Wiki: {ex.Message}", "Error");
+            }
         }
 
         private void SelectByConstructionName()
