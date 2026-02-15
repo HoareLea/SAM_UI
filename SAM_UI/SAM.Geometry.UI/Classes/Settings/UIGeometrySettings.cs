@@ -179,6 +179,11 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public bool HasAnyViewSettings()
+        {
+            return viewSettingsDictionary != null && viewSettingsDictionary.Count > 0;
+        }
+
         public virtual bool FromJObject(JObject jObject)
         {
             if(jObject == null)

@@ -671,16 +671,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             SetEnabled();
         }
 
-        private void RibbonButton_SetDefaultLayers_Click(object sender, RoutedEventArgs e)
-        {
-            uIAnalyticalModel.SetDefaultLayers(windowHandle);
-        }
-
-        private void RibbonButton_FixNames_Click(object sender, RoutedEventArgs e)
-        {
-            uIAnalyticalModel.ReplaceNameSpecialCharacters(windowHandle);
-        }
-
         private void MenuItem_AssignApertureConstruction_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
@@ -1243,6 +1233,30 @@ namespace SAM.Analytical.UI.WPF.Windows
             EditViewSettings();
         }
 
+        private void New3DView()
+        {
+            if (uIAnalyticalModel == null)
+            {
+                return;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = UI.Query.DefaultViewSettings(analyticalModel) as ThreeDimensionalViewSettings;
+
+            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(threeDimensionalViewSettings)), threeDimensionalViewSettings);
+            if (tabItem != null)
+            {
+                tabControl.SelectedItem = tabItem;
+            }
+
+            SetUIGeometrySettings(tabControl, analyticalModel);
+        }
+
         private bool Open(string path)
         {
             if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
@@ -1526,6 +1540,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.Export(uIAnalyticalModel);
         }
 
+        private void RibbonButton_FixNames_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel.ReplaceNameSpecialCharacters(windowHandle);
+        }
+
         private void RibbonButton_GlazingCalculator_Click(object sender, RoutedEventArgs e)
         {
             Modify.CalculateGlazing(uIAnalyticalModel);
@@ -1544,6 +1563,19 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_ImportObjects_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.Import(windowHandle);
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel != null)
+            {
+                if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null || !uIGeometrySettings.HasAnyViewSettings())
+                {
+                    List<Panel> panels = analyticalModel.GetPanels();
+                    if (panels != null && panels.Count != 0)
+                    {
+                        New3DView();
+                    }
+                }
+            }
         }
 
         private void RibbonButton_ImportWeatherData_Click(object sender, RoutedEventArgs e)
@@ -1569,26 +1601,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_New3DView_Click(object sender, RoutedEventArgs e)
         {
-            if (uIAnalyticalModel == null)
-            {
-                return;
-            }
-
-            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = UI.Query.DefaultViewSettings(analyticalModel) as ThreeDimensionalViewSettings;
-
-            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(threeDimensionalViewSettings)), threeDimensionalViewSettings);
-            if (tabItem != null)
-            {
-                tabControl.SelectedItem = tabItem;
-            }
-
-            SetUIGeometrySettings(tabControl, analyticalModel);
+            New3DView();
         }
 
         private void RibbonButton_NewAnalyticalModel_Click(object sender, RoutedEventArgs e)
@@ -1840,6 +1853,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             SelectByGuid();
         }
 
+        private void RibbonButton_SetDefaultLayers_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel.SetDefaultLayers(windowHandle);
+        }
+        
         private void RibbonButton_SimulateCases_Click(object sender, RoutedEventArgs e)
         {
             Modify.SimulateCases();
@@ -2373,7 +2391,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             doubleRangeWindow.Show();
         }
         
-        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Guid guid = GetActiveGuid();
             if (guid == Guid.Empty)
