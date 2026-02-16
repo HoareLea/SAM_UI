@@ -61,6 +61,20 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
+        public void SaveAs()
+        {
+            if (uIAnalyticalModel == null)
+            {
+                return;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+
+            SetUIGeometrySettings(tabControl, analyticalModel);
+
+            uIAnalyticalModel.SaveAs();
+        }
+
         private void AnalyticalModelControl_SelectionRequested(object sender, SelectionRequestedEventArgs e)
         {
             List<SAMObject> sAMObjects = e.SAMObjects;
@@ -439,6 +453,60 @@ namespace SAM.Analytical.UI.WPF.Windows
             return uIGeometrySettings.GetViewSettings(viewportControl.Guid);
         }
 
+        private void Hide()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<SAMObject> jSAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        }
+
+        private void Hide(MenuItem menuItem)
+        {
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects = null;
+            if (menuItem.Tag is IJSAMObject)
+            {
+                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                jSAMObjects = new List<IJSAMObject>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is IJSAMObject)
+                    {
+                        jSAMObjects.Add((IJSAMObject)@object);
+                    }
+                }
+            }
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        }
+
         private void InitializeWindow()
         {
             InitializeComponent();
@@ -669,6 +737,60 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
 
             SetEnabled();
+        }
+
+        private void Isolate(MenuItem menuItem)
+        {
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects = null;
+            if (menuItem.Tag is IJSAMObject)
+            {
+                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                jSAMObjects = new List<IJSAMObject>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is IJSAMObject)
+                    {
+                        jSAMObjects.Add((IJSAMObject)@object);
+                    }
+                }
+            }
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Isolate(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        }
+
+        private void Isolate()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<SAMObject> jSAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Isolate(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
         }
 
         private void MenuItem_AssignApertureConstruction_Click(object sender, RoutedEventArgs e)
@@ -996,43 +1118,12 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void MenuItem_Hide_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
+            Hide((MenuItem)sender);
+        }
 
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            List<IJSAMObject> jSAMObjects = null;
-            if (menuItem.Tag is IJSAMObject)
-            {
-                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                jSAMObjects = new List<IJSAMObject>();
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is IJSAMObject)
-                    {
-                        jSAMObjects.Add((IJSAMObject)@object);
-                    }
-                }
-            }
-
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        private void MenuItem_Isolate_Click(object sender, RoutedEventArgs e)
+        {
+            Isolate((MenuItem)sender);
         }
 
         private void MenuItem_Legend_Click(object sender, RoutedEventArgs e)
@@ -1381,6 +1472,39 @@ namespace SAM.Analytical.UI.WPF.Windows
             //SetActiveGuid();
             SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
             Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void RevealHidden()
+        {
+            //TabItem tabItem = tabControl.SelectedItem as TabItem;
+            //if (tabItem == null)
+            //{
+            //    return;
+            //}
+
+            //ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            //if (viewportControl == null)
+            //{
+            //    return;
+            //}
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //if (viewportControl != null)
+            //{
+            //    List<SAMObject> sAMObjects_Selected = viewportControl.SelectedSAMObjects<SAMObject>();
+            //    if (sAMObjects_Selected != null)
+            //    {
+            //        jSAMObjects.AddRange(sAMObjects_Selected);
+            //    }
+            //}
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.RemoveOverrides(uIAnalyticalModel, viewportControl.Guid);
         }
 
         private void RibbonButton_About_Click(object sender, RoutedEventArgs e)
@@ -1797,20 +1921,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_RevealHidden_Click(object sender, RoutedEventArgs e)
         {
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            UI.Modify.RemoveOverrides(uIAnalyticalModel, viewportControl.Guid);
+            RevealHidden();
         }
 
         private void RibbonButton_SaveAnalyticalModel_Click(object sender, RoutedEventArgs e)
@@ -1833,21 +1944,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             SaveAs();
         }
-
-        public void SaveAs()
-        {
-            if (uIAnalyticalModel == null)
-            {
-                return;
-            }
-
-            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
-
-            SetUIGeometrySettings(tabControl, analyticalModel);
-
-            uIAnalyticalModel.SaveAs();
-        }
-
+        
         private void RibbonButton_SelectByFilter_Click(object sender, RoutedEventArgs e)
         {
             SelectByFilter();
@@ -2952,48 +3049,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 contextMenu.Items.Add(menuItem);
             }
         }
-
-        private void MenuItem_Isolate_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
-
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            List<IJSAMObject> jSAMObjects = null;
-            if (menuItem.Tag is IJSAMObject)
-            {
-                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                jSAMObjects = new List<IJSAMObject>();
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is IJSAMObject)
-                    {
-                        jSAMObjects.Add((IJSAMObject)@object);
-                    }
-                }
-            }
-
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            UI.Modify.Isolate(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
-        }
-
+        
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;
@@ -3103,13 +3159,15 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F)
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+            {
+                SaveAs();
+            }
+            else if (e.Key == Key.F)
             {
                 SelectByGuid();
-                return;
             }
-
-            if (e.Key == Key.F12)
+            else if (e.Key == Key.F12)
             {
                 ViewportControl viewportControl = GetActiveViewportControl();
                 if (viewportControl != null)
@@ -3125,12 +3183,18 @@ namespace SAM.Analytical.UI.WPF.Windows
                     }
 
                 }
-                return;
             }
-
-            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+            else if (e.Key == Key.I)
             {
-                SaveAs();
+                Isolate();
+            }
+            else if (e.Key == Key.H)
+            {
+                Hide();
+            }
+            else if (e.Key == Key.U)
+            {
+                RevealHidden();
             }
         }
     }
