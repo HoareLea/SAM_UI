@@ -2780,6 +2780,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem_Hide.Tag = jSAMObjects;
             contextMenu.Items.Add(menuItem_Hide);
 
+            MenuItem menuItem_Isolate = new MenuItem();
+            menuItem_Isolate.Name = "MenuItem_Isolate";
+            menuItem_Isolate.Header = "Isolate";
+            menuItem_Isolate.Click += MenuItem_Isolate_Click;
+            menuItem_Isolate.Tag = jSAMObjects;
+            contextMenu.Items.Add(menuItem_Isolate);
+
 
             contextMenu.Items.Add(new Separator());
 
@@ -2939,6 +2946,47 @@ namespace SAM.Analytical.UI.WPF.Windows
                 menuItem.Tag = jSAMObjects;
                 contextMenu.Items.Add(menuItem);
             }
+        }
+
+        private void MenuItem_Isolate_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects = null;
+            if (menuItem.Tag is IJSAMObject)
+            {
+                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                jSAMObjects = new List<IJSAMObject>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is IJSAMObject)
+                    {
+                        jSAMObjects.Add((IJSAMObject)@object);
+                    }
+                }
+            }
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Isolate(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
         }
 
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
