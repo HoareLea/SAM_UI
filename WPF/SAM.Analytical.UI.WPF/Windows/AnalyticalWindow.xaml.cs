@@ -1831,6 +1831,11 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_SaveAsAnalyticalModel_Click(object sender, RoutedEventArgs e)
         {
+            SaveAs();
+        }
+
+        public void SaveAs()
+        {
             if (uIAnalyticalModel == null)
             {
                 return;
@@ -2064,7 +2069,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            using (TextBoxForm<string> textBoxControl = new TextBoxForm<string>("Guid", "Insert Guids"))
+            using (TextBoxForm<string> textBoxControl = new TextBoxForm<string>("Select By Guid", "Insert Guids"))
             {
                 if (textBoxControl.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
@@ -3121,6 +3126,11 @@ namespace SAM.Analytical.UI.WPF.Windows
 
                 }
                 return;
+            }
+
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+            {
+                SaveAs();
             }
         }
     }
