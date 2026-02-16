@@ -989,28 +989,43 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void MenuItem_Delete_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
+            //MenuItem menuItem = (MenuItem)sender;
+            //if (menuItem == null)
+            //{
+            //    return;
+            //}
+
+            //List<Panel>? panels = null;
+            //if (menuItem.Tag is Panel)
+            //{
+            //    panels = [(Panel)menuItem.Tag];
+            //}
+            //else if (menuItem.Tag is IEnumerable)
+            //{
+            //    panels = [];
+            //    foreach (object @object in (IEnumerable)menuItem.Tag)
+            //    {
+            //        if (@object is Panel)
+            //        {
+            //            panels.Add((Panel)@object);
+            //        }
+            //    }
+            //}
+
+            //Modify.RemovePanels(uIAnalyticalModel, panels);
+
+            Delete();
+        }
+
+        private void Delete()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
             {
                 return;
             }
 
-            List<Panel>? panels = null;
-            if (menuItem.Tag is Panel)
-            {
-                panels = [(Panel)menuItem.Tag];
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                panels = [];
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is Panel)
-                    {
-                        panels.Add((Panel)@object);
-                    }
-                }
-            }
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
 
             Modify.RemovePanels(uIAnalyticalModel, panels);
         }
@@ -2867,7 +2882,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             MenuItem menuItem_RevealHidden = new MenuItem();
             menuItem_RevealHidden.Name = "MenuItem_RevealHidden";
-            menuItem_RevealHidden.Header = "Unhide All";
+            menuItem_RevealHidden.Header = "Unhide All (U)";
             menuItem_RevealHidden.Click += MenuItem_RevealHidden_Click;
             contextMenu.Items.Add(menuItem_RevealHidden);
 
@@ -2887,14 +2902,14 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             MenuItem menuItem_Hide = new MenuItem();
             menuItem_Hide.Name = "MenuItem_Hide";
-            menuItem_Hide.Header = "Hide";
+            menuItem_Hide.Header = "Hide (H)";
             menuItem_Hide.Click += MenuItem_Hide_Click;
             menuItem_Hide.Tag = jSAMObjects;
             contextMenu.Items.Add(menuItem_Hide);
 
             MenuItem menuItem_Isolate = new MenuItem();
             menuItem_Isolate.Name = "MenuItem_Isolate";
-            menuItem_Isolate.Header = "Isolate";
+            menuItem_Isolate.Header = "Isolate (I)";
             menuItem_Isolate.Click += MenuItem_Isolate_Click;
             menuItem_Isolate.Tag = jSAMObjects;
             contextMenu.Items.Add(menuItem_Isolate);
@@ -3053,12 +3068,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Delete";
-                menuItem.Header = "Delete";
+                menuItem.Header = "Delete (Del)";
                 menuItem.Click += MenuItem_Delete_Click; ;
                 menuItem.Tag = jSAMObjects;
                 contextMenu.Items.Add(menuItem);
             }
         }
+        
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;
@@ -3204,6 +3220,10 @@ namespace SAM.Analytical.UI.WPF.Windows
             else if (e.Key == Key.U)
             {
                 RevealHidden();
+            }
+            else if (e.Key == Key.Delete)
+            {
+                Delete();
             }
         }
     }
