@@ -178,6 +178,11 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            if (doubleRangeWindow is null)
+            {
+                return;
+            }
+
             ViewportControl viewportControl = GetActiveViewportControl();
             if (viewportControl == null)
             {
