@@ -1277,6 +1277,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             //}
         }
 
+        private void MenuItem_RevealHidden_Click(object sender, RoutedEventArgs e)
+        {
+            RevealHidden();
+        }
+
         private void MenuItem_SelectByConstructionName_Click(object sender, RoutedEventArgs e)
         {
             SelectByConstructionName();
@@ -2034,7 +2039,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             try
             {
-                Core.Query.StartProcess("https://github.com/HoareLea/SAM_UI/wiki");
+                Core.Query.StartProcess("https://github.com/SAM-BIM/SAM_UI/wiki");
             }
             catch (Exception ex)
             {
@@ -3054,12 +3059,6 @@ namespace SAM.Analytical.UI.WPF.Windows
                 contextMenu.Items.Add(menuItem);
             }
         }
-
-        private void MenuItem_RevealHidden_Click(object sender, RoutedEventArgs e)
-        {
-            RevealHidden();
-        }
-
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;
