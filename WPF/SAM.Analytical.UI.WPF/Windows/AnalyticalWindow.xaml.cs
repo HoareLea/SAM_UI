@@ -2499,7 +2499,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<SAMObject> jSAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
-            if(jSAMObjects is null || jSAMObjects.Count == 0)
+            if(jSAMObjects is null || jSAMObjects.Count != 1)
             {
                 return;
             }
