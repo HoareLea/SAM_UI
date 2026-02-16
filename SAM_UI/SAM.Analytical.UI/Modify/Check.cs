@@ -25,6 +25,8 @@ namespace SAM.Analytical.UI
                 return;
             }
 
+            log.Sort();
+
             using (Core.Windows.Forms.LogForm logForm = new Core.Windows.Forms.LogForm(log))
             {
                 if(logForm.ShowDialog(owner) != DialogResult.OK)
