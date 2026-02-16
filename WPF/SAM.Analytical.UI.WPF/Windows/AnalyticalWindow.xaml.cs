@@ -2852,7 +2852,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             menuItem = new MenuItem();
             menuItem.Name = "MenuItem_ViewSettings";
-            menuItem.Header = "View Settings";
+            menuItem.Header = "View Settings (V)";
             menuItem.Click += MenuItem_ViewSettings_Click;
             contextMenu.Items.Add(menuItem);
 
@@ -3224,6 +3224,10 @@ namespace SAM.Analytical.UI.WPF.Windows
             else if (e.Key == Key.Delete)
             {
                 Delete();
+            }
+            else if (e.Key == Key.V)
+            {
+                EditViewSettings();
             }
         }
     }
