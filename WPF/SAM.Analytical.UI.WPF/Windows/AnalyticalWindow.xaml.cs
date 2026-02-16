@@ -165,6 +165,19 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.AssignMechanicalSystems(uIAnalyticalModel, spaces);
         }
 
+        private void Delete()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+
+            Modify.RemovePanels(uIAnalyticalModel, panels);
+        }
+
         private void DoubleRangeWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             doubleRangeWindow = null;
@@ -1021,20 +1034,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             Delete();
         }
-
-        private void Delete()
-        {
-            ViewportControl viewportControl = GetActiveViewportControl();
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
-
-            Modify.RemovePanels(uIAnalyticalModel, panels);
-        }
-
+        
         private void MenuItem_Duplicate_TabItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -1969,7 +1969,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             SaveAs();
         }
-        
+
         private void RibbonButton_SelectByFilter_Click(object sender, RoutedEventArgs e)
         {
             SelectByFilter();
@@ -1984,7 +1984,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             uIAnalyticalModel.SetDefaultLayers(windowHandle);
         }
-        
+
         private void RibbonButton_SimulateCases_Click(object sender, RoutedEventArgs e)
         {
             Modify.SimulateCases();
@@ -1999,7 +1999,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             Modify.Solve(uIAnalyticalModel);
         }
-       
+
         private void RibbonButton_SpaceDiagram_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.SpaceDiagram(windowHandle);
@@ -2038,7 +2038,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             bool result = Modify.UpdateUKBRFile(uIAnalyticalModel);
         }
-        
+
         private void RibbonButton_ViewGeometry_Click(object sender, RoutedEventArgs e)
         {
             GeometryWindow geometryWindow = new GeometryWindow();
@@ -2244,7 +2244,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
-            if(panels != null && panels.Count != 0)
+            if (panels != null && panels.Count != 0)
             {
                 AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
                 if (adjacencyCluster == null)
@@ -2289,7 +2289,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
-            if (panels != null && panels.Count != 0) 
+            if (panels != null && panels.Count != 0)
             {
                 AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
                 if (adjacencyCluster == null)
@@ -2490,6 +2490,39 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
+        private void ShowProperties()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<SAMObject> jSAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
+            if(jSAMObjects is null || jSAMObjects.Count == 0)
+            {
+                return;
+            }
+
+            SAMObject sAMObject = jSAMObjects[0];
+
+            if (sAMObject is Panel)
+            {
+                Panel panel = (Panel)sAMObject;
+                uIAnalyticalModel.EditPanel(panel, windowHandle);
+            }
+            else if (sAMObject is Space)
+            {
+                Space space = (Space)sAMObject;
+                uIAnalyticalModel.EditSpace(space, windowHandle);
+            }
+            else if (sAMObject is Aperture)
+            {
+                Aperture aperture = (Aperture)sAMObject;
+                uIAnalyticalModel.EditAperture(aperture, windowHandle);
+            }
+        }
+        
         private void ShowViewRange()
         {
             if (doubleRangeWindow != null)
@@ -2946,7 +2979,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Properties";
-                menuItem.Header = "Properties";
+                menuItem.Header = "Properties (P)";
                 menuItem.Click += MenuItem_Properties_Click;
                 menuItem.Tag = jSAMObject;
                 contextMenu.Items.Add(menuItem);
@@ -3233,6 +3266,10 @@ namespace SAM.Analytical.UI.WPF.Windows
             else if (e.Key == Key.V)
             {
                 EditViewSettings();
+            }
+            else if (e.Key == Key.P)
+            {
+                ShowProperties();
             }
         }
     }
