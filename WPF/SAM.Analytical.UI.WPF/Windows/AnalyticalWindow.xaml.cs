@@ -2858,8 +2858,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem_SelectByGuid.Header = "By Guid";
             menuItem_SelectByGuid.Click += MenuItem_SelectByGuid_Click;
             menuItem_Select.Items.Add(menuItem_SelectByGuid);
-
             contextMenu.Items.Add(menuItem_Select);
+
+            MenuItem menuItem_RevealHidden = new MenuItem();
+            menuItem_RevealHidden.Name = "MenuItem_RevealHidden";
+            menuItem_RevealHidden.Header = "Unhide All";
+            menuItem_RevealHidden.Click += MenuItem_RevealHidden_Click;
+            contextMenu.Items.Add(menuItem_RevealHidden);
 
             contextMenu.IsOpen = true;
 
@@ -3049,7 +3054,12 @@ namespace SAM.Analytical.UI.WPF.Windows
                 contextMenu.Items.Add(menuItem);
             }
         }
-        
+
+        private void MenuItem_RevealHidden_Click(object sender, RoutedEventArgs e)
+        {
+            RevealHidden();
+        }
+
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;

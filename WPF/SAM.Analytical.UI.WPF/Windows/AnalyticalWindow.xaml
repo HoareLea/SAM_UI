@@ -421,7 +421,7 @@
                     <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Visibility" Header="Visiblity">
-                    <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Reveal Hidden" />
+                    <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Unhide All" />
                     <RibbonButton x:Name="RibbonButton_ViewRange" Label="View Range" />
                 </RibbonGroup>
             </RibbonTab>
