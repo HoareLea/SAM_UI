@@ -153,7 +153,23 @@ namespace SAM.Analytical.UI
             {
                 foreach (KeyValuePair<string, List<LegendItemData>> keyValuePair in dictionary_Strings)
                 {
-                    Color color = System.Drawing.Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
+                    Color color = Core.Create.Color(keyValuePair.Key); //System.Drawing.Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
+                    if(keyValuePair.Value != null && keyValuePair.Value.Count != 0)
+                    {
+                        if (keyValuePair.Value.TrueForAll(x => x.Value is PanelType) && keyValuePair.Value.TrueForAll(x => (PanelType)x.Value == (PanelType)keyValuePair.Value[0].Value))
+                        {
+                            color = Analytical.Query.Color((PanelType)keyValuePair.Value[0].Value);
+                        }
+                        else if (keyValuePair.Value.TrueForAll(x => x.Value is BoundaryType) && keyValuePair.Value.TrueForAll(x => (BoundaryType)x.Value == (BoundaryType)keyValuePair.Value[0].Value))
+                        {
+                            color = Analytical.Query.Color((BoundaryType)keyValuePair.Value[0].Value);
+                        }
+                        else if (keyValuePair.Value.TrueForAll(x => x.Value is ApertureType) && keyValuePair.Value.TrueForAll(x => (ApertureType)x.Value == (ApertureType)keyValuePair.Value[0].Value))
+                        {
+                            color = Analytical.Query.Color(((ApertureType)keyValuePair.Value[0].Value));
+                        }
+                    }
+
                     foreach (LegendItemData legendItemData in keyValuePair.Value)
                     {
                         result[legendItemData.Guid] = new LegendItem(color, keyValuePair.Key);
