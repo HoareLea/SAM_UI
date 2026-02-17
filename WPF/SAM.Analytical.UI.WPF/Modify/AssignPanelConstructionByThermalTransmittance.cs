@@ -3,6 +3,7 @@ using SAM.Core;
 using SAM.Core.UI.WPF;
 using System.Collections.Generic;
 using System.Linq;
+using static SAM.Analytical.Glazing;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -85,12 +86,29 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            foreach(Panel panel_Temp in panels_Temp)
+            List<Panel> panels_Transparent = analyticalModel.TransparentPanels();
+
+            foreach (Panel panel_Temp in panels_Temp)
             {
                 Panel Panel_New  = Analytical.Create.Panel(panel_Temp, construction);
 
-                Panel_New.SetValue(PanelParameter.ThermalTransmittance, thermalTransmittanceCalculationResult.GetThermalTransmittance(Panel_New.PanelType));
-
+                bool transparent = construction.Transparent(constructionManager?.MaterialLibrary);
+                if (transparent)
+                {
+                    Panel_New.SetValue(PanelParameter.ThermalTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.GetTransparentThermalTransmittance(), Tolerance.MacroDistance));
+                    Panel_New.SetValue(PanelParameter.DirectSolarEnergyAbsorptance, Core.Query.Round(thermalTransmittanceCalculationResult.DirectSolarEnergyAbosrtptance, Tolerance.MacroDistance));
+                    Panel_New.SetValue(PanelParameter.DirectSolarEnergyReflectance, Core.Query.Round(thermalTransmittanceCalculationResult.DirectSolarEnergyReflectance, Tolerance.MacroDistance));
+                    Panel_New.SetValue(PanelParameter.DirectSolarEnergyTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.DirectSolarEnergyTransmittance, Tolerance.MacroDistance));
+                    Panel_New.SetValue(PanelParameter.LightReflectance, Core.Query.Round(thermalTransmittanceCalculationResult.LightReflectance, Tolerance.MacroDistance));
+                    Panel_New.SetValue(PanelParameter.LightTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.LightTransmittance, Tolerance.MacroDistance));
+                    Panel_New.SetValue(PanelParameter.PilkingtonShadingLongWavelengthCoefficient, Core.Query.Round(thermalTransmittanceCalculationResult.PilkingtonLongWavelengthCoefficient, Tolerance.MacroDistance));
+                    Panel_New.SetValue(PanelParameter.PilkingtonShadingShortWavelengthCoefficient, Core.Query.Round(thermalTransmittanceCalculationResult.PilkingtonShortWavelengthCoefficient, Tolerance.MacroDistance));
+                    Panel_New.SetValue(PanelParameter.TotalSolarEnergyTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.TotalSolarEnergyTransmittance, Tolerance.MacroDistance));
+                }
+                else
+                {
+                    Panel_New.SetValue(PanelParameter.ThermalTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.GetThermalTransmittance(Panel_New.PanelType), Tolerance.MacroDistance));
+                }
                 adjacencyCluster.AddObject(Panel_New);
             }
 
