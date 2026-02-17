@@ -85,7 +85,14 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            panels_Temp.ForEach(x => adjacencyCluster.AddObject(Analytical.Create.Panel(x, construction)));
+            foreach(Panel panel_Temp in panels_Temp)
+            {
+                Panel Panel_New  = Analytical.Create.Panel(panel_Temp, construction);
+
+                Panel_New.SetValue(PanelParameter.ThermalTransmittance, thermalTransmittanceCalculationResult.GetThermalTransmittance(Panel_New.PanelType));
+
+                adjacencyCluster.AddObject(Panel_New);
+            }
 
             uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, analyticalModel.ProfileLibrary), new AnalyticalModelModification(panels_Temp.ConvertAll(x => (SAMObject)x)));
         }
