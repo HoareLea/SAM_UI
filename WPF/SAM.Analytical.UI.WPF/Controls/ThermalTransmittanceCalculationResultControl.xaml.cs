@@ -82,7 +82,7 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                return (DataGrid_Main.SelectedItem as DisplayThermalTransmittanceCalculationResult).ThermalTransmittanceCalculationResult;
+                return (DataGrid_Main.SelectedItem as DisplayThermalTransmittanceCalculationResult)?.ThermalTransmittanceCalculationResult;
             }
         }
 
