@@ -85,6 +85,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            bool transparent = apertureConstruction.Transparent(constructionManager?.MaterialLibrary);
+
             List<SAMObject> sAMObjects = new List<SAMObject>();
             foreach (Aperture aperture in apertures_Temp)
             {
@@ -97,6 +99,23 @@ namespace SAM.Analytical.UI.WPF
                 panel = Analytical.Create.Panel(panel);
 
                 Aperture aperture_New = new Aperture(aperture, apertureConstruction);
+
+                if(transparent)
+                {
+                    aperture_New.SetValue(PanelParameter.ThermalTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.GetTransparentThermalTransmittance(), Tolerance.MacroDistance));
+                    aperture_New.SetValue(PanelParameter.DirectSolarEnergyAbsorptance, Core.Query.Round(thermalTransmittanceCalculationResult.DirectSolarEnergyAbosrtptance, Tolerance.MacroDistance));
+                    aperture_New.SetValue(PanelParameter.DirectSolarEnergyReflectance, Core.Query.Round(thermalTransmittanceCalculationResult.DirectSolarEnergyReflectance, Tolerance.MacroDistance));
+                    aperture_New.SetValue(PanelParameter.DirectSolarEnergyTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.DirectSolarEnergyTransmittance, Tolerance.MacroDistance));
+                    aperture_New.SetValue(PanelParameter.LightReflectance, Core.Query.Round(thermalTransmittanceCalculationResult.LightReflectance, Tolerance.MacroDistance));
+                    aperture_New.SetValue(PanelParameter.LightTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.LightTransmittance, Tolerance.MacroDistance));
+                    aperture_New.SetValue(PanelParameter.PilkingtonShadingLongWavelengthCoefficient, Core.Query.Round(thermalTransmittanceCalculationResult.PilkingtonLongWavelengthCoefficient, Tolerance.MacroDistance));
+                    aperture_New.SetValue(PanelParameter.PilkingtonShadingShortWavelengthCoefficient, Core.Query.Round(thermalTransmittanceCalculationResult.PilkingtonShortWavelengthCoefficient, Tolerance.MacroDistance));
+                    aperture_New.SetValue(PanelParameter.TotalSolarEnergyTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.TotalSolarEnergyTransmittance, Tolerance.MacroDistance));
+                }
+                else
+                {
+                    aperture_New.SetValue(ApertureParameter.ThermalTransmittance, Core.Query.Round(thermalTransmittanceCalculationResult.GetThermalTransmittance(panel.PanelType), Tolerance.MacroDistance));
+                }
 
                 panel.RemoveAperture(aperture.Guid);
 

@@ -3,7 +3,6 @@ using SAM.Core;
 using SAM.Core.UI.WPF;
 using System.Collections.Generic;
 using System.Linq;
-using static SAM.Analytical.Glazing;
 
 namespace SAM.Analytical.UI.WPF
 {
