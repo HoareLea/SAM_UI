@@ -3226,9 +3226,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 SaveAs();
             }
-            else if (e.Key == Key.F)
+            else if (e.Key == Key.G)
             {
                 SelectByGuid();
+            }
+            else if (e.Key == Key.F)
+            {
+                SelectByFilter();
             }
             else if (e.Key == Key.F12)
             {
