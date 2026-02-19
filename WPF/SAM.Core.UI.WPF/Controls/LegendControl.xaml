@@ -7,11 +7,41 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400">
     <Grid>
-        <CheckBox x:Name="checkBox_Visible"  Content="Visible" HorizontalAlignment="Left" Margin="10,43,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.682,2.513"/>
-        <Label x:Name="label_Name" Content="Name:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="textBox_Name" HorizontalAlignment="Stretch" Height="23" Margin="55,10,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-        <StackPanel HorizontalAlignment="Left" Height="100" Margin="290,149,0,0" VerticalAlignment="Top" Width="100"/>
-        <GroupBox Header="Colors" HorizontalAlignment="Stretch" Margin="10,65,10,10" VerticalAlignment="Stretch" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Content="Name:"/>
+            <TextBox x:Name="textBox_Name" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5"/>
+        </Grid>
+        
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox x:Name="checkBox_Visible" Grid.Column="0" Content="Visible" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Button x:Name="Button_GradientColor" Grid.Column="1" Content="Apply to All" Margin="5,5,5,5" Click="Button_GradientColor_Click" />
+            <Button x:Name="Button_PalletColor" Grid.Column="2" Content="Apply Palette" Margin="5,5,5,5" />
+        </Grid>
+
+        <GroupBox Grid.Row="3" Header="Colors" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel x:Name="stackPanel"  Margin="10,10,10,10" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Orientation="Vertical"/>
             </ScrollViewer>
