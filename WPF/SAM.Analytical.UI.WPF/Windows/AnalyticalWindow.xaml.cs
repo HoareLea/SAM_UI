@@ -2007,17 +2007,39 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
-            RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
-            relationClusterComplexReferenceWindow.RelationCluster = new RelationCluster(uIAnalyticalModel?.JSAMObject?.AdjacencyCluster);
+            Test();
 
-            bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
-            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
+            //RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
+            //relationClusterComplexReferenceWindow.RelationCluster = new RelationCluster(uIAnalyticalModel?.JSAMObject?.AdjacencyCluster);
+
+            //bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
+            //if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
+            //{
+            //    return;
+            //}
+
+            //SearchWindow searchWindow = new SearchWindow(new string[] {"absss", "Kubas", "KLUB" });
+            //searchWindow.ShowDialog();
+        }
+
+        private void Test()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            bool? dialogResult = openFileDialog.ShowDialog(this);
+
+            if(dialogResult == null || !dialogResult.Value)
             {
                 return;
             }
 
-            //SearchWindow searchWindow = new SearchWindow(new string[] {"absss", "Kubas", "KLUB" });
-            //searchWindow.ShowDialog();
+            string path = openFileDialog.FileName;
+            if(string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            IJSAMObject? jSAMObject = Core.Convert.ToSAM<IJSAMObject>(path)?.FirstOrDefault();
+
         }
 
         private void RibbonButton_TextMap_Click(object sender, RoutedEventArgs e)

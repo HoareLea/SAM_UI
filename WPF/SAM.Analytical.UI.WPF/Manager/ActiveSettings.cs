@@ -5,7 +5,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class ActiveSetting
     {
-        private static Setting setting = Load();
+        private static Setting setting = null;
 
         private static Setting Load()
         {
@@ -20,6 +20,11 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
+                if(setting == null)
+                {
+                    setting = Load();
+                }
+
                 return setting;
             }
         }
