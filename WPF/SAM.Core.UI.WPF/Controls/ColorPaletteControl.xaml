@@ -5,8 +5,32 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Core.UI.WPF"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="300" d:DesignWidth="200">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="74"/>
+                <ColumnDefinition Width="74"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Grid.Column="0" Content="Add" Width="64" Margin="5,5,5,5" x:Name="Button_Add" Click="Button_Add_Click"/>
+            <Button Grid.Row="0" Grid.Column="1" Content="Remove" Width="64" Margin="5,5,5,5" x:Name="Button_Delete" Click="Button_Delete_Click"/>
+        </Grid>
+
+        <ListBox x:Name="ListBox_Main" Grid.Column="1" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" SelectionMode="Multiple"/>
+
     </Grid>
+
+
 </UserControl>

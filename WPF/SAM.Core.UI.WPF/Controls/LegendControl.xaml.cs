@@ -81,6 +81,11 @@ namespace SAM.Core.UI.WPF
                 return;
             }
 
+            if (Sort)
+            {
+                UI.Modify.Sort(legendItems);
+            }
+
             ColorGradientWindow colorGradientWindow = new ColorGradientWindow();
             colorGradientWindow.Low = legendItems.First().Color;
             colorGradientWindow.High = legendItems.Last().Color;
@@ -114,6 +119,49 @@ namespace SAM.Core.UI.WPF
             Legend legend_New = new Legend(legend.Name, legendItems);
 
             SetLegend(legend_New);
+        }
+
+        private void Button_PaletteColor_Click(object sender, RoutedEventArgs e)
+        {
+            if (legend?.LegendItems is not List<LegendItem> legendItems || legendItems.Count < 2)
+            {
+                return;
+            }
+
+            if(Sort)
+            {
+                UI.Modify.Sort(legendItems);
+            }
+
+            ColorPaletteWindow colorPaletteWindow = new ColorPaletteWindow();
+            colorPaletteWindow.Colors = legendItems.ConvertAll(x => x.Color);
+
+            bool? dialogResult = colorPaletteWindow.ShowDialog();
+            if (dialogResult is null || !dialogResult.HasValue || !dialogResult.Value)
+            {
+                return;
+            }
+
+            List<System.Drawing.Color> colors = colorPaletteWindow.Colors;
+
+            int colorCount = colors.Count;
+            List<(double pos, System.Drawing.Color)> values = [];
+            for (int i = 0; i < colorCount; i++ )
+            {
+                values.Add(((double)i / (double)colorCount, colors[i]));
+            }
+
+            colors = ColorPaletteGenerator.GetSequentialFromStops(legendItems.Count, values);
+
+            for (int i = 0; i < legendItems.Count; i++)
+            {
+                legendItems[i] = new LegendItem(colors[i], legendItems[i].Text);
+            }
+
+            Legend legend_New = new Legend(legend.Name, legendItems);
+
+            SetLegend(legend_New);
+
         }
 
         private void Control_DoubleClick(object sender, MouseButtonEventArgs e)
@@ -185,27 +233,7 @@ namespace SAM.Core.UI.WPF
 
                 if (Sort)
                 {
-                    List<Tuple<LegendItem, double>> tuples = new List<Tuple<LegendItem, double>>();
-                    foreach(LegendItem legendItem in legendItems)
-                    {
-                        if(!Core.Query.TryConvert(legendItem.Text, out double value) || double.IsNaN(value))
-                        {
-                            tuples = null;
-                            break;
-                        }
-
-                        tuples.Add(new Tuple<LegendItem, double>(legendItem, value));
-                    }
-                    
-                    if(tuples == null || tuples.Count == 0)
-                    {
-                        legendItems.Sort((x, y) => x.Text.CompareTo(y.Text));
-                    }
-                    else
-                    {
-                        tuples.Sort((x, y) => x.Item2.CompareTo(y.Item2));
-                        legendItems = tuples.ConvertAll(x => x.Item1);
-                    }
+                    UI.Modify.Sort(legendItems);
                 }
 
                 foreach (LegendItem legendItem_Temp in legendItems)

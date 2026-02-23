@@ -36,9 +36,9 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <CheckBox x:Name="checkBox_Visible" Grid.Column="0" Content="Visible" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <CheckBox x:Name="checkBox_Visible" Grid.Column="0" Content="Visible" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Button x:Name="Button_GradientColor" Grid.Column="1" Content="Apply to All" Margin="5,5,5,5" Click="Button_GradientColor_Click" />
-            <Button x:Name="Button_PalletColor" Grid.Column="2" Content="Apply Palette" Margin="5,5,5,5" />
+            <Button x:Name="Button_PalletColor" Grid.Column="2" Content="Apply Palette" Margin="5,5,5,5" Click="Button_PaletteColor_Click" />
         </Grid>
 
         <GroupBox Grid.Row="3" Header="Colors" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
