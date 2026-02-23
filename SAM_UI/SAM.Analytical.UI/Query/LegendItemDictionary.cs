@@ -48,7 +48,7 @@ namespace SAM.Analytical.UI
                 {
                     double value = System.Convert.ToDouble(@object);
                     dictionary_Doubles[value] = Core.Query.Round(value, Core.Tolerance.MacroDistance).ToString();
-                    dictionary_Values[legendItemData] = value;
+                    dictionary_Values[legendItemData] = Core.Query.Round(value, Core.Tolerance.MicroDistance);
                 }
                 else if (@object is string)
                 {
