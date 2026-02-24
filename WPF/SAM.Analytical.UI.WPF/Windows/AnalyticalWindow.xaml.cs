@@ -174,8 +174,16 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+            if(panels != null)
+            {
+                Modify.RemovePanels(uIAnalyticalModel, panels);
+            }
 
-            Modify.RemovePanels(uIAnalyticalModel, panels);
+            List<Aperture> apertures = viewportControl.SelectedSAMObjects<Aperture>();
+            if (apertures != null)
+            {
+                Modify.RemoveApertures(uIAnalyticalModel, apertures);
+            }
         }
 
         private void DoubleRangeWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1317,6 +1325,128 @@ namespace SAM.Analytical.UI.WPF.Windows
             SelectByGuid();
         }
 
+        private void MenuItem_SelectByLegend_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject>? jSAMObjects = menuItem.Tag as List<IJSAMObject>;
+            if (jSAMObjects is null)
+            {
+                return;
+            }
+
+            if (GetActiveViewSettings() is not ViewSettings viewSettings)
+            {
+                return;
+            }
+
+            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster is null)
+            {
+                return;
+            }
+
+            List<Tuple<Type, object, string, string>> tuples = new List<Tuple<Type, object, string, string>>();
+            foreach (IJSAMObject jSAMObject in jSAMObjects)
+            {
+                object value = null;
+                string text = null;
+                string parameterName = null;
+
+                if (jSAMObject is Panel panel && UI.Query.TryGetValue(panel, adjacencyCluster, viewSettings, out value, out text, out parameterName))
+                {
+                    tuples.Add(new Tuple<Type, object, string, string>(typeof(Panel), value, text, parameterName));
+                }
+                else if (jSAMObject is Space space && UI.Query.TryGetValue(space, adjacencyCluster, viewSettings, out value, out text, out parameterName))
+                {
+                    tuples.Add(new Tuple<Type, object, string, string>(typeof(Space), value, text, parameterName));
+                }
+                else if (jSAMObject is Aperture aperture && UI.Query.TryGetValue(aperture, adjacencyCluster, viewSettings, out value, out text, out parameterName))
+                {
+                    tuples.Add(new Tuple<Type, object, string, string>(typeof(Aperture), value, text, parameterName));
+                }
+            }
+
+            if (tuples is null || tuples.Count == 0)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects_Filtered = [];
+
+            List<Tuple<Type, object, string, string>> tuples_Filtered = null;
+
+            tuples_Filtered = tuples.FindAll(x => x.Item1 == typeof(Panel));
+            if (tuples_Filtered is not null && tuples_Filtered.Count > 0)
+            {
+                List<Panel> panels = adjacencyCluster.GetPanels();
+                if (panels is not null && panels.Count > 0)
+                {
+                    foreach (Panel panel in panels)
+                    {
+                        if (UI.Query.TryGetValue(panel, adjacencyCluster, viewSettings, out object value, out string text, out string parameterName))
+                        {
+                            if (tuples_Filtered.Find(x => x.Item3 == text && x.Item4 == parameterName) != null)
+                            {
+                                jSAMObjects_Filtered.Add(panel);
+                            }
+                        }
+                    }
+                }
+            }
+
+            tuples_Filtered = tuples.FindAll(x => x.Item1 == typeof(Space));
+            if (tuples_Filtered is not null && tuples_Filtered.Count > 0)
+            {
+                List<Space> spaces = adjacencyCluster.GetSpaces();
+                if (spaces is not null && spaces.Count > 0)
+                {
+                    foreach (Space space in spaces)
+                    {
+                        if (UI.Query.TryGetValue(space, adjacencyCluster, viewSettings, out object value, out string text, out string parameterName))
+                        {
+                            if (tuples_Filtered.Find(x => x.Item3 == text && x.Item4 == parameterName) != null)
+                            {
+                                jSAMObjects_Filtered.Add(space);
+                            }
+                        }
+                    }
+                }
+            }
+
+            tuples_Filtered = tuples.FindAll(x => x.Item1 == typeof(Aperture));
+            if (tuples_Filtered is not null && tuples_Filtered.Count > 0)
+            {
+                List<Aperture> apertures = adjacencyCluster.GetApertures();
+                if (apertures is not null && apertures.Count > 0)
+                {
+                    foreach (Aperture aperture in apertures)
+                    {
+                        if (UI.Query.TryGetValue(aperture, adjacencyCluster, viewSettings, out object value, out string text, out string parameterName))
+                        {
+                            if (tuples_Filtered.Find(x => x.Item3 == text && x.Item4 == parameterName) != null)
+                            {
+                                jSAMObjects_Filtered.Add(aperture);
+                            }
+                        }
+                    }
+                }
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            viewportControl?.Select(jSAMObjects_Filtered?.FindAll(x => x is SAMObject)?.Cast<SAMObject>());
+
+        }
+
         private void MenuItem_SelectByPanelGroup_Click(object sender, RoutedEventArgs e)
         {
             SelectByPanelGroup();
@@ -1448,7 +1578,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             //SetActiveGuid();
 
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
-            tabControl.SelectionChanged -= tabControl_SelectionChanged;
+            tabControl.SelectionChanged -= TabControl_SelectionChanged;
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
 
@@ -1459,7 +1589,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.SetJSAMObject(analyticalModel, modifiedEventArgs.Modifications);
 
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-            tabControl.SelectionChanged += tabControl_SelectionChanged;
+            tabControl.SelectionChanged += TabControl_SelectionChanged;
 
             progressBarWindowManager.Close();
         }
@@ -2022,26 +2152,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             //searchWindow.ShowDialog();
         }
 
-        private void Test()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            bool? dialogResult = openFileDialog.ShowDialog(this);
-
-            if(dialogResult == null || !dialogResult.Value)
-            {
-                return;
-            }
-
-            string path = openFileDialog.FileName;
-            if(string.IsNullOrEmpty(path))
-            {
-                return;
-            }
-
-            IJSAMObject? jSAMObject = Core.Convert.ToSAM<IJSAMObject>(path)?.FirstOrDefault();
-
-        }
-
         private void RibbonButton_TextMap_Click(object sender, RoutedEventArgs e)
         {
             TextMapWindow textMapWindow = new TextMapWindow();
@@ -2521,7 +2631,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             List<SAMObject> jSAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
-            if(jSAMObjects is null || jSAMObjects.Count != 1)
+            if (jSAMObjects is null || jSAMObjects.Count != 1)
             {
                 return;
             }
@@ -2544,7 +2654,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 uIAnalyticalModel.EditAperture(aperture, windowHandle);
             }
         }
-        
+
         private void ShowViewRange()
         {
             if (doubleRangeWindow != null)
@@ -2572,8 +2682,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             doubleRangeWindow.Show();
         }
-        
-         private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Guid guid = GetActiveGuid();
             if (guid == Guid.Empty)
@@ -2586,7 +2696,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
-        private void tabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void TabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             TabItem tabItem = sender as TabItem;
             if (tabItem == null)
@@ -2640,6 +2750,26 @@ namespace SAM.Analytical.UI.WPF.Windows
             contextMenu.IsOpen = true;
         }
 
+        private void Test()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            bool? dialogResult = openFileDialog.ShowDialog(this);
+
+            if(dialogResult == null || !dialogResult.Value)
+            {
+                return;
+            }
+
+            string path = openFileDialog.FileName;
+            if(string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            IJSAMObject? jSAMObject = Core.Convert.ToSAM<IJSAMObject>(path)?.FirstOrDefault();
+
+        }
+        
         private void UIAnalyticalModel_Closed(object sender, ClosedEventArgs e)
         {
             Reload(e);
@@ -2694,7 +2824,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             if (tabItem == null)
             {
                 tabItem = new TabItem() { Header = "???" };
-                tabItem.ContextMenuOpening += tabItem_ContextMenuOpening;
+                tabItem.ContextMenuOpening += TabItem_ContextMenuOpening;
                 tabControl.Items.Add(tabItem);
             }
 
@@ -2940,6 +3070,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem_Select.Items.Add(menuItem_SelectByGuid);
             contextMenu.Items.Add(menuItem_Select);
 
+
             MenuItem menuItem_RevealHidden = new MenuItem();
             menuItem_RevealHidden.Name = "MenuItem_RevealHidden";
             menuItem_RevealHidden.Header = "Unhide All (U)";
@@ -2958,6 +3089,21 @@ namespace SAM.Analytical.UI.WPF.Windows
             if (jSAMObjects.Count == 0)
             {
                 return;
+            }
+
+            ViewSettings? viewSettings = GetActiveViewSettings() as ViewSettings;
+            if (viewSettings is not null)
+            {
+                Legend? legend = viewSettings?.Legend;
+                if (legend is not null)
+                {
+                    MenuItem menuItem_SelectByLegend = new MenuItem();
+                    menuItem_SelectByLegend.Name = "MenuItem_SelectByLegend";
+                    menuItem_SelectByLegend.Header = "By Legend";
+                    menuItem_SelectByLegend.Click += MenuItem_SelectByLegend_Click;
+                    menuItem_SelectByLegend.Tag = jSAMObjects;
+                    menuItem_Select.Items.Add(menuItem_SelectByLegend);
+                }
             }
 
             MenuItem menuItem_Hide = new MenuItem();
@@ -3119,7 +3265,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                     MenuItem menuItem_SelectByPanelGroup = new MenuItem();
                     menuItem_SelectByPanelGroup.Name = "MenuItem_SelectByPanelGroup";
                     menuItem_SelectByPanelGroup.Header = "By PanelGroup";
-                    menuItem_SelectByPanelGroup.Click += MenuItem_SelectByPanelGroup_Click; ;
+                    menuItem_SelectByPanelGroup.Click += MenuItem_SelectByPanelGroup_Click;
                     menuItem_Select.Items.Add(menuItem_SelectByPanelGroup);
                 }
             }
@@ -3129,7 +3275,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Delete";
                 menuItem.Header = "Delete (Del)";
-                menuItem.Click += MenuItem_Delete_Click; ;
+                menuItem.Click += MenuItem_Delete_Click;
                 menuItem.Tag = jSAMObjects;
                 contextMenu.Items.Add(menuItem);
             }

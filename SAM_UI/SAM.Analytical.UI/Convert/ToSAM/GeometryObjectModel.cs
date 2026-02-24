@@ -60,7 +60,7 @@ namespace SAM.Analytical.UI
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Space space in spaces)
                     {
-                        if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text, out _))
                         {
                             legendItemDatas.Add(new LegendItemData(space, value, text));
                         }
@@ -170,7 +170,7 @@ namespace SAM.Analytical.UI
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Panel panel in panels)
                     {
-                        if (Query.TryGetValue(panel, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(panel, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text, out _))
                         {
                             legendItemDatas.Add(new LegendItemData(panel, value, text));
                         }
@@ -296,7 +296,7 @@ namespace SAM.Analytical.UI
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Aperture aperture in apertures)
                     {
-                        if (Query.TryGetValue(aperture, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(aperture, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text, out _))
                         {
                             legendItemDatas.Add(new LegendItemData(aperture, value, text));
                         }
@@ -551,7 +551,7 @@ namespace SAM.Analytical.UI
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Space space in dictionary_Space.Keys)
                     {
-                        if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object value, out string text, out _))
                         {
                             legendItemDatas.Add(new LegendItemData(space, value, text));
                         }

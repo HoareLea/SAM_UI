@@ -505,6 +505,12 @@ namespace SAM.Analytical.UI.WPF
 
             progressBarWindowManager.Close();
 
+            IEnumerable<InternalCondition> internalConditions = adjacencyCluster.GetInternalConditions(false, true);
+            if(internalConditions != null)
+            {
+                adjacencyCluster_New.AddObjects(internalConditions);
+            }
+
             uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster_New), new AnalyticalModelModification(dictionary.Values));
         }
     }

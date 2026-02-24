@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace SAM.Core.UI
 {
-    public class LegendItem : IJSAMObject
+    public class    LegendItem : IJSAMObject
     {
         private Color color;
         private string text;
