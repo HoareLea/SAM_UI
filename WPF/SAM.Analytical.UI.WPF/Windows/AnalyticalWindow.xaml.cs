@@ -1310,6 +1310,16 @@ namespace SAM.Analytical.UI.WPF.Windows
             RevealHidden();
         }
 
+        private void MenuItem_SelectByApertureConstructionName_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByApertureConstructionName();
+        }
+
+        private void MenuItem_SelectByApertureType_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByApertureType();
+        }
+
         private void MenuItem_SelectByConstructionName_Click(object sender, RoutedEventArgs e)
         {
             SelectByConstructionName();
@@ -2199,6 +2209,101 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
+        private void SelectByApertureConstructionName()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Aperture> apertures = viewportControl.SelectedSAMObjects<Aperture>();
+            if (apertures != null && apertures.Count != 0)
+            {
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                HashSet<string> apertureConstructionNames = [];
+                foreach (Aperture aperture in apertures)
+                {
+                    if (aperture is null)
+                    {
+                        continue;
+                    }
+
+                    apertureConstructionNames.Add(aperture?.ApertureConstruction?.Name ?? string.Empty);
+                }
+
+                apertures = [];
+
+                List<Aperture> apertures_All = adjacencyCluster.GetApertures();
+                foreach (Aperture aperture in apertures_All)
+                {
+                    if (aperture == null)
+                    {
+                        continue;
+                    }
+
+                    if (!apertureConstructionNames.Contains(aperture?.ApertureConstruction?.Name ?? string.Empty))
+                    {
+                        continue;
+                    }
+
+                    apertures.Add(aperture);
+                }
+            }
+
+            viewportControl.Select(apertures);
+        }
+
+        private void SelectByApertureType()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Aperture> apertures = viewportControl.SelectedSAMObjects<Aperture>();
+            if (apertures != null && apertures.Count != 0)
+            {
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                HashSet<ApertureType> apertureTypes = [];
+                foreach (Aperture aperture in apertures)
+                {
+                    if (aperture is null)
+                    {
+                        continue;
+                    }
+
+                    apertureTypes.Add(aperture.ApertureType);
+                }
+
+                apertures = [];
+
+                List<Aperture> apertures_All = adjacencyCluster.GetApertures();
+                foreach (Aperture aperture in apertures_All)
+                {
+                    if (!apertureTypes.Contains(aperture.ApertureType))
+                    {
+                        continue;
+                    }
+
+                    apertures.Add(aperture);
+                }
+            }
+
+            viewportControl.Select(apertures);
+        }
+
         private void SelectByConstructionName()
         {
             ViewportControl viewportControl = GetActiveViewportControl();
@@ -2248,7 +2353,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             viewportControl.Select(panels);
         }
-
+        
         private void SelectByFilter()
         {
             AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
@@ -2456,7 +2561,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             viewportControl.Select(panels);
         }
-
+        
         private void SetActiveGuid()
         {
             Guid guid = GetActiveGuid();
@@ -3099,7 +3204,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 {
                     MenuItem menuItem_SelectByLegend = new MenuItem();
                     menuItem_SelectByLegend.Name = "MenuItem_SelectByLegend";
-                    menuItem_SelectByLegend.Header = "By Legend";
+                    menuItem_SelectByLegend.Header = "By Legend Color";
                     menuItem_SelectByLegend.Click += MenuItem_SelectByLegend_Click;
                     menuItem_SelectByLegend.Tag = jSAMObjects;
                     menuItem_Select.Items.Add(menuItem_SelectByLegend);
@@ -3231,6 +3336,18 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Click += MenuItem_EditOpeningProperties_Click;
                     menuItem.Tag = apertures;
                     contextMenu.Items.Add(menuItem);
+
+                    MenuItem menuItem_SelectByApertureConstructionName = new MenuItem();
+                    menuItem_SelectByApertureConstructionName.Name = "MenuItem_SelectByApertureConstructionName";
+                    menuItem_SelectByApertureConstructionName.Header = "By Aperture Construction Name";
+                    menuItem_SelectByApertureConstructionName.Click += MenuItem_SelectByApertureConstructionName_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByApertureConstructionName);
+
+                    MenuItem menuItem_SelectByApertureType = new MenuItem();
+                    menuItem_SelectByApertureType.Name = "MenuItem_SelectByApertureType";
+                    menuItem_SelectByApertureType.Header = "By ApertureType";
+                    menuItem_SelectByApertureType.Click += MenuItem_SelectByApertureType_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByApertureType);
                 }
 
                 List<Panel> panels = jSAMObjects.FindAll(x => x is Panel).ConvertAll(x => (Panel)x);
