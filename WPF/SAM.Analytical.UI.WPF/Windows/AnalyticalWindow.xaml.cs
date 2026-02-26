@@ -2356,7 +2356,13 @@ namespace SAM.Analytical.UI.WPF.Windows
         
         private void SelectByFilter()
         {
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             if (adjacencyCluster == null)
             {
                 return;
@@ -2365,13 +2371,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             IUIFilter uIFilter = ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
             if (uIFilter != null)
             {
-                UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+                UI.Modify.AssignAnalyticalModel(uIFilter, analyticalModel);
             }
 
             List<IUIFilter> uIFilters = ActiveManager.GetValue<SAMCollection<IUIFilter>>(Assembly.GetExecutingAssembly(), "UIFilters")?.Cast<IUIFilter>().ToList();
             if (uIFilters != null && uIFilters.Count != 0)
             {
-                uIFilters.ForEach(x => UI.Modify.AssignAdjacencyCluster(x, adjacencyCluster));
+                uIFilters.ForEach(x => UI.Modify.AssignAnalyticalModel(x, analyticalModel));
             }
 
             List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
@@ -2390,7 +2396,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 jSAMObjects = Analytical.Query.FilteringSAMObjects(adjacencyCluster);
             }
 
-            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space), UIFilter = uIFilter, UIFilters = uIFilters, JSAMObjects = jSAMObjects, AdjacencyCluster = adjacencyCluster };
+            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space), UIFilter = uIFilter, UIFilters = uIFilters, JSAMObjects = jSAMObjects, AnalyticalModel = analyticalModel };
             filterWindow.FilterAdding += FilterWindow_FilterAdding;
             bool? result = filterWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)

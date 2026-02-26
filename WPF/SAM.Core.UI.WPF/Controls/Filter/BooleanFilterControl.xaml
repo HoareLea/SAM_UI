@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="SAM.Core.UI.WPF.BooleanFilterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Core.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="270">
+    <Grid>
+        <GroupBox x:Name="groupBox_Main" Header="Text" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid ContextMenuOpening="Grid_ContextMenuOpening">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <ComboBox Grid.Column="0" x:Name="comboBox_Value" Text="" IsEditable="False" SelectionChanged="comboBox_Value_SelectionChanged" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                <CheckBox Grid.Column="1" x:Name="checkBox_Inverted" Content="Invert" Click="checkBox_Inverted_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0, 0, 20, 0"/>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

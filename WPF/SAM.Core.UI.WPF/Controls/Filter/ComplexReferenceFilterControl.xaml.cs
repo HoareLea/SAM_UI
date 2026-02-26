@@ -93,6 +93,15 @@ namespace SAM.Core.UI.WPF
                     complexReferenceFilter = new ComplexReferenceTextFilter() { SAMObjectRelationCluster = complexReferenceFilter.SAMObjectRelationCluster, ComplexReference = complexReference, Inverted = textFilter.Inverted, TextComparisonType = textFilter.TextComparisonType, Value = textFilter.Value };
                 }
             }
+            else if (userControl is BooleanFilterControl)
+            {
+                BooleanFilterControl booleanFilterControl = (BooleanFilterControl)userControl;
+                IBooleanFilter booleanFilter = booleanFilterControl?.UIBooleanFilter?.Filter;
+                if (booleanFilter != null)
+                {
+                    complexReferenceFilter = new ComplexReferenceBooleanFilter() { SAMObjectRelationCluster = complexReferenceFilter.SAMObjectRelationCluster, ComplexReference = complexReference, Inverted = booleanFilter.Inverted, Value = booleanFilter.Value };
+                }
+            }
 
             return new UIComplexReferenceFilter(result.Name, result.Type, complexReferenceFilter);
         }
@@ -132,6 +141,16 @@ namespace SAM.Core.UI.WPF
                 textFilterControl.FilterRemoving += NumberFilterControl_FilterRemoving;
 
                 StackPanel_Filter.Children.Add(textFilterControl);
+            }
+            else if (complexReferenceFilter is ComplexReferenceBooleanFilter)
+            {
+                ComplexReferenceBooleanFilter complexReferenceBooleanFilter = complexReferenceFilter as ComplexReferenceBooleanFilter;
+                BooleanFilterControl booleanFilterControl = new BooleanFilterControl(new UIBooleanFilter(uIComplexReferenceFilter.Name, uIComplexReferenceFilter.Type, complexReferenceBooleanFilter));
+                //booleanFilterControl.Values = complexReferenceBooleanFilter.SAMObjectRelationCluster?.GetValues(complexReferenceBooleanFilter.ComplexReference).ConvertAll(x => x?.ToString());
+                booleanFilterControl.FilterChanged += NumberFilterControl_FilterChanged;
+                booleanFilterControl.FilterRemoving += NumberFilterControl_FilterRemoving;
+
+                StackPanel_Filter.Children.Add(booleanFilterControl);
             }
             else
             {
@@ -186,6 +205,11 @@ namespace SAM.Core.UI.WPF
                         {
                             ((NumberFilterControl)filterControl).Values = complexReferenceFilter.SAMObjectRelationCluster?.GetValues(complexReference).ConvertAll(x => x?.ToString());
                         }
+
+                        //if (filterControl is BooleanFilterControl)
+                        //{
+                        //    ((BooleanFilterControl)filterControl).Values = complexReferenceFilter.SAMObjectRelationCluster?.GetValues(complexReference).ConvertAll(x => x?.ToString());
+                        //}
                     }
                 }
             }

@@ -29,6 +29,11 @@
                 NumberFilterControl numberFilterControl = new NumberFilterControl((UINumberFilter)uIFilter);
                 return numberFilterControl;
             }
+            else if (uIFilter is UIBooleanFilter)
+            {
+                BooleanFilterControl booleanFilterControl = new BooleanFilterControl((UIBooleanFilter)uIFilter);
+                return booleanFilterControl;
+            }
             else if (uIFilter is UIEnumFilter)
             {
                 EnumFilterControl enumFilterControl = new EnumFilterControl((UIEnumFilter)uIFilter);
