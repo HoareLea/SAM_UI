@@ -262,8 +262,19 @@ namespace SAM.Analytical.UI
             {
                 if (valueAppearanceSettings.TryGetValue(panel, out object value_Temp))
                 {
-                    value = value_Temp;
-                    text = value_Temp?.ToString();
+
+                    if (Core.Query.IsNumeric(value_Temp))
+                    {
+                        double @double = System.Convert.ToDouble(value_Temp);
+                        value = Core.Query.Round(@double, Tolerance.MacroDistance);
+                        text = Core.Query.Round(@double, Tolerance.MicroDistance).ToString();
+                    }
+                    else
+                    {
+                        value = value_Temp;
+                        text = value_Temp?.ToString();
+                    }
+
                     return true;
                 }
             }
