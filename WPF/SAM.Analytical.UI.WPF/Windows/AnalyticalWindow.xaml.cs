@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
+using HoneybeeSchema;
 using Microsoft.Win32;
 using SAM.Core;
 using SAM.Core.UI;
@@ -477,6 +478,69 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             return uIGeometrySettings.GetViewSettings(viewportControl.Guid);
+        }
+
+        private void Reverse()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel.JSAMObject?.AdjacencyCluster;
+
+            List<Tuple<SAMObject, bool>> tuples = [];
+
+            if (adjacencyCluster?.GetPanels() is List<Panel> panels)
+            {
+                foreach (Panel panel in panels)
+                {
+                    tuples.Add(new Tuple<SAMObject, bool>(panel, viewportControl.Contains<Panel>(panel.Guid)));
+
+                    List<Aperture> apertures = panel.Apertures;
+                    if (apertures != null)
+                    {
+                        foreach (Aperture aperture in apertures)
+                        {
+                            tuples.Add(new Tuple<SAMObject, bool>(aperture, viewportControl.Contains<Aperture>(aperture.Guid)));
+                        }
+                    }
+                }
+            }
+
+            if (adjacencyCluster?.GetSpaces() is List<Space> spaces)
+            {
+                foreach (Space space in spaces)
+                {
+                    tuples.Add(new Tuple<SAMObject, bool>(space, viewportControl.Contains<Space>(space.Guid)));
+                }
+            }
+
+            if (tuples is null || tuples.Count == 0)
+            {
+                return;
+            }
+
+            List<SAMObject> sAMObjects_Selected = viewportControl.SelectedSAMObjects<SAMObject>();
+            if(sAMObjects_Selected is null || sAMObjects_Selected.Count == 0)
+            {
+                UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, tuples.ConvertAll(x => x.Item1), tuples.ConvertAll(x => !x.Item2));
+            }
+            else
+            {
+                List<SAMObject> sAMObjects = tuples.FindAll(x => x.Item2).ConvertAll(x => x.Item1);
+                foreach(SAMObject sAMObject_Selected in sAMObjects_Selected)
+                {
+                    int index = sAMObjects.FindIndex(x => x.Guid == sAMObject_Selected.Guid);
+                    if(index != -1)
+                    {
+                        sAMObjects.RemoveAt(index);
+                    }
+                }
+
+                viewportControl.Select(sAMObjects);
+            }
         }
 
         private void Hide()
@@ -3188,6 +3252,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem_RevealHidden.Click += MenuItem_RevealHidden_Click;
             contextMenu.Items.Add(menuItem_RevealHidden);
 
+            MenuItem menuItem_Reverse = new MenuItem();
+            menuItem_Reverse.Name = "MenuItem_Reverse";
+            menuItem_Reverse.Header = "Reverse (R)";
+            menuItem_Reverse.Click += MenuItem_Reverse_Click;
+            contextMenu.Items.Add(menuItem_Reverse);
+
             contextMenu.IsOpen = true;
 
             List<IJSAMObject> jSAMObjects = e.ModelVisual3Ds?.ConvertAll(x => Core.UI.WPF.Query.Tag<IJSAMObject>(x));
@@ -3403,7 +3473,12 @@ namespace SAM.Analytical.UI.WPF.Windows
                 contextMenu.Items.Add(menuItem);
             }
         }
-        
+
+        private void MenuItem_Reverse_Click(object sender, RoutedEventArgs e)
+        {
+            Reverse();
+        }
+
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;
@@ -3549,6 +3624,10 @@ namespace SAM.Analytical.UI.WPF.Windows
             else if (e.Key == Key.H)
             {
                 Hide();
+            }
+            else if (e.Key == Key.R)
+            {
+                Reverse();
             }
             else if (e.Key == Key.U)
             {

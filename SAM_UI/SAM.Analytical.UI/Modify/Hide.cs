@@ -8,11 +8,19 @@ namespace SAM.Analytical.UI
 {
     public static partial class Modify
     {
-        public static void Hide(this UIAnalyticalModel uIAnalyticalModel, System.Guid guid, IEnumerable<IJSAMObject> jSAMObjects)
+        public static void Hide(this UIAnalyticalModel uIAnalyticalModel, System.Guid guid, IEnumerable<IJSAMObject> jSAMObjects, IEnumerable<bool> hide = null)
         {
             if(jSAMObjects == null || jSAMObjects.Count() == 0)
             {
                 return;
+            }
+
+            if(hide != null)
+            {
+                if(jSAMObjects.Count() != hide.Count())
+                {
+                    return;
+                }
             }
 
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -32,7 +40,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            Hide(viewSettings, jSAMObjects);
+            Hide(viewSettings, jSAMObjects, hide);
 
             uIGeometrySettings.AddViewSettings(viewSettings);
 
@@ -41,16 +49,26 @@ namespace SAM.Analytical.UI
             uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettings, true));
         }
 
-        public static void Hide(this ViewSettings viewSettings, IEnumerable<IJSAMObject> jSAMObjects)
+        public static void Hide(this ViewSettings viewSettings, IEnumerable<IJSAMObject> jSAMObjects, IEnumerable<bool> hide = null)
         {
             if (jSAMObjects == null || jSAMObjects.Count() == 0)
             {
                 return;
             }
 
-            foreach (IJSAMObject jSAMObject in jSAMObjects)
+            if (hide != null)
             {
-                SAMObject sAMObject = jSAMObject as SAMObject;
+                if (jSAMObjects.Count() != hide.Count())
+                {
+                    return;
+                }
+            }
+
+            int count = jSAMObjects.Count();
+
+            for(int i=0; i < count; i++)
+            {
+                SAMObject sAMObject = jSAMObjects.ElementAt(i) as SAMObject;
                 if (sAMObject == null)
                 {
                     continue;
@@ -68,11 +86,19 @@ namespace SAM.Analytical.UI
                     }
                 }
 
-                surfaceAppearances.ForEach(x => x.Visible = false);
+                bool visible = false;
+                if(hide != null)
+                {
+                    visible = hide.ElementAt(i);
+                }
 
                 viewSettings.RemoveAppearances(sAMObject.Guid);
 
-                viewSettings.SetAppearances(sAMObject.Guid, surfaceAppearances);
+                if (!visible)
+                {
+                    surfaceAppearances.ForEach(x => x.Visible = visible);
+                    viewSettings.SetAppearances(sAMObject.Guid, surfaceAppearances);
+                }
             }
         }
     }
