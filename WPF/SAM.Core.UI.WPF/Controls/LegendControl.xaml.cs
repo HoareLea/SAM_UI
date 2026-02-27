@@ -14,7 +14,7 @@ namespace SAM.Core.UI.WPF
     public partial class LegendControl : UserControl
     {
         private Legend legend;
-        
+
         public LegendControl()
         {
             InitializeComponent();
@@ -40,9 +40,9 @@ namespace SAM.Core.UI.WPF
         }
 
         public bool Sort { get; set; } = true;
-        
+
         public LegendItem UndefinedLegendItem { get; set; }
-        
+
         private int Add(LegendItem legendItem)
         {
             if (legendItem == null)
@@ -76,7 +76,7 @@ namespace SAM.Core.UI.WPF
 
         private void Button_GradientColor_Click(object sender, RoutedEventArgs e)
         {
-            if(legend?.LegendItems is not List<LegendItem> legendItems || legendItems.Count < 2)
+            if (legend?.LegendItems is not List<LegendItem> legendItems || legendItems.Count < 2)
             {
                 return;
             }
@@ -89,29 +89,29 @@ namespace SAM.Core.UI.WPF
             ColorGradientWindow colorGradientWindow = new ColorGradientWindow();
             colorGradientWindow.Low = legendItems.First().Color;
             colorGradientWindow.High = legendItems.Last().Color;
-            if(legendItems.Count > 2)
+            if (legendItems.Count > 2)
             {
                 colorGradientWindow.Mid = legendItems[legendItems.Count / 2].Color;
                 colorGradientWindow.HasMid = true;
             }
 
             bool? dialogResult = colorGradientWindow.ShowDialog();
-            if(dialogResult is null || !dialogResult.HasValue)
+            if (dialogResult is null || !dialogResult.HasValue)
             {
                 return;
             }
 
             System.Drawing.Color low = colorGradientWindow.Low;
             System.Drawing.Color high = colorGradientWindow.High;
-            System.Drawing.Color mid = colorGradientWindow.HasMid ? colorGradientWindow.Mid : System.Drawing.Color.FromArgb((low.R + high.R)/2, (low.G + high.G) / 2, (low.B + high.B) / 2);
+            System.Drawing.Color mid = colorGradientWindow.HasMid ? colorGradientWindow.Mid : System.Drawing.Color.FromArgb((low.R + high.R) / 2, (low.G + high.G) / 2, (low.B + high.B) / 2);
 
             List<System.Drawing.Color> colors = ColorGradientInterpolationGenerator.GenerateDiverging(low, mid, high, legendItems.Count);
-            if(colors is null || colors.Count != legendItems.Count)
+            if (colors is null || colors.Count != legendItems.Count)
             {
                 return;
             }
 
-            for(int i =0; i < legendItems.Count; i++)
+            for (int i = 0; i < legendItems.Count; i++)
             {
                 legendItems[i] = new LegendItem(colors[i], legendItems[i].Text);
             }
@@ -128,30 +128,76 @@ namespace SAM.Core.UI.WPF
                 return;
             }
 
-            if(Sort)
+            if (Sort)
             {
                 UI.Modify.Sort(legendItems);
             }
 
-            ColorPaletteWindow colorPaletteWindow = new ColorPaletteWindow();
-            colorPaletteWindow.Colors = legendItems.ConvertAll(x => x.Color);
+            string customName = "Custom...";
 
-            bool? dialogResult = colorPaletteWindow.ShowDialog();
-            if (dialogResult is null || !dialogResult.HasValue || !dialogResult.Value)
+            Dictionary<string, List<Color>> dictionary = [];
+
+
+            List<PaletteDefinition> paletteDefinitions =
+                [
+                    PaletteDefinitions.SamSpacesSoft,
+                    PaletteDefinitions.SamSystemsBold,
+                    PaletteDefinitions.SamThermal,
+                    PaletteDefinitions.SamComfort,
+                    PaletteDefinitions.SamEnergy,
+                    PaletteDefinitions.SamSpectrumAnalytical,
+                    PaletteDefinitions.SamSpectrumClassic,
+                    PaletteDefinitions.SamMonochrome,
+                    new PaletteDefinition() { Name = customName }
+                ];
+
+            PaletteDefinition paletteDefinition = null;
+
+            using (Windows.Forms.ComboBoxForm<PaletteDefinition> comboBoxForm = new Windows.Forms.ComboBoxForm<PaletteDefinition>("Select Palette", paletteDefinitions, x => x?.Name ?? string.Empty))
+            {
+                if (comboBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                {
+                    return;
+                }
+
+                paletteDefinition = comboBoxForm.SelectedItem;
+            }
+
+            if (paletteDefinition is null)
             {
                 return;
             }
 
-            List<System.Drawing.Color> colors = colorPaletteWindow.Colors;
+            List<System.Drawing.Color> colors = [];
 
-            int colorCount = colors.Count;
-            List<(double pos, System.Drawing.Color)> values = [];
-            for (int i = 0; i < colorCount; i++ )
+            if (paletteDefinition.Name != customName)
             {
-                values.Add(((double)i / (double)colorCount, colors[i]));
+                colors = ColorPaletteGenerator.GetColors(paletteDefinition, legendItems.ConvertAll(x => x.Text));
             }
+            else
+            {
+                ColorPaletteWindow colorPaletteWindow = new()
+                {
+                    Colors = legendItems.ConvertAll(x => x.Color),
+                };
 
-            colors = ColorPaletteGenerator.GetSequentialFromStops(legendItems.Count, values);
+                bool? dialogResult = colorPaletteWindow.ShowDialog();
+                if (dialogResult is null || !dialogResult.HasValue || !dialogResult.Value)
+                {
+                    return;
+                }
+
+                colors = colorPaletteWindow.Colors;
+
+                int colorCount = colors.Count;
+                List<(double pos, System.Drawing.Color)> values = [];
+                for (int i = 0; i < colorCount; i++)
+                {
+                    values.Add(((double)i / (double)colorCount, colors[i]));
+                }
+
+                colors = ColorPaletteGenerator.GetSequentialFromStops(legendItems.Count, values);
+            }
 
             for (int i = 0; i < legendItems.Count; i++)
             {
@@ -209,7 +255,7 @@ namespace SAM.Core.UI.WPF
             checkBox_Visible.IsChecked = true;
             stackPanel.Children.Clear();
 
-            if(legend == null)
+            if (legend == null)
             {
                 return;
             }
@@ -218,13 +264,13 @@ namespace SAM.Core.UI.WPF
             checkBox_Visible.IsChecked = legend.Visible;
 
             List<LegendItem> legendItems = legend.LegendItems;
-            if(legendItems != null)
+            if (legendItems != null)
             {
                 LegendItem undefinedlegendItem = null;
                 if (UndefinedLegendItem != null)
                 {
                     int undefinedLegendIndex = legendItems.FindIndex(x => x.Text == UndefinedLegendItem.Text && x.Color == UndefinedLegendItem.Color);
-                    if(undefinedLegendIndex != -1)
+                    if (undefinedLegendIndex != -1)
                     {
                         undefinedlegendItem = legendItems[undefinedLegendIndex];
                         legendItems.RemoveAt(undefinedLegendIndex);
@@ -247,10 +293,10 @@ namespace SAM.Core.UI.WPF
                 }
             }
         }
-        
+
         private void UpdateColor(StackPanel stackPanel)
         {
-            if(stackPanel == null)
+            if (stackPanel == null)
             {
                 return;
             }
