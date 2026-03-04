@@ -7,6 +7,7 @@ using SAM.Core.UI.WPF;
 using SAM.Geometry.Object.Spatial;
 using SAM.Geometry.Spatial;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,23 +15,19 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void Solve(UIAnalyticalModel uIAnalyticalModel)
+        public static AnalyticalModel? Solve(this AnalyticalModel analyticalModel, out IEnumerable<SAMObject>? sAMObjects)
         {
-            if (uIAnalyticalModel is null)
-            {
-                return;
-            }
+            sAMObjects = null;
 
-            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
             if (analyticalModel is null)
             {
-                return;
+                return null;
             }
 
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             if (adjacencyCluster is null)
             {
-                return;
+                return new AnalyticalModel(analyticalModel);
             }
 
             List<Panel> panels_All = adjacencyCluster.GetPanels();
@@ -51,7 +48,7 @@ namespace SAM.Analytical.UI.WPF
             bool? showDialogResult = solverWindow.ShowDialog();
             if (!(showDialogResult is not null && showDialogResult.Value))
             {
-                return;
+                return null;
             }
 
             using ProgressBarWindowManager progressBarWindowManager = new();
@@ -69,7 +66,7 @@ namespace SAM.Analytical.UI.WPF
             double weight = solverWindow.Weight;
             double maxExtension = solverWindow.MaxExtension;
             double levelOffset = solverWindow.LevelOffset;
-            
+
             bool replaceNameSpecialCharacters = solverWindow.ReplaceNameSpecialCharacters;
             string language = solverWindow.SelectedLanguage;
 
@@ -484,7 +481,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            if(removeUnusedSpaces)
+            if (removeUnusedSpaces)
             {
                 List<Space> spaces = adjacencyCluster_New.GetSpaces();
                 foreach (Space space in spaces)
@@ -498,7 +495,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            if(replaceNameSpecialCharacters && !string.IsNullOrWhiteSpace(language))
+            if (replaceNameSpecialCharacters && !string.IsNullOrWhiteSpace(language))
             {
                 adjacencyCluster_New.ReplaceNameSpecialCharacters(language);
             }
@@ -506,12 +503,36 @@ namespace SAM.Analytical.UI.WPF
             progressBarWindowManager.Close();
 
             IEnumerable<InternalCondition> internalConditions = adjacencyCluster.GetInternalConditions(false, true);
-            if(internalConditions != null)
+            if (internalConditions != null)
             {
                 adjacencyCluster_New.AddObjects(internalConditions);
             }
 
-            uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster_New), new AnalyticalModelModification(dictionary.Values));
+            sAMObjects = dictionary.Values;
+
+            return new AnalyticalModel(analyticalModel, adjacencyCluster_New);
+        }
+
+        public static void Solve(this UIAnalyticalModel uIAnalyticalModel)
+        {
+            if (uIAnalyticalModel is null)
+            {
+                return;
+            }
+
+            AnalyticalModel? analyticalModel = uIAnalyticalModel.JSAMObject;
+            if (analyticalModel is null)
+            {
+                return;
+            }
+
+            analyticalModel = Solve(analyticalModel, out IEnumerable<SAMObject>? sAMObjects);
+            if(analyticalModel is null)
+            {
+                return;
+            }
+
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new AnalyticalModelModification(sAMObjects));
         }
     }
 }
