@@ -118,7 +118,7 @@ namespace SAM.Analytical.UI.WPF
                 apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(135, 225), 0.25, null));
                 apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(226, 315), 0.2, null));
 
-                apertureCases = [new ApertureCase(new ApertureToPanelRatios(apertureToPanelRatios), true, 2.5, 0.85, 3, 0.1, false, null)];
+                apertureCases = [new ApertureCase(new ApertureToPanelRatios(apertureToPanelRatios), true, 2.5, 0.85, 3, 0.1, false, null, null, null)];
             }
 
             if (apertureCases is not null && apertureCases.Any())
