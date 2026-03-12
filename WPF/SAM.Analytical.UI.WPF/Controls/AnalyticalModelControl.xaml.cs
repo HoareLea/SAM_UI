@@ -1363,6 +1363,13 @@ namespace SAM.Analytical.UI.WPF
                 contextMenu_Views.Items.Add(menuItem);
 
                 menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_LoadView_TabItem";
+                menuItem.Header = "Load view";
+                menuItem.Click += MenuItem_LoadView_Click;
+                menuItem.Tag = jSAMObjects;
+                contextMenu_Views.Items.Add(menuItem);
+
+                menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Settings_TabItem";
                 menuItem.Header = "Settings";
                 menuItem.Click += MenuItem_Settings_TabItem_Click;
@@ -1371,6 +1378,23 @@ namespace SAM.Analytical.UI.WPF
             }
 
             contextMenu_Views.IsOpen = true;
+        }
+
+        private void MenuItem_LoadView_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            ViewSettings viewSettings = menuItem.Tag as ViewSettings;
+            if (viewSettings == null)
+            {
+                return;
+            }
+
+            Modify.CopyViewSettings(uIAnalyticalModel, viewSettings.Guid);
         }
 
         private void TreeViewHighlightManager_Model_TreeViewItemHighlighted(object sender, TreeViewItemHighlightedEventArgs e)

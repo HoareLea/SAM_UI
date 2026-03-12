@@ -277,6 +277,42 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.DuplicateViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
+        private void CopyViewSettings(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            Modify.CopyViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void CopyViewSettingsCamera(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            Modify.CopyViewSettingsCamera(uIAnalyticalModel, viewportControl.Guid);
+        }
+
         private void EditLegend()
         {
             Guid guid = GetActiveGuid();
@@ -2917,12 +2953,58 @@ namespace SAM.Analytical.UI.WPF.Windows
             contextMenu.Items.Add(menuItem);
 
             menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_LoadView_TabItem";
+            menuItem.Header = "Load view";
+            menuItem.Click += MenuItem_LoadView_Click;
+            contextMenu.Items.Add(menuItem);
+
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_LoadCamera_TabItem";
+            menuItem.Header = "Load camera";
+            menuItem.Click += MenuItem_LoadCamera_Click;
+            contextMenu.Items.Add(menuItem);
+
+            menuItem = new MenuItem();
             menuItem.Name = "MenuItem_Settings_TabItem";
             menuItem.Header = "Settings";
             menuItem.Click += MenuItem_Settings_TabItem_Click;
             contextMenu.Items.Add(menuItem);
 
             contextMenu.IsOpen = true;
+        }
+
+        private void MenuItem_LoadCamera_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            CopyViewSettingsCamera(tabItem);
+        }
+
+        private void MenuItem_LoadView_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            CopyViewSettings(tabItem);
         }
 
         private void Test()
@@ -3000,6 +3082,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             {
                 tabItem = new TabItem() { Header = "???" };
                 tabItem.ContextMenuOpening += TabItem_ContextMenuOpening;
+                tabItem.MouseDoubleClick += TabItem_MouseDoubleClick;
                 tabControl.Items.Add(tabItem);
             }
 
@@ -3040,7 +3123,17 @@ namespace SAM.Analytical.UI.WPF.Windows
                 List<ViewSettingsModification> viewSettingsModifications = modifiedEventArgs.GetModifications<ViewSettingsModification>((x) => x.ViewSettings?.Find(y => y.Guid == viewSettings.Guid) != null);
                 if(viewSettingsModifications != null && viewSettingsModifications.Count != 0)
                 {
-
+                    if(viewSettingsModifications.Any(x => x.UpdateCamera))
+                    {
+                        if (viewSettings is TwoDimensionalViewSettings twoDimensionalViewSettings)
+                        {
+                            viewportControl.Camera = twoDimensionalViewSettings.Camera;
+                        }
+                        else if (viewSettings is ThreeDimensionalViewSettings threeDimensionalViewSettings)
+                        {
+                            viewportControl.Camera = threeDimensionalViewSettings.Camera;
+                        }
+                    }
                 }
             }
 
@@ -3087,6 +3180,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             return tabItem;
+        }
+
+        private void TabItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TabItem? tabItem = sender as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            EditViewSettings(tabItem);
         }
 
         private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs)
