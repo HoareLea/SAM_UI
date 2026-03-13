@@ -29,6 +29,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public List<Panel>? SelectedPanels
+        {
+            get
+            {
+                return CreateCaseByApertureControl_Main.SelectedPanels;
+            }
+
+            set
+            {
+                CreateCaseByApertureControl_Main.SelectedPanels = value;
+            }
+        }
+
         public IEnumerable<ApertureCase>? ApertureCases
         {
             get

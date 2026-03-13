@@ -2,6 +2,7 @@
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Analytical.Classes;
+using SAM.Core;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -16,6 +17,7 @@ namespace SAM.Analytical.UI.WPF
     public partial class CreateCasesControl : UserControl
     {
         private AnalyticalModel analyticalModel;
+        private List<SAMObject>? selectedSAMObjects;
 
         public CreateCasesControl()
         {
@@ -78,6 +80,20 @@ namespace SAM.Analytical.UI.WPF
                 SetCases(value);
             }
         }
+        
+        public List<SAMObject>? SelectedSAMObjects
+        {
+            get
+            {
+                return selectedSAMObjects;
+            }
+
+            set
+            {
+                selectedSAMObjects = value;
+            }
+        }
+
         private void Add(Cases cases, int index = -1)
         {
             if (cases is null)
@@ -107,16 +123,17 @@ namespace SAM.Analytical.UI.WPF
         {
             CreateCaseByApertureWindow createCaseByApertureWindow = new()
             {
-                AnalyticalModel = analyticalModel
+                AnalyticalModel = analyticalModel,
+                SelectedPanels = selectedSAMObjects?.FindAll(x => x is Panel).Cast<Panel>().ToList()
             };
 
             if (apertureCases is null)
             {
                 List<ApertureToPanelRatio> apertureToPanelRatios = new();
-                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(316, 44), 0.15, null));
-                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(45, 134), 0.2, null));
-                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(135, 225), 0.25, null));
-                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Core.Range<double>(226, 315), 0.2, null));
+                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Range<double>(316, 44), 0.15, null));
+                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Range<double>(45, 134), 0.2, null));
+                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Range<double>(135, 225), 0.25, null));
+                apertureToPanelRatios.Add(new ApertureToPanelRatio(new Range<double>(226, 315), 0.2, null));
 
                 apertureCases = [new ApertureCase(new ApertureToPanelRatios(apertureToPanelRatios), true, 2.5, 0.85, 3, 0.1, false, null, null, null)];
             }

@@ -1849,7 +1849,16 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            List<AnalyticalModel>? analyticalModel_Case = Create.AnalyticalModels(analyticalModel);
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<SAMObject> sAMObjects_Selected = viewportControl.SelectedSAMObjects<SAMObject>();
+
+
+            List<AnalyticalModel>? analyticalModel_Case = Create.AnalyticalModels(analyticalModel, sAMObjects_Selected);
         }
 
         private void RibbonButton_CreateSimulateCases_Click(object sender, RoutedEventArgs e)
