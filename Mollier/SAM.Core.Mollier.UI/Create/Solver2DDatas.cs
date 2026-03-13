@@ -374,16 +374,20 @@ namespace SAM.Core.Mollier.UI
             {
                 return "";
             }
+
+
+            double value = Core.Query.Round(curve.Value, Tolerance.MicroDistance);
+
             switch (curve.ChartDataType)
             {
                 case ChartDataType.RelativeHumidity:
-                    return curve.Value.ToString() + "%";
+                    return value.ToString() + "%";
 
                 case ChartDataType.Enthalpy:
-                    return (curve.Value / 1000).ToString();
+                    return (value / 1000).ToString();
 
                 default:
-                    return curve.Value.ToString();
+                    return value.ToString();
             }
         }
 
