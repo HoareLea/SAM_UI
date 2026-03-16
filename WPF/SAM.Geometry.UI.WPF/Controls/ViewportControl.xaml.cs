@@ -351,7 +351,7 @@ namespace SAM.Geometry.UI.WPF
                 return null;
             }
 
-            return new Camera(projectionCamera.Position.ToSAM(), projectionCamera.LookDirection.ToSAM());
+            return new Camera(projectionCamera.Position.ToSAM(), projectionCamera.LookDirection.ToSAM(), projectionCamera.UpDirection.ToSAM());
         }
 
         private void helixViewport3D_CameraChanged(object sender, RoutedEventArgs e)
@@ -405,6 +405,11 @@ namespace SAM.Geometry.UI.WPF
                 {
                     helixViewport3D.Camera.Position = camera.Location.ToMedia3D();
                     helixViewport3D.Camera.LookDirection = camera.LookDirection.ToMedia3D();
+
+                    if(camera.UpDirection is not null)
+                    {
+                        helixViewport3D.Camera.UpDirection = camera.UpDirection.ToMedia3D(); //NEW 2026.03.16
+                    }
                 }
                 else
                 {
@@ -687,6 +692,11 @@ namespace SAM.Geometry.UI.WPF
 
             projectionCamera.LookDirection = lookDirection.ToMedia3D();
             projectionCamera.Position = camera.Location.ToMedia3D();
+
+            if(camera.UpDirection is not null)
+            {
+                projectionCamera.UpDirection = camera.UpDirection.ToMedia3D(); //NEW 2026.03.16
+            }
         }
 
         private void UIGeometryObjectModel_Closed(object sender, EventArgs e)

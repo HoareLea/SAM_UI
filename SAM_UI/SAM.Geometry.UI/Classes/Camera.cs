@@ -7,6 +7,7 @@ namespace SAM.Geometry.UI
     {
         private Point3D location;
         private Vector3D lookDirection;
+        private Vector3D upDirection;
 
         public Camera(Camera camera)
         {
@@ -14,13 +15,15 @@ namespace SAM.Geometry.UI
             {
                 location = camera.location != null ? new Point3D(camera.location) : null;
                 lookDirection = camera.lookDirection != null ? new Vector3D(camera.lookDirection) : null;
+                upDirection = camera.upDirection != null ? new Vector3D(camera.upDirection) : null;
             }
         }
 
-        public Camera(Point3D location, Vector3D lookDirection)
+        public Camera(Point3D location, Vector3D lookDirection, Vector3D upDirection)
         {
             this.location = location;
             this.lookDirection = lookDirection;
+            this.upDirection = upDirection;
         }
 
         public Camera(JObject jObject)
@@ -54,6 +57,19 @@ namespace SAM.Geometry.UI
             }
         }
 
+        public Vector3D UpDirection
+        {
+            get
+            {
+                return upDirection;
+            }
+
+            set
+            {
+                upDirection = value;
+            }
+        }
+
         public virtual bool FromJObject(JObject jObject)
         {
             if (jObject == null)
@@ -69,6 +85,11 @@ namespace SAM.Geometry.UI
             if (jObject.ContainsKey("LookDirection"))
             {
                 lookDirection = new Vector3D(jObject.Value<JObject>("LookDirection"));
+            }
+
+            if (jObject.ContainsKey("UpDirection"))
+            {
+                upDirection = new Vector3D(jObject.Value<JObject>("UpDirection"));
             }
 
             return true;
@@ -87,6 +108,11 @@ namespace SAM.Geometry.UI
             if(lookDirection != null)
             {
                 jObject.Add("LookDirection", lookDirection.ToJObject());
+            }
+
+            if (upDirection != null)
+            {
+                jObject.Add("UpDirection", upDirection.ToJObject());
             }
 
             return jObject;
