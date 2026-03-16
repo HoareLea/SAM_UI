@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace SAM.Analytical.UI
+namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
@@ -14,7 +14,7 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            AnalyticalModel analyticalModel_Temp = Query.Simulate(analyticalModel, uIAnalyticalModel.Path, owner);
+            AnalyticalModel analyticalModel_Temp = Modify.Simulate(analyticalModel, uIAnalyticalModel.Path, owner);
             if (analyticalModel_Temp == null)
             {
                 return;

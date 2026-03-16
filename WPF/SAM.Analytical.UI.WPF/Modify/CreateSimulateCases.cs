@@ -73,7 +73,7 @@ namespace SAM.Analytical.UI.WPF
             using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager())
             {
                 progressBarWindowManager.Show("Running", "Running...");
-                Tas.Modify.RunWorkflow(analyticalModels, workflowSettings, directory, parallel, null, true);
+                Modify.RunWorkflow(analyticalModels, workflowSettings, directory, parallel, null, true);
                 progressBarWindowManager.Close();
             }
         }
