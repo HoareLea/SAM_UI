@@ -406,6 +406,10 @@ namespace SAM.Geometry.UI.WPF
                     helixViewport3D.Camera.Position = camera.Location.ToMedia3D();
                     helixViewport3D.Camera.LookDirection = camera.LookDirection.ToMedia3D();
                 }
+                else
+                {
+                    helixViewport3D.ZoomExtents();
+                }
             }
 
             helixViewport3D.Loaded -= helixViewport3D_Loaded;
