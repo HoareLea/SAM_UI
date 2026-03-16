@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11217.181 d18.0
+VisualStudioVersion = 18.0.11217.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{7E74E0F2-AB94-4AFF-8456-EB38F1023D86}"
 EndProject
@@ -58,6 +58,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Grasshopper", "Grasshopper", "{7B25F88D-774F-4F59-9938-216526A2B145}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAM.Analytical.UI.WPF.Grasshopper", "Grasshopper\SAM.Analytical.UI.WPF.Grasshopper\SAM.Analytical.UI.WPF.Grasshopper.csproj", "{D6AF7994-E58C-1B61-94D5-2891BC4EF5F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -156,6 +160,12 @@ Global
 		{1218DFB7-B5A1-4C7C-B718-43677B18B7A8}.net48-windows|Any CPU.Build.0 = net48-windows|Any CPU
 		{1218DFB7-B5A1-4C7C-B718-43677B18B7A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1218DFB7-B5A1-4C7C-B718-43677B18B7A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6AF7994-E58C-1B61-94D5-2891BC4EF5F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6AF7994-E58C-1B61-94D5-2891BC4EF5F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6AF7994-E58C-1B61-94D5-2891BC4EF5F2}.net48-windows|Any CPU.ActiveCfg = net48-windows|Any CPU
+		{D6AF7994-E58C-1B61-94D5-2891BC4EF5F2}.net48-windows|Any CPU.Build.0 = net48-windows|Any CPU
+		{D6AF7994-E58C-1B61-94D5-2891BC4EF5F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6AF7994-E58C-1B61-94D5-2891BC4EF5F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -181,6 +191,8 @@ Global
 		{C5DAFD38-8F0B-4F8F-AB15-85F3D5475613} = {EDBE2559-B4B9-47CB-ACF9-398089AC149D}
 		{5674B031-9EBC-466E-8B5F-C7973B85438C} = {EDBE2559-B4B9-47CB-ACF9-398089AC149D}
 		{DAC5E6E9-AE63-492F-94DE-55A5E093B61C} = {069D87B3-C914-4360-A465-9E2E3E79B1EE}
+		{7B25F88D-774F-4F59-9938-216526A2B145} = {069D87B3-C914-4360-A465-9E2E3E79B1EE}
+		{D6AF7994-E58C-1B61-94D5-2891BC4EF5F2} = {7B25F88D-774F-4F59-9938-216526A2B145}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BDA24D60-F69D-4880-BBD8-4F2C110FF3CD}
