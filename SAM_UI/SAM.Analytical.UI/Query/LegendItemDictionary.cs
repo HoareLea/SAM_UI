@@ -1,4 +1,5 @@
-﻿using SAM.Core.UI;
+﻿using SAM.Core;
+using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -148,12 +149,13 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            Random random = new Random();
+            //Random random = new Random();
             if (dictionary_Strings != null && dictionary_Strings.Count != 0)
             {
+                List<Tuple<string, List<LegendItemData>>> tuples_Strings_Unassigned = [];
                 foreach (KeyValuePair<string, List<LegendItemData>> keyValuePair in dictionary_Strings)
                 {
-                    Color color = Core.Create.Color(keyValuePair.Key); //System.Drawing.Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
+                    Color color = System.Drawing.Color.Empty; //Core.Create.Color(keyValuePair.Key); //System.Drawing.Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
                     if(keyValuePair.Value != null && keyValuePair.Value.Count != 0)
                     {
                         if (keyValuePair.Value.TrueForAll(x => x.Value is PanelType) && keyValuePair.Value.TrueForAll(x => (PanelType)x.Value == (PanelType)keyValuePair.Value[0].Value))
@@ -170,9 +172,43 @@ namespace SAM.Analytical.UI
                         }
                     }
 
+                    if(color == System.Drawing.Color.Empty)
+                    {
+                        tuples_Strings_Unassigned.Add(new Tuple<string, List<LegendItemData>>(keyValuePair.Key, keyValuePair.Value));
+                        continue;
+                    }
+
                     foreach (LegendItemData legendItemData in keyValuePair.Value)
                     {
                         result[legendItemData.Guid] = new LegendItem(color, keyValuePair.Key);
+                    }
+                }
+
+                List<Color> colors = ColorPaletteGenerator.GetColors(PaletteDefinitions.SamSpacesSoft, tuples_Strings_Unassigned.ConvertAll(x => x.Item1));
+                if(colors is null || colors.Count == 0)
+                {
+                    foreach(Tuple<string, List<LegendItemData>> tuple in tuples_Strings_Unassigned)
+                    {
+                        Color color = Core.Create.Color(tuple.Item1);
+
+                        foreach (LegendItemData legendItemData in tuple.Item2)
+                        {
+                            result[legendItemData.Guid] = new LegendItem(color, tuple.Item1);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < tuples_Strings_Unassigned.Count; i++)
+                    {
+                        Tuple<string, List<LegendItemData>> tuple = tuples_Strings_Unassigned[i];
+
+                        Color color = i < colors.Count ? colors[i] : Core.Create.Color(tuple.Item1);
+
+                        foreach (LegendItemData legendItemData in tuple.Item2)
+                        {
+                            result[legendItemData.Guid] = new LegendItem(color, tuple.Item1);
+                        }
                     }
                 }
             }
