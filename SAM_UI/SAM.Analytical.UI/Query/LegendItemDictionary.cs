@@ -1,4 +1,7 @@
-﻿using SAM.Core;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core;
 using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
@@ -16,13 +19,13 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            Dictionary<LegendItemData, object> dictionary_Values = new Dictionary<LegendItemData, object>();
+            Dictionary<LegendItemData, object> dictionary_Values = [];
 
-            Dictionary<double, string> dictionary_Doubles = new Dictionary<double, string>();
+            Dictionary<double, string> dictionary_Doubles = [];
 
 
             //HashSet<string> strings = new HashSet<string>();
-            Dictionary<string, List<LegendItemData>> dictionary_Strings = new Dictionary<string, List<LegendItemData>>();
+            Dictionary<string, List<LegendItemData>> dictionary_Strings = [];
 
             Dictionary<Guid, LegendItem> result = new Dictionary<Guid, LegendItem>();
             foreach (LegendItemData legendItemData in legendItemDatas)
@@ -40,7 +43,7 @@ namespace SAM.Analytical.UI
                     string value = Core.Query.Description((Enum)@object);
                     if(!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
                     {
-                        legendItemDatas_Temp = new List<LegendItemData>();
+                        legendItemDatas_Temp = [];
                         dictionary_Strings[value] = legendItemDatas_Temp;
                     }
                     legendItemDatas_Temp.Add(legendItemData);
@@ -48,15 +51,15 @@ namespace SAM.Analytical.UI
                 else if (Core.Query.IsNumeric(@object))
                 {
                     double value = System.Convert.ToDouble(@object);
-                    dictionary_Doubles[value] = Core.Query.Round(value, Core.Tolerance.MacroDistance).ToString();
-                    dictionary_Values[legendItemData] = Core.Query.Round(value, Core.Tolerance.MicroDistance);
+                    dictionary_Doubles[value] = Core.Query.Round(value, Tolerance.MacroDistance).ToString();
+                    dictionary_Values[legendItemData] = Core.Query.Round(value, Tolerance.MicroDistance);
                 }
                 else if (@object is string)
                 {
                     string value = (string)@object;
                     if (!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
                     {
-                        legendItemDatas_Temp = new List<LegendItemData>();
+                        legendItemDatas_Temp = [];
                         dictionary_Strings[value] = legendItemDatas_Temp;
                     }
                     legendItemDatas_Temp.Add(legendItemData);
@@ -70,7 +73,7 @@ namespace SAM.Analytical.UI
                     string value = @object?.ToString();
                     if (!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
                     {
-                        legendItemDatas_Temp = new List<LegendItemData>();
+                        legendItemDatas_Temp = [];
                         dictionary_Strings[value] = legendItemDatas_Temp;
                     }
                     legendItemDatas_Temp.Add(legendItemData);
@@ -82,7 +85,7 @@ namespace SAM.Analytical.UI
             double max = double.MaxValue;
             if (dictionary_Doubles != null && dictionary_Doubles.Count != 0)
             {
-                List<double> doubles = new List<double>(dictionary_Doubles.Keys);
+                List<double> doubles = [.. dictionary_Doubles.Keys];
 
                 max = doubles.Max();
                 min = doubles.Min();

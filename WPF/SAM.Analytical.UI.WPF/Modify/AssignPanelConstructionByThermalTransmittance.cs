@@ -10,7 +10,7 @@ namespace SAM.Analytical.UI.WPF
     {
         public static void AssignPanelConstructionByThermalTransmittance(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<Panel> panels)
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            AnalyticalModel? analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null || panels == null || panels.Count() == 0)
             {
                 return;
@@ -59,7 +59,7 @@ namespace SAM.Analytical.UI.WPF
 
             progressBarWindowManager.Close();
 
-            ThermalTransmittanceCalculationResultWindow thermalTransmittanceCalculationResultWindow = new ThermalTransmittanceCalculationResultWindow();
+            ThermalTransmittanceCalculationResultWindow thermalTransmittanceCalculationResultWindow = new ();
             thermalTransmittanceCalculationResultWindow.ConstructionManager = constructionManager;
             thermalTransmittanceCalculationResultWindow.ThermalTransmittanceCalculationResults = thermalTransmittanceCalculationResults;
 
@@ -79,7 +79,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            Construction construction = constructionManager.Constructions?.Find(x => x.Guid == guid);
+            Construction? construction = constructionManager?.Constructions?.Find(x => x.Guid == guid);
             if(construction == null)
             {
                 return;

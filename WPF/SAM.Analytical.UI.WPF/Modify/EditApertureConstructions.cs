@@ -1,4 +1,7 @@
-﻿using SAM.Analytical.Tas;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Analytical.Tas;
 using SAM.Analytical.Windows;
 using SAM.Core;
 using SAM.Core.Tas;
@@ -12,9 +15,9 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static void EditApertureConstructions(this UIAnalyticalModel uIAnalyticalModel, IWin32Window owner = null)
+        public static void EditApertureConstructions(this UIAnalyticalModel uIAnalyticalModel, IWin32Window? owner = null)
         {
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
             if (adjacencyCluster == null)
             {
                 adjacencyCluster = new AdjacencyCluster();
@@ -24,7 +27,7 @@ namespace SAM.Analytical.UI.WPF
             ApertureConstructionLibrary apertureConstructionLibrary = new ApertureConstructionLibrary(uIAnalyticalModel?.JSAMObject?.Name ?? string.Empty);
             apertureConstructions?.ForEach(x => apertureConstructionLibrary.Add(x));
 
-            MaterialLibrary materialLibrary = uIAnalyticalModel.JSAMObject.MaterialLibrary;
+            MaterialLibrary? materialLibrary = uIAnalyticalModel?.JSAMObject.MaterialLibrary;
 
             using (Analytical.Windows.Forms.ApertureConstructionLibraryForm apertureConstructionLibraryForm = new Analytical.Windows.Forms.ApertureConstructionLibraryForm(materialLibrary, apertureConstructionLibrary))
             {
@@ -49,7 +52,7 @@ namespace SAM.Analytical.UI.WPF
 
         private static void ApertureConstructionLibraryForm_ConstructionManagerExporting(object sender, ConstructionManagerExportingEventArgs e)
         {
-            IWin32Window win32Widnow = sender as IWin32Window;
+            IWin32Window? win32Widnow = sender as IWin32Window;
 
             e.Handled = true;
 

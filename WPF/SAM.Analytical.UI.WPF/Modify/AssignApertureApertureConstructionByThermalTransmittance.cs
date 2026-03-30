@@ -1,4 +1,7 @@
-﻿using SAM.Analytical.Tas;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Analytical.Tas;
 using SAM.Core;
 using SAM.Core.UI.WPF;
 using System.Collections.Generic;
@@ -10,7 +13,7 @@ namespace SAM.Analytical.UI.WPF
     {
         public static void AssignApertureApertureConstructionByThermalTransmittance(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<Aperture> apertures)
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            AnalyticalModel? analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null || apertures == null || apertures.Count() == 0)
             {
                 return;
@@ -29,7 +32,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
 
-            List<Aperture> apertures_Temp = new List<Aperture>();
+            List<Aperture> apertures_Temp = [];
             foreach (Aperture aperture in apertures)
             {
                 if (aperture == null)
@@ -54,12 +57,12 @@ namespace SAM.Analytical.UI.WPF
             ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager();
             progressBarWindowManager.Show("Calculate", "Calculating...");
 
-            ThermalTransmittanceCalculator thermalTransmittanceCalculator = new ThermalTransmittanceCalculator(constructionManager);
+            ThermalTransmittanceCalculator thermalTransmittanceCalculator = new (constructionManager);
             List<ThermalTransmittanceCalculationResult> thermalTransmittanceCalculationResults = thermalTransmittanceCalculator.Calculate(constructionManager?.ApertureConstructions?.ConvertAll(x => x.Guid));
 
             progressBarWindowManager.Close();
 
-            ThermalTransmittanceCalculationResultWindow thermalTransmittanceCalculationResultWindow = new ThermalTransmittanceCalculationResultWindow();
+            ThermalTransmittanceCalculationResultWindow thermalTransmittanceCalculationResultWindow = new ();
             thermalTransmittanceCalculationResultWindow.ConstructionManager = constructionManager;
             thermalTransmittanceCalculationResultWindow.ThermalTransmittanceCalculationResults = thermalTransmittanceCalculationResults;
 
@@ -79,7 +82,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            ApertureConstruction apertureConstruction = constructionManager.ApertureConstructions?.Find(x => x.Guid == guid);
+            ApertureConstruction? apertureConstruction = constructionManager?.ApertureConstructions?.Find(x => x.Guid == guid);
             if (apertureConstruction == null)
             {
                 return;
@@ -87,7 +90,7 @@ namespace SAM.Analytical.UI.WPF
 
             bool transparent = apertureConstruction.Transparent(constructionManager?.MaterialLibrary);
 
-            List<SAMObject> sAMObjects = new List<SAMObject>();
+            List<SAMObject> sAMObjects = [];
             foreach (Aperture aperture in apertures_Temp)
             {
                 Panel panel = adjacencyCluster.GetPanel(aperture);
@@ -128,7 +131,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            uIAnalyticalModel.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, analyticalModel.ProfileLibrary), new AnalyticalModelModification(sAMObjects));
+            uIAnalyticalModel?.SetJSAMObject(new AnalyticalModel(analyticalModel, adjacencyCluster, analyticalModel.MaterialLibrary, analyticalModel.ProfileLibrary), new AnalyticalModelModification(sAMObjects));
         }
     }
 }

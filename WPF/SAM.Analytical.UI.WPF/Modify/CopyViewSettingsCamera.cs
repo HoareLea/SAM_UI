@@ -8,7 +8,7 @@ namespace SAM.Analytical.UI.WPF
     {
         public static void CopyViewSettingsCamera(this UIAnalyticalModel uIAnalyticalModel, System.Guid guid)
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            AnalyticalModel? analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
             {
                 return;
@@ -41,7 +41,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             IViewSettings? viewSettings_Source = null;
-            using (Core.Windows.Forms.ComboBoxForm<IViewSettings> textBoxForm = new Core.Windows.Forms.ComboBoxForm<IViewSettings>("Copy View", viewSettings_Compatible, x => x.Name))
+            using (Core.Windows.Forms.ComboBoxForm<IViewSettings> textBoxForm = new ("Copy View", viewSettings_Compatible, x => x.Name))
             {
                 if (textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
@@ -78,7 +78,7 @@ namespace SAM.Analytical.UI.WPF
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 
-            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettings_Destination, false, true));
+            uIAnalyticalModel?.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettings_Destination, false, true));
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using SAM.Geometry.UI;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -6,7 +9,7 @@ namespace SAM.Analytical.UI.WPF
     {
         public static void DuplicateViewSettings(this UIAnalyticalModel uIAnalyticalModel, System.Guid guid)
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            AnalyticalModel? analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null)
             {
                 return;
@@ -26,7 +29,7 @@ namespace SAM.Analytical.UI.WPF
             string name = string.IsNullOrWhiteSpace(viewSettings.Name) ? viewSettings.DefaultName() : viewSettings.Name;
             name = string.Format("New {0}", name);
 
-            using (Core.Windows.Forms.TextBoxForm<string> textBoxForm = new Core.Windows.Forms.TextBoxForm<string>("Duplicate View", "Name"))
+            using (Core.Windows.Forms.TextBoxForm<string> textBoxForm = new ("Duplicate View", "Name"))
             {
                 textBoxForm.Value = name;
                 if (textBoxForm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
@@ -58,7 +61,7 @@ namespace SAM.Analytical.UI.WPF
 
             analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
 
-            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettings, true, true));
+            uIAnalyticalModel?.SetJSAMObject(analyticalModel, new ViewSettingsModification(viewSettings, true, true));
         }
     }
 }

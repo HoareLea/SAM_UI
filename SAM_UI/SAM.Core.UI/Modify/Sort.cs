@@ -1,4 +1,7 @@
-﻿using System;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using System;
 using System.Collections.Generic;
 
 namespace SAM.Core.UI
@@ -12,7 +15,7 @@ namespace SAM.Core.UI
                 return;
             }
 
-            List<Tuple<LegendItem, double>> tuples = new List<Tuple<LegendItem, double>>();
+            List<Tuple<LegendItem, double>> tuples = [];
             foreach (LegendItem legendItem in legendItems)
             {
                 if (!Core.Query.TryConvert(legendItem.Text, out double value) || double.IsNaN(value))

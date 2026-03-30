@@ -1,4 +1,7 @@
-﻿using SAM.Core;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core;
 using SAM.Core.Windows.Forms;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -25,7 +28,7 @@ namespace SAM.Analytical.UI
 
             string name = null;
 
-            using (ComboBoxForm<string> comboBoxForm = new ComboBoxForm<string>("Select language", names))
+            using (ComboBoxForm<string> comboBoxForm = new ("Select language", names))
             {
                 comboBoxForm.SelectedItem = names.Find(x => x == "ISO");
 

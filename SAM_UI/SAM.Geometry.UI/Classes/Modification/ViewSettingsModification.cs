@@ -1,4 +1,7 @@
-﻿using SAM.Core.UI;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core.UI;
 using System.Collections.Generic;
 
 namespace SAM.Geometry.UI
@@ -15,7 +18,7 @@ namespace SAM.Geometry.UI
         {
             if(viewSettings != null)
             {
-                ViewSettings = new List<IViewSettings>() { viewSettings };
+                ViewSettings = [viewSettings];
             }
         }
 
@@ -23,7 +26,7 @@ namespace SAM.Geometry.UI
         {
             if (viewSettings != null)
             {
-                ViewSettings = new List<IViewSettings>() { viewSettings };
+                ViewSettings = [viewSettings];
             }
 
             UpdateGeometry = updateGeometry;
@@ -33,7 +36,7 @@ namespace SAM.Geometry.UI
         {
             if (viewSettings != null)
             {
-                ViewSettings = new List<IViewSettings>() { viewSettings };
+                ViewSettings = [viewSettings];
             }
 
             UpdateGeometry = updateGeometry;
@@ -42,12 +45,12 @@ namespace SAM.Geometry.UI
 
         public ViewSettingsModification(IEnumerable<IViewSettings> viewSettings)
         {
-            ViewSettings = viewSettings == null ? null : new List<IViewSettings>(viewSettings);
+            ViewSettings = viewSettings == null ? null : [.. viewSettings];
         }
 
         public ViewSettingsModification(IEnumerable<IViewSettings> viewSettings, bool updateGeometry)
         {
-            ViewSettings = viewSettings == null ? null : new List<IViewSettings>(viewSettings);
+            ViewSettings = viewSettings == null ? null : [.. viewSettings];
 
             UpdateGeometry = updateGeometry;
         }
