@@ -1,4 +1,4 @@
-name: SPDX + Copyright header check
+name: SPDX + Copyright header check (SAM_UI special case)
 
 on:
   pull_request:
