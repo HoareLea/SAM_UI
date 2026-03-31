@@ -1,4 +1,7 @@
-﻿using SAM.Core;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core;
 using SAM.Core.UI;
 using System.Collections.Generic;
 
@@ -45,6 +48,12 @@ namespace SAM.Analytical.UI
                 result.Add(new UINumberFilter(string.Format("{0} Area", type.Name), type, new PanelAreaFilter(NumberComparisonType.Equals, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Min Elevation", type.Name), type, new PanelMinElevationFilter(NumberComparisonType.Equals, 0)));
                 result.Add(new UINumberFilter(string.Format("{0} Max Elevation", type.Name), type, new PanelMaxElevationFilter(NumberComparisonType.Equals, 0)));
+                result.Add(new UIBooleanFilter(string.Format("{0} Adiabatic", type.Name), type, new PanelAdiabaticFilter(true)));
+                result.Add(new UIBooleanFilter(string.Format("{0} Has Apertures", type.Name), type, new PanelHasAperturesFilter(true)));
+                result.Add(new UIBooleanFilter(string.Format("{0} Has Exposed To Sun", type.Name), type, new PanelExposedToSunFilter(true)));
+                result.Add(new UIBooleanFilter(string.Format("{0} External", type.Name), type, new PanelExternalFilter(true)));
+                result.Add(new UIBooleanFilter(string.Format("{0} Is Ground", type.Name), type, new PanelGroundFilter(true)));
+                result.Add(new UIBooleanFilter(string.Format("{0} Transparent", type.Name), type, new PanelTransparentFilter(true)));
                 result.Add(new UINumberFilter(string.Format("Aperture Count", type.Name), type, new PanelApertureCountFilter(NumberComparisonType.Greater, 0)));
 
                 IUIFilters(typeof(Aperture), adjacencyCluster)?.ForEach(x => result.Add(new UIRelationFilter(x.Name, x.Type, new PanelAperturesFilter(x))));

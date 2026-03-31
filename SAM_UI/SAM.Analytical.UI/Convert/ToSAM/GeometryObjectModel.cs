@@ -1,4 +1,7 @@
-﻿using SAM.Core;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core;
 using SAM.Core.UI;
 using SAM.Geometry.Object;
 using SAM.Geometry.Object.Spatial;
@@ -37,6 +40,8 @@ namespace SAM.Analytical.UI
 
             Legend legend = threeDimensionalViewSettings.Legend;
 
+            Legend legend_Temp = legend is null ? null : new Legend(legend);
+
             List<Plane> planes = threeDimensionalViewSettings.Planes;
 
             //Range<double> range = analyticalModel.GetElevationRange();
@@ -54,13 +59,15 @@ namespace SAM.Analytical.UI
             Dictionary<Guid, Geometry3DObjectCollection> dictionary_Spaces = new Dictionary<Guid, Geometry3DObjectCollection>();
             if (showSpaces)
             {
+                Legend legend_Spaces = legend_Temp is null ? null : new Legend(legend_Temp);
+
                 List<Space> spaces = adjacencyCluster.GetSpaces();
                 if (spaces != null && spaces.Count != 0)
                 {
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Space space in spaces)
                     {
-                        if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(space, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text, out _))
                         {
                             legendItemDatas.Add(new LegendItemData(space, value, text));
                         }
@@ -69,15 +76,15 @@ namespace SAM.Analytical.UI
                     bool editable = Query.Editable<SpaceAppearanceSettings>(threeDimensionalViewSettings);
 
                     Dictionary<Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
-                    if (legend != null)
+                    if (legend_Spaces != null)
                     {
                         if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                         {
-                            legend.Refresh(dictionary_LegendItem.Values, true, true);
+                            legend_Spaces.Refresh(dictionary_LegendItem.Values, true, true);
                         }
                         else
                         {
-                            legend = null;
+                            legend_Spaces = null;
                         }
                     }
 
@@ -87,9 +94,9 @@ namespace SAM.Analytical.UI
 
                         if (dictionary_LegendItem.TryGetValue(space.Guid, out LegendItem legendItem) && legendItem != null)
                         {
-                            if (legend != null)
+                            if (legend_Spaces != null)
                             {
-                                legendItem = legend.Find(legendItem?.Text);
+                                legendItem = legend_Spaces.Find(legendItem?.Text);
                             }
 
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
@@ -139,9 +146,9 @@ namespace SAM.Analytical.UI
 
                     if (!legendUpdated)
                     {
-                        if (legend != null)
+                        if (legend_Spaces != null)
                         {
-                            threeDimensionalViewSettings.Legend = legend;
+                            threeDimensionalViewSettings.Legend = legend_Spaces;
                             legendUpdated = true;
                         }
                         else
@@ -164,13 +171,15 @@ namespace SAM.Analytical.UI
             Dictionary<Guid, Geometry3DObjectCollection> dictionary_Panels = new Dictionary<Guid, Geometry3DObjectCollection>();
             if (showPanels)
             {
+                Legend legend_Panels = legend_Temp is null ? null : new Legend(legend_Temp);
+
                 List<Panel> panels = adjacencyCluster.GetPanels();
                 if (panels != null && panels.Count != 0)
                 {
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Panel panel in panels)
                     {
-                        if (Query.TryGetValue(panel, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(panel, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text, out _))
                         {
                             legendItemDatas.Add(new LegendItemData(panel, value, text));
                         }
@@ -179,15 +188,15 @@ namespace SAM.Analytical.UI
                     bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
 
                     Dictionary<Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
-                    if (legend != null)
+                    if (legend_Panels != null)
                     {
                         if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                         {
-                            legend.Refresh(dictionary_LegendItem.Values, true, true);
+                            legend_Panels.Refresh(dictionary_LegendItem.Values, true, true);
                         }
                         else
                         {
-                            legend = null;
+                            legend_Panels = null;
                         }
                     }
 
@@ -199,9 +208,9 @@ namespace SAM.Analytical.UI
 
                         if (dictionary_LegendItem.TryGetValue(panel.Guid, out LegendItem legendItem) && legendItem != null)
                         {
-                            if (legend != null)
+                            if (legend_Panels != null)
                             {
-                                legendItem = legend.Find(legendItem?.Text);
+                                legendItem = legend_Panels.Find(legendItem?.Text);
                             }
 
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
@@ -264,9 +273,9 @@ namespace SAM.Analytical.UI
 
                     if (!legendUpdated)
                     {
-                        if (legend != null)
+                        if (legend_Panels != null)
                         {
-                            threeDimensionalViewSettings.Legend = legend;
+                            threeDimensionalViewSettings.Legend = legend_Panels;
                             legendUpdated = true;
                         }
                         else
@@ -290,13 +299,15 @@ namespace SAM.Analytical.UI
             Dictionary<Guid, Geometry3DObjectCollection> dictionary_Apertures = new Dictionary<Guid, Geometry3DObjectCollection>();
             if (showApertures)
             {
+                Legend legend_Apertures = legend_Temp is null ? null : new Legend(legend_Temp);
+
                 List<Aperture> apertures = adjacencyCluster.GetApertures();
                 if (apertures != null && apertures.Count != 0)
                 {
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Aperture aperture in apertures)
                     {
-                        if (Query.TryGetValue(aperture, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(aperture, adjacencyCluster, threeDimensionalViewSettings, out object value, out string text, out _))
                         {
                             legendItemDatas.Add(new LegendItemData(aperture, value, text));
                         }
@@ -305,15 +316,15 @@ namespace SAM.Analytical.UI
                     bool editable = Query.Editable<PanelAppearanceSettings>(threeDimensionalViewSettings);
 
                     Dictionary<Guid, LegendItem> dictionary_LegendItem = Query.LegendItemDictionary(legendItemDatas, editable, Query.UndefinedLegendItem());
-                    if (legend != null)
+                    if (legend_Apertures != null)
                     {
                         if (dictionary_LegendItem != null && dictionary_LegendItem.Count != 0)
                         {
-                            legend.Refresh(dictionary_LegendItem.Values, true, true);
+                            legend_Apertures.Refresh(dictionary_LegendItem.Values, true, true);
                         }
                         else
                         {
-                            legend = null;
+                            legend_Apertures = null;
                         }
                     }
 
@@ -325,9 +336,9 @@ namespace SAM.Analytical.UI
 
                         if (dictionary_LegendItem.TryGetValue(aperture.Guid, out LegendItem legendItem) && legendItem != null)
                         {
-                            if (legend != null)
+                            if (legend_Apertures != null)
                             {
-                                legendItem = legend.Find(legendItem?.Text);
+                                legendItem = legend_Apertures.Find(legendItem?.Text);
                             }
 
                             color = Color.FromRgb(legendItem.Color.R, legendItem.Color.G, legendItem.Color.B);
@@ -392,9 +403,9 @@ namespace SAM.Analytical.UI
 
                     if (!legendUpdated)
                     {
-                        if (legend != null)
+                        if (legend_Apertures != null)
                         {
-                            threeDimensionalViewSettings.Legend = legend;
+                            threeDimensionalViewSettings.Legend = legend_Apertures;
                             legendUpdated = true;
                         }
                         else
@@ -551,7 +562,7 @@ namespace SAM.Analytical.UI
                     List<LegendItemData> legendItemDatas = new List<LegendItemData>();
                     foreach (Space space in dictionary_Space.Keys)
                     {
-                        if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object value, out string text))
+                        if (Query.TryGetValue(space, adjacencyCluster, twoDimensionalViewSettings, out object value, out string text, out _))
                         {
                             legendItemDatas.Add(new LegendItemData(space, value, text));
                         }

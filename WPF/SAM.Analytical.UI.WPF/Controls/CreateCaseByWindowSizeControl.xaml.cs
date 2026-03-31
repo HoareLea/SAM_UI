@@ -101,7 +101,7 @@ namespace SAM.Analytical.UI.WPF
 
             List<IJSAMObject>? jSAMObjects = adjacencyCluster?.GetApertures()?.ConvertAll(x => x as IJSAMObject);
 
-            FilterWindow filterWindow = new FilterWindow() { Types = [typeof(Aperture)], Type = typeof(Aperture), UIFilter = uIFilter, UIFilters = null, JSAMObjects = jSAMObjects, AdjacencyCluster = adjacencyCluster };
+            FilterWindow filterWindow = new FilterWindow() { Types = [typeof(Aperture)], Type = typeof(Aperture), UIFilter = uIFilter, UIFilters = null, JSAMObjects = jSAMObjects, AnalyticalModel = analyticalModel };
             filterWindow.FilterAdding += FilterWindow_FilterAdding;
             bool? result = filterWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)

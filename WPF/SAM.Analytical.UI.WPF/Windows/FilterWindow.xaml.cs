@@ -12,7 +12,7 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class FilterWindow : System.Windows.Window
     {
-        private AdjacencyCluster adjacencyCluster = null;
+        private AnalyticalModel analyticalModel = null;
         private List<IJSAMObject> jSAMObjects = null;
 
         public event Core.UI.WPF.FilterAddingEventHandler FilterAdding;
@@ -62,7 +62,7 @@ namespace SAM.Analytical.UI.WPF
         {
             IUIFilter uIFilter = filtersControl.SelectedUIFilter;
 
-            UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+            UI.Modify.AssignAnalyticalModel(uIFilter, analyticalModel);
 
             filterControl.UIFilter = uIFilter;
         }
@@ -139,16 +139,16 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public AdjacencyCluster AdjacencyCluster
+        public AnalyticalModel AnalyticalModel
         {
             get
             {
-                return adjacencyCluster;
+                return analyticalModel;
             }
 
             set
             {
-                adjacencyCluster = value;
+                analyticalModel = value;
                 Refresh();
             }
         }
@@ -165,9 +165,9 @@ namespace SAM.Analytical.UI.WPF
         {
             IFilter filter = UIFilter.Transform();
 
-            UI.Modify.AssignAdjacencyCluster(filter, adjacencyCluster);
+            UI.Modify.AssignAnalyticalModel(filter, analyticalModel);
 
-            return adjacencyCluster.Filter<IJSAMObject>(filter, jSAMObjects);
+            return analyticalModel.Filter<IJSAMObject>(filter, jSAMObjects);
         }
 
         public Type Type
@@ -198,7 +198,7 @@ namespace SAM.Analytical.UI.WPF
             listBox_Before.Items.Clear();
             listBox_After.Items.Clear();
             
-            List<IJSAMObject> jSAMObjects = this.jSAMObjects != null && this.jSAMObjects.Count != 0 ? new List<IJSAMObject>(this.jSAMObjects) : Analytical.Query.FilteringSAMObjects(adjacencyCluster);
+            List<IJSAMObject> jSAMObjects = this.jSAMObjects != null && this.jSAMObjects.Count != 0 ? new List<IJSAMObject>(this.jSAMObjects) : Analytical.Query.FilteringSAMObjects(analyticalModel?.AdjacencyCluster);
             jSAMObjects?.RemoveAll(x => x == null || !x.GetType().IsAssignableFrom(Type));
 
             if (jSAMObjects != null)

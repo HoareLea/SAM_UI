@@ -1,4 +1,8 @@
-﻿using SAM.Core.UI;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core;
+using SAM.Core.UI;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,13 +19,13 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            Dictionary<LegendItemData, object> dictionary_Values = new Dictionary<LegendItemData, object>();
+            Dictionary<LegendItemData, object> dictionary_Values = [];
 
-            Dictionary<double, string> dictionary_Doubles = new Dictionary<double, string>();
+            Dictionary<double, string> dictionary_Doubles = [];
 
 
             //HashSet<string> strings = new HashSet<string>();
-            Dictionary<string, List<LegendItemData>> dictionary_Strings = new Dictionary<string, List<LegendItemData>>();
+            Dictionary<string, List<LegendItemData>> dictionary_Strings = [];
 
             Dictionary<Guid, LegendItem> result = new Dictionary<Guid, LegendItem>();
             foreach (LegendItemData legendItemData in legendItemDatas)
@@ -39,7 +43,7 @@ namespace SAM.Analytical.UI
                     string value = Core.Query.Description((Enum)@object);
                     if(!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
                     {
-                        legendItemDatas_Temp = new List<LegendItemData>();
+                        legendItemDatas_Temp = [];
                         dictionary_Strings[value] = legendItemDatas_Temp;
                     }
                     legendItemDatas_Temp.Add(legendItemData);
@@ -47,15 +51,15 @@ namespace SAM.Analytical.UI
                 else if (Core.Query.IsNumeric(@object))
                 {
                     double value = System.Convert.ToDouble(@object);
-                    dictionary_Doubles[value] = Core.Query.Round(value, Core.Tolerance.MacroDistance).ToString();
-                    dictionary_Values[legendItemData] = value;
+                    dictionary_Doubles[value] = Core.Query.Round(value, Tolerance.MacroDistance).ToString();
+                    dictionary_Values[legendItemData] = Core.Query.Round(value, Tolerance.MicroDistance);
                 }
                 else if (@object is string)
                 {
                     string value = (string)@object;
                     if (!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
                     {
-                        legendItemDatas_Temp = new List<LegendItemData>();
+                        legendItemDatas_Temp = [];
                         dictionary_Strings[value] = legendItemDatas_Temp;
                     }
                     legendItemDatas_Temp.Add(legendItemData);
@@ -69,7 +73,7 @@ namespace SAM.Analytical.UI
                     string value = @object?.ToString();
                     if (!dictionary_Strings.TryGetValue(value, out List<LegendItemData> legendItemDatas_Temp))
                     {
-                        legendItemDatas_Temp = new List<LegendItemData>();
+                        legendItemDatas_Temp = [];
                         dictionary_Strings[value] = legendItemDatas_Temp;
                     }
                     legendItemDatas_Temp.Add(legendItemData);
@@ -81,7 +85,7 @@ namespace SAM.Analytical.UI
             double max = double.MaxValue;
             if (dictionary_Doubles != null && dictionary_Doubles.Count != 0)
             {
-                List<double> doubles = new List<double>(dictionary_Doubles.Keys);
+                List<double> doubles = [.. dictionary_Doubles.Keys];
 
                 max = doubles.Max();
                 min = doubles.Min();
@@ -148,15 +152,66 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            Random random = new Random();
+            //Random random = new Random();
             if (dictionary_Strings != null && dictionary_Strings.Count != 0)
             {
+                List<Tuple<string, List<LegendItemData>>> tuples_Strings_Unassigned = [];
                 foreach (KeyValuePair<string, List<LegendItemData>> keyValuePair in dictionary_Strings)
                 {
-                    Color color = System.Drawing.Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
+                    Color color = System.Drawing.Color.Empty; //Core.Create.Color(keyValuePair.Key); //System.Drawing.Color.FromArgb(random.Next(0, 256), random.Next(0, 256), random.Next(0, 256));
+                    if(keyValuePair.Value != null && keyValuePair.Value.Count != 0)
+                    {
+                        if (keyValuePair.Value.TrueForAll(x => x.Value is PanelType) && keyValuePair.Value.TrueForAll(x => (PanelType)x.Value == (PanelType)keyValuePair.Value[0].Value))
+                        {
+                            color = Analytical.Query.Color((PanelType)keyValuePair.Value[0].Value);
+                        }
+                        else if (keyValuePair.Value.TrueForAll(x => x.Value is BoundaryType) && keyValuePair.Value.TrueForAll(x => (BoundaryType)x.Value == (BoundaryType)keyValuePair.Value[0].Value))
+                        {
+                            color = Analytical.Query.Color((BoundaryType)keyValuePair.Value[0].Value);
+                        }
+                        else if (keyValuePair.Value.TrueForAll(x => x.Value is ApertureType) && keyValuePair.Value.TrueForAll(x => (ApertureType)x.Value == (ApertureType)keyValuePair.Value[0].Value))
+                        {
+                            color = Analytical.Query.Color(((ApertureType)keyValuePair.Value[0].Value));
+                        }
+                    }
+
+                    if(color == System.Drawing.Color.Empty)
+                    {
+                        tuples_Strings_Unassigned.Add(new Tuple<string, List<LegendItemData>>(keyValuePair.Key, keyValuePair.Value));
+                        continue;
+                    }
+
                     foreach (LegendItemData legendItemData in keyValuePair.Value)
                     {
                         result[legendItemData.Guid] = new LegendItem(color, keyValuePair.Key);
+                    }
+                }
+
+                List<Color> colors = ColorPaletteGenerator.GetColors(PaletteDefinitions.SamSpacesSoft, tuples_Strings_Unassigned.ConvertAll(x => x.Item1));
+                if(colors is null || colors.Count == 0)
+                {
+                    foreach(Tuple<string, List<LegendItemData>> tuple in tuples_Strings_Unassigned)
+                    {
+                        Color color = Core.Create.Color(tuple.Item1);
+
+                        foreach (LegendItemData legendItemData in tuple.Item2)
+                        {
+                            result[legendItemData.Guid] = new LegendItem(color, tuple.Item1);
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < tuples_Strings_Unassigned.Count; i++)
+                    {
+                        Tuple<string, List<LegendItemData>> tuple = tuples_Strings_Unassigned[i];
+
+                        Color color = i < colors.Count ? colors[i] : Core.Create.Color(tuple.Item1);
+
+                        foreach (LegendItemData legendItemData in tuple.Item2)
+                        {
+                            result[legendItemData.Guid] = new LegendItem(color, tuple.Item1);
+                        }
                     }
                 }
             }

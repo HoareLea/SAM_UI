@@ -2,6 +2,7 @@
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Analytical.Classes;
+using SAM.Core;
 using System.Collections.Generic;
 
 namespace SAM.Analytical.UI.WPF
@@ -25,6 +26,19 @@ namespace SAM.Analytical.UI.WPF
             set
             {
                 CreateCasesControl_Main.AnalyticalModel = value;
+            }
+        }
+
+        public List<SAMObject>? SelectedSAMObjects
+        {
+            get
+            {
+                return CreateCasesControl_Main.SelectedSAMObjects;
+            }
+
+            set
+            {
+                CreateCasesControl_Main.SelectedSAMObjects = value;
             }
         }
 

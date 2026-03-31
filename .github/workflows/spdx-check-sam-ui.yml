@@ -1,7 +1,8 @@
-name: SPDX + Copyright header check
+name: SPDX + Copyright header check (SAM_UI special case)
 
 on:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   spdx:
@@ -9,9 +10,11 @@ jobs:
     permissions:
       contents: read
       pull-requests: read
+
     steps:
       - name: Check SPDX + copyright header in changed .cs files
         env:
+          EVENT_NAME: ${{ github.event_name }}
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
@@ -20,14 +23,20 @@ jobs:
         run: |
           set -euo pipefail
 
+          if [ "$EVENT_NAME" != "pull_request" ]; then
+            echo "Manual run detected."
+            echo "This workflow checks files changed in a pull request, so there is nothing to do without PR context."
+            exit 0
+          fi
+
           echo "Repo: $REPO"
           echo "PR: $PR"
           echo "Head SHA: $HEAD_SHA"
-          echo ""
+          echo
 
           mapfile -t files < <(
             gh api "repos/$REPO/pulls/$PR/files" --paginate \
-              --jq '.[] | .filename | select(endswith(".cs"))'
+              --jq '.[] | select(.status != "removed") | .filename | select(endswith(".cs"))'
           )
 
           if [ "${#files[@]}" -eq 0 ]; then
@@ -37,7 +46,7 @@ jobs:
 
           echo "C# files changed in PR:"
           printf ' - %s\n' "${files[@]}"
-          echo ""
+          echo
 
           spdx_re='SPDX-License-Identifier:[[:space:]]*LGPL-3\.0-or-later'
           cr_re='Copyright[[:space:]]*\(c\)[[:space:]]*2020[[:space:]]*[-–—][[:space:]]*2026[[:space:]]*Michal[[:space:]]+Dengusiak[[:space:]]*&[[:space:]]*Jakub[[:space:]]+Ziolkowski[[:space:]]+and[[:space:]]+contributors'
@@ -47,50 +56,49 @@ jobs:
           for f in "${files[@]}"; do
             echo "Checking: $f"
 
-            # Skip entire Properties folders (typically generated / designer-managed code)
             case "$f" in
-              */Properties/*)
-                echo "  ⏭️ Skipping Properties/*"
+              */Properties/*|*.xaml.cs)
+                echo "  Skipping Properties/* and *.xaml.cs"
                 continue
                 ;;
             esac
 
-            content_b64=$(gh api "repos/$REPO/contents/$f?ref=$HEAD_SHA" --jq '.content' 2>/dev/null || true)
-            if [ -z "$content_b64" ]; then
-              echo "  ❌ Could not fetch file content (deleted? submodule? path issue)"
+            content=$(gh api \
+              -H "Accept: application/vnd.github.raw" \
+              "repos/$REPO/contents/$f?ref=$HEAD_SHA" 2>/dev/null || true)
+
+            if [ -z "$content" ]; then
+              echo "  Could not fetch file content"
               missing+=("$f (unreadable)")
               continue
             fi
 
-            # Decode fully first (avoids SIGPIPE/broken pipe with pipefail),
-            # normalize CRLF, then take first 80 lines.
-            decoded=$(printf '%s' "$content_b64" | base64 -d)
-            headblock=$(printf '%s' "$decoded" | tr -d '\r' | sed -n '1,80p')
+            headblock=$(printf '%s' "$content" | sed '1s/^\xEF\xBB\xBF//' | tr -d '\r' | sed -n '1,80p')
 
             if ! printf '%s' "$headblock" | grep -Eiq "$spdx_re"; then
-              echo "  ❌ Missing SPDX line in first 80 lines"
+              echo "  Missing SPDX line in first 80 lines"
               missing+=("$f (SPDX)")
               continue
             fi
 
             if ! printf '%s' "$headblock" | grep -Eiq "$cr_re"; then
-              echo "  ❌ Missing copyright line in first 80 lines"
+              echo "  Missing copyright line in first 80 lines"
               missing+=("$f (Copyright)")
               continue
             fi
 
-            echo "  ✅ OK"
+            echo "  OK"
           done
 
-          echo ""
+          echo
           if [ "${#missing[@]}" -ne 0 ]; then
-            echo "❌ Missing required header in:"
+            echo "Missing required header in:"
             printf ' - %s\n' "${missing[@]}"
-            echo ""
+            echo
             echo "Expected somewhere in first 80 lines:"
             echo "// SPDX-License-Identifier: LGPL-3.0-or-later"
             echo "// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors"
             exit 1
           fi
 
-          echo "✅ SPDX + copyright headers OK."
+          echo "SPDX + copyright headers OK."

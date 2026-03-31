@@ -1,4 +1,7 @@
-﻿namespace SAM.Core.UI.WPF
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+namespace SAM.Core.UI.WPF
 {
     public static partial class Create
     {
@@ -11,32 +14,37 @@
 
             if (uIFilter is UITextFilter)
             {
-                TextFilterControl textFilterControl = new TextFilterControl((UITextFilter)uIFilter);
+                TextFilterControl textFilterControl = new ((UITextFilter)uIFilter);
                 return textFilterControl;
             }
             else if (uIFilter is UILogicalFilter)
             {
-                LogicalFilterControl logicalFilterControl = new LogicalFilterControl((UILogicalFilter)uIFilter);
+                LogicalFilterControl logicalFilterControl = new ((UILogicalFilter)uIFilter);
                 return logicalFilterControl;
             }
             else if (uIFilter is UIRelationFilter)
             {
-                RelationFilterControl relationFilterControl = new RelationFilterControl((UIRelationFilter)uIFilter);
+                RelationFilterControl relationFilterControl = new ((UIRelationFilter)uIFilter);
                 return relationFilterControl;
             }
             else if (uIFilter is UINumberFilter)
             {
-                NumberFilterControl numberFilterControl = new NumberFilterControl((UINumberFilter)uIFilter);
+                NumberFilterControl numberFilterControl = new ((UINumberFilter)uIFilter);
                 return numberFilterControl;
+            }
+            else if (uIFilter is UIBooleanFilter)
+            {
+                BooleanFilterControl booleanFilterControl = new ((UIBooleanFilter)uIFilter);
+                return booleanFilterControl;
             }
             else if (uIFilter is UIEnumFilter)
             {
-                EnumFilterControl enumFilterControl = new EnumFilterControl((UIEnumFilter)uIFilter);
+                EnumFilterControl enumFilterControl = new ((UIEnumFilter)uIFilter);
                 return enumFilterControl;
             }
             else if (uIFilter is UIComplexReferenceFilter)
             {
-                ComplexReferenceFilterControl complexReferenceFilterControl = new ComplexReferenceFilterControl((UIComplexReferenceFilter)uIFilter);
+                ComplexReferenceFilterControl complexReferenceFilterControl = new ((UIComplexReferenceFilter)uIFilter);
                 return complexReferenceFilterControl;
             }
 

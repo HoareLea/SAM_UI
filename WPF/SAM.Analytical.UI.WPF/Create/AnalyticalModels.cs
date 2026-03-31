@@ -3,7 +3,9 @@
 
 using Microsoft.Win32;
 using SAM.Analytical.Classes;
+using SAM.Core;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 
@@ -11,7 +13,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Create
     {
-        public static List<AnalyticalModel>? AnalyticalModels(this AnalyticalModel? analyticalModel)
+        public static List<AnalyticalModel>? AnalyticalModels<TSAMObject>(this AnalyticalModel? analyticalModel, IEnumerable<TSAMObject>? sAMObjects_Selected = null) where TSAMObject : ISAMObject
         {
             if (analyticalModel is null)
             {
@@ -22,7 +24,8 @@ namespace SAM.Analytical.UI.WPF
 
             CreateCasesWindow createCasesWindow = new()
             {
-                AnalyticalModel = analyticalModel
+                AnalyticalModel = analyticalModel,
+                SelectedSAMObjects = sAMObjects_Selected?.Cast<SAMObject>()?.ToList() ?? null
             };
 
             dialogResult = createCasesWindow.ShowDialog();

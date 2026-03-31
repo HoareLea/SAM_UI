@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="SAM.Core.UI.WPF.ColorGradientControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Core.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="80" d:DesignWidth="200">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="60"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Content="Low:" Grid.Row="0"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <CheckBox x:Name="CheckBox_Mid" HorizontalAlignment="Stretch" VerticalAlignment="Center" Click="CheckBox_Mid_Click"/>
+                <Label x:Name="Label_Mid" Content="Mid:" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+            </StackPanel>
+        <Label Content="High:" Grid.Row="2" Loaded="Label_Loaded"/>
+        <Button x:Name="Button_Low" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" Background="White" Click="Button_Low_Click"/>
+        <Button x:Name="Button_Mid" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" Background="White" Click="Button_Mid_Click"/>
+        <Button x:Name="Button_High" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5" Background="White" Click="Button_High_Click"/>
+    </Grid>
+</UserControl>

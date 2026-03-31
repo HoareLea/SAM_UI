@@ -42,7 +42,7 @@ namespace SAM.Analytical.UI
                 filter = uIFilter.Transform();
             }
 
-            Modify.AssignAdjacencyCluster(filter, adjacencyCluster);
+            Modify.AssignAnalyticalModel(filter, analyticalModel);
 
             return adjacencyCluster.Filter<TJSAMObject>(filter, null);
         }

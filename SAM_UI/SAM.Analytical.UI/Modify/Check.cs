@@ -1,4 +1,7 @@
-﻿using System.Windows.Forms;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using System.Windows.Forms;
 
 namespace SAM.Analytical.UI
 {
@@ -14,7 +17,7 @@ namespace SAM.Analytical.UI
 
             Core.Log log = null;
 
-            System.Action action = new System.Action(() => 
+            System.Action action = new (() => 
             {
                 log = analyticalModel.Log();
             });
@@ -25,7 +28,9 @@ namespace SAM.Analytical.UI
                 return;
             }
 
-            using (Core.Windows.Forms.LogForm logForm = new Core.Windows.Forms.LogForm(log))
+            log.Sort();
+
+            using (Core.Windows.Forms.LogForm logForm = new (log))
             {
                 if(logForm.ShowDialog(owner) != DialogResult.OK)
                 {

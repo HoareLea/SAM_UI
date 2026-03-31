@@ -22,6 +22,11 @@ namespace SAM.Analytical.UI.WPF
     {
         private AnalyticalModel analyticalModel;
 
+        private List<Panel>? selectedPanels;
+
+        private CaseSelection? caseSelection = null;
+
+
         public CreateCaseByApertureControl()
         {
             InitializeComponent();
@@ -54,6 +59,8 @@ namespace SAM.Analytical.UI.WPF
                 List<ApertureCase> result = [];
                 foreach (ApertureCase apertureCase in createCaseViewModel.Items)
                 {
+                    apertureCase.CaseSelection = caseSelection;
+
                     result.Add(apertureCase);
                 }
 
@@ -77,7 +84,26 @@ namespace SAM.Analytical.UI.WPF
                 foreach (ApertureCase apertureCase in value)
                 {
                     createCaseViewModel.Items.Add(apertureCase);
+                    if(apertureCase.CaseSelection is not null)
+                    {
+                        caseSelection = apertureCase.CaseSelection;
+                    }
+
                 }
+            }
+        }
+
+        public List<Panel>? SelectedPanels
+        {
+            get
+            {
+                return selectedPanels;
+            }
+
+            set
+            {
+                selectedPanels = value;
+                button_CurrentSelection.IsEnabled = selectedPanels is not null && selectedPanels.Count > 0;
             }
         }
 
@@ -103,7 +129,7 @@ namespace SAM.Analytical.UI.WPF
 
             List<IJSAMObject>? jSAMObjects = adjacencyCluster?.GetPanels()?.ConvertAll(x => x as IJSAMObject);
 
-            FilterWindow filterWindow = new FilterWindow() { Types = [typeof(Panel)], Type = typeof(Panel), UIFilter = uIFilter, UIFilters = null, JSAMObjects = jSAMObjects, AdjacencyCluster = adjacencyCluster };
+            FilterWindow filterWindow = new FilterWindow() { Types = [typeof(Panel)], Type = typeof(Panel), UIFilter = uIFilter, UIFilters = null, JSAMObjects = jSAMObjects, AnalyticalModel = analyticalModel };
             filterWindow.FilterAdding += FilterWindow_FilterAdding;
             bool? result = filterWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)
@@ -111,12 +137,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            foreach (ApertureCase apertureCase in apertureCases)
-            {
-                apertureCase.CaseSelection = new FilterSelection(filterWindow.UIFilter);
-            }
-
-            ApertureCases = apertureCases;
+            caseSelection = new FilterSelection(filterWindow.UIFilter);
         }
 
         private void DataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -169,6 +190,16 @@ namespace SAM.Analytical.UI.WPF
 
                 e.UIFilter = searchForm.SelectedItems.FirstOrDefault();
             }
+        }
+
+        private void button_CurrentSelection_Click(object sender, RoutedEventArgs e)
+        {
+            if(selectedPanels is null || selectedPanels.Count == 0)
+            {
+                return;
+            }
+
+            caseSelection = new ObjectReferenceCaseSelection(selectedPanels.ConvertAll(x => new ObjectReference(x)));
         }
     }
 }

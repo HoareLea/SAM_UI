@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
+using HoneybeeSchema;
 using Microsoft.Win32;
 using SAM.Core;
 using SAM.Core.UI;
@@ -28,21 +29,19 @@ namespace SAM.Analytical.UI.WPF.Windows
     {
         private static string titlePrefix = "SAM Analytical";
 
+        private DoubleRangeWindow doubleRangeWindow = null;
         private ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager();
 
         private UIAnalyticalModel uIAnalyticalModel = null;
         private Core.Windows.WindowHandle windowHandle = null;
-
-        private DoubleRangeWindow doubleRangeWindow = null;
-        
         public AnalyticalWindow()
         {
-            Initailize();
+            InitializeWindow();
         }
 
         public AnalyticalWindow(StartupOptions startupOptions)
         {
-            Initailize();
+            InitializeWindow();
 
             if (startupOptions != null)
             {
@@ -63,440 +62,18 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        private void Initailize()
+        public void SaveAs()
         {
-            InitializeComponent();
-
-            Title = titlePrefix;
-
-            windowHandle = new Core.Windows.WindowHandle(this);
-
-            Icon = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM);
-
-            RibbonButton_OpenAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
-            RibbonButton_OpenAnalyticalModel.Click += RibbonButton_OpenAnalyticalModel_Click;
-
-            RibbonButton_NewAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_New);
-            RibbonButton_NewAnalyticalModel.Click += RibbonButton_NewAnalyticalModel_Click;
-
-            RibbonButton_SaveAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Save);
-            RibbonButton_SaveAnalyticalModel.Click += RibbonButton_SaveAnalyticalModel_Click;
-
-            RibbonButton_SaveAsAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_SaveAs);
-            RibbonButton_SaveAsAnalyticalModel.Click += RibbonButton_SaveAsAnalyticalModel_Click;
-
-            RibbonButton_CloseAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
-            RibbonButton_CloseAnalyticalModel.Click += RibbonButton_CloseAnalyticalModel_Click;
-
-            RibbonButton_ImportAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
-            RibbonButton_ImportAnalyticalModel.Click += RibbonButton_ImportAnalyticalModel_Click;
-
-            RibbonButton_ExportAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Save);
-            RibbonButton_ExportAnalyticalModel.Click += RibbonButton_ExportAnalyticalModel_Click;
-
-            RibbonButton_NewSectionViews.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
-            RibbonButton_NewSectionViews.Click += RibbonButton_NewSectionViews_Click;
-
-            RibbonButton_NewSectionView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
-            RibbonButton_NewSectionView.Click += RibbonButton_NewSectionView_Click;
-
-            RibbonButton_New3DView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
-            RibbonButton_New3DView.Click += RibbonButton_New3DView_Click;
-
-            RibbonButton_ViewSettings.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
-            RibbonButton_ViewSettings.Click += RibbonButton_ViewSettings_Click;
-
-            RibbonButton_CloseView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
-            RibbonButton_CloseView.Click += RibbonButton_CloseView_Click;
-
-            RibbonButton_AnalyticalModelLocation.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Location);
-            RibbonButton_AnalyticalModelLocation.Click += RibbonButton_AnalyticalModelLocation_Click;
-
-            RibbonButton_AnalyticalModelProperties.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AnalyticalModelProperties);
-            RibbonButton_AnalyticalModelProperties.Click += RibbonButton_AnalyticalModelProperties_Click;
-
-            RibbonButton_ImportObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Import);
-            RibbonButton_ImportObjects.Click += RibbonButton_ImportObjects_Click;
-
-            RibbonButton_AnalyticalModelCheck.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ModelCheck);
-            RibbonButton_AnalyticalModelCheck.Click += RibbonButton_AnalyticalModelCheck_Click;
-
-            RibbonButton_EditMaterialLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_MaterialLibrary);
-            RibbonButton_EditMaterialLibrary.Click += RibbonButton_EditMaterialLibrary_Click;
-
-            RibbonButton_EditInternalConditionLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_InternalCondition);
-            RibbonButton_EditInternalConditionLibrary.Click += RibbonButton_EditInternalConditionLibrary_Click;
-
-            RibbonButton_EditProfileLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ProfileLibrary);
-            RibbonButton_EditProfileLibrary.Click += RibbonButton_EditProfileLibrary_Click;
-
-            RibbonButton_EditSpaces.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
-            RibbonButton_EditSpaces.Click += RibbonButton_EditSpaces_Click;
-
-            RibbonButton_EditConstructions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ConstructionLibrary);
-            RibbonButton_EditConstructions.Click += RibbonButton_EditConstructions_Click;
-
-            RibbonButton_EditApertureConstructions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ApertureConstruction);
-            RibbonButton_EditApertureConstructions.Click += RibbonButton_EditApertureConstructions_Click;
-
-            RibbonButton_EditWeatherData.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_WeatherData);
-            RibbonButton_EditWeatherData.Click += RibbonButton_EditWeatherData_Click;
-
-            RibbonButton_ImportWeatherData.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Import);
-            RibbonButton_ImportWeatherData.Click += RibbonButton_ImportWeatherData_Click;
-
-            RibbonButton_SolarSimulation.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_SolarCalculator);
-            RibbonButton_SolarSimulation.Click += RibbonButton_SolarSimulation_Click;
-
-            RibbonButton_EnergySimulation.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EnergySimulation);
-            RibbonButton_EnergySimulation.Click += RibbonButton_EnergySimulation_Click;
-
-            RibbonButton_EditLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
-            RibbonButton_EditLibrary.Click += RibbonButton_EditLibrary_Click;
-
-            RibbonButton_AssignMechanicalSystems.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
-            RibbonButton_AssignMechanicalSystems.Click += RibbonButton_AssignMechanicalSystems_Click;
-
-            RibbonButton_OpenT3D.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
-            RibbonButton_OpenT3D.Click += RibbonButton_OpenT3D_Click;
-
-            RibbonButton_OpenTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
-            RibbonButton_OpenTBD.Click += RibbonButton_OpenTBD_Click;
-
-            RibbonButton_OpenTSD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TSD);
-            RibbonButton_OpenTSD.Click += RibbonButton_OpenTSD_Click;
-
-            RibbonButton_OpenTPD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TPD);
-            RibbonButton_OpenTPD.Click += RibbonButton_OpenTPD_Click;
-
-            RibbonButton_ThermalTransmittanceCalculator.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
-            RibbonButton_ThermalTransmittanceCalculator.Click += RibbonButton_ThermalTransmittanceCalculator_Click;
-
-            RibbonButton_GlazingCalculator.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
-            RibbonButton_GlazingCalculator.Click += RibbonButton_GlazingCalculator_Click;
-
-            RibbonButton_CreateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
-            RibbonButton_CreateCases.Click += RibbonButton_CreateCases_Click;
-
-            RibbonButton_SimulateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
-            RibbonButton_SimulateCases.Click += RibbonButton_SimulateCases_Click; ;
-
-            RibbonButton_CreateSimulateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
-            RibbonButton_CreateSimulateCases.Click += RibbonButton_CreateSimulateCases_Click;
-
-            RibbonMenuButton_PartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
-
-            RibbonButton_OpenPartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
-            RibbonButton_OpenPartL.Click += RibbonButton_OpenPartL_Click;
-
-            RibbonButton_UpdateUKBRFile.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL_UKBR);
-            RibbonButton_UpdateUKBRFile.Click += RibbonButton_UpdateUKBRFile_Click;
-
-            RibbonButton_Hydra.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Hydra);
-            RibbonButton_Hydra.Click += RibbonButton_Hydra_Click;
-
-            RibbonButton_NCMNames.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
-            RibbonButton_NCMNames.Click += RibbonButton_NCMNames_Click;
-
-            RibbonButton_CleanAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
-            RibbonButton_CleanAnalyticalModel.Click += RibbonButton_CleanAnalyticalModel_Click;
-
-            RibbonButton_RemoveAirMovementObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
-            RibbonButton_RemoveAirMovementObjects.Click += RibbonButton_RemoveAirMovementObjects_Click;
-
-            //RibbonButton_CreateTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
-            //RibbonButton_CreateTBD.Click += RibbonButton_CreateTBD_Click;
-
-            RibbonButton_AddMissingObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AddMissingObjects);
-            RibbonButton_AddMissingObjects.Click += RibbonButton_AddMissingObjects_Click;
-
-            RibbonButton_PrintRoomDataSheets.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
-            RibbonButton_PrintRoomDataSheets.Click += RibbonButton_PrintRoomDataSheets_Click;
-
-            RibbonButton_OpenMollierChart.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_MollierDiagram);
-            RibbonButton_OpenMollierChart.Click += RibbonButton_OpenMollierChart_Click;
-
-            RibbonButton_ViewGeometry.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
-            RibbonButton_ViewGeometry.Click += RibbonButton_ViewGeometry_Click;
-
-            RibbonButton_MapInternalConditions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
-            RibbonButton_MapInternalConditions.Click += RibbonButton_MapInternalConditions_Click;
-
-            RibbonButton_MapInternalConditionsByTM59.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
-            RibbonButton_MapInternalConditionsByTM59.Click += RibbonButton_MapInternalConditionsByTM59_Click;
-
-            RibbonButton_EditInternalConditions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
-            RibbonButton_EditInternalConditions.Click += RibbonButton_EditInternalConditions_Click;
-
-            RibbonButton_TextMap.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
-            RibbonButton_TextMap.Click += RibbonButton_TextMap_Click;
-
-            RibbonButton_SelectByFilter.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
-            RibbonButton_SelectByFilter.Click += RibbonButton_SelectByFilter_Click;
-
-            RibbonButton_SelectByGuid.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
-            RibbonButton_SelectByGuid.Click += RibbonButton_SelectByGuid_Click;
-
-            RibbonButton_RevealHidden.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
-            RibbonButton_RevealHidden.Click += RibbonButton_RevealHidden_Click;
-
-            RibbonButton_ViewRange.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
-            RibbonButton_ViewRange.Click += RibbonButton_ViewRange_Click;
-
-            RibbonButton_AirHandlingUnitDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AirHandlingUnitDiagram);
-            RibbonButton_AirHandlingUnitDiagram.Click += RibbonButton_AirHandlingUnitDiagram_Click;
-
-            RibbonButton_SpaceDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_SpaceDiagram);
-            RibbonButton_SpaceDiagram.Click += RibbonButton_SpaceDiagram_Click;
-
-            RibbonButton_RemoveResults.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
-            RibbonButton_RemoveResults.Click += RibbonButton_RemoveResults_Click;
-
-            RibbonButton_Wiki.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
-            RibbonButton_Wiki.Click += RibbonButton_Wiki_Click;
-
-            RibbonButton_About.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
-            RibbonButton_About.Click += RibbonButton_About_Click;
-
-            RibbonButton_Test.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
-            RibbonButton_Test.Click += RibbonButton_Test_Click;
-
-            AnalyticalModelControl.ZoomRequested += AnalyticalModelControl_ZoomRequested;
-            AnalyticalModelControl.SelectionRequested += AnalyticalModelControl_SelectionRequested;
-            AnalyticalModelControl.TreeViewItemDropped += AnalyticalModelControl_TreeViewItemDropped;
-
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, null, null);
-
-            GeometryObjectModel geometryObjectModel = Convert.ToSAM_GeometryObjectModel(uIAnalyticalModel?.JSAMObject, threeDimensionalViewSettings);
-
-            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
-            viewportControl.Mode = threeDimensionalViewSettings.Mode();
-            viewportControl.Loaded += ViewportControl_Loaded;
-            viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
-            viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
-            viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
-            viewportControl.Focus();
-
-            uIAnalyticalModel = new UIAnalyticalModel();
-            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
-            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-            uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
-            uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
-
-            SetEnabled();
-        }
-
-        private void RibbonButton_SimulateCases_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.SimulateCases();
-        }
-
-        private void RibbonButton_CreateSimulateCases_Click(object sender, RoutedEventArgs e)
-        {
-            if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
+            if (uIAnalyticalModel == null)
             {
                 return;
             }
 
-            Modify.CreateSimulateCases(uIAnalyticalModel);
-        }
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
 
-        private void RibbonButton_CreateCases_Click(object sender, RoutedEventArgs e)
-        {
-            if(uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
-            {
-                return;
-            }
+            SetUIGeometrySettings(tabControl, analyticalModel);
 
-            List<AnalyticalModel>? analyticalModel_Case = Create.AnalyticalModels(analyticalModel);
-        }
-
-        private void RibbonButton_RemoveAirMovementObjects_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.RemoveAirMovementObjects(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_GlazingCalculator_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.CalculateGlazing(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_ThermalTransmittanceCalculator_Click(object sender, RoutedEventArgs e)
-        {
-            Modify.ThermalTransmittanceCalculator_SingleConstruction(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_UpdateUKBRFile_Click(object sender, RoutedEventArgs e)
-        {
-            bool result = Modify.UpdateUKBRFile(uIAnalyticalModel);
-        }
-
-        private void RibbonButton_NCMNames_Click(object sender, RoutedEventArgs e)
-        {
-            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection(), new NCMNameCollectionOptions(false));
-            nCMNameCollectionWindow.ShowDialog();
-        }
-
-        private void RibbonButton_AssignMechanicalSystems_Click(object sender, RoutedEventArgs e)
-        {
-            List<Space> spaces = GetActiveViewportControl()?.SelectedSAMObjects<Space>();
-            if(spaces == null  || spaces.Count == 0)
-            {
-                spaces = null;
-            }
-
-            //uIAnalyticalModel?.AssignMechanicalSystems(spaces);
-            uIAnalyticalModel?.AddMechanicalSystems(spaces);
-        }
-
-        private void RibbonButton_ViewRange_Click(object sender, RoutedEventArgs e)
-        {
-            ShowViewRange();
-        }
-
-        private void ShowViewRange()
-        {
-            if (doubleRangeWindow != null)
-            {
-                doubleRangeWindow.Close();
-                return;
-            }
-
-            double max = 0;
-            double min = 0;
-            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
-            if (range != null)
-            {
-                max = range.Max;
-                min = range.Min;
-            }
-
-            doubleRangeWindow = new DoubleRangeWindow(max, min);
-            doubleRangeWindow.ShowActivated = true;
-            doubleRangeWindow.Topmost = true;
-            doubleRangeWindow.RangeChanged += DoubleRangeWindow_RangeChanged;
-            doubleRangeWindow.Closing += DoubleRangeWindow_Closing;
-
-            RefreshDoubleRangeWindow();
-
-            doubleRangeWindow.Show();
-        }
-
-        private void DoubleRangeWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            doubleRangeWindow = null;
-        }
-
-        private void RefreshDoubleRangeWindow()
-        {
-            if(doubleRangeWindow == null)
-            {
-                return;
-            }
-            
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = GetActiveViewSettings() as ThreeDimensionalViewSettings;
-            if (threeDimensionalViewSettings == null)
-            {
-                return;
-            }
-
-            double max = 0;
-            double min = 0;
-            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
-            if (range != null)
-            {
-                max = range.Max;
-                min = range.Min;
-            }
-
-            range = new Range<double>(min, max);
-
-            List<Geometry.Spatial.Plane> planes = threeDimensionalViewSettings.Planes;
-            if (planes != null && planes.Count != 0)
-            {
-                if(planes.Count == 1)
-                {
-                    Geometry.Spatial.Plane plane = planes[0];
-
-                    if(plane.Normal.Z > 0)
-                    {
-                        range = new Range<double>(plane.Origin.Z, max);
-                    }
-                    else
-                    {
-                        range = new Range<double>(plane.Origin.Z, min);
-                    }
-                }
-                else
-                {
-                    List<double> values = planes.ConvertAll(x => x.Origin.Z);
-                    range = new Range<double>(values);
-                }
-            }
-
-            doubleRangeWindow.Range = range;
-        }
-
-        private void DoubleRangeWindow_RangeChanged(object sender, RangeChangedEventArgs<double> e)
-        {
-            Range<double> range = e.Range;
-            if(range == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = GetActiveViewportControl();
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
-            {
-                return;
-            }
-
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = uIGeometrySettings.GetViewSettings(viewportControl.Guid) as ThreeDimensionalViewSettings;
-            if(threeDimensionalViewSettings == null)
-            {
-                return;
-            }
-
-            List<Geometry.Spatial.Plane> planes = new List<Geometry.Spatial.Plane>();
-
-            if(doubleRangeWindow.Min != range.Min)
-            {
-                Geometry.Spatial.Plane plane_Min = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Min)) as Geometry.Spatial.Plane;
-
-                planes.Add(plane_Min);
-            }
-
-            if (doubleRangeWindow.Max != range.Max)
-            {
-                Geometry.Spatial.Plane plane_Max = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Max)) as Geometry.Spatial.Plane;
-                plane_Max.Reverse();
-
-                planes.Add(plane_Max);
-            }
-
-            if(planes.Count == 0)
-            {
-                planes = null;
-            }
-
-            threeDimensionalViewSettings.Planes = planes;
-
-            uIGeometrySettings.AddViewSettings(threeDimensionalViewSettings);
-
-            analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
-
-            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(threeDimensionalViewSettings, true));
+            uIAnalyticalModel.SaveAs();
         }
 
         private void AnalyticalModelControl_SelectionRequested(object sender, SelectionRequestedEventArgs e)
@@ -584,6 +161,104 @@ namespace SAM.Analytical.UI.WPF.Windows
             viewportControl.Zoom(sAMObjects);
         }
 
+        private void AssignMechanicalSystems(IEnumerable<Space> spaces = null)
+        {
+            Modify.AssignMechanicalSystems(uIAnalyticalModel, spaces);
+        }
+
+        private void Delete()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+            if(panels != null)
+            {
+                Modify.RemovePanels(uIAnalyticalModel, panels);
+            }
+
+            List<Aperture> apertures = viewportControl.SelectedSAMObjects<Aperture>();
+            if (apertures != null)
+            {
+                Modify.RemoveApertures(uIAnalyticalModel, apertures);
+            }
+        }
+
+        private void DoubleRangeWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            doubleRangeWindow = null;
+        }
+
+        private void DoubleRangeWindow_RangeChanged(object sender, RangeChangedEventArgs<double> e)
+        {
+            Range<double> range = e.Range;
+            if (range == null)
+            {
+                return;
+            }
+
+            if (doubleRangeWindow is null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null)
+            {
+                return;
+            }
+
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = uIGeometrySettings.GetViewSettings(viewportControl.Guid) as ThreeDimensionalViewSettings;
+            if (threeDimensionalViewSettings == null)
+            {
+                return;
+            }
+
+            List<Geometry.Spatial.Plane> planes = new List<Geometry.Spatial.Plane>();
+
+            if (doubleRangeWindow.Min != range.Min)
+            {
+                Geometry.Spatial.Plane plane_Min = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Min)) as Geometry.Spatial.Plane;
+
+                planes.Add(plane_Min);
+            }
+
+            if (doubleRangeWindow.Max != range.Max)
+            {
+                Geometry.Spatial.Plane plane_Max = Geometry.Spatial.Plane.WorldXY.GetMoved(new Geometry.Spatial.Vector3D(0, 0, range.Max)) as Geometry.Spatial.Plane;
+                plane_Max.Reverse();
+
+                planes.Add(plane_Max);
+            }
+
+            if (planes.Count == 0)
+            {
+                planes = null;
+            }
+
+            threeDimensionalViewSettings.Planes = planes;
+
+            uIGeometrySettings.AddViewSettings(threeDimensionalViewSettings);
+
+            analyticalModel.SetValue(AnalyticalModelParameter.UIGeometrySettings, uIGeometrySettings);
+
+            uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(threeDimensionalViewSettings, true));
+        }
+
         private void DuplicateViewSettings(TabItem tabItem)
         {
             if (tabItem == null)
@@ -602,6 +277,42 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.DuplicateViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
+        private void CopyViewSettings(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            Modify.CopyViewSettings(uIAnalyticalModel, viewportControl.Guid);
+        }
+
+        private void CopyViewSettingsCamera(TabItem tabItem)
+        {
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //SetActiveGuid();
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            Modify.CopyViewSettingsCamera(uIAnalyticalModel, viewportControl.Guid);
+        }
+
         private void EditLegend()
         {
             Guid guid = GetActiveGuid();
@@ -612,6 +323,11 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             //SetActiveGuid();
             Modify.EditLegend(uIAnalyticalModel, guid);
+        }
+
+        private void EditMechanicalSystems(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
+        {
+            Modify.EditMechanicalSystems(uIAnalyticalModel, spaces, MechanicalSystemCategory.Ventilation, selectedSpaces);
         }
 
         private void EditViewSettings()
@@ -665,16 +381,6 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             //SetActiveGuid();
             Modify.EditZones(uIAnalyticalModel, spaces, zoneCategory, selectedSpaces);
-        }
-
-        private void EditMechanicalSystems(IEnumerable<Space> spaces, IEnumerable<Space> selectedSpaces = null)
-        {
-            Modify.EditMechanicalSystems(uIAnalyticalModel, spaces, MechanicalSystemCategory.Ventilation, selectedSpaces);
-        }
-
-        private void AssignMechanicalSystems(IEnumerable<Space> spaces = null)
-        {
-            Modify.AssignMechanicalSystems(uIAnalyticalModel, spaces);
         }
 
         private void EnableViewSettings(bool enabled)
@@ -810,32 +516,407 @@ namespace SAM.Analytical.UI.WPF.Windows
             return uIGeometrySettings.GetViewSettings(viewportControl.Guid);
         }
 
-        private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
+        private void Reverse()
         {
-            MenuItem menuItem = (MenuItem)sender;
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel.JSAMObject?.AdjacencyCluster;
+
+            List<Tuple<SAMObject, bool>> tuples = [];
+
+            if (adjacencyCluster?.GetPanels() is List<Panel> panels)
+            {
+                foreach (Panel panel in panels)
+                {
+                    tuples.Add(new Tuple<SAMObject, bool>(panel, viewportControl.Contains<Panel>(panel.Guid)));
+
+                    List<Aperture> apertures = panel.Apertures;
+                    if (apertures != null)
+                    {
+                        foreach (Aperture aperture in apertures)
+                        {
+                            tuples.Add(new Tuple<SAMObject, bool>(aperture, viewportControl.Contains<Aperture>(aperture.Guid)));
+                        }
+                    }
+                }
+            }
+
+            if (adjacencyCluster?.GetSpaces() is List<Space> spaces)
+            {
+                foreach (Space space in spaces)
+                {
+                    tuples.Add(new Tuple<SAMObject, bool>(space, viewportControl.Contains<Space>(space.Guid)));
+                }
+            }
+
+            if (tuples is null || tuples.Count == 0)
+            {
+                return;
+            }
+
+            List<SAMObject> sAMObjects_Selected = viewportControl.SelectedSAMObjects<SAMObject>();
+            if(sAMObjects_Selected is null || sAMObjects_Selected.Count == 0)
+            {
+                UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, tuples.ConvertAll(x => x.Item1), tuples.ConvertAll(x => !x.Item2));
+            }
+            else
+            {
+                List<SAMObject> sAMObjects = tuples.FindAll(x => x.Item2).ConvertAll(x => x.Item1);
+                foreach(SAMObject sAMObject_Selected in sAMObjects_Selected)
+                {
+                    int index = sAMObjects.FindIndex(x => x.Guid == sAMObject_Selected.Guid);
+                    if(index != -1)
+                    {
+                        sAMObjects.RemoveAt(index);
+                    }
+                }
+
+                viewportControl.Select(sAMObjects);
+            }
+        }
+
+        private void Hide()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<SAMObject> jSAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        }
+
+        private void Hide(MenuItem menuItem)
+        {
             if (menuItem == null)
             {
                 return;
             }
 
-            List<Space> spaces = null;
-            if (menuItem.Tag is Space)
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
             {
-                spaces = new List<Space>() { (Space)menuItem.Tag };
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects = null;
+            if (menuItem.Tag is IJSAMObject)
+            {
+                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
             }
             else if (menuItem.Tag is IEnumerable)
             {
-                spaces = new List<Space>();
+                jSAMObjects = new List<IJSAMObject>();
                 foreach (object @object in (IEnumerable)menuItem.Tag)
                 {
-                    if (@object is Space)
+                    if (@object is IJSAMObject)
                     {
-                        spaces.Add((Space)@object);
+                        jSAMObjects.Add((IJSAMObject)@object);
                     }
                 }
             }
 
-            Modify.AssignSpaceInternalCondition(uIAnalyticalModel, spaces);
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        }
+
+        private void InitializeWindow()
+        {
+            InitializeComponent();
+
+            Title = titlePrefix;
+
+            windowHandle = new Core.Windows.WindowHandle(this);
+
+            Icon = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM);
+
+            RibbonButton_OpenAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
+            RibbonButton_OpenAnalyticalModel.Click += RibbonButton_OpenAnalyticalModel_Click;
+
+            RibbonButton_NewAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_New);
+            RibbonButton_NewAnalyticalModel.Click += RibbonButton_NewAnalyticalModel_Click;
+
+            RibbonButton_SaveAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Save);
+            RibbonButton_SaveAnalyticalModel.Click += RibbonButton_SaveAnalyticalModel_Click;
+
+            RibbonButton_SaveAsAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_SaveAs);
+            RibbonButton_SaveAsAnalyticalModel.Click += RibbonButton_SaveAsAnalyticalModel_Click;
+
+            RibbonButton_CloseAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
+            RibbonButton_CloseAnalyticalModel.Click += RibbonButton_CloseAnalyticalModel_Click;
+
+            RibbonButton_ImportAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Open);
+            RibbonButton_ImportAnalyticalModel.Click += RibbonButton_ImportAnalyticalModel_Click;
+
+            RibbonButton_ExportAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Save);
+            RibbonButton_ExportAnalyticalModel.Click += RibbonButton_ExportAnalyticalModel_Click;
+
+            RibbonButton_NewSectionViews.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_NewSectionViews.Click += RibbonButton_NewSectionViews_Click;
+
+            RibbonButton_NewSectionView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_NewSectionView.Click += RibbonButton_NewSectionView_Click;
+
+            RibbonButton_New3DView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_New3DView.Click += RibbonButton_New3DView_Click;
+
+            RibbonButton_ViewSettings.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_ViewSettings.Click += RibbonButton_ViewSettings_Click;
+
+            RibbonButton_CloseView.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Section);
+            RibbonButton_CloseView.Click += RibbonButton_CloseView_Click;
+
+            RibbonButton_AnalyticalModelLocation.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Location);
+            RibbonButton_AnalyticalModelLocation.Click += RibbonButton_AnalyticalModelLocation_Click;
+
+            RibbonButton_AnalyticalModelProperties.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AnalyticalModelProperties);
+            RibbonButton_AnalyticalModelProperties.Click += RibbonButton_AnalyticalModelProperties_Click;
+
+            RibbonButton_ImportObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Import);
+            RibbonButton_ImportObjects.Click += RibbonButton_ImportObjects_Click;
+
+            RibbonButton_AnalyticalModelCheck.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ModelCheck);
+            RibbonButton_AnalyticalModelCheck.Click += RibbonButton_AnalyticalModelCheck_Click;
+
+            RibbonButton_EditMaterialLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_MaterialLibrary);
+            RibbonButton_EditMaterialLibrary.Click += RibbonButton_EditMaterialLibrary_Click;
+
+            RibbonButton_EditInternalConditionLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_InternalCondition);
+            RibbonButton_EditInternalConditionLibrary.Click += RibbonButton_EditInternalConditionLibrary_Click;
+
+            RibbonButton_EditProfileLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ProfileLibrary);
+            RibbonButton_EditProfileLibrary.Click += RibbonButton_EditProfileLibrary_Click;
+
+            RibbonButton_EditSpaces.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_EditSpaces.Click += RibbonButton_EditSpaces_Click;
+
+            RibbonButton_EditConstructions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ConstructionLibrary);
+            RibbonButton_EditConstructions.Click += RibbonButton_EditConstructions_Click;
+
+            RibbonButton_EditApertureConstructions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ApertureConstruction);
+            RibbonButton_EditApertureConstructions.Click += RibbonButton_EditApertureConstructions_Click;
+
+            RibbonButton_EditWeatherData.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_WeatherData);
+            RibbonButton_EditWeatherData.Click += RibbonButton_EditWeatherData_Click;
+
+            RibbonButton_ImportWeatherData.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Import);
+            RibbonButton_ImportWeatherData.Click += RibbonButton_ImportWeatherData_Click;
+
+            RibbonButton_SolarSimulation.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_SolarCalculator);
+            RibbonButton_SolarSimulation.Click += RibbonButton_SolarSimulation_Click;
+
+            RibbonButton_EnergySimulation.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EnergySimulation);
+            RibbonButton_EnergySimulation.Click += RibbonButton_EnergySimulation_Click;
+
+            RibbonButton_EditLibrary.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
+            RibbonButton_EditLibrary.Click += RibbonButton_EditLibrary_Click;
+
+            RibbonButton_SetDefaultLayers.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_ConstructionLibrary);
+            RibbonButton_SetDefaultLayers.Click += RibbonButton_SetDefaultLayers_Click;
+
+            RibbonButton_AssignMechanicalSystems.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
+            RibbonButton_AssignMechanicalSystems.Click += RibbonButton_AssignMechanicalSystems_Click;
+
+            RibbonButton_OpenT3D.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
+            RibbonButton_OpenT3D.Click += RibbonButton_OpenT3D_Click;
+
+            RibbonButton_OpenTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
+            RibbonButton_OpenTBD.Click += RibbonButton_OpenTBD_Click;
+
+            RibbonButton_OpenTSD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TSD);
+            RibbonButton_OpenTSD.Click += RibbonButton_OpenTSD_Click;
+
+            RibbonButton_OpenTPD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TPD);
+            RibbonButton_OpenTPD.Click += RibbonButton_OpenTPD_Click;
+
+            RibbonButton_ThermalTransmittanceCalculator.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
+            RibbonButton_ThermalTransmittanceCalculator.Click += RibbonButton_ThermalTransmittanceCalculator_Click;
+
+            RibbonButton_GlazingCalculator.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
+            RibbonButton_GlazingCalculator.Click += RibbonButton_GlazingCalculator_Click;
+
+            RibbonButton_CreateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_CreateCases.Click += RibbonButton_CreateCases_Click;
+
+            RibbonButton_SimulateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_SimulateCases.Click += RibbonButton_SimulateCases_Click;
+
+            RibbonButton_CreateSimulateCases.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_CreateSimulateCases.Click += RibbonButton_CreateSimulateCases_Click;
+
+            RibbonButton_Solve.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
+            RibbonButton_Solve.Click += RibbonButton_Solve_Click;
+
+            RibbonMenuButton_PartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
+
+            RibbonButton_OpenPartL.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL);
+            RibbonButton_OpenPartL.Click += RibbonButton_OpenPartL_Click;
+
+            RibbonButton_UpdateUKBRFile.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PartL_UKBR);
+            RibbonButton_UpdateUKBRFile.Click += RibbonButton_UpdateUKBRFile_Click;
+
+            RibbonButton_Hydra.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Hydra);
+            RibbonButton_Hydra.Click += RibbonButton_Hydra_Click;
+
+            RibbonButton_NCMNames.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
+            RibbonButton_NCMNames.Click += RibbonButton_NCMNames_Click;
+
+            RibbonButton_FixNames.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_EditLibrary);
+            RibbonButton_FixNames.Click += RibbonButton_FixNames_Click;
+
+            RibbonButton_CleanAnalyticalModel.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
+            RibbonButton_CleanAnalyticalModel.Click += RibbonButton_CleanAnalyticalModel_Click;
+
+            RibbonButton_RemoveAirMovementObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
+            RibbonButton_RemoveAirMovementObjects.Click += RibbonButton_RemoveAirMovementObjects_Click;
+
+            //RibbonButton_CreateTBD.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_TBD);
+            //RibbonButton_CreateTBD.Click += RibbonButton_CreateTBD_Click;
+
+            RibbonButton_AddMissingObjects.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AddMissingObjects);
+            RibbonButton_AddMissingObjects.Click += RibbonButton_AddMissingObjects_Click;
+
+            RibbonButton_PrintRoomDataSheets.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_PrintRoomDataSheets.Click += RibbonButton_PrintRoomDataSheets_Click;
+
+            RibbonButton_OpenMollierChart.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_MollierDiagram);
+            RibbonButton_OpenMollierChart.Click += RibbonButton_OpenMollierChart_Click;
+
+            RibbonButton_ViewGeometry.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_ViewGeometry.Click += RibbonButton_ViewGeometry_Click;
+
+            RibbonButton_MapInternalConditions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_MapInternalConditions.Click += RibbonButton_MapInternalConditions_Click;
+
+            RibbonButton_MapInternalConditionsByTM59.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_MapInternalConditionsByTM59.Click += RibbonButton_MapInternalConditionsByTM59_Click;
+
+            RibbonButton_EditInternalConditions.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
+            RibbonButton_EditInternalConditions.Click += RibbonButton_EditInternalConditions_Click;
+
+            RibbonButton_TextMap.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_TextMap.Click += RibbonButton_TextMap_Click;
+
+            RibbonButton_SelectByFilter.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_SelectByFilter.Click += RibbonButton_SelectByFilter_Click;
+
+            RibbonButton_SelectByGuid.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_SelectByGuid.Click += RibbonButton_SelectByGuid_Click;
+
+            RibbonButton_RevealHidden.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_RevealHidden.Click += RibbonButton_RevealHidden_Click;
+
+            RibbonButton_ViewRange.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_PrintRDS);
+            RibbonButton_ViewRange.Click += RibbonButton_ViewRange_Click;
+
+            RibbonButton_AirHandlingUnitDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_AirHandlingUnitDiagram);
+            RibbonButton_AirHandlingUnitDiagram.Click += RibbonButton_AirHandlingUnitDiagram_Click;
+
+            RibbonButton_SpaceDiagram.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_SpaceDiagram);
+            RibbonButton_SpaceDiagram.Click += RibbonButton_SpaceDiagram_Click;
+
+            RibbonButton_RemoveResults.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Close);
+            RibbonButton_RemoveResults.Click += RibbonButton_RemoveResults_Click;
+
+            RibbonButton_Wiki.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
+            RibbonButton_Wiki.Click += RibbonButton_Wiki_Click;
+
+            RibbonButton_About.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
+            RibbonButton_About.Click += RibbonButton_About_Click;
+
+            RibbonButton_Test.LargeImageSource = Core.Windows.Convert.ToBitmapSource(Properties.Resources.SAM_Wiki);
+            RibbonButton_Test.Click += RibbonButton_Test_Click;
+
+            AnalyticalModelControl.ZoomRequested += AnalyticalModelControl_ZoomRequested;
+            AnalyticalModelControl.SelectionRequested += AnalyticalModelControl_SelectionRequested;
+            AnalyticalModelControl.TreeViewItemDropped += AnalyticalModelControl_TreeViewItemDropped;
+
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = new ThreeDimensionalViewSettings("3D View", null, null, null);
+
+            GeometryObjectModel geometryObjectModel = Convert.ToSAM_GeometryObjectModel(uIAnalyticalModel?.JSAMObject, threeDimensionalViewSettings);
+
+            viewportControl.UIGeometryObjectModel = new UIGeometryObjectModel(geometryObjectModel);
+            viewportControl.Mode = threeDimensionalViewSettings.Mode();
+            viewportControl.Loaded += ViewportControl_Loaded;
+            viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
+            viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
+            viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+            viewportControl.Focus();
+
+            uIAnalyticalModel = new UIAnalyticalModel();
+            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
+            uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
+
+            SetEnabled();
+        }
+
+        private void Isolate(MenuItem menuItem)
+        {
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = tabControl.SelectedItem as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects = null;
+            if (menuItem.Tag is IJSAMObject)
+            {
+                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                jSAMObjects = new List<IJSAMObject>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is IJSAMObject)
+                    {
+                        jSAMObjects.Add((IJSAMObject)@object);
+                    }
+                }
+            }
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Isolate(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
+        }
+
+        private void Isolate()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<SAMObject> jSAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.Isolate(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
         }
 
         private void MenuItem_AssignApertureConstruction_Click(object sender, RoutedEventArgs e)
@@ -865,7 +946,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             Modify.AssignApertureApertureConstruction(uIAnalyticalModel, apertures);
         }
-        
+
         private void MenuItem_AssignApertureConstructionByThermalTransmittance_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
@@ -950,6 +1031,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.AssignPanelConstructionByThermalTransmittance(uIAnalyticalModel, panels);
         }
 
+        private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            Modify.AssignSpaceInternalCondition(uIAnalyticalModel, spaces);
+        }
+
         private void MenuItem_Close_TabItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -1004,6 +1113,36 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EnableViewSettings(uIAnalyticalModel, false);
         }
 
+        private void MenuItem_Delete_Click(object sender, RoutedEventArgs e)
+        {
+            //MenuItem menuItem = (MenuItem)sender;
+            //if (menuItem == null)
+            //{
+            //    return;
+            //}
+
+            //List<Panel>? panels = null;
+            //if (menuItem.Tag is Panel)
+            //{
+            //    panels = [(Panel)menuItem.Tag];
+            //}
+            //else if (menuItem.Tag is IEnumerable)
+            //{
+            //    panels = [];
+            //    foreach (object @object in (IEnumerable)menuItem.Tag)
+            //    {
+            //        if (@object is Panel)
+            //        {
+            //            panels.Add((Panel)@object);
+            //        }
+            //    }
+            //}
+
+            //Modify.RemovePanels(uIAnalyticalModel, panels);
+
+            Delete();
+        }
+        
         private void MenuItem_Duplicate_TabItem_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = sender as MenuItem;
@@ -1049,6 +1188,34 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditInternalConditions(uIAnalyticalModel, spaces);
         }
 
+        private void MenuItem_EditMCMDatas(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            Modify.EditNCMDatas(uIAnalyticalModel, spaces);
+        }
+
         private void MenuItem_EditOpeningProperties_Click(object sender, RoutedEventArgs e)
         {
             MenuItem menuItem = (MenuItem)sender;
@@ -1077,37 +1244,19 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.EditOpeningProperties(uIAnalyticalModel, apertures);
         }
 
+        private void MenuItem_Hide_Click(object sender, RoutedEventArgs e)
+        {
+            Hide((MenuItem)sender);
+        }
+
+        private void MenuItem_Isolate_Click(object sender, RoutedEventArgs e)
+        {
+            Isolate((MenuItem)sender);
+        }
+
         private void MenuItem_Legend_Click(object sender, RoutedEventArgs e)
         {
             EditLegend();
-        }
-
-        private void MenuItem_ManageZones_Click(object sender, RoutedEventArgs e)
-        {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
-
-            List<Space> spaces = null;
-            if (menuItem.Tag is Space)
-            {
-                spaces = new List<Space>() { (Space)menuItem.Tag };
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                spaces = new List<Space>();
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is Space)
-                    {
-                        spaces.Add((Space)@object);
-                    }
-                }
-            }
-
-            EditZones(spaces, spaces);
         }
 
         private void MenuItem_ManageMechanicalSystems_Click(object sender, RoutedEventArgs e)
@@ -1137,6 +1286,34 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             //EditMechanicalSystems(spaces, spaces);
             AssignMechanicalSystems(spaces);
+        }
+
+        private void MenuItem_ManageZones_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<Space> spaces = null;
+            if (menuItem.Tag is Space)
+            {
+                spaces = new List<Space>() { (Space)menuItem.Tag };
+            }
+            else if (menuItem.Tag is IEnumerable)
+            {
+                spaces = new List<Space>();
+                foreach (object @object in (IEnumerable)menuItem.Tag)
+                {
+                    if (@object is Space)
+                    {
+                        spaces.Add((Space)@object);
+                    }
+                }
+            }
+
+            EditZones(spaces, spaces);
         }
 
         private void MenuItem_MenuItem_MapInternalCondition_Click(object sender, RoutedEventArgs e)
@@ -1188,7 +1365,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 Space space = (Space)jSAMObject;
                 uIAnalyticalModel.EditSpace(space, windowHandle);
             }
-            else if(jSAMObject is Aperture)
+            else if (jSAMObject is Aperture)
             {
                 Aperture aperture = (Aperture)jSAMObject;
                 uIAnalyticalModel.EditAperture(aperture, windowHandle);
@@ -1228,6 +1405,26 @@ namespace SAM.Analytical.UI.WPF.Windows
             //}
         }
 
+        private void MenuItem_RevealHidden_Click(object sender, RoutedEventArgs e)
+        {
+            RevealHidden();
+        }
+
+        private void MenuItem_SelectByApertureConstructionName_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByApertureConstructionName();
+        }
+
+        private void MenuItem_SelectByApertureType_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByApertureType();
+        }
+
+        private void MenuItem_SelectByConstructionName_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByConstructionName();
+        }
+
         private void MenuItem_SelectByFilter_Click(object sender, RoutedEventArgs e)
         {
             SelectByFilter();
@@ -1236,6 +1433,138 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void MenuItem_SelectByGuid_Click(object sender, RoutedEventArgs e)
         {
             SelectByGuid();
+        }
+
+        private void MenuItem_SelectByLegend_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = (MenuItem)sender;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            List<IJSAMObject>? jSAMObjects = menuItem.Tag as List<IJSAMObject>;
+            if (jSAMObjects is null)
+            {
+                return;
+            }
+
+            if (GetActiveViewSettings() is not ViewSettings viewSettings)
+            {
+                return;
+            }
+
+            AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            if (adjacencyCluster is null)
+            {
+                return;
+            }
+
+            List<Tuple<Type, object, string, string>> tuples = new List<Tuple<Type, object, string, string>>();
+            foreach (IJSAMObject jSAMObject in jSAMObjects)
+            {
+                object value = null;
+                string text = null;
+                string parameterName = null;
+
+                if (jSAMObject is Panel panel && UI.Query.TryGetValue(panel, adjacencyCluster, viewSettings, out value, out text, out parameterName))
+                {
+                    tuples.Add(new Tuple<Type, object, string, string>(typeof(Panel), value, text, parameterName));
+                }
+                else if (jSAMObject is Space space && UI.Query.TryGetValue(space, adjacencyCluster, viewSettings, out value, out text, out parameterName))
+                {
+                    tuples.Add(new Tuple<Type, object, string, string>(typeof(Space), value, text, parameterName));
+                }
+                else if (jSAMObject is Aperture aperture && UI.Query.TryGetValue(aperture, adjacencyCluster, viewSettings, out value, out text, out parameterName))
+                {
+                    tuples.Add(new Tuple<Type, object, string, string>(typeof(Aperture), value, text, parameterName));
+                }
+            }
+
+            if (tuples is null || tuples.Count == 0)
+            {
+                return;
+            }
+
+            List<IJSAMObject> jSAMObjects_Filtered = [];
+
+            List<Tuple<Type, object, string, string>> tuples_Filtered = null;
+
+            tuples_Filtered = tuples.FindAll(x => x.Item1 == typeof(Panel));
+            if (tuples_Filtered is not null && tuples_Filtered.Count > 0)
+            {
+                List<Panel> panels = adjacencyCluster.GetPanels();
+                if (panels is not null && panels.Count > 0)
+                {
+                    foreach (Panel panel in panels)
+                    {
+                        if (UI.Query.TryGetValue(panel, adjacencyCluster, viewSettings, out object value, out string text, out string parameterName))
+                        {
+                            if (tuples_Filtered.Find(x => x.Item3 == text && x.Item4 == parameterName) != null)
+                            {
+                                jSAMObjects_Filtered.Add(panel);
+                            }
+                        }
+                    }
+                }
+            }
+
+            tuples_Filtered = tuples.FindAll(x => x.Item1 == typeof(Space));
+            if (tuples_Filtered is not null && tuples_Filtered.Count > 0)
+            {
+                List<Space> spaces = adjacencyCluster.GetSpaces();
+                if (spaces is not null && spaces.Count > 0)
+                {
+                    foreach (Space space in spaces)
+                    {
+                        if (UI.Query.TryGetValue(space, adjacencyCluster, viewSettings, out object value, out string text, out string parameterName))
+                        {
+                            if (tuples_Filtered.Find(x => x.Item3 == text && x.Item4 == parameterName) != null)
+                            {
+                                jSAMObjects_Filtered.Add(space);
+                            }
+                        }
+                    }
+                }
+            }
+
+            tuples_Filtered = tuples.FindAll(x => x.Item1 == typeof(Aperture));
+            if (tuples_Filtered is not null && tuples_Filtered.Count > 0)
+            {
+                List<Aperture> apertures = adjacencyCluster.GetApertures();
+                if (apertures is not null && apertures.Count > 0)
+                {
+                    foreach (Aperture aperture in apertures)
+                    {
+                        if (UI.Query.TryGetValue(aperture, adjacencyCluster, viewSettings, out object value, out string text, out string parameterName))
+                        {
+                            if (tuples_Filtered.Find(x => x.Item3 == text && x.Item4 == parameterName) != null)
+                            {
+                                jSAMObjects_Filtered.Add(aperture);
+                            }
+                        }
+                    }
+                }
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            viewportControl?.Select(jSAMObjects_Filtered?.FindAll(x => x is SAMObject)?.Cast<SAMObject>());
+
+        }
+
+        private void MenuItem_SelectByPanelGroup_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByPanelGroup();
+        }
+
+        private void MenuItem_SelectByPanelType_Click(object sender, RoutedEventArgs e)
+        {
+            SelectByPanelType();
         }
 
         private void MenuItem_Settings_TabItem_Click(object sender, RoutedEventArgs e)
@@ -1260,6 +1589,97 @@ namespace SAM.Analytical.UI.WPF.Windows
             EditViewSettings();
         }
 
+        private void New3DView()
+        {
+            if (uIAnalyticalModel == null)
+            {
+                return;
+            }
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = UI.Query.DefaultViewSettings(analyticalModel) as ThreeDimensionalViewSettings;
+
+            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(threeDimensionalViewSettings)), threeDimensionalViewSettings);
+            if (tabItem != null)
+            {
+                tabControl.SelectedItem = tabItem;
+            }
+
+            SetUIGeometrySettings(tabControl, analyticalModel);
+        }
+
+        private bool Open(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
+            {
+                return false;
+            }
+
+            uIAnalyticalModel = new UIAnalyticalModel();
+            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
+            uIAnalyticalModel.Path = path;
+            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+            uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
+            uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
+
+            return uIAnalyticalModel.Open();
+        }
+
+        private void RefreshDoubleRangeWindow()
+        {
+            if (doubleRangeWindow == null)
+            {
+                return;
+            }
+
+            ThreeDimensionalViewSettings threeDimensionalViewSettings = GetActiveViewSettings() as ThreeDimensionalViewSettings;
+            if (threeDimensionalViewSettings == null)
+            {
+                return;
+            }
+
+            double max = 0;
+            double min = 0;
+            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
+            if (range != null)
+            {
+                max = range.Max;
+                min = range.Min;
+            }
+
+            range = new Range<double>(min, max);
+
+            List<Geometry.Spatial.Plane> planes = threeDimensionalViewSettings.Planes;
+            if (planes != null && planes.Count != 0)
+            {
+                if (planes.Count == 1)
+                {
+                    Geometry.Spatial.Plane plane = planes[0];
+
+                    if (plane.Normal.Z > 0)
+                    {
+                        range = new Range<double>(plane.Origin.Z, max);
+                    }
+                    else
+                    {
+                        range = new Range<double>(plane.Origin.Z, min);
+                    }
+                }
+                else
+                {
+                    List<double> values = planes.ConvertAll(x => x.Origin.Z);
+                    range = new Range<double>(values);
+                }
+            }
+
+            doubleRangeWindow.Range = range;
+        }
+
         private void Reload(ModifiedEventArgs modifiedEventArgs)
         {
             progressBarWindowManager.Show("Reloading", "Reloading...");
@@ -1268,7 +1688,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             //SetActiveGuid();
 
             uIAnalyticalModel.Modified -= UIAnalyticalModel_Modified;
-            tabControl.SelectionChanged -= tabControl_SelectionChanged;
+            tabControl.SelectionChanged -= TabControl_SelectionChanged;
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
 
@@ -1279,7 +1699,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.SetJSAMObject(analyticalModel, modifiedEventArgs.Modifications);
 
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-            tabControl.SelectionChanged += tabControl_SelectionChanged;
+            tabControl.SelectionChanged += TabControl_SelectionChanged;
 
             progressBarWindowManager.Close();
         }
@@ -1319,19 +1739,52 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
 
+        private void RevealHidden()
+        {
+            //TabItem tabItem = tabControl.SelectedItem as TabItem;
+            //if (tabItem == null)
+            //{
+            //    return;
+            //}
+
+            //ViewportControl viewportControl = tabItem.Content as ViewportControl;
+            //if (viewportControl == null)
+            //{
+            //    return;
+            //}
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            //if (viewportControl != null)
+            //{
+            //    List<SAMObject> sAMObjects_Selected = viewportControl.SelectedSAMObjects<SAMObject>();
+            //    if (sAMObjects_Selected != null)
+            //    {
+            //        jSAMObjects.AddRange(sAMObjects_Selected);
+            //    }
+            //}
+
+            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
+            UI.Modify.RemoveOverrides(uIAnalyticalModel, viewportControl.Guid);
+        }
+
         private void RibbonButton_About_Click(object sender, RoutedEventArgs e)
         {
             List<AboutInfoType> abouInfoTypes = Enum.GetValues(typeof(AboutInfoType)).Cast<AboutInfoType>().ToList();
 
             using (ComboBoxForm<AboutInfoType> comboBoxForm = new ComboBoxForm<AboutInfoType>("Info", abouInfoTypes, x => x.Description()))
             {
-                if(comboBoxForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (comboBoxForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     MessageBox.Show(Core.Query.AboutInfoTypeText(comboBoxForm.SelectedItem), "Info");
                 }
             }
         }
-        
+
         private void RibbonButton_AddMissingObjects_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.AddMissingObjects(windowHandle);
@@ -1357,6 +1810,18 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel?.EditProperties(windowHandle);
         }
 
+        private void RibbonButton_AssignMechanicalSystems_Click(object sender, RoutedEventArgs e)
+        {
+            List<Space> spaces = GetActiveViewportControl()?.SelectedSAMObjects<Space>();
+            if (spaces == null || spaces.Count == 0)
+            {
+                spaces = null;
+            }
+
+            //uIAnalyticalModel?.AssignMechanicalSystems(spaces);
+            uIAnalyticalModel?.AddMechanicalSystems(spaces);
+        }
+
         private void RibbonButton_CleanAnalyticalModel_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.Clean(windowHandle);
@@ -1375,6 +1840,35 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_CloseView_Click(object sender, RoutedEventArgs e)
         {
             EnableViewSettings(false);
+        }
+
+        private void RibbonButton_CreateCases_Click(object sender, RoutedEventArgs e)
+        {
+            if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
+            {
+                return;
+            }
+
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<SAMObject> sAMObjects_Selected = viewportControl.SelectedSAMObjects<SAMObject>();
+
+
+            List<AnalyticalModel>? analyticalModel_Case = Create.AnalyticalModels(analyticalModel, sAMObjects_Selected);
+        }
+
+        private void RibbonButton_CreateSimulateCases_Click(object sender, RoutedEventArgs e)
+        {
+            if (uIAnalyticalModel?.JSAMObject is not AnalyticalModel analyticalModel)
+            {
+                return;
+            }
+
+            Modify.CreateSimulateCases(uIAnalyticalModel);
         }
 
         private void RibbonButton_CreateTBD_Click(object sender, RoutedEventArgs e)
@@ -1444,6 +1938,16 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.Export(uIAnalyticalModel);
         }
 
+        private void RibbonButton_FixNames_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel.ReplaceNameSpecialCharacters(windowHandle);
+        }
+
+        private void RibbonButton_GlazingCalculator_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.CalculateGlazing(uIAnalyticalModel);
+        }
+
         private void RibbonButton_Hydra_Click(object sender, RoutedEventArgs e)
         {
             Core.Query.StartProcess(Link.Hydra);
@@ -1457,6 +1961,19 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_ImportObjects_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.Import(windowHandle);
+
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel != null)
+            {
+                if (!analyticalModel.TryGetValue(AnalyticalModelParameter.UIGeometrySettings, out UIGeometrySettings uIGeometrySettings) || uIGeometrySettings == null || !uIGeometrySettings.HasAnyViewSettings())
+                {
+                    List<Panel> panels = analyticalModel.GetPanels();
+                    if (panels != null && panels.Count != 0)
+                    {
+                        New3DView();
+                    }
+                }
+            }
         }
 
         private void RibbonButton_ImportWeatherData_Click(object sender, RoutedEventArgs e)
@@ -1474,28 +1991,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.MapInternalConditionsByTM59(uIAnalyticalModel);
         }
 
+        private void RibbonButton_NCMNames_Click(object sender, RoutedEventArgs e)
+        {
+            NCMNameCollectionWindow nCMNameCollectionWindow = new NCMNameCollectionWindow(Analytical.Query.DefaultNCMNameCollection(), new NCMNameCollectionOptions(false));
+            nCMNameCollectionWindow.ShowDialog();
+        }
+
         private void RibbonButton_New3DView_Click(object sender, RoutedEventArgs e)
         {
-            if (uIAnalyticalModel == null)
-            {
-                return;
-            }
-
-            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
-            if (analyticalModel == null)
-            {
-                return;
-            }
-
-            ThreeDimensionalViewSettings threeDimensionalViewSettings = UI.Query.DefaultViewSettings(analyticalModel) as ThreeDimensionalViewSettings;
-
-            TabItem tabItem = UpdateTabItem(tabControl, analyticalModel, new ModifiedEventArgs(new ViewSettingsModification(threeDimensionalViewSettings)), threeDimensionalViewSettings);
-            if (tabItem != null)
-            {
-                tabControl.SelectedItem = tabItem;
-            }
-
-            SetUIGeometrySettings(tabControl, analyticalModel);
+            New3DView();
         }
 
         private void RibbonButton_NewAnalyticalModel_Click(object sender, RoutedEventArgs e)
@@ -1604,23 +2108,6 @@ namespace SAM.Analytical.UI.WPF.Windows
             Open(path);
         }
 
-        private bool Open(string path)
-        {
-            if (string.IsNullOrWhiteSpace(path) || !System.IO.File.Exists(path))
-            {
-                return false;
-            }
-
-            uIAnalyticalModel = new UIAnalyticalModel();
-            AnalyticalModelControl.UIAnalyticalModel = uIAnalyticalModel;
-            uIAnalyticalModel.Path = path;
-            uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
-            uIAnalyticalModel.Closed += UIAnalyticalModel_Closed;
-            uIAnalyticalModel.Opened += UIAnalyticalModel_Opened;
-
-            return uIAnalyticalModel.Open();
-        }
-
         private void RibbonButton_OpenMollierChart_Click(object sender, RoutedEventArgs e)
         {
             using (Core.Mollier.UI.MollierForm mollierForm = new Core.Mollier.UI.MollierForm())
@@ -1632,15 +2119,26 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
-        private void RibbonButton_OpenT3D_Click(object sender, RoutedEventArgs e)
+        private void RibbonButton_OpenPartL_Click(object sender, RoutedEventArgs e)
         {
-            string path = Core.Tas.Query.TAS3DPath();
+            string path = Core.Tas.Query.UKBRStudio2021Path();
 
             if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
             {
                 return;
             }
 
+            System.Diagnostics.Process.Start(path);
+        }
+
+        private void RibbonButton_OpenT3D_Click(object sender, RoutedEventArgs e)
+        {
+            string path = Core.Tas.Query.TAS3DPath();
+            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
+            {
+                MessageBox.Show("TAS3D executable not found.", "Error");
+                return;
+            }
             System.Diagnostics.Process.Start(path);
         }
 
@@ -1680,26 +2178,24 @@ namespace SAM.Analytical.UI.WPF.Windows
             System.Diagnostics.Process.Start(path);
         }
 
-        private void RibbonButton_OpenPartL_Click(object sender, RoutedEventArgs e)
-        {
-            string path = Core.Tas.Query.UKBRStudio2021Path();
-
-            if (string.IsNullOrEmpty(path) || !System.IO.File.Exists(path))
-            {
-                return;
-            }
-
-            System.Diagnostics.Process.Start(path);
-        }
-
         private void RibbonButton_PrintRoomDataSheets_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.PrintRoomDataSheets(windowHandle);
         }
 
+        private void RibbonButton_RemoveAirMovementObjects_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.RemoveAirMovementObjects(uIAnalyticalModel);
+        }
+
         private void RibbonButton_RemoveResults_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel.RemoveResults();
+        }
+
+        private void RibbonButton_RevealHidden_Click(object sender, RoutedEventArgs e)
+        {
+            RevealHidden();
         }
 
         private void RibbonButton_SaveAnalyticalModel_Click(object sender, RoutedEventArgs e)
@@ -1720,16 +2216,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_SaveAsAnalyticalModel_Click(object sender, RoutedEventArgs e)
         {
-            if (uIAnalyticalModel == null)
-            {
-                return;
-            }
-
-            AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
-
-            SetUIGeometrySettings(tabControl, analyticalModel);
-
-            uIAnalyticalModel.SaveAs();
+            SaveAs();
         }
 
         private void RibbonButton_SelectByFilter_Click(object sender, RoutedEventArgs e)
@@ -1742,9 +2229,24 @@ namespace SAM.Analytical.UI.WPF.Windows
             SelectByGuid();
         }
 
+        private void RibbonButton_SetDefaultLayers_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel.SetDefaultLayers(windowHandle);
+        }
+
+        private void RibbonButton_SimulateCases_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.SimulateCases();
+        }
+
         private void RibbonButton_SolarSimulation_Click(object sender, RoutedEventArgs e)
         {
             uIAnalyticalModel?.SolarSimulation(windowHandle);
+        }
+
+        private void RibbonButton_Solve_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.Solve(uIAnalyticalModel);
         }
 
         private void RibbonButton_SpaceDiagram_Click(object sender, RoutedEventArgs e)
@@ -1754,14 +2256,16 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Test_Click(object sender, RoutedEventArgs e)
         {
-            RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
-            relationClusterComplexReferenceWindow.RelationCluster = new RelationCluster(uIAnalyticalModel?.JSAMObject?.AdjacencyCluster);
+            Test();
 
-            bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
-            if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
-            {
-                return;
-            }
+            //RelationClusterComplexReferenceWindow relationClusterComplexReferenceWindow = new RelationClusterComplexReferenceWindow();
+            //relationClusterComplexReferenceWindow.RelationCluster = new RelationCluster(uIAnalyticalModel?.JSAMObject?.AdjacencyCluster);
+
+            //bool? dialogResult = relationClusterComplexReferenceWindow.ShowDialog();
+            //if (dialogResult == null || !dialogResult.HasValue || !dialogResult.Value)
+            //{
+            //    return;
+            //}
 
             //SearchWindow searchWindow = new SearchWindow(new string[] {"absss", "Kubas", "KLUB" });
             //searchWindow.ShowDialog();
@@ -1776,10 +2280,25 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
+        private void RibbonButton_ThermalTransmittanceCalculator_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.ThermalTransmittanceCalculator_SingleConstruction(uIAnalyticalModel);
+        }
+
+        private void RibbonButton_UpdateUKBRFile_Click(object sender, RoutedEventArgs e)
+        {
+            bool result = Modify.UpdateUKBRFile(uIAnalyticalModel);
+        }
+
         private void RibbonButton_ViewGeometry_Click(object sender, RoutedEventArgs e)
         {
             GeometryWindow geometryWindow = new GeometryWindow();
             geometryWindow.Show();
+        }
+
+        private void RibbonButton_ViewRange_Click(object sender, RoutedEventArgs e)
+        {
+            ShowViewRange();
         }
 
         private void RibbonButton_ViewSettings_Click(object sender, RoutedEventArgs e)
@@ -1789,27 +2308,185 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_Wiki_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/HoareLea/SAM_UI/wiki");
+            try
+            {
+                Core.Query.StartProcess("https://github.com/SAM-BIM/SAM_UI/wiki");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open Wiki: {ex.Message}", "Error");
+            }
         }
 
+        private void SelectByApertureConstructionName()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Aperture> apertures = viewportControl.SelectedSAMObjects<Aperture>();
+            if (apertures != null && apertures.Count != 0)
+            {
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                HashSet<string> apertureConstructionNames = [];
+                foreach (Aperture aperture in apertures)
+                {
+                    if (aperture is null)
+                    {
+                        continue;
+                    }
+
+                    apertureConstructionNames.Add(aperture?.ApertureConstruction?.Name ?? string.Empty);
+                }
+
+                apertures = [];
+
+                List<Aperture> apertures_All = adjacencyCluster.GetApertures();
+                foreach (Aperture aperture in apertures_All)
+                {
+                    if (aperture == null)
+                    {
+                        continue;
+                    }
+
+                    if (!apertureConstructionNames.Contains(aperture?.ApertureConstruction?.Name ?? string.Empty))
+                    {
+                        continue;
+                    }
+
+                    apertures.Add(aperture);
+                }
+            }
+
+            viewportControl.Select(apertures);
+        }
+
+        private void SelectByApertureType()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Aperture> apertures = viewportControl.SelectedSAMObjects<Aperture>();
+            if (apertures != null && apertures.Count != 0)
+            {
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                HashSet<ApertureType> apertureTypes = [];
+                foreach (Aperture aperture in apertures)
+                {
+                    if (aperture is null)
+                    {
+                        continue;
+                    }
+
+                    apertureTypes.Add(aperture.ApertureType);
+                }
+
+                apertures = [];
+
+                List<Aperture> apertures_All = adjacencyCluster.GetApertures();
+                foreach (Aperture aperture in apertures_All)
+                {
+                    if (!apertureTypes.Contains(aperture.ApertureType))
+                    {
+                        continue;
+                    }
+
+                    apertures.Add(aperture);
+                }
+            }
+
+            viewportControl.Select(apertures);
+        }
+
+        private void SelectByConstructionName()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+            if (panels != null && panels.Count != 0)
+            {
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                HashSet<string> constructionNames = [];
+                foreach (Panel panel in panels)
+                {
+                    if (panel is null)
+                    {
+                        continue;
+                    }
+
+                    constructionNames.Add(panel?.Construction?.Name ?? string.Empty);
+                }
+
+                panels = [];
+
+                List<Panel> panels_All = adjacencyCluster.GetPanels();
+                foreach (Panel panel in panels_All)
+                {
+                    if (panel == null)
+                    {
+                        continue;
+                    }
+
+                    if (!constructionNames.Contains(panel?.Construction?.Name ?? string.Empty))
+                    {
+                        continue;
+                    }
+
+                    panels.Add(panel);
+                }
+            }
+
+            viewportControl.Select(panels);
+        }
+        
         private void SelectByFilter()
         {
-            AdjacencyCluster adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel == null)
+            {
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
             if (adjacencyCluster == null)
             {
                 return;
             }
 
             IUIFilter uIFilter = ActiveManager.GetValue<IUIFilter>(Assembly.GetExecutingAssembly(), "UIFilter");
-            if(uIFilter != null)
+            if (uIFilter != null)
             {
-                UI.Modify.AssignAdjacencyCluster(uIFilter, adjacencyCluster);
+                UI.Modify.AssignAnalyticalModel(uIFilter, analyticalModel);
             }
 
             List<IUIFilter> uIFilters = ActiveManager.GetValue<SAMCollection<IUIFilter>>(Assembly.GetExecutingAssembly(), "UIFilters")?.Cast<IUIFilter>().ToList();
-            if(uIFilters != null && uIFilters.Count != 0)
+            if (uIFilters != null && uIFilters.Count != 0)
             {
-                uIFilters.ForEach(x => UI.Modify.AssignAdjacencyCluster(x, adjacencyCluster));
+                uIFilters.ForEach(x => UI.Modify.AssignAnalyticalModel(x, analyticalModel));
             }
 
             List<IJSAMObject> jSAMObjects = new List<IJSAMObject>();
@@ -1828,7 +2505,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 jSAMObjects = Analytical.Query.FilteringSAMObjects(adjacencyCluster);
             }
 
-            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space), UIFilter = uIFilter, UIFilters = uIFilters, JSAMObjects = jSAMObjects, AdjacencyCluster = adjacencyCluster };
+            FilterWindow filterWindow = new FilterWindow() { Types = new List<Type>() { typeof(Space), typeof(Panel), typeof(Aperture) }, Type = typeof(Space), UIFilter = uIFilter, UIFilters = uIFilters, JSAMObjects = jSAMObjects, AnalyticalModel = analyticalModel };
             filterWindow.FilterAdding += FilterWindow_FilterAdding;
             bool? result = filterWindow.ShowDialog();
             if (result == null || !result.HasValue || !result.Value)
@@ -1847,7 +2524,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             viewportControl?.Select(jSAMObjects_Filtered?.FindAll(x => x is SAMObject)?.Cast<SAMObject>());
         }
-        
+
         private void SelectByGuid()
         {
             string value = null;
@@ -1866,7 +2543,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            using (TextBoxForm<string> textBoxControl = new TextBoxForm<string>("Guid", "Insert Guids"))
+            using (TextBoxForm<string> textBoxControl = new TextBoxForm<string>("Select By Guid", "Insert Guids"))
             {
                 if (textBoxControl.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                 {
@@ -1908,6 +2585,96 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             viewportControl.Select(sAMObjects);
+        }
+
+        private void SelectByPanelGroup()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+            if (panels != null && panels.Count != 0)
+            {
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                HashSet<PanelGroup> panelGroups = [];
+                foreach (Panel panel in panels)
+                {
+                    if (panel is null)
+                    {
+                        continue;
+                    }
+
+                    panelGroups.Add(panel.PanelGroup);
+                }
+
+                panels = [];
+
+                List<Panel> panels_All = adjacencyCluster.GetPanels();
+                foreach (Panel panel in panels_All)
+                {
+                    if (!panelGroups.Contains(panel.PanelGroup))
+                    {
+                        continue;
+                    }
+
+                    panels.Add(panel);
+                }
+            }
+
+            viewportControl.Select(panels);
+        }
+
+        private void SelectByPanelType()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<Panel> panels = viewportControl.SelectedSAMObjects<Panel>();
+            if (panels != null && panels.Count != 0)
+            {
+                AdjacencyCluster? adjacencyCluster = uIAnalyticalModel?.JSAMObject?.AdjacencyCluster;
+                if (adjacencyCluster == null)
+                {
+                    return;
+                }
+
+                HashSet<PanelType> panelTypes = [];
+                foreach (Panel panel in panels)
+                {
+                    if (panel is null)
+                    {
+                        continue;
+                    }
+
+                    panelTypes.Add(panel.PanelType);
+                }
+
+                panels = [];
+
+                List<Panel> panels_All = adjacencyCluster.GetPanels();
+                foreach (Panel panel in panels_All)
+                {
+                    if (!panelTypes.Contains(panel.PanelType))
+                    {
+                        continue;
+                    }
+
+                    panels.Add(panel);
+                }
+            }
+
+            viewportControl.Select(panels);
         }
         
         private void SetActiveGuid()
@@ -2075,7 +2842,68 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
-        private void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void ShowProperties()
+        {
+            ViewportControl viewportControl = GetActiveViewportControl();
+            if (viewportControl == null)
+            {
+                return;
+            }
+
+            List<SAMObject> jSAMObjects = viewportControl.SelectedSAMObjects<SAMObject>();
+            if (jSAMObjects is null || jSAMObjects.Count != 1)
+            {
+                return;
+            }
+
+            SAMObject sAMObject = jSAMObjects[0];
+
+            if (sAMObject is Panel)
+            {
+                Panel panel = (Panel)sAMObject;
+                uIAnalyticalModel.EditPanel(panel, windowHandle);
+            }
+            else if (sAMObject is Space)
+            {
+                Space space = (Space)sAMObject;
+                uIAnalyticalModel.EditSpace(space, windowHandle);
+            }
+            else if (sAMObject is Aperture)
+            {
+                Aperture aperture = (Aperture)sAMObject;
+                uIAnalyticalModel.EditAperture(aperture, windowHandle);
+            }
+        }
+
+        private void ShowViewRange()
+        {
+            if (doubleRangeWindow != null)
+            {
+                doubleRangeWindow.Close();
+                return;
+            }
+
+            double max = 0;
+            double min = 0;
+            Range<double> range = uIAnalyticalModel?.JSAMObject?.GetElevationRange();
+            if (range != null)
+            {
+                max = range.Max;
+                min = range.Min;
+            }
+
+            doubleRangeWindow = new DoubleRangeWindow(max, min);
+            doubleRangeWindow.ShowActivated = true;
+            doubleRangeWindow.Topmost = true;
+            doubleRangeWindow.RangeChanged += DoubleRangeWindow_RangeChanged;
+            doubleRangeWindow.Closing += DoubleRangeWindow_Closing;
+
+            RefreshDoubleRangeWindow();
+
+            doubleRangeWindow.Show();
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Guid guid = GetActiveGuid();
             if (guid == Guid.Empty)
@@ -2088,7 +2916,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
         }
 
-        private void tabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        private void TabItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             TabItem tabItem = sender as TabItem;
             if (tabItem == null)
@@ -2134,6 +2962,18 @@ namespace SAM.Analytical.UI.WPF.Windows
             contextMenu.Items.Add(menuItem);
 
             menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_LoadView_TabItem";
+            menuItem.Header = "Load view";
+            menuItem.Click += MenuItem_LoadView_Click;
+            contextMenu.Items.Add(menuItem);
+
+            menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_LoadCamera_TabItem";
+            menuItem.Header = "Load camera";
+            menuItem.Click += MenuItem_LoadCamera_Click;
+            contextMenu.Items.Add(menuItem);
+
+            menuItem = new MenuItem();
             menuItem.Name = "MenuItem_Settings_TabItem";
             menuItem.Header = "Settings";
             menuItem.Click += MenuItem_Settings_TabItem_Click;
@@ -2142,6 +2982,60 @@ namespace SAM.Analytical.UI.WPF.Windows
             contextMenu.IsOpen = true;
         }
 
+        private void MenuItem_LoadCamera_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            CopyViewSettingsCamera(tabItem);
+        }
+
+        private void MenuItem_LoadView_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem == null)
+            {
+                return;
+            }
+
+            TabItem tabItem = (menuItem.Parent as ContextMenu)?.Tag as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            CopyViewSettings(tabItem);
+        }
+
+        private void Test()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            bool? dialogResult = openFileDialog.ShowDialog(this);
+
+            if(dialogResult == null || !dialogResult.Value)
+            {
+                return;
+            }
+
+            string path = openFileDialog.FileName;
+            if(string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            IJSAMObject? jSAMObject = Core.Convert.ToSAM<IJSAMObject>(path)?.FirstOrDefault();
+
+        }
+        
         private void UIAnalyticalModel_Closed(object sender, ClosedEventArgs e)
         {
             Reload(e);
@@ -2196,7 +3090,8 @@ namespace SAM.Analytical.UI.WPF.Windows
             if (tabItem == null)
             {
                 tabItem = new TabItem() { Header = "???" };
-                tabItem.ContextMenuOpening += tabItem_ContextMenuOpening;
+                tabItem.ContextMenuOpening += TabItem_ContextMenuOpening;
+                tabItem.MouseDoubleClick += TabItem_MouseDoubleClick;
                 tabControl.Items.Add(tabItem);
             }
 
@@ -2237,7 +3132,17 @@ namespace SAM.Analytical.UI.WPF.Windows
                 List<ViewSettingsModification> viewSettingsModifications = modifiedEventArgs.GetModifications<ViewSettingsModification>((x) => x.ViewSettings?.Find(y => y.Guid == viewSettings.Guid) != null);
                 if(viewSettingsModifications != null && viewSettingsModifications.Count != 0)
                 {
-
+                    if(viewSettingsModifications.Any(x => x.UpdateCamera))
+                    {
+                        if (viewSettings is TwoDimensionalViewSettings twoDimensionalViewSettings)
+                        {
+                            viewportControl.Camera = twoDimensionalViewSettings.Camera;
+                        }
+                        else if (viewSettings is ThreeDimensionalViewSettings threeDimensionalViewSettings)
+                        {
+                            viewportControl.Camera = threeDimensionalViewSettings.Camera;
+                        }
+                    }
                 }
             }
 
@@ -2286,9 +3191,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             return tabItem;
         }
 
-        private void ViewportControl_ObjectSelectionChanged(object sender, ObjectSelectionChangedEventArgs e)
+        private void TabItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            
+            TabItem? tabItem = sender as TabItem;
+            if (tabItem == null)
+            {
+                return;
+            }
+
+            EditViewSettings(tabItem);
         }
 
         private List<TabItem> UpdateTabItems(TabControl tabControl, AnalyticalModel analyticalModel, ModifiedEventArgs modifiedEventArgs)
@@ -2419,7 +3330,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             menuItem = new MenuItem();
             menuItem.Name = "MenuItem_ViewSettings";
-            menuItem.Header = "View Settings";
+            menuItem.Header = "View Settings (V)";
             menuItem.Click += MenuItem_ViewSettings_Click;
             contextMenu.Items.Add(menuItem);
 
@@ -2430,23 +3341,35 @@ namespace SAM.Analytical.UI.WPF.Windows
             menuItem.IsEnabled = uIAnalyticalModel.HasLegend(GetActiveGuid());
             contextMenu.Items.Add(menuItem);
 
-            menuItem = new MenuItem();
-            menuItem.Name = "MenuItem_Select";
-            menuItem.Header = "Select";
+            MenuItem menuItem_Select = new MenuItem();
+            menuItem_Select.Name = "MenuItem_Select";
+            menuItem_Select.Header = "Select";
 
             MenuItem menuItem_SelectByFilter = new MenuItem();
             menuItem_SelectByFilter.Name = "MenuItem_SelectByFilter";
             menuItem_SelectByFilter.Header = "By Filter";
             menuItem_SelectByFilter.Click += MenuItem_SelectByFilter_Click;
-            menuItem.Items.Add(menuItem_SelectByFilter);
+            menuItem_Select.Items.Add(menuItem_SelectByFilter);
 
             MenuItem menuItem_SelectByGuid = new MenuItem();
             menuItem_SelectByGuid.Name = "MenuItem_SelectByGuid";
             menuItem_SelectByGuid.Header = "By Guid";
             menuItem_SelectByGuid.Click += MenuItem_SelectByGuid_Click;
-            menuItem.Items.Add(menuItem_SelectByGuid);
+            menuItem_Select.Items.Add(menuItem_SelectByGuid);
+            contextMenu.Items.Add(menuItem_Select);
 
-            contextMenu.Items.Add(menuItem);
+
+            MenuItem menuItem_RevealHidden = new MenuItem();
+            menuItem_RevealHidden.Name = "MenuItem_RevealHidden";
+            menuItem_RevealHidden.Header = "Unhide All (U)";
+            menuItem_RevealHidden.Click += MenuItem_RevealHidden_Click;
+            contextMenu.Items.Add(menuItem_RevealHidden);
+
+            MenuItem menuItem_Reverse = new MenuItem();
+            menuItem_Reverse.Name = "MenuItem_Reverse";
+            menuItem_Reverse.Header = "Reverse (R)";
+            menuItem_Reverse.Click += MenuItem_Reverse_Click;
+            contextMenu.Items.Add(menuItem_Reverse);
 
             contextMenu.IsOpen = true;
 
@@ -2462,12 +3385,34 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
+            ViewSettings? viewSettings = GetActiveViewSettings() as ViewSettings;
+            if (viewSettings is not null)
+            {
+                Legend? legend = viewSettings?.Legend;
+                if (legend is not null)
+                {
+                    MenuItem menuItem_SelectByLegend = new MenuItem();
+                    menuItem_SelectByLegend.Name = "MenuItem_SelectByLegend";
+                    menuItem_SelectByLegend.Header = "By Legend Color";
+                    menuItem_SelectByLegend.Click += MenuItem_SelectByLegend_Click;
+                    menuItem_SelectByLegend.Tag = jSAMObjects;
+                    menuItem_Select.Items.Add(menuItem_SelectByLegend);
+                }
+            }
+
             MenuItem menuItem_Hide = new MenuItem();
             menuItem_Hide.Name = "MenuItem_Hide";
-            menuItem_Hide.Header = "Hide";
+            menuItem_Hide.Header = "Hide (H)";
             menuItem_Hide.Click += MenuItem_Hide_Click;
             menuItem_Hide.Tag = jSAMObjects;
             contextMenu.Items.Add(menuItem_Hide);
+
+            MenuItem menuItem_Isolate = new MenuItem();
+            menuItem_Isolate.Name = "MenuItem_Isolate";
+            menuItem_Isolate.Header = "Isolate (I)";
+            menuItem_Isolate.Click += MenuItem_Isolate_Click;
+            menuItem_Isolate.Tag = jSAMObjects;
+            contextMenu.Items.Add(menuItem_Isolate);
 
 
             contextMenu.Items.Add(new Separator());
@@ -2496,7 +3441,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
                 menuItem = new MenuItem();
                 menuItem.Name = "MenuItem_Properties";
-                menuItem.Header = "Properties";
+                menuItem.Header = "Properties (P)";
                 menuItem.Click += MenuItem_Properties_Click;
                 menuItem.Tag = jSAMObject;
                 contextMenu.Items.Add(menuItem);
@@ -2580,6 +3525,18 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Click += MenuItem_EditOpeningProperties_Click;
                     menuItem.Tag = apertures;
                     contextMenu.Items.Add(menuItem);
+
+                    MenuItem menuItem_SelectByApertureConstructionName = new MenuItem();
+                    menuItem_SelectByApertureConstructionName.Name = "MenuItem_SelectByApertureConstructionName";
+                    menuItem_SelectByApertureConstructionName.Header = "By Aperture Construction Name";
+                    menuItem_SelectByApertureConstructionName.Click += MenuItem_SelectByApertureConstructionName_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByApertureConstructionName);
+
+                    MenuItem menuItem_SelectByApertureType = new MenuItem();
+                    menuItem_SelectByApertureType.Name = "MenuItem_SelectByApertureType";
+                    menuItem_SelectByApertureType.Header = "By ApertureType";
+                    menuItem_SelectByApertureType.Click += MenuItem_SelectByApertureType_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByApertureType);
                 }
 
                 List<Panel> panels = jSAMObjects.FindAll(x => x is Panel).ConvertAll(x => (Panel)x);
@@ -2598,95 +3555,41 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Click += MenuItem_AssignConstructionByThermalTransmittance_Click;
                     menuItem.Tag = panels;
                     contextMenu.Items.Add(menuItem);
-                }
-            }
-        }
 
-        private void MenuItem_EditMCMDatas(object sender, RoutedEventArgs e)
-        {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
+                    MenuItem menuItem_SelectByPanelType = new MenuItem();
+                    menuItem_SelectByPanelType.Name = "MenuItem_SelectByPanelType";
+                    menuItem_SelectByPanelType.Header = "By PanelType";
+                    menuItem_SelectByPanelType.Click += MenuItem_SelectByPanelType_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByPanelType);
 
-            List<Space> spaces = null;
-            if (menuItem.Tag is Space)
-            {
-                spaces = new List<Space>() { (Space)menuItem.Tag };
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                spaces = new List<Space>();
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is Space)
-                    {
-                        spaces.Add((Space)@object);
-                    }
+                    MenuItem menuItem_SelectByConstructionName = new MenuItem();
+                    menuItem_SelectByConstructionName.Name = "MenuItem_SelectByConstructionName";
+                    menuItem_SelectByConstructionName.Header = "By Construction Name";
+                    menuItem_SelectByConstructionName.Click += MenuItem_SelectByConstructionName_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByConstructionName);
+
+                    MenuItem menuItem_SelectByPanelGroup = new MenuItem();
+                    menuItem_SelectByPanelGroup.Name = "MenuItem_SelectByPanelGroup";
+                    menuItem_SelectByPanelGroup.Header = "By PanelGroup";
+                    menuItem_SelectByPanelGroup.Click += MenuItem_SelectByPanelGroup_Click;
+                    menuItem_Select.Items.Add(menuItem_SelectByPanelGroup);
                 }
             }
 
-            Modify.EditNCMDatas(uIAnalyticalModel, spaces);
+            if (jSAMObjects != null && jSAMObjects.Count > 0)
+            {
+                menuItem = new MenuItem();
+                menuItem.Name = "MenuItem_Delete";
+                menuItem.Header = "Delete (Del)";
+                menuItem.Click += MenuItem_Delete_Click;
+                menuItem.Tag = jSAMObjects;
+                contextMenu.Items.Add(menuItem);
+            }
         }
 
-        private void MenuItem_Hide_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Reverse_Click(object sender, RoutedEventArgs e)
         {
-            MenuItem menuItem = (MenuItem)sender;
-            if (menuItem == null)
-            {
-                return;
-            }
-
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            List<IJSAMObject> jSAMObjects = null;
-            if (menuItem.Tag is IJSAMObject)
-            {
-                jSAMObjects = new List<IJSAMObject>() { (IJSAMObject)menuItem.Tag };
-            }
-            else if (menuItem.Tag is IEnumerable)
-            {
-                jSAMObjects = new List<IJSAMObject>();
-                foreach (object @object in (IEnumerable)menuItem.Tag)
-                {
-                    if (@object is IJSAMObject)
-                    {
-                        jSAMObjects.Add((IJSAMObject)@object);
-                    }
-                }
-            }
-
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            UI.Modify.Hide(uIAnalyticalModel, viewportControl.Guid, jSAMObjects);
-        }
-
-        private void RibbonButton_RevealHidden_Click(object sender, RoutedEventArgs e)
-        {
-            TabItem tabItem = tabControl.SelectedItem as TabItem;
-            if (tabItem == null)
-            {
-                return;
-            }
-
-            ViewportControl viewportControl = tabItem.Content as ViewportControl;
-            if (viewportControl == null)
-            {
-                return;
-            }
-
-            SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
-            UI.Modify.RemoveOverrides(uIAnalyticalModel, viewportControl.Guid);
+            Reverse();
         }
 
         private void ViewportControl_Loaded(object sender, RoutedEventArgs e)
@@ -2740,7 +3643,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 uIAnalyticalModel.EditAperture(aperture, new Core.Windows.WindowHandle(this));
             }
         }
-        
+
         private void ViewportControl_ObjectHoovered(object sender, ObjectHooveredEventArgs e)
         {
             ViewportControl viewportControl = sender as ViewportControl;
@@ -2782,15 +3685,35 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
         }
 
+        private void ViewportControl_ObjectSelectionChanged(object sender, ObjectSelectionChangedEventArgs e)
+        {
+            
+        }
+        
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (doubleRangeWindow != null)
+            {
+                doubleRangeWindow.Close();
+                doubleRangeWindow = null;
+            }
+        }
+
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.F)
+            if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.S)
+            {
+                SaveAs();
+            }
+            else if (e.Key == Key.G)
             {
                 SelectByGuid();
-                return;
             }
-
-            if (e.Key == Key.F12)
+            else if (e.Key == Key.F)
+            {
+                SelectByFilter();
+            }
+            else if (e.Key == Key.F12)
             {
                 ViewportControl viewportControl = GetActiveViewportControl();
                 if (viewportControl != null)
@@ -2806,16 +3729,34 @@ namespace SAM.Analytical.UI.WPF.Windows
                     }
 
                 }
-                return;
             }
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if(doubleRangeWindow != null)
+            else if (e.Key == Key.I)
             {
-                doubleRangeWindow.Close();
-                doubleRangeWindow = null;
+                Isolate();
+            }
+            else if (e.Key == Key.H)
+            {
+                Hide();
+            }
+            else if (e.Key == Key.R)
+            {
+                Reverse();
+            }
+            else if (e.Key == Key.U)
+            {
+                RevealHidden();
+            }
+            else if (e.Key == Key.Delete)
+            {
+                Delete();
+            }
+            else if (e.Key == Key.V)
+            {
+                EditViewSettings();
+            }
+            else if (e.Key == Key.P)
+            {
+                ShowProperties();
             }
         }
     }

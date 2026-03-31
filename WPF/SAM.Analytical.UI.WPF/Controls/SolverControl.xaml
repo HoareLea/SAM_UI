@@ -1,0 +1,94 @@
+﻿<UserControl x:Class="SAM.Analytical.UI.WPF.SolverControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="350">
+    <Grid>
+        <StackPanel>
+            <GroupBox Header="Excluded elements" Margin="5,5,5,5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row ="0" Text="Excluded panels:" VerticalAlignment="Center"/>
+                    <Button x:Name="button_ExcludedPanels" Grid.Column="1" Grid.Row ="0" Content="Select" Width="160" Margin="5,5,5,5" Click="button_ExcludedPanels_Click" IsEnabled="False"/>
+                    <TextBlock Grid.Column="0" Grid.Row ="1" Text="Excluded panel types:" VerticalAlignment="Center"/>
+                    <ListBox x:Name="listBox_ExcludedPanelTypes" Grid.Column="1" Grid.Row ="1" Width="160" Height="140" Margin="5,5,5,5" SelectionMode="Multiple"/>
+                    <TextBlock Grid.Column="0" Grid.Row ="2" Text="Remove panel internal edges:" VerticalAlignment="Center"/>
+                    <CheckBox x:Name="checkBox_RemovePanelInternalEdges" Grid.Column="1" Grid.Row ="2" VerticalAlignment="Center" Margin="5,5,5,5" IsChecked="True"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Margin="5,5,5,5">
+                <GroupBox.Header>
+                    <CheckBox x:Name="checkBox_Filter" Content="Filter panels" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Click="checkBox_Filter_Click" IsChecked="True"/>
+                </GroupBox.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row ="0" Text="Min area:" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <TextBox Grid.Column="1" Grid.Row ="0" Width="160" Margin="5,5,5,5" x:Name="textBox_MinArea" Text="0.015"/>
+                    <TextBlock Grid.Column="0" Grid.Row ="1" Text="Min thinness ratio:" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <TextBox Grid.Column="1" Grid.Row ="1" Width="160" Margin="5,5,5,5" x:Name="textBox_MinThinnessRatio" Text="0.1"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Solver settings" Margin="5,5,5,5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row ="0" Text="Bucket size (single level):" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <TextBox Grid.Column="1" Grid.Row ="0" Width="160" Margin="5,5,5,5" x:Name="textBox_BucketSize_SingleLevel" Text="0.23"/>
+                    <TextBlock Grid.Column="0" Grid.Row ="1" Text="Bucket size (multiple level):" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <TextBox Grid.Column="1" Grid.Row ="1" Width="160" Margin="5,5,5,5" x:Name="textBox_BucketSize_MultipleLevel" Text="0.23"/>
+                    <TextBlock Grid.Column="0" Grid.Row ="2" Text="Weight:" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <TextBox Grid.Column="1" Grid.Row ="2" Width="160" Margin="5,5,5,5" x:Name="textBox_Weight" Text="1"/>
+                    <TextBlock Grid.Column="0" Grid.Row ="3" Text="Max extension:" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <TextBox Grid.Column="1" Grid.Row ="3" Width="160" Margin="5,5,5,5" x:Name="textBox_MaxExtension" Text="0.37"/>
+                    <TextBlock Grid.Column="0" Grid.Row ="4" Text="Levels:" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <Button x:Name="button_SelectLevels" Grid.Column="1" Grid.Row ="4" Content="Select" Width="160" Margin="5,5,5,5" Click="button_SelectLevels_Click"/>
+                    <TextBlock Grid.Column="0" Grid.Row ="5" Text="Level offset:" VerticalAlignment="Center" Margin="5,5,5,5"/>
+                    <TextBox Grid.Column="1" Grid.Row ="5" Width="160" Margin="5,5,5,5" x:Name="textBox_LevelOffset" Text="0.25"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Header="Post processing" Margin="5,5,5,5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="170"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="checkBox_RemoveUnassignedSpaces" Grid.Column="0" Grid.Row ="0" VerticalAlignment="Center" Margin="5,5,5,5" IsChecked="True" Content="Remove unused spaces"/>
+                    <CheckBox x:Name="checkBox_ReplaceNameSpecialCharacters" Grid.Column="0" Grid.Row ="1" VerticalAlignment="Center" Margin="5,5,5,5" IsChecked="True" Content="Fix names"/>
+                    <ComboBox x:Name="comboBox_ReplaceNameSpecialCharacters" Grid.Column="1" Grid.Row ="1" VerticalAlignment="Center" Margin="5,5,5,5" IsEditable="True" IsReadOnly="True"/>
+                </Grid>
+            </GroupBox>
+        </StackPanel>
+    </Grid>
+</UserControl>

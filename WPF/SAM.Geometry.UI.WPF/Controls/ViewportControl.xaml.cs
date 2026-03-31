@@ -19,20 +19,11 @@ namespace SAM.Geometry.UI.WPF
     /// </summary>
     public partial class ViewportControl : UserControl
     {
+        private ActionManager actionManager;
         private Mode mode = Mode.ThreeDimensional;
 
-        private UIGeometryObjectModel uIGeometryObjectModel;
-
-        public event ObjectHooveredEventHandler ObjectHoovered;
-        public event ObjectDoubleClickedEventHandler ObjectDoubleClicked;
-        public event ObjectContextMenuOpeningEventHandler ObjectContextMenuOpening;
-        public event ObjectSelectionChangedEventHandler ObjectSelectionChanged;
-
-        public Guid Guid { get; set; }
-
-        private ActionManager actionManager;
-
         private RectangularSelector rectangularSelector;
+        private UIGeometryObjectModel uIGeometryObjectModel;
 
         public ViewportControl()
         {
@@ -52,60 +43,506 @@ namespace SAM.Geometry.UI.WPF
 
         }
 
-        private void Select(Rect rect, SelectionType selectionType)
+        public event ObjectContextMenuOpeningEventHandler ObjectContextMenuOpening;
+
+        public event ObjectDoubleClickedEventHandler ObjectDoubleClicked;
+
+        public event ObjectHooveredEventHandler ObjectHoovered;
+        public event ObjectSelectionChangedEventHandler ObjectSelectionChanged;
+
+        public Camera Camera
         {
-            actionManager.Cancel<HighlightAction>();
-
-            if (rect == null || rect == Rect.Empty)
+            get
             {
-                return;
+                return GetCamera();
             }
 
-            if (selectionType == SelectionType.Undefined)
+            set
             {
-                return;
+                SetCamera(value);
+            }
+        }
+
+        public Guid Guid { get; set; }
+        
+        public Mode Mode
+        {
+            get
+            {
+                return mode;
             }
 
-            List<SAMObject> sAMObjects = new List<SAMObject>();
-            IEnumerable<HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult> rectangleHitResults = HelixToolkit.Wpf.Viewport3DHelper.FindHits(helixViewport3D.Viewport, rect, selectionType == SelectionType.Inside ? HelixToolkit.Wpf.SelectionHitMode.Inside : HelixToolkit.Wpf.SelectionHitMode.Touch);
-            if (rectangleHitResults != null)
+            set
             {
-                foreach (HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult rectangleHitResult in rectangleHitResults)
+                if (mode != value)
                 {
-                    IJSAMObject jSAMObject_Model = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(rectangleHitResult.Model);
-                    IJSAMObject jSAMObject_Visual = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(rectangleHitResult.Visual);
+                    mode = value;
+                    UpdateMode();
+                }
+            }
+        }
 
-                    if (jSAMObject_Model is Text3DObject)
-                    {
-                        continue;
-                    }
+        public UIGeometryObjectModel UIGeometryObjectModel
+        {
+            get
+            {
+                return uIGeometryObjectModel;
+            }
 
-                    SAMObject sAMObject = (jSAMObject_Visual as ITaggable)?.Tag?.Value as SAMObject;
-                    if (sAMObject != null)
+            set
+            {
+                uIGeometryObjectModel = value;
+                if (uIGeometryObjectModel != null)
+                {
+                    uIGeometryObjectModel.Modified -= UIGeometryObjectModel_Modified;
+                    uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
+
+                    uIGeometryObjectModel.Closed -= UIGeometryObjectModel_Closed;
+                    uIGeometryObjectModel.Closed += UIGeometryObjectModel_Closed;
+
+                    uIGeometryObjectModel.Opened -= UIGeometryObjectModel_Opened;
+                    uIGeometryObjectModel.Opened += UIGeometryObjectModel_Opened;
+                }
+
+                Load(uIGeometryObjectModel?.JSAMObject);
+
+                gridLinesVisual3D.Visible = uIGeometryObjectModel?.JSAMObject == null;
+            }
+        }
+
+        public LegendItem UndefinedLegendItem
+        {
+            get
+            {
+                return legendControl.UndefinedLegendItem;
+            }
+
+            set
+            {
+                legendControl.UndefinedLegendItem = value;
+            }
+        }
+
+        public bool ContainsAny<T>(IEnumerable<Guid> guids) where T : SAMObject
+        {
+            return Query.ContainsAny<T>(helixViewport3D.Children, guids);
+        }
+
+        public bool Contains<T>(Guid guid) where T : SAMObject
+        {
+            return Query.ContainsAny<T>(helixViewport3D.Children, [guid]);
+        }
+
+        public T GetSAMObject<T>(Guid guid) where T : SAMObject
+        {
+            return Core.UI.WPF.Query.JSAMObject<T>(GetVisual3D<T>(guid));
+        }
+
+        public Visual3D GetVisual3D<T>(Guid guid) where T : SAMObject
+        {
+            return Core.UI.WPF.Query.Visual3D<T>(helixViewport3D.Children, guid);
+        }
+
+        public List<T> SAMObjects<T>() where T : SAMObject
+        {
+            List<ModelVisual3D> visual3Ds = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) });
+            if (visual3Ds is null)
+            {
+                return null;
+            }
+
+            List<T> result = [];
+
+            foreach (ModelVisual3D visual3D in visual3Ds)
+            {
+                T t = Core.UI.WPF.Query.JSAMObject<T>(visual3D);
+                if (t is null)
+                {
+                    continue;
+                }
+
+                result.Add(t);
+            }
+
+            return result;
+        }
+
+        public bool Select(SAMObject sAMObject)
+        {
+            bool result = false;
+
+            if (sAMObject == null)
+            {
+                result = actionManager.Cancel<SelectAction>();
+                if (result)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+                return result;
+            }
+
+            Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
+            if (visual3D == null)
+            {
+                return result;
+            }
+
+            result = actionManager.Apply(new SelectAction(visual3D));
+            if (result)
+            {
+                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+            }
+
+            return result;
+        }
+
+        public bool Select<T>(IEnumerable<T> sAMObjects) where T : SAMObject
+        {
+            bool result = false;
+
+            if (sAMObjects == null)
+            {
+                result = actionManager.Cancel<SelectAction>();
+                if (result)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+                return result;
+            }
+
+            List<Visual3D> visual3Ds = new List<Visual3D>();
+            foreach (T t in sAMObjects)
+            {
+                Visual3D visual3D = GetVisual3D<SAMObject>(t.Guid);
+                if (visual3D == null)
+                {
+                    continue;
+                }
+
+                visual3Ds.Add(visual3D);
+            }
+
+            if (visual3Ds == null || visual3Ds.Count == 0)
+            {
+                result = actionManager.Cancel<SelectAction>();
+                if (result)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+
+                return result;
+            }
+
+            result = actionManager.Apply(new SelectAction(visual3Ds));
+            if (result)
+            {
+                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+            }
+
+            return result;
+        }
+        
+        public List<T> SelectedSAMObjects<T>() where T : SAMObject
+        {
+            if (actionManager == null)
+            {
+                return null;
+            }
+
+            List<SelectAction> selectActions = actionManager.GetActions<SelectAction>();
+            if (selectActions == null || selectActions.Count == 0)
+            {
+                return null;
+            }
+
+            List<T> result = new List<T>();
+            foreach (SelectAction selectAction in selectActions)
+            {
+                List<Visual3D> visual3Ds = selectAction.Visual3Ds;
+                if (visual3Ds != null)
+                {
+                    foreach (Visual3D visual3D in visual3Ds)
                     {
-                        Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
-                        if (jSAMObject_Model is ISAMGeometry3DObject && jSAMObject_Visual is IEnumerable<ISAMGeometry3DObject>)
+                        ITaggable taggable = visual3D?.JSAMObject<IJSAMObject>() as ITaggable;
+                        if (taggable != null)
                         {
-                            ISAMGeometry3DObject sAMGeometry3DObject = (ISAMGeometry3DObject)jSAMObject_Model;
-                            IEnumerable<ISAMGeometry3DObject> sAMGeometry3DObjects = (IEnumerable<ISAMGeometry3DObject>)jSAMObject_Visual;
-                            if (!sAMGeometry3DObjects.Contains(sAMGeometry3DObject))
+                            T t = taggable.Tag?.Value as T;
+                            if (t != null)
                             {
-                                continue;
+                                result.Add(t);
                             }
                         }
-
-                        sAMObjects.Add(sAMObject);
                     }
-
                 }
             }
 
-            Select(sAMObjects);
+            return result;
         }
 
-        private void RectangularSelector_Selecting(object sender, EventArgs e)
+        public bool Zoom(SAMObject sAMObject)
         {
+            if (sAMObject == null)
+            {
+                return false;
+            }
 
+            Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
+            if (visual3D == null)
+            {
+                return false;
+            }
+
+            Rect3D rect3D = visual3D.Bounds();
+            if (rect3D == Rect3D.Empty)
+            {
+                return false;
+            }
+
+            helixViewport3D.ZoomExtents(rect3D);
+            return true;
+        }
+
+        public bool Zoom<T>(IEnumerable<T> sAMObjects) where T : SAMObject
+        {
+            if (sAMObjects == null)
+            {
+                return false;
+            }
+
+            List<Rect3D> rect3Ds = new List<Rect3D>();
+            foreach (SAMObject sAMObject in sAMObjects)
+            {
+                Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
+                if (visual3D == null)
+                {
+                    continue;
+                }
+
+                Rect3D rect3D = visual3D.Bounds();
+                if (rect3D == Rect3D.Empty)
+                {
+                    continue;
+                }
+
+                rect3Ds.Add(rect3D);
+            }
+
+
+            Rect3D rect3D_Union = Rect3D.Empty;
+            foreach (Rect3D rect3D_Temp in rect3Ds)
+            {
+                rect3D_Union.Union(rect3D_Temp);
+            }
+
+            if (rect3D_Union == Rect3D.Empty)
+            {
+                return false;
+            }
+
+            helixViewport3D.ZoomExtents(rect3D_Union);
+            return true;
+        }
+
+        private Camera GetCamera()
+        {
+            ProjectionCamera projectionCamera = helixViewport3D.Camera;
+            if (projectionCamera == null)
+            {
+                return null;
+            }
+
+            return new Camera(projectionCamera.Position.ToSAM(), projectionCamera.LookDirection.ToSAM(), projectionCamera.UpDirection.ToSAM());
+        }
+
+        private void helixViewport3D_CameraChanged(object sender, RoutedEventArgs e)
+        {
+        }
+
+        private void helixViewport3D_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (Keyboard.IsKeyDown(Key.LeftCtrl) ||
+                Keyboard.IsKeyDown(Key.RightCtrl) ||
+                Keyboard.IsKeyDown(Key.LeftAlt) ||
+                Keyboard.IsKeyDown(Key.RightAlt) ||
+                Keyboard.IsKeyDown(Key.LeftShift) ||
+                Keyboard.IsKeyDown(Key.RightShift))
+            {
+                e.Handled = true;
+                return;
+            }
+
+            helixViewport3D.ContextMenu = new ContextMenu();
+
+            MenuItem menuItem = new MenuItem();
+            menuItem.Name = "MenuItem_ZoomExtents";
+            menuItem.Header = "Zoom Extents";
+            menuItem.Click += MenuItem_ZoomExtents_Click;
+            helixViewport3D.ContextMenu.Items.Add(menuItem);
+
+            ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(helixViewport3D.ContextMenu, e, actionManager.SelectedVisual3Ds()?.FindAll(x => x is ModelVisual3D)?.ConvertAll(x => x as ModelVisual3D)));
+        }
+
+        private void helixViewport3D_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                bool cancelled = actionManager.Cancel<SelectAction>();
+                if (cancelled)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+            }
+        }
+
+        private void helixViewport3D_Loaded(object sender, RoutedEventArgs e)
+        {
+            GeometryObjectModel geometryObjectModel = uIGeometryObjectModel?.JSAMObject;
+
+            if (geometryObjectModel != null && geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings) && viewSettings != null)
+            {
+                Camera camera = viewSettings.Camera;
+                if (camera != null)
+                {
+                    helixViewport3D.Camera.Position = camera.Location.ToMedia3D();
+                    helixViewport3D.Camera.LookDirection = camera.LookDirection.ToMedia3D();
+
+                    if(camera.UpDirection is not null)
+                    {
+                        helixViewport3D.Camera.UpDirection = camera.UpDirection.ToMedia3D(); //NEW 2026.03.16
+                    }
+                }
+                else
+                {
+                    helixViewport3D.ZoomExtents();
+                }
+            }
+
+            helixViewport3D.Loaded -= helixViewport3D_Loaded;
+        }
+
+        private void helixViewport3D_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Point point_Current = e.GetPosition(helixViewport3D);
+
+                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point_Current, out ModelVisual3D modelVisual3D);
+                if (rayMeshGeometry3DHitTestResult != null && modelVisual3D != null)
+                {
+                    ObjectDoubleClicked?.Invoke(this, new ObjectDoubleClickedEventArgs(e, modelVisual3D));
+                }
+            }
+        }
+
+        private void helixViewport3D_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Point point_Current = e.GetPosition(helixViewport3D);
+
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point_Current, out ModelVisual3D modelVisual3D);
+
+            bool cancelled = false;
+            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
+            {
+                cancelled = actionManager.Cancel<SelectAction>();
+            }
+
+            if (rayMeshGeometry3DHitTestResult == null && modelVisual3D == null)
+            {
+                e.Handled = true;
+
+                if (cancelled)
+                {
+                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+                }
+
+                return;
+            }
+
+            SelectAction selectAction = actionManager.GetAction<SelectAction>();
+            if (selectAction == null)
+            {
+                selectAction = new SelectAction();
+            }
+
+            if (selectAction != null && selectAction.Contains(modelVisual3D))
+            {
+                selectAction.Remove(modelVisual3D);
+            }
+            else
+            {
+                selectAction.Add(modelVisual3D);
+            }
+
+            actionManager.Apply(selectAction);
+            ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+
+        }
+
+        private void helixViewport3D_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            actionManager.Cancel<HighlightAction>();
+
+            Point point = e.GetPosition(helixViewport3D);
+
+            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point, out ModelVisual3D modelVisual3D);
+            if (rayMeshGeometry3DHitTestResult != null && modelVisual3D != null)
+            {
+                actionManager.Apply(new HighlightAction(modelVisual3D));
+
+                ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, modelVisual3D));
+            }
+        }
+
+        private void Load(GeometryObjectModel geometryObjectModel)
+        {
+            helixViewport3D.Lights.Children.Clear();
+            helixViewport3D.Lights.Children.Add(new AmbientLight());
+
+            bool cancelled = actionManager.Cancel();
+            if (cancelled)
+            {
+                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
+            }
+
+            int count = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) }).Count;
+            if (count > 0)
+            {
+                Core.UI.WPF.Modify.Clear<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) });
+            }
+
+            if (geometryObjectModel == null)
+            {
+                return;
+            }
+
+            ModelVisual3D modelVisual3D = Convert.ToMedia3D(geometryObjectModel);
+            if (modelVisual3D != null)
+            {
+                helixViewport3D.Children.Add(modelVisual3D);
+            }
+
+            if (count == 0)
+            {
+                helixViewport3D.ZoomExtents();
+            }
+
+            legendControl.Visibility = Visibility.Hidden;
+            if (geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings))
+            {
+                Legend legend = viewSettings.Legend;
+                List<LegendItem> legendItems = legend?.LegendItems;
+
+                if (legend != null && legend.Visible && legendItems != null && legendItems.Count != 0)
+                {
+                    legendControl.Visibility = Visibility.Visible;
+                    legendControl.Legend = legend;
+                }
+            }
+        }
+
+        private void MenuItem_ZoomExtents_Click(object sender, RoutedEventArgs e)
+        {
+            helixViewport3D.ZoomExtents();
         }
 
         private void RectangularSelector_Selected(object sender, EventArgs e)
@@ -174,266 +611,62 @@ namespace SAM.Geometry.UI.WPF
 
         }
 
-        public Mode Mode
+        private void RectangularSelector_Selecting(object sender, EventArgs e)
         {
-            get
+
+        }
+
+        private void Select(Rect rect, SelectionType selectionType)
+        {
+            actionManager.Cancel<HighlightAction>();
+
+            if (rect == null || rect == Rect.Empty)
             {
-                return mode;
+                return;
             }
 
-            set
+            if (selectionType == SelectionType.Undefined)
             {
-                if (mode != value)
+                return;
+            }
+
+            List<SAMObject> sAMObjects = new List<SAMObject>();
+            IEnumerable<HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult> rectangleHitResults = HelixToolkit.Wpf.Viewport3DHelper.FindHits(helixViewport3D.Viewport, rect, selectionType == SelectionType.Inside ? HelixToolkit.Wpf.SelectionHitMode.Inside : HelixToolkit.Wpf.SelectionHitMode.Touch);
+            if (rectangleHitResults != null)
+            {
+                foreach (HelixToolkit.Wpf.Viewport3DHelper.RectangleHitResult rectangleHitResult in rectangleHitResults)
                 {
-                    mode = value;
-                    UpdateMode();
-                }
-            }
-        }
+                    IJSAMObject jSAMObject_Model = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(rectangleHitResult.Model);
+                    IJSAMObject jSAMObject_Visual = Core.UI.WPF.Query.JSAMObject<IJSAMObject>(rectangleHitResult.Visual);
 
-        public Camera Camera
-        {
-            get
-            {
-                return GetCamera();
-            }
-
-            set
-            {
-                SetCamera(value);
-            }
-        }
-
-        public UIGeometryObjectModel UIGeometryObjectModel
-        {
-            get
-            {
-                return uIGeometryObjectModel;
-            }
-
-            set
-            {
-                uIGeometryObjectModel = value;
-                if (uIGeometryObjectModel != null)
-                {
-                    uIGeometryObjectModel.Modified -= UIGeometryObjectModel_Modified;
-                    uIGeometryObjectModel.Modified += UIGeometryObjectModel_Modified;
-
-                    uIGeometryObjectModel.Closed -= UIGeometryObjectModel_Closed;
-                    uIGeometryObjectModel.Closed += UIGeometryObjectModel_Closed;
-
-                    uIGeometryObjectModel.Opened -= UIGeometryObjectModel_Opened;
-                    uIGeometryObjectModel.Opened += UIGeometryObjectModel_Opened;
-                }
-
-                Load(uIGeometryObjectModel?.JSAMObject);
-
-                gridLinesVisual3D.Visible = uIGeometryObjectModel?.JSAMObject == null;
-            }
-        }
-
-        public Visual3D GetVisual3D<T>(Guid guid) where T : SAMObject
-        {
-            return Core.UI.WPF.Query.Visual3D<T>(helixViewport3D.Children, guid);
-        }
-
-        public bool ContainsAny<T>(IEnumerable<Guid> guids) where T : SAMObject
-        {
-            return Query.ContainsAny<T>(helixViewport3D.Children, guids);
-        }
-
-        public T GetSAMObject<T>(Guid guid) where T : SAMObject
-        {
-            return Core.UI.WPF.Query.JSAMObject<T>(GetVisual3D<T>(guid));
-        }
-
-        public bool Select(SAMObject sAMObject)
-        {
-            bool result = false;
-
-            if (sAMObject == null)
-            {
-                result = actionManager.Cancel<SelectAction>();
-                if(result)
-                {
-                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-                }
-                return result;
-            }
-
-            Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
-            if (visual3D == null)
-            {
-                return result;
-            }
-
-            result = actionManager.Apply(new SelectAction(visual3D));
-            if (result)
-            {
-                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-            }
-
-            return result;
-        }
-
-        public bool Select<T>(IEnumerable<T> sAMObjects) where T : SAMObject
-        {
-            bool result = false;
-            
-            if (sAMObjects == null)
-            {
-                result = actionManager.Cancel<SelectAction>();
-                if (result)
-                {
-                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-                }
-                return result;
-            }
-
-            List<Visual3D> visual3Ds = new List<Visual3D>();
-            foreach (T t in sAMObjects)
-            {
-                Visual3D visual3D = GetVisual3D<SAMObject>(t.Guid);
-                if (visual3D == null)
-                {
-                    continue;
-                }
-
-                visual3Ds.Add(visual3D);
-            }
-
-            if (visual3Ds == null || visual3Ds.Count == 0)
-            {
-                result = actionManager.Cancel<SelectAction>();
-                if (result)
-                {
-                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-                }
-
-                return result;
-            }
-
-            result = actionManager.Apply(new SelectAction(visual3Ds));
-            if (result)
-            {
-                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-            }
-
-            return result;
-        }
-
-        public List<T> SelectedSAMObjects<T>() where T : SAMObject
-        {
-            if (actionManager == null)
-            {
-                return null;
-            }
-
-            List<SelectAction> selectActions = actionManager.GetActions<SelectAction>();
-            if (selectActions == null || selectActions.Count == 0)
-            {
-                return null;
-            }
-
-            List<T> result = new List<T>();
-            foreach (SelectAction selectAction in selectActions)
-            {
-                List<Visual3D> visual3Ds = selectAction.Visual3Ds;
-                if(visual3Ds != null)
-                {
-                    foreach(Visual3D visual3D in visual3Ds)
+                    if (jSAMObject_Model is Text3DObject)
                     {
-                        ITaggable taggable = visual3D?.JSAMObject<IJSAMObject>() as ITaggable;
-                        if (taggable != null)
+                        continue;
+                    }
+
+                    SAMObject sAMObject = (jSAMObject_Visual as ITaggable)?.Tag?.Value as SAMObject;
+                    if (sAMObject != null)
+                    {
+                        Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
+                        if (jSAMObject_Model is ISAMGeometry3DObject && jSAMObject_Visual is IEnumerable<ISAMGeometry3DObject>)
                         {
-                            T t = taggable.Tag?.Value as T;
-                            if(t != null)
+                            ISAMGeometry3DObject sAMGeometry3DObject = (ISAMGeometry3DObject)jSAMObject_Model;
+                            IEnumerable<ISAMGeometry3DObject> sAMGeometry3DObjects = (IEnumerable<ISAMGeometry3DObject>)jSAMObject_Visual;
+                            if (!sAMGeometry3DObjects.Contains(sAMGeometry3DObject))
                             {
-                                result.Add(t);
+                                continue;
                             }
                         }
+
+                        sAMObjects.Add(sAMObject);
                     }
+
                 }
             }
 
-            return result;
+            Select(sAMObjects);
         }
-
-        public bool Zoom(SAMObject sAMObject)
-        {
-            if (sAMObject == null)
-            {
-                return false;
-            }
-
-            Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
-            if (visual3D == null)
-            {
-                return false;
-            }
-
-            Rect3D rect3D = visual3D.Bounds();
-            if(rect3D == Rect3D.Empty)
-            {
-                return false;
-            }
-
-            helixViewport3D.ZoomExtents(rect3D);
-            return true;
-        }
-
-        public bool Zoom<T>(IEnumerable<T> sAMObjects) where T: SAMObject
-        {
-            if (sAMObjects == null)
-            {
-                return false;
-            }
-
-            List<Rect3D> rect3Ds = new List<Rect3D>();
-            foreach(SAMObject sAMObject in sAMObjects)
-            {
-                Visual3D visual3D = GetVisual3D<SAMObject>(sAMObject.Guid);
-                if (visual3D == null)
-                {
-                    continue;
-                }
-
-                Rect3D rect3D = visual3D.Bounds();
-                if (rect3D == Rect3D.Empty)
-                {
-                    continue;
-                }
-
-                rect3Ds.Add(rect3D);
-            }
-
-
-            Rect3D rect3D_Union = Rect3D.Empty;
-            foreach(Rect3D rect3D_Temp in rect3Ds)
-            {
-                rect3D_Union.Union(rect3D_Temp);
-            }
-
-            if(rect3D_Union == Rect3D.Empty)
-            {
-                return false;
-            }
-
-            helixViewport3D.ZoomExtents(rect3D_Union);
-            return true;
-        }
-
-        private Camera GetCamera()
-        {
-            ProjectionCamera projectionCamera = helixViewport3D.Camera;
-            if(projectionCamera == null)
-            {
-                return null;
-            }
-
-            return new Camera(projectionCamera.Position.ToSAM(), projectionCamera.LookDirection.ToSAM());
-        }
-
+        
         private void SetCamera(Camera camera)
         {
             if (camera == null)
@@ -459,6 +692,26 @@ namespace SAM.Geometry.UI.WPF
 
             projectionCamera.LookDirection = lookDirection.ToMedia3D();
             projectionCamera.Position = camera.Location.ToMedia3D();
+
+            if(camera.UpDirection is not null)
+            {
+                projectionCamera.UpDirection = camera.UpDirection.ToMedia3D(); //NEW 2026.03.16
+            }
+        }
+
+        private void UIGeometryObjectModel_Closed(object sender, EventArgs e)
+        {
+            Load(uIGeometryObjectModel?.JSAMObject);
+        }
+
+        private void UIGeometryObjectModel_Modified(object sender, EventArgs e)
+        {
+            Load(uIGeometryObjectModel?.JSAMObject);
+        }
+
+        private void UIGeometryObjectModel_Opened(object sender, EventArgs e)
+        {
+            Load(uIGeometryObjectModel?.JSAMObject);
         }
 
         private void UpdateMode()
@@ -492,216 +745,6 @@ namespace SAM.Geometry.UI.WPF
             }
 
             helixViewport3D.ZoomExtents();
-        }
-
-        private void Load(GeometryObjectModel geometryObjectModel)
-        {
-            helixViewport3D.Lights.Children.Clear();
-            helixViewport3D.Lights.Children.Add(new AmbientLight());
-
-            bool cancelled = actionManager.Cancel();
-            if(cancelled)
-            {
-                ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-            }
-
-            int count = Core.UI.WPF.Query.Visual3Ds<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) }).Count;
-            if (count > 0)
-            {
-                Core.UI.WPF.Modify.Clear<ModelVisual3D>(helixViewport3D.Children, new Type[] { typeof(GeometryObjectModel) });
-            }
-
-            if (geometryObjectModel == null)
-            {
-                return;
-            }
-
-            ModelVisual3D modelVisual3D = Convert.ToMedia3D(geometryObjectModel);
-            if (modelVisual3D != null)
-            {
-                helixViewport3D.Children.Add(modelVisual3D);
-            }
-
-            if (count == 0)
-            {
-                helixViewport3D.ZoomExtents();
-            }
-
-            legendControl.Visibility = Visibility.Hidden;
-            if (geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings))
-            {
-                Legend legend = viewSettings.Legend;
-                List<LegendItem> legendItems = legend?.LegendItems;
-
-                if (legend != null && legend.Visible && legendItems != null && legendItems.Count != 0)
-                {
-                    legendControl.Visibility = Visibility.Visible;
-                    legendControl.Legend = legend;
-                }
-            }
-        }
-
-        private void MenuItem_ZoomExtents_Click(object sender, RoutedEventArgs e)
-        {
-            helixViewport3D.ZoomExtents();
-        }
-
-        private void UIGeometryObjectModel_Opened(object sender, EventArgs e)
-        {
-            Load(uIGeometryObjectModel?.JSAMObject);
-        }
-
-        private void UIGeometryObjectModel_Closed(object sender, EventArgs e)
-        {
-            Load(uIGeometryObjectModel?.JSAMObject);
-        }
-
-        private void UIGeometryObjectModel_Modified(object sender, EventArgs e)
-        {
-            Load(uIGeometryObjectModel?.JSAMObject);
-        }
-
-        private void helixViewport3D_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                Point point_Current = e.GetPosition(helixViewport3D);
-
-                RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point_Current, out ModelVisual3D modelVisual3D);
-                if (rayMeshGeometry3DHitTestResult != null && modelVisual3D != null)
-                {
-                    ObjectDoubleClicked?.Invoke(this, new ObjectDoubleClickedEventArgs(e, modelVisual3D));
-                }
-            }
-        }
-
-        private void helixViewport3D_PreviewMouseMove(object sender, MouseEventArgs e)
-        {
-            actionManager.Cancel<HighlightAction>();
-
-            Point point = e.GetPosition(helixViewport3D);
-
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point, out ModelVisual3D modelVisual3D);
-            if (rayMeshGeometry3DHitTestResult != null && modelVisual3D != null)
-            {
-                actionManager.Apply(new HighlightAction(modelVisual3D));
-
-                ObjectHoovered?.Invoke(this, new ObjectHooveredEventArgs(e, modelVisual3D));
-            }
-        }
-
-        private void helixViewport3D_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Point point_Current = e.GetPosition(helixViewport3D);
-
-            RayMeshGeometry3DHitTestResult rayMeshGeometry3DHitTestResult = Core.UI.WPF.Query.RayMeshGeometry3DHitTestResult(helixViewport3D, point_Current, out ModelVisual3D modelVisual3D);
-
-            bool cancelled = false;
-            if (!Keyboard.IsKeyDown(Key.LeftCtrl) && !Keyboard.IsKeyDown(Key.RightCtrl))
-            {
-                cancelled = actionManager.Cancel<SelectAction>();
-            }
-
-            if (rayMeshGeometry3DHitTestResult == null && modelVisual3D == null)
-            {
-                e.Handled = true;
-
-                if(cancelled)
-                {
-                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-                }
-
-                return;
-            }
-
-            SelectAction selectAction = actionManager.GetAction<SelectAction>();
-            if (selectAction == null)
-            {
-                selectAction = new SelectAction();
-            }
-
-            if (selectAction != null && selectAction.Contains(modelVisual3D))
-            {
-                selectAction.Remove(modelVisual3D);
-            }
-            else
-            {
-                selectAction.Add(modelVisual3D);
-            }
-
-            actionManager.Apply(selectAction);
-            ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-
-        }
-
-        private void helixViewport3D_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.Key == Key.Escape)
-            {
-                bool cancelled = actionManager.Cancel<SelectAction>();
-                if(cancelled)
-                {
-                    ObjectSelectionChanged?.Invoke(this, new ObjectSelectionChangedEventArgs());
-                }
-            }
-        }
-
-        private void helixViewport3D_ContextMenuOpening(object sender, ContextMenuEventArgs e)
-        {
-            if (Keyboard.IsKeyDown(Key.LeftCtrl) ||
-                Keyboard.IsKeyDown(Key.RightCtrl) ||
-                Keyboard.IsKeyDown(Key.LeftAlt) ||
-                Keyboard.IsKeyDown(Key.RightAlt) ||
-                Keyboard.IsKeyDown(Key.LeftShift) ||
-                Keyboard.IsKeyDown(Key.RightShift))
-            {
-                e.Handled = true;
-                return;
-            }
-
-            helixViewport3D.ContextMenu = new ContextMenu();
-
-            MenuItem menuItem = new MenuItem();
-            menuItem.Name = "MenuItem_ZoomExtents";
-            menuItem.Header = "Zoom Extents";
-            menuItem.Click += MenuItem_ZoomExtents_Click;
-            helixViewport3D.ContextMenu.Items.Add(menuItem);
-
-            ObjectContextMenuOpening?.Invoke(this, new ObjectContextMenuOpeningEventArgs(helixViewport3D.ContextMenu, e, actionManager.SelectedVisual3Ds()?.FindAll(x => x is ModelVisual3D)?.ConvertAll(x => x as ModelVisual3D)));
-        }
-
-        private void helixViewport3D_Loaded(object sender, RoutedEventArgs e)
-        {
-            GeometryObjectModel geometryObjectModel = uIGeometryObjectModel?.JSAMObject;
-
-            if (geometryObjectModel != null && geometryObjectModel.TryGetValue(GeometryObjectModelParameter.ViewSettings, out ViewSettings viewSettings) && viewSettings != null)
-            {
-                Camera camera = viewSettings.Camera;
-                if (camera != null)
-                {
-                    helixViewport3D.Camera.Position = camera.Location.ToMedia3D();
-                    helixViewport3D.Camera.LookDirection = camera.LookDirection.ToMedia3D();
-                }
-            }
-
-            helixViewport3D.Loaded -= helixViewport3D_Loaded;
-        }
-
-        public LegendItem UndefinedLegendItem
-        {
-            get
-            {
-                return legendControl.UndefinedLegendItem;
-            }
-
-            set
-            {
-                legendControl.UndefinedLegendItem = value;
-            }
-        }
-
-        private void helixViewport3D_CameraChanged(object sender, RoutedEventArgs e)
-        {
         }
     }
 }

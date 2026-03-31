@@ -421,7 +421,7 @@
                     <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Visibility" Header="Visiblity">
-                    <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Reveal Hidden" />
+                    <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Unhide All" />
                     <RibbonButton x:Name="RibbonButton_ViewRange" Label="View Range" />
                 </RibbonGroup>
             </RibbonTab>
@@ -459,6 +459,7 @@
                     <RibbonButton x:Name="RibbonButton_EditInternalConditions" Label="Modify IC" />
                     <RibbonButton x:Name="RibbonButton_AssignMechanicalSystems" Label="Add Mechanical Systems" />
                     <RibbonButton x:Name="RibbonButton_RemoveAirMovementObjects" Label="Remove IZAMs" />
+                    <RibbonButton x:Name="RibbonButton_SetDefaultLayers" Label="Set Default Layers" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Simulate" Header="Simulate">
@@ -502,6 +503,7 @@
                     <RibbonButton x:Name="RibbonButton_ViewGeometry" Label="View Geometry" />
                     <RibbonButton x:Name="RibbonButton_TextMap" Label="Text Map" />
                     <RibbonButton x:Name="RibbonButton_NCMNames" Label="NCM Names" />
+                    <RibbonButton x:Name="RibbonButton_FixNames" Label="Fix Names" />
 
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Tools_Developer" Header="Developer">
@@ -511,6 +513,9 @@
                     <RibbonButton x:Name="RibbonButton_CreateCases" Label="Create" />
                     <RibbonButton x:Name="RibbonButton_SimulateCases" Label="Simulate" />
                     <RibbonButton x:Name="RibbonButton_CreateSimulateCases" Label="Create Simulate" />
+                </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_Tools_Solver" Header="Solver">
+                    <RibbonButton x:Name="RibbonButton_Solve" Label="Solve" />
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Help" Header="Help">
@@ -531,7 +536,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
-            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" SelectionChanged="tabControl_SelectionChanged">
+            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" SelectionChanged="TabControl_SelectionChanged">
                 <TabItem Header="3D View">
                     <geometry:ViewportControl x:Name="viewportControl" />
                 </TabItem>
