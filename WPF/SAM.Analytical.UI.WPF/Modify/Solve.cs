@@ -375,8 +375,7 @@ namespace SAM.Analytical.UI.WPF
                         continue;
                     }
 
-                    double thinnessRatio = face3D.ThinnessRatio();
-
+                    double thinnessRatio = face3D_Split.ThinnessRatio();
                     if (thinnessRatio < minThinnessRatio)
                     {
                         continue;

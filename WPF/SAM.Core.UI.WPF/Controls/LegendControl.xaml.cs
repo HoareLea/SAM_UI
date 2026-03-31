@@ -96,7 +96,7 @@ namespace SAM.Core.UI.WPF
             }
 
             bool? dialogResult = colorGradientWindow.ShowDialog();
-            if (dialogResult is null || !dialogResult.HasValue)
+            if (dialogResult is null || !dialogResult.HasValue || !dialogResult.Value)
             {
                 return;
             }

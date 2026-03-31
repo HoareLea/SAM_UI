@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Modify
     {
-        public static AnalyticalModel RunWorkflow(this AnalyticalModel analyticalModel, WorkflowSettings workflowSettings)
+        public static AnalyticalModel? RunWorkflow(this AnalyticalModel analyticalModel, WorkflowSettings workflowSettings)
         {
             if (analyticalModel == null)
             {
@@ -25,19 +25,19 @@ namespace SAM.Analytical.UI.WPF
                 workflowSettings = new WorkflowSettings();
             }
 
-            WorkflowCalculator workflowCalculator = new WorkflowCalculator(workflowSettings);
+            WorkflowCalculator workflowCalculator = new (workflowSettings);
 
             return workflowCalculator.Calculate(analyticalModel);
         }
 
-        public static Dictionary<string, AnalyticalModel> RunWorkflow(this IEnumerable<AnalyticalModel> analyticalModels, WorkflowSettings workflowSettings, string directory, bool parallel = true, int? maxDegreeOfParallelism = null, bool saveAnalyticalModels = false)
+        public static Dictionary<string, AnalyticalModel>? RunWorkflow(this IEnumerable<AnalyticalModel> analyticalModels, WorkflowSettings workflowSettings, string directory, bool parallel = true, int? maxDegreeOfParallelism = null, bool saveAnalyticalModels = false)
         {
             if (workflowSettings == null || analyticalModels is null || !analyticalModels.Any())
             {
                 return null;
             }
 
-            List<Tuple<string, string, AnalyticalModel>> tuples = [.. Enumerable.Repeat<Tuple<string, string, AnalyticalModel>>(null, analyticalModels.Count())];
+            List<Tuple<string?, string, AnalyticalModel>> tuples = [.. Enumerable.Repeat<Tuple<string?, string, AnalyticalModel>>(null, analyticalModels.Count())];
 
             Func<int, int, string> getName = (i, count) =>
             {
@@ -103,13 +103,19 @@ namespace SAM.Analytical.UI.WPF
 
             Dictionary<string, AnalyticalModel> result = [];
 
-            using (ProgressBarWindowManager progressBarWindowManager = new ProgressBarWindowManager("Run", "Running"))
+            using (ProgressBarWindowManager progressBarWindowManager = new ("Run", "Running"))
             {
                 if (parallel)
                 {
+                    maxDegreeOfParallelism = maxDegreeOfParallelism ?? Environment.ProcessorCount - 1;
+                    if(maxDegreeOfParallelism.Value <= 0)
+                    {
+                        maxDegreeOfParallelism = 1;
+                    }
+
                     Parallel.For(0, count, new ParallelOptions()
                     {
-                        MaxDegreeOfParallelism = maxDegreeOfParallelism ?? Environment.ProcessorCount - 1
+                        MaxDegreeOfParallelism = maxDegreeOfParallelism.Value
                     },
                     action.Invoke);
                 }
