@@ -17,9 +17,8 @@ jobs:
     env:
       MSBUILDDISABLENODEREUSE: "1"
       ORG_NAME: "SAM-BIM"
-      # >>> CHANGE THIS PER REPO <<<
-      # Examples: SAM, SAM_gbXML, SAM_GEM, SAM_Tas, ...
       REPO_NAME: "SAM_UI"
+      NUGET_XMLDOC_MODE: "skip"
 
     steps:
       - name: Checkout this repo
@@ -36,16 +35,37 @@ jobs:
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
 
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v2
+        with:
+          nuget-version: "6.x"
+
       - name: Clone dependency repos (siblings)
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
 
-          $org  = '${{ env.ORG_NAME }}'
-          $repo = '${{ env.REPO_NAME }}'
+          $org   = '${{ env.ORG_NAME }}'
+          $repo  = '${{ env.REPO_NAME }}'
+          $token = '${{ secrets.ORG_REPO_TOKEN }}'
 
-          # >>> ADJUST BUILD ORDER HERE IF NEEDED <<<
-          # Keep the current repo LAST.
+          function Clone-Repo([string]$name) {
+            if (Test-Path $name) { return }
+
+            $url = if ($token) {
+              "https://$token@github.com/$org/$name.git"
+            } else {
+              "https://github.com/$org/$name.git"
+            }
+
+            Write-Host "Cloning $name"
+            git clone --depth 1 $url $name
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to clone $name. If it is private, check ORG_REPO_TOKEN access."
+            }
+          }
+
+          # Keep current repo LAST. Do not duplicate SAM_UI earlier in the list.
           $buildOrder = @(
             'SAM'
             'SAM_Systems'
@@ -57,16 +77,14 @@ jobs:
             'SAM_Excel'
             'SAM_GEM'
             'SAM_LadybugTools'
-            'SAM_UI'
+            'SAM_Solver'
             $repo
           )
 
           # Clone everything except the last one (already checked out by Actions)
           $deps = $buildOrder[0..($buildOrder.Count-2)]
           foreach ($r in $deps) {
-            if (Test-Path $r) { continue }
-            Write-Host "Cloning https://github.com/$org/$r.git"
-            git clone --depth 1 "https://github.com/$org/$r.git" $r
+            Clone-Repo $r
           }
 
           # Ensure ReferencePath exists even before SAM_Windows builds
@@ -91,10 +109,7 @@ jobs:
             "/p:ReferencePath=$windowsRef"
           )
 
-          # If you really want Platform, use QUOTED Any CPU:
-          # $common += '/p:Platform="Any CPU"'
-
-          # Same build order as above (keep repo LAST)
+          # Keep current repo LAST. SAM_Solver must be built before SAM_UI.
           $buildOrder = @(
             'SAM'
             'SAM_Systems'
@@ -106,13 +121,19 @@ jobs:
             'SAM_Excel'
             'SAM_GEM'
             'SAM_LadybugTools'
-            'SAM_UI'
+            'SAM_Solver'
             $repo
           )
 
           # Convert build order -> solution paths (robust: first .sln in each folder)
           $solutions = foreach ($r in $buildOrder) {
-            $sln = Get-ChildItem -Path $r -Filter *.sln -File | Select-Object -First 1
+            $expected = Join-Path $r "$r.sln"
+            if (Test-Path $expected) {
+              (Resolve-Path $expected).Path
+              continue
+            }
+
+            $sln = Get-ChildItem -Path $r -Filter *.sln -File -ErrorAction SilentlyContinue | Select-Object -First 1
             if (-not $sln) { throw "No .sln found under: $r" }
             $sln.FullName
           }
@@ -120,11 +141,13 @@ jobs:
           foreach ($sln in $solutions) {
             Write-Host "==> Restore: $sln"
             & msbuild $sln /t:Restore @common
+            if ($LASTEXITCODE -ne 0) { throw "MSBuild restore failed: $sln" }
           }
 
           foreach ($sln in $solutions) {
             Write-Host "==> Rebuild: $sln"
             & msbuild $sln /t:Rebuild @common
+            if ($LASTEXITCODE -ne 0) { throw "MSBuild rebuild failed: $sln" }
           }
 
       - name: Upload build folders (optional)
