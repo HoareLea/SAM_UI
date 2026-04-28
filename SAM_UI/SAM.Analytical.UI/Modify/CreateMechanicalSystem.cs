@@ -1,4 +1,7 @@
-﻿using SAM.Core.Windows.Forms;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core.Windows.Forms;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -51,7 +54,7 @@ namespace SAM.Analytical.UI
 
             string id = Analytical.Create.Id(adjacencyCluster, mechanicalSystemType);
 
-            MechanicalSystem mechanicalSystem = Analytical.Create.MechanicalSystem(mechanicalSystemType, id);
+            MechanicalSystem mechanicalSystem = Analytical.Create.MechanicalSystem(mechanicalSystemType, null, id);
 
             using (Windows.Forms.MechanicalSystemForm mechanicalSystemForm = new Windows.Forms.MechanicalSystemForm(mechanicalSystem, uIAnalyticalModel.JSAMObject.AdjacencyCluster))
             {
