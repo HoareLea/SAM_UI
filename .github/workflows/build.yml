@@ -2,9 +2,9 @@ name: Build (Windows)
 
 on:
   push:
-    branches: [ "master", "main" ]
+    branches: [ "master", "main", "sow/2026-Q2" ]
   pull_request:
-    branches: [ "master", "main" ]
+    branches: [ "master", "main", "sow/2026-Q2" ]
   workflow_dispatch:
 
 jobs:
