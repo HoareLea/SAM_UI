@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Geometry.Object;
 using SAM.Geometry.Spatial;
 using System;
@@ -20,7 +20,7 @@ namespace SAM.Geometry.UI
             this.textAppearance = textAppearance;
         }
 
-        public TwoDimensionalViewSettings(JObject jObject)
+        public TwoDimensionalViewSettings(JsonObject jObject)
             : base(jObject)
         {
 
@@ -97,34 +97,34 @@ namespace SAM.Geometry.UI
             }
         }
 
-        public override bool FromJObject(JObject jObject)
+        public override bool FromJsonObject(JsonObject jObject)
         {
-            if(!base.FromJObject(jObject))
+            if(!base.FromJsonObject(jObject))
             {
                 return false;
             }
 
             if (jObject.ContainsKey("Plane"))
             {
-                plane = new Plane(jObject.Value<JObject>("Plane"));
+                plane = new Plane(jObject["Plane"] as JsonObject);
             }
 
             if (jObject.ContainsKey("TextAppearance"))
             {
-                textAppearance = new TextAppearance(jObject.Value<JObject>("TextAppearance"));
+                textAppearance = new TextAppearance(jObject["TextAppearance"] as JsonObject);
             }
 
             if (jObject.ContainsKey("SpaceEdgeOffset"))
             {
-                spaceEdgeOffset = jObject.Value<double>("SpaceEdgeOffset");
+                spaceEdgeOffset = jObject["SpaceEdgeOffset"]?.GetValue<double>() ?? default(double);
             }
 
             return true;
         }
 
-        public override JObject ToJObject()
+        public override JsonObject ToJsonObject()
         {
-            JObject jObject = base.ToJObject();
+            JsonObject jObject = base.ToJsonObject();
             if(jObject == null)
             {
                 return null;
@@ -132,12 +132,12 @@ namespace SAM.Geometry.UI
 
             if(plane != null)
             {
-                jObject.Add("Plane", plane.ToJObject());
+                jObject.Add("Plane", plane.ToJsonObject());
             }
 
             if (textAppearance != null)
             {
-                jObject.Add("TextAppearance", textAppearance.ToJObject());
+                jObject.Add("TextAppearance", textAppearance.ToJsonObject());
             }
 
             if(!double.IsNaN(spaceEdgeOffset))

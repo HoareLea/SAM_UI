@@ -1,7 +1,7 @@
 ﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using SAM.Geometry.Spatial;
 
 namespace SAM.Geometry.UI
@@ -29,9 +29,9 @@ namespace SAM.Geometry.UI
             this.upDirection = upDirection;
         }
 
-        public Camera(JObject jObject)
+        public Camera(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
         public Point3D Location
@@ -73,7 +73,7 @@ namespace SAM.Geometry.UI
             }
         }
 
-        public virtual bool FromJObject(JObject jObject)
+        public virtual bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -82,40 +82,40 @@ namespace SAM.Geometry.UI
 
             if(jObject.ContainsKey("Location"))
             {
-                location = new Point3D(jObject.Value<JObject>("Location"));
+                location = new Point3D(jObject["Location"] as JsonObject);
             }
 
             if (jObject.ContainsKey("LookDirection"))
             {
-                lookDirection = new Vector3D(jObject.Value<JObject>("LookDirection"));
+                lookDirection = new Vector3D(jObject["LookDirection"] as JsonObject);
             }
 
             if (jObject.ContainsKey("UpDirection"))
             {
-                upDirection = new Vector3D(jObject.Value<JObject>("UpDirection"));
+                upDirection = new Vector3D(jObject["UpDirection"] as JsonObject);
             }
 
             return true;
         }
 
-        public virtual JObject ToJObject()
+        public virtual JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             if(location != null)
             {
-                jObject.Add("Location", location.ToJObject());
+                jObject.Add("Location", location.ToJsonObject());
             }
 
             if(lookDirection != null)
             {
-                jObject.Add("LookDirection", lookDirection.ToJObject());
+                jObject.Add("LookDirection", lookDirection.ToJsonObject());
             }
 
             if (upDirection != null)
             {
-                jObject.Add("UpDirection", upDirection.ToJObject());
+                jObject.Add("UpDirection", upDirection.ToJsonObject());
             }
 
             return jObject;

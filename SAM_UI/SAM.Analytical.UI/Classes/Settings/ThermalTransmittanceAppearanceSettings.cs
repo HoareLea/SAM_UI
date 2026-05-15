@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Core;
 using SAM.Geometry.UI;
 
@@ -21,7 +21,7 @@ namespace SAM.Analytical.UI
             }
         }
 
-        public ThermalTransmittanceAppearanceSettings(JObject jObject)
+        public ThermalTransmittanceAppearanceSettings(JsonObject jObject)
             : base(jObject)
         {
 

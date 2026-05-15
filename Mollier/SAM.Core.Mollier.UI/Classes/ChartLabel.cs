@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using SAM.Geometry.Planar;
 
 namespace SAM.Core.Mollier.UI.Classes
@@ -32,7 +32,7 @@ namespace SAM.Core.Mollier.UI.Classes
             Angle = angle;
             Color = color;
         }
-        public bool FromJObject(JObject jObject)
+        public bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -41,7 +41,7 @@ namespace SAM.Core.Mollier.UI.Classes
 
             if (jObject.ContainsKey("Position"))
             {
-                JObject jObject_Position = jObject.Value<JObject>("Position");
+                JsonObject jObject_Position = jObject["Position"] as JsonObject;
                 if (jObject_Position != null)
                 {
                     Position = new Point2D(jObject_Position);
@@ -50,17 +50,17 @@ namespace SAM.Core.Mollier.UI.Classes
 
             if (jObject.ContainsKey("Text"))
             {
-                Text = jObject.Value<string>("Text");
+                Text = jObject["Text"]?.GetValue<string>() ?? null;
             }
 
             if (jObject.ContainsKey("Angle"))
             {
-                Angle = jObject.Value<double>("Angle");
+                Angle = jObject["Angle"]?.GetValue<double>() ?? default(double);
             }
 
             if (jObject.ContainsKey("Color"))
             {
-                JObject jObject_Color = jObject.Value<JObject>("Color");
+                JsonObject jObject_Color = jObject["Color"] as JsonObject;
                 if (jObject_Color != null)
                 {
                     SAMColor sAMColor = new SAMColor(jObject_Color);
@@ -73,14 +73,14 @@ namespace SAM.Core.Mollier.UI.Classes
 
             return true;
         }
-        public JObject ToJObject()
+        public JsonObject ToJsonObject()
         {
-            JObject result = new JObject();
+            JsonObject result = new JsonObject();
             result.Add("_type", Core.Query.FullTypeName(this));
 
             if (Position != null)
             {
-                result.Add("Position", new Point2D(Position).ToJObject());
+                result.Add("Position", new Point2D(Position).ToJsonObject());
             }
 
             if (Text != null)
@@ -95,7 +95,7 @@ namespace SAM.Core.Mollier.UI.Classes
 
             if (Color != Color.Empty)
             {
-                result.Add("Color", new SAMColor(Color).ToJObject());
+                result.Add("Color", new SAMColor(Color).ToJsonObject());
             }
 
 

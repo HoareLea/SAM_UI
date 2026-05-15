@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using System;
+using System.Text.Json;
 
 namespace SAM.Core.UI
 {
@@ -26,9 +27,9 @@ namespace SAM.Core.UI
             }
         }
 
-        public LegendItemData(JObject jObject)
+        public LegendItemData(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
         public SAMObject SAMObject
@@ -63,7 +64,7 @@ namespace SAM.Core.UI
             }
         }
 
-        public bool FromJObject(JObject jObject)
+        public bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -72,32 +73,36 @@ namespace SAM.Core.UI
 
             if(jObject.ContainsKey("SAMObject"))
             {
-                sAMObject = Core.Query.IJSAMObject(jObject.Value<JObject>("SAMObject")) as SAMObject;
+                sAMObject = Core.Query.IJSAMObject(jObject["SAMObject"] as JsonObject) as SAMObject;
             }
 
-            JToken jToken = jObject.GetValue("Value");
-            if(jToken != null)
+            JsonNode jsonNode = jObject["Value"];
+            if(jsonNode != null)
             {
-                switch (jToken.Type)
+                switch (jsonNode.GetValueKind())
                 {
-                    case JTokenType.Integer:
-                        value = jToken.Value<int>();
+                    case JsonValueKind.Number:
+                        if (jsonNode is JsonValue jsonValue && jsonValue.TryGetValue<int>(out int intValue))
+                        {
+                            value = intValue;
+                        }
+                        else
+                        {
+                            value = jsonNode.GetValue<double>();
+                        }
                         break;
 
-                    case JTokenType.Float:
-                        value = jToken.Value<double>();
+                    case JsonValueKind.String:
+                        value = jsonNode.GetValue<string>();
                         break;
 
-                    case JTokenType.String:
-                        value = jToken.Value<string>();
-                        break;
-
-                    case JTokenType.Null:
+                    case JsonValueKind.Null:
                         value = null;
                         break;
 
-                    case JTokenType.Boolean:
-                        value = jToken.Value<bool>();
+                    case JsonValueKind.False:
+                    case JsonValueKind.True:
+                        value = jsonNode.GetValue<bool>();
                         break;
 
                     default:
@@ -107,20 +112,20 @@ namespace SAM.Core.UI
 
             if (jObject.ContainsKey("Text"))
             {
-                text = jObject.Value<string>("Text");
+                text = jObject["Text"]?.GetValue<string>() ?? null;
             }
 
             return true;
         }
 
-        public JObject ToJObject()
+        public JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             if (sAMObject != null)
             {
-                jObject.Add("SAMObject", sAMObject.ToJObject());
+                jObject.Add("SAMObject", sAMObject.ToJsonObject());
             }
 
             if(text != null)

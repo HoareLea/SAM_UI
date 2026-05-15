@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
@@ -16,7 +16,7 @@ namespace SAM.Analytical.UI
 
         }
 
-        public ApertureConstructionAppearanceSettings(JObject jObject)
+        public ApertureConstructionAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {
         }

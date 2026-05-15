@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Core;
 
 namespace SAM.Geometry.UI
@@ -18,9 +18,9 @@ namespace SAM.Geometry.UI
             }
         }
 
-        public ValueAppearanceSettings(JObject jObject)
+        public ValueAppearanceSettings(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
         public virtual bool IsValid(IJSAMObject jSAMObject)
@@ -35,7 +35,7 @@ namespace SAM.Geometry.UI
 
         public abstract bool TryGetValue<T>(IJSAMObject sAMObject, out T value);
 
-        public virtual bool FromJObject(JObject jObject)
+        public virtual bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -44,15 +44,15 @@ namespace SAM.Geometry.UI
 
             //if (jObject.ContainsKey("ParameterName"))
             //{
-            //    ParameterName = jObject.Value<string>("ParameterName");
+            //    ParameterName = jObject["ParameterName"]?.GetValue<string>() ?? null;
             //}
 
             return true;
         }
 
-        public virtual JObject ToJObject()
+        public virtual JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             //if(ParameterName != null)

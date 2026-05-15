@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Geometry.UI;
 
 namespace SAM.Core.UI
@@ -22,7 +22,7 @@ namespace SAM.Core.UI
             }
         }
 
-        public RelationClusterAppearanceSettings(JObject jObject)
+        public RelationClusterAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {
 

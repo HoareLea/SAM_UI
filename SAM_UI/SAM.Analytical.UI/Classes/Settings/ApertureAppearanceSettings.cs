@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
     public class ApertureAppearanceSettings : TypeAppearanceSettings<Aperture>
     {
-        public ApertureAppearanceSettings(JObject jObject) 
+        public ApertureAppearanceSettings(JsonObject jObject) 
             : base(jObject)
         {
         }

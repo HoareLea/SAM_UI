@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
 {
     public class OpeningPropertiesAppearanceSettings : TypeAppearanceSettings<IOpeningProperties>
     {
-        public OpeningPropertiesAppearanceSettings(JObject jObject) 
+        public OpeningPropertiesAppearanceSettings(JsonObject jObject) 
             : base(jObject)
         {
         }

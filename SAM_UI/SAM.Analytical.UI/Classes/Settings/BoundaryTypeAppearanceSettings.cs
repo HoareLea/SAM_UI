@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Core;
 
 namespace SAM.Analytical.UI
@@ -17,7 +17,7 @@ namespace SAM.Analytical.UI
 
         }
 
-        public BoundaryTypeAppearanceSettings(JObject jObject)
+        public BoundaryTypeAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {
         }

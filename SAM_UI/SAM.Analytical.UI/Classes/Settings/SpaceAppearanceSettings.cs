@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Core.UI;
 using SAM.Geometry.UI;
 
@@ -60,7 +60,7 @@ namespace SAM.Analytical.UI
 
         }
 
-        public SpaceAppearanceSettings(JObject jObject)
+        public SpaceAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {
 

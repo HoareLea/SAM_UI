@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using SAM.Core;
 using SAM.Core.UI;
 using System;
@@ -19,9 +19,9 @@ namespace SAM.Geometry.UI
             activeGuid = Guid.Empty;
         }
 
-        public UIGeometrySettings(JObject jObject)
+        public UIGeometrySettings(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
         public UIGeometrySettings(UIGeometrySettings uIGeometrySettings)
@@ -184,7 +184,7 @@ namespace SAM.Geometry.UI
             return viewSettingsDictionary != null && viewSettingsDictionary.Count > 0;
         }
 
-        public virtual bool FromJObject(JObject jObject)
+        public virtual bool FromJsonObject(JsonObject jObject)
         {
             if(jObject == null)
             {
@@ -195,11 +195,16 @@ namespace SAM.Geometry.UI
             {
                 viewSettingsDictionary = new Dictionary<Guid, IViewSettings>();
 
-                JArray jArray = jObject.Value<JArray>("ViewSettings");
+                JsonArray jArray = jObject["ViewSettings"] as JsonArray;
                 if(jArray != null)
                 {
-                    foreach(JObject jObject_ViewSettings in jArray)
+                    foreach(JsonNode jsonNode_ViewSettings in jArray)
                     {
+                        if (!(jsonNode_ViewSettings is JsonObject jObject_ViewSettings))
+                        {
+                            continue;
+                        }
+
                         IViewSettings viewSettings = Core.Create.IJSAMObject<IViewSettings>(jObject_ViewSettings);
                         if(viewSettings == null)
                         {
@@ -219,17 +224,17 @@ namespace SAM.Geometry.UI
             return true;
         }
 
-        public virtual JObject ToJObject()
+        public virtual JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             if(viewSettingsDictionary != null)
             {
-                JArray jArray = new JArray();
+                JsonArray jArray = new JsonArray();
                 foreach(IViewSettings viewSettings in viewSettingsDictionary.Values)
                 {
-                    JObject jObject_ViewSettings = viewSettings?.ToJObject();
+                    JsonObject jObject_ViewSettings = viewSettings?.ToJsonObject();
                     if(jObject_ViewSettings == null)
                     {
                         continue;

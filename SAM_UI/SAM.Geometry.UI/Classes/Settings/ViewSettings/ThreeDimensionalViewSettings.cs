@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Geometry.Spatial;
 using System;
 using System.Collections.Generic;
@@ -21,7 +21,7 @@ namespace SAM.Geometry.UI
 
         }
 
-        public ThreeDimensionalViewSettings(JObject jObject)
+        public ThreeDimensionalViewSettings(JsonObject jObject)
             : base(jObject)
         {
 
@@ -58,21 +58,26 @@ namespace SAM.Geometry.UI
             }
         }
 
-        public override bool FromJObject(JObject jObject)
+        public override bool FromJsonObject(JsonObject jObject)
         {
-            if(!base.FromJObject(jObject))
+            if(!base.FromJsonObject(jObject))
             {
                 return false;
             }
 
             if(jObject.ContainsKey("Planes"))
             {
-                JArray jArray = jObject.Value<JArray>("Planes");
+                JsonArray jArray = jObject["Planes"] as JsonArray;
                 if(jArray != null)
                 {
                     planes = new List<Plane>();
-                    foreach(JObject jObject_Plane in jArray)
+                    foreach(JsonNode jsonNode_Plane in jArray)
                     {
+                        if (!(jsonNode_Plane is JsonObject jObject_Plane))
+                        {
+                            continue;
+                        }
+
                         planes.Add(new Plane(jObject_Plane));
                     }
                 }
@@ -81,9 +86,9 @@ namespace SAM.Geometry.UI
             return true;
         }
 
-        public override JObject ToJObject()
+        public override JsonObject ToJsonObject()
         {
-            JObject jObject = base.ToJObject();
+            JsonObject jObject = base.ToJsonObject();
             if(jObject == null)
             {
                 return null;
@@ -91,10 +96,10 @@ namespace SAM.Geometry.UI
 
             if(planes != null)
             {
-                JArray jArray = new JArray();
+                JsonArray jArray = new JsonArray();
                 foreach(Plane plane in planes)
                 {
-                    jArray.Add(plane.ToJObject());
+                    jArray.Add(plane.ToJsonObject());
                 }
                 jObject.Add("Planes", jArray);
             }

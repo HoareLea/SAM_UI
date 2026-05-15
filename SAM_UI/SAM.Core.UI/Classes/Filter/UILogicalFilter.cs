@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using System;
 
 namespace SAM.Core.UI
@@ -18,7 +18,7 @@ namespace SAM.Core.UI
 
         }
 
-        public UILogicalFilter(JObject jObject)
+        public UILogicalFilter(JsonObject jObject)
             : base(jObject)
         {
 

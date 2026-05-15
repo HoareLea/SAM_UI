@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Geometry.Mollier;
 //using static iText.Svg.SvgConstants;
 
@@ -16,7 +16,7 @@ namespace SAM.Core.Mollier.UI
             this.processReferenceType = processReferenceType;
         }
 
-        public UIMollierProcessPoint(JObject jObject)
+        public UIMollierProcessPoint(JsonObject jObject)
             : base(jObject)
         {
 
@@ -178,9 +178,9 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-        public override bool FromJObject(JObject jObject)
+        public override bool FromJsonObject(JsonObject jObject)
         {
-            bool result = base.FromJObject(jObject);
+            bool result = base.FromJsonObject(jObject);
             if (!result)
             {
                 return result;
@@ -188,24 +188,24 @@ namespace SAM.Core.Mollier.UI
 
             if(jObject.ContainsKey("UIMollierProcess"))
             {
-                uIMollierProcess = new UIMollierProcess(jObject.Value<JObject>("UIMollierProcess"));
+                uIMollierProcess = new UIMollierProcess(jObject["UIMollierProcess"] as JsonObject);
             }
 
             if (jObject.ContainsKey("ProcessReferenceType"))
             {
-                processReferenceType = Core.Query.Enum<ProcessReferenceType>(jObject.Value<string>("ProcessReferenceType"));
+                processReferenceType = Core.Query.Enum<ProcessReferenceType>(jObject["ProcessReferenceType"]?.GetValue<string>() ?? null);
             }
 
             return result;
         }
 
-        public override JObject ToJObject()
+        public override JsonObject ToJsonObject()
         {
-            JObject result = base.ToJObject();
+            JsonObject result = base.ToJsonObject();
 
             if(uIMollierProcess != null)
             {
-                result.Add("UIMollierProcess", uIMollierProcess.ToJObject());
+                result.Add("UIMollierProcess", uIMollierProcess.ToJsonObject());
             }
 
             if(ProcessReferenceType != ProcessReferenceType.Undefined)

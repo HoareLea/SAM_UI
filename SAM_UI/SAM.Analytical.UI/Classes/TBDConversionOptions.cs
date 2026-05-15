@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Core;
 using SAM.Weather;
 using System.Collections.Generic;
@@ -53,12 +53,12 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        public SimulateOptions(JObject jObject)
+        public SimulateOptions(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
-        public bool FromJObject(JObject jObject)
+        public bool FromJsonObject(JsonObject jObject)
         {
             if(jObject == null)
             {
@@ -67,12 +67,12 @@ namespace SAM.Analytical.UI.WPF
 
             if (jObject.ContainsKey("ProjectName"))
             {
-                ProjectName = jObject.Value<string>("ProjectName");
+                ProjectName = jObject["ProjectName"]?.GetValue<string>() ?? null;
             }
 
             if (jObject.ContainsKey("ZoneCategories"))
             {
-                JArray jArray = jObject.Value<JArray>("ZoneCategories");
+                JsonArray jArray = jObject["ZoneCategories"] as JsonArray;
                 if(jArray != null)
                 {
                     ZoneCategories = new List<string>();
@@ -85,80 +85,80 @@ namespace SAM.Analytical.UI.WPF
 
             if(jObject.ContainsKey("WeatherData"))
             {
-                WeatherData = new WeatherData(jObject.Value<JObject>("WeatherData"));
+                WeatherData = new WeatherData(jObject["WeatherData"] as JsonObject);
             }
 
             if(jObject.ContainsKey("OutputDirectory"))
             {
-                OutputDirectory = jObject.Value<string>("OutputDirectory");
+                OutputDirectory = jObject["OutputDirectory"]?.GetValue<string>() ?? null;
             }
 
             if(jObject.ContainsKey("Simulate"))
             {
-                Simulate = jObject.Value<bool>("Simulate");
+                Simulate = jObject["Simulate"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("SolarCalculationMethod"))
             {
-                SolarCalculationMethod = Core.Query.Enum<SolarCalculationMethod>(jObject.Value<string>("SolarCalculationMethod"));
+                SolarCalculationMethod = Core.Query.Enum<SolarCalculationMethod>(jObject["SolarCalculationMethod"]?.GetValue<string>() ?? null);
             }
 
             if (jObject.ContainsKey("FullYearSimulation"))
             {
-                FullYearSimulation = jObject.Value<bool>("FullYearSimulation");
+                FullYearSimulation = jObject["FullYearSimulation"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("UnmetHours"))
             {
-                UnmetHours = jObject.Value<bool>("UnmetHours");
+                UnmetHours = jObject["UnmetHours"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("RoomDataSheets"))
             {
-                RoomDataSheets = jObject.Value<bool>("RoomDataSheets");
+                RoomDataSheets = jObject["RoomDataSheets"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("CreateSAP"))
             {
-                CreateSAP = jObject.Value<bool>("CreateSAP");
+                CreateSAP = jObject["CreateSAP"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("CreateTM59"))
             {
-                CreateTM59 = jObject.Value<bool>("CreateTM59");
+                CreateTM59 = jObject["CreateTM59"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("TextMap"))
             {
-                TextMap = Core.Query.IJSAMObject<TextMap>(jObject.Value<JObject>("TextMap"));
+                TextMap = Core.Query.IJSAMObject<TextMap>(jObject["TextMap"] as JsonObject);
             }
 
             if (jObject.ContainsKey("UseWidths"))
             {
-                UseWidths = jObject.Value<bool>("UseWidths");
+                UseWidths = jObject["UseWidths"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("CreateTPD"))
             {
-                CreateTPD = jObject.Value<bool>("CreateTPD");
+                CreateTPD = jObject["CreateTPD"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("CreatePartL"))
             {
-                CreatePartL = jObject.Value<bool>("CreatePartL");
+                CreatePartL = jObject["CreatePartL"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("Sizing"))
             {
-                Sizing = jObject.Value<bool>("Sizing");
+                Sizing = jObject["Sizing"]?.GetValue<bool>() ?? default(bool);
             }
 
             return true;
         }
 
-        public JObject ToJObject()
+        public JsonObject ToJsonObject()
         {
-            JObject result = new JObject();
+            JsonObject result = new JsonObject();
             result.Add("_type", Core.Query.FullTypeName(this));
 
             if (ProjectName != null)
@@ -168,7 +168,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (ZoneCategories != null)
             {
-                JArray jArray = new JArray();
+                JsonArray jArray = new JsonArray();
 
                 foreach (string zoneCategory in ZoneCategories)
                 {
@@ -185,7 +185,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (WeatherData != null)
             {
-                result.Add("WeatherData", WeatherData.ToJObject());
+                result.Add("WeatherData", WeatherData.ToJsonObject());
             }
 
             if (OutputDirectory != null)
@@ -220,7 +220,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (TextMap != null)
             {
-                result.Add("TextMap", TextMap.ToJObject());
+                result.Add("TextMap", TextMap.ToJsonObject());
             }
 
             return result;

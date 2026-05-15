@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
@@ -18,7 +18,7 @@ namespace SAM.Analytical.UI
 
         }
 
-        public InternalConditionAppearanceSettings(JObject jObject)
+        public InternalConditionAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {
         }

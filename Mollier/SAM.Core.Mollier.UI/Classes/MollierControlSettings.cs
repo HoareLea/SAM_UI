@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using System;
 using System.Drawing;
 
@@ -169,9 +169,9 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-        public MollierControlSettings(JObject jObject)
+        public MollierControlSettings(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
         public bool IsValid()
@@ -260,78 +260,78 @@ namespace SAM.Core.Mollier.UI
         }
 
         //loading from file
-        public bool FromJObject(JObject jObject)
+        public bool FromJsonObject(JsonObject jObject)
         {
             if (jObject.ContainsKey("Pressure"))
             {
-                Pressure = jObject.Value<double>("Pressure");
+                Pressure = jObject["Pressure"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Elevation"))
             {
-                Elevation = jObject.Value<double>("Elevation");
+                Elevation = jObject["Elevation"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("HumidityRatio_Max"))
             {
-                HumidityRatio_Max = jObject.Value<double>("HumidityRatio_Max");
+                HumidityRatio_Max = jObject["HumidityRatio_Max"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("HumidityRatio_Min"))
             {
-                HumidityRatio_Min = jObject.Value<double>("HumidityRatio_Min");
+                HumidityRatio_Min = jObject["HumidityRatio_Min"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("HumidityRatio_Interval"))
             {
-                HumidityRatio_Interval = jObject.Value<double>("HumidityRatio_Interval");
+                HumidityRatio_Interval = jObject["HumidityRatio_Interval"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Temperature_Max"))
             {
-                Temperature_Max = jObject.Value<double>("Temperature_Max");
+                Temperature_Max = jObject["Temperature_Max"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Temperature_Min"))
             {
-                Temperature_Min = jObject.Value<double>("Temperature_Min");
+                Temperature_Min = jObject["Temperature_Min"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Temperature_Interval"))
             {
-                Temperature_Interval = jObject.Value<double>("Temperature_Interval");
+                Temperature_Interval = jObject["Temperature_Interval"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("PartialVapourPressure_Interval"))
             {
-                PartialVapourPressure_Interval = jObject.Value<double>("PartialVapourPressure_Interval");
+                PartialVapourPressure_Interval = jObject["PartialVapourPressure_Interval"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Density_Line"))
             {
-                Density_Line = jObject.Value<bool>("Density_Line");
+                Density_Line = jObject["Density_Line"]?.GetValue<bool>() ?? default(bool);
             }
             if (jObject.ContainsKey("Enthalpy_Line"))
             {
-                Enthalpy_Line = jObject.Value<bool>("Enthalpy_Line");
+                Enthalpy_Line = jObject["Enthalpy_Line"]?.GetValue<bool>() ?? default(bool);
             }
             if (jObject.ContainsKey("SpecificVolume_Line"))
             {
-                SpecificVolume_Line = jObject.Value<bool>("SpecificVolume_Line");
+                SpecificVolume_Line = jObject["SpecificVolume_Line"]?.GetValue<bool>() ?? default(bool);
             }
             if (jObject.ContainsKey("WetBulbTemperature_Line"))
             {
-                WetBulbTemperature_Line = jObject.Value<bool>("WetBulbTemperature_Line");
+                WetBulbTemperature_Line = jObject["WetBulbTemperature_Line"]?.GetValue<bool>() ?? default(bool);
             }
             if (jObject.ContainsKey("WetBulbTemperature_Line"))
             {
-                PartialVapourPressure_Axis = jObject.Value<bool>("PartialVapourPressure_Axis");
+                PartialVapourPressure_Axis = jObject["PartialVapourPressure_Axis"]?.GetValue<bool>() ?? default(bool);
             }
             if (jObject.ContainsKey("Color"))
             {
-                DefaultTemplateName = jObject.Value<string>("Color");
+                DefaultTemplateName = jObject["Color"]?.GetValue<string>() ?? null;
             }
             if (jObject.ContainsKey("ChartType"))
             {
-                if (Enum.TryParse(jObject.Value<string>("ChartType"), out ChartType chartType))
+                if (Enum.TryParse(jObject["ChartType"]?.GetValue<string>() ?? null, out ChartType chartType))
                 {
                     ChartType = chartType;
                 }
             }
             if (jObject.ContainsKey("VisibilitySettings"))
             {
-                JObject jObject_VisibilitySettings = jObject.Value<JObject>("VisibilitySettings");
+                JsonObject jObject_VisibilitySettings = jObject["VisibilitySettings"] as JsonObject;
                 if (jObject_VisibilitySettings != null)
                 {
                     VisibilitySettings = new VisibilitySettings(jObject_VisibilitySettings);
@@ -340,7 +340,7 @@ namespace SAM.Core.Mollier.UI
 
             if (jObject.ContainsKey("PointGradientVisibilitySetting"))
             {
-                JObject jObject_PointGradientVisibilitySetting = jObject.Value<JObject>("PointGradientVisibilitySetting");
+                JsonObject jObject_PointGradientVisibilitySetting = jObject["PointGradientVisibilitySetting"] as JsonObject;
                 if (jObject_PointGradientVisibilitySetting != null)
                 {
                     PointGradientVisibilitySetting = new PointGradientVisibilitySetting(jObject_PointGradientVisibilitySetting);
@@ -349,160 +349,160 @@ namespace SAM.Core.Mollier.UI
 
             if (jObject.ContainsKey("DivisionAreaEnthalpy_Interval"))
             {
-                DivisionAreaEnthalpy_Interval = jObject.Value<int>("DivisionAreaEnthalpy_Interval");
+                DivisionAreaEnthalpy_Interval = jObject["DivisionAreaEnthalpy_Interval"]?.GetValue<int>() ?? default(int);
             }
             if (jObject.ContainsKey("DivisionAreaRelativeHumidity_Interval"))
             {
-                DivisionAreaRelativeHumidity_Interval = jObject.Value<int>("DivisionAreaRelativeHumidity_Interval");
+                DivisionAreaRelativeHumidity_Interval = jObject["DivisionAreaRelativeHumidity_Interval"]?.GetValue<int>() ?? default(int);
             }
 
             if(jObject.ContainsKey("VisualizeSolver"))
             {
-                VisualizeSolver = jObject.Value<bool>("VisualizeSolver");
+                VisualizeSolver = jObject["VisualizeSolver"]?.GetValue<bool>() ?? default(bool);
             }
             if (jObject.ContainsKey("DisableUnits"))
             {
-                DisableUnits = jObject.Value<bool>("DisableUnits");
+                DisableUnits = jObject["DisableUnits"]?.GetValue<bool>() ?? default(bool);
             }
             if (jObject.ContainsKey("DisableLabels"))
             {
-                DisableLabels = jObject.Value<bool>("DisableLabels");
+                DisableLabels = jObject["DisableLabels"]?.GetValue<bool>() ?? default(bool);
             }
 
             //Enthalpy
             if (jObject.ContainsKey("Enthalpy_Max"))
             {
-                Enthalpy_Max = jObject.Value<double>("Enthalpy_Max");
+                Enthalpy_Max = jObject["Enthalpy_Max"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Enthalpy_Min"))
             {
-                Enthalpy_Min = jObject.Value<double>("Enthalpy_Min");
+                Enthalpy_Min = jObject["Enthalpy_Min"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Enthalpy_Interval"))
             {
-                Enthalpy_Interval = jObject.Value<double>("Enthalpy_Interval");
+                Enthalpy_Interval = jObject["Enthalpy_Interval"]?.GetValue<double>() ?? default(double);
             }
 
             //Density
             if (jObject.ContainsKey("Density_Max"))
             {
-                Density_Max = jObject.Value<double>("Density_Max");
+                Density_Max = jObject["Density_Max"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Density_Min"))
             {
-                Density_Min = jObject.Value<double>("Density_Min");
+                Density_Min = jObject["Density_Min"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("Density_Interval"))
             {
-                Density_Interval = jObject.Value<double>("Density_Interval");
+                Density_Interval = jObject["Density_Interval"]?.GetValue<double>() ?? default(double);
             }
 
             //SpecificVolume
             if (jObject.ContainsKey("SpecificVolume_Max"))
             {
-                SpecificVolume_Max = jObject.Value<double>("SpecificVolume_Max");
+                SpecificVolume_Max = jObject["SpecificVolume_Max"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("SpecificVolume_Min"))
             {
-                SpecificVolume_Min = jObject.Value<double>("SpecificVolume_Min");
+                SpecificVolume_Min = jObject["SpecificVolume_Min"]?.GetValue<double>() ?? default(double);
             }
             if (jObject.ContainsKey("SpecificVolume_Interval"))
             {
-                SpecificVolume_Interval = jObject.Value<double>("SpecificVolume_Interval");
+                SpecificVolume_Interval = jObject["SpecificVolume_Interval"]?.GetValue<double>() ?? default(double);
             }
 
             if (jObject.ContainsKey("DisableStartProcessPoint"))
             {
-                DisableStartProcessPoint = jObject.Value<bool>("DisableStartProcessPoint");
+                DisableStartProcessPoint = jObject["DisableStartProcessPoint"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("DisableEndProcessPoint"))
             {
-                DisableEndProcessPoint = jObject.Value<bool>("DisableEndProcessPoint");
+                DisableEndProcessPoint = jObject["DisableEndProcessPoint"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("DisablePointBoarder"))
             {
-                DisablePointBoarder = jObject.Value<bool>("DisablePointBoarder");
+                DisablePointBoarder = jObject["DisablePointBoarder"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("ProccessLineThickness"))
             {
-                ProccessLineThickness = jObject.Value<int>("ProccessLineThickness");
+                ProccessLineThickness = jObject["ProccessLineThickness"]?.GetValue<int>() ?? default(int);
             }
 
             if (jObject.ContainsKey("DisableLabelStartProcessPoint"))
             {
-                DisableLabelStartProcessPoint = jObject.Value<bool>("DisableLabelStartProcessPoint");
+                DisableLabelStartProcessPoint = jObject["DisableLabelStartProcessPoint"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("DisableLabelEndProcessPoint"))
             {
-                DisableLabelEndProcessPoint = jObject.Value<bool>("DisableLabelEndProcessPoint");
+                DisableLabelEndProcessPoint = jObject["DisableLabelEndProcessPoint"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("DisableLabelProcess"))
             {
-                DisableLabelProcess = jObject.Value<bool>("DisableLabelProcess");
+                DisableLabelProcess = jObject["DisableLabelProcess"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("PointBoarderColor"))
             {
-                PointBorderColor = new SAMColor(jObject.Value<JObject>("PointBoarderColor")).ToColor();
+                PointBorderColor = new SAMColor(jObject["PointBoarderColor"] as JsonObject).ToColor();
             }
 
             if (jObject.ContainsKey("PointColor"))
             {
-                PointColor = new SAMColor(jObject.Value<JObject>("PointColor")).ToColor();
+                PointColor = new SAMColor(jObject["PointColor"] as JsonObject).ToColor();
             }
 
             if (jObject.ContainsKey("DisablePoint"))
             {
-                DisablePoint = jObject.Value<bool>("DisablePoint");
+                DisablePoint = jObject["DisablePoint"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("DisableCoolingAuxiliaryProcesses"))
             {
-                DisableCoolingAuxiliaryProcesses = jObject.Value<bool>("DisableCoolingAuxiliaryProcesses");
+                DisableCoolingAuxiliaryProcesses = jObject["DisableCoolingAuxiliaryProcesses"]?.GetValue<bool>() ?? default(bool);
             }
 
             if (jObject.ContainsKey("MollierWindowWidth"))
             {
-                MollierWindowWidth = jObject.Value<int>("MollierWindowWidth");
+                MollierWindowWidth = jObject["MollierWindowWidth"]?.GetValue<int>() ?? default(int);
             }
 
             if (jObject.ContainsKey("MollierWindowHeight"))
             {
-                MollierWindowHeight = jObject.Value<int>("MollierWindowHeight");
+                MollierWindowHeight = jObject["MollierWindowHeight"]?.GetValue<int>() ?? default(int);
             }
 
             if (jObject.ContainsKey("PsychrometricWindowWidth"))
             {
-                PsychrometricWindowWidth = jObject.Value<int>("PsychrometricWindowWidth");
+                PsychrometricWindowWidth = jObject["PsychrometricWindowWidth"]?.GetValue<int>() ?? default(int);
             }
 
             if (jObject.ContainsKey("PsychrometricWindowHeight"))
             {
-                PsychrometricWindowHeight = jObject.Value<int>("PsychrometricWindowHeight");
+                PsychrometricWindowHeight = jObject["PsychrometricWindowHeight"]?.GetValue<int>() ?? default(int);
             }
 
             if (jObject.ContainsKey("PointBorderSize"))
             {
-                PointBorderSize = jObject.Value<int>("PointBorderSize");
+                PointBorderSize = jObject["PointBorderSize"]?.GetValue<int>() ?? default(int);
             }
 
             if (jObject.ContainsKey("PointSize"))
             {
-                PointSize = jObject.Value<int>("PointSize");
+                PointSize = jObject["PointSize"]?.GetValue<int>() ?? default(int);
             }
 
             return true;
         }
 
         //saving to file
-        public JObject ToJObject()
+        public JsonObject ToJsonObject()
         {
-            JObject result = new JObject();
+            JsonObject result = new JsonObject();
             result.Add("_type", Core.Query.FullTypeName(this));
 
             if (!double.IsNaN(Pressure))
@@ -553,12 +553,12 @@ namespace SAM.Core.Mollier.UI
             result.Add("ChartType", ChartType.ToString());
             if (VisibilitySettings != null)
             {
-                result.Add("VisibilitySettings", VisibilitySettings.ToJObject());
+                result.Add("VisibilitySettings", VisibilitySettings.ToJsonObject());
             }
 
             if(PointGradientVisibilitySetting != null)
             {
-                result.Add("PointGradientVisibilitySetting", PointGradientVisibilitySetting.ToJObject());
+                result.Add("PointGradientVisibilitySetting", PointGradientVisibilitySetting.ToJsonObject());
             }
 
             result.Add("DivisionAreaEnthalpy_Interval", DivisionAreaEnthalpy_Interval);
@@ -615,8 +615,8 @@ namespace SAM.Core.Mollier.UI
             result.Add("DisableLabelEndProcessPoint", DisableLabelEndProcessPoint);
             result.Add("DisableLabelProcess", DisableLabelProcess);
 
-            result.Add("PointBoarderColor", new SAMColor(PointBorderColor).ToJObject());
-            result.Add("PointColor", new SAMColor(PointColor).ToJObject());
+            result.Add("PointBoarderColor", new SAMColor(PointBorderColor).ToJsonObject());
+            result.Add("PointColor", new SAMColor(PointColor).ToJsonObject());
 
             result.Add("DisablePoint", DisablePoint);
 

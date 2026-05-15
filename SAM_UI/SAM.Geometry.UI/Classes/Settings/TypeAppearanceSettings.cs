@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using SAM.Core;
 using SAM.Core.UI;
 
@@ -14,7 +14,7 @@ namespace SAM.Geometry.UI
             valueAppearanceSettings = new ParameterAppearanceSettings(parameterName);
         }
 
-        public TypeAppearanceSettings(JObject jObject)
+        public TypeAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {
 
@@ -73,7 +73,7 @@ namespace SAM.Geometry.UI
             return base.IsValid(jSAMObject);
         }
 
-        public override bool FromJObject(JObject jObject)
+        public override bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -82,20 +82,20 @@ namespace SAM.Geometry.UI
 
             if (jObject.ContainsKey("ValueAppearanceSettings"))
             {
-                valueAppearanceSettings = Core.Query.IJSAMObject(jObject.Value<JObject>("ValueAppearanceSettings")) as ValueAppearanceSettings;
+                valueAppearanceSettings = Core.Query.IJSAMObject(jObject["ValueAppearanceSettings"] as JsonObject) as ValueAppearanceSettings;
             }
 
             return true;
         }
 
-        public override JObject ToJObject()
+        public override JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             if(valueAppearanceSettings != null)
             {
-                jObject.Add("ValueAppearanceSettings", valueAppearanceSettings.ToJObject());
+                jObject.Add("ValueAppearanceSettings", valueAppearanceSettings.ToJsonObject());
             }
 
             return jObject;

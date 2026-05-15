@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 using System;
 using System.Drawing;
 
@@ -24,7 +24,7 @@ namespace SAM.Core.Mollier.UI
             ChartDataType = ChartDataType.Undefined;
         }
 
-        public BuiltInVisibilitySetting(JObject jObject)
+        public BuiltInVisibilitySetting(JsonObject jObject)
             : base(jObject)
         {
 
@@ -37,16 +37,16 @@ namespace SAM.Core.Mollier.UI
             ChartDataType = builtInVisibilitySetting.ChartDataType;
         }
 
-        public override bool FromJObject(JObject jObject)
+        public override bool FromJsonObject(JsonObject jObject)
         {
-            if(!base.FromJObject(jObject))
+            if(!base.FromJsonObject(jObject))
             {
                 return false;
             }
 
             if (jObject.ContainsKey("ChartDataType"))
             {
-                if (Enum.TryParse(jObject.Value<string>("ChartDataType"), out ChartDataType chartDataType))
+                if (Enum.TryParse(jObject["ChartDataType"]?.GetValue<string>() ?? null, out ChartDataType chartDataType))
                 {
                     ChartDataType = chartDataType;
                 }
@@ -54,7 +54,7 @@ namespace SAM.Core.Mollier.UI
 
             if (jObject.ContainsKey("ChartParameterType"))
             {
-                if (Enum.TryParse(jObject.Value<string>("ChartParameterType"), out ChartParameterType chartParameterType))
+                if (Enum.TryParse(jObject["ChartParameterType"]?.GetValue<string>() ?? null, out ChartParameterType chartParameterType))
                 {
                     ChartParameterType = chartParameterType;
                 }
@@ -63,9 +63,9 @@ namespace SAM.Core.Mollier.UI
             return true;
         }
 
-        public override JObject ToJObject()
+        public override JsonObject ToJsonObject()
         {
-            JObject jObject = base.ToJObject();
+            JsonObject jObject = base.ToJsonObject();
             if(jObject == null)
             {
                 return null;

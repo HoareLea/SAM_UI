@@ -1,5 +1,5 @@
 ﻿
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
@@ -29,7 +29,7 @@ namespace SAM.Analytical.UI
             }
         }
 
-        public ZoneAppearanceSettings(JObject jObject)
+        public ZoneAppearanceSettings(JsonObject jObject)
             : base(jObject)
         {
 
