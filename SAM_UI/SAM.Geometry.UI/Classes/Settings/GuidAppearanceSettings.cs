@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using System.Text.Json.Nodes;
 using SAM.Core;
 using SAM.Geometry.Object;
 using System;
@@ -16,9 +18,9 @@ namespace SAM.Geometry.UI
 
         }
 
-        public GuidAppearanceSettings(JObject jObject)
+        public GuidAppearanceSettings(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
         public GuidAppearanceSettings(GuidAppearanceSettings appearanceSettings)
@@ -150,7 +152,7 @@ namespace SAM.Geometry.UI
             return GetAppearances<IAppearance>(guid);
         }
 
-        public virtual bool FromJObject(JObject jObject)
+        public virtual bool FromJsonObject(JsonObject jObject)
         {
             if(jObject == null)
             {
@@ -161,27 +163,37 @@ namespace SAM.Geometry.UI
             {
                 appearanceDictionary = new Dictionary<Guid, List<IAppearance>>();
 
-                JArray jArray = jObject.Value<JArray>("AppearanceDictionary");
+                JsonArray jArray = jObject["AppearanceDictionary"] as JsonArray;
                 if(jArray != null)
                 {
-                    foreach(JObject jObject_Temp in jArray)
+                    foreach(JsonNode jsonNode_Temp in jArray)
                     {
+                        if (!(jsonNode_Temp is JsonObject jObject_Temp))
+                        {
+                            continue;
+                        }
+
                         if(!jObject_Temp.ContainsKey("Guid"))
                         {
                             continue;
                         }
 
-                        Guid guid = Guid.Parse(jObject_Temp.Value<string>("Guid"));
+                        Guid guid = Guid.Parse(jObject_Temp["Guid"]?.GetValue<string>() ?? null);
 
                         List<IAppearance> appearances = null;
                         if (!jObject_Temp.ContainsKey("Appearances"))
                         {
                             appearances = new List<IAppearance>();
-                            JArray jArray_Appearance = jObject.Value<JArray>("Appearances");
+                            JsonArray jArray_Appearance = jObject["Appearances"] as JsonArray;
                             if(jArray_Appearance != null)
                             {
-                                foreach(JObject jObject_Appearance in jArray_Appearance)
+                                foreach(JsonNode jsonNode_Appearance in jArray_Appearance)
                                 {
+                                    if (!(jsonNode_Appearance is JsonObject jObject_Appearance))
+                                    {
+                                        continue;
+                                    }
+
                                     IAppearance appearance = Core.Create.IJSAMObject<IAppearance>(jObject_Appearance);
                                     if(appearance != null)
                                     {
@@ -199,14 +211,14 @@ namespace SAM.Geometry.UI
             return true;
         }
 
-        public virtual JObject ToJObject()
+        public virtual JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             if(appearanceDictionary != null)
             {
-                JArray jArray = new JArray();
+                JsonArray jArray = new JsonArray();
                 foreach(KeyValuePair<Guid, List<IAppearance>> keyValuePair in appearanceDictionary)
                 {
                     if(keyValuePair.Value == null)
@@ -214,13 +226,13 @@ namespace SAM.Geometry.UI
                         continue;
                     }
 
-                    JObject jObject_Temp = new JObject();
+                    JsonObject jObject_Temp = new JsonObject();
                     jObject_Temp.Add("Guid", keyValuePair.Key);
 
-                    JArray jArray_Appearance = new JArray();
+                    JsonArray jArray_Appearance = new JsonArray();
                     foreach(IAppearance appearance in keyValuePair.Value)
                     {
-                        JObject jObject_Appearance = appearance?.ToJObject();
+                        JsonObject jObject_Appearance = appearance?.ToJsonObject();
                         if(jObject_Appearance == null)
                         {
                             continue;

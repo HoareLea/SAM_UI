@@ -90,9 +90,7 @@
     <PackageReference Include="NetOfficeFw.Excel">
       <Version>1.9.7</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.3</Version>
-    </PackageReference>
+    <PackageReference Include="System.Text.Json" Version="10.0.8" />
     <PackageReference Include="RibbonWinForms">
       <Version>5.1.0-beta</Version>
     </PackageReference>

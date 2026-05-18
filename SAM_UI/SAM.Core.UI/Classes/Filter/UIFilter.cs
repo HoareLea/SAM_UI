@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using System.Text.Json.Nodes;
 using System;
 
 namespace SAM.Core.UI
@@ -9,9 +11,9 @@ namespace SAM.Core.UI
         private Type type;
         private T filter;
 
-        public UIFilter(JObject jObject)
+        public UIFilter(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
         
         public UIFilter(string name, Type type, T filter)
@@ -91,7 +93,7 @@ namespace SAM.Core.UI
             return filter.IsValid(jSAMObject);
         }
 
-        public bool FromJObject(JObject jObject)
+        public bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -100,25 +102,25 @@ namespace SAM.Core.UI
 
             if (jObject.ContainsKey("Name"))
             {
-                name = jObject.Value<string>("Name");
+                name = jObject["Name"]?.GetValue<string>() ?? null;
             }
 
             if (jObject.ContainsKey("Type"))
             {
-                type = Core.Query.Type(jObject.Value<string>("Type"));
+                type = Core.Query.Type(jObject["Type"]?.GetValue<string>() ?? null);
             }
 
             if (jObject.ContainsKey("Filter"))
             {
-                filter = (T)Core.Query.IJSAMObject(jObject.Value<JObject>("Filter"));
+                filter = (T)Core.Query.IJSAMObject(jObject["Filter"] as JsonObject);
             }
 
             return true;
         }
 
-        public JObject ToJObject()
+        public JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             if (name != null)
@@ -133,7 +135,7 @@ namespace SAM.Core.UI
 
             if(filter != null)
             {
-                jObject.Add("Filter", filter.ToJObject());
+                jObject.Add("Filter", filter.ToJsonObject());
             }
 
 

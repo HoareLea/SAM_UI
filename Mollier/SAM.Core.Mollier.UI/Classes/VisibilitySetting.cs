@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using System.Text.Json.Nodes;
 using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
@@ -19,12 +21,12 @@ namespace SAM.Core.Mollier.UI
             Color = visibilitySetting.Color;
             Visible = visibilitySetting.Visible;
         }
-        public VisibilitySetting(JObject jObject)
+        public VisibilitySetting(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
-        public virtual bool FromJObject(JObject jObject)
+        public virtual bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -33,7 +35,7 @@ namespace SAM.Core.Mollier.UI
 
             if (jObject.ContainsKey("Color"))
             {
-                JObject jObject_Color = jObject.Value<JObject>("Color");
+                JsonObject jObject_Color = jObject["Color"] as JsonObject;
                 if (jObject_Color != null)
                 {
                     SAMColor sAMColor = new SAMColor(jObject_Color);
@@ -46,20 +48,20 @@ namespace SAM.Core.Mollier.UI
 
             if (jObject.ContainsKey("Visible"))
             {
-                Visible = jObject.Value<bool>("Visible");
+                Visible = jObject["Visible"]?.GetValue<bool>() ?? default(bool);
             }
 
             return true;
         }
 
-        public virtual JObject ToJObject()
+        public virtual JsonObject ToJsonObject()
         {
-            JObject result = new JObject();
+            JsonObject result = new JsonObject();
             result.Add("_type", Core.Query.FullTypeName(this));
 
             if (Color != Color.Empty)
             {
-                result.Add("Color", (new SAMColor(Color)).ToJObject());
+                result.Add("Color", (new SAMColor(Color)).ToJsonObject());
             }
 
             result.Add("Visible", Visible);
