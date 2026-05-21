@@ -401,7 +401,8 @@ namespace SAM.Analytical.UI.WPF
                 UseWidths = UseWidths,
                 CreateTPD = CreateTPD,
                 Sizing = Sizing,
-                CreatePartL = CreatePartL
+                CreatePartL = CreatePartL,
+                UpdateConstructionLayersByPanelType = UpdateConstructionLayersByPanelType
             };
 
             return result;
@@ -433,6 +434,8 @@ namespace SAM.Analytical.UI.WPF
             WeatherData = simulateOptions.WeatherData;
 
             Sizing = simulateOptions.Sizing;
+
+            UpdateConstructionLayersByPanelType = simulateOptions.UpdateConstructionLayersByPanelType;
 
             return true;
         }

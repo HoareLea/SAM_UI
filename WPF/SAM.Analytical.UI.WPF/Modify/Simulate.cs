@@ -392,6 +392,10 @@ namespace SAM.Analytical.UI.WPF
             simulateWindow_Path.ProjectName = System.IO.Path.GetFileNameWithoutExtension(path);
             simulateWindow_Path.OutputDirectory = System.IO.Path.GetDirectoryName(path);
             simulateWindow_Path.WeatherData = weatherData;
+            // Mirror the WinForms SimulateForm default that this overload replaced:
+            // sizing is on by default for the path-based simulation flow.
+            simulateWindow_Path.Sizing = true;
+            simulateWindow_Path.UpdateConstructionLayersByPanelType = true;
 
             if (owner != null)
             {

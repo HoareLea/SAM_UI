@@ -24,6 +24,7 @@ namespace SAM.Analytical.UI.WPF
         public bool CreatePartL { get; set; } = false;
         public bool UseWidths { get; set; } = false;
         public bool Sizing { get; set; } = true;
+        public bool UpdateConstructionLayersByPanelType { get; set; } = true;
 
         public TextMap TextMap { get; set; } = Analytical.Query.DefaultInternalConditionTextMap_TM59();
 
@@ -52,6 +53,7 @@ namespace SAM.Analytical.UI.WPF
                 CreateTPD = simulateOptions.CreateTPD;
                 Sizing = simulateOptions.Sizing;
                 CreatePartL = simulateOptions.CreatePartL;
+                UpdateConstructionLayersByPanelType = simulateOptions.UpdateConstructionLayersByPanelType;
             }
         }
 
@@ -155,6 +157,11 @@ namespace SAM.Analytical.UI.WPF
                 Sizing = jObject["Sizing"]?.GetValue<bool>() ?? default(bool);
             }
 
+            if (jObject.ContainsKey("UpdateConstructionLayersByPanelType"))
+            {
+                UpdateConstructionLayersByPanelType = jObject["UpdateConstructionLayersByPanelType"]?.GetValue<bool>() ?? default(bool);
+            }
+
             return true;
         }
 
@@ -219,6 +226,8 @@ namespace SAM.Analytical.UI.WPF
             result.Add("UseWidths", UseWidths);
 
             result.Add("Sizing", Sizing);
+
+            result.Add("UpdateConstructionLayersByPanelType", UpdateConstructionLayersByPanelType);
 
             if (TextMap != null)
             {
