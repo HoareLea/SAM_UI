@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using System.Text.Json.Nodes;
 using System.Collections.Generic;
 
 namespace SAM.Core.UI
@@ -22,30 +24,30 @@ namespace SAM.Core.UI
             }
         }
 
-        public ComplexReferenceAppearanceSettings(JObject jObject)
+        public ComplexReferenceAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {
 
         }
 
-        public override bool FromJObject(JObject jObject)
+        public override bool FromJsonObject(JsonObject jObject)
         {
-            if(!base.FromJObject(jObject))
+            if(!base.FromJsonObject(jObject))
             {
                 return false;
             }
 
             if(jObject.ContainsKey("ComplexReference"))
             {
-                ComplexReference = Core.Query.IJSAMObject<IComplexReference>(jObject.Value<JObject>("ComplexReference"));
+                ComplexReference = Core.Query.IJSAMObject<IComplexReference>(jObject["ComplexReference"] as JsonObject);
             }
 
             return true;
         }
 
-        public override JObject ToJObject()
+        public override JsonObject ToJsonObject()
         {
-            JObject result = base.ToJObject();
+            JsonObject result = base.ToJsonObject();
             if(result == null)
             {
                 return null;
@@ -53,7 +55,7 @@ namespace SAM.Core.UI
 
             if(ComplexReference != null)
             {
-                result.Add("ComplexReference", ComplexReference.ToJObject());
+                result.Add("ComplexReference", ComplexReference.ToJsonObject());
             }
 
             return result;

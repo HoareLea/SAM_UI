@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
              xmlns:WPF="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF" x:Class="SAM.Analytical.UI.WPF.SimulateControl"
              mc:Ignorable="d" 
-             d:DesignHeight="630" d:DesignWidth="350">
+             d:DesignHeight="650" d:DesignWidth="350">
     <Grid>
         <Label Content="Project Name:" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBox_ProjectName" HorizontalAlignment="Stretch" Height="23" Margin="10,36,10.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
@@ -17,6 +17,8 @@
         <CheckBox x:Name="checkBox_RoomDataSheets" Content="Print Room Data Sheets (RDS)" HorizontalAlignment="Left" Margin="30,425,0,0" VerticalAlignment="Top"/>
 
         <CheckBox x:Name="checkBox_CreatePartL" Content="Create Part L" HorizontalAlignment="Left" Margin="30,450,0,0" VerticalAlignment="Top"/>
+
+        <CheckBox x:Name="checkBox_UpdateConstructionLayersByPanelType" Content="Update Construction Layers By Panel Type" HorizontalAlignment="Left" Margin="30,473,0,0" VerticalAlignment="Top" IsChecked="True"/>
 
         <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_WeatherData" HorizontalAlignment="Stretch" Margin="10,157,10.4,0" VerticalAlignment="Top" Height="22"/>
 
@@ -38,7 +40,7 @@
                 <TextBox x:Name="textBox_FullYearSimulation_To" HorizontalAlignment="Left" Height="23" Margin="278,109,0,0" TextWrapping="Wrap" Text="365" VerticalAlignment="Top" Width="30" PreviewTextInput="textBox_FullYearSimulation_To_PreviewTextInput"/>
             </Grid>
         </GroupBox>
-        <GroupBox Margin="10,480,10,0" VerticalAlignment="Top" Height="140">
+        <GroupBox Margin="10,500,10,0" VerticalAlignment="Top" Height="140">
             <Grid>
                 <CheckBox x:Name="checkBox_CreateSAP" Content="Create SAP" HorizontalAlignment="Left" Margin="204,10,0,0" VerticalAlignment="Top" Click="checkBox_CreateSAP_Click"/>
                 <CheckBox x:Name="checkBox_CreateTM59" Content="Domestic Overheating" HorizontalAlignment="Left" Margin="13,10,0,0" VerticalAlignment="Top" Click="checkBox_CreateTM59_Click"/>

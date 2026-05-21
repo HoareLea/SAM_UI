@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using System.Text.Json.Nodes;
 using SAM.Core;
 using SAM.Core.UI;
 using SAM.Geometry.Object;
@@ -30,7 +32,7 @@ namespace SAM.Geometry.UI
             this.valueAppearanceSettings = valueAppearanceSettings == null ? null : valueAppearanceSettings.ToList().ConvertAll(x => x.Clone());
         }
 
-        public ViewSettings(JObject jObject)
+        public ViewSettings(JsonObject jObject)
             : base(jObject)
         {
         }
@@ -243,9 +245,9 @@ namespace SAM.Geometry.UI
             return types.Contains(type);
         }
 
-        public override bool FromJObject(JObject jObject)
+        public override bool FromJsonObject(JsonObject jObject)
         {
-            bool result = base.FromJObject(jObject);
+            bool result = base.FromJsonObject(jObject);
             if (!result)
             {
                 return result;
@@ -253,37 +255,42 @@ namespace SAM.Geometry.UI
 
             if (jObject.ContainsKey("GuidAppearanceSettings"))
             {
-                guidAppearanceSettings = new GuidAppearanceSettings(jObject.Value<JObject>("GuidAppearanceSettings"));
+                guidAppearanceSettings = new GuidAppearanceSettings(jObject["GuidAppearanceSettings"] as JsonObject);
             }
 
             if (jObject.ContainsKey("Types"))
             {
-                types = new Types(jObject.Value<JObject>("Types"));
+                types = new Types(jObject["Types"] as JsonObject);
             }
 
             if (jObject.ContainsKey("Legend"))
             {
-                legend = new Legend(jObject.Value<JObject>("Legend"));
+                legend = new Legend(jObject["Legend"] as JsonObject);
             }
 
             if (jObject.ContainsKey("Camera"))
             {
-                camera = Core.Query.IJSAMObject(jObject.Value<JObject>("Camera")) as Camera;
+                camera = Core.Query.IJSAMObject(jObject["Camera"] as JsonObject) as Camera;
             }
 
             if (jObject.ContainsKey("Enabled"))
             {
-                enabled = jObject.Value<bool>("Enabled");
+                enabled = jObject["Enabled"]?.GetValue<bool>() ?? default(bool);
             }
 
             if(jObject.ContainsKey("ValueAppearanceSettings"))
             {
-                JArray jArray = jObject.Value<JArray>("ValueAppearanceSettings");
+                JsonArray jArray = jObject["ValueAppearanceSettings"] as JsonArray;
                 if(jArray != null)
                 {
                     valueAppearanceSettings = new List<ValueAppearanceSettings>();
-                    foreach(JObject jObject_Temp in jArray)
+                    foreach(JsonNode jsonNode_Temp in jArray)
                     {
+                        if (!(jsonNode_Temp is JsonObject jObject_Temp))
+                        {
+                            continue;
+                        }
+
                         ValueAppearanceSettings valueAppearanceSettings_Temp = Core.Query.IJSAMObject(jObject_Temp) as ValueAppearanceSettings;
                         if(valueAppearanceSettings_Temp != null)
                         {
@@ -414,36 +421,36 @@ namespace SAM.Geometry.UI
             return true;
         }
         
-        public override JObject ToJObject()
+        public override JsonObject ToJsonObject()
         {
-            JObject jObject = base.ToJObject();
+            JsonObject jObject = base.ToJsonObject();
 
             if (guidAppearanceSettings != null)
             {
-                jObject.Add("GuidAppearanceSettings", guidAppearanceSettings.ToJObject());
+                jObject.Add("GuidAppearanceSettings", guidAppearanceSettings.ToJsonObject());
             }
 
             if (types != null)
             {
-                jObject.Add("Types", types.ToJObject());
+                jObject.Add("Types", types.ToJsonObject());
             }
 
             if (legend != null)
             {
-                jObject.Add("Legend", legend.ToJObject());
+                jObject.Add("Legend", legend.ToJsonObject());
             }
 
             if (camera != null)
             {
-                jObject.Add("Camera", camera.ToJObject());
+                jObject.Add("Camera", camera.ToJsonObject());
             }
 
             if (valueAppearanceSettings != null)
             {
-                JArray jArray = new JArray();
+                JsonArray jArray = new JsonArray();
                 foreach(ValueAppearanceSettings valueAppearanceSettings_Temp in valueAppearanceSettings)
                 {
-                    JObject jObject_Temp = valueAppearanceSettings_Temp?.ToJObject();
+                    JsonObject jObject_Temp = valueAppearanceSettings_Temp?.ToJsonObject();
                     if(jObject_Temp != null)
                     {
                         jArray.Add(jObject_Temp);

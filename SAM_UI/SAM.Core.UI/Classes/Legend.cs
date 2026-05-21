@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using System.Text.Json.Nodes;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -73,9 +75,9 @@ namespace SAM.Core.UI
             }
         }
 
-        public Legend(JObject jObject)
+        public Legend(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
         public int Add(LegendItem legendItem)
@@ -288,7 +290,7 @@ namespace SAM.Core.UI
             }
         }
 
-        public bool FromJObject(JObject jObject)
+        public bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -297,12 +299,17 @@ namespace SAM.Core.UI
 
             if(jObject.ContainsKey("LegendItems"))
             {
-                JArray jArray = jObject.Value<JArray>("LegendItems");
+                JsonArray jArray = jObject["LegendItems"] as JsonArray;
                 if(jArray != null)
                 {
                     legendItems = new List<LegendItem>();
-                    foreach(JObject jObject_LegendItem in jArray)
+                    foreach(JsonNode jsonNode_LegendItem in jArray)
                     {
+                        if (!(jsonNode_LegendItem is JsonObject jObject_LegendItem))
+                        {
+                            continue;
+                        }
+
                         if(jObject_LegendItem == null)
                         {
                             continue;
@@ -315,20 +322,20 @@ namespace SAM.Core.UI
 
             if (jObject.ContainsKey("Name"))
             {
-                name = jObject.Value<string>("Name");
+                name = jObject["Name"]?.GetValue<string>() ?? null;
             }
 
             if (jObject.ContainsKey("Visible"))
             {
-                visible = jObject.Value<bool>("Visible");
+                visible = jObject["Visible"]?.GetValue<bool>() ?? default(bool);
             }
 
             return true;
         }
 
-        public JObject ToJObject()
+        public JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             if (name != null)
@@ -338,10 +345,10 @@ namespace SAM.Core.UI
 
             if (legendItems != null)
             {
-                JArray jArray = new JArray();
+                JsonArray jArray = new JsonArray();
                 foreach(LegendItem legendItem in legendItems)
                 {
-                    JObject jObject_LegendItem = legendItem?.ToJObject();
+                    JsonObject jObject_LegendItem = legendItem?.ToJsonObject();
                     if(jObject_LegendItem == null)
                     {
                         continue;

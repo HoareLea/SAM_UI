@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using System.Text.Json.Nodes;
 using System.Drawing;
 
 namespace SAM.Core.Mollier.UI
@@ -21,7 +23,7 @@ namespace SAM.Core.Mollier.UI
             }
         }
 
-        public PointGradientVisibilitySetting(JObject jObject)
+        public PointGradientVisibilitySetting(JsonObject jObject)
             : base(jObject)
         {
 
@@ -34,16 +36,16 @@ namespace SAM.Core.Mollier.UI
             GradientColor = gradientColor;
         }
 
-        public override bool FromJObject(JObject jObject)
+        public override bool FromJsonObject(JsonObject jObject)
         {
-            if (!base.FromJObject(jObject))
+            if (!base.FromJsonObject(jObject))
             {
                 return false;
             }
 
             if (jObject.ContainsKey("GradientColor"))
             {
-                JObject jObject_Color = jObject.Value<JObject>("GradientColor");
+                JsonObject jObject_Color = jObject["GradientColor"] as JsonObject;
                 if (jObject_Color != null)
                 {
                     SAMColor sAMColor = new SAMColor(jObject_Color);
@@ -56,20 +58,20 @@ namespace SAM.Core.Mollier.UI
 
             if (jObject.ContainsKey("ChartParameterType"))
             {
-                ChartParameterType = Core.Query.Enum<ChartParameterType>(jObject.Value<string>("ChartParameterType"));
+                ChartParameterType = Core.Query.Enum<ChartParameterType>(jObject["ChartParameterType"]?.GetValue<string>() ?? null);
             }
 
             if (jObject.ContainsKey("ChartDataType"))
             {
-                ChartDataType = Core.Query.Enum<ChartDataType>(jObject.Value<string>("ChartDataType"));
+                ChartDataType = Core.Query.Enum<ChartDataType>(jObject["ChartDataType"]?.GetValue<string>() ?? null);
             }
 
             return true;
         }
 
-        public override JObject ToJObject()
+        public override JsonObject ToJsonObject()
         {
-            JObject jObject = base.ToJObject();
+            JsonObject jObject = base.ToJsonObject();
             if (jObject == null)
             {
                 return null;
@@ -77,7 +79,7 @@ namespace SAM.Core.Mollier.UI
 
             if (GradientColor != Color.Empty)
             {
-                jObject.Add("GradientColor", (new SAMColor(GradientColor)).ToJObject());
+                jObject.Add("GradientColor", (new SAMColor(GradientColor)).ToJsonObject());
             }
 
             jObject.Add("ChartParameterType", ChartParameterType.ToString());

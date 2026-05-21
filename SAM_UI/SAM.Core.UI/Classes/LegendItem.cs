@@ -1,7 +1,8 @@
 ﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
-using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 using System;
 using System.Drawing;
 
@@ -29,9 +30,9 @@ namespace SAM.Core.UI
             }
         }
 
-        public LegendItem(JObject jObject)
+        public LegendItem(JsonObject jObject)
         {
-            FromJObject(jObject);
+            FromJsonObject(jObject);
         }
 
         public Color Color
@@ -63,7 +64,7 @@ namespace SAM.Core.UI
             }
         }
 
-        public bool FromJObject(JObject jObject)
+        public bool FromJsonObject(JsonObject jObject)
         {
             if (jObject == null)
             {
@@ -72,7 +73,7 @@ namespace SAM.Core.UI
 
             if(jObject.ContainsKey("Color"))
             {
-                SAMColor sAMColor = Core.Query.IJSAMObject(jObject.Value<JObject>("Color")) as SAMColor;
+                SAMColor sAMColor = Core.Query.IJSAMObject(jObject["Color"] as JsonObject) as SAMColor;
                 if(sAMColor == null)
                 {
                     color = Color.Empty;
@@ -85,25 +86,25 @@ namespace SAM.Core.UI
 
             if (jObject.ContainsKey("Text"))
             {
-                text = jObject.Value<string>("Text");
+                text = jObject["Text"]?.GetValue<string>() ?? null;
             }
 
             if (jObject.ContainsKey("Editable"))
             {
-                editable = jObject.Value<bool>("Editable");
+                editable = jObject["Editable"]?.GetValue<bool>() ?? default(bool);
             }
 
             return true;
         }
 
-        public JObject ToJObject()
+        public JsonObject ToJsonObject()
         {
-            JObject jObject = new JObject();
+            JsonObject jObject = new JsonObject();
             jObject.Add("_type", Core.Query.FullTypeName(this));
 
             if (color != Color.Empty)
             {
-                jObject.Add("Color", new SAMColor(color).ToJObject());
+                jObject.Add("Color", new SAMColor(color).ToJsonObject());
             }
 
             if(text != null)

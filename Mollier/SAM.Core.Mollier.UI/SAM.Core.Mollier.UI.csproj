@@ -110,15 +110,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="iTextSharp">
-      <Version>5.5.13.4</Version>
-    </PackageReference>
     <PackageReference Include="NetOfficeFw.Excel">
       <Version>1.9.7</Version>
     </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.3</Version>
-    </PackageReference>
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' != 'net48-windows' ">
     <PackageReference Include="WinForms.DataVisualization" Version="1.10.0" />

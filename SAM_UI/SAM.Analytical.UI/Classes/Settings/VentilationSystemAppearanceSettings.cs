@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using System.Text.Json.Nodes;
 using SAM.Geometry.UI;
 
 namespace SAM.Analytical.UI
@@ -18,7 +20,7 @@ namespace SAM.Analytical.UI
 
         }
 
-        public VentilationSystemAppearanceSettings(JObject jObject)
+        public VentilationSystemAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {
         }
