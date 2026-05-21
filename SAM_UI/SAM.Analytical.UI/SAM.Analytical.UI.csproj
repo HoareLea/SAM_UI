@@ -76,18 +76,10 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="Controls\SimulateControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="NetOfficeFw.Excel">
       <Version>1.9.7</Version>
     </PackageReference>
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
-    <PackageReference Include="RibbonWinForms">
-      <Version>5.1.0-beta</Version>
-    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Mollier\SAM.Core.Mollier.UI\SAM.Core.Mollier.UI.csproj" />

@@ -1,7 +1,11 @@
-﻿using System;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+using System.Windows;
+using Microsoft.Win32;
 
 namespace SAM.Core.UI
 {
@@ -151,13 +155,13 @@ namespace SAM.Core.UI
 
             if (modified && jSAMObject != null)
             {
-                DialogResult dialogResult = MessageBox.Show("Do you want to save before closing?", "Save", MessageBoxButtons.YesNoCancel);
-                if(dialogResult == DialogResult.Cancel)
+                MessageBoxResult dialogResult = MessageBox.Show("Do you want to save before closing?", "Save", MessageBoxButton.YesNoCancel);
+                if(dialogResult == MessageBoxResult.Cancel)
                 {
                     return false;
                 }
 
-                if(dialogResult == DialogResult.Yes)
+                if(dialogResult == MessageBoxResult.Yes)
                 {
                     bool result = Save();
                     if(!result)
@@ -207,19 +211,18 @@ namespace SAM.Core.UI
 
             if(string.IsNullOrWhiteSpace(path))
             {
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+                SaveFileDialog saveFileDialog = new SaveFileDialog()
                 {
-                    saveFileDialog.Filter = "json files (*.json)|*.json|All files (*.*)|*.*";
-                    saveFileDialog.FilterIndex = 1;
-                    saveFileDialog.RestoreDirectory = true;
+                    Filter = "json files (*.json)|*.json|All files (*.*)|*.*",
+                    FilterIndex = 1
+                };
 
-                    if (saveFileDialog.ShowDialog() != DialogResult.OK)
-                    {
-                        return false;
-                    }
-
-                    path = saveFileDialog.FileName;
+                if(saveFileDialog.ShowDialog() != true)
+                {
+                    return false;
                 }
+
+                path = saveFileDialog.FileName;
             }
 
             bool result = Core.Convert.ToFile(new IJSAMObject[] { jSAMObject }, path);

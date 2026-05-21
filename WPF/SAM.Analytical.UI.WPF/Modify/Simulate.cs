@@ -71,7 +71,7 @@ namespace SAM.Analytical.UI.WPF
             bool useWidths = simulateWindow.UseWidths;
 
             SolarCalculationMethod solarCalculationMethod = simulateWindow.SolarCalculationMethod;
-            bool updateConstructionLayersByPanelType = true;
+            bool updateConstructionLayersByPanelType = simulateWindow.UpdateConstructionLayersByPanelType;
 
             TextMap textMap = simulateWindow.SelectedTextMap;
             weatherData = simulateWindow.SelectedWeatherData;
@@ -388,28 +388,44 @@ namespace SAM.Analytical.UI.WPF
             SolarCalculationMethod solarCalculationMethod = SolarCalculationMethod.None;
             bool updateConstructionLayersByPanelType = false;
 
-            using (Forms.SimulateForm simulateForm = new Forms.SimulateForm(System.IO.Path.GetFileNameWithoutExtension(path), System.IO.Path.GetDirectoryName(path)))
-            {
-                simulateForm.WeatherData = weatherData;
-                if (simulateForm.ShowDialog(owner) != DialogResult.OK)
-                {
-                    return null;
-                }
+            SimulateWindow simulateWindow_Path = new SimulateWindow();
+            simulateWindow_Path.ProjectName = System.IO.Path.GetFileNameWithoutExtension(path);
+            simulateWindow_Path.OutputDirectory = System.IO.Path.GetDirectoryName(path);
+            simulateWindow_Path.WeatherData = weatherData;
 
-                projectName = simulateForm.ProjectName;
-                outputDirectory = simulateForm.OutputDirectory;
-                unmetHours = simulateForm.UnmetHours;
-                sizing = simulateForm.Sizing;
-                weatherData = simulateForm.WeatherData;
-                solarCalculationMethod = simulateForm.SolarCalculationMethod;
-                updateConstructionLayersByPanelType = simulateForm.UpdateConstructionLayersByPanelType;
-                printRoomDataSheets = simulateForm.PrintRoomDataSheets;
-                fullYearSimulation = simulateForm.FullYearSimulation;
-                if (fullYearSimulation)
-                {
-                    fullYearSimulation_From = simulateForm.FullYearSimulation_From;
-                    fullYearSimulation_To = simulateForm.FullYearSimulation_To;
-                }
+            if (owner != null)
+            {
+                new System.Windows.Interop.WindowInteropHelper(simulateWindow_Path).Owner = owner.Handle;
+            }
+
+            if (simulateWindow_Path.ShowDialog() != true)
+            {
+                return null;
+            }
+
+            projectName = simulateWindow_Path.ProjectName;
+            outputDirectory = simulateWindow_Path.OutputDirectory;
+            unmetHours = simulateWindow_Path.UnmetHours;
+            sizing = simulateWindow_Path.Sizing;
+            weatherData = simulateWindow_Path.SelectedWeatherData;
+            solarCalculationMethod = simulateWindow_Path.SolarCalculationMethod;
+            updateConstructionLayersByPanelType = simulateWindow_Path.UpdateConstructionLayersByPanelType;
+            printRoomDataSheets = simulateWindow_Path.RoomDataSheets;
+            fullYearSimulation = simulateWindow_Path.FullYearSimulation;
+            if (fullYearSimulation)
+            {
+                fullYearSimulation_From = simulateWindow_Path.FullYearSimulation_From;
+                fullYearSimulation_To = simulateWindow_Path.FullYearSimulation_To;
+            }
+
+            if (string.IsNullOrWhiteSpace(projectName))
+            {
+                return null;
+            }
+
+            if (string.IsNullOrWhiteSpace(outputDirectory) || !System.IO.Directory.Exists(outputDirectory))
+            {
+                return null;
             }
 
             if (weatherData == null)

@@ -1,10 +1,10 @@
-﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 
-namespace SAM.Core.UI
+namespace SAM.Core.Mollier.UI
 {
     public class HooverTimer
     {
@@ -103,7 +103,7 @@ namespace SAM.Core.UI
                 return;
             }
 
-            Update?.Invoke(control, mouseEventArgs); 
+            Update?.Invoke(control, mouseEventArgs);
             timer.Stop();
             timer.Enabled = false;
         }

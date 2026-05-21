@@ -259,6 +259,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public bool UpdateConstructionLayersByPanelType
+        {
+            get
+            {
+                return simulateControl.UpdateConstructionLayersByPanelType;
+            }
+
+            set
+            {
+                simulateControl.UpdateConstructionLayersByPanelType = value;
+            }
+        }
+
         public SimulateOptions SimulateOptions
         {
             get

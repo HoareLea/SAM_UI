@@ -218,6 +218,19 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        public bool UpdateConstructionLayersByPanelType
+        {
+            get
+            {
+                return checkBox_UpdateConstructionLayersByPanelType.IsChecked != null && checkBox_UpdateConstructionLayersByPanelType.IsChecked.HasValue && checkBox_UpdateConstructionLayersByPanelType.IsChecked.Value;
+            }
+
+            set
+            {
+                checkBox_UpdateConstructionLayersByPanelType.IsChecked = value;
+            }
+        }
+
         public bool FullYearSimulation
         {
             get
