@@ -1,6 +1,55 @@
 # Project Progress
 
-## Current: SAM Documentation Framework Phase 1 - COMPLETE (closeout 26 Sep 2026)
+## Current: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - COMPLETE, awaiting owner review
+
+**New programme** (separate from the closed Part O UX programme). Goal: different final Part O strategies per
+dwelling (NV / MVHR + product / retained design airflow / cooling) in ONE analytical model, ONE annual TAS run,
+TM59 as final authority. **PR0 = investigation only. No production code in any repo. Do not start PR1 until
+the owner approves the PR0 report.**
+
+- **Report (authoritative):** SAM `documentation/PartO-MixedDwellingStrategies-PR0.md`. It contains the current
+  mutation map, 20 composability verdicts, blockers C1-C10, the recommended architecture, the authority model,
+  the PR sequence with gates, migration notes and open questions. It is linked from SAM
+  `documentation/PartO-ARCHITECTURE.md` §9.
+- **Evidence:** SAM `SAM/SAM.Tests/PartOMixedStrategyProofTests.cs`, 12 disposable proof tests
+  (`Category=PR0Investigation`) asserting today's behaviour. **12/12 pass.** The SAM Part O/Part F suite is
+  **1236/1236** green including them.
+- **Branches (local, not pushed):**
+  - SAM `investigation/parto-mixed-strategies-pr0`, from `sow/2026-Q3` `00db4b85`;
+  - SAM_UI `docs/parto-mixed-strategies-pr0-2026-09-26`, from `sow/2026-Q3` `7ab24f8` (this file only).
+- **Key findings:**
+  - A mixed route in one `PreparePartOIteration` call is refused.
+  - Per-dwelling calls are safe for MVHR next to MVHR. But preparing ANY MVHR dwelling writes Part F rates and
+    unconnected terminals onto EVERY sized space, including NV and unassessed flats. The rewrite of internal
+    conditions is irreversible (P1, P11).
+  - A dwelling cannot go from MVHR back to NV: the design is kept under an NV scenario (P4).
+  - An automatic unit selection re-selects a manual product (P3).
+  - Unit names follow call order (P2).
+  - SAM_Tas and TM59 are already per space and per AHU, with one weather per simulation.
+  - Cooling has no model or scenario identity. Any cooling forces the TPD / no-IZAM route on the whole
+    building.
+- **Decisions recorded:**
+  - Mixed materialisation starts from a CLEAN pre-Part-O baseline; sanitising back is rejected (P11).
+  - `PartODwellingStrategy` is persisted INTENT only: mode, optional product, cooling (gated),
+    `DesignAirFlowBasis` + terminal-set fingerprint.
+  - A retained 2B airflow lives ONLY on the baseline's `VentilationTerminal`s, through an explicit
+    per-dwelling "accept" design edit. No second airflow store.
+  - Materialisation is one deterministic SAM call from baseline + intent. The previous mixed model is never
+    mutated.
+  - Cooled mixed operation is UNRESOLVED until licensed TPD proof; PR1 records cooling and refuses it.
+- **Proposed PRs:**
+  - PR1 SAM: authority + materialisation.
+  - PR2 SAM_UI: dwelling grid + mixed workflow on the IZAM route.
+  - PR3 SAM + SAM_Tas: cooling authority + licensed proof.
+  - PR4: real TAS acceptance + deploy.
+- **Owner to confirm before PR1:**
+  - whether legacy projects whose open model was already materialised must reopen their pre-Part-O source;
+  - the default for the corridor / common-space scenario;
+  - where "all MVHR" project constraints live.
+- **Next step:** owner reviews the PR0 report. Then push both branches and open docs/investigation PRs into
+  `sow/2026-Q3` if wanted. PR1 starts only after approval.
+
+## Previous: SAM Documentation Framework Phase 1 - COMPLETE (closeout 26 Sep 2026)
 
 ```text
 SAM Documentation Framework — Phase 1
