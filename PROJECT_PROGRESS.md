@@ -1,6 +1,71 @@
 # Project Progress
 
-## Current: SAM Documentation Framework Phase 1 - COMPLETE (closeout 26 Sep 2026)
+## Current: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - APPROVED; PR0 PRs being merged
+
+**Owner approved PR0 (26 Sep 2026).** Binding decisions are recorded at the top of the SAM report:
+1. A clean baseline is mandatory; there is no undo/adopt, and materialisation fails explicitly on a
+   non-baseline model.
+2. Assessed common/corridor spaces are included automatically. They are not grid rows, and they are
+   classified from state, never from names.
+3. Project-wide constraints (such as all-MVHR or product pools) are project settings.
+4. The 2B airflow stays only on `VentilationTerminal`; the strategy holds a reference or fingerprint only.
+5. Cooling is recorded and refused in PR1.
+
+The order is PR1 SAM → PR2 SAM_UI → PR3 cooling + licensed proof → PR4 acceptance/deploy.
+PR1 starts only after the PR0 PRs are merged.
+
+**New programme** (separate from the closed Part O UX programme). Goal: different final Part O strategies per
+dwelling (NV / MVHR + product / retained design airflow / cooling) in ONE analytical model, ONE annual TAS run,
+TM59 as final authority. **PR0 = investigation only. No production code in any repo.**
+
+- **Report (authoritative):** SAM `documentation/PartO-MixedDwellingStrategies-PR0.md`. It contains the current
+  mutation map, 21 composability verdicts, blockers C1-C11, the recommended architecture, the authority model,
+  the PR sequence with gates, migration notes and open questions. It is linked from SAM
+  `documentation/PartO-ARCHITECTURE.md` §9.
+- **Evidence:** SAM `SAM/SAM.Tests/PartOMixedStrategyProofTests.cs`, 13 disposable proof tests
+  (`Category=PR0Investigation`) asserting today's behaviour. **13/13 pass.** The SAM Part O/Part F suite is
+  **1238/1238** green including them.
+  - P12 shows that a reused authored conditioned unit keeps its supply temperature, and its movement then
+    carries cooling. PR1 must refuse that under `ActiveCooling = None`.
+- **PRs:**
+  - [SAM-BIM/SAM#149](https://github.com/SAM-BIM/SAM/pull/149): branch `investigation/parto-mixed-strategies-pr0`,
+    from `sow/2026-Q3` `00db4b85`; report, proof tests and SAM `PROJECT_PROGRESS.md`. CI green.
+  - [SAM-BIM/SAM_UI#125](https://github.com/SAM-BIM/SAM_UI/pull/125): branch
+    `docs/parto-mixed-strategies-pr0-2026-09-26`, from `sow/2026-Q3` `7ab24f8`; this file only.
+  - Merge order: SAM first, then SAM_UI.
+- **Key findings:**
+  - A mixed route in one `PreparePartOIteration` call is refused.
+  - Per-dwelling calls are safe for MVHR next to MVHR. But preparing ANY MVHR dwelling writes Part F rates and
+    unconnected terminals onto EVERY sized space, including NV and unassessed flats. The rewrite of internal
+    conditions is irreversible (P1, P11).
+  - A dwelling cannot go from MVHR back to NV: the design is kept under an NV scenario (P4).
+  - An automatic unit selection re-selects a manual product (P3).
+  - Unit names follow call order (P2).
+  - SAM_Tas and TM59 are already per space and per AHU, with one weather per simulation.
+  - Cooling has no model or scenario identity. Any cooling forces the TPD / no-IZAM route on the whole
+    building.
+- **Decisions recorded:**
+  - Mixed materialisation starts from a CLEAN pre-Part-O baseline; sanitising back is rejected (P11).
+  - `PartODwellingStrategy` is persisted INTENT only: mode, optional product, cooling (gated),
+    `DesignAirFlowBasis` + terminal-set fingerprint.
+  - A retained 2B airflow lives ONLY on the baseline's `VentilationTerminal`s, through an explicit
+    per-dwelling "accept" design edit. No second airflow store.
+  - Materialisation is one deterministic SAM call from baseline + intent. The previous mixed model is never
+    mutated.
+  - Cooled mixed operation is UNRESOLVED until licensed TPD proof; PR1 records cooling and refuses it.
+- **Proposed PRs:**
+  - PR1 SAM: authority + materialisation.
+  - PR2 SAM_UI: dwelling grid + mixed workflow on the IZAM route.
+  - PR3 SAM + SAM_Tas: cooling authority + licensed proof.
+  - PR4: real TAS acceptance + deploy.
+- **Open owner questions:** none. All three are resolved by the decisions above:
+  - legacy materialised projects reopen their pre-Part-O source (decision 1);
+  - common spaces are included automatically (decision 2);
+  - constraints are project settings (decision 3).
+- **Next step:** once SAM#149 and SAM_UI#125 are merged, start **PR1 (SAM)** in a fresh session from the merged
+  `sow/2026-Q3`. Follow SAM report §D-§F and the owner decisions. No owner review is outstanding.
+
+## Previous: SAM Documentation Framework Phase 1 - COMPLETE (closeout 26 Sep 2026)
 
 ```text
 SAM Documentation Framework — Phase 1
