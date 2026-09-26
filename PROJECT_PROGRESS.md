@@ -16,8 +16,7 @@ PR1 starts only after the PR0 PRs are merged.
 
 **New programme** (separate from the closed Part O UX programme). Goal: different final Part O strategies per
 dwelling (NV / MVHR + product / retained design airflow / cooling) in ONE analytical model, ONE annual TAS run,
-TM59 as final authority. **PR0 = investigation only. No production code in any repo. Do not start PR1 until
-the owner approves the PR0 report.**
+TM59 as final authority. **PR0 = investigation only. No production code in any repo.**
 
 - **Report (authoritative):** SAM `documentation/PartO-MixedDwellingStrategies-PR0.md`. It contains the current
   mutation map, 20 composability verdicts, blockers C1-C10, the recommended architecture, the authority model,
@@ -26,9 +25,12 @@ the owner approves the PR0 report.**
 - **Evidence:** SAM `SAM/SAM.Tests/PartOMixedStrategyProofTests.cs`, 12 disposable proof tests
   (`Category=PR0Investigation`) asserting today's behaviour. **12/12 pass.** The SAM Part O/Part F suite is
   **1236/1236** green including them.
-- **Branches (local, not pushed):**
-  - SAM `investigation/parto-mixed-strategies-pr0`, from `sow/2026-Q3` `00db4b85`;
-  - SAM_UI `docs/parto-mixed-strategies-pr0-2026-09-26`, from `sow/2026-Q3` `7ab24f8` (this file only).
+- **PRs:**
+  - [SAM-BIM/SAM#149](https://github.com/SAM-BIM/SAM/pull/149): branch `investigation/parto-mixed-strategies-pr0`,
+    from `sow/2026-Q3` `00db4b85`; report, proof tests and SAM `PROJECT_PROGRESS.md`. CI green.
+  - [SAM-BIM/SAM_UI#125](https://github.com/SAM-BIM/SAM_UI/pull/125): branch
+    `docs/parto-mixed-strategies-pr0-2026-09-26`, from `sow/2026-Q3` `7ab24f8`; this file only.
+  - Merge order: SAM first, then SAM_UI.
 - **Key findings:**
   - A mixed route in one `PreparePartOIteration` call is refused.
   - Per-dwelling calls are safe for MVHR next to MVHR. But preparing ANY MVHR dwelling writes Part F rates and
@@ -54,12 +56,12 @@ the owner approves the PR0 report.**
   - PR2 SAM_UI: dwelling grid + mixed workflow on the IZAM route.
   - PR3 SAM + SAM_Tas: cooling authority + licensed proof.
   - PR4: real TAS acceptance + deploy.
-- **Owner to confirm before PR1:**
-  - whether legacy projects whose open model was already materialised must reopen their pre-Part-O source;
-  - the default for the corridor / common-space scenario;
-  - where "all MVHR" project constraints live.
-- **Next step:** owner reviews the PR0 report. Then push both branches and open docs/investigation PRs into
-  `sow/2026-Q3` if wanted. PR1 starts only after approval.
+- **Open owner questions:** none. All three are resolved by the decisions above:
+  - legacy materialised projects reopen their pre-Part-O source (decision 1);
+  - common spaces are included automatically (decision 2);
+  - constraints are project settings (decision 3).
+- **Next step:** once SAM#149 and SAM_UI#125 are merged, start **PR1 (SAM)** in a fresh session from the merged
+  `sow/2026-Q3`. Follow SAM report §D-§F and the owner decisions. No owner review is outstanding.
 
 ## Previous: SAM Documentation Framework Phase 1 - COMPLETE (closeout 26 Sep 2026)
 
