@@ -19,12 +19,14 @@ dwelling (NV / MVHR + product / retained design airflow / cooling) in ONE analyt
 TM59 as final authority. **PR0 = investigation only. No production code in any repo.**
 
 - **Report (authoritative):** SAM `documentation/PartO-MixedDwellingStrategies-PR0.md`. It contains the current
-  mutation map, 20 composability verdicts, blockers C1-C10, the recommended architecture, the authority model,
+  mutation map, 21 composability verdicts, blockers C1-C11, the recommended architecture, the authority model,
   the PR sequence with gates, migration notes and open questions. It is linked from SAM
   `documentation/PartO-ARCHITECTURE.md` §9.
-- **Evidence:** SAM `SAM/SAM.Tests/PartOMixedStrategyProofTests.cs`, 12 disposable proof tests
-  (`Category=PR0Investigation`) asserting today's behaviour. **12/12 pass.** The SAM Part O/Part F suite is
-  **1236/1236** green including them.
+- **Evidence:** SAM `SAM/SAM.Tests/PartOMixedStrategyProofTests.cs`, 13 disposable proof tests
+  (`Category=PR0Investigation`) asserting today's behaviour. **13/13 pass.** The SAM Part O/Part F suite is
+  **1238/1238** green including them.
+  - P12 shows that a reused authored conditioned unit keeps its supply temperature, and its movement then
+    carries cooling. PR1 must refuse that under `ActiveCooling = None`.
 - **PRs:**
   - [SAM-BIM/SAM#149](https://github.com/SAM-BIM/SAM/pull/149): branch `investigation/parto-mixed-strategies-pr0`,
     from `sow/2026-Q3` `00db4b85`; report, proof tests and SAM `PROJECT_PROGRESS.md`. CI green.
