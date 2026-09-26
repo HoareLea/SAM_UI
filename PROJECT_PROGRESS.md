@@ -1,6 +1,18 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - COMPLETE, awaiting owner review
+## Current: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - APPROVED; PR0 PRs being merged
+
+**Owner approved PR0 (26 Sep 2026).** Binding decisions are recorded at the top of the SAM report:
+1. A clean baseline is mandatory; there is no undo/adopt, and materialisation fails explicitly on a
+   non-baseline model.
+2. Assessed common/corridor spaces are included automatically. They are not grid rows, and they are
+   classified from state, never from names.
+3. Project-wide constraints (such as all-MVHR or product pools) are project settings.
+4. The 2B airflow stays only on `VentilationTerminal`; the strategy holds a reference or fingerprint only.
+5. Cooling is recorded and refused in PR1.
+
+The order is PR1 SAM → PR2 SAM_UI → PR3 cooling + licensed proof → PR4 acceptance/deploy.
+PR1 starts only after the PR0 PRs are merged.
 
 **New programme** (separate from the closed Part O UX programme). Goal: different final Part O strategies per
 dwelling (NV / MVHR + product / retained design airflow / cooling) in ONE analytical model, ONE annual TAS run,
