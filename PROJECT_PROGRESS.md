@@ -39,7 +39,7 @@ SAM_UI pass 6).
     MVHR / corridor on IZAM, Systems (Iteration 3 stages, materialiser's scenarios) and Systems DV-off. All TM59
     verdicts identical. NV Studio 1_0 (6 windows) RMSE 0.06 K (0.01 K warm), window ventilation gain identical
     (−4,612 vs −4,565 kWh) → **NV free-runs correctly on the Systems route**. Evidence
-    `documentation/evidence/parto-mixed-pr3a/route-proof-*.{log,txt}`, files `C:\TasOut\parto-mixed-pr3a-route-proof-2026-09-27\`.
+    `documentation/evidence/parto-mixed-pr3a/route-proof-*.txt`, files `C:\TasOut\parto-mixed-pr3a-route-proof-2026-09-27\`.
   - **Why MVHR differs:** not heat recovery (neither route), not airflow (equal). IZAM plant zone pre-cools supply
     (−1.37 K mean vs outdoor at ODB ≥ 20 °C, max 4.85 K - artefact); Systems two-pass coupling (≤ 0.25 K warm);
     `DisplacementVentilation` forced `true` by SAM_Systems for parity (≤ 0.03 K here; suppresses MG bypass, SAM#129).

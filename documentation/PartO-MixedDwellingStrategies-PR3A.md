@@ -248,7 +248,7 @@ materialised model is run three ways, all with the same weather/case: (1) the PR
 SAM_Systems `Materialise` (MV, Flat 2+3 units) → `Route` → `ResultantTemperatures` → `PartOTM59Assessment.Assess`
 with **the materialiser's own per-zone scenarios**; (3) as (2) with `DisplacementVentilation` cleared on all six
 system zones. All completed. Numbers: `evidence/parto-mixed-pr3a/route-proof-comparison-2026-09-27.txt`; log with
-the three TM59 reports: `evidence/parto-mixed-pr3a/route-proof-2026-09-27.log`; files `C:\TasOut\parto-mixed-pr3a-route-proof-2026-09-27\` (local).
+the three TM59 reports: `evidence/parto-mixed-pr3a/route-proof-2026-09-27.log.txt`; files `C:\TasOut\parto-mixed-pr3a-route-proof-2026-09-27\` (local).
 
 Systems minus IZAM, hourly resultant temperature (1,604 h with outdoor ≥ 20 °C):
 
