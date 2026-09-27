@@ -88,10 +88,13 @@ SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwelling
   bound to the simulation case; cancelled rerun re-validates; run notes surfaced); Accept dialog starts in the output folder
   with an empty name and answers plainly for the open baseline (native check, no TAS). SAM#152 Codex rounds fixed up to
   `e558db01` (merged up with sow `8a22c82b`, SAM#153). WPF **1307/1307**, SAM.Tests 2568/2568; Codex on cf67983 (screening notes, explicit product under unticked catalogue) fixed.
-- **Not done / risks:** SAM#152 unmerged (SAM_UI CI red until then); Optimised *screening* (2B inside screening) deferred;
+- **SAM#152 MERGED 27 Sep as `be84d7b8`** (head `204bfea9`, after 7 Codex rounds + a local high-effort review standing in
+  when Codex hit its usage limit - owner-approved). Local SAM fast-forwarded and rebuilt; SAM.Tests 2569/2569; SAM_UI
+  against it: WPF 1307/1307, mixed 62/62. Codex also at its limit for SAM_UI's last heads (local high review stood in).
+- **Not done / risks:** Optimised *screening* (2B inside screening) deferred;
   the 2B result file is chosen by the engineer (a capacity-envelope `-OptMax` file is indistinguishable by state - the
   confirmation shows every airflow); product pool not editable here; suggestion policy in SAM_UI (PR0 D6 later).
-- **Next step:** owner reviews/merges SAM#152 → re-run SAM_UI#126 CI → Codex re-review → Michal's manual acceptance
+- **Next step:** SAM_UI#126 CI green against merged SAM → Codex re-review when its limit resets → Michal's manual acceptance
   (procedure in the self-test report; now with Accept optimised airflow instead of the pre-accepted fixture). Do NOT start
   PR3 cooling before that.
 
