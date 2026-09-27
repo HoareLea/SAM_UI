@@ -187,3 +187,13 @@ Save → restart → reopen: still **current**, selection restored, Open result 
 weather copy and the reopened case key identically. Saved baseline: no systems/units/scenarios/results/record; F3's
 accepted terminals only. Sidecar: `OccupiedSpaceComplianceStatus: Fail`, `CorridorRiskStatus: SignificantRisk`,
 `SpaceCount_Unassessed: 0`, `SimulationCaseKey` recorded.
+
+## 11. Owner manual acceptance - PASS (Michal, 27 Sep 2026, 20:45-20:50)
+
+Real exe (build of #126 against SAM `be84d7b8`), real TAS, the procedure in the closeout report: clean baseline
+`Block-Mixed.sam` → F1 Natural, F2 MVHR Nuaire XBC15, F3 Accept optimised airflow (real 26 Sep `-Opt10.prepared.sam`) →
+Check → Build & Run → TM59 → Save → reopen. Result "FAIL — 1 dwelling pass · 2 fail · 0 not assessed · communal corridor:
+significant risk (Corridor_1)" (owner/owner-build-result.png); after reopen the same selection and a current result
+(owner/owner-reopen.png). Files checked: run model F3 terminals 143/95/48 l/s, F2 63/55/8; saved `Block-Mixed.sam` has no
+systems/scenarios/results, only the strategy set and F3's accepted terminals; sidecar OccupiedSpaceComplianceStatus Fail,
+CorridorRiskStatus SignificantRisk, SpaceCount_Unassessed 0, SimulationCaseKey recorded.

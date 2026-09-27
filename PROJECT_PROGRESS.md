@@ -94,7 +94,10 @@ SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwelling
 - **Not done / risks:** Optimised *screening* (2B inside screening) deferred;
   the 2B result file is chosen by the engineer (a capacity-envelope `-OptMax` file is indistinguishable by state - the
   confirmation shows every airflow); product pool not editable here; suggestion policy in SAM_UI (PR0 D6 later).
-- **Next step:** SAM_UI#126 CI green against merged SAM → Codex re-review when its limit resets → Michal's manual acceptance
+- **Owner manual acceptance: PASS (Michal, 27 Sep 2026)** - evidence record §11 (Natural + XBC15 MVHR + accepted 2B
+  Optimised, one real TAS run, corridor risk in the project result, save/reopen current, source baseline clean).
+- **Next step:** owner merges SAM_UI#126 (and SAM docs PR #157); Codex re-review optional when its limit resets. Then PR3
+  (cooling) may start in a fresh session - not before #126 is merged
   (procedure in the self-test report; now with Accept optimised airflow instead of the pre-accepted fixture). Do NOT start
   PR3 cooling before that.
 
