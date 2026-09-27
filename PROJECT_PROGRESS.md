@@ -1,6 +1,6 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR2 SAM_UI dwelling strategies + mixed-model workflow (27 Sep 2026) - PR OPEN, awaiting review
+## Previous: Mixed Part O dwelling strategies - PR2 SAM_UI dwelling strategies + mixed-model workflow (27 Sep 2026) - MERGED (SAM_UI#126 `2a341255`, SAM#157 `33eb00f3`)
 
 **Branch** `feature/parto-mixed-strategies-pr2` from `sow/2026-Q3` `c96ac19` (PR0 merged). Builds against SAM
 `sow/2026-Q3` `0f866ec6` (PR1 = SAM#150 merged `3de02102`; closeout SAM#151). **SAM must be built at `0f866ec6` or
@@ -96,10 +96,31 @@ SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwelling
   confirmation shows every airflow); product pool not editable here; suggestion policy in SAM_UI (PR0 D6 later).
 - **Owner manual acceptance: PASS (Michal, 27 Sep 2026)** - evidence record §11 (Natural + XBC15 MVHR + accepted 2B
   Optimised, one real TAS run, corridor risk in the project result, save/reopen current, source baseline clean).
-- **Next step:** owner merges SAM_UI#126 (and SAM docs PR #157); Codex re-review optional when its limit resets. Then PR3
-  (cooling) may start in a fresh session - not before #126 is merged
-  (procedure in the self-test report; now with Accept optimised airflow instead of the pre-accepted fixture). Do NOT start
-  PR3 cooling before that.
+- **Closeout (27 Sep 2026):** [SAM#152](https://github.com/SAM-BIM/SAM/pull/152) was already merged as `be84d7b8`.
+  [SAM#157](https://github.com/SAM-BIM/SAM/pull/157) (docs: record SAM#152 merge) went `CONFLICTING` after unrelated
+  PR2B/PR2C reporting merges (SAM#156, SAM#158) advanced `sow/2026-Q3` past its base - PROJECT_PROGRESS.md only,
+  resolved by merging `sow/2026-Q3` into the PR157 branch and combining both docs edits (no engineering conflict);
+  pushed as `a8c4e35c`, CI green (build/test/spdx), merged. [SAM_UI#126](https://github.com/SAM-BIM/SAM_UI/pull/126)
+  head `8ea4f84` (owner manual acceptance record only, on top of the already-tested implementation) - CI green
+  (build/spdx), clean/mergeable, merged. Codex was usage-capped throughout closeout; not waited on - all P1/P2
+  findings up to the merged heads were already fixed, native TAS acceptance and the owner's independent manual
+  acceptance had both passed.
+  - **Final SHAs:** SAM#152 `be84d7b8`; SAM#157 `33eb00f3c6e12fddd120dc8a2eee7191008a8bd4`; SAM_UI#126
+    `2a341255cba1f6a6ff265e50575c34f7e00c6e68`.
+  - **Final integration heads:** SAM `sow/2026-Q3` = `33eb00f3` (SAM_UI#126's own CI already built against this SAM
+    tip); SAM_UI `sow/2026-Q3` = `2a34125`. Both local checkouts fast-forwarded; neither branch moved further after
+    these merges (re-fetched and confirmed).
+  - **Post-merge validation:** relied on each PR's own green CI (already run against the merged heads) plus the
+    fast-forward merges themselves (no new diff beyond the PR content) - full local rebuild and the licensed TAS
+    acceptance were not repeated, per closeout instructions.
+  - **Known limitations carried forward (unchanged from the self-test/correction pass above):** optimised (2B)
+    *screening* still deferred; the 2B result file is still chosen by the engineer (no state marker distinguishes a
+    capacity-envelope `-OptMax` file); product pool not editable from the mixed window; suggestion policy in SAM_UI
+    still open (PR0 D6).
+- **Next step (PR3 cooling - fresh session, not started here):** extend the mixed-model workflow to cooling per the
+  self-test report's procedure (§ Accept optimised airflow replaces the old pre-accepted fixture as the 2B source).
+  Read this closeout entry plus `documentation/PartO-MixedDwellingStrategies-PR2.md` first; build SAM_UI against SAM
+  `sow/2026-Q3` `33eb00f3` or later.
 
 ## Previous: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - MERGED (SAM#149, SAM_UI#125); PR1 MERGED (SAM#150 `3de02102`)
 
