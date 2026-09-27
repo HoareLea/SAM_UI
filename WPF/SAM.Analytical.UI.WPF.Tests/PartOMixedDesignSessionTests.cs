@@ -26,6 +26,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel baseline = PartOMixedDesignFixture.Baseline(12, corridor: true, category: "Block");
 
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
 
             Assert.Equal(12, partOMixedDesignSession.Rows.Count);
             Assert.DoesNotContain(partOMixedDesignSession.Rows, x => x.Name == PartOMixedDesignFixture.Corridor);
@@ -43,6 +44,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void Filters_AndSearch_NarrowTheRows()
         {
             PartOMixedDesignSession partOMixedDesignSession = new(PartOMixedDesignFixture.Baseline(4), null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             partOMixedDesignSession.SetNatural([rows[0], rows[1]]);
@@ -64,6 +66,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void Readiness_CountsTheSelectedDesign_AndBlocksMissingSelections()
         {
             PartOMixedDesignSession partOMixedDesignSession = new(PartOMixedDesignFixture.Baseline(4), null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             partOMixedDesignSession.SetNatural([rows[0]]);
@@ -86,6 +89,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = PartOMixedDesignFixture.Baseline(3);
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             partOMixedDesignSession.SetNatural([rows[0], rows[1]]);
@@ -113,6 +117,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = PartOMixedDesignFixture.Baseline(3);
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             //A manual override: Flat 01 forced to MVHR although it will pass naturally.
@@ -149,6 +154,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void Suggestion_FollowsLeastIntervention_FilteredByConstraints_AndNeverReadsNotRunAsPass()
         {
             PartOMixedDesignSession partOMixedDesignSession = new(PartOMixedDesignFixture.Baseline(3), null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             PartOScreeningEvidence natural = Evidence(partOMixedDesignSession, PartOScreeningStrategy.Natural, (rows[0], PartODwellingOutcome.Pass), (rows[1], PartODwellingOutcome.Fail));
@@ -179,6 +185,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = PartOMixedDesignFixture.Baseline(2);
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             PartOScreeningEvidence natural = Evidence(partOMixedDesignSession, PartOScreeningStrategy.Natural, (rows[0], PartODwellingOutcome.Pass), (rows[1], PartODwellingOutcome.Pass));
@@ -196,6 +203,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void BulkAssignment_SetsEverySelectedRow_AndConstraintsRefuseItWhole()
         {
             PartOMixedDesignSession partOMixedDesignSession = new(PartOMixedDesignFixture.Baseline(25), null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             Assert.Null(partOMixedDesignSession.SetMvhr(rows.Take(20), null));
@@ -226,6 +234,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             withPool.SetValue(Analytical.AnalyticalModelParameter.PartOEquipmentSelection, new PartOEquipmentSelection(PartOEquipmentSelectionMode.AutomaticSelectedPool, [small.VentilationUnitReference]));
 
             PartOMixedDesignSession partOMixedDesignSession = new(withPool, null, [small, large], null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             Assert.True(partOMixedDesignSession.CatalogueOffered);
@@ -253,6 +262,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(baseline.IsPartOCleanBaseline(out _));
 
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             List<PartOMixedDwellingRow> rows = [.. partOMixedDesignSession.Rows];
 
             //Not MVHR yet: refused.
@@ -286,6 +296,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = PartOMixedDesignFixture.Baseline(2);
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
 
             partOMixedDesignSession.SetNatural(partOMixedDesignSession.Rows);
             Assert.True(partOMixedDesignSession.IsDirty);
@@ -298,6 +309,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             //Reopened from JSON: the strategies come back from the model itself.
             AnalyticalModel reopened = new(saved.ToJsonObject());
             PartOMixedDesignSession partOMixedDesignSession_Reopened = new(reopened, null, null, null);
+            partOMixedDesignSession_Reopened.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             Assert.All(partOMixedDesignSession_Reopened.Rows, x => Assert.Equal(PartOVentilationMode.NaturalVentilation, x.Selected.VentilationMode));
             Assert.False(partOMixedDesignSession_Reopened.IsDirty);
         }
@@ -319,6 +331,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 PartOMixedRunEvidence evidence = Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context(), CancellationToken.None, out _, fakeSimulator.Simulate);
 
                 PartOMixedDesignSession partOMixedDesignSession = new(baseline, path_Model, null, null);
+                partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
                 partOMixedDesignSession.Constraints.OptimisationAllowed = false;
                 partOMixedDesignSession.ApplyScreening([Evidence(partOMixedDesignSession, PartOScreeningStrategy.Natural, (partOMixedDesignSession.Rows[0], PartODwellingOutcome.Pass))]);
                 partOMixedDesignSession.ApplyFinal(evidence);
@@ -327,6 +340,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
                 // ---- Same baseline: everything current --------------------------------------------------------------
                 PartOMixedDesignSession reopened = new(new AnalyticalModel(baseline.ToJsonObject()), path_Model, null, PartOMixedDesignState.Read(path_State));
+                reopened.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
                 Assert.True(reopened.FinalCurrent, reopened.FinalStale);
                 Assert.False(reopened.Constraints.OptimisationAllowed);
                 Assert.Equal("FAIL", reopened.Rows.Single(x => x.Name == "Flat 02").FinalText);
@@ -337,6 +351,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 withoutSelection.RemoveValue(Analytical.AnalyticalModelParameter.PartODwellingStrategies);
 
                 PartOMixedDesignSession reopened_NoSelection = new(withoutSelection, path_Model, null, PartOMixedDesignState.Read(path_State));
+                reopened_NoSelection.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
                 Assert.False(reopened_NoSelection.FinalCurrent);
                 Assert.Equal("STALE", reopened_NoSelection.Rows[0].FinalText);
 
@@ -353,12 +368,14 @@ namespace SAM.Analytical.UI.WPF.Tests
                 adjacencyCluster_Changed.AddObject(space_Changed);
                 AnalyticalModel changed = new(baseline, adjacencyCluster_Changed);
                 PartOMixedDesignSession reopened_Changed = new(changed, path_Model, null, PartOMixedDesignState.Read(path_State));
+                reopened_Changed.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
                 Assert.False(reopened_Changed.FinalCurrent);
                 Assert.Equal("STALE", reopened_Changed.Rows[0].Screening_Natural);
 
                 // ---- The results file rewritten by another run: stale ---------------------------------------------
                 File.AppendAllText(evidence.Path_TSD, "rewritten");
                 PartOMixedDesignSession reopened_Rewritten = new(baseline, path_Model, null, PartOMixedDesignState.Read(path_State));
+                reopened_Rewritten.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
                 Assert.False(reopened_Rewritten.FinalCurrent);
                 Assert.Contains("rewritten", reopened_Rewritten.FinalStale);
 
@@ -394,6 +411,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOScreeningEvidence result = new(partOScreeningStrategy)
             {
                 Fingerprint_Design = UI.Query.PartOScreeningDesignFingerprint(partOMixedDesignSession.Baseline),
+                SimulationCaseKey = PartOMixedDesignFixture.CaseKey,
             };
 
             foreach ((PartOMixedDwellingRow row, PartODwellingOutcome outcome) in outcomes)

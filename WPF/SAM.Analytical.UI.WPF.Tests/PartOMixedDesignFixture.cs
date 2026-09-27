@@ -158,6 +158,9 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         internal static PartOSimulationContext Context(string projectName = "Block_Test") => new(Path.GetTempPath(), projectName, null, SolarCalculationMethod.TAS, 1, 365);
 
+        /// <summary>The simulation case every fixture run uses (<see cref="Context"/>): what a session compares evidence with.</summary>
+        internal static string CaseKey => SAM.Analytical.UI.WPF.Query.PartOSimulationCaseKey(Context())!;
+
         /// <summary>
         /// A stand-in for TAS + TM59: records what it was handed, and reports every occupied space of the listed dwellings
         /// as failing and every other as passing. Never touches the filesystem.
@@ -178,6 +181,9 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             /// <summary>Whether the communal corridor exceeds its &gt;28 °C reference - SAM's corridor risk, not a failure.</summary>
             internal bool CorridorAtRisk { get; set; }
+
+            /// <summary>Whether a common space the assessment covered produced no result - a hole in any pass.</summary>
+            internal bool UnassessedCommonSpace { get; set; }
 
             /// <summary>Whether an occupied space in no dwelling row fails - it is in the production verdict, never in a row.</summary>
             internal bool FailingCommonOccupiedSpace { get; set; }
@@ -244,7 +250,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 //An assessed assessment with no hourly data behind it: SAM's result type has no public constructor, and nothing
                 //here reads it beyond "there is one".
                 TM59AssessmentResult tM59AssessmentResult = (TM59AssessmentResult)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(TM59AssessmentResult));
-                PartOTM59Assessment partOTM59Assessment = new(tM59AssessmentResult, new TM59AssessmentReport(spaces_Report, tMResults_Mechanical, null, tMResults_Corridor, null, "Fake"), [], [], [], null, null, null, statuses);
+                PartOTM59Assessment partOTM59Assessment = new(tM59AssessmentResult, new TM59AssessmentReport(spaces_Report, tMResults_Mechanical, null, tMResults_Corridor, null, "Fake"), [], [], UnassessedCommonSpace ? [Guid.NewGuid()] : [], null, null, null, statuses);
 
                 //A real file in a directory of this fake's own, so the result's lineage (length and write time) is
                 //checked exactly as production checks it.

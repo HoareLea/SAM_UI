@@ -49,6 +49,9 @@ namespace SAM.Analytical.UI
 
         public string Fingerprint_Catalogue { get; set; }
 
+        /// <summary>The simulation case (weather, solar method) the strategy was screened under - <c>Query.PartOSimulationCaseKey</c>.</summary>
+        public string SimulationCaseKey { get; set; }
+
         /// <summary>The dwellings the run assessed. A dwelling outside it was not simulated under this strategy.</summary>
         public List<Guid> Guids_Zone_Assessed { get; } = [];
 
@@ -127,6 +130,7 @@ namespace SAM.Analytical.UI
                 ["Fingerprint_Design"] = Fingerprint_Design,
                 ["CatalogueOffered"] = CatalogueOffered,
                 ["Fingerprint_Catalogue"] = Fingerprint_Catalogue,
+                ["SimulationCaseKey"] = SimulationCaseKey,
                 ["Guids_Zone_Assessed"] = zones,
                 ["Path_TSD"] = Path_TSD,
                 ["Length_TSD"] = Length_TSD,
@@ -148,6 +152,7 @@ namespace SAM.Analytical.UI
                 Fingerprint_Design = (string)jsonObject["Fingerprint_Design"],
                 CatalogueOffered = (bool?)jsonObject["CatalogueOffered"] ?? false,
                 Fingerprint_Catalogue = (string)jsonObject["Fingerprint_Catalogue"],
+                SimulationCaseKey = (string)jsonObject["SimulationCaseKey"],
                 Path_TSD = (string)jsonObject["Path_TSD"],
                 Length_TSD = (long?)jsonObject["Length_TSD"] ?? 0,
                 Timestamp_TSD = (long?)jsonObject["Timestamp_TSD"] ?? 0,

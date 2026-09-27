@@ -62,6 +62,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             //What the PR2 session would show on opening this model.
             PartOMixedDesignSession session = new(mapped, null, null, null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             PartOMixedReadiness readiness = session.Readiness();
             log.AppendLine("== SESSION rows=" + session.Rows.Count + " (" + string.Join(", ", session.Rows.Select(r => r.Name)) + ") canBuild=" + readiness.CanBuild + " summary=" + readiness.Text);
             readiness.Blockers.ForEach(x => log.AppendLine("  BLOCKER " + x));
@@ -128,6 +129,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             //D. PR2 session over the accepted baseline: how does the row read, and what does the UI offer?
             PartOMixedDesignSession session = new(withRetained, null, [product], null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             foreach (PartOMixedDwellingRow row in session.Rows)
             {
                 log.AppendLine(string.Format("D. row {0}: selected='{1}' designTerminals={2} attention='{3}'", row.Name, row.SelectedText, row.HasDesignTerminals, row.Attention));

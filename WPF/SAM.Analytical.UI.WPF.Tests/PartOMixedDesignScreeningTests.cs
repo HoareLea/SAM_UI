@@ -42,6 +42,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void Screening_IsOptional_ADesignCanBeBuiltWithoutIt()
         {
             PartOMixedDesignSession partOMixedDesignSession = new(PartOMixedDesignFixture.Baseline(3), null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             partOMixedDesignSession.SetNatural(partOMixedDesignSession.Rows);
 
             Assert.Empty(partOMixedDesignSession.State.Screening);
@@ -155,6 +156,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             //And the session's selection is untouched by the evidence arriving.
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             partOMixedDesignSession.ApplyScreening(outcome.Evidence);
             Assert.All(partOMixedDesignSession.Rows, x => Assert.Equal(PartOVentilationMode.MVHR, x.Selected.VentilationMode));
         }
@@ -194,8 +196,8 @@ namespace SAM.Analytical.UI.WPF.Tests
             string catalogue_1 = UI.Query.PartOMixedCatalogueFingerprint(baseline, [product]);
             string catalogue_2 = UI.Query.PartOMixedCatalogueFingerprint(baseline, [new VentilationUnitCapacityDescriptor(product.VentilationUnitReference, 180, 200)]);
 
-            PartOScreeningEvidence evidence_Product = new(PartOScreeningStrategy.SelectedProduct) { Fingerprint_Design = fingerprint, CatalogueOffered = true, Fingerprint_Catalogue = catalogue_1 };
-            PartOScreeningEvidence evidence_Natural = new(PartOScreeningStrategy.Natural) { Fingerprint_Design = fingerprint };
+            PartOScreeningEvidence evidence_Product = new(PartOScreeningStrategy.SelectedProduct) { Fingerprint_Design = fingerprint, CatalogueOffered = true, Fingerprint_Catalogue = catalogue_1, SimulationCaseKey = PartOMixedDesignFixture.CaseKey };
+            PartOScreeningEvidence evidence_Natural = new(PartOScreeningStrategy.Natural) { Fingerprint_Design = fingerprint, SimulationCaseKey = PartOMixedDesignFixture.CaseKey };
 
             Assert.True(evidence_Product.IsCurrent(fingerprint, catalogue_1, out _));
             Assert.False(evidence_Product.IsCurrent(fingerprint, catalogue_2, out string reason));

@@ -201,7 +201,8 @@ namespace SAM.Analytical.UI.WPF
 
                 bool catalogueOffered = UI.Query.PartOScreeningCatalogueOffered(partOScreeningStrategy);
 
-                PartOStrategySetRun partOStrategySetRun = RunPartOStrategySet(analyticalModel_Screening, catalogueOffered ? descriptors : null, guids_Scope, func_Context(partOScreeningStrategy), cancellationToken, partOStrategySetSimulator);
+                PartOSimulationContext partOSimulationContext_Strategy = func_Context(partOScreeningStrategy);
+                PartOStrategySetRun partOStrategySetRun = RunPartOStrategySet(analyticalModel_Screening, catalogueOffered ? descriptors : null, guids_Scope, partOSimulationContext_Strategy, cancellationToken, partOStrategySetSimulator);
 
                 partOScreeningStep.DwellingCount = guids_Scope.Count;
                 partOScreeningStep.Refusals.AddRange(partOStrategySetRun.Refusals);
@@ -228,6 +229,7 @@ namespace SAM.Analytical.UI.WPF
 
                 PartOScreeningEvidence partOScreeningEvidence = new(partOScreeningStrategy)
                 {
+                    SimulationCaseKey = Query.PartOSimulationCaseKey(partOSimulationContext_Strategy),
                     Fingerprint_Design = fingerprint_Design,
                     CatalogueOffered = catalogueOffered,
                     Fingerprint_Catalogue = catalogueOffered ? fingerprint_Catalogue : null,
@@ -300,11 +302,15 @@ namespace SAM.Analytical.UI.WPF
 
             partOStrategySetRun.Results.ForEach(result.Add);
 
+            //The case this run was actually simulated under.
+            result.SimulationCaseKey = Query.PartOSimulationCaseKey(partOSimulationContext);
+
             //The project verdict and the communal-corridor state are SAM's report's own, kept beside the dwelling tally.
             PartOTM59Assessment partOTM59Assessment = partOStrategySetRun.Simulation.Assessment;
             if (partOTM59Assessment.IsAssessed && partOTM59Assessment.Report is TM59AssessmentReport tM59AssessmentReport)
             {
                 result.OccupiedSpaceComplianceStatus = tM59AssessmentReport.OccupiedSpaceComplianceStatus;
+                result.SpaceCount_Unassessed = partOTM59Assessment.SpaceGuids_Unassessed?.Count ?? 0;
                 result.CorridorRiskStatus = tM59AssessmentReport.CorridorRiskStatus;
 
                 foreach (IGrouping<string, TM59AssessmentReportCheck> grouping in (tM59AssessmentReport.CorridorChecks ?? []).GroupBy(x => x.Reference))

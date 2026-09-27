@@ -285,6 +285,15 @@ namespace SAM.Analytical.UI.WPF
             PartOSimulationCase partOSimulationCase = SimulationCase;
             string? refusal = SimulationCaseRefusal;
 
+            //Evidence simulated under another case is stale the moment the case changes, not only after the next run.
+            string? simulationCaseKey = Query.PartOSimulationCaseKey(partOSimulationCase);
+            if (session is not null && !string.Equals(session.SimulationCaseKey, simulationCaseKey, StringComparison.Ordinal))
+            {
+                session.SimulationCaseKey = simulationCaseKey;
+                RefreshView();
+                RefreshSummary();
+            }
+
             string weather = string.IsNullOrWhiteSpace(partOSimulationCase.WeatherData?.Name) ? "model weather" : partOSimulationCase.WeatherData!.Name;
 
             run_SimulationCaseSummary.Text = !simulationCase_Stated

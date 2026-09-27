@@ -43,6 +43,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Stopwatch stopwatch = Stopwatch.StartNew();
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             TimeSpan open = stopwatch.Elapsed;
 
             //One row per dwelling - never per space.
@@ -85,6 +86,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = PartOMixedDesignFixture.Baseline(Count_Dwelling, corridor: true, spacesPerFlat: SpacesPerDwelling);
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
 
             partOMixedDesignSession.SetMvhr(partOMixedDesignSession.Rows, null);
             partOMixedDesignSession.SetNatural(partOMixedDesignSession.Rows.Where((x, i) => i % 2 == 0));
@@ -106,6 +108,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = PartOMixedDesignFixture.Baseline(Count_Dwelling, corridor: true, spacesPerFlat: SpacesPerDwelling, category: "Core");
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
 
             PartOMixedDesignWindow partOMixedDesignWindow = new()
             {
@@ -160,6 +163,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void Window_ShowsTheFourAuthoritiesSeparately_AndOffersCoolingOnlyAsGated()
         {
             PartOMixedDesignSession partOMixedDesignSession = new(PartOMixedDesignFixture.Baseline(3), null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
 
             PartOMixedDesignWindow partOMixedDesignWindow = new() { Session = partOMixedDesignSession };
 

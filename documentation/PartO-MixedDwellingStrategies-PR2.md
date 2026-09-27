@@ -198,5 +198,11 @@ per-row refresh; the close prompt names an accepted design. SAM side: a designer
 **Closeout:** the Accept file dialog starts in the simulation case's output folder (model folder when unset), with an empty
 file name, and the open baseline itself is answered plainly before SAM is asked - no new persisted state.
 
-Tests: `PartOMixedDesignCorrectionTests` (9), `PartOMixedDesignAcceptTests` (7); the fake TAS now returns a real SAM
+**Codex on a2de99b (fixed):** the run verdict is not a pass where a covered (common) space went unassessed
+(`SpaceCount_Unassessed`, the TM59 window's partial rule); final and screening evidence record the simulation case they
+ran under (`Query.PartOSimulationCaseKey`: weather by content + solar method, from the run's own context) and a changed case
+makes them stale at once; a cancelled or incomplete rerun re-validates the previous result (its results file may have been
+rewritten); run notes (pre-simulation warnings, run-model persistence) are part of the build outcome.
+
+Tests: `PartOMixedDesignCorrectionTests` (13), `PartOMixedDesignAcceptTests` (7); the fake TAS now returns a real SAM
 `TM59AssessmentReport` (mechanical + corridor results) so the run verdict is SAM's in every test.

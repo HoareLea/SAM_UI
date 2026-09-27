@@ -111,6 +111,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(first.IsMaterialised, first.Refusal);
 
             PartOMixedDesignSession partOMixedDesignSession = new(first.AnalyticalModel, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             Assert.False(partOMixedDesignSession.IsCleanBaseline);
             Assert.False(partOMixedDesignSession.Readiness().CanBuild);
             Assert.Contains(partOMixedDesignSession.BaselineFindings, x => x.Reason == PartOMaterialisationRefusalReason.MaterialisedBaseline);
@@ -125,6 +126,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOMixedRunEvidence first = Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context(), CancellationToken.None, out _, fakeSimulator.Simulate);
 
             PartOMixedDesignSession partOMixedDesignSession = new(baseline, null, null, null);
+            partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             partOMixedDesignSession.ApplyFinal(first);
 
             PartOMixedDwellingRow flat03 = partOMixedDesignSession.Rows.Single(x => x.Name == "Flat 03");

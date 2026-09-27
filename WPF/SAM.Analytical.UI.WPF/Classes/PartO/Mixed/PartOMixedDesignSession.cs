@@ -191,6 +191,39 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        private string? simulationCaseKey;
+
+        /// <summary>
+        /// The simulation case the next run would use (<c>Query.PartOSimulationCaseKey</c>): evidence simulated under another
+        /// one is stale. Set by the window whenever the case changes; changing it re-validates.
+        /// </summary>
+        public string? SimulationCaseKey
+        {
+            get => simulationCaseKey;
+            set
+            {
+                if (string.Equals(simulationCaseKey, value, StringComparison.Ordinal))
+                {
+                    return;
+                }
+
+                simulationCaseKey = value;
+
+                ValidateFinal();
+                Refresh();
+            }
+        }
+
+        /// <summary>
+        /// Asks again whether the saved final run still describes the model and its results file - after a run that did not
+        /// complete, which may have rewritten that file.
+        /// </summary>
+        public void RevalidateFinal()
+        {
+            ValidateFinal();
+            Refresh();
+        }
+
         /// <summary>The catalogue as the next build offers it: <see cref="Descriptors"/> (possibly empty - the project test unit is SAM's to add), or null where products are not selected.</summary>
         public List<VentilationUnitCapacityDescriptor>? DescriptorsOffered => catalogueOffered ? Descriptors : null;
 
@@ -277,7 +310,17 @@ namespace SAM.Analytical.UI.WPF
             finalStale_Baseline = null;
 
             PartOMixedRunEvidence? partOMixedRunEvidence = State.FinalRun;
-            if (partOMixedRunEvidence is not null && !partOMixedRunEvidence.IsCurrent(analyticalModel, DescriptorsOffered, out finalStale_Baseline))
+            if (partOMixedRunEvidence is null)
+            {
+                return;
+            }
+
+            if (partOMixedRunEvidence.IsCurrent(analyticalModel, DescriptorsOffered, out finalStale_Baseline))
+            {
+                //SAM's record and the results file agree; the simulation case must too.
+                finalStale_Baseline = SimulationCaseStale(partOMixedRunEvidence.SimulationCaseKey) is string reason_Case ? string.Format("The mixed run {0}", reason_Case) : null;
+            }
+            else
             {
                 finalStale_Baseline ??= "The saved mixed result no longer describes the model.";
 
@@ -289,6 +332,41 @@ namespace SAM.Analytical.UI.WPF
                         : "The mixed run used generic MVHR units, and products are now selected from the catalogue, so the next build would select products. Build and run again.";
                 }
             }
+        }
+
+        /// <summary>Why evidence simulated under <paramref name="simulationCaseKey_Evidence"/> is not of the current case, or null.</summary>
+        private string? SimulationCaseStale(string? simulationCaseKey_Evidence)
+        {
+            if (string.IsNullOrWhiteSpace(simulationCaseKey_Evidence))
+            {
+                return "does not record the simulation case it was run under, so it cannot be shown as current. Run again.";
+            }
+
+            if (simulationCaseKey is null)
+            {
+                return "cannot be confirmed: no simulation case is selected.";
+            }
+
+            return string.Equals(simulationCaseKey_Evidence, simulationCaseKey, StringComparison.Ordinal)
+                ? null
+                : "was simulated under a different simulation case (weather or solar method), so it does not describe the case selected now. Run again.";
+        }
+
+        /// <summary>Whether screening evidence is current: SAM's fingerprints, then the simulation case.</summary>
+        private bool ScreeningCurrent(PartOScreeningEvidence partOScreeningEvidence, out string? reason)
+        {
+            if (!partOScreeningEvidence.IsCurrent(fingerprint_Design, fingerprint_Catalogue, out reason))
+            {
+                return false;
+            }
+
+            if (SimulationCaseStale(partOScreeningEvidence.SimulationCaseKey) is string reason_Case)
+            {
+                reason = string.Format("The screening {0}", reason_Case);
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>The strategy set persisted on the model, or null where there is none (a legacy model).</summary>
@@ -618,7 +696,7 @@ namespace SAM.Analytical.UI.WPF
             List<PartOScreeningEvidence> result = [];
             foreach (PartOScreeningEvidence partOScreeningEvidence in State.Screening)
             {
-                if (partOScreeningEvidence.IsCurrent(fingerprint_Design, fingerprint_Catalogue, out _))
+                if (ScreeningCurrent(partOScreeningEvidence, out _))
                 {
                     result.Add(partOScreeningEvidence);
                 }
@@ -748,14 +826,14 @@ namespace SAM.Analytical.UI.WPF
 
             foreach (PartOScreeningEvidence partOScreeningEvidence in State.Screening)
             {
-                if (partOScreeningEvidence.IsCurrent(fingerprint_Design, fingerprint_Catalogue, out string reason))
+                if (ScreeningCurrent(partOScreeningEvidence, out string? reason))
                 {
                     evidence_Current.Add(partOScreeningEvidence);
                     dictionary_Evidence[partOScreeningEvidence.Strategy] = partOScreeningEvidence;
                 }
                 else
                 {
-                    screeningStale[partOScreeningEvidence.Strategy] = reason;
+                    screeningStale[partOScreeningEvidence.Strategy] = reason ?? "The screening evidence is not current.";
                 }
             }
 

@@ -32,6 +32,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             PartOMixedDesignState state = new() { FinalRun = evidence };
             PartOMixedDesignSession session = new(baseline, null, [Product], state);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             Assert.True(session.CatalogueOffered);
             Assert.True(session.FinalCurrent, session.FinalStale);
 
@@ -60,6 +61,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(PartODwellingOutcome.Fail, evidence.Overall);
 
             PartOMixedDesignSession session = new(baseline, null, null, new PartOMixedDesignState { FinalRun = evidence });
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             Assert.StartsWith("Final mixed run: FAIL", session.FinalText);
         }
 
@@ -79,11 +81,91 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOMixedRunEvidence reopened = PartOMixedRunEvidence.Read(JsonNode.Parse(evidence.ToJsonObject().ToJsonString()) as JsonObject);
 
             PartOMixedDesignSession session = new(baseline, null, null, new PartOMixedDesignState { FinalRun = reopened });
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             Assert.Equal(3, session.Rows.Count);
             Assert.DoesNotContain(session.Rows, x => x.Name == PartOMixedDesignFixture.Corridor);
             Assert.Contains("communal corridor", session.FinalText);
             Assert.Contains("significant risk", session.FinalText);
             Assert.Contains(PartOMixedDesignFixture.Corridor, session.FinalText);
+        }
+
+        [Fact]
+        public void RunVerdict_IsNotAPass_WhereACommonSpaceWentUnassessed()
+        {
+            AnalyticalModel baseline = PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), PartOMixedDesignFixture.Natural);
+            PartOMixedDesignFixture.FakeSimulator fakeSimulator = new() { UnassessedCommonSpace = true };
+
+            PartOMixedRunEvidence evidence = Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context("Block_Hole"), CancellationToken.None, out _, fakeSimulator.Simulate);
+
+            //Every dwelling and SAM's occupied-space verdict pass - but a covered space has no result: not a pass (the TM59
+            //window's partial-assessment rule), and kept through the sidecar.
+            Assert.All(evidence.Results, x => Assert.Equal(PartODwellingOutcome.Pass, x.Outcome));
+            Assert.Equal(PartODwellingOutcome.NotAssessed, evidence.Overall);
+            Assert.Equal(PartODwellingOutcome.NotAssessed, PartOMixedRunEvidence.Read(JsonNode.Parse(evidence.ToJsonObject().ToJsonString()) as JsonObject).Overall);
+        }
+
+        // ---- P1: evidence is bound to the simulation case it ran under ----------------------------------------------
+
+        [Fact]
+        public void ChangingTheSimulationCase_MakesTheFinalResultAndScreeningStale_AndChangingItBackRestoresThem()
+        {
+            AnalyticalModel baseline = PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), PartOMixedDesignFixture.Natural);
+            PartOMixedDesignFixture.FakeSimulator fakeSimulator = new();
+            PartOMixedRunEvidence evidence = Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context("Block_Case"), CancellationToken.None, out _, fakeSimulator.Simulate);
+            Assert.Equal(PartOMixedDesignFixture.CaseKey, evidence.SimulationCaseKey);
+
+            PartOMixedDesignSession session = new(baseline, null, null, new PartOMixedDesignState { FinalRun = evidence });
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
+            session.ApplyScreening([PartOMixedDesignSessionTests.Evidence(session, PartOScreeningStrategy.Natural, [.. session.Rows.Select(x => (x, PartODwellingOutcome.Pass))])]);
+            Assert.True(session.FinalCurrent, session.FinalStale);
+            Assert.Single(session.CurrentScreening());
+
+            //Another weather file or solar method: neither result describes the case selected now.
+            session.SimulationCaseKey = "another weather|TAS";
+            Assert.False(session.FinalCurrent);
+            Assert.Contains("different simulation case", session.FinalStale);
+            Assert.Empty(session.CurrentScreening());
+            Assert.Equal("STALE", session.Rows[0].Screening(PartOScreeningStrategy.Natural));
+
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
+            Assert.True(session.FinalCurrent, session.FinalStale);
+            Assert.Single(session.CurrentScreening());
+        }
+
+        [Fact]
+        public void EvidenceRecordingNoSimulationCase_IsNotCurrent()
+        {
+            AnalyticalModel baseline = PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), PartOMixedDesignFixture.Natural);
+            PartOMixedDesignFixture.FakeSimulator fakeSimulator = new();
+            PartOMixedRunEvidence evidence = Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context("Block_NoCase"), CancellationToken.None, out _, fakeSimulator.Simulate);
+            evidence.SimulationCaseKey = null;
+
+            PartOMixedDesignSession session = new(baseline, null, null, new PartOMixedDesignState { FinalRun = evidence });
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
+
+            Assert.False(session.FinalCurrent);
+            Assert.Contains("does not record the simulation case", session.FinalStale);
+        }
+
+        // ---- P1: a run that did not complete re-validates the previous result ------------------------------------------
+
+        [Fact]
+        public void RevalidateFinal_AfterAnIncompleteRunRewroteTheResultsFile_ShowsThePreviousResultAsStale()
+        {
+            AnalyticalModel baseline = PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), PartOMixedDesignFixture.Natural);
+            PartOMixedDesignFixture.FakeSimulator fakeSimulator = new();
+            PartOMixedRunEvidence evidence = Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context("Block_Cancelled"), CancellationToken.None, out _, fakeSimulator.Simulate);
+
+            PartOMixedDesignSession session = new(baseline, null, null, new PartOMixedDesignState { FinalRun = evidence });
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
+            Assert.True(session.FinalCurrent, session.FinalStale);
+
+            //A cancelled rerun had already started writing the same results file.
+            System.IO.File.AppendAllText(evidence.Path_TSD, "partial");
+
+            session.RevalidateFinal();
+            Assert.False(session.FinalCurrent);
+            Assert.Contains("rewritten", session.FinalStale);
         }
 
         // ---- P2: the project test unit is a product ---------------------------------------------------------------
@@ -99,6 +181,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             baseline.SetValue(Analytical.AnalyticalModelParameter.PartOEquipmentSelection, new PartOEquipmentSelection(PartOEquipmentSelectionMode.AutomaticSelectedPool, partOProjectTestVentilationUnit.CapacityDescriptors().Select(x => x.VentilationUnitReference)));
 
             PartOMixedDesignSession session = new(baseline, null, null, null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
 
             Assert.True(session.CatalogueHasProducts);
             Assert.True(session.CatalogueOffered);
@@ -167,6 +250,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             baseline.SetValue(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit, new PartOProjectTestVentilationUnit("Project test unit", 200, 200));
 
             PartOMixedDesignSession session = new(baseline, null, [Product], null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
 
             Assert.DoesNotContain(session.AllowedProducts, x => x.VentilationUnitReference?.ToString().Contains("Project test unit") == true);
             Assert.Contains(session.AllowedProducts, x => x.VentilationUnitReference?.Model == "Unit");

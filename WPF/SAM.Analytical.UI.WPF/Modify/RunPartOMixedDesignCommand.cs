@@ -51,6 +51,7 @@ namespace SAM.Analytical.UI.WPF
 
             ActiveSetting.Setting.TryGetValue(AnalyticalSettingParameter.SimulateOptions_PartO, out SimulateOptions simulateOptions_Remembered);
             PartOSimulationCase partOSimulationCase = PartOSimulationCase.Create(analyticalModel, path_Model, simulateOptions_Remembered);
+            partOMixedDesignSession.SimulationCaseKey = Query.PartOSimulationCaseKey(partOSimulationCase);
 
             string? outcome = null;
             PartOMixedDwellingFilter partOMixedDwellingFilter = PartOMixedDwellingFilter.All;
@@ -77,6 +78,7 @@ namespace SAM.Analytical.UI.WPF
                 bool? showDialog = partOMixedDesignWindow.ShowDialog();
 
                 partOSimulationCase = partOMixedDesignWindow.SimulationCase;
+                partOMixedDesignSession.SimulationCaseKey = Query.PartOSimulationCaseKey(partOSimulationCase);
                 partOMixedDwellingFilter = partOMixedDesignWindow.Filter;
                 searchText = partOMixedDesignWindow.SearchText;
                 grouped = partOMixedDesignWindow.Grouped;
@@ -377,23 +379,36 @@ namespace SAM.Analytical.UI.WPF
 
             partOMixedDesignSession.SetRefusals(null);
 
-            if (partOStrategySetRun.Cancelled)
+            if (partOStrategySetRun.Cancelled || partOMixedRunEvidence is null)
             {
-                return string.Format("{0}Mixed run cancelled. The selection and any previous result are unchanged.", prefix);
-            }
+                //A run that did not complete may already have rewritten the results file the previous result was assessed
+                //from (the run writes to the same path), so that result is asked again rather than kept as current.
+                bool current_Before = partOMixedDesignSession.FinalCurrent;
+                partOMixedDesignSession.RevalidateFinal();
+                string previous = !current_Before
+                    ? string.Empty
+                    : partOMixedDesignSession.FinalCurrent ? " The previous result is still current." : string.Format(" The previous result is now STALE: {0}", partOMixedDesignSession.FinalStale);
 
-            if (partOMixedRunEvidence is null)
-            {
+                if (partOStrategySetRun.Cancelled)
+                {
+                    return string.Format("{0}Mixed run cancelled. The selection is unchanged.{1}", prefix, previous);
+                }
+
                 string refusal = partOStrategySetRun.Simulation?.Refusal ?? "The mixed run produced no assessable results.";
 
                 MessageBox.Show(owner, refusal, "Part O — Build & Run Mixed Design");
 
-                return string.Format("{0}Mixed run not completed: {1}", prefix, refusal);
+                return string.Format("{0}Mixed run not completed: {1}{2}", prefix, refusal, previous);
             }
 
             partOMixedDesignSession.ApplyFinal(partOMixedRunEvidence);
 
-            return string.Format("{0}Mixed design built and run: {1}", prefix, partOMixedDesignSession.FinalText);
+            //What the run itself warned about (a pre-simulation check warning, a run model that could not be kept) is part
+            //of its outcome - never dropped behind a clean-looking success.
+            List<string> notes_Run = partOStrategySetRun.Simulation?.Notes ?? [];
+            string notes = notes_Run.Count == 0 ? string.Empty : string.Format(" Run notes ({0}): {1}", notes_Run.Count, string.Join(" | ", notes_Run.Take(3)));
+
+            return string.Format("{0}Mixed design built and run: {1}{2}", prefix, partOMixedDesignSession.FinalText, notes);
         }
 
         /// <summary>SAM's structured refusals, grouped by reason, each with its subject - never collapsed into one generic message.</summary>

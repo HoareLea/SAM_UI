@@ -62,6 +62,16 @@ namespace SAM.Analytical.UI
         /// <summary>Why the production assessment reached no verdict for the run as a whole, or null.</summary>
         public string Refusal_Assessment { get; set; }
 
+        /// <summary>
+        /// How many spaces the production assessment covered but could not assess (no simulation space, refused series) -
+        /// common spaces included. A pass with a hole in it is not a pass, exactly as in the TM59 result window. Null where
+        /// not known.
+        /// </summary>
+        public int? SpaceCount_Unassessed { get; set; }
+
+        /// <summary>The simulation case (weather, solar method) the run was simulated under - <c>Query.PartOSimulationCaseKey</c>.</summary>
+        public string SimulationCaseKey { get; set; }
+
         /// <summary>SAM's production verdict over the run's occupied spaces, or null where it is not known.</summary>
         public TM59ComplianceStatus? OccupiedSpaceComplianceStatus { get; set; }
 
@@ -125,7 +135,7 @@ namespace SAM.Analytical.UI
                     return PartODwellingOutcome.Fail;
                 }
 
-                return OccupiedSpaceComplianceStatus == TM59ComplianceStatus.Pass && Count(PartODwellingOutcome.Pass) == results.Count && Refusal_Assessment is null ? PartODwellingOutcome.Pass : PartODwellingOutcome.NotAssessed;
+                return OccupiedSpaceComplianceStatus == TM59ComplianceStatus.Pass && SpaceCount_Unassessed == 0 && Count(PartODwellingOutcome.Pass) == results.Count && Refusal_Assessment is null ? PartODwellingOutcome.Pass : PartODwellingOutcome.NotAssessed;
             }
         }
 
@@ -218,6 +228,8 @@ namespace SAM.Analytical.UI
                 ["Path_RunModel"] = Path_RunModel,
                 ["Refusal_Assessment"] = Refusal_Assessment,
                 ["OccupiedSpaceComplianceStatus"] = OccupiedSpaceComplianceStatus?.ToString(),
+                ["SpaceCount_Unassessed"] = SpaceCount_Unassessed,
+                ["SimulationCaseKey"] = SimulationCaseKey,
                 ["CorridorRiskStatus"] = CorridorRiskStatus.ToString(),
                 ["Corridors"] = jsonArray_Corridors,
                 ["Results"] = jsonArray_Results,
@@ -241,6 +253,8 @@ namespace SAM.Analytical.UI
                 Timestamp_TSD = (long?)jsonObject["Timestamp_TSD"] ?? 0,
                 Path_RunModel = (string)jsonObject["Path_RunModel"],
                 Refusal_Assessment = (string)jsonObject["Refusal_Assessment"],
+                SpaceCount_Unassessed = (int?)jsonObject["SpaceCount_Unassessed"],
+                SimulationCaseKey = (string)jsonObject["SimulationCaseKey"],
             };
 
             if (DateTime.TryParse((string)jsonObject["CreatedUtc"], CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTime dateTime))

@@ -24,6 +24,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = Baseline();
             PartOMixedDesignSession session = new(baseline, null, null, null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             PartOMixedDwellingRow row = session.Rows.Single(x => x.Name == "Flat 03");
 
             PartODwellingDesignAcceptance acceptance = session.PreviewAcceptDesign(row, Source(baseline));
@@ -42,6 +43,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = Baseline();
             PartOMixedDesignSession session = new(baseline, null, null, null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             PartOMixedDwellingRow row = session.Rows.Single(x => x.Name == "Flat 03");
             List<string> others_Before = session.Rows.Where(x => x != row).Select(x => x.SelectedText).ToList();
 
@@ -91,6 +93,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOMixedRunEvidence evidence = Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context("Block_AcceptStale"), CancellationToken.None, out _, fakeSimulator.Simulate);
 
             PartOMixedDesignSession session = new(baseline, null, null, new PartOMixedDesignState { FinalRun = evidence });
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             Assert.True(session.FinalCurrent, session.FinalStale);
 
             PartOMixedDwellingRow row = session.Rows.Single(x => x.Name == "Flat 03");
@@ -100,6 +103,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             //Saved and reopened: the selection and the accepted design come back, and SAM materialises them.
             AnalyticalModel saved = session.WithSelection();
             PartOMixedDesignSession reopened = new(saved, null, null, null);
+            reopened.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             PartOMixedDwellingRow row_Reopened = reopened.Rows.Single(x => x.Name == "Flat 03");
 
             Assert.Equal(PartODesignAirFlowBasis.RetainedDesign, row_Reopened.Selected!.DesignAirFlowBasis);
@@ -115,6 +119,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = Baseline();
             PartOMixedDesignSession session = new(baseline, null, null, null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             PartOMixedDwellingRow row = session.Rows.Single(x => x.Name == "Flat 03");
 
             //The clean baseline states no design terminals, so there is no 2B design in it to accept.
@@ -132,6 +137,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel baseline = Baseline();
             PartOMixedDesignSession session = new(baseline, null, null, null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             session.Constraints.OptimisationAllowed = false;
             PartOMixedDwellingRow row = session.Rows.Single(x => x.Name == "Flat 03");
 
@@ -146,6 +152,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel baseline = Baseline();
             AnalyticalModel source = Source(baseline, "Flat 02", "Flat 03");
             PartOMixedDesignSession session = new(baseline, null, null, null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
             PartOMixedDwellingRow row_2 = session.Rows.Single(x => x.Name == "Flat 02");
             PartOMixedDwellingRow row_3 = session.Rows.Single(x => x.Name == "Flat 03");
 
