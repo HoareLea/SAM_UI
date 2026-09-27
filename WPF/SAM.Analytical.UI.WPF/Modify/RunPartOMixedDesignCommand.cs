@@ -282,6 +282,12 @@ namespace SAM.Analytical.UI.WPF
                 if (partOScreeningStep.Evidence is not null)
                 {
                     lines.Add(string.Format("{0}: {1} pass of {2} screened.", label, partOScreeningStep.Evidence.Results.Count(x => x.Outcome == PartODwellingOutcome.Pass), partOScreeningStep.DwellingCount));
+
+                    //What the run warned about is part of the evidence it produced.
+                    if (partOScreeningStep.Notes.Count != 0)
+                    {
+                        lines.Add(string.Format("   {0} run notes ({1}): {2}", label, partOScreeningStep.Notes.Count, string.Join(" | ", partOScreeningStep.Notes.Take(3))));
+                    }
                 }
                 else if (partOScreeningStep.Cancelled)
                 {
@@ -301,7 +307,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            if (partOScreeningOutcome.Steps.Any(x => x.Refusals.Count != 0 || x.Refusal_Simulation is not null || x.Cancelled))
+            if (partOScreeningOutcome.Steps.Any(x => x.Refusals.Count != 0 || x.Refusal_Simulation is not null || x.Cancelled || (x.Evidence is not null && x.Notes.Count != 0)))
             {
                 MessageBox.Show(owner, string.Join("\n\n", lines), "Part O — Screen dwelling strategies");
             }

@@ -204,5 +204,7 @@ ran under (`Query.PartOSimulationCaseKey`: weather by content + solar method, fr
 makes them stale at once; a cancelled or incomplete rerun re-validates the previous result (its results file may have been
 rewritten); run notes (pre-simulation warnings, run-model persistence) are part of the build outcome.
 
-Tests: `PartOMixedDesignCorrectionTests` (13), `PartOMixedDesignAcceptTests` (7); the fake TAS now returns a real SAM
+Codex on cf67983: screening run notes are shown with the screening outcome; unticking the catalogue flags any explicitly chosen product as needing attention (blocks Build, never rewritten).
+
+Tests: `PartOMixedDesignCorrectionTests` (14), `PartOMixedDesignAcceptTests` (7); the fake TAS now returns a real SAM
 `TM59AssessmentReport` (mechanical + corridor results) so the run verdict is SAM's in every test.

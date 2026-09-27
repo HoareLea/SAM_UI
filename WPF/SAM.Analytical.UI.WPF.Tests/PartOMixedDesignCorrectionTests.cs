@@ -46,6 +46,28 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(session.FinalCurrent, session.FinalStale);
         }
 
+        [Fact]
+        public void UntickingTheCatalogue_FlagsAnExplicitProduct_AndBlocksTheBuild_WithoutRewritingIt()
+        {
+            AnalyticalModel baseline = PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), x => new PartODwellingStrategy(x.Guid, PartOVentilationMode.MVHR, x.Name == "Flat 01" ? Product.VentilationUnitReference : null));
+            PartOMixedDesignSession session = new(baseline, null, [Product], null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
+            PartOMixedDwellingRow row = session.Rows.Single(x => x.Name == "Flat 01");
+            Assert.False(row.NeedsAttention);
+            Assert.True(session.Readiness().CanBuild);
+
+            session.CatalogueOffered = false;
+            Assert.True(row.NeedsAttention);
+            Assert.Contains("cannot be built", row.Attention);
+            Assert.False(session.Readiness().CanBuild);
+            Assert.Equal(Product.VentilationUnitReference.ToString(), row.Selected!.VentilationUnitReference!.ToString());
+            Assert.DoesNotContain(session.Rows, x => x != row && x.NeedsAttention);
+
+            session.CatalogueOffered = true;
+            Assert.False(row.NeedsAttention);
+            Assert.True(session.Readiness().CanBuild);
+        }
+
         // ---- P1: the run verdict is the production TM59 verdict ------------------------------------------------------
 
         [Fact]

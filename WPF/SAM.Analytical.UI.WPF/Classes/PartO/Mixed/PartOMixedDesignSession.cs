@@ -913,6 +913,12 @@ namespace SAM.Analytical.UI.WPF
                     attention.Add(refusal_Constraint);
                 }
 
+                //A product chosen while products were offered cannot be honoured once they are not: flagged, never rewritten.
+                if (!catalogueOffered && row.Selected?.VentilationUnitReference is VentilationUnitReference ventilationUnitReference)
+                {
+                    attention.Add(string.Format("{0} is selected, but MVHR products are not selected from the catalogue now, so it cannot be built. Offer the catalogue again, or choose MVHR with an automatic (generic) unit.", ventilationUnitReference));
+                }
+
                 row.SetAttention(attention.Count == 0 ? null : string.Join(" ", attention));
             }
         }
