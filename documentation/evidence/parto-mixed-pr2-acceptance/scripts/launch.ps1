@@ -1,0 +1,13 @@
+param([string]$Model)
+. (Join-Path $PSScriptRoot 'lib.ps1')
+$exe = 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
+Say ("launch: exe {0} (WPF dll {1:yyyy-MM-dd HH:mm}); model {2}" -f $exe, (Get-Item 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM.Analytical.UI.WPF.dll').LastWriteTime, $Model)
+$proc = Start-Process -FilePath $exe -ArgumentList "/Path=$Model" -PassThru
+$script:ProcessId = $proc.Id; Set-Content -Path $pidFile -Value $proc.Id
+$m = $null; $dl = (Get-Date).AddSeconds(180)
+do { Start-Sleep -Seconds 2; $m = Main } while (-not $m -and (Get-Date) -lt $dl)
+if (-not $m) { Say 'FAIL main window did not open'; exit 1 }
+$el = $AE::FromHandle($m.Handle)
+$tab = $null; $dl = (Get-Date).AddSeconds(120); do { Start-Sleep -Seconds 2; $tab = Find-ById $el 'RibbonTab_Simulate' } while (-not $tab -and (Get-Date) -lt $dl)
+Start-Sleep -Seconds 4
+Say ("main window '{0}' pid {1}" -f $m.Title, $proc.Id)

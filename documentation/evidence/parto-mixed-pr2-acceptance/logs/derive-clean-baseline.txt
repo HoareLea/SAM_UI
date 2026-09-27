@@ -1,0 +1,42 @@
+== MAP IC (TM59) zone type='Flats' of {Flats}
+  Studio 1_0: 'Studio - Studio 1_0 - Studio 1_0 - Studio 1_0 - Studio 1_0' -> 'Studio'  ()
+  Corridor_1: 'Studio' -> 'TM59_Communal Corridor (including pipework gains)'  ()
+  Bathroom_2: 'Studio - Bathroom_2 - Bathroom_2 - Bathroom_2 - Bathroom_2' -> 'TM59_Bathroom'  ()
+  Bedroom 2_3: 'Double Bedroom - Bedroom 2_3 - Bedroom 2_3 - Bedroom 2_3 - Bedroom 2_3' -> 'Double Bedroom'  ()
+  Kitchen_4: '1 Bed Apt. Kitchen - Kitchen_4 - Kitchen_4 - Kitchen_4 - Kitchen_4' -> '1 Bed Apt. Kitchen'  ()
+  Ensuite_5: 'Studio - Ensuite_5 - Ensuite_5 - Ensuite_5 - Ensuite_5' -> 'TM59_Bathroom'  ()
+  Bedroom 2_6: 'Double Bedroom - Bedroom 2_6 - Bedroom 2_6 - Bedroom 2_6 - Bedroom 2_6' -> 'Double Bedroom'  ()
+  Kitchen_7: '1 Bed Apt. Kitchen - Kitchen_7 - Kitchen_7 - Kitchen_7 - Kitchen_7' -> '1 Bed Apt. Kitchen'  ()
+  Ensuite_8: 'Studio - Ensuite_8 - Ensuite_8 - Ensuite_8 - Ensuite_8' -> 'TM59_Bathroom'  ()
+removed DesignDay: 12/12
+removed VentilationSystem: 6/6
+removed AirHandlingUnit: 4/4
+removed SpaceAirMovement: 17/17
+removed AirHandlingUnitAirMovement: 3/3
+removed VentilationTerminal: 9/9
+removed SpaceSimulationResult: 18/18
+removed SurfaceSimulationResult: 440/440
+removed ZoneSimulationResult: 20/20
+== DERIVED
+  zone 'Flat 1' dwelling=True category='Flats' spaces=Studio 1_0 [Studio], Bathroom_2 [TM59_Bathroom]
+  zone 'Corridor' dwelling=False category='Flats' spaces=Corridor_1 [TM59_Communal Corridor (including pipework gains)]
+  zone 'Flat 2' dwelling=True category='Flats' spaces=Bedroom 2_3 [Double Bedroom], Kitchen_4 [1 Bed Apt. Kitchen], Ensuite_5 [TM59_Bathroom]
+  zone 'Flat 3' dwelling=True category='Flats' spaces=Bedroom 2_6 [Double Bedroom], Kitchen_7 [1 Bed Apt. Kitchen], Ensuite_8 [TM59_Bathroom]
+  terminals=0 systems=0 AHUs=0 spaceMovements=0 designDays(cluster)=0
+  clean baseline=True
+catalogue: C:\Users\michal.dengusiak\Documents\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON products=2 first=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+== F1 NV / F2 MVHR generic / F3 MVHR generic (no catalogue): materialised=True systems=2 units=
+   scenarios=BaseNaturalVentilation/88b4fad2-6cf3-4b62-9024-385d5b1c6bf4 | BasePassive/5b0ca5f7-a3f1-4f96-95e7-c3a4a246975e | BasePassive/b5b9e52e-fdb4-4fb9-a97e-6e1ac9aab5a0 | DwellingIndependent/a1e8caf6-e6c5-4a53-8e5a-8d3f47f06e7d
+== F1 NV / F2 MVHR automatic / F3 MVHR first product (catalogue): materialised=True systems=2 units=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V) [supply 150 l/s, extract 150 l/s] rank 10 ; Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V) [supply 150 l/s, extract 150 l/s] rank 10
+   scenarios=BaseNaturalVentilation/88b4fad2-6cf3-4b62-9024-385d5b1c6bf4 | BasePassive/5b0ca5f7-a3f1-4f96-95e7-c3a4a246975e | BasePassive/b5b9e52e-fdb4-4fb9-a97e-6e1ac9aab5a0 | DwellingIndependent/a1e8caf6-e6c5-4a53-8e5a-8d3f47f06e7d
+== all NV: materialised=True systems=0 units=
+   scenarios=BaseNaturalVentilation/88b4fad2-6cf3-4b62-9024-385d5b1c6bf4 | BaseNaturalVentilation/5b0ca5f7-a3f1-4f96-95e7-c3a4a246975e | BaseNaturalVentilation/b5b9e52e-fdb4-4fb9-a97e-6e1ac9aab5a0 | DwellingIndependent/a1e8caf6-e6c5-4a53-8e5a-8d3f47f06e7d
+== all MVHR generic: materialised=True systems=3 units=
+   scenarios=BasePassive/88b4fad2-6cf3-4b62-9024-385d5b1c6bf4 | BasePassive/5b0ca5f7-a3f1-4f96-95e7-c3a4a246975e | BasePassive/b5b9e52e-fdb4-4fb9-a97e-6e1ac9aab5a0 | DwellingIndependent/a1e8caf6-e6c5-4a53-8e5a-8d3f47f06e7d
+   realise terminals Flat 3: refusals=0 
+   set Bedroom 2_6 Supply 63 -> 68: refusals=
+   set Kitchen_7 Extract 55 -> 60: refusals=
+accepted clean=True 
+== F1 NV / F2 MVHR / F3 RetainedDesign(+5): materialised=True
+saved C:/TasOut/parto-mixed-pr2-2026-09-27/fixtures\SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam = True
+reopened clean=True

@@ -1,0 +1,29 @@
+Clean fixture baseline: clean=True terminals=0
+A. RetainedDesign on terminal-less baseline: materialised=False
+   REFUSAL RetainedDesignStale : Dwelling 'Flat 04' is selected with a retained design airflow, but carries no design terminals to retain it on. Accept the design onto the baseline's terminals first.
+   realise terminals Flat 04: refusals=0 
+   set Flat 04 Bedroom Supply 8 -> 11: refusals=
+   set Flat 04 Bathroom Extract 8 -> 11: refusals=
+B. accepted baseline clean=True 
+   source baseline still terminal-less=True
+   Flat01 NV / Flat02 MVHR / Flat03 MVHR+U-1 / Flat04 MVHR RetainedDesign: materialised=True
+   baseline JSON byte-identical after materialise=True
+   Flat 01 / Flat 01 Bedroom: terminals=0 flows=
+   Flat 01 / Flat 01 Bathroom: terminals=0 flows=
+   Flat 02 / Flat 02 Bedroom: terminals=1 flows=Supply:8
+   Flat 02 / Flat 02 Bathroom: terminals=1 flows=Extract:8
+   Flat 03 / Flat 03 Bedroom: terminals=1 flows=Supply:8
+   Flat 03 / Flat 03 Bathroom: terminals=1 flows=Extract:8
+   Flat 04 / Flat 04 Bedroom: terminals=1 flows=Supply:11
+   Flat 04 / Flat 04 Bathroom: terminals=1 flows=Extract:11
+   systems=3 units=Maker Unit (U-1) [supply 200 l/s, extract 200 l/s] rank 0,Maker Unit (U-1) [supply 200 l/s, extract 200 l/s] rank 0,Maker Unit (U-1) [supply 200 l/s, extract 200 l/s] rank 0
+   scenarios=7f8107a1-b595-46fe-a13f-f2e156416cdc:BaseNaturalVentilation | e5bcc296-7440-4525-afa2-275aa654ddf3:BasePassive | 3ccb586d-744a-49ee-b3fe-75e9f1bf0840:BasePassive | f3568681-9206-487b-8716-0eb23fb2cdab:BasePassive | 89b654a5-a135-4935-9e39-1446adbf2456:DwellingIndependent
+   strategy JSON carries no airflow: True
+C. Flat04 MVHR PartFRequirement over raised terminals: materialised=False
+   REFUSAL DesignDiffersFromRequirement : Dwelling 'Flat 04' is selected at the Approved Document F requirement, but its design terminals differ from it ('Flat 04 Bathroom' Flat 04 Bathroom - Extract: 11 l/s designed against 8 l/s required; 'Flat 04 Bedroom' Flat 04 Bedroom - Supply: 11 l/s designed against 8 l/s required). They are not reset silently: select the retained design it was accepted as, or correct the terminals.
+D. row Flat 01: selected='Natural ventilation' designTerminals=False attention=''
+D. row Flat 02: selected='MVHR · automatic product' designTerminals=False attention=''
+D. row Flat 03: selected='MVHR · Maker Unit (U-1)' designTerminals=False attention=''
+D. row Flat 04: selected='Optimised MVHR (retained design) · automatic product' designTerminals=False attention=''
+D. readiness: 4 dwellings · 1 Natural · 2 MVHR · 1 Optimised MVHR canBuild=True
+D. screening availability: Natural=available | MechanicalBaseline=available | SelectedProduct=available | Optimised=Airflow optimisation is not yet connected to mixed-design screening. A retained design can still be selected for a dwelling whose baseline carries its design terminals. | ActiveCooling=Available after the cooling workflow is enabled.
