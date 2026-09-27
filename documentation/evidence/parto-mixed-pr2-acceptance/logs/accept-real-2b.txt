@@ -1,0 +1,13 @@
+baseline C:/TasOut/parto-mixed-pr2-2026-09-27/fixtures/SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam clean=True
+2B source C:/TasOut/parto-2b-journey-2026-09-26/run/000000_SAM_AnalyticalModel-It1a-futureZ1-Opt10.prepared.sam
+realise Flat 3 refusals=
+  Bedroom 2_6 Supply: requirement 63 -> 2B 143 l/s (source terminals 1, baseline terminals 1) refusals=
+  Kitchen_7 Extract: requirement 55 -> 2B 95 l/s (source terminals 1, baseline terminals 1) refusals=
+  Ensuite_8 Extract: requirement 8 -> 2B 48 l/s (source terminals 1, baseline terminals 1) refusals=
+accepted baseline clean=True 
+materialise F1 NV / F2 MVHR / Flat 3 Optimised (retained 2B): True
+   materialised Bedroom 2_6: Supply 143
+   materialised Kitchen_7: Extract 95
+   materialised Ensuite_8: Extract 48
+   record current=True 
+saved accepted baseline (no strategy set) C:/TasOut/parto-mixed-pr2-2026-09-27/fixtures\SAM_zoningAM-CIBSEfutureZ1-MixedBaseline-Flat3Accepted2B.sam = True

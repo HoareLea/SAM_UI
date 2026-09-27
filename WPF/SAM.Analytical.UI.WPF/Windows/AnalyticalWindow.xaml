@@ -485,6 +485,9 @@
                      Results > Part O - and this one neither replaces nor hides them. -->
                 <RibbonGroup x:Name="RibbonGroup_Simulate_PartO" Header="Part O">
                     <RibbonButton x:Name="RibbonButton_PartOWorkflow" Label="Prepare &amp; Run" ToolTipService.ShowOnDisabled="True" />
+                    <!-- Mixed dwelling strategies: an ADDITIONAL route beside Prepare & Run, which it neither replaces
+                         nor changes. One strategy per dwelling, built into one mixed model from the clean baseline. -->
+                    <RibbonButton x:Name="RibbonButton_PartOMixedDesign" Label="Mixed Design" ToolTipService.ShowOnDisabled="True" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Simulate_Simulate" Header="Simulate">
                     <RibbonButton x:Name="RibbonButton_SolarSimulation" Label="Solar Simulation" />
