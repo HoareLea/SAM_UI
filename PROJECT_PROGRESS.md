@@ -73,7 +73,7 @@ SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwelling
     (`DescriptorsOffered`); run verdict = SAM `OccupiedSpaceComplianceStatus`, corridor `CorridorRiskStatus` shown beside it
     (not a row, not a failure - SAM's rule); `AllowedProducts` asks SAM's `AllowedDescriptors` (test unit only where SAM
     makes it eligible); sidecar `ReadRefusal` fails closed. Fake TAS returns a real SAM report. Tests
-    `PartOMixedDesignCorrectionTests` (7, all red on c5f59bf - `logs/codex-regressions-RED-on-c5f59bf.log`),
+    `PartOMixedDesignCorrectionTests` (7, all red on c5f59bf - `logs/codex-regressions-RED-on-c5f59bf.txt`),
     `PartOMixedDesignAcceptTests` (5). Local high review → 3 more fixes (screening uses the shared product rule; stale
     acceptance refused; duplicate sidecar result fails closed) + SAM designer-terminal refusal (`b8dd64dd`). WPF
     **1299/1299**; SAM.Tests 2545/2545; `SAM_UI.sln` Release 0 errors.

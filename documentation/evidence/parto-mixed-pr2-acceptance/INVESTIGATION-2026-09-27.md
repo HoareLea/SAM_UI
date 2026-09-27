@@ -11,21 +11,21 @@ and the §5 Codex findings are fixed there; §8 lists workflow improvements. Not
 
 | Mode | What | Where |
 |---|---|---|
-| **Native UI** | the real `SAM_UI\build\SAM Analytical.exe`, driven through Windows UI Automation (buttons invoked, DataGrid rows selected by `SelectionItemPattern`, windows captured with `PrintWindow`) | `scripts/` (driver), `logs/native-drive.log`, `shots/` |
-| **Real licensed TAS** | every Build & Run and every screening strategy below is a genuine full-year TAS run (TBD/TAS3D processes observed, ~50-60 s each, `.tsd` 17 MB) | `logs/native-drive.log` |
-| **Headless production seams** | env-gated xunit harness `PartOMixedDesignInvestigationTests` calling the real SAM / SAM_UI methods (no WPF, no TAS) | `logs/*.log` |
+| **Native UI** | the real `SAM_UI\build\SAM Analytical.exe`, driven through Windows UI Automation (buttons invoked, DataGrid rows selected by `SelectionItemPattern`, windows captured with `PrintWindow`) | `scripts/` (driver), `logs/native-drive.txt`, `shots/` |
+| **Real licensed TAS** | every Build & Run and every screening strategy below is a genuine full-year TAS run (TBD/TAS3D processes observed, ~50-60 s each, `.tsd` 17 MB) | `logs/native-drive.txt` |
+| **Headless production seams** | env-gated xunit harness `PartOMixedDesignInvestigationTests` calling the real SAM / SAM_UI methods (no WPF, no TAS) | `logs/*.txt` |
 
 ## 2. Test model
 
 The owner's standard example `SAM_daily/2026-07-15 PartO/SAM_zoningAM-CIBSEfutureZ1.sam` (3 flats with their own
 dwelling zones, 1 corridor zone, Part F data on 9 spaces, weather `Z1_DSY1_2050s_HIGH90_CIBSE_v1.1`).
 
-**As saved it is not a clean baseline** and SAM refuses it (`logs/example-model-as-saved.log`, native `shots/36`):
+**As saved it is not a clean baseline** and SAM refuses it (`logs/example-model-as-saved.txt`, native `shots/36`):
 478 result objects, 12 cluster design days, Part O systems `MVHR 1-3`, 8 Part-F-rewritten internal conditions, and an
 authored shared `MV 1`/`AHU1` over Flats 2+3. Its corridor carries IC `Studio`. Every sibling variant in that folder is
 also prepared and/or simulated; `SAM_zoningAM.sam` (the closest) has no Part F data and London TRY weather.
 
-**Test fixture derived from it** (headless `Investigation_DeriveCleanBaseline`, `logs/derive-clean-baseline.log`) —
+**Test fixture derived from it** (headless `Investigation_DeriveCleanBaseline`, `logs/derive-clean-baseline.txt`) —
 a TEST FIXTURE, not a user-facing sanitiser:
 1. Map IC (TM59) exactly as the ribbon command's automatic mapping (TM59Manager, default text map/library, zone type
    `Flats`): corridor → `TM59_Communal Corridor (including pipework gains)`, bathrooms → `TM59_Bathroom`, Part F clones
@@ -40,7 +40,7 @@ MVHR systems. Local copies: `C:\TasOut\parto-mixed-pr2-2026-09-27\fixtures\` (no
 
 ## 3. Optimised MVHR / Iteration 2B gap — exactly what is missing
 
-Proven (`logs/optimised-gap-fixture.log`, `logs/accept-real-2b.log`, native run 3):
+Proven (`logs/optimised-gap-fixture.txt`, `logs/accept-real-2b.txt`, native run 3):
 
 | Layer | State |
 |---|---|
@@ -121,12 +121,12 @@ is always constructed `false` and unused (dead).
 **SAM:** SAM-BIM/SAM#152 `Modify.AcceptPartODwellingDesign` (branch `feature/parto-accept-dwelling-design`, `2c352d3e`).
 **SAM_UI:** the four Codex findings fixed, **Accept optimised airflow…** added (PR2 record §11).
 
-Regressions: `logs/codex-regressions-RED-on-c5f59bf.log`. All 7 correction regressions failed on the `c5f59bf` code;
+Regressions: `logs/codex-regressions-RED-on-c5f59bf.txt`. All 7 correction regressions failed on the `c5f59bf` code;
 the 6th/7th-finding test was re-checked against the `c5f59bf` session + command files after a clean rebuild. All pass after.
-Real-data seam: `logs/accept-real-2b-via-sam.log`. SAM accepts the live Opt10 design for each flat; Flat 3's fingerprint
+Real-data seam: `logs/accept-real-2b-via-sam.txt`. SAM accepts the live Opt10 design for each flat; Flat 3's fingerprint
 `24e136de…` is identical to the hand-composed seam that ran through real TAS in §4 #18.
 
-### Native regression (real exe `WPF dll 11:37`, real licensed TAS) - `logs/native-drive.log` after "NATIVE REGRESSION"
+### Native regression (real exe `WPF dll 11:37`, real licensed TAS) - `logs/native-drive.txt` after "NATIVE REGRESSION"
 
 | # | Required | Result | Evidence |
 |---|---|---|---|
@@ -143,7 +143,7 @@ Real-data seam: `logs/accept-real-2b-via-sam.log`. SAM accepts the live Opt10 de
 
 Tests: SAM `SAM.Tests` **2545/2545**; SAM_UI `SAM_UI.sln` Release 0 errors; WPF suite **1299/1299** (1279 + 9 correction +
 6 accept + 5 env-gated investigation harnesses, which are no-ops without their variables). A local high-effort review
-found 3 more defects, fixed with regressions shown red on 573183a (`logs/review-regressions-RED-on-573183a.log`) plus one
+found 3 more defects, fixed with regressions shown red on 573183a (`logs/review-regressions-RED-on-573183a.txt`) plus one
 SAM refusal (designer-added terminal). The native regression above ran on 573183a; the review fixes touch no path it
 exercised except screening availability (not in that regression) and the accept guard (same single-preview flow).
 

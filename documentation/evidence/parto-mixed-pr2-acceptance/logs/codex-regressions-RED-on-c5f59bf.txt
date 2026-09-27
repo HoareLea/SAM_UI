@@ -1,0 +1,26 @@
+  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.ProjectTestUnit_IsOfferedAndSelected_WhereTheCatalogueHasNoProducts [106 ms]
+   Assert.True() Failure
+Expected: True
+Actual:   False
+  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.CorridorRisk_IsPartOfTheProjectResult_ButNeverARow_AndNeverAFailure [53 ms]
+   Assert.Contains() Failure: Sub-string not found
+  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.SidecarMissingAnAssessedDwellingsResult_IsNeitherAPassNorCurrent [7 ms]
+   Assert.NotEqual() Failure: Values are equal
+Expected: Not Pass
+Actual:       Pass
+  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.SidecarWithAnUnreadableDwellingResult_IsNeitherAPassNorCurrent [7 ms]
+   Assert.NotEqual() Failure: Values are equal
+Expected: Not Pass
+Actual:       Pass
+  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.ChangingTheCatalogueSetting_MakesTheFinalResultStale_AndChangingItBackRestoresIt [68 ms]
+   Assert.False() Failure
+Expected: False
+Actual:   True
+  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.RunVerdict_CountsAnOccupiedSpaceOutsideEveryDwellingRow [6 ms]
+   Assert.Equal() Failure: Values differ
+Expected: Fail
+Actual:   Pass
+Failed!  - Failed:     6, Passed:     0, Skipped:     0, Total:     6, Duration: 248 ms - SAM.Analytical.UI.WPF.Tests.dll (net8.0)
+  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.ProjectTestUnit_IsNotOffered_UnderAllCatalogueProducts [111 ms]
+   Assert.DoesNotContain() Failure: Filter matched in collection
+Failed!  - Failed:     1, Passed:     0, Skipped:     0, Total:     1, Duration: 111 ms - SAM.Analytical.UI.WPF.Tests.dll (net8.0)
