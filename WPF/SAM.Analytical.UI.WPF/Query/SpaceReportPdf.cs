@@ -10,9 +10,7 @@ namespace SAM.Analytical.UI.WPF
 {
     public static partial class Query
     {
-        public const string SpaceAssumptionsPdfTitle = "Space Assumptions PDF";
-
-        private const int SpaceAssumptionsPdfNameMaxLength = 150;
+        private const int SpaceReportPdfNameMaxLength = 150;
 
         private static readonly HashSet<string> reservedFileNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -22,12 +20,13 @@ namespace SAM.Analytical.UI.WPF
         };
 
         /// <summary>
-        /// Resolves the selection for the Space Assumptions PDF (Phase 1: exactly one Space). The Space is looked
-        /// up by Guid in the current model, so a selection that went stale after an edit reports the model's
-        /// current Space, and one that was removed is refused rather than reported from an old copy.
+        /// Resolves the selection for a one-Space report PDF: exactly one Space. The Space is looked up by Guid in
+        /// the current model, so a selection that went stale after an edit reports the model's current Space, and
+        /// one that was removed is refused rather than reported from an old copy. Several Spaces are refused, never
+        /// reduced to the first.
         /// </summary>
         /// <param name="refusal">Why no Space was resolved, for the user; null when one was.</param>
-        public static Space? SpaceAssumptionsPdfSpace(AnalyticalModel? analyticalModel, IEnumerable<Space>? spaces, out string? refusal)
+        public static Space? SpaceReportPdfSpace(AnalyticalModel? analyticalModel, IEnumerable<Space>? spaces, SpaceReportPdf spaceReportPdf, out string? refusal)
         {
             refusal = null;
 
@@ -41,13 +40,13 @@ namespace SAM.Analytical.UI.WPF
             List<Space> spaces_Selected = spaces?.Where(x => x != null).GroupBy(x => x.Guid).Select(x => x.First()).ToList() ?? new List<Space>();
             if (spaces_Selected.Count == 0)
             {
-                refusal = "Select one Space, then choose Space Assumptions PDF.";
+                refusal = string.Format("Select one Space, then choose {0}.", spaceReportPdf?.Title);
                 return null;
             }
 
             if (spaces_Selected.Count > 1)
             {
-                refusal = string.Format("{0} Spaces are selected. The Space Assumptions PDF is created for one Space at a time: select a single Space.", spaces_Selected.Count);
+                refusal = string.Format("{0} Spaces are selected. The {1} is created for one Space at a time: select a single Space.", spaces_Selected.Count, spaceReportPdf?.Title);
                 return null;
             }
 
@@ -62,10 +61,10 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
-        /// "&lt;Space name&gt; - Space Assumptions.pdf", with characters Windows does not allow in a file name
+        /// "&lt;Space name&gt; - &lt;report name&gt;.pdf", with characters Windows does not allow in a file name
         /// replaced by "_". A Space with no usable name falls back to its Guid, the same subject the report prints.
         /// </summary>
-        public static string SpaceAssumptionsPdfFileName(Space? space)
+        public static string SpaceReportPdfFileName(Space? space, SpaceReportPdf spaceReportPdf)
         {
             string? name = SafeFileName(space?.Name);
             if (string.IsNullOrEmpty(name))
@@ -73,7 +72,7 @@ namespace SAM.Analytical.UI.WPF
                 name = space == null ? "Space" : "Space " + space.Guid.ToString("D");
             }
 
-            return name + " - Space Assumptions.pdf";
+            return name + " - " + spaceReportPdf?.Name + ".pdf";
         }
 
         private static string? SafeFileName(string? text)
@@ -88,9 +87,9 @@ namespace SAM.Analytical.UI.WPF
             char[] chars = text.Trim().Select(x => invalidChars.Contains(x) || char.IsControl(x) ? '_' : x).ToArray();
 
             string result = new string(chars);
-            if (result.Length > SpaceAssumptionsPdfNameMaxLength)
+            if (result.Length > SpaceReportPdfNameMaxLength)
             {
-                result = result.Substring(0, SpaceAssumptionsPdfNameMaxLength);
+                result = result.Substring(0, SpaceReportPdfNameMaxLength);
             }
 
             //Windows drops trailing dots and spaces from a file name.

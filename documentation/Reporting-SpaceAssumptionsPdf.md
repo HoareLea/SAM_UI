@@ -24,12 +24,14 @@ and still available.
 - In both context menus, when more than one Space is selected or highlighted, the item is shown **disabled** with the
   tooltip "…one Space at a time: select a single Space." The first Space is never picked silently.
 
-Code:
-- `Modify.CreateSpaceAssumptionsPdf` (UI flow);
-- `Modify.WriteSpaceAssumptionsPdf` (the testable seam);
-- `Query.SpaceAssumptionsPdfSpace` and `Query.SpaceAssumptionsPdfFileName`;
-- `Create.MenuItem_SpaceAssumptionsPdf`;
-- `SpaceAssumptionsPdfResult`.
+Code (shared with the Phase-2 Space Design Load Summary PDF since PR2D; see
+`Reporting-SpaceDesignLoadSummaryPdf.md`):
+- `SpaceReportPdf.SpaceAssumptions` (the report and its SAM entry point, `Create.SpaceAssumptions`);
+- `Modify.CreateSpaceReportPdf` (UI flow);
+- `Modify.WriteSpaceReportPdf` (the testable seam);
+- `Query.SpaceReportPdfSpace` and `Query.SpaceReportPdfFileName`;
+- `Create.MenuItem_SpaceReportPdf`;
+- `SpaceReportPdfResult`.
 
 ## Workflow
 1. Select a Space, then choose the command.
@@ -50,7 +52,7 @@ Code:
 ## Units
 SAM_UI has no unit-system preference (only the Mollier chart's own default), and PR3 adds none. The command uses the
 reporting framework's default, **SI**, with air flow in **L/s**. Every unit is formatted upstream by `QuantityFormatter`.
-`WriteSpaceAssumptionsPdf` takes a `UnitStyle`, so a later preference or IP option is a one-line change. That path is
+`WriteSpaceReportPdf` takes a `UnitStyle`, so a later preference or IP option is a one-line change. That path is
 tested for IP: no SI unit appears.
 
 ## File name
@@ -64,7 +66,7 @@ tested for IP: no SI unit appears.
 
 ## Failures
 Expected missing engineering data is **not** an error. The report prints `—`, `n/a`, `not set` and notices, and the
-reporting framework's diagnostics are kept in `SpaceAssumptionsPdfResult.Notes`.
+reporting framework's diagnostics are kept in `SpaceReportPdfResult.Notes`.
 
 A software failure stops the command and shows an error that names the stage:
 - **Document:** the reporting library threw.
