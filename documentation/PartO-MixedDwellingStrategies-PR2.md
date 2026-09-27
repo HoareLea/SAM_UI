@@ -195,5 +195,8 @@ acceptance previewed against an earlier baseline is refused (`ConditionalWeakTab
 dropping a later accepted edit; a sidecar listing a dwelling twice fails closed; the product check is hoisted out of the
 per-row refresh; the close prompt names an accepted design. SAM side: a designer-added terminal refuses acceptance.
 
-Tests: `PartOMixedDesignCorrectionTests` (9), `PartOMixedDesignAcceptTests` (6); the fake TAS now returns a real SAM
+**Closeout:** the Accept file dialog starts in the simulation case's output folder (model folder when unset), with an empty
+file name, and the open baseline itself is answered plainly before SAM is asked - no new persisted state.
+
+Tests: `PartOMixedDesignCorrectionTests` (9), `PartOMixedDesignAcceptTests` (7); the fake TAS now returns a real SAM
 `TM59AssessmentReport` (mechanical + corridor results) so the run verdict is SAM's in every test.

@@ -568,15 +568,16 @@ namespace SAM.Analytical.UI.WPF
             PartOMixedDwellingRow row = rows[0];
             const string caption = "Part O — Accept optimised airflow";
 
-            Microsoft.Win32.OpenFileDialog openFileDialog = new()
-            {
-                Title = string.Format("Accept optimised airflow for {0} — choose the completed Iteration 2B result model", row.Name),
-                Filter = "SAM model (*.sam)|*.sam",
-                InitialDirectory = string.IsNullOrWhiteSpace(session.Path_Model) ? null : System.IO.Path.GetDirectoryName(session.Path_Model),
-            };
+            Microsoft.Win32.OpenFileDialog openFileDialog = AcceptOptimisedFileDialog(row.Name, textBox_OutputDirectory.Text, session.Path_Model);
 
             if (openFileDialog.ShowDialog(this) != true)
             {
+                return;
+            }
+
+            if (IsOpenModel(openFileDialog.FileName, session.Path_Model))
+            {
+                MessageBox.Show(this, string.Format("'{0}' is the open baseline model itself, not a completed Iteration 2B result. Choose the 2B result model (its '-Opt' round file). Nothing was accepted.", System.IO.Path.GetFileName(openFileDialog.FileName)), caption, MessageBoxButton.OK, MessageBoxImage.Information);
                 return;
             }
 
@@ -627,6 +628,44 @@ namespace SAM.Analytical.UI.WPF
             textBlock_BulkMessage.Visibility = Visibility.Visible;
 
             RefreshAll();
+        }
+
+        /// <summary>
+        /// The file dialog of Accept optimised airflow: it starts in the simulation case's output folder - where Part O runs,
+        /// Iteration 2B's rounds included, write their result models - falling back to the model's folder, and its file name
+        /// is empty, so the open baseline is never offered as the answer. No new persisted state.
+        /// </summary>
+        internal static Microsoft.Win32.OpenFileDialog AcceptOptimisedFileDialog(string name_Dwelling, string? directory_Output, string? path_Model)
+        {
+            string? directory = !string.IsNullOrWhiteSpace(directory_Output) && System.IO.Directory.Exists(directory_Output)
+                ? directory_Output
+                : string.IsNullOrWhiteSpace(path_Model) ? null : System.IO.Path.GetDirectoryName(path_Model);
+
+            return new Microsoft.Win32.OpenFileDialog()
+            {
+                Title = string.Format("Accept optimised airflow for {0} — choose the completed Iteration 2B result model", name_Dwelling),
+                Filter = "SAM model (*.sam)|*.sam",
+                InitialDirectory = directory is not null && System.IO.Directory.Exists(directory) ? directory : string.Empty,
+                FileName = string.Empty,
+            };
+        }
+
+        /// <summary>Whether <paramref name="path"/> is the open model's own file.</summary>
+        internal static bool IsOpenModel(string? path, string? path_Model)
+        {
+            if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(path_Model))
+            {
+                return false;
+            }
+
+            try
+            {
+                return string.Equals(System.IO.Path.GetFullPath(path), System.IO.Path.GetFullPath(path_Model), StringComparison.OrdinalIgnoreCase);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         private void ApplySuggestions()

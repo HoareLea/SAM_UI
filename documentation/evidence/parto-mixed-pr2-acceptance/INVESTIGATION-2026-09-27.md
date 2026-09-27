@@ -165,3 +165,14 @@ wording of the catalogue-setting stale reason (a clarity defect in this pass's o
 | H2 | Matrix columns truncate at 1240 px ("MVHR baselir", "UNAVAILABI", failing-space names) | Shorter headers / tooltip, wider default, "Screening" group header | Readability | Next UI pass | UI-only | Small |
 | H3 | The accept confirmation is a message box; for many dwellings a table is better | Reuse the Apply-suggestions change window (dwelling / current / proposed / why) | Consistency, scale | With B | UI-only | Small |
 | H4 | The Open dialog pre-selects the open project file, an easy wrong pick (SAM refuses it safely) | Start the dialog in the model folder's run subfolder / filter to 2B round files | Fewer wrong picks | Next UI pass | UI-only | Small |
+
+## 9. Closeout: Accept dialog start folder (27 Sep 2026)
+
+The wrong pick in §7 was not a pre-filled name (the file name was empty, shots/41 context): the dialog started in the
+model's folder, where the open baseline is the only `.sam`. Now (`AcceptOptimisedFileDialog`, `IsOpenModel`): it starts in
+the simulation case's output folder (existing state; the model folder when unset), the file name is set empty explicitly,
+and choosing the open baseline itself answers plainly before SAM is asked. Regression
+`FileDialog_StartsInTheOutputFolder_WithAnEmptyFileName_AndNeverOffersTheOpenModel`. Native check (no TAS needed - the
+accept/build path is unchanged): output folder set to the 2B folder → dialog opened there, empty name (shots/55); open
+baseline chosen → "is the open baseline model itself, not a completed Iteration 2B result … Nothing was accepted"
+(shots/56); the real `-Opt10` → Flat 3's three changes only, answered No → nothing changed (shots/58).

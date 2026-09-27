@@ -164,6 +164,32 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(partOMaterialisation.IsMaterialised, partOMaterialisation.Refusal);
         }
 
+        [Fact]
+        public void FileDialog_StartsInTheOutputFolder_WithAnEmptyFileName_AndNeverOffersTheOpenModel()
+        {
+            string directory = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SAM_PartOAccept_" + System.Guid.NewGuid().ToString("N"));
+            string directory_Model = System.IO.Path.Combine(directory, "model");
+            string directory_Output = System.IO.Path.Combine(directory, "output");
+            System.IO.Directory.CreateDirectory(directory_Model);
+            System.IO.Directory.CreateDirectory(directory_Output);
+            string path_Model = System.IO.Path.Combine(directory_Model, "Block.sam");
+            System.IO.File.WriteAllText(path_Model, "{}");
+
+            Microsoft.Win32.OpenFileDialog openFileDialog = PartOMixedDesignWindow.AcceptOptimisedFileDialog("Flat 03", directory_Output, path_Model);
+            Assert.Equal(directory_Output, openFileDialog.InitialDirectory);
+            Assert.Equal(string.Empty, openFileDialog.FileName);
+
+            //No usable output folder: the model's folder, still with no file name.
+            openFileDialog = PartOMixedDesignWindow.AcceptOptimisedFileDialog("Flat 03", System.IO.Path.Combine(directory, "missing"), path_Model);
+            Assert.Equal(directory_Model, openFileDialog.InitialDirectory);
+            Assert.Equal(string.Empty, openFileDialog.FileName);
+
+            //The open model itself is recognised whatever the spelling of its path.
+            Assert.True(PartOMixedDesignWindow.IsOpenModel(System.IO.Path.Combine(directory_Model, ".", "BLOCK.sam"), path_Model));
+            Assert.False(PartOMixedDesignWindow.IsOpenModel(System.IO.Path.Combine(directory_Output, "Block-Opt10.sam"), path_Model));
+            Assert.False(PartOMixedDesignWindow.IsOpenModel(System.IO.Path.Combine(directory_Output, "Block-Opt10.sam"), null));
+        }
+
         /// <summary>Flat 01 natural, Flats 02 and 03 MVHR at the requirement - saved on the clean baseline.</summary>
         private static AnalyticalModel Baseline() => PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), x => x.Name == "Flat 01" ? PartOMixedDesignFixture.Natural(x) : PartOMixedDesignFixture.Mvhr(x));
 
