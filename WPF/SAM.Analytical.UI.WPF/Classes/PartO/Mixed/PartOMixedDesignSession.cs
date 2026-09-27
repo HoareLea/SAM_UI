@@ -867,6 +867,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             bool catalogueHasProducts = CatalogueHasProducts;
+            List<VentilationUnitCapacityDescriptor> allowedProducts = catalogueOffered ? AllowedProducts : [];
 
             foreach (PartOMixedDwellingRow row in rows)
             {
@@ -895,7 +896,7 @@ namespace SAM.Analytical.UI.WPF
 
                 row.ScreeningChanged();
 
-                row.SetSuggestion(UI.Query.PartODwellingSuggestion(row.ZoneGuid, evidence_Current, Constraints));
+                row.SetSuggestion(UI.Query.PartODwellingSuggestion(row.ZoneGuid, evidence_Current, Constraints, catalogueOffered));
 
                 PartODwellingResult? partODwellingResult = partOMixedRunEvidence?.Result(row.ZoneGuid);
                 PartODwellingStrategy? partODwellingStrategy_Ran = partOMixedRunEvidence?.Strategies?.Strategy(row.ZoneGuid);
@@ -913,10 +914,18 @@ namespace SAM.Analytical.UI.WPF
                     attention.Add(refusal_Constraint);
                 }
 
-                //A product chosen while products were offered cannot be honoured once they are not: flagged, never rewritten.
-                if (!catalogueOffered && row.Selected?.VentilationUnitReference is VentilationUnitReference ventilationUnitReference)
+                //A product chosen earlier that cannot be honoured now - products no longer offered, or the product no longer in
+                //the project's permitted pool: flagged, never rewritten.
+                if (row.Selected?.VentilationUnitReference is VentilationUnitReference ventilationUnitReference)
                 {
-                    attention.Add(string.Format("{0} is selected, but MVHR products are not selected from the catalogue now, so it cannot be built. Offer the catalogue again, or choose MVHR with an automatic (generic) unit.", ventilationUnitReference));
+                    if (!catalogueOffered)
+                    {
+                        attention.Add(string.Format("{0} is selected, but MVHR products are not selected from the catalogue now, so it cannot be built. Offer the catalogue again, or choose MVHR with an automatic (generic) unit.", ventilationUnitReference));
+                    }
+                    else if (!allowedProducts.Any(x => SameProduct(x.VentilationUnitReference, ventilationUnitReference)))
+                    {
+                        attention.Add(string.Format("{0} is selected, but it is not in the project's permitted product pool now, so it cannot be built. Choose a permitted product or automatic selection.", ventilationUnitReference));
+                    }
                 }
 
                 row.SetAttention(attention.Count == 0 ? null : string.Join(" ", attention));

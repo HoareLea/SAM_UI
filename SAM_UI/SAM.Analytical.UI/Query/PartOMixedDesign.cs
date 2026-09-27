@@ -219,7 +219,12 @@ namespace SAM.Analytical.UI
         /// </para>
         /// </summary>
         /// <param name="evidence_Current">Screening evidence that is current for the baseline in use - never stale evidence.</param>
-        public static PartODwellingSuggestion PartODwellingSuggestion(Guid guid_Zone, IEnumerable<PartOScreeningEvidence> evidence_Current, PartOMixedDesignConstraints partOMixedDesignConstraints)
+        /// <param name="catalogueOffered">
+        /// Whether the next build selects MVHR products from the catalogue. An MVHR suggestion is only made from the
+        /// screening that matches it - Selected-product MVHR when products are offered, MVHR baseline (generic units) when
+        /// not - because applying it builds in the session's mode, not the screened one. Null: no filter.
+        /// </param>
+        public static PartODwellingSuggestion PartODwellingSuggestion(Guid guid_Zone, IEnumerable<PartOScreeningEvidence> evidence_Current, PartOMixedDesignConstraints partOMixedDesignConstraints, bool? catalogueOffered = null)
         {
             partOMixedDesignConstraints ??= new PartOMixedDesignConstraints();
 
@@ -261,6 +266,12 @@ namespace SAM.Analytical.UI
                 if (!partOMixedDesignConstraints.Allows(partOScreeningStrategy))
                 {
                     passedOver.Add(string.Format("{0} passed but {1}", PartOScreeningStrategyLabel(partOScreeningStrategy), ConstraintText(partOScreeningStrategy)));
+                    continue;
+                }
+
+                if ((catalogueOffered == true && partOScreeningStrategy == PartOScreeningStrategy.MechanicalBaseline) || (catalogueOffered == false && partOScreeningStrategy == PartOScreeningStrategy.SelectedProduct))
+                {
+                    passedOver.Add(string.Format("{0} passed but the next build {1}", PartOScreeningStrategyLabel(partOScreeningStrategy), catalogueOffered == true ? "selects products from the catalogue" : "uses generic MVHR units"));
                     continue;
                 }
 

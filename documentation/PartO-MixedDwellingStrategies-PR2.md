@@ -204,7 +204,7 @@ ran under (`Query.PartOSimulationCaseKey`: weather by content + solar method, fr
 makes them stale at once; a cancelled or incomplete rerun re-validates the previous result (its results file may have been
 rewritten); run notes (pre-simulation warnings, run-model persistence) are part of the build outcome.
 
-Codex on cf67983: screening run notes are shown with the screening outcome; unticking the catalogue flags any explicitly chosen product as needing attention (blocks Build, never rewritten).
+Codex on cf67983: screening run notes are shown with the screening outcome; unticking the catalogue flags any explicitly chosen product as needing attention (blocks Build, never rewritten). Codex on e212b57: an explicit product outside the permitted pool needs attention too; an MVHR suggestion comes only from the screening of the current equipment mode (Selected-product with the catalogue, MVHR baseline without).
 
-Tests: `PartOMixedDesignCorrectionTests` (14), `PartOMixedDesignAcceptTests` (7); the fake TAS now returns a real SAM
+Tests: `PartOMixedDesignCorrectionTests` (16), `PartOMixedDesignAcceptTests` (7); the fake TAS now returns a real SAM
 `TM59AssessmentReport` (mechanical + corridor results) so the run verdict is SAM's in every test.

@@ -68,6 +68,44 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(session.Readiness().CanBuild);
         }
 
+        [Fact]
+        public void AnExplicitProductOutsideThePermittedPool_NeedsAttention_AndBlocksTheBuild()
+        {
+            VentilationUnitCapacityDescriptor other = new(new VentilationUnitReference("Maker", "Other", "O-1"), 200, 200);
+            AnalyticalModel baseline = PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), x => new PartODwellingStrategy(x.Guid, PartOVentilationMode.MVHR, x.Name == "Flat 01" ? other.VentilationUnitReference : null));
+            baseline.SetValue(Analytical.AnalyticalModelParameter.PartOEquipmentSelection, new PartOEquipmentSelection(PartOEquipmentSelectionMode.AutomaticSelectedPool, [Product.VentilationUnitReference]));
+
+            PartOMixedDesignSession session = new(baseline, null, [Product, other], null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
+            PartOMixedDwellingRow row = session.Rows.Single(x => x.Name == "Flat 01");
+
+            Assert.True(row.NeedsAttention);
+            Assert.Contains("permitted product pool", row.Attention);
+            Assert.False(session.Readiness().CanBuild);
+            Assert.Equal("Other", row.Selected!.VentilationUnitReference!.Model);
+        }
+
+        [Fact]
+        public void MvhrSuggestion_ComesOnlyFromTheScreeningOfTheCurrentEquipmentMode()
+        {
+            AnalyticalModel baseline = PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), PartOMixedDesignFixture.Mvhr);
+            PartOMixedDesignSession session = new(baseline, null, [Product], null);
+            session.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
+            Assert.True(session.CatalogueOffered);
+
+            //MVHR baseline (generic units) passed; nothing else was screened.
+            PartOScreeningEvidence evidence = PartOMixedDesignSessionTests.Evidence(session, PartOScreeningStrategy.MechanicalBaseline, [.. session.Rows.Select(x => (x, PartODwellingOutcome.Pass))]);
+            session.ApplyScreening([evidence]);
+
+            //Products are offered: applying it would build selected products, not what was screened - so no suggestion.
+            Assert.All(session.Rows, x => Assert.Null(x.Suggestion?.DwellingStrategy));
+            Assert.Contains("selects products from the catalogue", session.Rows[0].SuggestionReason);
+
+            //Generic units: the screening matches, so it is suggested.
+            session.CatalogueOffered = false;
+            Assert.All(session.Rows, x => Assert.NotNull(x.Suggestion?.DwellingStrategy));
+        }
+
         // ---- P1: the run verdict is the production TM59 verdict ------------------------------------------------------
 
         [Fact]

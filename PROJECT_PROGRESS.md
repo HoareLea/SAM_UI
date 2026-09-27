@@ -87,7 +87,7 @@ SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwelling
 - **Closeout (27 Sep, later):** Codex on SAM_UI a2de99b - 5 findings fixed (unassessed common space not a pass; evidence
   bound to the simulation case; cancelled rerun re-validates; run notes surfaced); Accept dialog starts in the output folder
   with an empty name and answers plainly for the open baseline (native check, no TAS). SAM#152 Codex rounds fixed up to
-  `e558db01` (merged up with sow `8a22c82b`, SAM#153). WPF **1305/1305**, SAM.Tests 2567/2567; Codex on cf67983 (screening notes, explicit product under unticked catalogue) fixed.
+  `e558db01` (merged up with sow `8a22c82b`, SAM#153). WPF **1307/1307**, SAM.Tests 2568/2568; Codex on cf67983 (screening notes, explicit product under unticked catalogue) fixed.
 - **Not done / risks:** SAM#152 unmerged (SAM_UI CI red until then); Optimised *screening* (2B inside screening) deferred;
   the 2B result file is chosen by the engineer (a capacity-envelope `-OptMax` file is indistinguishable by state - the
   confirmation shows every airflow); product pool not editable here; suggestion policy in SAM_UI (PR0 D6 later).
