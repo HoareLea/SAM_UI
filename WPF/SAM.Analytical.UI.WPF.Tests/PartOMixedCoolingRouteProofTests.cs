@@ -24,6 +24,7 @@ namespace SAM.Analytical.UI.WPF.Tests
     /// Needs <c>SAM_PARTO_PR3_ROUTE_PROOF</c> (output folder) and <c>SAM_PARTO_MIXED_BASELINE</c> (clean baseline);
     /// without them it does nothing.
     /// </summary>
+    [Collection(WpfCollection.Name)]
     public class PartOMixedCoolingRouteProofTests
     {
         [WpfFact]
