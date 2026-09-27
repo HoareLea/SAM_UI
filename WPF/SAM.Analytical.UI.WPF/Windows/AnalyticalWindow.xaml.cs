@@ -795,6 +795,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_PartOWorkflow.ToolTipTitle = "Part O — Prepare & Run";
             RibbonButton_PartOWorkflow.ToolTipDescription = "Inspect what this model already provides for an Approved Document O run, then prepare, check, simulate and assess it in one command. Existing results are reviewed without simulating again.";
 
+            RibbonButton_PartOMixedDesign.LargeImageSource = Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_EnergySimulation);
+            RibbonButton_PartOMixedDesign.Click += RibbonButton_PartOMixedDesign_Click;
+            RibbonButton_PartOMixedDesign.ToolTipTitle = "Part O — Mixed Design";
+            RibbonButton_PartOMixedDesign.ToolTipDescription = "Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.";
+
             RibbonButton_PreparePartOIteration.LargeImageSource = Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_PreparePartOIteration.Click += RibbonButton_PreparePartOIteration_Click;
 
@@ -1987,6 +1992,18 @@ namespace SAM.Analytical.UI.WPF.Windows
             RefreshPartOButtons();
         }
 
+        /// <summary>
+        /// The mixed dwelling-strategy route. It shares no run with the command above: it never replaces the open model
+        /// with a prepared or simulated one, and its only write is the selected strategy set, when saved.
+        /// </summary>
+        private void RibbonButton_PartOMixedDesign_Click(object sender, RoutedEventArgs e)
+        {
+            Modify.RunPartOMixedDesign(uIAnalyticalModel, windowHandle);
+
+            //Saving the selection is a model change and may have dropped a legacy run.
+            RefreshPartOButtons();
+        }
+
         private void RibbonButton_PreparePartOIteration_Click(object sender, RoutedEventArgs e)
         {
             Modify.PreparePartOIteration(uIAnalyticalModel, partORun, windowHandle);
@@ -3103,6 +3120,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_AssignMechanicalSystems.IsEnabled = false;
             RibbonButton_RemoveAirMovementObjects.IsEnabled = false;
             RibbonButton_PartOWorkflow.IsEnabled = false;
+            RibbonButton_PartOMixedDesign.IsEnabled = false;
             RibbonButton_PreparePartOIteration.IsEnabled = false;
             RibbonButton_AssessPartOTM59.IsEnabled = false;
             RibbonButton_OptimisePartOTM59.IsEnabled = false;
@@ -3155,6 +3173,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 //Preparing needs only a model; assessing needs a completed run, which is a fact about the
                 //session rather than about the model, so it is gated separately.
                 RibbonButton_PartOWorkflow.IsEnabled = true;
+                RibbonButton_PartOMixedDesign.IsEnabled = true;
                 RibbonButton_PreparePartOIteration.IsEnabled = true;
                 RefreshPartOButtons();
 

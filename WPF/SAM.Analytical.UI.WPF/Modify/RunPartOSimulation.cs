@@ -569,12 +569,20 @@ namespace SAM.Analytical.UI.WPF
 
                     //And what a later session needs to start Iteration 3 from these results without re-running
                     //Prepare & Run - the prepared model and a sidecar bound to these results (PartORunResume).
-                    result.TryGetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, out SimulationResultProvenance simulationResultProvenance_Resume);
-                    Modify.PersistPartORunResume(partORun, partOSimulationContext, simulationResultProvenance_Resume, path_TSD, out string note_Resume);
-
-                    if (!string.IsNullOrWhiteSpace(note_Resume))
+                    //
+                    //Not for a mixed-design run (a model SAM materialised from dwelling strategies, which carries
+                    //its PartOMaterialisationRecord): it has no legacy preparation to resume, its provenance is
+                    //that record, and the note this would add - "no saved preparation was written" - would only
+                    //mislead. Every legacy run is untouched: a legacy preparation never carries the record.
+                    if (!result.HasValue(Analytical.AnalyticalModelParameter.PartOMaterialisationRecord))
                     {
-                        notes.Add(note_Resume);
+                        result.TryGetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, out SimulationResultProvenance simulationResultProvenance_Resume);
+                        Modify.PersistPartORunResume(partORun, partOSimulationContext, simulationResultProvenance_Resume, path_TSD, out string note_Resume);
+
+                        if (!string.IsNullOrWhiteSpace(note_Resume))
+                        {
+                            notes.Add(note_Resume);
+                        }
                     }
                 }
             }

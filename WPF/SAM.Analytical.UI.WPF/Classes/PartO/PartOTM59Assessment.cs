@@ -55,8 +55,9 @@ namespace SAM.Analytical.UI.WPF
     {
         //Internal rather than private so tests can fabricate the assessment the subset-pass guard reads -
         //the production route to one remains Assess, which needs a real TSD.
-        internal PartOTM59Assessment(TM59AssessmentResult tM59AssessmentResult, TM59AssessmentReport tM59AssessmentReport, List<PartOTM59SpaceResult> spaceResults, List<string> associationRefusals, List<Guid> spaceGuids_Unassessed, string refusal, Dictionary<Guid, double[]>? resultantTemperatures = null, List<Guid>? spaceGuids_NoResult = null)
+        internal PartOTM59Assessment(TM59AssessmentResult tM59AssessmentResult, TM59AssessmentReport tM59AssessmentReport, List<PartOTM59SpaceResult> spaceResults, List<string> associationRefusals, List<Guid> spaceGuids_Unassessed, string refusal, Dictionary<Guid, double[]>? resultantTemperatures = null, List<Guid>? spaceGuids_NoResult = null, Dictionary<Guid, TM59ComplianceStatus>? occupiedSpaceStatuses = null)
         {
+            OccupiedSpaceStatuses = occupiedSpaceStatuses ?? [];
             Result = tM59AssessmentResult;
             Report = tM59AssessmentReport;
             SpaceResults = spaceResults ?? [];
@@ -105,6 +106,18 @@ namespace SAM.Analytical.UI.WPF
         /// </para>
         /// </summary>
         public Dictionary<Guid, double[]>? ResultantTemperatures { get; }
+
+        /// <summary>
+        /// Each assessed occupied space's <b>overall</b> TM59 status, keyed by <b>design</b> space guid - SAM's own
+        /// <c>TM59AssessmentReportSpace.ComplianceStatus</c>, the value the report's Overall column prints, resolved
+        /// through the same <c>SimulationSpaceMap</c> every other result on this class is.
+        /// <para>
+        /// <b>Read, never decided.</b> It exists so a mixed Part O design can tally a dwelling from the statuses
+        /// SAM gave its rooms (<c>Query.PartODwellingResults</c>) instead of re-combining the per-criterion rows. A
+        /// space that does not resolve to exactly one design space has no entry, as it has no verdict.
+        /// </para>
+        /// </summary>
+        public Dictionary<Guid, TM59ComplianceStatus> OccupiedSpaceStatuses { get; }
 
         /// <summary>The production assessment result, or null where none could be produced.</summary>
         public TM59AssessmentResult? Result { get; }
@@ -327,7 +340,34 @@ namespace SAM.Analytical.UI.WPF
                 ? CaptureResultantTemperatures(spaces, tM59AssessmentCalculator.SimulationSpaceMap, tM59AssessmentCalculator.ResultantTemperatureSeriesKey, spaceGuids_Capture)
                 : null;
 
-            return new PartOTM59Assessment(tM59AssessmentResult, tM59AssessmentReport, spaceResults, associationRefusals, spaceGuids_Unassessed, null, resultantTemperatures, spaceGuids_NoResult);
+            //Each occupied space's overall status, as SAM combined it, keyed to its design space - through the same
+            //map, so a room that resolves to no single design space has no status here, as it has no verdict.
+            Dictionary<Guid, TM59ComplianceStatus> occupiedSpaceStatuses = [];
+
+            Dictionary<string, Space> dictionary_Simulation = [];
+            foreach (Space space_Simulation in spaces ?? [])
+            {
+                if (space_Simulation is not null)
+                {
+                    dictionary_Simulation[space_Simulation.Guid.ToString()] = space_Simulation;
+                }
+            }
+
+            foreach (TM59AssessmentReportSpace tM59AssessmentReportSpace in tM59AssessmentReport.OccupiedSpaces ?? [])
+            {
+                if (tM59AssessmentReportSpace?.Reference is null || !dictionary_Simulation.TryGetValue(tM59AssessmentReportSpace.Reference, out Space? space_Simulation))
+                {
+                    continue;
+                }
+
+                Space? space_Design = tM59AssessmentCalculator.SimulationSpaceMap?.Design(space_Simulation);
+                if (space_Design is not null)
+                {
+                    occupiedSpaceStatuses[space_Design.Guid] = tM59AssessmentReportSpace.ComplianceStatus;
+                }
+            }
+
+            return new PartOTM59Assessment(tM59AssessmentResult, tM59AssessmentReport, spaceResults, associationRefusals, spaceGuids_Unassessed, null, resultantTemperatures, spaceGuids_NoResult, occupiedSpaceStatuses);
         }
 
         /// <summary>

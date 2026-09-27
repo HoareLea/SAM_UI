@@ -1,6 +1,56 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - APPROVED; PR0 PRs being merged
+## Current: Mixed Part O dwelling strategies - PR2 SAM_UI dwelling strategies + mixed-model workflow (27 Sep 2026) - PR OPEN, awaiting review
+
+**Branch** `feature/parto-mixed-strategies-pr2` from `sow/2026-Q3` `c96ac19` (PR0 merged). Builds against SAM
+`sow/2026-Q3` `0f866ec6` (PR1 = SAM#150 merged `3de02102`; closeout SAM#151). **SAM must be built at `0f866ec6` or
+later** (`SAM.sln` Release) - SAM_UI now uses `MaterialisePartODwellingStrategies`, `PartODwellingStrategySet` etc.
+SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwellingStrategies-PR2.md`.
+
+- **What:** Simulate › Part O › **Mixed Design** (new ribbon button; Prepare & Run and 1a/1b/2/2B/3 untouched). One
+  window: virtualised matrix, one row per dwelling (SAM's dwelling rule; common zones not rows); screening columns
+  (evidence), Suggested, Selected (authority), Final TM59; search / filter / group; bulk bar (Natural, MVHR +
+  product, retain baseline design, clear, Apply suggestions… with a preview whose default is Cancel); project
+  constraints; simulation case; Screen strategies… (optional), Check design, Open final TM59 result…, Save selection,
+  Build & Run Mixed Design.
+- **Key decisions:**
+  - Screening AND the final run both go through SAM PR1 `MaterialisePartODwellingStrategies` (screening = a copy with
+    a homogeneous set: Natural=1b, MVHR baseline=1a generic, Selected-product=2 with catalogue). No second Part O
+    implementation; no legacy `PreparePartOIteration` in the mixed route. Optimised (2B) screening = UNAVAILABLE in
+    PR2; cooling = gated.
+  - Minimum screening skips only whole strategies (not permitted / nothing left); out-of-scope cells are NOT RUN.
+  - Open model = baseline + selection; its ONLY write is Save selection. Runs use private `PartORun`s over
+    materialised copies (capacity-envelope pattern); run model named `<model>_Mixed` / `<model>_Screen_<strategy>`.
+  - Persistence: strategies on the model (SAM). Everything else in sidecar `<model>.partomixed.json`
+    (`PartOMixedDesign:v1`) - NOT on the model, because the record's baseline fingerprint digests every model
+    parameter. Deviation from PR0 F's "`PartORunResume:v3`" - documented in the PR2 record §7.
+  - Final staleness = SAM `PartOMaterialisationRecord.IsCurrent` + TSD length/write time + unsaved draft. Screening
+    staleness = `Query.PartOScreeningDesignFingerprint` (SAM digest minus the strategy set) + catalogue fingerprint.
+  - Constraints (natural allowed, optimisation allowed) filter the suggestion and gate assignment; stored in the
+    sidecar; product pool = existing `PartOEquipmentSelection`, read-only here.
+- **Changed existing code (additive):** `PartOTM59Assessment.OccupiedSpaceStatuses` (+ optional ctor arg);
+  `RunPartOSimulation` skips `PersistPartORunResume` for a model with a `PartOMaterialisationRecord`;
+  `AnalyticalWindow` ribbon button.
+- **New files:** SAM.Analytical.UI - `Enums/PartOScreeningStrategy|PartODwellingOutcome|PartOScreeningMode.cs`,
+  `Classes/PartO/Mixed/PartODwellingResult|PartOScreeningEvidence|PartOMixedRunEvidence|PartOMixedDesignConstraints|
+  PartOMixedDesignState|PartODwellingSuggestion.cs`, `Query/PartOMixedDesign.cs`; WPF -
+  `Classes/PartO/Mixed/PartOMixedDwellingRow|PartOMixedDesignSession.cs`, `Modify/RunPartOStrategySet|
+  ScreenPartODwellingStrategies|RunPartOMixedDesignCommand.cs`, `Query/PartODwellingResults.cs`,
+  `Windows/PartOMixedDesignWindow|PartOScreeningWindow|PartOMixedChangesWindow.xaml(.cs)`; tests
+  `PartOMixedDesignFixture|RunTests|SessionTests|ScreeningTests|ScalingTests.cs` (34 tests, fake TAS).
+- **Validation (27 Sep, this machine):** SAM `SAM.sln` Release at `0f866ec6` 0 errors; `SAM_UI.sln` Release 0 errors;
+  mixed tests 34/34; full WPF suite **1279/1279** (1245 before + 34). One earlier full run had a single timing flake in
+  untouched code (`The_progress_window_keeps_its_content_after_standing_aside_for_a_dialog`) that passed alone and on
+  the re-run. Scale (500 dwellings, 5,000 spaces, no TAS): open 0.42 s, window 15 rows realised of 500 (14
+  grouped), SAM materialisation 3.4 s.
+- **Not done / risks:** no licensed TAS run of the mixed route (PR4); no live walk-through of the window in the real
+  exe yet (owner acceptance per PR0 F); 2B "accept for a dwelling" + Optimised screening deferred; product pool not
+  editable here; suggestion policy in SAM_UI not SAM (PR0 D6 "later").
+- **Next step:** owner review of the PR (the §10 follow-ups and the sidecar deviation), a live walk-through in
+  SAM Analytical (open a clean pre-Part-O model → Mixed Design → select/screen → Build & Run), then merge. Do NOT start
+  PR3 cooling before that.
+
+## Previous: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - MERGED (SAM#149, SAM_UI#125); PR1 MERGED (SAM#150 `3de02102`)
 
 **Owner approved PR0 (26 Sep 2026).** Binding decisions are recorded at the top of the SAM report:
 1. A clean baseline is mandatory; there is no undo/adopt, and materialisation fails explicitly on a
