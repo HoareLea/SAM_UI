@@ -1,6 +1,43 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - APPROVED; PR0 PRs being merged
+## Current: SAM Documentation Framework Phase 2 - PR2D Space Design Load Summary PDF command (27 Sep 2026) - PR open
+
+**Status.** [SAM-BIM/SAM_UI#127](https://github.com/SAM-BIM/SAM_UI/pull/127), branch
+`feature/pr2d-space-design-load-summary-ui-2026-09-27` from `sow/2026-Q3` `c96ac19a`. PR2A/PR2B/PR2C are complete in
+SAM/SAM_Tas (SAM#153, SAM_Tas#69, SAM#156, SAM#158 merged; SAM `bb170cb8`). No SAM or SAM_Tas change in PR2D.
+Merge is done by the owner if the auto-mode classifier blocks `gh pr merge` (it has for every recent PR).
+
+**What.** Edit › Reports › **Space Design Load Summary PDF** (ribbon, view and tree context menus), next to Space
+Assumptions PDF. It calls `Create.SpaceDesignLoadSummary(context, space)` with **no result source** and the existing
+`PdfRenderer`; Ambiguous stays Ambiguous, NotSimulated / PeaksNotRecorded / 0 W still produce a PDF.
+- One shared workflow, no copy: `SpaceReportPdf` (report + SAM entry point: `SpaceAssumptions`,
+  `SpaceDesignLoadSummary`), `Modify.CreateSpaceReportPdf` / `WriteSpaceReportPdf`, `Query.SpaceReportPdfSpace` /
+  `SpaceReportPdfFileName`, `Create.MenuItem_SpaceReportPdf`, `SpaceReportPdfResult` (renamed from `SpaceAssumptions*`),
+  internal `SpaceReportPdfPrompts` (Save dialog / messages / open, replaced in tests).
+- Units: SI default, as Phase 1 (SAM_UI has no unit option). Default name `<Space> - Space Design Load Summary.pdf`.
+- No provenance stamping; the reporting command does not modify the model (checked: nothing in the path writes).
+
+**Files.** `Classes/Reporting/SpaceReportPdf.cs`, `SpaceReportPdfPrompts.cs` (new), `SpaceReportPdfResult.cs`,
+`Modify/SpaceReportPdf.cs`, `Query/SpaceReportPdf.cs`, `Create/MenuItem_SpaceReportPdf.cs` (renamed from the
+`SpaceAssumptionsPdf` files), `Windows/AnalyticalWindow.xaml(.cs)`, `Controls/AnalyticalModelControl.xaml.cs`; tests
+`SpaceDesignLoadSummaryPdfTests.cs` (new, 16), `SpaceAssumptionsPdfTests.cs` (calls renamed only), tests csproj
+(`SAM.Analytical.Reporting` reference); docs `documentation/Reporting-SpaceDesignLoadSummaryPdf.md` (new),
+`Reporting-SpaceAssumptionsPdf.md` (code names); evidence `documentation/evidence/space-design-load-summary-pdf/`.
+
+**Validation.** `SAM.sln` Release rebuilt at `bb170cb8`, `SAM_Tas.sln` at `fedf34cd`, `SAM_UI.sln` Release 0 errors, no
+new warnings. Focused 43/43; WPF **1261/1261**. Native UI on the real exe (record `ACCEPTANCE-2026-09-27.md`): placement,
+nothing selected, two Spaces, Save cancel, peaks (Bathroom_2 1,140/104 W; cooled Studio 1_0 from bridge.tsd), no
+results → Not simulated, legacy → Peaks not recorded, Yes opens the PDF, Space Assumptions regression - all PASS. IP is
+proven at the `WriteSpaceReportPdf` seam only (no UI selector). Fixtures in `C:\TasOut\pr2d` (not committed; recipe
+in the acceptance record).
+
+**Known, not PR2D.** Design-criteria set points print thermostat sentinels (−50 / 150 °C) - the Phase-1 set-point
+sentinel follow-up. SAM#138, SAM#154, source picker, freshness/provenance: separate.
+
+**Next step.** After #127 merges: PR2E - SAM_Deploy pointer move to the merged SAM_UI (and SAM `bb170cb8`) +
+installed-product smoke test of both report commands.
+
+## Previous (parallel programme): Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - APPROVED; PR0 merged (SAM_UI#125); PR2 open as SAM_UI#126
 
 **Owner approved PR0 (26 Sep 2026).** Binding decisions are recorded at the top of the SAM report:
 1. A clean baseline is mandatory; there is no undo/adopt, and materialisation fails explicitly on a
@@ -82,8 +119,7 @@ Status: COMPLETE
   supports IP.
 - Completion record, including what is outside Phase 1 and the SAM#138 follow-up (still open): SAM
   `documentation/Reporting-PDF.md` › *Phase 1 status*.
-- Next step: Phase 2 (Space Design Load Summary) audit done and BLOCKED on SAM/SAM_Tas prerequisites; see SAM
-  `documentation/Reporting-Phase2-ResultAuthority.md`. No SAM_UI Phase-2 work yet.
+- Next step (superseded): Phase 2 prerequisites were done in SAM/SAM_Tas (PR2A-PR2C); the SAM_UI command is PR2D above.
 
 ## Previous: Part O UX pass 6 - final consistency and end-to-end acceptance (26 Sep 2026) - MERGED (#122, 4b773f3e) and deployed; programme CLOSED
 
