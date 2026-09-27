@@ -993,3 +993,144 @@
 13:00:23     ROW Flat 1 | Flats | 2 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — |   | 
 13:00:23     ROW Flat 2 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — |   | 
 13:00:23     ROW Flat 3 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — |   | 
+===== FINAL NATIVE CHECK (1d34acd, simulation-case binding) =====
+13:17:18 launch: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-27 13:15); model C:\TasOut\parto-mixed-pr2-2026-09-27\run6\Block-Final.sam
+13:17:29 main window 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' pid 36968
+13:17:32 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
+13:17:32   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
+13:17:36   capture 59-mixed-open 'Part O — Mixed Design' (1240x780)
+13:17:39   select Flat 1: grid selection=[Flat 1] canMulti=True count='1 dwelling selected:'
+13:17:40   invoke button_SetNatural enabled=True: invoked
+13:17:41     textBlock_Baseline: 'Baseline: clean — 3 dwellings; 1 other zone is not strategy rows (SAM includes assessed communal corridors automatically).'
+13:17:41     textBlock_Outcome: '<absent>'
+13:17:41     textBlock_Readiness: '3 dwellings · 1 Natural · 0 MVHR · 2 not selected · unsaved changes'
+13:17:41     textBlock_Final: 'No mixed run yet.'
+13:17:41     textBlock_Screening: 'Not screened. Screening is optional.'
+13:17:41     textBlock_Refusals: '<absent>'
+13:17:41     textBlock_BulkMessage: '<absent>'
+13:17:41     textBlock_Next: 'Next: select a strategy for 2 dwellings — show 'No strategy selected', select them, and assign in bulk. Screening is optional.'
+13:17:41     'Save selection' enabled=True
+13:17:41     'Build & Run Mixed Design' enabled=False
+13:17:41     'Open final TM59 result…' enabled=False
+13:17:42     'Apply suggestions…' enabled=False
+13:17:42     'Retain baseline design airflow' enabled=True
+13:17:42     ROW Flat 1 | Flats | 2 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Natural ventilation | — |   | 
+13:17:42     ROW Flat 2 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — |   | 
+13:17:42     ROW Flat 3 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — |   | 
+13:17:44   select Flat 2: grid selection=[Flat 2] canMulti=True count='1 dwelling selected:'
+13:17:45   combo comboBox_Product: selected 'Nuaire XBC15 — 190 / 190 l/s'
+13:17:46   invoke button_SetMvhr enabled=True: invoked
+13:17:47     textBlock_Baseline: 'Baseline: clean — 3 dwellings; 1 other zone is not strategy rows (SAM includes assessed communal corridors automatically).'
+13:17:47     textBlock_Outcome: '<absent>'
+13:17:47     textBlock_Readiness: '3 dwellings · 1 Natural · 1 MVHR · 1 not selected · unsaved changes'
+13:17:47     textBlock_Final: 'No mixed run yet.'
+13:17:47     textBlock_Screening: 'Not screened. Screening is optional.'
+13:17:47     textBlock_Refusals: '<absent>'
+13:17:47     textBlock_BulkMessage: '<absent>'
+13:17:47     textBlock_Next: 'Next: select a strategy for 1 dwelling — show 'No strategy selected', select them, and assign in bulk. Screening is optional.'
+13:17:48     'Save selection' enabled=True
+13:17:48     'Build & Run Mixed Design' enabled=False
+13:17:48     'Open final TM59 result…' enabled=False
+13:17:48     'Apply suggestions…' enabled=False
+13:17:48     'Retain baseline design airflow' enabled=True
+13:17:48     ROW Flat 1 | Flats | 2 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Natural ventilation | — |   | 
+13:17:48     ROW Flat 2 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | MVHR · Nuaire XBC15 | — |   | 
+13:17:48     ROW Flat 3 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — |   | 
+13:17:50   select Flat 3: grid selection=[Flat 3] canMulti=True count='1 dwelling selected:'
+13:17:51   press button_AcceptOptimised in 'Part O — Mixed Design'
+13:17:54   file dialog 'Accept optimised airflow for Flat 3 — choose the completed Iteration 2B result model'
+13:17:54   capture 60-accept-filedialog 'Accept optimised airflow for Flat 3 — choose the completed Iteration 2B result model' (1384x699)
+13:17:54   file name set: C:\TasOut\parto-mixed-pr2-2026-09-27\run6\2B\Flat-2B-Opt10.sam
+13:17:55   open clicked
+13:18:55 FAIL no confirmation
+13:18:56     textBlock_Baseline: 'Baseline: clean — 3 dwellings; 1 other zone is not strategy rows (SAM includes assessed communal corridors automatically).'
+13:18:56     textBlock_Outcome: '<absent>'
+13:18:56     textBlock_Readiness: '3 dwellings · 1 Natural · 1 MVHR · 1 not selected · unsaved changes'
+13:18:56     textBlock_Final: 'No mixed run yet.'
+13:18:56     textBlock_Screening: 'Not screened. Screening is optional.'
+13:18:56     textBlock_Refusals: '<absent>'
+13:18:56     textBlock_BulkMessage: '<absent>'
+13:18:56     textBlock_Next: 'Next: select a strategy for 1 dwelling — show 'No strategy selected', select them, and assign in bulk. Screening is optional.'
+13:18:56     'Save selection' enabled=True
+13:18:56     'Build & Run Mixed Design' enabled=False
+13:18:56     'Open final TM59 result…' enabled=False
+13:18:57     'Apply suggestions…' enabled=False
+13:18:57     'Retain baseline design airflow' enabled=True
+13:18:57     ROW Flat 1 | Flats | 2 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Natural ventilation | — |   | 
+13:18:57     ROW Flat 2 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | MVHR · Nuaire XBC15 | — |   | 
+13:18:57     ROW Flat 3 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — |   | 
+13:18:57   MESSAGE BOX 'Part O — Accept optimised airflow': Accept the optimised design airflow for Flat 3 from C:\TasOut\parto-mixed-pr2-2026-09-27\run6\2B\Flat-2B-Opt10.sam?  Design airflow, current → accepted:    Bedroom 2_6 supply: 63 → 143 l/s    Ensuite_8 extract: 8 → 48 l/s    Kitchen_7 extract: 55 → 95 l/s  Only Flat 3's design terminals on the baseline change. No other dwelling is touched and nothing is simulated. Flat 3 is then selected as Optimised MVHR (retained design); the whole mixed model is rebuilt from the baseline at the next Build & Run. Save selection keeps it on the model.
+13:19:08 BOX: Accept the optimised design airflow for Flat 3 from C:\TasOut\parto-mixed-pr2-2026-09-27\run6\2B\Flat-2B-Opt10.sam?  Design airflow, current → accepted:    Bedr
+13:19:12     textBlock_Baseline: 'Baseline: clean — 3 dwellings; 1 other zone is not strategy rows (SAM includes assessed communal corridors automatically).'
+13:19:12     textBlock_Outcome: '<absent>'
+13:19:12     textBlock_Readiness: '3 dwellings · 1 Natural · 1 MVHR · 1 Optimised MVHR · unsaved changes'
+13:19:12     textBlock_Final: 'No mixed run yet.'
+13:19:12     textBlock_Screening: 'Not screened. Screening is optional.'
+13:19:12     textBlock_Refusals: '<absent>'
+13:19:12     textBlock_BulkMessage: 'Accepted the optimised airflow for Flat 3 from Flat-2B-Opt10.sam (3 design airflows changed). Save selection to keep it on the model.'
+13:19:13     textBlock_Next: 'Next: Build & Run the mixed design. The selection is saved onto the model first, and the model is materialised as a copy - the open model stays the clean baseline.'
+13:19:13     'Save selection' enabled=True
+13:19:13     'Build & Run Mixed Design' enabled=True
+13:19:13     'Open final TM59 result…' enabled=False
+13:19:13     'Apply suggestions…' enabled=False
+13:19:13     'Retain baseline design airflow' enabled=True
+13:19:13     ROW Flat 1 | Flats | 2 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Natural ventilation | — |   | 
+13:19:13     ROW Flat 2 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | MVHR · Nuaire XBC15 | — |   | 
+13:19:13     ROW Flat 3 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Optimised MVHR (retained design) · automatic product | — |   | 
+13:19:22   press button_Build in 'Part O — Mixed Design'
+13:19:25   [+3s] window 'Part O' (HwndWrapper[SAM Analytical;sam-parto-progress;d7620bad-b35e-49f3-8743-2705fcdcfd53])
+13:19:26   capture 61-final-build-Part-O 'Part O' (520x264)
+13:19:30   [+7s] TAS processes: 'taskhostw:18468, taskhostw:20196, TBD:39792'
+13:19:33   [+10s] TAS processes: 'TAS3D:30868, TAS3D:37012, TAS3D:44212, taskhostw:18468, taskhostw:20196'
+13:19:36   [+13s] TAS processes: 'TAS3D:35600, TAS3D:37012, TAS3D:44212, taskhostw:18468, taskhostw:20196'
+13:19:39   [+16s] TAS processes: 'TAS3D:44212, taskhostw:18468, taskhostw:20196, TBD:4080'
+13:19:57   [+35s] TAS processes: 'TAS3D:44212, taskhostw:18468, taskhostw:20196, TBD:4080, TBD:30208'
+13:20:00   [+38s] TAS processes: 'taskhostw:18468, taskhostw:20196, TBD:30208'
+13:20:09   [+47s] TAS processes: 'taskhostw:18468, taskhostw:20196, TBD:15632'
+13:20:12   [+50s] TAS processes: 'taskhostw:18468, taskhostw:20196'
+13:20:18   [+56s] window 'Part O — Mixed Design' (HwndWrapper[SAM Analytical;;7e36d3d9-c42c-42aa-a89f-a728792aa231])
+13:20:19   capture 62-final-build-Part-O-Mixed-Design 'Part O — Mixed Design' (1240x780)
+13:20:20   [+57s] TAS processes: 'taskhostw:18468, taskhostw:20196, TBD:35080'
+13:20:26   watch 'final-build' ended after 63 s
+13:20:27   combo comboBox_Filter: selected '[All, All dwellings]'
+13:20:28     textBlock_Baseline: 'Baseline: clean — 3 dwellings; 1 other zone is not strategy rows (SAM includes assessed communal corridors automatically).'
+13:20:28     textBlock_Outcome: 'Selection saved onto the model. Mixed design built and run: Final mixed run: FAIL — 1 dwelling pass · 2 fail · 0 not assessed · communal corridor: significant risk (Corridor_1) (27/09/2026 13:20).'
+13:20:28     textBlock_Readiness: '3 dwellings · 1 Natural · 1 MVHR · 1 Optimised MVHR'
+13:20:28     textBlock_Final: 'Final mixed run: FAIL — 1 dwelling pass · 2 fail · 0 not assessed · communal corridor: significant risk (Corridor_1) (27/09/2026 13:20).'
+13:20:28     textBlock_Screening: 'Not screened. Screening is optional.'
+13:20:28     textBlock_Refusals: '<absent>'
+13:20:28     textBlock_BulkMessage: '<absent>'
+13:20:28     textBlock_Next: 'Next: 2 dwellings failed the mixed run — show 'Failing in the final run', change their strategy, and build again. The other dwellings keep their selection; the whole design is rebuilt from the baseline.'
+13:20:28     'Save selection' enabled=False
+13:20:28     'Build & Run Mixed Design' enabled=True
+13:20:28     'Open final TM59 result…' enabled=True
+13:20:28     'Apply suggestions…' enabled=False
+13:20:29     'Retain baseline design airflow' enabled=True
+13:20:29     ROW Flat 1 | Flats | 2 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Natural ventilation | PASS |   | 
+13:20:29     ROW Flat 2 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | MVHR · Nuaire XBC15 | FAIL | 2 spaces (Bedroom 2_3, Kitchen_4)  | 
+13:20:29     ROW Flat 3 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Optimised MVHR (retained design) · automatic product | FAIL | 2 spaces (Bedroom 2_6, Kitchen_7)  | 
+13:20:29   capture 63-final-build-result 'Part O — Mixed Design' (1240x780)
+13:20:41   press button_Close in 'Part O — Mixed Design'
+13:20:46   press RibbonButton_SaveAnalyticalModel in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
+13:20:55 launch: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-27 13:15); model C:\TasOut\parto-mixed-pr2-2026-09-27\run6\Block-Final.sam
+13:21:05 main window 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' pid 32188
+13:21:08 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
+13:21:08   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
+13:21:13   capture 64-mixed-open 'Part O — Mixed Design' (1240x780)
+13:21:14     textBlock_Baseline: 'Baseline: clean — 3 dwellings; 1 other zone is not strategy rows (SAM includes assessed communal corridors automatically).'
+13:21:14     textBlock_Outcome: '<absent>'
+13:21:14     textBlock_Readiness: '3 dwellings · 1 Natural · 1 MVHR · 1 Optimised MVHR'
+13:21:14     textBlock_Final: 'Final mixed run: FAIL — 1 dwelling pass · 2 fail · 0 not assessed · communal corridor: significant risk (Corridor_1) (27/09/2026 13:20).'
+13:21:14     textBlock_Screening: 'Not screened. Screening is optional.'
+13:21:15     textBlock_Refusals: '<absent>'
+13:21:15     textBlock_BulkMessage: '<absent>'
+13:21:15     textBlock_Next: 'Next: 2 dwellings failed the mixed run — show 'Failing in the final run', change their strategy, and build again. The other dwellings keep their selection; the whole design is rebuilt from the baseline.'
+13:21:15     'Save selection' enabled=False
+13:21:15     'Build & Run Mixed Design' enabled=True
+13:21:15     'Open final TM59 result…' enabled=True
+13:21:15     'Apply suggestions…' enabled=False
+13:21:15     'Retain baseline design airflow' enabled=True
+13:21:15     ROW Flat 1 | Flats | 2 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Natural ventilation | PASS |   | 
+13:21:15     ROW Flat 2 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | MVHR · Nuaire XBC15 | FAIL | 2 spaces (Bedroom 2_3, Kitchen_4)  | 
+13:21:15     ROW Flat 3 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Optimised MVHR (retained design) · automatic product | FAIL | 2 spaces (Bedroom 2_6, Kitchen_7)  | 
+13:21:15   capture 65-final-reopen 'Part O — Mixed Design' (1240x780)

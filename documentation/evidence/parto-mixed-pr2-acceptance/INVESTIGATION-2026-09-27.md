@@ -176,3 +176,14 @@ and choosing the open baseline itself answers plainly before SAM is asked. Regre
 accept/build path is unchanged): output folder set to the 2B folder → dialog opened there, empty name (shots/55); open
 baseline chosen → "is the open baseline model itself, not a completed Iteration 2B result … Nothing was accepted"
 (shots/56); the real `-Opt10` → Flat 3's three changes only, answered No → nothing changed (shots/58).
+
+## 10. Closeout native check of the simulation-case binding (real TAS, head 1d34acd)
+
+Evidence now records the simulation case (weather by content + solar method) and is stale under another case - a change
+to the production path, so one real run was repeated (`logs/native-drive.txt` after "FINAL NATIVE CHECK"): clean baseline
+→ F1 Natural, F2 MVHR XBC15, F3 Accept optimised airflow (real `-Opt10`) → Build & Run (63 s): result **current**, "FAIL —
+1 dwelling pass · 2 fail · 0 not assessed · communal corridor: significant risk (Corridor_1)" (shots final-build-result) →
+Save → restart → reopen: still **current**, selection restored, Open result enabled (shots final-reopen) - so the run's
+weather copy and the reopened case key identically. Saved baseline: no systems/units/scenarios/results/record; F3's
+accepted terminals only. Sidecar: `OccupiedSpaceComplianceStatus: Fail`, `CorridorRiskStatus: SignificantRisk`,
+`SpaceCount_Unassessed: 0`, `SimulationCaseKey` recorded.
