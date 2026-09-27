@@ -7,10 +7,10 @@ using System.Collections.Generic;
 namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
-    /// Which stage of <see cref="Modify.WriteSpaceAssumptionsPdf"/> failed. Missing engineering data is not a
+    /// Which stage of <see cref="Modify.WriteSpaceReportPdf"/> failed. Missing engineering data is not a
     /// failure: the reporting framework prints it in the document (—, n/a, not set, notices).
     /// </summary>
-    public enum SpaceAssumptionsPdfFailure
+    public enum SpaceReportPdfFailure
     {
         None,
 
@@ -25,12 +25,12 @@ namespace SAM.Analytical.UI.WPF
     }
 
     /// <summary>
-    /// The outcome of one Space Assumptions PDF run. A failure keeps its exception for diagnostics; nothing is
-    /// swallowed.
+    /// The outcome of one Space report PDF run (<see cref="SpaceReportPdf"/>). A failure keeps its exception for
+    /// diagnostics; nothing is swallowed.
     /// </summary>
-    public sealed class SpaceAssumptionsPdfResult
+    public sealed class SpaceReportPdfResult
     {
-        private SpaceAssumptionsPdfResult(string? path, SpaceAssumptionsPdfFailure failure, string? message, Exception? exception, long length, IReadOnlyList<string>? notes)
+        private SpaceReportPdfResult(string? path, SpaceReportPdfFailure failure, string? message, Exception? exception, long length, IReadOnlyList<string>? notes)
         {
             Path = path;
             Failure = failure;
@@ -43,9 +43,9 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>The PDF path chosen by the user.</summary>
         public string? Path { get; }
 
-        public SpaceAssumptionsPdfFailure Failure { get; }
+        public SpaceReportPdfFailure Failure { get; }
 
-        public bool Succeeded => Failure == SpaceAssumptionsPdfFailure.None;
+        public bool Succeeded => Failure == SpaceReportPdfFailure.None;
 
         /// <summary>A concise message for the user; null on success.</summary>
         public string? Message { get; }
@@ -62,14 +62,14 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public IReadOnlyList<string> Notes { get; }
 
-        internal static SpaceAssumptionsPdfResult Created(string path, long length, IReadOnlyList<string> notes)
+        internal static SpaceReportPdfResult Created(string path, long length, IReadOnlyList<string> notes)
         {
-            return new SpaceAssumptionsPdfResult(path, SpaceAssumptionsPdfFailure.None, null, null, length, notes);
+            return new SpaceReportPdfResult(path, SpaceReportPdfFailure.None, null, null, length, notes);
         }
 
-        internal static SpaceAssumptionsPdfResult Failed(string? path, SpaceAssumptionsPdfFailure failure, string message, Exception? exception)
+        internal static SpaceReportPdfResult Failed(string? path, SpaceReportPdfFailure failure, string message, Exception? exception)
         {
-            return new SpaceAssumptionsPdfResult(path, failure, message, exception, 0, null);
+            return new SpaceReportPdfResult(path, failure, message, exception, 0, null);
         }
     }
 }

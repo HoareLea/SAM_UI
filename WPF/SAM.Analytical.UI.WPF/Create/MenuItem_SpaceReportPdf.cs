@@ -11,23 +11,23 @@ namespace SAM.Analytical.UI.WPF
     public static partial class Create
     {
         /// <summary>
-        /// The "Space Assumptions PDF" context-menu item for a Space selection, shared by the 3D/2D view and the
-        /// model tree. Phase 1 reports one Space: with several selected the item is shown disabled, with a tooltip
-        /// saying why, rather than silently reporting the first.
+        /// The context-menu item of a one-Space report PDF (e.g. "Space Assumptions PDF") for a Space selection,
+        /// shared by the 3D/2D view and the model tree. With several Spaces selected the item is shown disabled, with
+        /// a tooltip saying why, rather than silently reporting the first. The selection is the item's Tag.
         /// </summary>
-        public static MenuItem MenuItem_SpaceAssumptionsPdf(IEnumerable<Space>? spaces, RoutedEventHandler? click)
+        public static MenuItem MenuItem_SpaceReportPdf(IEnumerable<Space>? spaces, SpaceReportPdf spaceReportPdf, RoutedEventHandler? click)
         {
             List<Space> spaces_Selected = spaces?.Where(x => x != null).GroupBy(x => x.Guid).Select(x => x.First()).ToList() ?? new List<Space>();
 
             MenuItem menuItem = new MenuItem()
             {
-                Name = "MenuItem_SpaceAssumptionsPdf",
-                Header = Query.SpaceAssumptionsPdfTitle,
+                Name = "MenuItem_" + spaceReportPdf.Id,
+                Header = spaceReportPdf.Title,
                 Tag = spaces_Selected,
                 IsEnabled = spaces_Selected.Count == 1,
                 ToolTip = spaces_Selected.Count == 1
-                    ? "Create the Space Assumptions PDF for this Space"
-                    : "The Space Assumptions PDF is created for one Space at a time: select a single Space.",
+                    ? string.Format("Create the {0} for this Space", spaceReportPdf.Title)
+                    : string.Format("The {0} is created for one Space at a time: select a single Space.", spaceReportPdf.Title),
             };
 
             ToolTipService.SetShowOnDisabled(menuItem, true);

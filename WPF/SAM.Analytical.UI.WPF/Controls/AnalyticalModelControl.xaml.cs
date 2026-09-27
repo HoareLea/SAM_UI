@@ -1054,7 +1054,12 @@ namespace SAM.Analytical.UI.WPF
 
         private void MenuItem_SpaceAssumptionsPdf_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.CreateSpaceAssumptionsPdf((sender as MenuItem)?.Tag as IEnumerable<Space>, System.Windows.Window.GetWindow(this));
+            uIAnalyticalModel?.CreateSpaceReportPdf((sender as MenuItem)?.Tag as IEnumerable<Space>, SpaceReportPdf.SpaceAssumptions, System.Windows.Window.GetWindow(this));
+        }
+
+        private void MenuItem_SpaceDesignLoadSummaryPdf_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.CreateSpaceReportPdf((sender as MenuItem)?.Tag as IEnumerable<Space>, SpaceReportPdf.SpaceDesignLoadSummary, System.Windows.Window.GetWindow(this));
         }
 
         private void MenuItem_Select_Click(object sender, RoutedEventArgs e)
@@ -1282,7 +1287,8 @@ namespace SAM.Analytical.UI.WPF
                 menuItem.Tag = tuples_Zone;
                 contextMenu_Model.Items.Add(menuItem);
 
-                contextMenu_Model.Items.Add(Create.MenuItem_SpaceAssumptionsPdf(tuples.ConvertAll(x => x.Item2).OfType<Space>(), MenuItem_SpaceAssumptionsPdf_Click));
+                contextMenu_Model.Items.Add(Create.MenuItem_SpaceReportPdf(tuples.ConvertAll(x => x.Item2).OfType<Space>(), SpaceReportPdf.SpaceAssumptions, MenuItem_SpaceAssumptionsPdf_Click));
+                contextMenu_Model.Items.Add(Create.MenuItem_SpaceReportPdf(tuples.ConvertAll(x => x.Item2).OfType<Space>(), SpaceReportPdf.SpaceDesignLoadSummary, MenuItem_SpaceDesignLoadSummaryPdf_Click));
             }
             else if (jSAMObject is Panel)
             {

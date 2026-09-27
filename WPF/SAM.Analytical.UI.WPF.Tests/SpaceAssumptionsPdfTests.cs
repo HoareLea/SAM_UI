@@ -52,7 +52,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel analyticalModel = Model(out Space office, out _);
 
-            Space space = Query.SpaceAssumptionsPdfSpace(analyticalModel, [office], out string refusal);
+            Space space = Query.SpaceReportPdfSpace(analyticalModel, [office], SpaceReportPdf.SpaceAssumptions, out string refusal);
 
             Assert.NotNull(space);
             Assert.Null(refusal);
@@ -64,10 +64,10 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel analyticalModel = Model(out _, out _);
 
-            Assert.Null(Query.SpaceAssumptionsPdfSpace(analyticalModel, [], out string refusal_Empty));
+            Assert.Null(Query.SpaceReportPdfSpace(analyticalModel, [], SpaceReportPdf.SpaceAssumptions, out string refusal_Empty));
             Assert.Contains("Select one Space", refusal_Empty);
 
-            Assert.Null(Query.SpaceAssumptionsPdfSpace(analyticalModel, null, out string refusal_Null));
+            Assert.Null(Query.SpaceReportPdfSpace(analyticalModel, null, SpaceReportPdf.SpaceAssumptions, out string refusal_Null));
             Assert.Contains("Select one Space", refusal_Null);
         }
 
@@ -76,7 +76,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel analyticalModel = Model(out Space office, out Space store);
 
-            Space space = Query.SpaceAssumptionsPdfSpace(analyticalModel, [office, store], out string refusal);
+            Space space = Query.SpaceReportPdfSpace(analyticalModel, [office, store], SpaceReportPdf.SpaceAssumptions, out string refusal);
 
             Assert.Null(space);
             Assert.Contains("2 Spaces are selected", refusal);
@@ -88,7 +88,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel analyticalModel = Model(out Space office, out _);
 
-            Space space = Query.SpaceAssumptionsPdfSpace(analyticalModel, [office, office], out string refusal);
+            Space space = Query.SpaceReportPdfSpace(analyticalModel, [office, office], SpaceReportPdf.SpaceAssumptions, out string refusal);
 
             Assert.NotNull(space);
             Assert.Null(refusal);
@@ -102,18 +102,18 @@ namespace SAM.Analytical.UI.WPF.Tests
             //A selection captured before an edit: same Guid, old name.
             Space stale = new Space(office.Guid, "Old name", new Point3D(0, 0, 0));
 
-            Space space = Query.SpaceAssumptionsPdfSpace(analyticalModel, [stale], out _);
+            Space space = Query.SpaceReportPdfSpace(analyticalModel, [stale], SpaceReportPdf.SpaceAssumptions, out _);
             Assert.Equal(office.Name, space.Name);
 
             Space removed = new Space(Guid.NewGuid(), "Removed", new Point3D(0, 0, 0));
-            Assert.Null(Query.SpaceAssumptionsPdfSpace(analyticalModel, [removed], out string refusal));
+            Assert.Null(Query.SpaceReportPdfSpace(analyticalModel, [removed], SpaceReportPdf.SpaceAssumptions, out string refusal));
             Assert.Contains("no longer in the model", refusal);
         }
 
         [Fact]
         public void NoModel_IsRefused()
         {
-            Assert.Null(Query.SpaceAssumptionsPdfSpace(null, [new Space("A")], out string refusal));
+            Assert.Null(Query.SpaceReportPdfSpace(null, [new Space("A")], SpaceReportPdf.SpaceAssumptions, out string refusal));
             Assert.Contains("Open an analytical model", refusal);
         }
 
@@ -123,11 +123,11 @@ namespace SAM.Analytical.UI.WPF.Tests
             Space space_1 = new Space("One");
             Space space_2 = new Space("Two");
 
-            MenuItem menuItem_One = Create.MenuItem_SpaceAssumptionsPdf([space_1], null);
+            MenuItem menuItem_One = Create.MenuItem_SpaceReportPdf([space_1], SpaceReportPdf.SpaceAssumptions, null);
             Assert.True(menuItem_One.IsEnabled);
             Assert.Equal("Space Assumptions PDF", menuItem_One.Header);
 
-            MenuItem menuItem_Two = Create.MenuItem_SpaceAssumptionsPdf([space_1, space_2], null);
+            MenuItem menuItem_Two = Create.MenuItem_SpaceReportPdf([space_1, space_2], SpaceReportPdf.SpaceAssumptions, null);
             Assert.False(menuItem_Two.IsEnabled);
             Assert.Contains("one Space at a time", menuItem_Two.ToolTip as string);
             Assert.True(ToolTipService.GetShowOnDisabled(menuItem_Two));
@@ -144,7 +144,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         [InlineData("CON", "_CON - Space Assumptions.pdf")]
         public void TheDefaultFileName_IsTheSpaceNameMadeSafe(string name, string expected)
         {
-            Assert.Equal(expected, Query.SpaceAssumptionsPdfFileName(new Space(name)));
+            Assert.Equal(expected, Query.SpaceReportPdfFileName(new Space(name), SpaceReportPdf.SpaceAssumptions));
         }
 
         [Theory]
@@ -157,13 +157,13 @@ namespace SAM.Analytical.UI.WPF.Tests
             Guid guid = new Guid("00000000-0000-0000-0000-000000000042");
             Space space = new Space(guid, name, new Point3D(0, 0, 0));
 
-            Assert.Equal("Space 00000000-0000-0000-0000-000000000042 - Space Assumptions.pdf", Query.SpaceAssumptionsPdfFileName(space));
+            Assert.Equal("Space 00000000-0000-0000-0000-000000000042 - Space Assumptions.pdf", Query.SpaceReportPdfFileName(space, SpaceReportPdf.SpaceAssumptions));
         }
 
         [Fact]
         public void AVeryLongName_IsShortened()
         {
-            string fileName = Query.SpaceAssumptionsPdfFileName(new Space(new string('A', 400)));
+            string fileName = Query.SpaceReportPdfFileName(new Space(new string('A', 400)), SpaceReportPdf.SpaceAssumptions);
 
             Assert.True(fileName.Length < 200);
             Assert.EndsWith(" - Space Assumptions.pdf", fileName);
@@ -175,12 +175,12 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void OneSpace_WritesANonEmptyOnePageA4Pdf()
         {
             AnalyticalModel analyticalModel = Model(out Space office, out _);
-            string path = Path.Combine(directory, Query.SpaceAssumptionsPdfFileName(office));
+            string path = Path.Combine(directory, Query.SpaceReportPdfFileName(office, SpaceReportPdf.SpaceAssumptions));
 
-            SpaceAssumptionsPdfResult result = Modify.WriteSpaceAssumptionsPdf(analyticalModel, office, path);
+            SpaceReportPdfResult result = Modify.WriteSpaceReportPdf(analyticalModel, office, path, SpaceReportPdf.SpaceAssumptions);
 
             Assert.True(result.Succeeded, result.Message);
-            Assert.Equal(SpaceAssumptionsPdfFailure.None, result.Failure);
+            Assert.Equal(SpaceReportPdfFailure.None, result.Failure);
             Assert.Equal(path, result.Path);
             Assert.True(File.Exists(path));
             Assert.Equal(new FileInfo(path).Length, result.Length);
@@ -197,7 +197,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             //The one process-wide PDFsharp resolver is the renderer's; a second run reuses it.
             Assert.Same(NotoSansFontResolver.Instance, GlobalFontSettings.FontResolver);
-            Assert.True(Modify.WriteSpaceAssumptionsPdf(analyticalModel, office, Path.Combine(directory, "again.pdf")).Succeeded);
+            Assert.True(Modify.WriteSpaceReportPdf(analyticalModel, office, Path.Combine(directory, "again.pdf"), SpaceReportPdf.SpaceAssumptions).Succeeded);
         }
 
         [Fact]
@@ -210,7 +210,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel analyticalModel = new AnalyticalModel("Sparse", null, null, null, adjacencyCluster);
 
             string path = Path.Combine(directory, "sparse.pdf");
-            SpaceAssumptionsPdfResult result = Modify.WriteSpaceAssumptionsPdf(analyticalModel, sparse, path);
+            SpaceReportPdfResult result = Modify.WriteSpaceReportPdf(analyticalModel, sparse, path, SpaceReportPdf.SpaceAssumptions);
 
             Assert.True(result.Succeeded, result.Message);
             Assert.NotEmpty(result.Notes);
@@ -225,7 +225,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel analyticalModel = Model(out Space office, out _);
             CapturingRenderer capturingRenderer = new CapturingRenderer();
 
-            SpaceAssumptionsPdfResult result = Modify.WriteSpaceAssumptionsPdf(analyticalModel, office, Path.Combine(directory, unitStyle + ".pdf"), unitStyle, capturingRenderer);
+            SpaceReportPdfResult result = Modify.WriteSpaceReportPdf(analyticalModel, office, Path.Combine(directory, unitStyle + ".pdf"), SpaceReportPdf.SpaceAssumptions, unitStyle, capturingRenderer);
 
             Assert.True(result.Succeeded, result.Message);
 
@@ -240,7 +240,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel analyticalModel = Model(out Space office, out _);
             CapturingRenderer capturingRenderer = new CapturingRenderer();
 
-            Modify.WriteSpaceAssumptionsPdf(analyticalModel, office, Path.Combine(directory, "default.pdf"), documentRenderer: capturingRenderer);
+            Modify.WriteSpaceReportPdf(analyticalModel, office, Path.Combine(directory, "default.pdf"), SpaceReportPdf.SpaceAssumptions, documentRenderer: capturingRenderer);
 
             List<string> units = capturingRenderer.Document.FormattedValues().Select(x => x.Unit).ToList();
             Assert.Contains("m²", units);
@@ -256,10 +256,10 @@ namespace SAM.Analytical.UI.WPF.Tests
             File.WriteAllText(path, "previous");
 
             InvalidOperationException invalidOperationException = new InvalidOperationException("font resolver conflict");
-            SpaceAssumptionsPdfResult result = Modify.WriteSpaceAssumptionsPdf(analyticalModel, office, path, documentRenderer: new ThrowingRenderer(invalidOperationException));
+            SpaceReportPdfResult result = Modify.WriteSpaceReportPdf(analyticalModel, office, path, SpaceReportPdf.SpaceAssumptions, documentRenderer: new ThrowingRenderer(invalidOperationException));
 
             Assert.False(result.Succeeded);
-            Assert.Equal(SpaceAssumptionsPdfFailure.Rendering, result.Failure);
+            Assert.Equal(SpaceReportPdfFailure.Rendering, result.Failure);
             Assert.Same(invalidOperationException, result.Exception);
             Assert.Contains("could not be rendered", result.Message);
             Assert.Contains("font resolver conflict", result.Message);
@@ -273,9 +273,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel analyticalModel = Model(out Space office, out _);
             string path = Path.Combine(directory, "no such folder", "x.pdf");
 
-            SpaceAssumptionsPdfResult result = Modify.WriteSpaceAssumptionsPdf(analyticalModel, office, path);
+            SpaceReportPdfResult result = Modify.WriteSpaceReportPdf(analyticalModel, office, path, SpaceReportPdf.SpaceAssumptions);
 
-            Assert.Equal(SpaceAssumptionsPdfFailure.Output, result.Failure);
+            Assert.Equal(SpaceReportPdfFailure.Output, result.Failure);
             Assert.NotNull(result.Exception);
             Assert.Contains("could not be saved", result.Message);
             Assert.False(File.Exists(path));
@@ -288,13 +288,13 @@ namespace SAM.Analytical.UI.WPF.Tests
             string path = Path.Combine(directory, "open-in-viewer.pdf");
             File.WriteAllText(path, "previous");
 
-            SpaceAssumptionsPdfResult result;
+            SpaceReportPdfResult result;
             using (new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None))
             {
-                result = Modify.WriteSpaceAssumptionsPdf(analyticalModel, office, path);
+                result = Modify.WriteSpaceReportPdf(analyticalModel, office, path, SpaceReportPdf.SpaceAssumptions);
             }
 
-            Assert.Equal(SpaceAssumptionsPdfFailure.Output, result.Failure);
+            Assert.Equal(SpaceReportPdfFailure.Output, result.Failure);
             Assert.Contains("close the file", result.Message);
             Assert.Equal("previous", File.ReadAllText(path));
             Assert.False(File.Exists(path + ".tmp"));
@@ -307,7 +307,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             string path = Path.Combine(directory, "replace.pdf");
             File.WriteAllText(path, "previous");
 
-            Assert.True(Modify.WriteSpaceAssumptionsPdf(analyticalModel, office, path).Succeeded);
+            Assert.True(Modify.WriteSpaceReportPdf(analyticalModel, office, path, SpaceReportPdf.SpaceAssumptions).Succeeded);
             Assert.Equal("%PDF", System.Text.Encoding.ASCII.GetString(File.ReadAllBytes(path), 0, 4));
         }
 

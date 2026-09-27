@@ -466,10 +466,13 @@
                     <RibbonButton x:Name="RibbonButton_RemoveAirMovementObjects" Label="Remove IZAMs" />
                     <RibbonButton x:Name="RibbonButton_SetDefaultLayers" Label="Set Default Layers" />
                 </RibbonGroup>
-                <!-- SAM Documentation Framework, Phase 1: one selected Space to a PDF built by SAM.Analytical.Reporting
-                     and SAM.Core.Reporting.Pdf. Separate from the legacy Excel-based Print RDS above, which stays. -->
+                <!-- SAM Documentation Framework (Phase 1 Space Assumptions, Phase 2 Space Design Load Summary): one
+                     selected Space to a PDF built by SAM.Analytical.Reporting and SAM.Core.Reporting.Pdf, through one
+                     shared workflow (Modify.CreateSpaceReportPdf). Separate from the legacy Excel-based Print RDS
+                     above, which stays. -->
                 <RibbonGroup x:Name="RibbonGroup_Edit_Reports" Header="Reports">
                     <RibbonButton x:Name="RibbonButton_SpaceAssumptionsPdf" Label="Space Assumptions PDF" ToolTip="Create the Space Assumptions PDF for the one selected Space" ToolTipService.ShowOnDisabled="True" />
+                    <RibbonButton x:Name="RibbonButton_SpaceDesignLoadSummaryPdf" Label="Space Design Load Summary PDF" ToolTip="Create the Space Design Load Summary PDF (simulated heating and cooling peaks) for the one selected Space" ToolTipService.ShowOnDisabled="True" />
                 </RibbonGroup>
                 <!-- Part O is its own group rather than another button beside AddVent PartF: preparing an
                      iteration is a different step from sizing to Approved Document F, and it must be followed
