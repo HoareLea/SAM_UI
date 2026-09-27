@@ -140,13 +140,10 @@ namespace SAM.Analytical.UI.WPF
             Descriptors = ventilationUnitCapacityDescriptors ?? [];
             State = partOMixedDesignState ?? new PartOMixedDesignState();
 
-            //Offer products where the catalogue has any - the Iteration 2 terms. The final run of a design
-            //materialised without them is the Iteration 1a terms; which one the last run used is on its evidence.
-            CatalogueOffered = State.FinalRun?.CatalogueOffered ?? Descriptors.Count != 0;
-            if (Descriptors.Count == 0)
-            {
-                CatalogueOffered = false;
-            }
+            //Offer products where there are any - the catalogue's or the project's test unit, the Iteration 2 terms.
+            //The final run of a design materialised without them is the Iteration 1a terms; which one the last run
+            //used is on its evidence.
+            catalogueOffered = CatalogueHasProducts && (State.FinalRun?.CatalogueOffered ?? true);
 
             BuildRows();
             Rebase(analyticalModel_Baseline);
@@ -159,10 +156,42 @@ namespace SAM.Analytical.UI.WPF
 
         public List<VentilationUnitCapacityDescriptor> Descriptors { get; }
 
-        public bool CatalogueHasProducts => Descriptors.Count != 0;
+        /// <summary>
+        /// Whether any product can be offered: a selectable catalogue product, or the project's test ventilation unit
+        /// where SAM's product-selection rule makes it eligible (see <see cref="AllowedProducts"/>).
+        /// </summary>
+        public bool CatalogueHasProducts => Descriptors.Count != 0 || AllowedProducts.Count != 0;
 
-        /// <summary>Whether the final run offers the catalogue - products are then selected from the project's pool.</summary>
-        public bool CatalogueOffered { get; set; }
+        private List<VentilationUnitCapacityDescriptor> ProjectTestDescriptors => analyticalModel.GetValue<PartOProjectTestVentilationUnit>(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit)?.CapacityDescriptors() ?? [];
+
+        private bool catalogueOffered;
+
+        //Whether the baseline itself was edited in this session (an accepted design) and is not yet saved.
+        private bool baselineEdited;
+
+        /// <summary>
+        /// Whether the final run offers the catalogue - products are then selected from the project's pool. A build
+        /// input: changing it asks SAM again whether the final result still describes what would be built.
+        /// </summary>
+        public bool CatalogueOffered
+        {
+            get => catalogueOffered;
+            set
+            {
+                if (catalogueOffered == value)
+                {
+                    return;
+                }
+
+                catalogueOffered = value;
+
+                ValidateFinal();
+                Refresh();
+            }
+        }
+
+        /// <summary>The catalogue as the next build offers it: <see cref="Descriptors"/> (possibly empty - the project test unit is SAM's to add), or null where products are not selected.</summary>
+        public List<VentilationUnitCapacityDescriptor>? DescriptorsOffered => catalogueOffered ? Descriptors : null;
 
         public PartOMixedDesignState State { get; }
 
@@ -183,20 +212,19 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>SAM's refusals from the last check or build, shown against their dwellings until the next one.</summary>
         public IReadOnlyList<PartOMaterialisationRefusal> Refusals => refusals;
 
-        /// <summary>The products a dwelling may be given: the project's permitted pool, test product included.</summary>
+        /// <summary>
+        /// The products a dwelling may be given - SAM's rule, asked and never restated
+        /// (<c>PartOEquipmentSelection.AllowedDescriptors</c>, the default selection where the project sets none, exactly as
+        /// the materialisation reads it): the project test unit takes part only where the engineer ticked it into a
+        /// selected pool or selects by hand, never under "all catalogue products".
+        /// </summary>
         public List<VentilationUnitCapacityDescriptor> AllowedProducts
         {
             get
             {
-                PartOEquipmentSelection? partOEquipmentSelection = analyticalModel.GetValue<PartOEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOEquipmentSelection);
-                List<VentilationUnitCapacityDescriptor> descriptors_ProjectTest = analyticalModel.GetValue<PartOProjectTestVentilationUnit>(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit)?.CapacityDescriptors() ?? [];
+                PartOEquipmentSelection partOEquipmentSelection = analyticalModel.GetValue<PartOEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOEquipmentSelection) ?? new PartOEquipmentSelection();
 
-                if (partOEquipmentSelection is not null)
-                {
-                    return partOEquipmentSelection.AllowedDescriptors(Descriptors, descriptors_ProjectTest) ?? [];
-                }
-
-                return [.. Descriptors, .. descriptors_ProjectTest];
+                return partOEquipmentSelection.AllowedDescriptors(Descriptors, ProjectTestDescriptors) ?? [];
             }
         }
 
@@ -207,7 +235,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 if (!CatalogueHasProducts)
                 {
-                    return "No selectable product is in the ventilation unit catalogue, so MVHR units stay generic (Approved Document F duty only).";
+                    return "No selectable product is in the ventilation unit catalogue and the project sets no test unit, so MVHR units stay generic (Approved Document F duty only).";
                 }
 
                 PartOEquipmentSelection? partOEquipmentSelection = analyticalModel.GetValue<PartOEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOEquipmentSelection);
@@ -229,6 +257,7 @@ namespace SAM.Analytical.UI.WPF
         public void Rebase(AnalyticalModel analyticalModel_Baseline)
         {
             analyticalModel = analyticalModel_Baseline ?? throw new ArgumentNullException(nameof(analyticalModel_Baseline));
+            baselineEdited = false;
 
             BaselineFindings = Analytical.Query.PartOBaselineFindings(analyticalModel) ?? [];
 
@@ -255,9 +284,17 @@ namespace SAM.Analytical.UI.WPF
             finalStale_Baseline = null;
 
             PartOMixedRunEvidence? partOMixedRunEvidence = State.FinalRun;
-            if (partOMixedRunEvidence is not null && !partOMixedRunEvidence.IsCurrent(analyticalModel, Descriptors, out finalStale_Baseline))
+            if (partOMixedRunEvidence is not null && !partOMixedRunEvidence.IsCurrent(analyticalModel, DescriptorsOffered, out finalStale_Baseline))
             {
                 finalStale_Baseline ??= "The saved mixed result no longer describes the model.";
+
+                //SAM says the catalogue moved; where it is the setting that moved, say which way in the engineer's terms.
+                if (partOMixedRunEvidence.CatalogueOffered != catalogueOffered && partOMixedRunEvidence.ReadRefusal is null)
+                {
+                    finalStale_Baseline = partOMixedRunEvidence.CatalogueOffered
+                        ? "The mixed run selected MVHR products from the catalogue, and products are no longer selected from it, so the next build would use generic units. Build and run again."
+                        : "The mixed run used generic MVHR units, and products are now selected from the catalogue, so the next build would select products. Build and run again.";
+                }
             }
         }
 
@@ -287,6 +324,12 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
+                //An accepted design is a change of the baseline itself, not only of the selection.
+                if (baselineEdited)
+                {
+                    return true;
+                }
+
                 PartODwellingStrategySet? saved = Saved;
                 PartODwellingStrategySet draft = Draft;
 
@@ -378,6 +421,56 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return Assign(rows_Temp, row => new PartODwellingStrategy(row.Selected!) { DesignAirFlowBasis = PartODesignAirFlowBasis.RetainedDesign, DesignFingerprint = fingerprints[row.ZoneGuid] });
+        }
+
+        /// <summary>
+        /// Asks SAM to accept one dwelling's design airflow from <paramref name="analyticalModel_Source"/> - a completed
+        /// Iteration 2B result - onto this baseline (<c>Modify.AcceptPartODwellingDesign</c>: lineage, terminals, the
+        /// Approved Document F floor are all SAM's). Nothing changes here: the answer is what a person confirms.
+        /// </summary>
+        public PartODwellingDesignAcceptance PreviewAcceptDesign(PartOMixedDwellingRow row, AnalyticalModel? analyticalModel_Source)
+        {
+            return Analytical.Modify.AcceptPartODwellingDesign(analyticalModel, row?.ZoneGuid ?? Guid.Empty, analyticalModel_Source);
+        }
+
+        /// <summary>
+        /// Adopts an accepted design a person confirmed: the baseline becomes SAM's accepted model (only that dwelling's
+        /// design terminals differ) and the dwelling is selected as Optimised MVHR - MVHR with a retained design, guarded
+        /// by SAM's fingerprint and carrying no airflow. A pending edit of the baseline until the selection is saved; the
+        /// whole design is rebuilt from the baseline at the next build.
+        /// </summary>
+        /// <returns>Why it was not adopted, or null.</returns>
+        public string? AcceptDesign(PartOMixedDwellingRow row, PartODwellingDesignAcceptance partODwellingDesignAcceptance)
+        {
+            if (row is null || partODwellingDesignAcceptance is null || !partODwellingDesignAcceptance.IsAccepted || partODwellingDesignAcceptance.ZoneGuid != row.ZoneGuid)
+            {
+                return partODwellingDesignAcceptance?.Refusal ?? "There is no accepted design for this dwelling.";
+            }
+
+            //A product already chosen for the dwelling is kept; otherwise the unit is selected from the project's pool.
+            VentilationUnitReference? ventilationUnitReference = row.Selected?.VentilationMode == PartOVentilationMode.MVHR ? row.Selected.VentilationUnitReference : null;
+            PartODwellingStrategy partODwellingStrategy = new(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference, PartOActiveCooling.None, PartODesignAirFlowBasis.RetainedDesign, partODwellingDesignAcceptance.DesignFingerprint);
+
+            string? refusal = Constraints.Refusal(partODwellingStrategy);
+            if (refusal is not null)
+            {
+                return refusal;
+            }
+
+            analyticalModel = partODwellingDesignAcceptance.AnalyticalModel;
+            baselineEdited = true;
+
+            BaselineFindings = Analytical.Query.PartOBaselineFindings(analyticalModel) ?? [];
+            fingerprint_Design = UI.Query.PartOScreeningDesignFingerprint(analyticalModel);
+            fingerprint_Catalogue = UI.Query.PartOMixedCatalogueFingerprint(analyticalModel, Descriptors);
+            ValidateFinal();
+
+            row.SetSelected(partODwellingStrategy);
+
+            Edited([row]);
+            Refresh();
+
+            return null;
         }
 
         /// <summary>Removes the selection. An unselected dwelling is never built as natural ventilation - SAM refuses it.</summary>
@@ -554,6 +647,12 @@ namespace SAM.Analytical.UI.WPF
                     partOMixedRunEvidence.Count(PartODwellingOutcome.NotAssessed));
 
                 string when = partOMixedRunEvidence.CreatedUtc.ToLocalTime().ToString("g", System.Globalization.CultureInfo.CurrentCulture);
+
+                string? corridor = partOMixedRunEvidence.CorridorText;
+                if (corridor is not null)
+                {
+                    counts = string.Format("{0} · {1}", counts, corridor);
+                }
 
                 return FinalCurrent
                     ? string.Format("Final mixed run: {0} — {1} ({2}).", Core.Query.Description(partOMixedRunEvidence.Overall), counts, when)

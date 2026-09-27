@@ -203,7 +203,7 @@ namespace SAM.Analytical.UI.WPF
 
             using (new SAM.Core.UI.WPF.ProgressBarWindowManager("Part O — Check design", "Materialising the selected design from the baseline..."))
             {
-                partOMaterialisation = Analytical.Modify.MaterialisePartODwellingStrategies(partOMixedDesignSession.WithSelection(), partOMixedDesignSession.CatalogueOffered ? partOMixedDesignSession.Descriptors : null);
+                partOMaterialisation = Analytical.Modify.MaterialisePartODwellingStrategies(partOMixedDesignSession.WithSelection(), partOMixedDesignSession.DescriptorsOffered);
             }
 
             partOMixedDesignSession.SetRefusals(partOMaterialisation.Refusals);

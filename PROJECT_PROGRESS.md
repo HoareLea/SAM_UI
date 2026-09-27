@@ -43,11 +43,50 @@ SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwelling
   untouched code (`The_progress_window_keeps_its_content_after_standing_aside_for_a_dialog`) that passed alone and on
   the re-run. Scale (500 dwellings, 5,000 spaces, no TAS): open 0.42 s, window 15 rows realised of 500 (14
   grouped), SAM materialisation 3.4 s.
-- **Not done / risks:** no licensed TAS run of the mixed route (PR4); no live walk-through of the window in the real
-  exe yet (owner acceptance per PR0 F); 2B "accept for a dwelling" + Optimised screening deferred; product pool not
-  editable here; suggestion policy in SAM_UI not SAM (PR0 D6 "later").
-- **Next step:** owner review of the PR (the §10 follow-ups and the sidecar deviation), a live walk-through in
-  SAM Analytical (open a clean pre-Part-O model → Mixed Design → select/screen → Build & Run), then merge. Do NOT start
+- **Self-test 27 Sep (no production code changed; head still `c5f59bf`)** - record
+  `documentation/evidence/parto-mixed-pr2-acceptance/INVESTIGATION-2026-09-27.md` (shots, logs, UIA driver scripts):
+  - **Native UI + real licensed TAS on this machine**: 19 behaviours PASS - manual design, Check, Build & Run (one
+    combined model, one annual run, TM59), edit→STALE, rebuild from the clean baseline (proved: NV dwelling gets its
+    authored ICs back), final TM59 reopen, minimum screening (3 real runs; NOT RUN where skipped; selection unchanged),
+    Suggested vs Selected + Apply preview/Cancel/Apply, bulk multi-select, Save = baseline + strategies only, restart
+    restore, TSD-rewrite STALE, SAM refusal (DesignDiffersFromRequirement) on the row, **Optimised MVHR in one combined
+    run** (F1 NV / F2 XBC15 / F3 retained real 2B 143/95/48 l/s), dirty model refused.
+  - **Test model**: owner's `SAM_daily/2026-07-15 PartO/SAM_zoningAM-CIBSEfutureZ1.sam` is NOT clean (results, design
+    days, MVHR 1-3, Part F IC clones, shared MV 1/AHU1; corridor IC `Studio`). Test fixture derived headlessly (Map IC
+    TM59 + remove run output/plant) → `C:\TasOut\parto-mixed-pr2-2026-09-27\fixtures\` (local, not committed);
+    reproducible with env-gated `PartOMixedDesignInvestigationTests` (`SAM_PARTO_MIXED_INVESTIGATION`, `_MODEL`,
+    `_BASELINE`, `_2B`). The UI cannot clean it: Results›Remove leaves ZoneSimulationResults + cluster design days.
+  - **2B gap**: SAM PR1 complete for `RetainedDesign`; PR2 can select it; MISSING = the explicit "accept optimised
+    airflow for a dwelling" edit (clean baselines have no terminals) and any 2B source in the mixed route. Smallest seam
+    proven with real 2B data: `RealizePartFVentilationTerminals`(dwelling) + `SetSpaceDesignFlowRate` per space/direction
+    from a 2B result model (matched by space guid) → strategy `RetainedDesign` + fingerprint.
+  - **Codex review on c5f59bf: 2 P1 + 2 P2 unaddressed** (catalogue toggle doesn't stale final; run verdict ignores
+    auto-assessed corridor; project test unit not a product; unreadable sidecar result dropped). CI build + spdx green.
+- **Correction pass 27 Sep (after the owner's review of the self-test):**
+  - **SAM PR [SAM-BIM/SAM#152](https://github.com/SAM-BIM/SAM/pull/152)** `feature/parto-accept-dwelling-design` `2c352d3e`
+    (from `sow/2026-Q3` `0f866ec6`): `Modify.AcceptPartODwellingDesign` (lineage by `PartFTerminalReference.Matches`,
+    `RealizePartFVentilationTerminals` for that dwelling, `SetSpaceDesignFlowRate` per space/direction; nothing in the
+    strategy; non-clean baseline refused). 9 tests; SAM.Tests 2544/2544. **Must merge before SAM_UI#126 CI can pass**
+    (SAM_UI CI builds against the SAM `sow/2026-Q3` tip). Local builds need SAM built from that branch.
+  - **SAM_UI:** Accept optimised airflow… (bulk bar, one dwelling, file dialog → SAM preview → Yes/No default No →
+    pending baseline edit + MVHR/RetainedDesign/fingerprint). Codex fixes: catalogue setting re-validates the final
+    (`DescriptorsOffered`); run verdict = SAM `OccupiedSpaceComplianceStatus`, corridor `CorridorRiskStatus` shown beside it
+    (not a row, not a failure - SAM's rule); `AllowedProducts` asks SAM's `AllowedDescriptors` (test unit only where SAM
+    makes it eligible); sidecar `ReadRefusal` fails closed. Fake TAS returns a real SAM report. Tests
+    `PartOMixedDesignCorrectionTests` (7, all red on c5f59bf - `logs/codex-regressions-RED-on-c5f59bf.log`),
+    `PartOMixedDesignAcceptTests` (5). WPF **1296/1296**; `SAM_UI.sln` Release 0 errors.
+  - **Native regression (real exe + real TAS):** 9/9 required items PASS (evidence record §7), incl. accepting the real
+    26 Sep 2B `-Opt10` design for Flat 3 through the dialog, one mixed run with the corridor in the project result, catalogue
+    staleness, save/reopen, clean saved baseline. Improvements recorded in evidence §8 (not implemented).
+  - Files: SAM_UI `Classes/PartO/Mixed/PartOMixedRunEvidence.cs` (SAM_UI project), WPF `PartOMixedDesignSession.cs`,
+    `Modify/ScreenPartODwellingStrategies.cs`, `Modify/RunPartOMixedDesignCommand.cs`, `Windows/PartOMixedDesignWindow.xaml(.cs)`,
+    tests `PartOMixedDesignFixture.cs`, `PartOMixedDesignCorrectionTests.cs`, `PartOMixedDesignAcceptTests.cs`,
+    `PartOMixedDesignInvestigationTests.cs` (env-gated); docs PR2 record §11, evidence §7-§8.
+- **Not done / risks:** SAM#152 unmerged (SAM_UI CI red until then); Optimised *screening* (2B inside screening) deferred;
+  the 2B result file is chosen by the engineer (a capacity-envelope `-OptMax` file is indistinguishable by state - the
+  confirmation shows every airflow); product pool not editable here; suggestion policy in SAM_UI (PR0 D6 later).
+- **Next step:** owner reviews/merges SAM#152 → re-run SAM_UI#126 CI → Codex re-review → Michal's manual acceptance
+  (procedure in the self-test report; now with Accept optimised airflow instead of the pre-accepted fixture). Do NOT start
   PR3 cooling before that.
 
 ## Previous: Mixed Part O dwelling strategies - PR0 architecture investigation (26 Sep 2026) - MERGED (SAM#149, SAM_UI#125); PR1 MERGED (SAM#150 `3de02102`)

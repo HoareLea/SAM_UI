@@ -259,6 +259,8 @@
                     <ComboBox x:Name="comboBox_Product" Width="260" Height="24" Margin="4,0,0,0" ToolTip="The product for 'MVHR': automatic selection from the project's pool, or one permitted product for every selected dwelling."/>
                     <Button x:Name="button_SetRetained" Content="Retain baseline design airflow" Height="24" Padding="8,0" Margin="8,0,0,0"
                             ToolTip="Optimised MVHR: keep the design airflow the baseline's ventilation terminals already carry for these MVHR dwellings. Only SAM's design fingerprint is recorded; no airflow is copied."/>
+                    <Button x:Name="button_AcceptOptimised" Content="Accept optimised airflow…" Height="24" Padding="8,0" Margin="8,0,0,0" ToolTipService.ShowOnDisabled="True"
+                            ToolTip="Optimised MVHR from a completed Iteration 2B result: choose the 2B result model, see every design airflow it changes for the ONE selected dwelling, and confirm. SAM writes it onto that dwelling's design terminals on the baseline; no other dwelling changes and nothing is simulated."/>
                     <Button x:Name="button_Clear" Content="Clear" Height="24" Padding="8,0" Margin="8,0,0,0"/>
                     <Button x:Name="button_ApplySuggestions" Content="Apply suggestions…" Height="24" Padding="8,0" Margin="16,0,0,0"
                             ToolTip="Shows what applying the screening suggestions would change for the selected dwellings (or all shown dwellings), and changes nothing until you confirm."/>

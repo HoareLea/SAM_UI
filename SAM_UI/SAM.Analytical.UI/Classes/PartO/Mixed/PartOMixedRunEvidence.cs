@@ -27,6 +27,15 @@ namespace SAM.Analytical.UI
     /// dwelling whose selection has since been edited still says what its result was simulated with, and nothing is
     /// reconstructed from text.
     /// </para>
+    ///
+    /// <para><b>The project verdict is SAM's</b></para>
+    /// <para>
+    /// <see cref="Overall"/> is the production <c>TM59AssessmentReport.OccupiedSpaceComplianceStatus</c> of the
+    /// combined run (<see cref="OccupiedSpaceComplianceStatus"/>), which covers every occupied space the assessment
+    /// judged - one in no dwelling row included. The dwelling rows are a tally beside it, never its source. The
+    /// communal corridor is dwelling-independent state: SAM reports it as <see cref="CorridorRiskStatus"/>, beside the
+    /// verdict and never folded into it (SAM's rule), and it is never a row.
+    /// </para>
     /// </summary>
     public class PartOMixedRunEvidence
     {
@@ -52,6 +61,21 @@ namespace SAM.Analytical.UI
 
         /// <summary>Why the production assessment reached no verdict for the run as a whole, or null.</summary>
         public string Refusal_Assessment { get; set; }
+
+        /// <summary>SAM's production verdict over the run's occupied spaces, or null where it is not known.</summary>
+        public TM59ComplianceStatus? OccupiedSpaceComplianceStatus { get; set; }
+
+        /// <summary>SAM's communal-corridor risk for the run; <c>Undefined</c> where no communal corridor was assessed.</summary>
+        public TM59RiskStatus CorridorRiskStatus { get; set; } = TM59RiskStatus.Undefined;
+
+        /// <summary>The assessed communal corridors, by space name, with each one's own risk status.</summary>
+        public List<(string Name, TM59RiskStatus RiskStatus)> Corridors { get; } = [];
+
+        /// <summary>
+        /// Why the saved evidence cannot be trusted as read - an unreadable or missing dwelling result, an unknown status
+        /// - or null. Such evidence is never current and never a pass; nothing in it is silently dropped.
+        /// </summary>
+        public string ReadRefusal { get; private set; }
 
         public List<PartODwellingResult> Results => [.. results.Values];
 
@@ -83,24 +107,41 @@ namespace SAM.Analytical.UI
         }
 
         /// <summary>
-        /// The run as a whole: FAIL where any dwelling failed, PASS only where every assessed dwelling passed, and
-        /// NOT ASSESSED otherwise.
+        /// The run as a whole - SAM's production verdict: FAIL where it failed (or, certainly, where a dwelling did); PASS
+        /// only where it passed AND every assessed dwelling passed with no space unassessed; NOT ASSESSED otherwise,
+        /// including evidence that could not be read. The corridor risk is reported beside it, never in it.
         /// </summary>
         public PartODwellingOutcome Overall
         {
             get
             {
-                if (results.Count == 0)
+                if (ReadRefusal is not null || results.Count == 0)
                 {
                     return PartODwellingOutcome.NotAssessed;
                 }
 
-                if (Count(PartODwellingOutcome.Fail) != 0)
+                if (OccupiedSpaceComplianceStatus == TM59ComplianceStatus.Fail || Count(PartODwellingOutcome.Fail) != 0)
                 {
                     return PartODwellingOutcome.Fail;
                 }
 
-                return Count(PartODwellingOutcome.Pass) == results.Count && Refusal_Assessment is null ? PartODwellingOutcome.Pass : PartODwellingOutcome.NotAssessed;
+                return OccupiedSpaceComplianceStatus == TM59ComplianceStatus.Pass && Count(PartODwellingOutcome.Pass) == results.Count && Refusal_Assessment is null ? PartODwellingOutcome.Pass : PartODwellingOutcome.NotAssessed;
+            }
+        }
+
+        /// <summary>The communal-corridor state in a few words, or null where no communal corridor was assessed.</summary>
+        public string CorridorText
+        {
+            get
+            {
+                if (CorridorRiskStatus == TM59RiskStatus.Undefined || Corridors.Count == 0)
+                {
+                    return null;
+                }
+
+                List<string> names = Corridors.FindAll(x => CorridorRiskStatus != TM59RiskStatus.SignificantRisk || x.RiskStatus == TM59RiskStatus.SignificantRisk).ConvertAll(x => x.Name);
+
+                return string.Format("communal corridor: {0} ({1})", CorridorRiskStatus == TM59RiskStatus.SignificantRisk ? "significant risk" : "acceptable", string.Join(", ", names));
             }
         }
 
@@ -110,11 +151,18 @@ namespace SAM.Analytical.UI
         /// </summary>
         /// <param name="analyticalModel_Baseline">The open baseline, carrying the current selection.</param>
         /// <param name="ventilationUnitCapacityDescriptors">
-        /// The catalogue as it would be offered now - null where the run did not offer one.
+        /// The catalogue as the NEXT build would offer it - null where products are not selected from it now. So a
+        /// catalogue setting changed since the run makes it stale, exactly as a changed catalogue does.
         /// </param>
         public bool IsCurrent(AnalyticalModel analyticalModel_Baseline, IEnumerable<VentilationUnitCapacityDescriptor> ventilationUnitCapacityDescriptors, out string reason)
         {
             reason = null;
+
+            if (ReadRefusal is not null)
+            {
+                reason = ReadRefusal;
+                return false;
+            }
 
             if (Record is null)
             {
@@ -123,7 +171,7 @@ namespace SAM.Analytical.UI
             }
 
             //SAM's own staleness rule, asked rather than restated: strategies, then catalogue, then baseline.
-            if (!Record.IsCurrent(analyticalModel_Baseline, CatalogueOffered ? ventilationUnitCapacityDescriptors : null, out reason))
+            if (!Record.IsCurrent(analyticalModel_Baseline, ventilationUnitCapacityDescriptors, out reason))
             {
                 return false;
             }
@@ -152,6 +200,12 @@ namespace SAM.Analytical.UI
                 jsonArray_Results.Add(partODwellingResult.ToJsonObject());
             }
 
+            JsonArray jsonArray_Corridors = [];
+            foreach ((string name, TM59RiskStatus tM59RiskStatus) in Corridors)
+            {
+                jsonArray_Corridors.Add(new JsonObject { ["Name"] = name, ["RiskStatus"] = tM59RiskStatus.ToString() });
+            }
+
             return new JsonObject
             {
                 ["CreatedUtc"] = CreatedUtc.ToString("o", CultureInfo.InvariantCulture),
@@ -163,6 +217,9 @@ namespace SAM.Analytical.UI
                 ["Timestamp_TSD"] = Timestamp_TSD,
                 ["Path_RunModel"] = Path_RunModel,
                 ["Refusal_Assessment"] = Refusal_Assessment,
+                ["OccupiedSpaceComplianceStatus"] = OccupiedSpaceComplianceStatus?.ToString(),
+                ["CorridorRiskStatus"] = CorridorRiskStatus.ToString(),
+                ["Corridors"] = jsonArray_Corridors,
                 ["Results"] = jsonArray_Results,
             };
         }
@@ -191,11 +248,74 @@ namespace SAM.Analytical.UI
                 result.CreatedUtc = dateTime;
             }
 
+            //Fail closed: an entry that cannot be read is not dropped - it makes the whole evidence unreadable.
+            int count_Unreadable = 0;
             if (jsonObject["Results"] is JsonArray jsonArray_Results)
             {
                 foreach (JsonNode jsonNode in jsonArray_Results)
                 {
-                    result.Add(PartODwellingResult.Read(jsonNode as JsonObject));
+                    PartODwellingResult partODwellingResult = PartODwellingResult.Read(jsonNode as JsonObject);
+                    if (partODwellingResult is null)
+                    {
+                        count_Unreadable++;
+                        continue;
+                    }
+
+                    result.Add(partODwellingResult);
+                }
+            }
+
+            if (count_Unreadable != 0)
+            {
+                result.ReadRefusal = string.Format("{0} of the saved mixed run could not be read, so no verdict is reported from it. Build and run the mixed design again.", count_Unreadable == 1 ? "One dwelling result" : count_Unreadable + " dwelling results");
+            }
+            else if (result.Record?.ZoneGuids_Assessed is ICollection<Guid> guids_Assessed && guids_Assessed.Count != 0 && !new HashSet<Guid>(guids_Assessed).SetEquals(result.results.Keys))
+            {
+                result.ReadRefusal = "The saved mixed run's dwelling results do not match the dwellings it assessed, so no verdict is reported from it. Build and run the mixed design again.";
+            }
+
+            string text_Status = (string)jsonObject["OccupiedSpaceComplianceStatus"];
+            if (!string.IsNullOrWhiteSpace(text_Status))
+            {
+                if (Enum.TryParse(text_Status, false, out TM59ComplianceStatus tM59ComplianceStatus) && Enum.IsDefined(typeof(TM59ComplianceStatus), tM59ComplianceStatus))
+                {
+                    result.OccupiedSpaceComplianceStatus = tM59ComplianceStatus;
+                }
+                else
+                {
+                    result.ReadRefusal ??= "The saved mixed run's TM59 verdict could not be read, so no verdict is reported from it. Build and run the mixed design again.";
+                }
+            }
+            else if (result.Refusal_Assessment is null)
+            {
+                result.ReadRefusal ??= "The saved mixed run records no project TM59 verdict (it was written by an earlier build), so no verdict is reported from it. Build and run the mixed design again.";
+            }
+
+            string text_Corridor = (string)jsonObject["CorridorRiskStatus"];
+            if (!string.IsNullOrWhiteSpace(text_Corridor))
+            {
+                if (Enum.TryParse(text_Corridor, false, out TM59RiskStatus tM59RiskStatus) && Enum.IsDefined(typeof(TM59RiskStatus), tM59RiskStatus))
+                {
+                    result.CorridorRiskStatus = tM59RiskStatus;
+                }
+                else
+                {
+                    result.ReadRefusal ??= "The saved mixed run's communal-corridor status could not be read. Build and run the mixed design again.";
+                }
+            }
+
+            if (jsonObject["Corridors"] is JsonArray jsonArray_Corridors)
+            {
+                foreach (JsonNode jsonNode in jsonArray_Corridors)
+                {
+                    string name = (string)jsonNode?["Name"];
+                    if (string.IsNullOrWhiteSpace(name) || !Enum.TryParse((string)jsonNode?["RiskStatus"], false, out TM59RiskStatus tM59RiskStatus_Corridor) || !Enum.IsDefined(typeof(TM59RiskStatus), tM59RiskStatus_Corridor))
+                    {
+                        result.ReadRefusal ??= "A communal corridor of the saved mixed run could not be read. Build and run the mixed design again.";
+                        continue;
+                    }
+
+                    result.Corridors.Add((name, tM59RiskStatus_Corridor));
                 }
             }
 

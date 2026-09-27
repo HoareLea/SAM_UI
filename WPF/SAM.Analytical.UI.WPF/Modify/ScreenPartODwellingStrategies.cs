@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace SAM.Analytical.UI.WPF
@@ -298,6 +299,19 @@ namespace SAM.Analytical.UI.WPF
             };
 
             partOStrategySetRun.Results.ForEach(result.Add);
+
+            //The project verdict and the communal-corridor state are SAM's report's own, kept beside the dwelling tally.
+            PartOTM59Assessment partOTM59Assessment = partOStrategySetRun.Simulation.Assessment;
+            if (partOTM59Assessment.IsAssessed && partOTM59Assessment.Report is TM59AssessmentReport tM59AssessmentReport)
+            {
+                result.OccupiedSpaceComplianceStatus = tM59AssessmentReport.OccupiedSpaceComplianceStatus;
+                result.CorridorRiskStatus = tM59AssessmentReport.CorridorRiskStatus;
+
+                foreach (IGrouping<string, TM59AssessmentReportCheck> grouping in (tM59AssessmentReport.CorridorChecks ?? []).GroupBy(x => x.Reference))
+                {
+                    result.Corridors.Add((grouping.First().SpaceName ?? grouping.Key, grouping.Any(x => x.RiskStatus == TM59RiskStatus.SignificantRisk) ? TM59RiskStatus.SignificantRisk : TM59RiskStatus.Acceptable));
+                }
+            }
 
             return result;
         }

@@ -3,7 +3,7 @@
 
 # Part O — mixed dwelling strategies: PR2 (SAM_UI dwelling strategies + mixed-model workflow)
 
-**Status: implemented, awaiting review.** Builds on SAM PR1 (SAM#150, `sow/2026-Q3` `3de02102`; closeout SAM#151
+**Status: implemented + correction pass (27 Sep), awaiting review.** Builds on SAM PR1 (SAM#150, `sow/2026-Q3` `3de02102`; closeout SAM#151
 `0f866ec6`). Specification: SAM `documentation/PartO-MixedDwellingStrategies-PR0.md` §D–§F and
 `PartO-MixedDwellingStrategies-PR1.md`. SAM, SAM_Tas and SAM_Systems are unchanged. No cooling (PR3), no deploy (PR4).
 
@@ -115,7 +115,11 @@ Two small changes to existing code, both additive:
 
 **Dwelling tally** (`Query.PartODwellingResults`): FAIL if any occupied space failed; PASS only if ≥1 passed, none
 failed and no space of the dwelling is unassessed; else NOT ASSESSED - the TM59 window's partial-assessment rule at
-dwelling scale. The run: FAIL if any dwelling failed, PASS only if all passed.
+dwelling scale. **The run verdict is SAM's** production `TM59AssessmentReport.OccupiedSpaceComplianceStatus` (stored on
+the evidence; it covers every occupied space judged, one in no dwelling row included): FAIL where it (or a dwelling)
+failed, PASS only where it passed and every dwelling passed with no hole, else NOT ASSESSED. The communal corridor is
+not a row: SAM's `CorridorRiskStatus` is shown beside the verdict ("· communal corridor: significant risk (Corridor_1)"),
+never folded into it - SAM's own rule.
 
 ## 7. Result, reopen and staleness
 
@@ -154,11 +158,36 @@ bathroom joined by a partition, a communal-corridor zone). Covers every group in
 
 ## 10. Not in PR2 / follow-ups
 
-1. **Optimised MVHR screening** (2B inside screening) and the **"accept 2B for a dwelling"** design edit onto the
-   baseline's terminals (PR0 D3). PR2 supports a retained design only where the baseline already carries the
-   dwelling's design terminals (SAM's `PartODwellingDesignFingerprint` recorded; no airflow copied). Legacy 2B still
-   runs from Prepare & Run, but on the legacy (overwrite) path.
+1. **Optimised MVHR screening** (running 2B inside screening). Accepting an existing 2B result IS in PR2 (§11). Legacy
+   2B still runs from Prepare & Run, on the legacy (overwrite) path - run it on a copy of the project.
 2. Editing the product pool from this window (read-only here; edit in Prepare & Run).
 3. Suggestion policy lives in SAM_UI (`Query.PartODwellingSuggestion`); PR0 D6 puts it in SAM eventually.
 4. Cooling (PR3): the gate is visible and SAM refuses it.
 5. No licensed TAS run of the mixed route yet (PR4 acceptance); SAM_Tas C9 diagnostic label unchanged.
+
+## 11. Correction pass (27 Sep 2026)
+
+After the owner's self-test review. Evidence: `documentation/evidence/parto-mixed-pr2-acceptance/INVESTIGATION-2026-09-27.md` §7.
+
+**Accept optimised airflow…** (bulk bar; one selected dwelling; disabled where optimisation is not allowed or the
+baseline is not clean): choose a completed Iteration 2B result model → `session.PreviewAcceptDesign` asks SAM
+`Modify.AcceptPartODwellingDesign` (SAM-BIM/SAM#152: lineage by `PartFTerminalReference`, terminals realised for that
+dwelling only, `SetSpaceDesignFlowRate` per space/direction, AD F floor, non-clean baseline refused) → SAM's refusals are
+shown as they are, or every change "space direction: current → accepted l/s" in a Yes/No box whose default is No →
+`session.AcceptDesign` adopts SAM's model as a pending baseline edit (`IsDirty`; Save selection writes it) and selects the
+dwelling MVHR + `RetainedDesign` + SAM's fingerprint (a product already chosen is kept). No airflow in the strategy, no
+rule in SAM_UI, other dwellings untouched, the whole design rebuilt from the baseline at the next build; screening and the
+final run go stale because the building changed. Bulk acceptance later = the same SAM call chained per dwelling.
+
+**Codex findings on c5f59bf (each with a regression that failed on c5f59bf):**
+1. P1 catalogue setting: `CatalogueOffered` is a build input - its setter re-asks SAM's record with the catalogue as the
+   next build offers it (`DescriptorsOffered`); the stale reason says which way the setting moved.
+2. P1 run verdict: SAM's `OccupiedSpaceComplianceStatus` + `CorridorRiskStatus` + corridors persisted on the evidence (above).
+3. P2 project test unit: `AllowedProducts` now asks SAM's `PartOEquipmentSelection.AllowedDescriptors` (default selection
+   where none is set) - the test unit is offered exactly where SAM makes it eligible (ticked into a selected pool, or manual),
+   and no longer offered under "all catalogue products", where SAM refused it; `CatalogueHasProducts` counts it.
+4. P2 sidecar: an unreadable or missing dwelling result, an unknown verdict/corridor value, or a result set that does not
+   match the assessed dwellings sets `ReadRefusal` - never current, never a pass, nothing dropped silently.
+
+Tests: `PartOMixedDesignCorrectionTests` (7), `PartOMixedDesignAcceptTests` (5); the fake TAS now returns a real SAM
+`TM59AssessmentReport` (mechanical + corridor results) so the run verdict is SAM's in every test.

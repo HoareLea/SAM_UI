@@ -176,6 +176,14 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             internal string Refusal { get; set; }
 
+            /// <summary>Whether the communal corridor exceeds its &gt;28 °C reference - SAM's corridor risk, not a failure.</summary>
+            internal bool CorridorAtRisk { get; set; }
+
+            /// <summary>Whether an occupied space in no dwelling row fails - it is in the production verdict, never in a row.</summary>
+            internal bool FailingCommonOccupiedSpace { get; set; }
+
+            private static TMResult MechanicalResult(Space space, bool fail) => new TM59MechanicalVentilationResult(space.Name, "Fake", space.Guid.ToString(), TM52BuildingCategory.CategoryII, 4740, 142, fail ? 200 : 100, !fail, TM59SpaceApplication.Living);
+
             internal PartOStrategySetSimulation Simulate(AnalyticalModel analyticalModel_Materialised, List<OverheatingScenario> overheatingScenarios, PartOSimulationContext partOSimulationContext, CancellationToken cancellationToken)
             {
                 Models.Add(analyticalModel_Materialised);
@@ -193,7 +201,12 @@ namespace SAM.Analytical.UI.WPF.Tests
 
                 HashSet<string> failing = Failing(analyticalModel_Materialised) ?? [];
 
+                //A REAL production report, from one TM59 result per space - so the run's verdict is SAM's own
+                //OccupiedSpaceComplianceStatus and its corridor risk SAM's CorridorRiskStatus, as in a live run.
                 Dictionary<Guid, TM59ComplianceStatus> statuses = [];
+                List<Space> spaces_Report = [];
+                List<TMResult> tMResults_Mechanical = [];
+                List<TMResult> tMResults_Corridor = [];
                 AdjacencyCluster adjacencyCluster = analyticalModel_Materialised.AdjacencyCluster;
                 foreach (Zone zone in adjacencyCluster.GetZones())
                 {
@@ -204,14 +217,34 @@ namespace SAM.Analytical.UI.WPF.Tests
                             continue;
                         }
 
-                        statuses[space.Guid] = failing.Contains(zone.Name) ? TM59ComplianceStatus.Fail : TM59ComplianceStatus.Pass;
+                        spaces_Report.Add(space);
+
+                        if (zone.Name == Corridor)
+                        {
+                            tMResults_Corridor.Add(new TM59CorridorResult(space.Name, "Fake", space.Guid.ToString(), TM52BuildingCategory.CategoryII, 8760, 262, CorridorAtRisk ? 337 : 100, !CorridorAtRisk, 8760));
+                            continue;
+                        }
+
+                        bool fail = failing.Contains(zone.Name);
+                        statuses[space.Guid] = fail ? TM59ComplianceStatus.Fail : TM59ComplianceStatus.Pass;
+                        tMResults_Mechanical.Add(MechanicalResult(space, fail));
                     }
                 }
 
+                //An occupied space outside every dwelling row that the production assessment judged - what the run
+                //verdict must still count although no row shows it.
+                if (FailingCommonOccupiedSpace)
+                {
+                    Space space_Common = new("Common occupied room");
+                    spaces_Report.Add(space_Common);
+                    statuses[space_Common.Guid] = TM59ComplianceStatus.Fail;
+                    tMResults_Mechanical.Add(MechanicalResult(space_Common, true));
+                }
+
                 //An assessed assessment with no hourly data behind it: SAM's result type has no public constructor, and nothing
-                //here reads it beyond "there is one" - the per-space statuses are the whole of what the tally reads.
+                //here reads it beyond "there is one".
                 TM59AssessmentResult tM59AssessmentResult = (TM59AssessmentResult)System.Runtime.CompilerServices.RuntimeHelpers.GetUninitializedObject(typeof(TM59AssessmentResult));
-                PartOTM59Assessment partOTM59Assessment = new(tM59AssessmentResult, new TM59AssessmentReport(null, [], [], []), [], [], [], null, null, null, statuses);
+                PartOTM59Assessment partOTM59Assessment = new(tM59AssessmentResult, new TM59AssessmentReport(spaces_Report, tMResults_Mechanical, null, tMResults_Corridor, null, "Fake"), [], [], [], null, null, null, statuses);
 
                 //A real file in a directory of this fake's own, so the result's lineage (length and write time) is
                 //checked exactly as production checks it.

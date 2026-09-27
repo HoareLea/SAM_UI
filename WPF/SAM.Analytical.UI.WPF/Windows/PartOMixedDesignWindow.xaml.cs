@@ -118,6 +118,7 @@ namespace SAM.Analytical.UI.WPF
             button_SetNatural.Click += (s, e) => Edit(x => session!.SetNatural(x));
             button_SetMvhr.Click += (s, e) => Edit(x => session!.SetMvhr(x, (comboBox_Product.SelectedItem as ProductItem)?.Reference));
             button_SetRetained.Click += (s, e) => Edit(x => session!.SetRetainedDesign(x));
+            button_AcceptOptimised.Click += (s, e) => AcceptOptimised();
             button_Clear.Click += (s, e) => Edit(x => { session!.Clear(x); return null; });
             button_ApplySuggestions.Click += (s, e) => ApplySuggestions();
 
@@ -488,6 +489,10 @@ namespace SAM.Analytical.UI.WPF
             button_SetMvhr.IsEnabled = any;
             comboBox_Product.IsEnabled = any;
             button_SetRetained.IsEnabled = any && session.Constraints.OptimisationAllowed;
+            button_AcceptOptimised.IsEnabled = count == 1 && session.Constraints.OptimisationAllowed && session.IsCleanBaseline;
+            button_AcceptOptimised.ToolTip = !session.Constraints.OptimisationAllowed
+                ? "The project does not allow an optimised design airflow."
+                : count != 1 ? "Select ONE dwelling whose completed Iteration 2B result you want to accept." : "Choose the completed Iteration 2B result model for this dwelling, review the design airflows it changes, and confirm.";
             button_Clear.IsEnabled = any;
             button_ApplySuggestions.IsEnabled = session.Rows.Any(x => x.SuggestionDiffers);
         }
@@ -540,6 +545,88 @@ namespace SAM.Analytical.UI.WPF
             RefreshView();
             RefreshSummary();
             RefreshSelection();
+        }
+
+        /// <summary>
+        /// Accept optimised airflow: the person picks a completed Iteration 2B result model, SAM answers what accepting it
+        /// for the selected dwelling would write (or why it refuses), the person confirms every change - Cancel is the
+        /// default - and only then is it adopted. SAM owns every rule; this only asks and shows.
+        /// </summary>
+        private void AcceptOptimised()
+        {
+            if (session is null)
+            {
+                return;
+            }
+
+            List<PartOMixedDwellingRow> rows = SelectedRows;
+            if (rows.Count != 1)
+            {
+                return;
+            }
+
+            PartOMixedDwellingRow row = rows[0];
+            const string caption = "Part O — Accept optimised airflow";
+
+            Microsoft.Win32.OpenFileDialog openFileDialog = new()
+            {
+                Title = string.Format("Accept optimised airflow for {0} — choose the completed Iteration 2B result model", row.Name),
+                Filter = "SAM model (*.sam)|*.sam",
+                InitialDirectory = string.IsNullOrWhiteSpace(session.Path_Model) ? null : System.IO.Path.GetDirectoryName(session.Path_Model),
+            };
+
+            if (openFileDialog.ShowDialog(this) != true)
+            {
+                return;
+            }
+
+            AnalyticalModel? analyticalModel_Source = null;
+            try
+            {
+                analyticalModel_Source = Core.Convert.ToSAM<AnalyticalModel>(openFileDialog.FileName)?.FirstOrDefault(x => x is not null);
+            }
+            catch (Exception exception)
+            {
+                System.Diagnostics.Trace.TraceError(exception.ToString());
+            }
+
+            if (analyticalModel_Source is null)
+            {
+                MessageBox.Show(this, string.Format("'{0}' could not be read as a SAM analytical model. Nothing was accepted.", openFileDialog.FileName), caption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            PartODwellingDesignAcceptance partODwellingDesignAcceptance = session.PreviewAcceptDesign(row, analyticalModel_Source);
+            if (!partODwellingDesignAcceptance.IsAccepted)
+            {
+                MessageBox.Show(this, string.Format("SAM cannot accept the design airflow for {0} from '{1}':\n\n• {2}\n\nNothing was accepted.", row.Name, System.IO.Path.GetFileName(openFileDialog.FileName), string.Join("\n• ", partODwellingDesignAcceptance.Refusals)), caption, MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (partODwellingDesignAcceptance.Changes.Count == 0)
+            {
+                MessageBox.Show(this, string.Format("'{0}' states the same design airflow for {1} as the baseline already gives it, so there is no optimised airflow to accept. Nothing was accepted.", System.IO.Path.GetFileName(openFileDialog.FileName), row.Name), caption, MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            IEnumerable<string> lines = partODwellingDesignAcceptance.Changes.Select(x => string.Format("   {0} {1}: {2:0.##} → {3:0.##} l/s", x.SpaceName, Core.Query.Description(x.FlowClassification).ToLowerInvariant(), x.Before_Lps, x.After_Lps));
+
+            string text = string.Format(
+                "Accept the optimised design airflow for {0} from\n{1}?\n\nDesign airflow, current → accepted:\n{2}\n\nOnly {0}'s design terminals on the baseline change. No other dwelling is touched and nothing is simulated. {0} is then selected as Optimised MVHR (retained design); the whole mixed model is rebuilt from the baseline at the next Build & Run. Save selection keeps it on the model.",
+                row.Name, openFileDialog.FileName, string.Join("\n", lines));
+
+            if (MessageBox.Show(this, text, caption, MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No) != MessageBoxResult.Yes)
+            {
+                return;
+            }
+
+            string? refusal = session.AcceptDesign(row, partODwellingDesignAcceptance);
+            string message = refusal ?? string.Format("Accepted the optimised airflow for {0} from {1} ({2}). Save selection to keep it on the model.", row.Name, System.IO.Path.GetFileName(openFileDialog.FileName), UI.Query.PartOCount(partODwellingDesignAcceptance.Changes.Count, "design airflow changed", "design airflows changed"));
+
+            textBlock_BulkMessage.Text = message;
+            textBlock_BulkMessage.Visibility = Visibility.Visible;
+
+            RefreshAll();
         }
 
         private void ApplySuggestions()
