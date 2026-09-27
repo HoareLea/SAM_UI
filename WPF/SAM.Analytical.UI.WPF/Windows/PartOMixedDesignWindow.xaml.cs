@@ -719,7 +719,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            MessageBoxResult messageBoxResult = MessageBox.Show(this, "The selected strategies have changed and are not saved onto the model.\n\nSave them now?", "Part O — Mixed Design", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            MessageBoxResult messageBoxResult = MessageBox.Show(this, "The selected strategies or an accepted design airflow have changed and are not saved onto the model.\n\nSave them now?", "Part O — Mixed Design", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
             switch (messageBoxResult)
             {
                 case MessageBoxResult.Yes:

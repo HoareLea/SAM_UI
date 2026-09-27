@@ -141,8 +141,11 @@ Real-data seam: `logs/accept-real-2b-via-sam.log`. SAM accepts the live Opt10 de
 | 8 | Save → restart → reopen: selection (incl. Optimised), final (current, with corridor), Open result enabled | PASS | shots/52 |
 | 9 | Saved source `.sam`: no systems, units, scenarios, results, record; strategy set + F3's accepted terminals only | PASS | cmp in log |
 
-Tests: SAM `SAM.Tests` 2544/2544; SAM_UI `SAM_UI.sln` Release 0 errors; WPF suite **1296/1296** (1279 + 7 correction +
-5 accept + 5 env-gated investigation harnesses, which are no-ops without their variables).
+Tests: SAM `SAM.Tests` **2545/2545**; SAM_UI `SAM_UI.sln` Release 0 errors; WPF suite **1299/1299** (1279 + 9 correction +
+6 accept + 5 env-gated investigation harnesses, which are no-ops without their variables). A local high-effort review
+found 3 more defects, fixed with regressions shown red on 573183a (`logs/review-regressions-RED-on-573183a.log`) plus one
+SAM refusal (designer-added terminal). The native regression above ran on 573183a; the review fixes touch no path it
+exercised except screening availability (not in that regression) and the accept guard (same single-preview flow).
 
 ## 8. Potential workflow improvements discovered while using PR2
 

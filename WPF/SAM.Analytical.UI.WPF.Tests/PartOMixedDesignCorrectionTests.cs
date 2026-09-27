@@ -115,6 +115,50 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         [Fact]
+        public void ProjectTestUnit_IsScreened_AsTheSelectedProductStrategy_WhereItIsTheOnlyEligibleProduct()
+        {
+            AnalyticalModel baseline = PartOMixedDesignFixture.Baseline();
+            PartOProjectTestVentilationUnit partOProjectTestVentilationUnit = new("Project test unit", 200, 200);
+            baseline.SetValue(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit, partOProjectTestVentilationUnit);
+            baseline.SetValue(Analytical.AnalyticalModelParameter.PartOEquipmentSelection, new PartOEquipmentSelection(PartOEquipmentSelectionMode.AutomaticSelectedPool, partOProjectTestVentilationUnit.CapacityDescriptors().Select(x => x.VentilationUnitReference)));
+
+            PartOMixedDesignFixture.FakeSimulator fakeSimulator = new();
+            PartOScreeningOutcome outcome = Modify.ScreenPartODwellingStrategies(
+                baseline,
+                PartOMixedDesignFixture.Dwellings(baseline).Select(x => x.Guid),
+                [PartOScreeningStrategy.SelectedProduct],
+                PartOScreeningMode.FullComparison,
+                null,
+                [],
+                x => PartOMixedDesignFixture.Context(Create.PartOMixedProjectName(baseline, "Screen_" + x)),
+                CancellationToken.None,
+                fakeSimulator.Simulate);
+
+            //Run, not skipped as unavailable - and SAM selected the test unit in the screened model.
+            AnalyticalModel screened = Assert.Single(fakeSimulator.Models);
+            Assert.Single(outcome.Evidence);
+            Assert.Contains(screened.AdjacencyCluster.GetObjects<AirHandlingUnit>() ?? [], x => x.ToJsonObject().ToJsonString().Contains("Project test"));
+        }
+
+        [Fact]
+        public void SidecarListingADwellingTwice_IsNeitherAPassNorCurrent()
+        {
+            AnalyticalModel baseline = PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), PartOMixedDesignFixture.Natural);
+            PartOMixedDesignFixture.FakeSimulator fakeSimulator = new();
+            PartOMixedRunEvidence evidence = Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context("Block_Twice"), CancellationToken.None, out _, fakeSimulator.Simulate);
+
+            JsonObject jsonObject = (JsonObject)JsonNode.Parse(evidence.ToJsonObject().ToJsonString())!;
+            JsonArray results = (JsonArray)jsonObject["Results"]!;
+            results.Add(results[0]!.DeepClone());
+
+            PartOMixedRunEvidence read = PartOMixedRunEvidence.Read(jsonObject);
+
+            Assert.NotEqual(PartODwellingOutcome.Pass, read.Overall);
+            Assert.False(read.IsCurrent(baseline, null, out string reason));
+            Assert.Contains("more than once", reason);
+        }
+
+        [Fact]
         public void ProjectTestUnit_IsNotOffered_UnderAllCatalogueProducts()
         {
             //"All catalogue products" (also the default where the project sets none) never offers the test unit - SAM's

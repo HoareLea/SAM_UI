@@ -112,7 +112,7 @@ namespace SAM.Analytical.UI.WPF
             partOMixedDesignConstraints ??= new PartOMixedDesignConstraints();
 
             List<VentilationUnitCapacityDescriptor> descriptors = [.. ventilationUnitCapacityDescriptors ?? []];
-            bool catalogueHasProducts = descriptors.Count != 0;
+            bool catalogueHasProducts = UI.Query.PartOMixedProductsOffered(analyticalModel_Baseline, descriptors);
 
             HashSet<PartOScreeningStrategy> chosen = [.. strategies ?? []];
 

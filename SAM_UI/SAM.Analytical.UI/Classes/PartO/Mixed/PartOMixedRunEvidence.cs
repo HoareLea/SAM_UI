@@ -250,6 +250,7 @@ namespace SAM.Analytical.UI
 
             //Fail closed: an entry that cannot be read is not dropped - it makes the whole evidence unreadable.
             int count_Unreadable = 0;
+            int count_Read = 0;
             if (jsonObject["Results"] is JsonArray jsonArray_Results)
             {
                 foreach (JsonNode jsonNode in jsonArray_Results)
@@ -261,11 +262,16 @@ namespace SAM.Analytical.UI
                         continue;
                     }
 
+                    count_Read++;
                     result.Add(partODwellingResult);
                 }
             }
 
-            if (count_Unreadable != 0)
+            if (count_Read != result.results.Count)
+            {
+                result.ReadRefusal = "The saved mixed run lists a dwelling's result more than once, so no verdict is reported from it. Build and run the mixed design again.";
+            }
+            else if (count_Unreadable != 0)
             {
                 result.ReadRefusal = string.Format("{0} of the saved mixed run could not be read, so no verdict is reported from it. Build and run the mixed design again.", count_Unreadable == 1 ? "One dwelling result" : count_Unreadable + " dwelling results");
             }

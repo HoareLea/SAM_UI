@@ -189,5 +189,11 @@ final run go stale because the building changed. Bulk acceptance later = the sam
 4. P2 sidecar: an unreadable or missing dwelling result, an unknown verdict/corridor value, or a result set that does not
    match the assessed dwellings sets `ReadRefusal` - never current, never a pass, nothing dropped silently.
 
-Tests: `PartOMixedDesignCorrectionTests` (7), `PartOMixedDesignAcceptTests` (5); the fake TAS now returns a real SAM
+**Local high-effort review (same day), fixed with regressions red on 573183a:** Selected-product screening now uses the same
+product rule (`UI.Query.PartOMixedProductsOffered`, shared with the session) so a test-unit-only project screens it; an
+acceptance previewed against an earlier baseline is refused (`ConditionalWeakTable` of preview → baseline) instead of
+dropping a later accepted edit; a sidecar listing a dwelling twice fails closed; the product check is hoisted out of the
+per-row refresh; the close prompt names an accepted design. SAM side: a designer-added terminal refuses acceptance.
+
+Tests: `PartOMixedDesignCorrectionTests` (9), `PartOMixedDesignAcceptTests` (6); the fake TAS now returns a real SAM
 `TM59AssessmentReport` (mechanical + corridor results) so the run verdict is SAM's in every test.

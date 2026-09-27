@@ -140,17 +140,46 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.False(session.IsDirty);
         }
 
+        [Fact]
+        public void Accept_OfAPreviewAnsweredAgainstAnEarlierBaseline_IsRefused_AndKeepsTheLaterEdit()
+        {
+            AnalyticalModel baseline = Baseline();
+            AnalyticalModel source = Source(baseline, "Flat 02", "Flat 03");
+            PartOMixedDesignSession session = new(baseline, null, null, null);
+            PartOMixedDwellingRow row_2 = session.Rows.Single(x => x.Name == "Flat 02");
+            PartOMixedDwellingRow row_3 = session.Rows.Single(x => x.Name == "Flat 03");
+
+            PartODwellingDesignAcceptance acceptance_2 = session.PreviewAcceptDesign(row_2, source);
+            Assert.Null(session.AcceptDesign(row_3, session.PreviewAcceptDesign(row_3, source)));
+            AnalyticalModel baseline_After3 = session.Baseline;
+
+            //Flat 02's preview was answered before Flat 03 was accepted: adopting it would drop Flat 03's terminals.
+            Assert.NotNull(session.AcceptDesign(row_2, acceptance_2));
+            Assert.Same(baseline_After3, session.Baseline);
+            Assert.Equal(PartODesignAirFlowBasis.PartFRequirement, row_2.Selected!.DesignAirFlowBasis);
+
+            //Asked again, it is accepted on top of Flat 03's.
+            Assert.Null(session.AcceptDesign(row_2, session.PreviewAcceptDesign(row_2, source)));
+            PartOMaterialisation partOMaterialisation = session.WithSelection().MaterialisePartODwellingStrategies();
+            Assert.True(partOMaterialisation.IsMaterialised, partOMaterialisation.Refusal);
+        }
+
         /// <summary>Flat 01 natural, Flats 02 and 03 MVHR at the requirement - saved on the clean baseline.</summary>
         private static AnalyticalModel Baseline() => PartOMixedDesignFixture.WithStrategies(PartOMixedDesignFixture.Baseline(), x => x.Name == "Flat 01" ? PartOMixedDesignFixture.Natural(x) : PartOMixedDesignFixture.Mvhr(x));
 
         /// <summary>A 2B-style result: the all-MVHR run copy with Flat 03's supply and extract each raised, balanced.</summary>
-        private static AnalyticalModel Source(AnalyticalModel baseline)
+        private static AnalyticalModel Source(AnalyticalModel baseline, params string[] names_Flat)
         {
+            if (names_Flat.Length == 0)
+            {
+                names_Flat = ["Flat 03"];
+            }
+
             PartOMaterialisation partOMaterialisation = PartOMixedDesignFixture.WithStrategies(baseline, PartOMixedDesignFixture.Mvhr).MaterialisePartODwellingStrategies();
             Assert.True(partOMaterialisation.IsMaterialised, partOMaterialisation.Refusal);
 
             AdjacencyCluster adjacencyCluster = partOMaterialisation.AnalyticalModel.AdjacencyCluster;
-            foreach ((string name, FlowClassification flowClassification) in new[] { ("Flat 03 Bedroom", FlowClassification.Supply), ("Flat 03 Bathroom", FlowClassification.Extract) })
+            foreach ((string name, FlowClassification flowClassification) in names_Flat.SelectMany(x => new[] { (x + " Bedroom", FlowClassification.Supply), (x + " Bathroom", FlowClassification.Extract) }))
             {
                 Space space = adjacencyCluster.GetSpaces().Single(x => x.Name == name);
                 adjacencyCluster.SetSpaceDesignFlowRate(space, flowClassification, Flow(adjacencyCluster, name, flowClassification) + Raise_Lps, out _, out List<string> refusals);

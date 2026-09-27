@@ -133,6 +133,26 @@ namespace SAM.Analytical.UI
         /// SAM's catalogue fingerprint for what a materialisation of this model would be offered - the descriptors plus
         /// the project test product the model states.
         /// </summary>
+        /// <summary>
+        /// The products a mixed-design dwelling may be given - SAM's rule, asked and never restated:
+        /// <c>PartOEquipmentSelection.AllowedDescriptors</c> of the project's selection (the default one where the project
+        /// sets none, exactly as the materialisation reads it), over the catalogue and the project test unit. The test unit
+        /// takes part only where the engineer ticked it into a selected pool or selects by hand.
+        /// </summary>
+        public static List<VentilationUnitCapacityDescriptor> PartOMixedAllowedProducts(AnalyticalModel analyticalModel, IEnumerable<VentilationUnitCapacityDescriptor> ventilationUnitCapacityDescriptors)
+        {
+            PartOEquipmentSelection partOEquipmentSelection = analyticalModel?.GetValue<PartOEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOEquipmentSelection) ?? new PartOEquipmentSelection();
+            List<VentilationUnitCapacityDescriptor> ventilationUnitCapacityDescriptors_ProjectTest = analyticalModel?.GetValue<PartOProjectTestVentilationUnit>(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit)?.CapacityDescriptors() ?? [];
+
+            return partOEquipmentSelection.AllowedDescriptors(ventilationUnitCapacityDescriptors, ventilationUnitCapacityDescriptors_ProjectTest) ?? [];
+        }
+
+        /// <summary>Whether any product can be offered to the selected-product strategy: a catalogue product, or an eligible project test unit.</summary>
+        public static bool PartOMixedProductsOffered(AnalyticalModel analyticalModel, ICollection<VentilationUnitCapacityDescriptor> ventilationUnitCapacityDescriptors)
+        {
+            return (ventilationUnitCapacityDescriptors?.Count ?? 0) != 0 || PartOMixedAllowedProducts(analyticalModel, ventilationUnitCapacityDescriptors).Count != 0;
+        }
+
         public static string PartOMixedCatalogueFingerprint(AnalyticalModel analyticalModel, IEnumerable<VentilationUnitCapacityDescriptor> ventilationUnitCapacityDescriptors)
         {
             List<VentilationUnitCapacityDescriptor> ventilationUnitCapacityDescriptors_ProjectTest = analyticalModel?.GetValue<PartOProjectTestVentilationUnit>(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit)?.CapacityDescriptors();

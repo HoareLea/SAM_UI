@@ -160,14 +160,15 @@ namespace SAM.Analytical.UI.WPF
         /// Whether any product can be offered: a selectable catalogue product, or the project's test ventilation unit
         /// where SAM's product-selection rule makes it eligible (see <see cref="AllowedProducts"/>).
         /// </summary>
-        public bool CatalogueHasProducts => Descriptors.Count != 0 || AllowedProducts.Count != 0;
-
-        private List<VentilationUnitCapacityDescriptor> ProjectTestDescriptors => analyticalModel.GetValue<PartOProjectTestVentilationUnit>(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit)?.CapacityDescriptors() ?? [];
+        public bool CatalogueHasProducts => UI.Query.PartOMixedProductsOffered(analyticalModel, Descriptors);
 
         private bool catalogueOffered;
 
         //Whether the baseline itself was edited in this session (an accepted design) and is not yet saved.
         private bool baselineEdited;
+
+        //The baseline each previewed acceptance was answered against (weak: a preview never keeps a model alive).
+        private readonly System.Runtime.CompilerServices.ConditionalWeakTable<PartODwellingDesignAcceptance, AnalyticalModel> acceptanceBases = new();
 
         /// <summary>
         /// Whether the final run offers the catalogue - products are then selected from the project's pool. A build
@@ -218,15 +219,7 @@ namespace SAM.Analytical.UI.WPF
         /// the materialisation reads it): the project test unit takes part only where the engineer ticked it into a
         /// selected pool or selects by hand, never under "all catalogue products".
         /// </summary>
-        public List<VentilationUnitCapacityDescriptor> AllowedProducts
-        {
-            get
-            {
-                PartOEquipmentSelection partOEquipmentSelection = analyticalModel.GetValue<PartOEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOEquipmentSelection) ?? new PartOEquipmentSelection();
-
-                return partOEquipmentSelection.AllowedDescriptors(Descriptors, ProjectTestDescriptors) ?? [];
-            }
-        }
+        public List<VentilationUnitCapacityDescriptor> AllowedProducts => UI.Query.PartOMixedAllowedProducts(analyticalModel, Descriptors);
 
         /// <summary>A one-line description of the product pool the materialisation will select from.</summary>
         public string ProductPoolText
@@ -430,7 +423,12 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public PartODwellingDesignAcceptance PreviewAcceptDesign(PartOMixedDwellingRow row, AnalyticalModel? analyticalModel_Source)
         {
-            return Analytical.Modify.AcceptPartODwellingDesign(analyticalModel, row?.ZoneGuid ?? Guid.Empty, analyticalModel_Source);
+            PartODwellingDesignAcceptance result = Analytical.Modify.AcceptPartODwellingDesign(analyticalModel, row?.ZoneGuid ?? Guid.Empty, analyticalModel_Source);
+
+            //Which baseline it was answered against - adopting it later over a baseline edited since would drop that edit.
+            acceptanceBases.AddOrUpdate(result, analyticalModel);
+
+            return result;
         }
 
         /// <summary>
@@ -445,6 +443,11 @@ namespace SAM.Analytical.UI.WPF
             if (row is null || partODwellingDesignAcceptance is null || !partODwellingDesignAcceptance.IsAccepted || partODwellingDesignAcceptance.ZoneGuid != row.ZoneGuid)
             {
                 return partODwellingDesignAcceptance?.Refusal ?? "There is no accepted design for this dwelling.";
+            }
+
+            if (!acceptanceBases.TryGetValue(partODwellingDesignAcceptance, out AnalyticalModel? analyticalModel_Base) || !ReferenceEquals(analyticalModel_Base, analyticalModel))
+            {
+                return string.Format("The accepted design for {0} was prepared against an earlier state of the baseline, so adopting it would undo the changes made since. Accept it again.", row.Name);
             }
 
             //A product already chosen for the dwelling is kept; otherwise the unit is selected from the project's pool.
@@ -785,6 +788,8 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
+            bool catalogueHasProducts = CatalogueHasProducts;
+
             foreach (PartOMixedDwellingRow row in rows)
             {
                 foreach (PartOScreeningStrategy partOScreeningStrategy in UI.Query.PartOScreeningStrategies())
@@ -798,7 +803,7 @@ namespace SAM.Analytical.UI.WPF
                     {
                         text = "STALE";
                     }
-                    else if (UI.Query.PartOScreeningStrategyUnavailable(partOScreeningStrategy, CatalogueHasProducts) is not null)
+                    else if (UI.Query.PartOScreeningStrategyUnavailable(partOScreeningStrategy, catalogueHasProducts) is not null)
                     {
                         text = Core.Query.Description(PartODwellingOutcome.Unavailable);
                     }

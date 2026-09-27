@@ -63,7 +63,7 @@ SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwelling
   - **Codex review on c5f59bf: 2 P1 + 2 P2 unaddressed** (catalogue toggle doesn't stale final; run verdict ignores
     auto-assessed corridor; project test unit not a product; unreadable sidecar result dropped). CI build + spdx green.
 - **Correction pass 27 Sep (after the owner's review of the self-test):**
-  - **SAM PR [SAM-BIM/SAM#152](https://github.com/SAM-BIM/SAM/pull/152)** `feature/parto-accept-dwelling-design` `2c352d3e`
+  - **SAM PR [SAM-BIM/SAM#152](https://github.com/SAM-BIM/SAM/pull/152)** `feature/parto-accept-dwelling-design` `b8dd64dd`
     (from `sow/2026-Q3` `0f866ec6`): `Modify.AcceptPartODwellingDesign` (lineage by `PartFTerminalReference.Matches`,
     `RealizePartFVentilationTerminals` for that dwelling, `SetSpaceDesignFlowRate` per space/direction; nothing in the
     strategy; non-clean baseline refused). 9 tests; SAM.Tests 2544/2544. **Must merge before SAM_UI#126 CI can pass**
@@ -74,7 +74,9 @@ SAM_Tas / SAM_Systems unchanged. Full record: `documentation/PartO-MixedDwelling
     (not a row, not a failure - SAM's rule); `AllowedProducts` asks SAM's `AllowedDescriptors` (test unit only where SAM
     makes it eligible); sidecar `ReadRefusal` fails closed. Fake TAS returns a real SAM report. Tests
     `PartOMixedDesignCorrectionTests` (7, all red on c5f59bf - `logs/codex-regressions-RED-on-c5f59bf.log`),
-    `PartOMixedDesignAcceptTests` (5). WPF **1296/1296**; `SAM_UI.sln` Release 0 errors.
+    `PartOMixedDesignAcceptTests` (5). Local high review → 3 more fixes (screening uses the shared product rule; stale
+    acceptance refused; duplicate sidecar result fails closed) + SAM designer-terminal refusal (`b8dd64dd`). WPF
+    **1299/1299**; SAM.Tests 2545/2545; `SAM_UI.sln` Release 0 errors.
   - **Native regression (real exe + real TAS):** 9/9 required items PASS (evidence record §7), incl. accepting the real
     26 Sep 2B `-Opt10` design for Flat 3 through the dialog, one mixed run with the corridor in the project result, catalogue
     staleness, save/reopen, clean saved baseline. Improvements recorded in evidence §8 (not implemented).
