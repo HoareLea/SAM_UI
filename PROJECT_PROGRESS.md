@@ -1,6 +1,6 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only
+## Current: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only; decisions ACCEPTED by the owner (27 Sep)
 
 **Status.** Investigation complete; **no production code changed in any repo**. PR
 [SAM-BIM/SAM_UI#129](https://github.com/SAM-BIM/SAM_UI/pull/129), branch
@@ -56,7 +56,16 @@ SAM_UI pass 6).
   assumptions + TM59 confirmation) and merges #129 → PR3B-1 SAM → PR3B-2 SAM_Systems → PR3B-3 SAM_Tas, gated by the
   14.1 harness extended with one cooled flat → PR3C SAM_UI → PR4.
 
-## Previous: SAM Documentation Framework Phase 2 - PR2D Space Design Load Summary PDF command (27 Sep 2026) - MERGED (SAM_UI#127, `cbe1c076`)
+## Previous (reporting stream): SAM Documentation Framework Phase 2 COMPLETE (27 Sep 2026)
+
+SAM_UI#127 (PR2D) merged as `cbe1c076`; SAM#159 (HOY + "Peak sensible load") merged as `6c255ad8`. PR2E =
+SAM_Deploy#55, merged as `1506da5f`, pins SAM_UI `cbe1c076`. Installer run 218 was installed and both report commands
+passed installed-product acceptance from the installed `%APPDATA%\SAM\SAM Analytical.exe` (Bathroom_2, Studio 1_0,
+Not simulated, Space Assumptions regression, ribbon/tree/view workflow, Save Cancel, Open it now). Details: SAM_Deploy
+`PROJECT_PROGRESS.md`. **Next step:** PR2F (owner-led) - real-project PDF review and multi-Space / All-Spaces export
+scope; not started.
+
+## Previous: SAM Documentation Framework Phase 2 - PR2D Space Design Load Summary PDF command (27 Sep 2026) - MERGED (`cbe1c076`)
 
 **Status.** [SAM-BIM/SAM_UI#127](https://github.com/SAM-BIM/SAM_UI/pull/127), branch
 `feature/pr2d-space-design-load-summary-ui-2026-09-27` from `sow/2026-Q3` `c96ac19a`. PR2A/PR2B/PR2C are complete in
