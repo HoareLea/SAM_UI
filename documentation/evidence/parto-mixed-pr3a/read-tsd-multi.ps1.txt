@@ -1,0 +1,49 @@
+param([string[]]$Paths, [string]$OutDir)
+# Read-only: for each TSD writes <name>.<array>.csv (8760 x zones) for several zone arrays, plus <name>.outdoor.csv
+$interop = "C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_Tas\build\Interop.TSD.dll"
+Add-Type -Path $interop
+Add-Type -ReferencedAssemblies $interop -TypeDefinition @"
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+public static class TsdMulti
+{
+    static List<float> Read(object o) { List<float> v = new List<float>(); foreach (object x in (IEnumerable)o) v.Add(Convert.ToSingle(x)); return v; }
+    public static string Dump(string path, string outDir)
+    {
+        TSD.TSDDocument doc = new TSD.TSDDocument();
+        doc.openReadOnly(path);
+        string stem = Path.Combine(outDir, Path.GetFileNameWithoutExtension(path));
+        try
+        {
+            TSD.BuildingData bd = doc.SimulationData.GetBuildingData();
+            File.WriteAllText(stem + ".outdoor.csv", string.Join("\n", Read(bd.GetAnnualBuildingResult((int)TSD.tsdBuildingArray.externalTemperature)).ConvertAll(x => x.ToString("0.###", CultureInfo.InvariantCulture))));
+            TSD.tsdZoneArray[] arrays = { TSD.tsdZoneArray.resultantTemp, TSD.tsdZoneArray.dryBulbTemp, TSD.tsdZoneArray.zoneApertureFlowIn, TSD.tsdZoneArray.airMovementGain, TSD.tsdZoneArray.infVentGain, TSD.tsdZoneArray.izamIn };
+            int zones = 0;
+            foreach (TSD.tsdZoneArray a in arrays)
+            {
+                SortedDictionary<string, List<float>> rows = new SortedDictionary<string, List<float>>(StringComparer.Ordinal);
+                int i = 1; TSD.ZoneData z = bd.GetZoneData(i);
+                while (z != null) { rows[z.name] = Read(z.GetAnnualZoneResult((int)a)); i++; z = bd.GetZoneData(i); }
+                zones = rows.Count;
+                StringBuilder sb = new StringBuilder("hour," + string.Join(",", rows.Keys) + "\n");
+                int n = 0; foreach (List<float> v in rows.Values) { n = v.Count; break; }
+                for (int h = 0; h < n; h++)
+                {
+                    List<string> vals = new List<string>();
+                    foreach (List<float> v in rows.Values) vals.Add(v[h].ToString("0.####", CultureInfo.InvariantCulture));
+                    sb.Append(h).Append(',').Append(string.Join(",", vals)).Append('\n');
+                }
+                File.WriteAllText(stem + "." + a + ".csv", sb.ToString());
+            }
+            return string.Format("{0}: {1} zones", Path.GetFileName(path), zones);
+        }
+        finally { doc.close(); System.Runtime.InteropServices.Marshal.ReleaseComObject(doc); }
+    }
+}
+"@
+New-Item -ItemType Directory -Force $OutDir | Out-Null
+foreach ($p in $Paths) { [TsdMulti]::Dump($p, $OutDir) }

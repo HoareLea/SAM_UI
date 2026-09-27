@@ -3,7 +3,9 @@
 
 # Part O — mixed dwelling strategies: PR3A (active cooling architecture investigation)
 
-**Status: investigation only (27 Sep 2026). No production code changed in any repo.** Owner direction during the
+**Status: investigation only (27 Sep 2026). No production code changed in any repo.** §1-§13 are the first pass;
+**§14 (Decisions A-D, same day, with a licensed real-TAS route proof) supersedes §6 D1-D3, §7 cooling-airflow refusal,
+§11 D5(b) and §12.** Owner direction during the
 investigation: the PR3 cooling authority is **the MVHR cooling Iteration 3 already uses** - the selected product's
 manufacturer-guidance cooling (`PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance`, "MG"), the mode
 the production Hub runs (`WPF/.../Modify/RunPartOWorkflow.cs:89`). Not the IZAM plant-zone supply temperature.
@@ -104,7 +106,7 @@ free-run in the bridge, which the evidence in §11 supports.
 
 | # | Finding | Consequence | Where |
 |---|---|---|---|
-| D1 | Any cooled dwelling puts the **whole building** on the TPD route; uncooled MVHR dwellings are then simulated on TPD too | Flat 2's result depends on whether Flat 4 is cooled; B0 evidence: room RMSE 0.5-1.1 K, wet-room >26 °C hours up to ×2.7 lower (Ensuite_8 677→246); TM59 outcome unchanged on that fixture | SAM_Tas no-IZAM, by design |
+| D1 | Any cooled dwelling puts the **whole building** on the TPD route; uncooled MVHR dwellings are then simulated on TPD too | Flat 2's result depends on whether Flat 4 is cooled; B0 evidence (legacy 1a preparation of the owner's non-clean model): room RMSE 0.5-1.1 K, wet-room >26 °C hours up to ×2.7 lower (Ensuite_8 677→246); TM59 outcome unchanged. **Superseded by §14.1**: on the PR1 clean materialisation the wet-room shift is +0.1 K in warm hours and wet rooms are not TM59-assessed | SAM_Tas no-IZAM, by design |
 | D2 | Uncooled units in a cooled call would get the MVRE template (exchanger with template-default recovery) - a physics change from the IZAM route, which models no heat recovery (Part O extract is flattened to leave from the rooms, `SAM_Tas Query.DesignTerminalExtractFlattening`, so the plant zone sees outside air only) | must be MV (B0) for uncooled units | SAM_Systems template per call |
 | D3 | MG elevated cooling airflow is a **product** figure (80 l/s default, 60-120 l/s); SAM_Systems refuses it below the dwelling's design total (`MechanicalVentilationOperatingFlows.cs:177-185`) | **cooled Optimised MVHR fails closed** where the accepted 2B design exceeds it - the PR2 Flat 3 design (143 l/s supply) is refused | SAM_Systems; policy decision |
 | D4 | SAM_Systems membership follows **authored** transfer air (BFS, `:659-760`); a clean baseline may carry authored movements that PR1 carries through unchanged | an authored transfer to a corridor would make it a member of a cooled AHU → cooled/bound corridor | SAM_Systems + PR1 guard |
@@ -224,3 +226,208 @@ corridor) were read back through the TSD COM interop (script `evidence/parto-mix
 - **PR3C - SAM_UI**: §8 - toggle, Systems-route adapter over the Iteration 3 pipeline, evidence/staleness, fake-TAS
   tests (Systems route delegate), native owner walk-through incl. save/reopen/remove-cooling rebuild.
 - **PR4 - acceptance + deploy** (unchanged from PR0): large-model mixed run incl. cooled dwellings, SAM_Deploy pins.
+
+*(§13 is revised by §14.6.)*
+
+---
+
+## 14. Decisions A-D (27 Sep 2026, second pass, owner brief after accepting PR3A)
+
+Owner-preferred architecture under test: *any cooled dwelling → ONE Systems/TPD route for the whole mixed building;
+uncooled MVHR = ordinary MV; cooled = MVRE + guidance DX; Natural and corridor free-running.* Binding (Decision D):
+per-dwelling `Active cooling: On/Off`, cooling orthogonal to the strategy, numbers product/system-level.
+
+### 14.1 Decision A - licensed route proof on ONE materialised mixed model
+
+**Run (licensed TAS, this machine, ~4 min in total):** env-gated harness
+`WPF/SAM.Analytical.UI.WPF.Tests/PartOMixedCoolingRouteProofTests.cs` (`SAM_PARTO_PR3_ROUTE_PROOF`,
+`SAM_PARTO_MIXED_BASELINE`). The PR2 clean fixture is materialised by SAM PR1 as **Flat 1 Natural (Studio 1_0 with 6
+openable apertures + internal Bathroom_2) / Flat 2 MVHR / Flat 3 MVHR (generic, Part F design) / Corridor**. The
+materialised model is run three ways, all with the same weather/case: (1) the PR2 production IZAM route
+(`SimulatePartOMaterialisation`); (2) the Iteration 3 Systems stages with no A/B comparison - `ThermalSource` →
+SAM_Systems `Materialise` (MV, Flat 2+3 units) → `Route` → `ResultantTemperatures` → `PartOTM59Assessment.Assess`
+with **the materialiser's own per-zone scenarios**; (3) as (2) with `DisplacementVentilation` cleared on all six
+system zones. All completed. Numbers: `evidence/parto-mixed-pr3a/route-proof-comparison-2026-09-27.txt`; log with
+the three TM59 reports: `evidence/parto-mixed-pr3a/route-proof-2026-09-27.log`; files `C:\TasOut\parto-mixed-pr3a-route-proof-2026-09-27\` (local).
+
+Systems minus IZAM, hourly resultant temperature (1,604 h with outdoor ≥ 20 °C):
+
+| Room | all hours bias / RMSE | ODB ≥ 20 °C bias / RMSE | >26 °C h IZAM / Sys / Sys DV-off | TM59 (all three) |
+|---|---|---|---|---|
+| Studio 1_0 (**NV**) | −0.00 / 0.06 K | −0.01 / 0.01 K | 453 / 449 / 452 | Pass |
+| Bathroom_2 (NV, internal) | −0.03 / 0.11 K | −0.02 / 0.04 K | 445 / 434 / 442 | not assessed |
+| Corridor_1 | +0.01 / 0.23 K | −0.00 / 0.02 K | >28 °C 908 / 910 / 913 | significant risk (all) |
+| Bedroom 2_3 / 2_6 | −0.15 / 0.40 K | −0.02 / 0.11 K | 306 / 308 / 316 | Fail |
+| Kitchen_4 / 7 | +0.18 / 0.45 K | +0.09 / 0.13 K | 329 / 353 / 341 | Fail |
+| Ensuite_5 / 8 | +0.43 / 0.60 K | +0.12 / 0.16 K | 329 / 348 / 353 | not assessed |
+
+**Every TM59 verdict is identical on all three routes**; the run verdict (Fail) and the corridor risk (significant)
+too. Wet rooms are not TM59-assessed spaces, so the wet-room shift PR3A flagged never reaches a verdict.
+
+**Natural dwelling proof.** Flat 1 is genuinely natural: no terminal, system, unit or movement (PR1), six openable
+apertures on Studio 1_0. Its window ventilation runs identically on both routes - `infVentGain` (infiltration +
+aperture ventilation) annual −4,612 vs −4,565 kWh, July mean −819 vs −817 W, hourly RMSE 28 W; at the hottest hour
+(40.3 °C) 2,785 vs 2,782 W and 37.25 vs 37.25 °C. No mechanical coupling on either route (`airMovementGain` ≡ 0 on
+Studio 1_0, Bathroom_2, Corridor_1). The bridge matters: the no-IZAM source alone is −0.23 K / RMSE 0.32 K off for
+Studio 1_0; re-coupling to the pinned MVHR neighbours brings it to 0.06 K. **A Natural dwelling free-runs correctly on
+the Systems route.** (`zoneApertureFlowIn` / `izamIn` read back as TAS's −1 "not recorded" sentinel in both files,
+so aperture *flow* is evidenced through the heat balance, not the flow array.)
+
+**Why uncooled MVHR differs between routes - exact mechanisms** (this run + SAM_Tas
+`Documentation/evidence/PARTO-ITERATION3-B0-PARITY-DECOMPOSITION.md`):
+
+| Mechanism | IZAM route | Systems route | Measured | Physically intended |
+|---|---|---|---|---|
+| Heat recovery | none (Part O extract flattened to leave from the rooms - `DesignTerminalExtractFlattening`; the plant zone sees outside air only) | none (MV.json, no exchanger) | equal - **not a cause** | equal; both state BasePassive "MV at design rate", no HR - a shared simplification of the base identity, not a route difference |
+| Supply-air temperature | the air of an 18 m³ **plant zone** (3×3×2 m box `UpdateIZAMs` builds per unit, a full TAS zone with fabric and mass) | outdoor air exactly (fresh-air duct = ODB to 1e-9 K) | plant zone − ODB: RMSE 1.05 K, max 4.85 K; **−1.37 K mean with ODB ≥ 20 °C** | **Systems.** A unit without recovery (or in bypass) cannot deliver air below outdoor temperature; the IZAM plant zone pre-cools the supply in hot hours - a non-conservative artefact |
+| Supply/extract airflow | IZAM profiles at design | ducts at design, 43/43 constant, balanced | equal - **not a cause** | equal (`VentilationTerminal.DesignFlowRate_Lps`) |
+| Ventilation gains | IZAM `airMovementGain` in the room balance, co-solved | TPD zone solver; TBD `airMovementGain` ≡ 0, `ticV` 0 | equal inputs | equal |
+| Transfer air | at the source room's mixed temperature | TPD transfer legs (kept, not lost), damper duty carriers | directed graph identical | both represent it; DV affects which temperature is handed on (next row) |
+| `DisplacementVentilation` | n/a | **forced `true` on every zone** by SAM_Systems (`MechanicalVentilationAirSystem.cs:403-419`) - chosen because it reproduced the frozen B0 parity, not for a physical reason | on this clean model ≤ 0.03 K and no verdict change; on the legacy model it drove the wet-room signature (outlet up to 80 °C) and it **suppresses MVHR bypass ~12×** under MG (SAM#129) | **mixing (`false`)** for dwelling rooms: MVHR supply valves and door-undercut transfer are mixing ventilation; an 80 °C bathroom extract is not physical |
+| Building-system coupling | TBD co-solves fabric, room air and IZAMs in one time step | **two-pass**: loads from a free-running no-IZAM TBD, replayed into TPD, bridge re-solves the radiant half | source − achieved: +1.74 K (bedroom, all year) but **≤ 0.25 K with ODB ≥ 20 °C**; decomposition: r = 0.93 with the seasonal residual | **IZAM** is the tighter coupling; the Systems route's approximation is a winter effect, small in the assessed regime |
+| Controls | constant design profiles | fixed-speed fans, factor 1.0 schedule, 8760/8760 | equal | equal |
+
+**Verdict A: ACCEPTED - one whole-building Systems route whenever any dwelling is cooled.** The Systems route is the
+more faithful MVHR *plant* representation (true outdoor-air supply, explicit ducts/dampers/transfer legs, fans, and
+the only place a product's exchanger/bypass/DX can exist); it reproduces NV and the corridor exactly; its one
+approximation (two-pass coupling) is small in warm weather. **The final mixed workflow therefore intentionally
+supersedes the IZAM approximation whenever the Systems route is required**, for every dwelling in that run - not
+"equivalent to IZAM", but the better authority. Numerical equivalence is not required and is not claimed.
+Conditions: (1) `DisplacementVentilation` stated explicitly and identically for MV and MVRE dwelling zones -
+recommended `false`, which closes SAM#129 and requires re-accepting B0 and MG (owner decision, §14.5 Q1);
+(2) the route is recorded (materialisation record + evidence + "ran on the Systems route" per dwelling);
+(3) scale behaviour of TPD with hundreds of air systems is a PR4 gate (here 7 s for 2 systems; whole route ~1.8× the
+IZAM wall time). The hybrid IZAM/TPD route is rejected (two thermal authorities, and it would break the fail-closed
+no-IZAM/bridge contracts).
+
+**The wider idea - one physical systems model for all dwellings.** The evidence supports it as the direction: on this
+model the Systems route matches NV and corridor to 0.01-0.02 K in warm hours, removes the plant-zone pre-cooling
+artefact from MVHR, and changes no TM59 verdict. It is **not** adopted in PR3 for non-cooled runs: that would
+re-base every PR2-accepted result and needs its own acceptance - a large-project A/B (hundreds of dwellings), TPD
+runtime at scale, the DV decision, and the base-MVHR heat-recovery identity (neither route models recovery for
+BasePassive today). Proposed as a separate post-PR4 step ("Systems route as the single final route"), with the
+IZAM route kept until then.
+
+### 14.2 Decision B - what the manufacturer cooling airflow is
+
+From the catalogue's own transcription of the Nuaire reply (24 Sep 2026, `VentilationUnitCatalogue.JSON`
+`OperatingStrategy.Source`) and SAM `VentilationUnitOperatingStrategy`:
+
+| Quantity | Meaning | Where | Flat 3 (accepted 2B) |
+|---|---|---|---|
+| Part F requirement | regulatory minimum | `PartFSpaceData` | 63 l/s supply (bedroom) |
+| Design airflow | the dwelling's accepted design | `VentilationTerminal.DesignFlowRate_Lps` (sole authority) | **143 l/s** supply / 143 extract |
+| Unit capacity | what the unit can move | `VentilationUnitTemplate.MaximumSupply/ExtractFlowRate_Lps` | 150 / 150 l/s |
+| Background operating airflow | "background Part F rates until the room setpoint" - in practice the design airflow | SAM_Systems operating flows = design | 143 l/s |
+| **Cooling (elevated) operating airflow** | the total the unit moves **while the cooling-stat calls**, split in commissioned (design) room proportions - an *operating* airflow, never design, never capacity | `ElevatedAirFlow_Lps` (resolved per dwelling), else `DefaultElevatedAirFlow_Lps` | - |
+| `DefaultElevatedAirFlow_Lps` = 80 | **a default operating point**: "the stated default (Nuaire's presentation uses a fixed 80 l/s); a project with commissioned cooling airflows overrides it within 60-120 l/s" | catalogue | 80 |
+| `MinimumElevatedAirFlow_Lps` = 60 | **hard lower limit**: "air over-cooled below it" | catalogue | - |
+| `MaximumElevatedAirFlow_Lps` = 120 | **edge of published cooling performance** ("performance data to 120 l/s, larger ducting"; ~90 l/s with 220×90 flat duct); the `ExchangerThenCoil` rule has data at 60/80/100/120 and `PerformanceDomainPolicy: Refuse` | catalogue | - |
+
+So 80 l/s is **not** a limit; refusing Flat 3 because 80 < 143 (today's SAM_Systems check, §6 D3) would turn a
+default operating point into an artificial capacity limit. "Elevated" is by definition not below background.
+
+**Rule (replaces the §7 refusal):**
+
+```text
+Q_design   = max(design supply total, design extract total)            -- from the terminals, read only
+Q_guidance = dwelling/project commissioned figure, else DefaultElevatedAirFlow_Lps
+Q_cooling  = max(Q_design, Q_guidance)
+valid iff  MinimumElevatedAirFlow_Lps <= Q_cooling <= MaximumElevatedAirFlow_Lps   (published cooling data)
+      and  Q_cooling <= unit capacity (supply and extract)
+otherwise refuse, naming the figure and the limit it crosses
+```
+
+Ventilation never drops below design while cooling, and no second design authority is created: `Q_cooling` is an
+operating airflow resolved at materialisation, recorded in the record/evidence, never written to a terminal or the
+baseline. **Flat 3 (143 l/s) is refused** - not because of the 80 l/s default, but because 143 l/s is beyond the
+manufacturer's published cooling performance (120 l/s): the supply law has no data there. A Part F Flat 2 (63 l/s)
+cools at 80 l/s; a moderate retained design of 100 l/s cools at 100 l/s. SAM_Systems' existing "elevated below
+design" refusal stays as an invariant and can no longer fire through this resolution.
+
+### 14.3 Decision C - cooled scenario and TM59 authority
+
+- **Legacy Iteration 3** assessed its cooled Candidate B under Reference A's `BasePassive` scenarios, ventilation code
+  `MVHR` (`RunPartOIteration3.cs:852,972`) - i.e. a key asserting "no cooling". PR3 must not repeat that.
+- **Cooled dwelling scenario key (proposed; new keys, nothing re-keyed - `ActiveTrimCooling` has never been
+  persisted):** `OverheatingScenario(Scope = Dwelling, zone guid, Iteration = ActiveTrimCooling,
+  SystemTemplate.Ventilation = "MVHR", OperatingAssumptions = {Openings Restricted = false, Mechanical Ventilation At
+  Design Rate = true (background), Boost Available = true (elevated cooling airflow), Summer Bypass Available = true
+  (the product's bypass law), Active Cooling = "Supply Air (manufacturer guidance)"})`. Each value states what the
+  MG simulation actually does; the owner confirms them (the enum's own comment requires it) - SAM
+  `Query.PartOOperatingAssumptions` case `ActiveTrimCooling` stops refusing.
+- **TM59 criterion for a cooled dwelling: the existing mechanical criterion, unchanged** - SAM
+  `TMOverheatingCalculator.cs:359-370` selects by the scenario's ventilation code: `UV` → corridor, `NV` → natural
+  (bedroom/living), **anything else → `TM59MechanicalVentilationExtendedResult`: occupied hours with operative
+  temperature > 26 °C fewer than 3 % of occupied hours** (`GetHoursNumberExceeding26`, `TMExtendedResult.exceedanceFactor
+  = 0.03`). This is exactly what Iteration 3 already applied to cooled dwellings. SAM holds no cooled criterion and
+  none is invented; whether TM59 wants a different test for an actively cooled home is an owner/engineering
+  confirmation (Q3), not a code decision.
+- **Non-cooled dwellings in the same run:** keep their `BasePassive` / `BaseNaturalVentilation` keys and criteria;
+  their physics is the Systems route (14.1). Keys do not encode the route (PR0 §G): the materialisation record and
+  evidence carry it.
+- **Corridor:** unchanged - `DwellingIndependent`, code `UV`, `TM59CorridorExtendedResult` (operative > 28 °C, 3 %),
+  `CorridorRiskStatus` beside the verdict, free-running on the Systems route (0.02 K in warm hours, same risk).
+- **`scenarios[0]` single-iteration assumptions:** only SAM_Tas `PartODiagnosticLog.cs:167` and SAM_Tas_Grasshopper
+  `TasLogPartODiagnostics.cs:236` (the run's `partOIteration` label). TM59 reports/results do not read the
+  iteration; SAM_UI's `.Iteration` reads are 2B round numbers. Already wrong for PR2 NV/MVHR runs (C9); fix with the
+  distinct sorted iterations of the run.
+
+### 14.4 Final proposed changes
+
+**SAM** (`SAM.Analytical`):
+1. Lift `CoolingGated` for `MVHR + SupplyAirCooling` when the dwelling's selected or pool-resolved product carries an
+   `OperatingStrategy`; new refusals `CoolingWithoutProductGuidance` (generic unit), `CoolingAirFlowOutsidePerformance`
+   (14.2); keep `NaturalWithCooling`, `ConditionedReusedUnit` (all strategies).
+2. `Query.PartOCoolingOperatingAirFlow(strategy, designSupply, designExtract, capacity, commissioned?)` - the 14.2 rule.
+3. `PartOMaterialisation`: `Route` {`Izam`, `Systems`} (Systems iff any dwelling cooled), cooled dwellings → AHU guid +
+   `Q_cooling`.
+4. `ActiveTrimCooling` assumptions (14.3) and cooled scenarios from the materialiser.
+5. `PartOMaterialisationRecord` v2: route; per cooled dwelling the strategy's canonical cooling identity
+   (`OperatingStrategy` fields + `Source`) and `Q_cooling`, in the fingerprint; v1 read as not current for a cooled set.
+6. Refuse an authored air movement linking a cooled dwelling to a space outside it (§6 D4).
+
+**SAM_Systems:**
+1. Partial `GuidanceSettings` (cooled subset); a unit absent from it is uncooled; keys must still be materialised;
+   MG and B4 stay exclusive.
+2. Per-unit topology in one energy centre: MV prototype for uncooled units, MVRE + supply DX for guidance units.
+3. `DisplacementVentilation` one explicit setting for all dwelling zones (decision Q1; recommended `false`) instead
+   of the parity-driven `true`.
+4. `MechanicalVentilationGuidanceSettings` accepts the resolved `Q_cooling` (`WithElevatedAirFlow`) - no new rule here.
+
+**SAM_Tas:** no route change (cooling is grounded per `GuidanceCooling` record); `PartODiagnosticLog` iterations list
+(+ the Grasshopper twin); one TM59-tests case for a TPD document with guidance + plain MV air systems + an unbound NV
+room.
+
+### 14.5 Owner decisions still open
+
+1. `DisplacementVentilation` for dwelling zones on the Systems route: `false` (recommended; closes SAM#129; B0 and MG
+   re-accepted) or keep `true`.
+2. A project-level commissioned cooling airflow (optional, 60-120 l/s) - or the product default only in PR3.
+3. The `ActiveTrimCooling` assumption values in 14.3 and confirmation that TM59's mechanical criterion applies to a
+   cooled dwelling.
+
+### 14.6 Tests required and revised PR3B plan
+
+**PR3B-1 SAM** (after Q1-Q3): tests - five-dwelling fixture NV / MVHR / Optimised (retained ≤ 120) / MVHR + cooling /
+Optimised + cooling + corridor: one materialisation, route `Systems`, cooled scenarios `ActiveTrimCooling`, others
+unchanged keys; `Q_cooling` = max rule (63 → 80, 100 → 100), 143 → `CoolingAirFlowOutsidePerformance`, capacity and
+60 l/s edges; generic + cooling, NV + cooling refused; reused conditioned unit still refused; authored transfer from a
+cooled dwelling refused; removing cooling rebuilds to route `Izam` with no cooled state (determinism, P10 pattern);
+record stale on cooling toggle, on a changed `OperatingStrategy` figure, on `Q_cooling`; no airflow in the strategy
+JSON; legacy `PreparePartOIteration` and PR1/PR2 tests unchanged.
+
+**PR3B-2 SAM_Systems:** partial guidance + per-unit MV/MVRE in one call (graph: DX only in cooled units' air systems,
+no shared collection link); DV explicit; derived-guid determinism with a mixed set; all existing B0/B4/MG tests.
+
+**PR3B-3 SAM_Tas:** mixed TPD grounding test; diagnostic-log iterations test.
+
+**Gate (licensed, this machine):** the 14.1 harness extended with cooling - Flat 1 NV / Flat 2 MVHR / Flat 3 MVHR +
+cooling (Part F, `Q_cooling` 80 l/s) on the PR2 fixture: TPD shows a DX coil only in Flat 3's system, guidance
+read-back for 1 unit, bridge/TM59 complete, Flat 1 and corridor unchanged vs 14.1; plus B0/MG re-acceptance if the DV
+setting changes.
+
+**PR3C SAM_UI** (unchanged in scope): per-row/bulk `Active cooling: On/Off`; the Systems-route adapter is exactly the
+14.1 harness sequence behind the existing `PartOStrategySetSimulator` delegate (fake-TAS tests); evidence shows route
+and cooling read-back; staleness via the record; native owner walk-through. **PR4:** large-project acceptance incl.
+TPD scale, SAM_Deploy pins, then the separate "Systems route for all" proposal (14.1).

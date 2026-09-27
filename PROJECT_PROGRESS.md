@@ -2,9 +2,10 @@
 
 ## Current: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only
 
-**Status.** Investigation complete; **no production code changed in any repo**. Local branch
-`investigation/parto-mixed-cooling-pr3a-2026-09-27` from SAM_UI `sow/2026-Q3` `cbe1c076` - docs/evidence only,
-**uncommitted, not pushed** (commit + push before switching machines). Full record:
+**Status.** Investigation complete; **no production code changed in any repo**. PR
+[SAM-BIM/SAM_UI#129](https://github.com/SAM-BIM/SAM_UI/pull/129), branch
+`investigation/parto-mixed-cooling-pr3a-2026-09-27` from `sow/2026-Q3` `cbe1c076` - docs, evidence and one
+env-gated investigation test; not merged (owner merges). Full record:
 `documentation/PartO-MixedDwellingStrategies-PR3A.md`. Heads fetched 27 Sep: SAM `6c255ad8`, SAM_UI `cbe1c076`
 (PR2 closeout #128 merged `5ea27775`), SAM_Tas `fedf34cd`, SAM_Systems `22133736`, SAM_Deploy `e5cfeb1` (still pins
 SAM_UI pass 6).
@@ -26,14 +27,34 @@ SAM_UI pass 6).
 - **Real-TAS evidence (no new simulation):** existing 24 Sep B0/MG TSDs read via TSD COM
   (`evidence/parto-mixed-pr3a/`): unbound Corridor_1 on the uncooled TPD bridge vs IZAM route bias +0.08 K, RMSE
   0.30 K; uncooled MVHR habitable rooms RMSE 0.53-0.78 K, wet rooms >26 °C hours up to ×2.7 lower on TPD.
-- **Files (new, uncommitted):** `documentation/PartO-MixedDwellingStrategies-PR3A.md`,
-  `documentation/evidence/parto-mixed-pr3a/{read-tsd.ps1.txt,route-comparison-2026-09-27.txt}`, this entry.
-- **Owner decisions needed (record §12):** Q1 route for uncooled neighbours (recommended A: whole model on Systems
-  route, uncooled units as B0/MV; alternative B hybrid); Q2 cooled Optimised when design > product elevated airflow
-  (recommended: refuse); Q3 `ActiveTrimCooling` assumptions + TM59 criterion; Q4 UI = per-dwelling On/Off only.
-- **Next step:** owner answers §12 Q1-Q4 → PR3B (SAM strategy/route/scenario/record, then SAM_Systems partial
-  guidance + per-AHU MV/MVRE, then SAM_Tas test) with one licensed annual run on the PR2 clean fixture
-  (`C:\TasOut\parto-mixed-pr2-2026-09-27\fixtures\`, local) → PR3C SAM_UI → PR4.
+- **Files:** `documentation/PartO-MixedDwellingStrategies-PR3A.md`, `documentation/evidence/parto-mixed-pr3a/`
+  (TSD read scripts, route comparisons, route-proof log), `WPF/SAM.Analytical.UI.WPF.Tests/PartOMixedCoolingRouteProofTests.cs`
+  (env-gated, no-op in CI), this entry.
+- **Validation:** SAM, SAM_Systems (dotnet), SAM_Tas and SAM_UI (VS 18 Framework MSBuild - SAM_Tas COM references need
+  it) Release at the heads above, 0 errors; licensed harness PASS.
+- **First-pass owner questions (record §12)** were answered by the owner's decisions brief - see the next bullet.
+- **Decisions A-D pass (27 Sep, record §14 - supersedes §6 D1-D3, §7 airflow refusal, §11 D5(b), §12):**
+  - **Licensed route proof** (harness `WPF/SAM.Analytical.UI.WPF.Tests/PartOMixedCoolingRouteProofTests.cs`,
+    env `SAM_PARTO_PR3_ROUTE_PROOF` + `SAM_PARTO_MIXED_BASELINE`; ~4 min): one PR1-materialised model F1 NV / F2+F3
+    MVHR / corridor on IZAM, Systems (Iteration 3 stages, materialiser's scenarios) and Systems DV-off. All TM59
+    verdicts identical. NV Studio 1_0 (6 windows) RMSE 0.06 K (0.01 K warm), window ventilation gain identical
+    (−4,612 vs −4,565 kWh) → **NV free-runs correctly on the Systems route**. Evidence
+    `documentation/evidence/parto-mixed-pr3a/route-proof-*.{log,txt}`, files `C:\TasOut\parto-mixed-pr3a-route-proof-2026-09-27\`.
+  - **Why MVHR differs:** not heat recovery (neither route), not airflow (equal). IZAM plant zone pre-cools supply
+    (−1.37 K mean vs outdoor at ODB ≥ 20 °C, max 4.85 K - artefact); Systems two-pass coupling (≤ 0.25 K warm);
+    `DisplacementVentilation` forced `true` by SAM_Systems for parity (≤ 0.03 K here; suppresses MG bypass, SAM#129).
+  - **A: ACCEPTED** - whole-building Systems route whenever any dwelling is cooled; it intentionally supersedes the
+    IZAM approximation for that run. "Systems route for all dwellings" supported as a direction, proposed post-PR4.
+  - **B:** 80 l/s is a manufacturer **default operating point**, 60 hard minimum, 120 edge of published cooling data.
+    Rule `Q_cooling = max(Q_design, Q_guidance)` within [60, 120] and capacity; Flat 3 (143 l/s) refused as beyond
+    published cooling performance, not because of 80.
+  - **C:** cooled = `ActiveTrimCooling` key (assumptions proposed, owner confirms); TM59 = existing mechanical
+    criterion (>26 °C < 3 % occupied hours), as Iteration 3 already applied; only `PartODiagnosticLog` (+ Grasshopper
+    twin) assumes one iteration.
+  - **D (binding):** per-dwelling On/Off; cooling orthogonal; numbers product-level.
+- **Next step:** owner answers record §14.5 (DV setting, optional project cooling airflow, `ActiveTrimCooling`
+  assumptions + TM59 confirmation) and merges #129 → PR3B-1 SAM → PR3B-2 SAM_Systems → PR3B-3 SAM_Tas, gated by the
+  14.1 harness extended with one cooled flat → PR3C SAM_UI → PR4.
 
 ## Previous: SAM Documentation Framework Phase 2 - PR2D Space Design Load Summary PDF command (27 Sep 2026) - MERGED (SAM_UI#127, `cbe1c076`)
 
