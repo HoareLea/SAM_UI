@@ -867,7 +867,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             bool catalogueHasProducts = CatalogueHasProducts;
-            List<VentilationUnitCapacityDescriptor> allowedProducts = catalogueOffered ? AllowedProducts : [];
+            List<VentilationUnitCapacityDescriptor> allowedProducts = catalogueOffered && rows.Any(x => x.Selected?.VentilationUnitReference is not null) ? AllowedProducts : [];
 
             foreach (PartOMixedDwellingRow row in rows)
             {

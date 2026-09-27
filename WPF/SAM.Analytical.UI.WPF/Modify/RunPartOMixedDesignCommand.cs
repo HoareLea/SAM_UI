@@ -307,7 +307,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            if (partOScreeningOutcome.Steps.Any(x => x.Refusals.Count != 0 || x.Refusal_Simulation is not null || x.Cancelled || (x.Evidence is not null && x.Notes.Count != 0)))
+            if (partOScreeningOutcome.Steps.Any(x => x.Refusals.Count != 0 || x.Refusal_Simulation is not null || x.Cancelled))
             {
                 MessageBox.Show(owner, string.Join("\n\n", lines), "Part O — Screen dwelling strategies");
             }
