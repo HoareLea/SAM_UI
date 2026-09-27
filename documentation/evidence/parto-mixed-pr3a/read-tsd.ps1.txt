@@ -1,0 +1,53 @@
+param([string]$Dir)
+# Read-only: dumps every zone's annual hourly resultant temperature from each TSD in $Dir to <name>.csv
+$interop = "C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_Tas\build\Interop.TSD.dll"
+Add-Type -Path $interop
+Add-Type -ReferencedAssemblies $interop -TypeDefinition @"
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text;
+public static class TsdDump
+{
+    public static string Dump(string path, string pathCsv)
+    {
+        TSD.TSDDocument doc = new TSD.TSDDocument();
+        doc.openReadOnly(path);
+        try
+        {
+            TSD.BuildingData bd = doc.SimulationData.GetBuildingData();
+            SortedDictionary<string, List<float>> rows = new SortedDictionary<string, List<float>>(StringComparer.Ordinal);
+            int i = 1;
+            TSD.ZoneData z = bd.GetZoneData(i);
+            while (z != null)
+            {
+                List<float> v = new List<float>();
+                foreach (object o in (IEnumerable)z.GetAnnualZoneResult((int)TSD.tsdZoneArray.resultantTemp)) v.Add(Convert.ToSingle(o));
+                rows[z.name] = v;
+                i++;
+                z = bd.GetZoneData(i);
+            }
+            StringBuilder sb = new StringBuilder("hour," + string.Join(",", rows.Keys) + "\n");
+            int n = 0; foreach (List<float> v in rows.Values) { n = v.Count; break; }
+            for (int h = 0; h < n; h++)
+            {
+                List<string> vals = new List<string>();
+                foreach (List<float> v in rows.Values) vals.Add(v[h].ToString("0.###", CultureInfo.InvariantCulture));
+                sb.Append(h).Append(',').Append(string.Join(",", vals)).Append('\n');
+            }
+            File.WriteAllText(pathCsv, sb.ToString());
+            return string.Format("{0}: {1} zones, {2} hours", Path.GetFileName(path), rows.Count, n);
+        }
+        finally
+        {
+            doc.close();
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(doc);
+        }
+    }
+}
+"@
+foreach ($f in Get-ChildItem $Dir -Filter *.tsd) {
+    [TsdDump]::Dump($f.FullName, (Join-Path $Dir ($f.BaseName + ".csv")))
+}
