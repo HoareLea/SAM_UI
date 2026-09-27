@@ -1,6 +1,41 @@
 # Project Progress
 
-## Current: SAM Documentation Framework Phase 2 - PR2D Space Design Load Summary PDF command (27 Sep 2026) - PR open
+## Current: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only
+
+**Status.** Investigation complete; **no production code changed in any repo**. Local branch
+`investigation/parto-mixed-cooling-pr3a-2026-09-27` from SAM_UI `sow/2026-Q3` `cbe1c076` - docs/evidence only,
+**uncommitted, not pushed** (commit + push before switching machines). Full record:
+`documentation/PartO-MixedDwellingStrategies-PR3A.md`. Heads fetched 27 Sep: SAM `6c255ad8`, SAM_UI `cbe1c076`
+(PR2 closeout #128 merged `5ea27775`), SAM_Tas `fedf34cd`, SAM_Systems `22133736`, SAM_Deploy `e5cfeb1` (still pins
+SAM_UI pass 6).
+
+- **Owner direction (27 Sep):** PR3 cooling = the MVHR cooling Iteration 3 already uses - manufacturer-guidance
+  mode (`SelectedProductManufacturerGuidance`, the Hub's mode, `RunPartOWorkflow.cs:89`): product catalogue
+  `OperatingStrategy` → SAM_Systems MVRE + supply DX coil → SAM_Tas TPD grounding (100 kW numerical duty, supply law
+  bounds cooling) → no-IZAM source + thermostat bridge → TM59. NOT the IZAM plant-zone `SummerSupplyTemperature`
+  (that stays refused as a leak path).
+- **Verdict: not representable today.** Blockers: SAM `CoolingGated`; SAM_Systems all-or-nothing guidance settings
+  + one MV/MVRE template per call (`MechanicalVentilation.cs:283-381`); no cooled scenario identity
+  (`ActiveTrimCooling` uncharacterised); PR2 mixed run has only the IZAM route. SAM_Tas grounds cooling per record,
+  so it is expected to need no route change.
+- **Key findings:** any cooled dwelling puts the whole building on the TPD route (no-IZAM strip is building-wide);
+  transfer air is kept (TPD legs); NV/corridor unbound and free-run in the bridge; MG elevated cooling airflow is a
+  product figure (80 l/s default, 60-120) and SAM_Systems refuses it below the design total → **cooled Optimised
+  MVHR with the PR2 Flat 3 design (143 l/s) fails closed**; catalogue fingerprint misses cooling data; authored
+  transfer air can pull a corridor into a cooled AHU.
+- **Real-TAS evidence (no new simulation):** existing 24 Sep B0/MG TSDs read via TSD COM
+  (`evidence/parto-mixed-pr3a/`): unbound Corridor_1 on the uncooled TPD bridge vs IZAM route bias +0.08 K, RMSE
+  0.30 K; uncooled MVHR habitable rooms RMSE 0.53-0.78 K, wet rooms >26 °C hours up to ×2.7 lower on TPD.
+- **Files (new, uncommitted):** `documentation/PartO-MixedDwellingStrategies-PR3A.md`,
+  `documentation/evidence/parto-mixed-pr3a/{read-tsd.ps1.txt,route-comparison-2026-09-27.txt}`, this entry.
+- **Owner decisions needed (record §12):** Q1 route for uncooled neighbours (recommended A: whole model on Systems
+  route, uncooled units as B0/MV; alternative B hybrid); Q2 cooled Optimised when design > product elevated airflow
+  (recommended: refuse); Q3 `ActiveTrimCooling` assumptions + TM59 criterion; Q4 UI = per-dwelling On/Off only.
+- **Next step:** owner answers §12 Q1-Q4 → PR3B (SAM strategy/route/scenario/record, then SAM_Systems partial
+  guidance + per-AHU MV/MVRE, then SAM_Tas test) with one licensed annual run on the PR2 clean fixture
+  (`C:\TasOut\parto-mixed-pr2-2026-09-27\fixtures\`, local) → PR3C SAM_UI → PR4.
+
+## Previous: SAM Documentation Framework Phase 2 - PR2D Space Design Load Summary PDF command (27 Sep 2026) - MERGED (SAM_UI#127, `cbe1c076`)
 
 **Status.** [SAM-BIM/SAM_UI#127](https://github.com/SAM-BIM/SAM_UI/pull/127), branch
 `feature/pr2d-space-design-load-summary-ui-2026-09-27` from `sow/2026-Q3` `c96ac19a`. PR2A/PR2B/PR2C are complete in
