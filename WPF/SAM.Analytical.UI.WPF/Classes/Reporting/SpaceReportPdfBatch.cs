@@ -20,12 +20,18 @@ namespace SAM.Analytical.UI.WPF
     /// <see cref="SpaceReportPdf"/> reports into one folder, with one log. UI-free; the window
     /// (<see cref="SpaceReportPdfBatchWindow"/>) drives it from a background task.
     /// <para>
-    /// <see cref="Create"/> copies the model ONCE into a shared <see cref="Analytical.Reporting.DocumentContext"/>,
-    /// resolves the Spaces from that snapshot and plans every file name. <see cref="Run"/> then writes the documents
-    /// one at a time, each through <see cref="Modify.WriteSpaceReportPdf(Analytical.Reporting.DocumentContext, Space, string?, SpaceReportPdf, IDocumentRenderer?)"/>
-    /// over <c>WithNewDiagnostics()</c> of the shared context, so each document's diagnostics are its own and no
-    /// document copies the model again. Every PDF is on disk before the next is built; nothing is kept but a small
-    /// result per document. Sequential by design: the PDF font stack is process-global and not proven thread-safe.
+    /// <see cref="Create"/> builds ONE shared <see cref="Analytical.Reporting.DocumentContext"/>, resolves the
+    /// Spaces from it and plans every file name. <see cref="Run"/> then writes the documents one at a time, each
+    /// through <see cref="Modify.WriteSpaceReportPdf(Analytical.Reporting.DocumentContext, Space, string?, SpaceReportPdf, IDocumentRenderer?)"/>
+    /// over <c>WithNewDiagnostics()</c> of that same context, so each document's diagnostics are its own and no
+    /// document builds a context of its own. This is a shared structure, not an isolated snapshot: building the
+    /// context reads <c>AnalyticalModel.AdjacencyCluster</c> once, which is a shallow copy - a fresh cluster wrapper,
+    /// but the same Space/Panel object references as the live model - and every document's <c>WithNewDiagnostics()</c>
+    /// reuses that one instance rather than reading the model again. This is safe because the batch only ever runs
+    /// from the modal <see cref="SpaceReportPdfBatchWindow"/>, which keeps the rest of the UI from mutating the model
+    /// while it runs; this class does not itself defend against a concurrent mutation. Every PDF is on disk before
+    /// the next is built; nothing is kept but a small result per document. Sequential by design: the PDF font stack
+    /// is process-global and not proven thread-safe.
     /// </para>
     /// <para>
     /// Orchestration only: the documents are exactly SAM.Analytical.Reporting's, in its default units (SI).
@@ -49,9 +55,9 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
-        /// Takes the snapshot and plans the batch. <paramref name="spaceGuids"/> null means every Space in the model;
-        /// otherwise the Spaces with these Guids, in model order. A Guid no longer in the model is kept as a failed
-        /// document per report rather than dropped.
+        /// Builds the shared context and plans the batch. <paramref name="spaceGuids"/> null means every Space in
+        /// the model; otherwise the Spaces with these Guids, in model order. A Guid no longer in the model is kept
+        /// as a failed document per report rather than dropped.
         /// </summary>
         /// <exception cref="ArgumentException">No report type, or no Space to report.</exception>
         /// <exception cref="PathTooLongException">The folder leaves no room for the file names.</exception>
@@ -75,7 +81,8 @@ namespace SAM.Analytical.UI.WPF
 
             directory = System.IO.Path.GetFullPath(directory);
 
-            //The one model copy of the batch (AnalyticalModel.AdjacencyCluster copies the cluster).
+            //One shared context for the whole batch: AnalyticalModel.AdjacencyCluster is read once here - a shallow
+            //copy (a fresh cluster wrapper, the live model's own Space/Panel references) - and reused by every document.
             Analytical.Reporting.DocumentContext documentContext = Analytical.Reporting.Create.DocumentContext(analyticalModel, new DocumentOptions() { UnitSystem = unitStyle });
 
             List<Space> spaces_Model = documentContext.AdjacencyCluster?.GetSpaces() ?? new List<Space>();
@@ -114,7 +121,7 @@ namespace SAM.Analytical.UI.WPF
 
         public IReadOnlyList<SpaceReportPdf> SpaceReportPdfs { get; }
 
-        /// <summary>The Spaces to report, from the batch's model snapshot.</summary>
+        /// <summary>The Spaces to report, resolved once when the batch was created.</summary>
         public IReadOnlyList<Space> Spaces => spaces;
 
         /// <summary>Selected Spaces that are no longer in the model.</summary>
@@ -147,6 +154,8 @@ namespace SAM.Analytical.UI.WPF
         /// batch goes on. Cancellation is honoured between documents: the document in hand is finished (or, on
         /// failure, its staging file removed), completed PDFs are kept and the log says the run was cancelled.
         /// </summary>
+        /// <exception cref="IOException">The output folder could not be created or accessed. Thrown before any
+        /// document is attempted, so nothing is written and no document is recorded as failed.</exception>
         /// <param name="documentRenderer">Null means <see cref="PdfRenderer"/>; tests pass a stand-in.</param>
         public SpaceReportPdfBatchResult Run(SpaceReportPdfExistingFiles existingFiles, IProgress<SpaceReportPdfBatchProgress>? progress = null, CancellationToken cancellationToken = default, IDocumentRenderer? documentRenderer = null)
         {
@@ -158,13 +167,23 @@ namespace SAM.Analytical.UI.WPF
             List<SpaceReportPdfBatchItem> items = new List<SpaceReportPdfBatchItem>();
             bool cancelled = false;
 
+            //The output folder is required for every document, so a failure here fails the whole batch, before any
+            //document is attempted, rather than becoming an Output failure repeated once per document.
+            try
+            {
+                System.IO.Directory.CreateDirectory(Directory);
+            }
+            catch (Exception exception)
+            {
+                Trace.TraceError("Space report export: the output folder '{0}' could not be created or accessed: {1}", Directory, exception);
+                throw new IOException(string.Format(CultureInfo.InvariantCulture, "The output folder '{0}' could not be created or accessed: {1}", Directory, exception.Message), exception);
+            }
+
             string? logPath = null;
             string? logError = null;
             StreamWriter? streamWriter = null;
             try
             {
-                System.IO.Directory.CreateDirectory(Directory);
-
                 logPath = LogPath(Directory, started);
                 streamWriter = new StreamWriter(logPath, false, new UTF8Encoding(false));
             }
