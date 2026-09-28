@@ -473,6 +473,8 @@
                 <RibbonGroup x:Name="RibbonGroup_Edit_Reports" Header="Reports">
                     <RibbonButton x:Name="RibbonButton_SpaceAssumptionsPdf" Label="Space Assumptions PDF" ToolTip="Create the Space Assumptions PDF for the one selected Space" ToolTipService.ShowOnDisabled="True" />
                     <RibbonButton x:Name="RibbonButton_SpaceDesignLoadSummaryPdf" Label="Space Design Load Summary PDF" ToolTip="Create the Space Design Load Summary PDF (simulated heating and cooling peaks) for the one selected Space" ToolTipService.ShowOnDisabled="True" />
+                    <!-- PR2F-2: many Spaces (the selection, or all Spaces in the model) into one folder. -->
+                    <RibbonButton x:Name="RibbonButton_SpaceReportPdfs" Label="Export Space Reports" ToolTip="Export Space report PDFs for the selected Spaces, or for all Spaces in the model, into a folder" ToolTipService.ShowOnDisabled="True" />
                 </RibbonGroup>
                 <!-- Part O is its own group rather than another button beside AddVent PartF: preparing an
                      iteration is a different step from sizing to Approved Document F, and it must be followed

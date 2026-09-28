@@ -59,7 +59,8 @@ namespace SAM.Analytical.UI.WPF.Tests
                 RibbonGroup ribbonGroup = Assert.IsType<RibbonGroup>(analyticalWindow.FindName("RibbonGroup_Edit_Reports"));
                 List<RibbonButton> ribbonButtons = ribbonGroup.Items.OfType<RibbonButton>().ToList();
 
-                Assert.Equal(["RibbonButton_SpaceAssumptionsPdf", "RibbonButton_SpaceDesignLoadSummaryPdf"], ribbonButtons.Select(x => x.Name));
+                //The batch export (PR2F-2) follows them: SpaceReportPdfBatchWindowTests.
+                Assert.Equal(["RibbonButton_SpaceAssumptionsPdf", "RibbonButton_SpaceDesignLoadSummaryPdf"], ribbonButtons.Take(2).Select(x => x.Name));
                 Assert.Equal("Space Design Load Summary PDF", ribbonButtons[1].Label);
 
                 //Like Space Assumptions, disabled until a model is open.

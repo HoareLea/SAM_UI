@@ -1,0 +1,26 @@
+Model: bridge_peaks.sam x 555 copies = 4995 Spaces; managed before batch 236 MB
+Setup (snapshot + plan 9990 names): 42 ms; existing 0
+documents | elapsed s | s per 500 docs | managed MB | working set MB
+      500 |       6.6 |           6.40 |        355 |           2894
+     1000 |      11.5 |           4.94 |        291 |           2013
+     1500 |      16.5 |           5.05 |        409 |            663
+     2000 |      21.6 |           5.02 |        328 |            672
+     2500 |      26.4 |           4.87 |        422 |            676
+     3000 |      31.2 |           4.75 |        316 |            683
+     3500 |      35.8 |           4.58 |        406 |            688
+     4000 |      40.5 |           4.70 |        301 |            692
+     4500 |      45.1 |           4.63 |        383 |            706
+     5000 |      49.8 |           4.72 |        462 |            720
+     5500 |      54.6 |           4.76 |        332 |            720
+     6000 |      59.2 |           4.62 |        407 |            721
+     6500 |      64.0 |           4.77 |        273 |            719
+     7000 |      68.6 |           4.64 |        360 |            726
+     7500 |      73.2 |           4.59 |        428 |            726
+     8000 |      77.9 |           4.68 |        288 |            725
+     8500 |      82.5 |           4.59 |        370 |            718
+     9000 |      87.1 |           4.65 |        441 |            718
+     9500 |      92.0 |           4.84 |        291 |            701
+Total: 96.7 s (96.5 s documents); 9.66 ms per document
+Created 9990  Skipped 0  Failed 0  Not started 0  Cancelled False
+Peak sampled managed 462 MB, working set 2894 MB
+PDFs in folder 9990; .tmp files 0; suffixed names 216; log C:\TasOut\pr2f2\scale\Space reports 2026-09-28 095840.log

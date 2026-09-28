@@ -1,0 +1,30 @@
+SAM Space report export
+Run started:     2026-09-28 10:04:09
+Model:           000000_SAM_AnalyticalModel-It1a-futureZ1
+Scope:           Selected Spaces
+Spaces:          3
+Report types:    Space Assumptions, Space Design Load Summary
+Units:           SI
+Output folder:   C:\TasOut\pr2f2\accept\bridge_peaks Space reports
+Existing files:  Skip
+Documents:       6
+
+[1/6] Created | Studio 1_0 (75b28088-2415-44c0-bea8-3179b3475df0) | Space Assumptions | Studio 1_0 - Space Assumptions.pdf
+    note: Space Studio 1_0: no heating design day in model
+    note: Space Studio 1_0: no cooling design day in model
+[2/6] Skipped | Studio 1_0 (75b28088-2415-44c0-bea8-3179b3475df0) | Space Design Load Summary | Studio 1_0 - Space Design Load Summary.pdf
+    A PDF is already at this path.
+[3/6] Created | Bathroom_2 (e2c8a683-410d-42fd-92cb-bcf1e87e5a3a) | Space Assumptions | Bathroom_2 - Space Assumptions.pdf
+    note: Space Bathroom_2: no heating design day in model
+    note: Space Bathroom_2: no cooling design day in model
+[4/6] Skipped | Bathroom_2 (e2c8a683-410d-42fd-92cb-bcf1e87e5a3a) | Space Design Load Summary | Bathroom_2 - Space Design Load Summary.pdf
+    A PDF is already at this path.
+[5/6] Created | Kitchen_4 (cfd0fd57-5017-4003-9e6c-3d3d40468bd4) | Space Assumptions | Kitchen_4 - Space Assumptions.pdf
+    note: Space Kitchen_4: no heating design day in model
+    note: Space Kitchen_4: no cooling design day in model
+[6/6] Skipped | Kitchen_4 (cfd0fd57-5017-4003-9e6c-3d3d40468bd4) | Space Design Load Summary | Kitchen_4 - Space Design Load Summary.pdf
+    A PDF is already at this path.
+
+Run finished:    2026-09-28 10:04:09 (elapsed 00:00:00)
+Result:          Completed
+Created: 3  Skipped: 3  Failed: 0  Not started: 0

@@ -22,6 +22,9 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>The rendered PDF could not be written to the chosen path (permissions, locked file, bad path).</summary>
         Output,
+
+        /// <summary>Batch export only: a selected Space is no longer in the model, so there was nothing to report.</summary>
+        Selection,
     }
 
     /// <summary>

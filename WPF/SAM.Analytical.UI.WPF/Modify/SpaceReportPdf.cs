@@ -147,12 +147,51 @@ namespace SAM.Analytical.UI.WPF
                 return SpaceReportPdfResult.Failed(path, SpaceReportPdfFailure.Output, "No file was chosen for the PDF.", null);
             }
 
+            Analytical.Reporting.DocumentContext documentContext;
+            try
+            {
+                documentContext = Analytical.Reporting.Create.DocumentContext(analyticalModel, new DocumentOptions() { UnitSystem = unitStyle });
+            }
+            catch (Exception exception)
+            {
+                return SpaceReportPdfResult.Failed(path, SpaceReportPdfFailure.Document, string.Format("The {0} report could not be built for this Space: {1}", spaceReportPdf.Name, exception.Message), exception);
+            }
+
+            return WriteSpaceReportPdf(documentContext, space, path, spaceReportPdf, documentRenderer);
+        }
+
+        /// <summary>
+        /// <see cref="WriteSpaceReportPdf(AnalyticalModel, Space, string?, SpaceReportPdf, UnitStyle, IDocumentRenderer?)"/>
+        /// over a context the caller built: the batch export passes one model snapshot's
+        /// <see cref="Analytical.Reporting.DocumentContext.WithNewDiagnostics"/> per document, so no document copies
+        /// the model again. <paramref name="space"/> should come from that snapshot. The unit system is the context's.
+        /// </summary>
+        public static SpaceReportPdfResult WriteSpaceReportPdf(Analytical.Reporting.DocumentContext documentContext, Space space, string? path, SpaceReportPdf spaceReportPdf, IDocumentRenderer? documentRenderer = null)
+        {
+            if (documentContext == null)
+            {
+                throw new ArgumentNullException(nameof(documentContext));
+            }
+
+            if (space == null)
+            {
+                throw new ArgumentNullException(nameof(space));
+            }
+
+            if (spaceReportPdf == null)
+            {
+                throw new ArgumentNullException(nameof(spaceReportPdf));
+            }
+
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return SpaceReportPdfResult.Failed(path, SpaceReportPdfFailure.Output, "No file was chosen for the PDF.", null);
+            }
+
             Document document;
             List<string> notes;
             try
             {
-                Analytical.Reporting.DocumentContext documentContext = Analytical.Reporting.Create.DocumentContext(analyticalModel, new DocumentOptions() { UnitSystem = unitStyle });
-
                 document = spaceReportPdf.CreateDocument(documentContext, space);
 
                 notes = documentContext.Diagnostics.Select(x => x.Text).ToList();
