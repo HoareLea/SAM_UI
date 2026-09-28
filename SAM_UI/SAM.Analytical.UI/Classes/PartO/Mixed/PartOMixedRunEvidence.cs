@@ -59,6 +59,21 @@ namespace SAM.Analytical.UI
         /// <summary>The run's own persisted model beside its results - the model a detailed review reopens.</summary>
         public string Path_RunModel { get; set; }
 
+        /// <summary>
+        /// How the run was simulated - SAM's record's own answer (<see cref="PartOMaterialisationRecord.Route"/>): the
+        /// TAS Systems route for the whole model as soon as one dwelling is cooled, the IZAM route otherwise.
+        /// </summary>
+        public Enums.PartOSimulationRoute Route => Record?.Route ?? Enums.PartOSimulationRoute.Undefined;
+
+        /// <summary>The TAS Systems document a Systems-route run simulated, or null for an IZAM-route run. Traceability only.</summary>
+        public string Path_TPD { get; set; }
+
+        /// <summary>
+        /// What each cooled unit did, read back from TAS by the Systems route (<c>GuidanceCoolingResult.Summary</c>), one
+        /// line per cooled unit. Empty for an uncooled run.
+        /// </summary>
+        public List<string> GuidanceSummaries { get; } = [];
+
         /// <summary>Why the production assessment reached no verdict for the run as a whole, or null.</summary>
         public string Refusal_Assessment { get; set; }
 
@@ -166,6 +181,15 @@ namespace SAM.Analytical.UI
         /// </param>
         public bool IsCurrent(AnalyticalModel analyticalModel_Baseline, IEnumerable<VentilationUnitCapacityDescriptor> ventilationUnitCapacityDescriptors, out string reason)
         {
+            return IsCurrent(analyticalModel_Baseline, ventilationUnitCapacityDescriptors, null, out reason);
+        }
+
+        /// <summary>
+        /// As above, and for a run with a cooled dwelling also whether each cooled product still carries the manufacturer
+        /// guidance it was built with - SAM's record rule, handed the templates the next build would offer.
+        /// </summary>
+        public bool IsCurrent(AnalyticalModel analyticalModel_Baseline, IEnumerable<VentilationUnitCapacityDescriptor> ventilationUnitCapacityDescriptors, IEnumerable<VentilationUnitTemplate> ventilationUnitTemplates, out string reason)
+        {
             reason = null;
 
             if (ReadRefusal is not null)
@@ -181,7 +205,7 @@ namespace SAM.Analytical.UI
             }
 
             //SAM's own staleness rule, asked rather than restated: strategies, then catalogue, then baseline.
-            if (!Record.IsCurrent(analyticalModel_Baseline, ventilationUnitCapacityDescriptors, out reason))
+            if (!Record.IsCurrent(analyticalModel_Baseline, ventilationUnitCapacityDescriptors, ventilationUnitTemplates, out reason))
             {
                 return false;
             }
@@ -216,6 +240,12 @@ namespace SAM.Analytical.UI
                 jsonArray_Corridors.Add(new JsonObject { ["Name"] = name, ["RiskStatus"] = tM59RiskStatus.ToString() });
             }
 
+            JsonArray jsonArray_Guidance = [];
+            foreach (string summary in GuidanceSummaries)
+            {
+                jsonArray_Guidance.Add(summary);
+            }
+
             return new JsonObject
             {
                 ["CreatedUtc"] = CreatedUtc.ToString("o", CultureInfo.InvariantCulture),
@@ -226,6 +256,8 @@ namespace SAM.Analytical.UI
                 ["Length_TSD"] = Length_TSD,
                 ["Timestamp_TSD"] = Timestamp_TSD,
                 ["Path_RunModel"] = Path_RunModel,
+                ["Path_TPD"] = Path_TPD,
+                ["GuidanceSummaries"] = jsonArray_Guidance,
                 ["Refusal_Assessment"] = Refusal_Assessment,
                 ["OccupiedSpaceComplianceStatus"] = OccupiedSpaceComplianceStatus?.ToString(),
                 ["SpaceCount_Unassessed"] = SpaceCount_Unassessed,
@@ -252,6 +284,7 @@ namespace SAM.Analytical.UI
                 Length_TSD = (long?)jsonObject["Length_TSD"] ?? 0,
                 Timestamp_TSD = (long?)jsonObject["Timestamp_TSD"] ?? 0,
                 Path_RunModel = (string)jsonObject["Path_RunModel"],
+                Path_TPD = (string)jsonObject["Path_TPD"],
                 Refusal_Assessment = (string)jsonObject["Refusal_Assessment"],
                 SpaceCount_Unassessed = (int?)jsonObject["SpaceCount_Unassessed"],
                 SimulationCaseKey = (string)jsonObject["SimulationCaseKey"],
@@ -260,6 +293,17 @@ namespace SAM.Analytical.UI
             if (DateTime.TryParse((string)jsonObject["CreatedUtc"], CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTime dateTime))
             {
                 result.CreatedUtc = dateTime;
+            }
+
+            if (jsonObject["GuidanceSummaries"] is JsonArray jsonArray_Guidance)
+            {
+                foreach (JsonNode jsonNode in jsonArray_Guidance)
+                {
+                    if (jsonNode?.GetValue<string>() is string summary)
+                    {
+                        result.GuidanceSummaries.Add(summary);
+                    }
+                }
             }
 
             //Fail closed: an entry that cannot be read is not dropped - it makes the whole evidence unreadable.

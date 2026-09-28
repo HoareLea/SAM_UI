@@ -1,0 +1,31 @@
+PASS the saved model is still a clean Part O baseline 
+saved selection: Flat 1 88b4fad2-6cf3-4b62-9024-385d5b1c6bf4|NaturalVentilation|-|None|PartFRequirement|- | Flat 2 5b0ca5f7-a3f1-4f96-95e7-c3a4a246975e|MVHR|-|None|PartFRequirement|- | Flat 3 b5b9e52e-fdb4-4fb9-a97e-6e1ac9aab5a0|MVHR|Nuaire/MRXBOXAB-ECO5-AECV/MR-ECO-COOL-V|None|PartFRequirement|-
+PASS saved: Flat 1 Natural
+PASS saved: Flat 2 MVHR, cooling off
+PASS saved: Flat 3 MVHR, cooling off
+PASS saved: no strategy for the corridor
+PASS the sidecar holds a readable final run 
+PASS the final run is current for the saved design, catalogue and templates 
+route=Izam tpd= tsd=C:\TasOut\parto-pr3c-acceptance-2026-09-28\run\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tsd runModel=C:\TasOut\parto-pr3c-acceptance-2026-09-28\run\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.sam
+PASS route Izam
+PASS no cooled dwelling
+PASS no TPD for the IZAM route
+PASS TAS guidance read-back for 0 unit(s)
+TM59: overall Fail (Fail); corridor communal corridor: significant risk (Corridor_1)
+   Flat 1: Pass (1 pass, 0 fail, 0 not assessed) ran as Natural ventilation
+PASS Flat 1 has an assessed TM59 result
+   Flat 2: Fail (0 pass, 2 fail, 0 not assessed) ran as MVHR · automatic product
+PASS Flat 2 has an assessed TM59 result
+   Flat 3: Fail (0 pass, 2 fail, 0 not assessed) ran as MVHR · Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+PASS Flat 3 has an assessed TM59 result
+PASS no space left unassessed (0)
+PASS the run model is on disk: C:\TasOut\parto-pr3c-acceptance-2026-09-28\run\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.sam
+PASS the run model restores against its results 
+PASS restored results are the evidence's: C:\TasOut\parto-pr3c-acceptance-2026-09-28\run\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tsd
+scenarios: Flat 1 BaseNaturalVentilation 6dfe14cb-6cf3-8798-a61a-d337dbc40878 | Flat 2 BasePassive 9c836196-bf37-8de0-8e21-42e6ab626492 | Flat 3 BasePassive de20659c-1576-857d-97b2-127beee793b4 | Corridor DwellingIndependent 0a7452ba-015a-8138-a2e6-4172712753c2
+PASS Flat 1 BaseNaturalVentilation
+PASS Flat 2 BasePassive
+PASS Flat 3 BasePassive
+PASS corridor DwellingIndependent
+PASS no unit carries a supply setpoint (no cooling on the analytical model)
+INSPECTION PASSED

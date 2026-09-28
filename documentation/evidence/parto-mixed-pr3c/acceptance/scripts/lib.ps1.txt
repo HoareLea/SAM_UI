@@ -1,0 +1,86 @@
+param([string]$Out = "C:\TasOut\parto-pr3c-acceptance-2026-09-28")
+#              while a round's TAS workflow is running > result > Hub. Save.
+#   'reopen' : relaunch on the saved model > Hub (standing outcome, Optimise availability) > close.
+# Captures are PrintWindow (the window's own pixels), each with its UIA text dumped beside it.
+$sp = $PSScriptRoot
+. (Join-Path $sp 'uia.ps1'); . (Join-Path $sp 'win32.ps1')
+Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+Add-Type -Namespace A -Name N -ReferencedAssemblies System.Drawing -MemberDefinition @'
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool GetWindowRect(System.IntPtr h, out RECT r);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool PrintWindow(System.IntPtr h, System.IntPtr hdc, uint flags);
+[System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] public static extern int InternalGetWindowText(System.IntPtr h, System.Text.StringBuilder s, int n);
+public struct RECT { public int Left, Top, Right, Bottom; }
+public static string Capture(System.IntPtr h, string path) {
+    RECT r; GetWindowRect(h, out r);
+    int w = r.Right - r.Left, hh = r.Bottom - r.Top; if (w <= 0 || hh <= 0) return "empty";
+    using (var bmp = new System.Drawing.Bitmap(w, hh)) using (var g = System.Drawing.Graphics.FromImage(bmp)) {
+        var dc = g.GetHdc(); PrintWindow(h, dc, 2); g.ReleaseHdc(dc); bmp.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+    }
+    return w + "x" + hh;
+}
+'@
+$shots = Join-Path $Out "shots"; New-Item -ItemType Directory -Force $shots | Out-Null
+$log = Join-Path $Out "drive.log"
+$script:seq = (Get-ChildItem $shots -Filter *.png -ErrorAction SilentlyContinue).Count
+function Say($m) { $l = "{0:HH:mm:ss} {1}" -f (Get-Date), $m; Write-Host $l; Add-Content -Path $log -Value $l -Encoding UTF8 }
+function Windows() {
+    $list = New-Object System.Collections.Generic.List[object]
+    $cb = [W.N+EnumProc]{ param($h, $l)
+        [uint32]$p = 0; [void][W.N]::GetWindowThreadProcessId($h, [ref]$p)
+        if ($p -eq $script:ProcessId -and [W.N]::IsWindowVisible($h)) {
+            $c = New-Object System.Text.StringBuilder 256; [void][W.N]::GetClassName($h, $c, 256)
+            $t = New-Object System.Text.StringBuilder 512; [void][A.N]::InternalGetWindowText($h, $t, 512)
+            $list.Add([pscustomobject]@{ Handle = $h; Class = $c.ToString(); Title = $t.ToString() })
+        }
+        return $true }
+    [void][W.N]::EnumWindows($cb, [System.IntPtr]::Zero)
+    return $list
+}
+function Detached([string]$Arguments) { [void](Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden $Arguments" }) }
+function Press($top, [string]$Id) { Say "  press $Id in '$($top.Title)'"; Detached ("-File `"$sp\invoke.ps1`" -ProcessId $script:ProcessId -Handle {0} -Id {1}" -f $top.Handle.ToInt64(), $Id) }
+function Gone($top, [int]$Seconds = 60) { $k = $top.Handle.ToInt64(); $dl = (Get-Date).AddSeconds($Seconds); while ((Get-Date) -lt $dl) { if (-not (@(Windows) | Where-Object { $_.Handle.ToInt64() -eq $k })) { return $true }; Start-Sleep -Milliseconds 300 }; Say "  (window '$($top.Title)' still open after $Seconds s)"; return $false }
+function Shot($top, [string]$Name) {
+    $script:seq++
+    $base = Join-Path $shots ("{0:00}-{1}" -f $script:seq, $Name)
+    $s = [A.N]::Capture($top.Handle, "$base.png")
+    Say ("  capture {0:00}-{1} '{2}' ({3})" -f $script:seq, $Name, $top.Title, $s)
+    try { $el = $AE::FromHandle($top.Handle); (Dump $el 0 30) | Out-File "$base.txt" -Encoding UTF8 } catch { "dump failed: $($_.Exception.Message)" | Out-File "$base.txt" }
+}
+function AllText($top) { try { $el = $AE::FromHandle($top.Handle); (@($el.FindAll($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::Text))) | ForEach-Object { $_.Current.Name }) -join ' | ') -replace "`r?`n", ' / ' } catch { '?' } }
+function BoxText($top) { (@(Get-Children $top.Handle | Where-Object { $_.Class -eq 'Static' } | ForEach-Object { $t = New-Object System.Text.StringBuilder 4096; [void][W.N]::GetWindowText($_.Handle, $t, 4096); $t.ToString() } | Where-Object { $_ }) -join ' / ') -replace "`r?`n", ' ' }
+function BoxOK($top) { $b = Get-Children $top.Handle | Where-Object { $_.Class -eq 'Button' } | Select-Object -First 1; Say "  answer OK"; [void][W.N]::SendMessage($b.Handle, 0x00F5, [System.IntPtr]::Zero, $null) }
+function TasProcs() { @(Get-Process | Where-Object { $_.ProcessName -like 'Tas*' -or $_.ProcessName -like 'TBD*' } | ForEach-Object { $_.ProcessName + ':' + $_.Id }) -join ', ' }
+function Txt($root, $Id) { $e = Find-ById $root $Id; if ($e) { $e.Current.Name -replace "`r?`n", ' / ' } else { '<absent>' } }
+function En($root, $Id) { $e = Find-ById $root $Id; if ($e) { "'{0}' enabled={1}" -f ($e.Current.Name -replace "`r?`n", ' / '), $e.Current.IsEnabled } else { '<absent>' } }
+function Help($root, $Id) { $e = Find-ById $root $Id; if ($e) { $e.Current.HelpText -replace "`r?`n", ' / ' } else { '<absent>' } }
+function Val($root, $Id) { $e = Find-ById $root $Id; $p = $null; if ($e -and $e.TryGetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern, [ref]$p)) { $p.Current.Value } else { '<absent>' } }
+function Tog($root, $Id) { $e = Find-ById $root $Id; $p = $null; if ($e -and $e.TryGetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern, [ref]$p)) { $p.Current.ToggleState } else { '<absent>' } }
+function IsProgress($w) { $w.Class -ne '#32770' -and ($w.Title -eq 'Part O' -or $w.Title -like 'Preparing Model*' -or $w.Title -eq 'Tas Workflow' -or $w.Title -like 'Part O TM59*') }
+
+function Watch([string[]]$Like, [int]$Seconds, [string]$Tag, [int]$Every = 4, [int]$Max = 4, [scriptblock]$OnProgress = $null) {
+    $count = @{}; $last = @{}
+    $dl = (Get-Date).AddSeconds($Seconds)
+    while ((Get-Date) -lt $dl) {
+        foreach ($w in (Windows)) {
+            $k = $w.Handle.ToInt64()
+            if ($w.Class -eq '#32770') { return $w }
+            foreach ($l in $Like) { if ($w.Title -like $l) { return $w } }
+            if (IsProgress $w) {
+                if (-not $count.ContainsKey($k)) { $count[$k] = 0; $last[$k] = [datetime]::MinValue; Start-Sleep -Milliseconds 150 }
+                if ($count[$k] -lt $Max -and ((Get-Date) - $last[$k]).TotalSeconds -ge $Every) {
+                    $count[$k]++; $last[$k] = Get-Date
+                    $pe = $AE::FromHandle($w.Handle)
+                    Say ("  PROGRESS '{0}' #{1}: {2} || Cancel {3}" -f $w.Title, $count[$k], (AllText $w), (En $pe 'button_Cancel'))
+                    Shot $w ("$Tag-progress-{0}" -f $count[$k])
+                }
+                if ($OnProgress) { $r = & $OnProgress $w; if ($r -eq 'stop') { return $w } }
+            }
+        }
+        Start-Sleep -Milliseconds 250
+    }
+    Say ("  TIMEOUT waiting for {0}; windows: {1}" -f ($Like -join ','), ((Windows | ForEach-Object { "'$($_.Title)'[$($_.Class)]" }) -join ', '))
+    return $null
+}
+$pidFile = Join-Path $Out "pid.txt"; if (Test-Path $pidFile) { $script:ProcessId = [int](Get-Content $pidFile) }
+function Main() { Windows | Where-Object { $_.Title -like "SAM Analytical*" } | Select-Object -First 1 }
+function Top([string]$Like) { Windows | Where-Object { $_.Title -like $Like } | Select-Object -First 1 }

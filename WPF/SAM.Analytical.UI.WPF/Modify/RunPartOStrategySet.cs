@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
+using SAM.Analytical.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +34,15 @@ namespace SAM.Analytical.UI.WPF
         public PartOTM59Assessment? Assessment { get; set; }
 
         public TimeSpan Elapsed { get; set; }
+
+        /// <summary>The route the model was simulated on - SAM's record's, never chosen here.</summary>
+        public PartOSimulationRoute Route { get; set; } = PartOSimulationRoute.Izam;
+
+        /// <summary>The TAS Systems document of a Systems-route run; null on the IZAM route.</summary>
+        public string? Path_TPD { get; set; }
+
+        /// <summary>What each cooled unit did, read back from TAS - one line per cooled unit. Systems route only.</summary>
+        public List<string> GuidanceSummaries { get; } = [];
     }
 
     /// <summary>
@@ -41,6 +51,13 @@ namespace SAM.Analytical.UI.WPF
     /// exercised without a licensed TAS.
     /// </summary>
     internal delegate PartOStrategySetSimulation PartOStrategySetSimulator(AnalyticalModel analyticalModel_Materialised, List<OverheatingScenario> overheatingScenarios, PartOSimulationContext partOSimulationContext, CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Runs a materialisation SAM put on the TAS Systems route (a cooled dwelling): thermal source, ONE mixed SAM_Systems
+    /// graph, ONE TPD, the bridge and TM59. The production one is <see cref="Modify.SimulatePartOMaterialisationSystems"/>;
+    /// a test supplies its own.
+    /// </summary>
+    internal delegate PartOStrategySetSimulation PartOStrategySetSystemsSimulator(PartOMaterialisation partOMaterialisation, IReadOnlyList<VentilationUnitTemplate>? ventilationUnitTemplates, PartOSimulationContext partOSimulationContext, CancellationToken cancellationToken);
 
     /// <summary>
     /// One strategy set taken all the way from the clean baseline to a per-dwelling result: SAM materialises it,
@@ -92,11 +109,18 @@ namespace SAM.Analytical.UI.WPF
         /// <param name="analyticalModel_Baseline">A clean baseline carrying the strategy set to build. Not modified.</param>
         /// <param name="ventilationUnitCapacityDescriptors">The catalogue offered, or null to offer none.</param>
         /// <param name="guids_Zone_Assessed">The dwellings to assess; null for every dwelling.</param>
-        internal static PartOStrategySetRun RunPartOStrategySet(AnalyticalModel analyticalModel_Baseline, IEnumerable<VentilationUnitCapacityDescriptor>? ventilationUnitCapacityDescriptors, IEnumerable<Guid>? guids_Zone_Assessed, PartOSimulationContext partOSimulationContext, CancellationToken cancellationToken, PartOStrategySetSimulator? partOStrategySetSimulator = null, Action? onMaterialised = null)
+        /// <param name="ventilationUnitTemplates">
+        /// The catalogue's product templates - each product's manufacturer guidance, which is a cooled dwelling's cooling.
+        /// Null offers none, so SAM refuses any cooled dwelling (<c>CoolingWithoutProductGuidance</c>).
+        /// </param>
+        /// <param name="partOStrategySetSystemsSimulator">The Systems-route simulator, where SAM puts the model on that route; null for production.</param>
+        internal static PartOStrategySetRun RunPartOStrategySet(AnalyticalModel analyticalModel_Baseline, IEnumerable<VentilationUnitCapacityDescriptor>? ventilationUnitCapacityDescriptors, IEnumerable<Guid>? guids_Zone_Assessed, PartOSimulationContext partOSimulationContext, CancellationToken cancellationToken, PartOStrategySetSimulator? partOStrategySetSimulator = null, Action? onMaterialised = null, IEnumerable<VentilationUnitTemplate>? ventilationUnitTemplates = null, PartOStrategySetSystemsSimulator? partOStrategySetSystemsSimulator = null)
         {
+            List<VentilationUnitTemplate>? ventilationUnitTemplates_Temp = ventilationUnitTemplates is null ? null : [.. ventilationUnitTemplates];
+
             PartOStrategySetRun result = new()
             {
-                Materialisation = Analytical.Modify.MaterialisePartODwellingStrategies(analyticalModel_Baseline, ventilationUnitCapacityDescriptors, guids_Zone_Assessed),
+                Materialisation = Analytical.Modify.MaterialisePartODwellingStrategies(analyticalModel_Baseline, ventilationUnitCapacityDescriptors, guids_Zone_Assessed, ventilationUnitTemplates_Temp),
             };
 
             if (!result.IsMaterialised)
@@ -114,7 +138,10 @@ namespace SAM.Analytical.UI.WPF
 
             onMaterialised?.Invoke();
 
-            result.Simulation = (partOStrategySetSimulator ?? SimulatePartOMaterialisation)(partOMaterialisation.AnalyticalModel, [.. partOMaterialisation.OverheatingScenarios], partOSimulationContext, cancellationToken);
+            //SAM's record decides the route, for the WHOLE model: never a hybrid of IZAM dwellings and TPD dwellings.
+            result.Simulation = partOMaterialisation.Route == PartOSimulationRoute.Systems
+                ? (partOStrategySetSystemsSimulator ?? SimulatePartOMaterialisationSystems)(partOMaterialisation, ventilationUnitTemplates_Temp, partOSimulationContext, cancellationToken)
+                : (partOStrategySetSimulator ?? SimulatePartOMaterialisation)(partOMaterialisation.AnalyticalModel, [.. partOMaterialisation.OverheatingScenarios], partOSimulationContext, cancellationToken);
 
             if (result.Completed)
             {

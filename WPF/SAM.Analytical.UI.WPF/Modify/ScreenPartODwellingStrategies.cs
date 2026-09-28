@@ -265,9 +265,13 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         /// <param name="analyticalModel_Baseline">The open baseline, carrying the saved selection. Not modified.</param>
         /// <param name="catalogueOffered">Whether products are selected from the catalogue (Iteration 2 terms) or units stay generic (Iteration 1a terms).</param>
-        internal static PartOMixedRunEvidence? BuildAndRunPartOMixedDesign(AnalyticalModel analyticalModel_Baseline, bool catalogueOffered, IEnumerable<VentilationUnitCapacityDescriptor>? ventilationUnitCapacityDescriptors, PartOSimulationContext partOSimulationContext, CancellationToken cancellationToken, out PartOStrategySetRun partOStrategySetRun, PartOStrategySetSimulator? partOStrategySetSimulator = null, Action? onMaterialised = null)
+        /// <param name="ventilationUnitTemplates">
+        /// The catalogue's product templates, offered with the catalogue: a cooled dwelling's cooling is its selected
+        /// product's manufacturer guidance, which SAM reads from them. Not offered where the catalogue is not.
+        /// </param>
+        internal static PartOMixedRunEvidence? BuildAndRunPartOMixedDesign(AnalyticalModel analyticalModel_Baseline, bool catalogueOffered, IEnumerable<VentilationUnitCapacityDescriptor>? ventilationUnitCapacityDescriptors, PartOSimulationContext partOSimulationContext, CancellationToken cancellationToken, out PartOStrategySetRun partOStrategySetRun, PartOStrategySetSimulator? partOStrategySetSimulator = null, Action? onMaterialised = null, IEnumerable<VentilationUnitTemplate>? ventilationUnitTemplates = null, PartOStrategySetSystemsSimulator? partOStrategySetSystemsSimulator = null)
         {
-            partOStrategySetRun = RunPartOStrategySet(analyticalModel_Baseline, catalogueOffered ? ventilationUnitCapacityDescriptors : null, null, partOSimulationContext, cancellationToken, partOStrategySetSimulator, onMaterialised);
+            partOStrategySetRun = RunPartOStrategySet(analyticalModel_Baseline, catalogueOffered ? ventilationUnitCapacityDescriptors : null, null, partOSimulationContext, cancellationToken, partOStrategySetSimulator, onMaterialised, catalogueOffered ? ventilationUnitTemplates : null, partOStrategySetSystemsSimulator);
 
             if (!partOStrategySetRun.Completed)
             {
@@ -297,8 +301,11 @@ namespace SAM.Analytical.UI.WPF
                 Length_TSD = partOStrategySetRun.Simulation.Length_TSD,
                 Timestamp_TSD = partOStrategySetRun.Simulation.Timestamp_TSD,
                 Path_RunModel = partOStrategySetRun.Simulation.Path_RunModel,
+                Path_TPD = partOStrategySetRun.Simulation.Path_TPD,
                 Refusal_Assessment = partOStrategySetRun.Simulation.Assessment!.IsAssessed ? null : partOStrategySetRun.Simulation.Assessment.Refusal,
             };
+
+            result.GuidanceSummaries.AddRange(partOStrategySetRun.Simulation.GuidanceSummaries);
 
             partOStrategySetRun.Results.ForEach(result.Add);
 
