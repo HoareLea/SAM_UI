@@ -1062,6 +1062,11 @@ namespace SAM.Analytical.UI.WPF
             uIAnalyticalModel?.CreateSpaceReportPdf((sender as MenuItem)?.Tag as IEnumerable<Space>, SpaceReportPdf.SpaceDesignLoadSummary, System.Windows.Window.GetWindow(this));
         }
 
+        private void MenuItem_SpaceReportPdfs_Click(object sender, RoutedEventArgs e)
+        {
+            uIAnalyticalModel?.ExportSpaceReportPdfs((sender as MenuItem)?.Tag as IEnumerable<Space>, System.Windows.Window.GetWindow(this));
+        }
+
         private void MenuItem_Select_Click(object sender, RoutedEventArgs e)
         {
             List<IJSAMObject> jSAMObjects = GetSAMObjects(sender as MenuItem);
@@ -1289,6 +1294,7 @@ namespace SAM.Analytical.UI.WPF
 
                 contextMenu_Model.Items.Add(Create.MenuItem_SpaceReportPdf(tuples.ConvertAll(x => x.Item2).OfType<Space>(), SpaceReportPdf.SpaceAssumptions, MenuItem_SpaceAssumptionsPdf_Click));
                 contextMenu_Model.Items.Add(Create.MenuItem_SpaceReportPdf(tuples.ConvertAll(x => x.Item2).OfType<Space>(), SpaceReportPdf.SpaceDesignLoadSummary, MenuItem_SpaceDesignLoadSummaryPdf_Click));
+                contextMenu_Model.Items.Add(Create.MenuItem_SpaceReportPdfs(tuples.ConvertAll(x => x.Item2).OfType<Space>(), MenuItem_SpaceReportPdfs_Click));
             }
             else if (jSAMObject is Panel)
             {

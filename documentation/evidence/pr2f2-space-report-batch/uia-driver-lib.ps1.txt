@@ -1,0 +1,122 @@
+. "$PSScriptRoot\uia.ps1"
+$CT = [System.Windows.Automation.ControlType]
+$Exe = 'C:\Users\Virtual Machine\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
+$Title = 'Export Space reports'
+
+function Shot([string]$name) { & "$PSScriptRoot\shot.ps1" -Name $name; Move-Item -Force "$PSScriptRoot\$name.png" "C:\TasOut\pr2f2\screens\$name.png" }
+
+function Launch([string]$sam, [int]$wait = 90) {
+  Get-Process 'SAM Analytical' -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep 2
+  $r = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = "`"$Exe`" /Path=$sam"; CurrentDirectory = (Split-Path $Exe) }
+  $script:procId = $r.ProcessId; $script:main = $null
+  for ($i = 0; $i -lt $wait -and -not $script:main; $i++) { Start-Sleep 1; $h = [W32]::Top([uint32]$script:procId) | ? { [W32]::Text($_) -like 'SAM Analytical `[*' } | select -First 1; if ($h) { $script:main = $AE::FromHandle($h) } }
+  Start-Sleep 5
+  "window: $($script:main.Current.Name) pid $($script:procId) exe $((Get-CimInstance Win32_Process -Filter "ProcessId=$($script:procId)").ExecutablePath)"
+  if (-not [W32]::Front([IntPtr]$script:main.Current.NativeWindowHandle)) { throw 'SAM not in foreground' }
+}
+
+function Attach { $script:procId = Get-SamPid; $script:main = Get-MainElement $script:procId; [void][W32]::Front([IntPtr]$script:main.Current.NativeWindowHandle) }
+
+function Invoke-El($el) { $el.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke() }
+
+function Open-FromRibbon {
+  $tab = Find-ByName $script:main 'Edit' $CT::TabItem
+  $tab.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select(); Start-Sleep 1
+  $b = Find-ById $script:main 'RibbonButton_SpaceReportPdfs'
+  "ribbon button: '$($b.Current.Name)' enabled=$($b.Current.IsEnabled)"
+  Invoke-El $b
+  Get-BatchWindow
+}
+
+function Get-BatchWindow([int]$seconds = 20) {
+  for ($i = 0; $i -lt $seconds * 4; $i++) {
+    $h = [W32]::Top([uint32]$script:procId) | ? { [W32]::Text($_) -eq $Title -and [W32]::Cls($_) -ne '#32770' } | select -First 1
+    if ($h) { $script:win = $AE::FromHandle($h); return "batch window open" }
+    Start-Sleep -Milliseconds 250
+  }
+  throw 'batch window not found'
+}
+
+function W([string]$id) { Find-ById $script:win $id }
+
+function State {
+  $o = [ordered]@{}
+  foreach ($id in 'checkBox_SpaceAssumptions','checkBox_SpaceDesignLoadSummary') { $o[$id] = (W $id).GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern).Current.ToggleState }
+  foreach ($id in 'radioButton_Selected','radioButton_All') { $e = W $id; $o[$id] = "'$($e.Current.Name)' enabled=$($e.Current.IsEnabled) selected=$($e.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Current.IsSelected)" }
+  $o['folder'] = (W 'textBox_Folder').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value
+  $o['export'] = (W 'button_Export').Current.IsEnabled
+  $o['hint'] = (W 'textBlock_Hint').Current.Name
+  [pscustomobject]$o | Format-List | Out-String
+}
+
+function Set-Check([string]$id, [bool]$on) {
+  $t = (W $id).GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern)
+  if (($t.Current.ToggleState -eq 'On') -ne $on) { $t.Toggle() }
+}
+
+function Set-Scope([string]$id) { (W $id).GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select() }
+
+function Summary { $s = W 'textBlock_Summary'; if ($s -and -not $s.Current.IsOffscreen) { $s.Current.Name } }
+
+function Progress { "{0} | {1}" -f (W 'textBlock_Progress').Current.Name, (W 'textBlock_ProgressDetail').Current.Name }
+
+function Export([int]$answer = 0, [int]$seconds = 120) {
+  $dir = (W 'textBox_Folder').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value
+  $logs = @(Get-ChildItem -LiteralPath $dir -Filter *.log -ErrorAction SilentlyContinue).Count
+  $t0 = Get-Date
+  Invoke-El (W 'button_Export')
+  $answered = $false
+  for ($i = 0; $i -lt $seconds * 4; $i++) {
+    Start-Sleep -Milliseconds 250
+    if (-not $answered) {
+      $box = Get-TopWindows $script:procId | ? { $_.Class -eq '#32770' -and $_.Title -eq $Title } | select -First 1
+      if ($box) {
+        "box: " + ($AE::FromHandle($box.Handle).FindAll($TS::Descendants, [System.Windows.Automation.Condition]::TrueCondition) | % { $_.Current.Name } | ? { $_ -like '*PDFs*' } | select -First 1)
+        if ($answer -eq 0) { throw 'unexpected existing-files box' }
+        Click-DialogButton $box.Handle $answer | Out-Null; $answered = $true
+        if ($answer -eq 2) { Start-Sleep 1; return "cancelled at prompt; logs now $(@(Get-ChildItem -LiteralPath $dir -Filter *.log).Count) (was $logs)" }
+      }
+    }
+    if (@(Get-ChildItem -LiteralPath $dir -Filter *.log -ErrorAction SilentlyContinue).Count -gt $logs -and (W 'button_Export').Current.IsEnabled) { Start-Sleep -Milliseconds 500; break }
+  }
+  "elapsed {0:F1} s" -f ((Get-Date) - $t0).TotalSeconds
+  "summary: " + (Summary)
+}
+
+function Folder-Stats([string]$dir) {
+  $p = @(Get-ChildItem -LiteralPath $dir -Filter *.pdf -ErrorAction SilentlyContinue).Count
+  $t = @(Get-ChildItem -LiteralPath $dir -Filter *.tmp -ErrorAction SilentlyContinue).Count
+  $l = @(Get-ChildItem -LiteralPath $dir -Filter *.log -ErrorAction SilentlyContinue).Count
+  "folder: pdf=$p tmp=$t log=$l"
+}
+
+function Last-Log([string]$dir) { Get-ChildItem -LiteralPath $dir -Filter *.log | sort LastWriteTime | select -Last 1 }
+
+function Select-TreeSpaces([string[]]$names) {
+  $tree = Find-ById $script:main 'treeView_Model'
+  $spaces = Find-ByName $tree 'Spaces' $CT::TreeItem
+  $spaces.GetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern).Expand(); Start-Sleep 1
+  $first = $true; $last = $null
+  foreach ($n in $names) {
+    $item = Find-ByName $spaces $n $CT::TreeItem
+    if (-not $item) { throw "tree item $n not found" }
+    $r = $item.Current.BoundingRectangle
+    if (-not $first) { [W32]::keybd_event(0x11, 0, 0, [IntPtr]::Zero) }
+    [W32]::Click([int]($r.X + 40), [int]($r.Y + 8), $false); Start-Sleep -Milliseconds 300
+    if (-not $first) { [W32]::keybd_event(0x11, 0, 2, [IntPtr]::Zero) }
+    $first = $false; $last = $r
+  }
+  $script:lastRect = $last
+}
+
+function Context-Menu([string[]]$items) {
+  $r = $script:lastRect
+  [W32]::Click([int]($r.X + 40), [int]($r.Y + 8), $true); Start-Sleep -Milliseconds 1500
+  $out = @{}
+  foreach ($h in [W32]::Top([uint32]$script:procId)) {
+    $e = $AE::FromHandle($h)
+    foreach ($n in $items) { if (-not $out[$n]) { $c = Find-ByName $e $n $CT::MenuItem; if ($c) { $out[$n] = $c } } }
+  }
+  $out
+}
+

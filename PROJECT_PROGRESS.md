@@ -1,5 +1,47 @@
 # Project Progress
 
+## Current (reporting stream): SAM Documentation Framework PR2F-2 - batch Space report export (28 Sep 2026) - PR open
+
+**Status.** Implemented, tested, accepted in the dev build. Branch `feature/pr2f2-space-report-batch-2026-09-28`
+from `sow/2026-Q3` `11d9078a`. Full record: `documentation/Reporting-SpaceReportPdfBatch.md`. Evidence:
+`documentation/evidence/pr2f2-space-report-batch/`. Heads at the start: SAM `3e8670da` (SAM#164 docs-only; SAM#163
+PR2F-1 `afe90e94` provides `DocumentContext.WithNewDiagnostics()`), SAM_Tas `e7cc0ed4`, SAM_UI `11d9078a`,
+SAM_Deploy `bc76a31`. No SAM change.
+- **What.** "Export Space reports...": Ribbon Edit › Reports › Export Space Reports, and a multi-Space context-menu
+  item in the view and the tree. One window: report types, Selected/All Spaces, output folder, progress, Cancel,
+  totals, Open folder/log. The one-Space commands are unchanged.
+- **How.** `SpaceReportPdfBatch` copies the model once. Each document runs on `WithNewDiagnostics()` through the new
+  `Modify.WriteSpaceReportPdf(DocumentContext, ...)` seam. The model overload delegates to it. Processing is
+  sequential, and each PDF is on disk before the next.
+- **Behaviour.**
+  - File names: `Query.SpaceReportPdfFileNames` suffixes every member of a case-insensitive collision set with the
+    8-hex Guid (full Guid if still colliding), so names do not depend on order. Paths stay within MAX_PATH.
+  - Existing files: one Yes (overwrite) / No (skip) / Cancel prompt per batch; Skip when none existed.
+  - Failures continue, with a stage per document. Cancel stops between documents. No `.tmp` is left.
+  - The log `Space reports <timestamp>.log` goes in the output folder.
+- **Files.**
+  - `Classes/Reporting/SpaceReportPdfBatch.cs`, `SpaceReportPdfBatchResult.cs` (new);
+  - `Windows/SpaceReportPdfBatchWindow.xaml(.cs)` (new);
+  - `Create/MenuItem_SpaceReportPdfs.cs`, `Modify/ExportSpaceReportPdfs.cs` (new);
+  - `Modify/SpaceReportPdf.cs` (context overload);
+  - `Query/SpaceReportPdf.cs` (planner);
+  - `SpaceReportPdfPrompts.cs` (`ChooseFolder`);
+  - `SpaceReportPdfResult.cs` (`Selection` stage);
+  - `AnalyticalWindow.xaml(.cs)`, `AnalyticalModelControl.xaml.cs` (wiring);
+  - tests: `SpaceReportPdfBatchTests.cs` (40), `SpaceReportPdfBatchScaleHarness.cs` (env-gated), and the
+    `SpaceDesignLoadSummaryPdfTests` ribbon assertion (now the first two of three buttons).
+- **Validation.**
+  - WPF tests **1365/1365** Release (1324 + 41).
+  - `SAM_UI.sln` Debug and Release: 0 errors.
+  - Dev-app UIA acceptance on bridge_peaks and open_peaks (all Spaces, 3 selected, one or both reports,
+    skip/overwrite/cancel prompt, locked-file failure, single-Space parity).
+  - 5k-Space UI run: 9,990 PDFs in 1:44; cancel in 0.37 s; close mid-run; flat working set.
+  - Harness: 96.7 s, 9.7 ms per document, linear, bounded memory.
+  - Re-run the harness with env `SAM_PR2F2_SCALE_MODEL=C:\TasOut\pr2d\bridge_peaks.sam`,
+    `SAM_PR2F2_SCALE_OUT=<folder>` (optional `SAM_PR2F2_SCALE_SAVE=<x.sam>`).
+- **Next step.** Review and merge the PR into `sow/2026-Q3`, then PR2F-3: SAM_Deploy pointer bump to the merged
+  SAM_UI (and SAM `3e8670da`), plus installed-product batch acceptance.
+
 ## Current: Mixed Part O dwelling strategies - PR3B CLOSED (28 Sep 2026)
 
 - Merged: SAM#161 PR3B-1 (`85a13ec3`), SAM_Systems#31 PR3B-2 (`005c4fe`), SAM_Tas#71 PR3B-3 (`e7cc0ed`), SAM_UI#131
