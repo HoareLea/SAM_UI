@@ -5,6 +5,14 @@ param([string]$Model = 'C:\TasOut\progress-pattern\app\rds\bridge_peaks.sam')
 $ErrorActionPreference = 'Stop'
 . "$PSScriptRoot\uia.ps1"
 Add-Type -AssemblyName System.Drawing
+Add-Type -Namespace P -Name U -MemberDefinition @'
+[DllImport("user32.dll")] public static extern int GetWindowLong(IntPtr h, int i);
+[DllImport("user32.dll")] public static extern IntPtr GetWindow(IntPtr h, uint c);
+[DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr h, IntPtr p);
+[DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetClassName(IntPtr h, System.Text.StringBuilder s, int n);
+[DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
+public static string Cls(IntPtr h) { var b = new System.Text.StringBuilder(256); GetClassName(h, b, 256); return b.ToString(); }
+'@
 $CT = [System.Windows.Automation.ControlType]
 $Exe = 'C:\Users\Virtual Machine\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
 $Screens = 'C:\TasOut\progress-pattern\screens'
@@ -28,7 +36,13 @@ $b.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke(
 $t0 = Get-Date; $shots = 0; $seenAt = $null; $goneAt = $null
 while (((Get-Date) - $t0).TotalSeconds -lt 30) {
   $h = [W32]::Top([uint32]$procId) | ? { [W32]::Text($_) -eq 'Print RDS' } | select -First 1
-  if ($h -and -not $seenAt) { $seenAt = Get-Date; Say ("'Print RDS' window up after {0:F2} s" -f ($seenAt - $t0).TotalSeconds) }
+  if ($h -and -not $seenAt) {
+    $seenAt = Get-Date; Say ("'Print RDS' window up after {0:F2} s" -f ($seenAt - $t0).TotalSeconds)
+    $mh = [IntPtr]$main.Current.NativeWindowHandle
+    $ex = [P.U]::GetWindowLong($h, -20); $own = [P.U]::GetWindow($h, 4)
+    Say ("  owner {0}: class '{1}', visible {2}; main window {3} -> owner is main window: {4}" -f $own, [P.U]::Cls($own), [P.U]::IsWindowVisible($own), $mh, ($own -eq $mh))
+    Say ("  topmost (WS_EX_TOPMOST) = {0}; owner = {1}; UI thread id {2} (main window thread {3}) -> same thread: {4}" -f (($ex -band 8) -ne 0), $own, [P.U]::GetWindowThreadProcessId($h, [IntPtr]::Zero), [P.U]::GetWindowThreadProcessId($mh, [IntPtr]::Zero), ([P.U]::GetWindowThreadProcessId($h, [IntPtr]::Zero) -eq [P.U]::GetWindowThreadProcessId($mh, [IntPtr]::Zero)))
+  }
   if ($h -and $shots -lt 2) {
     $e = $AE::FromHandle($h); $rc = $e.Current.BoundingRectangle
     $bmp = New-Object System.Drawing.Bitmap ([int]$rc.Width), ([int]$rc.Height)

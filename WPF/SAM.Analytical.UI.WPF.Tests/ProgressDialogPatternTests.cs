@@ -240,6 +240,38 @@ namespace SAM.Analytical.UI.WPF.Tests
             Modify.PrintRoomDataSheetsWithProgress(null);
         }
 
+        [WpfFact]
+        public void ThePrintRdsWindow_KeepsTheReplacedWindowsBehaviour_InTheSharedStyle()
+        {
+            PartOProgressState partOProgressState = new(Modify.PrintRoomDataSheetsStageNames);
+            partOProgressState.Start(0);
+            partOProgressState.Start(1);
+
+            PartOProgressWindow window = Modify.PrintRoomDataSheetsWindow(partOProgressState, 3, @"C:\Projects\Bridge");
+            try
+            {
+                //As the replaced SAM "Print RDS" ProgressWindow: no owner, not topmost, not in the taskbar, centred.
+                Assert.Equal("Print RDS", window.Title);
+                Assert.False(window.Topmost);
+                Assert.False(window.ShowInTaskbar);
+                Assert.Null(window.Owner);
+                Assert.Equal(WindowStartupLocation.CenterScreen, window.WindowStartupLocation);
+
+                //The shared style, with no percentage and no Cancel - the work reports none and cannot stop.
+                AssertSharedStyles(window);
+                Assert.Equal("Print Room Data Sheets", window.Heading);
+                Assert.Equal(@"3 Spaces → C:\Projects\Bridge", window.Subheading);
+                Assert.Equal(Visibility.Collapsed, ((Button)window.FindName("button_Cancel")).Visibility);
+                Assert.True(((ProgressBar)window.FindName("progressBar")).IsIndeterminate);
+                Assert.Equal("No percentage is shown: this step does not report one. It cannot be cancelled.", ((TextBlock)window.FindName("textBlock_Note")).Text);
+                Assert.Equal(["Completed: Collect the room data", "Running now: Write the data to the RDS workbook", "Upcoming: Print the room data sheets (Excel)", "Upcoming: Finish"], ((ItemsControl)window.FindName("itemsControl_Stages")).Items.Cast<ProgressStageRow>().Select(x => x.AccessibleName));
+            }
+            finally
+            {
+                window.Close();
+            }
+        }
+
         [Fact]
         public void PrintRoomDataSheets_WithAStageCallback_OpensNoWindowOfItsOwn_AndAnnouncesNothingBeforeItStarts()
         {

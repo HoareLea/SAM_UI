@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
+using System.Windows.Threading;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -18,12 +19,15 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>
         /// The ribbon's Print Room Data Sheets: the same work as
-        /// <see cref="UI.Modify.PrintRoomDataSheets(UIAnalyticalModel, IWin32Window)"/>, with its stages shown in the
-        /// SAM progress-dialog pattern (documentation/ProgressDialogPattern.md) instead of the "Print RDS" window.
-        /// The work holds the application's thread in Excel, so the window is a <see cref="PartOProgressHost"/> on its
-        /// own thread and keeps painting. Excel reports no progress and the work cannot stop part-way, so the bar is
-        /// indeterminate and there is no Cancel; the note says both. The window opens only once the work starts - the
-        /// early returns (no folder, no template, no Spaces) open nothing, as before.
+        /// <see cref="UI.Modify.PrintRoomDataSheets(UIAnalyticalModel, IWin32Window)"/>, with its stages drawn in the
+        /// SAM progress-dialog style (documentation/ProgressDialogPattern.md) instead of the plain "Print RDS" window.
+        /// <para>
+        /// Only the look changes. The window is driven exactly as the "Print RDS" <c>SAM.Core.Windows.WPF.ProgressWindow</c>
+        /// it replaces: created on the calling (UI) thread when the first stage starts, shown modelessly with no owner,
+        /// not topmost, not in the taskbar; on each stage it is activated and the dispatcher is pumped once so it
+        /// repaints; it closes when the work returns or throws. Excel reports no progress and the work cannot stop
+        /// part-way, so there is no percentage and no Cancel, and the note says both.
+        /// </para>
         /// </summary>
         public static void PrintRoomDataSheetsWithProgress(this UIAnalyticalModel? uIAnalyticalModel, IWin32Window? owner = null)
         {
@@ -41,27 +45,65 @@ namespace SAM.Analytical.UI.WPF
 
             int spaceCount = analyticalModel.GetSpaces()?.Count ?? 0;
 
-            PartOProgressHost? partOProgressHost = null;
+            PartOProgressState partOProgressState = new(PrintRoomDataSheetsStageNames);
+            PartOProgressWindow? partOProgressWindow = null;
             try
             {
                 UI.Modify.PrintRoomDataSheets(analyticalModel, directory, owner, index =>
                 {
-                    partOProgressHost ??= new PartOProgressHost(
-                        "Print Room Data Sheets",
-                        string.Format(CultureInfo.CurrentCulture, "{0:N0} {1} → {2}", spaceCount, spaceCount == 1 ? "Space" : "Spaces", directory),
-                        PrintRoomDataSheetsStageNames,
-                        cancellable: false,
-                        title: "Print RDS");
+                    if (partOProgressWindow == null)
+                    {
+                        partOProgressWindow = PrintRoomDataSheetsWindow(partOProgressState, spaceCount, directory);
+                        partOProgressWindow.Show();
+                    }
 
-                    partOProgressHost.Start(index);
+                    partOProgressState.Start(index);
+                    partOProgressWindow.Render();
+                    partOProgressWindow.Activate();
+
+                    DoEvents();
                 });
-
-                partOProgressHost?.State.Complete();
             }
             finally
             {
-                partOProgressHost?.Dispose();
+                partOProgressWindow?.Close();
             }
+        }
+
+        /// <summary>
+        /// The Print RDS progress window, not yet shown: the shared progress style, with the replaced window's
+        /// title and window behaviour (no owner, not topmost, not in the taskbar, centred on screen) and no Cancel.
+        /// </summary>
+        internal static PartOProgressWindow PrintRoomDataSheetsWindow(PartOProgressState partOProgressState, int spaceCount, string? directory)
+        {
+            return new PartOProgressWindow()
+            {
+                Title = "Print RDS",
+                Topmost = false,
+                ShowInTaskbar = false,
+                Heading = "Print Room Data Sheets",
+                Subheading = string.Format(CultureInfo.CurrentCulture, "{0:N0} {1} → {2}", spaceCount, spaceCount == 1 ? "Space" : "Spaces", directory),
+                Cancellable = false,
+                State = partOProgressState,
+            };
+        }
+
+        /// <summary>
+        /// Pumps the dispatcher down to Background priority so the window repaints between steps - what the replaced
+        /// <c>ProgressWindow.Update</c> does.
+        /// </summary>
+        private static void DoEvents()
+        {
+            DispatcherFrame dispatcherFrame = new();
+            Dispatcher.CurrentDispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new DispatcherOperationCallback(x =>
+                {
+                    ((DispatcherFrame)x).Continue = false;
+                    return null;
+                }),
+                dispatcherFrame);
+            Dispatcher.PushFrame(dispatcherFrame);
         }
     }
 }

@@ -47,12 +47,17 @@ the Part O progress window.
    - it renders on a 500 ms timer, like Part O;
    - the form, prompts, batch calls, cancel, close-while-running and summary text are unchanged.
    - When the existing-PDFs question is cancelled, the progress still disappears and the form is as before.
-4. **Print Room Data Sheets (ribbon)** shows its four stages in the pattern through `PartOProgressHost`:
-   - title "Print RDS", no percentage, not cancellable;
-   - the window is on its own thread, so it no longer freezes during Excel.
-   - `SAM.Analytical.UI` `PrintRoomDataSheets` gained an overload with an optional stage callback. With no callback,
-     the old window and path are unchanged, so the Simulate workflow and Grasshopper callers are untouched.
-   - `PartOProgressHost` gained an optional `title` (default "Part O").
+4. **Print Room Data Sheets (ribbon)** shows its four stages in the shared style (`PartOProgressWindow`; title
+   "Print RDS", no percentage, not cancellable). **Style only: the execution and threading are the old window's.**
+   The window is created on the calling (UI) thread when the first stage starts, shown modelessly with no owner,
+   not topmost, not in the taskbar and centred on screen. On each stage it is activated and the dispatcher is
+   pumped once so it repaints (the old `ProgressWindow.Update`), and it closes when the work returns or throws.
+   - `SAM.Analytical.UI` `PrintRoomDataSheets` gained an overload with an optional stage callback. The stages are
+     announced at the same points as the old `Update` calls. With no callback, the old window and path are
+     unchanged, so the Simulate workflow and Grasshopper callers are untouched.
+   - Review round (owner): the first version hosted this window on its own thread with `PartOProgressHost`, which
+     made it topmost. That was an unverified behaviour change, since Excel is unavailable here, so it was reverted.
+     `PartOProgressHost` is now identical to the base branch.
 5. **Audit** of every reporting / export / print progress surface, classified: standardise now / already
    consistent / not applicable. See `ProgressDialogPattern.md`.
 
@@ -61,16 +66,18 @@ the Part O progress window.
 | Area | Files |
 |---|---|
 | New shared | `WPF/SAM.Core.UI.WPF/Themes/ProgressStyles.xaml`, `WPF/SAM.Core.UI.WPF/Classes/ProgressStageRow.cs`, `WPF/SAM.Analytical.UI.WPF/Create/ProgressStageRows.cs` |
-| Part O reference | `Windows/PartOProgressWindow.xaml(.cs)`, `Classes/PartO/PartOProgressHost.cs` (optional title) |
+| Part O reference | `Windows/PartOProgressWindow.xaml(.cs)` (`PartOProgressHost` unchanged) |
 | Space reports | `Windows/SpaceReportPdfBatchWindow.xaml(.cs)` |
 | Print RDS | `SAM_UI/SAM.Analytical.UI/Modify/PrintRoomDataSheets.cs` (stage-callback overload), `Modify/PrintRoomDataSheetsWithProgress.cs` (new), `Windows/AnalyticalWindow.xaml.cs` (ribbon handler) |
-| Tests | `ProgressDialogPatternTests.cs` (8), `ProgressDialogPatternEvidenceHarness.cs` (env-gated) |
+| Tests | `ProgressDialogPatternTests.cs` (9), `ProgressDialogPatternEvidenceHarness.cs` (env-gated) |
 | Docs and evidence | `documentation/ProgressDialogPattern.md`, this record, `Reporting-SpaceReportPdfBatch.md` (window description), `documentation/evidence/progress-dialog-pattern/` |
 
 ## Validation
 
 - `SAM_UI.sln` Release and Debug: 0 errors.
-- WPF tests: **1394/1394** Release on the merged branch (includes SAM_UI#134's tests and the 8 new ones).
+- WPF tests: **1395/1395** Release on the merged branch (includes SAM_UI#134's tests and the 9 new ones; one
+  pins the Print RDS window's title, not topmost, not in the taskbar, no owner, centred, no Cancel, the note text
+  and the shared styles).
   All existing `SpaceReportPdfBatch*` and `PartOProgress*` tests pass unchanged.
 - **Deterministic renders** (`evidence/progress-dialog-pattern/render/`): the real window running the real batch on
   `bridge_peaks.sam`, with a stand-in renderer gated for mid-run states. States: Part O reference, Print RDS, batch
@@ -86,7 +93,10 @@ the Part O progress window.
     "Space reports exported", 100%;
   - one locked PDF: "exported, with failures", Failed 1 with the reason; no `.tmp` files; logs written.
 - **Print RDS, dev app** (`rds-log.txt`, `scripts/rds.ps1.txt`):
-  - the ribbon opened the new "Print RDS" window at 0.10 s and it closed at 0.21 s;
+  - the ribbon opened the "Print RDS" window at 0.08 s and it closed at 0.27 s;
+  - Win32 checks on the live window: **on the main window's UI thread** (same thread id), **not topmost** (no
+    `WS_EX_TOPMOST`), and owned only by WPF's hidden `HwndWrapper`, which keeps a `ShowInTaskbar=False` window with no
+    `Owner` out of the taskbar. Its owner is not the main window, as with the old window;
   - Excel is not installed on this VM, so the command ends at its Excel step exactly as before: no dialog, and the
     app keeps running;
   - the dev build found the RDS template in `%APPDATA%\SAM\resources`;
@@ -106,10 +116,10 @@ the Part O progress window.
 
 ## Risks and open items
 
-- Print RDS with Excel present was not exercised on this VM, because Excel is missing. The work path is unchanged:
-  only the progress window differs, and it is now a topmost window on its own thread. If Excel's print macro ever
-  shows a dialog, the topmost progress window could sit over it. The old window was not topmost. `PartOProgressHost`
-  has `Hide()`/`Show()` for this if needed.
+- Print RDS with Excel present was not exercised on this VM, because Excel is missing. The work path, stage
+  points, thread and window behaviour are the old ones. Only the window's content and style differ: the window
+  is 520 px wide rather than 420, and shows a stage list rather than a caption and step bar. As before, the window
+  cannot repaint while Excel holds the UI thread.
 - Model export and the generic `ProgressBarWindow` are not standardised (see the doc's next steps).
 
 ## Next step

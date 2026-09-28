@@ -56,7 +56,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             partO.Detail = "T3D to TBD -> Shading";
             Snap(new PartOProgressWindow { Title = "Part O", Heading = "Prepare & Run — Iteration 2 — MVHR with manufacturer unit", Cancellable = true, State = partO }, directory, "01-parto-reference-running");
 
-            //Print Room Data Sheets: what its host builds - no percentage, no Cancel.
+            //Print Room Data Sheets: the window the ribbon command shows - no percentage, no Cancel.
             now = DateTime.UtcNow;
             PartOProgressState rds = new(Modify.PrintRoomDataSheetsStageNames, () => now);
             rds.Start(0);
@@ -65,7 +65,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             now = now.AddSeconds(38);
             rds.Start(2);
             now = now.AddSeconds(11);
-            Snap(new PartOProgressWindow { Title = "Print RDS", Heading = "Print Room Data Sheets", Subheading = @"4,995 Spaces → C:\Projects\Bridge", Cancellable = false, State = rds }, directory, "02-rds-printing");
+            Snap(Modify.PrintRoomDataSheetsWindow(rds, 4995, @"C:\Projects\Bridge"), directory, "02-rds-printing");
 
             //The batch window: form, preparing, writing, cancel requested, cancelled.
             GateRenderer gate = new(3);

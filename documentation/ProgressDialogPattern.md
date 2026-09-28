@@ -119,8 +119,13 @@ operation's result window or message takes over.
 
 ### Threading and render cadence
 
-- **The work holds the application's thread** (TAS COM, Excel automation): host the window on its own UI thread with
-  `PartOProgressHost`, so it keeps painting and Cancel keeps answering.
+- **The work holds the application's thread and must be cancellable** (TAS COM in Part O): host the window on its own
+  UI thread with `PartOProgressHost`, so it keeps painting and Cancel keeps answering.
+- **Adopting the pattern for an existing window is a style change, not a threading change.** Keep the window where
+  the replaced one was. For example, Print Room Data Sheets keeps its window on the application's thread (not
+  topmost, no owner, not in the taskbar), activated and repainted between stages exactly as its old
+  `ProgressWindow` was. Moving it to its own thread is a behaviour change, and it needs its own acceptance (with
+  Excel).
 - **The work runs on a background task** (the Space report batch): the window lives on the application's thread and
   updates from `IProgress<T>`.
 - **Either way, render on a timer (500 ms), never per progress tick.** The work updates the state object; the window
@@ -133,7 +138,7 @@ operation's result window or message takes over.
 |---|---|---|---|
 | Part O progress (`PartOProgressWindow`/`State`/`Host`) | the pattern | already consistent (reference) | draws with the extracted shared resources; unchanged look |
 | Export Space Reports (`SpaceReportPdfBatchWindow`) | status text + 6 px bar | standardise now | the pattern, with determinate percentage and the final summary state |
-| Print Room Data Sheets, ribbon (`PrintRoomDataSheets`) | SAM `ProgressWindow("Print RDS", 4)` on the frozen UI thread | standardise now | the pattern via `PartOProgressHost` (own thread, 4 stages, no percentage, not cancellable) |
+| Print Room Data Sheets, ribbon (`PrintRoomDataSheets`) | SAM `ProgressWindow("Print RDS", 4)` on the UI thread | standardise now (style only) | `PartOProgressWindow` in the shared style (4 stages, no percentage, not cancellable), driven as the old window was: same thread, not topmost, no owner, repainted between stages |
 | Print RDS inside the TAS `Simulate` workflow; Grasshopper Print RDS / Print AHU | old window / none | not applicable here | unchanged: a nested step of another workflow, or a Grasshopper host |
 | Space Assumptions PDF / Space Design Load Summary PDF (one Space) | message boxes; about a second | not applicable | unchanged |
 | Part O TM59 / Iteration 3 report saves | file writes inside Part O flows | not applicable | unchanged |
@@ -149,6 +154,8 @@ operation's result window or message takes over.
 2. **`ProgressBarWindow`** (SAM.Core.UI.WPF) could render the pattern's single-stage form: heading, indeterminate
    bar, elapsed time, and a note saying it cannot be cancelled. That would bring model export, import and the other
    generic busy windows in line. It is shared by non-reporting commands, so change it deliberately.
-3. **Print RDS inside `Simulate`** can adopt the stage callback
+3. **Print RDS off the UI thread.** Its window still freezes while Excel works, exactly as before. Hosting it on its
+   own thread would keep it painting, but that is a behaviour change that needs an acceptance run with Excel.
+4. **Print RDS inside `Simulate`** can adopt the stage callback
    (`PrintRoomDataSheets(model, directory, owner, stage)`) once the Simulate workflow shows its own progress in the
    pattern.
