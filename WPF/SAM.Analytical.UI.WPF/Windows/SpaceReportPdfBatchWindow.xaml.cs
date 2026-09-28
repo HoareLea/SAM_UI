@@ -191,6 +191,7 @@ namespace SAM.Analytical.UI.WPF
 
                 progressState?.Start(1);
                 ReportProgress(0, spaceReportPdfBatch.DocumentCount, null);
+                RenderProgress();
 
                 Progress<SpaceReportPdfBatchProgress> progress = new Progress<SpaceReportPdfBatchProgress>(x =>
                 {
@@ -297,7 +298,8 @@ namespace SAM.Analytical.UI.WPF
             progressState.Detail = detail;
             progressFraction = progressState.Fraction;
 
-            RenderProgress();
+            //Not rendered here: a tick arrives per document (hundreds a second), and rebuilding the rows each time
+            //floods the window's thread - Cancel then answers late. The timer renders, as PartOProgressWindow does.
         }
 
         /// <summary>How a batch that ran ended: finished (with or without failures) or cancelled between documents.</summary>

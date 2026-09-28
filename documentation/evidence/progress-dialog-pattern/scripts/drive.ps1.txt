@@ -1,0 +1,120 @@
+# Drives the dev build's "Export Space reports" window through UI Automation on the 4,995-Space model and captures the
+# progress-dialog states (form, writing, cancel requested, cancelled, overwrite prompt, completed, completed with a
+# failure). Evidence for the SAM progress-dialog pattern PR. Based on the PR2F-2 driver (C:\TasOut\pr2f2\scripts).
+param([string]$Model = 'C:\TasOut\progress-pattern\app\bridge_x555.sam')
+$ErrorActionPreference = 'Stop'
+. "$PSScriptRoot\uia.ps1"
+Add-Type -AssemblyName System.Windows.Forms,System.Drawing
+$CT = [System.Windows.Automation.ControlType]
+$Exe = 'C:\Users\Virtual Machine\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
+$Title = 'Export Space reports'
+$Screens = 'C:\TasOut\progress-pattern\screens'
+$Log = 'C:\TasOut\progress-pattern\drive-log.txt'
+Remove-Item $Log -ErrorAction SilentlyContinue
+
+function Say([string]$s) { $line = "{0:HH:mm:ss.f}  {1}" -f (Get-Date), $s; $line; Add-Content -Path $Log -Value $line -Encoding UTF8 }
+
+function Shot([string]$name) {
+  $r = $script:win.Current.BoundingRectangle
+  $bmp = New-Object System.Drawing.Bitmap ([int]$r.Width), ([int]$r.Height)
+  [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen([int]$r.X, [int]$r.Y, 0, 0, $bmp.Size)
+  $bmp.Save("$Screens\$name.png"); $bmp.Dispose()
+  Say "shot $name"
+}
+
+function Invoke-El($el) { $el.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke() }
+function W([string]$id) { Find-ById $script:win $id }
+function Name([string]$id) { $e = W $id; if ($e -and -not $e.Current.IsOffscreen) { $e.Current.Name } else { '' } }
+
+function Progress {
+  $stages = W 'itemsControl_Stages'
+  $rows = if ($stages) { ($stages.FindAll($TS::Children, [System.Windows.Automation.Condition]::TrueCondition) | % { $_.Current.Name }) -join ' | ' } else { '' }
+  "[{0}] [{1}] rows: {2} || detail: {3} || {4} {5} || note: {6} || cancel: '{7}' enabled={8}" -f (Name 'textBlock_Heading'), (Name 'textBlock_Subheading'), $rows, (Name 'textBlock_Detail'), (Name 'textBlock_Elapsed'), (Name 'textBlock_Percent'), (Name 'textBlock_Note'), (W 'button_Cancel').Current.Name, (W 'button_Cancel').Current.IsEnabled
+}
+
+function Set-Check([string]$id, [bool]$on) {
+  $t = (W $id).GetCurrentPattern([System.Windows.Automation.TogglePattern]::Pattern)
+  if (($t.Current.ToggleState -eq 'On') -ne $on) { $t.Toggle() }
+}
+
+function Wait-Idle([int]$seconds = 300) {
+  for ($i = 0; $i -lt $seconds * 4; $i++) { if ((W 'button_Export').Current.IsEnabled) { return }; Start-Sleep -Milliseconds 250 }
+  throw 'export did not finish'
+}
+
+function Answer-Box([int]$button, [int]$seconds = 30) {
+  for ($i = 0; $i -lt $seconds * 4; $i++) {
+    $box = Get-TopWindows $script:procId | ? { $_.Class -eq '#32770' -and $_.Title -eq $Title } | select -First 1
+    if ($box) {
+      Say ("box: " + ((Get-DialogText $box.Handle) -replace "`r?`n", ' / '))
+      $r = $AE::FromHandle($box.Handle).Current.BoundingRectangle
+      $bmp = New-Object System.Drawing.Bitmap ([int]$r.Width), ([int]$r.Height)
+      [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen([int]$r.X, [int]$r.Y, 0, 0, $bmp.Size); $bmp.Save("$Screens\F0-existing-pdfs-question.png"); $bmp.Dispose()
+      Click-DialogButton $box.Handle $button | Out-Null
+      return
+    }
+    Start-Sleep -Milliseconds 250
+  }
+  throw 'no existing-files box'
+}
+
+# Launch
+Get-Process 'SAM Analytical' -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep 2
+$r = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = "`"$Exe`" /Path=$Model"; CurrentDirectory = (Split-Path $Exe) }
+$script:procId = $r.ProcessId; $script:main = $null
+for ($i = 0; $i -lt 150 -and -not $script:main; $i++) { Start-Sleep 1; $h = [W32]::Top([uint32]$script:procId) | ? { [W32]::Text($_) -like 'SAM Analytical `[*' } | select -First 1; if ($h) { $script:main = $AE::FromHandle($h) } }
+Start-Sleep 8
+Say "app: $($script:main.Current.Name) pid $($script:procId) exe $((Get-CimInstance Win32_Process -Filter "ProcessId=$($script:procId)").ExecutablePath)"
+[void][W32]::Front([IntPtr]$script:main.Current.NativeWindowHandle)
+
+# Open the window from the ribbon
+$tab = Find-ByName $script:main 'Edit' $CT::TabItem
+$tab.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select(); Start-Sleep 1
+Invoke-El (Find-ById $script:main 'RibbonButton_SpaceReportPdfs')
+for ($i = 0; $i -lt 80 -and -not $script:win; $i++) { $h = [W32]::Top([uint32]$script:procId) | ? { [W32]::Text($_) -eq $Title -and [W32]::Cls($_) -ne '#32770' } | select -First 1; if ($h) { $script:win = $AE::FromHandle($h) } else { Start-Sleep -Milliseconds 250 } }
+[void][W32]::SetForegroundWindow([IntPtr]$script:win.Current.NativeWindowHandle); Start-Sleep -Milliseconds 500
+$wr = $script:win.Current.BoundingRectangle; Say ("batch window size {0} x {1} px" -f $wr.Width, $wr.Height)
+$dir = (W 'textBox_Folder').GetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern).Current.Value
+Say "window open; folder $dir; hint '$(Name 'textBlock_Hint')'; progress visible=$(-not (W 'textBlock_Heading') -or -not (W 'textBlock_Heading').Current.IsOffscreen)"
+Shot 'A-form'
+
+# Run 1: both reports, all Spaces, cancelled part-way
+Set-Check 'checkBox_SpaceAssumptions' $true; Set-Check 'checkBox_SpaceDesignLoadSummary' $true
+(W 'radioButton_All').GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select()
+Invoke-El (W 'button_Export')
+Start-Sleep -Milliseconds 400; Say (Progress)
+Start-Sleep 3; Say (Progress); Shot 'B-writing'
+Start-Sleep 5; Say (Progress); Shot 'C-writing-later'
+$cancel = W 'button_Cancel'; $export = W 'button_Export'
+$t0 = Get-Date
+Invoke-El $cancel
+for ($i = 0; $i -lt 2000 -and -not $export.Current.IsEnabled; $i++) { Start-Sleep -Milliseconds 10 }
+Say ("Cancel pressed -> export stopped and Export re-enabled: {0:F2} s" -f ((Get-Date) - $t0).TotalSeconds)
+Start-Sleep -Milliseconds 500; Say (Progress); Say ("summary: " + ((Name 'textBlock_Summary') -replace "`r?`n", ' / ')); Shot 'E-cancelled'
+
+# Run 2: Space Assumptions only; its PDFs from run 1 exist -> one question, Yes overwrites; runs to completion
+Set-Check 'checkBox_SpaceDesignLoadSummary' $false
+$t0 = Get-Date
+Invoke-El (W 'button_Export')
+Answer-Box 6
+Start-Sleep 4; Say (Progress); Shot 'F-writing-overwrite'
+Wait-Idle
+Say ("run 2 {0:F1} s" -f ((Get-Date) - $t0).TotalSeconds)
+Start-Sleep -Milliseconds 500; Say (Progress); Say ("summary: " + ((Name 'textBlock_Summary') -replace "`r?`n", ' / ')); Shot 'G-completed'
+
+# Run 3: one target PDF locked -> that document fails, the batch carries on; completed with a failure
+$locked = Get-ChildItem -LiteralPath $dir -Filter '*Space Assumptions.pdf' | sort Name | select -First 1
+$fs = [System.IO.File]::Open($locked.FullName, 'Open', 'ReadWrite', 'None')
+Say "locked $($locked.Name)"
+try {
+  Invoke-El (W 'button_Export')
+  Answer-Box 6
+  Wait-Idle
+} finally { $fs.Dispose() }
+Start-Sleep -Milliseconds 500; Say (Progress); Say ("summary: " + ((Name 'textBlock_Summary') -replace "`r?`n", ' / ')); Shot 'H-completed-with-failure'
+
+$pdf = @(Get-ChildItem -LiteralPath $dir -Filter *.pdf).Count; $tmp = @(Get-ChildItem -LiteralPath $dir -Filter *.tmp).Count; $logs = @(Get-ChildItem -LiteralPath $dir -Filter *.log).Count
+Say "folder: pdf=$pdf tmp=$tmp log=$logs"
+
+Invoke-El (W 'button_Cancel'); Start-Sleep 1
+Say "window closed: $(-not ([W32]::Top([uint32]$script:procId) | ? { [W32]::Text($_) -eq $Title }))"

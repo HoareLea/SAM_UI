@@ -22,8 +22,12 @@ SAM_UI only orchestrates. Documents, units (SI, the reporting default), notes an
   5,000 Spaces.
 - Output folder: "&lt;model name&gt; Space reports" beside the saved model, or Browse... (`OpenFolderDialog`). The batch
   creates the folder.
-- Export runs the batch on a background task. The window shows "Space 235 / 4,995 - Space Assumptions", the Space
-  name and a progress bar.
+- Export runs the batch on a background task. The progress follows the SAM progress-dialog pattern
+  ([ProgressDialogPattern.md](ProgressDialogPattern.md)): a heading, the run summary ("4,995 Spaces × 2 reports (...)
+  = 9,990 PDFs"), two stage rows with their times ("Prepare the model snapshot and plan the PDFs", "Write the PDFs
+  and the log · 822 of 9,990"), the document in hand ("Space 412 / 4,995 · Space Assumptions · Bedroom 2_6 #45"), a
+  bar with the real percentage, the elapsed time, and a note beside Cancel saying when Cancel takes effect. At the
+  end the heading and the stage rows say how it ended (exported / exported, with failures / cancelled).
 - Cancel stops between documents. Closing the window while it runs does the same, and the window closes once the
   log is written.
 - At the end it shows totals, the first three failures and "...and N more failures: see the log", plus

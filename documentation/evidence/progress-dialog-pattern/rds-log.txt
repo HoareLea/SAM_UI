@@ -1,0 +1,6 @@
+﻿12:53:20.5  app: SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1] pid 13732
+12:53:21.8  ribbon: 'Print RDS' enabled=True
+12:53:21.9  'Print RDS' window up after 0.10 s
+12:53:22.0  shot R1: 
+12:53:22.0  'Print RDS' window closed after 0.21 s
+12:53:22.0  app still running: True
