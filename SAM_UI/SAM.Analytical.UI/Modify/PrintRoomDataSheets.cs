@@ -29,6 +29,22 @@ namespace SAM.Analytical.UI
 
         public static void PrintRoomDataSheets(this AnalyticalModel analyticalModel, string directory = null, IWin32Window owner = null)
         {
+            PrintRoomDataSheets(analyticalModel, directory, owner, null);
+        }
+
+        /// <summary>
+        /// The stages of <see cref="PrintRoomDataSheets(AnalyticalModel, string, IWin32Window, Action{int})"/>, in the
+        /// order it announces them.
+        /// </summary>
+        public static readonly string[] PrintRoomDataSheetsStages = new string[] { "Collecting Data", "Writing Data", "Printing Data", "Finishing" };
+
+        /// <param name="stage">
+        /// Where given, called with the index in <see cref="PrintRoomDataSheetsStages"/> as each stage starts, in place
+        /// of the "Print RDS" progress window - so a caller can show the stages in its own progress window. Null keeps
+        /// that window. The work is the same either way.
+        /// </param>
+        public static void PrintRoomDataSheets(this AnalyticalModel analyticalModel, string directory, IWin32Window owner, Action<int> stage)
+        {
             if (analyticalModel == null)
             {
                 return;
@@ -58,9 +74,21 @@ namespace SAM.Analytical.UI
                 }
             }
 
-            using (SAM.Core.Windows.WPF.ProgressWindow progressForm = new SAM.Core.Windows.WPF.ProgressWindow("Print RDS", 4))
+            using (SAM.Core.Windows.WPF.ProgressWindow progressForm = stage == null ? new SAM.Core.Windows.WPF.ProgressWindow("Print RDS", 4) : null)
             {
-                progressForm.Update("Collecting Data");
+                Action<int> update = index =>
+                {
+                    if (progressForm != null)
+                    {
+                        progressForm.Update(PrintRoomDataSheetsStages[index]);
+                    }
+                    else
+                    {
+                        stage(index);
+                    }
+                };
+
+                update(0);
 
                 string path_Template = Core.Query.TemplatesDirectory(typeof(AnalyticalModel).Assembly);
                 if (!System.IO.Directory.Exists(path_Template))
@@ -674,7 +702,7 @@ namespace SAM.Analytical.UI
                     return Core.Excel.Modify.Write(worksheet, values, 3, 1, Core.Excel.ClearOption.None);
                 });
 
-                progressForm.Update("Writing Data");
+                update(1);
                 bool written = Core.Excel.Modify.Edit(path, "Data", func);
                 if (!written)
                 {
@@ -686,10 +714,10 @@ namespace SAM.Analytical.UI
                     return;
                 }
 
-                progressForm.Update("Printing Data");
+                update(2);
                 Core.Excel.Modify.TryRunMacro(path, true, "PrintRange", min, max);
 
-                progressForm.Update("Finishing");
+                update(3);
             }
 
 

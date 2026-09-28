@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -18,19 +19,35 @@ namespace SAM.Analytical.UI.WPF
     /// "Export Space reports...": report types, scope (selected / all Spaces) and an output folder, then
     /// <see cref="SpaceReportPdfBatch"/> on a background task with progress and Cancel. Existing PDFs are asked about
     /// once per batch. The window is modal, so the model cannot change under the batch's snapshot.
+    /// <para>
+    /// The progress follows the SAM progress-dialog pattern (documentation/ProgressDialogPattern.md), whose reference
+    /// is <see cref="PartOProgressWindow"/>: the stages are a <see cref="PartOProgressState"/>, drawn by
+    /// <see cref="Create.ProgressStageRows"/> and <c>Themes/ProgressStyles.xaml</c>. The batch reports a real count,
+    /// so the bar is determinate while PDFs are written; the preparation reports none, so it is not.
+    /// </para>
     /// </summary>
     public partial class SpaceReportPdfBatchWindow : System.Windows.Window
     {
         private const int FailuresShown = 3;
 
+        /// <summary>The stages of one export, in order.</summary>
+        internal static readonly IReadOnlyList<string> StageNames = ["Prepare the model snapshot and plan the PDFs", "Write the PDFs and the log"];
+
         private readonly AnalyticalModel? analyticalModel;
         private readonly List<Guid> selectedSpaceGuids;
         private readonly SpaceReportPdfPrompts spaceReportPdfPrompts;
         private readonly IDocumentRenderer? documentRenderer;
+        private readonly int spaceCount;
+        private readonly DispatcherTimer dispatcherTimer;
 
         private CancellationTokenSource? cancellationTokenSource;
         private bool running;
         private bool closeWhenFinished;
+
+        private PartOProgressState? progressState;
+        private double? progressFraction;
+        private bool cancelRequested;
+        private string? finalNote;
 
         public SpaceReportPdfBatchWindow()
             : this(null, null, null)
@@ -51,7 +68,7 @@ namespace SAM.Analytical.UI.WPF
             selectedSpaceGuids = selectedSpaces?.Where(x => x != null).Select(x => x.Guid).Distinct().ToList() ?? new List<Guid>();
 
             //Counted once, never listed: GetSpaces copies the Spaces only, not the adjacency cluster.
-            int spaceCount = analyticalModel?.GetSpaces()?.Count ?? 0;
+            spaceCount = analyticalModel?.GetSpaces()?.Count ?? 0;
 
             radioButton_Selected.Content = string.Format(CultureInfo.CurrentCulture, "Selected Spaces ({0:N0})", selectedSpaceGuids.Count);
             radioButton_Selected.IsEnabled = selectedSpaceGuids.Count > 0;
@@ -70,6 +87,15 @@ namespace SAM.Analytical.UI.WPF
             textBox_Folder.Text = directory ?? string.Empty;
 
             Closing += SpaceReportPdfBatchWindow_Closing;
+
+            //Keeps the elapsed time and the running stage's time moving between documents, as the Part O window does.
+            dispatcherTimer = new DispatcherTimer(DispatcherPriority.Background)
+            {
+                Interval = TimeSpan.FromMilliseconds(500),
+            };
+
+            dispatcherTimer.Tick += (s, e) => RenderProgress();
+            Closed += (s, e) => dispatcherTimer.Stop();
 
             UpdateState();
         }
@@ -121,7 +147,10 @@ namespace SAM.Analytical.UI.WPF
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             SetRunning(true);
-            ShowProgress("Preparing the model snapshot...", null, null);
+            BeginProgress(RunSummary(spaceGuids?.Count ?? spaceCount, spaceReportPdfs, null));
+
+            //True once the window shows how this export ended; otherwise the progress goes and the form is as it was.
+            bool final = false;
 
             try
             {
@@ -139,14 +168,20 @@ namespace SAM.Analytical.UI.WPF
                 catch (Exception exception)
                 {
                     System.Diagnostics.Trace.TraceError("Export Space reports could not start: {0}", exception);
+                    final = EndProgress("Space reports could not be exported", null, false, exception.Message, "Nothing was written. The message gives the reason.");
                     spaceReportPdfPrompts.ShowMessage(string.Format("The Space reports could not be exported: {0}", exception.Message), Title, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 if (cancellationToken.IsCancellationRequested)
                 {
+                    final = EndProgress("Export cancelled", null, false, null, "Cancelled before the first PDF: nothing was written.");
                     return;
                 }
+
+                progressState?.Complete(false);
+                textBlock_Subheading.Text = RunSummary(spaceReportPdfBatch.DocumentCount / Math.Max(1, spaceReportPdfs.Count), spaceReportPdfs, spaceReportPdfBatch.DocumentCount);
+                RenderProgress();
 
                 SpaceReportPdfExistingFiles? existingFiles = ExistingFiles(existingCount, spaceReportPdfBatch.DocumentCount);
                 if (existingFiles == null)
@@ -154,16 +189,17 @@ namespace SAM.Analytical.UI.WPF
                     return;
                 }
 
-                ShowProgress(string.Format(CultureInfo.CurrentCulture, "Starting {0:N0} documents...", spaceReportPdfBatch.DocumentCount), null, 0);
+                progressState?.Start(1);
+                ReportProgress(0, spaceReportPdfBatch.DocumentCount, null);
 
                 Progress<SpaceReportPdfBatchProgress> progress = new Progress<SpaceReportPdfBatchProgress>(x =>
                 {
                     if (running)
                     {
-                        ShowProgress(
-                            string.Format(CultureInfo.CurrentCulture, "Space {0:N0} / {1:N0} - {2}", x.SpaceIndex, x.SpaceCount, x.SpaceReportPdf.Name),
-                            x.SpaceName,
-                            x.DocumentCount == 0 ? 0 : (double)x.DocumentIndex / x.DocumentCount);
+                        ReportProgress(
+                            x.DocumentIndex,
+                            x.DocumentCount,
+                            string.Format(CultureInfo.CurrentCulture, "Space {0:N0} / {1:N0} · {2} · {3}", x.SpaceIndex, x.SpaceCount, x.SpaceReportPdf.Name, x.SpaceName));
                     }
                 });
 
@@ -175,15 +211,26 @@ namespace SAM.Analytical.UI.WPF
                 catch (Exception exception)
                 {
                     System.Diagnostics.Trace.TraceError("Export Space reports failed: {0}", exception);
+                    final = EndProgress("Space report export stopped", null, false, exception.Message, "The export stopped. The message gives the reason.");
                     spaceReportPdfPrompts.ShowMessage(string.Format("The Space report export stopped: {0}", exception.Message), Title, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
                 Result = spaceReportPdfBatchResult;
+                final = EndProgress(spaceReportPdfBatchResult);
                 ShowSummary(spaceReportPdfBatchResult, spaceReportPdfBatch.Directory);
             }
             finally
             {
+                dispatcherTimer.Stop();
+
+                if (!final)
+                {
+                    //Nothing was started (the existing-PDF question was cancelled): back to the form, as before.
+                    progressState = null;
+                    stackPanel_Progress.Visibility = Visibility.Collapsed;
+                }
+
                 SetRunning(false);
 
                 cancellationTokenSource.Dispose();
@@ -221,18 +268,176 @@ namespace SAM.Analytical.UI.WPF
             };
         }
 
-        private void ShowProgress(string text, string? detail, double? fraction)
+        private void BeginProgress(string runSummary)
         {
+            progressState = new PartOProgressState(StageNames);
+            progressState.Start(0);
+            progressFraction = null;
+            cancelRequested = false;
+            finalNote = null;
+
+            textBlock_Heading.Text = "Exporting Space reports";
+            textBlock_Subheading.Text = runSummary;
             stackPanel_Progress.Visibility = Visibility.Visible;
-            textBlock_Progress.Text = text;
-            textBlock_ProgressDetail.Text = detail ?? string.Empty;
-            progressBar.IsIndeterminate = !fraction.HasValue;
+
+            RenderProgress();
+            dispatcherTimer.Start();
+        }
+
+        /// <summary>A real count: <paramref name="completed"/> documents finished of <paramref name="total"/>.</summary>
+        private void ReportProgress(int completed, int total, string? detail)
+        {
+            if (progressState == null)
+            {
+                return;
+            }
+
+            progressState.Activity(string.Format(CultureInfo.CurrentCulture, "{0:N0} of {1:N0}", completed, total));
+            progressState.Report(completed, total);
+            progressState.Detail = detail;
+            progressFraction = progressState.Fraction;
+
+            RenderProgress();
+        }
+
+        /// <summary>How a batch that ran ended: finished (with or without failures) or cancelled between documents.</summary>
+        private bool EndProgress(SpaceReportPdfBatchResult result)
+        {
+            if (result.Cancelled)
+            {
+                return EndProgress(
+                    "Export cancelled",
+                    string.Format(CultureInfo.CurrentCulture, "stopped after {0:N0} of {1:N0}", result.Items.Count, result.DocumentCount),
+                    false,
+                    null,
+                    "Cancelled between documents: the PDFs already written are kept, and the log lists every document.");
+            }
+
+            return EndProgress(
+                result.Failed > 0 ? "Space reports exported, with failures" : "Space reports exported",
+                string.Format(CultureInfo.CurrentCulture, "{0:N0} of {0:N0}", result.DocumentCount),
+                true,
+                null,
+                "The log in the output folder lists every document.");
+        }
+
+        /// <summary>The final state: the running stage completed or failed, the clock stopped, the bar where it reached.</summary>
+        private bool EndProgress(string heading, string? activity, bool completed, string? detail, string note)
+        {
+            if (progressState == null)
+            {
+                return false;
+            }
+
+            if (activity != null)
+            {
+                progressState.Activity(activity);
+            }
+
+            if (completed)
+            {
+                progressState.Complete();
+                progressFraction = 1;
+            }
+            else
+            {
+                if (detail is null)
+                {
+                    progressState.Fail();
+                }
+                else
+                {
+                    progressState.Fail(detail);
+                }
+
+                progressState.SkipUnstarted();
+            }
+
+            textBlock_Heading.Text = heading;
+            finalNote = note;
+
+            RenderProgress();
+
+            return true;
+        }
+
+        /// <summary>Re-reads the stage state, as <see cref="PartOProgressWindow.Render"/> does. Internal for tests.</summary>
+        internal void RenderProgress()
+        {
+            if (progressState == null)
+            {
+                UpdateFooter();
+                return;
+            }
+
+            itemsControl_Stages.ItemsSource = Create.ProgressStageRows(progressState);
+
+            string? detail = progressState.Detail;
+            textBlock_Detail.Text = detail ?? string.Empty;
+            textBlock_Detail.Visibility = string.IsNullOrWhiteSpace(detail) ? Visibility.Collapsed : Visibility.Visible;
+
+            //Determinate only on a real count. Once the export has ended the bar stays where it reached.
+            double? fraction = progressState.IsFinished ? progressFraction : progressState.Fraction;
+            progressBar.IsIndeterminate = !progressState.IsFinished && !fraction.HasValue;
             progressBar.Value = fraction ?? 0;
+
+            textBlock_Percent.Text = fraction.HasValue ? string.Format(CultureInfo.InvariantCulture, "{0}%", (int)Math.Floor(fraction.Value * 100 + 1e-9)) : string.Empty;
+            textBlock_Percent.Visibility = fraction.HasValue ? Visibility.Visible : Visibility.Collapsed;
+
+            textBlock_Elapsed.Text = progressState.ElapsedText;
+
+            textBlock_Note.Text = progressState.IsFinished ? finalNote ?? string.Empty : Note(progressState.Status(0) == PartOProgressStageStatus.Running, cancelRequested);
+
+            UpdateFooter();
+        }
+
+        /// <summary>
+        /// The line beside Cancel while an export runs: whether there is a percentage, and when Cancel takes effect -
+        /// the batch observes it between documents only.
+        /// </summary>
+        /// <param name="preparing">The model snapshot is being prepared (no count yet).</param>
+        /// <param name="cancelRequested">Cancel has been pressed and the export has not yet stopped.</param>
+        internal static string Note(bool preparing, bool cancelRequested)
+        {
+            if (cancelRequested)
+            {
+                return "Cancel requested. The PDF being written finishes and is kept; the export stops before the next one and still writes the log.";
+            }
+
+            return preparing
+                ? "No percentage is shown while the model snapshot is prepared: it does not report one. Cancel takes effect before the first PDF is written."
+                : "Cancel takes effect at the next safe point, between documents: the PDF being written finishes and is kept, and the log is still written.";
+        }
+
+        /// <summary>"3 Spaces × 2 reports (Space Assumptions, Space Design Load Summary) = 6 PDFs": what this export covers.</summary>
+        internal static string RunSummary(int spaceCount, IReadOnlyList<SpaceReportPdf> spaceReportPdfs, int? documentCount)
+        {
+            string result = string.Format(
+                CultureInfo.CurrentCulture,
+                "{0:N0} {1} × {2} {3} ({4})",
+                spaceCount,
+                spaceCount == 1 ? "Space" : "Spaces",
+                spaceReportPdfs.Count,
+                spaceReportPdfs.Count == 1 ? "report" : "reports",
+                string.Join(", ", spaceReportPdfs.Select(x => x.Name)));
+
+            return documentCount.HasValue
+                ? string.Format(CultureInfo.CurrentCulture, "{0} = {1:N0} {2}", result, documentCount.Value, documentCount.Value == 1 ? "PDF" : "PDFs")
+                : result;
+        }
+
+        /// <summary>A hint about the form wins; otherwise the progress note, where there is one.</summary>
+        private void UpdateFooter()
+        {
+            bool hint = !string.IsNullOrEmpty(textBlock_Hint.Text);
+            bool note = !hint && stackPanel_Progress.Visibility == Visibility.Visible && !string.IsNullOrEmpty(textBlock_Note.Text);
+
+            textBlock_Hint.Visibility = note ? Visibility.Collapsed : Visibility.Visible;
+            textBlock_Note.Visibility = note ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void ShowSummary(SpaceReportPdfBatchResult result, string directory)
         {
-            stackPanel_Progress.Visibility = Visibility.Collapsed;
             stackPanel_Summary.Visibility = Visibility.Visible;
 
             textBlock_Summary.Text = Summary(result);
@@ -295,10 +500,6 @@ namespace SAM.Analytical.UI.WPF
             {
                 stackPanel_Summary.Visibility = Visibility.Collapsed;
             }
-            else
-            {
-                stackPanel_Progress.Visibility = Visibility.Collapsed;
-            }
 
             button_Cancel.IsEnabled = true;
             button_Cancel.Content = value ? "Cancel" : (Result == null ? "Cancel" : "Close");
@@ -312,6 +513,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 button_Export.IsEnabled = false;
                 textBlock_Hint.Text = string.Empty;
+                UpdateFooter();
                 return;
             }
 
@@ -331,6 +533,7 @@ namespace SAM.Analytical.UI.WPF
 
             button_Export.IsEnabled = hint == null;
             textBlock_Hint.Text = hint ?? string.Empty;
+            UpdateFooter();
         }
 
         private void Options_Changed(object sender, RoutedEventArgs e)
@@ -378,9 +581,12 @@ namespace SAM.Analytical.UI.WPF
             }
 
             cancellationTokenSource.Cancel();
+            cancelRequested = true;
 
             button_Cancel.IsEnabled = false;
             button_Cancel.Content = "Cancelling...";
+
+            RenderProgress();
         }
 
         private void SpaceReportPdfBatchWindow_Closing(object? sender, CancelEventArgs e)

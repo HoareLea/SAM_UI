@@ -72,7 +72,11 @@ namespace SAM.Analytical.UI.WPF
         /// to observe the token. For an operation with long stretches that never look at it (the Iteration 2B
         /// assessments between rounds), where a click could otherwise be accepted and then never acted on.
         /// </param>
-        public PartOProgressHost(string heading, string subheading, IEnumerable<string> stageNames, bool cancellable = true, bool show = true, bool cancelOnlyWhileObserved = false)
+        /// <param name="title">
+        /// The window's title. "Part O" for the Part O operations; another long operation that follows the SAM
+        /// progress-dialog pattern (documentation/ProgressDialogPattern.md) names itself.
+        /// </param>
+        public PartOProgressHost(string heading, string subheading, IEnumerable<string> stageNames, bool cancellable = true, bool show = true, bool cancelOnlyWhileObserved = false, string title = "Part O")
         {
             State = new PartOProgressState(stageNames)
             {
@@ -86,7 +90,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (show)
             {
-                Open(heading, subheading, cancellable);
+                Open(title, heading, subheading, cancellable);
             }
         }
 
@@ -197,7 +201,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void Open(string heading, string subheading, bool cancellable)
+        private void Open(string title, string heading, string subheading, bool cancellable)
         {
             try
             {
@@ -212,7 +216,7 @@ namespace SAM.Analytical.UI.WPF
                             //Not owned: an owner must live on the same thread. Topmost keeps it in front of
                             //the frozen application instead.
                             Topmost = true,
-                            Title = "Part O",
+                            Title = title,
                             Heading = heading,
                             Subheading = subheading,
                             Cancellable = cancellable,

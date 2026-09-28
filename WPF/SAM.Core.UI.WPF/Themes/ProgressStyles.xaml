@@ -1,0 +1,84 @@
+<!-- The SAM progress-dialog pattern: the look of a long operation's progress - a heading, a one-line run
+     summary, one row per stage (status glyph, name, time aligned right), the step inside the running stage,
+     a thin bar, the elapsed time with a percentage only where one is real, and a note beside Cancel saying
+     what the number means and when Cancel takes effect. Merged by a window with
+     <ResourceDictionary Source="/SAM.Core.UI.WPF;component/Themes/ProgressStyles.xaml"/>.
+     Extracted unchanged from PartOProgressWindow, the reference implementation; the stage rows are
+     ProgressStageRow. See documentation/ProgressDialogPattern.md. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- What is running, in the engineer's terms. Finished, it says how it ended. -->
+    <Style x:Key="SAM.Progress.Heading" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!-- One line of context under the heading: the case, the scope, the counts. -->
+    <Style x:Key="SAM.Progress.Subheading" TargetType="TextBlock">
+        <Setter Property="Margin" Value="0,2,0,0"/>
+        <Setter Property="Foreground" Value="#555555"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!-- One stage, bound to a ProgressStageRow. The name is read as one line - "Completed: Write the PDFs" -
+         so the status is never carried by the glyph or its colour alone. -->
+    <DataTemplate x:Key="SAM.Progress.StageRowTemplate">
+        <Grid Margin="0,2,0,2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="22"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding Glyph}" Foreground="{Binding Foreground}" FontWeight="Bold" ToolTip="{Binding StatusText}"/>
+            <TextBlock Grid.Column="1" Text="{Binding Name}" AutomationProperties.Name="{Binding AccessibleName}" Foreground="{Binding Foreground}" FontWeight="{Binding FontWeight}" TextWrapping="Wrap"/>
+            <TextBlock Grid.Column="2" Text="{Binding Duration}" Foreground="#666666" Margin="8,0,0,0"/>
+        </Grid>
+    </DataTemplate>
+
+    <Style x:Key="SAM.Progress.Stages" TargetType="ItemsControl">
+        <Setter Property="Margin" Value="0,12,0,0"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="ItemTemplate" Value="{StaticResource SAM.Progress.StageRowTemplate}"/>
+    </Style>
+
+    <!-- The step inside the running stage, indented under the stage names. -->
+    <Style x:Key="SAM.Progress.Detail" TargetType="TextBlock">
+        <Setter Property="Margin" Value="22,4,0,0"/>
+        <Setter Property="Foreground" Value="#555555"/>
+        <Setter Property="FontStyle" Value="Italic"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!-- Indeterminate unless the work reports a real count. -->
+    <Style x:Key="SAM.Progress.Bar" TargetType="ProgressBar">
+        <Setter Property="Height" Value="4"/>
+        <Setter Property="Margin" Value="0,10,0,0"/>
+        <Setter Property="Minimum" Value="0"/>
+        <Setter Property="Maximum" Value="1"/>
+        <Setter Property="AutomationProperties.Name" Value="Progress"/>
+    </Style>
+
+    <!-- "Elapsed 1m 44s" on the left, "63%" on the right. -->
+    <Style x:Key="SAM.Progress.Status" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="#333333"/>
+    </Style>
+
+    <!-- Beside Cancel: whether the percentage is real, and when Cancel takes effect. -->
+    <Style x:Key="SAM.Progress.Note" TargetType="TextBlock">
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Foreground" Value="#777777"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Margin" Value="0,0,10,0"/>
+    </Style>
+
+    <!-- Cancel, bottom right, level with the last line of the note. -->
+    <Style x:Key="SAM.Progress.CancelButton" TargetType="Button">
+        <Setter Property="MinWidth" Value="80"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="Padding" Value="8,0"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+    </Style>
+</ResourceDictionary>
