@@ -1,0 +1,59 @@
+﻿# Invokes the ribbon's Print RDS in the dev build and records every top-level window of the process for 30 s:
+# which progress window appears ("Print RDS", the SAM progress-dialog pattern), its stage rows, and how it ends.
+# Excel is not installed on this VM, so the command cannot get past its Excel step here.
+param([string]$Model = 'C:\TasOut\progress-pattern\app\rds\bridge_peaks.sam')
+$ErrorActionPreference = 'Stop'
+. "$PSScriptRoot\uia.ps1"
+Add-Type -AssemblyName System.Drawing
+Add-Type -Namespace P -Name U -MemberDefinition @'
+[DllImport("user32.dll")] public static extern int GetWindowLong(IntPtr h, int i);
+[DllImport("user32.dll")] public static extern IntPtr GetWindow(IntPtr h, uint c);
+[DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr h, IntPtr p);
+[DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetClassName(IntPtr h, System.Text.StringBuilder s, int n);
+[DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr h);
+public static string Cls(IntPtr h) { var b = new System.Text.StringBuilder(256); GetClassName(h, b, 256); return b.ToString(); }
+'@
+$CT = [System.Windows.Automation.ControlType]
+$Exe = 'C:\Users\Virtual Machine\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
+$Screens = 'C:\TasOut\progress-pattern\screens'
+$Log = 'C:\TasOut\progress-pattern\rds-log.txt'
+Remove-Item $Log -ErrorAction SilentlyContinue
+function Say([string]$s) { $line = "{0:HH:mm:ss.f}  {1}" -f (Get-Date), $s; $line; Add-Content -Path $Log -Value $line -Encoding UTF8 }
+
+Get-Process 'SAM Analytical' -ErrorAction SilentlyContinue | Stop-Process -Force; Start-Sleep 2
+$r = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = "`"$Exe`" /Path=$Model"; CurrentDirectory = (Split-Path $Exe) }
+$procId = $r.ProcessId; $main = $null
+for ($i = 0; $i -lt 90 -and -not $main; $i++) { Start-Sleep 1; $h = [W32]::Top([uint32]$procId) | ? { [W32]::Text($_) -like 'SAM Analytical `[*' } | select -First 1; if ($h) { $main = $AE::FromHandle($h) } }
+Start-Sleep 5
+Say "app: $($main.Current.Name) pid $procId"
+
+$tab = Find-ByName $main 'Edit' $CT::TabItem
+$tab.GetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern).Select(); Start-Sleep 1
+$b = Find-ById $main 'RibbonButton_PrintRoomDataSheets'
+Say "ribbon: '$($b.Current.Name)' enabled=$($b.Current.IsEnabled)"
+$b.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke()
+
+$t0 = Get-Date; $shots = 0; $seenAt = $null; $goneAt = $null
+while (((Get-Date) - $t0).TotalSeconds -lt 30) {
+  $h = [W32]::Top([uint32]$procId) | ? { [W32]::Text($_) -eq 'Print RDS' } | select -First 1
+  if ($h -and -not $seenAt) {
+    $seenAt = Get-Date; Say ("'Print RDS' window up after {0:F2} s" -f ($seenAt - $t0).TotalSeconds)
+    $mh = [IntPtr]$main.Current.NativeWindowHandle
+    $ex = [P.U]::GetWindowLong($h, -20); $own = [P.U]::GetWindow($h, 4)
+    Say ("  owner {0}: class '{1}', visible {2}; main window {3} -> owner is main window: {4}" -f $own, [P.U]::Cls($own), [P.U]::IsWindowVisible($own), $mh, ($own -eq $mh))
+    Say ("  topmost (WS_EX_TOPMOST) = {0}; owner = {1}; UI thread id {2} (main window thread {3}) -> same thread: {4}" -f (($ex -band 8) -ne 0), $own, [P.U]::GetWindowThreadProcessId($h, [IntPtr]::Zero), [P.U]::GetWindowThreadProcessId($mh, [IntPtr]::Zero), ([P.U]::GetWindowThreadProcessId($h, [IntPtr]::Zero) -eq [P.U]::GetWindowThreadProcessId($mh, [IntPtr]::Zero)))
+  }
+  if ($h -and $shots -lt 2) {
+    $e = $AE::FromHandle($h); $rc = $e.Current.BoundingRectangle
+    $bmp = New-Object System.Drawing.Bitmap ([int]$rc.Width), ([int]$rc.Height)
+    [System.Drawing.Graphics]::FromImage($bmp).CopyFromScreen([int]$rc.X, [int]$rc.Y, 0, 0, $bmp.Size); $shots++
+    $bmp.Save("$Screens\R$shots-print-rds.png"); $bmp.Dispose()
+    Say ("shot R${shots}: " + (($e.FindAll($TS::Descendants, [System.Windows.Automation.Condition]::TrueCondition) | % { $_.Current.Name } | ? { $_ }) -join ' | '))
+  }
+  if (-not $h -and $seenAt -and -not $goneAt) { $goneAt = Get-Date; Say ("'Print RDS' window closed after {0:F2} s" -f ($goneAt - $t0).TotalSeconds) }
+  foreach ($w in Get-TopWindows $procId) { if ($w.Class -eq '#32770') { Say "dialog '$($w.Title)': $(Get-DialogText $w.Handle)"; break } }
+  if ($goneAt) { break }
+  Start-Sleep -Milliseconds 20
+}
+Say "app still running: $([bool](Get-Process -Id $procId -ErrorAction SilentlyContinue))"
+

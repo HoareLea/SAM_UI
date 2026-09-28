@@ -1,0 +1,8 @@
+﻿13:19:51.0  app: SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1] pid 16432
+13:19:52.2  ribbon: 'Print RDS' enabled=True
+13:19:52.3  'Print RDS' window up after 0.08 s
+13:19:52.3    owner 722482: class 'HwndWrapper[SAM Analytical;;e26eff72-585b-458c-8137-4765aaa82782]', visible False; main window 13042702 -> owner is main window: False
+13:19:52.4    topmost (WS_EX_TOPMOST) = False; owner = 722482; UI thread id 18024 (main window thread 18024) -> same thread: True
+13:19:52.5  shot R1: 
+13:19:52.5  'Print RDS' window closed after 0.27 s
+13:19:52.5  app still running: True

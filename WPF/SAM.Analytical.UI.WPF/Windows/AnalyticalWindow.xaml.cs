@@ -2506,7 +2506,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_PrintRoomDataSheets_Click(object sender, RoutedEventArgs e)
         {
-            uIAnalyticalModel?.PrintRoomDataSheets(windowHandle);
+            uIAnalyticalModel?.PrintRoomDataSheetsWithProgress(windowHandle);
         }
 
         private void RibbonButton_SpaceAssumptionsPdf_Click(object sender, RoutedEventArgs e)
