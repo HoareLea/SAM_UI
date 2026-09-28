@@ -11,7 +11,7 @@ PASS Flat 1 scenario BaseNaturalVentilation
 PASS Flat 2 scenario BasePassive (uncooled MVHR)
 PASS Flat 3 scenario ActiveTrimCooling
 PASS corridor scenario DwellingIndependent
-PASS thermal source complete   (00:00:49.4638396)
+PASS thermal source complete   (00:01:02.8365070)
 PASS guidance settings at SAM's rule 
 PASS one SAM_Systems graph materialised 
 PASS exactly one guidance-cooled unit, Flat 3's
@@ -20,12 +20,13 @@ PASS DisplacementVentilation = false on all 6 system zones
 PASS one plant room
 PASS Flat 3 air system DX coils = 1
 PASS Flat 2 air system DX coils = 0
-PASS one TPD Systems document simulated  (00:01:05.6351330)
+PASS one TPD Systems document simulated  (00:01:08.9024377)
 PASS guidance read-back for 1 unit, Flat 3's air system
 PASS Flat 3 receives cooling: 1505 h with DX load, peak sensible 802 W, elevated 80 l/s
-PASS bridge complete, rooms=6  (00:00:37.5578340)
+PASS bridge complete, rooms=6  (00:00:38.0114164)
 PASS TM59 assessed 
 TM59 overall=Fail corridor=SignificantRisk
+PASS TM59: no space left unassessed (0)
    Flat 2 / Bedroom 2_3: mechanical >26 C hours 316/262 Fail
 PASS Flat 2 / Bedroom 2_3 on the mechanical TM59 criterion
    Flat 2 / Kitchen_4: mechanical >26 C hours 320/142 Fail
@@ -38,9 +39,12 @@ PASS Flat 3 / Kitchen_7 on the mechanical TM59 criterion
 PASS Flat 1 / Studio 1_0 on the natural TM59 criterion
    Flat 1 / Studio 1_0: natural Criterion 2 20/32 Pass
 PASS Flat 1 / Studio 1_0 on the natural TM59 criterion
+PASS Flat 1 has TM59 result rows (2)
+PASS Flat 2 has TM59 result rows (2)
+PASS Flat 3 has TM59 result rows (2)
 CIBSE TM59:2017 OVERHEATING ASSESSMENT
 ======================================
-Source: C:\TasOut\parto-pr3b-gate-2026-09-28\Gate_Systems-Bridge.tsd
+Source: C:\TasOut\parto-pr3b-gate-2026-09-28\rerun-132\Gate_Systems-Bridge.tsd
 Thermal model scope: WHOLE BUILDING
 TM52 building category: Category II
 Part O modelling assumptions: NOT VERIFIED BY THIS RESULT REPORT

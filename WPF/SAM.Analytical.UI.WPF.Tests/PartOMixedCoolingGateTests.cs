@@ -32,8 +32,8 @@ namespace SAM.Analytical.UI.WPF.Tests
     /// Needs <c>SAM_PARTO_PR3B_GATE</c> (output folder) and <c>SAM_PARTO_MIXED_BASELINE</c> (the clean baseline).
     /// Optional: <c>SAM_PARTO_CATALOGUE</c> (catalogue folder, default the installed one), <c>SAM_PARTO_MIXED_ACCEPTED</c>
     /// (the baseline with Flat 3's accepted Optimised design, for the retained-design + cooling case) and
-    /// <c>SAM_PARTO_LEGACY_RUN</c> (a saved Iteration 1a run folder, copied, for the B0 / MG re-acceptance with
-    /// DisplacementVentilation = false). Without the two required variables it does nothing.
+    /// <c>SAM_PARTO_LEGACY_RUNS</c> (saved Iteration 1a run folders, checked read-only to restore for the B0 / MG
+    /// re-acceptance with DisplacementVentilation = false). Without the two required variables it does nothing.
     /// </summary>
     [Collection(WpfCollection.Name)]
     public class PartOMixedCoolingGateTests
@@ -182,14 +182,28 @@ namespace SAM.Analytical.UI.WPF.Tests
                     Spaces(model_Source.AdjacencyCluster, zone).ForEach(x => zone_By_Space[x.Guid] = zone.Name);
                 }
 
+                Check((partOTM59Assessment.SpaceGuids_Unassessed?.Count ?? 0) == 0, "TM59: no space left unassessed (" + (partOTM59Assessment.SpaceGuids_Unassessed?.Count ?? 0) + ")");
+
+                Dictionary<string, int> rows_By_Zone = [];
                 foreach (PartOTM59SpaceResult partOTM59SpaceResult in partOTM59Assessment.SpaceResults ?? [])
                 {
                     zone_By_Space.TryGetValue(partOTM59SpaceResult.SpaceGuid_Design, out string name_Zone);
+                    if (name_Zone is not null)
+                    {
+                        rows_By_Zone[name_Zone] = (rows_By_Zone.TryGetValue(name_Zone, out int count) ? count : 0) + 1;
+                    }
+
                     Log(string.Format("   {0} / {1}: {2} {3} {4}/{5} {6}", name_Zone ?? "?", partOTM59SpaceResult.SpaceName, partOTM59SpaceResult.Mechanical ? "mechanical" : "natural", partOTM59SpaceResult.Check, partOTM59SpaceResult.Actual, partOTM59SpaceResult.Limit, partOTM59SpaceResult.ComplianceStatus));
                     if (name_Zone is not null)
                     {
                         Check(partOTM59SpaceResult.Mechanical == (name_Zone != "Flat 1"), name_Zone + " / " + partOTM59SpaceResult.SpaceName + " on the " + (name_Zone == "Flat 1" ? "natural" : "mechanical") + " TM59 criterion");
                     }
+                }
+
+                //A dwelling whose rows went missing would otherwise pass unseen: each must have its own results.
+                foreach (Zone zone in new[] { zone_Flat1, zone_Flat2, zone_Flat3 })
+                {
+                    Check(rows_By_Zone.TryGetValue(zone.Name, out int count) && count > 0, zone.Name + " has TM59 result rows (" + (rows_By_Zone.TryGetValue(zone.Name, out int count_Log) ? count_Log : 0) + ")");
                 }
 
                 Log(partOTM59Assessment.Report?.ToString());
@@ -246,82 +260,76 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Legacy Iteration 3 re-acceptance (SAM PR3B record §4): B0 (Parity) and MG (manufacturer guidance) rerun on
-        /// licensed TAS from a COPY of a saved Iteration 1a run, now with DisplacementVentilation = false on every
-        /// system zone (SAM_Systems PR3B-2). The saved run folder is never written. Reports the outcome for comparison
-        /// with the saved reviews; the accepted ventilation design is not changed.
+        /// Legacy Iteration 3 re-acceptance, provenance half (SAM PR3B record §4): each saved Iteration 1a run folder in
+        /// <c>SAM_PARTO_LEGACY_RUNS</c> (separated by ';') must restore under the current stack and be eligible for
+        /// Iteration 3. <b>Read-only</b>: a run's provenance records absolute paths, so a copied run would still resolve
+        /// - and an Iteration 3 run would write into - the original folder; B0 and MG themselves are therefore driven
+        /// through the real product UI, never from here. Every file in each folder is snapshotted before and after and
+        /// must be unchanged.
         /// </summary>
         [WpfFact]
-        public void Gate_LegacyIteration3_B0AndMG_DisplacementOff()
+        public void Gate_LegacyIteration3_FreshRunRestores()
         {
             string directory = Environment.GetEnvironmentVariable("SAM_PARTO_PR3B_GATE");
-            string directory_Run = Environment.GetEnvironmentVariable("SAM_PARTO_LEGACY_RUN");
-            if (string.IsNullOrWhiteSpace(directory) || string.IsNullOrWhiteSpace(directory_Run) || !Directory.Exists(directory_Run))
+            string runs = Environment.GetEnvironmentVariable("SAM_PARTO_LEGACY_RUNS");
+            if (string.IsNullOrWhiteSpace(directory) || string.IsNullOrWhiteSpace(runs))
             {
                 return;
             }
 
+            Directory.CreateDirectory(directory);
             StringBuilder log = new();
-            void Log(string text)
+            List<string> failures = [];
+            void Check(bool condition, string text)
             {
-                log.AppendLine(text);
-                File.WriteAllText(Path.Combine(directory, "legacy.log"), log.ToString());
+                log.AppendLine((condition ? "PASS " : "FAIL ") + text);
+                File.WriteAllText(Path.Combine(directory, "legacy-restore.log"), log.ToString());
+                if (!condition)
+                {
+                    failures.Add(text);
+                }
             }
 
-            Directory.CreateDirectory(directory);
-            List<string> failures = [];
-
-            foreach ((string name, PartOIteration3BehaviourMode mode) in new[] { ("Legacy-B0", PartOIteration3BehaviourMode.Parity), ("Legacy-MG", PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance) })
+            foreach (string directory_Run in runs.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
             {
-                string directory_Copy = Path.Combine(directory, name);
-                if (Directory.Exists(directory_Copy))
+                Check(Directory.Exists(directory_Run), "run folder exists: " + directory_Run);
+                if (!Directory.Exists(directory_Run))
                 {
-                    Directory.Delete(directory_Copy, true);
-                }
-
-                Directory.CreateDirectory(directory_Copy);
-                foreach (string path in Directory.GetFiles(directory_Run))
-                {
-                    if (path.EndsWith(".sam", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".json", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".tbd", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".tsd", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) || path.EndsWith(".t3d", StringComparison.OrdinalIgnoreCase) || path.EndsWith("-TM59.txt", StringComparison.OrdinalIgnoreCase))
-                    {
-                        //Only the Iteration 1a run itself - no Iteration 3 artefacts, so nothing stale is reviewed.
-                        if (Path.GetFileName(path).Contains("-It3") || Path.GetFileName(path).Contains("Iteration3"))
-                        {
-                            continue;
-                        }
-
-                        File.Copy(path, Path.Combine(directory_Copy, Path.GetFileName(path)));
-                    }
-                }
-
-                string path_Model = Directory.GetFiles(directory_Copy, "*.partorun.json").Select(x => x.Substring(0, x.Length - ".partorun.json".Length) + ".sam").Single(File.Exists);
-                AnalyticalModel analyticalModel = Core.Convert.ToSAM<AnalyticalModel>(path_Model).First();
-
-                PartORun partORun = new();
-                bool restored = partORun.Restore(analyticalModel, path_Model, out string refusal_Restore);
-                Log(name + " restored=" + restored + " " + refusal_Restore);
-                if (!restored)
-                {
-                    failures.Add(name + " not restored");
                     continue;
                 }
 
-                DateTime dateTime = DateTime.Now;
-                PartOIteration3Result partOIteration3Result = Modify.RunPartOIteration3(partORun, new PartOIteration3Pipeline(), CancellationToken.None, mode);
-                Log(string.Format("{0} ({1}) complete={2} in {3}: {4}", name, mode, partOIteration3Result.IsComplete, DateTime.Now - dateTime, PartOIteration3ReportText.Outcome(partOIteration3Result)));
-                Log("  " + (partOIteration3Result.IsComplete
-                    ? PartOIteration3ReportText.Comparison(partOIteration3Result, System.Globalization.CultureInfo.InvariantCulture)
-                    : PartOIteration3ReportText.Refusal(partOIteration3Result).Replace(Environment.NewLine, " / ")));
-                Log("  report=" + partOIteration3Result.Path_Report);
+                Dictionary<string, string> before = Snapshot(directory_Run);
 
-                if (!partOIteration3Result.IsComplete)
+                string path_Model = Directory.GetFiles(directory_Run, "*.partorun.json").Select(x => x.Substring(0, x.Length - ".partorun.json".Length) + ".sam").SingleOrDefault(File.Exists);
+                Check(path_Model is not null, "one saved run (.partorun.json + .sam) in " + directory_Run);
+                if (path_Model is null)
                 {
-                    failures.Add(name + " not complete");
+                    continue;
                 }
+
+                AnalyticalModel analyticalModel = Core.Convert.ToSAM<AnalyticalModel>(path_Model).First();
+                PartORun partORun = new();
+                bool restored = partORun.Restore(analyticalModel, path_Model, out string refusal_Restore);
+                Check(restored, "restores under the current stack: " + path_Model + " " + refusal_Restore);
+
+                if (restored)
+                {
+                    string path_TSD = partORun.Path_TSD;
+                    Check(path_TSD is not null && Path.GetFullPath(path_TSD).StartsWith(Path.GetFullPath(directory_Run), StringComparison.OrdinalIgnoreCase), "its results are its own folder's: " + path_TSD);
+                    Modify.Capabilities(partORun, out PartOIteration3Eligibility partOIteration3Eligibility);
+                    Check(partOIteration3Eligibility.CanRun, "eligible for Iteration 3 " + partOIteration3Eligibility.Refusal_Run);
+                }
+
+                Dictionary<string, string> after = Snapshot(directory_Run);
+                Check(before.Count == after.Count && before.All(x => after.TryGetValue(x.Key, out string value) && value == x.Value), "folder unchanged by the check (" + before.Count + " files)");
             }
 
-            Log(failures.Count == 0 ? "LEGACY RE-RUN COMPLETE" : "LEGACY RE-RUN FAILED: " + string.Join(", ", failures));
             Assert.Empty(failures);
+        }
+
+        private static Dictionary<string, string> Snapshot(string directory)
+        {
+            return Directory.GetFiles(directory).ToDictionary(x => Path.GetFileName(x), x => new FileInfo(x).Length + "|" + File.GetLastWriteTimeUtc(x).Ticks, StringComparer.OrdinalIgnoreCase);
         }
 
         private static PartOMaterialisation Materialise(AnalyticalModel baseline, IEnumerable<VentilationUnitCapacityDescriptor> descriptors, IEnumerable<VentilationUnitTemplate> templates, params PartODwellingStrategy[] strategies)
