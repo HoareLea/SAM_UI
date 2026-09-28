@@ -3,7 +3,41 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
-## Current (reporting stream): SAM progress-dialog pattern - Space report export and Print RDS UX (28 Sep 2026) - MERGED (`596a8a13`)
+## Current (reporting stream): Reporting hardening - DocumentContext wording, output-folder fail-fast (28 Sep 2026) - MERGED (`8f1b7ee5`)
+
+**Status.** Small, focused fix for two Kimi final-review findings (M1, M2) on `SpaceReportPdfBatch` /
+`Analytical.Reporting.DocumentContext` (the PR2F-2 batch Space report export). Merged:
+[SAM-BIM/SAM_UI#136](https://github.com/SAM-BIM/SAM_UI/pull/136), branch
+`feature/reporting-hardening-m1-m2-2026-09-28` from `sow/2026-Q3` `fc6e0861`, merged as `8f1b7ee5`. CI green (2/2
+checks). No review required, no comments. M3 and M4 are out of scope. Full record:
+`documentation/Reporting-SpaceReportPdfBatch-Hardening-PR.md`.
+- **M1 (misleading "snapshot/model copy" wording).** `SpaceReportPdfBatch`'s doc comments and
+  `documentation/Reporting-SpaceReportPdfBatch.md` called the shared `DocumentContext` a "snapshot" of the model.
+  Traced through SAM core (`AnalyticalModel.AdjacencyCluster` → `SAMObjectRelationCluster`/`RelationCluster` copy
+  constructors): the copy is shallow - a fresh cluster wrapper, but the same `Space`/`Panel` object references as
+  the live model, not an isolated copy. Reworded the class/method/property doc comments and the architecture doc to
+  say that plainly, and to explain why it is safe here: **Export Space reports...** is a modal window, so nothing
+  else can mutate the model while the batch runs; the class itself does not defend against a concurrent mutation.
+  No behaviour change. User-facing UI copy ("Prepare the model snapshot...") is unchanged - a plain-language label,
+  not a technical claim, left out of scope.
+- **M2 (one `Output` failure per document when the output folder can't be created).** `SpaceReportPdfBatch.Run`
+  wrapped `Directory.CreateDirectory` and opening the log's `StreamWriter` in one try/catch, so a directory-creation
+  failure was swallowed and every document was still attempted, each failing at the `Output` stage. Split directory
+  creation into its own try/catch that now fails fast - throws `IOException` (with `Trace.TraceError`) before any
+  document is attempted - reusing the window's existing "Space report export stopped" handling for a `Run`
+  exception. No window code changed. Opening the log file (once the folder exists) keeps its previous behaviour: a
+  log that can't be written never stops the PDFs.
+- **Files.** `Classes/Reporting/SpaceReportPdfBatch.cs` (doc-comment wording; split the directory/log try-catch);
+  `documentation/Reporting-SpaceReportPdfBatch.md` (wording; documented the fail-fast behaviour);
+  `WPF/SAM.Analytical.UI.WPF.Tests/SpaceReportPdfBatchTests.cs` (two new regression tests: a batch-level test that
+  `Run` throws `IOException` before any document when the output folder can't be created, and a window-level test
+  that the failure surfaces as the existing "stopped" state with exactly one message).
+- **Validation.** `SAM_UI.sln` Debug and Release: 0 errors. `SpaceReportPdfBatchTests` +
+  `SpaceReportPdfBatchWindowTests`: 42/42 passed (was 40; +2 new). Full `SAM.Analytical.UI.WPF.Tests`: **1397/1397**
+  passed (was 1395; +2 new), 0 failed.
+- **Next step.** None for this entry. M3 and M4 remain open findings for a future, separately scoped PR if picked up.
+
+## Previous (reporting stream): SAM progress-dialog pattern - Space report export and Print RDS UX (28 Sep 2026) - MERGED (`596a8a13`)
 
 **Status.** This is UX, refactoring and documentation only, and it is merged:
 [SAM-BIM/SAM_UI#135](https://github.com/SAM-BIM/SAM_UI/pull/135), branch
