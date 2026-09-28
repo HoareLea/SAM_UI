@@ -137,7 +137,7 @@ SAM_Deploy `bc76a31`. No SAM change.
     `SAM_PR2F2_SCALE_OUT=<folder>` (optional `SAM_PR2F2_SCALE_SAVE=<x.sam>`).
 - **Next step.** Done: PR2F-3 deployed via SAM_Deploy#57 (`3d531508`), see the entry above.
 
-## Current: Mixed Part O dwelling strategies - PR4 large-project acceptance (28 Sep 2026) - MERGED (SAM_UI#137 `d6f098d2`); SAM_Deploy pins next
+## Current: Mixed Part O dwelling strategies - PR4 large-project acceptance (28 Sep 2026) - MERGED (SAM_UI#137 `d6f098d2`); DEPLOYED (SAM_Deploy#58 `c74122b3`)
 
 **Status.** [SAM-BIM/SAM_UI#137](https://github.com/SAM-BIM/SAM_UI/pull/137) merged as `d6f098d2` (head `aa85e396`, CI
 build + spdx green; no review - Codex usage limit). Tests, harness and evidence only - **no production code change**.
@@ -171,8 +171,12 @@ Record: `documentation/PartO-MixedDwellingStrategies-PR4.md`; evidence `document
 - **Unresolved.** The ~5,000-space criterion - owner decision on a follow-up outside this programme (EDSL: TSD per-zone
   read performance; and/or SAM_Tas skipping per-zone reads the Part O routes do not use - `Overheating` + zone-group
   peaks were ~43 of the 50 min of "Adding Results" at ×30).
-- **Next step.** SAM_Deploy pin PR: SAM_UI `8971cfb0` → `d6f098d2` (ships PR3C), SAM_Tas_Grasshopper `a4d4f73` →
-  `9ddf8ff` (#7), SAM/SAM_Systems/SAM_Tas to their docs-only tips; installer build + installed-product smoke.
+- **Deployed.** SAM_Deploy#58 merged as `c74122b3` (closeout `f8df7f3`): SAM_UI `8971cfb0` → `0c7b5ec5` (ships PR3C),
+  SAM_Tas_Grasshopper → `9ddf8ff` (#7), SAM/SAM_Systems/SAM_Tas docs-only tips. Installer run 220
+  (`2026.3.220.0+87d3560`) green, H12 no violations; installed-product smoke of the PR3C mixed cooled case PASSED
+  (inspection 24 PASS). Record: SAM_Deploy `DEPLOY_PARTO_MIXED_PR4.md`.
+- **Next step.** None in this programme. The only open item is the owner's decision on the TSD-read-scaling follow-up
+  above (outside the Mixed Dwelling Strategies programme).
 
 ## Previous: Mixed Part O dwelling strategies - PR3C MERGED (28 Sep 2026) - SAM_UI#134 (`453ca942`)
 
