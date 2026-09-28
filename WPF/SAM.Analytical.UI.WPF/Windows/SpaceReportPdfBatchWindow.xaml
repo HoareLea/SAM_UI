@@ -2,11 +2,21 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Export Space reports" Width="520" SizeToContent="Height" ResizeMode="NoResize"
-        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+        FontFamily="Roboto Light" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Core.UI.WPF;component/Themes/ProgressStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <!-- SAM Documentation Framework PR2F-2: many Spaces x one or both Space report PDFs into one folder, through
          SpaceReportPdfBatch (one model snapshot, one PDF at a time, one log). The Spaces are counted, never listed:
          a model can hold thousands. The one-Space commands (Space Assumptions PDF, Space Design Load Summary PDF)
-         stay the quick route for a single Space. -->
+         stay the quick route for a single Space.
+         The progress follows the SAM progress-dialog pattern (documentation/ProgressDialogPattern.md; reference:
+         PartOProgressWindow): heading, run summary, stage rows with times on the right, the document in hand, a
+         bar with the real percentage, elapsed time, and a note beside Cancel saying when Cancel takes effect. -->
     <Grid Margin="14,12,14,12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -43,10 +53,20 @@
             </Grid>
         </GroupBox>
 
-        <StackPanel x:Name="stackPanel_Progress" Grid.Row="3" Margin="0,10,0,0" Visibility="Collapsed">
-            <TextBlock x:Name="textBlock_Progress" TextWrapping="Wrap" FontWeight="SemiBold"/>
-            <TextBlock x:Name="textBlock_ProgressDetail" TextWrapping="Wrap" Foreground="#555555" TextTrimming="CharacterEllipsis"/>
-            <ProgressBar x:Name="progressBar" Height="6" Margin="0,6,0,0" Minimum="0" Maximum="1" AutomationProperties.Name="Progress"/>
+        <StackPanel x:Name="stackPanel_Progress" Grid.Row="3" Margin="0,14,0,0" Visibility="Collapsed">
+            <TextBlock x:Name="textBlock_Heading" Style="{StaticResource SAM.Progress.Heading}"/>
+            <TextBlock x:Name="textBlock_Subheading" Style="{StaticResource SAM.Progress.Subheading}"/>
+            <ItemsControl x:Name="itemsControl_Stages" Style="{StaticResource SAM.Progress.Stages}"/>
+            <TextBlock x:Name="textBlock_Detail" Style="{StaticResource SAM.Progress.Detail}" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"/>
+            <ProgressBar x:Name="progressBar" Style="{StaticResource SAM.Progress.Bar}"/>
+            <Grid Margin="0,6,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="textBlock_Elapsed" Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource SAM.Progress.Status}"/>
+                <TextBlock x:Name="textBlock_Percent" Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource SAM.Progress.Status}" Visibility="Collapsed"/>
+            </Grid>
         </StackPanel>
 
         <StackPanel x:Name="stackPanel_Summary" Grid.Row="4" Margin="0,10,0,0" Visibility="Collapsed">
@@ -63,9 +83,11 @@
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
+            <!-- Before a run: what is missing. During and after one: the progress note, as in the Part O window. -->
             <TextBlock x:Name="textBlock_Hint" Grid.Column="0" TextWrapping="Wrap" Foreground="#777777" VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <Button x:Name="button_Export" Grid.Column="1" Content="Export" MinWidth="80" Height="24" IsDefault="True" Click="button_Export_Click"/>
-            <Button x:Name="button_Cancel" Grid.Column="2" Content="Cancel" MinWidth="80" Height="24" Margin="6,0,0,0" Click="button_Cancel_Click"/>
+            <TextBlock x:Name="textBlock_Note" Grid.Column="0" Style="{StaticResource SAM.Progress.Note}" Visibility="Collapsed"/>
+            <Button x:Name="button_Export" Grid.Column="1" Content="Export" MinWidth="80" Height="24" VerticalAlignment="Bottom" IsDefault="True" Click="button_Export_Click"/>
+            <Button x:Name="button_Cancel" Grid.Column="2" Content="Cancel" Margin="6,0,0,0" Style="{StaticResource SAM.Progress.CancelButton}" Click="button_Cancel_Click"/>
         </Grid>
     </Grid>
 </Window>
