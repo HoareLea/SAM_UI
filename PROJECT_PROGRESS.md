@@ -137,7 +137,44 @@ SAM_Deploy `bc76a31`. No SAM change.
     `SAM_PR2F2_SCALE_OUT=<folder>` (optional `SAM_PR2F2_SCALE_SAVE=<x.sam>`).
 - **Next step.** Done: PR2F-3 deployed via SAM_Deploy#57 (`3d531508`), see the entry above.
 
-## Current: Mixed Part O dwelling strategies - PR3C MERGED (28 Sep 2026) - SAM_UI#134 (`453ca942`)
+## Current: Mixed Part O dwelling strategies - PR4 large-project acceptance (28 Sep 2026) - MERGED (SAM_UI#137 `d6f098d2`); SAM_Deploy pins next
+
+**Status.** [SAM-BIM/SAM_UI#137](https://github.com/SAM-BIM/SAM_UI/pull/137) merged as `d6f098d2` (head `aa85e396`, CI
+build + spdx green; no review - Codex usage limit). Tests, harness and evidence only - **no production code change**.
+Record: `documentation/PartO-MixedDwellingStrategies-PR4.md`; evidence `documentation/evidence/parto-mixed-pr4/`.
+- **Scope (records, not inferred).** SAM PR0 §F: full-year mixed run on a large project (hundreds of dwellings, ~5,000
+  spaces) + SAM_Deploy pins; acceptance = TM59 per-dwelling outcome matches the strategies, no `.sam` growth,
+  materialisation budget measured. PR3A §14.1: include cooled dwellings; TPD scale with hundreds of air systems.
+  "Systems route for all" stays a separate post-PR4 proposal.
+- **Fixture.** No large residential project on this machine; the real PR2 clean baseline (3 flats + corridor, 9 spaces)
+  replicated into independent blocks 150 × 100 m apart (`PartOMixedLargeProjectFixture`), so block 1's TM59 outcome is
+  every block's reference.
+- **Evidence.** No TAS, 5,000 spaces (`PartOMixedLargeProjectTests`, thirds Natural / MVHR / MVHR + cooling): SAM
+  materialisation 4.1 s; ONE SAM_Systems graph 333 air systems 7.8 s, DX coil on exactly the 166 cooled units; no growth
+  over rebuilds or cooling off → on. Licensed production Build & Run (`PartOMixedLargeProjectAcceptance`, env-gated):
+  ×10 cooled (30 dwellings) **PASSED 27:54**; ×30 cooled (90 dwellings, 60 air systems, 30 cooled) **PASSED 4:33:29**;
+  ×10 uncooled IZAM **PASSED 6:44** - every dwelling = its block reference (0 deviate), truthful scenarios, one TPD,
+  guidance read-back per cooled unit, run model restores, no growth.
+- **Finding (the practical ceiling).** ×10 → ×30 is 3× the project and 9.8× the time (~N^2.1). TAS TSD per-zone result
+  reads - thermal-source "Adding Results" 27 s → 3,038 s, bridge 9:31 → 1:21:06, TM59 26 s → 1:15:41 - are CPU-bound in
+  TSD.exe (64-bit, v2.0.0.1) and grow with the file; at ×30 ONE `GetAnnualZoneResult` costs the same 22.4 s as 365
+  daily reads, and the TSD API has no building-wide per-zone-series call. TPD conversion is linear (~21 s per air system).
+  **The ~5,000-space full-year run (PR0 §F) is NOT practical on current TAS** (crude extrapolation ~2,000 h); the limit
+  is outside SAM_UI and applies equally to the homogeneous Part O workflow.
+- **Validation.** Focused `PartOMixed*` + `PartOIteration3*` 311/311; full WPF suite 1,400/1,400 on the branch updated
+  with `sow/2026-Q3` `0580078` (#135, #136); one load-sensitive failure in the first run
+  (`PartOWorkflowSimplificationTests.The_progress_window_keeps_its_content_after_standing_aside_for_a_dialog`) passed 3/3
+  alone and in the rerun.
+- **PR3C limitations triaged:** no Optimised + cooled fixture (retained); DX coils checked on the SAM_Systems graph at
+  scale (acceptance only); leftover `.tpd`/CSV after an IZAM rebuild, 1240 px column overflow (retained); no cooling in
+  screening (by design).
+- **Unresolved.** The ~5,000-space criterion - owner decision on a follow-up outside this programme (EDSL: TSD per-zone
+  read performance; and/or SAM_Tas skipping per-zone reads the Part O routes do not use - `Overheating` + zone-group
+  peaks were ~43 of the 50 min of "Adding Results" at ×30).
+- **Next step.** SAM_Deploy pin PR: SAM_UI `8971cfb0` → `d6f098d2` (ships PR3C), SAM_Tas_Grasshopper `a4d4f73` →
+  `9ddf8ff` (#7), SAM/SAM_Systems/SAM_Tas to their docs-only tips; installer build + installed-product smoke.
+
+## Previous: Mixed Part O dwelling strategies - PR3C MERGED (28 Sep 2026) - SAM_UI#134 (`453ca942`)
 
 - **Status: PR3C COMPLETE/CLOSED.** Per-dwelling active cooling in Mixed Design implemented, tested, and accepted on
   licensed TAS through the real `SAM Analytical.exe`. [SAM-BIM/SAM_UI#134](https://github.com/SAM-BIM/SAM_UI/pull/134),
