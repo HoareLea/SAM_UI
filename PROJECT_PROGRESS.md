@@ -3,7 +3,51 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
-## Current (reporting stream): PR2F-3 batch Space report export DEPLOYED (28 Sep 2026) - SAM_Deploy#57 merged (`3d531508`)
+## Current (reporting stream): SAM progress-dialog pattern - Space report export and Print RDS UX (28 Sep 2026) - MERGED (`596a8a13`)
+
+**Status.** This is UX, refactoring and documentation only, and it is merged:
+[SAM-BIM/SAM_UI#135](https://github.com/SAM-BIM/SAM_UI/pull/135), branch
+`feature/progress-dialog-pattern-2026-09-28` from `sow/2026-Q3` `4da598b9` (updated with `6b49c8c6` and #134's
+`52217c32` without conflicts), merged as `596a8a13`. CI green (build + SPDX). Built against SAM `bc85ba61`,
+SAM_Systems `fbef48f` and SAM_Tas `5753ad2e`. SAM_Deploy and PR2F-3 are untouched, and nothing is deployed yet.
+Full record: `documentation/UX-ProgressDialogPattern-PR.md`. The pattern: `documentation/ProgressDialogPattern.md`.
+Evidence: `documentation/evidence/progress-dialog-pattern/`.
+- **Pattern.** The Part O progress window is the reference: `PartOProgressWindow`, `PartOProgressState`,
+  `PartOProgressHost`. Its look was extracted unchanged into the neutral `SAM.Core.UI.WPF`
+  `Themes/ProgressStyles.xaml` (`SAM.Progress.*`) and `ProgressStageRow`, built by `Create.ProgressStageRows`.
+  `PartOProgressWindow` draws with them, with the same names and values; `PartOProgressHost` is unchanged.
+- **Export Space Reports** (`SpaceReportPdfBatchWindow`):
+  - heading, run summary, and stage rows with right-aligned times plus "n of N";
+  - the current document, a real percentage and the elapsed time, with the note beside Cancel;
+  - final states: exported / with failures / cancelled / could not start / stopped;
+  - it renders on a 500 ms timer, like Part O.
+
+  Batch behaviour is unchanged. A per-tick render made Cancel take about 10 s during development; it was fixed
+  before merge.
+- **Print RDS (ribbon)**: style only. The four stages are drawn in the shared style. The thread and window
+  behaviour are the old `ProgressWindow`'s: UI thread, modeless, no owner, not topmost, not in the taskbar, pumped
+  per stage. This was tightened in an owner review round: the host thread and topmost window were reverted.
+  `PrintRoomDataSheets` has a stage-callback overload; with no callback the old path is unchanged, for Simulate
+  and Grasshopper.
+- **Audit.** Classified as:
+  - already consistent: Part O;
+  - standardised: Space reports, Print RDS (ribbon);
+  - not applicable: RDS nested in Simulate, Grasshopper print, the single-Space PDFs, Part O report saves,
+    `ReportWindow`;
+  - not in this PR: model export and the generic `ProgressBarWindow`.
+- **Validation.**
+  - `SAM_UI.sln` Debug and Release: 0 errors.
+  - WPF tests: 1395/1395 (9 new).
+  - Dev app, UIA, 4,995 Spaces: Cancel in 0.06 s, 4,995 PDFs in 49 s, and the completed / cancelled /
+    with-failure states captured.
+  - Print RDS: Win32 checks show the window on the main UI thread and not topmost.
+  - Not verified: Print RDS with Excel. Excel is absent on the VM; the work path and threading are unchanged.
+- **Next step.**
+  - Deploying via SAM_Deploy is owner-led; this is a visible UX change.
+  - Follow-ups (see the pattern doc): neutral names for the Part O progress types; the single-stage form of
+    `ProgressBarWindow`; RDS off the UI thread, which needs acceptance with Excel.
+
+## Previous (reporting stream): PR2F-3 batch Space report export DEPLOYED (28 Sep 2026) - SAM_Deploy#57 merged (`3d531508`)
 
 SAM_Deploy `sow/2026-Q3` now pins SAM_UI `8971cfb0` (this repo's #133 batch export, merge `7161d9f8`), SAM `3d6fa80a`,
 SAM_Tas `e7cc0ed4`, SAM_Systems `005c4fe1`. SAM_Tas/SAM_Systems moved too: SAM#163 (PR2F-1) sits above SAM#161
@@ -12,7 +56,7 @@ was installed and accepted from the installed `%APPDATA%\SAM\SAM Analytical.exe`
 reports, skip/overwrite/cancel prompt, locked-file continuation, single-Space parity, logs, no `.tmp`, PDF visual
 checks; 4,995 Spaces → 9,990 PDFs in 1:44, cancel 0.12 s, close 0.04 s, memory plateau 3.9-4.0 GB. All reporting
 modules loaded from the installed folder. No SAM_UI change. Details: SAM_Deploy `PROJECT_PROGRESS.md`.
-**Next step:** none for PR2F-3; further reporting work is owner-led.
+**Next step:** none for PR2F-3; superseded by the progress-dialog pattern entry above.
 
 ## Previous (reporting stream): SAM Documentation Framework PR2F-2 - batch Space report export (28 Sep 2026) - MERGED (`7161d9f8`)
 
