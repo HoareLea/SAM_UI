@@ -315,7 +315,9 @@ namespace SAM.Analytical.UI.WPF.Tests
                 if (restored)
                 {
                     string path_TSD = partORun.Path_TSD;
-                    Check(path_TSD is not null && Path.GetFullPath(path_TSD).StartsWith(Path.GetFullPath(directory_Run), StringComparison.OrdinalIgnoreCase), "its results are its own folder's: " + path_TSD);
+                    //Separator-terminated, so a sibling folder sharing the name's prefix (run vs run-old) is never "inside".
+                    string directory_Run_Full = Path.TrimEndingDirectorySeparator(Path.GetFullPath(directory_Run)) + Path.DirectorySeparatorChar;
+                    Check(path_TSD is not null && Path.GetFullPath(path_TSD).StartsWith(directory_Run_Full, StringComparison.OrdinalIgnoreCase), "its results are its own folder's: " + path_TSD);
                     Modify.Capabilities(partORun, out PartOIteration3Eligibility partOIteration3Eligibility);
                     Check(partOIteration3Eligibility.CanRun, "eligible for Iteration 3 " + partOIteration3Eligibility.Refusal_Run);
                 }
