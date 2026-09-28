@@ -1,0 +1,31 @@
+movement Flat 2/Bedroom 2_3 -> Flat 2/Kitchen_4 0.063 m3/s
+movement Flat 2/Ensuite_5 -> unit MVHR Flat 2 0.008 m3/s
+movement Flat 2/Kitchen_4 -> Flat 2/Ensuite_5 0.008 m3/s
+movement Flat 2/Kitchen_4 -> unit MVHR Flat 2 0.055 m3/s
+movement Flat 3/Bedroom 2_6 -> Flat 3/Kitchen_7 0.063 m3/s
+movement Flat 3/Ensuite_8 -> unit MVHR Flat 3 0.008 m3/s
+movement Flat 3/Kitchen_7 -> Flat 3/Ensuite_8 0.008 m3/s
+movement Flat 3/Kitchen_7 -> unit MVHR Flat 3 0.055 m3/s
+movement unit MVHR Flat 2 -> Flat 2/Bedroom 2_3 0.063 m3/s
+movement unit MVHR Flat 2 -> outside 0.063 m3/s
+movement unit MVHR Flat 3 -> Flat 3/Bedroom 2_6 0.063 m3/s
+movement unit MVHR Flat 3 -> outside 0.063 m3/s
+space Corridor/Corridor_1
+space Flat 1/Bathroom_2
+space Flat 1/Studio 1_0
+space Flat 2/Bedroom 2_3
+space Flat 2/Ensuite_5
+space Flat 2/Kitchen_4
+space Flat 3/Bedroom 2_6
+space Flat 3/Ensuite_8
+space Flat 3/Kitchen_7
+system MVHR supply=MVHR Flat 2 exhaust=MVHR Flat 2 serves Flat 2/Bedroom 2_3+Flat 2/Ensuite_5+Flat 2/Kitchen_4
+system MVHR supply=MVHR Flat 3 exhaust=MVHR Flat 3 serves Flat 3/Bedroom 2_6+Flat 3/Ensuite_8+Flat 3/Kitchen_7
+terminal Extract 55 l/s in Flat 2/Kitchen_4 on MVHR
+terminal Extract 55 l/s in Flat 3/Kitchen_7 on MVHR
+terminal Extract 8 l/s in Flat 2/Ensuite_5 on MVHR
+terminal Extract 8 l/s in Flat 3/Ensuite_8 on MVHR
+terminal Supply 63 l/s in Flat 2/Bedroom 2_3 on MVHR
+terminal Supply 63 l/s in Flat 3/Bedroom 2_6 on MVHR
+unit MVHR Flat 2 product Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+unit MVHR Flat 3 product Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)

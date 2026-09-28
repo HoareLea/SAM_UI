@@ -10,12 +10,11 @@
   env-gated (`SAM_PARTO_PR3B_GATE`, `SAM_PARTO_MIXED_BASELINE`; optional `SAM_PARTO_CATALOGUE`, `SAM_PARTO_MIXED_ACCEPTED`,
   `SAM_PARTO_LEGACY_RUNS`). It makes the mixed SAM_Systems call the way `PartOIteration3Pipeline.Materialise` does plus
   `GuidanceTemplate` (the production pipeline has no such parameter - PR3C).
-- **Gate (licensed TAS, merged tips): 38/38 PASS; 43/43 after the Codex review** (4 TM59 completeness checks - nothing
-  unassessed, every flat has its own rows - and the accepted model object unchanged; the Optimised + cooled range is the
-  selected product's own published range, not a hard-coded 60-120) - `documentation/evidence/parto-mixed-pr3b/gate.txt`. One model, one
-  TPD, DX only on Flat 3's air system (80 l/s from a 63 l/s design, 1505 h cooling), DV false on all 6 system zones, Flat 3
-  `ActiveTrimCooling`, TM59 per criterion (Flat 3 bedroom 199/262 PASS vs Flat 2 316/262 FAIL), cooling removed leaves no
-  cooling (guid/order-free equality with a control), 143 l/s Optimised + cooled refused, baseline SHA-256 unchanged.
+- **Gate (licensed TAS, merged tips): 38/38 PASS; 51/51 after the Codex review rounds**, rerun on licensed TAS: TM59
+  completeness (nothing unassessed, every occupied room of every flat has its rows), the accepted model object unchanged,
+  the Optimised + cooled range read from the selected product, and a relationship-preserving topology signature
+  (`topology.txt`: systems, terminals, air movements, units named by what they join) beside the guid-masked content
+  comparison
 - **Legacy B0/MG re-accepted with DV = false.** The saved 24 Sep run no longer restores (`legacy.txt`), so fresh
   Iteration 1a runs were made through the real product UI (driver `C:\TasOut\parto-pr3b-closeout-2026-09-28\scripts\
   closeout.ps1`: Hub -> Iteration 1a -> Accept -> TAS -> TM59 -> Iteration 3 method by label -> Run system case) on the

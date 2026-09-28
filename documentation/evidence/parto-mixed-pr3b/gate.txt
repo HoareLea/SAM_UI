@@ -11,19 +11,19 @@ PASS Flat 1 scenario BaseNaturalVentilation
 PASS Flat 2 scenario BasePassive (uncooled MVHR)
 PASS Flat 3 scenario ActiveTrimCooling
 PASS corridor scenario DwellingIndependent
-PASS thermal source complete   (00:00:52.6427836)
+PASS thermal source complete   (00:01:10.3151414)
 PASS guidance settings at SAM's rule 
 PASS one SAM_Systems graph materialised 
 PASS exactly one guidance-cooled unit, Flat 3's
 PASS the unit operates at the recorded cooling operating airflow 80 l/s
 PASS DisplacementVentilation = false on all 6 system zones
 PASS one plant room
-PASS Flat 2 air system DX coils = 0
 PASS Flat 3 air system DX coils = 1
-PASS one TPD Systems document simulated  (00:01:30.4958574)
+PASS Flat 2 air system DX coils = 0
+PASS one TPD Systems document simulated  (00:01:27.9510756)
 PASS guidance read-back for 1 unit, Flat 3's air system
 PASS Flat 3 receives cooling: 1505 h with DX load, peak sensible 802 W, elevated 80 l/s
-PASS bridge complete, rooms=6  (00:00:43.6173118)
+PASS bridge complete, rooms=6  (00:00:55.9242308)
 PASS TM59 assessed 
 TM59 overall=Fail corridor=SignificantRisk
 PASS TM59: no space left unassessed (0)
@@ -40,11 +40,16 @@ PASS Flat 1 / Studio 1_0 on the natural TM59 criterion
    Flat 1 / Studio 1_0: natural Criterion 2 20/32 Pass
 PASS Flat 1 / Studio 1_0 on the natural TM59 criterion
 PASS Flat 1 has TM59 result rows (2)
+PASS Flat 1 / Studio 1_0: 2 TM59 row(s), 2 required
 PASS Flat 2 has TM59 result rows (2)
+PASS Flat 2 / Bedroom 2_3: 1 TM59 row(s), 1 required
+PASS Flat 2 / Kitchen_4: 1 TM59 row(s), 1 required
 PASS Flat 3 has TM59 result rows (2)
+PASS Flat 3 / Bedroom 2_6: 1 TM59 row(s), 1 required
+PASS Flat 3 / Kitchen_7: 1 TM59 row(s), 1 required
 CIBSE TM59:2017 OVERHEATING ASSESSMENT
 ======================================
-Source: C:\TasOut\parto-pr3b-gate-2026-09-28\rerun-132b\Gate_Systems-Bridge.tsd
+Source: C:\TasOut\parto-pr3b-gate-2026-09-28\rerun-132e\Gate_Systems-Bridge.tsd
 Thermal model scope: WHOLE BUILDING
 TM52 building category: Category II
 Part O modelling assumptions: NOT VERIFIED BY THIS RESULT REPORT
@@ -149,6 +154,9 @@ PASS cooling removed: no cooled dwelling, route Izam
 PASS cooling removed: Flat 3 scenario BasePassive
 PASS control: two uncooled rebuilds have the same engineering state (guid- and order-free)
 PASS cooling removed: the rebuilt model's engineering state equals the cooled one's (cooling lives only in the record)
+PASS control: two uncooled rebuilds have the same topology (every relationship by name)
+PASS cooling removed: the rebuilt model's topology equals the cooled one's (systems, terminals, air movements, units)
+PASS topology signature resolves every air movement to named rooms (topology.txt)
 PASS cooling removed: SAM_Systems graph has no guidance record and no DX coil
 Optimised + cooled: Flat 3 accepted supply design 143 l/s -> materialised=False CoolingAirFlowOutsideGuidance: Dwelling 'Flat 3' is selected with active cooling, but its product 'Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)' would cool at 143 l/s - the dwelling's design of 143 l/s - beyond the manufacturer's published cooling airflow range of 60-120 l/s, where no cooling data exists.
 Optimised + cooled: product published cooling range 60-120 l/s (below the minimum the guidance figure governs)

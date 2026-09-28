@@ -185,6 +185,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Check((partOTM59Assessment.SpaceGuids_Unassessed?.Count ?? 0) == 0, "TM59: no space left unassessed (" + (partOTM59Assessment.SpaceGuids_Unassessed?.Count ?? 0) + ")");
 
                 Dictionary<string, int> rows_By_Zone = [];
+                Dictionary<Guid, int> rows_By_Space = [];
                 foreach (PartOTM59SpaceResult partOTM59SpaceResult in partOTM59Assessment.SpaceResults ?? [])
                 {
                     zone_By_Space.TryGetValue(partOTM59SpaceResult.SpaceGuid_Design, out string name_Zone);
@@ -192,6 +193,8 @@ namespace SAM.Analytical.UI.WPF.Tests
                     {
                         rows_By_Zone[name_Zone] = (rows_By_Zone.TryGetValue(name_Zone, out int count) ? count : 0) + 1;
                     }
+
+                    rows_By_Space[partOTM59SpaceResult.SpaceGuid_Design] = (rows_By_Space.TryGetValue(partOTM59SpaceResult.SpaceGuid_Design, out int count_Space) ? count_Space : 0) + 1;
 
                     Log(string.Format("   {0} / {1}: {2} {3} {4}/{5} {6}", name_Zone ?? "?", partOTM59SpaceResult.SpaceName, partOTM59SpaceResult.Mechanical ? "mechanical" : "natural", partOTM59SpaceResult.Check, partOTM59SpaceResult.Actual, partOTM59SpaceResult.Limit, partOTM59SpaceResult.ComplianceStatus));
                     if (name_Zone is not null)
@@ -204,6 +207,16 @@ namespace SAM.Analytical.UI.WPF.Tests
                 foreach (Zone zone in new[] { zone_Flat1, zone_Flat2, zone_Flat3 })
                 {
                     Check(rows_By_Zone.TryGetValue(zone.Name, out int count) && count > 0, zone.Name + " has TM59 result rows (" + (rows_By_Zone.TryGetValue(zone.Name, out int count_Log) ? count_Log : 0) + ")");
+
+                    //Every occupied room of the dwelling, not just one: in this fixture the occupied rooms are every room
+                    //but the bathrooms and ensuites (wet rooms carry the supplementary >28 C check only). A naturally
+                    //ventilated sleeping room (Flat 1's studio) has both TM59 criteria.
+                    foreach (Space space in Spaces(model_Source.AdjacencyCluster, zone).Where(x => !x.Name.StartsWith("Bathroom", StringComparison.OrdinalIgnoreCase) && !x.Name.StartsWith("Ensuite", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        int expected = zone.Name == "Flat 1" ? 2 : 1;
+                        int actual = rows_By_Space.TryGetValue(space.Guid, out int rows) ? rows : 0;
+                        Check(actual >= expected, string.Format("{0} / {1}: {2} TM59 row(s), {3} required", zone.Name, space.Name, actual, expected));
+                    }
                 }
 
                 Log(partOTM59Assessment.Report?.ToString());
@@ -224,6 +237,13 @@ namespace SAM.Analytical.UI.WPF.Tests
                 new PartODwellingStrategy(zone_Flat3.Guid, PartOVentilationMode.MVHR, reference_Cooled));
             Check(EngineeringState(uncooled_Again.AnalyticalModel) == EngineeringState(uncooled.AnalyticalModel), "control: two uncooled rebuilds have the same engineering state (guid- and order-free)");
             Check(EngineeringState(uncooled.AnalyticalModel) == EngineeringState(model), "cooling removed: the rebuilt model's engineering state equals the cooled one's (cooling lives only in the record)");
+            //The masked comparison cannot see which object is connected to which; the topology signature names every
+            //relationship by the rooms and units it joins, so a reconnected terminal, movement or system would show.
+            Check(Topology(uncooled_Again.AnalyticalModel) == Topology(uncooled.AnalyticalModel), "control: two uncooled rebuilds have the same topology (every relationship by name)");
+            Check(Topology(uncooled.AnalyticalModel) == Topology(model), "cooling removed: the rebuilt model's topology equals the cooled one's (systems, terminals, air movements, units)");
+            string topology = Topology(model);
+            File.WriteAllText(Path.Combine(directory, "topology.txt"), topology);
+            Check(!topology.Contains("(unresolved)") && topology.Contains("terminal ") && topology.Contains("movement "), "topology signature resolves every air movement to named rooms (topology.txt)");
 
             List<Space> spaces_Mvhr_Uncooled = [.. Spaces(uncooled.AnalyticalModel.AdjacencyCluster, zone_Flat2), .. Spaces(uncooled.AnalyticalModel.AdjacencyCluster, zone_Flat3)];
             MechanicalVentilationMaterialisation plain = pipeline.Materialise(uncooled.AnalyticalModel.AdjacencyCluster, spaces_Mvhr_Uncooled);
@@ -377,6 +397,77 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>The model's cluster JSON with every guid masked and its lines sorted - guid- and order-free.</summary>
+        /// <summary>
+        /// Every relationship the materialisation makes, named by what it joins (room, zone, system, unit) - never by a
+        /// guid, which each materialisation mints afresh - with flows. Sorted, so order-free.
+        /// </summary>
+        private static string Topology(AnalyticalModel analyticalModel)
+        {
+            AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
+            string F(double value) => value.ToString("0.######", System.Globalization.CultureInfo.InvariantCulture);
+            string Names(IEnumerable<string> names) => string.Join("+", (names ?? []).Where(x => x is not null).OrderBy(x => x, StringComparer.Ordinal));
+
+            Dictionary<Guid, string> name_By_Space = [];
+            List<string> result = [];
+            foreach (Space space in adjacencyCluster.GetSpaces() ?? [])
+            {
+                string zone = Names(adjacencyCluster.GetRelatedObjects<Zone>(space)?.Select(x => x.Name));
+                name_By_Space[space.Guid] = zone + "/" + space.Name;
+                result.Add("space " + name_By_Space[space.Guid]);
+            }
+
+            //An air movement's end is a room or the dwelling's unit (supply from it, extract back to it).
+            foreach (AirHandlingUnit airHandlingUnit in adjacencyCluster.GetObjects<AirHandlingUnit>() ?? [])
+            {
+                name_By_Space[airHandlingUnit.Guid] = "unit " + airHandlingUnit.Name;
+            }
+
+            string SpaceName(Space space) => space is not null && name_By_Space.TryGetValue(space.Guid, out string name) ? name : "(none)";
+            string ReferenceName(string reference)
+            {
+                //An empty end is outside (a unit's exhaust).
+                if (string.IsNullOrWhiteSpace(reference))
+                {
+                    return "outside";
+                }
+
+                System.Text.RegularExpressions.Match match = System.Text.RegularExpressions.Regex.Match(reference ?? string.Empty, "[0-9a-fA-F]{8}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{4}-?[0-9a-fA-F]{12}");
+                if (match.Success && Guid.TryParse(match.Value, out Guid guid) && name_By_Space.TryGetValue(guid, out string name))
+                {
+                    return name;
+                }
+
+                //Not a room or a unit of this cluster: named by the type its reference states (still guid-free).
+                string type = (reference ?? string.Empty).Split([',', ':'], StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim();
+                return "(unresolved " + (string.IsNullOrEmpty(type) || match.Success && type.Contains(match.Value) ? "?" : type) + ")";
+            }
+
+            foreach (VentilationSystem ventilationSystem in adjacencyCluster.GetObjects<VentilationSystem>() ?? [])
+            {
+                result.Add(string.Format("system {0} supply={1} exhaust={2} serves {3}", ventilationSystem.Name, ventilationSystem.GetValue<string>(VentilationSystemParameter.SupplyUnitName), ventilationSystem.GetValue<string>(VentilationSystemParameter.ExhaustUnitName),
+                    Names(adjacencyCluster.GetRelatedObjects<Space>(ventilationSystem)?.Select(SpaceName))));
+            }
+
+            foreach (VentilationTerminal ventilationTerminal in adjacencyCluster.GetObjects<VentilationTerminal>() ?? [])
+            {
+                result.Add(string.Format("terminal {0} {1} l/s in {2} on {3}", ventilationTerminal.FlowClassification, ventilationTerminal.DesignFlowRate_Lps.HasValue ? F(ventilationTerminal.DesignFlowRate_Lps.Value) : "-",
+                    Names(adjacencyCluster.GetRelatedObjects<Space>(ventilationTerminal)?.Select(SpaceName)), Names(adjacencyCluster.GetRelatedObjects<VentilationSystem>(ventilationTerminal)?.Select(x => x.Name))));
+            }
+
+            foreach (SpaceAirMovement spaceAirMovement in adjacencyCluster.GetObjects<SpaceAirMovement>() ?? [])
+            {
+                result.Add(string.Format("movement {0} -> {1} {2} m3/s", ReferenceName(spaceAirMovement.From), ReferenceName(spaceAirMovement.To), F(spaceAirMovement.AirFlow)));
+            }
+
+            foreach (AirHandlingUnit airHandlingUnit in adjacencyCluster.GetObjects<AirHandlingUnit>() ?? [])
+            {
+                result.Add(string.Format("unit {0} product {1}", airHandlingUnit.Name, airHandlingUnit.SelectedVentilationUnitReference()?.ToString() ?? "(none)"));
+            }
+
+            result.Sort(StringComparer.Ordinal);
+            return string.Join("\n", result);
+        }
+
         private static string EngineeringState(AnalyticalModel analyticalModel)
         {
             string json = analyticalModel.AdjacencyCluster.ToJsonObject().ToJsonString().Replace(",\"", ",\n\"");
