@@ -1,9 +1,13 @@
 # Project Progress
 
-## Current (reporting stream): SAM Documentation Framework PR2F-2 - batch Space report export (28 Sep 2026) - PR open
+## Current (reporting stream): SAM Documentation Framework PR2F-2 - batch Space report export (28 Sep 2026) - MERGED (`7161d9f8`)
 
-**Status.** Implemented, tested, accepted in the dev build. Branch `feature/pr2f2-space-report-batch-2026-09-28`
-from `sow/2026-Q3` `11d9078a`. Full record: `documentation/Reporting-SpaceReportPdfBatch.md`. Evidence:
+**Status.** Implemented, tested, accepted in the dev build, merged. [SAM-BIM/SAM_UI#133](https://github.com/SAM-BIM/SAM_UI/pull/133),
+branch `feature/pr2f2-space-report-batch-2026-09-28` from `sow/2026-Q3` `11d9078a`, merged as `7161d9f8`. CI green
+(build + SPDX). No review comments. **Reconciliation:** `sow/2026-Q3` advanced to `07077b72` (PR3B gate closeout,
+SAM_UI#132) while this PR was open; merged into the branch (`eb2dbb42`), one conflict in `PROJECT_PROGRESS.md`
+(both branches appended independent entries - resolved by keeping both, no code overlap), pushed, CI re-ran green,
+then merged. Full record: `documentation/Reporting-SpaceReportPdfBatch.md`. Evidence:
 `documentation/evidence/pr2f2-space-report-batch/`. Heads at the start: SAM `3e8670da` (SAM#164 docs-only; SAM#163
 PR2F-1 `afe90e94` provides `DocumentContext.WithNewDiagnostics()`), SAM_Tas `e7cc0ed4`, SAM_UI `11d9078a`,
 SAM_Deploy `bc76a31`. No SAM change.
@@ -39,8 +43,8 @@ SAM_Deploy `bc76a31`. No SAM change.
   - Harness: 96.7 s, 9.7 ms per document, linear, bounded memory.
   - Re-run the harness with env `SAM_PR2F2_SCALE_MODEL=C:\TasOut\pr2d\bridge_peaks.sam`,
     `SAM_PR2F2_SCALE_OUT=<folder>` (optional `SAM_PR2F2_SCALE_SAVE=<x.sam>`).
-- **Next step.** Review and merge the PR into `sow/2026-Q3`, then PR2F-3: SAM_Deploy pointer bump to the merged
-  SAM_UI (and SAM `3e8670da`), plus installed-product batch acceptance.
+- **Next step.** PR2F-3: SAM_Deploy pointer bump to the merged SAM_UI `7161d9f8` (and SAM `3e8670da`), plus
+  installed-product batch acceptance. Not started.
 
 ## Current: Mixed Part O dwelling strategies - PR3B CLOSED (28 Sep 2026)
 
