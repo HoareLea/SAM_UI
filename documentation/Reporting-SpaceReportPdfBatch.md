@@ -37,19 +37,28 @@ SAM_UI only orchestrates. Documents, units (SI, the reporting default), notes an
 | Piece | Role |
 |---|---|
 | `Modify.WriteSpaceReportPdf(DocumentContext, Space, path, SpaceReportPdf, renderer)` | New seam: build → render → stage `.tmp` → move. The existing `AnalyticalModel` overload now builds the context and delegates (single-Space behaviour unchanged). |
-| `SpaceReportPdfBatch.Create(model, spaceGuids or null, reports, folder)` | Copies the model once into a shared `DocumentContext`, resolves Spaces from that snapshot (model order), plans the file names. |
+| `SpaceReportPdfBatch.Create(model, spaceGuids or null, reports, folder)` | Builds one shared `DocumentContext`, resolves Spaces from it (model order), plans the file names. |
 | `SpaceReportPdfBatch.ExistingCount()` / `Run(policy, IProgress, CancellationToken, renderer)` | For each Space, for each report: `sharedContext.WithNewDiagnostics()` → one PDF on disk → one log line. Sequential by design. |
 | `SpaceReportPdfBatchResult` / `SpaceReportPdfBatchItem` / `SpaceReportPdfBatchProgress` | Structured outcome: Created / Skipped / Failed / Not started, Cancelled, per-document path, stage, message, exception, notes. |
 | `Query.SpaceReportPdfFileNames(spaces, reports, folder)` | Deterministic collision-safe names. |
 | `Create.MenuItem_SpaceReportPdfs`, `Modify.ExportSpaceReportPdfs` | Menu entry and window launcher. |
 
-**One snapshot.** `Create.DocumentContext` copies the adjacency cluster (`AnalyticalModel.AdjacencyCluster`). The batch
-does that once. Each document gets `WithNewDiagnostics()`, which shares the snapshot, cluster, profile library, options,
-formatter and provenance, and starts an empty `Log`. So each document's notes are its own, and match what the
-one-Space command gives for that Space (tested).
+**One shared context, not an isolated snapshot.** `Create.DocumentContext` reads `AnalyticalModel.AdjacencyCluster`
+once. That read is a shallow copy: a fresh cluster wrapper, but the same Space/Panel object references as the live
+model - so it shares the model's objects rather than isolating them. The batch does that once, and every document's
+`WithNewDiagnostics()` reuses that one context - cluster, profile library, options, formatter and provenance - and
+only starts a fresh, empty `Log`. So each document's notes are its own, and match what the one-Space command gives
+for that Space (tested). This is safe here because **Export Space reports...** is a modal window: nothing else can
+mutate the model while the batch runs. The batch does not itself defend against a concurrent mutation, and none is
+expected while the window is open.
 
 **No parallelism.** The PDFsharp font resolver is process-global. Every PDF is on disk before the next is built. Only
 a small result per document is kept, never documents or bytes (tested with weak references).
+
+**The output folder is required up front.** `Run` creates the output folder before writing anything. If that fails
+(for example, a file already sits at that path, or it is not writable), `Run` throws immediately rather than writing
+every document and recording an `Output` failure for each. The window's existing "stopped" handling for a failed
+`Run` covers this the same way it covers any other exception from `Run`.
 
 ## File names
 1. Start from the one-Space name `"<Space name> - <report>.pdf"` (sanitised, reserved names prefixed `_`, 150-character
@@ -110,7 +119,9 @@ There are 40 tests, plus the opt-in scale harness `SpaceReportPdfBatchScaleHarne
 - one or both report types;
 - selected and all Spaces;
 - a removed Space;
-- a single shared snapshot, with per-document diagnostics isolation;
+- a single shared context, with per-document diagnostics isolation;
+- the output folder could not be created or accessed: `Run` fails fast, before any document, instead of one `Output`
+  failure per document;
 - a failing Space, a failing report type, and Rendering and Output stages with no `.tmp` left;
 - overwrite and skip;
 - cancellation mid-run and before the first document;
@@ -141,7 +152,7 @@ Evidence is in `documentation/evidence/pr2f2-space-report-batch/`.
   - Full run: 9,990 PDFs in 1:44 in the app. Working set is flat at about 4.05 GB during the run (the app's model is
     3.1 GB before) and returns to 3.1 GB after.
 - **Scale harness** (no UI, real renderer, 4,995 Spaces × 2 reports):
-  - setup (snapshot + 9,990 names) 42 ms;
+  - setup (the shared context + 9,990 names) 42 ms;
   - 96.7 s total, 9.7 ms per document;
   - 4.6-5.0 s per 500 documents from start to end (linear);
   - managed heap 270-460 MB sawtooth (bounded);
