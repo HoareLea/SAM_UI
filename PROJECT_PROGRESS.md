@@ -1,17 +1,33 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR3B domain (27 Sep 2026) - in progress
+## Current: Mixed Part O dwelling strategies - PR3B CLOSED (28 Sep 2026)
 
-- PR3A merged as SAM_UI#129 (`b3b061b8`); owner decisions binding (SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md`).
-- PR3B-1 SAM = [SAM-BIM/SAM#161](https://github.com/SAM-BIM/SAM/pull/161). SAM_UI needs no production change (PR2's mixed
-  run passes no templates, so SAM refuses cooled dwellings - fail-closed until PR3C).
-- Test-only SAM_UI PR (branch `test/parto-cooling-gate-retired-2026-09-27`): `CoolingRequested_IsRefusedBySam_NotBypassed`
-  accepts `CoolingGated` or `CoolingWithoutProductGuidance` by name (green against SAM before and after #161); the PR3A
-  route-proof harness joins the WPF collection (it broke `EveryClassWithStaTests_IsInTheWpfCollection`; CI only
-  builds). WPF **1324/1324** against #161.
-- **Handover 28 Sep:** SAM#161 (green) and SAM_Systems#31 (PR3B-2; build red until #161 merges) are open; PR3B-3 SAM_Tas
-  is a branch only. Full state, merge order and gate recipe: SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md`
-  §3-§5. **Next step:** PR3B-3, then merge #161 → #31 → PR3B-3, then the licensed gate.
+- Merged: SAM#161 PR3B-1 (`85a13ec3`), SAM_Systems#31 PR3B-2 (`005c4fe`), SAM_Tas#71 PR3B-3 (`e7cc0ed`), SAM_UI#131
+  (test-only, `11d9078`: `CoolingRequested_IsRefusedBySam_NotBypassed` accepts `CoolingGated` or
+  `CoolingWithoutProductGuidance`; the PR3A route-proof harness joined the WPF collection). No SAM_UI production change:
+  PR2's mixed run passes no templates, so SAM refuses a cooled dwelling (fail-closed until PR3C).
+- This branch `test/parto-pr3b-gate-2026-09-28` (test-only): `WPF/SAM.Analytical.UI.WPF.Tests/PartOMixedCoolingGateTests.cs`,
+  env-gated (`SAM_PARTO_PR3B_GATE`, `SAM_PARTO_MIXED_BASELINE`; optional `SAM_PARTO_CATALOGUE`, `SAM_PARTO_MIXED_ACCEPTED`,
+  `SAM_PARTO_LEGACY_RUNS`). It makes the mixed SAM_Systems call the way `PartOIteration3Pipeline.Materialise` does plus
+  `GuidanceTemplate` (the production pipeline has no such parameter - PR3C).
+- **Gate (licensed TAS, merged tips): 38/38 PASS; 51/51 after the Codex review rounds**, rerun on licensed TAS: TM59
+  completeness (nothing unassessed, every occupied room of every flat has its rows), the accepted model object unchanged,
+  the Optimised + cooled range read from the selected product, and a relationship-preserving topology signature
+  (`topology.txt`: systems, terminals, air movements, units named by what they join) beside the guid-masked content
+  comparison
+- **Legacy B0/MG re-accepted with DV = false.** The saved 24 Sep run no longer restores (`legacy.txt`), so fresh
+  Iteration 1a runs were made through the real product UI (driver `C:\TasOut\parto-pr3b-closeout-2026-09-28\scripts\
+  closeout.ps1`: Hub -> Iteration 1a -> Accept -> TAS -> TM59 -> Iteration 3 method by label -> Run system case) on the
+  24 Sep source model; both restore under the merged stack (`Gate_LegacyIteration3_FreshRunRestores`, read-only - Codex
+  P1: a run's provenance records absolute paths, so Iteration 3 is never run from a copied folder). Native DV 0 of 8
+  zones; B0 bias +0.55 K with 0/8 TM59 outcomes differing (the DV = true run's 2 were the wet-room stratification
+  artefact); MG law/exchanger exact, bypass follows its rule, DX +0.5-1 %, 0/8 differ. Record and evidence: SAM
+  `documentation/PartO-MixedDwellingStrategies-PR3B.md` §4 and `documentation/evidence/parto-mixed-pr3b/closeout-2026-09-28/`.
+- Validation: SAM_UI.sln Release 0 errors; WPF **1326/1326** (the two gate facts no-op without their variables).
+- Record: SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md` §4-§5.
+- **Next step:** PR3C (per-dwelling cooling On/Off) only on the owner's go-ahead. PR3C must give
+  `PartOIteration3Pipeline.Materialise` the mixed SAM_Systems call (`GuidanceTemplate`, as this harness does) and pass
+  the catalogue descriptors **and** templates to `MaterialisePartODwellingStrategies`.
 
 ## Previous: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only; decisions ACCEPTED by the owner (27 Sep)
 
