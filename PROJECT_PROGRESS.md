@@ -1,6 +1,6 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR3B domain MERGED, licensed gate PASSED (28 Sep 2026)
+## Current: Mixed Part O dwelling strategies - PR3B CLOSED (28 Sep 2026)
 
 - Merged: SAM#161 PR3B-1 (`85a13ec3`), SAM_Systems#31 PR3B-2 (`005c4fe`), SAM_Tas#71 PR3B-3 (`e7cc0ed`), SAM_UI#131
   (test-only, `11d9078`: `CoolingRequested_IsRefusedBySam_NotBypassed` accepts `CoolingGated` or
@@ -15,15 +15,19 @@
   TPD, DX only on Flat 3's air system (80 l/s from a 63 l/s design, 1505 h cooling), DV false on all 6 system zones, Flat 3
   `ActiveTrimCooling`, TM59 per criterion (Flat 3 bedroom 199/262 PASS vs Flat 2 316/262 FAIL), cooling removed leaves no
   cooling (guid/order-free equality with a control), 143 l/s Optimised + cooled refused, baseline SHA-256 unchanged.
-- **Legacy B0/MG re-acceptance with DV = false: NOT run yet** (`legacy.txt`): the saved 24 Sep run
-  (`C:\TasOut\parto-guidance-2026-09-24\03-Resume`) no longer restores ("the model has changed since the simulation
-  results were produced"). Codex P1: a run's provenance records absolute paths, so an Iteration 3 run from a COPY would
-  write into the original folder - the legacy fact is now read-only (`Gate_LegacyIteration3_FreshRunRestores`: restores,
-  results in its own folder, eligible for Iteration 3, folder unchanged). B0/MG are driven through the real product UI
-  from a fresh Iteration 1a run.
+- **Legacy B0/MG re-accepted with DV = false.** The saved 24 Sep run no longer restores (`legacy.txt`), so fresh
+  Iteration 1a runs were made through the real product UI (driver `C:\TasOut\parto-pr3b-closeout-2026-09-28\scripts\
+  closeout.ps1`: Hub -> Iteration 1a -> Accept -> TAS -> TM59 -> Iteration 3 method by label -> Run system case) on the
+  24 Sep source model; both restore under the merged stack (`Gate_LegacyIteration3_FreshRunRestores`, read-only - Codex
+  P1: a run's provenance records absolute paths, so Iteration 3 is never run from a copied folder). Native DV 0 of 8
+  zones; B0 bias +0.55 K with 0/8 TM59 outcomes differing (the DV = true run's 2 were the wet-room stratification
+  artefact); MG law/exchanger exact, bypass follows its rule, DX +0.5-1 %, 0/8 differ. Record and evidence: SAM
+  `documentation/PartO-MixedDwellingStrategies-PR3B.md` §4 and `documentation/evidence/parto-mixed-pr3b/closeout-2026-09-28/`.
 - Validation: SAM_UI.sln Release 0 errors; WPF **1326/1326** (the two gate facts no-op without their variables).
 - Record: SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md` §4-§5.
-- **Next step:** owner review of the gate; legacy B0/MG re-acceptance; PR3C (cooling toggle) only on the owner's go-ahead.
+- **Next step:** PR3C (per-dwelling cooling On/Off) only on the owner's go-ahead. PR3C must give
+  `PartOIteration3Pipeline.Materialise` the mixed SAM_Systems call (`GuidanceTemplate`, as this harness does) and pass
+  the catalogue descriptors **and** templates to `MaterialisePartODwellingStrategies`.
 
 ## Previous: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only; decisions ACCEPTED by the owner (27 Sep)
 
