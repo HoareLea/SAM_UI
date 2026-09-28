@@ -238,6 +238,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 AnalyticalModel accepted = Core.Convert.ToSAM<AnalyticalModel>(path_Accepted)?.Find(x => x is not null);
                 Zone zone_Flat3_Accepted = accepted.AdjacencyCluster.GetZones().Find(x => x.Name == "Flat 3");
                 string fingerprint = accepted.AdjacencyCluster.PartODwellingDesignFingerprint(zone_Flat3_Accepted);
+                string json_Accepted_Before = accepted.ToJsonObject().ToJsonString();
                 double design_Lps = accepted.AdjacencyCluster.GetRelatedObjects<Space>(zone_Flat3_Accepted)?.SelectMany(x => accepted.AdjacencyCluster.GetRelatedObjects<VentilationTerminal>(x) ?? []).Where(x => x.FlowClassification == FlowClassification.Supply).Sum(x => x.DesignFlowRate_Lps ?? 0) ?? 0;
 
                 PartOMaterialisation retained = Materialise(accepted, descriptors, templates,
@@ -245,10 +246,15 @@ namespace SAM.Analytical.UI.WPF.Tests
                     new PartODwellingStrategy(accepted.AdjacencyCluster.GetZones().Find(x => x.Name == "Flat 2").Guid, PartOVentilationMode.MVHR),
                     new PartODwellingStrategy(zone_Flat3_Accepted.Guid, PartOVentilationMode.MVHR, reference_Cooled, PartOActiveCooling.SupplyAirCooling, PartODesignAirFlowBasis.RetainedDesign, fingerprint));
                 Log(string.Format("Optimised + cooled: Flat 3 accepted supply design {0:0.#} l/s -> materialised={1} {2}", design_Lps, retained.IsMaterialised, string.Join(" | ", retained.Refusals.Select(x => x.Reason + ": " + x.Message))));
-                bool inRange = design_Lps >= 60 - 1e-9 && design_Lps <= 120 + 1e-9;
+                //The selected product's own published cooling range - never a hard-coded one.
+                double minimum_Lps = template_Cooled.OperatingStrategy.MinimumElevatedAirFlow_Lps;
+                double maximum_Lps = template_Cooled.OperatingStrategy.MaximumElevatedAirFlow_Lps;
+                bool inRange = design_Lps <= maximum_Lps + 1e-9;
+                Log(string.Format("Optimised + cooled: product published cooling range {0:0.#}-{1:0.#} l/s (below the minimum the guidance figure governs)", minimum_Lps, maximum_Lps));
                 Check(inRange ? retained.IsMaterialised && retained.Record?.CooledDwellings.Count == 1 : !retained.IsMaterialised && retained.Refusals.Exists(x => x.Reason == PartOMaterialisationRefusalReason.CoolingAirFlowOutsideGuidance),
                     inRange ? "Optimised + cooled inside the published range is materialised" : "Optimised + cooled beyond the published range is refused (CoolingAirFlowOutsideGuidance), the design untouched");
-                Check(Sha256(path_Accepted) == sha_Accepted_Before, "accepted fixture unchanged");
+                Check(Sha256(path_Accepted) == sha_Accepted_Before, "accepted fixture file unchanged");
+                Check(accepted.ToJsonObject().ToJsonString() == json_Accepted_Before, "accepted model object unchanged by the materialisation");
             }
 
             //---- 6. The clean source baseline is unchanged ----

@@ -11,19 +11,19 @@ PASS Flat 1 scenario BaseNaturalVentilation
 PASS Flat 2 scenario BasePassive (uncooled MVHR)
 PASS Flat 3 scenario ActiveTrimCooling
 PASS corridor scenario DwellingIndependent
-PASS thermal source complete   (00:01:02.8365070)
+PASS thermal source complete   (00:00:52.6427836)
 PASS guidance settings at SAM's rule 
 PASS one SAM_Systems graph materialised 
 PASS exactly one guidance-cooled unit, Flat 3's
 PASS the unit operates at the recorded cooling operating airflow 80 l/s
 PASS DisplacementVentilation = false on all 6 system zones
 PASS one plant room
-PASS Flat 3 air system DX coils = 1
 PASS Flat 2 air system DX coils = 0
-PASS one TPD Systems document simulated  (00:01:08.9024377)
+PASS Flat 3 air system DX coils = 1
+PASS one TPD Systems document simulated  (00:01:30.4958574)
 PASS guidance read-back for 1 unit, Flat 3's air system
 PASS Flat 3 receives cooling: 1505 h with DX load, peak sensible 802 W, elevated 80 l/s
-PASS bridge complete, rooms=6  (00:00:38.0114164)
+PASS bridge complete, rooms=6  (00:00:43.6173118)
 PASS TM59 assessed 
 TM59 overall=Fail corridor=SignificantRisk
 PASS TM59: no space left unassessed (0)
@@ -44,7 +44,7 @@ PASS Flat 2 has TM59 result rows (2)
 PASS Flat 3 has TM59 result rows (2)
 CIBSE TM59:2017 OVERHEATING ASSESSMENT
 ======================================
-Source: C:\TasOut\parto-pr3b-gate-2026-09-28\rerun-132\Gate_Systems-Bridge.tsd
+Source: C:\TasOut\parto-pr3b-gate-2026-09-28\rerun-132b\Gate_Systems-Bridge.tsd
 Thermal model scope: WHOLE BUILDING
 TM52 building category: Category II
 Part O modelling assumptions: NOT VERIFIED BY THIS RESULT REPORT
@@ -151,8 +151,10 @@ PASS control: two uncooled rebuilds have the same engineering state (guid- and o
 PASS cooling removed: the rebuilt model's engineering state equals the cooled one's (cooling lives only in the record)
 PASS cooling removed: SAM_Systems graph has no guidance record and no DX coil
 Optimised + cooled: Flat 3 accepted supply design 143 l/s -> materialised=False CoolingAirFlowOutsideGuidance: Dwelling 'Flat 3' is selected with active cooling, but its product 'Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)' would cool at 143 l/s - the dwelling's design of 143 l/s - beyond the manufacturer's published cooling airflow range of 60-120 l/s, where no cooling data exists.
+Optimised + cooled: product published cooling range 60-120 l/s (below the minimum the guidance figure governs)
 PASS Optimised + cooled beyond the published range is refused (CoolingAirFlowOutsideGuidance), the design untouched
-PASS accepted fixture unchanged
+PASS accepted fixture file unchanged
+PASS accepted model object unchanged by the materialisation
 PASS baseline file unchanged (SHA-256 89A8AC7BD8805391D936BB6CAB2F5BAAB720D62219AD36973BC671AFC9D99446)
 PASS baseline object unchanged by every materialisation
 GATE PASSED
