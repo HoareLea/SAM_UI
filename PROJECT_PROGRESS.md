@@ -9,7 +9,9 @@
   accepts `CoolingGated` or `CoolingWithoutProductGuidance` by name (green against SAM before and after #161); the PR3A
   route-proof harness joins the WPF collection (it broke `EveryClassWithStaTests_IsInTheWpfCollection`; CI only
   builds). WPF **1324/1324** against #161.
-- **Next step:** PR3B-2 SAM_Systems, PR3B-3 SAM_Tas, then the licensed gate (F1 NV / F2 MVHR / F3 MVHR cooled).
+- **Handover 28 Sep:** SAM#161 (green) and SAM_Systems#31 (PR3B-2; build red until #161 merges) are open; PR3B-3 SAM_Tas
+  is a branch only. Full state, merge order and gate recipe: SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md`
+  §3-§5. **Next step:** PR3B-3, then merge #161 → #31 → PR3B-3, then the licensed gate.
 
 ## Previous: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only; decisions ACCEPTED by the owner (27 Sep)
 
