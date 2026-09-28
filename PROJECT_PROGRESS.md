@@ -1,6 +1,20 @@
 # Project Progress
 
-## Current (reporting stream): SAM Documentation Framework PR2F-2 - batch Space report export (28 Sep 2026) - MERGED (`7161d9f8`)
+**Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
+afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
+
+## Current (reporting stream): PR2F-3 batch Space report export DEPLOYED (28 Sep 2026) - SAM_Deploy#57 merged (`3d531508`)
+
+SAM_Deploy `sow/2026-Q3` now pins SAM_UI `8971cfb0` (this repo's #133 batch export, merge `7161d9f8`), SAM `3d6fa80a`,
+SAM_Tas `e7cc0ed4`, SAM_Systems `005c4fe1`. SAM_Tas/SAM_Systems moved too: SAM#163 (PR2F-1) sits above SAM#161
+(PR3B-1), and this repo's CI built #133 only against the full PR3B stack. Installer run 219 (`2026.3.219.0+dc5c9ab`)
+was installed and accepted from the installed `%APPDATA%\SAM\SAM Analytical.exe`: All/Selected Spaces, one/both
+reports, skip/overwrite/cancel prompt, locked-file continuation, single-Space parity, logs, no `.tmp`, PDF visual
+checks; 4,995 Spaces → 9,990 PDFs in 1:44, cancel 0.12 s, close 0.04 s, memory plateau 3.9-4.0 GB. All reporting
+modules loaded from the installed folder. No SAM_UI change. Details: SAM_Deploy `PROJECT_PROGRESS.md`.
+**Next step:** none for PR2F-3; further reporting work is owner-led.
+
+## Previous (reporting stream): SAM Documentation Framework PR2F-2 - batch Space report export (28 Sep 2026) - MERGED (`7161d9f8`)
 
 **Status.** Implemented, tested, accepted in the dev build, merged. [SAM-BIM/SAM_UI#133](https://github.com/SAM-BIM/SAM_UI/pull/133),
 branch `feature/pr2f2-space-report-batch-2026-09-28` from `sow/2026-Q3` `11d9078a`, merged as `7161d9f8`. CI green
@@ -43,8 +57,7 @@ SAM_Deploy `bc76a31`. No SAM change.
   - Harness: 96.7 s, 9.7 ms per document, linear, bounded memory.
   - Re-run the harness with env `SAM_PR2F2_SCALE_MODEL=C:\TasOut\pr2d\bridge_peaks.sam`,
     `SAM_PR2F2_SCALE_OUT=<folder>` (optional `SAM_PR2F2_SCALE_SAVE=<x.sam>`).
-- **Next step.** PR2F-3: SAM_Deploy pointer bump to the merged SAM_UI `7161d9f8` (and SAM `3e8670da`), plus
-  installed-product batch acceptance. Not started.
+- **Next step.** Done: PR2F-3 deployed via SAM_Deploy#57 (`3d531508`), see the entry above.
 
 ## Current: Mixed Part O dwelling strategies - PR3B CLOSED (28 Sep 2026)
 
