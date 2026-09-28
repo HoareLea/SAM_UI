@@ -1,0 +1,6 @@
+89a8ac7bd8805391d936bb6cab2f5baab720d62219ad36973bc671afc9d99446 */c/TasOut/parto-mixed-pr2-2026-09-27/fixtures/SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam
+89a8ac7bd8805391d936bb6cab2f5baab720d62219ad36973bc671afc9d99446 */c/TasOut/parto-pr3c-acceptance-2026-09-28/run/PR3C-Mixed.sam
+accepted-2B fixture before: 2DD1D7B113BA12FF351FEF0A54F6B5293420AFBBB1E923B6FA5FA9828F36D398
+after the acceptance:
+2dd1d7b113ba12ff351fef0a54f6b5293420afbbb1e923b6fa5fa9828f36d398 */c/TasOut/parto-mixed-pr2-2026-09-27/fixtures/SAM_zoningAM-CIBSEfutureZ1-MixedBaseline-Flat3Accepted2B.sam
+89a8ac7bd8805391d936bb6cab2f5baab720d62219ad36973bc671afc9d99446 */c/TasOut/parto-mixed-pr2-2026-09-27/fixtures/SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam

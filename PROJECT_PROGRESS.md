@@ -46,7 +46,36 @@ SAM_Deploy `bc76a31`. No SAM change.
 - **Next step.** PR2F-3: SAM_Deploy pointer bump to the merged SAM_UI `7161d9f8` (and SAM `3e8670da`), plus
   installed-product batch acceptance. Not started.
 
-## Current: Mixed Part O dwelling strategies - PR3B CLOSED (28 Sep 2026)
+## Current: Mixed Part O dwelling strategies - PR3C per-dwelling active cooling (28 Sep 2026) - PR OPEN, accepted on licensed TAS
+
+**Status.** Implemented, tested, accepted through the real `SAM Analytical.exe` on licensed TAS; awaiting owner review /
+merge. [SAM-BIM/SAM_UI#134](https://github.com/SAM-BIM/SAM_UI/pull/134), branch
+`feature/parto-mixed-cooling-pr3c-2026-09-28` from `sow/2026-Q3` `8971cfb`. No change in SAM / SAM_Systems / SAM_Tas;
+builds against SAM `3d6fa80a`, SAM_Systems `005c4fe`, SAM_Tas `e7cc0ed` (**rebuild SAM.sln Release first** - SAM#163
+moved SAM after the PR3B build). Full record: `documentation/PartO-MixedDwellingStrategies-PR3C.md`.
+- **What.** Mixed Design: project rule "Active cooling is allowed" (default on, persisted), an Active cooling column
+  (On / Off / —, plain text) and bulk Cooling on / off - orthogonal to Natural / MVHR / Optimised MVHR (no new strategy
+  types). On refused for non-MVHR rows; Natural refused for a cooled row until cooling is off; product/basis edits keep
+  cooling; Off never blocked; corridors are not rows.
+- **Pipeline.** Check + Build pass the catalogue descriptors AND templates (templates only with the catalogue) to
+  `MaterialisePartODwellingStrategies`. SAM's `Route == Systems` → `Modify.SimulatePartOMaterialisationSystems` for the
+  WHOLE model: `Query.PartOMixedSystemsCall` (MVHR dwellings' rooms; guidance only for SAM's cooled units) →
+  `PartOIteration3Pipeline.MaterialiseMixed` (MV + `GuidanceTemplate` MVRE; checked against SAM's recorded airflow) →
+  no-IZAM source → one TPD → guidance read-back per cooled unit → bridge → TM59 with the materialiser's scenarios → run
+  model `<project>_Bridge.sam`. Otherwise the unchanged IZAM route. Evidence adds Route / Path_TPD / GuidanceSummaries;
+  staleness = SAM's cooled-record rule with templates. Gate harness uses the production `MaterialiseMixed`.
+- **Validation.** WPF **1384/1384**; `PartOMixedCoolingTests` 17/17; red first: base window test + 6 mutations
+  (`documentation/evidence/parto-mixed-pr3c/`). CI #134 green (`bbd533c`). Licensed real-UI acceptance: cooled run on
+  the Systems route (Flat 3 80 l/s, 1 TPD, 1 guidance read-back, DX 1505 h as the PR3B gate, scenarios F1 BaseNV / F2
+  BasePassive / F3 ActiveTrimCooling / corridor DwellingIndependent), save/reopen, cooling off → IZAM rebuild with no
+  cooling, 143 l/s Optimised + cooling refused (`CoolingAirFlowOutsideGuidance`) on the row; fixtures byte-identical.
+  Env-gated `PartOMixedCoolingAcceptanceInspection` (`SAM_PARTO_PR3C_MODEL`, `SAM_PARTO_PR3C_EXPECT=cooled|uncooled`).
+- **Limitations.** No valid Optimised + cooled case on TAS (no accepted design within 60-120 l/s). Native TPD DX coils
+  not re-read by COM in PR3C (unit test + TAS read-back). Pre-existing column overflow at 1240 px.
+- **Next step.** Owner review/merge of #134. Then (owner-led) PR4: large-project acceptance incl. TPD scale and
+  SAM_Deploy pins. Do not start without the owner.
+
+## Previous: Mixed Part O dwelling strategies - PR3B CLOSED (28 Sep 2026)
 
 - Merged: SAM#161 PR3B-1 (`85a13ec3`), SAM_Systems#31 PR3B-2 (`005c4fe`), SAM_Tas#71 PR3B-3 (`e7cc0ed`), SAM_UI#131
   (test-only, `11d9078`: `CoolingRequested_IsRefusedBySam_NotBypassed` accepts `CoolingGated` or

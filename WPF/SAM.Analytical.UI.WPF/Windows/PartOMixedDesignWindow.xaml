@@ -190,7 +190,7 @@
                     </GroupStyle>
                 </DataGrid.GroupStyle>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Dwelling" Binding="{Binding Name, Mode=OneWay}" Width="150" ElementStyle="{StaticResource PartO.Mixed.Cell}"/>
+                    <DataGridTextColumn Header="Dwelling" Binding="{Binding Name, Mode=OneWay}" Width="125" ElementStyle="{StaticResource PartO.Mixed.Cell}"/>
                     <DataGridTextColumn Header="Category" Binding="{Binding Group, Mode=OneWay}" Width="90" ElementStyle="{StaticResource PartO.Mixed.Cell}"/>
                     <DataGridTextColumn Header="Spaces" Binding="{Binding SpaceCount, Mode=OneWay}" Width="52" ElementStyle="{StaticResource PartO.Mixed.Cell}"/>
 
@@ -211,7 +211,7 @@
                     </DataGridTemplateColumn>
 
                     <!-- SELECTED: the designer's authority - the only strategy that is built. -->
-                    <DataGridTextColumn Header="Selected (your design)" Binding="{Binding SelectedText, Mode=OneWay}" Width="200">
+                    <DataGridTextColumn Header="Selected (your design)" Binding="{Binding SelectedText, Mode=OneWay}" Width="163">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="TextBlock" BasedOn="{StaticResource PartO.Mixed.Cell}">
                                 <Setter Property="FontWeight" Value="SemiBold"/>

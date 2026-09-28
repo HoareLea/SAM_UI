@@ -1,0 +1,16 @@
+param([string]$Op = 'show', [string]$Name = '')
+. (Join-Path $PSScriptRoot 'lib.ps1')
+$w = Top 'Part O*Mixed Design*'; $root = $AE::FromHandle($w.Handle)
+$g = Find-ById $root 'dataGrid_Dwellings'
+$rows = @($g.FindAll($TS::Children, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::DataItem))))
+foreach ($r in $rows) {
+    $n = ($r.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::Text)))).Current.Name
+    $p = $null; [void]$r.TryGetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern, [ref]$p)
+    if ($n -eq $Name) {
+        if ($Op -eq 'select') { $p.Select() } elseif ($Op -eq 'add') { $p.AddToSelection() } elseif ($Op -eq 'click') { $rc = $r.Current.BoundingRectangle; [System.Windows.Forms.Cursor]::Position = New-Object System.Drawing.Point([int]($rc.X + 40), [int]($rc.Y + $rc.Height / 2)) }
+    }
+}
+Start-Sleep -Milliseconds 700
+$gp = $null; [void]$g.TryGetCurrentPattern([System.Windows.Automation.SelectionPattern]::Pattern, [ref]$gp)
+$sel = @($gp.Current.GetSelection() | ForEach-Object { ($_.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::Text)))).Current.Name })
+Say ("  {0} {1}: grid selection=[{2}] canMulti={3} count='{4}'" -f $Op, $Name, ($sel -join ','), $gp.Current.CanSelectMultiple, (Txt $root 'textBlock_SelectionCount'))
