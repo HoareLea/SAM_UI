@@ -160,7 +160,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         [WpfFact]
-        public void Window_ShowsTheFourAuthoritiesSeparately_AndOffersCoolingOnlyAsGated()
+        public void Window_ShowsTheFourAuthoritiesSeparately_AndOffersCoolingAsAProjectRule()
         {
             PartOMixedDesignSession partOMixedDesignSession = new(PartOMixedDesignFixture.Baseline(3), null, null, null);
             partOMixedDesignSession.SimulationCaseKey = PartOMixedDesignFixture.CaseKey;
@@ -179,9 +179,11 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Contains("Selected (your design)", headers);
                 Assert.Contains("Final TM59", headers);
 
-                //Cooling is present only as gated: its checkbox cannot be ticked.
+                //PR3C: cooling is a project rule a person can change (allowed by default) and a column beside the selection.
                 CheckBox checkBox_Cooling = (CheckBox)partOMixedDesignWindow.FindName("checkBox_Cooling");
-                Assert.False(checkBox_Cooling.IsEnabled);
+                Assert.True(checkBox_Cooling.IsEnabled);
+                Assert.True(checkBox_Cooling.IsChecked);
+                Assert.Contains(headers, x => x.Contains("cooling"));
 
                 //No selection: Build is not offered, and says why.
                 Button button_Build = (Button)partOMixedDesignWindow.FindName("button_Build");

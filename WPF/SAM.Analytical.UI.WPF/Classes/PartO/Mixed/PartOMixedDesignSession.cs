@@ -63,6 +63,9 @@ namespace SAM.Analytical.UI.WPF
 
         public int Optimised { get; internal set; }
 
+        /// <summary>MVHR and Optimised MVHR dwellings with active cooling on - counted beside them, never as a strategy of its own.</summary>
+        public int Cooled { get; internal set; }
+
         public int NotSelected { get; internal set; }
 
         public int NeedsAttention { get; internal set; }
@@ -84,6 +87,11 @@ namespace SAM.Analytical.UI.WPF
                 if (Optimised != 0)
                 {
                     parts.Add(string.Format("{0} Optimised MVHR", Optimised));
+                }
+
+                if (Cooled != 0)
+                {
+                    parts.Add(string.Format("{0} with active cooling (whole building on the TAS Systems route)", Cooled));
                 }
 
                 if (NotSelected != 0)
@@ -133,11 +141,16 @@ namespace SAM.Analytical.UI.WPF
         //the baseline or the final run changes, never on every edit. See ValidateFinal.
         private string? finalStale_Baseline;
 
-        public PartOMixedDesignSession(AnalyticalModel analyticalModel_Baseline, string? path_Model, List<VentilationUnitCapacityDescriptor>? ventilationUnitCapacityDescriptors, PartOMixedDesignState? partOMixedDesignState)
+        /// <param name="ventilationUnitTemplates">
+        /// The catalogue's product templates - each product's manufacturer guidance, which is a cooled dwelling's cooling.
+        /// Offered to SAM with the descriptors; null or empty and SAM refuses any cooled dwelling.
+        /// </param>
+        public PartOMixedDesignSession(AnalyticalModel analyticalModel_Baseline, string? path_Model, List<VentilationUnitCapacityDescriptor>? ventilationUnitCapacityDescriptors, PartOMixedDesignState? partOMixedDesignState, List<VentilationUnitTemplate>? ventilationUnitTemplates = null)
         {
             analyticalModel = analyticalModel_Baseline ?? throw new ArgumentNullException(nameof(analyticalModel_Baseline));
             Path_Model = path_Model;
             Descriptors = ventilationUnitCapacityDescriptors ?? [];
+            Templates = ventilationUnitTemplates ?? [];
             State = partOMixedDesignState ?? new PartOMixedDesignState();
 
             //Offer products where there are any - the catalogue's or the project's test unit, the Iteration 2 terms.
@@ -155,6 +168,15 @@ namespace SAM.Analytical.UI.WPF
         public string? Path_Model { get; }
 
         public List<VentilationUnitCapacityDescriptor> Descriptors { get; }
+
+        /// <summary>The catalogue's product templates - the manufacturer guidance SAM reads a cooled dwelling's cooling from.</summary>
+        public List<VentilationUnitTemplate> Templates { get; }
+
+        /// <summary>
+        /// The templates as the next build offers them: with the catalogue, never without it (a cooled product must be
+        /// selected against the catalogue in the same call - SAM's rule).
+        /// </summary>
+        public List<VentilationUnitTemplate>? TemplatesOffered => catalogueOffered ? Templates : null;
 
         /// <summary>
         /// Whether any product can be offered: a selectable catalogue product, or the project's test ventilation unit
@@ -315,7 +337,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            if (partOMixedRunEvidence.IsCurrent(analyticalModel, DescriptorsOffered, out finalStale_Baseline))
+            if (partOMixedRunEvidence.IsCurrent(analyticalModel, DescriptorsOffered, TemplatesOffered, out finalStale_Baseline))
             {
                 //SAM's record and the results file agree; the simulation case must too.
                 finalStale_Baseline = SimulationCaseStale(partOMixedRunEvidence.SimulationCaseKey) is string reason_Case ? string.Format("The mixed run {0}", reason_Case) : null;
@@ -427,13 +449,28 @@ namespace SAM.Analytical.UI.WPF
 
         // ---- Editing ----------------------------------------------------------------------------------------------
 
-        /// <summary>Select natural ventilation for these dwellings. Refused whole where the project requires mechanical ventilation.</summary>
+        /// <summary>
+        /// Select natural ventilation for these dwellings. Refused whole where the project requires mechanical ventilation,
+        /// and where a dwelling has active cooling on: its cooling is on the MVHR supply, so it is turned off explicitly
+        /// first rather than dropped unseen.
+        /// </summary>
         public string? SetNatural(IEnumerable<PartOMixedDwellingRow> rows_Selected)
         {
-            return Assign(rows_Selected, row => new PartODwellingStrategy(row.ZoneGuid, PartOVentilationMode.NaturalVentilation));
+            List<PartOMixedDwellingRow> rows_Temp = [.. rows_Selected ?? []];
+
+            List<string> names_Cooled = [.. rows_Temp.Where(x => x.Selected?.ActiveCooling == PartOActiveCooling.SupplyAirCooling).Select(x => x.Name)];
+            if (names_Cooled.Count != 0)
+            {
+                return string.Format("Turn active cooling off first for {0}: a naturally ventilated dwelling has no mechanical supply to cool.", Names(names_Cooled));
+            }
+
+            return Assign(rows_Temp, row => new PartODwellingStrategy(row.ZoneGuid, PartOVentilationMode.NaturalVentilation));
         }
 
-        /// <summary>Select MVHR with this product - or null for automatic selection from the project's pool.</summary>
+        /// <summary>
+        /// Select MVHR with this product - or null for automatic selection from the project's pool. Cooling is orthogonal:
+        /// a dwelling already MVHR keeps its active cooling setting; one that was not starts with cooling off.
+        /// </summary>
         public string? SetMvhr(IEnumerable<PartOMixedDwellingRow> rows_Selected, VentilationUnitReference? ventilationUnitReference)
         {
             if (ventilationUnitReference is not null && !AllowedProducts.Any(x => SameProduct(x.VentilationUnitReference, ventilationUnitReference)))
@@ -441,7 +478,57 @@ namespace SAM.Analytical.UI.WPF
                 return string.Format("{0} is not in the project's permitted product pool, so it cannot be selected.", ventilationUnitReference);
             }
 
-            return Assign(rows_Selected, row => new PartODwellingStrategy(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference));
+            return Assign(rows_Selected, row => new PartODwellingStrategy(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference, Cooling(row)));
+        }
+
+        /// <summary>
+        /// Active cooling on or off for these dwellings - intent only, orthogonal to their ventilation strategy: nothing
+        /// else about the selection changes, and no cooling figure is stored (a cooled dwelling's cooling is its selected
+        /// product's manufacturer guidance, which SAM applies and refuses where it cannot).
+        /// <para>
+        /// On is refused whole for a dwelling that is not mechanically ventilated - the only cooling path is the MVHR
+        /// supply - and where the project does not allow cooling. Off is always allowed and leaves a natural or unselected
+        /// dwelling as it is.
+        /// </para>
+        /// </summary>
+        public string? SetCooling(IEnumerable<PartOMixedDwellingRow> rows_Selected, bool on)
+        {
+            List<PartOMixedDwellingRow> rows_Temp = [.. rows_Selected ?? []];
+            if (rows_Temp.Count == 0)
+            {
+                return "Select one or more dwellings first.";
+            }
+
+            if (!on)
+            {
+                //Never blocked by another project rule: taking cooling away only ever removes intent.
+                List<PartOMixedDwellingRow> rows_Cooled = rows_Temp.FindAll(x => x.Selected?.ActiveCooling == PartOActiveCooling.SupplyAirCooling);
+                foreach (PartOMixedDwellingRow row in rows_Cooled)
+                {
+                    row.SetSelected(new PartODwellingStrategy(row.Selected!) { ActiveCooling = PartOActiveCooling.None });
+                }
+
+                Edited(rows_Cooled);
+                Refresh();
+
+                return null;
+            }
+
+            List<string> names_NotMvhr = [.. rows_Temp.Where(x => x.Selected?.VentilationMode != PartOVentilationMode.MVHR).Select(x => x.Name)];
+            if (names_NotMvhr.Count != 0)
+            {
+                return string.Format("Active cooling is on the MVHR supply: select MVHR (or Optimised MVHR) first for {0}.", Names(names_NotMvhr));
+            }
+
+            return Assign(rows_Temp, row => new PartODwellingStrategy(row.Selected!) { ActiveCooling = PartOActiveCooling.SupplyAirCooling });
+        }
+
+        /// <summary>The row's active cooling where it stays MVHR - cooling is orthogonal to a change of product or airflow basis.</summary>
+        private static PartOActiveCooling Cooling(PartOMixedDwellingRow row)
+        {
+            PartODwellingStrategy? partODwellingStrategy = row.Selected;
+
+            return partODwellingStrategy?.VentilationMode == PartOVentilationMode.MVHR && partODwellingStrategy.ActiveCooling == PartOActiveCooling.SupplyAirCooling ? PartOActiveCooling.SupplyAirCooling : PartOActiveCooling.None;
         }
 
         /// <summary>
@@ -530,7 +617,7 @@ namespace SAM.Analytical.UI.WPF
 
             //A product already chosen for the dwelling is kept; otherwise the unit is selected from the project's pool.
             VentilationUnitReference? ventilationUnitReference = row.Selected?.VentilationMode == PartOVentilationMode.MVHR ? row.Selected.VentilationUnitReference : null;
-            PartODwellingStrategy partODwellingStrategy = new(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference, PartOActiveCooling.None, PartODesignAirFlowBasis.RetainedDesign, partODwellingDesignAcceptance.DesignFingerprint);
+            PartODwellingStrategy partODwellingStrategy = new(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference, Cooling(row), PartODesignAirFlowBasis.RetainedDesign, partODwellingDesignAcceptance.DesignFingerprint);
 
             string? refusal = Constraints.Refusal(partODwellingStrategy);
             if (refusal is not null)
@@ -735,6 +822,11 @@ namespace SAM.Analytical.UI.WPF
                     counts = string.Format("{0} · {1}", counts, corridor);
                 }
 
+                if (partOMixedRunEvidence.Route == PartOSimulationRoute.Systems)
+                {
+                    counts = string.Format("{0} · TAS Systems route, {1}", counts, UI.Query.PartOCount(partOMixedRunEvidence.Record?.CooledDwellings.Count ?? 0, "dwelling cooled", "dwellings cooled"));
+                }
+
                 return FinalCurrent
                     ? string.Format("Final mixed run: {0} — {1} ({2}).", Core.Query.Description(partOMixedRunEvidence.Overall), counts, when)
                     : string.Format("Previous mixed run ({0}) is STALE and is not the current result: {1}", when, finalStale);
@@ -773,6 +865,11 @@ namespace SAM.Analytical.UI.WPF
                 else
                 {
                     result.Mvhr++;
+                }
+
+                if (partODwellingStrategy?.ActiveCooling == PartOActiveCooling.SupplyAirCooling)
+                {
+                    result.Cooled++;
                 }
 
                 if (row.NeedsAttention)

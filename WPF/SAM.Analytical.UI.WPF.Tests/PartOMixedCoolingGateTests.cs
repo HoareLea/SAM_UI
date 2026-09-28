@@ -374,21 +374,10 @@ namespace SAM.Analytical.UI.WPF.Tests
             return withSet.MaterialisePartODwellingStrategies(descriptors, null, templates);
         }
 
-        /// <summary>The call <see cref="PartOIteration3Pipeline.Materialise"/> makes, plus the MVRE guidance topology (PR3B-2).</summary>
+        /// <summary>The production mixed SAM_Systems call (PR3C: <see cref="PartOIteration3Pipeline.MaterialiseMixed"/>).</summary>
         private static MechanicalVentilationMaterialisation Mixed(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, Dictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings)
         {
-            MechanicalVentilationSettings mechanicalVentilationSettings = new()
-            {
-                Schedule = Query.PartOIteration3OperatingSchedule(),
-                Name = PartOIteration3Pipeline.Name_SystemEnergyCentre,
-                MaterialiseSystemSpaceComponents = false,
-                GuidanceTemplate = new SystemTemplate(PartOIteration3Pipeline.Ventilation_Template_ManufacturerAware, null, null, null, null, null).SystemEnergyCentre(),
-                GuidanceSettings = guidanceSettings,
-            };
-
-            SystemEnergyCentre systemEnergyCentre = new SystemTemplate(PartOIteration3Pipeline.Ventilation_Template, null, null, null, null, null).SystemEnergyCentre();
-
-            return adjacencyCluster.MechanicalVentilation(systemEnergyCentre, mechanicalVentilationSettings, spaces);
+            return new PartOIteration3Pipeline().MaterialiseMixed(adjacencyCluster, spaces, guidanceSettings);
         }
 
         private static PartOIteration? Iteration(Dictionary<Guid, OverheatingScenario> scenario_By_Zone, Zone zone)

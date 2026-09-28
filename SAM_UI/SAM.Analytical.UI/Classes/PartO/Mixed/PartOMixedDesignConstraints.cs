@@ -33,6 +33,7 @@ namespace SAM.Analytical.UI
             {
                 NaturalVentilationAllowed = partOMixedDesignConstraints.NaturalVentilationAllowed;
                 OptimisationAllowed = partOMixedDesignConstraints.OptimisationAllowed;
+                CoolingAllowed = partOMixedDesignConstraints.CoolingAllowed;
             }
         }
 
@@ -45,10 +46,11 @@ namespace SAM.Analytical.UI
         public bool OptimisationAllowed { get; set; } = true;
 
         /// <summary>
-        /// Whether active cooling is allowed. Always false in this build: cooling is recorded and refused by SAM
-        /// until the cooling workflow (PR3) - so it is not a setting a person can switch on here.
+        /// Whether a dwelling may have active cooling. A project rule only: whether a cooled dwelling can be built -
+        /// its product's manufacturer guidance, the published cooling airflow range, the unit's capacity - is SAM's
+        /// materialisation's answer, never this one's.
         /// </summary>
-        public bool CoolingAllowed => false;
+        public bool CoolingAllowed { get; set; } = true;
 
         /// <summary>Why a strategy is not permitted by these rules, or null where it is.</summary>
         public string Refusal(PartODwellingStrategy partODwellingStrategy)
@@ -70,7 +72,7 @@ namespace SAM.Analytical.UI
 
             if (partODwellingStrategy.ActiveCooling == PartOActiveCooling.SupplyAirCooling && !CoolingAllowed)
             {
-                return "Active cooling is not available until the cooling workflow is enabled.";
+                return "The project does not allow active cooling.";
             }
 
             return null;
@@ -96,6 +98,7 @@ namespace SAM.Analytical.UI
             {
                 ["NaturalVentilationAllowed"] = NaturalVentilationAllowed,
                 ["OptimisationAllowed"] = OptimisationAllowed,
+                ["CoolingAllowed"] = CoolingAllowed,
             };
         }
 
@@ -107,6 +110,7 @@ namespace SAM.Analytical.UI
             {
                 result.NaturalVentilationAllowed = (bool?)jsonObject["NaturalVentilationAllowed"] ?? true;
                 result.OptimisationAllowed = (bool?)jsonObject["OptimisationAllowed"] ?? true;
+                result.CoolingAllowed = (bool?)jsonObject["CoolingAllowed"] ?? true;
             }
 
             return result;

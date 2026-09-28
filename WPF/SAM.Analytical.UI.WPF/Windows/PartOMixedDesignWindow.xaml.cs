@@ -112,6 +112,8 @@ namespace SAM.Analytical.UI.WPF
             checkBox_NaturalAllowed.Unchecked += (s, e) => ConstraintsChanged();
             checkBox_OptimisationAllowed.Checked += (s, e) => ConstraintsChanged();
             checkBox_OptimisationAllowed.Unchecked += (s, e) => ConstraintsChanged();
+            checkBox_Cooling.Checked += (s, e) => ConstraintsChanged();
+            checkBox_Cooling.Unchecked += (s, e) => ConstraintsChanged();
             checkBox_CatalogueOffered.Checked += (s, e) => CatalogueChanged();
             checkBox_CatalogueOffered.Unchecked += (s, e) => CatalogueChanged();
 
@@ -119,6 +121,8 @@ namespace SAM.Analytical.UI.WPF
             button_SetMvhr.Click += (s, e) => Edit(x => session!.SetMvhr(x, (comboBox_Product.SelectedItem as ProductItem)?.Reference));
             button_SetRetained.Click += (s, e) => Edit(x => session!.SetRetainedDesign(x));
             button_AcceptOptimised.Click += (s, e) => AcceptOptimised();
+            button_CoolingOn.Click += (s, e) => Edit(x => session!.SetCooling(x, true));
+            button_CoolingOff.Click += (s, e) => Edit(x => session!.SetCooling(x, false));
             button_Clear.Click += (s, e) => Edit(x => { session!.Clear(x); return null; });
             button_ApplySuggestions.Click += (s, e) => ApplySuggestions();
 
@@ -158,6 +162,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     checkBox_NaturalAllowed.IsChecked = session?.Constraints.NaturalVentilationAllowed ?? true;
                     checkBox_OptimisationAllowed.IsChecked = session?.Constraints.OptimisationAllowed ?? true;
+                    checkBox_Cooling.IsChecked = session?.Constraints.CoolingAllowed ?? true;
                     checkBox_CatalogueOffered.IsChecked = session?.CatalogueOffered ?? false;
                     checkBox_CatalogueOffered.IsEnabled = session?.CatalogueHasProducts ?? false;
                 }
@@ -425,9 +430,10 @@ namespace SAM.Analytical.UI.WPF
 
             // ---- Constraints and products -------------------------------------------------------------------------
 
-            run_ConstraintsSummary.Text = string.Format(" — {0}{1} · {2}",
+            run_ConstraintsSummary.Text = string.Format(" — {0}{1}{2} · {3}",
                 session.Constraints.NaturalVentilationAllowed ? "natural allowed" : "mechanical required",
                 session.Constraints.OptimisationAllowed ? string.Empty : " · no optimised airflow",
+                session.Constraints.CoolingAllowed ? string.Empty : " · no active cooling",
                 session.CatalogueOffered ? "products from the catalogue" : "generic MVHR units");
 
             textBlock_ProductPool.Text = session.CatalogueOffered
@@ -502,6 +508,11 @@ namespace SAM.Analytical.UI.WPF
             button_AcceptOptimised.ToolTip = !session.Constraints.OptimisationAllowed
                 ? "The project does not allow an optimised design airflow."
                 : count != 1 ? "Select ONE dwelling whose completed Iteration 2B result you want to accept." : "Choose the completed Iteration 2B result model for this dwelling, review the design airflows it changes, and confirm.";
+            button_CoolingOn.IsEnabled = any && session.Constraints.CoolingAllowed;
+            button_CoolingOn.ToolTip = !session.Constraints.CoolingAllowed
+                ? "The project does not allow active cooling."
+                : "Active cooling on for the selected MVHR / Optimised MVHR dwellings. Their cooling is the selected product's manufacturer guidance; SAM refuses it at Check design / Build where the product has none, or the design airflow is beyond the published cooling range or the unit's capacity.";
+            button_CoolingOff.IsEnabled = any;
             button_Clear.IsEnabled = any;
             button_ApplySuggestions.IsEnabled = session.Rows.Any(x => x.SuggestionDiffers);
         }
@@ -714,6 +725,7 @@ namespace SAM.Analytical.UI.WPF
 
             session.Constraints.NaturalVentilationAllowed = checkBox_NaturalAllowed.IsChecked == true;
             session.Constraints.OptimisationAllowed = checkBox_OptimisationAllowed.IsChecked == true;
+            session.Constraints.CoolingAllowed = checkBox_Cooling.IsChecked == true;
             session.Refresh();
 
             RefreshAll();

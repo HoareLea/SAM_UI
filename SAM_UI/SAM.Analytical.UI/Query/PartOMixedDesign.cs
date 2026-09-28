@@ -60,7 +60,7 @@ namespace SAM.Analytical.UI
                 PartOScreeningStrategy.MechanicalBaseline => null,
                 PartOScreeningStrategy.SelectedProduct => catalogueHasProducts ? null : "No selectable product is in the ventilation unit catalogue, so there is nothing to select.",
                 PartOScreeningStrategy.Optimised => "Airflow optimisation is not yet connected to mixed-design screening. A retained design can still be selected for a dwelling whose baseline carries its design terminals.",
-                PartOScreeningStrategy.ActiveCooling => "Available after the cooling workflow is enabled.",
+                PartOScreeningStrategy.ActiveCooling => "Cooling is not screened: turn Active cooling on for the dwellings that need it and Build & Run. A cooled design runs the whole building on the TAS Systems route.",
                 _ => "Not a screening strategy.",
             };
         }
@@ -194,7 +194,7 @@ namespace SAM.Analytical.UI
 
             if (partODwellingStrategy.ActiveCooling == PartOActiveCooling.SupplyAirCooling)
             {
-                result += " · active cooling (not yet available)";
+                result += " · active cooling";
             }
 
             return result;
@@ -300,7 +300,7 @@ namespace SAM.Analytical.UI
             {
                 PartOScreeningStrategy.Natural => "the project requires mechanical ventilation",
                 PartOScreeningStrategy.Optimised => "the project does not allow an optimised design airflow",
-                PartOScreeningStrategy.ActiveCooling => "active cooling is not yet available",
+                PartOScreeningStrategy.ActiveCooling => "the project does not allow active cooling",
                 _ => "the project does not allow it",
             };
         }

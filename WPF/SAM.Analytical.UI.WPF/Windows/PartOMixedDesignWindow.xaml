@@ -101,9 +101,9 @@
             <StackPanel Margin="18,6,0,0">
                 <CheckBox x:Name="checkBox_NaturalAllowed" Content="Natural ventilation is allowed (untick: every dwelling must be mechanically ventilated)"/>
                 <CheckBox x:Name="checkBox_OptimisationAllowed" Content="An optimised (retained) design airflow is allowed" Margin="0,4,0,0"/>
-                <CheckBox x:Name="checkBox_Cooling" Content="Active cooling" IsEnabled="False" Margin="0,4,0,0" ToolTipService.ShowOnDisabled="True"
-                          ToolTip="Available after the cooling workflow is enabled. Cooling is recorded and refused by SAM until then."/>
-                <TextBlock Style="{StaticResource PartO.Caption}" Margin="20,0,0,0" Text="Available after the cooling workflow is enabled."/>
+                <CheckBox x:Name="checkBox_Cooling" Content="Active cooling is allowed for MVHR dwellings" Margin="0,4,0,0"
+                          ToolTip="A project rule only. Whether a dwelling can be cooled is SAM's answer at Check design / Build: its selected product's manufacturer cooling guidance, the published cooling airflow range and the unit's capacity."/>
+                <TextBlock Style="{StaticResource PartO.Caption}" Margin="20,0,0,0" Text="A cooled dwelling uses its selected product's manufacturer cooling guidance, so products must be selected from the catalogue. Any cooled dwelling runs the whole building on the TAS Systems route."/>
                 <CheckBox x:Name="checkBox_CatalogueOffered" Content="Select MVHR products from the ventilation unit catalogue" Margin="0,8,0,0"/>
                 <TextBlock x:Name="textBlock_ProductPool" Style="{StaticResource PartO.Caption}" Margin="20,0,0,0"/>
             </StackPanel>
@@ -219,6 +219,9 @@
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
 
+                    <!-- ACTIVE COOLING: orthogonal to the strategy, a word per row (On / Off / — where there is no MVHR supply). -->
+                    <DataGridTextColumn x:Name="column_Cooling" Header="Active&#x0a;cooling" Binding="{Binding CoolingText, Mode=OneWay}" Width="62" ElementStyle="{StaticResource PartO.Mixed.Cell}"/>
+
                     <!-- FINAL: the last mixed run, shown as current only while it is current. -->
                     <DataGridTemplateColumn Header="Final TM59" Width="82">
                         <DataGridTemplateColumn.CellTemplate>
@@ -252,7 +255,7 @@
         <!-- BULK: every edit acts on the selected rows - one dwelling or a hundred - so nothing is edited a row at a time. -->
         <Border Grid.Row="5" Margin="0,8,0,0" Padding="8,6" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="4">
             <StackPanel>
-                <StackPanel Orientation="Horizontal">
+                <WrapPanel Orientation="Horizontal">
                     <TextBlock x:Name="textBlock_SelectionCount" VerticalAlignment="Center" FontWeight="SemiBold" Width="170"/>
                     <Button x:Name="button_SetNatural" Content="Natural ventilation" Height="24" Padding="8,0" ToolTipService.ShowOnDisabled="True"/>
                     <Button x:Name="button_SetMvhr" Content="MVHR" Height="24" Padding="8,0" Margin="8,0,0,0"/>
@@ -261,10 +264,13 @@
                             ToolTip="Optimised MVHR: keep the design airflow the baseline's ventilation terminals already carry for these MVHR dwellings. Only SAM's design fingerprint is recorded; no airflow is copied."/>
                     <Button x:Name="button_AcceptOptimised" Content="Accept optimised airflow…" Height="24" Padding="8,0" Margin="8,0,0,0" ToolTipService.ShowOnDisabled="True"
                             ToolTip="Optimised MVHR from a completed Iteration 2B result: choose the 2B result model, see every design airflow it changes for the ONE selected dwelling, and confirm. SAM writes it onto that dwelling's design terminals on the baseline; no other dwelling changes and nothing is simulated."/>
+                    <Button x:Name="button_CoolingOn" Content="Cooling on" Height="24" Padding="8,0" Margin="8,0,0,0" ToolTipService.ShowOnDisabled="True"/>
+                    <Button x:Name="button_CoolingOff" Content="Cooling off" Height="24" Padding="8,0" Margin="4,0,0,0"
+                            ToolTip="Active cooling off for the selected dwellings. Their ventilation strategy is unchanged; the next Build &amp; Run rebuilds the whole design from the clean baseline."/>
                     <Button x:Name="button_Clear" Content="Clear" Height="24" Padding="8,0" Margin="8,0,0,0"/>
                     <Button x:Name="button_ApplySuggestions" Content="Apply suggestions…" Height="24" Padding="8,0" Margin="16,0,0,0"
                             ToolTip="Shows what applying the screening suggestions would change for the selected dwellings (or all shown dwellings), and changes nothing until you confirm."/>
-                </StackPanel>
+                </WrapPanel>
                 <TextBlock x:Name="textBlock_BulkMessage" Margin="0,4,0,0" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Danger}" Visibility="Collapsed"/>
             </StackPanel>
         </Border>

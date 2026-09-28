@@ -45,9 +45,12 @@ namespace SAM.Analytical.UI.WPF
             VentilationUnitCatalogue ventilationUnitCatalogue = VentilationUnitCatalogue.Read();
             List<VentilationUnitCapacityDescriptor>? descriptors = ventilationUnitCatalogue.HasSelectableProducts ? ventilationUnitCatalogue.CapacityDescriptors : null;
 
+            //The same catalogue's templates: a cooled dwelling's cooling is its product's manufacturer guidance, read by SAM.
+            List<VentilationUnitTemplate>? templates = ventilationUnitCatalogue.HasSelectableProducts ? ventilationUnitCatalogue.Templates : null;
+
             string? path_State = PartOMixedDesignState.Path_State(path_Model);
 
-            PartOMixedDesignSession partOMixedDesignSession = new(analyticalModel, path_Model, descriptors, PartOMixedDesignState.Read(path_State));
+            PartOMixedDesignSession partOMixedDesignSession = new(analyticalModel, path_Model, descriptors, PartOMixedDesignState.Read(path_State), templates);
 
             ActiveSetting.Setting.TryGetValue(AnalyticalSettingParameter.SimulateOptions_PartO, out SimulateOptions simulateOptions_Remembered);
             PartOSimulationCase partOSimulationCase = PartOSimulationCase.Create(analyticalModel, path_Model, simulateOptions_Remembered);
@@ -205,14 +208,14 @@ namespace SAM.Analytical.UI.WPF
 
             using (new SAM.Core.UI.WPF.ProgressBarWindowManager("Part O — Check design", "Materialising the selected design from the baseline..."))
             {
-                partOMaterialisation = Analytical.Modify.MaterialisePartODwellingStrategies(partOMixedDesignSession.WithSelection(), partOMixedDesignSession.DescriptorsOffered);
+                partOMaterialisation = Analytical.Modify.MaterialisePartODwellingStrategies(partOMixedDesignSession.WithSelection(), partOMixedDesignSession.DescriptorsOffered, null, partOMixedDesignSession.TemplatesOffered);
             }
 
             partOMixedDesignSession.SetRefusals(partOMaterialisation.Refusals);
 
             if (partOMaterialisation.IsMaterialised)
             {
-                return string.Format("Check: SAM can build this mixed design ({0}). Nothing was simulated.", partOMixedDesignSession.Readiness().Text);
+                return string.Format("Check: SAM can build this mixed design ({0}).{1} Nothing was simulated.", partOMixedDesignSession.Readiness().Text, CoolingText(partOMaterialisation));
             }
 
             MessageBox.Show(owner, RefusalText(partOMaterialisation.Refusals), "Part O — Check design");
@@ -337,7 +340,10 @@ namespace SAM.Analytical.UI.WPF
             AnalyticalModel analyticalModel_Baseline = partOMixedDesignSession.Baseline;
             string projectName = Create.PartOMixedProjectName(analyticalModel_Baseline, "Mixed");
 
-            if (!RunModelsSafe(uIAnalyticalModel.Path, partOSimulationCase, [projectName], out string? refusal_Path))
+            //A Systems-route run's model is named from its bridge results; neither may land on the open model.
+            string projectName_Bridge = System.IO.Path.GetFileNameWithoutExtension(Query.Path_PartOMixedBridgeTBD(string.Empty, projectName));
+
+            if (!RunModelsSafe(uIAnalyticalModel.Path, partOSimulationCase, [projectName, projectName_Bridge], out string? refusal_Path))
             {
                 return string.Format("Not built: {0}", refusal_Path);
             }
@@ -360,7 +366,8 @@ namespace SAM.Analytical.UI.WPF
                     partOProgressHost.Token,
                     out partOStrategySetRun,
                     null,
-                    () => partOProgressHost.Start(1));
+                    () => partOProgressHost.Start(1),
+                    partOMixedDesignSession.Templates);
 
                 if (partOMixedRunEvidence is null)
                 {
@@ -414,7 +421,25 @@ namespace SAM.Analytical.UI.WPF
             List<string> notes_Run = partOStrategySetRun.Simulation?.Notes ?? [];
             string notes = notes_Run.Count == 0 ? string.Empty : string.Format(" Run notes ({0}): {1}", notes_Run.Count, string.Join(" | ", notes_Run.Take(3)));
 
-            return string.Format("{0}Mixed design built and run: {1}{2}", prefix, partOMixedDesignSession.FinalText, notes);
+            return string.Format("{0}Mixed design built and run: {1}{2}{3}", prefix, partOMixedDesignSession.FinalText, CoolingText(partOStrategySetRun.Materialisation), notes);
+        }
+
+        /// <summary>
+        /// What SAM's record says about cooling, in a sentence (or empty where no dwelling is cooled): which dwellings are
+        /// cooled, by which product, at the cooling operating airflow SAM resolved - reported, never computed here.
+        /// </summary>
+        internal static string CoolingText(PartOMaterialisation? partOMaterialisation)
+        {
+            List<PartOCooledDwelling> partOCooledDwellings = partOMaterialisation?.Record?.CooledDwellings ?? [];
+            if (partOCooledDwellings.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            AdjacencyCluster? adjacencyCluster = partOMaterialisation!.AnalyticalModel?.AdjacencyCluster;
+            IEnumerable<string> dwellings = partOCooledDwellings.Take(5).Select(x => string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} ({1} at {2:0.#} l/s)", adjacencyCluster?.GetObject<Zone>(x.ZoneGuid)?.Name ?? x.ZoneGuid.ToString(), x.VentilationUnitReference, x.CoolingOperatingAirFlow_Lps));
+
+            return string.Format(" Active cooling from the product's manufacturer guidance: {0}{1}; the whole building runs on the TAS Systems route.", string.Join(", ", dwellings), partOCooledDwellings.Count > 5 ? string.Format(" and {0} more", partOCooledDwellings.Count - 5) : string.Empty);
         }
 
         /// <summary>SAM's structured refusals, grouped by reason, each with its subject - never collapsed into one generic message.</summary>
