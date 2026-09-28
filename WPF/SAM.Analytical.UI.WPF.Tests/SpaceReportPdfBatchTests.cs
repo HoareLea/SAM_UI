@@ -292,6 +292,30 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.False(File.Exists(batch.Path(spaces[2].Guid, SpaceReportPdf.SpaceAssumptions)));
         }
 
+        // ------------------------------------------------------------------ the output folder itself
+
+        [Fact]
+        public void TheOutputFolder_CannotBeCreated_FailsFast_BeforeAnyDocument()
+        {
+            AnalyticalModel analyticalModel = Model(out _, "Office", "Store");
+
+            //A file already sits where the output folder needs to be, so CreateDirectory cannot succeed.
+            string blocked = Path.Combine(directory, "blocked");
+            File.WriteAllText(blocked, "not a folder");
+
+            SpaceReportPdfBatch batch = SpaceReportPdfBatch.Create(analyticalModel, null, [SpaceReportPdf.SpaceAssumptions, SpaceReportPdf.SpaceDesignLoadSummary], blocked);
+            CountingRenderer countingRenderer = new CountingRenderer();
+
+            IOException exception = Assert.Throws<IOException>(() => batch.Run(SpaceReportPdfExistingFiles.Skip, documentRenderer: countingRenderer));
+
+            Assert.Contains(blocked, exception.Message);
+            //Nothing was attempted: no document was rendered, no PDF, no log, and the blocking file is untouched.
+            Assert.Equal(0, countingRenderer.Count);
+            Assert.Empty(Directory.GetFiles(directory, "*.pdf", SearchOption.AllDirectories));
+            Assert.Empty(Directory.GetFiles(directory, "*.log", SearchOption.AllDirectories));
+            Assert.Equal("not a folder", File.ReadAllText(blocked));
+        }
+
         // ------------------------------------------------------------------ existing files
 
         [Fact]
@@ -909,6 +933,40 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(2, messages.Count);
             Assert.Same(previousResult, window.Result);
             Assert.Equal(logs, Directory.GetFiles(directory, "*.log").Length);
+
+            window.Close();
+        }
+
+        [WpfFact]
+        public async System.Threading.Tasks.Task Export_WhenTheOutputFolderCannotBeCreated_StopsBeforeAnyDocument_WithOneMessage()
+        {
+            AnalyticalModel analyticalModel = SpaceReportPdfBatchTests.Model(out _, "A", "B");
+
+            //A file already sits where the output folder needs to be, so CreateDirectory (inside Run) cannot succeed.
+            string blocked = Path.Combine(directory, "blocked");
+            File.WriteAllText(blocked, "not a folder");
+
+            List<(string Text, MessageBoxButton Button)> messages = [];
+            SpaceReportPdfPrompts prompts = new SpaceReportPdfPrompts()
+            {
+                ShowMessage = (text, _, button, _) => { messages.Add((text, button)); return MessageBoxResult.OK; },
+            };
+
+            SpaceReportPdfBatchWindow window = new SpaceReportPdfBatchWindow(analyticalModel, null, blocked, prompts, new SpaceReportPdfBatchTests.CountingRenderer());
+            window.checkBox_SpaceAssumptions.IsChecked = true;
+
+            await window.ExportAsync();
+
+            //Create() and ExistingCount() both succeed (Directory.Exists is false for a file, so existingCount is 0
+            //and there is no existing-files prompt); the failure surfaces from Run, through the window's existing
+            //"stopped" handling for any Run exception - the same state a mid-run failure would reach.
+            Assert.Equal("Space report export stopped", window.textBlock_Heading.Text);
+            (string text, MessageBoxButton button) = Assert.Single(messages);
+            Assert.Contains(blocked, text);
+            Assert.Equal(MessageBoxButton.OK, button);
+            Assert.Null(window.Result);
+            Assert.Empty(Directory.GetFiles(directory, "*.pdf", SearchOption.AllDirectories));
+            Assert.Empty(Directory.GetFiles(directory, "*.log", SearchOption.AllDirectories));
 
             window.Close();
         }
