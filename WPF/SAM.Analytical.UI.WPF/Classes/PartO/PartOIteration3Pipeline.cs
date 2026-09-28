@@ -110,6 +110,39 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
+        /// Mixed Part O (PR3C, SAM PR3B record §2): ONE SAM_Systems graph for a mixed model - every unit the ordinary
+        /// <c>MV.json</c> ventilation, and only the units named in <paramref name="guidanceSettings"/> the product's own
+        /// manufacturer-guidance arrangement (MVRE exchanger + supply DX coil, SAM_Systems' <c>GuidanceTemplate</c>).
+        /// The same schedule, name and flags as <see cref="Materialise"/>; nothing computed here - each unit's guidance
+        /// settings are SAM_Systems' resolution of SAM's cooling rule, handed in.
+        /// </summary>
+        public MechanicalVentilationMaterialisation MaterialiseMixed(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings)
+        {
+            SystemEnergyCentre systemEnergyCentre = new SystemTemplate(Ventilation_Template, null, null, null, null, null).SystemEnergyCentre();
+            SystemEnergyCentre systemEnergyCentre_Guidance = new SystemTemplate(Ventilation_Template_ManufacturerAware, null, null, null, null, null).SystemEnergyCentre();
+
+            if (systemEnergyCentre is null || systemEnergyCentre_Guidance is null)
+            {
+                return new MechanicalVentilationMaterialisation(
+                    null,
+                    [string.Format("The installed mechanical ventilation topology template '{0}' could not be resolved, so there is nothing to materialise the mixed Part O ventilation onto.", systemEnergyCentre is null ? Ventilation_Template : Ventilation_Template_ManufacturerAware)],
+                    null,
+                    null);
+            }
+
+            MechanicalVentilationSettings mechanicalVentilationSettings = new()
+            {
+                Schedule = Query.PartOIteration3OperatingSchedule(),
+                Name = Name_SystemEnergyCentre,
+                MaterialiseSystemSpaceComponents = false,
+                GuidanceTemplate = systemEnergyCentre_Guidance,
+                GuidanceSettings = guidanceSettings,
+            };
+
+            return adjacencyCluster.MechanicalVentilation(systemEnergyCentre, mechanicalVentilationSettings, spaces);
+        }
+
+        /// <summary>
         /// Candidate B's thermal source, produced by <b>the same pipeline that produced Reference A</b>
         /// with only its last step changed - see <see cref="PartOWorkflowRunner"/>.
         ///

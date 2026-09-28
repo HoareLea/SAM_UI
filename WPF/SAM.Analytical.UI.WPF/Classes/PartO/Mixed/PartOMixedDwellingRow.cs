@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
+using SAM.Analytical.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -69,11 +70,21 @@ namespace SAM.Analytical.UI.WPF
 
         public string SelectedText => UI.Query.PartODwellingStrategyText(selected);
 
+        /// <summary>Whether active cooling is on for this dwelling - intent only; its figures are the product's.</summary>
+        public bool Cooled => selected?.ActiveCooling == PartOActiveCooling.SupplyAirCooling;
+
+        /// <summary>
+        /// The Active cooling cell, as a word: "On" / "Off" for a mechanically ventilated dwelling, "—" where there is no
+        /// MVHR supply to cool (natural ventilation, or nothing selected) - unless cooling is recorded there anyway, which
+        /// is shown so SAM's refusal of it has something to point at.
+        /// </summary>
+        public string CoolingText => Cooled ? "On" : selected?.VentilationMode == PartOVentilationMode.MVHR ? "Off" : "—";
+
         internal void SetSelected(PartODwellingStrategy? partODwellingStrategy)
         {
             selected = partODwellingStrategy is null ? null : new PartODwellingStrategy(partODwellingStrategy);
 
-            Changed(nameof(Selected), nameof(HasSelection), nameof(SelectedText), nameof(SuggestionDiffers), nameof(FinalRanAs), nameof(FinalDetail));
+            Changed(nameof(Selected), nameof(HasSelection), nameof(SelectedText), nameof(Cooled), nameof(CoolingText), nameof(SuggestionDiffers), nameof(FinalRanAs), nameof(FinalDetail));
         }
 
         // ---- Screening ------------------------------------------------------------------------------------------
