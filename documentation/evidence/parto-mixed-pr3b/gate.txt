@@ -1,0 +1,154 @@
+PASS clean baseline C:\TasOut\parto-mixed-pr2-2026-09-27\fixtures\SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam 
+catalogue=C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_Systems\files\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON state=Selectable sha=D38789089D8580BB0E89F27BC139FBC67C41F834E7FA1BB0E76592BC974558D8
+PASS a catalogue product with manufacturer cooling guidance: Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V) + MR-ECO-COOL-V
+materialised=True route=Systems 
+PASS one complete analytical model materialised
+PASS route recorded Systems
+PASS exactly one cooled dwelling, Flat 3
+Flat 3: product Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V), design duty 63 / 63 l/s, cooling operating airflow 80 l/s
+scenarios=Flat 1: BaseNaturalVentilation 6dfe14cb-6cf3-8798-a61a-d337dbc40878 | Flat 2: BasePassive 9c836196-bf37-8de0-8e21-42e6ab626492 | Flat 3: ActiveTrimCooling 0c34389f-d803-8bca-b790-ac091a7e58c6 | Corridor: DwellingIndependent 0a7452ba-015a-8138-a2e6-4172712753c2
+PASS Flat 1 scenario BaseNaturalVentilation
+PASS Flat 2 scenario BasePassive (uncooled MVHR)
+PASS Flat 3 scenario ActiveTrimCooling
+PASS corridor scenario DwellingIndependent
+PASS thermal source complete   (00:00:49.4638396)
+PASS guidance settings at SAM's rule 
+PASS one SAM_Systems graph materialised 
+PASS exactly one guidance-cooled unit, Flat 3's
+PASS the unit operates at the recorded cooling operating airflow 80 l/s
+PASS DisplacementVentilation = false on all 6 system zones
+PASS one plant room
+PASS Flat 3 air system DX coils = 1
+PASS Flat 2 air system DX coils = 0
+PASS one TPD Systems document simulated  (00:01:05.6351330)
+PASS guidance read-back for 1 unit, Flat 3's air system
+PASS Flat 3 receives cooling: 1505 h with DX load, peak sensible 802 W, elevated 80 l/s
+PASS bridge complete, rooms=6  (00:00:37.5578340)
+PASS TM59 assessed 
+TM59 overall=Fail corridor=SignificantRisk
+   Flat 2 / Bedroom 2_3: mechanical >26 C hours 316/262 Fail
+PASS Flat 2 / Bedroom 2_3 on the mechanical TM59 criterion
+   Flat 2 / Kitchen_4: mechanical >26 C hours 320/142 Fail
+PASS Flat 2 / Kitchen_4 on the mechanical TM59 criterion
+   Flat 3 / Bedroom 2_6: mechanical >26 C hours 199/262 Pass
+PASS Flat 3 / Bedroom 2_6 on the mechanical TM59 criterion
+   Flat 3 / Kitchen_7: mechanical >26 C hours 296/142 Fail
+PASS Flat 3 / Kitchen_7 on the mechanical TM59 criterion
+   Flat 1 / Studio 1_0: natural Criterion 1 95/110 Pass
+PASS Flat 1 / Studio 1_0 on the natural TM59 criterion
+   Flat 1 / Studio 1_0: natural Criterion 2 20/32 Pass
+PASS Flat 1 / Studio 1_0 on the natural TM59 criterion
+CIBSE TM59:2017 OVERHEATING ASSESSMENT
+======================================
+Source: C:\TasOut\parto-pr3b-gate-2026-09-28\Gate_Systems-Bridge.tsd
+Thermal model scope: WHOLE BUILDING
+TM52 building category: Category II
+Part O modelling assumptions: NOT VERIFIED BY THIS RESULT REPORT
+
+TM59 OCCUPIED-SPACE ASSESSMENT: FAIL
+TM59 COMMUNAL-CORRIDOR RISK: SIGNIFICANT RISK
+
+ASSESSMENT BASIS
+----------------
+Method:                         CIBSE TM59:2017
+Simulation period:              1 Jan - 31 Dec (8760 hours)
+Natural ventilation study:      1 May - 30 Sep (3672 clock hours)
+Bedroom night-time window:      22:00 - 07:00, full year (3285 clock hours)
+Mechanical ventilation check:   Full year; annual occupied hours are space-specific
+Communal corridor check:        Full year (8760 hours)
+
+NATURAL VENTILATION
+-------------------
+Space       Internal Condition  TM59 Application        Criterion 1       Criterion 2  Overall
+Studio 1_0  Studio              Sleeping          95/110 (+15) PASS  20/32 (+12) PASS  PASS
+
+ASSESSMENT HOURS
+----------------
+Space       Occupied Summer Hours  Annual Night Occupied Hours
+Studio 1_0                   3672                         3285
+
+MECHANICAL VENTILATION
+----------------------
+Space        Internal Condition              TM59 Application  Annual Occupied Hours  Actual  Limit  Margin  Status
+Bedroom 2_3  Double Bedroom - Bedroom 2_3    Sleeping                           8760     316    262     -54  FAIL
+Kitchen_4    1 Bed Apt. Kitchen - Kitchen_4  Cooking                            4745     320    142    -178  FAIL
+Bedroom 2_6  Double Bedroom - Bedroom 2_6    Sleeping                           8760     199    262     +63  PASS
+Kitchen_7    1 Bed Apt. Kitchen - Kitchen_7  Cooking                            4745     296    142    -154  FAIL
+
+COMMUNAL CORRIDOR RISK
+----------------------
+Space       Internal Condition                                 Annual Hours  Actual  Limit  Margin  Risk
+Corridor_1  TM59_Communal Corridor (including pipework gains)          8760     899    262    -637  SIGNIFICANT RISK
+
+SUPPLEMENTARY >28 C CHECKS - INFORMATION ONLY
+---------------------------------------------
+Space       Internal Condition         Annual Hours  Actual  Limit  Margin  Risk
+Bathroom_2  TM59_Bathroom                      8760      77    262    +185  ACCEPTABLE
+Ensuite_5   TM59_Bathroom - Ensuite_5          8760      58    262    +204  ACCEPTABLE
+Ensuite_8   TM59_Bathroom - Ensuite_8          8760      49    262    +213  ACCEPTABLE
+
+SPACES NOT ASSESSED
+-------------------
+Every space the assessment covered produced a result.
+
+SUMMARY
+-------
+Natural ventilation:             PASS
+Mechanical ventilation:           FAIL
+TM59 occupied-space assessment:   FAIL
+TM59 communal-corridor risk:      SIGNIFICANT RISK
+
+This report assesses simulated temperatures against CIBSE TM59:2017. It does not by itself
+verify that every Approved Document O modelling assumption was applied to the simulation.
+
+LEGEND
+------
+Actual  Hours exceeding the stated temperature/comfort threshold.
+Limit   Maximum permitted hours for the criterion.
+Margin  Limit - Actual. Positive = allowance remaining, negative = threshold exceeded.
+        Status is taken from the assessment's own verdict, never re-derived from Margin:
+        Criterion 1, >26 C and >28 C are strict, so a zero margin is a failure, while
+        Criterion 2 is inclusive, so a zero margin passes.
+
+Criterion 1     Adaptive thermal comfort criterion for applicable naturally ventilated
+                occupied rooms, against Occupied Summer Hours (see Assessment Basis and
+                Assessment Hours).
+Criterion 2     Bedroom night-time overheating criterion. Applies to bedrooms only.
+                Assessed during 22:00-07:00 throughout the year against Annual Night
+                Occupied Hours.
+>26 C hours     Fixed-temperature criterion for applicable mechanically ventilated occupied
+                rooms, against Annual Occupied Hours.
+>28 C hours     Annual hours above 28 C.
+                For TM59 communal corridors this is the TM59 overheating-risk check.
+                For other spaces shown under Supplementary >28 C Checks it is advisory
+                engineering information only.
+
+TM59 Application
+    Sleeping  Space assessed as a bedroom/sleeping space.
+    Living    Space assessed as a living space.
+    Cooking   Space assessed as a kitchen/cooking space.
+
+    Multiple applications may apply to one space, for example:
+    Living, Cooking
+
+ComplianceStatus
+    PASS  the applicable criterion was satisfied.
+    FAIL  the applicable criterion was exceeded.
+    N/A   the criterion is not required of that space.
+RiskStatus
+    ACCEPTABLE       the >28 C reference threshold was not exceeded.
+    SIGNIFICANT RISK the threshold was exceeded. Highlight for design review. This is NOT
+                     an occupied-space compliance failure and never changes the TM59
+                     occupied-space assessment above.
+
+PASS cooling removed: no cooled dwelling, route Izam
+PASS cooling removed: Flat 3 scenario BasePassive
+PASS control: two uncooled rebuilds have the same engineering state (guid- and order-free)
+PASS cooling removed: the rebuilt model's engineering state equals the cooled one's (cooling lives only in the record)
+PASS cooling removed: SAM_Systems graph has no guidance record and no DX coil
+Optimised + cooled: Flat 3 accepted supply design 143 l/s -> materialised=False CoolingAirFlowOutsideGuidance: Dwelling 'Flat 3' is selected with active cooling, but its product 'Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)' would cool at 143 l/s - the dwelling's design of 143 l/s - beyond the manufacturer's published cooling airflow range of 60-120 l/s, where no cooling data exists.
+PASS Optimised + cooled beyond the published range is refused (CoolingAirFlowOutsideGuidance), the design untouched
+PASS accepted fixture unchanged
+PASS baseline file unchanged (SHA-256 89A8AC7BD8805391D936BB6CAB2F5BAAB720D62219AD36973BC671AFC9D99446)
+PASS baseline object unchanged by every materialisation
+GATE PASSED

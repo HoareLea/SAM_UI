@@ -1,0 +1,3 @@
+Legacy-B0 restored=False The model has changed since the simulation results at 'C:\TasOut\parto-guidance-2026-09-24\03-Resume\000000_SAM_AnalyticalModel-It1a-futureZ1.tsd' were produced from it, so those results no longer describe it. Re-run the simulation to review results for the current model.
+Legacy-MG restored=False The model has changed since the simulation results at 'C:\TasOut\parto-guidance-2026-09-24\03-Resume\000000_SAM_AnalyticalModel-It1a-futureZ1.tsd' were produced from it, so those results no longer describe it. Re-run the simulation to review results for the current model.
+LEGACY RE-RUN FAILED: Legacy-B0 not restored, Legacy-MG not restored

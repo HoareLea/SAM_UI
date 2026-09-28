@@ -1,17 +1,26 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR3B domain (27 Sep 2026) - in progress
+## Current: Mixed Part O dwelling strategies - PR3B domain MERGED, licensed gate PASSED (28 Sep 2026)
 
-- PR3A merged as SAM_UI#129 (`b3b061b8`); owner decisions binding (SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md`).
-- PR3B-1 SAM = [SAM-BIM/SAM#161](https://github.com/SAM-BIM/SAM/pull/161). SAM_UI needs no production change (PR2's mixed
-  run passes no templates, so SAM refuses cooled dwellings - fail-closed until PR3C).
-- Test-only SAM_UI PR (branch `test/parto-cooling-gate-retired-2026-09-27`): `CoolingRequested_IsRefusedBySam_NotBypassed`
-  accepts `CoolingGated` or `CoolingWithoutProductGuidance` by name (green against SAM before and after #161); the PR3A
-  route-proof harness joins the WPF collection (it broke `EveryClassWithStaTests_IsInTheWpfCollection`; CI only
-  builds). WPF **1324/1324** against #161.
-- **Handover 28 Sep:** SAM#161 (green) and SAM_Systems#31 (PR3B-2; build red until #161 merges) are open; PR3B-3 SAM_Tas
-  is a branch only. Full state, merge order and gate recipe: SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md`
-  §3-§5. **Next step:** PR3B-3, then merge #161 → #31 → PR3B-3, then the licensed gate.
+- Merged: SAM#161 PR3B-1 (`85a13ec3`), SAM_Systems#31 PR3B-2 (`005c4fe`), SAM_Tas#71 PR3B-3 (`e7cc0ed`), SAM_UI#131
+  (test-only, `11d9078`: `CoolingRequested_IsRefusedBySam_NotBypassed` accepts `CoolingGated` or
+  `CoolingWithoutProductGuidance`; the PR3A route-proof harness joined the WPF collection). No SAM_UI production change:
+  PR2's mixed run passes no templates, so SAM refuses a cooled dwelling (fail-closed until PR3C).
+- This branch `test/parto-pr3b-gate-2026-09-28` (test-only): `WPF/SAM.Analytical.UI.WPF.Tests/PartOMixedCoolingGateTests.cs`,
+  env-gated (`SAM_PARTO_PR3B_GATE`, `SAM_PARTO_MIXED_BASELINE`; optional `SAM_PARTO_CATALOGUE`, `SAM_PARTO_MIXED_ACCEPTED`,
+  `SAM_PARTO_LEGACY_RUN`). It makes the mixed SAM_Systems call the way `PartOIteration3Pipeline.Materialise` does plus
+  `GuidanceTemplate` (the production pipeline has no such parameter - PR3C).
+- **Gate (licensed TAS, merged tips): 38/38 PASS** - `documentation/evidence/parto-mixed-pr3b/gate.txt`. One model, one
+  TPD, DX only on Flat 3's air system (80 l/s from a 63 l/s design, 1505 h cooling), DV false on all 6 system zones, Flat 3
+  `ActiveTrimCooling`, TM59 per criterion (Flat 3 bedroom 199/262 PASS vs Flat 2 316/262 FAIL), cooling removed leaves no
+  cooling (guid/order-free equality with a control), 143 l/s Optimised + cooled refused, baseline SHA-256 unchanged.
+- **Legacy B0/MG re-acceptance with DV = false: NOT run** (`legacy.txt`): the saved 24 Sep run
+  (`C:\TasOut\parto-guidance-2026-09-24\03-Resume`) no longer restores ("the model has changed since the simulation
+  results were produced"). Needs a fresh Iteration 1a run through the product workflow, then rerun the harness's legacy
+  fact against a copy of that run folder.
+- Validation: SAM_UI.sln Release 0 errors; WPF **1326/1326** (the two gate facts no-op without their variables).
+- Record: SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md` §4-§5.
+- **Next step:** owner review of the gate; legacy B0/MG re-acceptance; PR3C (cooling toggle) only on the owner's go-ahead.
 
 ## Previous: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only; decisions ACCEPTED by the owner (27 Sep)
 
