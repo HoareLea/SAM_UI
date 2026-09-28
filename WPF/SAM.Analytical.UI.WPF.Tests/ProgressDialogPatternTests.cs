@@ -177,6 +177,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal(string.Format("Did not complete: Write the PDFs and the log · stopped after {0} of 4", window.Result.Items.Count), rows[1].AccessibleName);
 
                 Assert.False(window.progressBar.IsIndeterminate);
+                Assert.Equal((double)window.Result.Items.Count / 4, window.progressBar.Value, 6);
                 Assert.StartsWith("Cancelled between documents", window.textBlock_Note.Text);
                 Assert.StartsWith("Cancelled after", window.textBlock_Summary.Text);
                 Assert.Equal("Close", window.button_Cancel.Content);

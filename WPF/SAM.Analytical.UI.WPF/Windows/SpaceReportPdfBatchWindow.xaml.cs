@@ -305,6 +305,9 @@ namespace SAM.Analytical.UI.WPF
         {
             if (result.Cancelled)
             {
+                //The bar ends at what the result counts, not at the last progress tick (sent before its document).
+                progressFraction = result.DocumentCount == 0 ? 0 : (double)result.Items.Count / result.DocumentCount;
+
                 return EndProgress(
                     "Export cancelled",
                     string.Format(CultureInfo.CurrentCulture, "stopped after {0:N0} of {1:N0}", result.Items.Count, result.DocumentCount),
