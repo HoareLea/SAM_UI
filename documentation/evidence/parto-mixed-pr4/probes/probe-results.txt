@@ -1,0 +1,24 @@
+TsdResultsReadProbe (copy of each run's thermal-source TSD, read-only; this machine, 28 Sep 2026)
+
+x10 (90 zones, 161 MB TSD):
+     5.9 s  ZoneDatas: 90 zones in 0.06 s
+     8.4 s  ValueDictionary x2: 2.49 s
+     8.6 s  DesignDataDictionary: 90 in 0.16 s
+    33.7 s  per zone over 90 zones (ms/zone): Overheating 192.3, design-day zone 1.4, surface results 50.6, GetPeakZoneGroupGains 35.4
+    61.5 s  Convert.ToSAM_Results (whole): 2380 results in 27.7 s
+
+x30 (270 zones, 483 MB TSD), 30 zones timed, whole read skipped (the production run's took 3,038 s):
+     0.5 s  ZoneDatas: 270 zones in 0.19 s
+    11.8 s  ValueDictionary x2: 11.28 s
+    12.2 s  DesignDataDictionary: 270 in 0.43 s
+   419.9 s  per zone over 30 zones (ms/zone): Overheating 6781.8, design-day zone 3.4, surface results 60.1, GetPeakZoneGroupGains 6743.1
+
+TsdAnnualVsDailyProbe (same copies):
+x10, 90 zones: per zone (3 arrays): 365 daily calls 416.8 ms, one annual call 104.1 ms; bit differences: 0
+               GetPeakZoneGroupGains, 30 groups: one call each 1.0 s; a batched call returns ONE column (3x1) - not a per-group batch
+x30, 15 zones: per zone (3 arrays): 365 daily calls 22446.4 ms, one annual call 22414.8 ms; bit differences: 0
+               GetPeakZoneGroupGains, 5 groups: one call each 47.3 s (9.5 s/call)
+
+TAS: TSD.exe 64-bit, "C:\Program Files\Environmental Design Solutions Ltd\Tas", file version 2.0.0.1.
+Machine: Intel Core Ultra 7 165H (16 cores), 31.5 GB RAM (10 GB free), NVMe SSD. TSD.exe is CPU-bound (one core at
+100%) during the reads - not disk or memory.

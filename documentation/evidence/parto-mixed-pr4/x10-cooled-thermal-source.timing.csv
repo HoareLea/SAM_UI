@@ -1,0 +1,27 @@
+step,milliseconds
+"Opening TBD file",2041.6
+"Updating Weather Data",16.8
+"Updating HDD and CDD Day Types",109.5
+"Opening T3D file",9592.6
+"Importing gbXML",325.6
+"Updating T3D file",1639.0
+"T3D to TBD -> Shading",197619.0
+"Opening TBD",317.5
+"Updating Facing External Elements",665.0
+"Assigning Adiabatic Constructions",339.8
+"Setting Adiabatic",11170.9
+"Updating Building Elements",3092.3
+"Updating Ids",24084.0
+"Reusing Aperture Definitions",4356.0
+"Updating Thermal Parameters",442.5
+"Updating Zones",4692.7
+"Adding Design Days",46.0
+"Creating Zone Groups",100.6
+"Updating Aperture Types",14644.3
+"Removing IZAMs",0.7
+"Removing Mechanical Ventilation Gains",747.5
+"Simulating Model",33708.4
+"Adding Results",27046.7
+"Updating Design Loads",436.1
+"Saving Model",658.8
+"TOTAL",337894.0

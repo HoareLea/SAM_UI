@@ -1,0 +1,13 @@
+step,milliseconds
+"Opening TPD file",936.5
+"Loading TSD data",15.9
+"Adding properties (schedules/fluids/design conditions)",39.9
+"Adding energy sources",25.0
+"Plantroom: setup",3.7
+"Plantroom: liquid systems",670.2
+"Plantroom: standalone components (wind / PV)",23.0
+"Plantroom: air systems",436.0
+"Plantroom: ventilation legs",425221.9
+"Reconciling the conversion",11.4
+"Saving TPD",656.8
+"TOTAL",428040.5

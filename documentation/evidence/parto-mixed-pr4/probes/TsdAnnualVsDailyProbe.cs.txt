@@ -1,0 +1,76 @@
+// PR4 measurement: the cheaper TSD reads - one annual call per array instead of 365 daily calls, and one batched
+// GetPeakZoneGroupGains for many groups instead of one call per group. Checks the values are the same.
+using SAM.Core.Tas;
+using System.Collections;
+using System.Diagnostics;
+using TSD;
+
+internal static class Program
+{
+    [STAThread]
+    private static void Main(string[] args)
+    {
+        Stopwatch total = Stopwatch.StartNew();
+        void Log(string text) => Console.WriteLine("{0,8:0.0} s  {1}", total.Elapsed.TotalSeconds, text);
+        int count = int.Parse(args[1]);
+
+        using SAMTSDDocument sAMTSDDocument = new(args[0], true);
+        SimulationData simulationData = sAMTSDDocument.TSDDocument.SimulationData;
+        BuildingData buildingData = simulationData.GetBuildingData();
+        List<ZoneData> zoneDatas = SAM.Analytical.Tas.Query.ZoneDatas(buildingData);
+        count = Math.Min(count, zoneDatas.Count);
+        Log(zoneDatas.Count + " zones, timing " + count);
+
+        short[] arrays = { (short)tsdZoneArray.occupantSensibleGain, (short)tsdZoneArray.resultantTemp, (short)tsdZoneArray.dryBulbTemp };
+        Stopwatch step = Stopwatch.StartNew();
+        TimeSpan daily = TimeSpan.Zero, annual = TimeSpan.Zero;
+        int mismatches = 0;
+        for (int z = 0; z < count; z++)
+        {
+            ZoneData zoneData = zoneDatas[z];
+            foreach (short array in arrays)
+            {
+                step.Restart();
+                float[] fromDaily = new float[8760];
+                for (int d = simulationData.firstDay; d <= simulationData.lastDay; d++)
+                {
+                    float[] values = (zoneData.GetDailyZoneResult(d, array) as IEnumerable).Cast<float>().ToArray();
+                    Array.Copy(values, 0, fromDaily, d * 24 - 24, 24);
+                }
+                daily += step.Elapsed;
+
+                step.Restart();
+                float[] fromAnnual = (zoneData.GetAnnualZoneResult(array) as IEnumerable).Cast<float>().ToArray();
+                annual += step.Elapsed;
+
+                for (int h = 0; h < 8760; h++)
+                {
+                    if (h >= fromAnnual.Length || BitConverter.SingleToInt32Bits(fromAnnual[h]) != BitConverter.SingleToInt32Bits(fromDaily[h])) { mismatches++; break; }
+                }
+            }
+        }
+        Log(string.Format("per zone (3 arrays): 365 daily calls {0:0.0} ms, one annual call {1:0.0} ms; zones/arrays with any bit difference: {2}", daily.TotalMilliseconds / count, annual.TotalMilliseconds / count, mismatches));
+
+        // Peak of zone groups: one call per group vs one call for all
+        List<string> groups = new();
+        for (int z = 0; z + 2 < count; z += 3) groups.Add("Name:" + zoneDatas[z].zoneGUID + ":" + zoneDatas[z + 1].zoneGUID + ":" + zoneDatas[z + 2].zoneGUID);
+        step.Restart();
+        List<(double, int)> single = new();
+        foreach (string g in groups)
+        {
+            object[,] t = (object[,])buildingData.GetPeakZoneGroupGains(new[] { g }, new[] { (int)tsdZoneArray.coolingLoad });
+            single.Add((System.Convert.ToDouble(t[1, 0]), System.Convert.ToInt32(t[2, 0])));
+        }
+        TimeSpan time_Single = step.Elapsed;
+        step.Restart();
+        object[,] batched = (object[,])buildingData.GetPeakZoneGroupGains(groups.ToArray(), new[] { (int)tsdZoneArray.coolingLoad });
+        TimeSpan time_Batched = step.Elapsed;
+        Log(string.Format("GetPeakZoneGroupGains, {0} groups: one call each {1:0.0} s, one call for all {2:0.0} s; batched shape {3}x{4}", groups.Count, time_Single.TotalSeconds, time_Batched.TotalSeconds, batched.GetLength(0), batched.GetLength(1)));
+        int diff = 0;
+        for (int i = 0; i < groups.Count && i < batched.GetLength(1); i++)
+        {
+            if (System.Convert.ToDouble(batched[1, i]) != single[i].Item1 || System.Convert.ToInt32(batched[2, i]) != single[i].Item2) diff++;
+        }
+        Log("batched vs single differences: " + diff + (groups.Count > 0 ? string.Format(" (first: single {0}/{1}, batched {2}/{3})", single[0].Item1, single[0].Item2, batched[1, 0], batched[2, 0]) : ""));
+    }
+}

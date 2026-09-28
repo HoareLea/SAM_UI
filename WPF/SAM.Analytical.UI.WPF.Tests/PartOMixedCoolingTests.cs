@@ -26,11 +26,11 @@ namespace SAM.Analytical.UI.WPF.Tests
     [Collection(WpfCollection.Name)]
     public class PartOMixedCoolingTests
     {
-        private static readonly VentilationUnitReference Reference = new("Fixture", "MVHR-C", "COOL");
+        internal static readonly VentilationUnitReference Reference = new("Fixture", "MVHR-C", "COOL");
 
-        private static readonly VentilationUnitCapacityDescriptor Descriptor = new(Reference, 150, 150);
+        internal static readonly VentilationUnitCapacityDescriptor Descriptor = new(Reference, 150, 150);
 
-        private static VentilationUnitTemplate Template(double default_Lps = 80.0, double minimum_Lps = 60.0, double maximum_Lps = 120.0)
+        internal static VentilationUnitTemplate Template(double default_Lps = 80.0, double minimum_Lps = 60.0, double maximum_Lps = 120.0)
         {
             return new VentilationUnitTemplate(Reference, "PR3C fixture")
             {
