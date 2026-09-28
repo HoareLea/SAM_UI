@@ -72,7 +72,7 @@ installed catalogue (SHA `D3878908…58D8`); Z1 DSY1 2050s HIGH90, TAS solar, fu
 | ×30 cooled | 90 / 270 | 60 / 30 | 1:08:05 | 48:30 | 1:21:06 | 1:15:41 | **4:33:29** | **PASSED** |
 | ×10 uncooled (IZAM) | 30 / 90 | - | 6:25 (shading 3:54, results 0:28) | - | - | 0:17 | **6:44** | **PASSED** |
 
-Each PASSED run checked (logs `evidence/parto-mixed-pr4/Large_*.log`): route as expected; cooled dwellings = exactly the
+Each PASSED run checked (logs `evidence/parto-mixed-pr4/Large_*.txt`): route as expected; cooled dwellings = exactly the
 Flat 3s; ONE TPD; TAS guidance read-back for every cooled unit; no unit supply setpoint on the analytical model; every
 Natural dwelling `BaseNaturalVentilation`, uncooled MVHR `BasePassive`, cooled `ActiveTrimCooling`, every corridor
 `DwellingIndependent`; no space unassessed; **every dwelling has its block reference's TM59 outcome** (0 deviate of 30 /
@@ -134,9 +134,9 @@ SAM_Systems; it applies equally to the pre-existing homogeneous Part O workflow.
 
 ## 7. Validation, open items, next step
 
-- Focused `PartOMixed*` + `PartOIteration3*`: 311/311. Full WPF suite (Release, merged branch): 1,399/1,400 - the one
-  failure, `PartOWorkflowSimplificationTests.The_progress_window_keeps_its_content_after_standing_aside_for_a_dialog`
-  (a progress-window area SAM_UI#135 just changed), passes 3/3 alone: load-sensitive, not this PR (no production change).
+- Focused `PartOMixed*` + `PartOIteration3*`: 311/311. Full WPF suite (Release, merged branch): **1,400/1,400**
+  on the rerun; the first run had one failure, `PartOWorkflowSimplificationTests.The_progress_window_keeps_its_content_after_standing_aside_for_a_dialog`
+  (a progress-window area SAM_UI#135 just changed), which passed 3/3 alone and in the rerun: load-sensitive, not this PR.
 - CI #137: build + spdx green.
 - **Not met: the ~5,000-space full-year licensed run (PR0 §F)** - blocked by TAS TSD per-zone read scaling (§4.3),
   outside SAM_UI. Owner decision on the follow-up, which is not part of this programme: raise TSD per-zone read

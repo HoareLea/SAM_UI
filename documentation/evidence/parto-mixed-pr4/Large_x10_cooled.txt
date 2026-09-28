@@ -1,0 +1,55 @@
+[00:00:00] replicated SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam x 10: 90 spaces, 40 zones, 500 panels in 0.6 s
+[00:00:00] PASS the large project is a clean baseline 
+[00:00:00] PASS every space name is unique
+[00:00:01] catalogue=C:\Users\michal.dengusiak\Documents\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON sha=D38789089D8580BB0E89F27BC139FBC67C41F834E7FA1BB0E76592BC974558D8 cooled product=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+[00:00:01] PASS 30 dwelling rows, never a row per space
+[00:00:01] PASS Flat 1 of every block: Natural
+[00:00:01] PASS Flat 2 of every block: MVHR (automatic product)
+[00:00:01] PASS Flat 3 of every block: MVHR + Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+[00:00:01] PASS Flat 3 of every block: active cooling on
+[00:00:01] session open 308 ms, bulk assignment 42 ms; readiness: 30 dwellings · 10 Natural · 20 MVHR · 10 with active cooling (whole building on the TAS Systems route)
+[00:00:01] PASS saved C:\TasOut\parto-mixed-pr4-2026-09-28\Large_x10_cooled\Large_x10_cooled.sam
+[00:00:01] saved baseline 426,639 bytes in 0.4 s
+[00:00:02] case: 2E510695C3212F35EC3C8756B3E4965CA4A4AB9A02F5C318BBCED2F6508D34C5|TAS
+[00:27:56]    stage materialised                                            starts 00:00:00  lasts 00:00:00
+[00:27:56]    stage TAS Systems ventilation (SAM_Systems)                   starts 00:00:00  lasts 00:00:00
+[00:27:56]    stage TAS thermal source (full year, no IZAM)                 starts 00:00:01  lasts 00:05:40
+[00:27:56]    stage TAS Systems simulation (full year)                      starts 00:05:41  lasts 00:12:15
+[00:27:56]    stage Resultant temperature (thermostat bridge)               starts 00:17:57  lasts 00:09:31
+[00:27:56]    stage TM59 assessment                                         starts 00:27:28  lasts 00:00:26
+[00:27:56]    stage done                                                    starts 00:27:54  lasts 00:00:00
+[00:27:56] PASS Build & Run completed 
+[00:27:56] PASS route Systems
+[00:27:56] PASS cooled dwellings recorded: 10
+[00:27:57] PASS only Flat 3 of each block is cooled
+[00:27:57] PASS TAS guidance read-back for 10 unit(s)
+[00:27:57] PASS ONE TPD: C:\TasOut\parto-mixed-pr4-2026-09-28\Large_x10_cooled\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tpd
+[00:27:57] PASS no unit supply setpoint on the analytical model
+[00:27:57] PASS every Natural dwelling: BaseNaturalVentilation
+[00:27:57] PASS every uncooled MVHR dwelling: BasePassive
+[00:27:57] PASS every Flat 3: ActiveTrimCooling
+[00:27:57] PASS every corridor: DwellingIndependent (10)
+[00:27:57] TM59 overall=Fail, corridor=SignificantRisk, unassessed spaces=0
+[00:27:57] PASS no space left unassessed
+[00:27:57]    reference Flat 1: Pass (1 pass, 0 fail) - 
+[00:27:57]    reference Flat 2: Fail (0 pass, 2 fail) - Bedroom 2_3, Kitchen_4
+[00:27:57]    reference Flat 3: Fail (1 pass, 1 fail) - Kitchen_7
+[00:27:57] PASS every one of the 30 dwellings has its block reference's TM59 outcome (0 deviate)
+[00:27:57] PASS run model on disk C:\TasOut\parto-mixed-pr4-2026-09-28\Large_x10_cooled\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed_Bridge.sam
+[00:27:58] PASS run model reopens and restores against its results in 1.0 s 
+[00:27:59] PASS re-materialised from the reopened baseline in 0.5 s with the same size (no growth)
+[00:27:59] PASS the saved baseline was not written by the run
+[00:28:00] PASS the run is current against the reopened baseline 
+[00:28:00] PASS the source fixture is unchanged
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed_Bridge.sam            753,182 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed_Bridge.tbd         15,804,001 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed_Bridge.tsd        163,017,991 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed_GuidanceOperation.csv       7,206,485 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.t3d                   386,513 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tbd                 1,624,708 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.timing.csv                420 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tpd                   731,512 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tsd               161,072,044 bytes
+[00:28:00]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.xml                 2,802,918 bytes
+[00:28:00]    file Large_x10_cooled.sam                                                 426,639 bytes
+[00:28:00] ACCEPTANCE PASSED

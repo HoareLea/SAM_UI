@@ -1,0 +1,69 @@
+[00:00:00] replicated SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam x 10: 90 spaces, 40 zones, 500 panels in 0.6 s
+[00:00:00] PASS the large project is a clean baseline 
+[00:00:00] PASS every space name is unique
+[00:00:01] catalogue=C:\Users\michal.dengusiak\Documents\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON sha=D38789089D8580BB0E89F27BC139FBC67C41F834E7FA1BB0E76592BC974558D8 cooled product=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+[00:00:01] PASS 30 dwelling rows, never a row per space
+[00:00:01] PASS Flat 1 of every block: Natural
+[00:00:01] PASS Flat 2 of every block: MVHR (automatic product)
+[00:00:01] PASS Flat 3 of every block: MVHR + Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+[00:00:01] session open 272 ms, bulk assignment 38 ms; readiness: 30 dwellings · 10 Natural · 20 MVHR
+[00:00:01] PASS saved C:\TasOut\parto-mixed-pr4-2026-09-28\Large_x10_uncooled\Large_x10_uncooled.sam
+[00:00:01] saved baseline 425,824 bytes in 0.4 s
+[00:00:01] case: 2E510695C3212F35EC3C8756B3E4965CA4A4AB9A02F5C318BBCED2F6508D34C5|TAS
+[00:06:46]    stage materialised                                            starts 00:00:00  lasts 00:00:01
+[00:06:46]    stage Opening TBD file                                        starts 00:00:01  lasts 00:00:05
+[00:06:46]    stage Updating HDD and CDD Day Types                          starts 00:00:06  lasts 00:00:00
+[00:06:46]    stage Opening T3D file                                        starts 00:00:07  lasts 00:00:10
+[00:06:46]    stage Importing gbXML                                         starts 00:00:17  lasts 00:00:00
+[00:06:46]    stage Updating T3D file                                       starts 00:00:18  lasts 00:00:01
+[00:06:46]    stage T3D to TBD -> Shading                                   starts 00:00:20  lasts 00:03:54
+[00:06:46]    stage Opening TBD                                             starts 00:04:14  lasts 00:00:00
+[00:06:46]    stage Updating Facing External Elements                       starts 00:04:14  lasts 00:00:00
+[00:06:46]    stage Assigning Adiabatic Constructions                       starts 00:04:15  lasts 00:00:00
+[00:06:46]    stage Setting Adiabatic                                       starts 00:04:15  lasts 00:00:10
+[00:06:46]    stage Updating Building Elements                              starts 00:04:26  lasts 00:00:04
+[00:06:46]    stage Updating Ids                                            starts 00:04:30  lasts 00:00:22
+[00:06:46]    stage Reusing Aperture Definitions                            starts 00:04:53  lasts 00:00:05
+[00:06:46]    stage Updating Thermal Parameters                             starts 00:04:58  lasts 00:00:00
+[00:06:46]    stage Updating Zones                                          starts 00:04:58  lasts 00:00:04
+[00:06:46]    stage Updating Aperture Types                                 starts 00:05:03  lasts 00:00:12
+[00:06:46]    stage Add IZAMs                                               starts 00:05:15  lasts 00:00:02
+[00:06:46]    stage Simulating Model                                        starts 00:05:17  lasts 00:00:38
+[00:06:46]    stage Adding Results                                          starts 00:05:55  lasts 00:00:28
+[00:06:46]    stage Updating Design Loads                                   starts 00:06:24  lasts 00:00:00
+[00:06:46]    stage Saving Model                                            starts 00:06:25  lasts 00:00:00
+[00:06:46]    stage (none)                                                  starts 00:06:25  lasts 00:00:00
+[00:06:46]    stage TM59 assessment                                         starts 00:06:26  lasts 00:00:17
+[00:06:46]    stage done                                                    starts 00:06:44  lasts 00:00:00
+[00:06:46] 0 run notes written to Large_x10_uncooled.notes.txt
+[00:06:46] PASS Build & Run completed 
+[00:06:46] PASS route Izam
+[00:06:46] PASS cooled dwellings recorded: 0
+[00:06:46] PASS only Flat 3 of each block is cooled
+[00:06:46] PASS TAS guidance read-back for 0 unit(s)
+[00:06:46] PASS ONE TPD: 
+[00:06:46] PASS no unit supply setpoint on the analytical model
+[00:06:46] PASS every Natural dwelling: BaseNaturalVentilation
+[00:06:46] PASS every uncooled MVHR dwelling: BasePassive
+[00:06:46] PASS every Flat 3: BasePassive
+[00:06:46] PASS every corridor: DwellingIndependent (10)
+[00:06:46] TM59 overall=Fail, corridor=SignificantRisk, unassessed spaces=0
+[00:06:46] PASS no space left unassessed
+[00:06:46]    reference Flat 1: Pass (1 pass, 0 fail) - 
+[00:06:46]    reference Flat 2: Fail (0 pass, 2 fail) - Bedroom 2_3, Kitchen_4
+[00:06:46]    reference Flat 3: Fail (0 pass, 2 fail) - Bedroom 2_6, Kitchen_7
+[00:06:46] PASS every one of the 30 dwellings has its block reference's TM59 outcome (0 deviate)
+[00:06:46] PASS run model on disk C:\TasOut\parto-mixed-pr4-2026-09-28\Large_x10_uncooled\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.sam
+[00:06:46] PASS run model reopens and restores against its results in 0.6 s 
+[00:06:48] PASS re-materialised from the reopened baseline in 0.3 s with the same size (no growth)
+[00:06:48] PASS the saved baseline was not written by the run
+[00:06:48] PASS the run is current against the reopened baseline 
+[00:06:48] PASS the source fixture is unchanged
+[00:06:48]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.sam                   751,565 bytes
+[00:06:48]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.t3d                   386,611 bytes
+[00:06:48]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tbd                 1,751,114 bytes
+[00:06:48]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.timing.csv                764 bytes
+[00:06:48]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tsd               165,726,437 bytes
+[00:06:48]    file 000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.xml                 2,802,919 bytes
+[00:06:48]    file Large_x10_uncooled.sam                                               425,824 bytes
+[00:06:48] ACCEPTANCE PASSED
