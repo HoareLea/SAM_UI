@@ -1,6 +1,19 @@
 # Project Progress
 
-## Current: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only; decisions ACCEPTED by the owner (27 Sep)
+## Current: Mixed Part O dwelling strategies - PR3B domain (27 Sep 2026) - in progress
+
+- PR3A merged as SAM_UI#129 (`b3b061b8`); owner decisions binding (SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md`).
+- PR3B-1 SAM = [SAM-BIM/SAM#161](https://github.com/SAM-BIM/SAM/pull/161). SAM_UI needs no production change (PR2's mixed
+  run passes no templates, so SAM refuses cooled dwellings - fail-closed until PR3C).
+- Test-only SAM_UI PR (branch `test/parto-cooling-gate-retired-2026-09-27`): `CoolingRequested_IsRefusedBySam_NotBypassed`
+  accepts `CoolingGated` or `CoolingWithoutProductGuidance` by name (green against SAM before and after #161); the PR3A
+  route-proof harness joins the WPF collection (it broke `EveryClassWithStaTests_IsInTheWpfCollection`; CI only
+  builds). WPF **1324/1324** against #161.
+- **Handover 28 Sep:** SAM#161 (green) and SAM_Systems#31 (PR3B-2; build red until #161 merges) are open; PR3B-3 SAM_Tas
+  is a branch only. Full state, merge order and gate recipe: SAM `documentation/PartO-MixedDwellingStrategies-PR3B.md`
+  §3-§5. **Next step:** PR3B-3, then merge #161 → #31 → PR3B-3, then the licensed gate.
+
+## Previous: Mixed Part O dwelling strategies - PR3A active cooling architecture investigation (27 Sep 2026) - investigation only; decisions ACCEPTED by the owner (27 Sep)
 
 **Status.** Investigation complete; **no production code changed in any repo**. PR
 [SAM-BIM/SAM_UI#129](https://github.com/SAM-BIM/SAM_UI/pull/129), branch

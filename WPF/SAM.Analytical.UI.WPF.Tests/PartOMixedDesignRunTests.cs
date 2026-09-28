@@ -97,7 +97,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOMixedDesignFixture.FakeSimulator fakeSimulator = new();
             Modify.BuildAndRunPartOMixedDesign(baseline, false, null, PartOMixedDesignFixture.Context(), CancellationToken.None, out PartOStrategySetRun run, fakeSimulator.Simulate);
 
-            Assert.Contains(run.Refusals, x => x.Reason == PartOMaterialisationRefusalReason.CoolingGated);
+            //By name, so this holds against SAM before and after PR3B-1: PR1 gated cooling outright; PR3B-1 cools only
+            //with the product's manufacturer guidance, which this route never offers, so SAM still refuses.
+            Assert.Contains(run.Refusals, x => x.Reason.ToString() is "CoolingGated" or "CoolingWithoutProductGuidance");
             Assert.Empty(fakeSimulator.Models);
         }
 
