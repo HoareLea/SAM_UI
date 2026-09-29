@@ -129,7 +129,7 @@ namespace SAM.Analytical.UI.WPF
             //write is reported, never silent - but it fails nothing: the assessment itself is already done.
             bool reportSaved = SavePartOTM59Report(path_TSD, tM59AssessmentReport, out string? path_TM59Report, out string? refusal_Report);
 
-            string summary = Summary(partORun, tM59AssessmentResult, reportSaved, path_TM59Report, refusal_Report);
+            string summary = Summary(partORun, tM59AssessmentResult, tM59AssessmentReport, reportSaved, path_TM59Report, refusal_Report);
 
             PartOTM59ResultSummary partOTM59ResultSummary = PartOTM59ResultSummary.Create(partOTM59Assessment, partORun, summary, reportSaved ? path_TM59Report : null, reportSaved ? null : refusal_Report);
 
@@ -179,17 +179,54 @@ namespace SAM.Analytical.UI.WPF
         /// processed and named as not assessed, for instance - and wording them as one ("Assessed 9
         /// space(s)") read as though every one of the nine had been.
         /// </summary>
-        private static string Summary(PartORun partORun, TM59AssessmentResult tM59AssessmentResult, bool reportSaved, string? path_TM59Report, string? refusal_Report)
+        private static string Summary(PartORun partORun, TM59AssessmentResult tM59AssessmentResult, TM59AssessmentReport tM59AssessmentReport, bool reportSaved, string? path_TM59Report, string? refusal_Report)
         {
+            SplitCorridorResults(tM59AssessmentResult.CorridorResults, tM59AssessmentReport, out List<TMResult> communalCorridor, out List<TMResult> supplementary);
+
             return Summary(
                 tM59AssessmentResult.Spaces?.Count ?? 0,
                 partORun.Path_TSD,
                 tM59AssessmentResult.NaturalVentilationResults,
                 tM59AssessmentResult.MechanicalVentilationResults,
-                tM59AssessmentResult.CorridorResults,
+                communalCorridor,
+                supplementary,
                 reportSaved,
                 path_TM59Report,
                 refusal_Report);
+        }
+
+        /// <summary>
+        /// Splits the calculation's corridor BUCKET the way the report does. That bucket carries the &gt;28 C row
+        /// of every space the calculation gave the check - communal corridors, and also bathrooms and ensuites -
+        /// and only the report tells them apart, by the internal condition each space is assigned
+        /// (<see cref="TM59AssessmentReport.CorridorChecks"/> vs <see cref="TM59AssessmentReport.SupplementaryChecks"/>).
+        /// So the split is read off the report rather than restated: an information-only bathroom row is never
+        /// counted as a communal corridor.
+        /// </summary>
+        /// <remarks>Internal rather than private so the split is pinned by tests.</remarks>
+        internal static void SplitCorridorResults(IEnumerable<TMResult>? corridorResults, TM59AssessmentReport? tM59AssessmentReport, out List<TMResult> communalCorridorResults, out List<TMResult> supplementaryResults)
+        {
+            HashSet<string> references_CommunalCorridor = [.. (tM59AssessmentReport?.CorridorChecks ?? []).Select(x => x.Reference).Where(x => !string.IsNullOrWhiteSpace(x))];
+
+            communalCorridorResults = [];
+            supplementaryResults = [];
+
+            foreach (TMResult tMResult in corridorResults ?? [])
+            {
+                if (tMResult is null)
+                {
+                    continue;
+                }
+
+                if (tMResult.Reference is not null && references_CommunalCorridor.Contains(tMResult.Reference))
+                {
+                    communalCorridorResults.Add(tMResult);
+                }
+                else
+                {
+                    supplementaryResults.Add(tMResult);
+                }
+            }
         }
 
         /// <summary>
@@ -198,19 +235,25 @@ namespace SAM.Analytical.UI.WPF
         /// SAM.Analytical).
         /// </summary>
         /// <remarks>Internal rather than private so the wording is pinned by tests.</remarks>
-        internal static string Summary(int processed, string? path_TSD, IEnumerable<TMResult>? naturalVentilationResults, IEnumerable<TMResult>? mechanicalVentilationResults, IEnumerable<TMResult>? corridorResults, bool reportSaved, string? path_TM59Report, string? refusal_Report)
+        /// <param name="communalCorridorResults">The report's communal-corridor rows (the TM59 corridor criterion).</param>
+        /// <param name="supplementaryResults">
+        /// The other &gt;28 C rows the same calculation produced - bathrooms, ensuites - which the report shows as
+        /// information only. Counted apart, and never called a corridor.
+        /// </param>
+        internal static string Summary(int processed, string? path_TSD, IEnumerable<TMResult>? naturalVentilationResults, IEnumerable<TMResult>? mechanicalVentilationResults, IEnumerable<TMResult>? communalCorridorResults, IEnumerable<TMResult>? supplementaryResults, bool reportSaved, string? path_TM59Report, string? refusal_Report)
         {
             //Counts only. Which criterion applies, what its limit is and whether a space passes are all in the
             //report below, stated by the assessment itself.
             List<TMResult> naturalVentilation = [.. naturalVentilationResults ?? []];
             List<TMResult> mechanicalVentilation = [.. mechanicalVentilationResults ?? []];
-            List<TMResult> corridor = [.. corridorResults ?? []];
+            List<TMResult> corridor = [.. communalCorridorResults ?? []];
+            List<TMResult> supplementary = [.. supplementaryResults ?? []];
 
             //One result per space, but counted as distinct references rather than assumed: the count is the
             //answer to "how many spaces were assessed", and assuming one-result-per-space is how a duplicate
             //would hide.
             HashSet<string> references = [];
-            foreach (TMResult tMResult in naturalVentilation.Concat(mechanicalVentilation).Concat(corridor))
+            foreach (TMResult tMResult in naturalVentilation.Concat(mechanicalVentilation).Concat(corridor).Concat(supplementary))
             {
                 if (!string.IsNullOrWhiteSpace(tMResult?.Reference))
                 {
@@ -221,13 +264,14 @@ namespace SAM.Analytical.UI.WPF
             int assessed = references.Count;
 
             string result = string.Format(
-                "Processed {0} simulated space(s) from '{1}': {2} assessed ({3} natural ventilation, {4} mechanical ventilation, {5} corridor), {6} not assessed. The model assessed is the one the TAS workflow returned.",
+                "Processed {0} simulated space(s) from '{1}': {2} assessed ({3} natural ventilation, {4} mechanical ventilation, {5} communal corridor, {6} supplementary >28 C information only), {7} not assessed. The model assessed is the one the TAS workflow returned.",
                 processed,
                 path_TSD,
                 assessed,
                 naturalVentilation.Count,
                 mechanicalVentilation.Count,
                 corridor.Count,
+                supplementary.Count,
                 processed - assessed);
 
             result += reportSaved
