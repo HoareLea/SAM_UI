@@ -127,7 +127,7 @@ namespace SAM.Analytical.UI.WPF
             //The durable artifact: every assessment of a run persists its report beside that run's own
             //results, whether it was produced in-session or reviewed from a reopened model. A failure to
             //write is reported, never silent - but it fails nothing: the assessment itself is already done.
-            bool reportSaved = SavePartOTM59Report(path_TSD, tM59AssessmentReport, out string? path_TM59Report, out string? refusal_Report);
+            bool reportSaved = SavePartOTM59Report(path_TSD, tM59AssessmentReport, out string? path_TM59Report, out string? refusal_Report, PartOTM59ResultSummary.ReportProvenance(partORun, tM59AssessmentReport));
 
             string summary = Summary(partORun, tM59AssessmentResult, tM59AssessmentReport, reportSaved, path_TM59Report, refusal_Report);
 

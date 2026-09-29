@@ -55,6 +55,9 @@ namespace SAM.Analytical.UI.WPF
             Dictionary<Guid, Dictionary<string, PartOTM59SpaceResult>> dictionary_A = Criteria(partOIteration3Assessment_A, result, "Reference A");
             Dictionary<Guid, Dictionary<string, PartOTM59SpaceResult>> dictionary_B = Criteria(partOIteration3Assessment_B, result, "Candidate B");
 
+            HashSet<Guid> guids_InformationOnly_A = [.. partOIteration3Assessment_A.SpaceGuids_InformationOnly];
+            HashSet<Guid> guids_InformationOnly_B = [.. partOIteration3Assessment_B.SpaceGuids_InformationOnly];
+
             List<Guid> guids = [.. dictionary_Room.Keys];
             guids.Sort();
 
@@ -65,13 +68,47 @@ namespace SAM.Analytical.UI.WPF
                 bool assessed_A = dictionary_A.TryGetValue(guid_Space, out Dictionary<string, PartOTM59SpaceResult> criteria_A);
                 bool assessed_B = dictionary_B.TryGetValue(guid_Space, out Dictionary<string, PartOTM59SpaceResult> criteria_B);
 
+                //The run's information-only rule (SAM_UI#140), applied the same way on reopen: a served
+                //bathroom or ensuite carries no occupied-space criterion in EITHER case and both reports show it
+                //as supplementary information only. Its temperatures are compared, with no criterion to compare.
+                //Without this a completed pairing with such a room refused every time it was reopened.
+                if (!assessed_A && !assessed_B && guids_InformationOnly_A.Contains(guid_Space) && guids_InformationOnly_B.Contains(guid_Space))
+                {
+                    bool series_InformationOnly_A = partOIteration3Assessment_A.ResultantTemperature(guid_Space) is not null;
+                    bool series_InformationOnly_B = partOIteration3Assessment_B.ResultantTemperature(guid_Space) is not null;
+
+                    if (!series_InformationOnly_A || !series_InformationOnly_B)
+                    {
+                        result.Add(string.Format(
+                            "Room '{0}' ({1}) no longer carries a resultant temperature series in {2}, so its comparison cannot be rebuilt.",
+                            partOIteration3Room.Name_Space,
+                            guid_Space,
+                            series_InformationOnly_A ? "Candidate B" : series_InformationOnly_B ? "Reference A" : "either case"));
+
+                        continue;
+                    }
+
+                    rooms_Comparable.Add(partOIteration3Room);
+
+                    continue;
+                }
+
                 if (!assessed_A || !assessed_B)
                 {
-                    result.Add(string.Format(
-                        "Room '{0}' ({1}) was compared when this pairing was produced and now produces a TM59 result in {2} only, so the existing results no longer describe the pairing.",
-                        partOIteration3Room.Name_Space,
-                        guid_Space,
-                        assessed_A ? "Reference A" : "Candidate B"));
+                    result.Add(assessed_A || assessed_B
+                        ? string.Format(
+                            "Room '{0}' ({1}) was compared when this pairing was produced and now produces a TM59 result in {2} only, so the existing results no longer describe the pairing. In {3} it is {4}.",
+                            partOIteration3Room.Name_Space,
+                            guid_Space,
+                            assessed_A ? "Reference A" : "Candidate B",
+                            assessed_A ? "Candidate B" : "Reference A",
+                            Classification(false, assessed_A ? guids_InformationOnly_B : guids_InformationOnly_A, guid_Space))
+                        : string.Format(
+                            "Room '{0}' ({1}) was compared when this pairing was produced and now produces no TM59 occupied-space result in either case, and the two cases do not both report it as supplementary information only (Reference A: {2}; Candidate B: {3}).",
+                            partOIteration3Room.Name_Space,
+                            guid_Space,
+                            Classification(false, guids_InformationOnly_A, guid_Space),
+                            Classification(false, guids_InformationOnly_B, guid_Space)));
 
                     continue;
                 }

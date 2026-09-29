@@ -37,6 +37,13 @@ namespace SAM.Analytical.UI.WPF
     public class PartOIteration3Pipeline : IPartOIteration3Pipeline
     {
         /// <summary>
+        /// The provenance each saved TM59 report is headed with, keyed by the results file it was assessed
+        /// from - so the reference case's and the system case's reports each say which Iteration 3 case they
+        /// are. Null, or an answer of null, writes the report without one.
+        /// </summary>
+        public Func<string, TM59AssessmentReport, IEnumerable<string>> ReportProvenance { get; set; }
+
+        /// <summary>
         /// The ventilation identity of the shipped topology template the Part O route materialises onto.
         /// <para>
         /// Resolved through SAM_Systems' own capability index rather than by composing a path, so the
@@ -280,7 +287,7 @@ namespace SAM.Analytical.UI.WPF
             //The durable artifact, written whether the pairing goes on to complete or not. A failure to
             //write is carried as NO report path plus the writer's reason, and never fails the assessment,
             //which is already done.
-            string path_TM59Report = Report(path_TSD, partOTM59Assessment.Report, out string refusal_Report);
+            string path_TM59Report = Report(path_TSD, partOTM59Assessment.Report, out string refusal_Report, ReportProvenance?.Invoke(path_TSD, partOTM59Assessment.Report));
 
             return new PartOIteration3Assessment(
                 true,
@@ -307,9 +314,9 @@ namespace SAM.Analytical.UI.WPF
         /// would name whatever earlier report is still sitting there as this assessment's.
         /// </para>
         /// </summary>
-        internal static string Report(string path_TSD, TM59AssessmentReport tM59AssessmentReport, out string refusal)
+        internal static string Report(string path_TSD, TM59AssessmentReport tM59AssessmentReport, out string refusal, IEnumerable<string> provenance = null)
         {
-            return Modify.SavePartOTM59Report(path_TSD, tM59AssessmentReport, out string path_TM59Report, out refusal) ? path_TM59Report : null;
+            return Modify.SavePartOTM59Report(path_TSD, tM59AssessmentReport, out string path_TM59Report, out refusal, provenance) ? path_TM59Report : null;
         }
 
         /// <summary>

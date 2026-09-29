@@ -48,6 +48,9 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         private List<Guid> guids_Space_Dwelling;
 
+        /// <summary>The bound rooms the run treats as supplementary information only (a bathroom or ensuite).</summary>
+        private HashSet<Guid> guids_InformationOnly = [];
+
         public void Dispose()
         {
             try
@@ -113,7 +116,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         //A completed pairing, produced once and then reopened
         //-------------------------------------------------------------------------------------------------
 
-        private PartORun Run(out PartOIteration3Result partOIteration3Result, out List<Guid> guids_Bound, bool writeReports = false)
+        private PartORun Run(out PartOIteration3Result partOIteration3Result, out List<Guid> guids_Bound, bool writeReports = false, int count_InformationOnly = 0)
         {
             adjacencyCluster = PartOIteration3Fixture.Design(out guids_VentilationSystem, out zones);
 
@@ -124,6 +127,12 @@ namespace SAM.Analytical.UI.WPF.Tests
                 {
                     guids_Space_Dwelling.Add(space.Guid);
                 }
+            }
+
+            guids_InformationOnly = [];
+            for (int i = 0; i < count_InformationOnly && i < guids_Space_Dwelling.Count; i++)
+            {
+                guids_InformationOnly.Add(guids_Space_Dwelling[i]);
             }
 
             PartORun partORun = new();
@@ -214,8 +223,8 @@ namespace SAM.Analytical.UI.WPF.Tests
                     null,
                     null),
                 ResultantTemperatureResults = PartOIteration3Fixture.ResultantTemperatures(path_TSD_Bridge, guids_Bound, 0, 23, (guid, hour) => 21.0),
-                Assessment_ReferenceA = Assessment(guids_Space_Dwelling, 20.0),
-                Assessment_CandidateB = Assessment(guids_Bound, 21.0),
+                Assessment_ReferenceA = Assessment(guids_Space_Dwelling, 20.0, guids_InformationOnly),
+                Assessment_CandidateB = Assessment(guids_Bound, 21.0, guids_InformationOnly),
                 Persist_ForReal = true,
                 Write_Reports = writeReports,
             };
@@ -235,12 +244,24 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         private static PartOIteration3Assessment Assessment(IEnumerable<Guid> guids, double value)
         {
+            return Assessment(guids, value, []);
+        }
+
+        /// <summary>
+        /// As above, except that <paramref name="guids_InformationOnly"/> rooms carry no occupied-space criterion
+        /// and are reported as supplementary &gt;28 C information only - a bathroom or ensuite - with a series.
+        /// </summary>
+        private static PartOIteration3Assessment Assessment(IEnumerable<Guid> guids, double value, HashSet<Guid> guids_InformationOnly)
+        {
             List<PartOTM59SpaceResult> spaceResults = [];
             Dictionary<Guid, double[]> resultantTemperatures = [];
 
             foreach (Guid guid in guids)
             {
-                spaceResults.Add(new PartOTM59SpaceResult(guid, "room", "TM59 Criterion A", 10, 32, TM59ComplianceStatus.Pass, true));
+                if (!guids_InformationOnly.Contains(guid))
+                {
+                    spaceResults.Add(new PartOTM59SpaceResult(guid, "room", "TM59 Criterion A", 10, 32, TM59ComplianceStatus.Pass, true));
+                }
 
                 double[] values = new double[24];
 
@@ -252,7 +273,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 resultantTemperatures[guid] = values;
             }
 
-            return new PartOIteration3Assessment(true, null, TM59ComplianceStatus.Pass, spaceResults, null, null, null, resultantTemperatures, "report", null, spaceResults.Count);
+            return new PartOIteration3Assessment(true, null, TM59ComplianceStatus.Pass, spaceResults, null, null, null, resultantTemperatures, "report", null, spaceResults.Count, null, guids_InformationOnly);
         }
 
         private PartOIteration3PipelineReviewOnly ReviewPipeline(List<Guid> guids_Bound)
@@ -296,6 +317,68 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(2, partOIteration3PipelineReviewOnly.Count_Assess);
 
             Assert.Contains(partOIteration3Result.Notes, x => x.Contains("No TAS simulation was run and no TAS file was written."));
+        }
+
+        /// <summary>
+        /// <b>Regression (presentation polish, 29 Sep 2026).</b> A pairing whose bound rooms include a bathroom
+        /// or ensuite - supplementary &gt;28 C information only in BOTH cases, which the run reconciles since
+        /// SAM_UI#140 - reopened as "This Iteration 3 pairing no longer reconciles" every time, because the
+        /// review's reconciliation lacked the run's information-only rule. Reopened immediately, unchanged, it
+        /// must rebuild the same comparison over the same rooms.
+        /// </summary>
+        [Fact]
+        public void A_pairing_with_information_only_rooms_reopens_without_refusing()
+        {
+            PartORun partORun = Run(out PartOIteration3Result partOIteration3Result_Run, out List<Guid> guids_Bound, count_InformationOnly: 1);
+
+            Assert.Single(guids_InformationOnly);
+
+            int count = 0;
+
+            PartOIteration3Result partOIteration3Result = Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly
+            {
+                Func_Assess = guids => Assessment(guids, ++count == 1 ? 20.0 : 21.0, guids_InformationOnly),
+            });
+
+            Assert.True(partOIteration3Result.IsComplete, string.Join(Environment.NewLine, partOIteration3Result.Reasons));
+            Assert.NotNull(partOIteration3Result.Comparison);
+            Assert.Equal(guids_Bound.Count, partOIteration3Result.Comparison.Statistics.Count_Rooms);
+            Assert.Equal(partOIteration3Result_Run.Comparison.Statistics.Count_Rooms, partOIteration3Result.Comparison.Statistics.Count_Rooms);
+        }
+
+        /// <summary>
+        /// The rule stays fail-closed: a room information-only in one case and unassessed in the other still
+        /// refuses the reopen, and says what each case now calls it.
+        /// </summary>
+        [Fact]
+        public void A_room_information_only_on_one_side_still_refuses_the_reopen()
+        {
+            PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> _, count_InformationOnly: 1);
+
+            int count = 0;
+
+            PartOIteration3Result partOIteration3Result = Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly
+            {
+                //Candidate B no longer reports the room as information only.
+                Func_Assess = guids => ++count == 1 ? Assessment(guids, 20.0, guids_InformationOnly) : Assessment(Without(guids, guids_InformationOnly), 21.0, []),
+            });
+
+            Assert.False(partOIteration3Result.IsComplete);
+            Assert.Null(partOIteration3Result.Comparison);
+        }
+
+        private static List<Guid> Without(IEnumerable<Guid> guids, HashSet<Guid> guids_Excluded)
+        {
+            List<Guid> result = [];
+            foreach (Guid guid in guids)
+            {
+                if (!guids_Excluded.Contains(guid))
+                {
+                    result.Add(guid);
+                }
+            }
+
+            return result;
         }
 
         /// <summary>
