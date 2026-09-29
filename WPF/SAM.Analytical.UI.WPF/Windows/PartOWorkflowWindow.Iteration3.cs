@@ -321,7 +321,9 @@ namespace SAM.Analytical.UI.WPF
             bool canRunMethod = canRun && (partOIteration3Preflight?.CanRun ?? false);
 
             button_Iteration3.IsEnabled = canRunMethod;
-            button_Iteration3.Content = reviewable ? "Run again" : "Run system case";
+            //Named as the iteration it is: next to Prepare & Run (which re-runs the reference iteration) a
+            //"Run system case" button did not say it was the step that starts Iteration 3.
+            button_Iteration3.Content = reviewable ? "Run Iteration 3 again" : "Run Iteration 3";
             button_Iteration3.ToolTip = canRunMethod
                 ? "Build the system case and run it in TAS: a full-year building simulation, a TAS Systems simulation and a full-year resultant-temperature run, then the TM59 comparison. This takes several minutes."
                 : !canRun
@@ -401,6 +403,13 @@ namespace SAM.Analytical.UI.WPF
                 int count_More = refusals_General.Count - 1 + units_Refused.Count;
 
                 return count_More == 0 ? result : result + string.Format(CultureInfo.CurrentCulture, " (and {0} more reason(s))", count_More);
+            }
+
+            //Every unit refused for having no product: that is not a unit fault, it is a missing step, and the only
+            //place that said which one was under Advanced / Details. Say it here, where the method is chosen.
+            if (units_Refused.Count == partOIteration3Preflight.Units.Count && units_Refused.TrueForAll(x => x.Product == "No product selected"))
+            {
+                return "This method compares against a selected manufacturer unit, and no unit in this reference case has one. Run Iteration 2 (MVHR with manufacturer unit) first: it selects a product for each unit, and Iteration 3 then runs against that Iteration 2 result.";
             }
 
             return string.Format(

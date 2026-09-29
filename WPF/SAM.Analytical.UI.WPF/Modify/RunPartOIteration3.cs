@@ -193,10 +193,11 @@ namespace SAM.Analytical.UI.WPF
             partOIteration3Ledger.Complete(
                 PartOIteration3Stage.Input,
                 string.Format(
-                    "Iteration 1a run '{0}' is in this session, complete over the full year, and captured {1} prepared ventilation system identity(ies). Candidate B will be written as '{2}'.",
+                    "Reference run '{0}' ({3}) is in this session, complete over the full year, and captured {1} prepared ventilation system identity(ies). Candidate B will be written as '{2}'.",
                     partOIteration3Paths.ProjectName_ReferenceA,
                     partORun.Guids_VentilationSystem_Prepared.Count,
-                    partOIteration3Paths.ProjectName_CandidateB));
+                    partOIteration3Paths.ProjectName_CandidateB,
+                    Query.PartOIterationText(partORun)));
 
             //=================================================================================================
             //Reference A

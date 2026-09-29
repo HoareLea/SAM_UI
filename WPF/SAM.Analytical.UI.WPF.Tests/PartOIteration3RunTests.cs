@@ -284,6 +284,24 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
+        /// The record names the reference iteration the run itself records (2026-09-29): it used to call every
+        /// reference "Iteration 1a", including the Iteration 2 run manufacturer guidance is paired with.
+        /// </summary>
+        [Fact]
+        public void The_input_stage_names_the_reference_iteration_the_run_records()
+        {
+            PartORun partORun = Run();
+
+            PartOIteration3Result partOIteration3Result = Modify.RunPartOIteration3(partORun, Pipeline_Complete(out List<Guid> _));
+
+            string detail = partOIteration3Result.Ledger.State(PartOIteration3Stage.Input).Detail;
+
+            Assert.StartsWith("Reference run '", detail);
+            Assert.Contains("(" + Query.PartOIterationText(partORun) + ")", detail);
+            Assert.DoesNotContain("Iteration 1a run", detail);
+        }
+
+        /// <summary>
         /// Candidate B must be the SAME thermal case as Reference A, writing somewhere else - which is
         /// the whole basis on which the two are comparable.
         /// </summary>
