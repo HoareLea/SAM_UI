@@ -149,6 +149,38 @@ namespace SAM.Analytical.UI.WPF.Tests
             return new PartOIteration3Assessment(true, null, status, spaceResults, null, null, null, resultantTemperatures, "report", null, spaceResults.Count);
         }
 
+        /// <summary>
+        /// An assessment whose <paramref name="guids_InformationOnly"/> rooms carry no occupied-space criterion and are
+        /// reported only as supplementary &gt;28 C information - a bathroom or ensuite - with a captured series unless
+        /// <paramref name="series_InformationOnly"/> is false.
+        /// </summary>
+        private static PartOIteration3Assessment Assessment(IEnumerable<Guid> guids, IEnumerable<Guid> guids_InformationOnly, bool series_InformationOnly = true)
+        {
+            HashSet<Guid> informationOnly = [.. guids_InformationOnly];
+
+            List<PartOTM59SpaceResult> spaceResults = [];
+            Dictionary<Guid, double[]> resultantTemperatures = [];
+
+            foreach (Guid guid in guids)
+            {
+                if (informationOnly.Contains(guid))
+                {
+                    if (series_InformationOnly)
+                    {
+                        resultantTemperatures[guid] = new double[24];
+                    }
+
+                    continue;
+                }
+
+                spaceResults.Add(new PartOTM59SpaceResult(guid, "room", "TM59 Criterion A", 10, 32, TM59ComplianceStatus.Pass, true));
+
+                resultantTemperatures[guid] = new double[24];
+            }
+
+            return new PartOIteration3Assessment(true, null, TM59ComplianceStatus.Pass, spaceResults, null, null, null, resultantTemperatures, "report", null, spaceResults.Count, null, informationOnly);
+        }
+
         private List<string> Reconcile(PartOIteration3SystemScope partOIteration3SystemScope, SystemVentilationRoute systemVentilationRoute, PartOIteration3Assessment assessment_A, PartOIteration3Assessment assessment_B, out List<PartOIteration3Room> rooms)
         {
             return Query.PartOIteration3ReconciliationRefusals(
@@ -310,6 +342,93 @@ namespace SAM.Analytical.UI.WPF.Tests
             List<string> refusals = Reconcile(partOIteration3SystemScope, systemVentilationRoute, Assessment(guids_Space_Dwelling), Assessment(guids_B), out List<PartOIteration3Room> _);
 
             Assert.Contains(refusals, x => x.Contains("produced a TM59 result in Reference A only"));
+        }
+
+        //-------------------------------------------------------------------------------------------------
+        //Supplementary (information-only) rooms - the 2026-09-29 real project: a bathroom and two ensuites
+        //served by the route, whose >28 C rows both reports show as information only. The reconciliation
+        //refused them as "produced a TM59 result in Candidate B only", although NEITHER case had given them an
+        //occupied-space criterion - the classification was the same on both sides.
+        //-------------------------------------------------------------------------------------------------
+
+        [Fact]
+        public void A_served_room_that_both_cases_report_as_information_only_reconciles()
+        {
+            PartOIteration3SystemScope partOIteration3SystemScope = Scope();
+
+            SystemVentilationRoute systemVentilationRoute = Route();
+
+            Guid guid_WetRoom = guids_Space_Dwelling[0];
+
+            List<string> refusals = Reconcile(partOIteration3SystemScope, systemVentilationRoute, Assessment(guids_Space_Dwelling, [guid_WetRoom]), Assessment(guids_Space_Dwelling, [guid_WetRoom]), out List<PartOIteration3Room> rooms);
+
+            Assert.Empty(refusals);
+            Assert.Equal(guids_Space_Dwelling.Count, rooms.Count);
+            Assert.Contains(rooms, x => x.Guid_Space == guid_WetRoom);
+        }
+
+        [Fact]
+        public void A_served_room_with_no_result_in_either_case_is_not_blamed_on_Candidate_B()
+        {
+            PartOIteration3SystemScope partOIteration3SystemScope = Scope();
+
+            SystemVentilationRoute systemVentilationRoute = Route();
+
+            List<Guid> guids_Assessed = [.. guids_Space_Dwelling];
+            guids_Assessed.RemoveAt(0);
+
+            //Neither case assessed it and neither shows it as information only: still refused, but described as it is.
+            List<string> refusals = Reconcile(partOIteration3SystemScope, systemVentilationRoute, Assessment(guids_Assessed), Assessment(guids_Assessed), out List<PartOIteration3Room> _);
+
+            string refusal = Assert.Single(refusals, x => x.Contains(guids_Space_Dwelling[0].ToString()));
+            Assert.Contains("no TM59 occupied-space result in either case", refusal);
+            Assert.Contains("Reference A: not assessed at all; Candidate B: not assessed at all", refusal);
+            Assert.DoesNotContain("in Candidate B only", refusal);
+        }
+
+        [Fact]
+        public void A_room_information_only_in_one_case_and_absent_in_the_other_refuses()
+        {
+            PartOIteration3SystemScope partOIteration3SystemScope = Scope();
+
+            SystemVentilationRoute systemVentilationRoute = Route();
+
+            Guid guid_WetRoom = guids_Space_Dwelling[0];
+
+            List<Guid> guids_B = [.. guids_Space_Dwelling];
+            guids_B.RemoveAt(0);
+
+            List<string> refusals = Reconcile(partOIteration3SystemScope, systemVentilationRoute, Assessment(guids_Space_Dwelling, [guid_WetRoom]), Assessment(guids_B), out List<PartOIteration3Room> _);
+
+            Assert.Contains(refusals, x => x.Contains(guid_WetRoom.ToString()) && x.Contains("Reference A: reported as supplementary >28 C information only; Candidate B: not assessed at all"));
+        }
+
+        [Fact]
+        public void A_room_information_only_in_one_case_and_assessed_in_the_other_refuses()
+        {
+            PartOIteration3SystemScope partOIteration3SystemScope = Scope();
+
+            SystemVentilationRoute systemVentilationRoute = Route();
+
+            Guid guid_WetRoom = guids_Space_Dwelling[0];
+
+            List<string> refusals = Reconcile(partOIteration3SystemScope, systemVentilationRoute, Assessment(guids_Space_Dwelling, [guid_WetRoom]), Assessment(guids_Space_Dwelling), out List<PartOIteration3Room> _);
+
+            Assert.Contains(refusals, x => x.Contains(guid_WetRoom.ToString()) && x.Contains("produced a TM59 result in Candidate B only") && x.Contains("In Reference A it is reported as supplementary >28 C information only"));
+        }
+
+        [Fact]
+        public void An_information_only_room_without_a_series_on_one_side_refuses()
+        {
+            PartOIteration3SystemScope partOIteration3SystemScope = Scope();
+
+            SystemVentilationRoute systemVentilationRoute = Route();
+
+            Guid guid_WetRoom = guids_Space_Dwelling[0];
+
+            List<string> refusals = Reconcile(partOIteration3SystemScope, systemVentilationRoute, Assessment(guids_Space_Dwelling, [guid_WetRoom]), Assessment(guids_Space_Dwelling, [guid_WetRoom], false), out List<PartOIteration3Room> _);
+
+            Assert.Contains(refusals, x => x.Contains(guid_WetRoom.ToString()) && x.Contains("no captured resultant temperature series in Candidate B"));
         }
 
         [Fact]

@@ -55,8 +55,9 @@ namespace SAM.Analytical.UI.WPF
     {
         //Internal rather than private so tests can fabricate the assessment the subset-pass guard reads -
         //the production route to one remains Assess, which needs a real TSD.
-        internal PartOTM59Assessment(TM59AssessmentResult tM59AssessmentResult, TM59AssessmentReport tM59AssessmentReport, List<PartOTM59SpaceResult> spaceResults, List<string> associationRefusals, List<Guid> spaceGuids_Unassessed, string refusal, Dictionary<Guid, double[]>? resultantTemperatures = null, List<Guid>? spaceGuids_NoResult = null, Dictionary<Guid, TM59ComplianceStatus>? occupiedSpaceStatuses = null)
+        internal PartOTM59Assessment(TM59AssessmentResult tM59AssessmentResult, TM59AssessmentReport tM59AssessmentReport, List<PartOTM59SpaceResult> spaceResults, List<string> associationRefusals, List<Guid> spaceGuids_Unassessed, string refusal, Dictionary<Guid, double[]>? resultantTemperatures = null, List<Guid>? spaceGuids_NoResult = null, Dictionary<Guid, TM59ComplianceStatus>? occupiedSpaceStatuses = null, List<Guid>? spaceGuids_InformationOnly = null)
         {
+            SpaceGuids_InformationOnly = spaceGuids_InformationOnly ?? [];
             OccupiedSpaceStatuses = occupiedSpaceStatuses ?? [];
             Result = tM59AssessmentResult;
             Report = tM59AssessmentReport;
@@ -81,6 +82,15 @@ namespace SAM.Analytical.UI.WPF
         /// </para>
         /// </summary>
         public List<Guid> SpaceGuids_NoResult { get; }
+
+        /// <summary>
+        /// The <b>design</b> spaces the report shows only under "Supplementary &gt;28 C checks - information only":
+        /// a bathroom or ensuite given the &gt;28 C calculation, which is advisory and is not an occupied-space
+        /// criterion. They are not in <see cref="SpaceResults"/>, which carries criteria only, and they are not
+        /// "no result" either - so a caller comparing two assessments room by room can tell a consistently
+        /// information-only room from one that was assessed on one side and not the other.
+        /// </summary>
+        public List<Guid> SpaceGuids_InformationOnly { get; }
 
         /// <summary>
         /// The hourly resultant temperature series this assessment actually read, keyed by <b>design</b>
@@ -411,7 +421,23 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            return new PartOTM59Assessment(tM59AssessmentResult, tM59AssessmentReport, spaceResults, associationRefusals, spaceGuids_Unassessed, null, resultantTemperatures, spaceGuids_NoResult, occupiedSpaceStatuses);
+            //The information-only rows, resolved to design spaces through the same map as every criterion row.
+            List<Guid> spaceGuids_InformationOnly = [];
+            foreach (TM59AssessmentReportCheck tM59AssessmentReportCheck in tM59AssessmentReport.SupplementaryChecks ?? [])
+            {
+                if (tM59AssessmentReportCheck?.Reference is null || !dictionary_Simulation.TryGetValue(tM59AssessmentReportCheck.Reference, out Space? space_Simulation))
+                {
+                    continue;
+                }
+
+                Space? space_Design = tM59AssessmentCalculator.SimulationSpaceMap?.Design(space_Simulation);
+                if (space_Design is not null && !spaceGuids_InformationOnly.Contains(space_Design.Guid))
+                {
+                    spaceGuids_InformationOnly.Add(space_Design.Guid);
+                }
+            }
+
+            return new PartOTM59Assessment(tM59AssessmentResult, tM59AssessmentReport, spaceResults, associationRefusals, spaceGuids_Unassessed, null, resultantTemperatures, spaceGuids_NoResult, occupiedSpaceStatuses, spaceGuids_InformationOnly);
         }
 
         /// <summary>
