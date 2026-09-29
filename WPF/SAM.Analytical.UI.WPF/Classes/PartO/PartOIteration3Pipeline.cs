@@ -283,7 +283,8 @@ namespace SAM.Analytical.UI.WPF
                 partOTM59Assessment.Report.ToString(),
                 path_TM59Report,
                 partOTM59Assessment.Result?.Spaces?.Count ?? 0,
-                refusal_Report);
+                refusal_Report,
+                partOTM59Assessment.SpaceGuids_InformationOnly);
         }
 
         /// <summary>
