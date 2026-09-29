@@ -193,24 +193,64 @@ namespace SAM.Analytical.UI.WPF
         /// </param>
         public static PartOTM59Assessment Assess(AnalyticalModel? analyticalModel_Workflow, string? path_TSD, IEnumerable<OverheatingScenario>? overheatingScenarios, bool captureResultantTemperature = false, IEnumerable<Guid>? spaceGuids_Capture = null)
         {
+            return Assess(analyticalModel_Workflow, path_TSD, overheatingScenarios, captureResultantTemperature, spaceGuids_Capture, ConvertTSD);
+        }
+
+        /// <summary>
+        /// The TSD conversion settings a Part O TM59 assessment reads its results with: the two series the
+        /// assessment reads, the zones and the weather data it needs - and <b>a full-year simulation</b>.
+        /// <para>
+        /// <see cref="TSDConversionSettings.RequireFullYear"/> is SAM_Tas's own check (SAM_Tas#73) of the
+        /// simulation's stated day range, <c>firstDay == 1 &amp;&amp; lastDay == 365</c>, made before any
+        /// result is read. It is off by default because a part-year TSD is a legitimate input elsewhere (a
+        /// Grasshopper TM52/TM59 summer run); Part O's dynamic method is defined over a whole year, so it is
+        /// switched on here, and only here. <see cref="TM59AssessmentCalculator.HourCount_Expected"/> could not
+        /// catch a part year on its own: TSD answers 8760 hours for any simulation and pads the days it did not
+        /// simulate with -1.
+        /// </para>
+        /// <para>A new instance on every call, so no caller can change what another one reads.</para>
+        /// </summary>
+        internal static TSDConversionSettings PartOTSDConversionSettings()
+        {
+            return new TSDConversionSettings()
+            {
+                SpaceDataTypes = new HashSet<SpaceDataType>() { SpaceDataType.ResultantTemperature, SpaceDataType.OccupantSensibleGain },
+                ConvertWeaterData = true,
+                ConvertZones = true,
+                RequireFullYear = true,
+            };
+        }
+
+        /// <summary>The production conversion: SAM_Tas's, which states why it refused where it did.</summary>
+        private static AnalyticalModel? ConvertTSD(string path_TSD, TSDConversionSettings tSDConversionSettings, out string? refusal)
+        {
+            AnalyticalModel? result = Analytical.Tas.Convert.ToSAM(path_TSD, tSDConversionSettings, out string refusal_TSD);
+            refusal = refusal_TSD;
+            return result;
+        }
+
+        /// <summary>A TSD conversion: the model the file holds, or null with the reason when there is one.</summary>
+        internal delegate AnalyticalModel? TSDConversion(string path_TSD, TSDConversionSettings tSDConversionSettings, out string? refusal);
+
+        /// <summary>
+        /// <see cref="Assess(AnalyticalModel, string, IEnumerable{OverheatingScenario}, bool, IEnumerable{Guid})"/>
+        /// with the TSD conversion supplied, so the assessment can be exercised without TAS.
+        /// </summary>
+        internal static PartOTM59Assessment Assess(AnalyticalModel? analyticalModel_Workflow, string? path_TSD, IEnumerable<OverheatingScenario>? overheatingScenarios, bool captureResultantTemperature, IEnumerable<Guid>? spaceGuids_Capture, TSDConversion tSDConversion)
+        {
             if (analyticalModel_Workflow is null || string.IsNullOrWhiteSpace(path_TSD))
             {
                 return new PartOTM59Assessment(null, null, null, null, null, "No workflow model or no results path was supplied, so nothing could be assessed.");
             }
 
-            //The same conversion settings the production query uses - the two series the assessment reads,
-            //plus the zones and weather data it needs.
-            TSDConversionSettings tSDConversionSettings = new()
-            {
-                SpaceDataTypes = new HashSet<SpaceDataType>() { SpaceDataType.ResultantTemperature, SpaceDataType.OccupantSensibleGain },
-                ConvertWeaterData = true,
-                ConvertZones = true
-            };
-
-            AnalyticalModel analyticalModel_TSD = Analytical.Tas.Convert.ToSAM(path_TSD, tSDConversionSettings);
+            //A results file that does not hold the full simulated year is refused HERE, from its stated day
+            //range, before a single result is read or assessed (PartOTSDConversionSettings()).
+            AnalyticalModel? analyticalModel_TSD = tSDConversion(path_TSD, PartOTSDConversionSettings(), out string? refusal_TSD);
             if (analyticalModel_TSD is null)
             {
-                return new PartOTM59Assessment(null, null, null, null, null, string.Format("The simulation results at '{0}' could not be read.", path_TSD));
+                return new PartOTM59Assessment(null, null, null, null, null, refusal_TSD is null
+                    ? string.Format("The simulation results at '{0}' could not be read.", path_TSD)
+                    : string.Format("The simulation results at '{0}' were refused: {1}", path_TSD, refusal_TSD));
             }
 
             List<string> associationRefusals = [];
@@ -247,6 +287,10 @@ namespace SAM.Analytical.UI.WPF
             //and the partial year passed. A results file may not decide how much of a year it was supposed
             //to contain. See PartOSimulationContext.HourCount_FullYear, including why it is the static
             //1-to-365 authority rather than an instance - a RESTORED run carries no context at all.
+            //
+            //This length check alone cannot see a part-year SIMULATION: TSD answers 8760 hours for any day range
+            //and pads the days it did not simulate with -1. That case is refused earlier, from the file's stated
+            //day range (PartOTSDConversionSettings().RequireFullYear); this one still refuses a short series.
             tM59AssessmentCalculator.HourCount_Expected = PartOSimulationContext.HourCount_FullYear;
 
             OverheatingScenarioMap overheatingScenarioMap = new(overheatingScenarios, analyticalModel_Workflow, tM59AssessmentCalculator.SimulationSpaceMap);
