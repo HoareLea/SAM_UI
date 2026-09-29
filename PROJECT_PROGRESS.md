@@ -3,6 +3,32 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): Iteration 3 validation - information-only reconciliation, TM59 summary, journey wording (29 Sep 2026) - MERGED as SAM_UI#140 (`1a7c87f1`), #141 (`aa873a29`), #142 (`eee9308a`)
+
+**Status.** All three merged into `sow/2026-Q3`, final CI green, no unresolved review comments; bases refreshed and CI
+re-run between the dependent merges. Part of the Iteration 3 validation stream (SAM_Tas#74/#75, SAM_Systems#33,
+SAM#167 - see their closeouts).
+
+- **#140 `fix(parto)` reconcile information-only rooms** (head `9a2ba6e3`, merge `1a7c87f1`). A route-served room with no
+  occupied-space TM59 result (real project: Bathroom_2, Ensuite_5, Ensuite_8) reconciles only when Reference A and
+  Candidate B both classify it supplementary/information-only and both have the required temperature series; any
+  disagreement still refuses. Also fixes the one-side-only refusal naming the wrong side. Licensed replay:
+  `IsComplete = True`, 8 rooms reconciled by identity, 0 TM59 outcomes differ (baseline had failed at Reconciliation
+  after ~970 s; after ~308 s - VM timing varies). Files: `PartOIteration3Assessment.cs`, `PartOIteration3Pipeline.cs`,
+  `PartOTM59Assessment.cs`, `Query/PartOIteration3ReconciliationRefusals.cs`, `PartOIteration3ReconciliationTests.cs`.
+  Tests **1410/1410** (18 reconciliation).
+- **#141 `fix(parto)` TM59 summary categories** (head `5ac496fa`, merge `aa873a29`). The summary had counted every
+  supplementary >28 C check as a communal corridor. Real project now reads 8 assessed (0 natural, 5 mechanical,
+  0 communal corridor, 3 supplementary >28 C information only), 1 not assessed. Files: `Modify/AssessPartOTM59.cs`,
+  `PartOResultReopenTests.cs`. Tests **1407/1407**. (The 1 not assessed was Corridor_1 until SAM#167.)
+- **#142 `feat(parto)` journey wording** (head `a49925a0`, merge `eee9308a`). Wording only: buttons "Run Iteration 3" /
+  "Run Iteration 3 again", "Run system case" removed, a hint to run Iteration 2 first when no product exists, the Input
+  stage names the actual reference iteration. Files: `RunPartOIteration3.cs`, `PartOWorkflowWindow.Iteration3.cs`,
+  `PartOWorkflowWindow.xaml`, `PartOIteration3RunTests.cs`. Tests **1406/1406**.
+- **Deferred (separate future tasks).** Part O progress UI redesign, run history/persistence, resume/retry without
+  rerunning TAS, fingerprint/restore redesign, Design Condition cleanup.
+- **Next step.** None for this entry.
+
 ## Current (Part O stream): Part O TM59 requires a full-year TSD (29 Sep 2026) - MERGED (`a0f2f574`)
 
 **Status.** Merged: [SAM-BIM/SAM_UI#139](https://github.com/SAM-BIM/SAM_UI/pull/139), branch
