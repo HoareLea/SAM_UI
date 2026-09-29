@@ -37,6 +37,8 @@ namespace SAM.Analytical.UI
 
         private readonly Dictionary<Guid, double[]> resultantTemperatures = [];
 
+        private readonly List<Guid> spaceGuids_InformationOnly = [];
+
         public PartOIteration3Assessment(
             bool assessed,
             string refusal,
@@ -49,7 +51,8 @@ namespace SAM.Analytical.UI
             string reportText,
             string path_Report,
             int count_Processed,
-            string refusal_Report = null)
+            string refusal_Report = null,
+            IEnumerable<Guid> spaceGuids_InformationOnly = null)
         {
             IsAssessed = assessed && refusal is null;
             Refusal = refusal;
@@ -88,6 +91,14 @@ namespace SAM.Analytical.UI
                 this.spaceGuids_Unassessed.Add(guid);
             }
 
+            foreach (Guid guid in spaceGuids_InformationOnly ?? [])
+            {
+                if (!this.spaceGuids_InformationOnly.Contains(guid))
+                {
+                    this.spaceGuids_InformationOnly.Add(guid);
+                }
+            }
+
             foreach (KeyValuePair<Guid, double[]> keyValuePair in resultantTemperatures ?? new Dictionary<Guid, double[]>())
             {
                 if (keyValuePair.Value is not null)
@@ -123,6 +134,12 @@ namespace SAM.Analytical.UI
         /// capture was not asked for.
         /// </summary>
         public Dictionary<Guid, double[]> ResultantTemperatures => new(resultantTemperatures);
+
+        /// <summary>
+        /// Design spaces reported only as supplementary &gt;28 C information - no occupied-space criterion. Not in
+        /// <see cref="SpaceResults"/>, and not unassessed either.
+        /// </summary>
+        public List<Guid> SpaceGuids_InformationOnly => [.. spaceGuids_InformationOnly];
 
         /// <summary>The production report an engineer reads, verbatim.</summary>
         public string ReportText { get; }
