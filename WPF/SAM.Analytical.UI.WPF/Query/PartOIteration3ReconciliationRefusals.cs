@@ -171,8 +171,13 @@ namespace SAM.Analytical.UI.WPF
             Dictionary<Guid, Dictionary<string, PartOTM59SpaceResult>> dictionary_A = Criteria(partOIteration3Assessment_A, result, "Reference A");
             Dictionary<Guid, Dictionary<string, PartOTM59SpaceResult>> dictionary_B = Criteria(partOIteration3Assessment_B, result, "Candidate B");
 
+            HashSet<Guid> guids_InformationOnly_A = [.. partOIteration3Assessment_A.SpaceGuids_InformationOnly];
+            HashSet<Guid> guids_InformationOnly_B = [.. partOIteration3Assessment_B.SpaceGuids_InformationOnly];
+
             List<Guid> guids_Bound = [.. dictionary_Binding.Keys];
             guids_Bound.Sort();
+
+            int count_InformationOnly = 0;
 
             foreach (Guid guid_Space in guids_Bound)
             {
@@ -181,13 +186,51 @@ namespace SAM.Analytical.UI.WPF
                 bool assessed_A = dictionary_A.TryGetValue(guid_Space, out Dictionary<string, PartOTM59SpaceResult> criteria_A);
                 bool assessed_B = dictionary_B.TryGetValue(guid_Space, out Dictionary<string, PartOTM59SpaceResult> criteria_B);
 
+                //A served room that carries no occupied-space criterion in EITHER case - a bathroom or ensuite, whose
+                //>28 C row is supplementary information only. That is the same classification on both sides, not a
+                //missing result, provided BOTH reports show it as information only; its temperatures are still
+                //compared, with no criterion to compare.
+                if (!assessed_A && !assessed_B && guids_InformationOnly_A.Contains(guid_Space) && guids_InformationOnly_B.Contains(guid_Space))
+                {
+                    bool series_InformationOnly_A = partOIteration3Assessment_A.ResultantTemperature(guid_Space) is not null;
+                    bool series_InformationOnly_B = partOIteration3Assessment_B.ResultantTemperature(guid_Space) is not null;
+
+                    if (!series_InformationOnly_A || !series_InformationOnly_B)
+                    {
+                        result.Add(string.Format(
+                            "Room '{0}' ({1}) produced no captured resultant temperature series in {2}, so its two cases cannot be compared.",
+                            name,
+                            guid_Space,
+                            series_InformationOnly_A ? "Candidate B" : series_InformationOnly_B ? "Reference A" : "either case"));
+
+                        continue;
+                    }
+
+                    if (dictionary_Room.TryGetValue(guid_Space, out PartOIteration3Room partOIteration3Room_InformationOnly))
+                    {
+                        rooms_Comparable.Add(partOIteration3Room_InformationOnly);
+                        count_InformationOnly++;
+                    }
+
+                    continue;
+                }
+
                 if (!assessed_A || !assessed_B)
                 {
-                    result.Add(string.Format(
-                        "Room '{0}' ({1}) is served by the explicit ventilation route but produced a TM59 result in {2} only, so the two cases were not assessed over the same rooms.",
-                        name,
-                        guid_Space,
-                        assessed_A ? "Reference A" : "Candidate B"));
+                    result.Add(assessed_A || assessed_B
+                        ? string.Format(
+                            "Room '{0}' ({1}) is served by the explicit ventilation route but produced a TM59 result in {2} only, so the two cases were not assessed over the same rooms. In {3} it is {4}.",
+                            name,
+                            guid_Space,
+                            assessed_A ? "Reference A" : "Candidate B",
+                            assessed_A ? "Candidate B" : "Reference A",
+                            Classification(!assessed_A, assessed_A ? guids_InformationOnly_B : guids_InformationOnly_A, guid_Space))
+                        : string.Format(
+                            "Room '{0}' ({1}) is served by the explicit ventilation route but produced no TM59 occupied-space result in either case, and the two cases do not both report it as supplementary information only (Reference A: {2}; Candidate B: {3}), so the two cases were not assessed over the same rooms.",
+                            name,
+                            guid_Space,
+                            Classification(false, guids_InformationOnly_A, guid_Space),
+                            Classification(false, guids_InformationOnly_B, guid_Space)));
 
                     continue;
                 }
@@ -402,7 +445,24 @@ namespace SAM.Analytical.UI.WPF
                 rooms_Comparable.Count,
                 pairs_Route.Count));
 
+            if (count_InformationOnly != 0)
+            {
+                notes.Add(string.Format(
+                    "{0} of them carry no occupied-space criterion in either case - both reports show them only as supplementary >28 C information - so their temperatures are compared and no TM59 criterion is.",
+                    count_InformationOnly));
+            }
+
             return result;
+        }
+
+        /// <summary>How one case classified a room that has no occupied-space criterion there.</summary>
+        private static string Classification(bool assessed, HashSet<Guid> guids_InformationOnly, Guid guid_Space)
+        {
+            return assessed
+                ? "assessed against a TM59 occupied-space criterion"
+                : guids_InformationOnly.Contains(guid_Space)
+                    ? "reported as supplementary >28 C information only"
+                    : "not assessed at all";
         }
 
         /// <summary>One case's criteria, indexed by room then by check name. A room assessed twice on one criterion refuses.</summary>
