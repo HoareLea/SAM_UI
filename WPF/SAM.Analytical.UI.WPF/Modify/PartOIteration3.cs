@@ -306,12 +306,12 @@ namespace SAM.Analytical.UI.WPF
                     && string.Equals(System.IO.Path.GetFullPath(path_TSD), System.IO.Path.GetFullPath(partORun.Path_TSD), StringComparison.OrdinalIgnoreCase);
 
                 return reference
-                    ? PartOTM59ResultSummary.ReportProvenance(partORun, tM59AssessmentReport, [("Case", "Iteration 3 — Explicit system + cooling · reference case")])
+                    ? PartOTM59ResultSummary.ReportProvenance(partORun, tM59AssessmentReport, [("Case", "Iteration 3 — Explicit system and cooling assessment · reference case")])
                     : PartOTM59ResultSummary.ReportProvenance(
                         partORun,
                         tM59AssessmentReport,
                         [
-                            ("Iteration / scenario", string.Format("Iteration 3 — Explicit system + cooling · system case: explicit TAS/TPD system ({0})", label)),
+                            ("Iteration / scenario", string.Format("Iteration 3 — Explicit system and cooling assessment · system case: explicit TAS/TPD system ({0})", label)),
                             ("Reference case", Query.PartOIterationText(partORun)),
                         ],
                         includeScenario: false,
@@ -342,7 +342,8 @@ namespace SAM.Analytical.UI.WPF
                 string.Format("Iteration 3 — {0}", label),
                 "Opening the saved result. No TAS simulation is run.",
                 ["Read the saved result", "Re-assess the reference case", "Re-assess the system case", "Rebuild the comparison"],
-                false))
+                false,
+                showDelay: PartOProgressHost.ShowDelay_Review))
             {
                 int index = 0;
 

@@ -96,7 +96,8 @@ namespace SAM.Analytical.UI.WPF
                     "Checking TM59 results",
                     string.Format("{0} · reading the saved results; no TAS simulation is run.", Query.PartOIterationText(partORun)),
                     ["TM59 assessment"],
-                    false)
+                    false,
+                    showDelay: PartOProgressHost.ShowDelay_Review)
                 : null)
             {
                 PartOProgressHost partOProgressHost_Assessment = partOProgressHost ?? partOProgressHost_Review!;
