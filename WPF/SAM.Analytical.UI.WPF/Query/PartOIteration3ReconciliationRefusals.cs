@@ -224,7 +224,7 @@ namespace SAM.Analytical.UI.WPF
                             guid_Space,
                             assessed_A ? "Reference A" : "Candidate B",
                             assessed_A ? "Candidate B" : "Reference A",
-                            Classification(!assessed_A, assessed_A ? guids_InformationOnly_B : guids_InformationOnly_A, guid_Space))
+                            Classification(false, assessed_A ? guids_InformationOnly_B : guids_InformationOnly_A, guid_Space))
                         : string.Format(
                             "Room '{0}' ({1}) is served by the explicit ventilation route but produced no TM59 occupied-space result in either case, and the two cases do not both report it as supplementary information only (Reference A: {2}; Candidate B: {3}), so the two cases were not assessed over the same rooms.",
                             name,
