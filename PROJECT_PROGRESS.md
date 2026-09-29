@@ -3,6 +3,31 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): truthful Part O progress stages (29 Sep 2026) - MERGED as SAM_UI#143 (`c6af0e5e`) with SAM_Tas#77 (`1fc97570`)
+
+**Status.** Both merged into `sow/2026-Q3`, SAM_Tas first. CI green (build, SPDX), mergeable, no reviews or comments. SAM_UI#143 head
+`0ec37bc7`; SAM_Tas#77 head `c9e8174d`.
+
+- **Change.** Iteration 3 progress stages name one real operation each and list only what the method performs: Preparing the system
+  case; TAS building simulation (thermal source); Creating ventilation systems (Air system n of m); Running TAS systems (Air system n of m);
+  Evaluating manufacturer guidance (guidance method only) / Evaluating cooling-module behaviour (cooling method only); Calculating resultant
+  temperatures; Assessing TM59; Comparing and saving results. Prepare & Run (1a/2): Prepare and review; TAS building simulation (full year);
+  TM59 assessment. Counts come from SAM_Tas route events (real air-system counts), never a percentage. Files: `PartOProgressStages.cs`,
+  `Modify/ReportPartOSystemVentilationProgress.cs`, `Modify/PartOIteration3.cs` (mode-aware phases + announcer), `PartOIteration3Pipeline.cs`,
+  `PartOProgressState.IndexOf`, result window stage line, mixed-design detail wording, tests.
+- **Evidence.** Full WPF suite 1434/1434; SAM_Tas 1023/1023. Licensed production seam (mixed Build & Run, real TAS, 2 min): all behavioural
+  checks PASS. **Native WPF acceptance (real `SAM Analytical.exe`, UIA-driven, screenshots + UIA text sampling, folder
+  `C:\TasOut\parto-progress-2026-09-29\native-run3`):** Iteration 1a Prepare & Run and Iteration 3 (manufacturer-guidance method, 3 air systems)
+  observed end to end - stage order correct, "Air system 1..3 of 3" under Creating and Running, guidance stage 20 s, no clipping/overlap,
+  no stale detail, all stages completed, window closed normally as the result window opened.
+- **Not verified.** Cancel/X behaviour natively (code untouched); the final "Comparing and saving results" state fell between samples.
+- **Known UX debt (not defects of this change).** (1) The step line renders below the last stage row, away from the running stage, and the
+  window grows slightly when it appears. (2) The mixed-design window still has one fixed stage "TAS simulation (full year) and TM59
+  assessment" because its list is fixed before the route is known; the detail line carries the finer, honestly-named steps (Creating
+  ventilation systems, Running TAS systems, Evaluating manufacturer guidance...). Acceptable; a future refinement. (3) The UIA driver scripts
+  under `C:\TasOut\parto-final-real-project\scripts` are stale (`button_OK` id, Simulate dialog) - not repo files.
+- **Next step.** None for this entry.
+
 ## Current (Part O stream): Iteration 3 validation - information-only reconciliation, TM59 summary, journey wording (29 Sep 2026) - MERGED as SAM_UI#140 (`1a7c87f1`), #141 (`aa873a29`), #142 (`eee9308a`)
 
 **Status.** All three merged into `sow/2026-Q3`, final CI green, no unresolved review comments; bases refreshed and CI
