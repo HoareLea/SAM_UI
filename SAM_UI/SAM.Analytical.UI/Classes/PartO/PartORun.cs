@@ -93,6 +93,10 @@ namespace SAM.Analytical.UI
 
         private System.DateTime dateTime_TSD_Expected;
 
+        //Per Iteration 3 method: an attempt whose TAS work completed but whose pairing did not. See
+        //Iteration3Checkpoint.
+        private readonly Dictionary<PartOIteration3BehaviourMode, object> iteration3Checkpoints = [];
+
         /// <summary>How far this run has got.</summary>
         public PartORunState State { get; private set; } = PartORunState.None;
 
@@ -245,6 +249,51 @@ namespace SAM.Analytical.UI
 
         /// <summary>Why a restored run could not be resumed for Iteration 3, or null.</summary>
         public string ResumeRefusal { get; private set; }
+
+        /// <summary>
+        /// The TAS work of this run's last Iteration 3 attempt for one method, where that attempt completed its TAS
+        /// work (thermal source, TAS Systems, resultant temperature) but not its pairing - so a retry in this session
+        /// can reuse it instead of running TAS again. Null where there is none.
+        /// <para>
+        /// <b>Held by the run because its lifetime is the run's.</b> Every transition that drops, clears, restores
+        /// or re-prepares this run clears it with everything else, so it can never outlive the preparation, the
+        /// case and the results it was produced from - the same rule that keeps a stale run from being assessed.
+        /// Held here, it is also never written anywhere: it is session state, like the run.
+        /// </para>
+        /// <para>
+        /// <b>Opaque here.</b> Its contents are TAS Systems and SAM_Systems results this assembly does not
+        /// reference; the Iteration 3 orchestrator owns the type, and proves before any reuse that every file and
+        /// every identity it was produced from is unchanged. This class only bounds its lifetime.
+        /// </para>
+        /// </summary>
+        public object Iteration3Checkpoint(PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        {
+            return State == PartORunState.WorkflowCompleted && iteration3Checkpoints.TryGetValue(partOIteration3BehaviourMode, out object result) ? result : null;
+        }
+
+        /// <summary>
+        /// Keeps an Iteration 3 attempt's completed TAS work for a retry in this session - see
+        /// <see cref="Iteration3Checkpoint"/>. Only on a completed run: there is nothing an attempt could have been
+        /// built on otherwise.
+        /// </summary>
+        /// <returns>Whether it was kept.</returns>
+        public bool KeepIteration3Checkpoint(PartOIteration3BehaviourMode partOIteration3BehaviourMode, object checkpoint)
+        {
+            if (State != PartORunState.WorkflowCompleted || checkpoint is null)
+            {
+                return false;
+            }
+
+            iteration3Checkpoints[partOIteration3BehaviourMode] = checkpoint;
+
+            return true;
+        }
+
+        /// <summary>Forgets one method's kept TAS work - its pairing completed, or its files are about to be rewritten.</summary>
+        public void DropIteration3Checkpoint(PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        {
+            iteration3Checkpoints.Remove(partOIteration3BehaviourMode);
+        }
 
         /// <summary>
         /// Announces that the next model replacement is this run's own, so it is not read as an outside edit.
@@ -1042,6 +1091,10 @@ namespace SAM.Analytical.UI
             //materialisation to the PREVIOUS run's design, and every guid in it would resolve, so nothing
             //downstream could tell.
             guids_VentilationSystem_Prepared = [];
+
+            //Cleared with everything else: an Iteration 3 attempt's TAS work belongs to the run it was built on,
+            //and reusing it for a successor would pair that successor with another design's TAS results.
+            iteration3Checkpoints.Clear();
 
             //Cleared with everything else: a workflow announced to the run that has just been dropped must not
             //be able to complete its successor.
