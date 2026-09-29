@@ -297,7 +297,7 @@
 
         <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,12,0,4">
             <TextBlock Text="Spaces" Style="{StaticResource PartO.SectionHeading}" Margin="0,0,10,0" VerticalAlignment="Center"/>
-            <TextBlock Text="Approved Document F requirement and design airflow are different quantities" Style="{StaticResource PartO.Caption}" VerticalAlignment="Center"/>
+            <TextBlock x:Name="textBlock_SpacesCaption" Text="Approved Document F requirement and design airflow are different quantities" Style="{StaticResource PartO.Caption}" VerticalAlignment="Center"/>
         </StackPanel>
         <DataGrid x:Name="dataGrid_Spaces" Grid.Row="6" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" HeadersVisibility="Column" MinHeight="90"
                   Style="{StaticResource Style_Table}" EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling">
@@ -311,9 +311,9 @@
                 <DataGridTextColumn Header="Space" Binding="{Binding Name}" Width="220"/>
                 <DataGridTextColumn Header="Part F required (l/s)" Binding="{Binding PartFRequired_Lps, Converter={StaticResource Converter_AirFlow}}" Width="120"
                                     ElementStyle="{StaticResource Style_Numeric_PartF}" HeaderStyle="{StaticResource Style_NumericHeader}"/>
-                <DataGridTextColumn Header="Design SUP (l/s)" Binding="{Binding DesignSupply_Lps, Converter={StaticResource Converter_AirFlow}}" Width="110"
+                <DataGridTextColumn x:Name="column_Spaces_DesignSupply" Header="Design SUP (l/s)" Binding="{Binding DesignSupply_Lps, Converter={StaticResource Converter_AirFlow}}" Width="110"
                                     ElementStyle="{StaticResource Style_Numeric_Design}" CellStyle="{StaticResource Style_GroupCell}" HeaderStyle="{StaticResource Style_GroupHeader}"/>
-                <DataGridTextColumn Header="Design EXT (l/s)" Binding="{Binding DesignExtract_Lps, Converter={StaticResource Converter_AirFlow}}" Width="110"
+                <DataGridTextColumn x:Name="column_Spaces_DesignExtract" Header="Design EXT (l/s)" Binding="{Binding DesignExtract_Lps, Converter={StaticResource Converter_AirFlow}}" Width="110"
                                     ElementStyle="{StaticResource Style_Numeric_Design}" HeaderStyle="{StaticResource Style_NumericHeader}"/>
             </DataGrid.Columns>
         </DataGrid>

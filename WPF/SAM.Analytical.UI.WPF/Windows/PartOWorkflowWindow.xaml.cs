@@ -195,7 +195,18 @@ namespace SAM.Analytical.UI.WPF
 
             comboBox_Scenario.ItemsSource = PartOWorkflowScenario.Scenarios;
             comboBox_Scenario.SelectedIndex = 0;
-            comboBox_Scenario.SelectionChanged += (s, e) => Refresh();
+            comboBox_Scenario.SelectionChanged += (s, e) =>
+            {
+                //A person choosing another scenario is no longer looking at Iteration 3, so the primary
+                //result action goes back to that scenario's own results. Programmatic restores happen before
+                //the window is shown and leave the focus as the caller stated it.
+                if (IsVisible)
+                {
+                    iteration3InFocus = false;
+                }
+
+                Refresh();
+            };
 
             List<PartOWorkflowScope> scopes = [PartOWorkflowScope.AllDwellings, PartOWorkflowScope.SelectedDwellings, PartOWorkflowScope.SelectedDwellingsIsolated];
 
@@ -1012,10 +1023,11 @@ namespace SAM.Analytical.UI.WPF
                     : "Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.")
                 : textBlock_Blockers.Text;
 
-            button_Review.IsEnabled = partOWorkflowInspection.CanReviewResults;
-            button_Review.ToolTip = partOWorkflowInspection.CanReviewResults
+            reviewResults_Enabled = partOWorkflowInspection.CanReviewResults;
+            reviewResults_ToolTip = partOWorkflowInspection.CanReviewResults
                 ? "Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run."
                 : partOWorkflowInspection.ResultsRefusal ?? "There are no results to review yet.";
+            reviewResults_Caption = partOWorkflowInspection.CanReviewResults ? string.Empty : "No results yet";
 
             //Why a secondary action is unavailable, in two or three words under it. The complete reason is
             //the tooltip; these name only which of the two known conditions applies.
@@ -1034,7 +1046,6 @@ namespace SAM.Analytical.UI.WPF
             //Where a run with results exists, the reason 2B is unavailable is THAT run's - the authority's
             //refusal above - whatever scenario the box shows for the next run (live acceptance, 26 Sep: a
             //reopened Iteration 2 run, with the box back on its first scenario, read "Iteration 2 only").
-            textBlock_ReviewCaption.Text = partOWorkflowInspection.CanReviewResults ? string.Empty : "No results yet";
             textBlock_OptimiseCaption.Text = partOWorkflowInspection.CanOptimise
                 ? "Optimise ventilation"
                 : partOWorkflowInspection.CanReviewResults && partOWorkflowCapabilities.ResultsRestored
@@ -1045,6 +1056,7 @@ namespace SAM.Analytical.UI.WPF
 
             //The Iteration 3 panel's own actions, from the eligibility the caller gathered once - it touches
             //the filesystem (it looks for saved results), and a status list rebuilt on every keystroke must not.
+            //It also decides which case the primary Review action opens (UpdateReviewTarget).
             RefreshIteration3();
 
             stepStrip.Steps = PartOWorkflowProgress.Steps(partOWorkflowInspection, supportsOptimisation);
@@ -1314,7 +1326,7 @@ namespace SAM.Analytical.UI.WPF
 
         private void button_Review_Click(object sender, RoutedEventArgs e)
         {
-            Action = PartOWorkflowAction.ReviewResults;
+            Action = ReviewOpensIteration3 ? PartOWorkflowAction.Iteration3Review : PartOWorkflowAction.ReviewResults;
 
             DialogResult = true;
         }

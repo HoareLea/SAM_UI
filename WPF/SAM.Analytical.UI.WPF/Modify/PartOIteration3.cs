@@ -221,7 +221,7 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            IPartOIteration3Pipeline iPartOIteration3Pipeline = new PartOIteration3Pipeline();
+            IPartOIteration3Pipeline iPartOIteration3Pipeline = new PartOIteration3Pipeline { ReportProvenance = PartOIteration3ReportProvenance(partORun, partOIteration3BehaviourMode) };
 
             string reference = Query.PartOIterationText(partORun);
 
@@ -292,6 +292,34 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
+        /// The provenance an Iteration 3 TM59 report is saved with. The reference case's results are the
+        /// reference iteration's own, so its report keeps that iteration's scenario and says it is the
+        /// Iteration 3 reference case; every other results file is the system case's.
+        /// </summary>
+        internal static Func<string, TM59AssessmentReport, IEnumerable<string>> PartOIteration3ReportProvenance(PartORun partORun, PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        {
+            string label = Query.PartOIteration3MethodLabel(partOIteration3BehaviourMode);
+
+            return (path_TSD, tM59AssessmentReport) =>
+            {
+                bool reference = !string.IsNullOrWhiteSpace(path_TSD) && !string.IsNullOrWhiteSpace(partORun.Path_TSD)
+                    && string.Equals(System.IO.Path.GetFullPath(path_TSD), System.IO.Path.GetFullPath(partORun.Path_TSD), StringComparison.OrdinalIgnoreCase);
+
+                return reference
+                    ? PartOTM59ResultSummary.ReportProvenance(partORun, tM59AssessmentReport, [("Case", "Iteration 3 — Explicit system and cooling assessment · reference case")])
+                    : PartOTM59ResultSummary.ReportProvenance(
+                        partORun,
+                        tM59AssessmentReport,
+                        [
+                            ("Iteration / scenario", string.Format("Iteration 3 — Explicit system and cooling assessment · system case: explicit TAS/TPD system ({0})", label)),
+                            ("Reference case", Query.PartOIterationText(partORun)),
+                        ],
+                        includeScenario: false,
+                        path_TSD: path_TSD);
+            };
+        }
+
+        /// <summary>
         /// Opens one method's saved Iteration 3 result - rebuilt from the existing results, with no TAS - or,
         /// where the method's last attempt did not complete, that attempt's stage record.
         /// </summary>
@@ -302,7 +330,7 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            IPartOIteration3Pipeline iPartOIteration3Pipeline = new PartOIteration3Pipeline();
+            IPartOIteration3Pipeline iPartOIteration3Pipeline = new PartOIteration3Pipeline { ReportProvenance = PartOIteration3ReportProvenance(partORun, partOIteration3BehaviourMode) };
 
             string label = Query.PartOIteration3MethodLabel(partOIteration3BehaviourMode);
 
@@ -314,7 +342,8 @@ namespace SAM.Analytical.UI.WPF
                 string.Format("Iteration 3 — {0}", label),
                 "Opening the saved result. No TAS simulation is run.",
                 ["Read the saved result", "Re-assess the reference case", "Re-assess the system case", "Rebuild the comparison"],
-                false))
+                false,
+                showDelay: PartOProgressHost.ShowDelay_Review))
             {
                 int index = 0;
 

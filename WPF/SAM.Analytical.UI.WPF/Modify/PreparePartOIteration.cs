@@ -845,7 +845,7 @@ namespace SAM.Analytical.UI.WPF
 
             string overheatingScenarios = string.Format("{0} stated", UI.Query.PartOCount(count_Scenario, "overheating scenario", "overheating scenarios"));
 
-            return new PartOReviewSummary(scenario, scope, scopeDetail, route, duty, dutyDetail, equipment, equipmentDetail, overheatingScenarios);
+            return new PartOReviewSummary(scenario, scope, scopeDetail, route, duty, dutyDetail, equipment, equipmentDetail, overheatingScenarios, mechanical);
         }
     }
 }

@@ -87,6 +87,7 @@ namespace SAM.Analytical.UI.WPF
             //(first taken exactly as the Simulate dialog would have opened), and the line saying what the last
             //action did - which is where a successful run's completion is reported, instead of a message box.
             PartOIteration3BehaviourMode partOIteration3BehaviourMode = PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance;
+            bool iteration3InFocus = false;
             PartOSimulationCase? partOSimulationCase = null;
             PartOWorkflowOutcome? partOWorkflowOutcome = null;
 
@@ -112,6 +113,7 @@ namespace SAM.Analytical.UI.WPF
                     Iteration3Mode = partOIteration3BehaviourMode,
                     SimulationCase = partOSimulationCase,
                     LastOutcome = partOWorkflowOutcome,
+                    Iteration3InFocus = iteration3InFocus,
                 };
 
                 partOWorkflowWindow.Restore(partOWorkflowScenario, partOWorkflowScope, guids_Dwelling);
@@ -159,6 +161,12 @@ namespace SAM.Analytical.UI.WPF
                 stated_ProjectTestVentilationUnit = true;
                 partOIteration3BehaviourMode = partOWorkflowWindow.Iteration3Mode;
                 partOSimulationCase = partOWorkflowWindow.SimulationCase;
+
+                //Which case the person was working in, so the reopened Hub's primary Review action opens THAT
+                //case's result: Iteration 3 after an Iteration 3 run or opened result, otherwise the scenario's.
+                iteration3InFocus = partOWorkflowWindow.Action == PartOWorkflowAction.Iteration3
+                    || partOWorkflowWindow.Action == PartOWorkflowAction.Iteration3Review
+                    || (partOWorkflowWindow.Iteration3InFocus && partOWorkflowWindow.Action is not PartOWorkflowAction.PrepareAndRun and not PartOWorkflowAction.Optimise and not PartOWorkflowAction.ReviewResults);
 
                 guids_Dwelling = [];
                 foreach (Zone zone in partOWorkflowWindow.Zones_Dwelling)

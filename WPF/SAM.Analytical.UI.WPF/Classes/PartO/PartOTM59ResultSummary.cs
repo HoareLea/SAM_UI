@@ -322,6 +322,81 @@ namespace SAM.Analytical.UI.WPF
         /// What the result is of, from the run's own record. A fact the run does not hold is left out, never
         /// guessed: a reopened run carries no simulation context, so it states no weather file.
         /// </summary>
+        /// <summary>
+        /// The provenance block a saved plain-text TM59 report is headed with, so the file is understandable
+        /// when opened later without the GUI. Built from the SAME facts the result window shows
+        /// (<see cref="RunFacts"/>) - never a second source of truth - with the full results path rather than
+        /// its file name, and a weather line that says so where this session does not hold one.
+        /// </summary>
+        /// <param name="lines_Before">Lines stated first, such as which Iteration 3 case the report is.</param>
+        internal static List<string> ReportProvenance(PartORun? partORun, TM59AssessmentReport? tM59AssessmentReport, IEnumerable<(string Label, string Value)>? lines_Before = null, bool includeScenario = true, string? path_TSD = null)
+        {
+            List<(string Label, string Value)> lines = [.. lines_Before ?? []];
+
+            bool weather = false;
+
+            foreach (Fact fact in RunFacts(partORun, tM59AssessmentReport, null, null))
+            {
+                switch (fact.Label)
+                {
+                    case "Scenario":
+                        if (includeScenario)
+                        {
+                            lines.Add(("Iteration / scenario", fact.Value));
+                        }
+                        break;
+
+                    case "Thermal model":
+                        lines.Add(("Thermal model scope", string.IsNullOrWhiteSpace(fact.Detail) ? fact.Value : string.Format("{0} ({1})", fact.Value, fact.Detail)));
+                        break;
+
+                    case "Weather":
+                        weather = true;
+                        lines.Add(("Weather", fact.Value));
+                        break;
+
+                    case "Results":
+                        if (path_TSD is null)
+                        {
+                            lines.Add(("Source TAS result", fact.Detail ?? fact.Value));
+                        }
+                        break;
+
+                    case "Method":
+                        lines.Add(("TM59 method", fact.Value));
+                        break;
+
+                    default:
+                        lines.Add((fact.Label, fact.Value));
+                        break;
+                }
+            }
+
+            if (path_TSD is not null)
+            {
+                lines.Add(("Source TAS result", path_TSD));
+            }
+
+            if (!weather && partORun is not null)
+            {
+                lines.Add(("Weather", "not recorded in this session (the run was reopened from a saved model)"));
+            }
+
+            int width = 0;
+            foreach ((string label, string _) in lines)
+            {
+                width = System.Math.Max(width, label.Length);
+            }
+
+            List<string> result = [];
+            foreach ((string label, string value) in lines)
+            {
+                result.Add(string.Format("{0} {1}", (label + ":").PadRight(width + 1), value));
+            }
+
+            return result;
+        }
+
         internal static List<Fact> RunFacts(PartORun? partORun, TM59AssessmentReport? tM59AssessmentReport, string? path_TM59Report, string? refusal_Report)
         {
             List<Fact> result = [];

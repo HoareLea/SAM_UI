@@ -244,11 +244,12 @@
                      shown. -->
                 <Border x:Name="border_Iteration3" Margin="0,14,0,0" Padding="10,8" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="4">
                     <StackPanel>
-                        <TextBlock Text="Iteration 3 — explicit system and cooling assessment" FontWeight="SemiBold" FontSize="13"/>
+                        <TextBlock Text="Iteration 3 — Explicit system and cooling assessment" FontWeight="SemiBold" FontSize="13"/>
                         <TextBlock x:Name="textBlock_It3Reference" Margin="0,4,0,0" TextWrapping="Wrap" Foreground="#444444"/>
 
                         <StackPanel x:Name="stackPanel_It3" Margin="0,8,0,0">
-                            <TextBlock Text="System case" FontWeight="SemiBold" Margin="0,0,0,2"/>
+                            <TextBlock Text="System case" FontWeight="SemiBold" Margin="0,0,0,0"/>
+                            <TextBlock Text="Explicit TAS/TPD system with the selected product's operating and cooling behaviour. Validation methods are separate, under Advanced." Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,0,0,2"/>
                             <StackPanel x:Name="stackPanel_It3Methods"/>
                             <Expander x:Name="expander_It3Advanced" Header="Advanced — validation methods" Margin="0,4,0,0" FontSize="11">
                                 <StackPanel x:Name="stackPanel_It3MethodsAdvanced" Margin="0,4,0,0"/>
@@ -303,7 +304,7 @@
                         <TextBlock x:Name="textBlock_Advanced" Style="{StaticResource PartO.Caption}"
                                    Text="The individual Part O commands remain available: Edit - Map IC (TM59), AddVent PartF and Prepare Iteration, Simulate - Energy Simulation, and Results - Overheating (TM59) and Optimise (2B)."/>
                         <TextBlock Style="{StaticResource PartO.Caption}" Margin="0,6,0,0"
-                                   Text="Iteration 1a — MVHR design duty (no manufacturer unit)&#x0a;Iteration 1b — Natural ventilation (no mechanical system)&#x0a;Iteration 2 — MVHR with manufacturer unit&#x0a;Iteration 2B — TM59 optimisation of an Iteration 2 run&#x0a;Iteration 3 — explicit system comparison against a completed Iteration 1a or Iteration 2 run"/>
+                                   Text="Iteration 1a — MVHR design duty (no manufacturer unit)&#x0a;Iteration 1b — Natural ventilation (no mechanical system)&#x0a;Iteration 2 — MVHR with manufacturer unit&#x0a;Iteration 2B — TM59 optimisation of an Iteration 2 run&#x0a;Iteration 3 — Explicit system and cooling assessment against a completed Iteration 1a or Iteration 2 run (validation methods are a separate advanced option)"/>
                     </StackPanel>
                 </Expander>
             </StackPanel>

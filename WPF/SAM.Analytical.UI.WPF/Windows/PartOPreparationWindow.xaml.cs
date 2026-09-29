@@ -221,8 +221,22 @@ namespace SAM.Analytical.UI.WPF
                 textBlock_Equipment.ToolTip = string.IsNullOrWhiteSpace(value?.EquipmentDetail) ? null : value!.EquipmentDetail;
 
                 textBlock_OverheatingScenarios.Text = value?.OverheatingScenarios ?? string.Empty;
+
+                //The natural ventilation route has no mechanical design duty and no equipment: its space
+                //table keeps the Part F requirement as a reference and does not show mechanical design
+                //SUP/EXT columns as though this case had a mechanical system.
+                bool mechanical = value?.HasMechanicalDesignDuty ?? true;
+                Visibility visibility_Design = mechanical ? Visibility.Visible : Visibility.Collapsed;
+                column_Spaces_DesignSupply.Visibility = visibility_Design;
+                column_Spaces_DesignExtract.Visibility = visibility_Design;
+                textBlock_SpacesCaption.Text = mechanical
+                    ? "Approved Document F requirement and design airflow are different quantities"
+                    : "Approved Document F requirement, for reference · natural ventilation, no mechanical design airflow";
             }
         }
+
+        /// <summary>Whether the space table shows the mechanical design SUP/EXT columns. For a test to read.</summary>
+        internal bool ShowsSpaceDesignAirflow => column_Spaces_DesignSupply.Visibility == Visibility.Visible;
 
         /// <summary>The preparation summary as one block - what Copy All puts first.</summary>
         public string Summary => partOReviewSummary?.Text ?? string.Empty;
@@ -262,6 +276,9 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>Whether the "no dwelling units" line stands in for the dwelling table.</summary>
         internal bool IsNoEquipmentShown => textBlock_NoEquipment.Visibility == Visibility.Visible;
+
+        /// <summary>No dwelling unit and no equipment selection (Iteration 1b): shown as a sentence, not a table.</summary>
+        private bool IsEquipmentEmpty => equipmentRows.Count == 0 && partOEquipmentAssignmentSet is null;
 
         /// <summary>What this window currently says about the selection authority. For a test to read.</summary>
         public string ModeDescription => textBlock_Mode.Text;
@@ -622,7 +639,7 @@ namespace SAM.Analytical.UI.WPF
 
             //Iteration 1b builds no dwelling unit: a sentence instead of an empty ten-column table, and the
             //row gives its height to the space table.
-            bool empty = equipmentRows.Count == 0 && partOEquipmentAssignmentSet is null;
+            bool empty = IsEquipmentEmpty;
 
             dataGrid_Equipment.Visibility = empty ? Visibility.Collapsed : Visibility.Visible;
             textBlock_NoEquipment.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
@@ -777,7 +794,17 @@ namespace SAM.Analytical.UI.WPF
             stringBuilder.AppendLine(Summary);
             stringBuilder.AppendLine();
 
-            stringBuilder.AppendLine("Dwelling\tUnit\tDesign SUP (l/s)\tDesign EXT (l/s)\tAssigned product\tMax SUP (l/s)\tMax EXT (l/s)\tSUP headroom (l/s)\tEXT headroom (l/s)\tStatus");
+            //The same as the window: no dwelling unit is a sentence, not an empty table whose headings name
+            //mechanical design SUP/EXT airflow on a route that has none.
+            if (IsEquipmentEmpty)
+            {
+                stringBuilder.AppendLine(textBlock_NoEquipment.Text);
+            }
+            else
+            {
+                stringBuilder.AppendLine("Dwelling\tUnit\tDesign SUP (l/s)\tDesign EXT (l/s)\tAssigned product\tMax SUP (l/s)\tMax EXT (l/s)\tSUP headroom (l/s)\tEXT headroom (l/s)\tStatus");
+            }
+
             foreach (PartOEquipmentRow row in equipmentRows)
             {
                 stringBuilder.AppendLine(string.Format(
@@ -796,16 +823,28 @@ namespace SAM.Analytical.UI.WPF
 
             stringBuilder.AppendLine();
 
-            stringBuilder.AppendLine("Dwelling / Zone\tSpace\tPart F required (l/s)\tDesign SUP (l/s)\tDesign EXT (l/s)");
-            foreach (PartOSpaceRow row in spaceRows)
+            if (!(partOReviewSummary?.HasMechanicalDesignDuty ?? true))
             {
-                stringBuilder.AppendLine(string.Format(
-                    "{0}\t{1}\t{2}\t{3}\t{4}",
-                    row.Dwelling,
-                    row.Name,
-                    PartOAirFlowConverter.Text(row.PartFRequired_Lps),
-                    PartOAirFlowConverter.Text(row.DesignSupply_Lps),
-                    PartOAirFlowConverter.Text(row.DesignExtract_Lps)));
+                //The natural ventilation route: the same columns the table shows.
+                stringBuilder.AppendLine("Dwelling / Zone\tSpace\tPart F required (l/s)");
+                foreach (PartOSpaceRow row in spaceRows)
+                {
+                    stringBuilder.AppendLine(string.Format("{0}\t{1}\t{2}", row.Dwelling, row.Name, PartOAirFlowConverter.Text(row.PartFRequired_Lps)));
+                }
+            }
+            else
+            {
+                stringBuilder.AppendLine("Dwelling / Zone\tSpace\tPart F required (l/s)\tDesign SUP (l/s)\tDesign EXT (l/s)");
+                foreach (PartOSpaceRow row in spaceRows)
+                {
+                    stringBuilder.AppendLine(string.Format(
+                        "{0}\t{1}\t{2}\t{3}\t{4}",
+                        row.Dwelling,
+                        row.Name,
+                        PartOAirFlowConverter.Text(row.PartFRequired_Lps),
+                        PartOAirFlowConverter.Text(row.DesignSupply_Lps),
+                        PartOAirFlowConverter.Text(row.DesignExtract_Lps)));
+                }
             }
 
             stringBuilder.AppendLine();

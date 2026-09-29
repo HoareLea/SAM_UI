@@ -20,8 +20,9 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public class PartOReviewSummary
     {
-        public PartOReviewSummary(string scenario, string scope, string? scopeDetail, string route, string duty, string? dutyDetail, string equipment, string? equipmentDetail, string overheatingScenarios)
+        public PartOReviewSummary(string scenario, string scope, string? scopeDetail, string route, string duty, string? dutyDetail, string equipment, string? equipmentDetail, string overheatingScenarios, bool hasMechanicalDesignDuty = true)
         {
+            HasMechanicalDesignDuty = hasMechanicalDesignDuty;
             Scenario = scenario ?? string.Empty;
             Scope = scope ?? string.Empty;
             ScopeDetail = scopeDetail;
@@ -32,6 +33,13 @@ namespace SAM.Analytical.UI.WPF
             EquipmentDetail = equipmentDetail;
             OverheatingScenarios = overheatingScenarios ?? string.Empty;
         }
+
+        /// <summary>
+        /// Whether this run has a mechanical design duty at all. False on the natural ventilation route
+        /// (Iteration 1b), where the review must not present design SUP/EXT columns as though the case had a
+        /// mechanical system. Presentation only - no airflow is changed.
+        /// </summary>
+        public bool HasMechanicalDesignDuty { get; }
 
         /// <summary>The scenario, as the Hub names it - "Iteration 2 — MVHR with manufacturer unit".</summary>
         public string Scenario { get; }

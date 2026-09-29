@@ -54,6 +54,11 @@ namespace SAM.Analytical.UI.WPF
 
         private readonly ManualResetEventSlim manualResetEventSlim = new(false);
 
+        /// <summary>Set by <see cref="Dispose"/>, so a window still waiting out its show delay never comes up.</summary>
+        private readonly ManualResetEventSlim delayCancel = new(false);
+
+        private readonly TimeSpan showDelay;
+
         private Thread thread;
 
         private Dispatcher dispatcher;
@@ -72,8 +77,16 @@ namespace SAM.Analytical.UI.WPF
         /// to observe the token. For an operation with long stretches that never look at it (the Iteration 2B
         /// assessments between rounds), where a click could otherwise be accepted and then never acted on.
         /// </param>
-        public PartOProgressHost(string heading, string subheading, IEnumerable<string> stageNames, bool cancellable = true, bool show = true, bool cancelOnlyWhileObserved = false)
+        /// <param name="showDelay">
+        /// Zero (the default) shows the window at once. Otherwise the window comes up only if the operation is
+        /// still running after this long - for short, read-only refreshes (reopening saved results), where a
+        /// window that flashes up and closes again is noise, while a slow read on a large model still shows
+        /// its progress.
+        /// </param>
+        public PartOProgressHost(string heading, string subheading, IEnumerable<string> stageNames, bool cancellable = true, bool show = true, bool cancelOnlyWhileObserved = false, TimeSpan showDelay = default)
         {
+            this.showDelay = showDelay;
+
             State = new PartOProgressState(stageNames)
             {
                 CancelAvailable = !cancelOnlyWhileObserved,
@@ -89,6 +102,12 @@ namespace SAM.Analytical.UI.WPF
                 Open(heading, subheading, cancellable);
             }
         }
+
+        /// <summary>
+        /// How long a read-only review of saved results (Review Results, reopening an Iteration 3 result) runs
+        /// before its progress window comes up. A review that finishes sooner shows no second window at all.
+        /// </summary>
+        public static readonly TimeSpan ShowDelay_Review = TimeSpan.FromSeconds(1.5);
 
         /// <summary>
         /// The host of the operation running on this thread, or null. What the nested steps consult instead
@@ -205,6 +224,12 @@ namespace SAM.Analytical.UI.WPF
                 {
                     try
                     {
+                        //A delayed window: finished (disposed) before the delay ran out means no window at all.
+                        if (showDelay > TimeSpan.Zero && delayCancel.Wait(showDelay))
+                        {
+                            return;
+                        }
+
                         dispatcher = Dispatcher.CurrentDispatcher;
 
                         PartOProgressWindow partOProgressWindow_Temp = new()
@@ -263,8 +288,12 @@ namespace SAM.Analytical.UI.WPF
                 thread.SetApartmentState(ApartmentState.STA);
                 thread.Start();
 
-                //Bounded: a window that will not come up must never hold up the job it reports on.
-                manualResetEventSlim.Wait(5000);
+                //Bounded: a window that will not come up must never hold up the job it reports on. A delayed
+                //window is not waited for at all - the job starts at once and the window follows if needed.
+                if (showDelay <= TimeSpan.Zero)
+                {
+                    manualResetEventSlim.Wait(5000);
+                }
             }
             catch (Exception)
             {
@@ -284,6 +313,14 @@ namespace SAM.Analytical.UI.WPF
             }
 
             disposed = true;
+
+            try
+            {
+                delayCancel.Set();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
 
             if (ReferenceEquals(current, this))
             {
@@ -327,6 +364,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             manualResetEventSlim.Dispose();
+            delayCancel.Dispose();
         }
 
         private sealed class CancelScope : IDisposable

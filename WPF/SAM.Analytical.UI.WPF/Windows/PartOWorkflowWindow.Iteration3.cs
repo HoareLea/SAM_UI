@@ -78,6 +78,9 @@ namespace SAM.Analytical.UI.WPF
 
                     iteration3Mode = (PartOIteration3BehaviourMode)((RadioButton)s).Tag;
 
+                    //Choosing a method is working in Iteration 3.
+                    iteration3InFocus = true;
+
                     UpdateMethodSelection();
 
                     RefreshIteration3();
@@ -337,6 +340,66 @@ namespace SAM.Analytical.UI.WPF
                     : canRunMethod
                         ? "Runs TAS several times over the full year, so it takes several minutes. Progress is shown in its own window."
                         : string.Empty;
+
+            UpdateReviewTarget(reviewable);
+        }
+
+        //---------------------------------------------------------------------------------------------
+        //Which case the primary Review action opens
+        //---------------------------------------------------------------------------------------------
+
+        private bool iteration3InFocus;
+
+        private bool reviewResults_Enabled;
+
+        private string? reviewResults_ToolTip;
+
+        private string reviewResults_Caption = "No results yet";
+
+        /// <summary>
+        /// Whether the person is working in Iteration 3 - the Hub reopened after an Iteration 3 run or an
+        /// opened Iteration 3 result, or a method was chosen here. While it holds and the chosen method has a
+        /// completed result, the primary Review action opens THAT result (the comparison, with the reference
+        /// and system TM59 reports inside it) rather than silently opening the reference iteration's TM59.
+        /// Choosing another scenario clears it.
+        /// </summary>
+        public bool Iteration3InFocus
+        {
+            get => iteration3InFocus;
+            set
+            {
+                iteration3InFocus = value;
+
+                RefreshIteration3();
+            }
+        }
+
+        /// <summary>Whether the primary Review action currently opens the Iteration 3 result. For a test to read.</summary>
+        internal bool ReviewOpensIteration3 { get; private set; }
+
+        /// <summary>What the primary Review action says. For a test to read.</summary>
+        internal string ReviewActionText => button_Review.Content as string ?? string.Empty;
+
+        private void UpdateReviewTarget(bool reviewable_Iteration3)
+        {
+            ReviewOpensIteration3 = iteration3InFocus && reviewable_Iteration3;
+
+            if (ReviewOpensIteration3)
+            {
+                button_Review.Content = "Review Iteration 3 result";
+                button_Review.IsEnabled = true;
+                button_Review.ToolTip = string.Format(
+                    "Open the Iteration 3 result for '{0}' - explicit system and cooling assessment, compared with its reference case. The reference and system TM59 reports are available inside it. No TAS simulation is run.",
+                    Query.PartOIteration3MethodLabel(iteration3Mode));
+                textBlock_ReviewCaption.Text = "Iteration 3";
+
+                return;
+            }
+
+            button_Review.Content = "Review Results";
+            button_Review.IsEnabled = reviewResults_Enabled;
+            button_Review.ToolTip = reviewResults_ToolTip;
+            textBlock_ReviewCaption.Text = reviewResults_Caption;
         }
 
         /// <summary>One method's status line.</summary>
