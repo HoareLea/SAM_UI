@@ -3,7 +3,29 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
-## Current (reporting stream): Reporting hardening - DocumentContext wording, output-folder fail-fast (28 Sep 2026) - MERGED (`8f1b7ee5`)
+## Current (Part O stream): Part O TM59 requires a full-year TSD (29 Sep 2026) - MERGED (`a0f2f574`)
+
+**Status.** Merged: [SAM-BIM/SAM_UI#139](https://github.com/SAM-BIM/SAM_UI/pull/139), branch
+`fix/parto-tm59-require-full-year-2026-09-29` from `sow/2026-Q3` `6d44ec98`, merge commit `a0f2f574` (PR head
+`56e95cb6`). CI green (`build`, `spdx`), mergeable, no reviews or comments. Depends on the merged SAM_Tas#73
+(`7b84dd92`, SAM_Tas `sow/2026-Q3`). Full record: `documentation/PartO-TM59-RequireFullYear-PR.md`.
+- **Behaviour.** Part O TM59 now explicitly enables `TSDConversionSettings.RequireFullYear` through the new internal
+  `PartOTM59Assessment.PartOTSDConversionSettings()` (fresh instance per call). A part-year TSD is refused with
+  SAM_Tas's own reason before anything is mapped or assessed; an unreadable file keeps its existing message. All
+  Part O TM59 routes go through `PartOTM59Assessment.Assess`.
+- **Unchanged.** The full-year check stays opt-in in SAM_Tas (default off); generic / Grasshopper partial-year
+  conversion is untouched. No day-range logic in SAM_UI.
+- **Files.** `WPF/SAM.Analytical.UI.WPF/Classes/PartO/PartOTM59Assessment.cs`;
+  `WPF/SAM.Analytical.UI.WPF.Tests/PartOTM59FullYearGuardTests.cs` (new, 5 tests);
+  `documentation/PartO-TM59-RequireFullYear-PR.md`.
+- **Validation.** `SAM.Analytical.UI.WPF.Tests`: **1405/1405**, 0 failed (5 new), built against SAM_Tas
+  `sow/2026-Q3` containing #73. **Mutation check:** `RequireFullYear = false` in the Part O factory fails 3 of the 5
+  new tests (request, full-year, part-year); restored, 5/5.
+- **Open, deliberately not started.** Damaged/incomplete TSD robustness (files stating 1..365; TSD.exe hangs),
+  surface-result day-major optimisation, further TSD performance work, PR5 - each a separate future investigation.
+- **Next step.** None for this entry. Pick the next stream from the open items above.
+
+## Previous (reporting stream): Reporting hardening - DocumentContext wording, output-folder fail-fast (28 Sep 2026) - MERGED (`8f1b7ee5`)
 
 **Status.** Small, focused fix for two Kimi final-review findings (M1, M2) on `SpaceReportPdfBatch` /
 `Analytical.Reporting.DocumentContext` (the PR2F-2 batch Space report export). Merged:
