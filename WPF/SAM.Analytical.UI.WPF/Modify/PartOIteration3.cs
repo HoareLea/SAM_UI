@@ -11,30 +11,103 @@ namespace SAM.Analytical.UI.WPF
     public static partial class Modify
     {
         /// <summary>
-        /// The six phases an Iteration 3 run is shown as - the ledger's fifteen stages, in the engineer's
-        /// terms. Every stage maps to exactly one phase, in order.
+        /// The phases an Iteration 3 run is shown as - the ledger's fifteen stages, in the engineer's terms,
+        /// each one real work the run performs. The manufacturer-guidance (or cooling-module) evaluation is a
+        /// phase only for the method that performs it, so a run never lists work it does not do.
         /// </summary>
-        internal static readonly IReadOnlyList<string> PartOIteration3Phases =
-        [
-            "Reference case",
-            "System case design",
-            "TAS building simulation",
-            "TAS Systems simulation",
-            "TAS resultant temperature",
-            "TM59 comparison and reports",
-        ];
+        internal static IReadOnlyList<string> PartOIteration3Phases(PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        {
+            return PartOIteration3PhaseList(partOIteration3BehaviourMode);
+        }
 
-        /// <summary>Which of <see cref="PartOIteration3Phases"/> a ledger stage belongs to.</summary>
-        internal static int PartOIteration3Phase(PartOIteration3Stage partOIteration3Stage)
+        private static List<string> PartOIteration3PhaseList(PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        {
+            List<string> result =
+            [
+                PartOProgressStages.PreparingSystemCase,
+                PartOProgressStages.BuildingSimulationThermalSource,
+                PartOProgressStages.CreatingVentilationSystems,
+                PartOProgressStages.RunningTasSystems,
+            ];
+
+            switch (partOIteration3BehaviourMode)
+            {
+                case PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance:
+                    result.Add(PartOProgressStages.EvaluatingManufacturerGuidance);
+                    break;
+
+                case PartOIteration3BehaviourMode.SelectedProductCooling:
+                    result.Add(PartOProgressStages.EvaluatingCoolingModules);
+                    break;
+            }
+
+            result.Add(PartOProgressStages.CalculatingResultantTemperatures);
+            result.Add(PartOProgressStages.AssessingTm59);
+            result.Add(PartOProgressStages.ComparingAndSaving);
+
+            return result;
+        }
+
+        /// <summary>Which of <see cref="PartOIteration3Phases"/> a ledger stage belongs to, for this method.</summary>
+        internal static int PartOIteration3Phase(PartOIteration3Stage partOIteration3Stage, PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        {
+            List<string> phases = PartOIteration3PhaseList(partOIteration3BehaviourMode);
+
+            //ZoneTemperature is where the route's read-back evidence is checked and kept, so it belongs to the
+            //evaluation phase where the method has one, and to the systems run where it does not.
+            string name = partOIteration3Stage switch
+            {
+                PartOIteration3Stage.Input or PartOIteration3Stage.ReferenceA or PartOIteration3Stage.ReferenceATM59 or PartOIteration3Stage.SystemScope or PartOIteration3Stage.EquipmentResolution or PartOIteration3Stage.Materialisation => PartOProgressStages.PreparingSystemCase,
+                PartOIteration3Stage.ThermalSource => PartOProgressStages.BuildingSimulationThermalSource,
+                PartOIteration3Stage.SystemsConversion => PartOProgressStages.CreatingVentilationSystems,
+                PartOIteration3Stage.SystemsSimulation => PartOProgressStages.RunningTasSystems,
+                PartOIteration3Stage.ZoneTemperature => phases.Contains(PartOProgressStages.EvaluatingManufacturerGuidance)
+                    ? PartOProgressStages.EvaluatingManufacturerGuidance
+                    : phases.Contains(PartOProgressStages.EvaluatingCoolingModules)
+                        ? PartOProgressStages.EvaluatingCoolingModules
+                        : PartOProgressStages.RunningTasSystems,
+                PartOIteration3Stage.ResultantTemperature => PartOProgressStages.CalculatingResultantTemperatures,
+                PartOIteration3Stage.CandidateBTM59 => PartOProgressStages.AssessingTm59,
+                _ => PartOProgressStages.ComparingAndSaving,
+            };
+
+            return phases.IndexOf(name);
+        }
+
+        /// <summary>
+        /// The step shown beside a phase when one of its stages starts, for the stages that are a distinct
+        /// piece of work inside a phase. Null where the phase's own name says it, or where the work reports
+        /// finer steps itself (the building simulation, the TAS Systems route).
+        /// </summary>
+        internal static string? PartOIteration3StageDetail(PartOIteration3Stage partOIteration3Stage)
         {
             return partOIteration3Stage switch
             {
-                PartOIteration3Stage.Input or PartOIteration3Stage.ReferenceA or PartOIteration3Stage.ReferenceATM59 => 0,
-                PartOIteration3Stage.SystemScope or PartOIteration3Stage.EquipmentResolution or PartOIteration3Stage.Materialisation => 1,
-                PartOIteration3Stage.ThermalSource => 2,
-                PartOIteration3Stage.SystemsConversion or PartOIteration3Stage.SystemsSimulation or PartOIteration3Stage.ZoneTemperature => 3,
-                PartOIteration3Stage.ResultantTemperature => 4,
-                _ => 5,
+                PartOIteration3Stage.Input => "Checking the reference run",
+                PartOIteration3Stage.ReferenceA => "Reading the Iteration 1a results",
+                PartOIteration3Stage.ReferenceATM59 => "Assessing the reference case against TM59",
+                PartOIteration3Stage.SystemScope => "Scoping the ventilation design",
+                PartOIteration3Stage.EquipmentResolution => "Resolving the ventilation equipment",
+                PartOIteration3Stage.Materialisation => "Materialising the ventilation systems",
+                PartOIteration3Stage.SystemsConversion => "Preparing the TAS Systems document",
+                PartOIteration3Stage.ResultantTemperature => "Full-year resultant-temperature run in TAS",
+                PartOIteration3Stage.Reconciliation => "Reconciling the system case with the reference case",
+                PartOIteration3Stage.Comparison => "Comparing the two cases",
+                PartOIteration3Stage.Persistence => "Saving the system case model",
+                _ => null,
+            };
+        }
+
+        /// <summary>
+        /// What the progress window is told when a ledger stage starts: the phase, then the step inside it (a
+        /// stage that shares a phase with the one before would otherwise keep the earlier stage's step on screen).
+        /// </summary>
+        internal static Action<PartOIteration3Stage> PartOIteration3StageAnnouncer(PartOProgressHost partOProgressHost, PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        {
+            return partOIteration3Stage =>
+            {
+                partOProgressHost.Start(PartOIteration3Phase(partOIteration3Stage, partOIteration3BehaviourMode));
+                partOProgressHost.Detail(PartOIteration3StageDetail(partOIteration3Stage)!);
             };
         }
 
@@ -50,8 +123,8 @@ namespace SAM.Analytical.UI.WPF
         /// replaces that result - a destructive decision, and the one kind of question this keeps.</item>
         /// </list>
         /// <para>
-        /// <b>Progress</b> is one window for the whole run (<see cref="PartOProgressHost"/>): six phases, the
-        /// elapsed time, and Cancel between stages. It closes before the comparison opens. There is no
+        /// <b>Progress</b> is one window for the whole run (<see cref="PartOProgressHost"/>): the phases of
+        /// <see cref="PartOIteration3Phases"/>, the elapsed time, and Cancel between stages. It closes before the comparison opens. There is no
         /// completion message box: the comparison IS the completion, and the Hub states it inline afterwards.
         /// </para>
         /// </summary>
@@ -102,14 +175,14 @@ namespace SAM.Analytical.UI.WPF
             List<string> lines_Stages;
             TimeSpan elapsed;
 
-            using (PartOProgressHost partOProgressHost = new(string.Format("Iteration 3 — {0}", label), string.Format("Reference case: {0}", reference), PartOIteration3Phases))
+            using (PartOProgressHost partOProgressHost = new(string.Format("Iteration 3 — {0}", label), string.Format("Reference case: {0}", reference), PartOIteration3Phases(partOIteration3BehaviourMode)))
             {
                 partOIteration3Result = RunPartOIteration3(
                     partORun,
                     iPartOIteration3Pipeline,
                     partOProgressHost.Token,
                     partOIteration3BehaviourMode,
-                    partOIteration3Stage => partOProgressHost.Start(PartOIteration3Phase(partOIteration3Stage)));
+                    PartOIteration3StageAnnouncer(partOProgressHost, partOIteration3BehaviourMode));
 
                 if (partOIteration3Result.IsComplete)
                 {

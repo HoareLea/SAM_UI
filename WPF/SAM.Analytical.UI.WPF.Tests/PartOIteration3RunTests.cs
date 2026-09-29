@@ -997,11 +997,14 @@ namespace SAM.Analytical.UI.WPF.Tests
             for (int i = 1; i < announced.Count; i++)
             {
                 Assert.True(announced[i] > announced[i - 1], string.Format("{0} was announced after {1}", announced[i], announced[i - 1]));
-                Assert.True(Modify.PartOIteration3Phase(announced[i]) >= Modify.PartOIteration3Phase(announced[i - 1]));
+                Assert.True(Modify.PartOIteration3Phase(announced[i], PartOIteration3BehaviourMode.Parity) >= Modify.PartOIteration3Phase(announced[i - 1], PartOIteration3BehaviourMode.Parity));
             }
 
-            //Every one of the six phases is reached by a complete run.
-            Assert.Equal(Modify.PartOIteration3Phases.Count, announced.ConvertAll(Modify.PartOIteration3Phase).Distinct().Count());
+            //Every phase a Parity run lists is reached by a complete run. The ledger's SystemsSimulation stage is
+            //never announced - the route announces it - so that phase is reached through the route (see the
+            //PartOProgressStageTests); every other phase is reached by an announced stage.
+            List<int> phases = announced.ConvertAll(x => Modify.PartOIteration3Phase(x, PartOIteration3BehaviourMode.Parity));
+            Assert.Equal(Modify.PartOIteration3Phases(PartOIteration3BehaviourMode.Parity).Count - 1, phases.Distinct().Count());
         }
 
         /// <summary>
@@ -1046,6 +1049,133 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.True(partOIteration3PairingStatus.IsRefused);
             Assert.False(partOIteration3PairingStatus.IsReviewable);
+        }
+
+        /// <summary>
+        /// The progress window over a real complete run: the production announcer drives it from the ledger's
+        /// stages and, inside the route, from the events SAM_Tas' route reports. The window shows the run's
+        /// seven stages once each, in order, with the air-system counts, and ends with every stage completed.
+        /// </summary>
+        [Fact]
+        public void The_progress_window_walks_a_complete_run_through_its_stages_once_each_and_completes_them()
+        {
+            PartORun partORun = Run();
+
+            PartOIteration3PipelineFake partOIteration3PipelineFake = Pipeline_Complete(out List<Guid> _);
+
+            using PartOProgressHost partOProgressHost = new("Iteration 3", null, Modify.PartOIteration3Phases(PartOIteration3BehaviourMode.Parity), true, false);
+
+            List<string> running = [];
+            List<string> details = [];
+
+            void Record()
+            {
+                for (int i = 0; i < partOProgressHost.State.Count; i++)
+                {
+                    if (partOProgressHost.State.Status(i) == PartOProgressStageStatus.Running)
+                    {
+                        if (running.Count == 0 || running[^1] != partOProgressHost.State.Name(i))
+                        {
+                            running.Add(partOProgressHost.State.Name(i));
+                        }
+
+                        if (partOProgressHost.State.Detail is string detail)
+                        {
+                            details.Add(detail);
+                        }
+                    }
+                }
+            }
+
+            partOIteration3PipelineFake.Reporting_Route = () =>
+            {
+                for (int i = 1; i <= 3; i++)
+                {
+                    Modify.ReportPartOSystemVentilationProgress(PartOProgressHost.Current, new Analytical.Tas.TPD.SystemVentilationRouteProgress(Analytical.Tas.TPD.SystemVentilationRouteStage.ConvertingAirSystems, i, 3));
+                    Record();
+                }
+
+                for (int i = 1; i <= 3; i++)
+                {
+                    Modify.ReportPartOSystemVentilationProgress(PartOProgressHost.Current, new Analytical.Tas.TPD.SystemVentilationRouteProgress(Analytical.Tas.TPD.SystemVentilationRouteStage.SimulatingAirSystems, i, 3));
+                    Record();
+                }
+            };
+
+            Action<PartOIteration3Stage> announcer = Modify.PartOIteration3StageAnnouncer(partOProgressHost, PartOIteration3BehaviourMode.Parity);
+
+            PartOIteration3Result partOIteration3Result = Modify.RunPartOIteration3(
+                partORun,
+                partOIteration3PipelineFake,
+                partOProgressHost.Token,
+                PartOIteration3BehaviourMode.Parity,
+                stage =>
+                {
+                    announcer(stage);
+                    Record();
+                });
+
+            Assert.True(partOIteration3Result.IsComplete);
+
+            partOProgressHost.State.Complete();
+
+            Assert.Equal(Modify.PartOIteration3Phases(PartOIteration3BehaviourMode.Parity), running);
+
+            Assert.Contains("Air system 2 of 3", details);
+            Assert.Contains("Air system 3 of 3", details);
+
+            for (int i = 0; i < partOProgressHost.State.Count; i++)
+            {
+                Assert.Equal(PartOProgressStageStatus.Completed, partOProgressHost.State.Status(i));
+            }
+        }
+
+        /// <summary>
+        /// Cancel and refusal are unchanged by progress reporting: a cancel before the building simulation
+        /// still refuses at that stage, calls no TAS step, and the window ends with that stage failed and the
+        /// later ones never started.
+        /// </summary>
+        [Fact]
+        public void A_cancelled_run_still_refuses_at_the_stage_it_did_not_start_and_the_window_fails_that_stage()
+        {
+            PartORun partORun = Run();
+
+            PartOIteration3PipelineFake partOIteration3PipelineFake = Pipeline_Complete(out List<Guid> _);
+
+            using PartOProgressHost partOProgressHost = new("Iteration 3", null, Modify.PartOIteration3Phases(PartOIteration3BehaviourMode.Parity), true, false);
+
+            Action<PartOIteration3Stage> announcer = Modify.PartOIteration3StageAnnouncer(partOProgressHost, PartOIteration3BehaviourMode.Parity);
+
+            PartOIteration3Result partOIteration3Result = Modify.RunPartOIteration3(
+                partORun,
+                partOIteration3PipelineFake,
+                partOProgressHost.Token,
+                PartOIteration3BehaviourMode.Parity,
+                stage =>
+                {
+                    if (stage == PartOIteration3Stage.Materialisation)
+                    {
+                        partOProgressHost.Cancel();
+                    }
+
+                    announcer(stage);
+                });
+
+            Assert.True(partOIteration3Result.IsRefused);
+            Assert.Equal(PartOIteration3Stage.ThermalSource, partOIteration3Result.Ledger.Stage_Refused);
+            Assert.DoesNotContain(nameof(IPartOIteration3Pipeline.ThermalSource), partOIteration3PipelineFake.Called);
+
+            partOProgressHost.State.Fail();
+
+            int index_Building = partOProgressHost.State.IndexOf(PartOProgressStages.BuildingSimulationThermalSource);
+
+            Assert.Equal(PartOProgressStageStatus.Failed, partOProgressHost.State.Status(index_Building));
+            Assert.Equal(PartOProgressStageStatus.Completed, partOProgressHost.State.Status(0));
+
+            for (int i = index_Building + 1; i < partOProgressHost.State.Count; i++)
+            {
+                Assert.Equal(PartOProgressStageStatus.Pending, partOProgressHost.State.Status(i));
+            }
         }
     }
 }

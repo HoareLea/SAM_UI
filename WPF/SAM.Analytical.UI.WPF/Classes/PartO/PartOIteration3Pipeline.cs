@@ -224,7 +224,18 @@ namespace SAM.Analytical.UI.WPF
             int endHour,
             SystemVentilationFanHeatGainPolicy fanHeatGainPolicy = SystemVentilationFanHeatGainPolicy.ClearToZero)
         {
-            return Analytical.Tas.TPD.Create.SystemVentilationRoute(noIzamThermalSource, mechanicalVentilationMaterialisation, path_TPD, startHour, endHour, fanHeatGainPolicy);
+            //The route runs on this thread (every TAS COM call does), so the host of the operation on it is the
+            //one to report to. Coarse events only; null - no progress window - reports nothing.
+            PartOProgressHost partOProgressHost = PartOProgressHost.Current;
+
+            return Analytical.Tas.TPD.Create.SystemVentilationRoute(
+                noIzamThermalSource,
+                mechanicalVentilationMaterialisation,
+                path_TPD,
+                startHour,
+                endHour,
+                fanHeatGainPolicy,
+                partOProgressHost is null ? null : systemVentilationRouteProgress => Modify.ReportPartOSystemVentilationProgress(partOProgressHost, systemVentilationRouteProgress));
         }
 
         /// <summary>

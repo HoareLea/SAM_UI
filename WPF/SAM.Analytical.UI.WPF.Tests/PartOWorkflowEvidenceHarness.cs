@@ -146,7 +146,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 //The progress window, as it looks part-way through a run (a synthetic state - no TAS is run)
                 //---------------------------------------------------------------------------------------------
                 DateTime now = DateTime.UtcNow.AddMinutes(-4).AddSeconds(-32);
-                PartOProgressState partOProgressState = new(Modify.PartOIteration3Phases, () => now);
+                PartOProgressState partOProgressState = new(Modify.PartOIteration3Phases(PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance), () => now);
                 partOProgressState.Start(0);
                 now = now.AddSeconds(9);
                 partOProgressState.Start(1);

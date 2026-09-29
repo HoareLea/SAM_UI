@@ -44,6 +44,9 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         internal List<string> Paths_Route { get; } = [];
 
+        /// <summary>Run inside <see cref="Route"/>: what the production route reports as it converts and simulates.</summary>
+        internal Action Reporting_Route { get; set; }
+
         internal List<string> Paths_Bridge { get; } = [];
 
         internal List<string> Paths_Persist { get; } = [];
@@ -189,6 +192,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             Called.Add(nameof(Route));
 
             FanHeatGainPolicy_Route = fanHeatGainPolicy;
+
+            //Stands for the coarse events SAM_Tas' route reports while it runs (see PartOProgressStageTests).
+            Reporting_Route?.Invoke();
 
             Write(Paths_Route);
 

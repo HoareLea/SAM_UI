@@ -263,14 +263,16 @@ namespace SAM.Analytical.UI.WPF
                 return string.Join("     ", StageTimings);
             }
 
-            IReadOnlyList<string> phases = Modify.PartOIteration3Phases;
+            PartOIteration3BehaviourMode partOIteration3BehaviourMode = partOIteration3Result.Record?.BehaviourMode ?? PartOIteration3BehaviourMode.Parity;
+
+            IReadOnlyList<string> phases = Modify.PartOIteration3Phases(partOIteration3BehaviourMode);
 
             List<string> result = [];
 
             for (int i = 0; i < phases.Count; i++)
             {
                 List<PartOIteration3StageStatus> statuses = partOIteration3Result.Ledger.Stages
-                    .Where(x => Modify.PartOIteration3Phase(x.Stage) == i)
+                    .Where(x => Modify.PartOIteration3Phase(x.Stage, partOIteration3BehaviourMode) == i)
                     .Select(x => x.Status)
                     .ToList();
 
