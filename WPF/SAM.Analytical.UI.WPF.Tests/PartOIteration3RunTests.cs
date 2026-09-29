@@ -30,7 +30,7 @@ namespace SAM.Analytical.UI.WPF.Tests
     /// <c>PartORun</c> and real SAM_Systems and SAM_Tas result objects.
     /// </para>
     /// </summary>
-    public class PartOIteration3RunTests : IDisposable
+    public partial class PartOIteration3RunTests : IDisposable
     {
         private readonly string directory = PartOIteration3Fixture.Directory_Temp();
 

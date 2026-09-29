@@ -28,6 +28,16 @@ namespace SAM.Analytical.UI.WPF
         internal const double Tolerance_DesignAirFlow_Lps = 1e-6;
 
         /// <summary>
+        /// Runs one Approved Document O Iteration 3 A/B pairing - reusing, where
+        /// <see cref="Query.PartOIteration3ResumePlan"/> proves it may, the TAS work of this session's earlier attempt
+        /// that failed after it. See the overload with a plan for the whole contract.
+        /// </summary>
+        public static PartOIteration3Result RunPartOIteration3(PartORun partORun, IPartOIteration3Pipeline iPartOIteration3Pipeline, CancellationToken cancellationToken = default, PartOIteration3BehaviourMode partOIteration3BehaviourMode = PartOIteration3BehaviourMode.Parity, Action<PartOIteration3Stage> stageStarting = null)
+        {
+            return RunPartOIteration3(partORun, iPartOIteration3Pipeline, cancellationToken, partOIteration3BehaviourMode, stageStarting, null);
+        }
+
+        /// <summary>
         /// Runs one Approved Document O Iteration 3 A/B pairing, start to finish, and answers the ordered
         /// ledger, the durable record and - only where every stage completed - the comparison.
         ///
@@ -87,7 +97,30 @@ namespace SAM.Analytical.UI.WPF
         /// so it never makes the method reviewable and can simply be run again.
         /// </para>
         /// </param>
-        public static PartOIteration3Result RunPartOIteration3(PartORun partORun, IPartOIteration3Pipeline iPartOIteration3Pipeline, CancellationToken cancellationToken = default, PartOIteration3BehaviourMode partOIteration3BehaviourMode = PartOIteration3BehaviourMode.Parity, Action<PartOIteration3Stage> stageStarting = null)
+        /// <param name="partOIteration3ResumePlan">
+        /// Whether this attempt reuses an earlier attempt's TAS work - <see cref="Query.PartOIteration3ResumePlan"/>,
+        /// made by the caller so its progress window can list the stages this attempt will actually run. Null makes it
+        /// here.
+        /// <para>
+        /// <b>What a resumed attempt reuses, and what it still does.</b> It reuses the four pieces of work the TAS
+        /// stages produced - the materialised systems the TAS Systems document was converted from, the thermal source
+        /// (with the model the no-IZAM workflow returned), the TAS Systems route and the resultant temperatures - and
+        /// calls none of the pipeline members that produce them. Every other stage runs exactly as it always does:
+        /// Reference A is re-read and re-assessed, the scope and the equipment are resolved again and must come out
+        /// the same as the reused attempt's, the kept evidence is re-checked, Candidate B is assessed, reconciled,
+        /// compared and persisted. In place of claiming a TAS file as written by this attempt, each one is verified
+        /// unchanged since the reused attempt claimed it; one that is not refuses, by name, and discards the kept work
+        /// so the next attempt runs TAS. The reused stages say so in the ledger, so the record never reads as though
+        /// TAS had run again.
+        /// </para>
+        /// <para>
+        /// <b>What is kept, and when.</b> An attempt that has run TAS keeps its TAS work on the run
+        /// (<see cref="PartORun.KeepIteration3Checkpoint"/>) as soon as the last TAS stage completes - before
+        /// anything that can fail after it - and the pairing that completes drops it. An attempt that will run TAS
+        /// drops the method's earlier work first, because it is about to rewrite those files.
+        /// </para>
+        /// </param>
+        internal static PartOIteration3Result RunPartOIteration3(PartORun partORun, IPartOIteration3Pipeline iPartOIteration3Pipeline, CancellationToken cancellationToken, PartOIteration3BehaviourMode partOIteration3BehaviourMode, Action<PartOIteration3Stage> stageStarting, PartOIteration3ResumePlan partOIteration3ResumePlan)
         {
             PartOIteration3Ledger partOIteration3Ledger = new();
 
@@ -159,8 +192,43 @@ namespace SAM.Analytical.UI.WPF
 
             PartOIteration3Paths partOIteration3Paths = PartOIteration3Paths.Create(partOSimulationContext, path_TSD_ReferenceA, partOIteration3BehaviourMode);
 
+            //Reuse of an earlier attempt's TAS work is decided once, here, by the one resolver - never per stage.
+            partOIteration3ResumePlan ??= Query.PartOIteration3ResumePlan(partORun, partOIteration3BehaviourMode);
+
+            PartOIteration3Checkpoint partOIteration3Checkpoint = partOIteration3ResumePlan.Checkpoint;
+
+            if (partOIteration3Checkpoint is null)
+            {
+                //This attempt runs TAS and rewrites the files any kept work was proven by, so that work goes now.
+                partORun.DropIteration3Checkpoint(partOIteration3BehaviourMode);
+            }
+
+            AddNotes(notes, [partOIteration3ResumePlan.Reason]);
+
             PartOIteration3Artifacts partOIteration3Artifacts = new(partOIteration3Record.Guid_Run);
             partOIteration3Artifacts.Snapshot(partOIteration3Paths.Paths_CandidateB);
+
+            //A TAS file this attempt produced: claimed as written by it - or, resuming, verified unchanged since the
+            //reused attempt claimed it. A resumed file that changed discards the kept work, so the next attempt runs
+            //TAS rather than meeting the same refusal again.
+            bool TryOwn(IEnumerable<string> paths, out List<string> artifacts, out List<string> refusals)
+            {
+                if (partOIteration3Checkpoint is null)
+                {
+                    return partOIteration3Artifacts.TryClaim(paths, out artifacts, out refusals);
+                }
+
+                if (partOIteration3Checkpoint.TryVerify(paths, out artifacts, out refusals))
+                {
+                    return true;
+                }
+
+                partORun.DropIteration3Checkpoint(partOIteration3BehaviourMode);
+
+                refusals.Add("The kept TAS results have been discarded, so running Iteration 3 again runs TAS.");
+
+                return false;
+            }
 
             //Reference A's TM59 report is not Candidate B's to own, but this attempt's own assessment of A
             //rewrites it - so it is fingerprinted too, and recorded only where that rewrite happened.
@@ -193,11 +261,16 @@ namespace SAM.Analytical.UI.WPF
             partOIteration3Ledger.Complete(
                 PartOIteration3Stage.Input,
                 string.Format(
-                    "Reference run '{0}' ({3}) is in this session, complete over the full year, and captured {1} prepared ventilation system identity(ies). Candidate B will be written as '{2}'.",
+                    "Reference run '{0}' ({3}) is in this session, complete over the full year, and captured {1} prepared ventilation system identity(ies). Candidate B will be written as '{2}'.{4}",
                     partOIteration3Paths.ProjectName_ReferenceA,
                     partORun.Guids_VentilationSystem_Prepared.Count,
                     partOIteration3Paths.ProjectName_CandidateB,
-                    Query.PartOIterationText(partORun)));
+                    Query.PartOIterationText(partORun),
+                    partOIteration3Checkpoint is null
+                        ? string.Empty
+                        : string.Format(
+                            " Resumed: the TAS work of the attempt of {0} (thermal source, TAS Systems and resultant temperature) is reused - it was built from this same reference case, TAS case, prepared design, scope and method, and every file it wrote is unchanged.",
+                            partOIteration3Checkpoint.When)));
 
             //=================================================================================================
             //Reference A
@@ -442,7 +515,13 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            MechanicalVentilationMaterialisation mechanicalVentilationMaterialisation = iPartOIteration3Pipeline.Materialise(partOIteration3SystemScope.AdjacencyCluster, spaces_Scope, unitSettings, coolingSettings, guidanceSettings);
+            string settings_Resolved = Query.PartOIteration3ResumeSettings(unitSettings.Keys, coolingSettings.Keys, guidanceSettings.Keys);
+
+            //Resuming, the systems the reused TAS Systems document was converted from - never a second graph, which
+            //the reused route's air systems would not belong to.
+            MechanicalVentilationMaterialisation mechanicalVentilationMaterialisation = partOIteration3Checkpoint is null
+                ? iPartOIteration3Pipeline.Materialise(partOIteration3SystemScope.AdjacencyCluster, spaces_Scope, unitSettings, coolingSettings, guidanceSettings)
+                : partOIteration3Checkpoint.Materialisation;
 
             if (mechanicalVentilationMaterialisation is null || !mechanicalVentilationMaterialisation.IsMaterialised)
             {
@@ -491,9 +570,40 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
+            //Resuming: this attempt's own equipment resolution - from the same design and catalogue - must be the one
+            //the reused systems were materialised from. Unreachable where the plan's identity matched, and checked
+            //rather than assumed.
+            if (partOIteration3Checkpoint is not null)
+            {
+                List<string> refusals_Resume = [];
+
+                if (!string.Equals(partOIteration3Record.Sha256_VentilationUnitCatalogue, partOIteration3Checkpoint.Sha256_VentilationUnitCatalogue_Resolved, StringComparison.Ordinal))
+                {
+                    refusals_Resume.Add("The ventilation unit catalogue this attempt read is not the one the kept TAS results were resolved from.");
+                }
+
+                if (!string.Equals(settings_Resolved, partOIteration3Checkpoint.Settings, StringComparison.Ordinal))
+                {
+                    refusals_Resume.Add("This attempt resolved equipment for different air handling units than the kept TAS results were materialised with.");
+                }
+
+                if (refusals_Resume.Count != 0)
+                {
+                    partORun.DropIteration3Checkpoint(partOIteration3BehaviourMode);
+
+                    refusals_Resume.Add("The kept TAS results have been discarded, so running Iteration 3 again runs TAS.");
+
+                    partOIteration3Ledger.Refuse(PartOIteration3Stage.Materialisation, "The kept TAS results do not match this system case.", refusals_Resume);
+
+                    return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, partOIteration3Paths, notes);
+                }
+            }
+
+            string detail_Materialisation = string.Format("SAM_Systems materialised the explicit mechanical ventilation over {0} room(s) with {1} analytical binding(s).", spaces_Scope.Count, mechanicalVentilationMaterialisation.Bindings.Count);
+
             partOIteration3Ledger.Complete(
                 PartOIteration3Stage.Materialisation,
-                string.Format("SAM_Systems materialised the explicit mechanical ventilation over {0} room(s) with {1} analytical binding(s).", spaces_Scope.Count, mechanicalVentilationMaterialisation.Bindings.Count));
+                partOIteration3Checkpoint is null ? detail_Materialisation : partOIteration3Checkpoint.Reused(detail_Materialisation));
 
             //=================================================================================================
             //Thermal source - SAM_Tas, the same case as Reference A with no mechanical ventilation of its own
@@ -503,17 +613,36 @@ namespace SAM.Analytical.UI.WPF
                 return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, partOIteration3Paths, notes);
             }
 
-            PartOSimulationContext partOSimulationContext_CandidateB = partOSimulationContext.Copy(partOIteration3Paths.ProjectName_CandidateB);
+            NoIzamThermalSource noIzamThermalSource;
+            AnalyticalModel analyticalModel_CandidateB;
+            bool cancelled;
+            List<string> notes_ThermalSource;
+            string refusal_ThermalSource;
 
-            NoIzamThermalSource noIzamThermalSource = iPartOIteration3Pipeline.ThermalSource(
-                analyticalModel_Prepared,
-                partOSimulationContext_CandidateB,
-                partOIteration3Paths.ProjectName_CandidateB,
-                cancellationToken,
-                out AnalyticalModel analyticalModel_CandidateB,
-                out bool cancelled,
-                out List<string> notes_ThermalSource,
-                out string refusal_ThermalSource);
+            if (partOIteration3Checkpoint is null)
+            {
+                PartOSimulationContext partOSimulationContext_CandidateB = partOSimulationContext.Copy(partOIteration3Paths.ProjectName_CandidateB);
+
+                noIzamThermalSource = iPartOIteration3Pipeline.ThermalSource(
+                    analyticalModel_Prepared,
+                    partOSimulationContext_CandidateB,
+                    partOIteration3Paths.ProjectName_CandidateB,
+                    cancellationToken,
+                    out analyticalModel_CandidateB,
+                    out cancelled,
+                    out notes_ThermalSource,
+                    out refusal_ThermalSource);
+            }
+            else
+            {
+                //Reused, with the model the no-IZAM workflow returned for it - the one carrying Candidate B's TAS
+                //zone identities, which no other model can stand in for.
+                noIzamThermalSource = partOIteration3Checkpoint.ThermalSource;
+                analyticalModel_CandidateB = partOIteration3Checkpoint.AnalyticalModel_CandidateB;
+                cancelled = false;
+                notes_ThermalSource = [.. partOIteration3Checkpoint.Notes_ThermalSource];
+                refusal_ThermalSource = null;
+            }
 
             AddNotes(notes, notes_ThermalSource);
 
@@ -550,9 +679,13 @@ namespace SAM.Analytical.UI.WPF
             partOIteration3Record.RemovedIZAMs = noIzamThermalSource.RemovedIZAMs;
             partOIteration3Record.RemovedMechanicalVentilationGains = noIzamThermalSource.RemovedMechanicalVentilationGains;
 
-            if (!partOIteration3Artifacts.TryClaim(new[] { partOIteration3Paths.Path_TBD_ThermalSource, partOIteration3Paths.Path_TSD_ThermalSource }, out List<string> artifacts_ThermalSource, out List<string> refusals_ThermalSource))
+            if (!TryOwn([partOIteration3Paths.Path_TBD_ThermalSource, partOIteration3Paths.Path_TSD_ThermalSource], out List<string> artifacts_ThermalSource, out List<string> refusals_ThermalSource))
             {
-                partOIteration3Ledger.Refuse(PartOIteration3Stage.ThermalSource, "Candidate B's thermal source cannot be told apart from an earlier attempt's.", refusals_ThermalSource, artifacts_ThermalSource);
+                partOIteration3Ledger.Refuse(
+                    PartOIteration3Stage.ThermalSource,
+                    partOIteration3Checkpoint is null ? "Candidate B's thermal source cannot be told apart from an earlier attempt's." : "The kept thermal source is no longer the one that was produced.",
+                    refusals_ThermalSource,
+                    artifacts_ThermalSource);
 
                 return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, partOIteration3Paths, notes);
             }
@@ -560,13 +693,15 @@ namespace SAM.Analytical.UI.WPF
             partOIteration3Record.Add(new PartOIteration3FileRecord(PartOIteration3Roles.ThermalSource_TBD, partOIteration3Paths.Path_TBD_ThermalSource, Length(partOIteration3Paths.Path_TBD_ThermalSource), Ticks(partOIteration3Paths.Path_TBD_ThermalSource)));
             partOIteration3Record.Add(new PartOIteration3FileRecord(PartOIteration3Roles.ThermalSource_TSD, partOIteration3Paths.Path_TSD_ThermalSource, Length(partOIteration3Paths.Path_TSD_ThermalSource), Ticks(partOIteration3Paths.Path_TSD_ThermalSource)));
 
+            string detail_ThermalSource = string.Format(
+                "The no-IZAM thermal source simulated the same TAS case as Reference A: inherited IZAMs {0}, mechanical ventilation gain {1}, {2} room(s) carrying a TAS zone identity.",
+                noIzamThermalSource.RemovedIZAMs ? "removed" : "NOT removed",
+                noIzamThermalSource.RemovedMechanicalVentilationGains ? "neutralised" : "NOT neutralised",
+                noIzamThermalSource.Count_ZoneReferences);
+
             partOIteration3Ledger.Complete(
                 PartOIteration3Stage.ThermalSource,
-                string.Format(
-                    "The no-IZAM thermal source simulated the same TAS case as Reference A: inherited IZAMs {0}, mechanical ventilation gain {1}, {2} room(s) carrying a TAS zone identity.",
-                    noIzamThermalSource.RemovedIZAMs ? "removed" : "NOT removed",
-                    noIzamThermalSource.RemovedMechanicalVentilationGains ? "neutralised" : "NOT neutralised",
-                    noIzamThermalSource.Count_ZoneReferences),
+                partOIteration3Checkpoint is null ? detail_ThermalSource : partOIteration3Checkpoint.Reused(detail_ThermalSource),
                 artifacts_ThermalSource);
 
             //=================================================================================================
@@ -580,7 +715,9 @@ namespace SAM.Analytical.UI.WPF
             int startHour = 0;
             int endHour = PartOSimulationContext.HourCount_FullYear - 1;
 
-            SystemVentilationRoute systemVentilationRoute = iPartOIteration3Pipeline.Route(noIzamThermalSource, mechanicalVentilationMaterialisation, partOIteration3Paths.Path_TPD, startHour, endHour, fanHeatGainPolicy);
+            SystemVentilationRoute systemVentilationRoute = partOIteration3Checkpoint is null
+                ? iPartOIteration3Pipeline.Route(noIzamThermalSource, mechanicalVentilationMaterialisation, partOIteration3Paths.Path_TPD, startHour, endHour, fanHeatGainPolicy)
+                : partOIteration3Checkpoint.Route;
 
             if (systemVentilationRoute is null || !systemVentilationRoute.IsComplete)
             {
@@ -627,9 +764,12 @@ namespace SAM.Analytical.UI.WPF
 
             AddNotes(notes, systemVentilationRoute.Notes);
 
-            if (!partOIteration3Artifacts.TryClaim(partOIteration3Paths.Path_TPD, out string artifact_TPD, out string refusal_TPD))
+            if (!TryOwn([partOIteration3Paths.Path_TPD], out List<string> artifacts_TPD, out List<string> refusals_TPD))
             {
-                partOIteration3Ledger.Refuse(PartOIteration3Stage.SystemsConversion, "Candidate B's TAS Systems document cannot be told apart from an earlier attempt's.", [refusal_TPD]);
+                partOIteration3Ledger.Refuse(
+                    PartOIteration3Stage.SystemsConversion,
+                    partOIteration3Checkpoint is null ? "Candidate B's TAS Systems document cannot be told apart from an earlier attempt's." : "The kept TAS Systems document is no longer the one that was simulated.",
+                    refusals_TPD);
 
                 return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, partOIteration3Paths, notes);
             }
@@ -670,21 +810,25 @@ namespace SAM.Analytical.UI.WPF
             partOIteration3Record.Count_Connection_Transfer = count_Transfer;
             partOIteration3Record.Count_AirSystem = guids_AirSystem.Count;
 
+            string detail_SystemsConversion = string.Format(
+                "{0} physical air system(s), {1} room(s) and {2} directed leg(s) ({3} supply, {4} extract, {5} transfer) converted and reconciled against the source graph.",
+                guids_AirSystem.Count,
+                systemVentilationBindings.Count,
+                systemVentilationConnectionBindings.Count,
+                count_Supply,
+                count_Extract,
+                count_Transfer);
+
             partOIteration3Ledger.Complete(
                 PartOIteration3Stage.SystemsConversion,
-                string.Format(
-                    "{0} physical air system(s), {1} room(s) and {2} directed leg(s) ({3} supply, {4} extract, {5} transfer) converted and reconciled against the source graph.",
-                    guids_AirSystem.Count,
-                    systemVentilationBindings.Count,
-                    systemVentilationConnectionBindings.Count,
-                    count_Supply,
-                    count_Extract,
-                    count_Transfer),
-                [artifact_TPD]);
+                partOIteration3Checkpoint is null ? detail_SystemsConversion : partOIteration3Checkpoint.Reused(detail_SystemsConversion),
+                artifacts_TPD);
+
+            string detail_SystemsSimulation = string.Format("The TAS Systems simulation is evidenced as complete. {0}", systemVentilationRoute.SimulationEvidence?.NativeDiagnostic is string diagnostic && !string.IsNullOrWhiteSpace(diagnostic) ? string.Format("TAS said: {0}", diagnostic) : "TAS reported no diagnostic.");
 
             partOIteration3Ledger.Complete(
                 PartOIteration3Stage.SystemsSimulation,
-                string.Format("The TAS Systems simulation is evidenced as complete. {0}", systemVentilationRoute.SimulationEvidence?.NativeDiagnostic is string diagnostic && !string.IsNullOrWhiteSpace(diagnostic) ? string.Format("TAS said: {0}", diagnostic) : "TAS reported no diagnostic."));
+                partOIteration3Checkpoint is null ? detail_SystemsSimulation : partOIteration3Checkpoint.Reused(detail_SystemsSimulation));
 
             SystemZoneTemperatureResults systemZoneTemperatureResults = systemVentilationRoute.SystemZoneTemperatureResults;
 
@@ -699,16 +843,20 @@ namespace SAM.Analytical.UI.WPF
                 {
                     try
                     {
-                        File.WriteAllText(partOIteration3Paths.Path_OperatingAirFlow, Query.PartOIteration3OperatingAirFlowCsv(systemVentilationRoute.RecirculationCoolingResults, cooling));
-
-                        if (partOIteration3Artifacts.TryClaim(partOIteration3Paths.Path_OperatingAirFlow, out string artifact_OperatingAirFlow, out string refusal_OperatingAirFlow))
+                        //Resuming, the history the reused attempt wrote from these same route results stands.
+                        if (partOIteration3Checkpoint is null)
                         {
-                            artifacts_OperatingAirFlow.Add(artifact_OperatingAirFlow);
+                            File.WriteAllText(partOIteration3Paths.Path_OperatingAirFlow, Query.PartOIteration3OperatingAirFlowCsv(systemVentilationRoute.RecirculationCoolingResults, cooling));
+                        }
+
+                        if (TryOwn([partOIteration3Paths.Path_OperatingAirFlow], out List<string> artifacts_Owned, out List<string> refusals_Owned))
+                        {
+                            artifacts_OperatingAirFlow.AddRange(artifacts_Owned);
                             partOIteration3Record.Add(new PartOIteration3FileRecord(PartOIteration3Roles.OperatingAirFlow, partOIteration3Paths.Path_OperatingAirFlow, Length(partOIteration3Paths.Path_OperatingAirFlow), Ticks(partOIteration3Paths.Path_OperatingAirFlow)));
                         }
                         else
                         {
-                            refusals_CoolingOutcome.Add(refusal_OperatingAirFlow);
+                            refusals_CoolingOutcome.AddRange(refusals_Owned);
                         }
                     }
                     catch (Exception exception)
@@ -751,16 +899,20 @@ namespace SAM.Analytical.UI.WPF
                 {
                     try
                     {
-                        File.WriteAllText(partOIteration3Paths.Path_OperatingAirFlow, guidanceCoolingResults.ToCsv());
-
-                        if (partOIteration3Artifacts.TryClaim(partOIteration3Paths.Path_OperatingAirFlow, out string artifact_Guidance, out string refusal_Guidance))
+                        //Resuming, the history the reused attempt wrote from these same route results stands.
+                        if (partOIteration3Checkpoint is null)
                         {
-                            artifacts_Guidance.Add(artifact_Guidance);
+                            File.WriteAllText(partOIteration3Paths.Path_OperatingAirFlow, guidanceCoolingResults.ToCsv());
+                        }
+
+                        if (TryOwn([partOIteration3Paths.Path_OperatingAirFlow], out List<string> artifacts_Owned, out List<string> refusals_Owned))
+                        {
+                            artifacts_Guidance.AddRange(artifacts_Owned);
                             partOIteration3Record.Add(new PartOIteration3FileRecord(PartOIteration3Roles.GuidanceOperation, partOIteration3Paths.Path_OperatingAirFlow, Length(partOIteration3Paths.Path_OperatingAirFlow), Ticks(partOIteration3Paths.Path_OperatingAirFlow)));
                         }
                         else
                         {
-                            refusals_Guidance.Add(refusal_Guidance);
+                            refusals_Guidance.AddRange(refusals_Owned);
                         }
                     }
                     catch (Exception exception)
@@ -781,13 +933,15 @@ namespace SAM.Analytical.UI.WPF
                 partOIteration3Record.AddScopeNotes(notes_Operation);
             }
 
+            string detail_ZoneTemperature = string.Format(
+                "{0} room(s) returned a complete finite ZoneTemperature series over hours {1}..{2}.",
+                systemZoneTemperatureResults.Results.Count,
+                systemZoneTemperatureResults.StartHour,
+                systemZoneTemperatureResults.EndHour);
+
             partOIteration3Ledger.Complete(
                 PartOIteration3Stage.ZoneTemperature,
-                string.Format(
-                    "{0} room(s) returned a complete finite ZoneTemperature series over hours {1}..{2}.",
-                    systemZoneTemperatureResults.Results.Count,
-                    systemZoneTemperatureResults.StartHour,
-                    systemZoneTemperatureResults.EndHour));
+                partOIteration3Checkpoint is null ? detail_ZoneTemperature : partOIteration3Checkpoint.Reused(detail_ZoneTemperature));
 
             //=================================================================================================
             //Resultant temperature - SAM_Tas' replaceable provider
@@ -797,7 +951,9 @@ namespace SAM.Analytical.UI.WPF
                 return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, partOIteration3Paths, notes);
             }
 
-            ResultantTemperatureResults resultantTemperatureResults = iPartOIteration3Pipeline.ResultantTemperatures(systemVentilationRoute, partOIteration3Paths.Path_TBD_Bridge);
+            ResultantTemperatureResults resultantTemperatureResults = partOIteration3Checkpoint is null
+                ? iPartOIteration3Pipeline.ResultantTemperatures(systemVentilationRoute, partOIteration3Paths.Path_TBD_Bridge)
+                : partOIteration3Checkpoint.ResultantTemperatures;
 
             if (resultantTemperatureResults is null || !resultantTemperatureResults.IsComplete)
             {
@@ -812,9 +968,13 @@ namespace SAM.Analytical.UI.WPF
 
             AddNotes(notes, resultantTemperatureResults.Notes);
 
-            if (!partOIteration3Artifacts.TryClaim(new[] { partOIteration3Paths.Path_TBD_Bridge, partOIteration3Paths.Path_TSD_Bridge }, out List<string> artifacts_Bridge, out List<string> refusals_Bridge))
+            if (!TryOwn([partOIteration3Paths.Path_TBD_Bridge, partOIteration3Paths.Path_TSD_Bridge], out List<string> artifacts_Bridge, out List<string> refusals_Bridge))
             {
-                partOIteration3Ledger.Refuse(PartOIteration3Stage.ResultantTemperature, "Candidate B's resultant temperature files cannot be told apart from an earlier attempt's.", refusals_Bridge, artifacts_Bridge);
+                partOIteration3Ledger.Refuse(
+                    PartOIteration3Stage.ResultantTemperature,
+                    partOIteration3Checkpoint is null ? "Candidate B's resultant temperature files cannot be told apart from an earlier attempt's." : "The kept resultant temperature files are no longer the ones that were produced.",
+                    refusals_Bridge,
+                    artifacts_Bridge);
 
                 return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, partOIteration3Paths, notes);
             }
@@ -824,15 +984,50 @@ namespace SAM.Analytical.UI.WPF
             partOIteration3Record.Add(new PartOIteration3FileRecord(PartOIteration3Roles.Bridge_TSD, partOIteration3Paths.Path_TSD_Bridge, Length(partOIteration3Paths.Path_TSD_Bridge), Ticks(partOIteration3Paths.Path_TSD_Bridge)));
             partOIteration3Record.Add(new PartOIteration3FileRecord(PartOIteration3Roles.Systems_TPD, partOIteration3Paths.Path_TPD, Length(partOIteration3Paths.Path_TPD), Ticks(partOIteration3Paths.Path_TPD)));
 
+            string detail_ResultantTemperature = string.Format(
+                "{0} room(s) carry a complete finite ResultantTemperature series over hours {1}..{2}, obtained by: {3}",
+                resultantTemperatureResults.Results.Count,
+                resultantTemperatureResults.StartHour,
+                resultantTemperatureResults.EndHour,
+                resultantTemperatureResults.Method ?? "an unnamed method");
+
             partOIteration3Ledger.Complete(
                 PartOIteration3Stage.ResultantTemperature,
-                string.Format(
-                    "{0} room(s) carry a complete finite ResultantTemperature series over hours {1}..{2}, obtained by: {3}",
-                    resultantTemperatureResults.Results.Count,
-                    resultantTemperatureResults.StartHour,
-                    resultantTemperatureResults.EndHour,
-                    resultantTemperatureResults.Method ?? "an unnamed method"),
+                partOIteration3Checkpoint is null ? detail_ResultantTemperature : partOIteration3Checkpoint.Reused(detail_ResultantTemperature),
                 artifacts_Bridge);
+
+            //=================================================================================================
+            //Every TAS stage has completed and its files are claimed. Kept on the run BEFORE anything that can
+            //fail after it - a refusal, a cancel or an exception - so a retry in this session does not run TAS
+            //again. Resuming, the kept work is already there and stays until the pairing completes.
+            //=================================================================================================
+            if (partOIteration3Checkpoint is null && partOIteration3ResumePlan.Identity is PartOIteration3ResumeIdentity partOIteration3ResumeIdentity && partOIteration3ResumeIdentity.IsComplete(out string _))
+            {
+                List<PartOIteration3FileRecord> files_Tas = [];
+                foreach (string role in new[] { PartOIteration3Roles.ThermalSource_TBD, PartOIteration3Roles.ThermalSource_TSD, PartOIteration3Roles.Systems_TPD, PartOIteration3Roles.OperatingAirFlow, PartOIteration3Roles.GuidanceOperation, PartOIteration3Roles.Bridge_TBD, PartOIteration3Roles.Bridge_TSD })
+                {
+                    if (partOIteration3Record.File(role) is PartOIteration3FileRecord partOIteration3FileRecord)
+                    {
+                        files_Tas.Add(partOIteration3FileRecord);
+                    }
+                }
+
+                partORun.KeepIteration3Checkpoint(
+                    partOIteration3BehaviourMode,
+                    new PartOIteration3Checkpoint(
+                        partOIteration3Record.Guid_Run,
+                        new DateTime(partOIteration3Record.Ticks_Utc, DateTimeKind.Utc),
+                        partOIteration3ResumeIdentity,
+                        partOIteration3Record.Sha256_VentilationUnitCatalogue,
+                        settings_Resolved,
+                        mechanicalVentilationMaterialisation,
+                        noIzamThermalSource,
+                        analyticalModel_CandidateB,
+                        notes_ThermalSource,
+                        systemVentilationRoute,
+                        resultantTemperatureResults,
+                        files_Tas));
+            }
 
             //=================================================================================================
             //Candidate B TM59 - the SAME unchanged authority, over the bridge results
@@ -1013,6 +1208,10 @@ namespace SAM.Analytical.UI.WPF
                 PartOIteration3Stage.Persistence,
                 string.Format("Candidate B is reopenable at '{0}', provenanced to '{1}', and the pairing record is at '{2}'.", partOIteration3Paths.Path_Model_CandidateB, partOIteration3Paths.Path_TSD_Bridge, partOIteration3Paths.Path_Record),
                 artifacts_Persistence);
+
+            //The pairing is complete, so there is nothing left to resume: running this method again is a deliberate
+            //new run, and runs TAS.
+            partORun.DropIteration3Checkpoint(partOIteration3BehaviourMode);
 
             return Result(partOIteration3Ledger, partOIteration3Record, partOIteration3Comparison, partOIteration3Assessment_A, partOIteration3Assessment_B, partOIteration3Paths, notes);
         }

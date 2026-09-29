@@ -77,6 +77,16 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         internal PartOIteration3Assessment Assessment_CandidateB { get; set; }
 
+        /// <summary>
+        /// Reference A's results file. Where set, <see cref="Assess"/> answers Reference A's assessment for that path
+        /// and Candidate B's for any other, whatever the call order - which is what a second attempt on the same run
+        /// needs. Null keeps the call-order rule (first call is Reference A).
+        /// </summary>
+        internal string Path_TSD_ReferenceA { get; set; }
+
+        /// <summary>Thrown from <see cref="Assess"/> for Candidate B, where set - an assessment that does not return at all.</summary>
+        internal Exception Exception_CandidateB { get; set; }
+
         internal bool Persisted { get; set; } = true;
 
         /// <summary>
@@ -219,7 +229,16 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Captured.Add(guids);
 
-            PartOIteration3Assessment result = Captured.Count == 1 ? Assessment_ReferenceA : Assessment_CandidateB;
+            //By the results path where one is stated - so one fake can serve several attempts on the same run -
+            //and otherwise by call order, as every single-attempt test has always relied on.
+            bool isReferenceA = Path_TSD_ReferenceA is null ? Captured.Count == 1 : string.Equals(path_TSD, Path_TSD_ReferenceA, StringComparison.OrdinalIgnoreCase);
+
+            if (!isReferenceA && Exception_CandidateB is not null)
+            {
+                throw Exception_CandidateB;
+            }
+
+            PartOIteration3Assessment result = isReferenceA ? Assessment_ReferenceA : Assessment_CandidateB;
 
             return Write_Reports && result is not null && result.IsAssessed ? WithReport(result, WriteReport(path_TSD)) : result;
         }

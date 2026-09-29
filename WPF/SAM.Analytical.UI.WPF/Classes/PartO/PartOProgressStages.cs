@@ -24,5 +24,9 @@ namespace SAM.Analytical.UI.WPF
         public const string CalculatingResultantTemperatures = "Calculating resultant temperatures";
         public const string AssessingTm59 = "Assessing TM59";
         public const string ComparingAndSaving = "Comparing and saving results";
+
+        //Iteration 3 resumed from this session's earlier attempt: its TAS stages are reused and checked, not run, so a
+        //resumed run lists this one stage in their place rather than showing TAS work that does not happen.
+        public const string ReusingTasResults = "Reusing the completed TAS results";
     }
 }

@@ -15,13 +15,28 @@ namespace SAM.Analytical.UI.WPF
         /// each one real work the run performs. The manufacturer-guidance (or cooling-module) evaluation is a
         /// phase only for the method that performs it, so a run never lists work it does not do.
         /// </summary>
-        internal static IReadOnlyList<string> PartOIteration3Phases(PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        /// <param name="resumed">
+        /// Whether the run reuses this session's earlier attempt's TAS work (<see cref="PartOIteration3ResumePlan.Reuse"/>):
+        /// its TAS phases are then one "Reusing the completed TAS results" phase, because none of that work is done.
+        /// </param>
+        internal static IReadOnlyList<string> PartOIteration3Phases(PartOIteration3BehaviourMode partOIteration3BehaviourMode, bool resumed = false)
         {
-            return PartOIteration3PhaseList(partOIteration3BehaviourMode);
+            return PartOIteration3PhaseList(partOIteration3BehaviourMode, resumed);
         }
 
-        private static List<string> PartOIteration3PhaseList(PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        private static List<string> PartOIteration3PhaseList(PartOIteration3BehaviourMode partOIteration3BehaviourMode, bool resumed = false)
         {
+            if (resumed)
+            {
+                return
+                [
+                    PartOProgressStages.PreparingSystemCase,
+                    PartOProgressStages.ReusingTasResults,
+                    PartOProgressStages.AssessingTm59,
+                    PartOProgressStages.ComparingAndSaving,
+                ];
+            }
+
             List<string> result =
             [
                 PartOProgressStages.PreparingSystemCase,
@@ -49,9 +64,21 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>Which of <see cref="PartOIteration3Phases"/> a ledger stage belongs to, for this method.</summary>
-        internal static int PartOIteration3Phase(PartOIteration3Stage partOIteration3Stage, PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        internal static int PartOIteration3Phase(PartOIteration3Stage partOIteration3Stage, PartOIteration3BehaviourMode partOIteration3BehaviourMode, bool resumed = false)
         {
-            List<string> phases = PartOIteration3PhaseList(partOIteration3BehaviourMode);
+            List<string> phases = PartOIteration3PhaseList(partOIteration3BehaviourMode, resumed);
+
+            if (resumed)
+            {
+                //The materialisation and every TAS stage are the kept work being checked, not done.
+                return phases.IndexOf(partOIteration3Stage switch
+                {
+                    PartOIteration3Stage.Input or PartOIteration3Stage.ReferenceA or PartOIteration3Stage.ReferenceATM59 or PartOIteration3Stage.SystemScope or PartOIteration3Stage.EquipmentResolution => PartOProgressStages.PreparingSystemCase,
+                    PartOIteration3Stage.Materialisation or PartOIteration3Stage.ThermalSource or PartOIteration3Stage.SystemsConversion or PartOIteration3Stage.SystemsSimulation or PartOIteration3Stage.ZoneTemperature or PartOIteration3Stage.ResultantTemperature => PartOProgressStages.ReusingTasResults,
+                    PartOIteration3Stage.CandidateBTM59 => PartOProgressStages.AssessingTm59,
+                    _ => PartOProgressStages.ComparingAndSaving,
+                });
+            }
 
             //ZoneTemperature is where the route's read-back evidence is checked and kept, so it belongs to the
             //evaluation phase where the method has one, and to the systems run where it does not.
@@ -79,8 +106,29 @@ namespace SAM.Analytical.UI.WPF
         /// piece of work inside a phase. Null where the phase's own name says it, or where the work reports
         /// finer steps itself (the building simulation, the TAS Systems route).
         /// </summary>
-        internal static string? PartOIteration3StageDetail(PartOIteration3Stage partOIteration3Stage)
+        internal static string? PartOIteration3StageDetail(PartOIteration3Stage partOIteration3Stage, bool resumed = false)
         {
+            if (resumed)
+            {
+                //Said as what happens: the kept work is checked and used, and none of it is run again.
+                switch (partOIteration3Stage)
+                {
+                    case PartOIteration3Stage.Materialisation:
+                        return "Ventilation systems from the earlier attempt - not created again";
+
+                    case PartOIteration3Stage.ThermalSource:
+                        return "TAS building simulation (thermal source) - reused, not run again";
+
+                    case PartOIteration3Stage.SystemsConversion:
+                    case PartOIteration3Stage.SystemsSimulation:
+                    case PartOIteration3Stage.ZoneTemperature:
+                        return "TAS Systems results - reused, not run again";
+
+                    case PartOIteration3Stage.ResultantTemperature:
+                        return "Resultant temperatures - reused, not run again";
+                }
+            }
+
             return partOIteration3Stage switch
             {
                 PartOIteration3Stage.Input => "Checking the reference run",
@@ -102,12 +150,12 @@ namespace SAM.Analytical.UI.WPF
         /// What the progress window is told when a ledger stage starts: the phase, then the step inside it (a
         /// stage that shares a phase with the one before would otherwise keep the earlier stage's step on screen).
         /// </summary>
-        internal static Action<PartOIteration3Stage> PartOIteration3StageAnnouncer(PartOProgressHost partOProgressHost, PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        internal static Action<PartOIteration3Stage> PartOIteration3StageAnnouncer(PartOProgressHost partOProgressHost, PartOIteration3BehaviourMode partOIteration3BehaviourMode, bool resumed = false)
         {
             return partOIteration3Stage =>
             {
-                partOProgressHost.Start(PartOIteration3Phase(partOIteration3Stage, partOIteration3BehaviourMode));
-                partOProgressHost.Detail(PartOIteration3StageDetail(partOIteration3Stage)!);
+                partOProgressHost.Start(PartOIteration3Phase(partOIteration3Stage, partOIteration3BehaviourMode, resumed));
+                partOProgressHost.Detail(PartOIteration3StageDetail(partOIteration3Stage, resumed)!);
             };
         }
 
@@ -122,6 +170,12 @@ namespace SAM.Analytical.UI.WPF
         /// <item>A confirmation where the method already has a completed result, because running it again
         /// replaces that result - a destructive decision, and the one kind of question this keeps.</item>
         /// </list>
+        /// <para>
+        /// <b>Resume.</b> Where this session's last attempt for the method completed its TAS work and then stopped,
+        /// and <see cref="Query.PartOIteration3ResumePlan"/> proves that work still belongs to this run, it is reused
+        /// without asking - there is nothing to decide, because it was produced from exactly the inputs this attempt has. The
+        /// window says so in its subtitle and lists the TAS work as one reused stage; the outcome line says so too.
+        /// </para>
         /// <para>
         /// <b>Progress</b> is one window for the whole run (<see cref="PartOProgressHost"/>): the phases of
         /// <see cref="PartOIteration3Phases"/>, the elapsed time, and Cancel between stages. It closes before the comparison opens. There is no
@@ -171,18 +225,31 @@ namespace SAM.Analytical.UI.WPF
 
             string reference = Query.PartOIterationText(partORun);
 
+            //Decided before the window opens, so it lists only the stages this run performs: a resumed run shows its
+            //TAS work as reused, never as running. The same plan is what the run acts on.
+            PartOIteration3ResumePlan partOIteration3ResumePlan = Query.PartOIteration3ResumePlan(partORun, partOIteration3BehaviourMode);
+            bool resumed = partOIteration3ResumePlan.Reuse;
+
+            string subheading = string.Format(
+                "Reference case: {0}{1}",
+                reference,
+                resumed
+                    ? string.Format(" · resuming: the TAS results of the attempt of {0} are reused, TAS is not run again", partOIteration3ResumePlan.Checkpoint!.When)
+                    : partOIteration3ResumePlan.Reason is null ? string.Empty : " · earlier TAS results cannot be reused, so TAS is run");
+
             PartOIteration3Result partOIteration3Result;
             List<string> lines_Stages;
             TimeSpan elapsed;
 
-            using (PartOProgressHost partOProgressHost = new(string.Format("Iteration 3 — {0}", label), string.Format("Reference case: {0}", reference), PartOIteration3Phases(partOIteration3BehaviourMode)))
+            using (PartOProgressHost partOProgressHost = new(string.Format("Iteration 3 — {0}", label), subheading, PartOIteration3Phases(partOIteration3BehaviourMode, resumed)))
             {
                 partOIteration3Result = RunPartOIteration3(
                     partORun,
                     iPartOIteration3Pipeline,
                     partOProgressHost.Token,
                     partOIteration3BehaviourMode,
-                    PartOIteration3StageAnnouncer(partOProgressHost, partOIteration3BehaviourMode));
+                    PartOIteration3StageAnnouncer(partOProgressHost, partOIteration3BehaviourMode, resumed),
+                    partOIteration3ResumePlan);
 
                 if (partOIteration3Result.IsComplete)
                 {
@@ -204,11 +271,12 @@ namespace SAM.Analytical.UI.WPF
                 return new PartOWorkflowOutcome(
                     PartOWorkflowOutcomeKind.Success,
                     string.Format(
-                        "✓ Iteration 3 complete · {0} · {1} · reference {2} / system {3}",
+                        "✓ Iteration 3 complete · {0} · {1}{4} · reference {2} / system {3}",
                         label,
                         PartOProgressState.Format(elapsed),
                         Verdict(partOIteration3Result.Assessment_ReferenceA),
-                        Verdict(partOIteration3Result.Assessment_CandidateB)));
+                        Verdict(partOIteration3Result.Assessment_CandidateB),
+                        resumed ? string.Format(" · TAS results reused from the attempt of {0}", partOIteration3ResumePlan.Checkpoint!.When) : string.Empty));
             }
 
             PartOIteration3Stage? partOIteration3Stage_Refused = partOIteration3Result.Ledger.Stage_Refused;
@@ -216,10 +284,11 @@ namespace SAM.Analytical.UI.WPF
             return new PartOWorkflowOutcome(
                 PartOWorkflowOutcomeKind.Warning,
                 string.Format(
-                    "! Iteration 3 did not complete · {0} · stopped at {1} after {2}. It can be run again.",
+                    "! Iteration 3 did not complete · {0} · stopped at {1} after {2}. {3}",
                     label,
                     partOIteration3Stage_Refused.HasValue ? Core.Query.Description(partOIteration3Stage_Refused.Value).ToLowerInvariant() : "an unrecorded stage",
-                    PartOProgressState.Format(elapsed)));
+                    PartOProgressState.Format(elapsed),
+                    PartOIteration3RetryText(partORun, partOIteration3BehaviourMode)));
         }
 
         /// <summary>
@@ -315,6 +384,17 @@ namespace SAM.Analytical.UI.WPF
             }
 
             partOIteration3ResultWindow.ShowDialog();
+        }
+
+        /// <summary>
+        /// What running a method again after it stopped will do: reuse the TAS work this session kept for it, or - where
+        /// none is kept - simply run again. Read off the run, so it says what the next attempt will actually find.
+        /// </summary>
+        internal static string PartOIteration3RetryText(PartORun partORun, PartOIteration3BehaviourMode partOIteration3BehaviourMode)
+        {
+            return partORun?.Iteration3Checkpoint(partOIteration3BehaviourMode) is null
+                ? "It can be run again."
+                : "Its TAS results are kept for this session, so running it again reuses them instead of running TAS.";
         }
 
         private static string Verdict(PartOIteration3Assessment? partOIteration3Assessment)
