@@ -287,7 +287,7 @@
                                 <TextBlock x:Name="textBlock_It3Hint" Grid.Column="0" TextWrapping="Wrap" Foreground="#555555" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                                     <Button x:Name="button_It3Review" MinWidth="120" Height="24" Padding="8,0" Margin="0,0,8,0" Click="button_It3Review_Click" ToolTipService.ShowOnDisabled="True">Open result</Button>
-                                    <Button x:Name="button_Iteration3" MinWidth="140" Height="24" Padding="8,0" IsEnabled="False" Click="button_Iteration3_Click" ToolTipService.ShowOnDisabled="True">Run system case</Button>
+                                    <Button x:Name="button_Iteration3" MinWidth="140" Height="24" Padding="8,0" IsEnabled="False" Click="button_Iteration3_Click" ToolTipService.ShowOnDisabled="True">Run Iteration 3</Button>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>
