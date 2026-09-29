@@ -387,7 +387,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             System.IO.Directory.CreateDirectory(directory);
 
             DateTime now = DateTime.UtcNow.AddMinutes(-9).AddSeconds(-14);
-            PartOProgressState partOProgressState_Iteration3 = new(Modify.PartOIteration3Phases, () => now);
+            PartOProgressState partOProgressState_Iteration3 = new(Modify.PartOIteration3Phases(PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance), () => now);
             partOProgressState_Iteration3.Start(0);
             now = now.AddSeconds(9);
             partOProgressState_Iteration3.Start(1);

@@ -207,7 +207,7 @@ namespace SAM.Analytical.UI.WPF
             string? path_RunModel = Query.Path_PartORunModel(path_TSD);
             result.Path_RunModel = path_RunModel is not null && File.Exists(path_RunModel) ? path_RunModel : null;
 
-            PartOProgressHost.Current?.Detail("TM59 assessment");
+            PartOProgressHost.Current?.Detail(PartOProgressStages.AssessingTm59);
 
             result.Assessment = PartOTM59Assessment.Assess(partORun.AnalyticalModel_Assessment, partORun.Path_TSD, partORun.OverheatingScenarios);
 

@@ -260,7 +260,7 @@ namespace SAM.Analytical.UI.WPF
             using (PartOProgressHost partOProgressHost = new(
                 string.Format("Prepare & Run — {0}", iteration),
                 reuse ? "The iteration already prepared for this scenario and scope is reused." : null,
-                ["Prepare and review the iteration", "TAS simulation (full year)", "TM59 assessment"]))
+                [PartOProgressStages.PrepareAndReview, PartOProgressStages.BuildingSimulationFullYear, PartOProgressStages.Tm59Assessment]))
             {
                 //Reused only where the run's own record of what it was prepared with describes this request.
                 //Otherwise prepared again - including where an iteration is prepared for something else, which

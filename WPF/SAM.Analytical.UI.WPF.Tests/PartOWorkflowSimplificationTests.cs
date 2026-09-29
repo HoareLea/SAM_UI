@@ -281,19 +281,22 @@ namespace SAM.Analytical.UI.WPF.Tests
         [Fact]
         public void Every_iteration_3_stage_belongs_to_one_phase_and_the_phases_are_in_ledger_order()
         {
-            int phase_Previous = 0;
-
-            foreach (PartOIteration3Stage partOIteration3Stage in PartOIteration3Ledger.Order)
+            foreach (PartOIteration3BehaviourMode partOIteration3BehaviourMode in Enum.GetValues<PartOIteration3BehaviourMode>())
             {
-                int phase = Modify.PartOIteration3Phase(partOIteration3Stage);
+                int phase_Previous = 0;
 
-                Assert.InRange(phase, 0, Modify.PartOIteration3Phases.Count - 1);
-                Assert.True(phase >= phase_Previous);
+                foreach (PartOIteration3Stage partOIteration3Stage in PartOIteration3Ledger.Order)
+                {
+                    int phase = Modify.PartOIteration3Phase(partOIteration3Stage, partOIteration3BehaviourMode);
 
-                phase_Previous = phase;
+                    Assert.InRange(phase, 0, Modify.PartOIteration3Phases(partOIteration3BehaviourMode).Count - 1);
+                    Assert.True(phase >= phase_Previous);
+
+                    phase_Previous = phase;
+                }
+
+                Assert.Equal(Modify.PartOIteration3Phases(partOIteration3BehaviourMode).Count - 1, phase_Previous);
             }
-
-            Assert.Equal(Modify.PartOIteration3Phases.Count - 1, phase_Previous);
         }
 
         /// <summary>What the shown progress window says, read through UI Automation as an outside reader would.</summary>

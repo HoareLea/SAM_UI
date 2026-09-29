@@ -341,6 +341,12 @@ namespace SAM.Analytical.UI.WPF
             return index >= 0 && index < names.Count ? names[index] : null;
         }
 
+        /// <summary>The index of the stage with this name, or -1 where this operation has no such stage.</summary>
+        public int IndexOf(string name)
+        {
+            return names.IndexOf(name);
+        }
+
         /// <summary>The stage's name with its activity, where it has one: "Optimisation rounds · round 2".</summary>
         public string Label(int index)
         {

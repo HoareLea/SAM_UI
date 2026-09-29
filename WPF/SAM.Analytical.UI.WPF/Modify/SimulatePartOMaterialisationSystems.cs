@@ -45,7 +45,7 @@ namespace SAM.Analytical.UI.WPF
 
             // ---- 1. ONE mixed SAM_Systems graph ------------------------------------------------------------------------
 
-            PartOProgressHost.Current?.Detail("TAS Systems ventilation (SAM_Systems)");
+            PartOProgressHost.Current?.Detail("Materialising the ventilation systems");
 
             MechanicalVentilationMaterialisation? mechanicalVentilationMaterialisation = PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates, partOIteration3Pipeline, out string? refusal_Systems);
             if (mechanicalVentilationMaterialisation is null)
@@ -62,7 +62,7 @@ namespace SAM.Analytical.UI.WPF
 
             // ---- 2. The no-IZAM thermal source of the whole model ------------------------------------------------------
 
-            PartOProgressHost.Current?.Detail("TAS thermal source (full year, no IZAM)");
+            PartOProgressHost.Current?.Detail(PartOProgressStages.BuildingSimulationThermalSource);
 
             NoIzamThermalSource noIzamThermalSource = partOIteration3Pipeline.ThermalSource(partOMaterialisation.AnalyticalModel, partOSimulationContext, partOSimulationContext.ProjectName, cancellationToken, out AnalyticalModel analyticalModel_Source, out bool cancelled, out List<string> notes_Source, out string refusal_Source);
 
@@ -87,7 +87,8 @@ namespace SAM.Analytical.UI.WPF
 
             // ---- 3. ONE TPD: convert, simulate, read back each cooled unit ---------------------------------------------
 
-            PartOProgressHost.Current?.Detail("TAS Systems simulation (full year)");
+            //The route itself reports its air systems, one at a time, through the pipeline.
+            PartOProgressHost.Current?.Detail(PartOProgressStages.CreatingVentilationSystems);
 
             SystemVentilationRoute systemVentilationRoute = partOIteration3Pipeline.Route(noIzamThermalSource, mechanicalVentilationMaterialisation, path_TPD, 0, PartOSimulationContext.HourCount_FullYear - 1);
             if (systemVentilationRoute is null || !systemVentilationRoute.IsComplete)
@@ -126,7 +127,7 @@ namespace SAM.Analytical.UI.WPF
 
             // ---- 4. The bridge, then TM59 with the materialiser's own scenarios ----------------------------------------
 
-            PartOProgressHost.Current?.Detail("Resultant temperature (thermostat bridge)");
+            PartOProgressHost.Current?.Detail(PartOProgressStages.CalculatingResultantTemperatures);
 
             FileInfo fileInfo_Before = new(path_TSD_Bridge);
             (bool Exists, long Length, DateTime WriteTime) bridge_Before = (fileInfo_Before.Exists, fileInfo_Before.Exists ? fileInfo_Before.Length : 0, fileInfo_Before.Exists ? fileInfo_Before.LastWriteTimeUtc : default);
@@ -147,7 +148,7 @@ namespace SAM.Analytical.UI.WPF
                 return result;
             }
 
-            PartOProgressHost.Current?.Detail("TM59 assessment");
+            PartOProgressHost.Current?.Detail(PartOProgressStages.AssessingTm59);
 
             result.Assessment = PartOTM59Assessment.Assess(analyticalModel_Source, path_TSD_Bridge, partOMaterialisation.OverheatingScenarios);
             if (!result.Assessment.IsAssessed)
