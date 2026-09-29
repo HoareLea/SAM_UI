@@ -277,6 +277,9 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Whether the "no dwelling units" line stands in for the dwelling table.</summary>
         internal bool IsNoEquipmentShown => textBlock_NoEquipment.Visibility == Visibility.Visible;
 
+        /// <summary>No dwelling unit and no equipment selection (Iteration 1b): shown as a sentence, not a table.</summary>
+        private bool IsEquipmentEmpty => equipmentRows.Count == 0 && partOEquipmentAssignmentSet is null;
+
         /// <summary>What this window currently says about the selection authority. For a test to read.</summary>
         public string ModeDescription => textBlock_Mode.Text;
 
@@ -636,7 +639,7 @@ namespace SAM.Analytical.UI.WPF
 
             //Iteration 1b builds no dwelling unit: a sentence instead of an empty ten-column table, and the
             //row gives its height to the space table.
-            bool empty = equipmentRows.Count == 0 && partOEquipmentAssignmentSet is null;
+            bool empty = IsEquipmentEmpty;
 
             dataGrid_Equipment.Visibility = empty ? Visibility.Collapsed : Visibility.Visible;
             textBlock_NoEquipment.Visibility = empty ? Visibility.Visible : Visibility.Collapsed;
@@ -791,7 +794,17 @@ namespace SAM.Analytical.UI.WPF
             stringBuilder.AppendLine(Summary);
             stringBuilder.AppendLine();
 
-            stringBuilder.AppendLine("Dwelling\tUnit\tDesign SUP (l/s)\tDesign EXT (l/s)\tAssigned product\tMax SUP (l/s)\tMax EXT (l/s)\tSUP headroom (l/s)\tEXT headroom (l/s)\tStatus");
+            //The same as the window: no dwelling unit is a sentence, not an empty table whose headings name
+            //mechanical design SUP/EXT airflow on a route that has none.
+            if (IsEquipmentEmpty)
+            {
+                stringBuilder.AppendLine(textBlock_NoEquipment.Text);
+            }
+            else
+            {
+                stringBuilder.AppendLine("Dwelling\tUnit\tDesign SUP (l/s)\tDesign EXT (l/s)\tAssigned product\tMax SUP (l/s)\tMax EXT (l/s)\tSUP headroom (l/s)\tEXT headroom (l/s)\tStatus");
+            }
+
             foreach (PartOEquipmentRow row in equipmentRows)
             {
                 stringBuilder.AppendLine(string.Format(

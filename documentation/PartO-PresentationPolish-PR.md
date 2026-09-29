@@ -3,8 +3,8 @@
 
 # Part O / TM59 presentation polish (29 Sep 2026)
 
-**Status (29 Sep 2026): code and focused/full automated tests complete; PR open against `sow/2026-Q3`, awaiting
-CI. Not merged.** Branch `feature/parto-presentation-polish-2026-09-29` from `sow/2026-Q3` `f16976a`. Companion SAM
+**Status (29 Sep 2026, late): code, automated tests and the licensed real-app presentation-route smoke are
+complete; CI green; ready to merge (SAM#168 first, then this PR).** Branch `feature/parto-presentation-polish-2026-09-29` from `sow/2026-Q3` `f16976a`. Companion SAM
 PR [SAM-BIM/SAM#168](https://github.com/SAM-BIM/SAM/pull/168) (branch `feature/tm59-report-margin-columns-2026-09-29` from SAM `sow/2026-Q3` `d9a8497b`) carries item 4 only.
 The two PRs are independent at compile time: no public API changed. SAM_Tas and SAM_Systems are unchanged.
 
@@ -17,7 +17,10 @@ verdict, airflow or engineering calculation is changed.
    - `PartOReviewSummary.HasMechanicalDesignDuty` is new. It is false when the preparation has no mechanical
      design duty (`DesignSupplyDuty_Lps` is NaN, the same test that already printed "No mechanical design duty").
    - When it is false, the review window's space table hides the Design SUP/EXT columns and keeps
-     `Part F required (l/s)` as a reference. Copy All matches. The caption says this is natural ventilation with
+     `Part F required (l/s)` as a reference. Copy All matches.
+   - Found by the smoke: Copy All still wrote the empty equipment table's ten headings (incl. Design SUP/EXT)
+     where the window shows the "No dwelling units" sentence. Copy All now writes that sentence instead
+     (`PartOPreparationWindow.IsEquipmentEmpty`, shared with the window's own visibility rule). The caption says this is natural ventilation with
      no mechanical design airflow.
    - The mechanical routes are unchanged.
 2. **TM59 report provenance.** Each saved plain-text `*-TM59.txt` now has a `PART O CASE` block directly under the
@@ -104,10 +107,37 @@ verdict, airflow or engineering calculation is changed.
 - Full SAM_UI WPF suite: **1470/1470** (1458 before this PR, plus 12 new tests), built against local SAM with SAM#168.
 - **Mutation check (item 6):** with the pre-fix reconciler restored, `A_pairing_with_information_only_rooms_reopens_without_refusing`
   fails. With the fix restored, it passes.
-- **Not done:** a licensed/native presentation-route walk (1b review → 1b TM59 → Iteration 2 TM59 → Iteration 3
-  run → close/reopen). The owner should run it in Visual Studio before the presentation.
+- After the Copy All fix: full SAM_UI WPF suite **1470/1470** (the fix extends an existing test).
+- **Licensed real-app presentation route (29 Sep, 22:33-22:56)**, driven through UI Automation on the PR build
+  (SAM_UI head + SAM#168), fresh copy of `SAM_zoningAM-CIBSEfutureZ1.sam` (SHA-256 A7E09A25…). Evidence:
+  `documentation/evidence/parto-presentation-route-2026-09-29/`.
+  - Iteration 1b review: space columns `Dwelling / Zone | Space | Part F required (l/s)`, NV caption. PASS.
+  - Iteration 2 run + TM59 (51 s TAS); saved report heads with the PART O CASE block (scenario, route, scope,
+    weather, full source TSD path, method). PASS.
+  - Iteration 3 (default method, manufacturer operating guidance) run 7.5 min; comparison has no refusal;
+    reference and system TM59 reports both open from it; both saved reports carry provenance
+    ("Iteration 3 — Explicit system and cooling assessment · reference case / system case …"). PASS.
+  - Closed the comparison; the Hub's primary action read **Review Iteration 3 result**; it reopened the
+    comparison in 14.5 s, "reopened from the saved result — no TAS simulation was run", no reconciliation
+    refusal, reports A/B open. PASS.
+  - Iteration 1b run in the same session after Iteration 2: completed, TM59 FAIL (3 pass / 5 fail); saved report
+    has the PART O CASE block and the new `C1 Actual | C1 Limit | C1 Margin | C1 Status …` table. PASS.
+  - Copy All fix re-checked in the real app (1b review, declined before TAS). PASS.
+  - The TM59 result window shows SAM's report verbatim, by design; the provenance is in its facts panel and in
+    the saved `*-TM59.txt`. The driver's "window report carries PART O CASE" checks were a wrong expectation.
 
 ## Unresolved / follow-ups (after the presentation)
+
+- **Presentation note — Iteration 1b first on this test model is refused by the model check.** Not caused by
+  this PR (the check is SAM `20735fc0`, 3 Sep). `SAM_zoningAM-CIBSEfutureZ1.sam` is itself an older 1a output:
+  its MVHR-01..03 units carry a humidification limit of 100 % (overlapping humidistat). Iteration 1a/2
+  re-prepare the units; 1b copies the model unchanged, so a first-run 1b shows a "Log" window with three errors
+  and ends "Iteration 1b not completed — no TM59 results". **Workaround for the demo:** run Iteration 2 (or 1a)
+  before 1b in the session, or use a model whose units are current. Proper fix (NV route and leftover units)
+  is an engineering decision for the owner.
+- **Presentation note — one output folder per iteration.** Every iteration writes the same file names
+  (`<model name>.tsd`, `-TM59.txt`). Running 1b into the Iteration 2 folder overwrites the Iteration 2
+  results that the Iteration 3 record depends on. The smoke used a separate `run-1b` folder.
 
 - **Priority B, left for later:** a persistent case selector/header (1a · 1b · 2 · 2B · 3) and moving Iteration 3
   higher up the page. `Optimise (2B)…` is still a global bottom action.
@@ -127,5 +157,5 @@ verdict, airflow or engineering calculation is changed.
 
 ## Next step
 
-Merge the SAM PR and this PR after CI is green, then add the post-merge `PROJECT_PROGRESS.md` closeout on
-`sow/2026-Q3`. Before the presentation, walk the route above in the real app.
+Merge SAM#168, then this PR, then add the post-merge `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`.
+For the presentation, follow the order and output-folder notes above.

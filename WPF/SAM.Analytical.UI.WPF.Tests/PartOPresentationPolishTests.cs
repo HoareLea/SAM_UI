@@ -59,13 +59,18 @@ namespace SAM.Analytical.UI.WPF.Tests
         [WpfFact]
         public void The_natural_ventilation_review_shows_Part_F_and_no_mechanical_design_airflow()
         {
-            PartOPreparationWindow partOPreparationWindow = new() { ReviewSummary = Summary(false) };
+            PartOPreparationWindow partOPreparationWindow = new() { ReviewSummary = Summary(false), EquipmentRows = [] };
 
             Assert.False(partOPreparationWindow.ShowsSpaceDesignAirflow);
 
             string text = partOPreparationWindow.CopyAllText();
             Assert.Contains("Dwelling / Zone\tSpace\tPart F required (l/s)" + Environment.NewLine, text);
             Assert.DoesNotContain("Part F required (l/s)\tDesign SUP (l/s)", text);
+
+            //No empty equipment table either: the window shows a sentence, and so does the copy.
+            Assert.True(partOPreparationWindow.IsNoEquipmentShown);
+            Assert.DoesNotContain("Design SUP", text);
+            Assert.Contains("No dwelling units:", text);
 
             partOPreparationWindow.Close();
         }

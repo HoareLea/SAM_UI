@@ -1,0 +1,45 @@
+﻿22:51:06 scenario: selected 'Iteration 1b — Natural ventilation (no mechanical system)'
+22:51:10 output: set
+22:51:11 --- HUB: 1b before run
+22:51:11   scenario line: NV · No mechanical system, unit or terminal
+22:51:11   scope: All 3 eligible dwellings · simulated inside the whole building
+22:51:11   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next
+22:51:11   last outcome: ○ Opened the saved Iteration 3 result · Selected product — manufacturer operating guidance · reference FAIL / system FAIL · no TAS run (12s)
+22:51:12   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 8/8 spaces mapped | Part F requirements | – | N/A | Continuous mechanical rates are not applied on the natural-ventilation route. | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel-It1a-futureZ1.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+22:51:12   blockers: <absent>
+22:51:12   next: Next: Review the TM59 results. Iteration 3 can then compare them with an explicit ventilation system (below). Or optimise ventilation with Iteration 2B (Optimise (2B)): it raises the design airflow of the failing spaces within the selected units and re-simulates.
+22:51:12   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+22:51:12   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+22:51:12   button_Optimise: 'Optimise (2B)…' enabled=True tooltip='Optimise ventilation (Iteration 2B): raise the design airflow of the spaces that fail TM59 by a fixed step within the selected ventilation units, rebalance, re-simulate the same full year and reassess, until they pass or a limit is reached. You confirm the step and the round limit before it starts. The selected product is never changed.'
+22:51:12   It3: <absent>
+22:51:12   press button_Run in 'Part O — Prepare & Run'
+22:51:17   REVIEW columns: Dwelling / Zone | Space | Part F required (l/s)
+22:51:17   press button_CopyAll in 'Part O — Review iteration'
+22:51:19   copied 2202 chars to 1b-after-2-review.txt
+22:51:19   CHECK FAIL Copy All has no Design SUP
+22:51:19   press button_Accept in 'Part O — Review iteration'
+22:52:08   capture 01-1b-transient 'Reloading' (empty)
+22:52:12   TM59 [1b] verdict: TM59 assessment — FAIL | 8 spaces assessed · 3 pass · 5 fail · 1 not assessed | <absent>
+22:52:13   TM59 [1b] facts: Scenario | Iteration 1b — Natural ventilation (no mechanical system) | Route | NV | Thermal model | Whole building | Weather | Z1_DSY1_2050s_HIGH90_CIBSE_v1.1 | Results | 000000_SAM_AnalyticalModel-It1a-futureZ1.tsd | Report saved | 000000_SAM_AnalyticalModel-It1a-futureZ1-TM59.txt | Method | CIBSE TM59:2017 · TM52 Category II
+22:52:13   capture 02-1b-tm59 'Part O — Overheating (TM59)' (1000x760)
+22:52:13   press button_CopyAll in 'Part O — Overheating (TM59)'
+22:52:15   copied 7925 chars to 1b-tm59-window.txt
+22:52:15   CHECK FAIL 1b TM59 window report carries the PART O CASE block
+22:52:15   press button_Close in 'Part O — Overheating (TM59)'
+22:52:21 --- HUB: 1b after run
+22:52:21   scenario line: NV · No mechanical system, unit or terminal
+22:52:21   scope: All 3 eligible dwellings · simulated inside the whole building
+22:52:21   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next
+22:52:21   last outcome: Iteration 1b completed — TM59 FAIL
+22:52:22   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 8/8 spaces mapped | Part F requirements | – | N/A | Continuous mechanical rates are not applied on the natural-ventilation route. | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel-It1a-futureZ1.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+22:52:22   blockers: <absent>
+22:52:22   next: Next: Review the TM59 results.
+22:52:22   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+22:52:22   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+22:52:22   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='Iteration 2B optimises mechanical design airflow, and this run was prepared over the Natural Ventilation route. Natural ventilation is not a mechanical airflow optimisation target.'
+22:52:22   It3: <absent>
+22:52:22   capture 03-1b-hub-after 'Part O — Prepare & Run' (800x604)
+22:52:22 RESULT: 2 failure(s)
+22:52:22   - Copy All has no Design SUP
+22:52:22   - 1b TM59 window report carries the PART O CASE block
+22:52:22 DONE
