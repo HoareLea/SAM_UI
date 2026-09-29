@@ -3,7 +3,44 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
-## Current (Part O stream): safe Iteration 3 retry without re-running TAS - Follow-up #3 (29 Sep 2026) - MERGED as SAM_UI#144 (`e64a383b`)
+## Current (Part O stream): Part O / TM59 presentation polish + Iteration 3 reopen fix (29 Sep 2026) - MERGED as SAM_UI#145 (`d46ca3a9`) with SAM#168 (`6d29803a`)
+
+**Status.** Both merged into `sow/2026-Q3`, SAM#168 first. CI green (build, SPDX; SAM also test). SAM_UI#145 head `c3df784`.
+Presentation only, plus one defect fix. No TM59 figure, verdict, airflow or engineering calculation changed. Full record:
+`documentation/PartO-PresentationPolish-PR.md`.
+
+- **Changes.**
+  - Iteration 1b review: no mechanical Design SUP/EXT columns; the Part F requirement is kept for reference.
+  - Saved `*-TM59.txt` reports head with a `PART O CASE` block (case, route, scope, weather, source TSD, method).
+  - SAM#168: the NV table uses `C1/C2 Actual | Limit | Margin | Status`.
+  - A 1.5 s delayed progress window for read-only reviews.
+  - The Hub's primary action reads **Review Iteration 3 result** while Iteration 3 is in focus.
+  - Wording: "Iteration 3 — Explicit system and cooling assessment".
+  - **Defect fix:** the Iteration 3 reopen refused pairings with information-only rooms. The review reconciler now
+    has the #140 rule.
+- **Evidence.**
+  - WPF suite **1470/1470**; SAM TM59 tests 214/214.
+  - **Licensed real-app presentation route PASSED** (UIA driver on the merged build). The route: 1b review → Iteration 2
+    TM59 → Iteration 3 run (7.5 min) → close → Review Iteration 3 result reopened in 14.5 s with no refusal, and the
+    reference and system reports opened.
+  - The smoke found one inconsistency, fixed in `c3df784`: 1b Copy All still wrote the empty equipment table headings.
+  - Evidence: `documentation/evidence/parto-presentation-route-2026-09-29/`.
+- **Presentation notes (pre-existing, not fixed).**
+  - On `SAM_zoningAM-CIBSEfutureZ1.sam`, a *first* 1b run is refused by the 3 Sep humidistat model check (SAM
+    `20735fc0`): the legacy MVHR units carry a 100 % humidification limit, and 1b copies them unchanged. Run
+    Iteration 2 (or 1a) first.
+  - All iterations write the same file names, so use a separate output folder per iteration. Otherwise 1b
+    overwrites the Iteration 2 results that Iteration 3 references.
+- **Follow-ups.**
+  - Case selector (1a/1b/2/2B/3).
+  - Provenance for the 2B round reports.
+  - A shared per-room helper for the two It3 reconcilers.
+  - TPD performance investigation.
+  - NV route vs leftover mechanical units (owner decision).
+  - Per-iteration output names.
+- **Next step.** Owner presentation using the route and notes above. No code work is pending for this entry.
+
+## Previous (Part O stream): safe Iteration 3 retry without re-running TAS - Follow-up #3 (29 Sep 2026) - MERGED as SAM_UI#144 (`e64a383b`)
 
 **Status.** Merged into `sow/2026-Q3` (PR head `3b2c5255`, merge `e64a383b`). CI green (build, SPDX), no reviews or
 comments. SAM_UI only - SAM, SAM_Tas and SAM_Systems unchanged. Full record: `documentation/PartO-Iteration3-SafeResume-PR.md`.
