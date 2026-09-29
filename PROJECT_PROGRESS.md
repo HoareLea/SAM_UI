@@ -3,7 +3,58 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
-## Current (Part O stream): truthful Part O progress stages (29 Sep 2026) - MERGED as SAM_UI#143 (`c6af0e5e`) with SAM_Tas#77 (`1fc97570`)
+## Current (Part O stream): safe Iteration 3 retry without re-running TAS - Follow-up #3 (29 Sep 2026) - MERGED as SAM_UI#144 (`e64a383b`)
+
+**Status.** Merged into `sow/2026-Q3` (PR head `3b2c5255`, merge `e64a383b`). CI green (build, SPDX), no reviews or
+comments. SAM_UI only - SAM, SAM_Tas and SAM_Systems unchanged. Full record: `documentation/PartO-Iteration3-SafeResume-PR.md`.
+**Outcome B: safe same-session retry only.**
+
+- **Problem.** An Iteration 3 attempt that failed after its TAS work re-ran all of that TAS work on retry. The failure
+  could be Candidate B TM59, reconciliation, comparison, persistence, a cancel or an exception. The TAS work is the
+  materialisation, thermal source, TAS Systems route and resultant-temperature bridge. Iterations 1a/2 were already
+  correct: Review Results re-reads the TSD without TAS.
+- **Change.**
+  - `PartORun` keeps each method's completed TAS work in memory (`Iteration3Checkpoint`). It is cleared by every drop,
+    reset, re-prepare and restore, kept only after the last TAS stage completes, and dropped when a pairing completes.
+  - `Query.PartOIteration3ResumePlan` is the single decision. Reuse needs all of these to hold:
+    - the same method;
+    - the same Reference A results file (path, length, write time) and provenance fingerprints;
+    - the same TAS case, prepared-design fingerprint, dwelling scope and prepared systems;
+    - for product methods, the same catalogue SHA-256;
+    - every TAS file unchanged, and every kept result complete.
+  - Stale, unknown (any missing value) or incompatible state fails closed: TAS runs, with the reason shown. There is
+    no partial reuse.
+  - A resumed attempt re-runs every non-TAS stage and verifies TAS files instead of claiming them; a mismatch refuses
+    and discards the kept work. It records the reused stages as "Reused from the attempt of …".
+  - The progress window lists "Reusing the completed TAS results", and the Hub lines say when TAS results are kept
+    and when they were reused.
+  - A failed finalisation stays refused and not reviewable.
+- **Restart resume is intentionally unsupported.** Candidate B's workflow model, the route bindings and the
+  resultant-temperature series are persisted only when a pairing completes. A later session explains this and runs
+  TAS.
+- **Evidence.**
+  - WPF suite **1458/1458** (+23 resume tests, +1 env-gated acceptance fact).
+  - **Licensed production seam: PASS.** Real 3-dwelling project, manufacturer guidance, Reference A restored.
+    Retry **~195 s → ~6.9 s**: `Assess, Assess, Persist` only, no TBD/TAS3D/TPD process started.
+  - **Native WPF: PASS.** Real `SAM Analytical.exe` with a genuine Persistence failure. Retry **~4.7 min → ~12 s**.
+    The progress window, result window and Hub all stated the reuse.
+  - Both resumed comparisons are identical to the Follow-up #2 normal run: bias 0.918 K, RMSE 1.405 K, 0 TM59
+    outcomes differ. Evidence: `C:\TasOut\parto-resume-2026-09-29\` (not in the repo).
+- **Acceptance-folder incident (evidence only, no repository state).** Provenance resolves a restored run to its
+  recorded results path, so the first harness run wrote Candidate B into the Follow-up #2 folder
+  `C:\TasOut\parto-progress-2026-09-29\native-run3`.
+  - Its MG record and Candidate B `.sam` were replaced, after its review and TM59 reports were backed up to
+    `...\parto-resume-2026-09-29\native-run3-backup-at-2102`.
+  - The harness now refuses unless Reference A resolves inside the disposable folder.
+  - The three leftover Follow-up #2 `tasmon.ps1` observers were stopped.
+- **Limitations.**
+  - Restart resume is not supported.
+  - The mixed-design Build & Run Systems route is not covered.
+  - File identity is length + write time.
+  - UX debt: after a stop, the method row still reads "…it can be run again"; the Hub outcome line states the reuse.
+- **Next step.** None for this entry.
+
+## Previous (Part O stream): truthful Part O progress stages (29 Sep 2026) - MERGED as SAM_UI#143 (`c6af0e5e`) with SAM_Tas#77 (`1fc97570`)
 
 **Status.** Both merged into `sow/2026-Q3`, SAM_Tas first. CI green (build, SPDX), mergeable, no reviews or comments. SAM_UI#143 head
 `0ec37bc7`; SAM_Tas#77 head `c9e8174d`.
