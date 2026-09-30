@@ -1,0 +1,16 @@
+step,milliseconds,count
+"Route: guard and intent",4.9,
+"Route: duty carriers (working copy)",35.2,
+"Route: TPD generation (Convert.ToTPD - see .timing.csv)",12600.7,
+"Route: TAS air-system simulation + ZoneTemperature",12792.5,
+"Route: validating zone temperatures",17.2,
+"Route: manufacturer-guidance evidence",12421.6,
+"TOTAL",37872.1,
+" > Simulate: open TPD",373.6,1
+" > Simulate: TAS ISystem.Simulate (per air system)",12283.6,2
+" > Simulate: read ZoneTemperature (per air system)",52.9,2
+" > Simulate: save TPD",51.4,1
+" > Guidance evidence: copy TPD",2.5,1
+" > Guidance evidence: open TPD copy",349.5,1
+" > Guidance evidence: TAS plant-room SimulateEx (duct data)",11999.8,1
+" > Guidance evidence: read hourly series (all units)",36.4,1

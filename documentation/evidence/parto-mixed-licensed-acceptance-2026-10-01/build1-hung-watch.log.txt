@@ -1,0 +1,17 @@
+﻿22:46:03   press button_Build in 'Part O — Mixed Design'
+22:46:06   [+3s] window 'Part O — Mixed Design' (HwndWrapper[SAM Analytical;;913b5f2b-4dc7-4ce5-b264-a0d84e27740a])
+22:46:07   capture 04-build-Part-O-Mixed-Design 'Part O — Mixed Design' (1240x780)
+22:47:13   [+70s] TAS processes: 'taskhostw:22520, taskhostw:46324, TBD:24936'
+22:47:16   [+73s] window 'Part O' (HwndWrapper[SAM Analytical;sam-parto-progress;aac1f39d-2bcc-4dd0-8b4d-625d30d69bd3])
+22:47:17   capture 05-build-Part-O 'Part O' (520x264)
+22:48:23   [+139s] TAS processes: 'taskhostw:22520, taskhostw:26372, taskhostw:46324'
+23:14:02   [+1679s] TAS processes: 'taskhostw:22520, taskhostw:26372, taskhostw:46024, taskhostw:46324'
+23:14:05   [+1682s] TAS processes: 'taskhostw:22520, taskhostw:26372, taskhostw:46324'
+23:47:27   [+3684s] TAS processes: 'taskhostw:22520, taskhostw:46324'
+00:08:01   [+4918s] TAS processes: 'taskhostw:22520, taskhostw:28648, taskhostw:46324'
+00:08:04   [+4921s] TAS processes: 'taskhostw:22520, taskhostw:46324'
+00:15:11   [+5348s] TAS processes: 'taskhostw:22520, taskhostw:38864, taskhostw:46324'
+00:15:14   [+5351s] TAS processes: 'taskhostw:22520, taskhostw:46324'
+00:27:01   [+6058s] TAS processes: 'taskhostw:22520, taskhostw:26244, taskhostw:46324'
+00:27:05   [+6061s] TAS processes: 'taskhostw:22520, taskhostw:46324'
+00:46:05   watch 'build' ended after 7201 s
