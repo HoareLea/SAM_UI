@@ -1,0 +1,75 @@
+SAM.Analytical:         <SAM-BIM>\SAM_UI\build\SAM.Analytical.dll
+SAM.Analytical.Systems: <SAM-BIM>\SAM_UI\build\SAM.Analytical.Systems.dll
+SAM_UI WPF:             <SAM-BIM>\SAM_UI\build\SAM.Analytical.UI.WPF.dll
+PR-2 query present: True
+PR-3 scoped SAM_Systems overload present: True
+Model: <SAM_daily>\2026-09-30 partOi\000000_SAM_AnalyticalModel-Cleaned.sam
+SHA256 before: F561161F756A02171637B821F35236E6FC33E259D9BB275E0D6CBE6669FD0B78
+Folder before:
+  000000_SAM_AnalyticalModel-Cleaned-NoLegacyPlant.partomixed.json  213  2026-09-30T11:47:10.4264443Z
+  000000_SAM_AnalyticalModel-Cleaned-NoLegacyPlant.sam  121713  2026-09-30T11:45:16.0354992Z
+  000000_SAM_AnalyticalModel-Cleaned-NoLegacySystems.sam  121531  2026-09-30T11:50:05.4995284Z
+  000000_SAM_AnalyticalModel-Cleaned.partomixed.json  213  2026-09-30T11:41:28.8104163Z
+  000000_SAM_AnalyticalModel-Cleaned.sam  122999  2026-09-30T11:35:56.9296373Z
+  000000_SAM_AnalyticalModel.sam  155105  2026-09-29T21:12:07.3685339Z
+  PartO  -1  2026-09-30T11:47:11.1664477Z
+  PartO\MixedDesign  -1  2026-09-30T11:47:11.1691012Z
+  PartO\MixedDesign\PartOCase.json  55  2026-09-30T11:47:11.1691012Z
+  PartO\MixedDesign\diagnostics  -1  2026-09-30T11:47:11.1664477Z
+  PartO\MixedDesign\reports  -1  2026-09-30T11:47:11.1664477Z
+  PartO\MixedDesign\tas  -1  2026-09-30T11:47:11.1664477Z
+
+== Ventilation systems on the design model, with the PR-2 classification
+  NV 1  d50c5c6a-9466-48d4-85b2-abd783154afb  supply='' exhaust=''  terminals=0  spaces=2  -> NV 1: inert
+  UV 1  7ad6dfcf-2eab-4953-b476-c7886860a1f8  supply='' exhaust=''  terminals=0  spaces=1  -> UV 1: inert
+  MV 1  22e38d0c-6322-4064-99be-c2622c15394f  supply='AHU1' exhaust='AHU1'  terminals=0  spaces=6  -> MV 1: inert
+  unit AHU1  e715cc07-6a33-40ee-8fd0-75eaa177fd72  product=(none)  -> AHU1: inert
+  Zones: Flat 1, Corridor, Flat 2, Flat 3
+
+Catalogue: Selectable (2 descriptors, 2 templates)
+
+== A. Owner's selection - the real Check design (SAM materialisation, then the Systems preflight)
+  Flat 1: natural   Flat 2: Nuaire XBC15 (cooling off)   Flat 3: Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V) (cooling on)
+  materialised: True  route: Systems  systems checked: True  passed: True
+  SharedSystem refusals: 0
+  NOTE Ventilation system 'MV 1' (MV) is related to assessed spaces and names unit 'AHU1', but neither states any duty - no design terminal airflow, no air movement, no selected product - so they are inert template metadata: left exactly as authored and not part of this assessment.
+  NOTE Ventilation system 'NV 1' (NV) is related to assessed spaces but carries no design duty and no unit, so it is template metadata: left exactly as authored.
+  systems refusal: (none)
+  SYSTEMS NOTE Ventilation system 'NV 1' (d50c5c6a-9466-48d4-85b2-abd783154afb) was left out of the TAS Systems materialisation input: Part O did not build it, and it carries no design ventilation terminal - so it states no mechanical duty the TAS Systems route has to recreate. It remains on the design and in the thermal model, where its authored behaviour is simulated as authored.
+  SYSTEMS NOTE Ventilation system 'UV 1' (7ad6dfcf-2eab-4953-b476-c7886860a1f8) was left out of the TAS Systems materialisation input: Part O did not build it, and it carries no design ventilation terminal - so it states no mechanical duty the TAS Systems route has to recreate. It remains on the design and in the thermal model, where its authored behaviour is simulated as authored.
+  SYSTEMS NOTE Ventilation system 'MV 1' (22e38d0c-6322-4064-99be-c2622c15394f) was left out of the TAS Systems materialisation input: Part O did not build it, and it carries no design ventilation terminal - so it states no mechanical duty the TAS Systems route has to recreate. It remains on the design and in the thermal model, where its authored behaviour is simulated as authored.
+  SYSTEMS NOTE 2 ventilation system(s) built by Part O are the design under assessment; 3 authored system(s) were left out of the materialisation input and none of them states mechanical duty.
+  record VentilationSystemGuids: Flat 2 -> a4c5039a-f88c-417b-840f-72b6ade8e211 'MVHR Flat 2', Flat 3 -> 7420f814-7181-4969-aeaa-ed69de8c6be9 'MVHR Flat 3'
+  materialised model ventilation systems: NV 1, UV 1, MV 1, MVHR Flat 2, MVHR Flat 3
+  materialised model units: AHU1 [no product], MVHR Flat 2 [Nuaire XBC15], MVHR Flat 3 [Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)]
+
+== B. PR-1 Systems scope on the owner's materialisation
+  SCOPE: Part O Systems scope: 2 retained, 3 removed.
+  retained: 7420f814-7181-4969-aeaa-ed69de8c6be9 'MVHR Flat 3', a4c5039a-f88c-417b-840f-72b6ade8e211 'MVHR Flat 2'
+  removed:  22e38d0c-6322-4064-99be-c2622c15394f 'MV 1', 7ad6dfcf-2eab-4953-b476-c7886860a1f8 'UV 1', d50c5c6a-9466-48d4-85b2-abd783154afb 'NV 1'
+
+== C. PR-3 defensive SAM_Systems boundary - the WHOLE materialised model, nothing removed
+  call: 6 dwelling rooms, 1 cooled unit(s): MVHR Flat 3
+  no scope stated (legacy): materialised False
+    REFUSAL Ventilation system 'UV' names no air handling unit, so the physical unit it serves from could not be resolved.
+  SAM's scope stated:       materialised True
+    air systems: 2  units processed: MVHR Flat 2, MVHR Flat 3
+    rooms: 6 (Bedroom 2_3, Bedroom 2_6, Ensuite_5, Ensuite_8, Kitchen_4, Kitchen_7)
+    guidance-cooled units: MVHR Flat 3 at 80 l/s
+    NV 1: on the model True, bound by SAM_Systems False
+    UV 1: on the model True, bound by SAM_Systems False
+    MV 1: on the model True, bound by SAM_Systems False
+    AHU1: on the model True, materialised as an air system False
+    identical to PR-1's working-copy graph (JSON + bindings): True
+  materialised model unchanged by SAM_Systems: True
+
+== D. Production Systems preflight (PR-1 working copy + PR-3 stated scope), no TAS
+  SAM_Systems graph built: True  refusal: (none)
+  air systems: 2  units: MVHR Flat 2, MVHR Flat 3  guidance-cooled units: 1
+
+PR-3 gate: PASS
+
+In-memory design model JSON unchanged: True
+SHA256 after:  F561161F756A02171637B821F35236E6FC33E259D9BB275E0D6CBE6669FD0B78
+Source model unchanged: True
+Folder listing unchanged: True

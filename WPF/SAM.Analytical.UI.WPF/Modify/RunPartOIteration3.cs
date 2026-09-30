@@ -531,7 +531,7 @@ namespace SAM.Analytical.UI.WPF
             //Resuming, the systems the reused TAS Systems document was converted from - never a second graph, which
             //the reused route's air systems would not belong to.
             MechanicalVentilationMaterialisation mechanicalVentilationMaterialisation = partOIteration3Checkpoint is null
-                ? iPartOIteration3Pipeline.Materialise(partOIteration3SystemScope.AdjacencyCluster, spaces_Scope, unitSettings, coolingSettings, guidanceSettings)
+                ? iPartOIteration3Pipeline.Materialise(partOIteration3SystemScope.AdjacencyCluster, spaces_Scope, unitSettings, coolingSettings, guidanceSettings, partOIteration3SystemScope.Guids_Retained)
                 : partOIteration3Checkpoint.Materialisation;
 
             if (mechanicalVentilationMaterialisation is null || !mechanicalVentilationMaterialisation.IsMaterialised)

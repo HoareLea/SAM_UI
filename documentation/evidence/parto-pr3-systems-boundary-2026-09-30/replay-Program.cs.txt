@@ -1,0 +1,208 @@
+// PR-3 headless, no-TAS, READ-ONLY replay of the owner's cleaned model.
+// Paths are redacted for the public repo: <SAM_daily> is the owner's SAM_daily folder, <SAM-BIM> the local repo root.
+// Reads 000000_SAM_AnalyticalModel-Cleaned.sam, hashes it and lists its folder before and after, writes NOTHING beside it.
+// Nothing is deleted from the model: NV 1, UV 1, MV 1 and AHU1 all stay.
+using SAM.Analytical;
+using SAM.Analytical.Enums;
+using SAM.Analytical.Systems;
+using SAM.Analytical.UI.WPF;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
+
+internal static class Program
+{
+    private const string Directory_Model = @"<SAM_daily>\2026-09-30 partOi";
+
+    private static string Sha(string path) => System.Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
+
+    private static string Listing(string directory) => string.Join(Environment.NewLine, Directory.GetFileSystemEntries(directory, "*", SearchOption.AllDirectories).OrderBy(x => x, StringComparer.Ordinal).Select(x => string.Format("  {0}  {1}  {2:o}", Path.GetRelativePath(directory, x), File.Exists(x) ? new FileInfo(x).Length : -1, File.GetLastWriteTimeUtc(x))));
+
+    private static void Line(string text = "") => Console.WriteLine(text);
+
+    [STAThread]
+    private static int Main()
+    {
+        string path = Path.Combine(Directory_Model, "000000_SAM_AnalyticalModel-Cleaned.sam");
+        string sha_Before = Sha(path);
+        DateTime write_Before = File.GetLastWriteTimeUtc(path);
+        string listing_Before = Listing(Directory_Model);
+        Line("SAM.Analytical:         " + typeof(AnalyticalModel).Assembly.Location);
+        Line("SAM.Analytical.Systems: " + typeof(MechanicalVentilationMaterialisation).Assembly.Location);
+        Line("SAM_UI WPF:             " + typeof(PartOIteration3Pipeline).Assembly.Location);
+        Line("PR-2 query present: " + (typeof(SAM.Analytical.Query).GetMethod("PartOAuthoredPlantDuty", [typeof(AdjacencyCluster), typeof(VentilationSystem)]) is not null));
+        Line("PR-3 scoped SAM_Systems overload present: " + (typeof(SAM.Analytical.Systems.Create).GetMethod("MechanicalVentilation", [typeof(AdjacencyCluster), typeof(SAM.Core.Systems.SystemEnergyCentre), typeof(MechanicalVentilationSettings), typeof(IEnumerable<Space>), typeof(IEnumerable<Guid>)]) is not null));
+        Line("Model: " + path);
+        Line("SHA256 before: " + sha_Before);
+        Line("Folder before:");
+        Line(listing_Before);
+
+        AnalyticalModel analyticalModel = SAM.Core.Convert.ToSAM<AnalyticalModel>(path).Find(x => x is not null);
+        AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
+        string json_Design = analyticalModel.ToJsonObject().ToJsonString();
+
+        Line();
+        Line("== Ventilation systems on the design model, with the PR-2 classification");
+        foreach (VentilationSystem ventilationSystem in adjacencyCluster.GetObjects<VentilationSystem>())
+        {
+            PartOAuthoredPlantDuty duty = adjacencyCluster.PartOAuthoredPlantDuty(ventilationSystem);
+            Line(string.Format("  {0,-5} {1}  supply='{2}' exhaust='{3}'  terminals={4}  spaces={5}  -> {6}", ventilationSystem.FullName, ventilationSystem.Guid, ventilationSystem.GetValue<string>(VentilationSystemParameter.SupplyUnitName), ventilationSystem.GetValue<string>(VentilationSystemParameter.ExhaustUnitName), (adjacencyCluster.GetRelatedObjects<VentilationTerminal>(ventilationSystem) ?? []).Count, (adjacencyCluster.GetRelatedObjects<Space>(ventilationSystem) ?? []).Count, duty));
+        }
+
+        foreach (AirHandlingUnit airHandlingUnit in adjacencyCluster.GetObjects<AirHandlingUnit>() ?? [])
+        {
+            Line(string.Format("  unit {0}  {1}  product={2}  -> {3}", airHandlingUnit.Name, airHandlingUnit.Guid, airHandlingUnit.SelectedVentilationUnitReference()?.ToString() ?? "(none)", adjacencyCluster.PartOAuthoredPlantDuty(airHandlingUnit)));
+        }
+
+        Line("  Zones: " + string.Join(", ", adjacencyCluster.GetZones().Select(x => x.Name)));
+
+        VentilationUnitCatalogue catalogue = VentilationUnitCatalogue.Read();
+        Line();
+        Line(string.Format("Catalogue: {0} ({1} descriptors, {2} templates)", catalogue.State, catalogue.CapacityDescriptors.Count, catalogue.Templates.Count));
+
+        VentilationUnitReference Product(string text)
+        {
+            VentilationUnitCapacityDescriptor descriptor = catalogue.CapacityDescriptors.Find(x => x.VentilationUnitReference?.ToString()?.Contains(text, StringComparison.OrdinalIgnoreCase) ?? false);
+            if (descriptor is null) throw new Exception("product not in catalogue: " + text);
+            return descriptor.VentilationUnitReference;
+        }
+
+        Zone Zone(string name) => adjacencyCluster.GetZones().Single(x => x.Name == name);
+
+        AnalyticalModel WithSet(params PartODwellingStrategy[] strategies)
+        {
+            PartODwellingStrategySet set = new();
+            foreach (PartODwellingStrategy strategy in strategies) set.Set(strategy);
+            AnalyticalModel result = new(analyticalModel);
+            result.SetValue(SAM.Analytical.AnalyticalModelParameter.PartODwellingStrategies, set);
+            return result;
+        }
+
+        Assembly wpf = typeof(PartOIteration3Pipeline).Assembly;
+        MethodInfo method_Check = wpf.GetType("SAM.Analytical.UI.WPF.Modify").GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Single(x => x.Name == "CheckPartOMixedDesign" && x.GetParameters()[0].ParameterType == typeof(AnalyticalModel));
+        MethodInfo method_Scope = wpf.GetType("SAM.Analytical.UI.WPF.Query").GetMethod("PartOMixedSystemsScope", BindingFlags.NonPublic | BindingFlags.Static);
+        MethodInfo method_Call = wpf.GetType("SAM.Analytical.UI.WPF.Query").GetMethod("PartOMixedSystemsCall", BindingFlags.NonPublic | BindingFlags.Static);
+        MethodInfo method_Preflight = wpf.GetType("SAM.Analytical.UI.WPF.Modify").GetMethods(BindingFlags.NonPublic | BindingFlags.Static).Single(x => x.Name == "PartOMixedSystemsMaterialisation" && x.GetParameters().Length == 5);
+
+        // ---- A. PR-2 classification -> PR-1 scope: the owner's selection through the real Check design
+        Line();
+        Line("== A. Owner's selection - the real Check design (SAM materialisation, then the Systems preflight)");
+        VentilationUnitReference product_Flat2 = Product("XBC15");
+        VentilationUnitReference product_Flat3 = Product("MRXBOXAB-ECO5");
+        Line("  Flat 1: natural   Flat 2: " + product_Flat2 + " (cooling off)   Flat 3: " + product_Flat3 + " (cooling on)");
+        AnalyticalModel analyticalModel_Owner = WithSet(
+            new PartODwellingStrategy(Zone("Flat 1").Guid, PartOVentilationMode.NaturalVentilation),
+            new PartODwellingStrategy(Zone("Flat 2").Guid, PartOVentilationMode.MVHR, product_Flat2),
+            new PartODwellingStrategy(Zone("Flat 3").Guid, PartOVentilationMode.MVHR, product_Flat3, PartOActiveCooling.SupplyAirCooling));
+        object check = method_Check.Invoke(null, [analyticalModel_Owner, catalogue.CapacityDescriptors, catalogue.Templates]);
+        PartOMaterialisation materialisation = (PartOMaterialisation)check.GetType().GetProperty("Materialisation").GetValue(check);
+        Line("  materialised: " + materialisation.IsMaterialised + "  route: " + materialisation.Route + "  systems checked: " + check.GetType().GetProperty("SystemsChecked").GetValue(check) + "  passed: " + check.GetType().GetProperty("Passed").GetValue(check));
+        foreach (PartOMaterialisationRefusal refusal in materialisation.Refusals) Line("  REFUSAL " + refusal);
+        Line("  SharedSystem refusals: " + materialisation.Refusals.Count(x => x.Reason == PartOMaterialisationRefusalReason.SharedSystem));
+        foreach (string note in materialisation.Notes.Where(x => x.Contains("inert") || x.Contains("template metadata"))) Line("  NOTE " + note);
+        Line("  systems refusal: " + (check.GetType().GetProperty("Refusal_Systems").GetValue(check) ?? "(none)"));
+        foreach (string note in (List<string>)check.GetType().GetProperty("Notes_Systems").GetValue(check)) Line("  SYSTEMS NOTE " + note);
+
+        if (!materialisation.IsMaterialised) return Finish(path, sha_Before, write_Before, listing_Before, json_Design, analyticalModel, 2);
+
+        AdjacencyCluster adjacencyCluster_Materialised = materialisation.AnalyticalModel.AdjacencyCluster;
+        string json_Materialised = materialisation.AnalyticalModel.ToJsonObject().ToJsonString();
+        Line("  record VentilationSystemGuids: " + string.Join(", ", materialisation.Record.VentilationSystemGuids.Select(x => string.Format("{0} -> {1} '{2}'", adjacencyCluster_Materialised.GetObject<Zone>(x.Key)?.Name, x.Value, adjacencyCluster_Materialised.GetObject<VentilationSystem>(x.Value)?.FullName))));
+        Line("  materialised model ventilation systems: " + string.Join(", ", adjacencyCluster_Materialised.GetObjects<VentilationSystem>().Select(x => x.FullName)));
+        Line("  materialised model units: " + string.Join(", ", adjacencyCluster_Materialised.GetObjects<AirHandlingUnit>().Select(x => x.Name + " [" + (x.SelectedVentilationUnitReference()?.ToString() ?? "no product") + "]")));
+
+        // ---- B. PR-1 scope
+        Line();
+        Line("== B. PR-1 Systems scope on the owner's materialisation");
+        PartOSystemsMaterialisationScope scope = (PartOSystemsMaterialisationScope)method_Scope.Invoke(null, [materialisation]);
+        Line("  SCOPE: " + scope);
+        Line("  retained: " + string.Join(", ", scope.Guids_Retained.Select(x => string.Format("{0} '{1}'", x, adjacencyCluster_Materialised.GetObject<VentilationSystem>(x)?.FullName))));
+        Line("  removed:  " + string.Join(", ", scope.Guids_Removed.Select(x => string.Format("{0} '{1}'", x, adjacencyCluster_Materialised.GetObject<VentilationSystem>(x)?.FullName))));
+        if (!scope.IsScoped) return Finish(path, sha_Before, write_Before, listing_Before, json_Design, analyticalModel, 3);
+
+        // ---- C. PR-3 boundary: SAM_Systems handed the WHOLE materialised model (NV 1, UV 1, MV 1 -> AHU1 all on it)
+        Line();
+        Line("== C. PR-3 defensive SAM_Systems boundary - the WHOLE materialised model, nothing removed");
+        object call = method_Call.Invoke(null, [materialisation, catalogue.Templates]);
+        List<Space> spaces_Call = (List<Space>)call.GetType().GetProperty("Spaces").GetValue(call);
+        Dictionary<Guid, MechanicalVentilationGuidanceSettings> guidance_Call = (Dictionary<Guid, MechanicalVentilationGuidanceSettings>)call.GetType().GetProperty("GuidanceSettings").GetValue(call);
+        Line("  call: " + spaces_Call.Count + " dwelling rooms, " + guidance_Call.Count + " cooled unit(s): " + string.Join(", ", guidance_Call.Keys.Select(x => adjacencyCluster_Materialised.GetObject<AirHandlingUnit>(x)?.Name)));
+
+        MechanicalVentilationMaterialisation unscoped = new PartOIteration3Pipeline().MaterialiseMixed(adjacencyCluster_Materialised, spaces_Call, guidance_Call);
+        Line("  no scope stated (legacy): materialised " + unscoped.IsMaterialised);
+        foreach (string refusal in unscoped.Refusals) Line("    REFUSAL " + refusal);
+
+        MechanicalVentilationMaterialisation scoped = new PartOIteration3Pipeline().MaterialiseMixed(adjacencyCluster_Materialised, spaces_Call, guidance_Call, scope.Guids_Retained);
+        Line("  SAM's scope stated:       materialised " + scoped.IsMaterialised);
+        foreach (string refusal in scoped.Refusals) Line("    REFUSAL " + refusal);
+
+        if (scoped.IsMaterialised)
+        {
+            List<string> units = scoped.Bindings.Where(x => x.BindingType == MechanicalVentilationBindingType.AirSystem).Select(x => adjacencyCluster_Materialised.GetObject<AirHandlingUnit>(x.Guid_Analytical)?.Name).OrderBy(x => x, StringComparer.Ordinal).ToList();
+            List<string> rooms = scoped.Bindings.Where(x => x.BindingType == MechanicalVentilationBindingType.SystemSpace).Select(x => adjacencyCluster_Materialised.GetObject<Space>(x.Guid_Analytical)?.Name).OrderBy(x => x, StringComparer.Ordinal).ToList();
+            HashSet<Guid> bound = [.. scoped.Bindings.SelectMany(x => new[] { x.Guid_Analytical, x.Guid_Analytical_Secondary })];
+            Line("    air systems: " + scoped.SystemEnergyCentre.GetSystemPlantRooms().Sum(x => x.GetSystems<AirSystem>().Count) + "  units processed: " + string.Join(", ", units));
+            Line("    rooms: " + rooms.Count + " (" + string.Join(", ", rooms) + ")");
+            Line("    guidance-cooled units: " + string.Join(", ", scoped.GuidanceCoolings.Select(x => adjacencyCluster_Materialised.GetObject<AirHandlingUnit>(x.Guid_AirHandlingUnit)?.Name + " at " + x.ElevatedAirFlow_Lps + " l/s")));
+            foreach (string name in new[] { "NV 1", "UV 1", "MV 1" })
+            {
+                VentilationSystem ventilationSystem = adjacencyCluster_Materialised.GetObjects<VentilationSystem>().Single(x => x.FullName == name);
+                Line(string.Format("    {0}: on the model {1}, bound by SAM_Systems {2}", name, adjacencyCluster_Materialised.GetObject<VentilationSystem>(ventilationSystem.Guid) is not null, bound.Contains(ventilationSystem.Guid)));
+            }
+
+            AirHandlingUnit ahu1 = adjacencyCluster_Materialised.GetObjects<AirHandlingUnit>().Single(x => x.Name == "AHU1");
+            Line(string.Format("    AHU1: on the model {0}, materialised as an air system {1}", adjacencyCluster_Materialised.GetObject<AirHandlingUnit>(ahu1.Guid) is not null, bound.Contains(ahu1.Guid)));
+
+            MechanicalVentilationMaterialisation workingCopy = new PartOIteration3Pipeline().MaterialiseMixed(scope.AdjacencyCluster, spaces_Call, guidance_Call);
+            Line("    identical to PR-1's working-copy graph (JSON + bindings): " + (workingCopy.IsMaterialised && workingCopy.SystemEnergyCentre.ToJsonObject().ToJsonString() == scoped.SystemEnergyCentre.ToJsonObject().ToJsonString() && workingCopy.Bindings.Select(x => x.ToString()).SequenceEqual(scoped.Bindings.Select(x => x.ToString()))));
+        }
+
+        Line("  materialised model unchanged by SAM_Systems: " + (materialisation.AnalyticalModel.ToJsonObject().ToJsonString() == json_Materialised));
+
+        // ---- D. The production preflight (what Check and Build & Run both run), now stating the scope
+        Line();
+        Line("== D. Production Systems preflight (PR-1 working copy + PR-3 stated scope), no TAS");
+        object[] arguments = [materialisation, catalogue.Templates, new PartOIteration3Pipeline(), null, null];
+        object mixed = method_Preflight.Invoke(null, arguments);
+        Line("  SAM_Systems graph built: " + (mixed is not null) + "  refusal: " + (arguments[3] ?? "(none)"));
+        if (mixed is MechanicalVentilationMaterialisation materialised)
+        {
+            Line("  air systems: " + materialised.SystemEnergyCentre.GetSystemPlantRooms().Sum(x => x.GetSystems<AirSystem>().Count) + "  units: " + string.Join(", ", materialised.Bindings.Where(x => x.BindingType == MechanicalVentilationBindingType.AirSystem).Select(x => adjacencyCluster_Materialised.GetObject<AirHandlingUnit>(x.Guid_Analytical)?.Name).OrderBy(x => x, StringComparer.Ordinal)) + "  guidance-cooled units: " + materialised.GuidanceCoolings.Count);
+        }
+
+        bool pass = unscoped.IsMaterialised == false && scoped.IsMaterialised && mixed is not null;
+        Line();
+        Line("PR-3 gate: " + (pass ? "PASS" : "FAIL"));
+
+        return Finish(path, sha_Before, write_Before, listing_Before, json_Design, analyticalModel, pass ? 0 : 4);
+    }
+
+    private static int Finish(string path, string sha_Before, DateTime write_Before, string listing_Before, string json_Design, AnalyticalModel analyticalModel, int code)
+    {
+        string sha_After = Sha(path);
+        string listing_After = Listing(Directory_Model);
+        Line();
+        Line("In-memory design model JSON unchanged: " + (analyticalModel.ToJsonObject().ToJsonString() == json_Design));
+        Line("SHA256 after:  " + sha_After);
+        Line("Source model unchanged: " + (sha_After == sha_Before && File.GetLastWriteTimeUtc(path) == write_Before));
+        Line("Folder listing unchanged: " + (listing_After == listing_Before));
+        return sha_After == sha_Before && listing_After == listing_Before ? code : 9;
+    }
+}
+
+internal static class Resolver
+{
+    [System.Runtime.CompilerServices.ModuleInitializer]
+    internal static void Initialise()
+    {
+        const string build = @"<SAM-BIM>\SAM_UI\build";
+        System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) =>
+        {
+            string path = System.IO.Path.Combine(build, name.Name + ".dll");
+            return System.IO.File.Exists(path) ? context.LoadFromAssemblyPath(path) : null;
+        };
+    }
+}

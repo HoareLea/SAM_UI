@@ -68,6 +68,26 @@ namespace SAM.Analytical.UI.WPF
         MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null);
 
         /// <summary>
+        /// Part O PR-3: <see cref="Materialise(AdjacencyCluster, IEnumerable{Space}, IReadOnlyDictionary{Guid, MechanicalVentilationUnitSettings}, IReadOnlyDictionary{Guid, MechanicalVentilationCoolingSettings}, IReadOnlyDictionary{Guid, MechanicalVentilationGuidanceSettings})"/>
+        /// told the scope SAM_Systems may process. An added member with a default body, so an existing implementation of
+        /// this interface still compiles and binds; it serves an unstated scope and refuses a stated one it cannot honour,
+        /// rather than quietly processing every system.
+        /// </summary>
+        /// <param name="guids_VentilationSystem">
+        /// The ventilation systems SAM_Systems may process - SAM's retained scope. Stated, SAM_Systems processes no other
+        /// system of <paramref name="adjacencyCluster"/>. Null processes every one.
+        /// </param>
+        MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings, IEnumerable<Guid> guids_VentilationSystem)
+        {
+            if (guids_VentilationSystem is not null)
+            {
+                throw new NotSupportedException(GetType().Name + " cannot limit SAM_Systems to a stated ventilation system scope.");
+            }
+
+            return Materialise(adjacencyCluster, spaces, unitSettings, coolingSettings, guidanceSettings);
+        }
+
+        /// <summary>
         /// Runs Candidate B's dedicated no-IZAM thermal case - the same TAS case as Reference A, writing
         /// somewhere else, with the mechanical ventilation removed because it is about to be modelled
         /// explicitly instead.
