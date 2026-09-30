@@ -5,8 +5,8 @@
 
 **Status (1 Oct 2026): implemented and tested. Two coordinated PRs are open against `sow/2026-Q3`, neither merged. Merge SAM first.**
 
-1. **SAM PR-5** (domain: the reference, stamping, resolution). Record: SAM `documentation/PartO-BaselineReference-PR5.md`.
-2. **SAM_UI PR-5** (this record): stamps every case, completes the locators, exposes the reference, names the design in the refusal.
+1. **[SAM-BIM/SAM#173](https://github.com/SAM-BIM/SAM/pull/173)** (domain: the reference, stamping, resolution). Record: SAM `documentation/PartO-BaselineReference-PR5.md`.
+2. **[SAM-BIM/SAM_UI#155](https://github.com/SAM-BIM/SAM_UI/pull/155)** (this record): stamps every case, completes the locators, exposes the reference, names the design in the refusal.
 
 Both use the branch `feature/parto-pr5-baseline-reference-2026-10-01`, from `sow/2026-Q3` (SAM `137c0bcf`, SAM_UI `d9e30ca`). SAM_UI's CI clones the
 same-named SAM branch first, so it can go green before SAM merges; it still must not merge first. No SAM_Systems or SAM_Tas change. Architecture authority:
