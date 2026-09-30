@@ -8,7 +8,7 @@ merged:**
 
 1. **SAM_Systems PR-3, [SAM-BIM/SAM_Systems#34](https://github.com/SAM-BIM/SAM_Systems/pull/34)** (merge FIRST): the scoped `Create.MechanicalVentilation` overload. Record:
    SAM_Systems `docs/PartO-SystemsBoundary-PR3.md`.
-2. **SAM_UI PR-3** (this record, merge SECOND): Mixed Design and Iteration 3 state SAM's scope to SAM_Systems. Its CI
+2. **SAM_UI PR-3, [SAM-BIM/SAM_UI#153](https://github.com/SAM-BIM/SAM_UI/pull/153)** (this record, merge SECOND): Mixed Design and Iteration 3 state SAM's scope to SAM_Systems. Its CI
    clones SAM_Systems' default branch, so it cannot go green until (1) is merged. Re-run it then.
 
 - Branch `feature/parto-pr3-systems-scope-2026-09-30` in both repos, from SAM_Systems `sow/2026-Q3` `aadb1b1` and
