@@ -3,6 +3,33 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): PR-3 Systems boundary - SAM_Systems processes only SAM's scope (30 Sep 2026) - MERGED as SAM_UI#153 (`5ad0e47`) + SAM_Systems#34 (`1893e71`)
+
+**Status.** Merged into `sow/2026-Q3` with merge commits: [SAM-BIM/SAM_Systems#34](https://github.com/SAM-BIM/SAM_Systems/pull/34)
+(`1893e71`, closeout `09063b4`) first, then [SAM-BIM/SAM_UI#153](https://github.com/SAM-BIM/SAM_UI/pull/153) (PR head
+`1442b9b`, merge `5ad0e47`). SAM_UI CI re-run green against the merged SAM_Systems. Record:
+`documentation/PartO-SystemsBoundary-PR3.md`.
+
+**Work.** Mixed Design's ONE preflight and Iteration 3 now state SAM's retained scope (`Guids_Retained`) to
+SAM_Systems, so it reads no system SAM left out (unit-less NV/UV, legacy `MV 1`/`AHU1`). Output over the working copy is
+byte-identical (tested); no Part O logic moved into SAM_Systems.
+
+**Decisions.** API hygiene review: no existing public signature replaced. `PartOIteration3Pipeline.Materialise` and
+`MaterialiseMixed` keep their CLR signatures and gain scoped overloads (required trailing `IEnumerable<Guid>`).
+`IPartOIteration3Pipeline` keeps its original member and gains the scoped one as a default interface member (refuses a
+stated scope an old implementer cannot honour). Nothing is `virtual`; tests observe the scope through an `internal`
+`PartOIteration3Pipeline.ScopeObserver`.
+
+**Files.** `Interfaces/IPartOIteration3Pipeline.cs`, `Classes/PartO/PartOIteration3Pipeline.cs`,
+`Modify/SimulatePartOMaterialisationSystems.cs`, `Modify/RunPartOIteration3.cs`; tests `PartOMixedSystemsScopeTests.cs`
+(+3), `PartOIteration3RunTests.cs` (+1), fakes; record + redacted real-model replay evidence.
+
+**Validation.** `SAM.Analytical.UI.WPF.Tests` 1563/1563 after the API change (275 in the affected filter); real-model
+replay in the record; SAM_Systems 303/303. No licensed TAS run for PR-3.
+
+**Risks.** None open. **Next step.** Real licensed Mixed Design acceptance on the cleaned model, then PR-5
+(BaselineReference / derived-from persistence).
+
 ## Current (Part O stream): redact local paths from public evidence (30 Sep 2026) - MERGED as SAM_UI#152 (`cdddff39`)
 
 **Status.** Merged into `sow/2026-Q3` with a merge commit: [SAM-BIM/SAM_UI#152](https://github.com/SAM-BIM/SAM_UI/pull/152),
