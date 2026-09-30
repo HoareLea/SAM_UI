@@ -202,10 +202,10 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// <c>NoIzamThermalSource.IsComplete</c> stats them - which is the behaviour under test elsewhere
         /// and is not worked around here.
         /// </summary>
-        internal static NoIzamThermalSource ThermalSource(string directory, IEnumerable<Guid> guids_Space, bool removedIZAMs = true, bool removedGains = true)
+        internal static NoIzamThermalSource ThermalSource(string directory, IEnumerable<Guid> guids_Space, bool removedIZAMs = true, bool removedGains = true, string projectName_CandidateB = "Flat-It3B")
         {
-            string path_TBD = Path.Combine(directory, "Flat-It3B.tbd");
-            string path_TSD = Path.Combine(directory, "Flat-It3B.tsd");
+            string path_TBD = Path.Combine(directory, projectName_CandidateB + ".tbd");
+            string path_TSD = Path.Combine(directory, projectName_CandidateB + ".tsd");
 
             File.WriteAllText(path_TBD, "tbd");
             File.WriteAllText(path_TSD, "tsd");

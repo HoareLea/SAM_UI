@@ -178,9 +178,21 @@ namespace SAM.Analytical.UI.WPF
             //below can leave partORun dropped - a cancelled or unassessable round invalidates it - and both
             //contexts read null in that state, so the envelope stage could not ask for them afterwards.
             PartOPreparationContext partOPreparationContext = partORun!.PreparationContext!;
-            //The baseline's own TAS case, writing into Iteration 2B's folder beneath the same Part O root: every
+            //The baseline's own TAS case, writing into Iteration 2B's folder beneath the baseline's Part O root: every
             //round and the envelope go there, and the baseline's results are read where they are. See PartOOutputPaths.
-            PartOSimulationContext partOSimulationContext = PartOOutputPaths.SimulationContext(partORun.SimulationContext!, PartOOutputCase.Iteration2B) ?? partORun.SimulationContext!;
+            PartOSimulationContext partOSimulationContext = partORun.SimulationContext!;
+
+            PartOOutputPaths? partOOutputPaths = PartOOutputPaths.Create(PartOOutputPaths.Root(partOSimulationContext.OutputDirectory), PartOOutputCase.Iteration2B);
+            if (partOOutputPaths is not null)
+            {
+                refusal = partOOutputPaths.TryCreateDirectories();
+                if (refusal is not null)
+                {
+                    return null;
+                }
+
+                partOSimulationContext = partOOutputPaths.SimulationContext(partOSimulationContext);
+            }
 
             PartOOptimisationRun result = Optimise(partORun, partOOptimisationSettings, partOPreparationContext, partOSimulationContext);
 

@@ -5,6 +5,7 @@ using SAM.Analytical.Enums;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json.Nodes;
 
 namespace SAM.Analytical.UI
 {
@@ -13,10 +14,11 @@ namespace SAM.Analytical.UI
     /// person chose - the Part O root:
     /// <code>
     /// &lt;root&gt;/Iteration1a|Iteration1b|Iteration2|Iteration2B|Iteration3|MixedDesign/
-    ///     tas/          every TAS model and result file, together (.xml .t3d .tbd .tpd .tsd, bridges),
-    ///                   and the per-run .sam / .partorun.json / .prepared.sam named from the TSD
-    ///     reports/      TM59 .txt reports, the Iteration 3 record and its A/B review .txt / .json
-    ///     diagnostics/  timing CSVs, route timing, operating-airflow histories
+    ///     PartOCase.json  the marker that makes this a folder SAM created (see Find)
+    ///     tas/            every TAS model and result file, together (.xml .t3d .tbd .tpd .tsd, bridges),
+    ///                     and the per-run .sam / .partorun.json / .prepared.sam named from the TSD
+    ///     reports/        TM59 .txt reports, the Iteration 3 record and its A/B review .txt / .json
+    ///     diagnostics/    timing CSVs, route timing, operating-airflow histories
     /// </code>
     ///
     /// <para><b>Why folders, and why per case</b></para>
@@ -37,14 +39,25 @@ namespace SAM.Analytical.UI
     /// for no gain.
     /// </para>
     ///
-    /// <para><b>Recognised, never assumed - which is what keeps old projects readable</b></para>
+    /// <para><b>The chosen folder is the root, exactly</b></para>
     /// <para>
-    /// A directory is read as part of this layout only when it IS <c>&lt;root&gt;/&lt;case&gt;/tas</c>,
-    /// <c>/reports</c> or <c>/diagnostics</c> by name (<see cref="Find"/>). Anything else - every folder a run
-    /// wrote into before this existed - is a legacy flat folder: its reports stay beside its results, as they
-    /// always were, and nothing here moves or rewrites a file in it. A new run started from a legacy run
-    /// treats that flat folder as its root (<see cref="Root"/>), so it writes into its own case folder beneath
-    /// it and cannot overwrite the legacy files either.
+    /// <see cref="Create"/> takes the root as given - never re-rooted above or below it, whatever it is called.
+    /// A person who picks <c>D:\Work\Iteration2\tas</c> gets <c>D:\Work\Iteration2\tas\Iteration1a\tas</c>,
+    /// not <c>D:\Work\Iteration1a\tas</c>. Only a root read back off an EXISTING run's results
+    /// (<see cref="Root"/> - how Iteration 2B and Iteration 3 follow the run they start from) steps out of a
+    /// case folder, and only out of one SAM created.
+    /// </para>
+    ///
+    /// <para><b>Recognised by SAM's own marker, never by name alone - which keeps every other folder safe</b></para>
+    /// <para>
+    /// A directory is read as part of this layout only when it is <c>&lt;root&gt;/&lt;case&gt;/tas</c>,
+    /// <c>/reports</c> or <c>/diagnostics</c> by name AND its case folder holds the <see cref="File_Marker"/>
+    /// that <see cref="CreateDirectories"/> wrote, naming that same case (<see cref="Find"/>). A folder a person
+    /// made or named - <c>Iteration2</c>, <c>tas</c>, <c>Iteration3\reports</c> - carries no marker, so it is a
+    /// legacy flat folder: its reports stay beside its results, as they always were, nothing is filed out of
+    /// it, and nothing here moves or rewrites a file in it. A new run started from a legacy run treats that flat
+    /// folder as its root, so it writes into its own case folder beneath it and cannot overwrite the legacy
+    /// files either.
     /// </para>
     /// </summary>
     public sealed class PartOOutputPaths
@@ -58,6 +71,15 @@ namespace SAM.Analytical.UI
         /// <summary>The case folder's diagnostics subfolder.</summary>
         public const string Folder_Diagnostics = "diagnostics";
 
+        /// <summary>
+        /// The marker <see cref="CreateDirectories"/> writes into a case folder - what makes it a folder SAM created,
+        /// as opposed to one that is merely called the same. Storage only.
+        /// </summary>
+        public const string File_Marker = "PartOCase.json";
+
+        /// <summary>The marker's schema.</summary>
+        public const string Schema_Marker = "SAM.PartOOutputCase/1";
+
         /// <summary>What a SAM_Tas timing file's name ends with - the workflow's, the TPD's, the route's and the bridge's.</summary>
         public const string Suffix_Timing = ".timing.csv";
 
@@ -69,6 +91,7 @@ namespace SAM.Analytical.UI
             Directory_Tas = Path.Combine(Directory_Case, Folder_Tas);
             Directory_Reports = Path.Combine(Directory_Case, Folder_Reports);
             Directory_Diagnostics = Path.Combine(Directory_Case, Folder_Diagnostics);
+            Path_Marker = Path.Combine(Directory_Case, File_Marker);
         }
 
         /// <summary>The case these paths are for.</summary>
@@ -89,6 +112,9 @@ namespace SAM.Analytical.UI
         /// <summary>Where the case's diagnostic output is written.</summary>
         public string Directory_Diagnostics { get; }
 
+        /// <summary>The case folder's <see cref="File_Marker"/>.</summary>
+        public string Path_Marker { get; }
+
         /// <summary>The folder name of one case.</summary>
         public static string Folder(PartOOutputCase partOOutputCase)
         {
@@ -105,13 +131,13 @@ namespace SAM.Analytical.UI
         }
 
         /// <summary>
-        /// One case's paths beneath a Part O root, or null where no root is given. A directory that is already
-        /// inside this layout resolves to its own root first (<see cref="Root"/>), so a case folder can never
-        /// be nested inside another.
+        /// One case's paths beneath a Part O root, or null where no root is given. The root is used <b>exactly as
+        /// given</b>: whatever it is called, the case folder is created directly inside it. To follow an existing
+        /// run's root instead, pass <see cref="Root"/> of its results folder.
         /// </summary>
         public static PartOOutputPaths Create(string directory_Root, PartOOutputCase partOOutputCase)
         {
-            string root = Root(directory_Root);
+            string root = Trim(directory_Root);
 
             if (string.IsNullOrWhiteSpace(root) || !Enum.IsDefined(typeof(PartOOutputCase), partOOutputCase))
             {
@@ -122,9 +148,10 @@ namespace SAM.Analytical.UI
         }
 
         /// <summary>
-        /// The layout a directory is part of - it is <c>&lt;root&gt;/&lt;case&gt;/tas</c>, <c>/reports</c> or
-        /// <c>/diagnostics</c>, matched by name without regard to case - or null where it is not, which is
-        /// every legacy flat output folder.
+        /// The layout a directory is part of, or null where it is not - which is every folder SAM did not create
+        /// as a case folder, however it is named. It is: <c>&lt;root&gt;/&lt;case&gt;/tas</c>, <c>/reports</c> or
+        /// <c>/diagnostics</c> by name, without regard to case, whose case folder holds a readable
+        /// <see cref="File_Marker"/> naming that same case.
         /// </summary>
         public static PartOOutputPaths Find(string directory)
         {
@@ -160,6 +187,12 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
+            //Named like a case folder is not enough: SAM's own marker, for this case, must be there.
+            if (CaseOfMarker(Path.Combine(directory_Case, File_Marker)) != partOOutputCase)
+            {
+                return null;
+            }
+
             return new PartOOutputPaths(directory_Root, partOOutputCase.Value);
         }
 
@@ -173,8 +206,9 @@ namespace SAM.Analytical.UI
         }
 
         /// <summary>
-        /// The Part O root of a directory: the root of the layout it is part of, or - for a legacy flat folder,
-        /// or the root itself - the directory as given.
+        /// The Part O root of an EXISTING run's results folder - how a run started from it (Iteration 2B, Iteration 3)
+        /// follows it: the root of the SAM-created case folder it is in, or - for a legacy flat folder, however it
+        /// is named - the folder itself. Steps out of exactly one case folder, never further.
         /// </summary>
         public static string Root(string directory)
         {
@@ -183,7 +217,7 @@ namespace SAM.Analytical.UI
                 return null;
             }
 
-            return Find(directory)?.Directory_Root ?? directory;
+            return Find(directory)?.Directory_Root ?? Trim(directory);
         }
 
         /// <summary>
@@ -247,28 +281,55 @@ namespace SAM.Analytical.UI
         }
 
         /// <summary>
-        /// A run's TAS case again, writing into another case's <c>tas</c> folder beneath the same Part O root -
-        /// how Iteration 2B's rounds and Iteration 3's Candidate B leave the run they start from where it is. The
-        /// root is read off the case's own output directory (<see cref="Root"/>): a run in a legacy flat folder
-        /// has that folder as its root. Only the output directory differs (<see cref="PartOSimulationContext.Copy"/>).
-        /// Null where there is no case or no output directory.
+        /// A run's TAS case again, writing into this case's <c>tas</c> folder - how Iteration 2B's rounds and
+        /// Iteration 3's Candidate B leave the run they start from where it is. Only the output directory differs
+        /// (<see cref="PartOSimulationContext.Copy"/>). Null where there is no case.
         /// </summary>
-        public static PartOSimulationContext SimulationContext(PartOSimulationContext partOSimulationContext, PartOOutputCase partOOutputCase)
+        public PartOSimulationContext SimulationContext(PartOSimulationContext partOSimulationContext)
         {
-            PartOOutputPaths partOOutputPaths = Create(partOSimulationContext?.OutputDirectory, partOOutputCase);
-
-            return partOOutputPaths is null ? null : partOSimulationContext.Copy(outputDirectory: partOOutputPaths.Directory_Tas);
+            return partOSimulationContext?.Copy(outputDirectory: Directory_Tas);
         }
 
         /// <summary>
-        /// Creates the case folder and its three subfolders. Idempotent. Throws what
-        /// <see cref="Directory.CreateDirectory(string)"/> throws - the caller decides whether that is a refusal.
+        /// Creates the case folder, its three subfolders and its <see cref="File_Marker"/> - which is what makes it
+        /// recognisable as this layout from then on. Idempotent; an existing marker is never rewritten. Throws what
+        /// <see cref="Directory.CreateDirectory(string)"/> and <see cref="File.WriteAllText(string, string)"/>
+        /// throw - the caller decides whether that is a refusal.
         /// </summary>
         public void CreateDirectories()
         {
             Directory.CreateDirectory(Directory_Tas);
             Directory.CreateDirectory(Directory_Reports);
             Directory.CreateDirectory(Directory_Diagnostics);
+
+            if (!File.Exists(Path_Marker))
+            {
+                JsonObject jsonObject = new()
+                {
+                    ["Schema"] = Schema_Marker,
+                    ["Case"] = Folder(Case),
+                };
+
+                File.WriteAllText(Path_Marker, jsonObject.ToJsonString());
+            }
+        }
+
+        /// <summary>
+        /// <see cref="CreateDirectories"/>, as a refusal rather than an exception: null where the folders exist,
+        /// otherwise why they could not be created.
+        /// </summary>
+        public string TryCreateDirectories()
+        {
+            try
+            {
+                CreateDirectories();
+
+                return null;
+            }
+            catch (Exception exception)
+            {
+                return string.Format("The Part O output folder '{0}' could not be created. ({1})", Directory_Case, exception.Message);
+            }
         }
 
         /// <summary>
@@ -366,6 +427,34 @@ namespace SAM.Analytical.UI
             }
 
             return null;
+        }
+
+        /// <summary>The case a marker names, or null where there is none, or it cannot be read, or it is not one.</summary>
+        private static PartOOutputCase? CaseOfMarker(string path_Marker)
+        {
+            try
+            {
+                if (!File.Exists(path_Marker))
+                {
+                    return null;
+                }
+
+                if (JsonNode.Parse(File.ReadAllText(path_Marker)) is not JsonObject jsonObject)
+                {
+                    return null;
+                }
+
+                if (!string.Equals(jsonObject["Schema"]?.GetValue<string>(), Schema_Marker, StringComparison.Ordinal))
+                {
+                    return null;
+                }
+
+                return CaseOfFolder(jsonObject["Case"]?.GetValue<string>());
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private static string Trim(string directory)

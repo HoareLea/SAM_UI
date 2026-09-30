@@ -168,7 +168,10 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.True(partORun.Complete(analyticalModel_Workflow, path_TSD, PartOIteration3Fixture.SimulationContext(directory_ReferenceA), out string _));
 
-            NoIzamThermalSource noIzamThermalSource = PartOIteration3Fixture.ThermalSource(directory_It3, guids_Space_Dwelling);
+            //Candidate B's name as the run derives it - qualified where Reference A is an Iteration 1a run.
+            string name_CandidateB = "Flat" + PartOIteration3Paths.Qualifier_Reference(path_TSD) + PartOIteration3Paths.Suffix_CandidateB;
+
+            NoIzamThermalSource noIzamThermalSource = PartOIteration3Fixture.ThermalSource(directory_It3, guids_Space_Dwelling, projectName_CandidateB: name_CandidateB);
 
             List<SystemVentilationBinding> bindings = [];
 
@@ -217,14 +220,14 @@ namespace SAM.Analytical.UI.WPF.Tests
                     "damper"));
             }
 
-            string path_TPD = Path.Combine(directory_It3, "Flat-It3B.tpd");
-            string path_TSD_Bridge = Path.Combine(directory_It3, "Flat-It3B-Bridge.tsd");
+            string path_TPD = Path.Combine(directory_It3, name_CandidateB + ".tpd");
+            string path_TSD_Bridge = Path.Combine(directory_It3, name_CandidateB + "-Bridge.tsd");
 
             PartOIteration3PipelineFake partOIteration3PipelineFake = new()
             {
                 Materialisation = new MechanicalVentilationMaterialisation(new Core.Systems.SystemEnergyCentre("Part O"), null, null, null),
                 NoIzamThermalSource = noIzamThermalSource,
-                AnalyticalModel_CandidateB = PartOIteration3Fixture.Model(new AdjacencyCluster(adjacencyCluster), "Flat-It3B"),
+                AnalyticalModel_CandidateB = PartOIteration3Fixture.Model(new AdjacencyCluster(adjacencyCluster), name_CandidateB),
                 SystemVentilationRoute = new SystemVentilationRoute(
                     noIzamThermalSource,
                     path_TPD,
@@ -241,10 +244,10 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Write_Reports = writeReports,
             };
 
-            partOIteration3PipelineFake.Paths_ThermalSource.Add(Path.Combine(directory_It3, "Flat-It3B.tbd"));
-            partOIteration3PipelineFake.Paths_ThermalSource.Add(Path.Combine(directory_It3, "Flat-It3B.tsd"));
+            partOIteration3PipelineFake.Paths_ThermalSource.Add(Path.Combine(directory_It3, name_CandidateB + ".tbd"));
+            partOIteration3PipelineFake.Paths_ThermalSource.Add(Path.Combine(directory_It3, name_CandidateB + ".tsd"));
             partOIteration3PipelineFake.Paths_Route.Add(path_TPD);
-            partOIteration3PipelineFake.Paths_Bridge.Add(Path.Combine(directory_It3, "Flat-It3B-Bridge.tbd"));
+            partOIteration3PipelineFake.Paths_Bridge.Add(Path.Combine(directory_It3, name_CandidateB + "-Bridge.tbd"));
             partOIteration3PipelineFake.Paths_Bridge.Add(path_TSD_Bridge);
 
             partOIteration3Result = Modify.RunPartOIteration3(partORun, partOIteration3PipelineFake);
@@ -309,7 +312,8 @@ namespace SAM.Analytical.UI.WPF.Tests
         [Fact]
         public void A_reference_in_Iteration2_pairs_into_Iteration3_and_reopens_from_the_Iteration2_results_alone()
         {
-            string directory_Iteration2 = Path.Combine(directory, "Iteration2", "tas");
+            //Iteration 2's folders as a Prepare & Run created them.
+            string directory_Iteration2 = Created(PartOOutputCase.Iteration2);
             string path_TSD_ReferenceA = Path.Combine(directory_Iteration2, "Flat.tsd");
 
             PartORun partORun = Run(out PartOIteration3Result partOIteration3Result_Run, out List<Guid> guids_Bound, directory_ReferenceA: directory_Iteration2);
@@ -344,6 +348,100 @@ namespace SAM.Analytical.UI.WPF.Tests
             //Its A/B review report beside the record, in Iteration 3's reports folder.
             Assert.True(File.Exists(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.txt")));
             Assert.True(File.Exists(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.json")));
+        }
+
+        /// <summary>A case's folders beneath the test root, as a Prepare &amp; Run creates them; its tas folder.</summary>
+        private string Created(PartOOutputCase partOOutputCase)
+        {
+            PartOOutputPaths partOOutputPaths = PartOOutputPaths.Create(directory, partOOutputCase);
+            partOOutputPaths.CreateDirectories();
+
+            return partOOutputPaths.Directory_Tas;
+        }
+
+        /// <summary>
+        /// Iteration 3 accepts either MVHR reference. A pairing against a model's Iteration 1a results and one against
+        /// its Iteration 2 results - same model name, same results file name, same Part O root - are both kept: the
+        /// second run leaves every file the first wrote exactly as it was, and each reopens later from its own
+        /// reference's results alone, naming its own reference.
+        /// </summary>
+        [Fact]
+        public void Iteration3_against_a_1a_and_a_2_reference_of_the_same_model_keeps_both_pairings_and_both_reopen()
+        {
+            string directory_Iteration1a = Created(PartOOutputCase.Iteration1a);
+            string directory_Iteration2 = Created(PartOOutputCase.Iteration2);
+
+            PartORun partORun_1a = Run(out PartOIteration3Result partOIteration3Result_1a, out List<Guid> guids_Bound_1a, directory_ReferenceA: directory_Iteration1a);
+
+            Assert.Equal(Path.Combine(directory_It3Reports, "Flat-It1a-Iteration3-B0.json"), partOIteration3Result_1a.Path_Record);
+
+            //Everything the 1a pairing owns, as it stood before the Iteration 2 pairing ran.
+            PartOIteration3Record partOIteration3Record_1a = Query.PartOIteration3PairingRecord(partOIteration3Result_1a.Path_Record);
+            List<string> paths_1a =
+            [
+                partOIteration3Result_1a.Path_Record,
+                PartOIteration3Paths.Path_Report_ForRecord(partOIteration3Result_1a.Path_Record),
+                PartOIteration3Paths.Path_Report_ForRecord(partOIteration3Result_1a.Path_Record, "json"),
+            ];
+
+            foreach (string role in new[] { PartOIteration3Roles.ThermalSource_TBD, PartOIteration3Roles.ThermalSource_TSD, PartOIteration3Roles.Systems_TPD, PartOIteration3Roles.Bridge_TBD, PartOIteration3Roles.Bridge_TSD, PartOIteration3Roles.CandidateB_Model })
+            {
+                string path = partOIteration3Record_1a.File(role).Path;
+
+                Assert.Contains("Flat-It1a-It3B", Path.GetFileName(path));
+                paths_1a.Add(path);
+            }
+
+            Dictionary<string, string> content_1a = [];
+            foreach (string path in paths_1a)
+            {
+                Assert.True(File.Exists(path), path);
+                content_1a[path] = File.ReadAllText(path) + "|" + File.GetLastWriteTimeUtc(path).Ticks;
+            }
+
+            List<Guid> guids_Space_Dwelling_1a = guids_Space_Dwelling;
+            HashSet<Guid> guids_InformationOnly_1a = guids_InformationOnly;
+
+            PartORun partORun_2 = Run(out PartOIteration3Result partOIteration3Result_2, out List<Guid> guids_Bound_2, directory_ReferenceA: directory_Iteration2);
+
+            Assert.Equal(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json"), partOIteration3Result_2.Path_Record);
+
+            //The Iteration 2 pairing overwrote nothing of the 1a pairing's.
+            foreach (KeyValuePair<string, string> keyValuePair in content_1a)
+            {
+                Assert.Equal(keyValuePair.Value, File.ReadAllText(keyValuePair.Key) + "|" + File.GetLastWriteTimeUtc(keyValuePair.Key).Ticks);
+            }
+
+            //Both reopen from their own reference alone, naming their own reference.
+            PartOIteration3Result Review(PartORun partORun)
+            {
+                int count = 0;
+
+                return Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly
+                {
+                    Func_Assess = guids => Assessment(guids, ++count == 1 ? 20.0 : 21.0),
+                });
+            }
+
+            PartOIteration3Result partOIteration3Result_Review_2 = Review(partORun_2);
+            Assert.True(partOIteration3Result_Review_2.IsComplete);
+            Assert.Equal(partOIteration3Result_2.Path_Record, partOIteration3Result_Review_2.Path_Record);
+            Assert.Equal(Path.Combine(directory_Iteration2, "Flat.tsd"), partOIteration3Result_Review_2.Record.Path_TSD_ReferenceA);
+            Assert.Equal(guids_Bound_2.Count, partOIteration3Result_Review_2.Comparison.Statistics.Count_Rooms);
+
+            guids_Space_Dwelling = guids_Space_Dwelling_1a;
+            guids_InformationOnly = guids_InformationOnly_1a;
+
+            PartOIteration3Result partOIteration3Result_Review_1a = Review(partORun_1a);
+            Assert.True(partOIteration3Result_Review_1a.IsComplete);
+            Assert.Equal(partOIteration3Result_1a.Path_Record, partOIteration3Result_Review_1a.Path_Record);
+            Assert.Equal(Path.Combine(directory_Iteration1a, "Flat.tsd"), partOIteration3Result_Review_1a.Record.Path_TSD_ReferenceA);
+            Assert.Equal(guids_Bound_1a.Count, partOIteration3Result_Review_1a.Comparison.Statistics.Count_Rooms);
+
+            //Each case folder holds only its own reference's results; Iteration 3 holds no copy of either.
+            Assert.Equal(["Flat.tsd"], Array.ConvertAll(Directory.GetFiles(directory_Iteration1a), Path.GetFileName));
+            Assert.Equal(["Flat.tsd"], Array.ConvertAll(Directory.GetFiles(directory_Iteration2), Path.GetFileName));
+            Assert.DoesNotContain(Directory.GetFiles(directory_It3), x => string.Equals(Path.GetFileName(x), "Flat.tsd", StringComparison.OrdinalIgnoreCase));
         }
 
         [Fact]

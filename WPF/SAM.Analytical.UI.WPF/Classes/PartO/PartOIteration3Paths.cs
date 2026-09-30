@@ -92,6 +92,28 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>PR5B: the hourly OperatingAirFlow history a B4 run persists beside its TPD.</summary>
         public const string Suffix_OperatingAirFlow = "-OperatingAirFlow";
 
+        /// <summary>
+        /// What every file an Iteration 3 run owns adds after Reference A's name when Reference A is an
+        /// <b>Iteration 1a</b> run - Candidate B's TAS files, bridge, model, TM59 report, histories, record and review.
+        /// <para>
+        /// Iteration 3 accepts either MVHR reference, 1a or 2, and both are named from the same model, so without it a
+        /// pairing against a model's 1a results and one against its Iteration 2 results would write the same
+        /// <c>Iteration3</c> files. Iteration 2 - the ordinary reference - keeps the unqualified names. Read off
+        /// Reference A's own results folder (<see cref="Qualifier_Reference"/>), so a review holding only those results
+        /// derives the same names. A reference in a legacy flat folder is unqualified, as every pairing was before.
+        /// </para>
+        /// </summary>
+        public const string Qualifier_ReferenceIteration1a = "-It1a";
+
+        /// <summary>
+        /// <see cref="Qualifier_ReferenceIteration1a"/> where Reference A's results are in a SAM-created
+        /// <c>Iteration1a</c> case folder, and nothing otherwise.
+        /// </summary>
+        public static string Qualifier_Reference(string path_TSD_ReferenceA)
+        {
+            return PartOOutputPaths.FindForFile(path_TSD_ReferenceA)?.Case == PartOOutputCase.Iteration1a ? Qualifier_ReferenceIteration1a : string.Empty;
+        }
+
         private PartOIteration3Paths(PartOOutputPaths partOOutputPaths, string projectName_ReferenceA, string path_TSD_ReferenceA, PartOIteration3BehaviourMode partOIteration3BehaviourMode = PartOIteration3BehaviourMode.Parity)
         {
             OutputPaths = partOOutputPaths;
@@ -99,8 +121,11 @@ namespace SAM.Analytical.UI.WPF
             ProjectName_ReferenceA = projectName_ReferenceA;
             Path_TSD_ReferenceA = path_TSD_ReferenceA;
 
+            //Reference A's name, qualified where Reference A is Iteration 1a so its pairing and an Iteration 2 one
+            //never share a file.
             ProjectName_CandidateB = string.Concat(
                 projectName_ReferenceA,
+                Qualifier_Reference(path_TSD_ReferenceA),
                 partOIteration3BehaviourMode == PartOIteration3BehaviourMode.SelectedProductCooling ? Suffix_CandidateB_Cooling
                 : partOIteration3BehaviourMode == PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance ? Suffix_CandidateB_ManufacturerGuidance
                 : partOIteration3BehaviourMode == PartOIteration3BehaviourMode.SelectedProduct ? Suffix_CandidateB_SelectedProduct
@@ -216,7 +241,8 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            PartOOutputPaths partOOutputPaths = PartOOutputPaths.Create(partOSimulationContext.OutputDirectory, PartOOutputCase.Iteration3);
+            //Reference A's own Part O root: the root of the case folder its results are in, or its flat folder.
+            PartOOutputPaths partOOutputPaths = PartOOutputPaths.Create(PartOOutputPaths.Root(partOSimulationContext.OutputDirectory), PartOOutputCase.Iteration3);
             if (partOOutputPaths is null)
             {
                 return null;
@@ -238,8 +264,9 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>
         /// One behaviour mode's own record path for a results file alone - what a <b>review</b> uses, which
         /// has only the reopened run's TSD and no simulation context at all - and where a run writes it:
-        /// <c>&lt;root&gt;/Iteration3/reports/&lt;run&gt;-Iteration3-&lt;tag&gt;.json</c>, the root read off the
-        /// results' own folder (<see cref="PartOOutputPaths.Root"/>). Null mode is the legacy mode-independent
+        /// <c>&lt;root&gt;/Iteration3/reports/&lt;run&gt;[-It1a]-Iteration3-&lt;tag&gt;.json</c>, the root read off the
+        /// results' own folder (<see cref="PartOOutputPaths.Root"/>) and the qualifier off their case
+        /// (<see cref="Qualifier_Reference"/>). Null mode is the legacy mode-independent
         /// path beside the results. A per-mode record written beside the results before Iteration 3 had its own
         /// folder is <see cref="Path_Record_ForResults_Legacy"/>.
         /// </summary>
@@ -256,14 +283,14 @@ namespace SAM.Analytical.UI.WPF
             }
 
             string fileName = Path.GetFileNameWithoutExtension(path_TSD);
-            string directory = PartOOutputPaths.Create(Path.GetDirectoryName(path_TSD), PartOOutputCase.Iteration3)?.Directory_Reports;
+            string directory = PartOOutputPaths.Create(PartOOutputPaths.Root(Path.GetDirectoryName(path_TSD)), PartOOutputCase.Iteration3)?.Directory_Reports;
 
             if (string.IsNullOrWhiteSpace(directory) || string.IsNullOrWhiteSpace(fileName))
             {
                 return null;
             }
 
-            return Path.Combine(directory, fileName + Suffix_Record + "-" + Tag(partOIteration3BehaviourMode.Value) + ".json");
+            return Path.Combine(directory, fileName + Qualifier_Reference(path_TSD) + Suffix_Record + "-" + Tag(partOIteration3BehaviourMode.Value) + ".json");
         }
 
         /// <summary>

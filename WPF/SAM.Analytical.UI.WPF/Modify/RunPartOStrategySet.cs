@@ -235,6 +235,10 @@ namespace SAM.Analytical.UI.WPF
         {
             SimulateOptions simulateOptions = SimulateOptions_PartO(analyticalModel, path_Model, null);
 
+            //The MixedDesign folders (and their marker) exist before the run's first file. A folder that cannot be
+            //created is reported by that first write - the gbXML, or the TBD - in its own words.
+            PartOOutputPaths.Create(partOSimulationCase?.OutputDirectory, PartOOutputCase.MixedDesign)?.TryCreateDirectories();
+
             return new PartOSimulationContext(PartOMixedOutputDirectory(partOSimulationCase), projectName, partOSimulationCase.WeatherData is null ? null : new Weather.WeatherData(partOSimulationCase.WeatherData), partOSimulationCase.SolarCalculationMethod, 1, 365)
             {
                 UnmetHours = simulateOptions?.UnmetHours ?? false,
@@ -245,8 +249,9 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
-        /// Where a mixed-design run's TAS files go: the MixedDesign case's <c>tas</c> folder beneath the Part O root the
-        /// Simulation case names (<see cref="PartOOutputPaths"/>) - every screening and the final run, together.
+        /// Where a mixed-design run's TAS files go: the MixedDesign case's <c>tas</c> folder directly inside the Part O root
+        /// the Simulation case names, exactly as named (<see cref="PartOOutputPaths"/>) - every screening and the final
+        /// run, together.
         /// </summary>
         internal static string? PartOMixedOutputDirectory(PartOSimulationCase? partOSimulationCase)
         {

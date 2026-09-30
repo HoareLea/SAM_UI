@@ -262,8 +262,9 @@ namespace SAM.Analytical.UI.WPF
             //Skipped entirely on the warm-start path: the gbXML exists to be imported into a T3D and
             //converted, and a canonical TBD is the product of having done exactly that. Writing one and then
             //not converting it would cost the export for nothing.
-            //A Part O case folder (<root>/<case>/tas, see PartOOutputPaths) is created here, before its first file.
-            //SAM_Tas creates no folders. A legacy flat folder is not created: it was always one that existed.
+            //A Part O case folder (<root>/<case>/tas, see PartOOutputPaths) is created by whoever resolved it; this
+            //only restores a subfolder removed since, before the first file. SAM_Tas creates no folders. A legacy
+            //flat folder is not created: it was always one that existed.
             PartOOutputPaths partOOutputPaths = PartOOutputPaths.Find(outputDirectory);
             if (partOOutputPaths is not null)
             {

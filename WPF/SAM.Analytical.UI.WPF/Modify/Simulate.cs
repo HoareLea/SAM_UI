@@ -278,12 +278,30 @@ namespace SAM.Analytical.UI.WPF
             string projectName = simulateInputs.ProjectName;
             string outputDirectory = simulateInputs.OutputDirectory;
 
-            //Approved Document O: the folder a person chose is the Part O root, and this case's TAS work goes into
-            //its own tas folder beneath it, so 1a, 1b and 2 - which share file names - cannot overwrite each other.
-            //Resolved here, not in the options, so the remembered folder stays the root.
-            if (simulateInputs.PartOOutputCase is PartOOutputCase partOOutputCase)
+            //Approved Document O: the folder a person chose is the Part O root, exactly as chosen, and this case's
+            //TAS work goes into its own tas folder beneath it, so 1a, 1b and 2 - which share file names - cannot
+            //overwrite each other. Resolved here, not in the options, so the remembered folder stays the root.
+            if (simulateInputs.Simulate && simulateInputs.PartOOutputCase is PartOOutputCase partOOutputCase)
             {
-                outputDirectory = PartOOutputPaths.Create(outputDirectory, partOOutputCase)?.Directory_Tas ?? outputDirectory;
+                PartOOutputPaths partOOutputPaths = PartOOutputPaths.Create(outputDirectory, partOOutputCase);
+                if (partOOutputPaths is not null)
+                {
+                    string refusal_Directories = partOOutputPaths.TryCreateDirectories();
+                    if (refusal_Directories is not null)
+                    {
+                        partOSimulationOutcome.Ran = true;
+                        partOSimulationOutcome.Refusal = refusal_Directories;
+
+                        if (!quiet)
+                        {
+                            MessageBox.Show(refusal_Directories);
+                        }
+
+                        return partOSimulationOutcome;
+                    }
+
+                    outputDirectory = partOOutputPaths.Directory_Tas;
+                }
             }
 
             bool unmetHours = simulateInputs.UnmetHours;
