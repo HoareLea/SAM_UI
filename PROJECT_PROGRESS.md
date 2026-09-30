@@ -3,6 +3,31 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): Results > Part O > Remove Results... - clean Mixed Design baseline from a run model (30 Sep 2026) - MERGED as SAM_UI#149 (`7a464660`) with SAM#169 (`19531bd9`)
+
+**Status.** Merged into `sow/2026-Q3` with a merge commit (PR head `7cf57f7b`, 1 commit). SAM#169 merged first; #149 CI was
+re-run against the merged SAM base (attempt 2) and is green (build, SPDX). Head unchanged between review and merge. Full record:
+`documentation/PartO-RemoveResults-PR.md`; SAM half: SAM `documentation/PartO-RemoveRunState-PR.md`.
+
+- **Work.** New ribbon button Results > Part O > Remove Results... (enabled whenever a model is open). The window shows Removed
+  from the copy / Left in the copy / Mixed Design baseline check (PASS/FAIL with glyph + text, all findings). Default action
+  `Save cleaned copy...` (`<model>-Cleaned.sam`; the open model's own path is refused, the open model and TAS files are never
+  changed), then `Open cleaned copy`. The check is of the SAVED file read back from disk via SAM's `Query.PartOBaselineFindings`.
+  Mixed Design's refusal text now points at Remove Results.
+- **Decisions (owner).** Part F condition restore only on evidence; removal rules live in SAM; never overwrite; General > Remove
+  unchanged.
+- **Files.** `Classes/PartO/PartORemoveResults.cs`, `Modify/RemovePartOResultsCommand.cs`, `Windows/PartORemoveResultsWindow.xaml(.cs)`
+  (new); `Windows/AnalyticalWindow.xaml(.cs)`; wording in `Classes/PartO/Mixed/PartOMixedDesignSession.cs` and
+  `Windows/PartOMixedDesignWindow.xaml.cs`; `PartORemoveResultsTests.cs` (9 tests); PR record; evidence in
+  `documentation/evidence/parto-remove-results-2026-09-30/`.
+- **Validation.** Full WPF suite 1539/1539 (9 new); mutation check on the open-model refusal; real owner model 6 findings -> 0,
+  source SHA-256 unchanged; native smoke PASS (Remove Results -> save -> open -> Mixed Design "Baseline: clean - 3 dwellings").
+- **Risks.** No licensed TAS Mixed Design run on a cleaned copy yet; Open cleaned copy has no unsaved-changes prompt (existing File >
+  Open behaviour); main window title keeps the model's internal name.
+- **Next step.** Deploy via a SAM_Deploy PR (needs SAM `19531bd9` + this merge). Optional: the licensed Mixed Design acceptance
+  (Flat 1 NV, Flat 2 MVHR, Flat 3 MVHR + cooling) on a cleaned copy.
+
+
 ## Current (Part O stream): acceptance follow-ups - TM59 header, Mixed Design sidecar, prepared-model links (30 Sep 2026) - MERGED as SAM_UI#148 (`f92ae5d8`)
 
 **Status.** Merged into `sow/2026-Q3` with a merge commit (PR head `0fd3f9a`; 2 commits: `7eb1fe4`, `0fd3f9a`). CI green
