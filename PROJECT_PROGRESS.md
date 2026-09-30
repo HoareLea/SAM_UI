@@ -3,6 +3,28 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): redact local paths from public evidence (30 Sep 2026) - MERGED as SAM_UI#152 (`cdddff39`)
+
+**Status.** Merged into `sow/2026-Q3` with a merge commit: [SAM-BIM/SAM_UI#152](https://github.com/SAM-BIM/SAM_UI/pull/152),
+branch `docs/redact-parto-pr1-evidence-paths-2026-09-30`, PR head `2166eba`. Docs/evidence-only; no production code.
+
+**Work.** SAM_UI is public; 36 files under `documentation/evidence/` exposed local user/OneDrive/company paths.
+Byte-level substitution: `...\OneDrive - Tetra Tech, Inc\Documents\SAM_daily` -> `<SAM_daily>`;
+`C:\Users\<user>\Documents\GitHub\SAM-BIM` -> `<SAM-BIM>`; `C:\Users\<user>\Documents\SAM\resources` ->
+`<Documents>\SAM\resources`. `replay-Program.cs.txt` (PR-1 evidence) carries a header comment explaining the
+placeholders (same pattern as SAM#172).
+
+**Validation.** Grep of `documentation/` for `OneDrive`, `michal.dengusiak`, `\tt.local` = zero matches after.
+Diff is one line per occurrence plus the one comment line; hashes, results, line endings and BOMs unchanged. No
+build/tests (docs-only).
+
+**Risks / open.** The old paths remain in git history (and forks/clones); no rewrite was done - owner decides
+separately. This file still has one OneDrive `SAM_daily` path in the 2026-09-01 acceptance-fixture entry; left as is
+(history-record text, not evidence). Commit/push before switching computers.
+
+**Next step.** Resume Part O: PR-3 (SAM_Systems D2 honours scope), then the licensed Mixed acceptance on the
+existing `-Cleaned.sam`. Optionally decide on history rewriting and on redacting the one remaining path here.
+
 ## Current (Part O stream): PR-1 - one identity-based Systems scope for Iteration 3 and Mixed; Check runs Build's preflight (30 Sep 2026) - MERGED as SAM_UI#151 (`5cc590fe`) with SAM#171 (`4ecea97a`)
 
 **Status.**
