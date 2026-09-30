@@ -69,16 +69,15 @@ result, not the cluster's ventilation systems. So nothing downstream can reintro
 
 ## Files (SAM_UI)
 
-- `WPF/SAM.Analytical.UI.WPF/Interfaces/IPartOIteration3Pipeline.cs`: `Materialise(..., IEnumerable<Guid>
-  guids_VentilationSystem = null)`.
+- `WPF/SAM.Analytical.UI.WPF/Interfaces/IPartOIteration3Pipeline.cs`: a scoped `Materialise` member with a default body; the original member is unchanged.
 - `WPF/SAM.Analytical.UI.WPF/Classes/PartO/PartOIteration3Pipeline.cs`:
-  - `Materialise` and `MaterialiseMixed` forward the scope;
-  - `MaterialiseMixed` is `virtual` (test visibility only).
+  - `Materialise` and `MaterialiseMixed` keep their signatures and gain scoped overloads that forward the scope;
+  - internal `ScopeObserver` (test visibility only; no `virtual`).
 - `WPF/SAM.Analytical.UI.WPF/Modify/SimulatePartOMaterialisationSystems.cs`: Mixed states
   `partOSystemsMaterialisationScope.Guids_Retained`.
 - `WPF/SAM.Analytical.UI.WPF/Modify/RunPartOIteration3.cs`: Iteration 3 states `partOIteration3SystemScope.Guids_Retained`.
 - Tests:
-  - `PartOMixedSystemsScopeTests.cs`: +2 tests, plus an Iteration 3 `Materialise` assertion;
+  - `PartOMixedSystemsScopeTests.cs`: +3 tests, plus an Iteration 3 `Materialise` assertion;
   - `PartOIteration3RunTests.cs`: +1 test;
   - the three test doubles take the new parameter (`PartOIteration3PipelineFake` records it, `…ReviewTests`,
     `…ResumeAcceptance`).
@@ -132,10 +131,18 @@ result, not the cluster's ventilation systems. So nothing downstream can reintro
 ## API compatibility
 
 - **SAM_Systems:** additive only. The old signature is unchanged, and binary and source compatible.
-- **SAM_UI:** `IPartOIteration3Pipeline.Materialise` gains a trailing optional parameter. Callers are source-compatible.
-  Implementers must add it, and the only ones are the production class and three test doubles, all updated. The
-  interface documents that it is not an extension point. `MaterialiseMixed` gains a trailing optional parameter and
-  becomes `virtual`.
+- **SAM_UI (API hygiene review):** no existing public signature is replaced. The scope is added as overloads:
+  - `PartOIteration3Pipeline.Materialise(..., guidanceSettings)` and `MaterialiseMixed(adjacencyCluster, spaces,
+    guidanceSettings)` keep their original CLR signatures and delegate with a null (unstated) scope. Each gains a
+    scoped overload with a required trailing `IEnumerable<Guid> guids_VentilationSystem`.
+  - `IPartOIteration3Pipeline.Materialise` keeps its original member. The scoped member is added with a default body
+    (C# 8 default interface member): an implementation that predates the scope still compiles and binds, serves an
+    unstated scope as before, and refuses a stated scope it cannot honour (`NotSupportedException`) instead of quietly
+    processing every system.
+  - Nothing in production is `virtual`. The test that observes what the preflight hands SAM_Systems uses an `internal`
+    `PartOIteration3Pipeline.ScopeObserver` (visible to the test assembly only; unset in production).
+  - Behaviour is unchanged: the same scope reaches SAM_Systems on both routes. The test doubles implement both members.
+  - Covered by `TheScopeIsAddedNotSubstituted_PublicSignaturesAreUnchanged`.
 
 ## Unresolved / risks / belongs elsewhere
 

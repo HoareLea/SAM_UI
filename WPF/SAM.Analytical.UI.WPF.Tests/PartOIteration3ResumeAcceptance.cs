@@ -68,7 +68,12 @@ namespace SAM.Analytical.UI.WPF.Tests
                 return result;
             }
 
-            public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null, IEnumerable<Guid> guids_VentilationSystem = null)
+            public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null)
+            {
+                return Materialise(adjacencyCluster, spaces, unitSettings, coolingSettings, guidanceSettings, null);
+            }
+
+            public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings, IEnumerable<Guid> guids_VentilationSystem)
             {
                 return Timed(nameof(Materialise), () => production.Materialise(adjacencyCluster, spaces, unitSettings, coolingSettings, guidanceSettings, guids_VentilationSystem));
             }

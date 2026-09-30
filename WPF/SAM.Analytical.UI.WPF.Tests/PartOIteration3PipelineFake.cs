@@ -164,7 +164,12 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// <summary>PR-3: the ventilation system scope <see cref="Materialise"/> was handed, null meaning none was passed at all.</summary>
         internal List<Guid> VentilationSystemGuids_Materialised { get; private set; }
 
-        public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null, IEnumerable<Guid> guids_VentilationSystem = null)
+        public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null)
+        {
+            return Materialise(adjacencyCluster, spaces, unitSettings, coolingSettings, guidanceSettings, null);
+        }
+
+        public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings, IEnumerable<Guid> guids_VentilationSystem)
         {
             Called.Add(nameof(Materialise));
 

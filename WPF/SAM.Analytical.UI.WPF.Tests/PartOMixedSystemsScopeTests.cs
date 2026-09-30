@@ -389,25 +389,38 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void ThePreflight_TellsSamSystemsExactlyTheSystemsPartOBuilt()
         {
             PartOMaterialisation partOMaterialisation = Materialise(Scaffolded());
-            CapturingPipeline capturingPipeline = new();
+            List<Guid>? guids_Told = null;
+            bool told = false;
+            PartOIteration3Pipeline capturingPipeline = new() { ScopeObserver = x => { told = true; guids_Told = x is null ? null : [.. x.OrderBy(g => g)]; } };
 
             MechanicalVentilationMaterialisation? mixed = Modify.PartOMixedSystemsMaterialisation(partOMaterialisation, [Template()], capturingPipeline, out string? refusal, out List<string> _);
 
             Assert.True(mixed is not null, refusal);
-            Assert.NotNull(capturingPipeline.Guids_VentilationSystem);
-            Assert.Equal(partOMaterialisation.Record.VentilationSystemGuids.Values.OrderBy(x => x), capturingPipeline.Guids_VentilationSystem);
+            Assert.True(told);
+            Assert.NotNull(guids_Told);
+            Assert.Equal(partOMaterialisation.Record.VentilationSystemGuids.Values.OrderBy(x => x), guids_Told);
         }
 
-        private sealed class CapturingPipeline : PartOIteration3Pipeline
+        /// <summary>
+        /// Stating the scope added members; it replaced none. The pre-PR-3 public signatures still exist, no production
+        /// method is virtual for a test's sake, and the interface's original member stays the one an implementer must write
+        /// (the scoped one has a default body), so an implementation that predates the scope still binds.
+        /// </summary>
+        [Fact]
+        public void TheScopeIsAddedNotSubstituted_PublicSignaturesAreUnchanged()
         {
-            internal List<Guid>? Guids_VentilationSystem { get; private set; }
+            Type type = typeof(PartOIteration3Pipeline);
+            Type[] types_Materialise = [typeof(AdjacencyCluster), typeof(IEnumerable<Space>), typeof(IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings>), typeof(IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings>), typeof(IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings>)];
 
-            public override MechanicalVentilationMaterialisation MaterialiseMixed(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings, IEnumerable<Guid>? guids_VentilationSystem = null)
-            {
-                Guids_VentilationSystem = guids_VentilationSystem is null ? null : [.. guids_VentilationSystem.OrderBy(x => x)];
+            Assert.NotNull(type.GetMethod(nameof(PartOIteration3Pipeline.Materialise), types_Materialise));
+            System.Reflection.MethodInfo? mixed = type.GetMethod(nameof(PartOIteration3Pipeline.MaterialiseMixed), [typeof(AdjacencyCluster), typeof(IEnumerable<Space>), typeof(IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings>)]);
+            Assert.NotNull(mixed);
+            Assert.DoesNotContain(type.GetMethods(), x => x.DeclaringType == type && x.IsVirtual && !x.IsFinal);
 
-                return base.MaterialiseMixed(adjacencyCluster, spaces, guidanceSettings, guids_VentilationSystem);
-            }
+            System.Reflection.MethodInfo? original = typeof(IPartOIteration3Pipeline).GetMethod(nameof(IPartOIteration3Pipeline.Materialise), types_Materialise);
+            System.Reflection.MethodInfo? scoped = typeof(IPartOIteration3Pipeline).GetMethod(nameof(IPartOIteration3Pipeline.Materialise), [.. types_Materialise, typeof(IEnumerable<Guid>)]);
+            Assert.True(original!.IsAbstract);
+            Assert.False(scoped!.IsAbstract);
         }
 
         /// <summary>A materialisation refusal is still reported by SAM's own structured refusals, and no preflight runs.</summary>
