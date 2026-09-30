@@ -164,11 +164,11 @@ namespace SAM.Analytical.UI.WPF
 
             if (step_LastValid is not null && !ReferenceEquals(step_LastValid, step_Baseline))
             {
-                facts.Add(new Fact("Kept design", Design(step_LastValid, true), string.Format("The last round that was prepared, simulated over the full year and assessed. It is the design loaded into the model. Results: {0}", partOOptimisationRun.Path_TSD_LastValid ?? "-")));
+                facts.Add(new Fact("Kept design", Design(step_LastValid, true), string.Format("The last round that was prepared, simulated over the full year and assessed. It is the Iteration 2B result, kept under PartO/Iteration2B; your design model is not changed. Results: {0}", partOOptimisationRun.Path_TSD_LastValid ?? "-")));
             }
             else if (step_LastValid is not null)
             {
-                facts.Add(new Fact("Kept design", "The starting design (run 0) — no round changed it", "No optimisation round completed, so the design loaded into the model is the one the optimisation started from."));
+                facts.Add(new Fact("Kept design", "The starting design (run 0) — no round changed it", "No optimisation round completed, so the kept design is the one the optimisation started from. Your design model is not changed."));
             }
             else
             {
@@ -369,7 +369,7 @@ namespace SAM.Analytical.UI.WPF
                 return new Fact(
                     "Capacity envelope",
                     string.Format("Calculated (diagnostic, not adopted) · production TM59 status {0}", Core.Query.Description(step.OccupiedSpaceComplianceStatus)),
-                    string.Format("What the already-selected units could support if the kept design were grown towards their ceilings. It is not the run's answer and is not loaded into the model. {0}", description));
+                    string.Format("What the already-selected units could support if the kept design were grown towards their ceilings. It is not the run's answer and is not kept. {0}", description));
             }
 
             return partOOptimisationRun.Step_CapacityEnvelope is null

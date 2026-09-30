@@ -96,8 +96,8 @@ namespace SAM.Analytical.UI.WPF
         internal static string DecisionText(PartOReviewIntent partOReviewIntent)
         {
             return partOReviewIntent == PartOReviewIntent.PrepareAndRun
-                ? "Accept & Run TAS adopts this prepared model and starts the full-year TAS simulation, then the TM59 assessment. Cancel changes nothing and starts nothing."
-                : "Accept Preparation adopts this prepared model. No TAS simulation is started. Cancel changes nothing.";
+                ? "Accept & Run TAS starts the full-year TAS simulation of this prepared copy, then the TM59 assessment. Your design model stays open; only your equipment choices, if any, are saved onto it. Cancel changes nothing and starts nothing."
+                : "Accept Preparation keeps this prepared copy in the session, and Prepare & Run simulates it when run for the same case. No TAS simulation is started. Your design model stays open; only your equipment choices, if any, are saved onto it. Cancel changes nothing.";
         }
 
         private void UpdateDecision()
@@ -107,14 +107,14 @@ namespace SAM.Analytical.UI.WPF
             button_Accept.Content = AcceptText(partOReviewIntent);
 
             button_Accept.ToolTip = run
-                ? "Adopt the prepared model, with the assignments above, and start the full-year TAS simulation. The TM59 assessment follows."
-                : "Adopt the prepared model, with the assignments above. Nothing is simulated.";
+                ? "Simulate this prepared copy, with the assignments above, over the full year in TAS. The TM59 assessment follows. Your design model stays open."
+                : "Keep this prepared copy, with the assignments above, in the session. Nothing is simulated. Your design model stays open.";
 
             textBlock_Decision.Text = DecisionText(partOReviewIntent);
 
             textBlock_Subtitle.Text = run
                 ? "The iteration is prepared. Review it here; nothing is simulated until you accept."
-                : "The iteration is prepared. Review it here; accepting adopts it and does not start a simulation.";
+                : "The iteration is prepared. Review it here; accepting keeps it in the session and does not start a simulation.";
         }
 
         /// <summary>What the line beside the decision buttons says. For a test to read.</summary>

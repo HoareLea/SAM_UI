@@ -58,7 +58,10 @@ namespace SAM.Analytical.UI.WPF
         /// The choices they made are carried across; the state is not - it is re-inspected every time.
         /// </para>
         /// </summary>
-        /// <param name="uIAnalyticalModel">The loaded model. Replaced only by the commands below, on their own existing terms.</param>
+        /// <param name="uIAnalyticalModel">
+        /// The design model. Every case derives from it and the window stays on it (PR-4): only the Part O inputs
+        /// confirmed in a review are ever written onto it. A Part O result opened here can be reviewed, not run from.
+        /// </param>
         /// <param name="partORun">The session's Part O run.</param>
         /// <param name="owner">Owner window for the dialogs.</param>
         public static void RunPartOWorkflow(this UIAnalyticalModel? uIAnalyticalModel, PartORun partORun, IWin32Window? owner = null)
@@ -93,7 +96,7 @@ namespace SAM.Analytical.UI.WPF
 
             while (true)
             {
-                PartOWorkflowCapabilities partOWorkflowCapabilities = Capabilities(partORun, out PartOIteration3Eligibility? partOIteration3Eligibility);
+                PartOWorkflowCapabilities partOWorkflowCapabilities = Capabilities(partORun, uIAnalyticalModel.JSAMObject, out PartOIteration3Eligibility? partOIteration3Eligibility);
 
                 if (partOSimulationCase is null)
                 {
@@ -477,6 +480,20 @@ namespace SAM.Analytical.UI.WPF
         /// is not refused for having been prepared without them.
         /// </para>
         /// </summary>
+        /// <summary>
+        /// <see cref="Capabilities(PartORun, out PartOIteration3Eligibility)"/> for the Hub over the open model: also
+        /// asks, once per showing, whether that model is a Part O result that no new case may start from
+        /// (<c>Query.PartODesignModelRefusal</c>). A result is reviewed, never run from.
+        /// </summary>
+        internal static PartOWorkflowCapabilities Capabilities(PartORun? partORun, AnalyticalModel? analyticalModel, out PartOIteration3Eligibility? partOIteration3Eligibility)
+        {
+            PartOWorkflowCapabilities result = Capabilities(partORun, out partOIteration3Eligibility);
+
+            result.DesignModelRefusal = UI.Query.PartODesignModelRefusal(analyticalModel);
+
+            return result;
+        }
+
         internal static PartOWorkflowCapabilities Capabilities(PartORun? partORun, out PartOIteration3Eligibility? partOIteration3Eligibility)
         {
             PartOWorkflowCapabilities result = new();

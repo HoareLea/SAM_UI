@@ -275,6 +275,13 @@ namespace SAM.Analytical.UI.WPF
 
         public bool IsCleanBaseline => BaselineFindings.Count == 0;
 
+        /// <summary>
+        /// Whether the open model is a Part O result rather than a design model - <c>Query.PartODesignModelRefusal</c>
+        /// over the findings above. Mixed Design already refuses it as an unclean baseline; this only lets the
+        /// refusal say first that it is a result and that cases run from the design model (PR-4).
+        /// </summary>
+        public bool IsPartOResult => !IsCleanBaseline && UI.Query.PartODesignModelRefusal(analyticalModel, BaselineFindings) is not null;
+
         /// <summary>SAM's refusals from the last check or build, shown against their dwellings until the next one.</summary>
         public IReadOnlyList<PartOMaterialisationRefusal> Refusals => refusals;
 
@@ -849,7 +856,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (!IsCleanBaseline)
             {
-                result.Blockers.Add(string.Format("The open model is not a clean Part O baseline ({0}). Save a cleaned copy with Results > Part O > Remove Results and open it, or reopen the pre-Part-O model.", string.Join("; ", BaselineFindings.Select(x => Core.Query.Description(x.Reason)).Distinct())));
+                result.Blockers.Add(string.Format("{0}The open model is not a clean Part O baseline ({1}). Save a cleaned copy with Results > Part O > Remove Results and open it, or reopen the pre-Part-O model.", IsPartOResult ? UI.Query.PartODesignModelRefusal_Lead + " " : string.Empty, string.Join("; ", BaselineFindings.Select(x => Core.Query.Description(x.Reason)).Distinct())));
             }
 
             if (rows.Count == 0)

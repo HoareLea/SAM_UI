@@ -158,8 +158,9 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Prepare Iteration's acceptance adopts and prepares - the run is Prepared and the model replaced -
-        /// and stops there: the gate says no simulation follows, and the run holds no results to assess.
+        /// Prepare Iteration's acceptance adopts the preparation into the run - the run is Prepared - and stops
+        /// there: the gate says no simulation follows, and the run holds no results to assess. The open design
+        /// model is not replaced (PR-4), and with no input changed it is not written at all.
         /// </summary>
         [Fact]
         public void Prepare_only_acceptance_adopts_and_does_not_continue_to_TAS()
@@ -173,7 +174,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.Equal(PartOPreparationResult.Adopted, partOPreparationResult);
             Assert.Equal(PartORunState.Prepared, prepared.PartORun.State);
-            Assert.Equal(1, modified);
+            Assert.Equal(0, modified);
 
             Assert.False(Modify.ContinuesToSimulation(Modify.ReviewIntent_PrepareIteration, partOPreparationResult));
             Assert.False(prepared.PartORun.CanAssess);
@@ -234,9 +235,9 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Accept &amp; Run TAS takes exactly the path OK took: the prepared model is adopted into the run,
-        /// the run is Prepared - the state Prepare &amp; Run simulates from - and the loaded model is replaced
-        /// once, by the prepared one.
+        /// Accept &amp; Run TAS adopts the prepared model into the run, and the run is Prepared - the state
+        /// Prepare &amp; Run simulates from. The loaded design model is NOT replaced by the prepared one (PR-4):
+        /// the run holds the prepared model, and the window keeps the design.
         /// </summary>
         [Fact]
         public void Accept_follows_the_production_adoption()
@@ -250,7 +251,8 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.Equal(PartOPreparationResult.Adopted, partOPreparationResult);
             Assert.Equal(PartORunState.Prepared, prepared.PartORun.State);
-            Assert.Equal(1, modified);
+            Assert.Equal(0, modified);
+            Assert.Same(prepared.AnalyticalModel_Prepared, prepared.PartORun.AnalyticalModel_Prepared);
 
             //The run carries the systems the preparation built, as the direct adoption does.
             Assert.NotEmpty(prepared.PartORun.Guids_VentilationSystem_Prepared);

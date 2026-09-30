@@ -2239,8 +2239,9 @@ namespace SAM.Analytical.UI.WPF.Windows
         private void RibbonButton_EnergySimulation_Click(object sender, RoutedEventArgs e)
         {
             //uIAnalyticalModel?.EnergySimulation(windowHandle);
-            //The Part O run goes in so a workflow over a prepared model can complete it. A run in any other
-            //state is dropped by this simulation's own model replacement, which is the intended behaviour.
+            //The ordinary simulation of the open model. It never completes a Part O run: the open model is the
+            //design model, and a Part O case is simulated from Prepare & Run (PR-4). A pending run is dropped by
+            //this simulation's own model replacement, which is the intended behaviour.
             uIAnalyticalModel?.Simulate(partORun);
 
             RefreshPartOButtons();

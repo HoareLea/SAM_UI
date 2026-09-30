@@ -867,6 +867,9 @@ namespace SAM.Analytical.UI.WPF
                 Path_Results = partOWorkflowCapabilities.Path_Results,
                 OptimisationAvailable = partOWorkflowCapabilities.OptimisationAvailable,
                 OptimisationRefusal = partOWorkflowCapabilities.OptimisationRefusal,
+
+                //A Part O result is reviewed, never run from (PR-4).
+                DesignModelRefusal = partOWorkflowCapabilities.DesignModelRefusal,
             };
 
             PartOWorkflowInspection partOWorkflowInspection = PartOWorkflowInspection.Inspect(analyticalModel, Request, partORun, capabilities, textMap_TM59);

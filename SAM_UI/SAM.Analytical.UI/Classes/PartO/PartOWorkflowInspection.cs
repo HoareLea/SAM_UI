@@ -158,6 +158,12 @@ namespace SAM.Analytical.UI
                 result.blockers.Add("No base provision is selected, so there is no Approved Document O iteration to prepare.");
             }
 
+            //An opened Part O result is reviewed, never run from: every case derives from the design model.
+            if (!string.IsNullOrWhiteSpace(capabilities.DesignModelRefusal))
+            {
+                result.blockers.Insert(0, capabilities.DesignModelRefusal);
+            }
+
             return result;
         }
 
