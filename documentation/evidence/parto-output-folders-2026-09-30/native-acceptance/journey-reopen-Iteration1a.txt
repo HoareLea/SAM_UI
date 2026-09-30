@@ -1,4 +1,4 @@
-﻿09:36:37 exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe; reopen the saved run model C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2\Iteration1a\tas\000000_SAM_AnalyticalModel-It1a-futureZ1.sam
+﻿09:36:37 exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe; reopen the saved run model C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2\Iteration1a\tas\000000_SAM_AnalyticalModel-It1a-futureZ1.sam
 09:36:50   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
 09:36:56 --- HUB: opened on the saved Iteration1a run
 09:36:56   scenario line: MVHR · Design duty only · No manufacturer unit required

@@ -24,7 +24,7 @@ removed ZoneSimulationResult: 20/20
   zone 'Flat 3' dwelling=True category='Flats' spaces=Bedroom 2_6 [Double Bedroom], Kitchen_7 [1 Bed Apt. Kitchen], Ensuite_8 [TM59_Bathroom]
   terminals=0 systems=0 AHUs=0 spaceMovements=0 designDays(cluster)=0
   clean baseline=True
-catalogue: C:\Users\michal.dengusiak\Documents\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON products=2 first=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+catalogue: <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON products=2 first=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
 == F1 NV / F2 MVHR generic / F3 MVHR generic (no catalogue): materialised=True systems=2 units=
    scenarios=BaseNaturalVentilation/88b4fad2-6cf3-4b62-9024-385d5b1c6bf4 | BasePassive/5b0ca5f7-a3f1-4f96-95e7-c3a4a246975e | BasePassive/b5b9e52e-fdb4-4fb9-a97e-6e1ac9aab5a0 | DwellingIndependent/a1e8caf6-e6c5-4a53-8e5a-8d3f47f06e7d
 == F1 NV / F2 MVHR automatic / F3 MVHR first product (catalogue): materialised=True systems=2 units=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V) [supply 150 l/s, extract 150 l/s] rank 10 ; Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V) [supply 150 l/s, extract 150 l/s] rank 10

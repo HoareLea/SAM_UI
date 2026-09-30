@@ -1,6 +1,6 @@
 param([string]$Dir)
 # Read-only: dumps every zone's annual hourly resultant temperature from each TSD in $Dir to <name>.csv
-$interop = "C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_Tas\build\Interop.TSD.dll"
+$interop = "<SAM-BIM>\SAM_Tas\build\Interop.TSD.dll"
 Add-Type -Path $interop
 Add-Type -ReferencedAssemblies $interop -TypeDefinition @"
 using System;

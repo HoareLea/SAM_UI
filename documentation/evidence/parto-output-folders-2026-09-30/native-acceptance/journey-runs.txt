@@ -1,4 +1,4 @@
-﻿09:25:07 exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 09:22:58; UI dll 2026-09-30 09:22:44); model C:\TasOut\parto-output-folders-accept-2026-09-30\model\SAM_zoningAM-CIBSEfutureZ1.sam sha256 A7E09A25AE29C7DBB4C690D747A96FCD9F110CA27FB4DC2ABE816755368D7E4B; root C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2
+﻿09:25:07 exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 09:22:58; UI dll 2026-09-30 09:22:44); model C:\TasOut\parto-output-folders-accept-2026-09-30\model\SAM_zoningAM-CIBSEfutureZ1.sam sha256 A7E09A25AE29C7DBB4C690D747A96FCD9F110CA27FB4DC2ABE816755368D7E4B; root C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2
 09:25:24   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
 09:25:31 scenario 1a: selected 'Iteration 1a — MVHR design duty (no manufacturer unit)'
 09:25:35   type the Part O root: set

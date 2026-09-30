@@ -1,4 +1,4 @@
-﻿22:55:27 exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-29 22:53:03; SAM.Analytical 2026-09-29 21:55:03); model C:\TasOut\parto-presentation-route-2026-09-29\fix-check\SAM_zoningAM-CIBSEfutureZ1.sam sha256 A7E09A25AE29C7DBB4C690D747A96FCD9F110CA27FB4DC2ABE816755368D7E4B
+﻿22:55:27 exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-29 22:53:03; SAM.Analytical 2026-09-29 21:55:03); model C:\TasOut\parto-presentation-route-2026-09-29\fix-check\SAM_zoningAM-CIBSEfutureZ1.sam sha256 A7E09A25AE29C7DBB4C690D747A96FCD9F110CA27FB4DC2ABE816755368D7E4B
 22:55:43   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
 22:55:49 scenario: selected 'Iteration 1b — Natural ventilation (no mechanical system)'
 22:55:54   press button_Run in 'Part O — Prepare & Run'

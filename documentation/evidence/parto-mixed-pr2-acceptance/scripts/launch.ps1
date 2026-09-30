@@ -1,7 +1,7 @@
 param([string]$Model)
 . (Join-Path $PSScriptRoot 'lib.ps1')
-$exe = 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
-Say ("launch: exe {0} (WPF dll {1:yyyy-MM-dd HH:mm}); model {2}" -f $exe, (Get-Item 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM.Analytical.UI.WPF.dll').LastWriteTime, $Model)
+$exe = '<SAM-BIM>\SAM_UI\build\SAM Analytical.exe'
+Say ("launch: exe {0} (WPF dll {1:yyyy-MM-dd HH:mm}); model {2}" -f $exe, (Get-Item '<SAM-BIM>\SAM_UI\build\SAM.Analytical.UI.WPF.dll').LastWriteTime, $Model)
 $proc = Start-Process -FilePath $exe -ArgumentList "/Path=$Model" -PassThru
 $script:ProcessId = $proc.Id; Set-Content -Path $pidFile -Value $proc.Id
 $m = $null; $dl = (Get-Date).AddSeconds(180)

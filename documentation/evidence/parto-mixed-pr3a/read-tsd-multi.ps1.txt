@@ -1,6 +1,6 @@
 param([string[]]$Paths, [string]$OutDir)
 # Read-only: for each TSD writes <name>.<array>.csv (8760 x zones) for several zone arrays, plus <name>.outdoor.csv
-$interop = "C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_Tas\build\Interop.TSD.dll"
+$interop = "<SAM-BIM>\SAM_Tas\build\Interop.TSD.dll"
 Add-Type -Path $interop
 Add-Type -ReferencedAssemblies $interop -TypeDefinition @"
 using System;

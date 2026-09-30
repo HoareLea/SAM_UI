@@ -1,4 +1,4 @@
-﻿11:02:13 exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 11:00:46); model C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2\Iteration1a\tas\000000_SAM_AnalyticalModel-It1a-futureZ1.sam
+﻿11:02:13 exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 11:00:46); model C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2\Iteration1a\tas\000000_SAM_AnalyticalModel-It1a-futureZ1.sam
 11:02:13   REPORT after before: written 09:37:23, 5770 bytes
 11:02:13     | CIBSE TM59:2017 OVERHEATING ASSESSMENT
 11:02:13     | ======================================

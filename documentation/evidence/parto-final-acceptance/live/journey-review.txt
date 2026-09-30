@@ -1,4 +1,4 @@
-﻿15:01:53 review/pass6: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-26 15:00); model C:\TasOut\parto-pass6-2026-09-26\review-pass6\000000_SAM_AnalyticalModel-It1a-futureZ1.sam
+﻿15:01:53 review/pass6: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-26 15:00); model C:\TasOut\parto-pass6-2026-09-26\review-pass6\000000_SAM_AnalyticalModel-It1a-futureZ1.sam
 15:01:53 TAS processes before: ''
 15:02:06   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
 15:02:12   press button_Review in 'Part O — Prepare & Run'

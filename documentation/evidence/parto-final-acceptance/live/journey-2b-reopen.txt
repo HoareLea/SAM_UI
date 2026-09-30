@@ -1,4 +1,4 @@
-﻿15:21:25 reopen: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-26 15:12); model C:\TasOut\parto-pass6-2026-09-26\2b\run\SAM_zoningAM-CIBSEfutureZ1.sam
+﻿15:21:25 reopen: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-26 15:12); model C:\TasOut\parto-pass6-2026-09-26\2b\run\SAM_zoningAM-CIBSEfutureZ1.sam
 15:21:25 TAS processes before: 'taskhostw:20196'
 15:21:41   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1-Opt06]'
 15:21:47 --- HUB reopened: outcome '○' 'Saved Iteration 2 results reopened — ready to review' 'Review Results shows the TM59 verdict · no new simulation is needed'

@@ -112,9 +112,9 @@ function RunIteration3([string]$Tag) {
 
 # ------------------------------------------------------------------------------------------ launch
 $script:method = $Method
-$exe = 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
+$exe = '<SAM-BIM>\SAM_UI\build\SAM Analytical.exe'
 $model = Join-Path $Out 'model\SAM_zoningAM-CIBSEfutureZ1.sam'
-Say ("exe {0} (WPF dll {1:yyyy-MM-dd HH:mm:ss}; UI dll {2:yyyy-MM-dd HH:mm:ss}); model {3} sha256 {4}; root {5}" -f $exe, (Get-Item 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM.Analytical.UI.WPF.dll').LastWriteTime, (Get-Item 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM.Analytical.UI.dll').LastWriteTime, $model, (Get-FileHash $model).Hash, $Root)
+Say ("exe {0} (WPF dll {1:yyyy-MM-dd HH:mm:ss}; UI dll {2:yyyy-MM-dd HH:mm:ss}); model {3} sha256 {4}; root {5}" -f $exe, (Get-Item '<SAM-BIM>\SAM_UI\build\SAM.Analytical.UI.WPF.dll').LastWriteTime, (Get-Item '<SAM-BIM>\SAM_UI\build\SAM.Analytical.UI.dll').LastWriteTime, $model, (Get-FileHash $model).Hash, $Root)
 if (@(Get-ChildItem $Root -Force -ErrorAction SilentlyContinue).Count -ne 0) { Say 'ABORT the chosen root is not empty'; exit 1 }
 $proc = Start-Process -FilePath $exe -ArgumentList "/Path=$model" -PassThru
 $script:ProcessId = $proc.Id
