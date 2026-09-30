@@ -3,7 +3,66 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
-## Current (Part O stream): Iteration 3 case-report provenance + no UNAVAILABLE beside a PASS (30 Sep 2026) - MERGED as SAM_UI#146 (`a36f12bc`)
+## Current (Part O stream): per-case output folders beneath the chosen Part O root (30 Sep 2026) - MERGED as SAM_UI#147 (`4971a3f7`)
+
+**Status.** Merged into `sow/2026-Q3` with a merge commit (PR head `bedfb94`; 3 commits: `642125e`, `fe6ddd2`, `bedfb94`).
+CI green (build, SPDX). SAM_UI only - SAM (`83eb79a3`) and SAM_Tas (`057faf3`) are unchanged. Full record:
+`documentation/PartO-OutputFolders-PR.md`.
+
+- **Problem.** Every Part O run wrote into one flat output folder. 1a, 1b and 2 reuse the same file names, so a later
+  case overwrote an earlier one - e.g. 1b replaced the Iteration 2 results an Iteration 3 pairing references.
+- **Structure.** The chosen folder is the Part O root, **used verbatim**. SAM creates
+  `<root>/Iteration1a|Iteration1b|Iteration2|Iteration2B|Iteration3|MixedDesign/`, each containing:
+  - `PartOCase.json` - a marker holding only `{"Schema":"SAM.PartOOutputCase/1","Case":"<case>"}`;
+  - `tas/` - `.xml .t3d .tbd .tpd .tsd` (+ bridge), and the per-run `.sam`, `.partorun.json`, `.prepared.sam`;
+  - `reports/` - `-TM59.txt`, the Iteration 3 record `-Iteration3-<tag>.json` and its `-Review.txt/.json`;
+  - `diagnostics/` - `.timing.csv` (moved from `tas/` after SAM_Tas writes them), `.route.timing.csv`,
+    `-OperatingAirFlow.csv`, `_GuidanceOperation.csv`.
+
+  File names are unchanged, except Iteration 3 against an **Iteration 1a** reference adds `-It1a` to every file the
+  pairing owns (Iteration 2 names are unchanged). `.partomixed.json` still sits beside the open model.
+- **Design.** One resolver, `SAM.Analytical.UI.PartOOutputPaths` (+ `PartOOutputCase`), used by:
+  - Simulate (guided Part O route only; the expert command is unchanged);
+  - `RunPartOSimulation` and `Path_TM59Report`;
+  - 2B (`Iteration2B/tas`, following the baseline's root);
+  - `PartOIteration3Paths` / `RunPartOIteration3` (following Reference A's root);
+  - Mixed Design.
+- **How folders are recognised.** A folder counts as SAM's layout only when its name matches **and** its case folder
+  holds the marker, so a folder a person named `Iteration2\tas` is a legacy flat folder. `Root()` steps out of exactly
+  one SAM case folder, and only when following an existing run.
+- **Backward compatibility.** Legacy flat folders are read as saved: nothing is moved, rewritten or migrated.
+  - Reports stay beside legacy results.
+  - Per-method records beside a legacy TSD are still found; a newer record in `Iteration3/reports` supersedes them.
+  - A new run started from a legacy run is rooted at that flat folder.
+- **Evidence.**
+  - Full WPF suite **1519/1519**; focused Part O set 451/451.
+  - `PartOOutputFolderTests` (42): mapping, adversarial folder names/markers/depth, collisions, 1a-vs-2
+    Iteration 3 over all methods, reopen, legacy.
+  - Runtime run → run → reopen test for the 1a and 2 references.
+  - Licensed Mixed Design acceptance PASSED twice.
+  - **Final native gate PASSED** (real `SAM Analytical.exe`, UIA, licensed TAS, disposable root deliberately named
+    `Iteration2`):
+    1. 1a Prepare & Run → Iteration 3 (MG) → Iteration 2 Prepare & Run → Iteration 3 (MG).
+    2. Reopen each saved `.sam` in a new session: Review Results + Open result, with no TBD/TAS3D/TPD process (only
+       the `TSD` results reader).
+    3. The root was used verbatim, 1a and 2 and both pairings coexist byte-identical, and nothing was left in the
+       root.
+    4. All 9,048 historical `C:\TasOut` files are unchanged.
+
+    Evidence: `documentation/evidence/parto-output-folders-2026-09-30/`.
+- **Not verified.** Iteration 2B was not run in the real app (unit and production-seam coverage only). Iteration 3
+  was verified natively for the manufacturer-guidance method only.
+- **Notes.**
+  - Choosing a folder inside an existing SAM layout nests a new layout there, by design (the root is verbatim).
+  - This machine's remembered Part O output folder is the acceptance root
+    `C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2`.
+  - Pre-existing and unchanged: the thermal-source and TPD `.timing.csv` share a base name, so the TPD's replaces
+    the workflow's.
+- **Deferred.** Case selector, 2B UX, TPD performance, Iteration 3B, historical file migration, a SAM_Tas option to
+  write timing CSVs to a given folder.
+- **Next step.** None required for this entry.
+
+## Previous (Part O stream): Iteration 3 case-report provenance + no UNAVAILABLE beside a PASS (30 Sep 2026) - MERGED as SAM_UI#146 (`a36f12bc`)
 
 **Status.** Merged into `sow/2026-Q3` (head `855db98`, one commit). The PR had no CI checks configured; validated by local
 build + tests + a real-app check. Small reporting fix only; no TM59 figure or verdict changed.
@@ -56,14 +115,15 @@ Presentation only, plus one defect fix. No TM59 figure, verdict, airflow or engi
     `20735fc0`): the legacy MVHR units carry a 100 % humidification limit, and 1b copies them unchanged. Run
     Iteration 2 (or 1a) first.
   - All iterations write the same file names, so use a separate output folder per iteration. Otherwise 1b
-    overwrites the Iteration 2 results that Iteration 3 references.
+    overwrites the Iteration 2 results that Iteration 3 references. *(Resolved by SAM_UI#147: SAM now writes each
+    case into its own folder beneath the chosen root.)*
 - **Follow-ups.**
   - Case selector (1a/1b/2/2B/3).
   - Provenance for the 2B round reports.
   - A shared per-room helper for the two It3 reconcilers.
   - TPD performance investigation.
   - NV route vs leftover mechanical units (owner decision).
-  - Per-iteration output names.
+  - Per-iteration output names. *(Resolved by SAM_UI#147 as per-case output folders.)*
 - **Next step.** Owner presentation using the route and notes above. No code work is pending for this entry.
 
 ## Previous (Part O stream): safe Iteration 3 retry without re-running TAS - Follow-up #3 (29 Sep 2026) - MERGED as SAM_UI#144 (`e64a383b`)
