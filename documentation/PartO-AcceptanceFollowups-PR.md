@@ -3,7 +3,8 @@
 
 # Part O acceptance follow-ups: TM59 header, Mixed Design sidecar, prepared-model links
 
-**Status (30 Sep 2026): implemented and tested. The PR is open against `sow/2026-Q3` for review and NOT merged.**
+**Status (30 Sep 2026): implemented, tested, CI green, and the native-app smoke of A and B PASSED. The PR is open
+against `sow/2026-Q3`, ready to merge, and NOT merged.**
 
 - Branch `fix/parto-acceptance-followups-2026-09-30`, from `sow/2026-Q3` `7619c41` (the SAM_UI#147 closeout).
   SAM_UI#147 was already merged as `4971a3f7`.
@@ -82,13 +83,15 @@ Route: … Thermal model scope: … Weather: … Source TAS result: … TM59 met
 
 **Regression.**
 - `PartOPreparedModelCarriedLinkTests` drives the real `RunPartOSimulation`, with TAS replaced at `PartOWorkflowRunner`,
-  on a prepared model that carries a previous case's link.
-- A completed run is linked only to its own TSD and scenarios. It reopens and resumes, and the resumed
-  `.prepared.sam` still carries the old link, which is outside the fingerprint the resume is bound by.
-- Opening the `.prepared.sam` itself is refused, never paired with the previous TSD.
-- A run that does not complete (one day) returns the model Simulate adopts as the open model, still with the old
-  link. Saved and reopened, it is refused.
+  on a prepared model that carries a previous case's link. Only the input fixture is required to carry it.
+- A completed run is linked only to its own TSD and scenarios. It reopens and resumes even with the previous case's
+  TSD deleted, which proves the old link is not consumed. The two carried parameters are outside the fingerprint
+  the resume is bound by.
+- Opening the `.prepared.sam` itself is refused. It is never read as a result.
+- A run that does not complete (one day) names none of its own results. Saved and reopened, it is refused.
 - Nothing is written into the previous case's folder.
+- **The tests require that the link is never trusted, not that it survives.** With a temporary strip of both
+  parameters at `PartORun.Prepare` (reverted), the 3 tests still pass, so a later clean-up keeps them green.
 
 **Why nothing was cleared.** Clearing is a persisted-state change with no reader to fix. The fail-closed checks
 already make the link inert. The only visible effect: after an incomplete run, a reopen refusal names the previous
@@ -117,15 +120,40 @@ unaffected, since both parameters are excluded.
 - The 3 C tests pass against the unchanged production code. They pin the behaviour, not a fix.
 - Focused: `PartOPresentationPolishTests`, `PartOMixedDesignStatePersistenceTests`, `PartOPreparedModelCarriedLinkTests`
   all pass (18 + 4 + 3).
-- Full WPF suite (Debug, local): 1530/1530 passed (base 1519 + 11 new).
+- Full WPF suite (Debug, local): 1530/1530 passed (base 1519 + 11 new), also after the C test revision.
+- CI on `7eb1fe4`: build and spdx passed.
 - No licensed TAS rerun. No change touches simulation execution; A is text, B is a file write outside TAS, and C
   has no code change.
 
+## Native-app smoke (30 Sep 2026, app built from `7eb1fe4`, no licensed TAS)
+
+Evidence: `documentation/evidence/parto-148-smoke-2026-09-30/`. The drivers are adapted from the 30 Sep acceptance
+and kept in `C:\TasOut\parto-148-smoke-2026-09-30\scripts` (local).
+
+**A: PASS.**
+- A new session reopened the saved Iteration 1a run in the disposable #147 root
+  (`C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2`).
+- **Hub → Review Results:** the 1a report reads `Scenario: Iteration 1a — MVHR design duty (no manufacturer unit)`,
+  with no `Assessment context` line.
+- **Hub → Open result** (Iteration 3 vs 1a, re-assessed from the existing results): the same file reads that
+  scenario, then `Assessment context: Iteration 3 — Reference case`. Route, scope, weather, source TSD and method
+  are unchanged.
+- The system-case report reads `Scenario: Iteration 3 — … system case …` and `Reference case: Iteration 1a — baseline`.
+- Before the smoke, the file carried the old `Case:` / `Iteration / scenario:` header.
+- Only the two TM59 reports changed, and they were restored from backup afterwards, so the root is hash-identical
+  to before.
+- The only TAS process seen was TSD, the results reader. No TBD, TAS3D or TPD ran.
+
+**B: PASS.**
+- Mixed Design was opened on disposable copies of the Iteration 2 run output, and refused both times (Run Output
+  Baseline; Materialised Baseline), with Check and Build disabled.
+- With no sidecar beforehand, closing the window created none.
+- With the existing 213-byte sidecar, it was byte-identical after close, with an unchanged write time.
+
 ## Not verified / risks
 
-- The real-app behaviour of A and B was not re-run in the GUI. Both are covered at their production seams (the
-  report writer, and the command's one state-write helper).
-- CI (the Windows build) runs on the PR.
+- The system-case scenario wording and the valid Mixed Design persistence were covered by tests only, not by the
+  smoke. A valid Mixed run needs the clean pre-Part-O model and licensed TAS.
 
 ## Next step
 

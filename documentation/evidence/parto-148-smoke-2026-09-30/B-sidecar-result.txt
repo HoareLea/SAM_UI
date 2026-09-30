@@ -1,0 +1,10 @@
+SAM_UI#148 smoke B - Mixed Design refusal and the .partomixed.json sidecar (native app, build of 7eb1fe4, 30 Sep 2026)
+Model: disposable copies of the #147 acceptance Iteration 2 run output (C:\TasOut\parto-148-smoke-2026-09-30\mixed\refusedN\Model.sam).
+
+refused1 (no sidecar beforehand): baseline refused (Run Output Baseline; Materialised Baseline), Check/Build disabled, window closed.
+  after close: folder holds Model.sam only - no Model.partomixed.json created.
+
+refused2 (existing 213-byte sidecar, the one the 30 Sep acceptance left in Iteration2/tas):
+  sidecar before 7A1498CC4947E4C07D8A778C539F6123D7421E567435E452A3C60FE8FD17C039
+  sidecar after  7A1498CC4947E4C07D8A778C539F6123D7421E567435E452A3C60FE8FD17C039
+  identical hash: True; write time unchanged: True (10:17:43)

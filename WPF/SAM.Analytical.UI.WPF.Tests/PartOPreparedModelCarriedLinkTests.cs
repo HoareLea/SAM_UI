@@ -37,7 +37,8 @@ namespace SAM.Analytical.UI.WPF.Tests
     /// </para>
     /// <para>
     /// These tests drive that production path, with TAS replaced at its one seam (<see cref="PartOWorkflowRunner"/>),
-    /// from a model that carries a previous case's link exactly as the acceptance files did.
+    /// from a model that carries a previous case's link exactly as the acceptance files did. They require that the
+    /// link is never trusted - not that it survives: a later clean-up that strips it keeps them green.
     /// </para>
     /// </summary>
     public class PartOPreparedModelCarriedLinkTests : IDisposable
@@ -82,7 +83,13 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.StartsWith(directory_Next, path_TSD, StringComparison.OrdinalIgnoreCase);
             Assert.Equal(ScenarioTexts(@case.Scenarios_Next), ScenarioTexts(Scenarios(analyticalModel_Workflow)));
 
-            //And so is what a later session reopens - the saved run model, its sidecar and the prepared model.
+            //Nothing was written into the previous case's folder.
+            Assert.Equal(new[] { @case.Path_TSD_Previous }, Directory.GetFiles(directory_Previous));
+
+            //And the previous results are not needed by anything below: a link that were consumed would fail here.
+            File.Delete(@case.Path_TSD_Previous);
+
+            //What a later session reopens - the saved run model, its sidecar and the prepared model.
             string path_Model = Query.Path_PartORunModel(path_TSD);
             AnalyticalModel analyticalModel_Saved = Read(path_Model);
 
@@ -92,9 +99,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(ScenarioTexts(@case.Scenarios_Next), ScenarioTexts(partORun.OverheatingScenarios));
             Assert.True(partORun.CanResumeIteration3, partORun.ResumeRefusal);
 
-            //The resumed prepared model still carries the previous case's link, as preparation copied it...
+            //Whatever the resumed prepared model carries, it names no result of this run and none is taken from it...
             AnalyticalModel analyticalModel_Prepared = partORun.AnalyticalModel_Prepared;
-            Assert.Equal(@case.Path_TSD_Previous, Provenance(analyticalModel_Prepared)!.Path_TSD);
+            Assert.NotEqual(path_TSD, Provenance(analyticalModel_Prepared)?.Path_TSD);
 
             //...and it is in no identity the resume or Iteration 3 is bound by: the fingerprint is the same without it.
             AnalyticalModel analyticalModel_Stripped = new(analyticalModel_Prepared);
@@ -102,14 +109,11 @@ namespace SAM.Analytical.UI.WPF.Tests
             analyticalModel_Stripped.RemoveValue(Analytical.AnalyticalModelParameter.OverheatingScenarios);
             Assert.Equal(SimulationResultProvenance.Fingerprint(analyticalModel_Stripped), SimulationResultProvenance.Fingerprint(analyticalModel_Prepared));
             Assert.Equal(PartORunResume.Read(PartORunResume.Path_Resume(path_TSD))!.Fingerprint_PreparedModel, SimulationResultProvenance.Fingerprint(analyticalModel_Stripped));
-
-            //Nothing was written into the previous case's folder.
-            Assert.Equal(new[] { @case.Path_TSD_Previous }, Directory.GetFiles(directory_Previous));
         }
 
         /// <summary>
-        /// Opening the <c>.prepared.sam</c> itself is never read as the previous case's result: its design is not
-        /// the one those results were produced from.
+        /// Opening the <c>.prepared.sam</c> itself is never read as a result - not the previous case's, whose link it
+        /// may carry, and not this run's.
         /// </summary>
         [Fact]
         public void The_prepared_model_opened_on_its_own_is_never_paired_with_the_previous_results()
@@ -120,20 +124,17 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             string path_Prepared = PartORunResume.Path_PreparedModel(path_TSD);
             AnalyticalModel analyticalModel_Prepared = Read(path_Prepared);
-            Assert.Equal(@case.Path_TSD_Previous, Provenance(analyticalModel_Prepared)!.Path_TSD);
 
             PartORun partORun = new();
-            Assert.False(partORun.Restore(analyticalModel_Prepared, path_Prepared, out string refusal));
+            Assert.False(partORun.Restore(analyticalModel_Prepared, path_Prepared, out string _));
             Assert.NotEqual(PartORunState.WorkflowCompleted, partORun.State);
             Assert.Null(partORun.Path_TSD);
-            Assert.Contains("changed since", refusal);
         }
 
         /// <summary>
-        /// A run that does not complete (not a full year) writes no record and stamps no link; the model it returns
-        /// - the one Simulate adopts as the open model - still carries the previous case's link. Reopened, that
-        /// link is refused, never paired: the run's scenarios were stamped over it, so they are no longer the
-        /// ones the previous results were assessed under.
+        /// A run that does not complete (not a full year) writes no record and stamps no link of its own. Whatever
+        /// the model it returns carries - the one Simulate adopts as the open model - names none of this run's
+        /// results, and reopened it is refused, never paired with the previous case's.
         /// </summary>
         [Fact]
         public void A_run_that_does_not_complete_leaves_the_carried_link_refused_on_reopen()
@@ -142,7 +143,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             AnalyticalModel analyticalModel_Workflow = Run(@case, 1, out string path_TSD);
 
-            Assert.Equal(@case.Path_TSD_Previous, Provenance(analyticalModel_Workflow)!.Path_TSD);
+            Assert.NotEqual(path_TSD, Provenance(analyticalModel_Workflow)?.Path_TSD);
             Assert.Equal(ScenarioTexts(@case.Scenarios_Next), ScenarioTexts(Scenarios(analyticalModel_Workflow)));
             Assert.False(File.Exists(Query.Path_PartORunModel(path_TSD)));
             Assert.False(File.Exists(PartORunResume.Path_PreparedModel(path_TSD)));
@@ -152,10 +153,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(Core.Convert.ToFile(analyticalModel_Workflow, path_Model, SAMFileType.SAM));
 
             PartORun partORun = new();
-            Assert.False(partORun.Restore(Read(path_Model), path_Model, out string refusal));
+            Assert.False(partORun.Restore(Read(path_Model), path_Model, out string _));
             Assert.NotEqual(PartORunState.WorkflowCompleted, partORun.State);
             Assert.Null(partORun.Path_TSD);
-            Assert.False(string.IsNullOrWhiteSpace(refusal));
         }
 
         // -----------------------------------------------------------------------------------------------
