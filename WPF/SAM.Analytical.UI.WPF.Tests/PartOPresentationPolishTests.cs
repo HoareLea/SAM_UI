@@ -118,11 +118,11 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             TM59AssessmentReport tM59AssessmentReport = Report();
 
-            string text = Modify.PartOTM59ReportText(tM59AssessmentReport, ["Iteration / scenario: Iteration 1b", "Weather: London"]);
+            string text = Modify.PartOTM59ReportText(tM59AssessmentReport, ["Scenario: Iteration 1b", "Weather: London"]);
 
             string heading = TM59AssessmentReportFormatter.Heading + Environment.NewLine + new string('=', TM59AssessmentReportFormatter.Heading.Length) + Environment.NewLine;
 
-            Assert.StartsWith(heading + Modify.PartOTM59ReportProvenanceHeading + Environment.NewLine + "Iteration / scenario: Iteration 1b" + Environment.NewLine + "Weather: London" + Environment.NewLine, text);
+            Assert.StartsWith(heading + Modify.PartOTM59ReportProvenanceHeading + Environment.NewLine + "Scenario: Iteration 1b" + Environment.NewLine + "Weather: London" + Environment.NewLine, text);
 
             //Everything SAM wrote, in order, after the block.
             Assert.EndsWith(tM59AssessmentReport.ToString().Substring(heading.Length), text);
@@ -142,13 +142,13 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             string path_TSD = Path.Combine(directory, "Flat.tsd");
 
-            Assert.True(Modify.SavePartOTM59Report(path_TSD, Report(), out string path_TM59Report, out string refusal, ["Iteration / scenario: Iteration 2"]));
+            Assert.True(Modify.SavePartOTM59Report(path_TSD, Report(), out string path_TM59Report, out string refusal, ["Scenario: Iteration 2"]));
             Assert.Null(refusal);
 
             string text = File.ReadAllText(path_TM59Report);
 
             Assert.Contains(Modify.PartOTM59ReportProvenanceHeading, text);
-            Assert.Contains("Iteration / scenario: Iteration 2", text);
+            Assert.Contains("Scenario: Iteration 2", text);
             Assert.StartsWith(TM59AssessmentReportFormatter.Heading, text);
         }
 
@@ -156,11 +156,125 @@ namespace SAM.Analytical.UI.WPF.Tests
         [Fact]
         public void The_provenance_states_the_method_and_says_when_no_weather_is_held()
         {
-            List<string> lines = PartOTM59ResultSummary.ReportProvenance(new PartORun(), Report(), [("Case", "Iteration 3 · reference case")]);
+            List<string> lines = PartOTM59ResultSummary.ReportProvenance(new PartORun(), Report(), [("Assessment context", "Iteration 3 — Reference case")]);
 
-            Assert.StartsWith("Case:", lines[0]);
+            Assert.StartsWith("Assessment context:", lines[0]);
             Assert.Contains(lines, x => x.StartsWith("TM59 method:") && x.Contains("CIBSE TM59:2017"));
             Assert.Contains(lines, x => x.StartsWith("Weather:") && x.Contains("not recorded"));
+        }
+
+        /// <summary>
+        /// A completed Iteration 1a run, as the TM59 report writers see it: its scenario, its results file and its
+        /// TM59 method are all the run's own.
+        /// </summary>
+        private PartORun CompletedRun()
+        {
+            Zone zone = new("Flat 1");
+            AdjacencyCluster adjacencyCluster = new();
+            adjacencyCluster.AddObject(zone);
+
+            PartORun partORun = new();
+            Assert.True(partORun.Prepare(new AnalyticalModel("prepared", null, null, null, adjacencyCluster, null, null), [new OverheatingScenario(PartOAssessmentScope.Dwelling, Guid.NewGuid(), PartOIteration.BasePassive)], new PartOPreparationContext(PartOIteration.BasePassive, [zone], [], null)));
+
+            string path_TSD = Path.Combine(directory, "Flat.tsd");
+            Assert.True(partORun.ExpectResults(path_TSD));
+            File.WriteAllText(path_TSD, "results");
+
+            Assert.True(partORun.Complete(new AnalyticalModel("workflow", null, null, null, new AdjacencyCluster(), null, null), path_TSD, new PartOSimulationContext(directory, "Flat", null, SolarCalculationMethod.SAM, 1, 365), out string refusal), refusal);
+
+            return partORun;
+        }
+
+        private static string Value(List<string> lines, string label)
+        {
+            string line = Assert.Single(lines, x => x.StartsWith(label + ":", StringComparison.Ordinal));
+
+            return line.Substring(label.Length + 1).Trim();
+        }
+
+        /// <summary>
+        /// The Iteration 1a results reassessed as Iteration 3's reference case are headed by what the results file
+        /// physically is - the Iteration 1a scenario - with Iteration 3 beneath it as the assessment they serve,
+        /// never the other way round. Everything else the header stated is still there, from the same run.
+        /// </summary>
+        [Fact]
+        public void The_Iteration_3_reference_report_is_headed_by_its_own_scenario_then_its_assessment_context()
+        {
+            PartORun partORun = CompletedRun();
+
+            List<string> lines = [.. Modify.PartOIteration3ReportProvenance(partORun, PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance)(partORun.Path_TSD, Report())];
+
+            Assert.Equal("Scenario:", lines[0].Split(' ')[0]);
+            Assert.Equal(PartOWorkflowScenario.Text_Iteration1a, Value(lines, "Scenario"));
+            Assert.Equal("Iteration 3 — Reference case", Value(lines, "Assessment context"));
+            Assert.StartsWith("Assessment context:", lines[1]);
+
+            //The confusing pairing is gone: no "Case" line, and no Iteration 3 wording in the scenario.
+            Assert.DoesNotContain(lines, x => x.StartsWith("Case:", StringComparison.Ordinal) || x.StartsWith("Iteration / scenario:", StringComparison.Ordinal));
+            Assert.DoesNotContain("Iteration 3", Value(lines, "Scenario"));
+
+            //Preserved, and from the run: the source results are the Iteration 1a TSD that was assessed.
+            Assert.Equal(partORun.Path_TSD, Value(lines, "Source TAS result"));
+            Assert.Contains("CIBSE TM59:2017", Value(lines, "TM59 method"));
+            Assert.Contains(lines, x => x.StartsWith("Thermal model scope:", StringComparison.Ordinal));
+            Assert.Contains(lines, x => x.StartsWith("Weather:", StringComparison.Ordinal));
+
+            //The labels still line up as one block.
+            Assert.Equal(lines[0].IndexOf(PartOWorkflowScenario.Text_Iteration1a, StringComparison.Ordinal), lines[1].IndexOf("Iteration 3", StringComparison.Ordinal));
+        }
+
+        /// <summary>An ordinary report of a run's own results states its scenario and no assessment context at all.</summary>
+        [Fact]
+        public void A_standalone_report_states_its_scenario_and_no_assessment_context()
+        {
+            PartORun partORun = CompletedRun();
+
+            List<string> lines = PartOTM59ResultSummary.ReportProvenance(partORun, Report());
+
+            Assert.StartsWith("Scenario:", lines[0]);
+            Assert.Equal(PartOWorkflowScenario.Text_Iteration1a, Value(lines, "Scenario"));
+            Assert.DoesNotContain(lines, x => x.StartsWith("Assessment context:", StringComparison.Ordinal) || x.StartsWith("Reference case:", StringComparison.Ordinal) || x.StartsWith("Case:", StringComparison.Ordinal));
+            Assert.Equal(partORun.Path_TSD, Value(lines, "Source TAS result"));
+        }
+
+        /// <summary>
+        /// The system case's bridge results ARE Iteration 3's, so Iteration 3 is its scenario and the reference case
+        /// is named beneath it; the run's own scenario is not repeated as if the bridge were Iteration 1a's.
+        /// </summary>
+        [Fact]
+        public void The_Iteration_3_system_report_is_headed_by_Iteration_3_and_names_its_reference_case()
+        {
+            PartORun partORun = CompletedRun();
+            string path_TSD_Bridge = Path.Combine(directory, "Flat-It3BMG-Bridge.tsd");
+
+            List<string> lines = [.. Modify.PartOIteration3ReportProvenance(partORun, PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance)(path_TSD_Bridge, Report())];
+
+            Assert.StartsWith("Scenario:", lines[0]);
+            Assert.StartsWith("Iteration 3 — Explicit system and cooling assessment · system case", Value(lines, "Scenario"));
+            Assert.StartsWith("Reference case:", lines[1]);
+            Assert.Equal(Query.PartOIterationText(partORun), Value(lines, "Reference case"));
+            Assert.DoesNotContain(lines, x => x.StartsWith("Assessment context:", StringComparison.Ordinal));
+            Assert.Single(lines, x => x.StartsWith("Scenario:", StringComparison.Ordinal));
+            Assert.Equal(path_TSD_Bridge, Value(lines, "Source TAS result"));
+        }
+
+        /// <summary>The saved reference-case file, end to end: the hierarchy sits under the PART O CASE heading.</summary>
+        [Fact]
+        public void The_saved_reference_report_file_carries_the_scenario_then_the_assessment_context()
+        {
+            PartORun partORun = CompletedRun();
+            IEnumerable<string> provenance = Modify.PartOIteration3ReportProvenance(partORun, PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance)(partORun.Path_TSD, Report());
+
+            Assert.True(Modify.SavePartOTM59Report(partORun.Path_TSD, Report(), out string path_TM59Report, out string refusal, provenance), refusal);
+
+            string[] lines = File.ReadAllLines(path_TM59Report);
+            int index = Array.IndexOf(lines, Modify.PartOTM59ReportProvenanceHeading);
+
+            Assert.True(index > 0);
+            Assert.StartsWith("Scenario:", lines[index + 1]);
+            Assert.EndsWith(PartOWorkflowScenario.Text_Iteration1a, lines[index + 1]);
+            Assert.StartsWith("Assessment context:", lines[index + 2]);
+            Assert.EndsWith("Iteration 3 — Reference case", lines[index + 2]);
         }
 
         /// <summary>

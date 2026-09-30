@@ -343,22 +343,37 @@ namespace SAM.Analytical.UI.WPF
         /// (<see cref="RunFacts"/>) - never a second source of truth - with the full results path rather than
         /// its file name, and a weather line that says so where this session does not hold one.
         /// </summary>
-        /// <param name="lines_Before">Lines stated first, such as which Iteration 3 case the report is.</param>
-        internal static List<string> ReportProvenance(PartORun? partORun, TM59AssessmentReport? tM59AssessmentReport, IEnumerable<(string Label, string Value)>? lines_Before = null, bool includeScenario = true, string? path_TSD = null)
+        /// <param name="lines_Context">
+        /// Lines stated directly under the scenario, where the results serve a further assessment - such as
+        /// the Iteration 3 case the report is. Null or empty for an ordinary report, which then states no
+        /// context at all.
+        /// </param>
+        /// <param name="scenario">
+        /// What the results are of, where that is not the run's own scenario - the Iteration 3 system case's
+        /// bridge results. Null states the run's.
+        /// </param>
+        internal static List<string> ReportProvenance(PartORun? partORun, TM59AssessmentReport? tM59AssessmentReport, IEnumerable<(string Label, string Value)>? lines_Context = null, string? scenario = null, string? path_TSD = null)
         {
-            List<(string Label, string Value)> lines = [.. lines_Before ?? []];
+            List<Fact> facts = RunFacts(partORun, tM59AssessmentReport, null, null);
+
+            //The scenario first - it is what the results file physically is - and then any assessment it serves.
+            List<(string Label, string Value)> lines = [];
+
+            string? scenario_Stated = scenario ?? facts.Find(x => x.Label == "Scenario")?.Value;
+            if (!string.IsNullOrWhiteSpace(scenario_Stated))
+            {
+                lines.Add(("Scenario", scenario_Stated!));
+            }
+
+            lines.AddRange(lines_Context ?? []);
 
             bool weather = false;
 
-            foreach (Fact fact in RunFacts(partORun, tM59AssessmentReport, null, null))
+            foreach (Fact fact in facts)
             {
                 switch (fact.Label)
                 {
                     case "Scenario":
-                        if (includeScenario)
-                        {
-                            lines.Add(("Iteration / scenario", fact.Value));
-                        }
                         break;
 
                     case "Thermal model":

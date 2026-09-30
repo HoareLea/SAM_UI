@@ -160,7 +160,17 @@ namespace SAM.Analytical.UI.WPF
 
             BuildRows();
             Rebase(analyticalModel_Baseline);
+
+            OpenedOnCleanBaseline = IsCleanBaseline;
         }
+
+        /// <summary>
+        /// Whether the model this session was opened on was a clean baseline. Only such a session keeps its state
+        /// beside the model (<c>Modify.WritePartOMixedDesignState</c>): a refused model can never be built from -
+        /// it is a run output, and nothing is cleaned back - so a sidecar beside it would hold nothing a mixed design
+        /// can use, and would only drop a file into another workflow's folder.
+        /// </summary>
+        public bool OpenedOnCleanBaseline { get; }
 
         /// <summary>The baseline the session reads - the open model as last adopted.</summary>
         public AnalyticalModel Baseline => analyticalModel;
