@@ -1,5 +1,5 @@
 Headless run of SAM Modify.RemovePartORunState (SAM branch feature/parto-remove-results-2026-09-30) on the owner's run-output model.
-Source: OneDrive...\SAM_daily\2026-09-29 partOi\model\000000_SAM_AnalyticalModel.sam, SHA-256 prefix 25dd56b6eae57976 before AND after (unchanged).
+Source: <SAM_daily>\2026-09-29 partOi\model\000000_SAM_AnalyticalModel.sam, SHA-256 prefix 25dd56b6eae57976 before AND after (unchanged).
 Output: a scratch copy (not committed - project model data).
 
 BEFORE findings=6 :: spaces=9 zones=4 panels=50 systems=[NV 1,UV 1,MV 1,MVHR 1,MVHR 2,MVHR 3] ahu=[AHU1,MVHR-01,MVHR-02,MVHR-03] heating=4 cooling=3 terminals=9 spaceMov=17 ahuMov=3 ics(cluster)=19 partF=8 weather=True eqsel=True constructions=4

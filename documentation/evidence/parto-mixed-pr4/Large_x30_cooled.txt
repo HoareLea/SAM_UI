@@ -1,7 +1,7 @@
 [00:00:04] replicated SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam x 30: 270 spaces, 120 zones, 1500 panels in 3.2 s
 [00:00:04] PASS the large project is a clean baseline 
 [00:00:04] PASS every space name is unique
-[00:00:04] catalogue=C:\Users\michal.dengusiak\Documents\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON sha=D38789089D8580BB0E89F27BC139FBC67C41F834E7FA1BB0E76592BC974558D8 cooled product=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
+[00:00:04] catalogue=<Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON sha=D38789089D8580BB0E89F27BC139FBC67C41F834E7FA1BB0E76592BC974558D8 cooled product=Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V)
 [00:00:05] PASS 90 dwelling rows, never a row per space
 [00:00:05] PASS Flat 1 of every block: Natural
 [00:00:05] PASS Flat 2 of every block: MVHR (automatic product)

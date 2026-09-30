@@ -1,6 +1,6 @@
 ﻿13:04:40 FILES before
 13:04:40   000000_SAM_AnalyticalModel.sam  155105 bytes  25DD56B6EAE57976
-13:04:40 exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 12:54:00, SAM.Analytical dll 12:48:03)
+13:04:40 exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 12:54:00, SAM.Analytical dll 12:48:03)
 13:04:56 main window 'SAM Analytical [000000_SAM_AnalyticalModel]'
 13:04:58 ribbon button 'Remove Results...' enabled=True help='Saves a cleaned copy of the open model without its Part O results and preparation, so Mixed Design can start from it. The open model is not changed and no files are deleted; the copy is checked by the same baseline check Mixed Design uses.'
 13:04:58   capture 01-results-tab 'SAM Analytical [000000_SAM_AnalyticalModel]' (1936x1048)

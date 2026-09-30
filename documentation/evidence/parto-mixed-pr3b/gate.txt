@@ -1,5 +1,5 @@
 PASS clean baseline C:\TasOut\parto-mixed-pr2-2026-09-27\fixtures\SAM_zoningAM-CIBSEfutureZ1-MixedBaseline.sam 
-catalogue=C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_Systems\files\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON state=Selectable sha=D38789089D8580BB0E89F27BC139FBC67C41F834E7FA1BB0E76592BC974558D8
+catalogue=<SAM-BIM>\SAM_Systems\files\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON state=Selectable sha=D38789089D8580BB0E89F27BC139FBC67C41F834E7FA1BB0E76592BC974558D8
 PASS a catalogue product with manufacturer cooling guidance: Nuaire MRXBOXAB-ECO5-AECV (MR-ECO-COOL-V) + MR-ECO-COOL-V
 materialised=True route=Systems 
 PASS one complete analytical model materialised

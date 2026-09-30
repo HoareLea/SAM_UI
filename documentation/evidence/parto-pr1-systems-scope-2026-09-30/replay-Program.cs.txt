@@ -1,3 +1,4 @@
+// Local machine path prefixes were replaced by placeholders for publication: <SAM_daily> is the owner's SAM_daily folder, <SAM-BIM> the local repo root.
 // PR-1 headless, no-TAS, READ-ONLY replay of the owner's cleaned model.
 // Reads 000000_SAM_AnalyticalModel-Cleaned.sam, hashes it before and after, writes NOTHING beside it.
 using SAM.Analytical;
@@ -12,7 +13,7 @@ using System.Security.Cryptography;
 
 internal static class Program
 {
-    private const string Directory_Model = @"C:\Users\michal.dengusiak\OneDrive - Tetra Tech, Inc\Documents\SAM_daily\2026-09-30 partOi";
+    private const string Directory_Model = @"<SAM_daily>\2026-09-30 partOi";
 
     private static string Sha(string path) => System.Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(path)));
 
@@ -155,7 +156,7 @@ internal static class Resolver
     [System.Runtime.CompilerServices.ModuleInitializer]
     internal static void Initialise()
     {
-        const string build = @"C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build";
+        const string build = @"<SAM-BIM>\SAM_UI\build";
         System.Runtime.Loader.AssemblyLoadContext.Default.Resolving += (context, name) =>
         {
             string path = System.IO.Path.Combine(build, name.Name + ".dll");

@@ -1,7 +1,7 @@
-SAM.Analytical: C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM.Analytical.dll
-SAM_UI WPF:     C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM.Analytical.UI.WPF.dll
+SAM.Analytical: <SAM-BIM>\SAM_UI\build\SAM.Analytical.dll
+SAM_UI WPF:     <SAM-BIM>\SAM_UI\build\SAM.Analytical.UI.WPF.dll
 PR-1 query present: True
-Model: C:\Users\michal.dengusiak\OneDrive - Tetra Tech, Inc\Documents\SAM_daily\2026-09-30 partOi\000000_SAM_AnalyticalModel-Cleaned.sam
+Model: <SAM_daily>\2026-09-30 partOi\000000_SAM_AnalyticalModel-Cleaned.sam
 SHA256 before: F561161F756A02171637B821F35236E6FC33E259D9BB275E0D6CBE6669FD0B78
 
 == Ventilation systems on the design model

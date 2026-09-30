@@ -51,7 +51,7 @@ $compHandler = { param($w)
     Press $w 'button_Close'; [void](Gone $w)
 }
 
-$exe = 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
+$exe = '<SAM-BIM>\SAM_UI\build\SAM Analytical.exe'
 $model = @(Get-ChildItem (Join-Path $Root "$Case\tas") -Filter '*.sam' | Where-Object { $_.Name -notlike '*.prepared.sam' })[0].FullName
 Say ("exe {0}; reopen the saved run model {1}" -f $exe, $model)
 $proc = Start-Process -FilePath $exe -ArgumentList "/Path=$model" -PassThru

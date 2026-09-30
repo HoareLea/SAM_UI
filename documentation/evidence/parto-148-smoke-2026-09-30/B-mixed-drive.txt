@@ -1,4 +1,4 @@
-﻿11:04:17 launch: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 11:00); model C:\TasOut\parto-148-smoke-2026-09-30\mixed\refused1\Model.sam
+﻿11:04:17 launch: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 11:00); model C:\TasOut\parto-148-smoke-2026-09-30\mixed\refused1\Model.sam
 11:04:29 main window 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' pid 46804
 11:04:31 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
 11:04:31   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
@@ -17,7 +17,7 @@
 11:04:38   press button_Close in 'Part O — Mixed Design'
 11:04:41   window after close 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' [HwndWrapper[SAM Analytical;;f7545449-1f18-4a80-8365-19edab9d54d6]]
 11:04:44 MIXED PROBE DONE
-11:04:54 launch: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 11:00); model C:\TasOut\parto-148-smoke-2026-09-30\mixed\refused2\Model.sam
+11:04:54 launch: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 11:00); model C:\TasOut\parto-148-smoke-2026-09-30\mixed\refused2\Model.sam
 11:05:06 main window 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' pid 15792
 11:05:08 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
 11:05:08   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'

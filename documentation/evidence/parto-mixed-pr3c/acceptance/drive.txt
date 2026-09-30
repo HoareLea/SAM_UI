@@ -1,4 +1,4 @@
-﻿11:58:12 launch: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-28 11:55); model C:\TasOut\parto-pr3c-acceptance-2026-09-28\run\PR3C-Mixed.sam
+﻿11:58:12 launch: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-28 11:55); model C:\TasOut\parto-pr3c-acceptance-2026-09-28\run\PR3C-Mixed.sam
 11:58:23 main window 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' pid 32040
 11:58:25 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
 11:58:25   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
@@ -187,7 +187,7 @@
 12:08:36   press RibbonButton_SaveAnalyticalModel in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
 12:08:44 window 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' [HwndWrapper[SAM Analytical;;48d69257-5759-4b68-af92-5d30b5b0ffb6]] 
 12:08:44 model 121383 bytes 12:08:39
-12:09:29 launch: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-28 11:55); model C:\TasOut\parto-pr3c-acceptance-2026-09-28\run\PR3C-Mixed.sam
+12:09:29 launch: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-28 11:55); model C:\TasOut\parto-pr3c-acceptance-2026-09-28\run\PR3C-Mixed.sam
 12:09:41 main window 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' pid 18844
 12:09:44 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
 12:09:44   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
@@ -265,7 +265,7 @@
 12:11:57   press button_Close in 'Part O — Mixed Design'
 12:12:02   press RibbonButton_SaveAnalyticalModel in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
 12:12:10 model 121383 bytes 12:12:04
-12:12:33 launch: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-28 11:55); model C:\TasOut\parto-pr3c-acceptance-2026-09-28\run-optimised\PR3C-Optimised.sam
+12:12:33 launch: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-28 11:55); model C:\TasOut\parto-pr3c-acceptance-2026-09-28\run-optimised\PR3C-Optimised.sam
 12:12:43 main window 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]' pid 10728
 12:12:46 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
 12:12:46   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'

@@ -1,4 +1,4 @@
-Model: C:\Users\michal.dengusiak\OneDrive - Tetra Tech, Inc\Documents\SAM_daily\2026-07-15 PartO\SAM_zoningAM-CIBSEfutureZ1.sam loaded=True
+Model: <SAM_daily>\2026-07-15 PartO\SAM_zoningAM-CIBSEfutureZ1.sam loaded=True
 == AS SAVED
   zone 'Flat 1' dwelling=True category='Flats' spaces=Studio 1_0 [Studio - Studio 1_0 - Studio 1_0 - Studio 1_0 - Studio 1_0], Bathroom_2 [Studio - Bathroom_2 - Bathroom_2 - Bathroom_2 - Bathroom_2]
   zone 'Corridor' dwelling=False category='Flats' spaces=Corridor_1 [Studio]

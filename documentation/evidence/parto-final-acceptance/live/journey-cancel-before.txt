@@ -1,4 +1,4 @@
-﻿14:58:18 cancel/before: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-26 14:58); model C:\TasOut\parto-pass6-2026-09-26\cancel-before\SAM_zoningAM-CIBSEfutureZ1.sam
+﻿14:58:18 cancel/before: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-26 14:58); model C:\TasOut\parto-pass6-2026-09-26\cancel-before\SAM_zoningAM-CIBSEfutureZ1.sam
 14:58:18 TAS processes before: ''
 14:58:33   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
 14:58:38   simulation case: weather '<absent>' output '<absent>'

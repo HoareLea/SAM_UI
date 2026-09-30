@@ -6,10 +6,10 @@ $sp = $PSScriptRoot
 . (Join-Path $sp 'lib.ps1')
 function Abort([string]$m) { Say "ABORT $m"; Stop-Process -Id $script:ProcessId -Force -ErrorAction SilentlyContinue; exit 1 }
 
-$exe = 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe'
+$exe = '<SAM-BIM>\SAM_UI\build\SAM Analytical.exe'
 $model = if ($Part -eq 'result') { 'C:\TasOut\parto-output-folders-accept-2026-09-30\Iteration2\Iteration1a\tas\000000_SAM_AnalyticalModel-It1a-futureZ1.sam' } else { Join-Path $Out 'model\Design.sam' }
 $hash_Before = (Get-FileHash $model -Algorithm SHA256).Hash
-Say ("exe {0} (WPF dll {1:HH:mm:ss}); model {2}; SHA-256 {3}" -f $exe, (Get-Item 'C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM.Analytical.UI.WPF.dll').LastWriteTime, $model, $hash_Before)
+Say ("exe {0} (WPF dll {1:HH:mm:ss}); model {2}; SHA-256 {3}" -f $exe, (Get-Item '<SAM-BIM>\SAM_UI\build\SAM.Analytical.UI.WPF.dll').LastWriteTime, $model, $hash_Before)
 Say ("TAS processes before: " + ((@(Get-Process | Where-Object { $_.ProcessName -match '^(TBD|TPD|TSD|Tas(?!k))' } | ForEach-Object { $_.ProcessName }) -join ', ') -replace '^$', 'none'))
 
 $proc = Start-Process -FilePath $exe -ArgumentList "/Path=$model" -PassThru

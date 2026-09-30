@@ -1,4 +1,4 @@
-﻿08:17:18 run: exe C:\Users\michal.dengusiak\Documents\GitHub\SAM-BIM\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-26 08:10); model C:\TasOut\parto-2b-journey-2026-09-26\run\SAM_zoningAM-CIBSEfutureZ1.sam
+﻿08:17:18 run: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-26 08:10); model C:\TasOut\parto-2b-journey-2026-09-26\run\SAM_zoningAM-CIBSEfutureZ1.sam
 08:17:18 TAS processes before: 'taskhostw:20196'
 08:17:33   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel-It1a-futureZ1]'
 08:17:40   scenario: selected 'Iteration 2 — MVHR with manufacturer unit'
