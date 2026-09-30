@@ -3,6 +3,92 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): PR-4 - protect the design model from Part O run output (30 Sep 2026) - MERGED as SAM_UI#150 (`d721f1a8`) with SAM#170 (`f4c317e0`)
+
+**Status.**
+- Merged into `sow/2026-Q3` with a merge commit. PR head `8c139601`, 6 commits.
+- SAM#170 was merged first (head `5f04fb97`, merge `f4c317e0`, SAM closeout `ffb61972`).
+- #150's CI was green against the merged SAM (build, SPDX), and the head was unchanged between review and merge.
+- This is **step 1 of the approved Part O model-state architecture**: `documentation/PartO-ModelStateArchitecture.md`,
+  added by this PR. That document holds the invariant, the explicit inputs versus the outputs, the three owner
+  decisions and the PR order.
+- Records: `documentation/PartO-DesignModelProtection-PR4.md`, and SAM `documentation/PartO-ManualEquipmentSelection-PR.md`.
+
+**Invariant.** Part O modifies the design model only through an explicit user action that changes Part O input or
+design intent. Preparation, materialisation, simulation and result creation never mutate it.
+
+- **Work.**
+  - **The window stays on the design model.**
+    - An accepted review hands the prepared model to the run only. It writes only the confirmed inputs onto the
+      design, and only where they changed (`Modify.PersistPartOInputs`). Those inputs are `PartOEquipmentSelection`,
+      `PartOProjectTestVentilationUnit` and, under Manual, `PartOManualEquipmentSelection`.
+    - `SimulatePartO` simulates `PartORun.AnalyticalModel_Prepared` and never calls `SetJSAMObject`.
+    - The expert Energy Simulation never completes a Part O run.
+    - 2B no longer adopts its last valid design. It stays with the run and under `PartO/Iteration2B`.
+    - 1a, 1b and 2 all derive from the design model.
+  - **A manually opened Part O result is refused as a starting point**, through `UI.Query.PartODesignModelRefusal`.
+    - The message is "This is a Part O result. Part O cases run from a design model — open the design model."
+    - The Hub blocks Run and keeps Review Results. The Prepare Iteration command and the shared preparation refuse.
+    - Mixed Design's existing refusal now leads with the same sentence.
+    - Remove Results remains the recovery path.
+    - The rule uses Part O signals only: scenarios, provenance, and SAM's `MaterialisedBaseline` findings. Ordinary
+      simulation results do not refuse.
+  - **Hand-picked per-dwelling products (owner decision): they are Part O design input.**
+    - They are stored as SAM's `PartOManualEquipmentSelection`: dwelling zone guid → product identity.
+    - SAM's preparation materialises them onto its own new units. They are never copied from a result.
+    - Only a product-selecting review in Manual mode reads them.
+    - Accepting a Manual review writes them: an assigned row sets its dwelling, an unassigned row clears it, and
+      dwellings outside the review's scope keep theirs.
+    - Accepting an automatic review clears them.
+  - **Wording.** The Review window's decision text and the 2B result's "kept design" line no longer claim the model
+    is "adopted" or "loaded into the model".
+- **Decisions.**
+  - The original six-parameter `PreparePartOIteration` is kept in SAM for binary compatibility. The new overload
+    takes all seven parameters explicitly.
+  - Inputs are compared as stored JSON, and nothing is written when nothing changed.
+  - The test seams follow the existing `confirm` pattern: `SimulatePartO(…, PartOWorkflowRunner)`, and `optimise` and
+    `showResult` on `RunPartOOptimisationResult`.
+- **Files.**
+  - `SAM_UI/SAM.Analytical.UI/Query/PartODesignModelRefusal.cs` (new).
+  - `PartOWorkflowCapabilities.cs` and `PartOWorkflowInspection.cs`.
+  - In `WPF/SAM.Analytical.UI.WPF/`:
+    - `Modify/`: `PreparePartOIteration.cs`, `Simulate.cs`, `RunPartOOptimisation.cs`, `RunPartOWorkflow.cs`;
+    - `Windows/`: `PartOWorkflowWindow.xaml.cs`, `PartOPreparationWindow.xaml.cs`, `PartOMixedDesignWindow.xaml.cs`,
+      `AnalyticalWindow.xaml.cs` (comment only);
+    - `Classes/PartO/`: `PartOOptimisationSummary.cs`, `Mixed/PartOMixedDesignSession.cs`.
+  - Tests: `PartODesignModelProtectionTests.cs` (new, 10 tests), `PartOReviewIterationTests.cs` (2 updated),
+    `PartOPreparedModelCarriedLinkTests.cs` (comment).
+  - Docs: `documentation/PartO-ModelStateArchitecture.md`, the PR record, and
+    `documentation/evidence/parto-design-model-protection-2026-09-30/`.
+- **Validation.**
+  - WPF: 1549/1549, including against the merged SAM `ffb61972`. SAM.Tests: 2705/2705.
+  - The in-process journey 1a → 1b → 2 → 2B → Save keeps the design JSON identical, except for the explicit input
+    commit. TAS is replaced only at `PartOWorkflowRunner`; the SAM preparation is real.
+  - No run state carries forward into 1b or 2.
+  - Hand-picked products A/B rebuild onto new units from the design across 1a → 1b → 2, with no earlier result in the
+    source, and survive Save and reopen.
+  - The opened-result guard works in the Hub, the Hub window and Mixed Design, and review still works.
+  - Every mutation check fails its intended tests.
+  - The native no-TAS smoke passes. On an opened result the real Hub blocks Run and offers Review; on a design model
+    Run is enabled. The first smoke run found, and the PR fixed, the Hub window dropping `DesignModelRefusal`.
+- **Risks.**
+  - No licensed TAS Prepare & Run followed by Save was run in the real UI. That path is covered in process.
+  - After a run, the window holds no Part O results. Results are reached through Review, the Results tab or the case
+    `.sam`.
+  - Legacy result-as-design files, including the owner's current model, are refused for Prepare & Run. Remove Results
+    is the recovery.
+  - "Prepare Iteration → Energy Simulation" no longer completes a Part O run. Prepare & Run reuses the preparation.
+  - The Review window has no per-row "clear product" control; the clear rule is pinned at the commit seam.
+  - Undoing the input write drops a pending run.
+- **Next step.**
+  - **PR-1** (Part O system scope, SAM + SAM_UI), in a fresh session. It moves the Iteration 3 scope into a public SAM
+    query and scopes Mixed Design's Systems route by `Record.VentilationSystemGuids`, with Check running the same
+    preflight.
+  - Then PR-2 ∥ PR-3, then the licensed Mixed Design acceptance on the existing `-Cleaned.sam`, per the architecture
+    record.
+  - Optional: a licensed native Prepare & Run followed by Save, to confirm the saved design `.sam` has no Part O
+    results.
+
 ## Current (Part O stream): Results > Part O > Remove Results... - clean Mixed Design baseline from a run model (30 Sep 2026) - MERGED as SAM_UI#149 (`7a464660`) with SAM#169 (`19531bd9`)
 
 **Status.** Merged into `sow/2026-Q3` with a merge commit (PR head `7cf57f7b`, 1 commit). SAM#169 merged first; #149 CI was
