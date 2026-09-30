@@ -310,6 +310,21 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
+        /// The verdict of an Iteration 3 case that WAS assessed, from its production occupied-space status alone -
+        /// so the case's report window is headed by that verdict, never by "unavailable". Pass and fail only; any
+        /// other status is "not assessed". No counts: the case carries its report text, not its report object.
+        /// </summary>
+        internal static PartOTM59ResultSummary ForStatus(TM59ComplianceStatus tM59ComplianceStatus)
+        {
+            return tM59ComplianceStatus switch
+            {
+                TM59ComplianceStatus.Pass => new PartOTM59ResultSummary(PartOTM59Verdict.Pass, tM59ComplianceStatus, null, null, null, []),
+                TM59ComplianceStatus.Fail => new PartOTM59ResultSummary(PartOTM59Verdict.Fail, tM59ComplianceStatus, null, null, null, []),
+                _ => new PartOTM59ResultSummary(PartOTM59Verdict.NotAssessed, tM59ComplianceStatus, null, null, string.Format("The production assessment reached no occupied-space pass or fail (its combined status is '{0}').", Core.Query.Description(tM59ComplianceStatus)), []),
+            };
+        }
+
+        /// <summary>
         /// There is no assessment: the run's results are missing, stale or could not be read. Stated in the
         /// window with the reason, never as a pass or a fail.
         /// </summary>

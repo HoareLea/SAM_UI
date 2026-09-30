@@ -8,6 +8,7 @@ using SAM.Core.Systems;
 using SAM.Core.Tas;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace SAM.Analytical.UI.WPF
@@ -287,7 +288,9 @@ namespace SAM.Analytical.UI.WPF
             //The durable artifact, written whether the pairing goes on to complete or not. A failure to
             //write is carried as NO report path plus the writer's reason, and never fails the assessment,
             //which is already done.
-            string path_TM59Report = Report(path_TSD, partOTM59Assessment.Report, out string refusal_Report, ReportProvenance?.Invoke(path_TSD, partOTM59Assessment.Report));
+            List<string> provenance = ReportProvenance?.Invoke(path_TSD, partOTM59Assessment.Report)?.ToList();
+
+            string path_TM59Report = Report(path_TSD, partOTM59Assessment.Report, out string refusal_Report, provenance);
 
             return new PartOIteration3Assessment(
                 true,
@@ -298,7 +301,8 @@ namespace SAM.Analytical.UI.WPF
                 partOTM59Assessment.Result?.VentilationStrategyRefusals,
                 partOTM59Assessment.SpaceGuids_Unassessed,
                 partOTM59Assessment.ResultantTemperatures,
-                partOTM59Assessment.Report.ToString(),
+                //The text as saved, provenance included, so the window and Copy All show what the file holds.
+                Modify.PartOTM59ReportText(partOTM59Assessment.Report, provenance),
                 path_TM59Report,
                 partOTM59Assessment.Result?.Spaces?.Count ?? 0,
                 refusal_Report,
