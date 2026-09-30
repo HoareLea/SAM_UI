@@ -3,7 +3,59 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
-## Current (Part O stream): per-case output folders beneath the chosen Part O root (30 Sep 2026) - MERGED as SAM_UI#147 (`4971a3f7`)
+## Current (Part O stream): acceptance follow-ups - TM59 header, Mixed Design sidecar, prepared-model links (30 Sep 2026) - MERGED as SAM_UI#148 (`f92ae5d8`)
+
+**Status.** Merged into `sow/2026-Q3` with a merge commit (PR head `0fd3f9a`; 2 commits: `7eb1fe4`, `0fd3f9a`). CI green
+(build, SPDX). SAM_UI only - SAM and SAM_Tas are unchanged. It closes the three findings of the 30 Sep final real-app
+acceptance of #147. Full record: `documentation/PartO-AcceptanceFollowups-PR.md`.
+
+- **A. TM59 Scenario / Assessment context (presentation only).** The saved TM59 report's `PART O CASE` block now
+  states first what the results file physically is, then any assessment it serves:
+  - The Iteration 1a report reassessed as the Iteration 3 reference case reads
+    `Scenario: Iteration 1a — MVHR design duty (no manufacturer unit)`, then
+    `Assessment context: Iteration 3 — Reference case`. It used to read `Case: Iteration 3 …` above
+    `Iteration / scenario: …`.
+  - The label is `Scenario` everywhere, as in the TM59 result window.
+  - A standalone report prints no `Assessment context` line.
+  - The system case keeps `Scenario: Iteration 3 — … system case …` and `Reference case: …`.
+  - Unchanged: the provenance model, the assessed TSD, the calculations, and every other header line.
+  - Seam: `PartOTM59ResultSummary.ReportProvenance(run, report, lines_Context, scenario, path_TSD)`.
+- **B. A refused Mixed Design session no longer creates or overwrites `.partomixed.json`.**
+  - Cause: the command writes the state on every window close, and with no sidecar present it starts from a default.
+    So opening a run-output model and closing the window dropped a default sidecar into `<case>/tas`.
+  - Fix: `PartOMixedDesignSession.OpenedOnCleanBaseline` gates `Modify.WritePartOMixedDesignState`, the one write
+    seam. A refused session writes nothing, and an existing sidecar stays byte-identical.
+  - A clean-baseline session persists exactly as before. The baseline validation is untouched.
+- **C. Stale `.prepared.sam` fields: investigated, intentionally left unchanged.**
+  - What is carried: preparation copies the open model, which after a run is that run's output. So `.prepared.sam`
+    carries the previous run's `SimulationResultProvenance` and `OverheatingScenarios` (verified byte-identical on the
+    acceptance files).
+  - Why it stays: no reader trusts them.
+    - `RunPartOSimulation` stamps the run's own scenarios, and fresh provenance on completion.
+    - Results/Review and Iteration 3 read the freshly stamped models.
+    - The resume reads only cluster, zones and systems, under `SimulationResultProvenance.Fingerprint`, which excludes
+      both parameters.
+    - `PartORun.Restore` fails closed on the TSD, design and scenario fingerprints.
+  - Regression: `PartOPreparedModelCarriedLinkTests` pins this. It requires non-trust, not survival: the tests still
+    pass under a hypothetical strip.
+  - Optional future scrub seam, only if the owner asks: `PreparePartOIteration.ConcludePartOReview`, in its own PR.
+- **Evidence.**
+  - Full WPF suite **1530/1530** (1519 + 11 new). Each fix's new tests were shown failing without it.
+  - **Native smoke acceptance PASSED for A and B** (real `SAM Analytical.exe` built from `7eb1fe4`, UIA):
+    - A: the saved 1a run in the disposable #147 root was reopened. Review Results gave the standalone header;
+      Iteration 3 Open result gave the Scenario + Assessment context header. The root was restored hash-identical.
+    - B: two refused run-output copies. No sidecar was created; an existing one stayed byte-identical.
+    - Evidence: `documentation/evidence/parto-148-smoke-2026-09-30/`.
+  - **No licensed TAS rerun was required.** Nothing changes simulation execution, and only the TSD results reader ran.
+- **Not verified.** The valid Mixed Design persistence path is covered by tests only; it needs the clean pre-Part-O
+  model and licensed TAS.
+- **Notes.**
+  - The 30 Sep acceptance evidence branch `docs/parto-final-acceptance-2026-09-30` (`4bb923c`) is still local and
+    unpushed. Pushing it is the owner's call.
+  - The smoke drivers are in `C:\TasOut\parto-148-smoke-2026-09-30\scripts` (local).
+- **Next step.** None required for this entry.
+
+## Previous (Part O stream): per-case output folders beneath the chosen Part O root (30 Sep 2026) - MERGED as SAM_UI#147 (`4971a3f7`)
 
 **Status.** Merged into `sow/2026-Q3` with a merge commit (PR head `bedfb94`; 3 commits: `642125e`, `fe6ddd2`, `bedfb94`).
 CI green (build, SPDX). SAM_UI only - SAM (`83eb79a3`) and SAM_Tas (`057faf3`) are unchanged. Full record:
