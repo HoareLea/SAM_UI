@@ -849,7 +849,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (!IsCleanBaseline)
             {
-                result.Blockers.Add(string.Format("The open model is not a clean Part O baseline ({0}). Reopen the pre-Part-O model: nothing is cleaned or undone.", string.Join("; ", BaselineFindings.Select(x => Core.Query.Description(x.Reason)).Distinct())));
+                result.Blockers.Add(string.Format("The open model is not a clean Part O baseline ({0}). Save a cleaned copy with Results > Part O > Remove Results and open it, or reopen the pre-Part-O model.", string.Join("; ", BaselineFindings.Select(x => Core.Query.Description(x.Reason)).Distinct())));
             }
 
             if (rows.Count == 0)

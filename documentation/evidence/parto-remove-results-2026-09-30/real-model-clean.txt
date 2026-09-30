@@ -1,0 +1,92 @@
+Headless run of SAM Modify.RemovePartORunState (SAM branch feature/parto-remove-results-2026-09-30) on the owner's run-output model.
+Source: OneDrive...\SAM_daily\2026-09-29 partOi\model\000000_SAM_AnalyticalModel.sam, SHA-256 prefix 25dd56b6eae57976 before AND after (unchanged).
+Output: a scratch copy (not committed - project model data).
+
+BEFORE findings=6 :: spaces=9 zones=4 panels=50 systems=[NV 1,UV 1,MV 1,MVHR 1,MVHR 2,MVHR 3] ahu=[AHU1,MVHR-01,MVHR-02,MVHR-03] heating=4 cooling=3 terminals=9 spaceMov=17 ahuMov=3 ics(cluster)=19 partF=8 weather=True eqsel=True constructions=4
+clean took 45 ms
+REMOVED:
+  - Overheating scenarios (the Part O run's scenario statement).
+  - Simulation result provenance (the link to the run's TAS results file; the file itself is not touched).
+  - 242 simulation result object(s): 18 SpaceSimulationResult, 220 SurfaceSimulationResult, 4 ZoneSimulationResult.
+  - 2 design-day record(s) the TAS workflow wrote into the cluster (the model's own design-day parameters are kept).
+  - 3 Part O MVHR ventilation system(s) 'MVHR 1', 'MVHR 2', 'MVHR 3'.
+  - 3 Part O air handling unit(s) 'MVHR-01', 'MVHR-02', 'MVHR-03'.
+  - 9 design terminal(s) connected to those systems (the Part F requirements they were realised from are kept).
+  - 20 air movement(s) the Part O preparation built for those dwellings (supply, extract and internal transfer air).
+  - 8 per-space Part F internal condition(s), each restored to the condition it was made from: 'Bathroom_2' -> 'TM59_Bathroom', 'Bedroom 2_3' -> 'Double Bedroom', 'Bedroom 2_6' -> 'Double Bedroom', 'Ensuite_5' -> 'TM59_Bathroom', 'Ensuite_8' -> 'TM59_Bathroom', 'Kitchen_4' -> '1 Bed Apt. Kitchen', 'Kitchen_7' -> '1 Bed Apt. Kitchen', 'Studio 1_0' -> 'Studio'.
+KEPT:
+AFTER (in memory) findings=0 :: spaces=9 zones=4 panels=50 systems=[NV 1,UV 1,MV 1] ahu=[AHU1] heating=4 cooling=3 terminals=0 spaceMov=0 ahuMov=0 ics(cluster)=19 partF=8 weather=True eqsel=True constructions=4
+input still refused=6
+saved=True
+REOPENED findings=0 :: spaces=9 zones=4 panels=50 systems=[NV 1,UV 1,MV 1] ahu=[AHU1] heating=4 cooling=3 terminals=0 spaceMov=0 ahuMov=0 ics(cluster)=19 partF=8 weather=True eqsel=True constructions=4
+  space 'Studio 1_0' ic='Studio' sup=False app=True
+  space 'Corridor_1' ic='TM59_Communal Corridor (including pipework gains)' sup=False app=True
+  space 'Bathroom_2' ic='TM59_Bathroom' sup=False app=True
+  space 'Bedroom 2_3' ic='Double Bedroom' sup=False app=True
+  space 'Kitchen_4' ic='1 Bed Apt. Kitchen' sup=False app=True
+  space 'Ensuite_5' ic='TM59_Bathroom' sup=False app=True
+  space 'Bedroom 2_6' ic='Double Bedroom' sup=False app=True
+  space 'Kitchen_7' ic='1 Bed Apt. Kitchen' sup=False app=True
+  space 'Ensuite_8' ic='TM59_Bathroom' sup=False app=True
+
+== Before (validator inventory, same file)
+== …/SAM_daily/2026-09-29 partOi/model/000000_SAM_AnalyticalModel.sam
+  findings=6
+   - RunOutputBaseline: The model carries overheating scenarios, so it has been through a Part O run: scenarios are stated for a run, not authored on a baseline.
+   - RunOutputBaseline: The model carries a simulation result provenance record, so it is the output of a simulation, not a baseline.
+   - RunOutputBaseline: The model's cluster carries 242 simulation result object(s) (for example SpaceSimulationResult), so it is the output of a simulation, not a baseline. Accepting it would feed a run's output back in as its input.
+   - RunOutputBaseline: The model's cluster carries 2 design-day record(s). The TAS workflow writes those into the cluster after a run (Modify.ReplaceDesignDays); a baseline states its design days as the model's own Heating/Cooling Design Days parameters, which are accepted.
+   - MaterialisedBaseline: The model already carries Part O MVHR system(s) 'MVHR 1', 'MVHR 2', 'MVHR 3', so it has been prepared for a Part O run. Reopen the pre-Part-O source model; a materialised model is never cleaned back into a baseline.
+   - MaterialisedBaseline: 8 space(s) carry the per-space internal condition Modify.ApplyPartFVentilationRates writes (for example 'Bathroom_2'), so the model's authored internal conditions have already been replaced by a Part O preparation. That rewrite is not reversible; reopen the pre-Part-O source model.
+  model params:
+    [SAM.Analytical.UI] UI Geometry Settings : UIGeometrySettings
+    [SAM.Analytical] Weather Data : WeatherData
+    [SAM.Analytical] Overheating Scenarios : SAMCollection`1
+    [SAM.Analytical] Simulation Result Provenance : SimulationResultProvenance
+    [SAM.Analytical] Part O Equipment Selection : PartOEquipmentSelection
+  cluster types:
+    Space x9
+    Panel x50
+    Zone x4
+    VentilationSystem x6
+    AirHandlingUnit x4
+    CoolingSystem x3
+    HeatingSystem x4
+    InternalCondition x19
+    DesignDay x2
+    SpaceSimulationResult x18
+    SurfaceSimulationResult x220
+    ZoneSimulationResult x4
+    VentilationTerminal x9
+    SpaceAirMovement x17
+    AirHandlingUnitAirMovement x3
+  ventilation systems:
+    'NV 1' type='NV' a2d3df07-33e4-4f20-9966-d60592ff9477 spaces=2 ahu=[] terminals=0
+    'UV 1' type='UV' 6d83aa34-d99a-4bf4-9dca-2de88f1255eb spaces=1 ahu=[] terminals=0
+    'MV 1' type='MV' 4ef36d1a-2ccd-45bc-84b6-9e7c5e40e0e4 spaces=6 ahu=[] terminals=0
+    'MVHR 1' type='MVHR' 5a4b1f2c-9d3e-4c7a-8b16-2f0d6e5c8a41 spaces=2 ahu=[] terminals=3
+    'MVHR 2' type='MVHR' 5a4b1f2c-9d3e-4c7a-8b16-2f0d6e5c8a41 spaces=3 ahu=[] terminals=3
+    'MVHR 3' type='MVHR' 5a4b1f2c-9d3e-4c7a-8b16-2f0d6e5c8a41 spaces=3 ahu=[] terminals=3
+    AHU 'AHU1' systems=[]
+    AHU 'MVHR-01' systems=[]
+    AHU 'MVHR-02' systems=[]
+    AHU 'MVHR-03' systems=[]
+    SAM 'Studio 1_0 to Bathroom_2 transfer' SAM.Analytical.Space,SAM.Analytical::[75b28088241544c0bea83179b3475df0] -> SAM.Analytical.Space,SAM.Analytical::[e2c8a683410d42fd92cbbcf1e87e5a3a]
+    SAM 'Studio 1_0 supply' SAM.Analytical.AirHandlingUnit,SAM.Analytical::[a086dc2ee2654ab7b7f7db9eab3ae155] -> SAM.Analytical.Space,SAM.Analytical::[75b28088241544c0bea83179b3475df0]
+    SAM 'MVHR-01 exhaust' SAM.Analytical.AirHandlingUnit,SAM.Analytical::[a086dc2ee2654ab7b7f7db9eab3ae155] -> 
+    SAM 'Bathroom_2 extract' SAM.Analytical.Space,SAM.Analytical::[e2c8a683410d42fd92cbbcf1e87e5a3a] -> SAM.Analytical.AirHandlingUnit,SAM.Analytical::[a086dc2ee2654ab7b7f7db9eab3ae155]
+    SAM 'Studio 1_0 extract' SAM.Analytical.Space,SAM.Analytical::[75b28088241544c0bea83179b3475df0] -> SAM.Analytical.AirHandlingUnit,SAM.Analytical::[a086dc2ee2654ab7b7f7db9eab3ae155]
+    SAM 'Bedroom 2_3 to Kitchen_4 transfer' SAM.Analytical.Space,SAM.Analytical::[e4d79f26bd864334831afe4048c0e6cc] -> SAM.Analytical.Space,SAM.Analytical::[cfd0fd57501740039e6c3d3d40468bd4]
+    SAM 'Ensuite_5 extract' SAM.Analytical.Space,SAM.Analytical::[407a5b9182484992abeb000fdced341d] -> SAM.Analytical.AirHandlingUnit,SAM.Analytical::[637e558ed7ed4a3b93c6bc84afaaefc7]
+    SAM 'Bedroom 2_3 supply' SAM.Analytical.AirHandlingUnit,SAM.Analytical::[637e558ed7ed4a3b93c6bc84afaaefc7] -> SAM.Analytical.Space,SAM.Analytical::[e4d79f26bd864334831afe4048c0e6cc]
+    SAM 'Kitchen_4 extract' SAM.Analytical.Space,SAM.Analytical::[cfd0fd57501740039e6c3d3d40468bd4] -> SAM.Analytical.AirHandlingUnit,SAM.Analytical::[637e558ed7ed4a3b93c6bc84afaaefc7]
+    SAM 'Kitchen_4 to Ensuite_5 transfer' SAM.Analytical.Space,SAM.Analytical::[cfd0fd57501740039e6c3d3d40468bd4] -> SAM.Analytical.Space,SAM.Analytical::[407a5b9182484992abeb000fdced341d]
+    SAM 'MVHR-02 exhaust' SAM.Analytical.AirHandlingUnit,SAM.Analytical::[637e558ed7ed4a3b93c6bc84afaaefc7] -> 
+    SAM 'Kitchen_7 to Ensuite_8 transfer' SAM.Analytical.Space,SAM.Analytical::[59709f589e714ad99ba1a7b8c84c2fcc] -> SAM.Analytical.Space,SAM.Analytical::[b62f342bf86a4c468feb616bd976e525]
+    SAM 'Bedroom 2_6 to Kitchen_7 transfer' SAM.Analytical.Space,SAM.Analytical::[6011108b0d834602ba4f1ac620e6219e] -> SAM.Analytical.Space,SAM.Analytical::[59709f589e714ad99ba1a7b8c84c2fcc]
+    SAM 'Bedroom 2_6 supply' SAM.Analytical.AirHandlingUnit,SAM.Analytical::[6279b4db8b2e4d9c9f94952fec293c56] -> SAM.Analytical.Space,SAM.Analytical::[6011108b0d834602ba4f1ac620e6219e]
+    SAM 'MVHR-03 exhaust' SAM.Analytical.AirHandlingUnit,SAM.Analytical::[6279b4db8b2e4d9c9f94952fec293c56] -> 
+    SAM 'Kitchen_7 extract' SAM.Analytical.Space,SAM.Analytical::[59709f589e714ad99ba1a7b8c84c2fcc] -> SAM.Analytical.AirHandlingUnit,SAM.Analytical::[6279b4db8b2e4d9c9f94952fec293c56]
+    SAM 'Ensuite_8 extract' SAM.Analytical.Space,SAM.Analytical::[b62f342bf86a4c468feb616bd976e525] -> SAM.Analytical.AirHandlingUnit,SAM.Analytical::[6279b4db8b2e4d9c9f94952fec293c56]
+    space 'Studio 1_0' ic='Studio - Studio 1_0' partF=True sup=True exh=True terminals=2
+    space 'Corridor_1' ic='TM59_Communal Corridor (including pipework gains)' partF=False sup=False exh=False terminals=0

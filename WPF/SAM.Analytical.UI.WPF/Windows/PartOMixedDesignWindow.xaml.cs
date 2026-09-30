@@ -395,7 +395,7 @@ namespace SAM.Analytical.UI.WPF
             }
             else
             {
-                textBlock_Baseline.Text = string.Format("The open model is NOT a clean Part O baseline, so no mixed design can be built from it. Reopen the pre-Part-O model; nothing is cleaned or undone. SAM says: {0}",
+                textBlock_Baseline.Text = string.Format("The open model is NOT a clean Part O baseline, so no mixed design can be built from it. Mixed Design does not change it: save a cleaned copy with Results > Part O > Remove Results and open that, or reopen the pre-Part-O model. SAM says: {0}",
                     string.Join(" ", session.BaselineFindings.Take(4).Select(x => string.Format("[{0}] {1}", Core.Query.Description(x.Reason), x.Message))) + (session.BaselineFindings.Count > 4 ? string.Format(" …and {0} more.", session.BaselineFindings.Count - 4) : string.Empty));
                 textBlock_Baseline.Foreground = Brushes.Firebrick;
             }
