@@ -3,8 +3,8 @@
 
 # Part O PR-1: one identity-based Systems scope for Iteration 3 and Mixed Design; Check runs Build's preflight
 
-**Status (30 Sep 2026): implemented and tested. The PR is open against `sow/2026-Q3` and is NOT merged. It depends on
-SAM PR-1 (`Query.PartOSystemsMaterialisationScope`), which must merge first.**
+**Status (30 Sep 2026): implemented and tested. The PR is open (SAM-BIM/SAM_UI#151) against `sow/2026-Q3` and is NOT merged. It depends on
+SAM PR-1 (SAM-BIM/SAM#171, `Query.PartOSystemsMaterialisationScope`), which must merge first.**
 
 - Branch `feature/parto-systems-scope-2026-09-30`, from `sow/2026-Q3` `a3ae5df` (after SAM_UI#150 PR-4 and its
   closeout). SAM branch of the same name, from SAM `sow/2026-Q3` `ffb61972`.
