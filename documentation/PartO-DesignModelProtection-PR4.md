@@ -5,10 +5,11 @@
 
 **Status (30 Sep 2026): implemented and tested. The PR is open against `sow/2026-Q3` and is NOT merged.**
 
-It **depends on SAM-BIM/SAM#170** (`feature/parto-manual-equipment-selection-2026-09-30`), which adds
-`PartOManualEquipmentSelection` and `PreparePartOIteration`'s manual parameter (record: SAM
-`documentation/PartO-ManualEquipmentSelection-PR.md`). SAM_UI CI stays red until that SAM PR merges into SAM
-`sow/2026-Q3`, so merge SAM first. The owner question raised by the first round is resolved (below).
+It depends on **SAM-BIM/SAM#170, MERGED into SAM `sow/2026-Q3` as `f4c317e0`** (PR head `5f04fb97`; SAM closeout
+`ffb61972`). That PR adds `PartOManualEquipmentSelection` and a manual-aware `PreparePartOIteration` overload. The
+original six-parameter overload is kept unchanged for binary compatibility. Record: SAM
+`documentation/PartO-ManualEquipmentSelection-PR.md`. This PR was revalidated against the merged SAM (below). The owner
+question raised by the first round is resolved (below).
 
 - Branch `feature/parto-design-model-protection-2026-09-30`, from `sow/2026-Q3` `92534d6`.
 - Architecture: `documentation/PartO-ModelStateArchitecture.md`, which is the approved review. This PR is step 1 of it.
@@ -79,7 +80,7 @@ authority.
 
 **Semantics.**
 - **Read.** Only a product-selecting review under Manual reads the input (`Modify.ManualEquipmentSelection(request,
-  selection, model)`). SAM's `PreparePartOIteration(…, partOManualEquipmentSelection)` assigns each dwelling's product
+  selection, model)`). SAM's seven-parameter `PreparePartOIteration(…, isolate, partOManualEquipmentSelection)` assigns each dwelling's product
   to the unit it builds through `AssignVentilationUnit`. 1a and 1b never read it, an automatic rule is never
   overridden, and an unknown schema is warned about and not applied.
 - **Written on Accept of a Manual review** (`Modify.ManualEquipmentSelection(table, preparation, existing)`, keyed
@@ -166,7 +167,7 @@ authority.
   - an automatic review keeps or stores choices: 3 tests fail;
   - an unassigned row does not clear: the clear test fails;
   - choices are never written to the design: 2 tests fail.
-- **Full WPF suite: 1549/1549** (1546 in round one; this round adds 4 tests and replaces 1). **SAM.Tests: 2703/2703** on the SAM branch.
+- **Full WPF suite: 1549/1549** (1546 in round one; this round adds 4 tests and replaces 1). **SAM.Tests: 2705/2705** on the SAM branch. **Revalidated against merged SAM `sow/2026-Q3` `ffb61972`: WPF 1549/1549.**
 - **Native smoke, no TAS: PASS** after one fix (`evidence/…/SMOKE.md`).
   - On an opened result, the real Hub blocks Run with the refusal and offers Review Results, and Mixed Design leads
     with the sentence.
@@ -188,7 +189,7 @@ authority.
 
 ## Next step
 
-1. The owner reviews SAM-BIM/SAM#170 and this PR. Merge SAM first.
+1. SAM-BIM/SAM#170 is merged (`f4c317e0`). This PR is ready for the owner to merge once its CI is green against that SAM.
 2. Optionally, a licensed native check: open a design model, Prepare & Run 1a, confirm the window is still the design,
    Review, Save, and confirm the saved `.sam` has no Part O results.
 3. Merge. Then add the `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`, and start **PR-1** (Part O system scope,
