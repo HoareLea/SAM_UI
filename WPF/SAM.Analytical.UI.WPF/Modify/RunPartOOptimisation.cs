@@ -11,7 +11,7 @@ namespace SAM.Analytical.UI.WPF
     {
         /// <summary>
         /// The ribbon command behind the automatic Approved Document O Iteration 2B optimisation: confirm it,
-        /// run it, show its outcome and history, and adopt the last design that was actually valid.
+        /// run it, and show its outcome and history. The open design model is never replaced by it.
         /// <para>
         /// <b>Orchestration only.</b> Every engineering decision belongs to
         /// <see cref="OptimisePartOTM59(PartORun, PartOOptimisationSettings, out string)"/> and, beneath it,
@@ -28,12 +28,14 @@ namespace SAM.Analytical.UI.WPF
         /// agreed to.
         /// </para>
         /// <para>
-        /// <b>What is adopted is the last valid design</b> - the last iteration that was prepared, simulated
+        /// <b>What is kept is the last valid design</b> - the last iteration that was prepared, simulated
         /// over the full year and assessed. On a capacity stop that is the design one full step below the
-        /// selected unit's ceiling; it is never a refused round, and never a round that was not simulated.
+        /// selected unit's ceiling; it is never a refused round, and never a round that was not simulated. It
+        /// stays with the run and under <c>PartO/Iteration2B</c>, and is never written into the design model
+        /// (PR-4, owner decision 3).
         /// </para>
         /// </summary>
-        /// <param name="uIAnalyticalModel">The loaded model. Replaced by the last valid design on success.</param>
+        /// <param name="uIAnalyticalModel">The open design model. Never replaced or changed by an optimisation.</param>
         /// <param name="partORun">The session's completed Iteration 2 run.</param>
         /// <param name="owner">Owner window for the dialogs.</param>
         public static void RunPartOOptimisation(this UIAnalyticalModel? uIAnalyticalModel, PartORun? partORun, IWin32Window? owner = null)
@@ -57,12 +59,20 @@ namespace SAM.Analytical.UI.WPF
         /// Test seam: answers the confirmation instead of showing it. Null shows
         /// <see cref="PartOOptimisationStartWindow"/>.
         /// </param>
+        /// <param name="optimise">
+        /// Test seam: runs the optimisation instead of <see cref="OptimisePartOTM59(PartORun, PartOOptimisationSettings, out string)"/>,
+        /// which needs TAS. Null is the production optimiser.
+        /// </param>
+        /// <param name="showResult">
+        /// Test seam: receives the outcome instead of <see cref="PartOOptimisationResultWindow"/> - the run, whether a
+        /// Cancel was requested, and whether 2B can continue. Null shows the window.
+        /// </param>
         /// <returns>
         /// The optimisation that ran, or null where it was refused before starting (that refusal has already
         /// been shown) or the confirmation was cancelled (<paramref name="partOOptimisationSettings_Confirmed"/>
         /// is then null too).
         /// </returns>
-        internal static PartOOptimisationRun? RunPartOOptimisationResult(UIAnalyticalModel? uIAnalyticalModel, PartORun? partORun, IWin32Window? owner, PartOOptimisationSettings? partOOptimisationSettings_Session, out PartOOptimisationSettings? partOOptimisationSettings_Confirmed, Func<PartOOptimisationStart, PartOOptimisationSettings?>? confirm = null)
+        internal static PartOOptimisationRun? RunPartOOptimisationResult(UIAnalyticalModel? uIAnalyticalModel, PartORun? partORun, IWin32Window? owner, PartOOptimisationSettings? partOOptimisationSettings_Session, out PartOOptimisationSettings? partOOptimisationSettings_Confirmed, Func<PartOOptimisationStart, PartOOptimisationSettings?>? confirm = null, Func<PartORun, PartOOptimisationSettings, PartOOptimisationRun?>? optimise = null, Action<PartOOptimisationRun, bool, bool>? showResult = null)
         {
             partOOptimisationSettings_Confirmed = null;
 
@@ -123,7 +133,15 @@ namespace SAM.Analytical.UI.WPF
                 PartOOptimisationPhases(partOOptimisationSettings),
                 cancelOnlyWhileObserved: true))
             {
-                partOOptimisationRun = partORun.OptimisePartOTM59(partOOptimisationSettings, out refusal);
+                if (optimise is null)
+                {
+                    partOOptimisationRun = partORun.OptimisePartOTM59(partOOptimisationSettings, out refusal);
+                }
+                else
+                {
+                    partOOptimisationRun = optimise(partORun, partOOptimisationSettings);
+                    refusal = partOOptimisationRun is null ? "The optimisation did not run." : null;
+                }
 
                 //From the run's own stop reason, as Iteration 3 ends its list from its result: a cancelled or
                 //failed round must not read as completed while the window closes.
@@ -152,35 +170,27 @@ namespace SAM.Analytical.UI.WPF
                 && partORun.State == PartORunState.WorkflowCompleted
                 && ReferenceEquals(partORun.AnalyticalModel_Assessment, analyticalModel_LastValid);
 
-            PartOOptimisationResultWindow partOOptimisationResultWindow = new();
-            partOOptimisationResultWindow.Show(partOOptimisationRun, cancelRequested, canContinue);
-
-            if (owner is not null)
+            if (showResult is not null)
             {
-                new System.Windows.Interop.WindowInteropHelper(partOOptimisationResultWindow).Owner = owner.Handle;
+                showResult(partOOptimisationRun, cancelRequested, canContinue);
+            }
+            else
+            {
+                PartOOptimisationResultWindow partOOptimisationResultWindow = new();
+                partOOptimisationResultWindow.Show(partOOptimisationRun, cancelRequested, canContinue);
+
+                if (owner is not null)
+                {
+                    new System.Windows.Interop.WindowInteropHelper(partOOptimisationResultWindow).Owner = owner.Handle;
+                }
+
+                partOOptimisationResultWindow.ShowDialog();
             }
 
-            partOOptimisationResultWindow.ShowDialog();
-
-            if (analyticalModel_LastValid is null)
-            {
-                return partOOptimisationRun;
-            }
-
-            //Armed only where the run holds THIS VERY MODEL as its completed one. State alone is not
-            //enough: a round can complete its workflow and then fail its assessment, which would leave the
-            //run in WorkflowCompleted carrying that round's model and TSD while the design being adopted
-            //here is the previous one. Arming on state would then accept the replacement without dropping
-            //the run, and the user would be looking at one design while the assessment command read
-            //another's results. The optimiser drops such a run itself; this is the second lock on the same
-            //door, and where it does not hold the replacement below is correctly read as an outside edit.
-            if (partORun.State == PartORunState.WorkflowCompleted && ReferenceEquals(partORun.AnalyticalModel_Assessment, analyticalModel_LastValid))
-            {
-                partORun.ExpectModification();
-            }
-
-            uIAnalyticalModel.SetJSAMObject(analyticalModel_LastValid, new FullModification());
-
+            //The last valid design is NOT adopted into the window (PR-4; owner decision 3). It is the run's
+            //completed model where the run survived, and its files are under PartO/Iteration2B; the open design
+            //model is never replaced by an optimisation output. Promoting it to design intent would be an explicit
+            //"Adopt accepted 2B design" action, which does not exist.
             return partOOptimisationRun;
         }
 

@@ -64,5 +64,12 @@ namespace SAM.Analytical.UI
 
         /// <summary>Why the action can do nothing, in the eligibility authority's own words.</summary>
         public string Iteration3Refusal { get; set; }
+
+        /// <summary>
+        /// Why no new case may start from the open model because it is a Part O result, not a design model -
+        /// <c>Query.PartODesignModelRefusal</c>, asked once. Null for a design model. It blocks Run and leaves
+        /// Review Results alone.
+        /// </summary>
+        public string DesignModelRefusal { get; set; }
     }
 }

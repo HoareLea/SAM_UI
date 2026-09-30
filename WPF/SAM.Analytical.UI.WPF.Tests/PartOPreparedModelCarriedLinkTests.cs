@@ -133,7 +133,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         /// <summary>
         /// A run that does not complete (not a full year) writes no record and stamps no link of its own. Whatever
-        /// the model it returns carries - the one Simulate adopts as the open model - names none of this run's
+        /// the model it returns carries - the one Simulate adopted as the open model before PR-4 - names none of this run's
         /// results, and reopened it is refused, never paired with the previous case's.
         /// </summary>
         [Fact]

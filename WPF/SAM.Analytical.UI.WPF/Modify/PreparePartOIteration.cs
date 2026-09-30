@@ -11,8 +11,9 @@ namespace SAM.Analytical.UI.WPF
     public static partial class Modify
     {
         /// <summary>
-        /// Prepares an Approved Document O base iteration over the model's dwelling zones, shows what it
-        /// produced, and - on OK - adopts the prepared model and starts the session's Part O run.
+        /// Prepares an Approved Document O base iteration over the design model's dwelling zones, shows what it
+        /// produced, and - on OK - hands the prepared model to the session's Part O run. The open design model is
+        /// never replaced by it (PR-4); only the Part O inputs the engineer confirmed are written onto it.
         /// <para>
         /// <b>Orchestration only.</b> The engineering is one call:
         /// <c>SAM.Analytical.Modify.PreparePartOIteration</c>. This method chooses nothing it could get from
@@ -24,13 +25,13 @@ namespace SAM.Analytical.UI.WPF
         /// never writes a design airflow.
         /// </para>
         /// <para>
-        /// <b>The run is started only after the model is adopted</b>, and
-        /// <see cref="PartORun.ExpectModification"/> is armed immediately before that write so the run's own
-        /// change is not read as somebody else's edit. Everything else that replaces the model between here
-        /// and a completed workflow drops the run - see <see cref="PartORun"/>.
+        /// <b>The run is started only after the preparation is adopted</b>, and
+        /// <see cref="PartORun.ExpectModification"/> is armed immediately before the one write to the design
+        /// model - its confirmed inputs - so that change is not read as somebody else's edit. Everything else that
+        /// replaces the model between here and a completed workflow drops the run - see <see cref="PartORun"/>.
         /// </para>
         /// </summary>
-        /// <param name="uIAnalyticalModel">The loaded model. Not modified unless the user accepts.</param>
+        /// <param name="uIAnalyticalModel">The design model. Only the confirmed Part O inputs are ever written to it.</param>
         /// <param name="partORun">The session's Part O run, which this command moves to Prepared.</param>
         /// <param name="owner">Owner window for the dialogs.</param>
         public static void PreparePartOIteration(this UIAnalyticalModel? uIAnalyticalModel, PartORun partORun, IWin32Window? owner = null)
@@ -38,6 +39,15 @@ namespace SAM.Analytical.UI.WPF
             AnalyticalModel? analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel is null || partORun is null)
             {
+                return;
+            }
+
+            //A Part O result is reviewed, never prepared from (PR-4). Asked before the dialog, so nothing is offered.
+            string? refusal_DesignModel = UI.Query.PartODesignModelRefusal(analyticalModel);
+            if (refusal_DesignModel is not null)
+            {
+                MessageBox.Show(refusal_DesignModel, "Part O — Preparation");
+
                 return;
             }
 
@@ -116,7 +126,7 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>
         /// The preparation itself, over a request that has already been made: prepare, show what it produced,
-        /// and - on OK - adopt the prepared model and start the session's Part O run.
+        /// and - on OK - hand the prepared model to the session's Part O run (never to the window, PR-4).
         /// <para>
         /// <b>The one implementation.</b> The Prepare Iteration picker builds a request from its own controls
         /// and calls this; so does <see cref="RunPartOWorkflow"/>. Neither has a preparation of its own, so
@@ -131,7 +141,7 @@ namespace SAM.Analytical.UI.WPF
         /// </para>
         /// </summary>
         /// <returns>
-        /// True where the prepared model was adopted and <paramref name="partORun"/> is now
+        /// True where the preparation was adopted into the run and <paramref name="partORun"/> is now
         /// <see cref="PartORunState.Prepared"/>. False for a refusal, a decline, or a failed adoption - each
         /// of which has already been reported to the user by the time this returns.
         /// </returns>
@@ -165,6 +175,19 @@ namespace SAM.Analytical.UI.WPF
 
             if (analyticalModel is null || partORun is null || option is null || zones_Dwelling.Count == 0)
             {
+                return PartOPreparationResult.NotPrepared;
+            }
+
+            //Every case derives from the design model (PR-4). The Hub already blocks Run on a Part O result; this is
+            //the lock on the one implementation both routes share. The run is left alone, so a restored result
+            //stays reviewable.
+            string? refusal_DesignModel = UI.Query.PartODesignModelRefusal(analyticalModel);
+            if (refusal_DesignModel is not null)
+            {
+                PartOProgressHost.Current?.Hide();
+
+                MessageBox.Show(refusal_DesignModel, "Part O — Preparation");
+
                 return PartOPreparationResult.NotPrepared;
             }
 
@@ -340,8 +363,9 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>
         /// What follows the engineer's answer to the Review iteration window: nothing at all for Cancel, and
-        /// for Accept &amp; Run TAS the one write, the adoption and the model replacement - exactly the steps
-        /// that followed OK before, moved here unchanged so the decision point can be tested without a dialog.
+        /// for Accept the equipment write into the prepared model, the adoption into the run, and the confirmed
+        /// inputs onto the design model (<see cref="PersistPartOInputs"/>) - so the decision point can be tested
+        /// without a dialog. The open design model is never replaced by the prepared one (PR-4).
         /// <para>
         /// <b>Declined leaves everything as it was.</b> The loaded model is untouched - the preparation worked
         /// on a copy - and the run is not moved, so nothing can later be simulated and assessed against
@@ -415,12 +439,100 @@ namespace SAM.Analytical.UI.WPF
                 return PartOPreparationResult.NotPrepared;
             }
 
-            //Armed immediately before the write, so this replacement is not read as an outside edit.
-            partORun.ExpectModification();
-
-            uIAnalyticalModel.SetJSAMObject(analyticalModel_Prepared, new FullModification());
+            //The prepared model is the RUN's, never the window's (PR-4): the open design model is not replaced by
+            //it. Only the inputs the engineer just confirmed are written onto the design model, so they survive
+            //Save and seed the next case - see PersistPartOInputs.
+            PersistPartOInputs(uIAnalyticalModel, partORun, partOWorkflowRequest.SelectVentilationUnit, partOEquipmentAssignmentSet?.EquipmentSelection, partOProjectTestVentilationUnit);
 
             return partORun.State == PartORunState.Prepared ? PartOPreparationResult.Adopted : PartOPreparationResult.NotPrepared;
+        }
+
+        /// <summary>
+        /// Writes the Part O <b>inputs</b> the engineer confirmed in the Review window onto the open design model,
+        /// and nothing else - the one way an accepted review changes the design model.
+        ///
+        /// <para><b>The invariant (PR-4, the approved model-state architecture)</b></para>
+        /// <para>
+        /// Part O changes the design model only through an explicit input the engineer confirmed. Preparation,
+        /// simulation and results never touch it. The inputs are the project's equipment selection (its mode and
+        /// permitted pool, <c>PartOEquipmentSelection</c>) and its test product
+        /// (<c>PartOProjectTestVentilationUnit</c>), both model-level parameters. They are written with the same
+        /// rules the prepared model is stamped with: the selection only where the review had an equipment table,
+        /// and the test product - set, or removed where the project states none - only where products were
+        /// selected at all.
+        /// </para>
+        /// <para>
+        /// <b>Nothing is written where nothing changed</b>, so a 1a or 1b review, or a 2 review that confirmed the
+        /// project's existing choices, leaves the design model untouched and fires no model replacement.
+        /// </para>
+        /// <para>
+        /// <b>Per-dwelling product assignments are not inputs here.</b> They live on the Part O units the
+        /// preparation built, which are run output, so they stay on the prepared model. The design model has no
+        /// place for them before the owner decides one (see the PR-4 record).
+        /// </para>
+        /// </summary>
+        /// <returns>Whether the design model was changed.</returns>
+        internal static bool PersistPartOInputs(UIAnalyticalModel uIAnalyticalModel, PartORun partORun, bool selectVentilationUnit, PartOEquipmentSelection? partOEquipmentSelection, PartOProjectTestVentilationUnit? partOProjectTestVentilationUnit)
+        {
+            //A copy: the getter clones, so nothing here reaches the instance the window holds until it is set.
+            AnalyticalModel? analyticalModel = uIAnalyticalModel?.JSAMObject;
+            if (analyticalModel is null)
+            {
+                return false;
+            }
+
+            bool changed = false;
+
+            if (partOEquipmentSelection is not null && !SameValue(analyticalModel.GetValue<PartOEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOEquipmentSelection), partOEquipmentSelection))
+            {
+                analyticalModel.SetValue(Analytical.AnalyticalModelParameter.PartOEquipmentSelection, partOEquipmentSelection);
+
+                changed = true;
+            }
+
+            if (selectVentilationUnit)
+            {
+                PartOProjectTestVentilationUnit? partOProjectTestVentilationUnit_Design = analyticalModel.GetValue<PartOProjectTestVentilationUnit>(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit);
+
+                if (partOProjectTestVentilationUnit is null)
+                {
+                    if (partOProjectTestVentilationUnit_Design is not null)
+                    {
+                        analyticalModel.RemoveValue(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit);
+
+                        changed = true;
+                    }
+                }
+                else if (!SameValue(partOProjectTestVentilationUnit_Design, partOProjectTestVentilationUnit))
+                {
+                    analyticalModel.SetValue(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit, partOProjectTestVentilationUnit);
+
+                    changed = true;
+                }
+            }
+
+            if (!changed)
+            {
+                return false;
+            }
+
+            //Armed immediately before the write, so the run just prepared is not dropped by its own inputs.
+            partORun?.ExpectModification();
+
+            uIAnalyticalModel!.SetJSAMObject(analyticalModel, new FullModification());
+
+            return true;
+        }
+
+        /// <summary>Whether two stored values say the same thing, compared as the JSON the .sam holds.</summary>
+        private static bool SameValue(Core.IJSAMObject? jSAMObject_1, Core.IJSAMObject? jSAMObject_2)
+        {
+            if (jSAMObject_1 is null || jSAMObject_2 is null)
+            {
+                return jSAMObject_1 is null && jSAMObject_2 is null;
+            }
+
+            return string.Equals(jSAMObject_1.ToJsonObject()?.ToJsonString(), jSAMObject_2.ToJsonObject()?.ToJsonString(), StringComparison.Ordinal);
         }
 
         /// <summary>

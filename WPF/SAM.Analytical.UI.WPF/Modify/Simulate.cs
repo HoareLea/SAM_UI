@@ -29,11 +29,13 @@ namespace SAM.Analytical.UI.WPF
         /// <param name="partORun">
         /// The session's Part O run, or null where the caller has none.
         /// <para>
-        /// <b>Only a run that is <see cref="PartORunState.Prepared"/> is completed here</b>, and only by a
-        /// workflow that actually ran. In every other case this method's own model replacement reaches the run
-        /// as an unexpected modification and drops it - which is the intended outcome, not a side effect: a
-        /// second simulation, or a simulation of a model that was edited after preparation, must not be paired
-        /// with the earlier preparation's overheating scenarios.
+        /// <b>Only the guided Part O case completes a run</b> (<paramref name="partOWorkflow"/> over a
+        /// <see cref="PartORunState.Prepared"/> run). It simulates the run's own prepared model - the open model
+        /// is the design model and is never it (PR-4) - and the result stays with the run: the window is not
+        /// replaced. Every other call is the ordinary simulation of the open model, which adopts its result as it
+        /// always has; that replacement reaches the run as an unexpected modification and drops it, which is the
+        /// intended outcome: a simulation of the design is not the prepared case, and must not be paired with the
+        /// preparation's overheating scenarios.
         /// </para>
         /// </summary>
         /// <param name="partOWorkflow">
@@ -67,6 +69,15 @@ namespace SAM.Analytical.UI.WPF
             // run in any other state is one this method's own model replacement is about to drop, so it is
             // not a Part O run and does not get the Part O preset or the locked dialog.
             bool partO = partOWorkflow && partORun is not null && partORun.State == PartORunState.Prepared;
+
+            //The Part O case is the run's prepared model, never the open design model (PR-4).
+            AnalyticalModel analyticalModel_Source = partO ? partORun.AnalyticalModel_Prepared : analyticalModel;
+            if (analyticalModel_Source is null)
+            {
+                return;
+            }
+
+            analyticalModel = analyticalModel_Source;
 
             SimulateWindow simulateWindow = new SimulateWindow();
 
@@ -146,7 +157,9 @@ namespace SAM.Analytical.UI.WPF
                 PartOOutputCase = partO ? PartOOutputPaths.CaseOf(partORun.PreparationContext) : null,
             };
 
-            Simulate(uIAnalyticalModel, partORun, simulateInputs, false);
+            //Only the Part O case hands the run in. The ordinary command simulates the open model and never
+            //completes, stamps or persists a Part O run.
+            Simulate(uIAnalyticalModel, partO ? partORun : null, analyticalModel_Source, simulateInputs, false, null);
         }
 
         /// <summary>
@@ -168,14 +181,26 @@ namespace SAM.Analytical.UI.WPF
         /// returned too, and the caller shows those - they are things a person has to read.
         /// </para>
         /// </summary>
-        /// <param name="uIAnalyticalModel">The loaded, prepared model.</param>
+        /// <param name="uIAnalyticalModel">
+        /// The open design model. It is never simulated and never replaced: the case simulated is the run's own
+        /// prepared model, and its result stays with the run (PR-4). Only its path is read, for the defaults.
+        /// </param>
         /// <param name="partORun">The session's run; must be <see cref="PartORunState.Prepared"/>.</param>
         /// <param name="partOSimulationCase">The Hub's Simulation case.</param>
         public static PartOSimulationOutcome SimulatePartO(this UIAnalyticalModel uIAnalyticalModel, PartORun partORun, PartOSimulationCase partOSimulationCase)
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            return SimulatePartO(uIAnalyticalModel, partORun, partOSimulationCase, null);
+        }
 
-            if (analyticalModel is null || partORun is null || partORun.State != PartORunState.Prepared)
+        /// <summary>
+        /// <see cref="SimulatePartO(UIAnalyticalModel, PartORun, PartOSimulationCase)"/> with the TAS workflow step
+        /// supplied - the one seam <see cref="RunPartOSimulation"/> already has, for a test. Null is TAS.
+        /// </summary>
+        internal static PartOSimulationOutcome SimulatePartO(UIAnalyticalModel uIAnalyticalModel, PartORun partORun, PartOSimulationCase partOSimulationCase, PartOWorkflowRunner partOWorkflowRunner)
+        {
+            AnalyticalModel analyticalModel = partORun?.State == PartORunState.Prepared ? partORun.AnalyticalModel_Prepared : null;
+
+            if (uIAnalyticalModel is null || analyticalModel is null || partORun is null || partORun.State != PartORunState.Prepared)
             {
                 return new PartOSimulationOutcome { Refusal = "The Part O iteration is not prepared, so nothing was simulated. Prepare the iteration again." };
             }
@@ -226,7 +251,7 @@ namespace SAM.Analytical.UI.WPF
                 PartOOutputCase = PartOOutputPaths.CaseOf(partORun.PreparationContext),
             };
 
-            return Simulate(uIAnalyticalModel, partORun, simulateInputs, true);
+            return Simulate(uIAnalyticalModel, partORun, analyticalModel, simulateInputs, true, partOWorkflowRunner);
         }
 
         /// <summary>What the Simulate dialog hands back, as values - so the dialog path and the Hub path share one core.</summary>
@@ -264,13 +289,22 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>
         /// The one simulation core. <paramref name="quiet"/> is the Hub path: nothing is shown here, and what
         /// the dialog path shows as message boxes is returned instead.
+        /// <para>
+        /// <b>Two cases, told apart by <paramref name="partORun"/>.</b> With a run, this is the Part O case: it
+        /// simulates the run's prepared model, completes the run, and <b>never replaces the open model</b> - the
+        /// window stays on the design model and the result is reached through the run (PR-4, the approved
+        /// model-state architecture). Without one, it is the ordinary simulation of the open model, whose result
+        /// is adopted into the window exactly as before.
+        /// </para>
         /// </summary>
-        private static PartOSimulationOutcome Simulate(UIAnalyticalModel uIAnalyticalModel, PartORun partORun, SimulateInputs simulateInputs, bool quiet)
+        /// <param name="analyticalModel_Source">What is simulated: the run's prepared model, or the open model.</param>
+        /// <param name="partOWorkflowRunner">The TAS workflow step; null is TAS. See <see cref="RunPartOSimulation"/>.</param>
+        private static PartOSimulationOutcome Simulate(UIAnalyticalModel uIAnalyticalModel, PartORun partORun, AnalyticalModel analyticalModel_Source, SimulateInputs simulateInputs, bool quiet, PartOWorkflowRunner partOWorkflowRunner)
         {
             PartOSimulationOutcome partOSimulationOutcome = new();
 
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
-            if (analyticalModel == null)
+            AnalyticalModel analyticalModel = analyticalModel_Source;
+            if (analyticalModel == null || uIAnalyticalModel == null)
             {
                 return partOSimulationOutcome;
             }
@@ -405,7 +439,7 @@ namespace SAM.Analytical.UI.WPF
                 // the zones, the shading, the workflow - and the Part O arming that goes before it. Extracted
                 // so an Iteration 2B optimisation can repeat this exact case over a changed design without a
                 // second copy of it existing to drift. See Modify.RunPartOSimulation.
-                AnalyticalModel analyticalModel_Workflow = Modify.RunPartOSimulation(analyticalModel, partOSimulationContext, projectName, partORun, CancellationToken.None, out path_TBD, out string _, out cancelled, out workflowSimulatedFullYear, out List<string> notes_Simulation, out string refusal_Simulation);
+                AnalyticalModel analyticalModel_Workflow = Modify.RunPartOSimulation(analyticalModel, partOSimulationContext, projectName, partORun, CancellationToken.None, out path_TBD, out string _, out cancelled, out workflowSimulatedFullYear, out List<string> notes_Simulation, out string refusal_Simulation, null, partOWorkflowRunner);
 
                 notes_Simulate.AddRange(notes_Simulation);
 
@@ -573,8 +607,7 @@ namespace SAM.Analytical.UI.WPF
 
             TimeSpan timeSpan = new TimeSpan(DateTime.Now.Ticks - dateTime.Ticks);
 
-            // Whether this run may complete a pending Part O run. Read BEFORE the model is adopted, because
-            // adopting it raises the modification that consumes the armed expectation further down.
+            // Whether this run may complete a pending Part O run.
             bool completePartORun = partORun != null
                 && partORun.State == PartORunState.Prepared
                 && workflowCompleted
@@ -583,10 +616,9 @@ namespace SAM.Analytical.UI.WPF
                 && analyticalModel != null;
 
             // A prepared run this simulation cannot complete is dropped HERE, with the reason it was actually
-            // refused for. Left to the model replacement below, it would be reported as an outside edit - true,
-            // but useless: what the user needs to be told is that the simulation was not the full year a TM59
-            // assessment reads. Nothing is dropped where the run was cancelled or no model was adopted, since
-            // the loaded model is then untouched and the preparation still describes it.
+            // refused for: what the user needs to be told is that the simulation was not the full year a TM59
+            // assessment reads. Nothing is dropped where the run was cancelled or produced no model, since the
+            // preparation then still describes the design and can be simulated again.
             string? note_PartORun = null;
             if (partORun != null && partORun.State == PartORunState.Prepared && !completePartORun && !cancelled && analyticalModel != null)
             {
@@ -645,26 +677,22 @@ namespace SAM.Analytical.UI.WPF
                 MessageBox.Show(message);
             }
 
-            if (completePartORun)
-            {
-                // Armed immediately before the write it belongs to, so nothing can consume it in between.
-                // Deliberately NOT armed on any other path: a simulation that is not completing a prepared
-                // Part O run must drop it, and the unexpected modification is how that happens.
-                partORun.ExpectModification();
-            }
-
-            // A cancelled run leaves analyticalModel null, and pushing that back would replace the model the
-            // user still has open with nothing. Not adopting it really does leave the loaded model untouched,
-            // because everything above this point worked on the copy taken before the first mutation.
-            if (!cancelled && analyticalModel != null)
+            // The Part O case NEVER replaces the open model: the window stays on the design model, and the result is
+            // the run's (PR-4). A normal Save therefore cannot write Part O output over the design file.
+            //
+            // The ordinary simulation adopts its result as it always has. A cancelled run leaves analyticalModel
+            // null, and pushing that back would replace the model the user still has open with nothing. Not
+            // adopting it really does leave the loaded model untouched, because everything above this point
+            // worked on the copy taken before the first mutation.
+            if (partORun is null && !cancelled && analyticalModel != null)
             {
                 uIAnalyticalModel.SetJSAMObject(analyticalModel, new FullModification());
             }
 
             if (completePartORun)
             {
-                // The model handed over is the one this workflow produced and the window has just adopted -
-                // not the preparation output, and not read back from uIAnalyticalModel (whose getter clones).
+                // The model handed over is the one this workflow produced - not the preparation output, and
+                // not the open design model.
                 // The TSD is required to exist: the file name is derived, and a derived name is a guess until
                 // the file behind it is there. A sizing-only run writes none, and is correctly not completable.
                 string path_TSD = System.IO.Path.ChangeExtension(path_TBD, "tsd");
