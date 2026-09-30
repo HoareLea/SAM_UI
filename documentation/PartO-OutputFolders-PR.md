@@ -3,8 +3,9 @@
 
 # Part O output folders: one folder per case beneath the chosen root
 
-**Status (30 Sep 2026): code, tests and licensed Mixed Design acceptance are done. The PR is open against
-`sow/2026-Q3` and is NOT merged; the owner reviews the structure first.**
+**Status (30 Sep 2026): architecture accepted at `fe6ddd2`. The final real-app acceptance gate PASSED (licensed
+1a, 2 and Iteration 3 against both, then reopen). The PR is open against `sow/2026-Q3`, ready for merge review,
+and NOT merged.**
 
 - Branch `feature/parto-output-folders-2026-09-30`, from `sow/2026-Q3` `788e647` (the SAM_UI#146 closeout).
 - SAM_UI only. SAM (`83eb79a3`) and SAM_Tas (`057faf3`) are unchanged.
@@ -216,15 +217,64 @@ Three writers deliberately sit outside the resolver:
   - `MixedDesign/PartOCase.json`: the marker.
   - Nothing else was written into the root, and no other case folder was created.
 
+## Final acceptance gate: real app + licensed TAS (30 Sep 2026, build of `fe6ddd2`)
+
+**Driver and evidence.** UIA drove the real `SAM Analytical.exe`, built at `fe6ddd2` (0 errors). The disposable
+folder was `C:\TasOut\parto-output-folders-accept-2026-09-30`. Evidence is in
+`documentation/evidence/parto-output-folders-2026-09-30/native-acceptance/`: journeys, tree snapshots with SHA-256,
+the TAS-process watch, driver scripts and key screenshots.
+
+**Safety.**
+- The fixture is a fresh copy of the presentation-route model `SAM_zoningAM-CIBSEfutureZ1.sam`. Its decompressed
+  JSON holds no `SimulationResultProvenance`, no Part O run state and no absolute paths, so nothing could resolve back
+  into an older folder.
+- Every result was generated fresh under the new root, including the Iteration 3 references.
+- All 9,048 historical files under `C:\TasOut` were snapshotted before the run.
+
+**Phase A: one session.**
+1. Typed the root `...\accept\Iteration2` into the Hub. It is named like a SAM case folder on purpose, and is empty.
+2. Ran **1a** Prepare & Run.
+3. Ran **Iteration 3** (default method, manufacturer guidance).
+4. Ran **Iteration 2** Prepare & Run.
+5. Ran **Iteration 3** again with the same method.
+6. Closed the app.
+
+**Phase B: new sessions.** A fresh session opened each per-run `.sam` (Iteration 2, then 1a). In each: Hub → Review
+Results → Open result. A watcher logged every TAS process.
+
+| # | Observation | Native UI | Licensed TAS | Result |
+|---|---|---|---|---|
+| 1 | The root is chosen in the real Hub: the box holds it exactly, and its tooltip names the case folders SAM creates. | yes | - | PASS |
+| 2 | SAM creates the case structure, not flat files. The root holds only `Iteration1a/`, `Iteration2/`, `Iteration3/`, and no file directly in it. | yes | yes | PASS |
+| 3 | 1a/2: `tas/` has `.xml .t3d .tbd .tsd .sam .partorun.json .prepared.sam`, `reports/` has `-TM59.txt`, `diagnostics/` has `.timing.csv`, and each case folder has a `PartOCase.json`. | yes | yes | PASS |
+| 3b | Iteration 3: `tas/` has `.xml .t3d .tbd .tsd .tpd`, the bridge `.tbd/.tsd` and the Candidate B `.sam`. `reports/` has the bridge TM59, the record and the review `.txt/.json`. `diagnostics/` has the OperatingAirFlow history plus the **real** SAM_Tas workflow, route and bridge `.timing.csv` files, moved out of `tas`. | yes | yes | PASS |
+| 4 | The root is used verbatim despite its name. Output went to `...\accept\Iteration2\Iteration2\tas` and `...\Iteration2\Iteration1a\tas`, never `...\accept\Iteration1a`. | yes | yes | PASS |
+| 5 | 1a and 2 coexist. Both write the same file names. The Iteration 2 run left all 27 existing 1a / It3-vs-1a files byte-identical (size, write time, SHA-256). | yes | yes | PASS |
+| 6 | Iteration 3 against both. The 1a pairing is `...-It1a-It3BMG*` / `...-It1a-Iteration3-MG*`; the Iteration 2 pairing is unqualified. None of the 17 files of the 1a pairing changed, and both comparisons completed with no refusal. | yes | yes | PASS |
+| 7 | Close and reopen from each saved `.sam`. The Hub reads "Saved Iteration 2/1a results reopened". Review Results showed TM59 naming its own `...\<case>\tas` results. Open result reopened each comparison: "reopened from the saved result — no TAS simulation was run", 1a with `-It1a`, and no refusal. | yes | watcher | PASS |
+| 7b | No TAS simulation on reopen. The watcher saw only `TSD` (the results reader); no `TBD`, `TAS3D` or `TPD`. All 30 `tas/` files were unchanged. | - | watcher | PASS |
+| 8 | Final tree: 53 files, all inside the three case folders, with nothing in the root. | yes | - | PASS |
+| 9 | No historical inputs rewritten. All 9,048 historical `C:\TasOut` files are unchanged in size and write time. The fixture copy and its source are hash-identical, and the model folder holds only the model. No generated record or report names any other `C:\TasOut` folder. | - | - | PASS |
+| 10 | `PartOCase.json` is only `{"Schema":"SAM.PartOOutputCase/1","Case":"<case>"}`: no paths, no workflow state. | yes | - | PASS |
+| 11 | Iteration 2B folder, natively. Not run: 2B needs a live Iteration 2 run and many TAS rounds. It is covered only by unit / production-seam tests. | - | - | INCONCLUSIVE |
+
+**Expected rewrites (pre-existing behaviour, each inside its own case).**
+- Iteration 3 re-assesses Reference A and rewrites *that reference's own* `-TM59.txt`.
+- A reopened review rewrites the TM59 reports with byte-identical content (only the write time moves).
+- It re-saves the A/B review `.txt/.json` of **its own** pairing. The review variant is smaller and states
+  "Reopened from the persisted pairing record. No TAS simulation was run". It names the real cross-case paths:
+  `Iteration2\Iteration2\tas\...tsd` for Reference A and `Iteration2\Iteration3\tas\...-Bridge.tsd` for Candidate B.
+
+No defect was found and no code changed after `fe6ddd2`.
+
+**Environment note.** The session's remembered Part O output folder is now the acceptance root. The Hub falls back
+to the model folder if that root is deleted.
+
 ## Not verified / risks
 
-- **No licensed Iteration 3 or 2B run.** The existing Iteration 3 licensed harness needs a disposable restorable
-  Reference A, and a copied run resolves back to its original folder (the #146 trap), so running it could write into
-  historical evidence.
-  - The Iteration 3 and 2B folders, the `-It1a` qualifier and the timing filing are covered by unit and
-    production-seam tests with fake TAS.
-  - The TPD/bridge "folder must exist" precondition is met by the attempt-start `CreateDirectories`.
-- **No native UI walk.** There are tooltips only; the Hub shows no output path during a run.
+- **Iteration 2B: no native or licensed run** (row 11). It is covered by unit and production-seam tests with fake TAS.
+- Iteration 3 was verified natively for the manufacturer-guidance method only. The other methods share the same
+  naming code and are covered by the per-method unit theory.
 - **Choosing a folder inside an existing layout nests.** If a person chooses a SAM `tas` folder as the root (e.g. the
   Hub defaults to the folder of a per-run `.sam` opened from `Iteration2/tas`), the new layout is created inside it.
   This is by design, since the chosen folder is the root exactly; the Hub box shows the folder.
@@ -240,4 +290,5 @@ CSVs to a given folder.
 
 ## Next step
 
-Owner reviews the structure on the PR. Then CI green → merge → `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`.
+Owner merge review of PR #147. Then CI green → merge → `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`,
+including the merge SHA.
