@@ -3,6 +3,59 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): PR-1 - one identity-based Systems scope for Iteration 3 and Mixed; Check runs Build's preflight (30 Sep 2026) - MERGED as SAM_UI#151 (`5cc590fe`) with SAM#171 (`4ecea97a`)
+
+**Status.**
+- Merged into `sow/2026-Q3` with a merge commit: [SAM-BIM/SAM_UI#151](https://github.com/SAM-BIM/SAM_UI/pull/151), branch
+  `feature/parto-systems-scope-2026-09-30`, PR head `d60bbce6`.
+- [SAM-BIM/SAM#171](https://github.com/SAM-BIM/SAM/pull/171) was merged first (head `6bd9943f`, merge `4ecea97a`, SAM
+  closeout `525a9f3a`). #151's CI was green on its final head, after SAM#171 merged.
+- Step 2 (PR-1) of the approved Part O model-state architecture (`documentation/PartO-ModelStateArchitecture.md`); no
+  contradiction found. Records: `documentation/PartO-SystemsScope-PR1.md` and SAM `documentation/PartO-SystemsScope-PR1.md`.
+
+**Work.**
+- **The rule is SAM's.** `Analytical.Query.PartOSystemsMaterialisationScope` (SAM#171): keep the systems Part O built
+  (by guid), leave out authored ventilation systems with no effective duty, refuse where authored duty exists.
+- **Iteration 3, behaviour-identical.** `Query.PartOIteration3SystemScope` is a wording adapter over the SAM query; it
+  decides nothing. Callers are unchanged.
+- **Mixed Design.** `Modify.PartOMixedSystemsMaterialisation` (the ONE Systems preflight) scopes the SAM_Systems input
+  by `PartOMaterialisationRecord.VentilationSystemGuids` (`Query.PartOMixedSystemsScope`) before
+  `MaterialiseMixed`. Unit-less NV/UV and inert template MV are left out of the SAM_Systems input only; the thermal
+  model keeps them. This removes the false "Ventilation system 'UV' names no air handling unit" refusal.
+- **Check == Build.** Check design calls `Modify.CheckPartOMixedDesign`: SAM materialisation, then (Systems route
+  only) the same preflight Build & Run runs first. No TAS.
+- Scope notes go to `PartOStrategySetSimulation.Notes_SystemsScope` / `PartOMixedDesignCheck.Notes_Systems`, not to
+  the run's warnings.
+
+**Decisions.** Identity only, never names. Whole-building Systems route unchanged. NV/UV semantics unchanged. Authored
+effective duty still refuses (also in Mixed, e.g. duty in an unzoned plant room). Iteration 3 keeps its own wording.
+PR boundary kept: no PR-2 (`AuthoredMechanicalSystems`), PR-3 (SAM_Systems), PR-5, PR-6 or Deploy work. Design model
+never mutated.
+
+**Files.** `Query/PartOIteration3SystemScope.cs`, `Query/PartOMixedSystemsCall.cs`,
+`Modify/SimulatePartOMaterialisationSystems.cs`, `Modify/CheckPartOMixedDesign.cs` (new),
+`Modify/RunPartOMixedDesignCommand.cs`, `Modify/RunPartOStrategySet.cs`, `Classes/PartO/PartOIteration3SystemScope.cs`
+(doc), `SAM.Analytical.UI.WPF.Tests/PartOMixedSystemsScopeTests.cs` (new, 10 tests),
+`documentation/PartO-SystemsScope-PR1.md`, `documentation/evidence/parto-pr1-systems-scope-2026-09-30/`.
+
+**Validation.**
+- Iteration 3 pinned before the move by a temporary frozen copy of the old rule + 312 equivalence cases: It3 tests
+  573/573 before and after (`786f1ed`); the copy was removed (`782c7b6`).
+- Full WPF suite 1559/1559 (1549 before), also against merged SAM `525a9f3a`. SAM.Tests 2732/2732.
+- Mutations U1-U5 (whole-cluster Mixed, Check skips preflight, It3 wording drift x2, Mixed scope = every system) and
+  SAM S1-S5 all killed.
+- Headless, no-TAS, read-only replay of the owner's `000000_SAM_AnalyticalModel-Cleaned.sam` (SHA256 unchanged):
+  owner's selection still refuses `SharedSystem` on `MV 1`/`AHU1` (PR-2, expected); an in-memory Flat-1-only
+  diagnostic on the Systems route scopes to `MVHR Flat 1`, leaves out `NV 1`/`UV 1`/`MV 1`, and SAM_Systems builds;
+  the whole cluster reproduces "Ventilation system 'UV' names no air handling unit".
+
+**Risks.** The owner's real Mixed Check still refuses on `MV 1`/`AHU1` until PR-2. SAM_Systems still scans every
+system it is handed (PR-3). No licensed TAS run (acceptance comes after PR-1 + PR-2 + PR-3).
+
+**Next step.** PR-2 (SAM: effective-duty classification in `AuthoredMechanicalSystems`, owner decision 1) in a fresh
+session; PR-3 (SAM_Systems D2 honours scope) may run in parallel; then the licensed Mixed acceptance on the existing
+`-Cleaned.sam`, deleting nothing.
+
 ## Current (Part O stream): PR-4 - protect the design model from Part O run output (30 Sep 2026) - MERGED as SAM_UI#150 (`d721f1a8`) with SAM#170 (`f4c317e0`)
 
 **Status.**
