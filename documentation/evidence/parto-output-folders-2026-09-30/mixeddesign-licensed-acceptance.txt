@@ -1,0 +1,11 @@
+context.OutputDirectory=C:\TasOut\parto-output-folders-2026-09-30\PartO\MixedDesign\tas
+tsd=C:\TasOut\parto-output-folders-2026-09-30\PartO\MixedDesign\tas\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tsd refusal= elapsed=00:00:56.2698244
+  MixedDesign\diagnostics\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.timing.csv  749
+  MixedDesign\reports\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed-TM59.txt  5386
+  MixedDesign\tas\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.sam  151496
+  MixedDesign\tas\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.t3d  44659
+  MixedDesign\tas\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tbd  429249
+  MixedDesign\tas\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.tsd  17338396
+  MixedDesign\tas\000000_SAM_AnalyticalModel-It1a-futureZ1_Mixed.xml  303299
+  output-folders-acceptance.txt  809
+DONE

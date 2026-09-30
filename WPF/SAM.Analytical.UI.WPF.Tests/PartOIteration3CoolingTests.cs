@@ -305,14 +305,14 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             //B0 exactly as before the cooling mode existed.
             Assert.Equal("Flat1" + PartOIteration3Paths.Suffix_CandidateB, paths_B0.ProjectName_CandidateB);
-            Assert.Equal("C:\\out\\Flat1-It3B.tpd", paths_B0.Path_TPD);
+            Assert.Equal("C:\\out\\Iteration3\\tas\\Flat1-It3B.tpd", paths_B0.Path_TPD);
 
             //The selected-product method has its own documents too, so it no longer overwrites B0's and the two
             //results can be kept side by side.
-            Assert.Equal("C:\\out\\Flat1-It3BP.tpd", PartOIteration3Paths.Create(PartOIteration3Fixture.SimulationContext("C:\\out", "Flat1"), "C:\\out\\Flat1.tsd", PartOIteration3BehaviourMode.SelectedProduct).Path_TPD);
+            Assert.Equal("C:\\out\\Iteration3\\tas\\Flat1-It3BP.tpd", PartOIteration3Paths.Create(PartOIteration3Fixture.SimulationContext("C:\\out", "Flat1"), "C:\\out\\Flat1.tsd", PartOIteration3BehaviourMode.SelectedProduct).Path_TPD);
 
             Assert.Equal("Flat1" + PartOIteration3Paths.Suffix_CandidateB_Cooling, paths_B4.ProjectName_CandidateB);
-            Assert.Equal("C:\\out\\Flat1-It3B4-OperatingAirFlow.csv", paths_B4.Path_OperatingAirFlow);
+            Assert.Equal("C:\\out\\Iteration3\\diagnostics\\Flat1-It3B4-OperatingAirFlow.csv", paths_B4.Path_OperatingAirFlow);
             Assert.Contains(paths_B4.Path_OperatingAirFlow, paths_B4.Paths_CandidateB);
 
             //No Candidate B document is shared between the two - and neither is the record: each method keeps its own.

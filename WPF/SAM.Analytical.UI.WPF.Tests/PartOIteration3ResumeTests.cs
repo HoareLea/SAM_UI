@@ -384,7 +384,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run_FailedAfterTas(out PartOIteration3PipelineFake partOIteration3PipelineFake, out PartOIteration3Result _);
 
-            string path = Path.Combine(directory, fileName);
+            string path = Path.Combine(directory_It3, fileName);
 
             if (rewrite)
             {
@@ -420,7 +420,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.True(partOIteration3ResumePlan.Reuse);
 
-            string path_TPD = Path.Combine(directory, "Flat-It3B.tpd");
+            string path_TPD = Path.Combine(directory_It3, "Flat-It3B.tpd");
 
             PartOIteration3Result partOIteration3Result = Modify.RunPartOIteration3(
                 partORun,

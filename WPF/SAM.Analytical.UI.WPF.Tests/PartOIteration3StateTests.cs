@@ -269,13 +269,14 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal("Flat1-It3B", partOIteration3Paths.ProjectName_CandidateB);
             Assert.Equal("Flat1-It3B-Bridge", partOIteration3Paths.ProjectName_Bridge);
 
-            Assert.Equal(Path.Combine("C:\\out", "Flat1-It3B.tbd"), partOIteration3Paths.Path_TBD_ThermalSource);
-            Assert.Equal(Path.Combine("C:\\out", "Flat1-It3B.tsd"), partOIteration3Paths.Path_TSD_ThermalSource);
-            Assert.Equal(Path.Combine("C:\\out", "Flat1-It3B.tpd"), partOIteration3Paths.Path_TPD);
-            Assert.Equal(Path.Combine("C:\\out", "Flat1-It3B-Bridge.tbd"), partOIteration3Paths.Path_TBD_Bridge);
-            Assert.Equal(Path.Combine("C:\\out", "Flat1-It3B-Bridge.tsd"), partOIteration3Paths.Path_TSD_Bridge);
-            Assert.Equal(Path.Combine("C:\\out", "Flat1-It3B-Bridge.sam"), partOIteration3Paths.Path_Model_CandidateB);
-            Assert.Equal(Path.Combine("C:\\out", "Flat1-Iteration3-B0.json"), partOIteration3Paths.Path_Record);
+            //Every TAS file in Iteration 3's own tas folder beneath the reference's root; the record in its reports.
+            Assert.Equal(Path.Combine("C:\\out", "Iteration3", "tas", "Flat1-It3B.tbd"), partOIteration3Paths.Path_TBD_ThermalSource);
+            Assert.Equal(Path.Combine("C:\\out", "Iteration3", "tas", "Flat1-It3B.tsd"), partOIteration3Paths.Path_TSD_ThermalSource);
+            Assert.Equal(Path.Combine("C:\\out", "Iteration3", "tas", "Flat1-It3B.tpd"), partOIteration3Paths.Path_TPD);
+            Assert.Equal(Path.Combine("C:\\out", "Iteration3", "tas", "Flat1-It3B-Bridge.tbd"), partOIteration3Paths.Path_TBD_Bridge);
+            Assert.Equal(Path.Combine("C:\\out", "Iteration3", "tas", "Flat1-It3B-Bridge.tsd"), partOIteration3Paths.Path_TSD_Bridge);
+            Assert.Equal(Path.Combine("C:\\out", "Iteration3", "tas", "Flat1-It3B-Bridge.sam"), partOIteration3Paths.Path_Model_CandidateB);
+            Assert.Equal(Path.Combine("C:\\out", "Iteration3", "reports", "Flat1-Iteration3-B0.json"), partOIteration3Paths.Path_Record);
 
             //Not an optimisation round: the iteration reader must not see a number in it, or a later
             //optimisation would number its rounds from here and overwrite this pairing's evidence.

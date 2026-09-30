@@ -19,11 +19,13 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOIteration3Paths paths_B4 = PartOIteration3Paths.Create(PartOIteration3Fixture.SimulationContext("C:\\out", "Flat1"), "C:\\out\\Flat1.tsd", PartOIteration3BehaviourMode.SelectedProductCooling);
             PartOIteration3Paths paths_MG = PartOIteration3Paths.Create(PartOIteration3Fixture.SimulationContext("C:\\out", "Flat1"), "C:\\out\\Flat1.tsd", PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance);
 
-            Assert.Equal("C:\\out\\Flat1-It3B.tpd", paths_B0.Path_TPD);
-            Assert.Equal("C:\\out\\Flat1-It3B4.tpd", paths_B4.Path_TPD);
-            Assert.Equal("C:\\out\\Flat1-It3BMG.tpd", paths_MG.Path_TPD);
-            Assert.Equal("C:\\out\\Flat1-It3BMG-OperatingAirFlow.csv", paths_MG.Path_OperatingAirFlow);
-            Assert.Equal("C:\\out\\Flat1-It3BMG-Bridge.tsd", paths_MG.Path_TSD_Bridge);
+            //A reference in a legacy flat folder: that folder is the Part O root, and Iteration 3 writes into its own
+            //folder beneath it.
+            Assert.Equal("C:\\out\\Iteration3\\tas\\Flat1-It3B.tpd", paths_B0.Path_TPD);
+            Assert.Equal("C:\\out\\Iteration3\\tas\\Flat1-It3B4.tpd", paths_B4.Path_TPD);
+            Assert.Equal("C:\\out\\Iteration3\\tas\\Flat1-It3BMG.tpd", paths_MG.Path_TPD);
+            Assert.Equal("C:\\out\\Iteration3\\diagnostics\\Flat1-It3BMG-OperatingAirFlow.csv", paths_MG.Path_OperatingAirFlow);
+            Assert.Equal("C:\\out\\Iteration3\\tas\\Flat1-It3BMG-Bridge.tsd", paths_MG.Path_TSD_Bridge);
         }
 
         [Fact]

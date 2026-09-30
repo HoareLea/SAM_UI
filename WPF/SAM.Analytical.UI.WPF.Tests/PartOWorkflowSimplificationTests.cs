@@ -58,7 +58,12 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal(Path.ChangeExtension(partOIteration3Paths.Path_Record, null) + "-Review.txt", path_Report);
             }
 
-            Assert.Equal("C:\\out\\Flat1-Iteration3-MG.json", PartOIteration3Paths.Path_Record_ForResults("C:\\out\\Flat1.tsd", PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance));
+            //A method's own record and its review in Iteration 3's reports folder beneath the results' root.
+            Assert.Equal("C:\\out\\Iteration3\\reports\\Flat1-Iteration3-MG.json", PartOIteration3Paths.Path_Record_ForResults("C:\\out\\Flat1.tsd", PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance));
+            Assert.Equal("C:\\out\\Iteration3\\reports\\Flat1-Iteration3-MG-Review.txt", PartOIteration3Paths.Path_Report_ForRecord("C:\\out\\Iteration3\\reports\\Flat1-Iteration3-MG.json"));
+
+            //One written beside the results before that folder existed is still named, and still reports beside itself.
+            Assert.Equal("C:\\out\\Flat1-Iteration3-MG.json", PartOIteration3Paths.Path_Record_ForResults_Legacy("C:\\out\\Flat1.tsd", PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance));
             Assert.Equal("C:\\out\\Flat1-Iteration3-MG-Review.txt", PartOIteration3Paths.Path_Report_ForRecord("C:\\out\\Flat1-Iteration3-MG.json"));
 
             //The legacy record and its report, exactly as before.

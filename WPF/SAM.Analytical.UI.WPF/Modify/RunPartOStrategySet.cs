@@ -143,6 +143,9 @@ namespace SAM.Analytical.UI.WPF
                 ? (partOStrategySetSystemsSimulator ?? SimulatePartOMaterialisationSystems)(partOMaterialisation, ventilationUnitTemplates_Temp, partOSimulationContext, cancellationToken)
                 : (partOStrategySetSimulator ?? SimulatePartOMaterialisation)(partOMaterialisation.AnalyticalModel, [.. partOMaterialisation.OverheatingScenarios], partOSimulationContext, cancellationToken);
 
+            //The TPD, route and bridge timing CSVs SAM_Tas wrote beside the run's TAS files go to diagnostics.
+            PartOOutputPaths.FileDiagnostics(partOSimulationContext.OutputDirectory);
+
             if (result.Completed)
             {
                 //Membership from the MATERIALISED model: the design side the assessment keys its spaces by.
@@ -232,13 +235,29 @@ namespace SAM.Analytical.UI.WPF
         {
             SimulateOptions simulateOptions = SimulateOptions_PartO(analyticalModel, path_Model, null);
 
-            return new PartOSimulationContext(partOSimulationCase.OutputDirectory, projectName, partOSimulationCase.WeatherData is null ? null : new Weather.WeatherData(partOSimulationCase.WeatherData), partOSimulationCase.SolarCalculationMethod, 1, 365)
+            //The MixedDesign folders (and their marker) exist before the run's first file. A folder that cannot be
+            //created is reported by that first write - the gbXML, or the TBD - in its own words.
+            PartOOutputPaths.Create(partOSimulationCase?.OutputDirectory, PartOOutputCase.MixedDesign)?.TryCreateDirectories();
+
+            return new PartOSimulationContext(PartOMixedOutputDirectory(partOSimulationCase), projectName, partOSimulationCase.WeatherData is null ? null : new Weather.WeatherData(partOSimulationCase.WeatherData), partOSimulationCase.SolarCalculationMethod, 1, 365)
             {
                 UnmetHours = simulateOptions?.UnmetHours ?? false,
                 Sizing = simulateOptions?.Sizing ?? false,
                 UseWidths = simulateOptions?.UseWidths ?? false,
                 UpdateConstructionLayersByPanelType = simulateOptions?.UpdateConstructionLayersByPanelType ?? true,
             };
+        }
+
+        /// <summary>
+        /// Where a mixed-design run's TAS files go: the MixedDesign case's <c>tas</c> folder directly inside the Part O root
+        /// the Simulation case names, exactly as named (<see cref="PartOOutputPaths"/>) - every screening and the final
+        /// run, together.
+        /// </summary>
+        internal static string? PartOMixedOutputDirectory(PartOSimulationCase? partOSimulationCase)
+        {
+            string? directory_Root = partOSimulationCase?.OutputDirectory;
+
+            return PartOOutputPaths.Create(directory_Root, PartOOutputCase.MixedDesign)?.Directory_Tas ?? directory_Root;
         }
 
         /// <summary>

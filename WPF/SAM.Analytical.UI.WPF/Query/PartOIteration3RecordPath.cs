@@ -25,7 +25,10 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>
         /// Which record file holds one method's pairing for a results file.
         /// <list type="number">
-        /// <item>The method's own record, <c>&lt;run&gt;-Iteration3-&lt;tag&gt;.json</c>, wherever it exists.</item>
+        /// <item>The method's own record, <c>&lt;run&gt;-Iteration3-&lt;tag&gt;.json</c>, in Iteration 3's
+        /// reports folder, wherever it exists - where a run writes it.</item>
+        /// <item>Otherwise the method's own record BESIDE the results, where every run wrote it before Iteration 3
+        /// had its own folder. Read, never written; a legacy project is read as it was saved.</item>
         /// <item>Otherwise the mode-independent <c>&lt;run&gt;-Iteration3.json</c> written before per-method
         /// records existed - but only where the mode recorded inside it IS this method. It is read, never
         /// written, and a method's own record always supersedes it.</item>
@@ -41,6 +44,14 @@ namespace SAM.Analytical.UI.WPF
             if (string.IsNullOrWhiteSpace(path) || File.Exists(path))
             {
                 return path;
+            }
+
+            //Not "legacy" in the sense below: this is the method's own record, only in the old place.
+            string path_Beside = PartOIteration3Paths.Path_Record_ForResults_Legacy(path_TSD, partOIteration3BehaviourMode);
+
+            if (!string.IsNullOrWhiteSpace(path_Beside) && File.Exists(path_Beside))
+            {
+                return path_Beside;
             }
 
             string path_Legacy = PartOIteration3Paths.Path_Record_ForResults(path_TSD);

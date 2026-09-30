@@ -50,6 +50,8 @@ namespace SAM.Analytical.UI.WPF
 
             try
             {
+                PartOOutputPaths.EnsureDirectoryForFile(path_TM59Report);
+
                 File.WriteAllText(path_TM59Report, PartOTM59ReportText(tM59AssessmentReport, provenance));
 
                 return true;

@@ -34,6 +34,11 @@ namespace SAM.Analytical.UI.WPF.Tests
     {
         private readonly string directory = PartOIteration3Fixture.Directory_Temp();
 
+        //Iteration 3's own folders beneath the reference's folder - see PartOOutputPaths.
+        private string directory_It3 => Path.Combine(directory, "Iteration3", "tas");
+
+        private string directory_It3Reports => Path.Combine(directory, "Iteration3", "reports");
+
         public void Dispose()
         {
             try
@@ -167,8 +172,8 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             return new SystemVentilationRoute(
                 noIzamThermalSource,
-                Path.Combine(directory, "Flat-It3B.tpd"),
-                PartOIteration3Fixture.Evidence(Path.Combine(directory, "Flat-It3B.tpd"), Path.Combine(directory, "Flat-It3B.tpd")),
+                Path.Combine(directory_It3, "Flat-It3B.tpd"),
+                PartOIteration3Fixture.Evidence(Path.Combine(directory_It3, "Flat-It3B.tpd"), Path.Combine(directory_It3, "Flat-It3B.tpd")),
                 systemVentilationBindings,
                 connectionBindings,
                 PartOIteration3Fixture.ZoneTemperatures(systemVentilationBindings, 0, 23),
@@ -194,7 +199,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// <summary>The pipeline for a run that completes, wired to the fixture design.</summary>
         private PartOIteration3PipelineFake Pipeline_Complete(out List<Guid> guids_Bound)
         {
-            NoIzamThermalSource noIzamThermalSource = PartOIteration3Fixture.ThermalSource(directory, guids_Space_Dwelling);
+            NoIzamThermalSource noIzamThermalSource = PartOIteration3Fixture.ThermalSource(directory_It3, guids_Space_Dwelling);
 
             SystemVentilationRoute systemVentilationRoute = Route(noIzamThermalSource, out List<SystemVentilationBinding> systemVentilationBindings);
 
@@ -208,7 +213,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             guids_Bound.Sort();
 
-            string path_TSD_Bridge = Path.Combine(directory, "Flat-It3B-Bridge.tsd");
+            string path_TSD_Bridge = Path.Combine(directory_It3, "Flat-It3B-Bridge.tsd");
 
             //Candidate B one degree above Reference A everywhere, so the expected statistics are exact.
             ResultantTemperatureResults resultantTemperatureResults = PartOIteration3Fixture.ResultantTemperatures(path_TSD_Bridge, guids_Bound, 0, 23, (guid, hour) => 21.0);
@@ -229,12 +234,12 @@ namespace SAM.Analytical.UI.WPF.Tests
             //Each stage writes what the real one writes, so the artifact-ownership rule sees this
             //attempt's files rather than the fixture's - which is what a stale attempt looks like, and is
             //tested on its own below.
-            result.Paths_ThermalSource.Add(Path.Combine(directory, "Flat-It3B.tbd"));
-            result.Paths_ThermalSource.Add(Path.Combine(directory, "Flat-It3B.tsd"));
-            result.Paths_Route.Add(Path.Combine(directory, "Flat-It3B.tpd"));
-            result.Paths_Bridge.Add(Path.Combine(directory, "Flat-It3B-Bridge.tbd"));
-            result.Paths_Bridge.Add(Path.Combine(directory, "Flat-It3B-Bridge.tsd"));
-            result.Paths_Persist.Add(Path.Combine(directory, "Flat-It3B-Bridge.sam"));
+            result.Paths_ThermalSource.Add(Path.Combine(directory_It3, "Flat-It3B.tbd"));
+            result.Paths_ThermalSource.Add(Path.Combine(directory_It3, "Flat-It3B.tsd"));
+            result.Paths_Route.Add(Path.Combine(directory_It3, "Flat-It3B.tpd"));
+            result.Paths_Bridge.Add(Path.Combine(directory_It3, "Flat-It3B-Bridge.tbd"));
+            result.Paths_Bridge.Add(Path.Combine(directory_It3, "Flat-It3B-Bridge.tsd"));
+            result.Paths_Persist.Add(Path.Combine(directory_It3, "Flat-It3B-Bridge.sam"));
 
             return result;
         }
@@ -318,7 +323,8 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.NotNull(partOSimulationContext);
             Assert.Equal("Flat-It3B", partOSimulationContext.ProjectName);
-            Assert.Equal(directory, partOSimulationContext.OutputDirectory);
+            //Iteration 3's own tas folder beneath the reference's root - never Reference A's folder.
+            Assert.Equal(System.IO.Path.Combine(directory, "Iteration3", "tas"), partOSimulationContext.OutputDirectory);
             Assert.Same(partORun.SimulationContext.WeatherData, partOSimulationContext.WeatherData);
             Assert.Equal(partORun.SimulationContext.SolarCalculationMethod, partOSimulationContext.SolarCalculationMethod);
             Assert.Equal(partORun.SimulationContext.SimulateFrom, partOSimulationContext.SimulateFrom);
@@ -465,7 +471,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             PartOIteration3PipelineFake partOIteration3PipelineFake = Pipeline_Complete(out List<Guid> _);
 
-            string path_TPD = Path.Combine(directory, "Flat-It3B.tpd");
+            string path_TPD = Path.Combine(directory_It3, "Flat-It3B.tpd");
 
             partOIteration3PipelineFake.SystemVentilationRoute = new SystemVentilationRoute(
                 partOIteration3PipelineFake.NoIzamThermalSource,
@@ -603,8 +609,8 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run();
 
-            string path_Model = Path.Combine(directory, "Flat-It3B-Bridge.sam");
-            string path_Record = Path.Combine(directory, "Flat-Iteration3-B0.json");
+            string path_Model = Path.Combine(directory_It3, "Flat-It3B-Bridge.sam");
+            string path_Record = Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json");
 
             File.WriteAllText(path_Model, "an earlier attempt's reopenable Candidate B");
             File.WriteAllText(path_Record, "an earlier attempt's pairing");
@@ -667,7 +673,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOIteration3PipelineFake partOIteration3PipelineFake = Pipeline_Complete(out List<Guid> _);
 
             string path_Report_A = Query.Path_TM59Report(path_TSD_ReferenceA);
-            string path_Report_B = Query.Path_TM59Report(Path.Combine(directory, "Flat-It3B-Bridge.tsd"));
+            string path_Report_B = Query.Path_TM59Report(Path.Combine(directory_It3, "Flat-It3B-Bridge.tsd"));
 
             File.WriteAllText(path_Report_A, "an earlier assessment's Reference A report");
             File.WriteAllText(path_Report_B, "an earlier attempt's Candidate B report");
@@ -716,7 +722,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             partOIteration3PipelineFake.Write_Reports = true;
 
             string path_Report_A = Query.Path_TM59Report(path_TSD_ReferenceA);
-            string path_Report_B = Query.Path_TM59Report(Path.Combine(directory, "Flat-It3B-Bridge.tsd"));
+            string path_Report_B = Query.Path_TM59Report(Path.Combine(directory_It3, "Flat-It3B-Bridge.tsd"));
 
             File.WriteAllText(path_Report_A, "an earlier assessment's Reference A report");
             File.WriteAllText(path_Report_B, "an earlier attempt's Candidate B report");
@@ -971,7 +977,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOIteration3Result partOIteration3Result = Modify.RunPartOIteration3(partORun, Pipeline_Complete(out List<Guid> _));
 
             Assert.True(partOIteration3Result.IsComplete, string.Join("; ", partOIteration3Result.Ledger.Reasons));
-            Assert.Equal(Path.Combine(directory, "Flat-Iteration3-B0.json"), partOIteration3Result.Path_Record);
+            Assert.Equal(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json"), partOIteration3Result.Path_Record);
             Assert.True(File.Exists(partOIteration3Result.Path_Record));
             Assert.False(File.Exists(Path.Combine(directory, "Flat-Iteration3.json")));
         }
