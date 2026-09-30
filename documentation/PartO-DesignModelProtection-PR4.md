@@ -5,7 +5,7 @@
 
 **Status (30 Sep 2026): implemented and tested. The PR is open against `sow/2026-Q3` and is NOT merged.**
 
-It **depends on SAM-BIM/SAM `feature/parto-manual-equipment-selection-2026-09-30`**, which adds
+It **depends on SAM-BIM/SAM#170** (`feature/parto-manual-equipment-selection-2026-09-30`), which adds
 `PartOManualEquipmentSelection` and `PreparePartOIteration`'s manual parameter (record: SAM
 `documentation/PartO-ManualEquipmentSelection-PR.md`). SAM_UI CI stays red until that SAM PR merges into SAM
 `sow/2026-Q3`, so merge SAM first. The owner question raised by the first round is resolved (below).
