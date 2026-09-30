@@ -3,8 +3,12 @@
 
 # Part O PR-4: protect the design model from Part O run output
 
-**Status (30 Sep 2026): implemented and tested. The PR is open against `sow/2026-Q3` and is NOT merged. It is SAM_UI
-only, with no SAM change. One owner question is open (below).**
+**Status (30 Sep 2026): implemented and tested. The PR is open against `sow/2026-Q3` and is NOT merged.**
+
+It **depends on SAM-BIM/SAM `feature/parto-manual-equipment-selection-2026-09-30`**, which adds
+`PartOManualEquipmentSelection` and `PreparePartOIteration`'s manual parameter (record: SAM
+`documentation/PartO-ManualEquipmentSelection-PR.md`). SAM_UI CI stays red until that SAM PR merges into SAM
+`sow/2026-Q3`, so merge SAM first. The owner question raised by the first round is resolved (below).
 
 - Branch `feature/parto-design-model-protection-2026-09-30`, from `sow/2026-Q3` `92534d6`.
 - Architecture: `documentation/PartO-ModelStateArchitecture.md`, which is the approved review. This PR is step 1 of it.
@@ -21,7 +25,8 @@ Before this PR:
 
 | Step | Before | After |
 |---|---|---|
-| Accepted review (`ConcludePartOReview`) | The window adopted the prepared model | The prepared model goes to the run only. **Only the confirmed inputs** (`PartOEquipmentSelection`, `PartOProjectTestVentilationUnit`) are written onto the design model, and only where they changed (`Modify.PersistPartOInputs`). The run expects the write and survives it. |
+| Accepted review (`ConcludePartOReview`) | The window adopted the prepared model | The prepared model goes to the run only. **Only the confirmed inputs** (`PartOEquipmentSelection`, `PartOProjectTestVentilationUnit` and, under Manual, the hand-picked products `PartOManualEquipmentSelection`) are written onto the design model, and only where they changed (`Modify.PersistPartOInputs`). The run expects the write and survives it. |
+| Hand-picked products (Manual) | Lived on the prepared unit, and reached the next case only through result carry-forward | **Design input**, keyed by dwelling zone guid. A manual Iteration 2 prepared from the design gets them materialised onto its own new units by SAM. See "Hand-picked products" below. |
 | Guided Part O simulation (`SimulatePartO`, and the dialog with `partOWorkflow`) | Simulated the open model and adopted the result | Simulates `PartORun.AnalyticalModel_Prepared`, completes the run and **never replaces the open model** |
 | Expert *Energy Simulation* | Completed a prepared Part O run when the open model was the prepared one | An ordinary simulation of the open model, adopted into the window as before. It never completes, stamps or persists a Part O run, and it drops a pending run. |
 | Iteration 2B (`RunPartOOptimisation`) | Adopted the last valid design into the window | Not adopted. The kept design stays with the run and under `PartO/Iteration2B` (owner decision 3). The result window no longer says "loaded into the model". |
@@ -52,36 +57,54 @@ the guid.
 
   Null means production behaviour.
 
-## Owner question (raised rather than decided)
+## Hand-picked products (owner decision, resolved in this PR)
 
-**Hand-picked per-dwelling products no longer carry to the next case.**
+**Found in the first round.** In Manual mode the Review window wrote a dwelling's product onto the Part O unit the
+preparation built, and that unit is run output. The product reached the next case only because the next case was
+prepared from the previous result (probe: `MVHR-01/02 … Hand-picked unit reused=True`). PR-4 removes that
+carry-forward, so the product was lost.
 
-In Manual mode, the Review window writes a dwelling's product (`VentilationUnitReference`) onto the **Part O unit the
-preparation built**, and that unit is run output. Before PR-4 the next Iteration 2 reused those units, because it was
-prepared from the previous run's output (probe: `MVHR-01/02 … Hand-picked unit reused=True`). Now it prepares from the
-design, and its new units start with no product.
+**Owner decision.** Manual per-dwelling equipment selection is explicit Part O design input. It is persisted
+independently of prepared or run systems and materialised by preparation. It is never copied from a result unit.
 
-What does carry:
-- the mode and pool (`PartOEquipmentSelection`) and the test product, which are model-level inputs;
-- the hand-picked products within the run's own saved models, and within 2B and Iteration 3 of that run.
+**Representation (SAM).** `PartOManualEquipmentSelection` is a new, additive
+`AnalyticalModelParameter.PartOManualEquipmentSelection`:
+- dwelling zone guid → `VentilationUnitReference` identity, never a name;
+- canonical, and schema `v1`;
+- absent means none.
 
-Automatic modes re-select deterministically, so they are unaffected.
+Existing types were not reused. `PartOEquipmentSelection` is documented as "a candidate constraint, never an
+assignment", and its `Matches` drives reuse. Mixed Design's `PartODwellingStrategySet` is Mixed Design's own
+authority.
 
-The architecture lists "Part O equipment choices" as design inputs, but the design model has no place for a
-per-dwelling choice before a preparation builds the units. Options:
-- **(a)** accept this for now: re-pick per run, or use an automatic mode;
-- **(b)** a follow-up PR that stores per-dwelling choices on the design, for example keyed by dwelling zone like
-  Mixed Design's `PartODwellingStrategies` (SAM + SAM_UI);
-- **(c)** something else.
+**Semantics.**
+- **Read.** Only a product-selecting review under Manual reads the input (`Modify.ManualEquipmentSelection(request,
+  selection, model)`). SAM's `PreparePartOIteration(…, partOManualEquipmentSelection)` assigns each dwelling's product
+  to the unit it builds through `AssignVentilationUnit`. 1a and 1b never read it, an automatic rule is never
+  overridden, and an unknown schema is warned about and not applied.
+- **Written on Accept of a Manual review** (`Modify.ManualEquipmentSelection(table, preparation, existing)`, keyed
+  through the new `PartOIterationPreparation.DwellingZoneGuids`):
+  - an assigned row sets its dwelling;
+  - an unassigned row clears it;
+  - dwellings outside the review's scope keep theirs;
+  - an empty result removes the parameter.
 
-It is pinned by `A_hand_picked_product_stays_with_its_run_and_the_next_case_starts_from_the_design`, which changes if
-the owner picks (b).
+  Confirming the same choices writes nothing.
+- **Changing to an automatic mode** (an accepted automatic review) clears every hand-picked product. The rule's
+  answers are never stored as intent.
+- **Changing back to Manual** starts from nothing dormant. "Convert to Manual" in a review keeps the rule's current
+  answers as the starting choices, which the engineer then accepts or edits.
+- **Clearing one dwelling.** The Review window has no control that blanks a row today; the table only assigns. The
+  rule ("an unassigned row clears") is defined and pinned at the commit seam, and switching to an automatic mode
+  clears all.
+- **Legacy.** A model without the parameter behaves as before.
+- **The prepared model** is stamped with the same selection, as it is with the mode and pool.
 
 ## Files
 
 - `SAM_UI/SAM.Analytical.UI/Query/PartODesignModelRefusal.cs` (new): the refusal and its lead sentence.
 - `SAM_UI/SAM.Analytical.UI/Classes/PartO/PartOWorkflowCapabilities.cs`, `PartOWorkflowInspection.cs`: `DesignModelRefusal`, which becomes the first Run blocker.
-- `WPF/SAM.Analytical.UI.WPF/Modify/PreparePartOIteration.cs`: no adoption, `PersistPartOInputs`, and the two entry guards.
+- `WPF/SAM.Analytical.UI.WPF/Modify/PreparePartOIteration.cs`: no adoption, `PersistPartOInputs` (now also the hand-picked products), the two entry guards, and the two `ManualEquipmentSelection` rules (read for preparation; build from an accepted table).
 - `WPF/SAM.Analytical.UI.WPF/Modify/Simulate.cs`: the Part O case simulates the run's prepared model and adopts nothing; the runner seam.
 - `WPF/SAM.Analytical.UI.WPF/Modify/RunPartOOptimisation.cs`: no adoption; the seams.
 - `WPF/SAM.Analytical.UI.WPF/Modify/RunPartOWorkflow.cs`: `Capabilities(run, model, …)`.
@@ -89,13 +112,13 @@ the owner picks (b).
 - `WPF/SAM.Analytical.UI.WPF/Windows/PartOPreparationWindow.xaml.cs`, `Classes/PartO/PartOOptimisationSummary.cs`: wording ("your design model stays open"; 2B "kept under PartO/Iteration2B").
 - `WPF/SAM.Analytical.UI.WPF/Classes/PartO/Mixed/PartOMixedDesignSession.cs`, `Windows/PartOMixedDesignWindow.xaml.cs`: `IsPartOResult`, and the lead sentence.
 - `WPF/SAM.Analytical.UI.WPF/Windows/AnalyticalWindow.xaml.cs`: comment only (expert Energy Simulation).
-- `WPF/SAM.Analytical.UI.WPF.Tests/PartODesignModelProtectionTests.cs` (new, 7 tests), and `PartOReviewIterationTests.cs` (2 tests updated from "replaced once" to "not replaced"), `PartOPreparedModelCarriedLinkTests.cs` (comment only).
+- `WPF/SAM.Analytical.UI.WPF.Tests/PartODesignModelProtectionTests.cs` (new, 10 tests), and `PartOReviewIterationTests.cs` (2 tests updated from "replaced once" to "not replaced"), `PartOPreparedModelCarriedLinkTests.cs` (comment only).
 - `documentation/PartO-ModelStateArchitecture.md` (new, the approved architecture), this record, and `documentation/evidence/parto-design-model-protection-2026-09-30/`.
 
 ## Evidence
 
 - **Build.** `SAM.Analytical.UI.WPF` builds with 0 errors.
-- **`PartODesignModelProtectionTests`: 7/7.** TAS is replaced only at `PartOWorkflowRunner`. The SAM preparation is
+- **`PartODesignModelProtectionTests`: 10/10.** TAS is replaced only at `PartOWorkflowRunner`. The SAM preparation is
   real, and the production decision point, simulation core and 2B command are used.
   - **A/C/E journey.** 1a → 1b → 2 → 2B → Save. The design JSON is identical after each preparation, simulation and
     2B step.
@@ -113,14 +136,37 @@ the owner picks (b).
     and in Mixed Design. Restore and review still work. An ordinary simulation result is not refused.
   - **Hub window.** Run is blocked on an opened result and Review Results is offered. On the design model the refusal
     is absent.
-  - **Pinned boundary.** Hand-picked products (see the owner question).
+  - **Hand-picked products** (these replace the round-one test that pinned their loss):
+    - **1.** Manual A for dwelling 1 and B for dwelling 2, committed. The design holds exactly `{zone1: A, zone2: B}`,
+      written once, and no Part O output.
+    - **2.** The run's units carry A/B.
+    - **5.** After the commit, the Iteration 2 simulation and 1a/1b preparation and simulation leave the design
+      byte-identical.
+    - **3.** 1a units get no product. A later Iteration 2 with no edit materialises A/B onto new units. Those units'
+      guids differ from the earlier run's, and the prepared model has no provenance, scenarios, results or earlier
+      systems. Nothing is written.
+    - **4.** Save, then reopen in a new session with a new run, then prepare: A/B again, and the design is unchanged.
+    - **Semantics.** Changing one dwelling's product keeps the other dwelling's. An automatic review selects by the
+      rule and clears the input. Back in Manual nothing is dormant. An unassigned row clears, and out-of-scope
+      dwellings keep theirs.
+    - **6/7.** Only a manual product-selecting review reads the input. 1a, both automatic modes and a legacy model
+      without the parameter read none.
 - **Mutation checks.** Each reintroduced behaviour is caught:
   - the result adopted in `Simulate` fails the journey and D;
   - the prepared model adopted in the review fails "1a preparation";
   - 2B adopting its design fails 2B;
   - the Hub blocker removed fails D;
   - the window dropping the field fails the Hub-window test.
-- **Full WPF suite: 1546/1546** (1539 + 7 new).
+
+  For hand-picked products, run one at a time on clean code:
+  - SAM skips the assignment: 3 SAM_UI tests fail, plus SAM's own;
+  - SAM applies the selection under a catalogue: the SAM test fails;
+  - the input is read for 1a and automatic reviews: 3 tests fail;
+  - the input is never read: 3 tests fail;
+  - an automatic review keeps or stores choices: 3 tests fail;
+  - an unassigned row does not clear: the clear test fails;
+  - choices are never written to the design: 2 tests fail.
+- **Full WPF suite: 1549/1549** (1546 in round one; this round adds 4 tests and replaces 1). **SAM.Tests: 2703/2703** on the SAM branch.
 - **Native smoke, no TAS: PASS** after one fix (`evidence/…/SMOKE.md`).
   - On an opened result, the real Hub blocks Run with the refusal and offers Review Results, and Mixed Design leads
     with the sentence.
@@ -142,7 +188,7 @@ the owner picks (b).
 
 ## Next step
 
-1. The owner reviews this PR and answers the hand-picked-products question.
+1. The owner reviews SAM-BIM/SAM#170 and this PR. Merge SAM first.
 2. Optionally, a licensed native check: open a design model, Prepare & Run 1a, confirm the window is still the design,
    Review, Save, and confirm the saved `.sam` has no Part O results.
 3. Merge. Then add the `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`, and start **PR-1** (Part O system scope,

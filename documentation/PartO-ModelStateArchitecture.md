@@ -17,7 +17,11 @@ calculation and result step.
 
 **Explicit design inputs.** These may change the design model:
 - Part F and zoning edits;
-- Part O equipment choices (the Review window's selection mode and pool, `PartOEquipmentSelection`);
+- Part O equipment choices:
+  - the Review window's selection mode and pool (`PartOEquipmentSelection`);
+  - under Manual, each dwelling's hand-picked product (`PartOManualEquipmentSelection`, keyed by dwelling zone guid).
+    This was an owner decision during PR-4, 30 Sep 2026. Preparation materialises these choices onto its own units,
+    and they are never copied from a result;
 - the project test unit (`PartOProjectTestVentilationUnit`);
 - the Mixed Design strategy selection (`PartODwellingStrategies`).
 

@@ -266,44 +266,201 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.NotEqual(PartORunState.Prepared, journey.PartORun.State);
         }
 
+        // ---- Hand-picked per-dwelling products: Part O design input (owner decision on PR-4) --------------------
+
         /// <summary>
-        /// <b>Pinned PR-4 boundary, raised with the owner.</b> A per-dwelling product chosen by hand in the Review
-        /// window is written onto the Part O unit the preparation built - run output - so it stays with that run and
-        /// its saved models, and the next case, prepared from the design model, starts with no product on its units.
-        /// The project's mode, pool and test product are design inputs and do carry. Before PR-4 the hand-picked
-        /// identities reached the next run only because it was prepared from the previous run's output.
+        /// Manual mode: the products chosen by hand for dwelling 1 (A) and dwelling 2 (B) are committed as design
+        /// input, keyed by dwelling zone. Every later case is prepared from the design model - 1a and 1b select no
+        /// product, as ever, and a later Iteration 2 materialises A and B onto its OWN new units from that input,
+        /// with no earlier run's provenance, scenarios, results or systems anywhere in its source. Save and reopen
+        /// keep them. Once committed, nothing but another explicit input changes the design model.
         /// </summary>
         [Fact]
-        public void A_hand_picked_product_stays_with_its_run_and_the_next_case_starts_from_the_design()
+        public void Hand_picked_products_are_design_input_and_every_case_rebuilds_them_from_the_design()
         {
             Journey journey = Open();
+            (Zone zone_1, Zone zone_2) = Flats(journey.UIAnalyticalModel.JSAMObject);
 
-            PartOProjectTestVentilationUnit partOProjectTestVentilationUnit = new("Hand-picked unit", 60, 60);
-            PartOEquipmentSelection partOEquipmentSelection = new(PartOEquipmentSelectionMode.ManualPerDwelling, [partOProjectTestVentilationUnit.VentilationUnitReference]);
+            PartOEquipmentSelection partOEquipmentSelection_Manual = new(PartOEquipmentSelectionMode.ManualPerDwelling);
 
-            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, partOEquipmentSelection, partOProjectTestVentilationUnit, edit: x =>
+            // ---- 1. Choose A for dwelling 1 and B for dwelling 2, and commit --------------------------------------
+            int modified_Before = journey.Modified;
+
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, partOEquipmentSelection_Manual, catalogue: Catalogue(), edit: (x, preparation) =>
             {
-                Assert.True(x.Assign(x.Assignments.Select(y => y.Guid_AirHandlingUnit), partOProjectTestVentilationUnit.VentilationUnitReference, out List<Guid> _, out List<string> refusals), string.Join(" ", refusals));
+                Assign(x, preparation, zone_1, product_A);
+                Assign(x, preparation, zone_2, product_B);
             }));
 
-            //The run's units carry the hand-picked product; the design carries the mode and pool, and no unit.
-            List<AirHandlingUnit> airHandlingUnits_Run = journey.PartORun.AnalyticalModel_Prepared.AdjacencyCluster.GetObjects<AirHandlingUnit>();
-            Assert.NotEmpty(airHandlingUnits_Run);
-            Assert.All(airHandlingUnits_Run, x => Assert.Equal(0, VentilationUnitReference.Compare(partOProjectTestVentilationUnit.VentilationUnitReference, Analytical.Query.SelectedVentilationUnitReference(x))));
+            Assert.Equal(modified_Before + 1, journey.Modified);
 
             AnalyticalModel analyticalModel_Design = journey.UIAnalyticalModel.JSAMObject;
-            Assert.Equal(PartOEquipmentSelectionMode.ManualPerDwelling, analyticalModel_Design.GetValue<PartOEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOEquipmentSelection).Mode);
-            AssertNoPartOOutput(analyticalModel_Design, "design after a hand-picked review");
+            PartOManualEquipmentSelection? partOManualEquipmentSelection = analyticalModel_Design.GetValue<PartOManualEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection);
+            Assert.NotNull(partOManualEquipmentSelection);
+            Assert.Equal(2, partOManualEquipmentSelection!.Count);
+            Assert.Equal(0, VentilationUnitReference.Compare(product_A, partOManualEquipmentSelection.Product(zone_1.Guid)));
+            Assert.Equal(0, VentilationUnitReference.Compare(product_B, partOManualEquipmentSelection.Product(zone_2.Guid)));
+            AssertNoPartOOutput(analyticalModel_Design, "design after the manual commit");
+
+            //The run's units carry the choice this review made.
+            AssertProducts(journey.PartORun, zone_1, product_A, zone_2, product_B, "first Iteration 2");
+
+            // ---- 5. From here on, calculations do not move the design ----------------------------------------------
+            string snapshot_Design = Snapshot(journey.UIAnalyticalModel);
 
             Simulate(journey);
+            AssertDesign(journey, snapshot_Design, "Iteration 2 simulation");
 
-            //The next Iteration 2 prepares from the design: it is not refused, and its new units start with no product.
-            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2));
+            List<Guid> guids_Unit_Earlier = [.. journey.PartORun.AnalyticalModel_Assessment.AdjacencyCluster.GetObjects<AirHandlingUnit>().Select(x => x.Guid)];
+            List<Guid> guids_System_Earlier = journey.PartORun.Guids_VentilationSystem_Prepared;
 
-            List<AirHandlingUnit> airHandlingUnits_Next = journey.PartORun.AnalyticalModel_Prepared.AdjacencyCluster.GetObjects<AirHandlingUnit>();
-            Assert.NotEmpty(airHandlingUnits_Next);
-            Assert.All(airHandlingUnits_Next, x => Assert.Null(Analytical.Query.SelectedVentilationUnitReference(x)));
-            Assert.DoesNotContain(airHandlingUnits_Next, x => airHandlingUnits_Run.Exists(y => y.Guid == x.Guid));
+            // ---- 3. 1a and 1b: prepared from the design, no product, the input untouched ------------------------
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration1a));
+            Assert.All(journey.PartORun.AnalyticalModel_Prepared.AdjacencyCluster.GetObjects<AirHandlingUnit>(), x => Assert.Null(Analytical.Query.SelectedVentilationUnitReference(x)));
+            AssertDesign(journey, snapshot_Design, "1a preparation");
+            Simulate(journey);
+            AssertDesign(journey, snapshot_Design, "1a simulation");
+
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration1b));
+            AssertDesign(journey, snapshot_Design, "1b preparation");
+            Simulate(journey);
+            AssertDesign(journey, snapshot_Design, "1b simulation");
+
+            // ---- 3. Iteration 2 again, with no edit: A and B from the design input alone --------------------------
+            int modified_Before2 = journey.Modified;
+
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, catalogue: Catalogue()));
+
+            AssertProducts(journey.PartORun, zone_1, product_A, zone_2, product_B, "Iteration 2 after 1a and 1b");
+            AssertNoRunState(journey.PartORun.AnalyticalModel_Prepared, guids_System_Earlier, "Iteration 2 after 1a and 1b");
+            Assert.DoesNotContain(journey.PartORun.AnalyticalModel_Prepared.AdjacencyCluster.GetObjects<AirHandlingUnit>(), x => guids_Unit_Earlier.Contains(x.Guid));
+
+            //Confirming the same choices writes nothing.
+            Assert.Equal(modified_Before2, journey.Modified);
+            AssertDesign(journey, snapshot_Design, "Iteration 2 preparation from the input");
+
+            // ---- 4. Save, reopen, prepare again -------------------------------------------------------------------
+            Assert.True(journey.UIAnalyticalModel.Save());
+
+            Journey journey_Reopened = Reopen();
+            Assert.Equal(snapshot_Design, Snapshot(journey_Reopened.UIAnalyticalModel));
+
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey_Reopened, PartOWorkflowScenario.Text_Iteration2, catalogue: Catalogue()));
+            AssertProducts(journey_Reopened.PartORun, zone_1, product_A, zone_2, product_B, "Iteration 2 after reopening");
+            Assert.Equal(snapshot_Design, Snapshot(journey_Reopened.UIAnalyticalModel));
+        }
+
+        /// <summary>
+        /// Changing, clearing and leaving Manual. Changing one dwelling's product replaces only that dwelling's
+        /// input. An accepted automatic review clears every hand-picked product - the rule's answers are never
+        /// stored as authored intent - and returning to Manual starts from nothing dormant.
+        /// </summary>
+        [Fact]
+        public void Changing_a_choice_or_the_mode_keeps_only_what_the_engineer_last_confirmed()
+        {
+            Journey journey = Open();
+            (Zone zone_1, Zone zone_2) = Flats(journey.UIAnalyticalModel.JSAMObject);
+
+            PartOEquipmentSelection partOEquipmentSelection_Manual = new(PartOEquipmentSelectionMode.ManualPerDwelling);
+
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, partOEquipmentSelection_Manual, catalogue: Catalogue(), edit: (x, preparation) =>
+            {
+                Assign(x, preparation, zone_1, product_A);
+                Assign(x, preparation, zone_2, product_B);
+            }));
+
+            //Change dwelling 1 only: dwelling 2 keeps its product.
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, catalogue: Catalogue(), edit: (x, preparation) => Assign(x, preparation, zone_1, product_B)));
+
+            PartOManualEquipmentSelection? partOManualEquipmentSelection = Manual(journey);
+            Assert.Equal(0, VentilationUnitReference.Compare(product_B, partOManualEquipmentSelection!.Product(zone_1.Guid)));
+            Assert.Equal(0, VentilationUnitReference.Compare(product_B, partOManualEquipmentSelection.Product(zone_2.Guid)));
+
+            //Automatic: the rule chooses, the hand-picked products are not applied, and the input is cleared - not
+            //replaced by the rule's answers.
+            PartOEquipmentSelection partOEquipmentSelection_Automatic = new(PartOEquipmentSelectionMode.AutomaticSelectedPool, [product_A]);
+
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, partOEquipmentSelection_Automatic, catalogue: Catalogue()));
+
+            AssertProducts(journey.PartORun, zone_1, product_A, zone_2, product_A, "automatic Iteration 2");
+            Assert.Null(Manual(journey));
+            Assert.Equal(PartOEquipmentSelectionMode.AutomaticSelectedPool, journey.UIAnalyticalModel.JSAMObject.GetValue<PartOEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOEquipmentSelection).Mode);
+
+            //Back to Manual: nothing was kept dormant, so no product is applied until one is chosen, and an unedited
+            //manual review stores nothing.
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, partOEquipmentSelection_Manual, catalogue: Catalogue()));
+
+            Assert.All(journey.PartORun.AnalyticalModel_Prepared.AdjacencyCluster.GetObjects<AirHandlingUnit>(), x => Assert.Null(Analytical.Query.SelectedVentilationUnitReference(x)));
+            Assert.Null(Manual(journey));
+        }
+
+        /// <summary>
+        /// The persistence rule itself, per row: an assigned row sets its dwelling's product, an unassigned row
+        /// clears it, and a dwelling outside the review's scope keeps its choice. The Review window has no control
+        /// that blanks a row today, so this is pinned at the seam every review commits through.
+        /// </summary>
+        [Fact]
+        public void An_unassigned_row_clears_its_dwelling_and_other_dwellings_keep_theirs()
+        {
+            AnalyticalModel analyticalModel = Design();
+            (Zone zone_1, Zone zone_2) = Flats(analyticalModel);
+            Guid guid_Zone_Outside = Guid.NewGuid();
+
+            PartOManualEquipmentSelection partOManualEquipmentSelection_Existing = new();
+            partOManualEquipmentSelection_Existing.Set(zone_1.Guid, product_A);
+            partOManualEquipmentSelection_Existing.Set(zone_2.Guid, product_B);
+            partOManualEquipmentSelection_Existing.Set(guid_Zone_Outside, product_A);
+
+            //Dwelling 2's unit prepared with no product - an unassigned row.
+            PartOManualEquipmentSelection partOManualEquipmentSelection_Prepared = new();
+            partOManualEquipmentSelection_Prepared.Set(zone_1.Guid, product_A);
+
+            List<Zone> zones = PartOMixedDesignFixture.Dwellings(analyticalModel);
+            PartOIterationPreparation partOIterationPreparation = Analytical.Modify.PreparePartOIteration(analyticalModel, PartOIteration.BasePassive, zones, zones.ToDictionary(x => x.Guid, x => "MVHR"), null, false, partOManualEquipmentSelection_Prepared);
+            Assert.True(partOIterationPreparation.Refusal is null, partOIterationPreparation.Refusal);
+
+            PartOEquipmentAssignmentSet partOEquipmentAssignmentSet = PartOEquipmentAssignmentSet.Create(partOIterationPreparation.AnalyticalModel.AdjacencyCluster, partOIterationPreparation.AirHandlingUnits, [], [], Catalogue(), new PartOEquipmentSelection(PartOEquipmentSelectionMode.ManualPerDwelling));
+
+            PartOManualEquipmentSelection? partOManualEquipmentSelection = Modify.ManualEquipmentSelection(partOEquipmentAssignmentSet, partOIterationPreparation, partOManualEquipmentSelection_Existing);
+
+            Assert.NotNull(partOManualEquipmentSelection);
+            Assert.Equal(0, VentilationUnitReference.Compare(product_A, partOManualEquipmentSelection!.Product(zone_1.Guid)));
+            Assert.Null(partOManualEquipmentSelection.Product(zone_2.Guid));
+            Assert.Equal(0, VentilationUnitReference.Compare(product_A, partOManualEquipmentSelection.Product(guid_Zone_Outside)));
+
+            //The existing input handed in is not changed by computing the new one.
+            Assert.Equal(0, VentilationUnitReference.Compare(product_B, partOManualEquipmentSelection_Existing.Product(zone_2.Guid)));
+
+            //Under an automatic mode the table states no hand-picked product at all.
+            partOEquipmentAssignmentSet.SetMode(PartOEquipmentSelectionMode.AutomaticAllProducts);
+            Assert.Null(Modify.ManualEquipmentSelection(partOEquipmentAssignmentSet, partOIterationPreparation, partOManualEquipmentSelection_Existing));
+        }
+
+        /// <summary>
+        /// Which preparations read the input: only a product-selecting review under manual authority. 1a/1b and
+        /// automatic reviews never do, and a legacy model without the input reads as none.
+        /// </summary>
+        [Fact]
+        public void Only_a_manual_product_selecting_review_reads_the_input()
+        {
+            AnalyticalModel analyticalModel = Design();
+            (Zone zone_1, Zone _) = Flats(analyticalModel);
+
+            PartOManualEquipmentSelection partOManualEquipmentSelection = new();
+            partOManualEquipmentSelection.Set(zone_1.Guid, product_A);
+
+            AnalyticalModel analyticalModel_WithInput = new(analyticalModel);
+            analyticalModel_WithInput.SetValue(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection, partOManualEquipmentSelection);
+
+            PartOEquipmentSelection partOEquipmentSelection_Manual = new(PartOEquipmentSelectionMode.ManualPerDwelling);
+
+            Assert.NotNull(Modify.ManualEquipmentSelection(Request(analyticalModel_WithInput, PartOWorkflowScenario.Text_Iteration2), partOEquipmentSelection_Manual, analyticalModel_WithInput));
+            Assert.Null(Modify.ManualEquipmentSelection(Request(analyticalModel_WithInput, PartOWorkflowScenario.Text_Iteration1a), partOEquipmentSelection_Manual, analyticalModel_WithInput));
+            Assert.Null(Modify.ManualEquipmentSelection(Request(analyticalModel_WithInput, PartOWorkflowScenario.Text_Iteration2), new PartOEquipmentSelection(PartOEquipmentSelectionMode.AutomaticAllProducts), analyticalModel_WithInput));
+            Assert.Null(Modify.ManualEquipmentSelection(Request(analyticalModel_WithInput, PartOWorkflowScenario.Text_Iteration2), new PartOEquipmentSelection(PartOEquipmentSelectionMode.AutomaticSelectedPool, [product_A]), analyticalModel_WithInput));
+
+            //Legacy: no input on the model is no hand-picked product.
+            Assert.Null(Modify.ManualEquipmentSelection(Request(analyticalModel, PartOWorkflowScenario.Text_Iteration2), partOEquipmentSelection_Manual, analyticalModel));
         }
 
         // ---- D: an opened Part O result -------------------------------------------------------------------------
@@ -499,6 +656,91 @@ namespace SAM.Analytical.UI.WPF.Tests
             return result;
         }
 
+        // ---- hand-picked product helpers -------------------------------------------------------------------------
+
+        private static readonly VentilationUnitReference product_A = new("PR-4 Fixture", "Unit A", null);
+
+        private static readonly VentilationUnitReference product_B = new("PR-4 Fixture", "Unit B", "B-01");
+
+        /// <summary>Two fixture products that can serve either flat.</summary>
+        private static List<VentilationUnitCapacityDescriptor> Catalogue()
+        {
+            return [new VentilationUnitCapacityDescriptor(product_A, 60, 60, 0), new VentilationUnitCapacityDescriptor(product_B, 80, 80, 0)];
+        }
+
+        private static (Zone, Zone) Flats(AnalyticalModel analyticalModel)
+        {
+            List<Zone> zones = PartOMixedDesignFixture.Dwellings(analyticalModel);
+            Assert.Equal(2, zones.Count);
+
+            return (zones[0], zones[1]);
+        }
+
+        /// <summary>What the engineer does in the table: assign a product to one dwelling's row, found by zone identity.</summary>
+        private static void Assign(PartOEquipmentAssignmentSet partOEquipmentAssignmentSet, PartOIterationPreparation partOIterationPreparation, Zone zone, VentilationUnitReference ventilationUnitReference)
+        {
+            int index = partOIterationPreparation.DwellingZoneGuids.IndexOf(zone.Guid);
+            Assert.True(index >= 0, "The preparation built no unit for the dwelling.");
+
+            Assert.True(partOEquipmentAssignmentSet.Assign(partOIterationPreparation.AirHandlingUnits[index].Guid, ventilationUnitReference, out string refusal), refusal);
+        }
+
+        /// <summary>The product each dwelling's unit carries in the run's prepared model.</summary>
+        private static void AssertProducts(PartORun partORun, Zone zone_1, VentilationUnitReference ventilationUnitReference_1, Zone zone_2, VentilationUnitReference ventilationUnitReference_2, string step)
+        {
+            AdjacencyCluster adjacencyCluster = partORun.AnalyticalModel_Prepared.AdjacencyCluster;
+
+            Assert.True(VentilationUnitReference.Compare(ventilationUnitReference_1, Analytical.Query.SelectedVentilationUnitReference(Unit(adjacencyCluster, zone_1))) == 0, string.Format("{0}: dwelling 1", step));
+            Assert.True(VentilationUnitReference.Compare(ventilationUnitReference_2, Analytical.Query.SelectedVentilationUnitReference(Unit(adjacencyCluster, zone_2))) == 0, string.Format("{0}: dwelling 2", step));
+        }
+
+        /// <summary>The Part O unit serving a dwelling zone's spaces, found through the zone - identity, not name.</summary>
+        private static AirHandlingUnit Unit(AdjacencyCluster adjacencyCluster, Zone zone)
+        {
+            HashSet<Guid> guids_Space = [.. adjacencyCluster.GetRelatedObjects<Space>(adjacencyCluster.GetObject<Zone>(zone.Guid)).Select(x => x.Guid)];
+
+            List<AirHandlingUnit> result = [];
+            foreach (VentilationSystem ventilationSystem in adjacencyCluster.GetObjects<VentilationSystem>() ?? [])
+            {
+                List<Space> spaces = adjacencyCluster.GetRelatedObjects<Space>(ventilationSystem) ?? [];
+                if (spaces.Count == 0 || !spaces.TrueForAll(x => guids_Space.Contains(x.Guid)))
+                {
+                    continue;
+                }
+
+                result.AddRange(adjacencyCluster.GetRelatedObjects<AirHandlingUnit>(ventilationSystem) ?? []);
+
+                if (ventilationSystem.TryGetValue(VentilationSystemParameter.SupplyUnitName, out string name_Unit))
+                {
+                    result.AddRange((adjacencyCluster.GetObjects<AirHandlingUnit>() ?? []).FindAll(x => x.Name == name_Unit));
+                }
+            }
+
+            return Assert.Single(result.GroupBy(x => x.Guid).Select(x => x.First()));
+        }
+
+        private static PartOManualEquipmentSelection? Manual(Journey journey)
+        {
+            return journey.UIAnalyticalModel.JSAMObject.GetValue<PartOManualEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection);
+        }
+
+        /// <summary>The saved design file opened again in a new session: a new window model and a new run.</summary>
+        private Journey Reopen()
+        {
+            UIAnalyticalModel uIAnalyticalModel = new(path_Design);
+            Assert.True(uIAnalyticalModel.Open());
+
+            Journey result = new() { UIAnalyticalModel = uIAnalyticalModel };
+
+            uIAnalyticalModel.Modified += (s, e) =>
+            {
+                result.Modified++;
+                result.PartORun.NotifyModified(UI.Query.IsModelChange(e?.Modifications));
+            };
+
+            return result;
+        }
+
         private static PartOWorkflowScenario Scenario(string text)
         {
             return PartOWorkflowScenario.Scenarios.Single(x => x.Text == text);
@@ -519,7 +761,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// What <c>PrepareAndReviewPartOIteration</c> does up to the Review window - from the OPEN model, which is the
         /// design - and then the engineer's answer, through the production decision point.
         /// </summary>
-        private static PartOPreparationResult Accept(Journey journey, string text_Scenario, PartOEquipmentSelection? partOEquipmentSelection = null, PartOProjectTestVentilationUnit? partOProjectTestVentilationUnit = null, bool accepted = true, Action<PartOEquipmentAssignmentSet>? edit = null)
+        private static PartOPreparationResult Accept(Journey journey, string text_Scenario, PartOEquipmentSelection? partOEquipmentSelection = null, PartOProjectTestVentilationUnit? partOProjectTestVentilationUnit = null, bool accepted = true, Action<PartOEquipmentAssignmentSet, PartOIterationPreparation>? edit = null, List<VentilationUnitCapacityDescriptor>? catalogue = null)
         {
             AnalyticalModel analyticalModel = journey.UIAnalyticalModel.JSAMObject;
 
@@ -532,13 +774,16 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOEquipmentSelection partOEquipmentSelection_Resolved = Query.PartOEquipmentSelection(partOWorkflowRequest, analyticalModel);
 
             List<VentilationUnitCapacityDescriptor>? ventilationUnitCapacityDescriptors_Candidate = partOWorkflowRequest.SelectVentilationUnit
-                ? partOEquipmentSelection_Resolved.CandidateDescriptors([], ventilationUnitCapacityDescriptors_ProjectTest)
+                ? partOEquipmentSelection_Resolved.CandidateDescriptors(catalogue ?? [], ventilationUnitCapacityDescriptors_ProjectTest)
                 : null;
 
-            PartOIterationPreparation partOIterationPreparation = Analytical.Modify.PreparePartOIteration(analyticalModel, partOIteration, partOWorkflowRequest.Zones_Dwelling, dictionary_VentilationStrategy, ventilationUnitCapacityDescriptors_Candidate, false);
+            //The same rule production reads the design's hand-picked products by.
+            PartOManualEquipmentSelection? partOManualEquipmentSelection = Modify.ManualEquipmentSelection(partOWorkflowRequest, partOEquipmentSelection_Resolved, analyticalModel);
+
+            PartOIterationPreparation partOIterationPreparation = Analytical.Modify.PreparePartOIteration(analyticalModel, partOIteration, partOWorkflowRequest.Zones_Dwelling, dictionary_VentilationStrategy, ventilationUnitCapacityDescriptors_Candidate, false, partOManualEquipmentSelection);
             Assert.True(partOIterationPreparation.Refusal is null, partOIterationPreparation.Refusal);
 
-            PartOPreparationContext partOPreparationContext = new(partOIteration, partOWorkflowRequest.Zones_Dwelling, dictionary_VentilationStrategy, partOWorkflowRequest.SelectVentilationUnit ? ventilationUnitCapacityDescriptors_ProjectTest : null)
+            PartOPreparationContext partOPreparationContext = new(partOIteration, partOWorkflowRequest.Zones_Dwelling, dictionary_VentilationStrategy, partOWorkflowRequest.SelectVentilationUnit ? [.. catalogue ?? [], .. ventilationUnitCapacityDescriptors_ProjectTest] : null)
             {
                 EquipmentSelection = partOEquipmentSelection_Resolved,
                 ProjectTestVentilationUnit = partOProjectTestVentilationUnit_Resolved,
@@ -548,13 +793,13 @@ namespace SAM.Analytical.UI.WPF.Tests
             AdjacencyCluster adjacencyCluster_Prepared = analyticalModel_Prepared.AdjacencyCluster;
 
             PartOEquipmentAssignmentSet? partOEquipmentAssignmentSet = partOWorkflowRequest.SelectVentilationUnit
-                ? PartOEquipmentAssignmentSet.Create(adjacencyCluster_Prepared, partOIterationPreparation.AirHandlingUnits, [], [], [], partOEquipmentSelection_Resolved, ventilationUnitCapacityDescriptors_ProjectTest)
+                ? PartOEquipmentAssignmentSet.Create(adjacencyCluster_Prepared, partOIterationPreparation.AirHandlingUnits, [], [], catalogue ?? [], partOEquipmentSelection_Resolved, ventilationUnitCapacityDescriptors_ProjectTest)
                 : null;
 
             //What the engineer does in the Review window's assignment table, if anything.
             if (partOEquipmentAssignmentSet is not null)
             {
-                edit?.Invoke(partOEquipmentAssignmentSet);
+                edit?.Invoke(partOEquipmentAssignmentSet, partOIterationPreparation);
             }
 
             return Modify.ConcludePartOReview(accepted, journey.UIAnalyticalModel, journey.PartORun, partOWorkflowRequest, analyticalModel_Prepared, adjacencyCluster_Prepared, partOIterationPreparation, partOPreparationContext, partOEquipmentAssignmentSet, partOProjectTestVentilationUnit_Resolved);

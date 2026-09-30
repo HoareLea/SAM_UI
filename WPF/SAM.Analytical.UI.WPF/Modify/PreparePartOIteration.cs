@@ -275,7 +275,11 @@ namespace SAM.Analytical.UI.WPF
                 ProjectTestVentilationUnit = partOProjectTestVentilationUnit,
             };
 
-            PartOIterationPreparation partOIterationPreparation = Analytical.Modify.PreparePartOIteration(analyticalModel, option.PartOIteration, zones_Dwelling, dictionary_VentilationStrategy, ventilationUnitCapacityDescriptors_Candidate, partOWorkflowRequest.Isolate);
+            //The design's own hand-picked products, where this preparation is under manual authority. SAM materialises
+            //them onto the units it builds; nothing comes from an earlier run.
+            PartOManualEquipmentSelection? partOManualEquipmentSelection = ManualEquipmentSelection(partOWorkflowRequest, partOEquipmentSelection, analyticalModel);
+
+            PartOIterationPreparation partOIterationPreparation = Analytical.Modify.PreparePartOIteration(analyticalModel, option.PartOIteration, zones_Dwelling, dictionary_VentilationStrategy, ventilationUnitCapacityDescriptors_Candidate, partOWorkflowRequest.Isolate, partOManualEquipmentSelection);
 
             //A refusal returns no model at all, by contract. Nothing is adopted and the run is dropped with
             //the reason, so the ribbon can say why an assessment is unavailable.
@@ -413,6 +417,25 @@ namespace SAM.Analytical.UI.WPF
                 analyticalModel_Prepared.SetValue(Analytical.AnalyticalModelParameter.PartOEquipmentSelection, partOEquipmentAssignmentSet.EquipmentSelection);
             }
 
+            //The hand-picked products as the table now stands - the design input the next case is prepared from.
+            //Stamped beside the preselection for the same reason, and written to the design model below.
+            bool stated_ManualEquipmentSelection = partOEquipmentAssignmentSet is not null;
+            PartOManualEquipmentSelection? partOManualEquipmentSelection = stated_ManualEquipmentSelection
+                ? ManualEquipmentSelection(partOEquipmentAssignmentSet!, partOIterationPreparation, analyticalModel_Prepared.GetValue<PartOManualEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection))
+                : null;
+
+            if (stated_ManualEquipmentSelection)
+            {
+                if (partOManualEquipmentSelection is null)
+                {
+                    analyticalModel_Prepared.RemoveValue(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection);
+                }
+                else
+                {
+                    analyticalModel_Prepared.SetValue(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection, partOManualEquipmentSelection);
+                }
+            }
+
             //The project's test product, stamped beside the preselection and for the same reasons: it rides
             //on the model, so it survives the project being saved and reopened - which is what lets a
             //dwelling assigned to it resolve its capacity again rather than coming back as "capacity
@@ -442,9 +465,87 @@ namespace SAM.Analytical.UI.WPF
             //The prepared model is the RUN's, never the window's (PR-4): the open design model is not replaced by
             //it. Only the inputs the engineer just confirmed are written onto the design model, so they survive
             //Save and seed the next case - see PersistPartOInputs.
-            PersistPartOInputs(uIAnalyticalModel, partORun, partOWorkflowRequest.SelectVentilationUnit, partOEquipmentAssignmentSet?.EquipmentSelection, partOProjectTestVentilationUnit);
+            PersistPartOInputs(uIAnalyticalModel, partORun, partOWorkflowRequest.SelectVentilationUnit, partOEquipmentAssignmentSet?.EquipmentSelection, partOProjectTestVentilationUnit, stated_ManualEquipmentSelection, partOManualEquipmentSelection);
 
             return partORun.State == PartORunState.Prepared ? PartOPreparationResult.Adopted : PartOPreparationResult.NotPrepared;
+        }
+
+        /// <summary>
+        /// The hand-picked products a preparation materialises: the design model's own
+        /// <c>PartOManualEquipmentSelection</c> - Part O design input - on a review that selects products under
+        /// manual authority, and null otherwise. Iteration 1a and 1b select no product, and an automatic rule is
+        /// never overridden by a stored manual choice.
+        /// </summary>
+        internal static PartOManualEquipmentSelection? ManualEquipmentSelection(PartOWorkflowRequest partOWorkflowRequest, PartOEquipmentSelection partOEquipmentSelection, AnalyticalModel analyticalModel)
+        {
+            if (partOWorkflowRequest is null || !partOWorkflowRequest.SelectVentilationUnit || partOEquipmentSelection is null || partOEquipmentSelection.IsAutomatic)
+            {
+                return null;
+            }
+
+            return analyticalModel?.GetValue<PartOManualEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection);
+        }
+
+        /// <summary>
+        /// The hand-picked products an accepted equipment table states - the design input
+        /// (<c>PartOManualEquipmentSelection</c>) - or null where it states none.
+        ///
+        /// <para><b>Manual authority only</b></para>
+        /// <para>
+        /// Under an automatic mode the rule chose every product, and none of its answers is authored intent, so
+        /// null: accepting an automatic review clears any hand-picked products, and none of the rule's answers
+        /// is stored. Returning to Manual starts from what that review's table shows - "Convert to Manual" keeps
+        /// the rule's answers as the starting choices, which the engineer then accepts or edits - never from a
+        /// stale selection kept dormant behind an automatic one.
+        /// </para>
+        ///
+        /// <para><b>Per dwelling, by zone identity, merged over the design's existing choices</b></para>
+        /// <para>
+        /// Each row is a unit this preparation built, and <c>PartOIterationPreparation.DwellingZoneGuids</c> says
+        /// which dwelling zone it was built for - identity, never a name. An assigned row sets its dwelling's
+        /// product, an unassigned row clears it, and dwellings outside this review's scope keep theirs.
+        /// </para>
+        /// </summary>
+        /// <param name="partOManualEquipmentSelection_Existing">The design's choices when the case was prepared.</param>
+        internal static PartOManualEquipmentSelection? ManualEquipmentSelection(PartOEquipmentAssignmentSet partOEquipmentAssignmentSet, PartOIterationPreparation partOIterationPreparation, PartOManualEquipmentSelection? partOManualEquipmentSelection_Existing)
+        {
+            if (partOEquipmentAssignmentSet is null || partOEquipmentAssignmentSet.EquipmentSelection.IsAutomatic)
+            {
+                return null;
+            }
+
+            Dictionary<Guid, Guid> dictionary_Zone = [];
+            for (int i = 0; i < partOIterationPreparation.AirHandlingUnits.Count && i < partOIterationPreparation.DwellingZoneGuids.Count; i++)
+            {
+                AirHandlingUnit airHandlingUnit = partOIterationPreparation.AirHandlingUnits[i];
+                if (airHandlingUnit is not null && partOIterationPreparation.DwellingZoneGuids[i] != Guid.Empty)
+                {
+                    dictionary_Zone[airHandlingUnit.Guid] = partOIterationPreparation.DwellingZoneGuids[i];
+                }
+            }
+
+            PartOManualEquipmentSelection result = partOManualEquipmentSelection_Existing is not null && partOManualEquipmentSelection_Existing.IsValid
+                ? new PartOManualEquipmentSelection(partOManualEquipmentSelection_Existing)
+                : new PartOManualEquipmentSelection();
+
+            foreach (PartOEquipmentAssignment partOEquipmentAssignment in partOEquipmentAssignmentSet.Assignments)
+            {
+                if (!dictionary_Zone.TryGetValue(partOEquipmentAssignment.Guid_AirHandlingUnit, out Guid guid_Zone))
+                {
+                    continue;
+                }
+
+                if (partOEquipmentAssignment.IsAssigned)
+                {
+                    result.Set(guid_Zone, partOEquipmentAssignment.VentilationUnitReference);
+                }
+                else
+                {
+                    result.Remove(guid_Zone);
+                }
+            }
+
+            return result.Count == 0 ? null : result;
         }
 
         /// <summary>
@@ -466,13 +567,14 @@ namespace SAM.Analytical.UI.WPF
         /// project's existing choices, leaves the design model untouched and fires no model replacement.
         /// </para>
         /// <para>
-        /// <b>Per-dwelling product assignments are not inputs here.</b> They live on the Part O units the
-        /// preparation built, which are run output, so they stay on the prepared model. The design model has no
-        /// place for them before the owner decides one (see the PR-4 record).
+        /// <b>Hand-picked per-dwelling products are an input too</b> (<c>PartOManualEquipmentSelection</c>, owner
+        /// decision on PR-4): written where the review had an equipment table (<paramref name="stated_ManualEquipmentSelection"/>),
+        /// set where it states any and removed where it states none - see <see cref="ManualEquipmentSelection"/>.
+        /// The units they were materialised onto stay on the prepared model, which is run output.
         /// </para>
         /// </summary>
         /// <returns>Whether the design model was changed.</returns>
-        internal static bool PersistPartOInputs(UIAnalyticalModel uIAnalyticalModel, PartORun partORun, bool selectVentilationUnit, PartOEquipmentSelection? partOEquipmentSelection, PartOProjectTestVentilationUnit? partOProjectTestVentilationUnit)
+        internal static bool PersistPartOInputs(UIAnalyticalModel uIAnalyticalModel, PartORun partORun, bool selectVentilationUnit, PartOEquipmentSelection? partOEquipmentSelection, PartOProjectTestVentilationUnit? partOProjectTestVentilationUnit, bool stated_ManualEquipmentSelection = false, PartOManualEquipmentSelection? partOManualEquipmentSelection = null)
         {
             //A copy: the getter clones, so nothing here reaches the instance the window holds until it is set.
             AnalyticalModel? analyticalModel = uIAnalyticalModel?.JSAMObject;
@@ -506,6 +608,27 @@ namespace SAM.Analytical.UI.WPF
                 else if (!SameValue(partOProjectTestVentilationUnit_Design, partOProjectTestVentilationUnit))
                 {
                     analyticalModel.SetValue(Analytical.AnalyticalModelParameter.PartOProjectTestVentilationUnit, partOProjectTestVentilationUnit);
+
+                    changed = true;
+                }
+            }
+
+            if (stated_ManualEquipmentSelection)
+            {
+                PartOManualEquipmentSelection? partOManualEquipmentSelection_Design = analyticalModel.GetValue<PartOManualEquipmentSelection>(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection);
+
+                if (partOManualEquipmentSelection is null)
+                {
+                    if (partOManualEquipmentSelection_Design is not null)
+                    {
+                        analyticalModel.RemoveValue(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection);
+
+                        changed = true;
+                    }
+                }
+                else if (partOManualEquipmentSelection_Design is null || !partOManualEquipmentSelection.Matches(partOManualEquipmentSelection_Design))
+                {
+                    analyticalModel.SetValue(Analytical.AnalyticalModelParameter.PartOManualEquipmentSelection, partOManualEquipmentSelection);
 
                     changed = true;
                 }
