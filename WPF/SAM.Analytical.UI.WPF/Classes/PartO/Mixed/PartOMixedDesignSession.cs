@@ -856,7 +856,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (!IsCleanBaseline)
             {
-                result.Blockers.Add(string.Format("{0}The open model is not a clean Part O baseline ({1}). Save a cleaned copy with Results > Part O > Remove Results and open it, or reopen the pre-Part-O model.", IsPartOResult ? UI.Query.PartODesignModelRefusal_Lead + " " : string.Empty, string.Join("; ", BaselineFindings.Select(x => Core.Query.Description(x.Reason)).Distinct())));
+                result.Blockers.Add(string.Format("{0}The open model is not a clean Part O baseline ({1}). Save a cleaned copy with Results > Part O > Remove Results and open it, or reopen the pre-Part-O model.", IsPartOResult ? UI.Query.PartODesignModelRefusal_Lead + " " + (UI.Query.PartODerivedFromSentence(analyticalModel, Path_Model) is string derivedFrom ? derivedFrom + " " : string.Empty) : string.Empty, string.Join("; ", BaselineFindings.Select(x => Core.Query.Description(x.Reason)).Distinct())));
             }
 
             if (rows.Count == 0)

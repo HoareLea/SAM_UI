@@ -43,7 +43,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             //A Part O result is reviewed, never prepared from (PR-4). Asked before the dialog, so nothing is offered.
-            string? refusal_DesignModel = UI.Query.PartODesignModelRefusal(analyticalModel);
+            string? refusal_DesignModel = UI.Query.PartODesignModelRefusal(analyticalModel, uIAnalyticalModel?.Path);
             if (refusal_DesignModel is not null)
             {
                 MessageBox.Show(refusal_DesignModel, "Part O — Preparation");
@@ -181,7 +181,7 @@ namespace SAM.Analytical.UI.WPF
             //Every case derives from the design model (PR-4). The Hub already blocks Run on a Part O result; this is
             //the lock on the one implementation both routes share. The run is left alone, so a restored result
             //stays reviewable.
-            string? refusal_DesignModel = UI.Query.PartODesignModelRefusal(analyticalModel);
+            string? refusal_DesignModel = UI.Query.PartODesignModelRefusal(analyticalModel, uIAnalyticalModel?.Path);
             if (refusal_DesignModel is not null)
             {
                 PartOProgressHost.Current?.Hide();

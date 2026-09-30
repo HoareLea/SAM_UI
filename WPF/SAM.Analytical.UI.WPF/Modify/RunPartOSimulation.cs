@@ -566,6 +566,11 @@ namespace SAM.Analytical.UI.WPF
                     //Constructed AFTER the scenarios are stamped above, deliberately: the record fingerprints
                     //both the design state and the scenarios it finds on the model, and a record taken before
                     //them would bind an empty assessment context.
+                    //A result that says what it was derived from (PR-5) gets its locators completed now that the folder it
+                    //is written to is known - and BEFORE the record below, which fingerprints every model parameter it does
+                    //not exclude. A model with no reference (a legacy or non-Part-O run) is left as it is.
+                    result.LocatePartOBaselineReference(System.IO.Path.GetDirectoryName(path_TSD), partOSimulationContext?.Path_DesignModel);
+
                     result.SetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, new SimulationResultProvenance(result, path_TSD));
 
                     //This run's own persisted model, beside its results and named from them by the single

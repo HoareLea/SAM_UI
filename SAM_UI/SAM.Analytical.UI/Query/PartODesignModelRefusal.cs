@@ -46,6 +46,69 @@ namespace SAM.Analytical.UI
         }
 
         /// <summary>
+        /// <see cref="PartODesignModelRefusal(AnalyticalModel)"/> for an opened result whose file is known: where the result carries
+        /// a <c>PartOBaselineReference</c> (PR-5) the refusal also says which case it is and which design model it was derived
+        /// from, found by identity (<see cref="PartODerivedFromSentence"/>). Nothing is opened or adopted: the design is named, never
+        /// loaded as the open model. A result with no reference is refused exactly as before.
+        /// </summary>
+        public static string PartODesignModelRefusal(AnalyticalModel analyticalModel, string path_Model)
+        {
+            return PartODesignModelRefusal(analyticalModel, path_Model, analyticalModel is null ? null : Analytical.Query.PartOBaselineFindings(analyticalModel));
+        }
+
+        /// <summary>
+        /// <see cref="PartODesignModelRefusal(AnalyticalModel, string)"/> over findings the caller already holds.
+        /// </summary>
+        public static string PartODesignModelRefusal(AnalyticalModel analyticalModel, string path_Model, IEnumerable<PartOMaterialisationRefusal> partOBaselineFindings)
+        {
+            string result = PartODesignModelRefusal(analyticalModel, partOBaselineFindings);
+            if (result is null)
+            {
+                return null;
+            }
+
+            string sentence = PartODerivedFromSentence(analyticalModel, path_Model);
+
+            return sentence is null ? result : result.Replace(" Review Results still shows", " " + sentence + " Review Results still shows");
+        }
+
+        /// <summary>
+        /// One or two sentences saying which Part O case an opened result is and which model it was derived from (PR-5), or null where it
+        /// carries no valid <c>PartOBaselineReference</c> - a legacy result is not guessed about. The design is found by identity (guid and
+        /// state, then the recorded locators), never by name, and opening the result never adopts it.
+        /// </summary>
+        public static string PartODerivedFromSentence(AnalyticalModel analyticalModel, string path_Model)
+        {
+            if (analyticalModel is null || !analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.PartOBaselineReference, out PartOBaselineReference partOBaselineReference) || partOBaselineReference is null || !partOBaselineReference.IsValid)
+            {
+                return null;
+            }
+
+            string text_Case = Core.Query.Description(partOBaselineReference.Case);
+
+            if (partOBaselineReference.Design is null)
+            {
+                return string.Format("It is the {0} result; the design model it came from is not recorded.", text_Case);
+            }
+
+            PartOBaselineResolution partOBaselineResolution = Analytical.Query.PartOModelResolution(partOBaselineReference.Design, path_Model);
+
+            string name = string.IsNullOrWhiteSpace(partOBaselineReference.Design.Name) ? "the design model" : string.Format("the design model '{0}'", partOBaselineReference.Design.Name);
+
+            switch (partOBaselineResolution.Status)
+            {
+                case PartOBaselineResolutionStatus.Resolved:
+                    return string.Format("It is the {0} result, derived from {1} ({2}) - open that file to run Part O cases.", text_Case, name, System.IO.Path.GetFileName(partOBaselineResolution.Path));
+
+                case PartOBaselineResolutionStatus.Changed:
+                    return string.Format("It is the {0} result, derived from {1} ({2}), which has changed since - open that file to run from its current state.", text_Case, name, System.IO.Path.GetFileName(partOBaselineResolution.Path));
+
+                default:
+                    return string.Format("It is the {0} result. {1}", text_Case, partOBaselineResolution.Description);
+            }
+        }
+
+        /// <summary>
         /// <see cref="PartODesignModelRefusal(AnalyticalModel)"/> over findings the caller already holds from
         /// <c>Analytical.Query.PartOBaselineFindings</c> of the same model - Mixed Design keeps them - so the model
         /// is not validated twice.
