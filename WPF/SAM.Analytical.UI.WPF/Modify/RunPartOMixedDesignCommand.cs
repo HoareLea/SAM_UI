@@ -200,23 +200,35 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
-        /// Asks SAM to materialise the selected design from the baseline - no simulation - and attaches every
-        /// structured refusal to the dwelling it names.
+        /// Asks SAM to materialise the selected design from the baseline and, on the TAS Systems route, runs the same
+        /// Systems preflight Build &amp; Run runs before TAS (<see cref="CheckPartOMixedDesign(AnalyticalModel, IEnumerable{VentilationUnitCapacityDescriptor}, IEnumerable{VentilationUnitTemplate})"/>)
+        /// - no simulation - and attaches every structured refusal to the dwelling it names.
         /// </summary>
         private static string CheckPartOMixedDesign(PartOMixedDesignSession partOMixedDesignSession, IWin32Window? owner)
         {
-            PartOMaterialisation partOMaterialisation;
+            PartOMixedDesignCheck partOMixedDesignCheck;
 
             using (new SAM.Core.UI.WPF.ProgressBarWindowManager("Part O — Check design", "Materialising the selected design from the baseline..."))
             {
-                partOMaterialisation = Analytical.Modify.MaterialisePartODwellingStrategies(partOMixedDesignSession.WithSelection(), partOMixedDesignSession.DescriptorsOffered, null, partOMixedDesignSession.TemplatesOffered);
+                partOMixedDesignCheck = CheckPartOMixedDesign(partOMixedDesignSession.WithSelection(), partOMixedDesignSession.DescriptorsOffered, partOMixedDesignSession.TemplatesOffered);
             }
+
+            PartOMaterialisation partOMaterialisation = partOMixedDesignCheck.Materialisation!;
 
             partOMixedDesignSession.SetRefusals(partOMaterialisation.Refusals);
 
+            if (partOMaterialisation.IsMaterialised && partOMixedDesignCheck.Refusal_Systems is not null)
+            {
+                MessageBox.Show(owner, partOMixedDesignCheck.Refusal_Systems, "Part O — Check design");
+
+                return string.Format("Check: SAM can build this mixed design ({0}), but its TAS Systems ventilation cannot be prepared, so Build & Run would stop before TAS. Nothing was simulated.", partOMixedDesignSession.Readiness().Text);
+            }
+
             if (partOMaterialisation.IsMaterialised)
             {
-                return string.Format("Check: SAM can build this mixed design ({0}).{1} Nothing was simulated.", partOMixedDesignSession.Readiness().Text, CoolingText(partOMaterialisation));
+                string systems = partOMixedDesignCheck.SystemsChecked ? " The TAS Systems ventilation can be prepared." : string.Empty;
+
+                return string.Format("Check: SAM can build this mixed design ({0}).{1}{2} Nothing was simulated.", partOMixedDesignSession.Readiness().Text, CoolingText(partOMaterialisation), systems);
             }
 
             MessageBox.Show(owner, RefusalText(partOMaterialisation.Refusals), "Part O — Check design");

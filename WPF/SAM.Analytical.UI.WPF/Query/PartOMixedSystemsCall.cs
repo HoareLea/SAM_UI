@@ -111,5 +111,36 @@ namespace SAM.Analytical.UI.WPF
 
             return result;
         }
+
+        /// <summary>
+        /// Which of the materialised mixed model's ventilation systems its ONE SAM_Systems call is handed: SAM's
+        /// <c>Analytical.Query.PartOSystemsMaterialisationScope</c> - the rule Iteration 3 uses - over the systems SAM's
+        /// record says it built (<see cref="PartOMaterialisationRecord.VentilationSystemGuids"/>), never over names.
+        /// <para>
+        /// The dwelling rooms are those of every assessed dwelling (<see cref="PartOMaterialisationRecord.ZoneGuids_Assessed"/>,
+        /// natural ones included), which only words a refusal. The materialised model is read, never changed; the scope's
+        /// working copy is what SAM_Systems sees, and the thermal model keeps every authored system.
+        /// </para>
+        /// </summary>
+        internal static PartOSystemsMaterialisationScope PartOMixedSystemsScope(PartOMaterialisation partOMaterialisation)
+        {
+            PartOMaterialisationRecord? partOMaterialisationRecord = partOMaterialisation?.Record;
+            AdjacencyCluster? adjacencyCluster = partOMaterialisation?.AnalyticalModel?.AdjacencyCluster;
+
+            List<Guid> guids_Space_Dwelling = [];
+            if (adjacencyCluster is not null)
+            {
+                foreach (Guid guid_Zone in partOMaterialisationRecord?.ZoneGuids_Assessed ?? [])
+                {
+                    Zone? zone = adjacencyCluster.GetObject<Zone>(guid_Zone);
+                    foreach (Space space in (zone is null ? null : adjacencyCluster.GetRelatedObjects<Space>(zone)) ?? [])
+                    {
+                        guids_Space_Dwelling.Add(space.Guid);
+                    }
+                }
+            }
+
+            return Analytical.Query.PartOSystemsMaterialisationScope(adjacencyCluster, partOMaterialisationRecord?.VentilationSystemGuids.Values, guids_Space_Dwelling);
+        }
     }
 }

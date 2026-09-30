@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
+using SAM.Analytical.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -12,55 +13,15 @@ namespace SAM.Analytical.UI.WPF
         /// SAM #114's production answer: which authored ventilation systems the Iteration 3
         /// materialisation is given, decided by <b>identity</b>.
         ///
-        /// <para><b>The rule, in one sentence</b></para>
+        /// <para><b>The rule is SAM's (PR-1)</b></para>
         /// <para>
         /// Keep exactly the systems the Part O preparation built; remove an authored system that carries
         /// no effective mechanical duty anywhere in the thermal model; <b>refuse</b> - rather than choose -
-        /// where an authored system does carry one.
-        /// </para>
-        ///
-        /// <para><b>Why identity and not a rule over the model</b></para>
-        /// <para>
-        /// A real Approved Document O model reaches this stage carrying natural, uncontrolled and legacy
-        /// mechanical systems that <c>Modify.PreparePartOIteration</c> deliberately preserved and says so
-        /// in its own notes. PR1 walks every <c>VentilationSystem</c> and requires each to resolve an air
-        /// handling unit, so it refuses such a model outright. No rule recovers "which of these is the
-        /// design under assessment" afterwards: the type does not (a legacy MV system is mechanical too),
-        /// terminals do not (a competing design carries them), and the display name never does. The only
-        /// moment the answer is known is when the preparation hands its systems back - which is where
-        /// <c>PartORun.Guids_VentilationSystem_Prepared</c> captures it.
-        /// </para>
-        ///
-        /// <para><b>Why the whole thermal domain is inspected, not just the dwellings in scope</b></para>
-        /// <para>
-        /// Candidate B's thermal source removes mechanical ventilation <b>model-wide</b>: the no-IZAM
-        /// workflow sweeps inherited IZAMs and neutralises the mechanical ventilation gain everywhere, not
-        /// only in the assessed dwellings. Candidate B then reinstates, explicitly in TAS Systems, only
-        /// the duty of the systems materialised here. So a legacy mechanical system serving a room
-        /// <i>outside</i> the assessed dwellings is not harmless context: its ventilation exists in
-        /// Reference A and is simply gone in Candidate B, that room's temperature moves, and it is coupled
-        /// to the assessed rooms through fabric and through air movement. The difference would then be
-        /// read as a difference between the two ROUTES, which is the one thing this comparison must not
-        /// get wrong.
-        /// </para>
-        /// <para>
-        /// The answer is to refuse, and not to broaden the materialisation to cover the extra system:
-        /// materialising a system nobody asked to assess would put a design PR4 invented into a TAS
-        /// simulation, which is a far worse failure than declining to compare.
-        /// </para>
-        ///
-        /// <para><b>Natural ventilation, uncontrolled ventilation and infiltration are not mechanical</b></para>
-        /// <para>
-        /// They are authored thermal behaviour, the no-IZAM source preserves them on purpose, and nothing
-        /// here removes them from anything that is simulated. A system of theirs with no design terminal
-        /// is dropped from the <i>materialisation input only</i>, with a note saying so.
-        /// </para>
-        ///
-        /// <para><b>Scaling</b></para>
-        /// <para>
-        /// One pass over the spaces to index the dwelling scope, one pass over the ventilation systems,
-        /// and for each system one pass over its own related terminals - so the work is linear in the
-        /// model, and no list is scanned by name.
+        /// where an authored system does carry one. That rule, and why the whole thermal domain is
+        /// inspected, is <c>SAM.Analytical.Query.PartOSystemsMaterialisationScope</c>, shared with Mixed
+        /// Design. This method only asks it, and words its structured answer the way Iteration 3 always has
+        /// (its records persist these notes), so Iteration 3's behaviour did not change when the rule moved.
+        /// Nothing here decides what is kept, removed or refused.
         /// </para>
         /// </summary>
         /// <param name="adjacencyCluster">
@@ -72,231 +33,100 @@ namespace SAM.Analytical.UI.WPF
         /// </param>
         /// <param name="guids_Space_Dwelling">
         /// The Part O dwelling design scope, from <c>Query.PartODwellingSpaceGuids</c>. Used only to word
-        /// the refusal: an in-scope competing design and an out-of-scope unreinstated duty both refuse,
-        /// and a reader needs to know which they are looking at.
+        /// the refusal.
         /// </param>
         public static PartOIteration3SystemScope PartOIteration3SystemScope(AdjacencyCluster adjacencyCluster, IEnumerable<Guid> guids_VentilationSystem_Prepared, IEnumerable<Guid> guids_Space_Dwelling)
         {
-            List<string> refusals = [];
-            List<string> notes = [];
+            PartOSystemsMaterialisationScope partOSystemsMaterialisationScope = Analytical.Query.PartOSystemsMaterialisationScope(adjacencyCluster, guids_VentilationSystem_Prepared, guids_Space_Dwelling);
 
-            if (adjacencyCluster is null)
+            if (!partOSystemsMaterialisationScope.IsScoped)
             {
-                refusals.Add("No prepared model was supplied, so there is no ventilation design to scope.");
-
-                return new PartOIteration3SystemScope(null, null, null, null, refusals);
+                return new PartOIteration3SystemScope(null, null, null, null, partOSystemsMaterialisationScope.Refusals.ConvertAll(PartOIteration3SystemScopeRefusal));
             }
 
-            HashSet<Guid> guids_Retained = [];
-            foreach (Guid guid in guids_VentilationSystem_Prepared ?? [])
-            {
-                if (guid != Guid.Empty)
-                {
-                    guids_Retained.Add(guid);
-                }
-            }
-
-            if (guids_Retained.Count == 0)
-            {
-                refusals.Add(
-                    "This Part O run captured no ventilation system identities from its preparation, so which of the model's authored ventilation systems is the design under assessment is not known. "
-                    + "Prepare and run Iteration 1a again in this session; a reopened run records what was run rather than how it was prepared.");
-
-                return new PartOIteration3SystemScope(null, null, null, null, refusals);
-            }
-
-            HashSet<Guid> guids_Dwelling = [];
-            foreach (Guid guid in guids_Space_Dwelling ?? [])
-            {
-                guids_Dwelling.Add(guid);
-            }
-
-            //One pass each. Nothing below re-enumerates the model.
-            Dictionary<Guid, VentilationSystem> dictionary_System = [];
-            foreach (VentilationSystem ventilationSystem in adjacencyCluster.GetObjects<VentilationSystem>() ?? [])
-            {
-                if (ventilationSystem is not null && ventilationSystem.Guid != Guid.Empty)
-                {
-                    dictionary_System[ventilationSystem.Guid] = ventilationSystem;
-                }
-            }
-
-            foreach (Guid guid in guids_Retained)
-            {
-                if (!dictionary_System.ContainsKey(guid))
-                {
-                    refusals.Add(string.Format(
-                        "The ventilation system {0} this Part O run was prepared with is not on the prepared model, so the design under assessment cannot be identified on it.",
-                        guid));
-                }
-            }
-
-            if (refusals.Count != 0)
-            {
-                return new PartOIteration3SystemScope(null, null, null, null, refusals);
-            }
-
-            List<Guid> guids_Removed = [];
-
-            foreach (KeyValuePair<Guid, VentilationSystem> keyValuePair in dictionary_System)
-            {
-                Guid guid_System = keyValuePair.Key;
-
-                if (guids_Retained.Contains(guid_System))
-                {
-                    continue;
-                }
-
-                VentilationSystem ventilationSystem = keyValuePair.Value;
-
-                int count_Terminal = 0;
-                int count_Duty = 0;
-
-                foreach (VentilationTerminal ventilationTerminal in adjacencyCluster.VentilationTerminals(ventilationSystem) ?? [])
-                {
-                    if (ventilationTerminal is null)
-                    {
-                        continue;
-                    }
-
-                    count_Terminal++;
-
-                    if (!IsEffectiveMechanicalDuty(ventilationTerminal))
-                    {
-                        continue;
-                    }
-
-                    count_Duty++;
-
-                    List<Space> spaces = adjacencyCluster.GetRelatedObjects<Space>(ventilationTerminal) ?? [];
-
-                    if (spaces.Count == 0)
-                    {
-                        //Fail closed. A duty that serves no identified room cannot be shown to be outside
-                        //the thermal case, and "probably harmless" is not a standard this comparison can
-                        //be built on.
-                        refusals.Add(string.Format(
-                            "Ventilation system '{0}' ({1}) carries the design terminal '{2}' ({3}) at {4:0.###} l/s, and that terminal is not related to any space - so it cannot be shown that removing its mechanical ventilation does not change the thermal case. "
-                            + "Approved Document O Iteration 3 will not compare a model it cannot account for.",
-                            ventilationSystem.Name,
-                            guid_System,
-                            ventilationTerminal.Name,
-                            ventilationTerminal.Guid,
-                            ventilationTerminal.DesignFlowRate_Lps ?? double.NaN));
-
-                        continue;
-                    }
-
-                    foreach (Space space in spaces)
-                    {
-                        if (space is null)
-                        {
-                            continue;
-                        }
-
-                        refusals.Add(guids_Dwelling.Contains(space.Guid)
-                            ? string.Format(
-                                "Ventilation system '{0}' ({1}) carries a design {2} terminal of {3:0.###} l/s in '{4}' ({5}), which is inside the assessed Approved Document O dwelling scope. "
-                                + "That is a second mechanical ventilation design for a room this iteration already designed, and choosing between two designs is not this orchestration's decision. "
-                                + "Resolve the model so one mechanical design serves the room, then run Iteration 3 again.",
-                                ventilationSystem.Name,
-                                guid_System,
-                                ventilationTerminal.FlowClassification,
-                                ventilationTerminal.DesignFlowRate_Lps ?? double.NaN,
-                                space.Name,
-                                space.Guid)
-                            : string.Format(
-                                "Ventilation system '{0}' ({1}) carries a design {2} terminal of {3:0.###} l/s in '{4}' ({5}). That room is outside the assessed dwellings but is part of the same thermal model. "
-                                + "Candidate B's no-IZAM source removes mechanical ventilation from the WHOLE model and reinstates only the systems materialised here, so this room's ventilation would exist in Reference A and be absent from Candidate B - and it is thermally coupled to the assessed rooms. "
-                                + "The two cases would therefore differ by more than the route being compared, so the comparison is refused rather than reported.",
-                                ventilationSystem.Name,
-                                guid_System,
-                                ventilationTerminal.FlowClassification,
-                                ventilationTerminal.DesignFlowRate_Lps ?? double.NaN,
-                                space.Name,
-                                space.Guid));
-                    }
-                }
-
-                if (count_Duty != 0)
-                {
-                    continue;
-                }
-
-                guids_Removed.Add(guid_System);
-
-                notes.Add(string.Format(
-                    "Ventilation system '{0}' ({1}) was left out of the materialisation input: this iteration did not build it, and it carries {2} - so it states no mechanical duty that Candidate B's explicit Systems route has to recreate. "
-                    + "It remains on the design and in the thermal model, where its authored behaviour is simulated exactly as Reference A simulates it.",
-                    ventilationSystem.Name,
-                    guid_System,
-                    count_Terminal == 0 ? "no design ventilation terminal" : string.Format("{0} design ventilation terminal(s), none of which states an effective design airflow", count_Terminal)));
-            }
-
-            if (refusals.Count != 0)
-            {
-                return new PartOIteration3SystemScope(null, null, null, null, refusals);
-            }
-
-            //Ordered before the removals so the working copy, the record and the evidence are the same on
-            //every machine - a dictionary walk is not.
-            guids_Removed.Sort();
-
-            List<Guid> guids_Retained_Ordered = [.. guids_Retained];
-            guids_Retained_Ordered.Sort();
-
-            //A COPY. The removals below must never reach the design - see the class summary. The shallow
-            //copy is the right one: it rebuilds the cluster's own dictionaries, which is all that is
-            //written here, and shares the objects, none of which is touched.
-            AdjacencyCluster adjacencyCluster_Working = new(adjacencyCluster);
-
-            foreach (Guid guid in guids_Removed)
-            {
-                VentilationSystem ventilationSystem = adjacencyCluster_Working.GetObject<VentilationSystem>(guid);
-
-                if (ventilationSystem is null || !adjacencyCluster_Working.RemoveObject(ventilationSystem))
-                {
-                    refusals.Add(string.Format(
-                        "Ventilation system {0} could not be removed from the materialisation input, so the systems handed to the materialisation are not the ones this scope decided on.",
-                        guid));
-                }
-            }
-
-            if (refusals.Count != 0)
-            {
-                return new PartOIteration3SystemScope(null, null, null, null, refusals);
-            }
+            List<string> notes = partOSystemsMaterialisationScope.Exclusions.ConvertAll(PartOIteration3SystemScopeNote);
 
             notes.Add(string.Format(
                 "{0} ventilation system(s) built by this Part O iteration are the design under assessment; {1} authored system(s) were left out of the materialisation input and none of them states mechanical duty.",
-                guids_Retained_Ordered.Count,
-                guids_Removed.Count));
+                partOSystemsMaterialisationScope.Guids_Retained.Count,
+                partOSystemsMaterialisationScope.Guids_Removed.Count));
 
-            return new PartOIteration3SystemScope(adjacencyCluster_Working, guids_Retained_Ordered, guids_Removed, notes, null);
+            return new PartOIteration3SystemScope(partOSystemsMaterialisationScope.AdjacencyCluster, partOSystemsMaterialisationScope.Guids_Retained, partOSystemsMaterialisationScope.Guids_Removed, notes, null);
         }
 
-        /// <summary>
-        /// Whether one design terminal states mechanical duty that actually moves air.
-        /// <para>
-        /// A supply or extract terminal with a stated, finite, non-zero design airflow does. A terminal
-        /// with no stated airflow, with <see cref="double.NaN"/>, or designed at nothing does not - there
-        /// is no ventilation for the no-IZAM sweep to remove and none for Candidate B to reinstate, so
-        /// refusing over it would refuse models nothing is wrong with.
-        /// </para>
-        /// <para>
-        /// The classification is required as well as the value: <c>FlowClassification.Undefined</c> on a
-        /// terminal carrying a number states neither supply nor extract, and a duty whose direction is
-        /// unknown is not one this can reason about - so it counts, and refuses.
-        /// </para>
-        /// </summary>
-        private static bool IsEffectiveMechanicalDuty(VentilationTerminal ventilationTerminal)
+        /// <summary>Iteration 3's wording of one system SAM's scope left out.</summary>
+        private static string PartOIteration3SystemScopeNote(PartOSystemsScopeExclusion partOSystemsScopeExclusion)
         {
-            double? designFlowRate_Lps = ventilationTerminal?.DesignFlowRate_Lps;
+            return string.Format(
+                "Ventilation system '{0}' ({1}) was left out of the materialisation input: this iteration did not build it, and it carries {2} - so it states no mechanical duty that Candidate B's explicit Systems route has to recreate. "
+                + "It remains on the design and in the thermal model, where its authored behaviour is simulated exactly as Reference A simulates it.",
+                partOSystemsScopeExclusion.Name_VentilationSystem,
+                partOSystemsScopeExclusion.Guid_VentilationSystem,
+                partOSystemsScopeExclusion.Count_VentilationTerminal == 0 ? "no design ventilation terminal" : string.Format("{0} design ventilation terminal(s), none of which states an effective design airflow", partOSystemsScopeExclusion.Count_VentilationTerminal));
+        }
 
-            return designFlowRate_Lps.HasValue
-                && !double.IsNaN(designFlowRate_Lps.Value)
-                && !double.IsInfinity(designFlowRate_Lps.Value)
-                && designFlowRate_Lps.Value != 0;
+        /// <summary>Iteration 3's wording of one reason SAM's scope refused.</summary>
+        private static string PartOIteration3SystemScopeRefusal(PartOSystemsScopeRefusal partOSystemsScopeRefusal)
+        {
+            double designFlowRate_Lps = partOSystemsScopeRefusal.DesignFlowRate_Lps ?? double.NaN;
+
+            switch (partOSystemsScopeRefusal.Reason)
+            {
+                case PartOSystemsScopeRefusalReason.NoModel:
+                    return "No prepared model was supplied, so there is no ventilation design to scope.";
+
+                case PartOSystemsScopeRefusalReason.NoIdentities:
+                    return "This Part O run captured no ventilation system identities from its preparation, so which of the model's authored ventilation systems is the design under assessment is not known. "
+                        + "Prepare and run Iteration 1a again in this session; a reopened run records what was run rather than how it was prepared.";
+
+                case PartOSystemsScopeRefusalReason.IdentityNotOnModel:
+                    return string.Format(
+                        "The ventilation system {0} this Part O run was prepared with is not on the prepared model, so the design under assessment cannot be identified on it.",
+                        partOSystemsScopeRefusal.Guid_VentilationSystem);
+
+                case PartOSystemsScopeRefusalReason.DutyServesNoSpace:
+                    return string.Format(
+                        "Ventilation system '{0}' ({1}) carries the design terminal '{2}' ({3}) at {4:0.###} l/s, and that terminal is not related to any space - so it cannot be shown that removing its mechanical ventilation does not change the thermal case. "
+                        + "Approved Document O Iteration 3 will not compare a model it cannot account for.",
+                        partOSystemsScopeRefusal.Name_VentilationSystem,
+                        partOSystemsScopeRefusal.Guid_VentilationSystem,
+                        partOSystemsScopeRefusal.Name_VentilationTerminal,
+                        partOSystemsScopeRefusal.Guid_VentilationTerminal,
+                        designFlowRate_Lps);
+
+                case PartOSystemsScopeRefusalReason.DutyInsideDwellingScope:
+                    return string.Format(
+                        "Ventilation system '{0}' ({1}) carries a design {2} terminal of {3:0.###} l/s in '{4}' ({5}), which is inside the assessed Approved Document O dwelling scope. "
+                        + "That is a second mechanical ventilation design for a room this iteration already designed, and choosing between two designs is not this orchestration's decision. "
+                        + "Resolve the model so one mechanical design serves the room, then run Iteration 3 again.",
+                        partOSystemsScopeRefusal.Name_VentilationSystem,
+                        partOSystemsScopeRefusal.Guid_VentilationSystem,
+                        partOSystemsScopeRefusal.FlowClassification,
+                        designFlowRate_Lps,
+                        partOSystemsScopeRefusal.Name_Space,
+                        partOSystemsScopeRefusal.Guid_Space);
+
+                case PartOSystemsScopeRefusalReason.DutyOutsideDwellingScope:
+                    return string.Format(
+                        "Ventilation system '{0}' ({1}) carries a design {2} terminal of {3:0.###} l/s in '{4}' ({5}). That room is outside the assessed dwellings but is part of the same thermal model. "
+                        + "Candidate B's no-IZAM source removes mechanical ventilation from the WHOLE model and reinstates only the systems materialised here, so this room's ventilation would exist in Reference A and be absent from Candidate B - and it is thermally coupled to the assessed rooms. "
+                        + "The two cases would therefore differ by more than the route being compared, so the comparison is refused rather than reported.",
+                        partOSystemsScopeRefusal.Name_VentilationSystem,
+                        partOSystemsScopeRefusal.Guid_VentilationSystem,
+                        partOSystemsScopeRefusal.FlowClassification,
+                        designFlowRate_Lps,
+                        partOSystemsScopeRefusal.Name_Space,
+                        partOSystemsScopeRefusal.Guid_Space);
+
+                case PartOSystemsScopeRefusalReason.NotRemovable:
+                    return string.Format(
+                        "Ventilation system {0} could not be removed from the materialisation input, so the systems handed to the materialisation are not the ones this scope decided on.",
+                        partOSystemsScopeRefusal.Guid_VentilationSystem);
+
+                default:
+                    //A reason added to SAM after this wording: SAM's own sentence, never silence.
+                    return partOSystemsScopeRefusal.Message;
+            }
         }
     }
 }
