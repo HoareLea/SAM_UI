@@ -756,6 +756,8 @@ namespace SAM.Analytical.UI.WPF
 
             partOTM59ResultWindow.SetDiagnostics(partOIteration3Assessment.AssociationRefusals, partOIteration3Assessment.VentilationStrategyRefusals);
 
+            partOTM59ResultWindow.ResultSummary = PartOTM59ResultSummary.ForStatus(partOIteration3Assessment.OccupiedSpaceComplianceStatus);
+
             partOTM59ResultWindow.Summary = string.Format(
                 "{0}: TM59 {1} over {2}. {3}",
                 description,

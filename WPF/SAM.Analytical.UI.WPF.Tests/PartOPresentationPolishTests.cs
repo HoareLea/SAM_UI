@@ -163,6 +163,52 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Contains(lines, x => x.StartsWith("Weather:") && x.Contains("not recorded"));
         }
 
+        /// <summary>
+        /// The Iteration 3 system case's report (<c>...-It3BMG-Bridge-TM59.txt</c>) is written through the same
+        /// provenance writer as every other Part O report: it names the iteration, the case and its method, and
+        /// the bridge results it was assessed from - taken from the run, never from the file name.
+        /// </summary>
+        [Fact]
+        public void The_Iteration_3_bridge_report_is_headed_by_its_provenance()
+        {
+            PartORun partORun = new();
+            string path_TSD_Bridge = Path.Combine(directory, "Model-It3BMG-Bridge.tsd");
+
+            IEnumerable<string> provenance = Modify.PartOIteration3ReportProvenance(partORun, PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance)(path_TSD_Bridge, Report());
+
+            Assert.True(Modify.SavePartOTM59Report(path_TSD_Bridge, Report(), out string path_TM59Report, out string refusal, provenance), refusal);
+
+            string text = File.ReadAllText(path_TM59Report);
+
+            Assert.EndsWith("-It3BMG-Bridge-TM59.txt", path_TM59Report);
+            Assert.Contains(Modify.PartOTM59ReportProvenanceHeading, text);
+            Assert.Contains("Iteration 3", text);
+            Assert.Contains("system case", text);
+            Assert.Contains("Reference case:", text);
+            Assert.Contains("TM59 method:", text);
+            Assert.Contains("Weather:", text);
+            Assert.Contains("Source TAS result:", text);
+            Assert.Contains(path_TSD_Bridge, text);
+            Assert.True(text.IndexOf(Modify.PartOTM59ReportProvenanceHeading, StringComparison.Ordinal) < text.IndexOf("Source TAS result:", StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// A case that was assessed is headed by its own verdict in the report window - never "unavailable"
+        /// beside a pass.
+        /// </summary>
+        [Theory]
+        [InlineData(TM59ComplianceStatus.Pass, PartOTM59Verdict.Pass)]
+        [InlineData(TM59ComplianceStatus.Fail, PartOTM59Verdict.Fail)]
+        [InlineData(TM59ComplianceStatus.Undefined, PartOTM59Verdict.NotAssessed)]
+        public void An_assessed_case_is_never_headed_unavailable(TM59ComplianceStatus tM59ComplianceStatus, PartOTM59Verdict partOTM59Verdict)
+        {
+            PartOTM59ResultSummary partOTM59ResultSummary = PartOTM59ResultSummary.ForStatus(tM59ComplianceStatus);
+
+            Assert.Equal(partOTM59Verdict, partOTM59ResultSummary.Verdict);
+            Assert.DoesNotContain("UNAVAILABLE", partOTM59ResultSummary.Heading);
+            Assert.DoesNotContain("No TM59 assessment was produced", partOTM59ResultSummary.Text);
+        }
+
         //-------------------------------------------------------------------------------------------------
         //3. A short read-only review shows no second window
         //-------------------------------------------------------------------------------------------------
