@@ -226,7 +226,7 @@
                         <WPF:SelectSAMObjectComboBoxControl x:Name="selectSAMObjectComboBoxControl_Weather" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Height="22"/>
 
                         <TextBlock Grid.Row="1" Grid.Column="0" Text="Output folder" VerticalAlignment="Center" Margin="0,6,0,0"/>
-                        <TextBox x:Name="textBox_OutputDirectory" Grid.Row="1" Grid.Column="1" Height="22" Margin="0,6,6,0" VerticalContentAlignment="Center"/>
+                        <TextBox x:Name="textBox_OutputDirectory" Grid.Row="1" Grid.Column="1" Height="22" Margin="0,6,6,0" VerticalContentAlignment="Center" ToolTip="The Part O output root. SAM creates a folder for each case inside it (Iteration1a, Iteration1b, Iteration2, Iteration2B, Iteration3, MixedDesign), each with tas, reports and diagnostics folders."/>
                         <Button x:Name="button_OutputDirectory" Grid.Row="1" Grid.Column="2" Content="…" Width="30" Height="22" Margin="0,6,0,0"/>
 
                         <TextBlock Grid.Row="2" Grid.Column="0" Text="Solar calculation" VerticalAlignment="Center" Margin="0,6,0,0"/>

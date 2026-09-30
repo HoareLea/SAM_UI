@@ -480,7 +480,10 @@ namespace SAM.Analytical.UI.WPF
         {
             refusal = null;
 
-            if (string.IsNullOrWhiteSpace(path_Model) || string.IsNullOrWhiteSpace(partOSimulationCase.OutputDirectory))
+            //Where the runs actually write: the MixedDesign case folder beneath the chosen root.
+            string? directory = Create.PartOMixedOutputDirectory(partOSimulationCase);
+
+            if (string.IsNullOrWhiteSpace(path_Model) || string.IsNullOrWhiteSpace(directory))
             {
                 return true;
             }
@@ -488,7 +491,7 @@ namespace SAM.Analytical.UI.WPF
             string path_Full = Path.GetFullPath(path_Model);
             foreach (string projectName in projectNames)
             {
-                string path_Run = Path.GetFullPath(Path.Combine(partOSimulationCase.OutputDirectory, projectName + ".sam"));
+                string path_Run = Path.GetFullPath(Path.Combine(directory, projectName + ".sam"));
                 if (string.Equals(path_Run, path_Full, StringComparison.OrdinalIgnoreCase))
                 {
                     refusal = string.Format("the run model '{0}' would overwrite the open model. Choose another output folder.", path_Run);

@@ -244,6 +244,17 @@ namespace SAM.Analytical.UI.WPF
             Delete(partOIteration3Paths.Path_Model_CandidateB, "the previous Candidate B model", refusals_Clear, notes);
             Delete(partOIteration3Paths.Path_Record, "the previous Iteration 3 pairing record", refusals_Clear, notes);
 
+            //Iteration 3's own folders beneath the Part O root, before anything is written into them. SAM_Tas
+            //creates no folders, and the TPD and bridge refuse a folder that does not exist.
+            try
+            {
+                partOIteration3Paths.OutputPaths.CreateDirectories();
+            }
+            catch (Exception exception)
+            {
+                refusals_Clear.Add(string.Format("The Iteration 3 output folder '{0}' could not be created. ({1})", partOIteration3Paths.OutputPaths.Directory_Case, exception.Message));
+            }
+
             if (refusals_Clear.Count != 0)
             {
                 partOIteration3Ledger.Refuse(PartOIteration3Stage.Input, "An earlier attempt's Candidate B could not be cleared.", refusals_Clear);
@@ -621,7 +632,9 @@ namespace SAM.Analytical.UI.WPF
 
             if (partOIteration3Checkpoint is null)
             {
-                PartOSimulationContext partOSimulationContext_CandidateB = partOSimulationContext.Copy(partOIteration3Paths.ProjectName_CandidateB);
+                //Reference A's case, named for Candidate B and writing into Iteration 3's own tas folder - never
+                //into Reference A's.
+                PartOSimulationContext partOSimulationContext_CandidateB = partOSimulationContext.Copy(partOIteration3Paths.ProjectName_CandidateB, partOIteration3Paths.OutputDirectory);
 
                 noIzamThermalSource = iPartOIteration3Pipeline.ThermalSource(
                     analyticalModel_Prepared,
@@ -846,6 +859,7 @@ namespace SAM.Analytical.UI.WPF
                         //Resuming, the history the reused attempt wrote from these same route results stands.
                         if (partOIteration3Checkpoint is null)
                         {
+                            PartOOutputPaths.EnsureDirectoryForFile(partOIteration3Paths.Path_OperatingAirFlow);
                             File.WriteAllText(partOIteration3Paths.Path_OperatingAirFlow, Query.PartOIteration3OperatingAirFlowCsv(systemVentilationRoute.RecirculationCoolingResults, cooling));
                         }
 
@@ -902,6 +916,7 @@ namespace SAM.Analytical.UI.WPF
                         //Resuming, the history the reused attempt wrote from these same route results stands.
                         if (partOIteration3Checkpoint is null)
                         {
+                            PartOOutputPaths.EnsureDirectoryForFile(partOIteration3Paths.Path_OperatingAirFlow);
                             File.WriteAllText(partOIteration3Paths.Path_OperatingAirFlow, guidanceCoolingResults.ToCsv());
                         }
 
@@ -1243,12 +1258,17 @@ namespace SAM.Analytical.UI.WPF
         {
             partOIteration3Record.Adopt(partOIteration3Ledger);
 
+            //The route, TPD and bridge timing CSVs SAM_Tas wrote beside Candidate B's TAS files go to diagnostics.
+            PartOOutputPaths.FileDiagnostics(partOIteration3Paths?.OutputDirectory);
+
             string path_Record = partOIteration3Paths?.Path_Record;
 
             if (!string.IsNullOrWhiteSpace(path_Record))
             {
                 try
                 {
+                    PartOOutputPaths.EnsureDirectoryForFile(path_Record);
+
                     File.WriteAllText(path_Record, partOIteration3Record.ToString());
                 }
                 catch (Exception exception)

@@ -121,6 +121,8 @@ namespace SAM.Analytical.UI.WPF
             {
                 try
                 {
+                    PartOOutputPaths.EnsureDirectoryForFile(path_Report_Temp);
+
                     File.WriteAllText(path_Report_Temp, PartOIteration3ReportText.Text(partOIteration3Result, rows, CultureInfo.InvariantCulture, true));
                     File.WriteAllText(path_Report_Json_Temp, PartOIteration3ReportJson.Text(partOIteration3Result, rows));
                 }

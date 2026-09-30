@@ -657,6 +657,13 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         internal static Microsoft.Win32.OpenFileDialog AcceptOptimisedFileDialog(string name_Dwelling, string? directory_Output, string? path_Model)
         {
+            //Iteration 2B's own tas folder beneath the chosen root, where its result models are, once it exists.
+            string? directory_Iteration2B = PartOOutputPaths.Create(directory_Output, PartOOutputCase.Iteration2B)?.Directory_Tas;
+            if (!string.IsNullOrWhiteSpace(directory_Iteration2B) && System.IO.Directory.Exists(directory_Iteration2B))
+            {
+                directory_Output = directory_Iteration2B;
+            }
+
             string? directory = !string.IsNullOrWhiteSpace(directory_Output) && System.IO.Directory.Exists(directory_Output)
                 ? directory_Output
                 : string.IsNullOrWhiteSpace(path_Model) ? null : System.IO.Path.GetDirectoryName(path_Model);

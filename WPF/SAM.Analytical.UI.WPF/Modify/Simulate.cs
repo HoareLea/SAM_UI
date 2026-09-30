@@ -141,6 +141,9 @@ namespace SAM.Analytical.UI.WPF
                 WeatherData = simulateWindow.SelectedWeatherData,
                 ZoneCategory = simulateWindow.SelectedZoneCategory,
                 Simulate = simulateWindow.Simulate,
+
+                //Only the guided Part O route writes into a case folder; the expert command writes where it is told.
+                PartOOutputCase = partO ? PartOOutputPaths.CaseOf(partORun.PreparationContext) : null,
             };
 
             Simulate(uIAnalyticalModel, partORun, simulateInputs, false);
@@ -220,6 +223,7 @@ namespace SAM.Analytical.UI.WPF
                 WeatherData = simulateOptions.WeatherData,
                 ZoneCategory = null,
                 Simulate = simulateOptions.Simulate,
+                PartOOutputCase = PartOOutputPaths.CaseOf(partORun.PreparationContext),
             };
 
             return Simulate(uIAnalyticalModel, partORun, simulateInputs, true);
@@ -247,6 +251,14 @@ namespace SAM.Analytical.UI.WPF
             public WeatherData WeatherData;
             public string ZoneCategory;
             public bool Simulate;
+
+            /// <summary>
+            /// The Part O case this run is, where it is the guided Part O route - and then
+            /// <see cref="OutputDirectory"/> is the Part O ROOT and the run writes into the case's own folder beneath
+            /// it (<see cref="PartOOutputPaths"/>). Null for the expert command, or where the case cannot be said,
+            /// which writes into <see cref="OutputDirectory"/> itself as before.
+            /// </summary>
+            public PartOOutputCase? PartOOutputCase;
         }
 
         /// <summary>
@@ -265,6 +277,15 @@ namespace SAM.Analytical.UI.WPF
 
             string projectName = simulateInputs.ProjectName;
             string outputDirectory = simulateInputs.OutputDirectory;
+
+            //Approved Document O: the folder a person chose is the Part O root, and this case's TAS work goes into
+            //its own tas folder beneath it, so 1a, 1b and 2 - which share file names - cannot overwrite each other.
+            //Resolved here, not in the options, so the remembered folder stays the root.
+            if (simulateInputs.PartOOutputCase is PartOOutputCase partOOutputCase)
+            {
+                outputDirectory = PartOOutputPaths.Create(outputDirectory, partOOutputCase)?.Directory_Tas ?? outputDirectory;
+            }
+
             bool unmetHours = simulateInputs.UnmetHours;
             bool printRoomDataSheets = simulateInputs.PrintRoomDataSheets;
 

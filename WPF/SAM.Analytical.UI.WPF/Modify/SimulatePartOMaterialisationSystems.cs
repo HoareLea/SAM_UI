@@ -112,7 +112,10 @@ namespace SAM.Analytical.UI.WPF
 
             try
             {
-                File.WriteAllText(Path.ChangeExtension(path_TPD, null) + "_GuidanceOperation.csv", guidanceCoolingResults.ToCsv());
+                //A diagnostic history: the case's diagnostics folder, or beside the TPD in a legacy flat folder.
+                string path_GuidanceOperation = Path.Combine(PartOOutputPaths.Directory_Diagnostics_ForFile(path_TPD), Path.GetFileNameWithoutExtension(path_TPD) + "_GuidanceOperation.csv");
+                PartOOutputPaths.EnsureDirectoryForFile(path_GuidanceOperation);
+                File.WriteAllText(path_GuidanceOperation, guidanceCoolingResults.ToCsv());
             }
             catch (Exception exception)
             {

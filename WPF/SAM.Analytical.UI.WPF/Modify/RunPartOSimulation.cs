@@ -262,6 +262,23 @@ namespace SAM.Analytical.UI.WPF
             //Skipped entirely on the warm-start path: the gbXML exists to be imported into a T3D and
             //converted, and a canonical TBD is the product of having done exactly that. Writing one and then
             //not converting it would cost the export for nothing.
+            //A Part O case folder (<root>/<case>/tas, see PartOOutputPaths) is created here, before its first file.
+            //SAM_Tas creates no folders. A legacy flat folder is not created: it was always one that existed.
+            PartOOutputPaths partOOutputPaths = PartOOutputPaths.Find(outputDirectory);
+            if (partOOutputPaths is not null)
+            {
+                try
+                {
+                    partOOutputPaths.CreateDirectories();
+                }
+                catch (Exception exception)
+                {
+                    refusal = string.Format("The Part O output folder '{0}' could not be created, so nothing was simulated. ({1})", partOOutputPaths.Directory_Case, exception.Message);
+
+                    return null;
+                }
+            }
+
             string path_Xml = null;
             if (solarCalculationMethod == SolarCalculationMethod.TAS && partOCanonicalTBD is null)
             {
@@ -495,6 +512,9 @@ namespace SAM.Analytical.UI.WPF
                     ? Modify.RunWorkflow(analyticalModel, workflowSettings, cancellationToken, out cancelled, true)
                     : partOWorkflowRunner(analyticalModel, workflowSettings, cancellationToken, out cancelled);
             }
+
+            //SAM_Tas writes its timing CSV beside the TBD; in a Part O case folder it belongs in diagnostics.
+            PartOOutputPaths.FileDiagnostics(outputDirectory);
 
             if (cancelled || result is null)
             {

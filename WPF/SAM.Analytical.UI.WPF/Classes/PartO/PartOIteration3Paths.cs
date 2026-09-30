@@ -92,9 +92,10 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>PR5B: the hourly OperatingAirFlow history a B4 run persists beside its TPD.</summary>
         public const string Suffix_OperatingAirFlow = "-OperatingAirFlow";
 
-        private PartOIteration3Paths(string outputDirectory, string projectName_ReferenceA, string path_TSD_ReferenceA, PartOIteration3BehaviourMode partOIteration3BehaviourMode = PartOIteration3BehaviourMode.Parity)
+        private PartOIteration3Paths(PartOOutputPaths partOOutputPaths, string projectName_ReferenceA, string path_TSD_ReferenceA, PartOIteration3BehaviourMode partOIteration3BehaviourMode = PartOIteration3BehaviourMode.Parity)
         {
-            OutputDirectory = outputDirectory;
+            OutputPaths = partOOutputPaths;
+            OutputDirectory = partOOutputPaths.Directory_Tas;
             ProjectName_ReferenceA = projectName_ReferenceA;
             Path_TSD_ReferenceA = path_TSD_ReferenceA;
 
@@ -104,31 +105,42 @@ namespace SAM.Analytical.UI.WPF
                 : partOIteration3BehaviourMode == PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance ? Suffix_CandidateB_ManufacturerGuidance
                 : partOIteration3BehaviourMode == PartOIteration3BehaviourMode.SelectedProduct ? Suffix_CandidateB_SelectedProduct
                 : Suffix_CandidateB);
-            Path_OperatingAirFlow = Path.Combine(outputDirectory, ProjectName_CandidateB + Suffix_OperatingAirFlow + ".csv");
+            Path_OperatingAirFlow = Path.Combine(partOOutputPaths.Directory_Diagnostics, ProjectName_CandidateB + Suffix_OperatingAirFlow + ".csv");
             ProjectName_Bridge = string.Concat(ProjectName_CandidateB, Suffix_Bridge);
 
-            Path_TBD_ThermalSource = Path.Combine(outputDirectory, ProjectName_CandidateB + ".tbd");
+            //Every TAS file of Candidate B together, in Iteration 3's own tas folder.
+            Path_TBD_ThermalSource = Path.Combine(OutputDirectory, ProjectName_CandidateB + ".tbd");
             Path_TSD_ThermalSource = Path.ChangeExtension(Path_TBD_ThermalSource, "tsd");
-            Path_TPD = Path.Combine(outputDirectory, ProjectName_CandidateB + ".tpd");
-            Path_TBD_Bridge = Path.Combine(outputDirectory, ProjectName_Bridge + ".tbd");
+            Path_TPD = Path.Combine(OutputDirectory, ProjectName_CandidateB + ".tpd");
+            Path_TBD_Bridge = Path.Combine(OutputDirectory, ProjectName_Bridge + ".tbd");
             Path_TSD_Bridge = Path.ChangeExtension(Path_TBD_Bridge, "tsd");
 
+            //Derived from the results as every run's are: the model beside them in tas, the reports in reports.
+            //Reference A's report is Reference A's own, wherever its results are.
             Path_Model_CandidateB = Query.Path_PartORunModel(Path_TSD_Bridge);
             Path_TM59Report_CandidateB = Query.Path_TM59Report(Path_TSD_Bridge);
             Path_TM59Report_ReferenceA = Query.Path_TM59Report(path_TSD_ReferenceA);
 
             BehaviourMode = partOIteration3BehaviourMode;
 
-            //This mode's own record. The legacy mode-independent record is read, never written.
-            Path_Record = Path.Combine(
-                Path.GetDirectoryName(path_TSD_ReferenceA) ?? outputDirectory,
-                Path.GetFileNameWithoutExtension(path_TSD_ReferenceA) + Suffix_Record + "-" + Tag(partOIteration3BehaviourMode) + ".json");
+            //This mode's own record, in Iteration 3's reports folder. Records written beside Reference A's
+            //results before that - per mode, or the mode-independent one - are read, never written.
+            Path_Record = Path_Record_ForResults(path_TSD_ReferenceA, partOIteration3BehaviourMode);
         }
 
         /// <summary>The behaviour mode these paths are for.</summary>
         public PartOIteration3BehaviourMode BehaviourMode { get; }
 
-        /// <summary>Where both cases write. Candidate B never writes anywhere Reference A did not.</summary>
+        /// <summary>
+        /// Iteration 3's folders beneath the Part O root Reference A's run was written under - see
+        /// <see cref="PartOOutputPaths"/>. For a Reference A in a legacy flat folder, that folder is the root.
+        /// </summary>
+        public PartOOutputPaths OutputPaths { get; }
+
+        /// <summary>
+        /// Where Candidate B's TAS files are written: Iteration 3's <c>tas</c> folder. Reference A's own files are
+        /// read where they are - in Iteration 2's (or 1a's) folder, or a legacy flat one - and never copied here.
+        /// </summary>
         public string OutputDirectory { get; }
 
         public string ProjectName_ReferenceA { get; }
@@ -204,7 +216,13 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            return new PartOIteration3Paths(partOSimulationContext.OutputDirectory, partOSimulationContext.ProjectName, path_TSD_ReferenceA, partOIteration3BehaviourMode);
+            PartOOutputPaths partOOutputPaths = PartOOutputPaths.Create(partOSimulationContext.OutputDirectory, PartOOutputCase.Iteration3);
+            if (partOOutputPaths is null)
+            {
+                return null;
+            }
+
+            return new PartOIteration3Paths(partOOutputPaths, partOSimulationContext.ProjectName, path_TSD_ReferenceA, partOIteration3BehaviourMode);
         }
 
         /// <summary>
@@ -219,9 +237,41 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>
         /// One behaviour mode's own record path for a results file alone - what a <b>review</b> uses, which
-        /// has only the reopened run's TSD and no simulation context at all. Null mode is the legacy path.
+        /// has only the reopened run's TSD and no simulation context at all - and where a run writes it:
+        /// <c>&lt;root&gt;/Iteration3/reports/&lt;run&gt;-Iteration3-&lt;tag&gt;.json</c>, the root read off the
+        /// results' own folder (<see cref="PartOOutputPaths.Root"/>). Null mode is the legacy mode-independent
+        /// path beside the results. A per-mode record written beside the results before Iteration 3 had its own
+        /// folder is <see cref="Path_Record_ForResults_Legacy"/>.
         /// </summary>
         public static string Path_Record_ForResults(string path_TSD, PartOIteration3BehaviourMode? partOIteration3BehaviourMode)
+        {
+            if (string.IsNullOrWhiteSpace(path_TSD))
+            {
+                return null;
+            }
+
+            if (!partOIteration3BehaviourMode.HasValue)
+            {
+                return Path_Record_ForResults_Legacy(path_TSD, null);
+            }
+
+            string fileName = Path.GetFileNameWithoutExtension(path_TSD);
+            string directory = PartOOutputPaths.Create(Path.GetDirectoryName(path_TSD), PartOOutputCase.Iteration3)?.Directory_Reports;
+
+            if (string.IsNullOrWhiteSpace(directory) || string.IsNullOrWhiteSpace(fileName))
+            {
+                return null;
+            }
+
+            return Path.Combine(directory, fileName + Suffix_Record + "-" + Tag(partOIteration3BehaviourMode.Value) + ".json");
+        }
+
+        /// <summary>
+        /// Where a record was written BESIDE the results file, as every pairing before Iteration 3 had its own
+        /// folder was: the per-mode <c>&lt;run&gt;-Iteration3-&lt;tag&gt;.json</c>, or with no mode the
+        /// mode-independent <c>&lt;run&gt;-Iteration3.json</c>. Read, never written.
+        /// </summary>
+        public static string Path_Record_ForResults_Legacy(string path_TSD, PartOIteration3BehaviourMode? partOIteration3BehaviourMode)
         {
             if (string.IsNullOrWhiteSpace(path_TSD))
             {

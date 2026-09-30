@@ -40,6 +40,11 @@ namespace SAM.Analytical.UI.WPF.Tests
     {
         private readonly string directory = PartOIteration3Fixture.Directory_Temp();
 
+        //Iteration 3's own folders beneath the reference's folder - see PartOOutputPaths.
+        private string directory_It3 => Path.Combine(directory, "Iteration3", "tas");
+
+        private string directory_It3Reports => Path.Combine(directory, "Iteration3", "reports");
+
         private AdjacencyCluster adjacencyCluster;
 
         private List<Guid> guids_VentilationSystem;
@@ -116,8 +121,15 @@ namespace SAM.Analytical.UI.WPF.Tests
         //A completed pairing, produced once and then reopened
         //-------------------------------------------------------------------------------------------------
 
-        private PartORun Run(out PartOIteration3Result partOIteration3Result, out List<Guid> guids_Bound, bool writeReports = false, int count_InformationOnly = 0)
+        /// <param name="directory_ReferenceA">
+        /// Where Reference A's results are - the test's flat folder by default, or a case's <c>tas</c> folder beneath
+        /// it. Either way Iteration 3 writes into <see cref="directory_It3"/>: the flat folder is the root.
+        /// </param>
+        private PartORun Run(out PartOIteration3Result partOIteration3Result, out List<Guid> guids_Bound, bool writeReports = false, int count_InformationOnly = 0, string directory_ReferenceA = null)
         {
+            directory_ReferenceA ??= directory;
+            Directory.CreateDirectory(directory_ReferenceA);
+
             adjacencyCluster = PartOIteration3Fixture.Design(out guids_VentilationSystem, out zones);
 
             guids_Space_Dwelling = [];
@@ -143,7 +155,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 new PartOPreparationContext(PartOIteration.BasePassive, zones, null, null),
                 guids_VentilationSystem));
 
-            string path_TSD = Path.Combine(directory, "Flat.tsd");
+            string path_TSD = Path.Combine(directory_ReferenceA, "Flat.tsd");
 
             Assert.True(partORun.ExpectResults(path_TSD));
 
@@ -154,9 +166,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.OverheatingScenarios, new Core.SAMCollection<OverheatingScenario>(partORun.OverheatingScenarios));
             analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, new SimulationResultProvenance(analyticalModel_Workflow, path_TSD));
 
-            Assert.True(partORun.Complete(analyticalModel_Workflow, path_TSD, PartOIteration3Fixture.SimulationContext(directory), out string _));
+            Assert.True(partORun.Complete(analyticalModel_Workflow, path_TSD, PartOIteration3Fixture.SimulationContext(directory_ReferenceA), out string _));
 
-            NoIzamThermalSource noIzamThermalSource = PartOIteration3Fixture.ThermalSource(directory, guids_Space_Dwelling);
+            NoIzamThermalSource noIzamThermalSource = PartOIteration3Fixture.ThermalSource(directory_It3, guids_Space_Dwelling);
 
             List<SystemVentilationBinding> bindings = [];
 
@@ -205,8 +217,8 @@ namespace SAM.Analytical.UI.WPF.Tests
                     "damper"));
             }
 
-            string path_TPD = Path.Combine(directory, "Flat-It3B.tpd");
-            string path_TSD_Bridge = Path.Combine(directory, "Flat-It3B-Bridge.tsd");
+            string path_TPD = Path.Combine(directory_It3, "Flat-It3B.tpd");
+            string path_TSD_Bridge = Path.Combine(directory_It3, "Flat-It3B-Bridge.tsd");
 
             PartOIteration3PipelineFake partOIteration3PipelineFake = new()
             {
@@ -229,10 +241,10 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Write_Reports = writeReports,
             };
 
-            partOIteration3PipelineFake.Paths_ThermalSource.Add(Path.Combine(directory, "Flat-It3B.tbd"));
-            partOIteration3PipelineFake.Paths_ThermalSource.Add(Path.Combine(directory, "Flat-It3B.tsd"));
+            partOIteration3PipelineFake.Paths_ThermalSource.Add(Path.Combine(directory_It3, "Flat-It3B.tbd"));
+            partOIteration3PipelineFake.Paths_ThermalSource.Add(Path.Combine(directory_It3, "Flat-It3B.tsd"));
             partOIteration3PipelineFake.Paths_Route.Add(path_TPD);
-            partOIteration3PipelineFake.Paths_Bridge.Add(Path.Combine(directory, "Flat-It3B-Bridge.tbd"));
+            partOIteration3PipelineFake.Paths_Bridge.Add(Path.Combine(directory_It3, "Flat-It3B-Bridge.tbd"));
             partOIteration3PipelineFake.Paths_Bridge.Add(path_TSD_Bridge);
 
             partOIteration3Result = Modify.RunPartOIteration3(partORun, partOIteration3PipelineFake);
@@ -287,6 +299,52 @@ namespace SAM.Analytical.UI.WPF.Tests
         //-------------------------------------------------------------------------------------------------
         //The review
         //-------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// The Part O output folders: Reference A is an Iteration 2 run in <c>Iteration2/tas</c>. The pairing writes
+        /// every Candidate B file into Iteration 3's own folders, records the ACTUAL Iteration 2 results path, copies
+        /// nothing into Iteration 3 and writes nothing into Iteration 2 - and a later review, holding only the
+        /// Iteration 2 results, finds the record and rebuilds the comparison without TAS.
+        /// </summary>
+        [Fact]
+        public void A_reference_in_Iteration2_pairs_into_Iteration3_and_reopens_from_the_Iteration2_results_alone()
+        {
+            string directory_Iteration2 = Path.Combine(directory, "Iteration2", "tas");
+            string path_TSD_ReferenceA = Path.Combine(directory_Iteration2, "Flat.tsd");
+
+            PartORun partORun = Run(out PartOIteration3Result partOIteration3Result_Run, out List<Guid> guids_Bound, directory_ReferenceA: directory_Iteration2);
+
+            Assert.Equal(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json"), partOIteration3Result_Run.Path_Record);
+
+            PartOIteration3Record partOIteration3Record = Query.PartOIteration3PairingRecord(partOIteration3Result_Run.Path_Record);
+            Assert.Equal(path_TSD_ReferenceA, partOIteration3Record.Path_TSD_ReferenceA);
+
+            foreach (string role in new[] { PartOIteration3Roles.ThermalSource_TBD, PartOIteration3Roles.ThermalSource_TSD, PartOIteration3Roles.Systems_TPD, PartOIteration3Roles.Bridge_TBD, PartOIteration3Roles.Bridge_TSD, PartOIteration3Roles.CandidateB_Model })
+            {
+                Assert.Equal(directory_It3, Path.GetDirectoryName(partOIteration3Record.File(role).Path));
+            }
+
+            //Reference A's folder holds Reference A's results and nothing of Candidate B's; Iteration 3 holds no copy.
+            Assert.Equal(["Flat.tsd"], Array.ConvertAll(Directory.GetFiles(directory_Iteration2), Path.GetFileName));
+            Assert.DoesNotContain(Directory.GetFiles(directory_It3), x => string.Equals(Path.GetFileName(x), "Flat.tsd", StringComparison.OrdinalIgnoreCase));
+
+            //A later session: only the reopened run's results path is known.
+            int count = 0;
+            PartOIteration3Result partOIteration3Result_Review = Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly
+            {
+                Func_Assess = guids => Assessment(guids, ++count == 1 ? 20.0 : 21.0),
+            });
+
+            Assert.True(partOIteration3Result_Review.IsRestored);
+            Assert.True(partOIteration3Result_Review.IsComplete);
+            Assert.NotNull(partOIteration3Result_Review.Comparison);
+            Assert.Equal(guids_Bound.Count, partOIteration3Result_Review.Comparison.Statistics.Count_Rooms);
+            Assert.Equal(partOIteration3Result_Run.Path_Record, partOIteration3Result_Review.Path_Record);
+
+            //Its A/B review report beside the record, in Iteration 3's reports folder.
+            Assert.True(File.Exists(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.txt")));
+            Assert.True(File.Exists(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.json")));
+        }
 
         [Fact]
         public void A_completed_pairing_reopens_and_rebuilds_its_comparison_without_running_TAS()
@@ -422,7 +480,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> guids_Bound);
 
-            string path = Path.Combine(directory, "Flat-It3B-Bridge.tsd");
+            string path = Path.Combine(directory_It3, "Flat-It3B-Bridge.tsd");
 
             File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddHours(1));
 
@@ -438,7 +496,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> guids_Bound);
 
-            File.Delete(Path.Combine(directory, "Flat-It3B-Bridge.sam"));
+            File.Delete(Path.Combine(directory_It3, "Flat-It3B-Bridge.sam"));
 
             PartOIteration3Result partOIteration3Result = Modify.ReviewPartOIteration3(partORun, ReviewPipeline(guids_Bound));
 
@@ -452,11 +510,11 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> guids_Bound);
 
             //The design state fingerprint the record copied no longer describes the model in front of us.
-            PartOIteration3Record partOIteration3Record = Query.PartOIteration3PairingRecord(Path.Combine(directory, "Flat-Iteration3-B0.json"));
+            PartOIteration3Record partOIteration3Record = Query.PartOIteration3PairingRecord(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json"));
 
             string text = partOIteration3Record.ToString().Replace(partOIteration3Record.Fingerprint_Model_ReferenceA, "0000000000000000");
 
-            File.WriteAllText(Path.Combine(directory, "Flat-Iteration3-B0.json"), text);
+            File.WriteAllText(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json"), text);
 
             PartOIteration3Result partOIteration3Result = Modify.ReviewPartOIteration3(partORun, ReviewPipeline(guids_Bound));
 
@@ -469,7 +527,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> guids_Bound);
 
-            string path_Record = Path.Combine(directory, "Flat-Iteration3-B0.json");
+            string path_Record = Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json");
 
             File.WriteAllText(path_Record, File.ReadAllText(path_Record).Replace(PartOIteration3Record.CurrentSchema, "PartOIteration3Record:v0"));
 
@@ -496,8 +554,10 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// </summary>
         private static void Write_V1(string path_Record, Action<JsonObject> modify = null)
         {
+            //The run wrote its own B0 record in Iteration 3's reports folder; the v1 record it becomes is the legacy
+            //mode-independent one beside the results.
             string path_Record_Run = path_Record.EndsWith("-Iteration3.json", StringComparison.OrdinalIgnoreCase)
-                ? path_Record.Substring(0, path_Record.Length - ".json".Length) + "-B0.json"
+                ? Path.Combine(Path.GetDirectoryName(path_Record), "Iteration3", "reports", Path.GetFileNameWithoutExtension(path_Record) + "-B0.json")
                 : path_Record;
 
             JsonObject jsonObject = JsonNode.Parse(File.ReadAllText(path_Record_Run)).AsObject();
@@ -602,7 +662,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> guids_Bound);
 
-            string path_Record = Path.Combine(directory, "Flat-Iteration3-B0.json");
+            string path_Record = Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json");
 
             JsonObject jsonObject = JsonNode.Parse(File.ReadAllText(path_Record)).AsObject();
             Assert.Equal(PartOIteration3Record.CurrentSchema, (string)jsonObject["Schema"]);
@@ -622,7 +682,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> guids_Bound);
 
-            string path_Record = Path.Combine(directory, "Flat-Iteration3-B0.json");
+            string path_Record = Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json");
             File.WriteAllText(path_Record, File.ReadAllText(path_Record).Replace("\"BehaviourMode\": \"Parity\"", "\"BehaviourMode\": \"Unknown\""));
 
             PartOIteration3PipelineReviewOnly pipeline = ReviewPipeline(guids_Bound);
@@ -638,7 +698,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> guids_Bound);
 
-            string path_Record = Path.Combine(directory, "Flat-Iteration3-B0.json");
+            string path_Record = Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json");
             File.WriteAllText(path_Record, File.ReadAllText(path_Record).Replace("\"BehaviourMode\": \"Parity\"", "\"BehaviourMode\": \"SelectedProduct\""));
 
             PartOIteration3PipelineReviewOnly pipeline = ReviewPipeline(guids_Bound);
@@ -655,7 +715,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             PartORun partORun = Run(out PartOIteration3Result _, out List<Guid> guids_Bound);
 
-            File.Delete(Path.Combine(directory, "Flat-Iteration3-B0.json"));
+            File.Delete(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json"));
 
             PartOIteration3Result partOIteration3Result = Modify.ReviewPartOIteration3(partORun, ReviewPipeline(guids_Bound));
 
@@ -892,8 +952,8 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             Run(out PartOIteration3Result partOIteration3Result, out List<Guid> _);
 
-            string path_Report = Path.Combine(directory, "Flat-Iteration3-B0-Review.txt");
-            string path_Report_Json = Path.Combine(directory, "Flat-Iteration3-B0-Review.json");
+            string path_Report = Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.txt");
+            string path_Report_Json = Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.json");
 
             Assert.Equal(path_Report, partOIteration3Result.Path_Report);
             Assert.Equal(path_Report_Json, partOIteration3Result.Path_Report_Json);
@@ -1013,7 +1073,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             long ticks = File.GetLastWriteTimeUtc(path_Report).Ticks;
 
             //The design state the record copied no longer describes the model in front of us.
-            string path_Record = Path.Combine(directory, "Flat-Iteration3-B0.json");
+            string path_Record = Path.Combine(directory_It3Reports, "Flat-Iteration3-B0.json");
 
             PartOIteration3Record partOIteration3Record = Query.PartOIteration3PairingRecord(path_Record);
 
@@ -1086,8 +1146,8 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.True(partOIteration3Result.IsRefused);
             Assert.Null(partOIteration3Result.Path_Report);
-            Assert.False(File.Exists(Path.Combine(directory, "Flat-Iteration3-B0-Review.txt")));
-            Assert.False(File.Exists(Path.Combine(directory, "Flat-Iteration3-B0-Review.json")));
+            Assert.False(File.Exists(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.txt")));
+            Assert.False(File.Exists(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.json")));
         }
 
         /// <summary>

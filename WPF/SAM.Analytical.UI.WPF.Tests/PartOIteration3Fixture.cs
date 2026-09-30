@@ -304,6 +304,10 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             System.IO.Directory.CreateDirectory(result);
 
+            //The folders an Iteration 3 run against a reference here writes into (PartOOutputPaths), so a test can
+            //arrange a record or a TAS file in them before the run - which creates them itself - has started.
+            PartOOutputPaths.Create(result, PartOOutputCase.Iteration3).CreateDirectories();
+
             return result;
         }
     }

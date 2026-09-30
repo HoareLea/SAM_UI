@@ -276,9 +276,11 @@ namespace SAM.Analytical.UI.WPF
 
             foreach (PartOIteration3BehaviourMode partOIteration3BehaviourMode_Candidate in Query.PartOIteration3BehaviourModes)
             {
-                string path = PartOIteration3Paths.Path_Record_ForResults(path_TSD, partOIteration3BehaviourMode_Candidate);
+                //The method's own record where it exists - in Iteration 3's reports folder, or beside the results
+                //where a pairing written before that folder existed put it.
+                string path = Query.PartOIteration3RecordPath(path_TSD, partOIteration3BehaviourMode_Candidate, out bool legacy);
 
-                if (!string.IsNullOrWhiteSpace(path) && System.IO.File.Exists(path))
+                if (!legacy && !string.IsNullOrWhiteSpace(path) && System.IO.File.Exists(path))
                 {
                     return path;
                 }
