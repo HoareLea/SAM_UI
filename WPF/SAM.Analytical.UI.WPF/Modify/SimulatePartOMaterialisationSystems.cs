@@ -54,7 +54,7 @@ namespace SAM.Analytical.UI.WPF
                 return result;
             }
 
-            result.Notes.AddRange(notes_Systems);
+            result.Notes_SystemsScope.AddRange(notes_Systems);
 
             if (cancellationToken.IsCancellationRequested)
             {

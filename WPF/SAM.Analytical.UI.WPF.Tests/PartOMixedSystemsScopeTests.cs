@@ -303,7 +303,10 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(partOStrategySetRun.IsMaterialised);
             Assert.True(partOStrategySetRun.Simulation!.Cancelled);
             Assert.Null(partOStrategySetRun.Simulation.Refusal);
-            Assert.Equal(partOMixedDesignCheck.Notes_Systems, partOStrategySetRun.Simulation.Notes);
+            Assert.Equal(partOMixedDesignCheck.Notes_Systems, partOStrategySetRun.Simulation.Notes_SystemsScope);
+
+            //Evidence, not warnings: the run's own warnings stay first in its notes.
+            Assert.DoesNotContain(partOStrategySetRun.Simulation.Notes, x => x.Contains("left out of the TAS Systems materialisation input"));
             Assert.Empty(izam.Models);
 
             Assert.Equal(json_Baseline, Json(baseline));

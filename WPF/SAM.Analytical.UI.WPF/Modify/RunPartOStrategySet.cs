@@ -43,6 +43,12 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>What each cooled unit did, read back from TAS - one line per cooled unit. Systems route only.</summary>
         public List<string> GuidanceSummaries { get; } = [];
+
+        /// <summary>
+        /// Which authored systems the Systems preflight left out of the SAM_Systems input, and why - the same notes Check
+        /// design reports. Evidence, not warnings, so kept apart from <see cref="Notes"/>. Systems route only.
+        /// </summary>
+        public List<string> Notes_SystemsScope { get; } = [];
     }
 
     /// <summary>
