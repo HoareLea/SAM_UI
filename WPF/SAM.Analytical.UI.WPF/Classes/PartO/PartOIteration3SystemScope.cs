@@ -9,6 +9,10 @@ namespace SAM.Analytical.UI.WPF
     /// <summary>
     /// Which of a prepared model's authored ventilation systems the Iteration 3 materialisation is given -
     /// SAM #114's production answer, decided by identity and by nothing else.
+    /// <para>
+    /// Since PR-1 the decision is SAM's <c>PartOSystemsMaterialisationScope</c> (shared with Mixed Design); this
+    /// type carries it in Iteration 3's own wording, which its records persist.
+    /// </para>
     ///
     /// <para><b>Fail closed, with no partial-scope cluster</b></para>
     /// <para>

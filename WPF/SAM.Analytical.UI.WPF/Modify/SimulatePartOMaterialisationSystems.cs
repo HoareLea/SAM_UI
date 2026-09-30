@@ -47,12 +47,14 @@ namespace SAM.Analytical.UI.WPF
 
             PartOProgressHost.Current?.Detail("Materialising the ventilation systems");
 
-            MechanicalVentilationMaterialisation? mechanicalVentilationMaterialisation = PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates, partOIteration3Pipeline, out string? refusal_Systems);
+            MechanicalVentilationMaterialisation? mechanicalVentilationMaterialisation = PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates, partOIteration3Pipeline, out string? refusal_Systems, out List<string> notes_Systems);
             if (mechanicalVentilationMaterialisation is null)
             {
                 result.Refusal = refusal_Systems;
                 return result;
             }
+
+            result.Notes_SystemsScope.AddRange(notes_Systems);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -193,7 +195,27 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         internal static MechanicalVentilationMaterialisation? PartOMixedSystemsMaterialisation(PartOMaterialisation partOMaterialisation, IEnumerable<VentilationUnitTemplate>? ventilationUnitTemplates, PartOIteration3Pipeline partOIteration3Pipeline, out string? refusal)
         {
+            return PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates, partOIteration3Pipeline, out refusal, out List<string> _);
+        }
+
+        /// <summary>
+        /// <b>The ONE mixed Systems preflight</b> - asked by Check design and by Build &amp; Run's first step alike, so the two
+        /// cannot disagree (PR-1). No TAS.
+        /// <list type="number">
+        /// <item><b>Compose</b> the call from SAM's record (<see cref="Query.PartOMixedSystemsCall"/>).</item>
+        /// <item><b>Scope</b> SAM_Systems' input to the systems Part O built, by identity
+        /// (<see cref="Query.PartOMixedSystemsScope"/> - SAM's <c>PartOSystemsMaterialisationScope</c>, the rule Iteration 3
+        /// uses). Unit-less natural and uncontrolled systems, and any authored system with no effective duty, are left out
+        /// of the SAM_Systems input only - never out of the model simulated. An authored system with effective duty
+        /// refuses.</item>
+        /// <item><b>Materialise</b> the ONE SAM_Systems graph over the scoped copy and check it against SAM's record.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="notes">What the scope left out, and why - part of the run's evidence.</param>
+        internal static MechanicalVentilationMaterialisation? PartOMixedSystemsMaterialisation(PartOMaterialisation partOMaterialisation, IEnumerable<VentilationUnitTemplate>? ventilationUnitTemplates, PartOIteration3Pipeline partOIteration3Pipeline, out string? refusal, out List<string> notes)
+        {
             refusal = null;
+            notes = [];
 
             PartOMixedSystemsCall partOMixedSystemsCall = Query.PartOMixedSystemsCall(partOMaterialisation, ventilationUnitTemplates);
             if (!partOMixedSystemsCall.IsValid)
@@ -202,7 +224,18 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            MechanicalVentilationMaterialisation mechanicalVentilationMaterialisation = partOIteration3Pipeline.MaterialiseMixed(partOMaterialisation.AnalyticalModel.AdjacencyCluster, partOMixedSystemsCall.Spaces, partOMixedSystemsCall.GuidanceSettings);
+            //Never the whole cluster: SAM_Systems requires every ventilation system it is handed to name a unit, and the
+            //model's natural and uncontrolled systems never do.
+            PartOSystemsMaterialisationScope partOSystemsMaterialisationScope = Query.PartOMixedSystemsScope(partOMaterialisation);
+            if (!partOSystemsMaterialisationScope.IsScoped)
+            {
+                refusal = Join("The TAS Systems ventilation of the mixed model could not be limited to the systems Part O built.", partOSystemsMaterialisationScope.Refusals.ConvertAll(x => x.Message));
+                return null;
+            }
+
+            notes.AddRange(partOSystemsMaterialisationScope.Notes);
+
+            MechanicalVentilationMaterialisation mechanicalVentilationMaterialisation = partOIteration3Pipeline.MaterialiseMixed(partOSystemsMaterialisationScope.AdjacencyCluster, partOMixedSystemsCall.Spaces, partOMixedSystemsCall.GuidanceSettings);
             if (mechanicalVentilationMaterialisation is null || !mechanicalVentilationMaterialisation.IsMaterialised)
             {
                 refusal = Join("SAM_Systems could not materialise the mixed ventilation.", mechanicalVentilationMaterialisation?.Refusals);
