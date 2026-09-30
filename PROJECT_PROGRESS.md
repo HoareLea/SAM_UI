@@ -3,6 +3,32 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): Iteration 3 case-report provenance + no UNAVAILABLE beside a PASS (30 Sep 2026) - MERGED as SAM_UI#146 (`a36f12bc`)
+
+**Status.** Merged into `sow/2026-Q3` (head `855db98`, one commit). The PR had no CI checks configured; validated by local
+build + tests + a real-app check. Small reporting fix only; no TM59 figure or verdict changed.
+
+- **Defect.** The Iteration 3 comparison's "TM59 report - reference/system" windows (`PartOIteration3ResultWindow.ShowReport`)
+  showed and copied the raw report text with no `PART O CASE` block, and never set a result summary, so the header read
+  "TM59 assessment - UNAVAILABLE / No TM59 assessment was produced" beside "System case: TM59 PASS". The saved
+  `*-It3BMG-Bridge-TM59.txt` file already carried the block (verified on the 29 Sep run) - only the window/Copy All differed.
+- **Fix.** `PartOIteration3Pipeline.Assess` builds the provenance once (run metadata via `PartOIteration3ReportProvenance`),
+  writes the file with it and hands the same text (`Modify.PartOTM59ReportText`) to the window; new
+  `PartOTM59ResultSummary.ForStatus` heads an assessed case with its own Pass/Fail/Not assessed (no space counts: the case
+  carries report text, not the report object).
+- **Files.** `PartOIteration3Pipeline.cs`, `PartOTM59ResultSummary.cs`, `PartOIteration3ResultWindow.xaml.cs`,
+  `PartOPresentationPolishTests.cs`.
+- **Evidence.** Build 0 errors. Focused tests 38/38 (PartOPresentationPolish, PartOTM59Result*, PartOIteration3Pipeline*);
+  the full WPF suite was NOT re-run. Real app (PR-head build, UIA driver, saved 29 Sep It3BMG result, no TAS): Hub "Open
+  result" -> comparison (reference PASS / system PASS) -> both report windows headed "TM59 assessment - PASS", no
+  "No TM59 assessment was produced"; system window Copy All carries Iteration 3, system case, Reference case, Route,
+  scope, Weather, TM59 method and Source TAS result, and its provenance block is byte-identical to the saved
+  `*-It3BMG-Bridge-TM59.txt`. Evidence kept local only: `C:\TasOut\pr146`.
+- **Risks / notes.** The saved model records absolute paths, so reviewing a *copied* run folder reads and rewrites the
+  reports of the ORIGINAL folder (report files only, content unchanged; no TAS files). Use a fresh `/Path=` model with
+  its own outputs for scratch checks.
+- **Next.** None required. Deferred: provenance for 2B round reports; a summary with counts for the Iteration 3 case windows.
+
 ## Current (Part O stream): Part O / TM59 presentation polish + Iteration 3 reopen fix (29 Sep 2026) - MERGED as SAM_UI#145 (`d46ca3a9`) with SAM#168 (`6d29803a`)
 
 **Status.** Both merged into `sow/2026-Q3`, SAM#168 first. CI green (build, SPDX; SAM also test). SAM_UI#145 head `c3df784`.
