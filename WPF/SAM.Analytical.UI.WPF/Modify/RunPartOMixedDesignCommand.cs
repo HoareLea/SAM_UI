@@ -86,7 +86,8 @@ namespace SAM.Analytical.UI.WPF
                 searchText = partOMixedDesignWindow.SearchText;
                 grouped = partOMixedDesignWindow.Grouped;
 
-                //The constraints and the screening choice are the project's, whatever was done - kept beside the model.
+                //The constraints and the screening choice are the project's, whatever was done - kept beside the model,
+                //unless the model was refused as a baseline (see WritePartOMixedDesignState).
                 WriteState(partOMixedDesignSession, path_State);
 
                 if (showDialog != true)
@@ -504,10 +505,23 @@ namespace SAM.Analytical.UI.WPF
 
         private static void WriteState(PartOMixedDesignSession partOMixedDesignSession, string? path_State)
         {
-            if (path_State is not null)
+            WritePartOMixedDesignState(partOMixedDesignSession, path_State);
+        }
+
+        /// <summary>
+        /// Keeps the session's state beside the model - unless the model was refused as a baseline when the window
+        /// opened. A refused model is never built from, so its session has nothing to keep: no sidecar is created
+        /// beside it, and one already there is left exactly as it was.
+        /// </summary>
+        /// <returns>Whether the state was written.</returns>
+        internal static bool WritePartOMixedDesignState(PartOMixedDesignSession partOMixedDesignSession, string? path_State)
+        {
+            if (path_State is null || !partOMixedDesignSession.OpenedOnCleanBaseline)
             {
-                partOMixedDesignSession.State.Write(path_State, out _);
+                return false;
             }
+
+            return partOMixedDesignSession.State.Write(path_State, out _);
         }
     }
 }

@@ -293,8 +293,9 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>
         /// The provenance an Iteration 3 TM59 report is saved with. The reference case's results are the
-        /// reference iteration's own, so its report keeps that iteration's scenario and says it is the
-        /// Iteration 3 reference case; every other results file is the system case's.
+        /// reference iteration's own, so its report is headed by that iteration's scenario, with Iteration 3
+        /// as the assessment context it was reassessed for; every other results file is the system case's,
+        /// whose scenario is Iteration 3 itself.
         /// </summary>
         internal static Func<string, TM59AssessmentReport, IEnumerable<string>> PartOIteration3ReportProvenance(PartORun partORun, PartOIteration3BehaviourMode partOIteration3BehaviourMode)
         {
@@ -306,15 +307,12 @@ namespace SAM.Analytical.UI.WPF
                     && string.Equals(System.IO.Path.GetFullPath(path_TSD), System.IO.Path.GetFullPath(partORun.Path_TSD), StringComparison.OrdinalIgnoreCase);
 
                 return reference
-                    ? PartOTM59ResultSummary.ReportProvenance(partORun, tM59AssessmentReport, [("Case", "Iteration 3 — Explicit system and cooling assessment · reference case")])
+                    ? PartOTM59ResultSummary.ReportProvenance(partORun, tM59AssessmentReport, [("Assessment context", "Iteration 3 — Reference case")])
                     : PartOTM59ResultSummary.ReportProvenance(
                         partORun,
                         tM59AssessmentReport,
-                        [
-                            ("Iteration / scenario", string.Format("Iteration 3 — Explicit system and cooling assessment · system case: explicit TAS/TPD system ({0})", label)),
-                            ("Reference case", Query.PartOIterationText(partORun)),
-                        ],
-                        includeScenario: false,
+                        [("Reference case", Query.PartOIterationText(partORun))],
+                        scenario: string.Format("Iteration 3 — Explicit system and cooling assessment · system case: explicit TAS/TPD system ({0})", label),
                         path_TSD: path_TSD);
             };
         }
