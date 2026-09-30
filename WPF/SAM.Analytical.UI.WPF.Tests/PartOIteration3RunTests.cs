@@ -370,6 +370,27 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(guids_Space_Dwelling.Count, partOIteration3PipelineFake.Spaces_Materialised.Count);
         }
 
+        /// <summary>
+        /// PR-3: SAM_Systems is also told the scope - the systems Part O built, which are exactly the ventilation systems
+        /// of the working copy. So stating it changes nothing Iteration 3 materialises; it only stops SAM_Systems reading
+        /// anything else.
+        /// </summary>
+        [Fact]
+        public void The_materialisation_is_told_the_retained_system_scope_which_is_exactly_the_working_copys_systems()
+        {
+            PartORun partORun = Run();
+
+            PartOIteration3PipelineFake partOIteration3PipelineFake = Pipeline_Complete(out List<Guid> _);
+
+            Modify.RunPartOIteration3(partORun, partOIteration3PipelineFake);
+
+            List<Guid> guids_Prepared = [.. partORun.Guids_VentilationSystem_Prepared.Distinct().OrderBy(x => x)];
+
+            Assert.NotNull(partOIteration3PipelineFake.VentilationSystemGuids_Materialised);
+            Assert.Equal(guids_Prepared, partOIteration3PipelineFake.VentilationSystemGuids_Materialised);
+            Assert.Equal(guids_Prepared, partOIteration3PipelineFake.AdjacencyCluster_Materialised.GetObjects<VentilationSystem>().ConvertAll(x => x.Guid).OrderBy(x => x));
+        }
+
         //-------------------------------------------------------------------------------------------------
         //The refusal boundaries
         //-------------------------------------------------------------------------------------------------

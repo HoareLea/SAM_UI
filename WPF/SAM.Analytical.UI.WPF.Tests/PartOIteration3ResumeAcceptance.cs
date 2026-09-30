@@ -68,9 +68,9 @@ namespace SAM.Analytical.UI.WPF.Tests
                 return result;
             }
 
-            public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null)
+            public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null, IEnumerable<Guid> guids_VentilationSystem = null)
             {
-                return Timed(nameof(Materialise), () => production.Materialise(adjacencyCluster, spaces, unitSettings, coolingSettings, guidanceSettings));
+                return Timed(nameof(Materialise), () => production.Materialise(adjacencyCluster, spaces, unitSettings, coolingSettings, guidanceSettings, guids_VentilationSystem));
             }
 
             public NoIzamThermalSource ThermalSource(AnalyticalModel analyticalModel_Prepared, PartOSimulationContext partOSimulationContext, string projectName, CancellationToken cancellationToken, out AnalyticalModel analyticalModel_Source, out bool cancelled, out List<string> notes, out string refusal)

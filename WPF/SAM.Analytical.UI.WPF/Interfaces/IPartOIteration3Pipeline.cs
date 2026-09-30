@@ -65,7 +65,11 @@ namespace SAM.Analytical.UI.WPF
         /// SAM#123: each scoped unit's selected product operated to its manufacturer's guidance, keyed by its
         /// guid - materialised on the MVRE topology with a supply DX coil. Null or empty materialises none.
         /// </param>
-        MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null);
+        /// <param name="guids_VentilationSystem">
+        /// Part O PR-3: the ventilation systems SAM_Systems may process - SAM's retained scope. Stated, SAM_Systems processes
+        /// no other system of <paramref name="adjacencyCluster"/>. Null processes every one, as before.
+        /// </param>
+        MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null, IEnumerable<Guid> guids_VentilationSystem = null);
 
         /// <summary>
         /// Runs Candidate B's dedicated no-IZAM thermal case - the same TAS case as Reference A, writing

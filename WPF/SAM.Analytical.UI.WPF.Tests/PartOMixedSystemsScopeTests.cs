@@ -28,7 +28,8 @@ namespace SAM.Analytical.UI.WPF.Tests
     /// <para><b>The boundary</b></para>
     /// <para>
     /// <c>MV 1</c> serves an unzoned plant room so SAM's authored-plant classification (PR-2) is not what is tested, and
-    /// SAM_Systems itself is unchanged (PR-3): everything here is the caller building the right input. No TAS.
+    /// PR-1 is the caller building the right input; PR-3 (the last section) is SAM_Systems honouring the same scope when it
+    /// is stated, so the whole cluster can no longer refuse. No TAS.
     /// </para>
     /// </summary>
     [Collection(WpfCollection.Name)]
@@ -337,6 +338,76 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(partOMixedDesignCheck.Passed, partOMixedDesignCheck.Materialisation?.Refusal);
             Assert.False(partOMixedDesignCheck.SystemsChecked);
             Assert.Equal(PartOSimulationRoute.Izam, partOMixedDesignCheck.Materialisation!.Route);
+        }
+
+        // =================================================================================================
+        // PR-3: SAM_Systems honours the stated scope
+        // =================================================================================================
+
+        /// <summary>
+        /// The whole materialised cluster - <c>NV 1</c>, <c>UV 1</c>, <c>MV 1 → AHU1</c> and all - handed to SAM_Systems with
+        /// SAM's retained scope materialises the two Part O systems only, exactly as the working copy does. The model's
+        /// other systems are never read, so the cluster that refuses unscoped (above) no longer can.
+        /// </summary>
+        [Fact]
+        public void TheWholeCluster_WithSamsScope_MaterialisesOnlyThePartOSystems_ExactlyAsTheWorkingCopy()
+        {
+            PartOMaterialisation partOMaterialisation = Materialise(Scaffolded());
+            AdjacencyCluster adjacencyCluster = partOMaterialisation.AnalyticalModel.AdjacencyCluster;
+            string json_Materialised = Json(partOMaterialisation.AnalyticalModel);
+
+            PartOMixedSystemsCall partOMixedSystemsCall = Query.PartOMixedSystemsCall(partOMaterialisation, [Template()]);
+            PartOSystemsMaterialisationScope scope = Query.PartOMixedSystemsScope(partOMaterialisation);
+            Assert.True(scope.IsScoped, scope.Refusal);
+
+            MechanicalVentilationMaterialisation whole = new PartOIteration3Pipeline().MaterialiseMixed(adjacencyCluster, partOMixedSystemsCall.Spaces, partOMixedSystemsCall.GuidanceSettings, scope.Guids_Retained);
+            MechanicalVentilationMaterialisation workingCopy = new PartOIteration3Pipeline().MaterialiseMixed(scope.AdjacencyCluster, partOMixedSystemsCall.Spaces, partOMixedSystemsCall.GuidanceSettings);
+
+            Assert.True(whole.IsMaterialised, string.Join(" | ", whole.Refusals));
+            Assert.True(workingCopy.IsMaterialised, string.Join(" | ", workingCopy.Refusals));
+
+            //Only the Part O units: AHU1 stays on the model and is not materialised.
+            List<Guid> guids_Unit = [.. whole.Bindings.Where(x => x.BindingType == MechanicalVentilationBindingType.AirSystem).Select(x => x.Guid_Analytical).OrderBy(x => x)];
+            Assert.Equal(partOMaterialisation.Record.VentilationSystemGuids.Values.Select(x => adjacencyCluster.AirHandlingUnit(adjacencyCluster.GetObject<VentilationSystem>(x))!.Guid).OrderBy(x => x), guids_Unit);
+            Assert.DoesNotContain(adjacencyCluster.GetObjects<AirHandlingUnit>().Single(x => x.Name == "AHU1").Guid, guids_Unit);
+
+            //The same graph, the same identities.
+            Assert.Equal(workingCopy.SystemEnergyCentre.ToJsonObject().ToJsonString(), whole.SystemEnergyCentre.ToJsonObject().ToJsonString());
+            Assert.Equal(workingCopy.Bindings.Select(x => x.ToString()), whole.Bindings.Select(x => x.ToString()));
+
+            //Iteration 3's Materialise forwards the scope the same way.
+            Assert.False(new PartOIteration3Pipeline().Materialise(adjacencyCluster, partOMixedSystemsCall.Spaces).IsMaterialised);
+            MechanicalVentilationMaterialisation whole_Iteration3 = new PartOIteration3Pipeline().Materialise(adjacencyCluster, partOMixedSystemsCall.Spaces, null, null, null, scope.Guids_Retained);
+            Assert.True(whole_Iteration3.IsMaterialised, string.Join(" | ", whole_Iteration3.Refusals));
+            Assert.Equal(new PartOIteration3Pipeline().Materialise(scope.AdjacencyCluster, partOMixedSystemsCall.Spaces).SystemEnergyCentre.ToJsonObject().ToJsonString(), whole_Iteration3.SystemEnergyCentre.ToJsonObject().ToJsonString());
+
+            Assert.Equal(json_Materialised, Json(partOMaterialisation.AnalyticalModel));
+        }
+
+        /// <summary>The ONE preflight (Check and Build) tells SAM_Systems exactly the systems SAM's record says Part O built.</summary>
+        [Fact]
+        public void ThePreflight_TellsSamSystemsExactlyTheSystemsPartOBuilt()
+        {
+            PartOMaterialisation partOMaterialisation = Materialise(Scaffolded());
+            CapturingPipeline capturingPipeline = new();
+
+            MechanicalVentilationMaterialisation? mixed = Modify.PartOMixedSystemsMaterialisation(partOMaterialisation, [Template()], capturingPipeline, out string? refusal, out List<string> _);
+
+            Assert.True(mixed is not null, refusal);
+            Assert.NotNull(capturingPipeline.Guids_VentilationSystem);
+            Assert.Equal(partOMaterialisation.Record.VentilationSystemGuids.Values.OrderBy(x => x), capturingPipeline.Guids_VentilationSystem);
+        }
+
+        private sealed class CapturingPipeline : PartOIteration3Pipeline
+        {
+            internal List<Guid>? Guids_VentilationSystem { get; private set; }
+
+            public override MechanicalVentilationMaterialisation MaterialiseMixed(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings, IEnumerable<Guid>? guids_VentilationSystem = null)
+            {
+                Guids_VentilationSystem = guids_VentilationSystem is null ? null : [.. guids_VentilationSystem.OrderBy(x => x)];
+
+                return base.MaterialiseMixed(adjacencyCluster, spaces, guidanceSettings, guids_VentilationSystem);
+            }
         }
 
         /// <summary>A materialisation refusal is still reported by SAM's own structured refusals, and no preflight runs.</summary>

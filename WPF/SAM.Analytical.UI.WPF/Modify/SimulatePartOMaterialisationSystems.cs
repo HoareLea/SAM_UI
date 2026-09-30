@@ -235,7 +235,8 @@ namespace SAM.Analytical.UI.WPF
 
             notes.AddRange(partOSystemsMaterialisationScope.Notes);
 
-            MechanicalVentilationMaterialisation mechanicalVentilationMaterialisation = partOIteration3Pipeline.MaterialiseMixed(partOSystemsMaterialisationScope.AdjacencyCluster, partOMixedSystemsCall.Spaces, partOMixedSystemsCall.GuidanceSettings);
+            //PR-3: and SAM_Systems is told the same scope, so it processes those systems and no other.
+            MechanicalVentilationMaterialisation mechanicalVentilationMaterialisation = partOIteration3Pipeline.MaterialiseMixed(partOSystemsMaterialisationScope.AdjacencyCluster, partOMixedSystemsCall.Spaces, partOMixedSystemsCall.GuidanceSettings, partOSystemsMaterialisationScope.Guids_Retained);
             if (mechanicalVentilationMaterialisation is null || !mechanicalVentilationMaterialisation.IsMaterialised)
             {
                 refusal = Join("SAM_Systems could not materialise the mixed ventilation.", mechanicalVentilationMaterialisation?.Refusals);

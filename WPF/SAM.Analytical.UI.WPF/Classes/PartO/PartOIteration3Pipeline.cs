@@ -85,7 +85,7 @@ namespace SAM.Analytical.UI.WPF
         /// <c>MV.json</c> ventilation plus the cooling branch, so the template still follows
         /// <paramref name="unitSettings"/> alone.
         /// </summary>
-        public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null)
+        public MechanicalVentilationMaterialisation Materialise(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationUnitSettings> unitSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationCoolingSettings> coolingSettings = null, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings = null, IEnumerable<Guid> guids_VentilationSystem = null)
         {
             bool hasUnitSettings = unitSettings is not null && unitSettings.Count != 0;
             bool hasGuidanceSettings = guidanceSettings is not null && guidanceSettings.Count != 0;
@@ -114,7 +114,7 @@ namespace SAM.Analytical.UI.WPF
                 GuidanceSettings = guidanceSettings,
             };
 
-            return adjacencyCluster.MechanicalVentilation(systemEnergyCentre, mechanicalVentilationSettings, spaces);
+            return adjacencyCluster.MechanicalVentilation(systemEnergyCentre, mechanicalVentilationSettings, spaces, guids_VentilationSystem);
         }
 
         /// <summary>
@@ -123,8 +123,13 @@ namespace SAM.Analytical.UI.WPF
         /// manufacturer-guidance arrangement (MVRE exchanger + supply DX coil, SAM_Systems' <c>GuidanceTemplate</c>).
         /// The same schedule, name and flags as <see cref="Materialise"/>; nothing computed here - each unit's guidance
         /// settings are SAM_Systems' resolution of SAM's cooling rule, handed in.
+        /// <para>
+        /// Part O PR-3: <paramref name="guids_VentilationSystem"/> is SAM's retained scope; stated, SAM_Systems processes
+        /// only those systems of <paramref name="adjacencyCluster"/>. Null processes every one, as before. Virtual only so a
+        /// test can see what the production preflight hands it.
+        /// </para>
         /// </summary>
-        public MechanicalVentilationMaterialisation MaterialiseMixed(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings)
+        public virtual MechanicalVentilationMaterialisation MaterialiseMixed(AdjacencyCluster adjacencyCluster, IEnumerable<Space> spaces, IReadOnlyDictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings, IEnumerable<Guid> guids_VentilationSystem = null)
         {
             SystemEnergyCentre systemEnergyCentre = new SystemTemplate(Ventilation_Template, null, null, null, null, null).SystemEnergyCentre();
             SystemEnergyCentre systemEnergyCentre_Guidance = new SystemTemplate(Ventilation_Template_ManufacturerAware, null, null, null, null, null).SystemEnergyCentre();
@@ -147,7 +152,7 @@ namespace SAM.Analytical.UI.WPF
                 GuidanceSettings = guidanceSettings,
             };
 
-            return adjacencyCluster.MechanicalVentilation(systemEnergyCentre, mechanicalVentilationSettings, spaces);
+            return adjacencyCluster.MechanicalVentilation(systemEnergyCentre, mechanicalVentilationSettings, spaces, guids_VentilationSystem);
         }
 
         /// <summary>
