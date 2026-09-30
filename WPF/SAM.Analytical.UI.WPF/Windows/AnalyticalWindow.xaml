@@ -509,6 +509,10 @@
                     <!-- ShowOnDisabled because the tooltip is the only place the reason appears while the
                          button is unavailable, and "unavailable with no reason given" is the state this
                          command most needs to explain. -->
+                    <!-- A clean Part O baseline from a model that has been through Prepare & Run: SAM removes the run
+                         output and the Part O preparation from a COPY, saved as a new file, and the copy is judged by
+                         the Mixed Design baseline check. Beside, not instead of, General > Remove. -->
+                    <RibbonButton x:Name="RibbonButton_RemovePartOResults" Label="Remove Results..." ToolTipService.ShowOnDisabled="True" />
                     <RibbonButton x:Name="RibbonButton_AssessPartOTM59" Label="Overheating (TM59)" ToolTipService.ShowOnDisabled="True" />
                     <!-- Iteration 2B. Deliberately here rather than in the base-provision list: it is an
                          optimisation performed ON an Iteration 2 design, needs a completed run to start

@@ -809,6 +809,11 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_PreparePartOIteration.LargeImageSource = Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_PreparePartOIteration.Click += RibbonButton_PreparePartOIteration_Click;
 
+            RibbonButton_RemovePartOResults.LargeImageSource = Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_Clean);
+            RibbonButton_RemovePartOResults.Click += RibbonButton_RemovePartOResults_Click;
+            RibbonButton_RemovePartOResults.ToolTipTitle = "Part O — Remove Results";
+            RibbonButton_RemovePartOResults.ToolTipDescription = "Saves a cleaned copy of the open model without its Part O results and preparation, so Mixed Design can start from it. The open model is not changed and no files are deleted; the copy is checked by the same baseline check Mixed Design uses.";
+
             RibbonButton_AssessPartOTM59.LargeImageSource = Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_Space);
             RibbonButton_AssessPartOTM59.Click += RibbonButton_AssessPartOTM59_Click;
 
@@ -2026,6 +2031,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             RefreshPartOButtons();
         }
 
+        private void RibbonButton_RemovePartOResults_Click(object sender, RoutedEventArgs e)
+        {
+            //Opening the saved copy is the File > Open path, so it replaces the open model exactly as that does.
+            Modify.RemovePartOResults(uIAnalyticalModel, windowHandle, Open);
+        }
+
         private void RibbonButton_AssessPartOTM59_Click(object sender, RoutedEventArgs e)
         {
             Modify.AssessPartOTM59(partORun, windowHandle);
@@ -3151,6 +3162,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonButton_RemoveAirMovementObjects.IsEnabled = false;
             RibbonButton_PartOWorkflow.IsEnabled = false;
             RibbonButton_PartOMixedDesign.IsEnabled = false;
+            RibbonButton_RemovePartOResults.IsEnabled = false;
             RibbonButton_PreparePartOIteration.IsEnabled = false;
             RibbonButton_AssessPartOTM59.IsEnabled = false;
             RibbonButton_OptimisePartOTM59.IsEnabled = false;
@@ -3206,6 +3218,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 //session rather than about the model, so it is gated separately.
                 RibbonButton_PartOWorkflow.IsEnabled = true;
                 RibbonButton_PartOMixedDesign.IsEnabled = true;
+                RibbonButton_RemovePartOResults.IsEnabled = true;
                 RibbonButton_PreparePartOIteration.IsEnabled = true;
                 RefreshPartOButtons();
 
