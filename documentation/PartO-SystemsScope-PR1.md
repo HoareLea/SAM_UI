@@ -3,7 +3,7 @@
 
 # Part O PR-1: one identity-based Systems scope for Iteration 3 and Mixed Design; Check runs Build's preflight
 
-**Status (30 Sep 2026): implemented and tested. The PR is open (SAM-BIM/SAM_UI#151) against `sow/2026-Q3` and is NOT merged. It depends on
+**Status (30 Sep 2026): implemented and tested. The PR is open (SAM-BIM/SAM_UI#151) against `sow/2026-Q3` and is NOT merged. It depends on (now merged)
 SAM PR-1 (SAM-BIM/SAM#171, `Query.PartOSystemsMaterialisationScope`), which must merge first.**
 
 - Branch `feature/parto-systems-scope-2026-09-30`, from `sow/2026-Q3` `a3ae5df` (after SAM_UI#150 PR-4 and its
@@ -89,7 +89,7 @@ SAM PR-1 (SAM-BIM/SAM#171, `Query.PartOSystemsMaterialisationScope`), which must
     scope notes; baseline JSON unchanged;
   - system-free cooled design still passes both; uncooled design has no Systems preflight; a SAM materialisation
     refusal skips it.
-- **Full WPF suite: 1559/1559** on the final head (1549 before this PR, +10; the temporary oracle added 312 more while it existed, 1871/1871). Built against the SAM PR-1 branch.
+- **Full WPF suite: 1559/1559** on the final head (1549 before this PR, +10; the temporary oracle added 312 more while it existed, 1871/1871). Built against the SAM PR-1 branch. **Revalidated against merged SAM `sow/2026-Q3` `525a9f3a` (SAM#171 merged as `4ecea97a`): WPF 1559/1559.**
 - **Mutation checks (all killed, reverted clean):** U1 Mixed passes the whole cluster (2 fail); U2 Check skips the
   preflight (3 fail); U3 It3 note wording drift (34 fail, with the oracle); U4 Mixed scope = every system (4 fail);
   U5 It3 inside-dwelling wording lost (136 fail, with the oracle). SAM-side S1-S5: see the SAM record.
