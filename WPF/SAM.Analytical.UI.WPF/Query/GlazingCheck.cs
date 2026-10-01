@@ -14,7 +14,8 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>
         /// The scoped check after "Set glazing": SAM's per-object model-check rules (<c>Create.Log(ApertureConstruction |
         /// Aperture | Panel, MaterialLibrary)</c>, the rules behind Edit > ModelCheck) over the applied aperture
-        /// construction, the apertures it was assigned to and the panels carrying them - never the whole model. Records
+        /// construction, the apertures it was assigned to and the panels carrying them (including the host-panel rules: the
+        /// aperture construction's Default Panel Type and panel group against the panel) - never the whole model. Records
         /// are distinct by text. Reads the model only.
         /// </summary>
         public static UValueCheckSummary GlazingCheckSummary(AnalyticalModel analyticalModel, SetGlazingResult result)
@@ -52,10 +53,19 @@ namespace SAM.Analytical.UI.WPF
             foreach (Guid guid in result.PanelGuids)
             {
                 Panel panel = adjacencyCluster?.GetObject<Panel>(guid);
-                if (panel != null)
+                if (panel == null)
                 {
-                    logRecords.AddRange(Analytical.Create.Log(panel, materialLibrary) ?? new Log());
+                    continue;
                 }
+
+                logRecords.AddRange(Analytical.Create.Log(panel, materialLibrary) ?? new Log());
+
+                // The host-panel rules of Edit > ModelCheck: the apertures' Default Panel Type against this panel
+                // (Create.Log(Panel)), and the panel group of the panel against the group of the assigned aperture
+                // construction (a rule SAM only runs in the whole-model Log(AdjacencyCluster) loop, so it is applied here
+                // to the changed apertures with the same wording).
+                logRecords.AddRange(Analytical.Create.Log(panel) ?? new Log());
+                logRecords.AddRange(PanelGroupRecords(panel, result.ApertureGuids));
             }
 
             HashSet<string> texts = new HashSet<string>();
@@ -98,6 +108,45 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return new UValueCheckSummary(log, errors, warnings, messages, text);
+        }
+
+        /// <summary>
+        /// SAM's whole-model rule "PanelType of {panel} does not match with assigned {aperture construction}", restricted to
+        /// the changed apertures of one panel (same wording and severity as <c>Create.Log(AdjacencyCluster)</c>).
+        /// </summary>
+        private static IEnumerable<LogRecord> PanelGroupRecords(Panel panel, IEnumerable<Guid> apertureGuids)
+        {
+            List<LogRecord> result = new List<LogRecord>();
+
+            PanelGroup panelGroup_Panel = panel.PanelType.PanelGroup();
+            if (panelGroup_Panel == PanelGroup.Undefined || panel.Apertures == null)
+            {
+                return result;
+            }
+
+            HashSet<Guid> guids = new HashSet<Guid>(apertureGuids ?? Enumerable.Empty<Guid>());
+            foreach (Aperture aperture in panel.Apertures)
+            {
+                ApertureConstruction apertureConstruction = aperture?.ApertureConstruction;
+                if (apertureConstruction == null || !guids.Contains(aperture.Guid))
+                {
+                    continue;
+                }
+
+                PanelGroup panelGroup_ApertureConstruction = apertureConstruction.PanelType().PanelGroup();
+                if (panelGroup_ApertureConstruction == PanelGroup.Undefined || panelGroup_ApertureConstruction == panelGroup_Panel)
+                {
+                    continue;
+                }
+
+                string apertureName = string.IsNullOrEmpty(aperture.Name) ? "???" : aperture.Name;
+                string apertureConstructionName = string.IsNullOrEmpty(apertureConstruction.Name) ? "???" : apertureConstruction.Name;
+
+                result.Add(new LogRecord("PanelType of {0} Panel (Guid: {1}) does not match with assigned {2} ApertureConstruction (Guid: {3}) for {4} Aperture (Guid: {5}).", LogRecordType.Warning,
+                    panel.Name, panel.Guid, apertureConstructionName, apertureConstruction.Guid, apertureName, aperture.Guid));
+            }
+
+            return result;
         }
     }
 }

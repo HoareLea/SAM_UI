@@ -109,6 +109,49 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         [Fact]
+        public async Task TheCheck_ReportsASystemMadeForAnotherPanelGroup_AsModelCheckDoes()
+        {
+            // Found in the real-app pass: SIM_EXT_GLZ_SKY (a roof system) applied to wall apertures. The full Edit > ModelCheck
+            // warned for every aperture (Default Panel Type vs host panel, and the panel group rule); the scoped check said
+            // "No errors or warnings".
+            Guid roofGuid = new Guid("a0000000-0000-4000-8000-0000000000a1");
+            ApertureConstruction roof = GlazingFixture.System(roofGuid, "GLZ_Roof", ApertureType.Window, GlazingFixture.LowE);
+            roof.SetValue(ApertureConstructionParameter.DefaultPanelType, PanelType.Roof.ToString());
+
+            MaterialLibrary materials = GlazingFixture.ModelMaterials();
+            materials.Add(GlazingFixture.LowEGlass());
+            GlazingSource library = new GlazingSource(GlazingSourceKind.Library, "Default library", new ConstructionManager(new System.Collections.Generic.List<ApertureConstruction>() { GlazingFixture.Current(), roof }, null, materials));
+
+            AnalyticalModel analyticalModel = GlazingFixture.Model(5);
+            GlazingViewModel viewModel = GlazingFixture.ViewModel(analyticalModel, null, null, library);
+            await viewModel.InitializeAsync();
+            viewModel.SelectedGuid = roofGuid;
+            SetGlazingRequest request = viewModel.CreateRequest();
+            AnalyticalModel changed = Modify.SetGlazing(analyticalModel, request, Tas(request), out SetGlazingResult result);
+            Assert.True(result.Succeeded);
+
+            UValueCheckSummary summary = Query.GlazingCheckSummary(changed, result);
+
+            Assert.False(summary.Passed);
+            Assert.Equal(0, summary.Errors);
+            Assert.Equal(10, summary.Warnings);   // per aperture: the Default Panel Type rule and the panel group rule
+            Assert.Equal(5, summary.Log.Count(x => x.Text.Contains("has diiferent Default Panel Type than its")));
+            Assert.Equal(5, summary.Log.Count(x => x.Text.Contains("does not match with assigned GLZ_Roof ApertureConstruction")));
+            Assert.StartsWith("10 warnings for GLZ_Roof and its 5 apertures", summary.Text);
+            Assert.Equal("⚠", summary.Glyph);
+        }
+
+        [Fact]
+        public async Task TheCheck_OfASystemForTheSamePanelGroup_HasNoHostPanelWarnings()
+        {
+            (AnalyticalModel changed, SetGlazingResult result) = await Applied();
+
+            UValueCheckSummary summary = Query.GlazingCheckSummary(changed, result);
+
+            Assert.DoesNotContain(summary.Log, x => x.Text.Contains("Default Panel Type") || x.Text.Contains("does not match with assigned"));
+        }
+
+        [Fact]
         public async Task TheReport_OfASystemWithoutFrame_SaysNoneNotAQuestionMark()
         {
             (AnalyticalModel changed, SetGlazingResult result) = await Applied(system: GlazingFixture.PaneOnlyGuid);
