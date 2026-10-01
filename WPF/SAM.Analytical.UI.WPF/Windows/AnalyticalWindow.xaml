@@ -533,7 +533,12 @@
                     <RibbonButton x:Name="RibbonButton_OpenTBD" Label="Open TBD" />
                     <RibbonButton x:Name="RibbonButton_OpenTSD" Label="Open TSD" />
                     <RibbonButton x:Name="RibbonButton_OpenTPD" Label="Open TPD" />
-                    <RibbonButton x:Name="RibbonButton_ThermalTransmittanceCalculator" Label="U Value Calculator" />
+                    <!-- U-value plan PR2b (owner decision 1 Oct 2026): the button opens the one-window "Set U-value" flow;
+                         the legacy multi-window calculator stays one click away as "(classic)". -->
+                    <RibbonSplitButton x:Name="RibbonButton_ThermalTransmittanceCalculator" Label="U Value Calculator"
+                                       ToolTip="Set a construction's U-value in one window. The arrow keeps the classic calculator.">
+                        <RibbonMenuItem x:Name="RibbonMenuItem_ThermalTransmittanceCalculator_Classic" Header="U Value Calculator (classic)" />
+                    </RibbonSplitButton>
                     <RibbonButton x:Name="RibbonButton_GlazingCalculator" Label="Glazing Calculator" />
 
                     <RibbonMenuButton x:Name="RibbonMenuButton_PartL" Label="PartL" >
