@@ -4,7 +4,7 @@
 # Part O final real-app acceptance before presentation (30 Sep 2026)
 
 **Status: complete. The Part O output folders PASS for 1a, 1b, 2 and Iteration 3 (against both 1a and 2), including reopen.
-Mixed Design was refused, correctly, because the owner's model is not a clean baseline. Nothing was merged. `PROJECT_PROGRESS.md`
+Mixed Design was refused, correctly, because the owner's model is not a clean baseline. This acceptance run made no product-code changes. `PROJECT_PROGRESS.md`
 is untouched.**
 
 ## Setup
@@ -141,12 +141,6 @@ The app's remembered Part O folder (user settings) is now this root.
 4. **Opening Mixed Design on a result model drops a `.partomixed.json` into that case's `tas/`** (point above). It is harmless but visible in a demo.
 5. **The reopened Iteration 3 review report replaces the in-session one** with the shorter review-of-record form.
 
-## Next step
+## Historical follow-up
 
-Replace the source with the clean pre-Part-O model and run Phase 1 (Mixed Design into `PartO/MixedDesign/`) with the prepared drivers
-(`scripts/m*.ps1`, `mixedprobe.ps1`):
-- Flat 1: Natural;
-- Flat 2: MVHR + product, cooling off;
-- Flat 3: MVHR + Nuaire MRXBOXAB-ECO5-AECV, cooling on.
-
-Then reopen it.
+At the time of this acceptance run, the next step was to repeat Mixed Design using the clean pre-Part-O model. This was subsequently exercised and accepted in SAM_UI #154.
