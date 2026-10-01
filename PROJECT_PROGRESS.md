@@ -3,6 +3,44 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): sidecar portability (Save As / move / copy) - MERGED as SAM_UI#158 (`e99662d`) (1 Oct 2026)
+
+**Status.** [SAM_UI#158](https://github.com/SAM-BIM/SAM_UI/pull/158) merged into `sow/2026-Q3` with a merge commit (`e99662d`; PR head `22d47f7`). `build` and `spdx` green on that head, MERGEABLE/CLEAN; a
+high-effort review ran (5 findings: 2 fixed in `22d47f7`, 3 left by decision, below). SAM_UI only; no SAM / SAM_Tas / SAM_Systems change. Record: `documentation/PartO-SidecarPortability.md`.
+Post-release follow-up; the Part O architecture and the `SimulationResultProvenance.Path_TSD` fix (SAM#174) are untouched.
+
+**Work.** `.partomixed.json` (`FinalRun` and `Screening[]`: results, run model, TPD) and the Iteration 3 pairing record (Reference A results/model, Candidate B files) persisted absolute workstation paths.
+Reproduced: after a folder **move** the run read STALE and the Iteration 3 review refused; after a **copy** with the original in place the copy validated (and Iteration 3 loaded) the ORIGINAL's files.
+New `Classes/PartO/PartOSidecarPaths.cs` writes a file inside the tree the sidecar travels with as `Locator_*` (relative; the same `SimulationResultProvenance.Locator` rule as SAM#174) instead of `Path_*`.
+Reads prefer the locator, resolved against where the sidecar is now; legacy absolute `Path_*` still read and are upgraded on the next save. No schema bump; lineage (length / write time) checks and every
+refusal unchanged; an older build reading a new sidecar fails closed.
+
+**Decisions.**
+- Locator only for a file **within the sidecar's tree** (its own folder for Mixed; the Part O root of its case folder for Iteration 3). A file beyond it (another drive, or another project's folder that a copied
+  legacy sidecar still names) stays an absolute `Path_*`. Found by the real-data run: the first version wrote `../..` out of a copy into the original.
+- **Save As to a new name does not carry the sidecar** (it is named from the model): a model saved under another name starts with no saved evidence and fails closed. Pinned by a test; carrying it needs an
+  owner policy on orphaned / duplicate sidecars.
+- The ventilation-unit catalogue directory/path in the Iteration 3 record is not a project file and stays absolute.
+- Review fixes: the Iteration 3 review now compares **normalised places** (`SamePlace`) for Reference A and Candidate B (a forward-slash spelling of the same results was refused); locator reads are **total**
+  (a malformed locator no longer throws out of the reopen). Left by decision: `Read(JsonObject)` with no sidecar path cannot resolve a locator (production always passes it); the env-gated real-data test
+  returns early when unset (precedent `PartOMixedLargeProjectAcceptance`); the legacy-copy limitation below.
+
+**Files changed.** `SAM_UI/SAM.Analytical.UI/Classes/PartO/`: new `PartOSidecarPaths.cs`; `Mixed/PartOMixedDesignState.cs`, `Mixed/PartOMixedRunEvidence.cs`, `Mixed/PartOScreeningEvidence.cs`;
+`PartOIteration3Record.cs`, `PartOIteration3FileRecord.cs`. `WPF/SAM.Analytical.UI.WPF/`: `Modify/RunPartOIteration3.cs`, `Query/PartOIteration3Eligibility.cs`, `Query/PartOIteration3ReviewRefusals.cs`.
+Tests: new `PartOMixedDesignPortabilityTests.cs` (9), `PartOSidecarPortabilityRealDataAcceptance.cs` (1, env-gated), 5 added to `PartOIteration3ReviewTests.cs` (3 + 2 from the review).
+
+**Validation.** `SAM.Analytical.UI.WPF.Tests` **1605/1605** (baseline 1590 + 15 new). The new tests fail on the old code (5 of the first 8 Mixed tests; the Iteration 3 copy test with the refusal texts above;
+both review-fix tests). **Real data:** the 35 MB project folder of the 30 Sep licensed Mixed acceptance (real legacy sidecar, 16.5 MB TSD, run model) copied twice with write times kept - legacy read, upgraded
+(no absolute path left), copy with the original in place reads only its own files, whole-folder move still finds the run's files; the source folder's SHA256 listing identical before and after. No licensed
+TAS run; the real WPF app was not clicked through.
+
+**Risks / unresolved.** A legacy (pre-fix) sidecar moved without its original still reads STALE, and one copied beside its original still names the original's run until a new run is saved in the copy;
+a length + write-time probe of path suffixes could repair this - not built (heuristic). A copy tool that does not preserve write time makes the run read STALE (fail-closed, unchanged rule). The Iteration 3 stage
+ledger's own sentences and the review report JSON still quote absolute paths for display (nothing resolves or compares them). `Path_Model_ReferenceA` is only relative when the model lies inside the Part O root.
+
+**Next step.** Owner decisions only: (1) whether Save As to a new name should carry the sidecar; (2) whether to repair legacy sidecars after a move/copy; (3) optional diagnostic before `AddTSDData` if the TPD stall recurs
+(see the #159 entry below). Then SAM_Deploy as already planned; no further Part O feature work. The `WaitToUnlock` counter defect is flagged as its own task.
+
 ## Current (Part O stream): post-release investigation records (TPD stall; Systems-in-assessment reuse) - MERGED as SAM_UI#159 (`ab713d2`) (1 Oct 2026)
 
 **Status.** [SAM_UI#159](https://github.com/SAM-BIM/SAM_UI/pull/159) (docs only) merged into `sow/2026-Q3` with a merge commit (`ab713d2`; PR head `bd911a5`). It was MERGEABLE/CLEAN with `build` and `spdx` green.
