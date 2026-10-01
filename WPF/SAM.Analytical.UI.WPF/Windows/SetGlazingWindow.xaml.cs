@@ -37,6 +37,9 @@ namespace SAM.Analytical.UI.WPF
             public ApertureType ApertureType { get; set; }
 
             public string Display => string.Format(CultureInfo.CurrentCulture, "{0}   ({1} {2}, {3})", Name, ApertureCount, ApertureCount == 1 ? "aperture" : "apertures", ApertureType.ToString().ToLowerInvariant());
+
+            // The text a screen reader and type-ahead use for the item.
+            public override string ToString() => Display;
         }
 
         private readonly UIAnalyticalModel uIAnalyticalModel;
@@ -278,7 +281,15 @@ namespace SAM.Analytical.UI.WPF
                     break;
 
                 default:
-                    SetStatus("✓", vm.ProposedRow == null ? "Choose a glazing system from the table, or type a target Uw." : string.Format(CultureInfo.CurrentCulture, "Chosen: {0}.", vm.ProposedRow.Name), (Brush)FindResource("PartO.Brush.Success"));
+                    if (vm.ProposedRow == null)
+                    {
+                        SetStatus("–", "Choose a glazing system from the table, or type a target Uw.", Brushes_Muted());
+                    }
+                    else
+                    {
+                        SetStatus("✓", string.Format(CultureInfo.CurrentCulture, "Chosen: {0}.", vm.ProposedRow.Name), (Brush)FindResource("PartO.Brush.Success"));
+                    }
+
                     break;
             }
 

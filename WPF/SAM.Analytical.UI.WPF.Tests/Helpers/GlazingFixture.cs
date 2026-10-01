@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-or-later
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Core;
@@ -32,6 +32,8 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
         public static readonly Guid DoorGuid = new Guid("a0000000-0000-4000-8000-000000000005");
         public static readonly Guid DifferentMaterialGuid = new Guid("a0000000-0000-4000-8000-000000000006");
         public static readonly Guid LoadedGuid = new Guid("a0000000-0000-4000-8000-000000000007");
+        public static readonly Guid SolidGuid = new Guid("a0000000-0000-4000-8000-000000000008");
+        public static readonly Guid SolidDoorGuid = new Guid("a0000000-0000-4000-8000-000000000009");
 
         // Ug, g, light, Uf (NaN: no frame). The Tas stand-in answers these by system Guid.
         public static readonly Dictionary<Guid, GlazingValues> Values = new Dictionary<Guid, GlazingValues>()
@@ -96,6 +98,12 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
 
         public static ApertureConstruction Current() => System(CurrentGuid, CurrentName, ApertureType.Window, Clear);
 
+        /// <summary>A system without glass: a timber panel in a frame.</summary>
+        public static ApertureConstruction Solid(Guid guid, string name, ApertureType type)
+        {
+            return new ApertureConstruction(guid, name, type, new List<ConstructionLayer>() { new ConstructionLayer(FrameMaterial, 0.05) }, new List<ConstructionLayer>() { new ConstructionLayer(FrameMaterial, 0.05) });
+        }
+
         /// <summary>The default-library stand-in: a better system with the SAME name, a pane-only one, one with a missing material, a door, and a twin of the current system.</summary>
         public static GlazingSource Library()
         {
@@ -109,6 +117,8 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
                 System(PaneOnlyGuid, "GLZ_Pane", ApertureType.Window, Clear, false),
                 System(MissingMaterialGuid, "GLZ_Missing", ApertureType.Window, "Mystery"),
                 System(DoorGuid, "DOOR", ApertureType.Door, Clear),
+                Solid(SolidGuid, "SOLID", ApertureType.Window),
+                Solid(SolidDoorGuid, "SOLID_DOOR", ApertureType.Door),
             };
 
             return new GlazingSource(GlazingSourceKind.Library, "Default library", new ConstructionManager(systems, null, materials));

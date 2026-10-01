@@ -30,7 +30,10 @@ namespace SAM.Analytical.UI.WPF
 
             ApertureConstruction apertureConstruction = adjacencyCluster?.GetApertureConstructions()?.Find(x => x != null && x.Guid == result.ApertureConstruction.Guid) ?? result.ApertureConstruction;
 
+            // Both rule sets of the aperture construction, as Edit > ModelCheck runs them: its layers (a pane or a frame
+            // missing) and its materials (a gas layer outside).
             List<LogRecord> logRecords = new List<LogRecord>();
+            logRecords.AddRange(Analytical.Create.Log(apertureConstruction) ?? new Log());
             logRecords.AddRange(Analytical.Create.Log(apertureConstruction, materialLibrary) ?? new Log());
 
             int apertures = 0;

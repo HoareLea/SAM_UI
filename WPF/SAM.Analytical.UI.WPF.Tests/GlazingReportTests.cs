@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-or-later
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Analytical.Tas;
@@ -91,6 +91,33 @@ namespace SAM.Analytical.UI.WPF.Tests
             UValueCheckSummary summary = Query.GlazingCheckSummary(changed, result);
 
             Assert.Contains("GLZ 2 (assigned to no aperture)", summary.Text);
+        }
+
+        [Fact]
+        public async Task TheCheck_RunsBothRuleSetsOfTheApertureConstruction_AsModelCheckDoes()
+        {
+            // Edit > ModelCheck warns about a system without frame layers (the layers rule set); the scoped check must too.
+            (AnalyticalModel changed, SetGlazingResult result) = await Applied(system: GlazingFixture.PaneOnlyGuid);
+
+            UValueCheckSummary summary = Query.GlazingCheckSummary(changed, result);
+
+            Assert.False(summary.Passed);
+            Assert.Equal(1, summary.Warnings);
+            Assert.Contains(summary.Log, x => x.LogRecordType == LogRecordType.Warning && x.Text.Contains("has no Frame ConstructionLayers"));
+            Assert.StartsWith("1 warning for GLZ_Pane and its 5 apertures", summary.Text);
+            Assert.Equal("⚠", summary.Glyph);
+        }
+
+        [Fact]
+        public async Task TheReport_OfASystemWithoutFrame_SaysNoneNotAQuestionMark()
+        {
+            (AnalyticalModel changed, SetGlazingResult result) = await Applied(system: GlazingFixture.PaneOnlyGuid);
+
+            string text = Query.GlazingChangeReportText(result, Query.GlazingCheckSummary(changed, result), null);
+
+            Assert.Contains(Line("Uf", "2.000 -> none W/m2K"), text);
+            Assert.Contains(Line("Frame", "50 mm Frame -> none"), text);
+            Assert.DoesNotContain("?", text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).First(x => x.StartsWith("Uf:")));
         }
 
         [Fact]

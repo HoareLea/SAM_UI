@@ -612,15 +612,28 @@ namespace SAM.Analytical.UI.WPF
         // Rebuilds the pool's candidates from the sources (new Guids only; the first source of a Guid wins).
         private void Rebuild()
         {
+            // Glass is replaced by glass and a solid door by a solid door: a system of the other kind is not a candidate
+            // (one whose material cannot be resolved stays, shown as unusable, so the reason is visible).
+            bool transparent_Current = current.Transparent(sources[0].ConstructionManager?.MaterialLibrary);
+
             HashSet<Guid> guids = new HashSet<Guid>(candidates.Select(x => x.Guid));
             foreach (GlazingSource source in sources)
             {
                 foreach (ApertureConstruction apertureConstruction in source.GetApertureConstructions(current.ApertureType))
                 {
-                    if (guids.Add(apertureConstruction.Guid))
+                    if (guids.Contains(apertureConstruction.Guid))
                     {
-                        candidates.Add(new GlazingCandidate(apertureConstruction, source, modelMaterials));
+                        continue;
                     }
+
+                    GlazingCandidate candidate = new GlazingCandidate(apertureConstruction, source, modelMaterials);
+                    if (candidate.MaterialIssue == null && apertureConstruction.Transparent(source.ConstructionManager?.MaterialLibrary) != transparent_Current)
+                    {
+                        continue;
+                    }
+
+                    guids.Add(apertureConstruction.Guid);
+                    candidates.Add(candidate);
                 }
             }
 

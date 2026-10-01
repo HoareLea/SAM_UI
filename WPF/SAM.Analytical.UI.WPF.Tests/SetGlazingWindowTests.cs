@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-or-later
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Analytical.Tas;
@@ -110,6 +110,9 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.False(Control<Button>(window, "button_Apply").IsEnabled);
                 Assert.False(Control<Expander>(window, "expander_Advanced").IsExpanded);
                 Assert.Equal("Choose a glazing system from the table.", Text(window, "textBlock_Result"));
+
+                // Nothing chosen yet: a neutral dash, not a tick.
+                Assert.Equal("–", Text(window, "textBlock_StatusGlyph"));
             }
             finally
             {
@@ -157,6 +160,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal(GlazingFixture.CurrentGuid, window.ViewModel.ApertureConstructionGuid);
                 Assert.Equal(4, Rows(window));
                 Assert.Equal("GLZ   (20 apertures, window)", ((SetGlazingWindow.ApertureConstructionItem)Control<ComboBox>(window, "comboBox_ApertureConstruction").SelectedItem).Display);
+                Assert.Equal("GLZ   (20 apertures, window)", Control<ComboBox>(window, "comboBox_ApertureConstruction").SelectedItem.ToString());
             }
             finally
             {

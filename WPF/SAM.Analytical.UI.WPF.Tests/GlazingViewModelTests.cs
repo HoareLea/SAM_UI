@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-or-later
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Analytical.Tas;
@@ -73,6 +73,29 @@ namespace SAM.Analytical.UI.WPF.Tests
             // Filtered out by a target it does not meet, it stays as the reference row.
             viewModel.TargetText = "1.0";
             Assert.Contains(viewModel.Rows, x => x.IsCurrent && !x.Passes);
+        }
+
+        [Fact]
+        public async Task GlassIsReplacedByGlass_NotBySolidSystems()
+        {
+            GlazingViewModel viewModel = await Ready();
+
+            Assert.DoesNotContain(viewModel.Rows, x => x.Guid == GlazingFixture.SolidGuid);
+        }
+
+        [Fact]
+        public async Task ASolidDoor_IsOfferedOnlyOtherSolidDoors()
+        {
+            ApertureConstruction door = GlazingFixture.Solid(new Guid("a0000000-0000-4000-8000-0000000000dd"), "Door A", ApertureType.Door);
+            Panel panel = GlazingFixture.PanelWithWindow(door, 0, out Aperture _);
+            AdjacencyCluster adjacencyCluster = new AdjacencyCluster();
+            adjacencyCluster.AddObject(panel);
+            AnalyticalModel analyticalModel = new AnalyticalModel("Doors", null, null, null, adjacencyCluster, GlazingFixture.ModelMaterials(), new ProfileLibrary("Profiles"));
+            GlazingViewModel viewModel = new GlazingViewModel(analyticalModel, door.Guid, null, new FakeGlazingEvaluator(), GlazingFixture.Library());
+            await viewModel.InitializeAsync();
+
+            Assert.Equal(new[] { door.Guid, GlazingFixture.SolidDoorGuid }.OrderBy(x => x), viewModel.Rows.Select(x => x.Guid).OrderBy(x => x));
+            Assert.DoesNotContain(viewModel.Rows, x => x.Guid == GlazingFixture.DoorGuid);
         }
 
         [Fact]

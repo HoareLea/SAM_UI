@@ -81,7 +81,7 @@ namespace SAM.Analytical.UI.WPF
             GlazingValues before = result.OldValues;
             GlazingValues after = result.Values;
             Line_Glazing(stringBuilder, "Ug", string.Format(CultureInfo.InvariantCulture, "{0} -> {1} W/m2K", U_Glazing(before?.Ug ?? double.NaN), U_Glazing(after?.Ug ?? double.NaN)));
-            Line_Glazing(stringBuilder, "Uf", string.Format(CultureInfo.InvariantCulture, "{0} -> {1} W/m2K", U_Glazing(before?.Uf ?? double.NaN), U_Glazing(after?.Uf ?? double.NaN)));
+            Line_Glazing(stringBuilder, "Uf", string.Format(CultureInfo.InvariantCulture, "{0} -> {1} W/m2K", Uf_Glazing(before, source), Uf_Glazing(after, chosen)));
             Line_Glazing(stringBuilder, "g", string.Format(CultureInfo.InvariantCulture, "{0} -> {1}", U_Glazing(before?.G ?? double.NaN), U_Glazing(after?.G ?? double.NaN)));
             Line_Glazing(stringBuilder, "Light", string.Format(CultureInfo.InvariantCulture, "{0} -> {1}", U_Glazing(before?.LightTransmittance ?? double.NaN), U_Glazing(after?.LightTransmittance ?? double.NaN)));
             Line_Glazing(stringBuilder, "Uw", string.Format(CultureInfo.InvariantCulture, "{0} -> {1} W/m2K ({2}{3})", U_Glazing(result.OldUw), U_Glazing(result.NewUw), result.UwBasis == GlazingUwBasis.Approximate ? "approx. Uw (80/20)" : "area-weighted over the apertures' pane and frame areas", double.IsNaN(result.TargetUw) ? string.Empty : string.Format(CultureInfo.InvariantCulture, "; target at most {0}", U_Glazing(result.TargetUw))));
@@ -134,6 +134,12 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return string.Join(" / ", constructionLayers.Where(x => x != null).Select(x => string.Format(CultureInfo.InvariantCulture, "{0:0.#} mm {1}", x.Thickness * 1000, x.Name)));
+        }
+
+        // The frame's U-value, or "none" for a system without frame layers (it has no frame, so no Uf).
+        private static string Uf_Glazing(GlazingValues values, ApertureConstruction apertureConstruction)
+        {
+            return apertureConstruction != null && !apertureConstruction.HasFrameConstructionLayers() ? "none" : U_Glazing(values?.Uf ?? double.NaN);
         }
 
         private static string U_Glazing(double value)
