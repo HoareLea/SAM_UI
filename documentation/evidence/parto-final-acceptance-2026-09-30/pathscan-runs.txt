@@ -1,0 +1,104 @@
+Iteration1a\reports\000000_SAM_AnalyticalModel-TM59.txt
+       2  PartO\Iteration1a\tas
+Iteration1a\tas\000000_SAM_AnalyticalModel.prepared.sam
+       1  OUTSIDE <SAM_daily>\2026-09-29 partOi\000000_SAM_AnalyticalModel.tsd
+       1  OUTSIDE s:\\github.com\HoareLea\SAM [2026\07\15]
+Iteration1a\tas\000000_SAM_AnalyticalModel.sam
+       1  OUTSIDE s:\\github.com\HoareLea\SAM [2026\07\15]
+       1  PartO\Iteration1a\tas
+Iteration1b\reports\000000_SAM_AnalyticalModel-TM59.txt
+       2  PartO\Iteration1b\tas
+Iteration1b\tas\000000_SAM_AnalyticalModel.prepared.sam
+       1  OUTSIDE s:\\github.com\HoareLea\SAM [2026\07\15]
+       1  PartO\Iteration1a\tas
+Iteration1b\tas\000000_SAM_AnalyticalModel.sam
+       1  OUTSIDE s:\\github.com\HoareLea\SAM [2026\07\15]
+       1  PartO\Iteration1b\tas
+Iteration2\reports\000000_SAM_AnalyticalModel-TM59.txt
+       2  PartO\Iteration2\tas
+Iteration2\tas\000000_SAM_AnalyticalModel.prepared.sam
+       1  OUTSIDE s:\\github.com\HoareLea\SAM [2026\07\15]
+       1  PartO\Iteration1b\tas
+Iteration2\tas\000000_SAM_AnalyticalModel.sam
+       1  OUTSIDE s:\\github.com\HoareLea\SAM [2026\07\15]
+       1  PartO\Iteration2\tas
+Iteration3\reports\000000_SAM_AnalyticalModel-It1a-It3BMG-Bridge-TM59.txt
+       2  PartO\Iteration3\tas
+Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG-Review.json
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+       2  PartO\Iteration1a\reports
+       3  PartO\Iteration1a\tas
+       1  PartO\Iteration3\diagnostics
+       3  PartO\Iteration3\reports
+      16  PartO\Iteration3\tas
+Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG-Review.txt
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+       1  PartO\Iteration1a\reports
+       3  PartO\Iteration1a\tas
+       1  PartO\Iteration3\diagnostics
+       6  PartO\Iteration3\reports
+      16  PartO\Iteration3\tas
+Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG.json
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+       1  PartO\Iteration1a\reports
+       3  PartO\Iteration1a\tas
+       1  PartO\Iteration3\diagnostics
+       1  PartO\Iteration3\reports
+      13  PartO\Iteration3\tas
+Iteration3\reports\000000_SAM_AnalyticalModel-It3BMG-Bridge-TM59.txt
+       2  PartO\Iteration3\tas
+Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG-Review.json
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+       2  PartO\Iteration2\reports
+       3  PartO\Iteration2\tas
+       1  PartO\Iteration3\diagnostics
+       5  PartO\Iteration3\reports
+      16  PartO\Iteration3\tas
+Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG-Review.txt
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+       1  PartO\Iteration2\reports
+       3  PartO\Iteration2\tas
+       1  PartO\Iteration3\diagnostics
+       7  PartO\Iteration3\reports
+      16  PartO\Iteration3\tas
+Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG.json
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+       1  OUTSIDE <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+       1  PartO\Iteration2\reports
+       3  PartO\Iteration2\tas
+       1  PartO\Iteration3\diagnostics
+       3  PartO\Iteration3\reports
+      13  PartO\Iteration3\tas
+Iteration3\tas\000000_SAM_AnalyticalModel-It1a-It3BMG-Bridge.sam
+       1  OUTSIDE s:\\github.com\HoareLea\SAM [2026\07\15]
+       1  PartO\Iteration3\tas
+Iteration3\tas\000000_SAM_AnalyticalModel-It3BMG-Bridge.sam
+       1  OUTSIDE s:\\github.com\HoareLea\SAM [2026\07\15]
+       1  PartO\Iteration3\tas
+== paths outside the PartO root: 21
+   Iteration1a\tas\000000_SAM_AnalyticalModel.prepared.sam -> <SAM_daily>\2026-09-29 partOi\000000_SAM_AnalyticalModel.tsd
+   Iteration1a\tas\000000_SAM_AnalyticalModel.prepared.sam -> s:\\github.com\HoareLea\SAM [2026\07\15]
+   Iteration1a\tas\000000_SAM_AnalyticalModel.sam -> s:\\github.com\HoareLea\SAM [2026\07\15]
+   Iteration1b\tas\000000_SAM_AnalyticalModel.prepared.sam -> s:\\github.com\HoareLea\SAM [2026\07\15]
+   Iteration1b\tas\000000_SAM_AnalyticalModel.sam -> s:\\github.com\HoareLea\SAM [2026\07\15]
+   Iteration2\tas\000000_SAM_AnalyticalModel.prepared.sam -> s:\\github.com\HoareLea\SAM [2026\07\15]
+   Iteration2\tas\000000_SAM_AnalyticalModel.sam -> s:\\github.com\HoareLea\SAM [2026\07\15]
+   Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG-Review.json -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+   Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG-Review.json -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+   Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG-Review.txt -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+   Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG-Review.txt -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+   Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG.json -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+   Iteration3\reports\000000_SAM_AnalyticalModel-It1a-Iteration3-MG.json -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+   Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG-Review.json -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+   Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG-Review.json -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+   Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG-Review.txt -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+   Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG-Review.txt -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+   Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG.json -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit
+   Iteration3\reports\000000_SAM_AnalyticalModel-Iteration3-MG.json -> <Documents>\SAM\resources\Analytical\Systems\VentilationUnit\VentilationUnitCatalogue.JSON
+   Iteration3\tas\000000_SAM_AnalyticalModel-It1a-It3BMG-Bridge.sam -> s:\\github.com\HoareLea\SAM [2026\07\15]
+   Iteration3\tas\000000_SAM_AnalyticalModel-It3BMG-Bridge.sam -> s:\\github.com\HoareLea\SAM [2026\07\15]

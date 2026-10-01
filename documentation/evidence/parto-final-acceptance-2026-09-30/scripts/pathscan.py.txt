@@ -1,0 +1,36 @@
+"""Lists every absolute path persisted in the generated .sam (zip JSON), .json and report files under the PartO root,
+grouped by the case folder each path points into. Flags any path outside the PartO root."""
+import io, os, re, sys, zipfile, collections
+root = sys.argv[1] if len(sys.argv) > 1 else r'<SAM_daily>\2026-09-29 partOi\PartO'
+work = os.path.dirname(root)
+pat = re.compile(r'[A-Za-z]:(?:\\\\|\\|/)[^"\r\n|<>*?]{3,300}')
+def text(p):
+    if p.lower().endswith('.sam'):
+        try:
+            z = zipfile.ZipFile(p)
+            return ''.join(z.read(n).decode('utf-8', 'replace') for n in z.namelist())
+        except zipfile.BadZipFile:
+            pass
+    return io.open(p, encoding='utf-8', errors='replace').read()
+outside = []
+for dp, dn, fn in os.walk(root):
+    for f in sorted(fn):
+        if os.path.splitext(f)[1].lower() not in ('.sam', '.json', '.txt'):
+            continue
+        p = os.path.join(dp, f)
+        found = collections.Counter()
+        for m in pat.findall(text(p)):
+            m = m.replace('\\\\', '\\').replace('/', '\\').strip().rstrip('.,;:)')
+            if m.lower().startswith(root.lower() + '\\'):
+                rel = m[len(root) + 1:]
+                found['PartO\\' + '\\'.join(rel.split('\\')[:2])] += 1
+            else:
+                found['OUTSIDE ' + m] += 1
+                outside.append((p, m))
+        if found:
+            print(os.path.relpath(p, root))
+            for k, c in sorted(found.items()):
+                print('    %4d  %s' % (c, k))
+print('== paths outside the PartO root: %d' % len(outside))
+for p, m in outside:
+    print('   %s -> %s' % (os.path.relpath(p, root), m))

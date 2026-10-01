@@ -1,0 +1,204 @@
+09:59:34 exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 09:22:58; UI dll 2026-09-30 09:22:44); model <SAM_daily>\2026-09-29 partOi\model\000000_SAM_AnalyticalModel.sam sha256 25DD56B6EAE579762A3F707F8567363EC456CF47327A993060970D9E1B70E572; root <SAM_daily>\2026-09-29 partOi\PartO
+09:59:45   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel]'
+09:59:52   remembered output folder at open: '<SAM_daily>\2026-09-29 partOi\model'
+09:59:52 --- HUB: opened on the working copy
+09:59:52   scenario line: MVHR · Design duty only · No manufacturer unit required
+09:59:52   scope: All 3 eligible dwellings · simulated inside the whole building
+09:59:52   strip: ✓ | Configure | Done | 2 | Prepare model | Next | 3 | Check & simulate |  | 4 | Review | 
+09:59:52   last outcome: Previous Part O run is no longer valid — no results to review
+09:59:52   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Built by Prepare & Run | Run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ○ | Not run | Full-year TAS run | Results | ○ | Not available | No Part O run is available to assess.
+09:59:52   blockers: <absent>
+09:59:52   next: Next: Prepare the ventilation design and run the Part O assessment.
+09:59:52   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+09:59:52   button_Review: 'Review Results' enabled=False tooltip='No Part O run is available to assess. The simulation results this model was produced from are no longer at '<SAM_daily>\2026-09-29 partOi\000000_SAM_AnalyticalModel.tsd'. Re-run the simulation to produce them again.'
+09:59:52   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='Iteration 2B works within the capacity of a selected manufacturer unit, so it is available on Iteration 2 only.'
+09:59:52   It3: <absent>
+09:59:52   capture 01-hub-at-open 'Part O — Prepare & Run' (800x733)
+09:59:53 scenario 1a: selected 'Iteration 1a — MVHR design duty (no manufacturer unit)'
+09:59:57   type the Part O root: set
+09:59:58   output folder box: '<SAM_daily>\2026-09-29 partOi\PartO' tooltip='The Part O output root. SAM creates a folder for each case inside it (Iteration1a, Iteration1b, Iteration2, Iteration2B, Iteration3, MixedDesign), each with tas, reports and diagnostics folders.'
+09:59:58   CHECK OK   1a output folder box holds the chosen root exactly
+09:59:58 --- HUB: 1a before run
+09:59:58   scenario line: MVHR · Design duty only · No manufacturer unit required
+09:59:58   scope: All 3 eligible dwellings · simulated inside the whole building
+09:59:58   strip: ✓ | Configure | Done | 2 | Prepare model | Next | 3 | Check & simulate |  | 4 | Review | 
+09:59:58   last outcome: Previous Part O run is no longer valid — no results to review
+09:59:58   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Built by Prepare & Run | Run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ○ | Not run | Full-year TAS run | Results | ○ | Not available | No Part O run is available to assess.
+09:59:58   blockers: <absent>
+09:59:58   next: Next: Prepare the ventilation design and run the Part O assessment.
+09:59:58   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+09:59:59   button_Review: 'Review Results' enabled=False tooltip='No Part O run is available to assess. The simulation results this model was produced from are no longer at '<SAM_daily>\2026-09-29 partOi\000000_SAM_AnalyticalModel.tsd'. Re-run the simulation to produce them again.'
+09:59:59   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='Iteration 2B works within the capacity of a selected manufacturer unit, so it is available on Iteration 2 only.'
+09:59:59   It3: <absent>
+09:59:59   capture 02-1a-hub-before-run 'Part O — Prepare & Run' (800x733)
+09:59:59   press button_Run in 'Part O — Prepare & Run'
+10:00:03   REVIEW [1a] <absent>
+10:00:04   capture 03-1a-review 'Part O — Review iteration' (1260x760)
+10:00:04   press button_Accept in 'Part O — Review iteration'
+10:01:05   capture 04-1a-transient 'Reloading' (empty)
+10:01:10   TM59 [1a] verdict: TM59 assessment — PASS
+10:01:10   capture 05-1a-tm59 'Part O — Overheating (TM59)' (1000x760)
+10:01:10   press button_CopyAll in 'Part O — Overheating (TM59)'
+10:01:12   copied 7581 chars to 1a-tm59-window.txt
+10:01:12   press button_Close in 'Part O — Overheating (TM59)'
+10:01:19 1a run + TM59 done in 1.3 min
+10:01:19 --- HUB: 1a after run
+10:01:19   scenario line: MVHR · Design duty only · No manufacturer unit required
+10:01:19   scope: All 3 eligible dwellings · simulated inside the whole building
+10:01:19   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next
+10:01:19   last outcome: Iteration 1a completed — TM59 PASS
+10:01:19   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:01:19   blockers: <absent>
+10:01:19   next: Next: Review the TM59 results. Iteration 3 can then compare them with an explicit ventilation system (below).
+10:01:19   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:01:19   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+10:01:19   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='This Part O run was prepared without equipment selection, so it is an Iteration 1a run and there is no selected ventilation unit for an optimisation to work within. Prepare the iteration again with a manufacturer ventilation unit selected.'
+10:01:19   It3: <absent>
+10:01:19   capture 06-1a-hub-after-run 'Part O — Prepare & Run' (800x949)
+10:01:20   tree 'after-1a': 10 file(s) -> tree-after-1a.txt
+10:01:20   It3 reference: Reference case: Iteration 1a — baseline · results 000000_SAM_AnalyticalModel.tsd
+10:01:20   select method: no pattern
+10:01:24   button_Iteration3 'Run Iteration 3' enabled=True; hint: Runs TAS several times over the full year, so it takes several minutes. Progress is shown in its own window.; refusal: 
+10:01:24   capture 07-1a-it3-hub-before-run 'Part O — Prepare & Run' (800x949)
+10:01:24   press button_Iteration3 in 'Part O — Prepare & Run'
+10:04:41 1a-it3 Iteration 3 finished in 3.2 min
+10:04:41   [1a-it3-it3] textBlock_Heading: Iteration 3 comparison — Selected product — manufacturer operating guidance
+10:04:41   [1a-it3-it3] textBlock_Cases: Reference case: Iteration 1a — baseline (000000_SAM_AnalyticalModel)   ·   System case: explicit TAS system (000000_SAM_AnalyticalModel-It1a-It3BMG)   ·   produced in this session
+10:04:41   [1a-it3-it3] textBlock_TileReference: PASS
+10:04:41   [1a-it3-it3] textBlock_TileSystem: PASS
+10:04:41   [1a-it3-it3] textBlock_Refusal: <hidden/absent>
+10:04:41   CHECK OK   1a-it3-it3 comparison shows no refusal
+10:04:41   capture 08-1a-it3-it3-comparison 'Part O — Iteration 3 comparison' (1320x860)
+10:04:41   press button_CopyAll in 'Part O — Iteration 3 comparison'
+10:04:44   copied 32107 chars to 1a-it3-it3-comparison.txt
+10:04:44   press button_Close in 'Part O — Iteration 3 comparison'
+10:04:52 --- HUB: 1a after Iteration 3
+10:04:52   scenario line: MVHR · Design duty only · No manufacturer unit required
+10:04:52   scope: All 3 eligible dwellings · simulated inside the whole building
+10:04:52   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next
+10:04:52   last outcome: ✓ Iteration 3 complete · Selected product — manufacturer operating guidance · 3m 12s · reference PASS / system PASS
+10:04:52   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:04:52   blockers: <absent>
+10:04:52   next: Next: Review the TM59 results. Iteration 3 can then compare them with an explicit ventilation system (below).
+10:04:52   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:04:52   button_Review: 'Review Iteration 3 result' enabled=True tooltip='Open the Iteration 3 result for 'Selected product — manufacturer operating guidance' - explicit system and cooling assessment, compared with its reference case. The reference and system TM59 reports are available inside it. No TAS simulation is run.'
+10:04:52   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='This Part O run was prepared without equipment selection, so it is an Iteration 1a run and there is no selected ventilation unit for an optimisation to work within. Prepare the iteration again with a manufacturer ventilation unit selected.'
+10:04:52   It3: <absent>
+10:04:53   tree 'after-1a-it3': 27 file(s) -> tree-after-1a-it3.txt
+10:04:53 scenario 1b: selected 'Iteration 1b — Natural ventilation (no mechanical system)'
+10:04:57   output folder box: '<SAM_daily>\2026-09-29 partOi\PartO' tooltip='The Part O output root. SAM creates a folder for each case inside it (Iteration1a, Iteration1b, Iteration2, Iteration2B, Iteration3, MixedDesign), each with tas, reports and diagnostics folders.'
+10:04:57   CHECK OK   1b output folder box holds the chosen root exactly
+10:04:57 --- HUB: 1b before run
+10:04:57   scenario line: NV · No mechanical system, unit or terminal
+10:04:57   scope: All 3 eligible dwellings · simulated inside the whole building
+10:04:57   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next
+10:04:57   last outcome: ✓ Iteration 3 complete · Selected product — manufacturer operating guidance · 3m 12s · reference PASS / system PASS
+10:04:57   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | – | N/A | Continuous mechanical rates are not applied on the natural-ventilation route. | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:04:57   blockers: <absent>
+10:04:57   next: Next: Review the TM59 results. Iteration 3 can then compare them with an explicit ventilation system (below).
+10:04:57   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:04:58   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+10:04:58   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='This Part O run was prepared without equipment selection, so it is an Iteration 1a run and there is no selected ventilation unit for an optimisation to work within. Prepare the iteration again with a manufacturer ventilation unit selected.'
+10:04:58   It3: <absent>
+10:04:58   capture 09-1b-hub-before-run 'Part O — Prepare & Run' (800x949)
+10:04:58   press button_Run in 'Part O — Prepare & Run'
+10:05:03   REVIEW [1b] <absent>
+10:05:03   capture 10-1b-review 'Part O — Review iteration' (1260x760)
+10:05:03   press button_Accept in 'Part O — Review iteration'
+10:05:56   capture 11-1b-transient 'Reloading' (empty)
+10:06:01   TM59 [1b] verdict: TM59 assessment — PASS
+10:06:01   capture 12-1b-tm59 'Part O — Overheating (TM59)' (1000x760)
+10:06:02   press button_CopyAll in 'Part O — Overheating (TM59)'
+10:06:04   copied 8112 chars to 1b-tm59-window.txt
+10:06:04   press button_Close in 'Part O — Overheating (TM59)'
+10:06:10 1b run + TM59 done in 1.2 min
+10:06:10 --- HUB: 1b after run
+10:06:10   scenario line: NV · No mechanical system, unit or terminal
+10:06:10   scope: All 3 eligible dwellings · simulated inside the whole building
+10:06:10   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next
+10:06:10   last outcome: Iteration 1b completed — TM59 PASS
+10:06:10   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | – | N/A | Continuous mechanical rates are not applied on the natural-ventilation route. | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:06:11   blockers: <absent>
+10:06:11   next: Next: Review the TM59 results.
+10:06:11   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:06:11   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+10:06:11   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='Iteration 2B optimises mechanical design airflow, and this run was prepared over the Natural Ventilation route. Natural ventilation is not a mechanical airflow optimisation target.'
+10:06:11   It3: <absent>
+10:06:11   capture 13-1b-hub-after-run 'Part O — Prepare & Run' (800x604)
+10:06:11   tree 'after-1b': 37 file(s) -> tree-after-1b.txt
+10:06:12 scenario 2: selected 'Iteration 2 — MVHR with manufacturer unit'
+10:06:16   output folder box: '<SAM_daily>\2026-09-29 partOi\PartO' tooltip='The Part O output root. SAM creates a folder for each case inside it (Iteration1a, Iteration1b, Iteration2, Iteration2B, Iteration3, MixedDesign), each with tas, reports and diagnostics folders.'
+10:06:16   CHECK OK   2 output folder box holds the chosen root exactly
+10:06:16 --- HUB: 2 before run
+10:06:16   scenario line: MVHR · Manufacturer unit per dwelling · Equipment selection: Automatic - all catalogue products. The smallest capable product is selected per dwelling from the full selectable catalogue. Product maximum capacity is a ceiling and never becomes a design airflow.
+10:06:16   scope: All 3 eligible dwellings · simulated inside the whole building
+10:06:16   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next | 5 | Optimise (2B) | 
+10:06:16   last outcome: Iteration 1b completed — TM59 PASS
+10:06:16   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Equipment | ✓ | Ready | The smallest capable product is selected per dwelling against the realized design duty. | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:06:16   blockers: <absent>
+10:06:16   next: Next: Review the TM59 results.
+10:06:17   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:06:17   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+10:06:17   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='Iteration 2B optimises mechanical design airflow, and this run was prepared over the Natural Ventilation route. Natural ventilation is not a mechanical airflow optimisation target.'
+10:06:17   It3: <absent>
+10:06:17   capture 14-2-hub-before-run 'Part O — Prepare & Run' (800x949)
+10:06:17   press button_Run in 'Part O — Prepare & Run'
+10:06:22   REVIEW [2] <absent>
+10:06:22   capture 15-2-review 'Part O — Review iteration' (1260x760)
+10:06:23   press button_Accept in 'Part O — Review iteration'
+10:07:26   capture 16-2-transient 'Reloading' (empty)
+10:07:32   TM59 [2] verdict: TM59 assessment — PASS
+10:07:32   capture 17-2-tm59 'Part O — Overheating (TM59)' (1000x760)
+10:07:32   press button_CopyAll in 'Part O — Overheating (TM59)'
+10:07:35   copied 7561 chars to 2-tm59-window.txt
+10:07:35   press button_Close in 'Part O — Overheating (TM59)'
+10:07:42 2 run + TM59 done in 1.4 min
+10:07:42 --- HUB: 2 after run
+10:07:42   scenario line: MVHR · Manufacturer unit per dwelling · Equipment selection: Automatic - all catalogue products. The smallest capable product is selected per dwelling from the full selectable catalogue. Product maximum capacity is a ceiling and never becomes a design airflow.
+10:07:42   scope: All 3 eligible dwellings · simulated inside the whole building
+10:07:42   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next | 5 | Optimise (2B) | Available
+10:07:42   last outcome: Iteration 2 completed — TM59 PASS
+10:07:42   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Equipment | ✓ | Ready | The smallest capable product is selected per dwelling against the realized design duty. | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:07:42   blockers: <absent>
+10:07:42   next: Next: Review the TM59 results. Iteration 3 can then compare them with an explicit ventilation system (below). Or optimise ventilation with Iteration 2B (Optimise (2B)): it raises the design airflow of the failing spaces within the selected units and re-simulates.
+10:07:43   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:07:43   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+10:07:43   button_Optimise: 'Optimise (2B)…' enabled=True tooltip='Optimise ventilation (Iteration 2B): raise the design airflow of the spaces that fail TM59 by a fixed step within the selected ventilation units, rebalance, re-simulate the same full year and reassess, until they pass or a limit is reached. You confirm the step and the round limit before it starts. The selected product is never changed.'
+10:07:43   It3: <absent>
+10:07:43   capture 18-2-hub-after-run 'Part O — Prepare & Run' (800x949)
+10:07:45   tree 'after-2': 47 file(s) -> tree-after-2.txt
+10:07:45   It3 reference: Reference case: Iteration 2 — MVHR with manufacturer unit · results 000000_SAM_AnalyticalModel.tsd
+10:07:45   select method: no pattern
+10:07:49   button_Iteration3 'Run Iteration 3' enabled=True; hint: Runs TAS several times over the full year, so it takes several minutes. Progress is shown in its own window.; refusal: 
+10:07:49   capture 19-2-it3-hub-before-run 'Part O — Prepare & Run' (800x949)
+10:07:50   press button_Iteration3 in 'Part O — Prepare & Run'
+10:07:54   capture 20-2-it3-transient 'Part O' (520x360)
+10:10:53 2-it3 Iteration 3 finished in 3.0 min
+10:10:53   [2-it3-it3] textBlock_Heading: Iteration 3 comparison — Selected product — manufacturer operating guidance
+10:10:53   [2-it3-it3] textBlock_Cases: Reference case: Iteration 2 — MVHR with manufacturer unit (000000_SAM_AnalyticalModel)   ·   System case: explicit TAS system (000000_SAM_AnalyticalModel-It3BMG)   ·   produced in this session
+10:10:53   [2-it3-it3] textBlock_TileReference: PASS
+10:10:53   [2-it3-it3] textBlock_TileSystem: PASS
+10:10:53   [2-it3-it3] textBlock_Refusal: <hidden/absent>
+10:10:53   CHECK OK   2-it3-it3 comparison shows no refusal
+10:10:53   capture 21-2-it3-it3-comparison 'Part O — Iteration 3 comparison' (1320x860)
+10:10:53   press button_CopyAll in 'Part O — Iteration 3 comparison'
+10:10:56   copied 31583 chars to 2-it3-it3-comparison.txt
+10:10:56   press button_Close in 'Part O — Iteration 3 comparison'
+10:11:02 --- HUB: 2 after Iteration 3
+10:11:02   scenario line: MVHR · Manufacturer unit per dwelling · Equipment selection: Automatic - all catalogue products. The smallest capable product is selected per dwelling from the full selectable catalogue. Product maximum capacity is a ceiling and never becomes a design airflow.
+10:11:02   scope: All 3 eligible dwellings · simulated inside the whole building
+10:11:02   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next | 5 | Optimise (2B) | Available
+10:11:02   last outcome: ✓ Iteration 3 complete · Selected product — manufacturer operating guidance · 2m 57s · reference PASS / system PASS
+10:11:02   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Equipment | ✓ | Ready | The smallest capable product is selected per dwelling against the realized design duty. | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Completed in this session (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:11:02   blockers: <absent>
+10:11:02   next: Next: Review the TM59 results. Iteration 3 can then compare them with an explicit ventilation system (below). Or optimise ventilation with Iteration 2B (Optimise (2B)): it raises the design airflow of the failing spaces within the selected units and re-simulates.
+10:11:02   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:11:02   button_Review: 'Review Iteration 3 result' enabled=True tooltip='Open the Iteration 3 result for 'Selected product — manufacturer operating guidance' - explicit system and cooling assessment, compared with its reference case. The reference and system TM59 reports are available inside it. No TAS simulation is run.'
+10:11:02   button_Optimise: 'Optimise (2B)…' enabled=True tooltip='Optimise ventilation (Iteration 2B): raise the design airflow of the spaces that fail TM59 by a fixed step within the selected ventilation units, rebalance, re-simulate the same full year and reassess, until they pass or a limit is reached. You confirm the step and the round limit before it starts. The selected product is never changed.'
+10:11:03   It3: <absent>
+10:11:03   tree 'after-2-it3': 63 file(s) -> tree-after-2-it3.txt
+10:11:03 method used for both Iteration 3 runs: ''
+10:11:03   press button_Close in 'Part O — Prepare & Run'
+10:11:10   tree 'after-close': 63 file(s) -> tree-after-close.txt
+10:11:10 RESULT: 0 failure(s)
+10:11:10 DONE

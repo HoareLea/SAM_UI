@@ -1,0 +1,4 @@
+Iteration1a/PartOCase.json: {"Schema":"SAM.PartOOutputCase/1","Case":"Iteration1a"}
+Iteration1b/PartOCase.json: {"Schema":"SAM.PartOOutputCase/1","Case":"Iteration1b"}
+Iteration2/PartOCase.json: {"Schema":"SAM.PartOOutputCase/1","Case":"Iteration2"}
+Iteration3/PartOCase.json: {"Schema":"SAM.PartOOutputCase/1","Case":"Iteration3"}

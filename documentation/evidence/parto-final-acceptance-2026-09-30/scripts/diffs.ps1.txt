@@ -1,0 +1,25 @@
+# Writes snapshot-diffs.txt: for each consecutive snapshot pair, every changed line in the working area, and the
+# number of changed lines in the historical SAM_daily and C:\TasOut snapshots.
+$ev = 'C:\TasOut\parto-final-acceptance-2026-09-30'
+$names = 'before-runs', 'after-runs', 'before-reopen', 'after-reopen', 'after-mixed-probe'
+$out = New-Object System.Collections.Generic.List[string]
+$out.Add('Snapshots: work = <source folder> (size|UTC ticks|SHA-256); daily = rest of SAM_daily (SHA-256); tasout = C:\TasOut minus this acceptance (size|ticks).')
+foreach ($n in $names) { $out.Add(("{0,-18} work {1,3}  daily {2,3}  tasout {3,5} file(s)" -f $n, @(Get-Content "$ev\snap-work-$n.txt").Count, @(Get-Content "$ev\snap-daily-$n.txt").Count, @(Get-Content "$ev\snap-tasout-$n.txt").Count)) }
+for ($i = 1; $i -lt $names.Count; $i++) {
+    $x = $names[$i - 1]; $y = $names[$i]
+    $out.Add(''); $out.Add("== $x -> $y")
+    $old = @{}; foreach ($l in Get-Content "$ev\snap-work-$x.txt") { $p = $l.Split('|'); $old[$p[0]] = $p }
+    $seen = @{}
+    foreach ($l in Get-Content "$ev\snap-work-$y.txt") {
+        $p = $l.Split('|'); $seen[$p[0]] = 1; $o = $old[$p[0]]
+        if (-not $o) { $out.Add("  NEW       $($p[0])") }
+        elseif ($o[3] -ne $p[3]) { $out.Add("  CONTENT   $($p[0]) ($($o[1]) -> $($p[1]) bytes)") }
+        elseif ($o[2] -ne $p[2]) { $out.Add("  TIME ONLY $($p[0])") }
+    }
+    foreach ($k in $old.Keys) { if (-not $seen.ContainsKey($k)) { $out.Add("  REMOVED   $k") } }
+    foreach ($s in 'daily', 'tasout') { $out.Add(("  {0}: {1} changed line(s)" -f $s, (Compare-Object (Get-Content "$ev\snap-$s-$x.txt") (Get-Content "$ev\snap-$s-$y.txt") | Measure-Object).Count)) }
+}
+$out.Add(''); $out.Add('== source model')
+$out.Add((Get-Content "$ev\snap-work-after-mixed-probe.txt" | Where-Object { $_ -like '000000_SAM_AnalyticalModel.sam|*' -or $_ -like 'model\*' }) -join "`n")
+[IO.File]::WriteAllLines("$ev\snapshot-diffs.txt", [string[]]$out)
+$out

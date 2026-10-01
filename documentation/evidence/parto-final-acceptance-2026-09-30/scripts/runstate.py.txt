@@ -1,0 +1,25 @@
+"""Per model: ventilation system types, persisted result provenance (relative to the working area) and Part O scenarios."""
+import sys, zipfile, json, collections
+for p in sys.argv[1:]:
+    z = zipfile.ZipFile(p)
+    d = json.loads(z.read(z.namelist()[0]))
+    vs, prov, scen = [], [], []
+    def walk(o):
+        if isinstance(o, dict):
+            t = o.get('_type', '')
+            if t.startswith('SAM.Analytical.VentilationSystem,'):
+                vs.append((o.get('Type') or {}).get('Name'))
+            if t.startswith('SAM.Analytical.SimulationResultProvenance,'):
+                prov.append(o.get('Path_TSD', '').split('partOi\\')[-1])
+            if t.startswith('SAM.Analytical.OverheatingScenario,'):
+                scen.append(o.get('Name'))
+            for v in o.values():
+                walk(v)
+        elif isinstance(o, list):
+            for v in o:
+                walk(v)
+    walk(d)
+    print(p)
+    print('   systems   ', dict(collections.Counter(vs)))
+    print('   provenance', prov)
+    print('   scenarios ', scen)

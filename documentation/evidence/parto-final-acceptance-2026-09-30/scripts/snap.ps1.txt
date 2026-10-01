@@ -1,0 +1,19 @@
+param([string]$Name = 'before')
+# Filesystem snapshot for the final Part O acceptance (30 Sep 2026).
+#   work-*      : every file in the source working area (source .sam, model copy, PartO root) - size, write time, SHA-256
+#   daily-*     : every other file under SAM_daily (historical)                                   - size, write time, SHA-256
+#   tasout-*    : every file under C:\TasOut except this acceptance's own folder (historical)     - size, write time
+$ev = 'C:\TasOut\parto-final-acceptance-2026-09-30'
+$daily = '<SAM_daily>'
+$work = Join-Path $daily '2026-09-29 partOi'
+function Line($f, $base, [switch]$Hash) {
+    $h = if ($Hash) { (Get-FileHash -LiteralPath $f.FullName -Algorithm SHA256).Hash } else { '' }
+    "{0}|{1}|{2}|{3}" -f $f.FullName.Substring($base.Length + 1), $f.Length, $f.LastWriteTimeUtc.Ticks, $h
+}
+$w = @(Get-ChildItem -LiteralPath $work -Recurse -File -Force | Sort-Object FullName | ForEach-Object { Line $_ $work -Hash })
+[IO.File]::WriteAllLines((Join-Path $ev "snap-work-$Name.txt"), [string[]]$w)
+$d = @(Get-ChildItem -LiteralPath $daily -Recurse -File -Force | Where-Object { -not $_.FullName.StartsWith($work + '\') } | Sort-Object FullName | ForEach-Object { Line $_ $daily -Hash })
+[IO.File]::WriteAllLines((Join-Path $ev "snap-daily-$Name.txt"), [string[]]$d)
+$t = @(Get-ChildItem -LiteralPath 'C:\TasOut' -Recurse -File -Force -ErrorAction SilentlyContinue | Where-Object { -not $_.FullName.StartsWith($ev + '\') } | Sort-Object FullName | ForEach-Object { Line $_ 'C:\TasOut' })
+[IO.File]::WriteAllLines((Join-Path $ev "snap-tasout-$Name.txt"), [string[]]$t)
+"{0:HH:mm:ss} snapshot '{1}': work {2}, daily {3}, tasout {4} file(s)" -f (Get-Date), $Name, $w.Count, $d.Count, $t.Count
