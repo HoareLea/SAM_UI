@@ -25,24 +25,42 @@ namespace SAM.Analytical.UI.WPF
         /// <param name="constructionManager">Used to tell "no layer is selected" from "no layer can be adjusted".</param>
         internal static string UValueCalculationMessage(this LayerThicknessCalculationData data, ConstructionManager constructionManager)
         {
+            switch (data.UValueCalculationFailure(constructionManager))
+            {
+                case WPF.UValueCalculationFailure.HeatFlowUndefined:
+                    string constructionName = string.IsNullOrWhiteSpace(data.ConstructionName) ? "the construction" : data.ConstructionName;
+                    return string.Format("The heat-flow direction is undefined: {0} has no default panel type. Choose a Heat Flow Direction and try again.", constructionName);
+
+                case WPF.UValueCalculationFailure.NoAdjustableLayer:
+                    return NoAdjustableLayerMessage;
+
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// The classification behind <see cref="UValueCalculationMessage(LayerThicknessCalculationData, ConstructionManager)"/>:
+        /// why the calculation cannot even start, or <see cref="WPF.UValueCalculationFailure.None"/> when it can.
+        /// </summary>
+        internal static UValueCalculationFailure UValueCalculationFailure(this LayerThicknessCalculationData data, ConstructionManager constructionManager)
+        {
             if (data == null)
             {
-                return null;
+                return WPF.UValueCalculationFailure.None;
             }
-
-            string constructionName = string.IsNullOrWhiteSpace(data.ConstructionName) ? "the construction" : data.ConstructionName;
 
             if (data.HeatFlowDirection == HeatFlowDirection.Undefined)
             {
-                return string.Format("The heat-flow direction is undefined: {0} has no default panel type. Choose a Heat Flow Direction and try again.", constructionName);
+                return WPF.UValueCalculationFailure.HeatFlowUndefined;
             }
 
             if (data.LayerIndex == -1 && NoAdjustableLayer(data, constructionManager))
             {
-                return NoAdjustableLayerMessage;
+                return WPF.UValueCalculationFailure.NoAdjustableLayer;
             }
 
-            return null;
+            return WPF.UValueCalculationFailure.None;
         }
 
         /// <summary>
@@ -54,29 +72,51 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         internal static string UValueCalculationMessage(this LayerThicknessCalculationResult result, LayerThicknessCalculationData data, ConstructionManager constructionManager)
         {
+            switch (result.UValueCalculationFailure())
+            {
+                case WPF.UValueCalculationFailure.Unavailable:
+                    return "The Tas thermal transmittance calculation is unavailable: TCD could not run, so no U-value could be calculated.";
+
+                case WPF.UValueCalculationFailure.NoAdjustableLayer:
+                    return NoAdjustableLayerMessage;
+
+                case WPF.UValueCalculationFailure.Unreachable:
+                    return string.Format(
+                        CultureInfo.CurrentCulture,
+                        "Target U {0} W/m²K is not reachable by varying {1} within {2}-{3} mm.",
+                        result.ThermalTransmittance.ToString("0.###", CultureInfo.CurrentCulture),
+                        LayerName(result, data, constructionManager),
+                        Millimetres(data?.ThicknessRange?.Min),
+                        Millimetres(data?.ThicknessRange?.Max));
+
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// The classification behind <see cref="UValueCalculationMessage(LayerThicknessCalculationResult, LayerThicknessCalculationData, ConstructionManager)"/>:
+        /// why the calculation did not reach its target, or <see cref="WPF.UValueCalculationFailure.None"/> when it did.
+        /// </summary>
+        internal static UValueCalculationFailure UValueCalculationFailure(this LayerThicknessCalculationResult result)
+        {
             if (result == null || double.IsNaN(result.InitialThermalTransmittance))
             {
-                return "The Tas thermal transmittance calculation is unavailable: TCD could not run, so no U-value could be calculated.";
+                return WPF.UValueCalculationFailure.Unavailable;
             }
 
             if (result.LayerIndex == -1)
             {
-                return NoAdjustableLayerMessage;
+                return WPF.UValueCalculationFailure.NoAdjustableLayer;
             }
 
             double calculated = result.CalculatedThermalTransmittance;
             if (double.IsNaN(result.Thickness) || double.IsNaN(calculated) || Math.Abs(calculated - result.ThermalTransmittance) > UValueTargetTolerance)
             {
-                return string.Format(
-                    CultureInfo.CurrentCulture,
-                    "Target U {0} W/m²K is not reachable by varying {1} within {2}-{3} mm.",
-                    result.ThermalTransmittance.ToString("0.###", CultureInfo.CurrentCulture),
-                    LayerName(result, data, constructionManager),
-                    Millimetres(data?.ThicknessRange?.Min),
-                    Millimetres(data?.ThicknessRange?.Max));
+                return WPF.UValueCalculationFailure.Unreachable;
             }
 
-            return null;
+            return WPF.UValueCalculationFailure.None;
         }
 
         private const string NoAdjustableLayerMessage = "No adjustable layer: all layers are gas, glass, or thinner than 10 mm.";

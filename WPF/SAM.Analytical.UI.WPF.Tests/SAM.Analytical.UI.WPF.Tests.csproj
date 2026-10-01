@@ -21,6 +21,11 @@
     <Reference Include="SAM.Geometry">
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
+    <!-- The U-value tests read ConstructionLayer.Name / .Thickness, which ConstructionLayer inherits from
+         SAM.Architectural.MaterialLayer; the compiler needs the base type's assembly. -->
+    <Reference Include="SAM.Architectural">
+      <HintPath>..\..\..\SAM\build\SAM.Architectural.dll</HintPath>
+    </Reference>
     <!-- PartOOptimisationTests builds a PartOSimulationContext, whose WeatherData property makes this type
          part of the signature the compiler has to resolve. A plain data carrier - no TAS COM type is
          reached, so the suite still runs on a machine with no TAS installed. -->
