@@ -1,0 +1,33 @@
+[     0 ms] model ../model.sam: SIM_EXT_SLD 5c3039ff-c4af-4953-bbf0-5c84bdd8044c used by 12 panels (12 WallExternal); selected 3
+[   115 ms] ModelCheck before: 0 error(s)
+[   830 ms] open: target='0.26' status=NoChange busy=False current U=0.2598 achieved=NaN thickness=NaN mm margin=NaN eval=310 ms apply=False
+[   831 ms]    message: The target equals the current U-value; there is nothing to change.
+[   831 ms]    layer: I01_Mineral Wool_20kg/m3_0.025W/mK 80 mm will be adjusted; other layers stay fixed.
+[   831 ms]    scope: Applies to 12 panels using SIM_EXT_SLD (3 selected).
+[   835 ms]    result: Creates SIM_EXT_SLD U0.26; SIM_EXT_SLD stays unchanged.
+[   835 ms]    basis: WallExternal Horizontal external=True fromPanels=True mixed=False
+[   835 ms]    range: U 1.4507 at 1 mm .. U 0.0246 at 1000 mm
+[  1622 ms] typed 0.3: target='0.3' status=Reached busy=False current U=0.26 achieved=0.3 thickness=67.1 mm margin=0 eval=273 ms apply=True
+[  1623 ms]    row 0 F00_WhitePaint_0.1kg/m3_0.2W/mK: 0.2 -> 0.2 mm
+[  1623 ms]    row 1 C01_Plasterboard_700kg/m3_0.21W/mK: 12.5 -> 12.5 mm
+[  1623 ms]    row 2 Ar90Up_Air__50mm_1.25W/m2K: 50 -> 50 mm
+[  1623 ms]    row 3 C00_Cement particleboard_1200kg/m3_0.23W/mK: 12 -> 12 mm
+[  1623 ms]    row 4 I01_Mineral Wool_20kg/m3_0.025W/mK: 80 -> 67 mm  <- adjusted
+[  1623 ms]    row 5 Ar90Up_Air__50mm_1.25W/m2K: 50 -> 50 mm
+[  1623 ms]    row 6 C00_Rainscreen_7800kg/m3_50W/mK: 3 -> 3 mm
+[  1969 ms] typed 0.01 (settled after 345 ms incl. 300 ms debounce): target='0.01' status=Unreachable busy=False current U=0.2598 achieved=NaN thickness=NaN mm margin=NaN eval=0 ms apply=False
+[  1969 ms]    message: Target U 0.01 W/m²K is not reachable by varying I01_Mineral Wool_20kg/m3_0.025W/mK within 1-1000 mm. Best achievable: U 0.025 W/m²K at 1000 mm.
+[  2321 ms] typed 5 (settled after 351 ms incl. 300 ms debounce): target='5' status=Unreachable busy=False current U=0.2598 achieved=NaN thickness=NaN mm margin=NaN eval=0 ms apply=False
+[  2321 ms]    message: Target U 5 W/m²K is not reachable by varying I01_Mineral Wool_20kg/m3_0.025W/mK within 1-1000 mm. Best achievable: U 1.451 W/m²K at 1 mm.
+[  2885 ms] typed 0.05 (settled after 563 ms incl. 300 ms debounce): target='0.05' status=Reached busy=False current U=0.26 achieved=0.051 thickness=469.3 mm margin=-0.001 eval=226 ms apply=True
+[  3464 ms] typed 0.5 (settled after 579 ms incl. 300 ms debounce): target='0.5' status=Reached busy=False current U=0.26 achieved=0.5 thickness=33.8 mm margin=0 eval=244 ms apply=True
+[  4025 ms] typed 0.3 (settled after 560 ms incl. 300 ms debounce): target='0.3' status=Reached busy=False current U=0.26 achieved=0.3 thickness=67.1 mm margin=0 eval=237 ms apply=True
+[  4026 ms] request: layer 4 thickness 0.0671 m U 0.26 -> 0.3 mode NewConstruction scope AllPanels name 'SIM_EXT_SLD U0.30'
+[  4477 ms] apply (451 ms incl. Tas UpdateThermalParameters): succeeded=True error= Modified events=1 HistoryChanged=1 CanUndo=True
+[  4477 ms]    new construction 'SIM_EXT_SLD U0.30' (8152b372-8b49-4bac-8258-7760620fabb2); material I01_Mineral Wool_20kg/m3_0.025W/mK -> I01_Mineral Wool_20kg/m3_0.025W/mK_0.067m (added=True); 0.080 -> 0.067 m; U 0.26 -> 0.3; 12 panels
+[  4478 ms]    material library has I01_Mineral Wool_20kg/m3_0.025W/mK_0.067m: True
+[  4478 ms]    panels on new: 12; panels on source: 0; source still in model: True
+[  4519 ms] ModelCheck after apply: 0 error(s)
+[  4772 ms] saved ../model-after.sam
+[  4884 ms] undo started=True: CanUndo=False CanRedo=True; panels on source 12/12; new construction present=False; material present=False; materials 18 (original 18)
+[  5135 ms] redo started=True: panels on new 12; material present=True

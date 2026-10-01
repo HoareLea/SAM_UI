@@ -1,0 +1,87 @@
+Main thread apartment: STA
+warm-up U=0.5: layer=4 t=33.8mm U0=0.26 U=0.5 target=0.5 | 478 ms
+
+== A: 50 consecutive reachable evaluations (one STA thread)
+  #01 target 0.150: layer=4 t=150.3mm U0=0.26 U=0.15 target=0.15 | 247 ms
+  #02 target 0.175: layer=4 t=126.9mm U0=0.26 U=0.175 target=0.175 | 247 ms
+  #03 target 0.200: layer=4 t=108.8mm U0=0.26 U=0.2 target=0.2 | 232 ms
+  #04 target 0.225: layer=4 t=94.7mm U0=0.26 U=0.225 target=0.225 | 221 ms
+  #05 target 0.250: layer=4 t=83.9mm U0=0.26 U=0.25 target=0.25 | 238 ms
+  #06 target 0.275: layer=4 t=74.7mm U0=0.26 U=0.275 target=0.275 | 255 ms
+  #07 target 0.300: layer=4 t=67.1mm U0=0.26 U=0.3 target=0.3 | 242 ms
+  #08 target 0.325: layer=4 t=60.8mm U0=0.26 U=0.325 target=0.325 | 256 ms
+  #09 target 0.350: layer=4 t=55.1mm U0=0.26 U=0.35 target=0.35 | 255 ms
+  #10 target 0.375: layer=4 t=50.5mm U0=0.26 U=0.375 target=0.375 | 247 ms
+  #11 target 0.153: layer=4 t=147.3mm U0=0.26 U=0.153 target=0.153 | 226 ms
+  #12 target 0.178: layer=4 t=123.9mm U0=0.26 U=0.178 target=0.178 | 217 ms
+  #13 target 0.203: layer=4 t=106.4mm U0=0.26 U=0.204 target=0.203 | 234 ms
+  #14 target 0.228: layer=4 t=93.2mm U0=0.26 U=0.228 target=0.228 | 215 ms
+  #15 target 0.253: layer=4 t=82.5mm U0=0.26 U=0.253 target=0.253 | 218 ms
+  #16 target 0.278: layer=4 t=73.7mm U0=0.26 U=0.278 target=0.278 | 219 ms
+  #17 target 0.303: layer=4 t=66.4mm U0=0.26 U=0.303 target=0.303 | 226 ms
+  #18 target 0.328: layer=4 t=60.0mm U0=0.26 U=0.328 target=0.328 | 278 ms
+  #19 target 0.353: layer=4 t=54.7mm U0=0.26 U=0.353 target=0.353 | 286 ms
+  #20 target 0.378: layer=4 t=49.9mm U0=0.26 U=0.378 target=0.378 | 313 ms
+  #21 target 0.156: layer=4 t=144.4mm U0=0.26 U=0.156 target=0.156 | 282 ms
+  #22 target 0.181: layer=4 t=122.0mm U0=0.26 U=0.181 target=0.181 | 294 ms
+  #23 target 0.206: layer=4 t=105.4mm U0=0.26 U=0.206 target=0.206 | 264 ms
+  #24 target 0.231: layer=4 t=92.2mm U0=0.26 U=0.231 target=0.231 | 278 ms
+  #25 target 0.256: layer=4 t=81.5mm U0=0.26 U=0.256 target=0.256 | 246 ms
+  #26 target 0.281: layer=4 t=72.7mm U0=0.26 U=0.281 target=0.281 | 253 ms
+  #27 target 0.306: layer=4 t=65.4mm U0=0.26 U=0.306 target=0.306 | 244 ms
+  #28 target 0.331: layer=4 t=59.3mm U0=0.26 U=0.331 target=0.331 | 252 ms
+  #29 target 0.356: layer=4 t=53.9mm U0=0.26 U=0.356 target=0.356 | 277 ms
+  #30 target 0.381: layer=4 t=49.4mm U0=0.26 U=0.381 target=0.381 | 260 ms
+  #31 target 0.159: layer=4 t=141.5mm U0=0.26 U=0.159 target=0.159 | 248 ms
+  #32 target 0.184: layer=4 t=119.5mm U0=0.26 U=0.184 target=0.184 | 227 ms
+  #33 target 0.209: layer=4 t=103.4mm U0=0.26 U=0.209 target=0.209 | 229 ms
+  #34 target 0.234: layer=4 t=90.8mm U0=0.26 U=0.234 target=0.234 | 240 ms
+  #35 target 0.259: layer=4 t=80.3mm U0=0.26 U=0.259 target=0.259 | 238 ms
+  #36 target 0.284: layer=4 t=71.7mm U0=0.26 U=0.284 target=0.284 | 230 ms
+  #37 target 0.309: layer=4 t=64.7mm U0=0.26 U=0.309 target=0.309 | 267 ms
+  #38 target 0.334: layer=4 t=58.6mm U0=0.26 U=0.334 target=0.334 | 228 ms
+  #39 target 0.359: layer=4 t=53.4mm U0=0.26 U=0.359 target=0.359 | 236 ms
+  #40 target 0.384: layer=4 t=48.8mm U0=0.26 U=0.384 target=0.384 | 250 ms
+  #41 target 0.162: layer=4 t=138.6mm U0=0.26 U=0.162 target=0.162 | 277 ms
+  #42 target 0.187: layer=4 t=117.6mm U0=0.26 U=0.187 target=0.187 | 239 ms
+  #43 target 0.212: layer=4 t=101.5mm U0=0.26 U=0.212 target=0.212 | 246 ms
+  #44 target 0.237: layer=4 t=89.3mm U0=0.26 U=0.237 target=0.237 | 261 ms
+  #45 target 0.262: layer=4 t=79.0mm U0=0.26 U=0.262 target=0.262 | 228 ms
+  #46 target 0.287: layer=4 t=70.8mm U0=0.26 U=0.287 target=0.287 | 252 ms
+  #47 target 0.312: layer=4 t=63.9mm U0=0.26 U=0.312 target=0.312 | 235 ms
+  #48 target 0.337: layer=4 t=57.9mm U0=0.26 U=0.337 target=0.337 | 240 ms
+  #49 target 0.362: layer=4 t=52.8mm U0=0.26 U=0.362 target=0.362 | 228 ms
+  #50 target 0.387: layer=4 t=48.3mm U0=0.26 U=0.387 target=0.387 | 231 ms
+A: n=50 min=215 median=246 p90=278 max=313 mean=247 ms
+
+== B: unreachable targets
+  target 5: layer=4 t=NaNmm U0=0.26 U=NaN target=5 | 2634 ms
+  target 5: layer=4 t=NaNmm U0=0.26 U=NaN target=5 | 2732 ms
+  target 5: layer=4 t=NaNmm U0=0.26 U=NaN target=5 | 2719 ms
+  target 0.02: layer=4 t=NaNmm U0=0.26 U=NaN target=0.02 | 2727 ms
+  target 0.02: layer=4 t=NaNmm U0=0.26 U=NaN target=0.02 | 2779 ms
+  target 0.02: layer=4 t=NaNmm U0=0.26 U=NaN target=0.02 | 2689 ms
+B: n=6 min=2634 median=2727 p90=2779 max=2779 mean=2713 ms
+
+== C: U at the range ends (one TCD call each, Calculate(Guid))
+  layer 4 at 1000 mm: U(horizontal, external) = 0.024600649252533913 | 230 ms
+  layer 4 at 1 mm: U(horizontal, external) = 1.4506677389144897 | 217 ms
+  layer 4 at 80 mm: U(horizontal, external) = 0.2597849667072296 | 218 ms
+
+== D: STA single-flight worker, debounce 300 ms
+  D1 typing burst: started=1 completed=1 discarded=0
+  D2 burst during in-flight: started=3 completed=3 discarded=1
+  D3 unreachable then reachable: started=5 completed=5 discarded=2
+    delivered v3 target 0.355: layer=4 t=54.2mm U0=0.26 U=0.355 target=0.355 (eval 234 ms, 537 ms after last keystroke)
+    delivered v6 target 0.45: layer=4 t=39.3mm U0=0.26 U=0.45 target=0.45 (eval 265 ms, 575 ms after last keystroke)
+    delivered v8 target 0.3: layer=4 t=67.1mm U0=0.26 U=0.3 target=0.3 (eval 251 ms, 2870 ms after last keystroke)
+
+== E: two concurrent evaluations (two STA threads, separate calculators)
+  t1 joined=True layer=4 t=67.1mm U0=0.26 U=0.3 target=0.3 | 401 ms
+  t2 joined=True layer=4 t=46.2mm U0=0.26 U=0.4 target=0.4 | 433 ms
+
+leftover temp .tcd files: before=0 after=0
+
+real	0m38.026s
+user	0m0.030s
+sys	0m0.000s

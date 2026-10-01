@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>disable</Nullable>
+    <NoWarn>$(NoWarn);CS0618;MSB3270;MSB3277</NoWarn>
+    <UiLibs>C:\Users\Virtual Machine\Documents\GitHub\SAM-BIM\SAM_UI\build</UiLibs>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SAM.Core"><HintPath>$(UiLibs)\SAM.Core.dll</HintPath></Reference>
+    <Reference Include="SAM.Geometry"><HintPath>$(UiLibs)\SAM.Geometry.dll</HintPath></Reference>
+    <Reference Include="SAM.Architectural"><HintPath>$(UiLibs)\SAM.Architectural.dll</HintPath></Reference>
+    <Reference Include="SAM.Analytical"><HintPath>$(UiLibs)\SAM.Analytical.dll</HintPath></Reference>
+    <Reference Include="SAM.Core.UI"><HintPath>$(UiLibs)\SAM.Core.UI.dll</HintPath></Reference>
+    <Reference Include="SAM.Analytical.UI"><HintPath>$(UiLibs)\SAM.Analytical.UI.dll</HintPath></Reference>
+    <Reference Include="SAM.Analytical.UI.WPF"><HintPath>$(UiLibs)\SAM.Analytical.UI.WPF.dll</HintPath></Reference>
+    <Reference Include="SAM.Analytical.Tas"><HintPath>$(UiLibs)\SAM.Analytical.Tas.dll</HintPath></Reference>
+  </ItemGroup>
+</Project>

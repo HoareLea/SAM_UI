@@ -1,0 +1,19 @@
+model.sam panels 50 constructions 4
+  panel construction ('SIM_EXT_GRD_FLR FLR01', 'SlabOnGrade') 9
+  panel construction ('SIM_EXT_SLD', 'WallExternal') 12
+  panel construction ('SIM_EXT_SLD_Roof', 'Roof') 9
+  panel construction ('SIM_INT_SLD_Partition', 'WallInternal') 20
+  construction SIM_INT_SLD_Partition 0.0752 [0.0002, 0.0125, 0.05, 0.0125]
+  construction SIM_EXT_SLD 0.2077 [0.0002, 0.0125, 0.05, 0.012, 0.08, 0.05, 0.003]
+  construction SIM_EXT_SLD_Roof 0.3335 [0.0125, 0.05, 0.1, 0.001, 0.17]
+  construction SIM_EXT_GRD_FLR FLR01 1.4127 [0.0127, 0.2, 0.2, 1]
+model-after.sam panels 50 constructions 5
+  panel construction ('SIM_EXT_GRD_FLR FLR01', 'SlabOnGrade') 9
+  panel construction ('SIM_EXT_SLD U0.30', 'WallExternal') 12
+  panel construction ('SIM_EXT_SLD_Roof', 'Roof') 9
+  panel construction ('SIM_INT_SLD_Partition', 'WallInternal') 20
+  construction SIM_INT_SLD_Partition 0.0752 [0.0002, 0.0125, 0.05, 0.0125]
+  construction SIM_EXT_SLD U0.30 0.1947 [0.0002, 0.0125, 0.05, 0.012, 0.067, 0.05, 0.003]
+  construction SIM_EXT_SLD_Roof 0.3335 [0.0125, 0.05, 0.1, 0.001, 0.17]
+  construction SIM_EXT_GRD_FLR FLR01 1.4127 [0.0127, 0.2, 0.2, 1]
+  construction SIM_EXT_SLD 0.2077 [0.0002, 0.0125, 0.05, 0.012, 0.08, 0.05, 0.003]
