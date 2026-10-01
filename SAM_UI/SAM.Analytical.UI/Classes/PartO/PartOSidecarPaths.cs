@@ -90,10 +90,18 @@ namespace SAM.Analytical.UI
             string locator = (string)jsonObject[key_Locator];
             if (!string.IsNullOrWhiteSpace(locator) && !string.IsNullOrWhiteSpace(path_Sidecar))
             {
-                string directory = Path.GetDirectoryName(Path.GetFullPath(path_Sidecar));
-                if (!string.IsNullOrWhiteSpace(directory))
+                try
                 {
-                    return Path.GetFullPath(Path.Combine(directory, locator));
+                    string directory = Path.GetDirectoryName(Path.GetFullPath(path_Sidecar));
+                    if (!string.IsNullOrWhiteSpace(directory))
+                    {
+                        return Path.GetFullPath(Path.Combine(directory, locator));
+                    }
+                }
+                catch (System.Exception exception) when (exception is System.ArgumentException || exception is System.NotSupportedException || exception is IOException)
+                {
+                    //A locator this machine cannot form a path from (a corrupt or hand-edited file) is no location at all:
+                    //reading is total, and what cannot be found is refused by name by the caller.
                 }
             }
 

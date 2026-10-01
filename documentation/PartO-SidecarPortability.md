@@ -54,7 +54,7 @@ Files: `PartOSidecarPaths.cs` (new); `Mixed/PartOMixedDesignState.cs`, `Mixed/Pa
 
 ## Validation
 
-- `SAM.Analytical.UI.WPF.Tests` **1603/1603** (baseline 1590 + 13 new): `PartOMixedDesignPortabilityTests` (9: new sidecar writes no workstation path; same folder; moved folder;
+- `SAM.Analytical.UI.WPF.Tests` **1605/1605** (baseline 1590 + 15 new; 13 + 2 from the review below): `PartOMixedDesignPortabilityTests` (9: new sidecar writes no workstation path; same folder; moved folder;
   copied folder reads its own run; sidecar moved without its results is stale; legacy absolute sidecar still read and upgraded on save; no relative form kept absolute; a file outside
   the sidecar's folder stays absolute; Save As pinned) and 3 in `PartOIteration3ReviewTests` (copied folder reviews its own pairing - the original's files deliberately damaged; legacy
   absolute record still reviews in place; new record names project files relative) + 1 env-gated real-data test. On the old code 5 of the 8 first Mixed tests and the Iteration 3
@@ -63,6 +63,12 @@ Files: `PartOSidecarPaths.cs` (new); `Mixed/PartOMixedDesignState.cs`, `Mixed/Pa
   legacy `.partomixed.json`, real 16.5 MB `.tsd`, real run model). Copied twice with write times preserved: the legacy sidecar was read, upgraded (no absolute path left), copied
   with the first left in place (reads only its own files), and the whole folder moved (still finds the run's real files, length and write time unchanged). The source folder's SHA256
   listing was identical before and after. No licensed TAS was run.
+- **Review (high effort) fixes, same PR:** the Iteration 3 review compared the record's now-normalised path with the run's verbatim path by string, so a results path spelt with forward slashes
+  (or a `..` segment) was refused although it is the same file - now compared as normalised places (`SamePlace`, both the Reference A and the Candidate B comparison); and
+  `PartOSidecarPaths.Read` was not total (a malformed locator made `Path.GetFullPath` throw, and the Iteration 3 reader only catches `IOException`) - it now treats such a locator as no
+  location. Two tests, each failing first (`A_reopened_run_whose_results_path_is_spelt_differently_still_reviews_its_pairing`, `A_record_with_a_malformed_locator_reads_without_throwing`).
+  Left as is, by decision: a `Read(JsonObject)` with no sidecar path cannot resolve a locator (production always passes it); the env-gated real-data test returns early when unset (the
+  existing `PartOMixedLargeProjectAcceptance` precedent); the legacy-copy limitation above.
 - PR CI: see the PR.
 
 ## Risks / not done

@@ -488,6 +488,48 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Contains(jsonArray_Files, x => (string)x["Locator"] == "../tas/Flat-It3B-Bridge.sam");
         }
 
+        /// <summary>
+        /// The same results file named another way - forward slashes - is the same file: the review compares places,
+        /// not spellings, now that the record's path is resolved (and so normalised) from a locator.
+        /// </summary>
+        [Fact]
+        public void A_reopened_run_whose_results_path_is_spelt_differently_still_reviews_its_pairing()
+        {
+            PartORun partORun_Original = Run(out PartOIteration3Result _, out List<Guid> _);
+
+            PartORun partORun = Reopened(directory.Replace('\\', '/'), partORun_Original);
+
+            Assert.Contains('/', partORun.Path_TSD);
+
+            int count = 0;
+            PartOIteration3Result partOIteration3Result_Review = Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly
+            {
+                Func_Assess = guids => Assessment(guids, ++count == 1 ? 20.0 : 21.0),
+            });
+
+            Assert.True(partOIteration3Result_Review.IsComplete, string.Join(" | ", partOIteration3Result_Review.Ledger.Reasons ?? []));
+        }
+
+        /// <summary>A record with an unusable locator reads as a record with no such path, never as an exception out of the reopen.</summary>
+        [Fact]
+        public void A_record_with_a_malformed_locator_reads_without_throwing()
+        {
+            PartORun partORun = Run(out PartOIteration3Result partOIteration3Result_Run, out List<Guid> _);
+
+            JsonObject jsonObject = JsonNode.Parse(File.ReadAllText(partOIteration3Result_Run.Path_Record)).AsObject();
+            jsonObject["Locator_TSD_ReferenceA"] = "bad\u0000path.tsd";
+            File.WriteAllText(partOIteration3Result_Run.Path_Record, jsonObject.ToJsonString());
+
+            PartOIteration3Record partOIteration3Record = Query.PartOIteration3PairingRecord(partOIteration3Result_Run.Path_Record);
+
+            Assert.NotNull(partOIteration3Record);
+            Assert.Null(partOIteration3Record.Path_TSD_ReferenceA);
+
+            //And the review says so by name rather than throwing.
+            PartOIteration3Result partOIteration3Result_Review = Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly { Func_Assess = guids => Assessment(guids, 20.0) });
+            Assert.False(partOIteration3Result_Review.IsComplete);
+        }
+
         /// <summary>A case's folders beneath the test root, as a Prepare &amp; Run creates them; its tas folder.</summary>
         private string Created(PartOOutputCase partOOutputCase)
         {
