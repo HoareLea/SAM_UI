@@ -5,13 +5,13 @@ Branch `fix/uvalue-calculator-messages-2026-10-01`, from `sow/2026-Q3` `7c17eab2
 Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md); brief: [plans/UValue-PR1-PROMPT.md](plans/UValue-PR1-PROMPT.md).
 
 **Depends on SAM_Tas PR1a: [SAM-BIM/SAM_Tas#78](https://github.com/SAM-BIM/SAM_Tas/pull/78)** (type-based layer
-picker; `Tas.Query.AdjustableLayerIndex`, which this PR calls). Merge SHA: *pending - to be filled when #78 merges*.
+picker; `Tas.Query.AdjustableLayerIndex`, which this PR calls). Merged as `4b5e1c18` (PR head `0a2c13d6`); SAM_Tas closeout `1761624f`. The `SAM_Tasuild` DLL used here was built from the PR head, whose code equals the merge.
 This PR does not compile against a SAM_Tas build older than #78.
 
 ## Status
 
 Implemented, unit-tested (full WPF suite green) and accepted in the real app on the pre-fix and post-fix builds.
-The PR is not opened until SAM_Tas#78 is merged (CI builds against the base branch of SAM_Tas).
+SAM_Tas#78 is merged; this PR is open for review.
 
 ## Problem
 
@@ -128,6 +128,5 @@ The "Tas unavailable" message could not be provoked in the real app (unit tests 
 
 ## Next step
 
-Merge SAM_Tas#78 (explicit approval), rebuild, fill in its merge SHA above, open this PR against `sow/2026-Q3`,
-wait for green CI and for explicit merge approval, then add the `PROJECT_PROGRESS.md` closeout commits in both
+Wait for green CI and for explicit merge approval, then add the `PROJECT_PROGRESS.md` closeout commits in both
 repos on `sow/2026-Q3`. PR2 (new U-value window) follows the plan.
