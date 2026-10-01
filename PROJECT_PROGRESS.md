@@ -3,6 +3,27 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (UI stream): SearchWindow can be confirmed (OK / double-click / Enter) - MERGED as SAM_UI#161 (`f44b6f7`) (1 Oct 2026)
+
+**Status.** [SAM_UI#161](https://github.com/SAM-BIM/SAM_UI/pull/161) merged into `sow/2026-Q3` with a merge commit (`f44b6f7`; PR head `af21c6e`). `build` and `spdx` green on that head, MERGEABLE, no reviews
+or comments. Resolves unresolved item 1 of the U-value PR1 entry below (Assign Construction could not be confirmed). Record: `documentation/SearchWindow-Confirm-PR.md`.
+
+**Work.** `SearchWindow` (every "Select Construction / Filter / Internal Condition ..." picker) could only be closed with Cancel: `button_OK` had no Click handler or `IsDefault`, and nothing raised a
+double-click. Now OK is `IsDefault`, enabled only while an item is selected, and sets `DialogResult = true`; Enter confirms via the default button; double-clicking an item confirms. Cancel unchanged.
+
+**Decisions.** `Control.MouseDoubleClick` is a Direct routed event (never bubbles), so `SearchControl` raises a new bubbling `ItemDoubleClick` from an `ItemContainerStyle` EventSetter and the window listens to
+that; the old `ListBox_Main_MouseDoubleClick` / public `MouseDoubleClick` delegate were never reachable and are left untouched (replaceable by callers, so the window does not rely on them). No caller changes.
+Behaviour change for all callers by design: OK disabled until a selection exists (Assign Construction pre-fills `SearchText` but selects nothing).
+
+**Files.** `WPF/SAM.Core.UI.WPF/Windows/SearchWindow.xaml(.cs)`, `WPF/SAM.Core.UI.WPF/Controls/SearchControl.xaml(.cs)`, `WPF/SAM.Analytical.UI.WPF.Tests/SearchWindowConfirmTests.cs` (new, 8), record.
+
+**Validation.** Full WPF suite 1626/1626; the 8 new STA tests: 6 fail on pre-fix code, 8/8 pass with the fix. Real mouse/keyboard (throw-away harness hosting the built window): double-click, click+Enter, click+OK
+return true with the right item; Enter with nothing selected and double-click in the search box leave it open.
+
+**Unresolved / risks.** The full 3D-view right-click > Assign Construction flow was NOT re-driven in the licensed app, so "every panel changed" in the U-value acceptance is still to be confirmed through the UI.
+
+**Next step.** Re-run right-click > Assign Construction in the licensed app (closes the U-value PR1 acceptance gap), then PR2 of the U-value plan.
+
 ## Current (U-value workflow stream): PR1 - the default layer works and failures say why - MERGED as SAM_UI#160 (`8e4f417`) with SAM_Tas#78 (`4b5e1c18`) (1 Oct 2026)
 
 **Status.** [SAM_UI#160](https://github.com/SAM-BIM/SAM_UI/pull/160) merged into `sow/2026-Q3` with a merge commit (`8e4f417`; PR head `35d5e35`), after
