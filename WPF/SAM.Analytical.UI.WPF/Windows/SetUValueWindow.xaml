@@ -44,8 +44,7 @@
         <StackPanel Grid.Row="0">
             <TextBlock Text="Construction" Style="{StaticResource PartO.SectionHeading}"/>
             <ComboBox x:Name="comboBox_Construction" DisplayMemberPath="Display" IsTextSearchEnabled="True" TextSearch.TextPath="Name"
-                      SelectionChanged="comboBox_Construction_SelectionChanged"
-                      ToolTip="The construction whose U-value changes. Typing jumps to a name."/>
+                      SelectionChanged="comboBox_Construction_SelectionChanged"/>
             <TextBlock x:Name="textBlock_ConstructionFacts" Style="{StaticResource PartO.Caption}" Margin="0,3,0,0"/>
             <TextBlock x:Name="textBlock_SelectionNote" Style="{StaticResource PartO.Caption}" Margin="0,2,0,0" Visibility="Collapsed"/>
         </StackPanel>

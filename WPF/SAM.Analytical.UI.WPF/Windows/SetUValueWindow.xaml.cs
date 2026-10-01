@@ -211,7 +211,7 @@ namespace SAM.Analytical.UI.WPF
 
             if (!hasViewModel)
             {
-                textBlock_ConstructionFacts.Text = "Choose the construction whose U-value should change.";
+                textBlock_ConstructionFacts.Text = "Choose the construction whose U-value should change (typing jumps to a name).";
                 textBlock_SelectionNote.Visibility = Visibility.Collapsed;
                 textBlock_Range.Text = string.Empty;
                 textBlock_Layer.Text = string.Empty;
@@ -285,7 +285,11 @@ namespace SAM.Analytical.UI.WPF
             SetTable(vm.CalculatedThermalTransmittance, vm.TargetThermalTransmittance, vm.Margin, rowStatus);
 
             dataGrid_Layers.ItemsSource = vm.PreviewRows;
-            textBlock_Timing.Text = vm.LastEvaluationMilliseconds < 0 ? string.Empty : string.Format(CultureInfo.CurrentCulture, "Last calculation {0} ms (Tas TCD).", vm.LastEvaluationMilliseconds);
+            textBlock_Timing.Text = vm.LastEvaluationMilliseconds < 0
+                ? string.Empty
+                : vm.LastEvaluationMilliseconds == 0
+                    ? "Answered from the reachable range already calculated (no new Tas calculation)."
+                    : string.Format(CultureInfo.CurrentCulture, "Last calculation {0} ms (Tas TCD).", vm.LastEvaluationMilliseconds);
 
             textBlock_Scope.Text = vm.ScopeText;
             textBlock_Result.Text = vm.ResultText;
@@ -477,11 +481,12 @@ namespace SAM.Analytical.UI.WPF
 
             textBlock_Applied.Text = string.Format(
                 CultureInfo.CurrentCulture,
-                "Applied: {0} now has U {1} W/m²K ({2} {3}). One Undo reverts it.",
+                "Applied: {0} now has U {1} W/m²K ({2}). One Undo reverts it.",
                 result.Construction.Name,
                 U(result.NewThermalTransmittance),
-                result.PanelCount,
-                result.PanelCount == 1 ? "panel" : "panels");
+                result.Scope == UValueApplyScope.DontAssign
+                    ? "not assigned to any panel"
+                    : string.Format(CultureInfo.CurrentCulture, "{0} {1}", result.PanelCount, result.PanelCount == 1 ? "panel" : "panels"));
 
             Brush brush = (Brush)FindResource(CheckSummary.Errors > 0 ? "PartO.Brush.Danger" : CheckSummary.Warnings > 0 ? "PartO.Brush.Danger" : "PartO.Brush.Success");
             border_Applied.BorderBrush = brush;
