@@ -228,6 +228,15 @@ namespace SAM.Analytical.UI
 
         public JsonObject ToJsonObject()
         {
+            return ToJsonObject(null);
+        }
+
+        /// <param name="path_Sidecar">
+        /// The sidecar this is written into: the files it names are then written relative to its folder
+        /// (<see cref="PartOSidecarPaths"/>). Null writes them absolute, as given.
+        /// </param>
+        public JsonObject ToJsonObject(string path_Sidecar)
+        {
             JsonArray jsonArray_Results = [];
             foreach (PartODwellingResult partODwellingResult in results.Values)
             {
@@ -246,17 +255,14 @@ namespace SAM.Analytical.UI
                 jsonArray_Guidance.Add(summary);
             }
 
-            return new JsonObject
+            JsonObject result = new()
             {
                 ["CreatedUtc"] = CreatedUtc.ToString("o", CultureInfo.InvariantCulture),
                 ["Record"] = Record?.ToJsonObject(),
                 ["Strategies"] = Strategies?.ToJsonObject(),
                 ["CatalogueOffered"] = CatalogueOffered,
-                ["Path_TSD"] = Path_TSD,
                 ["Length_TSD"] = Length_TSD,
                 ["Timestamp_TSD"] = Timestamp_TSD,
-                ["Path_RunModel"] = Path_RunModel,
-                ["Path_TPD"] = Path_TPD,
                 ["GuidanceSummaries"] = jsonArray_Guidance,
                 ["Refusal_Assessment"] = Refusal_Assessment,
                 ["OccupiedSpaceComplianceStatus"] = OccupiedSpaceComplianceStatus?.ToString(),
@@ -266,9 +272,24 @@ namespace SAM.Analytical.UI
                 ["Corridors"] = jsonArray_Corridors,
                 ["Results"] = jsonArray_Results,
             };
+
+            PartOSidecarPaths.Write(result, "TSD", Path_TSD, path_Sidecar);
+            PartOSidecarPaths.Write(result, "RunModel", Path_RunModel, path_Sidecar);
+            PartOSidecarPaths.Write(result, "TPD", Path_TPD, path_Sidecar);
+
+            return result;
         }
 
         public static PartOMixedRunEvidence Read(JsonObject jsonObject)
+        {
+            return Read(jsonObject, null);
+        }
+
+        /// <param name="path_Sidecar">
+        /// Where the sidecar is NOW: a locator is resolved against its folder, so a moved or copied project reads its
+        /// own files. A legacy absolute path is read as written.
+        /// </param>
+        public static PartOMixedRunEvidence Read(JsonObject jsonObject, string path_Sidecar)
         {
             if (jsonObject is null)
             {
@@ -280,11 +301,11 @@ namespace SAM.Analytical.UI
                 Record = jsonObject["Record"] is JsonObject jsonObject_Record ? new PartOMaterialisationRecord((JsonObject)jsonObject_Record.DeepClone()) : null,
                 Strategies = jsonObject["Strategies"] is JsonObject jsonObject_Strategies ? new PartODwellingStrategySet((JsonObject)jsonObject_Strategies.DeepClone()) : null,
                 CatalogueOffered = (bool?)jsonObject["CatalogueOffered"] ?? false,
-                Path_TSD = (string)jsonObject["Path_TSD"],
+                Path_TSD = PartOSidecarPaths.Read(jsonObject, "TSD", path_Sidecar),
                 Length_TSD = (long?)jsonObject["Length_TSD"] ?? 0,
                 Timestamp_TSD = (long?)jsonObject["Timestamp_TSD"] ?? 0,
-                Path_RunModel = (string)jsonObject["Path_RunModel"],
-                Path_TPD = (string)jsonObject["Path_TPD"],
+                Path_RunModel = PartOSidecarPaths.Read(jsonObject, "RunModel", path_Sidecar),
+                Path_TPD = PartOSidecarPaths.Read(jsonObject, "TPD", path_Sidecar),
                 Refusal_Assessment = (string)jsonObject["Refusal_Assessment"],
                 SpaceCount_Unassessed = (int?)jsonObject["SpaceCount_Unassessed"],
                 SimulationCaseKey = (string)jsonObject["SimulationCaseKey"],

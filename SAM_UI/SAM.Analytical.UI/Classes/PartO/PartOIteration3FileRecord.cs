@@ -78,22 +78,41 @@ namespace SAM.Analytical.UI
 
         public JsonObject ToJsonObject()
         {
-            return new JsonObject
+            return ToJsonObject(null);
+        }
+
+        /// <param name="path_Record">
+        /// The pairing record this is written into: the path is then written relative to its folder
+        /// (<see cref="PartOSidecarPaths"/>). Null writes it absolute, as given.
+        /// </param>
+        public JsonObject ToJsonObject(string path_Record)
+        {
+            JsonObject result = new()
             {
                 { "Role", Role },
-                { "Path", Path },
-                { "Length", Length },
-                { "Ticks_Utc", Ticks_Utc },
             };
+
+            PartOSidecarPaths.Write(result, "Path", "Locator", Path, path_Record, PartOIteration3Record.Directory_Root(path_Record));
+
+            result.Add("Length", Length);
+            result.Add("Ticks_Utc", Ticks_Utc);
+
+            return result;
         }
 
         public static PartOIteration3FileRecord FromJsonObject(JsonObject jsonObject)
+        {
+            return FromJsonObject(jsonObject, null);
+        }
+
+        /// <param name="path_Record">Where the record is NOW: a locator is resolved against its folder.</param>
+        public static PartOIteration3FileRecord FromJsonObject(JsonObject jsonObject, string path_Record)
         {
             return jsonObject is null
                 ? null
                 : new PartOIteration3FileRecord(
                     PartOIteration3Json.Text(jsonObject, "Role"),
-                    PartOIteration3Json.Text(jsonObject, "Path"),
+                    PartOSidecarPaths.Read(jsonObject, "Path", "Locator", path_Record),
                     PartOIteration3Json.Integer(jsonObject, "Length", -1),
                     PartOIteration3Json.Integer(jsonObject, "Ticks_Utc", -1));
         }

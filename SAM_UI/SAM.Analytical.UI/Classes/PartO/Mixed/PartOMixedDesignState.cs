@@ -95,10 +95,19 @@ namespace SAM.Analytical.UI
 
         public JsonObject ToJsonObject()
         {
+            return ToJsonObject(null);
+        }
+
+        /// <param name="path_State">
+        /// The file this is written to: the files its evidence names are written relative to its folder, so the
+        /// state survives a moved or copied project (<see cref="PartOSidecarPaths"/>). Null writes them absolute.
+        /// </param>
+        public JsonObject ToJsonObject(string path_State)
+        {
             JsonArray jsonArray_Screening = [];
             foreach (PartOScreeningEvidence partOScreeningEvidence in Screening)
             {
-                jsonArray_Screening.Add(partOScreeningEvidence.ToJsonObject());
+                jsonArray_Screening.Add(partOScreeningEvidence.ToJsonObject(path_State));
             }
 
             JsonArray jsonArray_Strategies = [];
@@ -111,11 +120,17 @@ namespace SAM.Analytical.UI
                 ["Strategies_Screening"] = jsonArray_Strategies,
                 ["ScreeningMode"] = ScreeningMode.ToString(),
                 ["Screening"] = jsonArray_Screening,
-                ["FinalRun"] = FinalRun?.ToJsonObject(),
+                ["FinalRun"] = FinalRun?.ToJsonObject(path_State),
             };
         }
 
         public static PartOMixedDesignState Read(JsonObject jsonObject)
+        {
+            return Read(jsonObject, null);
+        }
+
+        /// <param name="path_State">Where the state file is now - what its relative locators are resolved against.</param>
+        public static PartOMixedDesignState Read(JsonObject jsonObject, string path_State)
         {
             if (jsonObject is null || (string)jsonObject["Schema"] != Schema_Current)
             {
@@ -125,7 +140,7 @@ namespace SAM.Analytical.UI
             PartOMixedDesignState result = new()
             {
                 Constraints = PartOMixedDesignConstraints.Read(jsonObject["Constraints"] as JsonObject),
-                FinalRun = PartOMixedRunEvidence.Read(jsonObject["FinalRun"] as JsonObject),
+                FinalRun = PartOMixedRunEvidence.Read(jsonObject["FinalRun"] as JsonObject, path_State),
             };
 
             if (Enum.TryParse((string)jsonObject["ScreeningMode"], false, out PartOScreeningMode partOScreeningMode) && Enum.IsDefined(typeof(PartOScreeningMode), partOScreeningMode) && partOScreeningMode != PartOScreeningMode.Undefined)
@@ -148,7 +163,7 @@ namespace SAM.Analytical.UI
             {
                 foreach (JsonNode jsonNode in jsonArray_Screening)
                 {
-                    result.SetScreeningEvidence(PartOScreeningEvidence.Read(jsonNode as JsonObject));
+                    result.SetScreeningEvidence(PartOScreeningEvidence.Read(jsonNode as JsonObject, path_State));
                 }
             }
 
@@ -165,7 +180,7 @@ namespace SAM.Analytical.UI
 
             try
             {
-                return Read(JsonNode.Parse(File.ReadAllText(path_State)) as JsonObject);
+                return Read(JsonNode.Parse(File.ReadAllText(path_State)) as JsonObject, path_State);
             }
             catch
             {
@@ -186,7 +201,7 @@ namespace SAM.Analytical.UI
 
             try
             {
-                File.WriteAllText(path_State, ToJsonObject().ToJsonString());
+                File.WriteAllText(path_State, ToJsonObject(path_State).ToJsonString());
             }
             catch (Exception exception)
             {
