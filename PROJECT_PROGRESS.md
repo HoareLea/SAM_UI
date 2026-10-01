@@ -3,6 +3,38 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (U-value workflow stream): PR1 - the default layer works and failures say why - MERGED as SAM_UI#160 (`8e4f417`) with SAM_Tas#78 (`4b5e1c18`) (1 Oct 2026)
+
+**Status.** [SAM_UI#160](https://github.com/SAM-BIM/SAM_UI/pull/160) merged into `sow/2026-Q3` with a merge commit (`8e4f417`; PR head `35d5e35`), after
+[SAM_Tas#78](https://github.com/SAM-BIM/SAM_Tas/pull/78) (`4b5e1c18`, closeout `1761624f`). `build` and `spdx` green on that head, CLEAN, no reviews or comments.
+Plan: `documentation/plans/UValue-Workflow-PLAN.md`; brief: `documentation/plans/UValue-PR1-PROMPT.md`; record: `documentation/UValue-LayerPicker-PR1.md`;
+evidence: `documentation/evidence/uvalue-workflow-2026-10-01/`. PR2 (new U-value window) is next per the plan.
+
+**Work.** Root cause: the SAM_Tas default-layer picker chose the lowest-conductivity layer >= 10 mm; the model's gas gaps (0.024 / 0.01622 W/mK) beat mineral wool (0.025),
+so U=0.5 on `SIM_EXT_SLD` was unreachable and the UI said only "Could not calculate construction for given criteria." SAM_Tas#78 excludes gas and transparent layers by
+material type (`Tas.Query.AdjustableLayerIndex`, also used by the calculator's `layerIndex == -1` fallback). SAM_UI#160 adds `Query.UValueCalculationMessage` (before the call:
+heat-flow direction undefined; no adjustable layer. After: Tas unavailable; "Target U ... not reachable by varying <layer> within <min>-<max> mm", incl. achieved U > 0.01 off
+target). MessageBox / loop-back behaviour unchanged.
+
+**Decisions.** Heat-flow Undefined is checked BEFORE the call because it yields initial U = NaN, indistinguishable from TCD not running. Tolerance 0.01 W/m2K (Tas reports 0.051 for 0.05).
+A cleared layer selection with an adjustable layer present is left to the calculator fallback. Aperture / multi-construction flows keep the generic text.
+
+**Files.** `WPF/SAM.Analytical.UI.WPF/Query/UValueCalculationMessage.cs` (new), `Modify/ThermalTransmittanceCalculator_SingleConstruction.cs`,
+`WPF/SAM.Analytical.UI.WPF.Tests/UValueCalculationMessageTests.cs` (new, 13), record + plans + evidence.
+
+**Validation.** Full WPF suite 1618/1618; SAM_Tas 1038/1038 (15 new). Real TCD probe: old picker NaN after 1.5 s, new picker mineral wool 33.8 mm in 0.25 s, forced `-1` fallback picks the same.
+Real app (UIA, copies of `SAM_UIuild`, fresh model copies): before = Air 50 mm pre-selected, U=0.5 fails, manual mineral wool works in 1.7 s (80 -> 34 mm); after = U=0.5 first time on the
+default selection, unreachable / heat-flow-undefined / glass-only each show their own message. "Tas unavailable" not provoked in the real app (unit tests only).
+
+**Unresolved / risks.**
+1. `SearchWindow` (Select Construction for Assign Construction) OK button has no handler - Assign Construction cannot be confirmed; "every panel changed" was NOT confirmed through the UI.
+   A separate fix session was started (task "Fix dead OK button in SearchWindow"); check `git log origin/sow/2026-Q3` for it.
+2. Edit > ModelCheck after the legacy apply: Error "Material Library does not contain Material ..._0.034m" - PR2's `Modify.SetUValue` must add the adjusted material in the same single Undo step.
+3. The calculator pre-check shows the first log record, not the error record (left; PR2 replaces the flow).
+4. Evidence uses folder copies, not an installer: installed-app acceptance needs an installer containing the new SAM_Tas DLL.
+
+**Next step.** PR2 per the plan (view-model + evaluator seam, `Modify.SetUValue`, three entry points, scoped check and report); reuse `Tas.Query.AdjustableLayerIndex` and the failure classification.
+
 ## Current (Part O stream): sidecar portability (Save As / move / copy) - MERGED as SAM_UI#158 (`e99662d`) (1 Oct 2026)
 
 **Status.** [SAM_UI#158](https://github.com/SAM-BIM/SAM_UI/pull/158) merged into `sow/2026-Q3` with a merge commit (`e99662d`; PR head `22d47f7`). `build` and `spdx` green on that head, MERGEABLE/CLEAN; a
