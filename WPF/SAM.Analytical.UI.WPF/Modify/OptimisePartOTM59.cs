@@ -245,7 +245,7 @@ namespace SAM.Analytical.UI.WPF
             //PR-5: every round is Iteration 2B derived from THIS result - the Iteration 2 result run 0 stands for, not the
             //previous round - and carries the design that result was derived from. Captured once, here, before
             //analyticalModel_LastValid moves on.
-            result.PartOBaselineReference = Analytical.Create.PartOBaselineReferenceFromResult(PartODerivedCase.Iteration2B, analyticalModel_LastValid, Query.Path_PartORunModel(path_TSD_LastValid));
+            result.PartOBaselineReference = Analytical.Create.PartOBaselineReferenceFromResult(PartODerivedCase.Iteration2B, analyticalModel_LastValid, Query.Path_PartORunModel(path_TSD_LastValid), partOSimulationContext.OutputDirectory);
 
             //Reported, where the command shows the Part O progress window; nothing below depends on it.
             PartOProgressHost.Current?.Start(PartOOptimisationPhase_Starting);

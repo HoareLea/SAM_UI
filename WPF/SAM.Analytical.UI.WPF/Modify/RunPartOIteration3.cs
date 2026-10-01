@@ -1183,10 +1183,11 @@ namespace SAM.Analytical.UI.WPF
             //reviewable against the same criteria.
             analyticalModel_CandidateB.SetValue(Analytical.AnalyticalModelParameter.OverheatingScenarios, new SAMCollection<OverheatingScenario>(overheatingScenarios));
 
-            //PR-5: and what this pairing was derived from - Reference A's saved result and, through it, the design - stamped with
-            //its locators BEFORE the record below, which fingerprints every model parameter it does not exclude.
-            analyticalModel_CandidateB.StampPartOBaselineReference(Analytical.Create.PartOBaselineReferenceFromResult(PartODerivedCase.Iteration3, analyticalModel_ReferenceA, partOIteration3Record.Path_Model_ReferenceA));
-            analyticalModel_CandidateB.LocatePartOBaselineReference(System.IO.Path.GetDirectoryName(partOIteration3Paths.Path_TSD_Bridge));
+            //PR-5: and what this pairing was derived from - Reference A's saved result and, through it, the design - with relative locators
+            //from the folder Candidate B is written to, stamped BEFORE the record below, which fingerprints every model parameter it does
+            //not exclude. Reference A is the one authoritative source: Candidate B is built from A's own prepared model and compared with A's
+            //own results, and both are bound to A (the live run, or its saved resume sidecar), so no second source is needed.
+            analyticalModel_CandidateB.StampPartOBaselineReference(Analytical.Create.PartOBaselineReferenceFromResult(PartODerivedCase.Iteration3, analyticalModel_ReferenceA, partOIteration3Record.Path_Model_ReferenceA, System.IO.Path.GetDirectoryName(partOIteration3Paths.Path_TSD_Bridge)));
 
             analyticalModel_CandidateB.SetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, new SimulationResultProvenance(analyticalModel_CandidateB, partOIteration3Paths.Path_TSD_Bridge));
 

@@ -50,9 +50,9 @@ namespace SAM.Analytical.UI
         public string OutputDirectory { get; }
 
         /// <summary>
-        /// The design model's file, where the run was started from one that has been saved - a locator for the
-        /// <see cref="PartOBaselineReference"/> the result carries (PR-5), for a case whose materialiser does not know the
-        /// file. Null or empty where unknown. Identity is never taken from it.
+        /// The design model's file, where the run was started from one that has been saved. Session state only: it is used to compute the
+        /// relative locator of the <see cref="PartOBaselineReference"/> a result carries (PR-5), for a case whose materialiser does not know
+        /// the file (Mixed Design), and is never persisted. Null or empty where unknown. Identity is never taken from it.
         /// </summary>
         public string Path_DesignModel { get; set; }
 

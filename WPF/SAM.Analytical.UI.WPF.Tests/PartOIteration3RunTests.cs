@@ -407,8 +407,12 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void Candidate_B_model_states_its_source_result_and_the_design_behind_it()
         {
             AnalyticalModel analyticalModel_Design = PartOIteration3Fixture.Model(new AdjacencyCluster(PartOIteration3Fixture.Design(out _, out _)), "Design");
-            string path_Design = Path.Combine(directory, "Design.sam");
-            PartOBaselineReference partOBaselineReference_A = Analytical.Create.PartOBaselineReferenceFromDesign(PartODerivedCase.Iteration1a, analyticalModel_Design, path_Design)!;
+            string path_Design = Path.Combine(directory, "model", "Design.sam");
+            Directory.CreateDirectory(Path.GetDirectoryName(path_Design)!);
+            Assert.True(Core.Convert.ToFile(analyticalModel_Design, path_Design, Core.SAMFileType.SAM));
+
+            //Reference A's saved model sits in the run folder; its reference locates the design relative to that folder.
+            PartOBaselineReference partOBaselineReference_A = Analytical.Create.PartOBaselineReferenceFromDesign(PartODerivedCase.Iteration1a, analyticalModel_Design, path_Design, directory)!;
 
             PartORun partORun = Run(partOBaselineReference_A);
             AnalyticalModel analyticalModel_ReferenceA = partORun.AnalyticalModel_Assessment;
@@ -429,14 +433,16 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.Equal(PartOModelReferenceKind.Result, partOBaselineReference.Source.Kind);
             Assert.Equal(analyticalModel_ReferenceA.GetValue<SimulationResultProvenance>(Analytical.AnalyticalModelParameter.SimulationResultProvenance).Fingerprint_Model, partOBaselineReference.Source.Fingerprint);
-            Assert.Equal(partOIteration3Result.Record.Path_Model_ReferenceA, partOBaselineReference.Source.Path_Absolute);
-            Assert.False(string.IsNullOrEmpty(partOBaselineReference.Source.Path_Relative));
+            Assert.False(Path.IsPathRooted(partOBaselineReference.Source.Path_Relative));
+            Assert.Equal(Analytical.Query.PartOBaselineRelativePath(Path.GetDirectoryName(path_CandidateB)!, partOIteration3Result.Record.Path_Model_ReferenceA), partOBaselineReference.Source.Path_Relative);
 
             //Through Reference A, the design it was derived from - the same guid, state and file.
             Assert.Equal(PartOModelReferenceKind.Design, partOBaselineReference.Design.Kind);
             Assert.Equal(partOBaselineReference_A.Design.Guid, partOBaselineReference.Design.Guid);
             Assert.Equal(partOBaselineReference_A.Design.Fingerprint, partOBaselineReference.Design.Fingerprint);
-            Assert.Equal(path_Design, partOBaselineReference.Design.Path_Absolute);
+            Assert.Equal(Analytical.Query.PartOBaselineRelativePath(Path.GetDirectoryName(path_CandidateB)!, path_Design), partOBaselineReference.Design.Path_Relative);
+            Assert.Equal(PartOBaselineResolutionStatus.Resolved, Analytical.Query.PartOModelResolution(partOBaselineReference.Design, path_CandidateB).Status);
+            Assert.DoesNotContain("Path_Absolute", partOBaselineReference.ToJsonObject().ToJsonString());
 
             //Stamped before its own provenance record, so the saved Candidate B still matches it.
             Assert.Equal(analyticalModel_CandidateB.GetValue<SimulationResultProvenance>(Analytical.AnalyticalModelParameter.SimulationResultProvenance).Fingerprint_Model, SimulationResultProvenance.Fingerprint(analyticalModel_CandidateB));

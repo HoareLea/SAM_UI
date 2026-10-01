@@ -401,7 +401,7 @@ namespace SAM.Analytical.UI.WPF
                 && !analyticalModel_Design.HasValue(Analytical.AnalyticalModelParameter.PartOBaselineReference)
                 && !analyticalModel_Design.HasValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance))
             {
-                analyticalModel.StampPartOBaselineReference(Analytical.Create.PartOBaselineReferenceFromDesign(partODerivedCase, analyticalModel_Design, uIAnalyticalModel.Path));
+                analyticalModel.StampPartOBaselineReference(Analytical.Create.PartOBaselineReferenceFromDesign(partODerivedCase, analyticalModel_Design, uIAnalyticalModel.Path, outputDirectory));
             }
 
             // Whether `analyticalModel` is a working copy this method may mutate freely. False while it is

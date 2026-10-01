@@ -68,7 +68,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             //SAM names the baseline by identity; it knows no file.
             PartOBaselineReference partOBaselineReference_Materialised = partOMaterialisation.AnalyticalModel.GetValue<PartOBaselineReference>(Analytical.AnalyticalModelParameter.PartOBaselineReference);
             Assert.Equal(PartODerivedCase.MixedDesign, partOBaselineReference_Materialised.Case);
-            Assert.Null(partOBaselineReference_Materialised.Design.Path_Absolute);
+            Assert.Null(partOBaselineReference_Materialised.Design.Path_Relative);
 
             //The run: the same pipeline every Part O run uses, in a private run, exactly as SimulatePartOMaterialisation builds it.
             string directory_Tas = Path.Combine(directory, "PartO", "MixedDesign", "tas");
@@ -100,8 +100,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(fingerprint_Baseline, partOBaselineReference.Design.Fingerprint);
             Assert.Equal(partOMaterialisation.Record.Fingerprint_Baseline, partOBaselineReference.Design.Fingerprint);
 
-            //The locators the run added: the baseline's file, and the way to it from the folder the result is written to.
-            Assert.Equal(path_Design, partOBaselineReference.Design.Path_Absolute);
+            //The locator the run added: the way to the baseline's file from the folder the result is written to - and nothing absolute.
+            Assert.DoesNotContain("Path_Absolute", partOBaselineReference.ToJsonObject().ToJsonString());
+            Assert.DoesNotContain(directory, partOBaselineReference.ToJsonObject().ToJsonString(), StringComparison.OrdinalIgnoreCase);
             Assert.Equal(Path.Combine("..", "..", "..", "model", "Block.sam"), partOBaselineReference.Design.Path_Relative);
             Assert.Equal(PartOBaselineResolutionStatus.Resolved, Analytical.Query.PartOModelResolution(partOBaselineReference.Design, path_Result).Status);
 
