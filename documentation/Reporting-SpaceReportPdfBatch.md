@@ -134,7 +134,7 @@ There are 40 tests, plus the opt-in scale harness `SpaceReportPdfBatchScaleHarne
   summary text; the ribbon and menu items.
 
 ## Acceptance (28 Sep 2026, dev build `SAM_UI\build\SAM Analytical.exe`, driven by UI Automation)
-Evidence is in `documentation/evidence/pr2f2-space-report-batch/`.
+Evidence is not included in this repository.
 - **bridge_peaks.sam, All Spaces (9), both reports:** 18 PDFs in 0.8 s. Re-run with Skip: 0 created, 18 skipped.
   Overwrite: 18. Cancel at the prompt: nothing written, no new log. A PDF locked by another process: 17 created,
   1 FAILED (`stage: Output`), the locked file unchanged, no `.tmp`.

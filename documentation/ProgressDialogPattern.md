@@ -21,7 +21,6 @@ It is used by:
 - Export Space Reports ([`SpaceReportPdfBatchWindow`](../WPF/SAM.Analytical.UI.WPF/Windows/SpaceReportPdfBatchWindow.xaml));
 - Print Room Data Sheets from the ribbon ([`Modify.PrintRoomDataSheetsWithProgress`](../WPF/SAM.Analytical.UI.WPF/Modify/PrintRoomDataSheetsWithProgress.cs)).
 
-Evidence: [`evidence/progress-dialog-pattern/`](evidence/progress-dialog-pattern/).
 
 ## Anatomy
 

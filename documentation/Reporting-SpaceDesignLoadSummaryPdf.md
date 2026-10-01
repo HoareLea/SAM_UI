@@ -47,4 +47,4 @@ No provenance stamping or freshness workflow ("Matches current model" prints wha
 recorded"); no source picker; no batch reports. Nothing in the report command modifies the model.
 
 ## Evidence
-`documentation/evidence/space-design-load-summary-pdf/ACCEPTANCE-2026-09-27.md`.
+Acceptance evidence is not included in this repository.

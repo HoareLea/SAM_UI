@@ -2,7 +2,7 @@
 
 Branch `feature/uvalue-pr2a-engine-2026-10-01`, from `sow/2026-Q3` `ff68f3f9`. **Not merged.**
 `PROJECT_PROGRESS.md` is not touched on this branch (closeout after merge, per `AGENTS.md`).
-Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md); brief: [plans/UValue-PR2-PROMPT.md](plans/UValue-PR2-PROMPT.md)
+Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md)
 (committed here as instructed); PR1: [UValue-LayerPicker-PR1.md](UValue-LayerPicker-PR1.md) (SAM_UI#160 + SAM_Tas#78, merged).
 
 ## Status
@@ -151,7 +151,7 @@ for the two TCD calls whose physics reproduces the spike values (U = 1/(0.65 + t
 - Tests: `Helpers/UValueFixture.cs`, `UValueEvaluatorTests.cs`, `UValueViewModelTests.cs`, `SetUValueTests.cs`;
   `SAM.Analytical.UI.WPF.Tests.csproj` (+ `SAM.Architectural` reference: `ConstructionLayer` derives from its
   `MaterialLayer`).
-- Docs: this record, `plans/UValue-PR2-PROMPT.md`, `evidence/uvalue-pr2a-2026-10-01/` (spike + engine probe).
+- Docs: this record.
 
 ## Open decision for PR2b (needs the owner)
 

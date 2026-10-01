@@ -2,7 +2,7 @@
 
 Branch `feature/uvalue-pr2b-window-2026-10-01`, from `sow/2026-Q3` `a023d9de` (PR2a merged as SAM_UI#162 `9ef5bd5`
 + closeout). **Not merged.** `PROJECT_PROGRESS.md` is not touched on this branch (closeout after merge).
-Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md); brief: [plans/UValue-PR2-PROMPT.md](plans/UValue-PR2-PROMPT.md);
+Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md);
 engine: [UValue-SetUValue-PR2A.md](UValue-SetUValue-PR2A.md).
 
 ## Status

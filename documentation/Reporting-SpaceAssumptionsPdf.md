@@ -117,4 +117,4 @@ The renderer's built-in SAM mark is used. SAM_UI has no company-logo resource, s
 (`DocumentStyle.CompanyLogoPng` stays null). No Tas or EDSL branding is used.
 
 ## Evidence
-See `documentation/evidence/space-assumptions-pdf/ACCEPTANCE-2026-09-26.md`.
+Acceptance evidence is not included in this repository.

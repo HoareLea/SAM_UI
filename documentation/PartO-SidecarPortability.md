@@ -81,4 +81,4 @@ Files: `PartOSidecarPaths.cs` (new); `Mixed/PartOMixedDesignState.cs`, `Mixed/Pa
 
 ## Next step
 
-Review and merge; then the `PROJECT_PROGRESS.md` closeout commit on `sow/2026-Q3`. Separate: the TPD `Loading TSD data` investigation record (docs-only PR).
+Review and merge; then the closeout commit on `sow/2026-Q3`. Separate: the TPD `Loading TSD data` investigation record (docs-only PR).

@@ -2,7 +2,7 @@
 
 Branch `fix/uvalue-calculator-messages-2026-10-01`, from `sow/2026-Q3` `7c17eab2`. **Not merged.**
 `PROJECT_PROGRESS.md` is not touched on this branch (closeout after merge, per `AGENTS.md`).
-Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md); brief: [plans/UValue-PR1-PROMPT.md](plans/UValue-PR1-PROMPT.md).
+Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md).
 
 **Depends on SAM_Tas PR1a: [SAM-BIM/SAM_Tas#78](https://github.com/SAM-BIM/SAM_Tas/pull/78)** (type-based layer
 picker; `Tas.Query.AdjustableLayerIndex`, which this PR calls). Merged as `4b5e1c18` (PR head `0a2c13d6`); SAM_Tas closeout `1761624f`. The `SAM_Tasuild` DLL used here was built from the PR head, whose code equals the merge.
@@ -115,9 +115,7 @@ The "Tas unavailable" message could not be provoked in the real app (unit tests 
 - `WPF/SAM.Analytical.UI.WPF/Query/UValueCalculationMessage.cs` (new)
 - `WPF/SAM.Analytical.UI.WPF/Modify/ThermalTransmittanceCalculator_SingleConstruction.cs`
 - `WPF/SAM.Analytical.UI.WPF.Tests/UValueCalculationMessageTests.cs` (new)
-- `documentation/UValue-LayerPicker-PR1.md` (this record), `documentation/plans/UValue-Workflow-PLAN.md`,
-  `documentation/plans/UValue-PR1-PROMPT.md` (committed here as instructed),
-  `documentation/evidence/uvalue-workflow-2026-10-01/` (shots, logs, probe, scripts).
+- `documentation/UValue-LayerPicker-PR1.md` (this record), `documentation/plans/UValue-Workflow-PLAN.md`.
 
 ## Risks
 

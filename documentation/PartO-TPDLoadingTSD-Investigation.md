@@ -4,8 +4,7 @@
 # Part O: the TPD `Loading TSD data` stall - investigation record
 
 **Status (1 Oct 2026): investigated; NOT reproduced and NOT proven; intentionally left unfixed. Docs-only.** Read against `sow/2026-Q3` at SAM_UI `2c0798b`, SAM `c3890d5c`, SAM_Tas
-`057faf3`, SAM_Systems `09063b4`. No production code or test was changed. The observation is recorded in the licensed Mixed acceptance evidence
-(`documentation/evidence/parto-mixed-licensed-acceptance-2026-10-01/`, SAM_UI#154).
+`057faf3`, SAM_Systems `09063b4`. No production code or test was changed. The observation was made during the licensed Mixed acceptance run (SAM_UI#154).
 
 ## Observation (one occurrence)
 
