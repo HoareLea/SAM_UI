@@ -7,10 +7,14 @@ Prerequisite PR3-0 (the SAM_Tas `.tcd` importer made linear) is merged as SAM_Ta
 
 ## Status
 
-Implemented, unit/window-tested (full WPF suite **1812 passed, 0 failed**: 1700 before + 112 new) and accepted in the
+Implemented, unit/window-tested (full WPF suite **1814 passed, 0 failed**: 1700 before + 114 new) and accepted in the
 real app (UIA-driven `SAM Analytical.exe` from a copy of `SAM_UI\build`, real Tas, fresh model copy). The solution builds
 (MSBuild, Release). SAM_Tas is unchanged by this PR. Owner decision applied: **Tools > Glazing Calculator opens the new
 window; the legacy flow stays as "Glazing Calculator (classic)"**.
+
+A closing pass (3D right-click route, full ModelCheck before/after, Undo/Redo, Part O style review) found **one real
+defect, now fixed**: the scoped post-apply check missed the host-panel rules that Edit > ModelCheck reports (see
+"Closing pass" below).
 
 ## What is added
 
@@ -68,11 +72,60 @@ App: copy of `SAM_UI\build`; model: fresh copy; driver and evidence are local (`
 | Don't assign | `SIM_EXT_GLZ_SKY` + 1 material added, no aperture changed; Undo restores |
 | Load more then Cancel | Undo disabled; saved model identical to the original |
 | Edit > Aperture Constructions > row > Set glazing... | list closes, window opens |
-| Interactions | Tools route with Load more ~8; without Load more ~5-6 |
+| Interactions (Tools route) | with Load more ~8 |
 
-**Not driven in the real app: the 3D right-click entry.** The 3D viewport did not rotate/zoom under injected mouse input,
-apertures are not visible from the default camera and the plan tabs show none. That menu item is verified by code review
-only (it calls the same `OpenSetGlazingWindow` the other routes use; the window itself is covered by window tests).
+## Closing pass: 3D right-click, ModelCheck before/after, Undo/Redo (final build)
+
+App: copy of `SAM_UI\build` at `13dff649` (`SAM.Analytical.UI.WPF.dll` md5 `e187a72c...`), fresh copy of the model, real Tas.
+The 3D context menu is built from the viewport's current **selection**, not a hit test, so the aperture was selected with
+right-click > Select > By Guid (the apertures are not visible from the default camera and injected drags do not orbit
+it); the counted path starts from that selected aperture and uses real mouse clicks.
+
+| Check | Result |
+|---|---|
+| **3D right-click route** | selected aperture, right-click in the viewport: the menu lists "Set glazing..." with the aperture items; clicking it opens the window with the aperture's system, "used by 20 apertures (1 selected)" and "Applies to 20 apertures using SIM_EXT_GLZ (1 selected)." The route works. |
+| **Interactions to Apply** | (1) right-click, (2) "Set glazing...", (3) click the chosen system, (4) Apply = **4**; (5) Close = **5**. Selecting the aperture by clicking it in a real session adds one: **5 to Apply, within the 4-6 target**. No layer picking, no error recovery. Window open 0.1 s, Tas table 680 ms. |
+| **Full ModelCheck BEFORE** | 5 information messages (gas recognised), **0 warnings, 0 errors** |
+| Apply | chose the library `SIM_EXT_GLZ` (Ug 2.24); added as `SIM_EXT_GLZ 2` (name clash handled) + 1 material; all 20 apertures, including the selected one, now on it; U/g/LT 2.238 / 0.406 / 0.804 |
+| **Full ModelCheck AFTER** | **40 warnings, 0 errors**, 5 messages: for each of the 20 apertures "ApertureConstruction ... different Default Panel Type than its SIM_EXT_SLD host panel" and "PanelType of SIM_EXT_SLD Panel does not match with assigned SIM_EXT_GLZ 2 ApertureConstruction". Cause: this library system's Default Panel Type is `Floor`, the hosts are `WallExternal`. |
+| **Scoped check vs full ModelCheck** | scoped line "Check: 40 warnings for SIM_EXT_GLZ 2 and its 20 apertures."; its 40 records are **text-identical** to the 40 warnings of the full ModelCheck (0 only-in-scoped, 0 only-in-full) |
+| No-regression case | applying the matching library twin (`SIM_EXT_GLZ`, same values, no new material): scoped "No errors or warnings for SIM_EXT_GLZ 2 and its 20 apertures."; full ModelCheck 0 warnings, 0 errors, 5 messages |
+| **One Undo** | Undo disabled, Redo enabled after one click; 20 apertures back on `SIM_EXT_GLZ` (U/g/LT 1.243 / 0.4002 / 0.8036); **1 aperture construction, 18 materials** (the added construction and material are not left behind); full ModelCheck back to 0 warnings / 5 messages |
+| **Redo** | 20 apertures on `SIM_EXT_GLZ 2`, 2 aperture constructions, 19 materials; Undo enabled, Redo disabled (one Apply = one history step) |
+
+### Defect found and fixed in the closing pass
+
+Applying a roof system (`SIM_EXT_GLZ_SKY`) to the wall apertures on the **pre-fix** build gave the scoped line "No errors or
+warnings", while Edit > ModelCheck warned for every aperture. Cause: `GlazingCheck` ran `Create.Log(panel,
+materialLibrary)` only, not the host-panel rules: `Create.Log(Panel)` (the aperture construction's Default Panel Type
+against the host panel) and the panel-group rule that SAM only runs inside `Create.Log(AdjacencyCluster)`. Fix
+(`Query/GlazingCheck.cs`): the scoped check also runs `Create.Log(panel)` and applies the panel-group rule, with SAM's
+wording, to the changed apertures. Regression tests: `TheCheck_ReportsASystemMadeForAnotherPanelGroup_AsModelCheckDoes`
+(a roof system on wall apertures: 10 warnings for 5 apertures, none before) and
+`TheCheck_OfASystemForTheSamePanelGroup_HasNoHostPanelWarnings`. Re-run on the fixed build: the "Scoped check vs full
+ModelCheck" and "No-regression case" rows above.
+
+Evidence note: the Edit > ModelCheck `Log` grid is virtualised, so a plain UIA read returns only the realised rows (22 of
+45 here); the counts above come from a scrolling reader, and SAM's own `Create.Log` on the saved model gives the same 40.
+
+## Part O style review (SetGlazingWindow against the Part O / TM59 windows)
+
+Compared: the new window's screenshots (empty, chosen, applied) with the captured Part O hub and TM59 result windows, and
+`PartOStyles.xaml` plus the Part O result/preparation window XAML. The Part O screenshots predate later Part O polish.
+
+| Element | Result |
+|---|---|
+| Section headings | **Consistent**: `PartO.SectionHeading` (bold) for "Glazing to replace" / "Target", as Part O's bold "Status" / "Current configuration" |
+| Captions | **Consistent**: `PartO.Caption` muted grey for the facts line, "Showing 5 of 5 systems..." and the report line, as Part O's grey explanatory lines |
+| Primary action | **Consistent**: Apply uses `PartO.PrimaryButton` (blue, default); Cancel/Close are plain buttons of the same 28 px height as the Part O results windows |
+| Status glyphs | **Consistent** resource (`PartO.StatusGlyph`: green check, red cross/warning triangle, grey dash). Part O's hub states "READY / NEEDS PREPARATION" in words; this window pairs glyph and words |
+| Table spacing / alignment | **Mostly consistent**: horizontal grid lines in the Part O border colour, numeric columns right-aligned, chosen row clearly marked. Differences: rows use the default height (~18 px) where the Part O Mixed Design grid sets 24 px, and the Pane / Frame text is truncated in the grid |
+| Advanced section | **Consistent**: collapsed Expander headed "Advanced" with the same circle chevron as Part O's "Catalogue products" |
+| Copy All / Details | **Partly different**: same size and grey style as Part O, but Copy All sits at the far left of the action bar (as in Set U-value) while the Part O result windows put it next to Close at the right. "Details" is a button in the result box (opens the existing LogWindow) where Part O uses "Technical details" expanders |
+| Warning / error wording | **Consistent in tone** (plain sentences, counts, "One Undo reverts it."). **Different in colour**: warnings use the red Danger brush (as Set U-value) because `PartOStyles` has no amber; Part O's hub amber is a hard-coded colour |
+
+Not changed in this PR (record only): grid row height and truncation, Copy All placement and an amber warning brush are
+small follow-ups, natural for PR4 with the restyle of the remaining legacy windows.
 
 ## Found in the first real-app pass and fixed
 
@@ -82,14 +135,15 @@ only (it calls the same `OpenSetGlazingWindow` the other routes use; the window 
 4. The status glyph for a neutral state is now neutral.
 5. Selected-row style fixed.
 6. The report says "none" for Uf of a frameless system.
+7. (Closing pass) The scoped check missed the host-panel rules of ModelCheck: see the defect section above.
 
-## Tests (`SAM.Analytical.UI.WPF.Tests`, 112 new; full suite 1812 passed, 0 failed)
+## Tests (`SAM.Analytical.UI.WPF.Tests`, 114 new; full suite 1814 passed, 0 failed)
 
 - `GlazingViewModelTests`: sources, candidate identity, filtering, target/margin/status, choosing, scope and Advanced
   options, blocked candidates and their reason, evaluator failure.
 - `SetGlazingTests`: one history step, only the chosen system and missing materials added, name clash, assign scopes,
   parameters refreshed, source kept, failure leaves the model untouched.
-- `GlazingSourceReaderTests` (reader, cache, pane-library note) and `GlazingReportTests` (check, report, save path).
+- `GlazingSourceReaderTests` (reader, cache, pane-library note) and `GlazingReportTests` (check incl. the host-panel rules, report, save path).
 - `SetGlazingWindowTests` (STA, `WpfCollection`): opened from apertures and from Tools; picker; target filters and
   chooses; row click; Tas failure shown; Apply changes the model once, shows the check and saves the report; unsaved model
   offers Copy All only; failed Apply leaves model and history alone; Advanced; selected-only disabled with no selection;
@@ -110,8 +164,7 @@ only (it calls the same `OpenSetGlazingWindow` the other routes use; the window 
    synthesised.
 4. **IGDB v76 is pane-only** (11,664 panes, no glazing systems), so it provides no complete candidates and the window says
    so. Automatic pane + gap + pane composition remains explicitly **out of scope** (owner decision, a later PR).
-5. The remaining acceptance gaps after the first real-app pass were the **3D right-click route** and a **full
-   Edit > ModelCheck before/after**; they are closed by the targeted pass below.
+5. The two acceptance gaps left after the first real-app pass, the 3D right-click route and the full ModelCheck before/after, are closed (see "Closing pass").
 
 ## Decisions and assumptions
 
@@ -130,12 +183,16 @@ only (it calls the same `OpenSetGlazingWindow` the other routes use; the window 
 - **Frameless candidates** (every TCD-imported system) get Uw = Ug and a warning that the apertures lose their frame; the
   table labels them "no frame". There is no preference for framed candidates beyond that label.
 - No automatic pane + gap + pane composition from IGDB panes.
+- **The table can offer systems made for another panel group.** Default-library systems carry a Default Panel Type (the
+  second `SIM_EXT_GLZ` is `Floor`, `SIM_EXT_GLZ_SKY` a roof system); on wall apertures they apply fine but ModelCheck then
+  warns for every aperture. The scoped check now says so after Apply (40 warnings in the case above); the window does not
+  yet warn **before** Apply. Left for the owner to decide (a pre-apply warning or a status on the row).
 - Pre-existing latent: an unknown TCD material type in a material folder throws `NullReferenceException` in the importer
   (documented in SAM_Tas#79).
 - Whole-model `Tas.Modify.UpdateThermalParameters` ignores aperture constructions; `SetGlazing` calculates the chosen
   system itself, so a later whole-model update will not refresh them.
 - The Edit > Aperture Constructions unsaved-edits prompt, "Tas unavailable" and the Copy All clipboard were not driven
-  in the real app.
+  in the real app. Aperture selection in the 3D acceptance was set up with Select > By Guid, not by clicking the aperture.
 - Evidence uses a folder copy of `SAM_UI\build`, not an installer.
 
 ## Files changed
