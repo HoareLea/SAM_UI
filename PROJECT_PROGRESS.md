@@ -3,6 +3,33 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): post-release investigation records (TPD stall; Systems-in-assessment reuse) - MERGED as SAM_UI#159 (`ab713d2`) (1 Oct 2026)
+
+**Status.** [SAM_UI#159](https://github.com/SAM-BIM/SAM_UI/pull/159) (docs only) merged into `sow/2026-Q3` with a merge commit (`ab713d2`; PR head `bd911a5`). It was MERGEABLE/CLEAN with `build` and `spdx` green.
+No production code or test changed. The companion code PR is SAM_UI#158 (sidecar portability), tracked separately.
+
+**Work.** Two investigation records, written after the Part O core release and final regression, with the Part O architecture untouched:
+`documentation/PartO-TPDLoadingTSD-Investigation.md` and `documentation/PartO-SystemsInAssessment-FutureReuse.md`.
+
+**Decisions.**
+- **TPD `Loading TSD data` stall (once, 7,420 s; retry 111 s): not reproduced, not proven, intentionally left unfixed.** The delay is one synchronous COM call (`energyCentre.AddTSDData`) into the
+  TPD server, before the SAM_Systems graph is read; nothing on that path has a timeout, kill, watchdog or cancel token, and no SAM-side cause was found. The route's `WaitToUnlock(path_TSD)` only returns
+  once the TSD is unlocked, which argues against "TBD still held the file". A timeout or process kill would be a behaviour change justified only by a guess. If it recurs, the smallest next step is a
+  behaviour-neutral diagnostic line before `AddTSDData` (exclusive-open probe, length, TBD/TAS3D/TSD/TPD process names, PIDs, start times); keep the `*.timing.csv`, `*.route.timing.csv` and a dump.
+- **"Systems in this assessment" outside Mixed: not built.** Prepare & Run has no Systems scope (SAM's scope query is never run there; a section would only repeat the prepare summary). Iteration 3 does
+  compute SAM's scope, but showing it needs plumbing (the `PartOIteration3SystemScope` wrapper drops `Exclusions` and structured `Refusals`; the PR-6 builder needs a cluster-based overload; the XAML
+  needs extracting into a shared control with the Mixed window's test accessors forwarded; a restored run says "not available"). Recorded as a future UX enhancement; Iteration 3 hub panel only, if wanted.
+
+**Files changed.** The two documentation files above only.
+
+**Validation.** Docs only: PR checks (`build`, `spdx`) green. Both records were written from a code read of `sow/2026-Q3` (SAM_UI `2c0798b`, SAM `c3890d5c`, SAM_Tas `057faf3`, SAM_Systems `09063b4`) and the
+SAM_UI#154 acceptance evidence; nothing was run against licensed TAS.
+
+**Risks / unresolved.** The stall can recur with no timeout or cancel path (Cancel waits for the running TAS step). Separate latent defect found on the way and flagged as its own task:
+`SAM.Core.Query.WaitToUnlock` never increments its counter, so a persistently locked file loops forever (called from SAM_Tas `Modify/Simulate.cs`; a different step from the observed stall).
+
+**Next step.** Merge SAM_UI#158 (sidecar portability) and close it out. Re-open the TPD record only on the next occurrence, with the diagnostics listed above.
+
 ## Current (Part O stream): PR-6 "Systems in this assessment" - MERGED as SAM_UI#156 (`84e7ad9`); the final core Part O feature PR (1 Oct 2026)
 
 **Status.** [SAM_UI#156](https://github.com/SAM-BIM/SAM_UI/pull/156) merged into `sow/2026-Q3` with a merge commit (`84e7ad9`; PR head `0dbf57e`, unchanged since review). It was
