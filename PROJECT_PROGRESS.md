@@ -3,6 +3,38 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): PR-5 every saved result says what it was derived from - MERGED as SAM_UI#155 (`a65825d`) + SAM#173 (`bce2c05d`) (1 Oct 2026)
+
+**Status.** Merged into `sow/2026-Q3` with merge commits: [SAM-BIM/SAM#173](https://github.com/SAM-BIM/SAM/pull/173) first (`bce2c05d`, closeout `d483faaf`), then
+[SAM-BIM/SAM_UI#155](https://github.com/SAM-BIM/SAM_UI/pull/155) (PR head `44455c1`, merge `a65825d`). SAM_UI CI re-run green against the merged SAM. Record:
+`documentation/PartO-BaselineReference-PR5.md` (it also holds the investigation). The licensed Mixed acceptance evidence that motivated it is [SAM_UI#154](https://github.com/SAM-BIM/SAM_UI/pull/154)
+(docs only, still open).
+
+**Work.** Every Part O case stamps its result with a `PartOBaselineReference` (SAM#173): 1a/1b/2 in `Simulate.cs` from the open design at simulation time; 2B on a copy of every round and the
+capacity envelope, sourced from the Iteration 2 result (run 0, not the previous round); Iteration 3 on Candidate B, sourced from Reference A's saved result with the design inherited; Mixed
+from SAM's materialiser plus the design locator from `PartOSimulationContext.Path_DesignModel` (session state). Locators are relative only - **no absolute path is persisted**.
+`PartORun.BaselineReference` exposes it, and the refusal shown for an opened result (Prepare, the Hub, Mixed Design) says which case it is and which design it came from, found by
+identity; nothing is opened or adopted and there is no new prompt.
+
+**Decisions.** Iteration 3 has one authoritative source result (Reference A; its prepared model is A's own). The review found that after a 2B run the session's run holds the last 2B round
+and Iteration 3 was offered over it: `PartOIteration3Eligibility` now refuses a 2B round, recognised by its own reference or by SAM's case-folder marker (regression tests failed first).
+A "Run from design model?" action is deliberately not built (UI work, PR-6 territory).
+
+**Files.** `SAM_UI/SAM.Analytical.UI/`: `Classes/PartO/PartOSimulationContext.cs`, `PartOOptimisationRun.cs`, `PartORun.cs`, `Query/PartODesignModelRefusal.cs`, new `Query/PartODerivedCaseOf.cs`;
+`WPF/SAM.Analytical.UI.WPF/`: `Modify/Simulate.cs`, `RunPartOSimulation.cs`, `OptimisePartOTM59.cs`, `RunPartOIteration3.cs`, `RunPartOStrategySet.cs`, `PreparePartOIteration.cs`,
+`RunPartOWorkflow.cs`, `Classes/PartO/Mixed/PartOMixedDesignSession.cs`, `Query/PartOIteration3Eligibility.cs`. Tests: `PartODesignModelProtectionTests.cs` (+4), `PartOIteration3RunTests.cs` (+1), new
+`PartOBaselineReferenceMixedTests.cs` (+1).
+
+**Validation.** `SAM.Analytical.UI.WPF.Tests` 1569/1569 on binaries rebuilt from clean sources (SAM 2787/2787). Six SAM_UI mutations killed (no stamping in Simulate, Iteration 3 or the 2B round; no
+Mixed locator; the Iteration 3 guard removed; the guard without its folder rule). The two call sites inside `Optimise` are covered through the production helper they call, not a full loop (it has no
+TAS seam). No local, user or OneDrive paths in any file of the PR or of the #154 evidence.
+
+**Risks.** Resolution may open up to 16 `.sam` files beside a recorded location, on the refusal path, on the UI thread. How an older build reads a result with the new parameter was not verified.
+A 2B round written before the reference existed is recognised by its case folder, not by its model. The existing `SimulationResultProvenance.Path_TSD` is itself absolute and was not changed.
+`.partomixed.json` is still named from the design's file name (Save As orphans it); the Iteration 3 review still requires absolute path equality.
+
+**Next step.** PR-6 ("Systems in this assessment") only on the owner's go-ahead. Separately, SAM_UI#154 (acceptance evidence) awaits the owner's decision to merge.
+
 ## Current (Part O stream): PR-3 Systems boundary - SAM_Systems processes only SAM's scope (30 Sep 2026) - MERGED as SAM_UI#153 (`5ad0e47`) + SAM_Systems#34 (`1893e71`)
 
 **Status.** Merged into `sow/2026-Q3` with merge commits: [SAM-BIM/SAM_Systems#34](https://github.com/SAM-BIM/SAM_Systems/pull/34)
