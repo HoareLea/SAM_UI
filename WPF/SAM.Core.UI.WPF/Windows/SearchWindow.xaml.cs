@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace SAM.Core.UI.WPF
@@ -46,6 +47,8 @@ namespace SAM.Core.UI.WPF
 
             MouseDoubleClick = SearchControl_Main.MouseDoubleClick;
             SelectedIndexChanged = SearchControl_Main.SelectedIndexChanged;
+
+            Initialize();
         }
 
         public SearchWindow(IEnumerable<object> items, Func<object, string> text, bool caseSensitive = false)
@@ -56,6 +59,57 @@ namespace SAM.Core.UI.WPF
 
             MouseDoubleClick = SearchControl_Main.MouseDoubleClick;
             SelectedIndexChanged = SearchControl_Main.SelectedIndexChanged;
+
+            Initialize();
+        }
+
+        /// <summary>
+        /// Wires the dialog's confirm paths. They listen to events of their own rather than to
+        /// <see cref="SelectedIndexChanged"/> / <see cref="MouseDoubleClick"/>, because those are public
+        /// delegates a caller may replace and so cannot carry behaviour the window itself needs.
+        /// </summary>
+        private void Initialize()
+        {
+            SearchControl_Main.AddHandler(Selector.SelectionChangedEvent, new SelectionChangedEventHandler(SearchControl_Main_SelectionChanged));
+            SearchControl_Main.ItemDoubleClick += SearchControl_Main_ItemDoubleClick;
+
+            UpdateOKEnabled();
+        }
+
+        private bool HasSelection()
+        {
+            List<object> selectedItems = SearchControl_Main.SelectedItems;
+            return selectedItems != null && selectedItems.Count != 0;
+        }
+
+        private void UpdateOKEnabled()
+        {
+            button_OK.IsEnabled = HasSelection();
+        }
+
+        private void Confirm()
+        {
+            if (!HasSelection())
+            {
+                return;
+            }
+
+            DialogResult = true;
+        }
+
+        private void SearchControl_Main_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateOKEnabled();
+        }
+
+        private void SearchControl_Main_ItemDoubleClick(object sender, RoutedEventArgs e)
+        {
+            Confirm();
+        }
+
+        private void button_OK_Click(object sender, RoutedEventArgs e)
+        {
+            Confirm();
         }
 
         [Description("Search Text"), Category("Data")]

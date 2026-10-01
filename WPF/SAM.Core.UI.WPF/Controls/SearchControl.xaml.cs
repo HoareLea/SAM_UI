@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -16,6 +17,20 @@ namespace SAM.Core.UI.WPF
         public new MouseEventHandler MouseDoubleClick;
 
         public EventHandler SelectedIndexChanged;
+
+        /// <summary>
+        /// Raised when an item of the list is double-clicked. <see cref="Control.MouseDoubleClick"/> is a direct
+        /// routed event - it reaches only the element that was clicked - so a host cannot listen for it on the
+        /// control; this one bubbles, and is raised for list items only (not for the search box or scroll bar).
+        /// </summary>
+        public static readonly RoutedEvent ItemDoubleClickEvent = EventManager.RegisterRoutedEvent(
+            nameof(ItemDoubleClick), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(SearchControl));
+
+        public event RoutedEventHandler ItemDoubleClick
+        {
+            add { AddHandler(ItemDoubleClickEvent, value); }
+            remove { RemoveHandler(ItemDoubleClickEvent, value); }
+        }
 
         public SearchControl()
         {
@@ -173,6 +188,16 @@ namespace SAM.Core.UI.WPF
             {
                 mouseEventHandler(this, e);
             }
+        }
+
+        private void ListBoxItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton != MouseButton.Left)
+            {
+                return;
+            }
+
+            RaiseEvent(new RoutedEventArgs(ItemDoubleClickEvent, this));
         }
 
         private void ListBox_Main_SelectionChanged(object sender, SelectionChangedEventArgs e)

@@ -8,6 +8,12 @@
              d:DesignHeight="450" d:DesignWidth="250">
     <Grid>
         <TextBox x:Name="TextBox_Text" Margin="5, 5, 5, 0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="20" TextChanged="TextBox_Text_TextChanged"/>
-        <ListBox x:Name="ListBox_Main" Margin="5,30,5,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectionChanged="ListBox_Main_SelectionChanged" />
+        <ListBox x:Name="ListBox_Main" Margin="5,30,5,5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" SelectionChanged="ListBox_Main_SelectionChanged">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <EventSetter Event="MouseDoubleClick" Handler="ListBoxItem_MouseDoubleClick"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
     </Grid>
 </UserControl>
