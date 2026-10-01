@@ -114,6 +114,12 @@ namespace SAM.Analytical.UI
 
         public JsonObject ToJsonObject()
         {
+            return ToJsonObject(null);
+        }
+
+        /// <param name="path_Sidecar">The sidecar this is written into; see <see cref="PartOSidecarPaths"/>.</param>
+        public JsonObject ToJsonObject(string path_Sidecar)
+        {
             JsonArray zones = [];
             Guids_Zone_Assessed.ForEach(x => zones.Add(x.ToString()));
 
@@ -123,7 +129,7 @@ namespace SAM.Analytical.UI
                 jsonArray_Results.Add(partODwellingResult.ToJsonObject());
             }
 
-            return new JsonObject
+            JsonObject result = new()
             {
                 ["Strategy"] = Strategy.ToString(),
                 ["CreatedUtc"] = CreatedUtc.ToString("o", CultureInfo.InvariantCulture),
@@ -132,15 +138,24 @@ namespace SAM.Analytical.UI
                 ["Fingerprint_Catalogue"] = Fingerprint_Catalogue,
                 ["SimulationCaseKey"] = SimulationCaseKey,
                 ["Guids_Zone_Assessed"] = zones,
-                ["Path_TSD"] = Path_TSD,
                 ["Length_TSD"] = Length_TSD,
                 ["Timestamp_TSD"] = Timestamp_TSD,
                 ["Results"] = jsonArray_Results,
             };
+
+            PartOSidecarPaths.Write(result, "TSD", Path_TSD, path_Sidecar);
+
+            return result;
         }
 
         /// <summary>Reads one back, or null where it is not readable. An unknown strategy name is unreadable.</summary>
         public static PartOScreeningEvidence Read(JsonObject jsonObject)
+        {
+            return Read(jsonObject, null);
+        }
+
+        /// <param name="path_Sidecar">Where the sidecar is now; see <see cref="PartOSidecarPaths"/>.</param>
+        public static PartOScreeningEvidence Read(JsonObject jsonObject, string path_Sidecar)
         {
             if (jsonObject is null || !Enum.TryParse((string)jsonObject["Strategy"], false, out PartOScreeningStrategy partOScreeningStrategy) || !Enum.IsDefined(typeof(PartOScreeningStrategy), partOScreeningStrategy) || partOScreeningStrategy == PartOScreeningStrategy.Undefined)
             {
@@ -153,7 +168,7 @@ namespace SAM.Analytical.UI
                 CatalogueOffered = (bool?)jsonObject["CatalogueOffered"] ?? false,
                 Fingerprint_Catalogue = (string)jsonObject["Fingerprint_Catalogue"],
                 SimulationCaseKey = (string)jsonObject["SimulationCaseKey"],
-                Path_TSD = (string)jsonObject["Path_TSD"],
+                Path_TSD = PartOSidecarPaths.Read(jsonObject, "TSD", path_Sidecar),
                 Length_TSD = (long?)jsonObject["Length_TSD"] ?? 0,
                 Timestamp_TSD = (long?)jsonObject["Timestamp_TSD"] ?? 0,
             };

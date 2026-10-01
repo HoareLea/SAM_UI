@@ -350,6 +350,186 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(File.Exists(Path.Combine(directory_It3Reports, "Flat-Iteration3-B0-Review.json")));
         }
 
+        /// <summary>
+        /// A later session on a copy of the project: the run is reopened from the COPY's results, as a reopened model
+        /// finds them through its relative locator.
+        /// </summary>
+        private PartORun Reopened(string directory_Root, PartORun partORun_Original)
+        {
+            PartORun partORun = new();
+
+            Assert.True(partORun.Prepare(
+                PartOIteration3Fixture.Model(adjacencyCluster),
+                partORun_Original.OverheatingScenarios,
+                new PartOPreparationContext(PartOIteration.BasePassive, zones, null, null),
+                guids_VentilationSystem));
+
+            string path_TSD = Path.Combine(directory_Root, "Flat.tsd");
+
+            Assert.True(partORun.ExpectResults(path_TSD));
+
+            //A run only accepts results written after it expected them; the copy's are rewritten (same content) as a rerun would.
+            File.WriteAllText(path_TSD, "reference A results");
+
+            AnalyticalModel analyticalModel_Workflow = PartOIteration3Fixture.Model(new AdjacencyCluster(adjacencyCluster), "Flat");
+
+            analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.OverheatingScenarios, new Core.SAMCollection<OverheatingScenario>(partORun.OverheatingScenarios));
+            analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, new SimulationResultProvenance(analyticalModel_Workflow, path_TSD));
+
+            Assert.True(partORun.Complete(analyticalModel_Workflow, path_TSD, PartOIteration3Fixture.SimulationContext(directory_Root), out string refusal), refusal);
+
+            return partORun;
+        }
+
+        private static void CopyTree(string from, string to)
+        {
+            foreach (string path in Directory.GetFiles(from, "*", SearchOption.AllDirectories))
+            {
+                string path_To = Path.Combine(to, Path.GetRelativePath(from, path));
+                Directory.CreateDirectory(Path.GetDirectoryName(path_To));
+
+                //File.Copy keeps the write time - the lineage of every file the record names is its length and write time.
+                File.Copy(path, path_To, true);
+            }
+        }
+
+        /// <summary>
+        /// The pairing record named absolute paths, so a project folder copied elsewhere refused its review (Reference
+        /// A's recorded results and every Candidate B file were "no longer there"), and - with the original left in
+        /// place - validated and loaded the ORIGINAL's Candidate B. The paths are now relative to the record.
+        /// </summary>
+        [Fact]
+        public void A_copied_project_folder_reviews_its_own_pairing_and_never_the_originals()
+        {
+            PartORun partORun_Original = Run(out PartOIteration3Result partOIteration3Result_Run, out List<Guid> guids_Bound);
+
+            string directory_Copy = directory + "_Copy";
+
+            try
+            {
+                CopyTree(directory, directory_Copy);
+
+                //The original is then made unusable: a review of the copy that still read it would now refuse.
+                File.AppendAllText(Path.Combine(directory_It3, "Flat-Iteration3-B0-Bridge.tsd"), "rewritten after the copy was taken");
+                foreach (string path in Directory.GetFiles(directory_It3, "*.sam"))
+                {
+                    File.AppendAllText(path, " ");
+                }
+
+                PartORun partORun_Copy = Reopened(directory_Copy, partORun_Original);
+
+                int count = 0;
+                PartOIteration3Result partOIteration3Result_Review = Modify.ReviewPartOIteration3(partORun_Copy, new PartOIteration3PipelineReviewOnly
+                {
+                    Func_Assess = guids => Assessment(guids, ++count == 1 ? 20.0 : 21.0),
+                });
+
+                Assert.True(partOIteration3Result_Review.IsRestored, string.Join(" | ", partOIteration3Result_Review.Reasons ?? []));
+                Assert.True(partOIteration3Result_Review.IsComplete, string.Join(" | ", partOIteration3Result_Review.Ledger.Reasons ?? []) + " || " + string.Join(" | ", partOIteration3Result_Review.Notes));
+                Assert.Equal(Path.Combine(directory_Copy, "Iteration3", "reports", "Flat-Iteration3-B0.json"), partOIteration3Result_Review.Path_Record, ignoreCase: true);
+                Assert.StartsWith(directory_Copy, partOIteration3Result_Review.Record.File(PartOIteration3Roles.CandidateB_Model).Path, StringComparison.OrdinalIgnoreCase);
+                Assert.StartsWith(directory_Copy, partOIteration3Result_Review.Record.Path_TSD_ReferenceA, StringComparison.OrdinalIgnoreCase);
+            }
+            finally
+            {
+                if (Directory.Exists(directory_Copy))
+                {
+                    Directory.Delete(directory_Copy, true);
+                }
+            }
+        }
+
+        /// <summary>A record an earlier build wrote - absolute paths, no locators - still reopens in place.</summary>
+        [Fact]
+        public void A_record_written_with_absolute_paths_still_reviews_in_place()
+        {
+            PartORun partORun_Original = Run(out PartOIteration3Result partOIteration3Result_Run, out List<Guid> guids_Bound);
+
+            //The record as an earlier build wrote it.
+            File.WriteAllText(partOIteration3Result_Run.Path_Record, partOIteration3Result_Run.Record.ToJsonObject().ToJsonString());
+
+            PartORun partORun = Reopened(directory, partORun_Original);
+
+            Assert.Contains(directory.Replace("\\", "\\\\"), File.ReadAllText(partOIteration3Result_Run.Path_Record), StringComparison.OrdinalIgnoreCase);
+
+            int count = 0;
+            PartOIteration3Result partOIteration3Result_Review = Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly
+            {
+                Func_Assess = guids => Assessment(guids, ++count == 1 ? 20.0 : 21.0),
+            });
+
+            Assert.True(partOIteration3Result_Review.IsRestored, string.Join(" | ", partOIteration3Result_Review.Reasons ?? []));
+            Assert.True(partOIteration3Result_Review.IsComplete, string.Join(" | ", partOIteration3Result_Review.Ledger.Reasons ?? []) + " || " + string.Join(" | ", partOIteration3Result_Review.Notes));
+        }
+
+        /// <summary>
+        /// The project files a new pairing record names - Reference A's results and model and every Candidate B file -
+        /// are written relative to the record, and no absolute path is written for them. (The stage ledger's own
+        /// sentences still quote paths for display; nothing resolves or compares them.)
+        /// </summary>
+        [Fact]
+        public void A_new_record_names_its_project_files_relative_to_itself()
+        {
+            Run(out PartOIteration3Result partOIteration3Result, out List<Guid> _);
+
+            JsonObject jsonObject = JsonNode.Parse(File.ReadAllText(partOIteration3Result.Path_Record)).AsObject();
+
+            Assert.Null(jsonObject["Path_TSD_ReferenceA"]);
+            Assert.Equal("../../Flat.tsd", (string)jsonObject["Locator_TSD_ReferenceA"]);
+
+            JsonArray jsonArray_Files = jsonObject["Files"].AsArray();
+            Assert.NotEmpty(jsonArray_Files);
+            foreach (JsonNode jsonNode_File in jsonArray_Files)
+            {
+                Assert.Null(jsonNode_File["Path"]);
+                Assert.False(Path.IsPathRooted((string)jsonNode_File["Locator"]), (string)jsonNode_File["Locator"]);
+            }
+
+            Assert.Contains(jsonArray_Files, x => (string)x["Locator"] == "../tas/Flat-It3B-Bridge.sam");
+        }
+
+        /// <summary>
+        /// The same results file named another way - forward slashes - is the same file: the review compares places,
+        /// not spellings, now that the record's path is resolved (and so normalised) from a locator.
+        /// </summary>
+        [Fact]
+        public void A_reopened_run_whose_results_path_is_spelt_differently_still_reviews_its_pairing()
+        {
+            PartORun partORun_Original = Run(out PartOIteration3Result _, out List<Guid> _);
+
+            PartORun partORun = Reopened(directory.Replace('\\', '/'), partORun_Original);
+
+            Assert.Contains('/', partORun.Path_TSD);
+
+            int count = 0;
+            PartOIteration3Result partOIteration3Result_Review = Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly
+            {
+                Func_Assess = guids => Assessment(guids, ++count == 1 ? 20.0 : 21.0),
+            });
+
+            Assert.True(partOIteration3Result_Review.IsComplete, string.Join(" | ", partOIteration3Result_Review.Ledger.Reasons ?? []));
+        }
+
+        /// <summary>A record with an unusable locator reads as a record with no such path, never as an exception out of the reopen.</summary>
+        [Fact]
+        public void A_record_with_a_malformed_locator_reads_without_throwing()
+        {
+            PartORun partORun = Run(out PartOIteration3Result partOIteration3Result_Run, out List<Guid> _);
+
+            JsonObject jsonObject = JsonNode.Parse(File.ReadAllText(partOIteration3Result_Run.Path_Record)).AsObject();
+            jsonObject["Locator_TSD_ReferenceA"] = "bad\u0000path.tsd";
+            File.WriteAllText(partOIteration3Result_Run.Path_Record, jsonObject.ToJsonString());
+
+            PartOIteration3Record partOIteration3Record = Query.PartOIteration3PairingRecord(partOIteration3Result_Run.Path_Record);
+
+            Assert.NotNull(partOIteration3Record);
+            Assert.Null(partOIteration3Record.Path_TSD_ReferenceA);
+
+            //And the review says so by name rather than throwing.
+            PartOIteration3Result partOIteration3Result_Review = Modify.ReviewPartOIteration3(partORun, new PartOIteration3PipelineReviewOnly { Func_Assess = guids => Assessment(guids, 20.0) });
+            Assert.False(partOIteration3Result_Review.IsComplete);
+        }
+
         /// <summary>A case's folders beneath the test root, as a Prepare &amp; Run creates them; its tas folder.</summary>
         private string Created(PartOOutputCase partOOutputCase)
         {
@@ -659,6 +839,26 @@ namespace SAM.Analytical.UI.WPF.Tests
                 : path_Record;
 
             JsonObject jsonObject = JsonNode.Parse(File.ReadAllText(path_Record_Run)).AsObject();
+
+            //A record of that era named absolute paths. The run's own record names them relative to itself, so it is
+            //rewritten the way the old build wrote it before it moves to another folder.
+            string directory_Run = Path.GetDirectoryName(path_Record_Run);
+
+            void Absolute(JsonObject jsonObject_Paths, string key_Path, string key_Locator)
+            {
+                if ((string)jsonObject_Paths[key_Locator] is string locator)
+                {
+                    jsonObject_Paths.Remove(key_Locator);
+                    jsonObject_Paths[key_Path] = Path.GetFullPath(Path.Combine(directory_Run, locator));
+                }
+            }
+
+            Absolute(jsonObject, "Path_TSD_ReferenceA", "Locator_TSD_ReferenceA");
+            Absolute(jsonObject, "Path_Model_ReferenceA", "Locator_Model_ReferenceA");
+            foreach (JsonNode jsonNode_File in jsonObject["Files"].AsArray())
+            {
+                Absolute(jsonNode_File.AsObject(), "Path", "Locator");
+            }
 
             if (!string.Equals(path_Record_Run, path_Record, StringComparison.OrdinalIgnoreCase))
             {

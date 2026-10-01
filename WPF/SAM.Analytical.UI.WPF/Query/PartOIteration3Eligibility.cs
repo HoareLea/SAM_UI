@@ -208,7 +208,7 @@ namespace SAM.Analytical.UI.WPF
 
             try
             {
-                return UI.PartOIteration3Record.Parse(File.ReadAllText(path_Record));
+                return UI.PartOIteration3Record.Parse(File.ReadAllText(path_Record), path_Record);
             }
             catch (IOException)
             {

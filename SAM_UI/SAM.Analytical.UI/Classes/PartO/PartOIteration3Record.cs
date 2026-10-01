@@ -378,6 +378,17 @@ namespace SAM.Analytical.UI
 
         public JsonObject ToJsonObject()
         {
+            return ToJsonObject(null);
+        }
+
+        /// <param name="path_Record">
+        /// The file this is written to: Reference A's results and model and every Candidate B file are then
+        /// written relative to its folder, so the pairing survives a moved or copied project
+        /// (<see cref="PartOSidecarPaths"/>). Null writes them absolute, as given. The ventilation unit catalogue
+        /// is not a project file - it lives where the product library is installed - and is always written as is.
+        /// </param>
+        public JsonObject ToJsonObject(string path_Record)
+        {
             JsonArray jsonArray_Bindings = [];
             foreach (PartOIteration3BindingRecord partOIteration3BindingRecord in bindings)
             {
@@ -387,7 +398,7 @@ namespace SAM.Analytical.UI
             JsonArray jsonArray_Files = [];
             foreach (PartOIteration3FileRecord partOIteration3FileRecord in files)
             {
-                jsonArray_Files.Add(partOIteration3FileRecord.ToJsonObject());
+                jsonArray_Files.Add(partOIteration3FileRecord.ToJsonObject(path_Record));
             }
 
             JsonArray jsonArray_Stages = [];
@@ -421,13 +432,11 @@ namespace SAM.Analytical.UI
                 jsonArray_Guidance.Add(partOIteration3GuidanceEvidence.ToJsonObject());
             }
 
-            return new JsonObject
+            JsonObject result = new()
             {
                 { "Schema", Schema },
                 { "Guid_Run", Guid_Run.ToString() },
                 { "Ticks_Utc", Ticks_Utc },
-                { "Path_TSD_ReferenceA", Path_TSD_ReferenceA },
-                { "Path_Model_ReferenceA", Path_Model_ReferenceA },
                 { "Fingerprint_Model_ReferenceA", Fingerprint_Model_ReferenceA },
                 { "Fingerprint_Scenarios_ReferenceA", Fingerprint_Scenarios_ReferenceA },
                 { "Fingerprint_Scenario", Fingerprint_Scenario },
@@ -461,9 +470,33 @@ namespace SAM.Analytical.UI
                 { "Stage_Refused", Stage_Refused.HasValue ? Stage_Refused.Value.ToString() : null },
                 { "IsComplete", IsComplete },
             };
+
+            string directory_Root = Directory_Root(path_Record);
+            PartOSidecarPaths.Write(result, "Path_TSD_ReferenceA", "Locator_TSD_ReferenceA", Path_TSD_ReferenceA, path_Record, directory_Root);
+            PartOSidecarPaths.Write(result, "Path_Model_ReferenceA", "Locator_Model_ReferenceA", Path_Model_ReferenceA, path_Record, directory_Root);
+
+            return result;
+        }
+
+        /// <summary>
+        /// The tree a pairing record travels with: the Part O root of the case folder it is written in (so Reference A's
+        /// results in a sibling case folder are inside it), or - for a record in a legacy flat folder - its own
+        /// folder. Null where there is no record path.
+        /// </summary>
+        internal static string Directory_Root(string path_Record)
+        {
+            string directory = string.IsNullOrWhiteSpace(path_Record) ? null : System.IO.Path.GetDirectoryName(System.IO.Path.GetFullPath(path_Record));
+
+            return string.IsNullOrWhiteSpace(directory) ? null : PartOOutputPaths.Root(directory);
         }
 
         public static PartOIteration3Record FromJsonObject(JsonObject jsonObject)
+        {
+            return FromJsonObject(jsonObject, null);
+        }
+
+        /// <param name="path_Record">Where the record file is NOW - what its relative locators are resolved against.</param>
+        public static PartOIteration3Record FromJsonObject(JsonObject jsonObject, string path_Record)
         {
             if (jsonObject is null)
             {
@@ -475,8 +508,8 @@ namespace SAM.Analytical.UI
                 Schema = PartOIteration3Json.Text(jsonObject, "Schema"),
                 Guid_Run = PartOIteration3Json.Guid(jsonObject, "Guid_Run"),
                 Ticks_Utc = PartOIteration3Json.Integer(jsonObject, "Ticks_Utc", -1),
-                Path_TSD_ReferenceA = PartOIteration3Json.Text(jsonObject, "Path_TSD_ReferenceA"),
-                Path_Model_ReferenceA = PartOIteration3Json.Text(jsonObject, "Path_Model_ReferenceA"),
+                Path_TSD_ReferenceA = PartOSidecarPaths.Read(jsonObject, "TSD_ReferenceA", path_Record),
+                Path_Model_ReferenceA = PartOSidecarPaths.Read(jsonObject, "Model_ReferenceA", path_Record),
                 Fingerprint_Model_ReferenceA = PartOIteration3Json.Text(jsonObject, "Fingerprint_Model_ReferenceA"),
                 Fingerprint_Scenarios_ReferenceA = PartOIteration3Json.Text(jsonObject, "Fingerprint_Scenarios_ReferenceA"),
                 Fingerprint_Scenario = PartOIteration3Json.Text(jsonObject, "Fingerprint_Scenario"),
@@ -527,7 +560,7 @@ namespace SAM.Analytical.UI
 
             foreach (JsonObject jsonObject_File in PartOIteration3Json.Objects(jsonObject, "Files"))
             {
-                result.Add(PartOIteration3FileRecord.FromJsonObject(jsonObject_File));
+                result.Add(PartOIteration3FileRecord.FromJsonObject(jsonObject_File, path_Record));
             }
 
             foreach (JsonObject jsonObject_Equipment in PartOIteration3Json.Objects(jsonObject, "Equipment"))
@@ -569,11 +602,23 @@ namespace SAM.Analytical.UI
         /// </summary>
         public override string ToString()
         {
-            return ToJsonObject().ToJsonString(new JsonSerializerOptions { WriteIndented = true });
+            return ToString(null);
+        }
+
+        /// <summary>The record as it is written to <paramref name="path_Record"/> - project files relative to it.</summary>
+        public string ToString(string path_Record)
+        {
+            return ToJsonObject(path_Record).ToJsonString(new JsonSerializerOptions { WriteIndented = true });
         }
 
         /// <summary>Reads one back. Null where the text is not a JSON object at all.</summary>
         public static PartOIteration3Record Parse(string text)
+        {
+            return Parse(text, null);
+        }
+
+        /// <summary>Reads one back from the file at <paramref name="path_Record"/>, resolving its locators against that folder.</summary>
+        public static PartOIteration3Record Parse(string text, string path_Record)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -582,7 +627,7 @@ namespace SAM.Analytical.UI
 
             try
             {
-                return FromJsonObject(JsonNode.Parse(text) as JsonObject);
+                return FromJsonObject(JsonNode.Parse(text) as JsonObject, path_Record);
             }
             catch (JsonException)
             {

@@ -1277,7 +1277,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     PartOOutputPaths.EnsureDirectoryForFile(path_Record);
 
-                    File.WriteAllText(path_Record, partOIteration3Record.ToString());
+                    File.WriteAllText(path_Record, partOIteration3Record.ToString(path_Record));
                 }
                 catch (Exception exception)
                 {

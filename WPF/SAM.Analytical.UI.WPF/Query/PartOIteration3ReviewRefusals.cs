@@ -232,7 +232,7 @@ namespace SAM.Analytical.UI.WPF
             //-------------------------------------------------------------------------------------------
             string path_TSD_ReferenceA = partORun.Path_TSD;
 
-            if (!string.Equals(partOIteration3Record.Path_TSD_ReferenceA, path_TSD_ReferenceA, StringComparison.OrdinalIgnoreCase))
+            if (!SamePlace(partOIteration3Record.Path_TSD_ReferenceA, path_TSD_ReferenceA))
             {
                 result.Add(string.Format(
                     "This Iteration 3 pairing was recorded against the results at '{0}', and the run being reviewed produced '{1}'.",
@@ -354,7 +354,7 @@ namespace SAM.Analytical.UI.WPF
                 return result;
             }
 
-            if (!string.Equals(path_TSD_CandidateB, partOIteration3FileRecord_TSD.Path, StringComparison.OrdinalIgnoreCase))
+            if (!SamePlace(path_TSD_CandidateB, partOIteration3FileRecord_TSD.Path))
             {
                 result.Add(string.Format(
                     "Candidate B's model records the results at '{0}' and this pairing recorded '{1}', so the model and the temperatures being compared are not from the same run.",
@@ -363,6 +363,26 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Whether two paths name the same place: compared after normalisation, so a spelling (slashes, a '..' segment) is not
+        /// a different file. A path that cannot be normalised is compared as written.
+        /// </summary>
+        private static bool SamePlace(string path_A, string path_B)
+        {
+            if (!string.IsNullOrWhiteSpace(path_A) && !string.IsNullOrWhiteSpace(path_B))
+            {
+                try
+                {
+                    return string.Equals(System.IO.Path.GetFullPath(path_A), System.IO.Path.GetFullPath(path_B), StringComparison.OrdinalIgnoreCase);
+                }
+                catch (Exception exception) when (exception is ArgumentException || exception is NotSupportedException || exception is System.IO.IOException)
+                {
+                }
+            }
+
+            return string.Equals(path_A, path_B, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
