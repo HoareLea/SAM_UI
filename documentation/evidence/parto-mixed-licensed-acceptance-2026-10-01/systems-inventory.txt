@@ -1,0 +1,26 @@
+== design model (open, read only)
+  VentilationSystem  MV                           guid=22e38d0c
+  VentilationSystem  NV                           guid=d50c5c6a
+  VentilationSystem  UV                           guid=7ad6dfcf
+  AirHandlingUnit    AHU1                         guid=e715cc07
+  PartOMaterialisationRecord         0
+  SimulationResultProvenance         0
+  OverheatingScenario                0
+  PartODwellingStrategySet           0
+  PartOManualEquipmentSelection      0
+  model-level keys: ['AdjacencyCluster', 'Description', 'Guid', 'Location', 'MaterialLibrary', 'Name', 'ParameterSets', 'ProfileLibrary', '_type']
+== Mixed run model
+  VentilationSystem  MV                           guid=22e38d0c
+  VentilationSystem  MVHR                         guid=e6a2f1ab
+  VentilationSystem  MVHR                         guid=6e4638d6
+  VentilationSystem  NV                           guid=d50c5c6a
+  VentilationSystem  UV                           guid=7ad6dfcf
+  AirHandlingUnit    AHU1                         guid=e715cc07
+  AirHandlingUnit    MVHR Flat 2                  guid=35ba3db0
+  AirHandlingUnit    MVHR Flat 3                  guid=87f7ecd9
+  PartOMaterialisationRecord         1
+  SimulationResultProvenance         1
+  OverheatingScenario                5
+  PartODwellingStrategySet           1
+  PartOManualEquipmentSelection      0
+  model-level keys: ['AdjacencyCluster', 'Description', 'Guid', 'Location', 'MaterialLibrary', 'Name', 'ParameterSets', 'ProfileLibrary', '_type']

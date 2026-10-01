@@ -1,0 +1,26 @@
+step,milliseconds,count
+"Opening TPD file",479.7,
+"Loading TSD data",1.9,
+"Adding properties (schedules/fluids/design conditions)",39.1,
+"Adding energy sources",13.3,
+"Plantroom: setup",5.8,
+"Plantroom: liquid systems",897.5,
+"Plantroom: standalone components (wind / PV)",10.1,
+"Plantroom: air systems",1334.1,
+"Plantroom: ventilation legs (bind)",19.1,
+"Plantroom: ventilation fans",25.0,
+"Plantroom: ventilation exchangers",10.9,
+"Plantroom: ventilation zone flags",14.1,
+"Plantroom: recirculation cooling",1.0,
+"Plantroom: manufacturer-guidance cooling",9673.5,
+"Reconciling the conversion",3.4,
+"Saving TPD",70.5,
+"TOTAL",12599.0,
+" > Guidance: write exchanger state table",3375.2,1
+" > Guidance: exchanger state table cells written",0.0,35479
+" > Guidance: exchanger state table cells",0.0,70490
+" > Guidance: write coil supply-law table",11.1,1
+" > Guidance: add controllers",17.6,1
+" > Guidance: read back exchanger state table",6124.4,1
+" > Guidance: read back coil",17.7,1
+" > Guidance: read back controllers",15.0,1
