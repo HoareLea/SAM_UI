@@ -97,6 +97,22 @@ only (it calls the same `OpenSetGlazingWindow` the other routes use; the window 
 - `UIJSAMObject.Undo` restores asynchronously, so unit tests assert one history step only; the restore itself is
   verified in the real app (table above).
 
+## Deviations from the plan, stated plainly
+
+1. **Legacy post-steps.** The plan says to keep `UpdateConstructions`, `UpdateApertureConstructions` and
+   `Tas.Modify.UpdateThermalParameters`. `SetGlazing` calls **`UpdateApertureConstructions` only**.
+   `UpdateConstructions` is not needed: panel constructions do not change when glazing is set.
+2. **Aperture performance is recalculated directly.** `Tas.Modify.UpdateThermalParameters` does not apply to aperture
+   constructions, so the chosen system is calculated with Tas (`CalculateGlazing`) and its U/g/LT parameters are written
+   by `SetGlazing` itself. A later whole-model `UpdateThermalParameters` will not refresh them.
+3. **Imported TCD glazing systems are frameless in the tested sources.** For those candidates `Uf` is blank and
+   `Uw = Ug`; the table shows "no frame" and a warning says the apertures lose their frame. No frame data is invented or
+   synthesised.
+4. **IGDB v76 is pane-only** (11,664 panes, no glazing systems), so it provides no complete candidates and the window says
+   so. Automatic pane + gap + pane composition remains explicitly **out of scope** (owner decision, a later PR).
+5. The remaining acceptance gaps after the first real-app pass were the **3D right-click route** and a **full
+   Edit > ModelCheck before/after**; they are closed by the targeted pass below.
+
 ## Decisions and assumptions
 
 - Candidate identity is the Guid, not the name.
@@ -118,8 +134,8 @@ only (it calls the same `OpenSetGlazingWindow` the other routes use; the window 
   (documented in SAM_Tas#79).
 - Whole-model `Tas.Modify.UpdateThermalParameters` ignores aperture constructions; `SetGlazing` calculates the chosen
   system itself, so a later whole-model update will not refresh them.
-- The 3D right-click entry, the Edit > Aperture Constructions unsaved-edits prompt, "Tas unavailable" and the Copy All
-  clipboard were not driven in the real app.
+- The Edit > Aperture Constructions unsaved-edits prompt, "Tas unavailable" and the Copy All clipboard were not driven
+  in the real app.
 - Evidence uses a folder copy of `SAM_UI\build`, not an installer.
 
 ## Files changed
