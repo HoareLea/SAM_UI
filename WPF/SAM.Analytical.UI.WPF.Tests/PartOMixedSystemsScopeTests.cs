@@ -35,13 +35,13 @@ namespace SAM.Analytical.UI.WPF.Tests
     [Collection(WpfCollection.Name)]
     public class PartOMixedSystemsScopeTests
     {
-        private const string PlantRoom = "Plant Room";
+        internal const string PlantRoom = "Plant Room";
 
         private static readonly VentilationUnitReference Reference = PartOMixedCoolingTests.Reference;
 
-        private static readonly VentilationUnitCapacityDescriptor Descriptor = PartOMixedCoolingTests.Descriptor;
+        internal static readonly VentilationUnitCapacityDescriptor Descriptor = PartOMixedCoolingTests.Descriptor;
 
-        private static VentilationUnitTemplate Template() => PartOMixedCoolingTests.Template();
+        internal static VentilationUnitTemplate Template() => PartOMixedCoolingTests.Template();
 
         /// <summary>The system types the <c>AddMechanicalSystems</c> template names, resolved by name as SAM does.</summary>
         private static Core.SystemTypeLibrary SystemTypeLibrary(string type_Plant)
@@ -65,7 +65,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// the corridor uncontrolled (<c>UV 1</c>, no unit), an unzoned plant room mechanical (<c>MV 1</c> naming
         /// <c>AHU1</c>), cooling <c>FCU 1</c> / <c>AHU 1</c> and heating <c>RAD 1</c>. None carries a design terminal.
         /// </summary>
-        private static AnalyticalModel Scaffolded(string type_Plant = "MV", double? plantSupply_Lps = null, bool cooled = true)
+        internal static AnalyticalModel Scaffolded(string type_Plant = "MV", double? plantSupply_Lps = null, bool cooled = true)
         {
             AnalyticalModel analyticalModel = PartOMixedDesignFixture.Baseline();
             AdjacencyCluster adjacencyCluster = analyticalModel.AdjacencyCluster;
@@ -110,7 +110,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             });
         }
 
-        private static PartOMaterialisation Materialise(AnalyticalModel baseline)
+        internal static PartOMaterialisation Materialise(AnalyticalModel baseline)
         {
             PartOMaterialisation result = baseline.MaterialisePartODwellingStrategies([Descriptor], null, [Template()]);
             Assert.True(result.IsMaterialised, result.Refusal);
@@ -121,7 +121,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         private static string Json(AnalyticalModel analyticalModel) => analyticalModel.ToJsonObject().ToJsonString();
 
         /// <summary>Build &amp; Run's production path, stopped by cancellation the moment its Systems preflight is behind it.</summary>
-        private static PartOStrategySetRun BuildToThePreflight(AnalyticalModel baseline, PartOMixedDesignFixture.FakeSimulator izam)
+        internal static PartOStrategySetRun BuildToThePreflight(AnalyticalModel baseline, PartOMixedDesignFixture.FakeSimulator izam)
         {
             using CancellationTokenSource cancellationTokenSource = new();
 

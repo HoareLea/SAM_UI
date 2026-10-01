@@ -27,6 +27,12 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Whether the Systems preflight was asked at all - only for a materialised design on the Systems route.</summary>
         public bool SystemsChecked { get; init; }
 
+        /// <summary>
+        /// The systems the design's assessment includes and the ones it retains without assessing, or why it is refused -
+        /// SAM's scope in the engineer's words (PR-6). Null where SAM refused to materialise the design at all.
+        /// </summary>
+        public PartOSystemsInAssessment? SystemsInAssessment { get; init; }
+
         public bool IsMaterialised => Materialisation?.IsMaterialised ?? false;
 
         /// <summary>Whether Build &amp; Run would get as far as TAS.</summary>
@@ -55,16 +61,21 @@ namespace SAM.Analytical.UI.WPF
 
             if (!partOMaterialisation.IsMaterialised || partOMaterialisation.Route != PartOSimulationRoute.Systems)
             {
-                return new PartOMixedDesignCheck { Materialisation = partOMaterialisation };
+                return new PartOMixedDesignCheck
+                {
+                    Materialisation = partOMaterialisation,
+                    SystemsInAssessment = partOMaterialisation.IsMaterialised ? Query.PartOSystemsInAssessment(partOMaterialisation, null) : null,
+                };
             }
 
-            PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates_Temp, new PartOIteration3Pipeline(), out string? refusal, out List<string> notes);
+            PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates_Temp, new PartOIteration3Pipeline(), out string? refusal, out List<string> notes, out PartOSystemsInAssessment systemsInAssessment);
 
             PartOMixedDesignCheck result = new()
             {
                 Materialisation = partOMaterialisation,
                 Refusal_Systems = refusal,
                 SystemsChecked = true,
+                SystemsInAssessment = systemsInAssessment,
             };
 
             result.Notes_Systems.AddRange(notes);

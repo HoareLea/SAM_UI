@@ -791,6 +791,44 @@ namespace SAM.Analytical.UI.WPF
             Refresh();
         }
 
+        // ---- Systems in this assessment (PR-6) ---------------------------------------------------------------------
+
+        private PartOSystemsInAssessment? systemsInAssessment;
+        private string? systemsInAssessment_Key;
+
+        /// <summary>
+        /// SAM's answer, from the last Check design or Build &amp; Run, to which ventilation systems the selected design's
+        /// assessment includes and which it retains without assessing (or why it is refused). Null until one has been asked,
+        /// and <b>null again as soon as it no longer describes the design on screen</b> (see
+        /// <see cref="SystemsInAssessmentStale"/>): the design, the selection and the catalogue offered are what SAM was asked
+        /// about, and this never shows an answer to a different question. Session-only: it is derived, not state.
+        /// </summary>
+        public PartOSystemsInAssessment? SystemsInAssessment => systemsInAssessment is not null && string.Equals(systemsInAssessment_Key, SystemsKey(), StringComparison.Ordinal) ? systemsInAssessment : null;
+
+        /// <summary>
+        /// Why a systems answer SAM gave is no longer shown - the design has changed since - or null where there is none
+        /// to be stale (never asked), or it is current.
+        /// </summary>
+        public string? SystemsInAssessmentStale => systemsInAssessment is not null && SystemsInAssessment is null
+            ? "The selected design has changed since SAM last answered. Check design to see which systems it assesses."
+            : null;
+
+        /// <summary>
+        /// Records SAM's answer for the design as it is now. Null clears it (SAM refused to materialise the design, so there
+        /// is no scope to show - its refusals are shown against the dwellings).
+        /// </summary>
+        public void SetSystemsInAssessment(PartOSystemsInAssessment? partOSystemsInAssessment)
+        {
+            systemsInAssessment = partOSystemsInAssessment;
+            systemsInAssessment_Key = partOSystemsInAssessment is null ? null : SystemsKey();
+        }
+
+        /// <summary>What SAM's systems answer depends on: the baseline's design, the selection, and whether the catalogue is offered.</summary>
+        private string SystemsKey()
+        {
+            return string.Join("|", fingerprint_Design, catalogueOffered ? "catalogue" : "generic", Draft.ToJsonObject()?.ToJsonString());
+        }
+
         /// <summary>Why this strategy's screening evidence is stale, or null where it is current or absent.</summary>
         public string? ScreeningStale(PartOScreeningStrategy partOScreeningStrategy) => screeningStale.TryGetValue(partOScreeningStrategy, out string? reason) ? reason : null;
 

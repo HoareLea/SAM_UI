@@ -217,6 +217,9 @@ namespace SAM.Analytical.UI.WPF
 
             partOMixedDesignSession.SetRefusals(partOMaterialisation.Refusals);
 
+            //Which systems the design's assessment includes - the same SAM scope Build & Run reports (PR-6).
+            RecordSystemsInAssessment(partOMixedDesignSession, partOMixedDesignCheck);
+
             if (partOMaterialisation.IsMaterialised && partOMixedDesignCheck.Refusal_Systems is not null)
             {
                 MessageBox.Show(owner, partOMixedDesignCheck.Refusal_Systems, "Part O — Check design");
@@ -234,6 +237,29 @@ namespace SAM.Analytical.UI.WPF
             MessageBox.Show(owner, RefusalText(partOMaterialisation.Refusals), "Part O — Check design");
 
             return string.Format("Check: SAM refused the design ({0}). Nothing was built.", UI.Query.PartOCount(partOMaterialisation.Refusals.Count, "refusal", "refusals"));
+        }
+
+        /// <summary>Hands the session SAM's systems answer from a Check design - null where SAM refused to materialise the design.</summary>
+        internal static void RecordSystemsInAssessment(PartOMixedDesignSession partOMixedDesignSession, PartOMixedDesignCheck partOMixedDesignCheck)
+        {
+            partOMixedDesignSession.SetSystemsInAssessment(partOMixedDesignCheck.SystemsInAssessment);
+        }
+
+        /// <summary>
+        /// Hands the session the systems a Build &amp; Run took, from the SAM scope its preflight used. SAM refusing to
+        /// materialise the design clears the answer; a run cancelled before the preflight has none to give, so an earlier
+        /// answer for this same design stays and one for another design is already stale.
+        /// </summary>
+        internal static void RecordSystemsInAssessment(PartOMixedDesignSession partOMixedDesignSession, PartOStrategySetRun partOStrategySetRun)
+        {
+            if (!partOStrategySetRun.IsMaterialised)
+            {
+                partOMixedDesignSession.SetSystemsInAssessment(null);
+            }
+            else if (partOStrategySetRun.Simulation?.SystemsInAssessment is PartOSystemsInAssessment partOSystemsInAssessment)
+            {
+                partOMixedDesignSession.SetSystemsInAssessment(partOSystemsInAssessment);
+            }
         }
 
         private static string ScreenPartOMixedDesign(UIAnalyticalModel uIAnalyticalModel, PartOMixedDesignSession partOMixedDesignSession, PartOSimulationCase partOSimulationCase, List<PartOScreeningStrategy> strategies, PartOScreeningMode partOScreeningMode, IWin32Window? owner)
@@ -397,6 +423,7 @@ namespace SAM.Analytical.UI.WPF
             if (!partOStrategySetRun.IsMaterialised)
             {
                 partOMixedDesignSession.SetRefusals(partOStrategySetRun.Refusals);
+                RecordSystemsInAssessment(partOMixedDesignSession, partOStrategySetRun);
 
                 MessageBox.Show(owner, RefusalText(partOStrategySetRun.Refusals), "Part O — Build & Run Mixed Design");
 
@@ -404,6 +431,8 @@ namespace SAM.Analytical.UI.WPF
             }
 
             partOMixedDesignSession.SetRefusals(null);
+
+            RecordSystemsInAssessment(partOMixedDesignSession, partOStrategySetRun);
 
             if (partOStrategySetRun.Cancelled || partOMixedRunEvidence is null)
             {
