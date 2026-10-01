@@ -3,6 +3,35 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): PR-6 "Systems in this assessment" - MERGED as SAM_UI#156 (`84e7ad9`); the final core Part O feature PR (1 Oct 2026)
+
+**Status.** [SAM_UI#156](https://github.com/SAM-BIM/SAM_UI/pull/156) merged into `sow/2026-Q3` with a merge commit (`84e7ad9`; PR head `0dbf57e`, unchanged since review). It was
+MERGEABLE/CLEAN, `build` and `spdx` green, no review blockers. SAM_UI only; no SAM change was needed (PR-5 SAM#173 and SAM#174 were already merged). Record:
+`documentation/PartO-SystemsInAssessment-PR6.md`. **PR-6 is the final core Part O feature PR.** This supersedes "PR-6 only on the owner's go-ahead" in the entries below.
+
+**Work.** Mixed Design shows a collapsible "Systems in this assessment" section: the systems Part O built (included) and the authored systems retained on the design but not assessed. SAM remains
+authoritative: the lists are `PartOSystemsMaterialisationScope` (`Guids_Retained`, `Exclusions`, `Refusals`) plus the materialisation record, and membership is by GUID/identity only (names are display
+words; nothing is classified by name, no duty is read, PR-1/PR-2 logic is not duplicated). Check design and Build & Run share ONE scope: `Modify.PartOMixedSystemsMaterialisation` (the one Systems
+preflight) gained an `out PartOSystemsInAssessment`, set on every return including a refusal; the old overload delegates. Four states, never blank: not checked yet, out of date (design / selection /
+catalogue changed - the old answer is withdrawn), refused (SAM's text, bounded, no list), answered. The answer is session-only and keyed by (design fingerprint, catalogue, draft selection); nothing
+is persisted. Display only - no AHU edit/remove controls.
+
+**Decisions.** Included label is the unit's name ("MVHR Flat 2"); fresh system identities per materialisation (Check and Build & Run agree on what they say and on authored retained guids, not on
+built-system guids); IZAM route claims no Systems scope; Prepare & Run / Iteration 3 do not show the section (follow-up, existing workflows unchanged).
+
+**Files.** `SAM_UI/WPF/SAM.Analytical.UI.WPF/`: new `Classes/PartO/Mixed/PartOSystemsInAssessment.cs`; `Modify/SimulatePartOMaterialisationSystems.cs`, `CheckPartOMixedDesign.cs`,
+`RunPartOStrategySet.cs`, `RunPartOMixedDesignCommand.cs`; `Classes/PartO/Mixed/PartOMixedDesignSession.cs`; `Windows/PartOMixedDesignWindow.xaml(.cs)`. Tests: new `PartOSystemsInAssessmentTests.cs` (21),
+`PartOMixedSystemsScopeTests.cs` helpers made internal. Evidence: `documentation/evidence/parto-pr6-systems-in-assessment-2026-10-01/` (no local paths).
+
+**Validation.** `SAM.Analytical.UI.WPF.Tests` **1590/1590** (1569 + 21). **11 mutations killed.** Real `SAM Analytical.exe` via UI Automation on a hash-verified copy of
+`000000_SAM_AnalyticalModel-Cleaned.sam`: Check design unchanged and the section read **2 included (MVHR Flat 2, MVHR Flat 3) / 3 retained (MV 1 naming AHU1, NV 1, UV 1)**; the source model's
+SHA256 was unchanged afterwards. No licensed TAS run. PR CI (`build`, `spdx`) green on `0dbf57e`.
+
+**Risks.** Build & Run was not clicked through in the real app (same preflight, covered by tests). Retained list has no search/filter. Unchanged and separate: the intermittent TPD `Loading TSD data`
+(`AddTSDData`) stall recorded in SAM_UI#154.
+
+**Next step.** SAM_Deploy (bump submodules to the merged Part O tips, build/package by the normal process), then the final release/regression validation. No further Part O feature work.
+
 ## Current (Part O stream): licensed Mixed Design acceptance evidence - MERGED as SAM_UI#154 (`12ffe4a`) (1 Oct 2026)
 
 **Status.** [SAM_UI#154](https://github.com/SAM-BIM/SAM_UI/pull/154) (docs only) merged into `sow/2026-Q3` with a merge commit on the owner's instruction. It was MERGEABLE/CLEAN, `build` and `spdx` green, no review requirement. This supersedes "#154 still open / awaits the owner's decision" in the PR-5 entry below.
