@@ -1,4 +1,7 @@
-﻿using SAM.Analytical.Tas;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Analytical.Tas;
 using SAM.Core;
 using SAM.Core.UI;
 using SAM.Core.UI.WPF;
@@ -139,12 +142,29 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
+                LayerThicknessCalculationData layerThicknessCalculationData = thermalTransmittanceCalculationData as LayerThicknessCalculationData;
+
+                string message = layerThicknessCalculationData?.UValueCalculationMessage(constructionManager);
+                if (message != null)
+                {
+                    progressBarWindowManager.Close();
+
+                    MessageBox.Show(message);
+                    @continue = true;
+                    continue;
+                }
+
                 thermalTransmittanceCalculationResult = thermalTransmittanceCalculator.Calculate(thermalTransmittanceCalculationData);
                 progressBarWindowManager.Close();
 
+                if (layerThicknessCalculationData != null)
+                {
+                    message = (thermalTransmittanceCalculationResult as LayerThicknessCalculationResult).UValueCalculationMessage(layerThicknessCalculationData, constructionManager);
+                }
+
                 if (thermalTransmittanceCalculationResult == null)
                 {
-                    MessageBox.Show("Could not calculate construction for given criteria.");
+                    MessageBox.Show(message ?? "Could not calculate construction for given criteria.");
                     @continue = true;
                     continue;
                 }
@@ -160,9 +180,9 @@ namespace SAM.Analytical.UI.WPF
                 }
                 else if (thermalTransmittanceCalculationResult is LayerThicknessCalculationResult)
                 {
-                    if (double.IsNaN(((LayerThicknessCalculationResult)thermalTransmittanceCalculationResult).CalculatedThermalTransmittance))
+                    if (message != null)
                     {
-                        MessageBox.Show("Could not calculate construction for given criteria.");
+                        MessageBox.Show(message);
                         @continue = true;
                         continue;
                     }

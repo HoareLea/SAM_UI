@@ -1,0 +1,13 @@
+param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Like = '*', [string]$SelectName = '', [string]$SetId = '', [string]$SetValue = '', [string]$Press = '', [string]$Combo = '', [string]$ComboItem = '', [string]$Shot = '', [int]$Wait = 2, [switch]$Dump)
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$w = Windows | Where-Object { $_.Like -or $_.Title -like $Like } | Where-Object { $Like -ne '*' -or $_.Title -notlike 'SAM Analytical*' } | Select-Object -First 1
+if (-not $w) { Say "FAIL window '$Like' not found"; ListWindows; exit 1 }
+$root = $AE::FromHandle($w.Handle)
+if ($SelectName) { $e = $root.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.AndCondition((New-Object System.Windows.Automation.PropertyCondition($AE::NameProperty, $SelectName)), (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::TreeItem))))); if ($e) { $p = $null; if ($e.TryGetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern, [ref]$p)) { $p.Select(); Say "selected '$SelectName'" } } else { Say "item '$SelectName' not found" } }
+if ($SetId) { $e = Find-ById $root $SetId; Say ("set {0}='{1}': {2}" -f $SetId, $SetValue, (Set-Text $e $SetValue)) }
+if ($Combo) { Say ("combo {0}: {1}" -f $Combo, (Select-ComboItem (Find-ById $root $Combo) $ComboItem)) }
+if ($Press) { Say "press $Press in '$($w.Title)'"; Detached ("-File `"$PSScriptRoot\invoke.ps1`" -ProcessId $script:ProcessId -Handle {0} -Id {1}" -f $w.Handle.ToInt64(), $Press) }
+Start-Sleep -Seconds $Wait
+foreach ($x in (Windows)) { if ($x.Class -eq '#32770') { Say ("MESSAGE BOX '{0}': {1}" -f $x.Title, (BoxText $x)) } }
+if ($Shot) { $t = Windows | Where-Object { $_.Title -notlike 'SAM Analytical*' } | Select-Object -First 1; if ($t) { Shot $t $Shot } ; if ($Dump -and $t) { (Dump ($AE::FromHandle($t.Handle)) 0 14) | Select-Object -First 150 } }
+ListWindows

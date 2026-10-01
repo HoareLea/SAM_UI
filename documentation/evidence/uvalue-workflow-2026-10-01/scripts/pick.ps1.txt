@@ -1,0 +1,14 @@
+param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Like = 'Construction Calculation Data', [string]$ListItemLike = '', [string]$Shot = '')
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$w = Top $Like; $root = $AE::FromHandle($w.Handle)
+$items = $root.FindAll($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::ListItem)))
+foreach ($i in $items) {
+    $sel = $null; $isSel = $false
+    if ($i.TryGetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern, [ref]$sel)) { $isSel = $sel.Current.IsSelected }
+    if ($ListItemLike -and $i.Current.Name -like $ListItemLike) { $sel.Select(); Say ("selected list item '{0}'" -f $i.Current.Name) ; $isSel = $true }
+    Say ("  item '{0}' selected={1}" -f $i.Current.Name, $isSel)
+}
+function Val($r, $Id) { $e = Find-ById $r $Id; $p = $null; if ($e -and $e.TryGetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern, [ref]$p)) { $p.Current.Value } else { "<absent>" } }
+Say ("U box: '{0}'; name box '{1}'" -f (Val $root 'TextBox_ThermalTransmittance'), (Val $root 'TextBox_ConstructionName'))
+if ($Shot) { Start-Sleep -Milliseconds 400; Shot $w $Shot }
+function Val($r, $Id) { $e = Find-ById $r $Id; $p = $null; if ($e -and $e.TryGetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern, [ref]$p)) { $p.Current.Value } else { '<absent>' } }

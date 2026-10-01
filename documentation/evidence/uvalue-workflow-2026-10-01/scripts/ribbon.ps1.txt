@@ -1,0 +1,11 @@
+param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Tab = 'Tools', [string]$Press = '', [string]$Shot = '')
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$m = Main; $el = $AE::FromHandle($m.Handle)
+$tabEl = Find-ById $el "RibbonTab_$Tab"
+$p = $null
+if ($tabEl.TryGetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern, [ref]$p)) { $p.Select() }
+Start-Sleep -Milliseconds 700
+$btn = $el.FindAll($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::Button)))
+foreach ($b in $btn) { if ($b.Current.AutomationId -like 'RibbonButton_*' -and -not $b.Current.IsOffscreen) { Say ("button '{0}' id={1} en={2}" -f $b.Current.Name, $b.Current.AutomationId, $b.Current.IsEnabled) } }
+if ($Press) { $b = Find-ById $el $Press; Detached ("-File `"$PSScriptRoot\invoke.ps1`" -ProcessId $script:ProcessId -Handle {0} -Id {1}" -f $m.Handle.ToInt64(), $Press); Say "pressed $Press" }
+if ($Shot) { Start-Sleep -Seconds 1; ScreenShot $Shot }

@@ -1,0 +1,5 @@
+param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Name = 'w', [string]$Like = '*', [int]$Depth = 12)
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+ListWindows
+$w = Windows | Where-Object { $_.Title -notlike 'SAM Analytical*' -and $_.Title -like $Like } | Select-Object -First 1
+if ($w) { Shot $w $Name; (Dump ($AE::FromHandle($w.Handle)) 0 $Depth) | Select-Object -First 120 }

@@ -1,0 +1,66 @@
+param()
+# U-value evidence driver library (derived from the Part O acceptance scripts).
+$sp = $PSScriptRoot
+. (Join-Path $sp 'uia.ps1'); . (Join-Path $sp 'win32.ps1')
+Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+Add-Type -Namespace A -Name N -ReferencedAssemblies System.Drawing,System.Windows.Forms -MemberDefinition @'
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool GetWindowRect(System.IntPtr h, out RECT r);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool SetForegroundWindow(System.IntPtr h);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern void mouse_event(uint f, uint x, uint y, uint d, System.IntPtr e);
+[System.Runtime.InteropServices.DllImport("user32.dll")] public static extern bool PrintWindow(System.IntPtr h, System.IntPtr hdc, uint flags);
+[System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)] public static extern int InternalGetWindowText(System.IntPtr h, System.Text.StringBuilder s, int n);
+public struct RECT { public int Left, Top, Right, Bottom; }
+public static string Capture(System.IntPtr h, string path) {
+    RECT r; GetWindowRect(h, out r);
+    int w = r.Right - r.Left, hh = r.Bottom - r.Top; if (w <= 0 || hh <= 0) return "empty";
+    using (var bmp = new System.Drawing.Bitmap(w, hh)) using (var g = System.Drawing.Graphics.FromImage(bmp)) {
+        var dc = g.GetHdc(); PrintWindow(h, dc, 2); g.ReleaseHdc(dc); bmp.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+    }
+    return w + "x" + hh;
+}
+public static void Click(int x, int y, bool right) {
+    SetCursorPos(x, y); System.Threading.Thread.Sleep(120);
+    if (right) { mouse_event(0x8, 0, 0, 0, System.IntPtr.Zero); mouse_event(0x10, 0, 0, 0, System.IntPtr.Zero); }
+    else { mouse_event(0x2, 0, 0, 0, System.IntPtr.Zero); mouse_event(0x4, 0, 0, 0, System.IntPtr.Zero); }
+}
+public static string Screen(string path) {
+    var b = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+    using (var bmp = new System.Drawing.Bitmap(b.Width, b.Height)) using (var g = System.Drawing.Graphics.FromImage(bmp)) {
+        g.CopyFromScreen(b.Left, b.Top, 0, 0, bmp.Size); bmp.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+    }
+    return b.Width + "x" + b.Height;
+}
+'@
+if (-not $Out) { $Out = 'C:\TasOut\uvalue\evidence' }
+New-Item -ItemType Directory -Force $Out | Out-Null
+$shots = Join-Path $Out 'shots'; New-Item -ItemType Directory -Force $shots | Out-Null
+$log = Join-Path $Out 'drive.log'
+$pidFile = Join-Path $Out 'pid.txt'; if (Test-Path $pidFile) { $script:ProcessId = [int](Get-Content $pidFile) }
+function Say($m) { $l = "{0:HH:mm:ss.fff} {1}" -f (Get-Date), $m; Write-Host $l; Add-Content -Path $log -Value $l -Encoding UTF8 }
+function Windows() {
+    $list = New-Object System.Collections.Generic.List[object]
+    $cb = [W.N+EnumProc]{ param($h, $l)
+        [uint32]$p = 0; [void][W.N]::GetWindowThreadProcessId($h, [ref]$p)
+        if ($p -eq $script:ProcessId -and [W.N]::IsWindowVisible($h)) {
+            $c = New-Object System.Text.StringBuilder 256; [void][W.N]::GetClassName($h, $c, 256)
+            $t = New-Object System.Text.StringBuilder 512; [void][A.N]::InternalGetWindowText($h, $t, 512)
+            $list.Add([pscustomobject]@{ Handle = $h; Class = $c.ToString(); Title = $t.ToString() })
+        }
+        return $true }
+    [void][W.N]::EnumWindows($cb, [System.IntPtr]::Zero)
+    return $list
+}
+function Main() { Windows | Where-Object { $_.Title -like 'SAM Analytical*' } | Select-Object -First 1 }
+function Top([string]$Like) { Windows | Where-Object { $_.Title -like $Like } | Select-Object -First 1 }
+function Detached([string]$Arguments) { [void](Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{ CommandLine = "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden $Arguments" }) }
+function Shot($top, [string]$Name) {
+    $base = Join-Path $shots $Name
+    $s = [A.N]::Capture($top.Handle, "$base.png")
+    Say ("  capture {0} '{1}' ({2})" -f $Name, $top.Title, $s)
+    try { $el = $AE::FromHandle($top.Handle); (Dump $el 0 30) | Out-File "$base.txt" -Encoding UTF8 } catch { "dump failed: $($_.Exception.Message)" | Out-File "$base.txt" }
+}
+function ScreenShot([string]$Name) { $s = [A.N]::Screen((Join-Path $shots "$Name.png")); Say "  screen $Name ($s)" }
+function BoxText($top) { (@(Get-Children $top.Handle | Where-Object { $_.Class -eq 'Static' } | ForEach-Object { $t = New-Object System.Text.StringBuilder 4096; [void][W.N]::GetWindowText($_.Handle, $t, 4096); $t.ToString() } | Where-Object { $_ }) -join ' / ') -replace "`r?`n", ' ' }
+function AllText($top) { try { $el = $AE::FromHandle($top.Handle); (@($el.FindAll($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::Text))) | ForEach-Object { $_.Current.Name }) -join ' | ') -replace "`r?`n", ' / ' } catch { '?' } }
+function ListWindows() { foreach ($w in (Windows)) { Say ("  window '{0}' [{1}] {2}" -f $w.Title, $w.Class, $w.Handle) } }

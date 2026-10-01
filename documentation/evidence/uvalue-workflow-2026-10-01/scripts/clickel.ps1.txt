@@ -1,0 +1,11 @@
+param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Like = '*', [string]$ById = '', [string]$ByName = '', [int]$Type = 0, [switch]$Right, [int]$Wait = 2)
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$w = Top $Like; if (-not $w) { Say "FAIL win $Like"; exit 1 }
+$root = $AE::FromHandle($w.Handle); [void][A.N]::SetForegroundWindow($w.Handle); Start-Sleep -Milliseconds 300
+$e = if ($ById) { Find-ById $root $ById } else { Find-ByName $root $ByName }
+if (-not $e) { Say 'FAIL element'; exit 1 }
+$r = $e.Current.BoundingRectangle
+$x = [int]($r.X + $r.Width / 2); $y = [int]($r.Y + $r.Height / 2)
+[A.N]::Click($x, $y, [bool]$Right); Say ("clicked '{0}{1}' at {2},{3}" -f $ById, $ByName, $x, $y)
+Start-Sleep -Seconds $Wait
+ListWindows
