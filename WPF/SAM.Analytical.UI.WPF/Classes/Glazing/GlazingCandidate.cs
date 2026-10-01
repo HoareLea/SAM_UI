@@ -63,8 +63,8 @@ namespace SAM.Analytical.UI.WPF
 
         public string Name => ApertureConstruction.Name;
 
-        /// <summary>The first 8 characters of the Guid: tells same-named systems apart in a tooltip.</summary>
-        public string ShortId => ApertureConstruction.Guid.ToString().Substring(0, 8);
+        /// <summary>The last 6 characters of the Guid: tells same-named systems apart in a tooltip (libraries often share the first group).</summary>
+        public string ShortId => ApertureConstruction.Guid.ToString().Substring(30);
 
         public ApertureConstruction ApertureConstruction { get; }
 
@@ -104,8 +104,9 @@ namespace SAM.Analytical.UI.WPF
             return string.Join(" / ", constructionLayers.Where(x => x != null).Select(x => string.Format(CultureInfo.CurrentCulture, "{0:0.#} {1}", x.Thickness * 1000, x.Name)));
         }
 
-        // Same definition = same JSON once the object's own Guid is left out (a material copied between libraries keeps
-        // its properties but may get a new Guid).
+        // Same definition = same JSON once the object's own Guid and the parameters without a value are left out (a material
+        // copied between libraries keeps its properties but may get a new Guid, and a NaN parameter is not written to a file,
+        // so a material read from a file would otherwise differ from the same one still in memory).
         private static bool Same(IMaterial material_1, IMaterial material_2)
         {
             if (ReferenceEquals(material_1, material_2))
@@ -124,7 +125,9 @@ namespace SAM.Analytical.UI.WPF
         private static string Json(IMaterial material)
         {
             string json = material.ToJsonObject()?.ToJsonString() ?? string.Empty;
-            return System.Text.RegularExpressions.Regex.Replace(json, "\"Guid\":\"[0-9a-fA-F-]{36}\",?", string.Empty);
+            json = System.Text.RegularExpressions.Regex.Replace(json, "\"Guid\":\"[0-9a-fA-F-]{36}\",?", string.Empty);
+            json = System.Text.RegularExpressions.Regex.Replace(json, @",\{""Name"":""[^""]*""\}", string.Empty);
+            return System.Text.RegularExpressions.Regex.Replace(json, @"\{""Name"":""[^""]*""\},?", string.Empty);
         }
     }
 }

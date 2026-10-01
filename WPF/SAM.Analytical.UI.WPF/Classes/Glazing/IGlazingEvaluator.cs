@@ -43,7 +43,7 @@ namespace SAM.Analytical.UI.WPF
 
     public sealed class GlazingEvaluation
     {
-        public GlazingEvaluation(IReadOnlyDictionary<Guid, GlazingValues> values, long elapsedMilliseconds, string error = null)
+        public GlazingEvaluation(IReadOnlyDictionary<Guid, GlazingValues> values, long elapsedMilliseconds, string? error = null)
         {
             Values = values ?? new Dictionary<Guid, GlazingValues>();
             ElapsedMilliseconds = elapsedMilliseconds;
@@ -56,6 +56,6 @@ namespace SAM.Analytical.UI.WPF
         public long ElapsedMilliseconds { get; }
 
         /// <summary>Why nothing could be calculated (Tas unavailable); null otherwise.</summary>
-        public string Error { get; }
+        public string? Error { get; }
     }
 }

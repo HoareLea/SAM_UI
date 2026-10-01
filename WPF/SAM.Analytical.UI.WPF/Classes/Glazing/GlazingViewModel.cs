@@ -619,7 +619,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     if (guids.Add(apertureConstruction.Guid))
                     {
-                        candidates.Add(new GlazingCandidate(apertureConstruction, source, source.Kind == GlazingSourceKind.Model ? null : modelMaterials));
+                        candidates.Add(new GlazingCandidate(apertureConstruction, source, modelMaterials));
                     }
                 }
             }
@@ -627,7 +627,7 @@ namespace SAM.Analytical.UI.WPF
             // The current system must be in the pool even if the model-source listing lost it.
             if (!candidates.Any(x => x.Guid == current.Guid))
             {
-                candidates.Insert(0, new GlazingCandidate(current, sources[0], null));
+                candidates.Insert(0, new GlazingCandidate(current, sources[0], modelMaterials));
             }
 
             Refresh();
@@ -690,7 +690,8 @@ namespace SAM.Analytical.UI.WPF
                     passes = uw <= target + 1e-9;
                 }
 
-                if (passes && transparent)
+                // A system without glass (a door) has no g or light transmittance: the g / light filters then say "no".
+                if (passes)
                 {
                     if (!double.IsNaN(minG) && !(glazingValues.G >= minG - 1e-9))
                     {
