@@ -1,0 +1,14 @@
+import json, sys, zipfile
+# Lists the model's Material Library names matching an optional substring.
+def names(path, needle):
+    z = zipfile.ZipFile(path); out = []
+    for n in z.namelist():
+        d = json.loads(z.read(n).decode('utf-8-sig'))
+        lib = d.get('MaterialLibrary') if isinstance(d, dict) else None
+        if lib is None and isinstance(d, list): lib = next((x.get('MaterialLibrary') for x in d if isinstance(x, dict) and 'MaterialLibrary' in x), None)
+        for m in (lib or {}).get('Objects', []) or []:
+            out.append(m.get('Name'))
+    return [x for x in out if needle in (x or '')], len(out)
+for p in sys.argv[2:]:
+    hit, total = names(p, sys.argv[1])
+    print(p, 'materials', total, 'matching', repr(sys.argv[1]), hit)

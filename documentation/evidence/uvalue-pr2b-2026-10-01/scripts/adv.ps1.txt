@@ -1,0 +1,8 @@
+param([string]$Out = 'C:\TasOut\uvalue\pr2b\a\ev', [string]$Like = 'Set U-value', [switch]$Expand, [string]$Radio = '')
+# Expands "Advanced" and/or selects a radio button in the Set U-value window (UIA patterns).
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$w = Top $Like; if (-not $w) { Say "FAIL window '$Like'"; exit 1 }
+$root = $AE::FromHandle($w.Handle)
+if ($Expand) { $e = Find-ById $root 'expander_Advanced'; $p = $null; if ($e.TryGetCurrentPattern([System.Windows.Automation.ExpandCollapsePattern]::Pattern, [ref]$p)) { $p.Expand(); Say 'Advanced expanded' } }
+if ($Radio) { Start-Sleep -Milliseconds 300; $e = Find-ById $root $Radio; $p = $null; if ($e -and $e.TryGetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern, [ref]$p)) { $p.Select(); Say "radio $Radio selected" } else { Say "FAIL radio $Radio" } }
+Start-Sleep -Milliseconds 500

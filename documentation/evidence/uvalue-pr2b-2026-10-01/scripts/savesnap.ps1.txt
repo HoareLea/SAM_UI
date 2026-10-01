@@ -1,0 +1,13 @@
+﻿param([string]$Out = 'C:\TasOut\uvalue\pr2b\a\ev', [Parameter(Mandatory)][string]$Model, [string]$As)
+# File > Save (to the model's own path), wait until the file is rewritten, copy it to $As and summarise it.
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$before = (Get-Item $Model).LastWriteTimeUtc
+& (Join-Path $PSScriptRoot 'ribbon.ps1') -Out $Out -Tab 'File' -Press 'RibbonButton_SaveAnalyticalModel' | Out-Null
+$sw = [Diagnostics.Stopwatch]::StartNew()
+while ((Get-Item $Model).LastWriteTimeUtc -eq $before -and $sw.Elapsed.TotalSeconds -lt 60) { Start-Sleep -Milliseconds 250 }
+Start-Sleep -Seconds 2
+foreach ($x in (Windows)) { if ($x.Class -eq '#32770') { Say ("MESSAGE BOX '{0}': {1}" -f $x.Title, (BoxText $x)) } }
+Copy-Item $Model $As -Force
+Say ("saved after {0:N1}s -> {1}" -f $sw.Elapsed.TotalSeconds, $As)
+$sum = & python (Join-Path $PSScriptRoot 'modelsum.py') $As
+$sum | ForEach-Object { Say $_ }

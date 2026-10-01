@@ -1,0 +1,10 @@
+param([string]$Out = 'C:\TasOut\uvalue\pr2b\a\ev', [string]$Like = 'Set U-value', [string]$Keys, [int]$Wait = 1500, [string]$Shot = '')
+# Sends keystrokes to a window (SendKeys syntax: {ENTER}, {ESC}, ...), waits, optionally captures it.
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$w = Top $Like; if (-not $w) { Say "FAIL window '$Like'"; exit 1 }
+[void][A.N]::SetForegroundWindow($w.Handle); Start-Sleep -Milliseconds 300
+$sw = [Diagnostics.Stopwatch]::StartNew()
+[System.Windows.Forms.SendKeys]::SendWait($Keys)
+Say ("keys '{0}' to '{1}'" -f $Keys, $w.Title)
+Start-Sleep -Milliseconds $Wait
+if ($Shot) { $w2 = Top $Like; if ($w2) { Shot $w2 $Shot } else { ScreenShot $Shot } }

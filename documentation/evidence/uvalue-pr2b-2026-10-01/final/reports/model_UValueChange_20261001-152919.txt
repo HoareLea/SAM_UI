@@ -1,0 +1,17 @@
+U-VALUE CHANGE
+==============
+Model:        C:\TasOut\uvalue\pr2b\b\model.sam
+Applied:      applied at 2026-10-01 15:29:19; may since have been undone
+Method:       SAM Set U-value: Tas TCD thermal transmittance, one layer varied
+
+Construction: SIM_EXT_SLD U0.30 -> SIM_EXT_SLD U0.35 (new construction; SIM_EXT_SLD U0.30 unchanged)
+Layer:        5: I01_Mineral Wool_20kg/m3_0.025W/mK_0.067m -> I01_Mineral Wool_20kg/m3_0.025W/mK_0.055m
+Thickness:    67 mm -> 55 mm
+U-value:      0.300 -> 0.350 W/m2K (target 0.350; horizontal heat flow)
+Scope:        1 selected panel that used SIM_EXT_SLD U0.30
+Material:     I01_Mineral Wool_20kg/m3_0.025W/mK_0.055m added to the Material Library
+
+CHECK (SAM model-check rules over the changed construction and its panels)
+No errors or warnings for SIM_EXT_SLD U0.35 and its 1 panel.
+  Message: Gas Material Ar90Up_Air__50mm_1.25W/m2K for SIM_EXT_SLD U0.35 (Guid: 600e4b75-a684-40d6-a7ca-7f8c4591b105) recognized as Air (Construction Layer Index: 2)
+  Message: Gas Material Ar90Up_Air__50mm_1.25W/m2K for SIM_EXT_SLD U0.35 (Guid: 600e4b75-a684-40d6-a7ca-7f8c4591b105) recognized as Air (Construction Layer Index: 5)
