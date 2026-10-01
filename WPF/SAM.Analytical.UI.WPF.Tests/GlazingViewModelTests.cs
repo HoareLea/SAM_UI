@@ -353,10 +353,10 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.Equal("Applies to 20 apertures using GLZ (3 selected).", viewModel.ScopeText);
 
-            viewModel.ApplyScope = GlazingApplyScope.SelectedApertures;
+            viewModel.ApplyScope = ThermalApplyScope.SelectedOnly;
             Assert.Equal("Applies to 3 selected apertures of the 20 using GLZ.", viewModel.ScopeText);
 
-            viewModel.ApplyScope = GlazingApplyScope.DontAssign;
+            viewModel.ApplyScope = ThermalApplyScope.DontAssign;
             Assert.Equal("Adds the chosen system to the model without assigning it to any aperture.", viewModel.ScopeText);
         }
 
@@ -442,7 +442,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             GlazingViewModel viewModel = await Ready(analyticalModel, selected);
 
             double all = viewModel.CurrentRow.Uw;
-            viewModel.ApplyScope = GlazingApplyScope.SelectedApertures;
+            viewModel.ApplyScope = ThermalApplyScope.SelectedOnly;
 
             // The same windows everywhere: the weighted value does not depend on how many, and is recomputed, not stale.
             Assert.Equal(all, viewModel.CurrentRow.Uw, 6);
@@ -543,7 +543,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             List<Guid> selected = GlazingFixture.ApertureGuids(analyticalModel, GlazingFixture.CurrentGuid).Take(3).ToList();
             GlazingViewModel viewModel = await Ready(analyticalModel, selected);
             viewModel.TargetText = "1.25";
-            viewModel.ApplyScope = GlazingApplyScope.SelectedApertures;
+            viewModel.ApplyScope = ThermalApplyScope.SelectedOnly;
 
             SetGlazingRequest request = viewModel.CreateRequest();
 
@@ -551,7 +551,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(GlazingFixture.CurrentGuid, request.SourceApertureConstructionGuid);
             Assert.Equal(GlazingFixture.BetterGuid, request.ApertureConstruction.Guid);
             Assert.Equal(new[] { GlazingFixture.LowE }, request.MaterialsToAdd.Select(x => x.Name).ToArray());
-            Assert.Equal(GlazingApplyScope.SelectedApertures, request.Scope);
+            Assert.Equal(ThermalApplyScope.SelectedOnly, request.Scope);
             Assert.Equal(selected.OrderBy(x => x), request.SelectedApertureGuids.OrderBy(x => x));
             Assert.Equal(1.10, request.Values.Ug);
             Assert.Equal(1.40, request.OldValues.Ug);

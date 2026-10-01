@@ -41,7 +41,7 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Why nothing was applied; null on success.</summary>
         public string Error { get; }
 
-        public GlazingApplyScope Scope { get; }
+        public ThermalApplyScope Scope { get; }
 
         /// <summary>The aperture construction the apertures used before.</summary>
         public ApertureConstruction SourceApertureConstruction { get; }

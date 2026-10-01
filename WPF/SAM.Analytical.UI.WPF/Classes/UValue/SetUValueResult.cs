@@ -21,7 +21,7 @@ namespace SAM.Analytical.UI.WPF
         internal SetUValueResult(SetUValueRequest request, Construction sourceConstruction, Construction construction, string sourceMaterialName, string materialName, bool materialAdded, double oldThickness, double newThickness, IReadOnlyList<Guid> panelGuids)
         {
             Mode = request.Mode;
-            Scope = request.Mode == UValueApplyMode.ModifyInPlace ? UValueApplyScope.AllPanels : request.Scope;
+            Scope = request.Mode == UValueApplyMode.ModifyInPlace ? ThermalApplyScope.AllUsing : request.Scope;
             LayerIndex = request.LayerIndex;
             OldThermalTransmittance = request.InitialThermalTransmittance;
             NewThermalTransmittance = request.CalculatedThermalTransmittance;
@@ -46,8 +46,8 @@ namespace SAM.Analytical.UI.WPF
 
         public UValueApplyMode Mode { get; }
 
-        /// <summary>The effective scope (<see cref="UValueApplyScope.AllPanels"/> for in-place).</summary>
-        public UValueApplyScope Scope { get; }
+        /// <summary>The effective scope (<see cref="ThermalApplyScope.AllUsing"/> for in-place).</summary>
+        public ThermalApplyScope Scope { get; }
 
         /// <summary>The construction before the change.</summary>
         public Construction SourceConstruction { get; }

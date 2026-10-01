@@ -23,9 +23,9 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>The materials of the chosen system that the model does not have; only these are added.</summary>
         public IEnumerable<IMaterial> MaterialsToAdd { get; set; }
 
-        public GlazingApplyScope Scope { get; set; } = GlazingApplyScope.AllApertures;
+        public ThermalApplyScope Scope { get; set; } = ThermalApplyScope.AllUsing;
 
-        /// <summary>The selected apertures; used by <see cref="GlazingApplyScope.SelectedApertures"/>.</summary>
+        /// <summary>The selected apertures; used by <see cref="ThermalApplyScope.SelectedOnly"/>.</summary>
         public IEnumerable<Guid> SelectedApertureGuids { get; set; }
 
         /// <summary>Values of the chosen system as shown in the comparison (set on the apertures, and for the report).</summary>

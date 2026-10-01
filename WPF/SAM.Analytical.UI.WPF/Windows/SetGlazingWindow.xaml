@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Set glazing" Height="780" Width="1100" MinWidth="760" MinHeight="620"
+        Title="Set glazing" Height="800" Width="1260" MinWidth="760" MinHeight="620"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" FontFamily="Roboto Light">
     <Window.Resources>
         <ResourceDictionary>
@@ -32,7 +32,20 @@
 
             <Style x:Key="Style_RightCell" TargetType="TextBlock">
                 <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="0,0,6,0"/>
+            </Style>
+
+            <!-- A text cell that is cut short ends in an ellipsis (the row's tooltip carries the full text), centred in the 24 px row. -->
+            <Style x:Key="Style_TrimmedCell" TargetType="TextBlock">
+                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="2,0,6,0"/>
+            </Style>
+
+            <!-- The Check column: what the system is marked for before it is chosen, in amber, never colour alone (the words carry it). -->
+            <Style x:Key="Style_WarningCell" TargetType="TextBlock" BasedOn="{StaticResource Style_TrimmedCell}">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Warning}"/>
             </Style>
         </ResourceDictionary>
     </Window.Resources>
@@ -108,7 +121,7 @@
 
                 <DataGrid x:Name="dataGrid_Candidates" Grid.Row="1" Margin="0,6,0,0" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column"
                           CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False" SelectionMode="Single" SelectionUnit="FullRow"
-                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{StaticResource PartO.Brush.Border}" MinHeight="150"
+                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{StaticResource PartO.Brush.Border}" MinHeight="150" RowHeight="24"
                           SelectionChanged="dataGrid_Candidates_SelectionChanged" AutomationProperties.Name="Glazing systems">
                     <!-- The chosen row stays clearly marked, whether or not the grid has the focus. -->
                     <DataGrid.Resources>
@@ -129,17 +142,18 @@
                         </Style>
                     </DataGrid.RowStyle>
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="System" Binding="{Binding NameText}" Width="170"/>
-                        <DataGridTextColumn Header="Source" Binding="{Binding SourceLabel}" Width="100"/>
-                        <DataGridTextColumn Header="Pane" Binding="{Binding PaneBuildUp}" Width="*"/>
-                        <DataGridTextColumn Header="Frame" Binding="{Binding FrameText}" Width="110"/>
+                        <DataGridTextColumn Header="System" Binding="{Binding NameText}" Width="170" ElementStyle="{StaticResource Style_TrimmedCell}"/>
+                        <DataGridTextColumn Header="Source" Binding="{Binding SourceLabel}" Width="90" ElementStyle="{StaticResource Style_TrimmedCell}"/>
+                        <DataGridTextColumn Header="Pane" Binding="{Binding PaneBuildUp}" Width="*" MinWidth="160" ElementStyle="{StaticResource Style_TrimmedCell}"/>
+                        <DataGridTextColumn Header="Frame" Binding="{Binding FrameText}" Width="110" ElementStyle="{StaticResource Style_TrimmedCell}"/>
                         <DataGridTextColumn Header="Ug" Binding="{Binding UgText}" Width="46" ElementStyle="{StaticResource Style_RightCell}"/>
                         <DataGridTextColumn Header="Uf" Binding="{Binding UfText}" Width="46" ElementStyle="{StaticResource Style_RightCell}"/>
                         <DataGridTextColumn Header="g" Binding="{Binding GText}" Width="44" ElementStyle="{StaticResource Style_RightCell}"/>
                         <DataGridTextColumn Header="Light" Binding="{Binding LightTransmittanceText}" Width="50" ElementStyle="{StaticResource Style_RightCell}"/>
                         <DataGridTextColumn Header="Uw" Binding="{Binding UwText}" Width="54" ElementStyle="{StaticResource Style_RightCell}"/>
                         <DataGridTextColumn Header="Margin" Binding="{Binding MarginText}" Width="56" ElementStyle="{StaticResource Style_RightCell}"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="110"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="110" ElementStyle="{StaticResource Style_TrimmedCell}"/>
+                        <DataGridTextColumn Header="Check" Binding="{Binding WarningText}" Width="200" ElementStyle="{StaticResource Style_WarningCell}"/>
                     </DataGrid.Columns>
                 </DataGrid>
 
@@ -177,16 +191,24 @@
             </StackPanel>
         </Border>
 
-        <!-- THE APPLY SCOPE, inline, before Apply: which apertures, what is added, and the warnings. -->
+        <!-- THE APPLY SCOPE, inline and in the main area (not under Advanced), before Apply: which apertures (all N using the
+             current system, or only the M selected), what is added, and the warnings. The labels carry the counts and are set
+             from GlazingViewModel.Scope. -->
         <Border Grid.Row="4" Margin="0,10,0,0" Background="{StaticResource PartO.Brush.AccentSurface}" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="10,6">
             <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                    <TextBlock Text="Changes" VerticalAlignment="Center" Margin="0,0,12,0" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                    <RadioButton x:Name="radioButton_AllApertures" GroupName="Scope" IsChecked="True" Content="All apertures using it" Margin="0,0,16,0" Checked="radioButton_Scope_Checked"/>
+                    <RadioButton x:Name="radioButton_SelectedApertures" GroupName="Scope" Content="Only the selected" Checked="radioButton_Scope_Checked"/>
+                </StackPanel>
+                <TextBlock x:Name="textBlock_ScopeReason" Style="{StaticResource PartO.Caption}" Margin="0,0,0,4" Visibility="Collapsed"/>
                 <TextBlock x:Name="textBlock_Scope" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}"/>
                 <TextBlock x:Name="textBlock_Result" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}" Margin="0,2,0,0"/>
                 <ItemsControl x:Name="itemsControl_Warnings" Focusable="False" Margin="0,4,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
-                                <TextBlock Text="&#x26A0;" Style="{StaticResource PartO.StatusGlyph}" Foreground="{StaticResource PartO.Brush.Danger}"/>
+                                <TextBlock Text="&#x26A0;" Style="{StaticResource PartO.StatusGlyph}" Foreground="{StaticResource PartO.Brush.Warning}"/>
                                 <TextBlock Text="{Binding}" TextWrapping="Wrap" MaxWidth="900" Foreground="{StaticResource PartO.Brush.Text}"/>
                             </StackPanel>
                         </DataTemplate>
@@ -208,12 +230,10 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="Assign to" VerticalAlignment="Center" Margin="0,2,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
-                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0,2">
-                    <RadioButton x:Name="radioButton_AllApertures" GroupName="Scope" Content="All apertures using it" IsChecked="True" Margin="0,0,16,0" Checked="radioButton_Scope_Checked"/>
-                    <RadioButton x:Name="radioButton_SelectedApertures" GroupName="Scope" Content="Selected apertures only" Margin="0,0,16,0" Checked="radioButton_Scope_Checked"/>
-                    <RadioButton x:Name="radioButton_DontAssign" GroupName="Scope" Content="Don't assign" Checked="radioButton_Scope_Checked"/>
-                </StackPanel>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Assign" VerticalAlignment="Center" Margin="0,2,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                <CheckBox x:Name="checkBox_DontAssign" Grid.Row="0" Grid.Column="1" Content="Don't assign to any aperture (only add the system to the model)" Margin="0,2"
+                          Checked="radioButton_Scope_Checked" Unchecked="radioButton_Scope_Checked"
+                          ToolTip="Add the chosen system and the materials it lacks to the model without assigning it to any aperture."/>
 
                 <TextBlock Grid.Row="1" Grid.Column="0" Text="Candidates from" VerticalAlignment="Center" Margin="0,2,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
                 <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,2">

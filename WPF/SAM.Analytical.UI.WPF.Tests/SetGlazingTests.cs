@@ -25,7 +25,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             return new ThermalTransmittanceCalculationResult(request.ApertureConstruction.Guid, "Fake", 0.70, 0.20, 0.45, 0.25, 0.30, 0.50, 0.60, 0.30, new ThermalTransmittances(2, 2, 2, 2, 2, 2, 1.10));
         }
 
-        private static async Task<SetGlazingRequest> Request(AnalyticalModel analyticalModel, Guid systemGuid, GlazingApplyScope scope = GlazingApplyScope.AllApertures, IEnumerable<Guid> selected = null)
+        private static async Task<SetGlazingRequest> Request(AnalyticalModel analyticalModel, Guid systemGuid, ThermalApplyScope scope = ThermalApplyScope.AllUsing, IEnumerable<Guid> selected = null)
         {
             GlazingViewModel viewModel = GlazingFixture.ViewModel(analyticalModel, selected);
             await viewModel.InitializeAsync();
@@ -145,7 +145,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel analyticalModel = GlazingFixture.Model(10);
             List<Guid> selected = GlazingFixture.ApertureGuids(analyticalModel, GlazingFixture.CurrentGuid).Take(3).ToList();
-            SetGlazingRequest request = await Request(analyticalModel, GlazingFixture.BetterGuid, GlazingApplyScope.SelectedApertures, selected);
+            SetGlazingRequest request = await Request(analyticalModel, GlazingFixture.BetterGuid, ThermalApplyScope.SelectedOnly, selected);
 
             AnalyticalModel changed = Apply(analyticalModel, request, out SetGlazingResult result);
 
@@ -159,7 +159,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         public async Task DontAssign_AddsTheSystemAndItsMaterials_ButChangesNoAperture()
         {
             AnalyticalModel analyticalModel = GlazingFixture.Model(6);
-            SetGlazingRequest request = await Request(analyticalModel, GlazingFixture.BetterGuid, GlazingApplyScope.DontAssign);
+            SetGlazingRequest request = await Request(analyticalModel, GlazingFixture.BetterGuid, ThermalApplyScope.DontAssign);
 
             AnalyticalModel changed = Apply(analyticalModel, request, out SetGlazingResult result);
 
@@ -175,7 +175,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel analyticalModel = GlazingFixture.Model(6);
             SetGlazingRequest request = await Request(analyticalModel, GlazingFixture.BetterGuid);
-            request.Scope = GlazingApplyScope.SelectedApertures;
+            request.Scope = ThermalApplyScope.SelectedOnly;
             request.SelectedApertureGuids = new[] { Guid.NewGuid() };
 
             AnalyticalModel changed = Apply(analyticalModel, request, out SetGlazingResult result);
@@ -325,7 +325,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel analyticalModel = GlazingFixture.Model(3);
             UIAnalyticalModel uIAnalyticalModel = new UIAnalyticalModel(analyticalModel);
             int calculations = 0;
-            SetGlazingRequest request = await Request(analyticalModel, GlazingFixture.BetterGuid, GlazingApplyScope.DontAssign);
+            SetGlazingRequest request = await Request(analyticalModel, GlazingFixture.BetterGuid, ThermalApplyScope.DontAssign);
 
             SetGlazingResult result = Modify.SetGlazing(uIAnalyticalModel, request, x => { calculations++; return Tas(x); });
 
@@ -342,7 +342,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Apply(analyticalModel, request, out SetGlazingResult result);
 
-            Assert.Equal(GlazingApplyScope.AllApertures, result.Scope);
+            Assert.Equal(ThermalApplyScope.AllUsing, result.Scope);
             Assert.Equal(GlazingFixture.CurrentGuid, result.SourceApertureConstruction.Guid);
             Assert.Equal(1.40, result.OldValues.Ug);
             Assert.Equal(1.10, result.Values.Ug);

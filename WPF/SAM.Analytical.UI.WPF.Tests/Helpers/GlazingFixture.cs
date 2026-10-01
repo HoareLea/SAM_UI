@@ -98,6 +98,14 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
 
         public static ApertureConstruction Current() => System(CurrentGuid, CurrentName, ApertureType.Window, Clear);
 
+        /// <summary>A good window system made for roofs (Default Panel Type "Roof"), as a roof light is: it carries a panel-group mismatch on wall windows.</summary>
+        public static ApertureConstruction RoofSystem(Guid guid, string name = "GLZ_Roof", string panelType = "Roof")
+        {
+            ApertureConstruction result = System(guid, name, ApertureType.Window, LowE, true, "Roof light");
+            result.SetValue(ApertureConstructionParameter.DefaultPanelType, panelType);
+            return result;
+        }
+
         /// <summary>A system without glass: a timber panel in a frame.</summary>
         public static ApertureConstruction Solid(Guid guid, string name, ApertureType type)
         {
@@ -105,7 +113,7 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
         }
 
         /// <summary>The default-library stand-in: a better system with the SAME name, a pane-only one, one with a missing material, a door, and a twin of the current system.</summary>
-        public static GlazingSource Library()
+        public static GlazingSource Library(params ApertureConstruction[] extra)
         {
             MaterialLibrary materials = ModelMaterials();
             materials.Add(LowEGlass());
@@ -120,6 +128,8 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
                 Solid(SolidGuid, "SOLID", ApertureType.Window),
                 Solid(SolidDoorGuid, "SOLID_DOOR", ApertureType.Door),
             };
+
+            systems.AddRange(extra);
 
             return new GlazingSource(GlazingSourceKind.Library, "Default library", new ConstructionManager(systems, null, materials));
         }
@@ -144,11 +154,11 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
         }
 
         /// <summary>A panel with a 2.0 x 1.5 m window (frame 0.05 m: pane 2.66 m², frame 0.34 m²) on a 4 x 3 m wall.</summary>
-        public static Panel PanelWithWindow(ApertureConstruction apertureConstruction, int index, out Aperture aperture)
+        public static Panel PanelWithWindow(ApertureConstruction apertureConstruction, int index, out Aperture aperture, PanelType panelType = PanelType.WallExternal)
         {
             double x = index * 5;
             Construction construction = new Construction(new Guid("b0000000-0000-4000-8000-000000000001"), "Wall", new List<ConstructionLayer>() { new ConstructionLayer(FrameMaterial, 0.2) });
-            Panel panel = Analytical.Create.Panel(construction, PanelType.WallExternal, new Face3D(new Polygon3D(new List<Point3D>()
+            Panel panel = Analytical.Create.Panel(construction, panelType, new Face3D(new Polygon3D(new List<Point3D>()
             {
                 new Point3D(x, 0, 0), new Point3D(x + 4, 0, 0), new Point3D(x + 4, 0, 3), new Point3D(x, 0, 3),
             })));
@@ -163,7 +173,7 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
         }
 
         /// <summary>A model with <paramref name="windows"/> windows of the current system and <paramref name="others"/> windows of another system.</summary>
-        public static AnalyticalModel Model(int windows = 20, ApertureConstruction other = null, int others = 0)
+        public static AnalyticalModel Model(int windows = 20, ApertureConstruction other = null, int others = 0, int roofWindows = 0)
         {
             AdjacencyCluster adjacencyCluster = new AdjacencyCluster();
             ApertureConstruction current = Current();
@@ -171,6 +181,11 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
             for (int i = 0; i < windows; i++)
             {
                 adjacencyCluster.AddObject(PanelWithWindow(current, index++, out Aperture _));
+            }
+
+            for (int i = 0; i < roofWindows; i++)
+            {
+                adjacencyCluster.AddObject(PanelWithWindow(current, index++, out Aperture _, PanelType.Roof));
             }
 
             for (int i = 0; i < others; i++)

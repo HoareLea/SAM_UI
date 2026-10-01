@@ -37,7 +37,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             ThermalTransmittanceCalculationResult thermalTransmittanceCalculationResult = null;
-            if (request?.ApertureConstruction != null && request.Scope != GlazingApplyScope.DontAssign)
+            if (request?.ApertureConstruction != null && request.Scope != ThermalApplyScope.DontAssign)
             {
                 thermalTransmittanceCalculationResult = calculate?.Invoke(request);
             }
@@ -102,16 +102,16 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            GlazingApplyScope scope = request.Scope;
+            ThermalApplyScope scope = request.Scope;
             List<Aperture> apertures_Using = adjacencyCluster.GetApertures(source) ?? new List<Aperture>();
             List<Aperture> apertures;
             switch (scope)
             {
-                case GlazingApplyScope.AllApertures:
+                case ThermalApplyScope.AllUsing:
                     apertures = apertures_Using;
                     break;
 
-                case GlazingApplyScope.SelectedApertures:
+                case ThermalApplyScope.SelectedOnly:
                     HashSet<Guid> selected = new HashSet<Guid>(request.SelectedApertureGuids ?? Enumerable.Empty<Guid>());
                     apertures = apertures_Using.FindAll(x => selected.Contains(x.Guid));
                     if (apertures.Count == 0)
@@ -127,7 +127,7 @@ namespace SAM.Analytical.UI.WPF
                     break;
             }
 
-            if (scope == GlazingApplyScope.AllApertures && apertures.Count == 0)
+            if (scope == ThermalApplyScope.AllUsing && apertures.Count == 0)
             {
                 result = new SetGlazingResult(string.Format("No aperture uses {0}.", source.Name));
                 return null;

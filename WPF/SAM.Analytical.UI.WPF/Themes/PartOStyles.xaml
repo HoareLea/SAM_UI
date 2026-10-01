@@ -19,6 +19,8 @@
     <SolidColorBrush x:Key="PartO.Brush.AccentSurface" Color="#DDF4FF"/>
     <SolidColorBrush x:Key="PartO.Brush.Success" Color="#1A7F37"/>
     <SolidColorBrush x:Key="PartO.Brush.Danger" Color="#CF222E"/>
+    <!-- Amber for a warning (something to look at, not a failure): the glyph and a row marker; the text stays in Text. -->
+    <SolidColorBrush x:Key="PartO.Brush.Warning" Color="#9A6700"/>
 
     <!-- A heading over a section of a dialog: small, semibold, never louder than the content. -->
     <Style x:Key="PartO.SectionHeading" TargetType="TextBlock">
