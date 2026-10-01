@@ -3,6 +3,36 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (U-value workflow stream): PR2b - "Set U-value" window, entry points, scoped check and report - MERGED as SAM_UI#163 (`338c697`) (1 Oct 2026)
+
+**Status.** [SAM_UI#163](https://github.com/SAM-BIM/SAM_UI/pull/163) merged into `sow/2026-Q3` with a merge commit (`338c697`; PR head `f5c89fc`), owner-approved. `build` and `spdx` green on that
+head, CLEAN, no reviews or comments. Record: `documentation/UValue-Window-PR2B.md`; evidence: `documentation/evidence/uvalue-pr2b-2026-10-01/` (final run, first pass, driver scripts).
+The opaque U-value journey of the plan (PR2) is complete; glazing (PR3) is next.
+
+**Work.** `Windows/SetUValueWindow.xaml(.cs)`: one progressive window (pattern B, `PartOStyles.xaml`) over `UValueViewModel`: construction picker, target pre-filled/selected, live preview
+(`Actual U | Target U | Margin | Status`, layer table, evaluation ms), inline scope, Advanced collapsed; Enter applies, Esc cancels. Entry points: 3D right-click > "Set U-value..."
+(`Modify.OpenSetUValueWindow`); Edit > Constructions opt-in "Set U-value..." button (`ConstructionLibraryWindow.SetUValueRequested`; the list closes first, unsaved edits ask Yes/No/Cancel);
+Tools > U Value Calculator is a split button: new window with the picker open, drop-down "U Value Calculator (classic)" = PR1 legacy flow (owner decision 1 Oct 2026). After Apply:
+`Query.UValueCheckSummary` (SAM `Create.Log` over the changed construction + its panels only; Details opens `LogWindow`) and `U-VALUE CHANGE` report (`Query.UValueChangeReportText`,
+`Modify.SaveUValueChangeReport`: model folder, `<model>_UValueChange_<yyyyMMdd-HHmmss>.txt`, never overwrites; unsaved model -> Copy All only). Neither writes to the model.
+
+**Decisions.** Report folder = the model's folder (SAM's default simulation output folder). Inline busy state, no progress dialog (evaluation ~0.25 s, Apply ~0.4 s). Split button keeps the old
+x:Name; menu-item clicks bubbling to its Click are ignored. A layer adjusted twice is renamed from its base material (no `_0.067m_0.055m`). No construction is named for an unreachable target.
+
+**Files.** New `SetUValueWindow.xaml(.cs)`, `Modify/OpenSetUValueWindow.cs`, `Modify/SaveUValueChangeReport.cs`, `Query/UValueCheck.cs`, `Query/UValueChangeReport.cs`,
+`Classes/UValue/UValueCheckSummary.cs`, `SAM.Analytical.UI/Classes/EventArgs/SetUValueRequestedEventArgs.cs`; changed `AnalyticalWindow.xaml(.cs)`, `Modify/EditConstructions.cs`,
+`SAM.Analytical.UI/Windows/ConstructionLibraryWindow.xaml(.cs)`, `UValueViewModel.cs`, `Modify/SetUValue.cs`; tests `UValueReportTests.cs` (11), `SetUValueWindowTests.cs` (8, STA), +1 engine.
+
+**Validation.** Full WPF suite 1700/1700. Real app (UIA, copy of `SAM_UIuild` at `bcdf24f0`, real Tas, fresh model copy): 3D right-click -> applied U in 6 interactions incl. selecting the panel
+(5 from a selected panel; legacy ~15-18); U=0.3 wool 80 -> 67 mm, 264 ms per evaluation; check "No errors or warnings ... 12 panels"; Edit > ModelCheck 0 errors (no missing material);
+one Undo restores 12 panels, no unused construction, no orphan material; Redo reapplies; unreachable 0.01 inline with best U 0.025 at 1000 mm, Apply off; Tools picker, classic fallback,
+Constructions hand-over, in place / selected only / don't assign verified on saved models (`modelsum.py`).
+
+**Unresolved / risks.** Not driven in the real app: the Constructions unsaved-edits prompt, "Tas unavailable", Copy All clipboard read-back. Evidence uses a build-folder copy, not an installer
+(installed-app acceptance needs an installer with the SAM_Tas#78 DLL). Mixed wall/roof panels on one construction get the majority heat-flow basis with a warning.
+
+**Next step.** PR3 (glazing selection) per the plan; brief `documentation/plans/UValue-PR3-PROMPT.md` (written 1 Oct 2026, committed on the PR3 branch like the PR1/PR2 briefs). PR4 (U-value / Used-by columns, restyling, fate of the classic calculator) optional.
+
 ## Current (U-value workflow stream): PR2a - "Set U-value" engine, no window - MERGED as SAM_UI#162 (`9ef5bd5`) (1 Oct 2026)
 
 **Status.** [SAM_UI#162](https://github.com/SAM-BIM/SAM_UI/pull/162) merged into `sow/2026-Q3` with a merge commit (`9ef5bd5`; PR head `2e4c01c`), owner-approved. `build` and `spdx` green on that
@@ -29,8 +59,7 @@ HistoryChanged; ModelCheck 0 errors after Apply (legacy: missing-material Error)
 
 **Unresolved / risks.** Mixed wall/roof panels on one construction get one (majority) basis, with a warning. Timings are from this VM. No real-app (window) acceptance yet - PR2b.
 
-**Next step.** PR2b on `feature/uvalue-pr2b-window-2026-10-01`: the window (pattern B, `PartOStyles.xaml`), three entry points, scoped check + `U-VALUE CHANGE` report, real-app UIA acceptance.
-**Owner decision (1 Oct 2026):** Tools > U Value Calculator opens the NEW window by default; the legacy flow stays reachable as "U Value Calculator (classic)".
+**Next step.** Done: PR2b merged as SAM_UI#163 (entry above). Owner decision (1 Oct 2026) applied there: Tools > U Value Calculator opens the new window; legacy = "(classic)".
 
 ## Current (UI stream): SearchWindow can be confirmed (OK / double-click / Enter) - MERGED as SAM_UI#161 (`f44b6f7`) (1 Oct 2026)
 
