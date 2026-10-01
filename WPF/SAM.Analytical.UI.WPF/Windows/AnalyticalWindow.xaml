@@ -421,7 +421,7 @@
                     <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Panels" Header="Panels">
-                    <RibbonToggleButton x:Name="RibbonToggleButton_ThermalPerformance" Label="Thermal Performance" ToolTip="Show or hide the Thermal Performance side panel (B0 spike, read-only)." />
+                    <RibbonToggleButton x:Name="RibbonToggleButton_ThermalPerformance" Label="Thermal Performance" ToolTip="Show or hide the Thermal Performance panel: the stored performance of the selected panels and apertures, or of the whole external envelope. Read-only." />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Visibility" Header="Visiblity">
                     <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Unhide All" />
@@ -590,16 +590,15 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250" />
                 <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="461*" />
-                <ColumnDefinition Width="86*" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
-                <ColumnDefinition x:Name="ColumnDefinition_ThermalPanel" Width="0" />
+                <ColumnDefinition x:Name="ColumnDefinition_ThermalPerformance" Width="0" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
-            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" SelectionChanged="TabControl_SelectionChanged">
+            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" SelectionChanged="TabControl_SelectionChanged">
                 <TabItem Header="3D View">
                     <geometry:ViewportControl x:Name="viewportControl" />
                 </TabItem>
@@ -607,9 +606,10 @@
 
             <local:AnalyticalModelControl x:Name="AnalyticalModelControl"  Grid.Column="0" Grid.Row="0" />
 
-            <!-- B0 docking spike: the Thermal Performance side panel, hidden until the View > Thermal Performance toggle is on. -->
-            <GridSplitter x:Name="GridSplitter_ThermalPanel" Grid.Column="4" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" ResizeDirection="Columns" Visibility="Collapsed" />
-            <local:ThermalPerformanceSpikeControl x:Name="ThermalPerformanceControl" Grid.Column="5" Grid.Row="0" Visibility="Collapsed" />
+            <!-- The Thermal Performance panel (Stage B, read-only), docked beside the view tabs; hidden until the View > Panels >
+                 Thermal Performance toggle is on. Hidden = column width 0, so the layout is the one without it. -->
+            <GridSplitter x:Name="GridSplitter_ThermalPerformance" Grid.Column="3" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" ResizeDirection="Columns" Visibility="Collapsed" />
+            <local:ThermalPerformanceControl x:Name="ThermalPerformancePanel" Grid.Column="4" Grid.Row="0" Visibility="Collapsed" />
         </Grid>
     </DockPanel>
 </Window>
