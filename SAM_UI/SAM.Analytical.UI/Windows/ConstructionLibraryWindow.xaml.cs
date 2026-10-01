@@ -25,6 +25,27 @@ namespace SAM.Analytical.UI
         public event EventHandler<ConstructionManagerExportingEventArgs> ConstructionManagerExporting;
         public event EventHandler<ConstructionManagerImportingEventArgs> ConstructionManagerImporting;
 
+        /// <summary>
+        /// Raised by the "Set U-value..." button (shown only while a handler is attached) with the one selected
+        /// construction. The handler hands over to the "Set U-value" window and closes this one.
+        /// </summary>
+        public event EventHandler<SetUValueRequestedEventArgs> SetUValueRequested
+        {
+            add
+            {
+                setUValueRequested += value;
+                Button_SetUValue.Visibility = setUValueRequested == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            remove
+            {
+                setUValueRequested -= value;
+                Button_SetUValue.Visibility = setUValueRequested == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        private EventHandler<SetUValueRequestedEventArgs> setUValueRequested;
+
         private MaterialLibrary materialLibrary;
         private ConstructionLibrary constructionLibrary;
         private Construction construction_Selected;
@@ -551,6 +572,22 @@ namespace SAM.Analytical.UI
             }
 
             MessageBox.Show(result ? "Data exported successfully." : "Data could not be exported.");
+        }
+
+        private void DataGrid_Constructions_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            Button_SetUValue.IsEnabled = DataGrid_Constructions.SelectedItems.Count == 1;
+        }
+
+        private void Button_SetUValue_Click(object sender, RoutedEventArgs e)
+        {
+            Construction construction = GetConstructions(true)?.FirstOrDefault();
+            if (construction == null || DataGrid_Constructions.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            setUValueRequested?.Invoke(this, new SetUValueRequestedEventArgs(construction));
         }
 
         private void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

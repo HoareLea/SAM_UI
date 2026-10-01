@@ -154,6 +154,22 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         [Fact]
+        public void ALayerAdjustedTwice_IsNamedFromItsBaseMaterial_NotStacked()
+        {
+            // Found in the PR2b acceptance: "..._0.067m" adjusted again became "..._0.067m_0.055m".
+            AnalyticalModel analyticalModel = UValueFixture.Model(out Construction source);
+            AnalyticalModel once = Apply(analyticalModel, Request(source, UValueApplyMode.ModifyInPlace), out SetUValueResult first);
+            SetUValueRequest again = Request(source, UValueApplyMode.ModifyInPlace);
+            again.Thickness = 0.055;
+
+            Apply(once, again, out SetUValueResult second);
+
+            Assert.Equal("I01_Mineral Wool_0.067m", first.MaterialName);
+            Assert.Equal("I01_Mineral Wool_0.067m", second.SourceMaterialName);
+            Assert.Equal("I01_Mineral Wool_0.055m", second.MaterialName);
+        }
+
+        [Fact]
         public void NewConstruction_SelectedPanelsOnly_ReassignsOnlyTheSelectedPanels()
         {
             AnalyticalModel analyticalModel = UValueFixture.Model(out Construction source);

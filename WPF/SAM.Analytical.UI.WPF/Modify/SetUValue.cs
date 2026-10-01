@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -133,7 +134,16 @@ namespace SAM.Analytical.UI.WPF
             ConstructionLayer constructionLayer = constructionLayers[request.LayerIndex];
             double oldThickness = constructionLayer.Thickness;
             double thickness = Core.Query.Round(request.Thickness, Tolerance.MacroDistance);
-            string materialName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}m", constructionLayer.Name, thickness);
+            // Named as the legacy flow names it, "<material>_<thickness>m"; a layer already adjusted once
+            // ("<material>_0.067m") is renamed from its base material, so the suffixes do not stack.
+            string materialName_Base = constructionLayer.Name;
+            string materialName_Stripped = Regex.Replace(materialName_Base ?? string.Empty, @"_\d+(\.\d+)?m$", string.Empty, RegexOptions.CultureInvariant);
+            if (materialName_Stripped != materialName_Base && materialLibrary.GetMaterial(materialName_Stripped) != null)
+            {
+                materialName_Base = materialName_Stripped;
+            }
+
+            string materialName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}m", materialName_Base, thickness);
 
             bool materialAdded = false;
             IMaterial material = materialLibrary.GetMaterial(materialName);
