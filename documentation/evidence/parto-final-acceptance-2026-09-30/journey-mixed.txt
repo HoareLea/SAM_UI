@@ -1,0 +1,44 @@
+﻿09:55:12 launch: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 09:22); model <SAM_daily>\2026-09-29 partOi\model\000000_SAM_AnalyticalModel.sam
+09:55:25 main window 'SAM Analytical [000000_SAM_AnalyticalModel]' pid 19356
+09:55:27 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
+09:55:27   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel]'
+09:55:32   capture 01-mixed-open 'Part O — Mixed Design' (1240x780)
+09:55:34   expanded expander_SimulationCase: Expanded
+09:55:34     textBlock_Baseline: 'The open model is NOT a clean Part O baseline, so no mixed design can be built from it. Reopen the pre-Part-O model; nothing is cleaned or undone. SAM says: [Run Output Baseline] The model carries overheating scenarios, so it has been through a Part O run: scenarios are stated for a run, not authored on a baseline. [Run Output Baseline] The model carries a simulation result provenance record, so it is the output of a simulation, not a baseline. [Run Output Baseline] The model's cluster carries 242 simulation result object(s) (for example SpaceSimulationResult), so it is the output of a simulation, not a baseline. Accepting it would feed a run's output back in as its input. [Run Output Baseline] The model's cluster carries 2 design-day record(s). The TAS workflow writes those into the cluster after a run (Modify.ReplaceDesignDays); a baseline states its design days as the model's own Heating/Cooling Design Days parameters, which are accepted. …and 2 more.'
+09:55:34     textBlock_Outcome: '<absent>'
+09:55:34     textBlock_Readiness: '3 dwellings · 0 Natural · 0 MVHR · 3 not selected'
+09:55:34     textBlock_Final: 'No mixed run yet.'
+09:55:34     textBlock_Screening: 'Not screened. Screening is optional.'
+09:55:34     textBlock_Refusals: '<absent>'
+09:55:34     textBlock_BulkMessage: '<absent>'
+09:55:34     textBlock_Next: 'Blocked: The open model is not a clean Part O baseline (Run Output Baseline; Materialised Baseline). Reopen the pre-Part-O model: nothing is cleaned or undone.'
+09:55:35     'Save selection' enabled=False
+09:55:35     'Build & Run Mixed Design' enabled=False
+09:55:35     'Open final TM59 result…' enabled=False
+09:55:35     'Apply suggestions…' enabled=False
+09:55:35     'Retain baseline design airflow' enabled=True
+09:55:35     ROW Flat 1 | Flats | 2 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — | — |   | 
+09:55:35     ROW Flat 2 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — | — |   | 
+09:55:35     ROW Flat 3 | Flats | 3 | NOT RUN | NOT RUN | NOT RUN | UNAVAILABLE | UNAVAILABLE | — | Not selected | — | — |   | 
+09:55:52   capture 02-baseline-refused 'Part O — Mixed Design' (1240x780)
+09:55:52   press button_Close in 'Part O — Mixed Design'
+09:55:56   window 'SAM Analytical [000000_SAM_AnalyticalModel]' [HwndWrapper[SAM Analytical;;1832f054-627b-47de-8e35-c4105a922370]]
+10:17:19 launch: exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe (WPF dll 2026-09-30 09:22); model <SAM_daily>\2026-09-29 partOi\PartO\Iteration2\tas\000000_SAM_AnalyticalModel.sam
+10:17:31 main window 'SAM Analytical [000000_SAM_AnalyticalModel]' pid 30352
+10:17:33 Mixed Design button enabled=True tooltip='Select a Part O strategy per dwelling - natural ventilation, MVHR, a product, a retained design - optionally screen them, then build ONE mixed model from the clean baseline and run it. The open model is never replaced by a prepared or simulated one.'
+10:17:33   press RibbonButton_PartOMixedDesign in 'SAM Analytical [000000_SAM_AnalyticalModel]'
+10:17:38   capture 03-mixed-open 'Part O — Mixed Design' (1240x780)
+10:17:39 MIXED PROBE model <SAM_daily>\2026-09-29 partOi\PartO\Iteration2\tas\000000_SAM_AnalyticalModel.sam
+10:17:39   BASELINE: The open model is NOT a clean Part O baseline, so no mixed design can be built from it. Reopen the pre-Part-O model; nothing is cleaned or undone. SAM says: [Run Output Baseline] The model carries overheating scenarios, so it has been through a Part O run: scenarios are stated for a run, not authored on a baseline. [Run Output Baseline] The model carries a simulation result provenance record, so it is the output of a simulation, not a baseline. [Run Output Baseline] The model's cluster carries 242 simulation result object(s) (for example SpaceSimulationResult), so it is the output of a simulation, not a baseline. Accepting it would feed a run's output back in as its input. [Run Output Baseline] The model's cluster carries 2 design-day record(s). The TAS workflow writes those into the cluster after a run (Modify.ReplaceDesignDays); a baseline states its design days as the model's own Heating/Cooling Design Days parameters, which are accepted. …and 2 more.
+10:17:39   NEXT: Blocked: The open model is not a clean Part O baseline (Run Output Baseline; Materialised Baseline). Reopen the pre-Part-O model: nothing is cleaned or undone.
+10:17:39   READINESS: 3 dwellings · 0 Natural · 0 MVHR · 3 not selected
+10:17:40   button_Check: 'Check design' enabled=False
+10:17:40   button_Build: 'Build & Run Mixed Design' enabled=False
+10:17:40   button_Save: 'Save selection' enabled=False
+10:17:40   button_SetNatural: 'Natural ventilation' enabled=True
+10:17:40   button_SetMvhr: 'MVHR' enabled=True
+10:17:40   baseline tooltip: 
+10:17:40   capture 04-mixed-probe 'Part O — Mixed Design' (1240x780)
+10:17:41   press button_Close in 'Part O — Mixed Design'
+10:17:44   window after close 'SAM Analytical [000000_SAM_AnalyticalModel]' [HwndWrapper[SAM Analytical;;ed7a8092-77d2-465e-a75f-fde7fabc600c]]
+10:17:47 MIXED PROBE DONE

@@ -1,0 +1,41 @@
+﻿10:15:04 exe <SAM-BIM>\SAM_UI\build\SAM Analytical.exe; reopen the saved run model <SAM_daily>\2026-09-29 partOi\PartO\Iteration1b\tas\000000_SAM_AnalyticalModel.sam
+10:15:18   press RibbonButton_PartOWorkflow in 'SAM Analytical [000000_SAM_AnalyticalModel]'
+10:15:23 --- HUB: opened on the saved Iteration1b run
+10:15:23   scenario line: MVHR · Design duty only · No manufacturer unit required
+10:15:23   scope: All 3 eligible dwellings · simulated inside the whole building
+10:15:23   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next
+10:15:23   last outcome: Saved Iteration 1b results reopened — ready to review
+10:15:23   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Reopened from this model's own saved run (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:15:23   blockers: <absent>
+10:15:23   next: Next: Review the TM59 results.
+10:15:23   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:15:23   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+10:15:23   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='This Part O run was reopened from a saved model, so its results can be reviewed but not continued. Iteration 2B re-prepares the design at every round against the ventilation unit catalogue the baseline selected from, and a saved model does not carry that catalogue - repeating the optimisation from today's catalogue could check a round against a capacity the baseline was never selected under. Run Prepare & Run again over the same scenario and dwellings to optimise from a live run.'
+10:15:23   It3: <absent>
+10:15:23   capture 01-Iteration1b-reopen-hub 'Part O — Prepare & Run' (800x910)
+10:15:23   CHECK OK   Iteration1b Hub says the saved results were reopened
+10:15:23 primary action: 'Review Results' enabled=True
+10:15:23   press button_Review in 'Part O — Prepare & Run'
+10:15:28   capture 02-Iteration1b-review-transient 'Part O' (520x204)
+10:15:33   TM59 [Iteration1b] 'Part O — Overheating (TM59)' verdict: TM59 assessment — PASS
+10:15:33   capture 03-Iteration1b-reopen-tm59 'Part O — Overheating (TM59)' (1000x760)
+10:15:33   press button_CopyAll in 'Part O — Overheating (TM59)'
+10:15:35   copied 8112 chars to reopen-Iteration1b-tm59-window.txt
+10:15:35   CHECK OK   Iteration1b TM59 window names its results in Iteration1b\tas
+10:15:35   press button_Close in 'Part O — Overheating (TM59)'
+10:15:42   CHECK OK   Iteration1b Review Results opened the TM59 assessment
+10:15:42 --- HUB: after the reopen
+10:15:42   scenario line: MVHR · Design duty only · No manufacturer unit required
+10:15:42   scope: All 3 eligible dwellings · simulated inside the whole building
+10:15:42   strip: ✓ | Configure | Done | 2 | Prepare model |  | ✓ | Check & simulate | Done | 4 | Review | Next
+10:15:42   last outcome: Saved Iteration 1b results reviewed — TM59 PASS
+10:15:42   status: Current configuration | Dwelling scope | ✓ | Ready | 3 dwellings · 8 spaces | TM59 mapping | ✓ | Ready | 5/8 spaces mapped | Part F requirements | ✓ | Ready | 8/8 spaces defined | Ventilation design | ○ | Not prepared | Rebuilt for the next Prepare & Run · the existing results are reviewable as they are | Existing run / results | Model check | ○ | Waiting | Runs after preparation, before TAS | Simulation | ✓ | Ready | Reopened from this model's own saved run (000000_SAM_AnalyticalModel.tsd). | Results | ✓ | Ready | The TM59 assessment can be reviewed from these results without running TAS again.
+10:15:42   blockers: <absent>
+10:15:42   next: Next: Review the TM59 results.
+10:15:42   button_Run: 'Prepare & Run' enabled=True tooltip='Prepare the iteration, check the model, run the full-year TAS simulation and assess it against the CIBSE TM59 criteria.'
+10:15:42   button_Review: 'Review Results' enabled=True tooltip='Read this run's existing simulation results and show the CIBSE TM59 assessment. No new simulation is run.'
+10:15:42   button_Optimise: 'Optimise (2B)…' enabled=False tooltip='This Part O run was reopened from a saved model, so its results can be reviewed but not continued. Iteration 2B re-prepares the design at every round against the ventilation unit catalogue the baseline selected from, and a saved model does not carry that catalogue - repeating the optimisation from today's catalogue could check a round against a capacity the baseline was never selected under. Run Prepare & Run again over the same scenario and dwellings to optimise from a live run.'
+10:15:42   It3: <absent>
+10:15:42   press button_Close in 'Part O — Prepare & Run'
+10:15:45 RESULT: 0 failure(s)
+10:15:45 DONE

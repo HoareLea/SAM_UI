@@ -1,0 +1,13 @@
+param([string]$File = 'C:\TasOut\parto-output-folders-accept-2026-09-30\tas-processes-reopen.txt', [int]$Seconds = 900)
+# Records every TAS process (TBD, TSD, TAS3D, TPD, TWD, TCD) that exists at any 300 ms sample, until $Seconds or a stop file.
+$names = 'TBD', 'TSD', 'TAS3D', 'TPD', 'TWD', 'TCD'
+$seen = @{}; "{0:HH:mm:ss} watch started" -f (Get-Date) | Set-Content -Encoding UTF8 $File
+$stop = "$File.stop"; Remove-Item $stop -ErrorAction SilentlyContinue
+$dl = (Get-Date).AddSeconds($Seconds)
+while ((Get-Date) -lt $dl -and -not (Test-Path $stop)) {
+    foreach ($p in @(Get-Process -Name $names -ErrorAction SilentlyContinue)) {
+        if (-not $seen.ContainsKey($p.Id)) { $seen[$p.Id] = 1; "{0:HH:mm:ss} TAS PROCESS {1} pid {2}" -f (Get-Date), $p.ProcessName, $p.Id | Add-Content -Encoding UTF8 $File }
+    }
+    Start-Sleep -Milliseconds 300
+}
+"{0:HH:mm:ss} watch stopped; {1} TAS process(es) seen" -f (Get-Date), $seen.Count | Add-Content -Encoding UTF8 $File
