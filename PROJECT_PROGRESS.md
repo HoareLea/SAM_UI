@@ -3,6 +3,20 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (Part O stream): licensed Mixed Design acceptance evidence - MERGED as SAM_UI#154 (`12ffe4a`) (1 Oct 2026)
+
+**Status.** [SAM_UI#154](https://github.com/SAM-BIM/SAM_UI/pull/154) (docs only) merged into `sow/2026-Q3` with a merge commit on the owner's instruction. It was MERGEABLE/CLEAN, `build` and `spdx` green, no review requirement. This supersedes "#154 still open / awaits the owner's decision" in the PR-5 entry below.
+
+**Work.** Adds `documentation/evidence/parto-mixed-licensed-acceptance-2026-10-01/` (ACCEPTANCE.md, logs, snapshots, timing CSVs, systems inventory). Evidence unchanged; no code touched.
+
+**Decisions.** None new. Acceptance result stays PASS (TPD AddTSDData hang seen once, recorded in the evidence).
+
+**Validation.** PR checks only (docs-only change); no local build or test run was needed.
+
+**Risks.** None added.
+
+**Next step.** Small separate cleanup: `SimulationResultProvenance.Path_TSD` persists an absolute local path in saved `.sam` result models (also noted in the PR-5 Risks). Then PR-6 only on the owner's go-ahead.
+
 ## Current (Part O stream): PR-5 every saved result says what it was derived from - MERGED as SAM_UI#155 (`a65825d`) + SAM#173 (`bce2c05d`) (1 Oct 2026)
 
 **Status.** Merged into `sow/2026-Q3` with merge commits: [SAM-BIM/SAM#173](https://github.com/SAM-BIM/SAM/pull/173) first (`bce2c05d`, closeout `d483faaf`), then
