@@ -1,9 +1,0 @@
-Dwelling	Space	TM59 criterion	Mechanical	A actual	A limit	A status	B actual	B limit	B status	Delta actual	Hours	Mean A	Mean B	Bias B-A	RMSE	Max |B-A|	at hour
-Flat 1	Bathroom_2	>26 C hours	True	4	262	Pass	16	262	Pass	12	8760	17.439	17.934	0.495	0.817	2.454	1843
-Flat 1	Studio 1_0	>26 C hours	True	13	262	Pass	12	262	Pass	-1	8760	16	16.285	0.285	0.673	1.544	6211
-Flat 2	Bedroom 2_3	>26 C hours	True	3	262	Pass	3	262	Pass	0	8760	14.814	15.301	0.487	0.713	2.352	2968
-Flat 2	Ensuite_5	>26 C hours	True	0	262	Pass	0	262	Pass	0	8760	17.005	17.052	0.048	0.828	2.633	4819
-Flat 2	Kitchen_4	>26 C hours	True	4	142	Pass	4	142	Pass	0	8760	15.567	16.396	0.829	1.069	2.459	2968
-Flat 3	Bedroom 2_6	>26 C hours	True	2	262	Pass	3	262	Pass	1	8760	14.769	15.235	0.466	0.694	2.493	2968
-Flat 3	Ensuite_8	>26 C hours	True	0	262	Pass	0	262	Pass	0	8760	17.536	17.201	-0.335	0.85	2.909	5491
-Flat 3	Kitchen_7	>26 C hours	True	4	142	Pass	4	142	Pass	0	8760	15.738	16.445	0.706	0.948	2.374	2968

@@ -1,6 +1,0 @@
-param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Like = 'Select Construction', [string]$Shot = '')
-. (Join-Path $PSScriptRoot 'ulib.ps1')
-$w = Top $Like; $r = New-Object A.N+RECT; [void][A.N]::GetWindowRect($w.Handle, [ref]$r)
-Say ("rect {0},{1},{2},{3}" -f $r.Left, $r.Top, $r.Right, $r.Bottom)
-[void][A.N]::SetForegroundWindow($w.Handle); Start-Sleep -Milliseconds 500
-if ($Shot) { ScreenShot $Shot }

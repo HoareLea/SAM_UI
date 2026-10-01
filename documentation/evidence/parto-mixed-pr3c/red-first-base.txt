@@ -1,5 +1,0 @@
-  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignScalingTests.Window_ShowsTheFourAuthoritiesSeparately_AndOffersCoolingAsAProjectRule [804 ms]
-   Assert.True() Failure
-Expected: True
-Actual:   False
-Failed!  - Failed:     1, Passed:     0, Skipped:     0, Total:     1, Duration: 804 ms - SAM.Analytical.UI.WPF.Tests.dll (net8.0)

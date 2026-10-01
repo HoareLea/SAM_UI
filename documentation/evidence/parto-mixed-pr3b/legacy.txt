@@ -1,4 +1,0 @@
-PASS run folder exists: C:\TasOut\parto-guidance-2026-09-24\03-Resume
-PASS one saved run (.partorun.json + .sam) in C:\TasOut\parto-guidance-2026-09-24\03-Resume
-FAIL restores under the current stack: C:\TasOut\parto-guidance-2026-09-24\03-Resume\000000_SAM_AnalyticalModel-It1a-futureZ1.sam The model has changed since the simulation results at 'C:\TasOut\parto-guidance-2026-09-24\03-Resume\000000_SAM_AnalyticalModel-It1a-futureZ1.tsd' were produced from it, so those results no longer describe it. Re-run the simulation to review results for the current model.
-PASS folder unchanged by the check (39 files)

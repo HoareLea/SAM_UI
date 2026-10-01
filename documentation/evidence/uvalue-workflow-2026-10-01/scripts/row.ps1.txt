@@ -1,8 +1,0 @@
-param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Like = 'Constructions', [string]$Grid = 'DataGrid_Constructions', [string]$CellName = 'SIM_EXT_SLD')
-. (Join-Path $PSScriptRoot 'ulib.ps1')
-$w = Top $Like; $root = $AE::FromHandle($w.Handle)
-$g = Find-ById $root $Grid
-foreach ($r in $g.FindAll($TS::Children, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::DataItem)))) {
-    $c = $r.FindFirst($TS::Children, (New-Object System.Windows.Automation.PropertyCondition($AE::NameProperty, $CellName)))
-    if ($c) { $p = $null; if ($r.TryGetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern, [ref]$p)) { $p.Select(); Say "row selected: $CellName" } }
-}

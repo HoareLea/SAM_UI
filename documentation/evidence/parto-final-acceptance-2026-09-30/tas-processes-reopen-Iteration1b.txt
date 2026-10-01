@@ -1,3 +1,0 @@
-﻿10:15:03 watch started
-10:15:26 TAS PROCESS TSD pid 35328
-10:15:45 watch stopped; 1 TAS process(es) seen

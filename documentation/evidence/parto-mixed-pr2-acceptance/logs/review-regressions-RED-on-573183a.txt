@@ -1,4 +1,0 @@
-  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.ProjectTestUnit_IsScreened_AsTheSelectedProductStrategy_WhereItIsTheOnlyEligibleProduct [96 ms]
-  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignCorrectionTests.SidecarListingADwellingTwice_IsNeitherAPassNorCurrent [35 ms]
-  Failed SAM.Analytical.UI.WPF.Tests.PartOMixedDesignAcceptTests.Accept_OfAPreviewAnsweredAgainstAnEarlierBaseline_IsRefused_AndKeepsTheLaterEdit [163 ms]
-Failed!  - Failed:     3, Passed:     0, Skipped:     0, Total:     3, Duration: 163 ms - SAM.Analytical.UI.WPF.Tests.dll (net8.0)

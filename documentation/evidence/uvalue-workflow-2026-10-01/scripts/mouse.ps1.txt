@@ -1,6 +1,0 @@
-param([string]$Out = 'C:\TasOut\uvalue\before-ev', [int]$X, [int]$Y, [switch]$Right, [string]$Shot = '', [int]$Wait = 1)
-. (Join-Path $PSScriptRoot 'ulib.ps1')
-$m = Main; [void][A.N]::SetForegroundWindow($m.Handle); Start-Sleep -Milliseconds 300
-[A.N]::Click($X, $Y, [bool]$Right); Say ("click {0},{1} right={2}" -f $X, $Y, [bool]$Right)
-Start-Sleep -Seconds $Wait
-if ($Shot) { ScreenShot $Shot }
