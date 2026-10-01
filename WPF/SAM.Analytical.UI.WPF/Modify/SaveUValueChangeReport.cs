@@ -16,8 +16,22 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public static bool SaveUValueChangeReport(string path_Model, DateTime appliedAt, string text, out string path_Report, out string refusal)
         {
+            return SaveChangeReport(Query.Path_UValueChangeReport(path_Model, appliedAt), text, out path_Report, out refusal);
+        }
+
+        /// <summary>
+        /// Saves the "Set glazing" report next to the model (<see cref="Query.Path_GlazingChangeReport"/>), with the
+        /// same rules as <see cref="SaveUValueChangeReport"/>: best effort, never overwrites, never writes to the model.
+        /// </summary>
+        public static bool SaveGlazingChangeReport(string path_Model, DateTime appliedAt, string text, out string path_Report, out string refusal)
+        {
+            return SaveChangeReport(Query.Path_GlazingChangeReport(path_Model, appliedAt), text, out path_Report, out refusal);
+        }
+
+        private static bool SaveChangeReport(string path_Planned, string text, out string path_Report, out string refusal)
+        {
             refusal = null;
-            path_Report = Query.Path_UValueChangeReport(path_Model, appliedAt);
+            path_Report = path_Planned;
             if (path_Report == null)
             {
                 refusal = "The model has not been saved, so the report was not written to a file; use Copy All.";

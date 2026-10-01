@@ -1,0 +1,249 @@
+<Window x:Class="SAM.Analytical.UI.WPF.SetGlazingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Set glazing" Height="780" Width="1000" MinWidth="760" MinHeight="620"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False" FontFamily="Roboto Light">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Analytical.UI.WPF;component/Themes/PartOStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="Style_TableHeader" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Muted}"/>
+                <Setter Property="FontSize" Value="11"/>
+                <Setter Property="Margin" Value="0,0,16,2"/>
+            </Style>
+
+            <Style x:Key="Style_TableValue" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Margin" Value="0,0,16,0"/>
+            </Style>
+
+            <Style x:Key="Style_Filter" TargetType="TextBox">
+                <Setter Property="Width" Value="56"/>
+                <Setter Property="Height" Value="24"/>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="Style_RightCell" TargetType="TextBlock">
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="Margin" Value="0,0,6,0"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- PATTERN B, ONE PROGRESSIVE WINDOW (U-value plan), glazing = SELECTION not calculation: the current system and the
+         filters on top, the comparison table of complete glazing systems below, the Current | Proposed | Target | Margin |
+         Status block and the inline apply scope, Advanced collapsed, Apply at the bottom. Every value is read from
+         GlazingViewModel; after Apply the scoped check and the report appear in place. -->
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- CURRENT GLAZING -->
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Glazing to replace" Style="{StaticResource PartO.SectionHeading}"/>
+            <ComboBox x:Name="comboBox_ApertureConstruction" DisplayMemberPath="Display" IsTextSearchEnabled="True" TextSearch.TextPath="Name"
+                      SelectionChanged="comboBox_ApertureConstruction_SelectionChanged"/>
+            <TextBlock x:Name="textBlock_Facts" Style="{StaticResource PartO.Caption}" Margin="0,3,0,0" TextWrapping="Wrap"/>
+            <TextBlock x:Name="textBlock_SelectionNote" Style="{StaticResource PartO.Caption}" Margin="0,2,0,0" Visibility="Collapsed" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- TARGET AND FILTERS -->
+        <StackPanel Grid.Row="1" Margin="0,10,0,0">
+            <TextBlock Text="Target" Style="{StaticResource PartO.SectionHeading}"/>
+            <WrapPanel>
+                <TextBlock Text="Uw at most" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox x:Name="textBox_Target" Style="{StaticResource Style_Filter}" TextChanged="textBox_Filter_TextChanged"
+                         ToolTip="The largest overall U-value (Uw) wanted, in W/m²K. The table filters as you type."/>
+                <TextBlock Text="W/m²K" VerticalAlignment="Center" Margin="4,0,18,0" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                <TextBlock Text="g from" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox x:Name="textBox_MinG" Style="{StaticResource Style_Filter}" TextChanged="textBox_Filter_TextChanged" ToolTip="The smallest total solar energy transmittance (0-1)."/>
+                <TextBlock Text="to" VerticalAlignment="Center" Margin="6,0"/>
+                <TextBox x:Name="textBox_MaxG" Style="{StaticResource Style_Filter}" TextChanged="textBox_Filter_TextChanged" ToolTip="The largest total solar energy transmittance (0-1)."/>
+                <TextBlock Text="Light at least" VerticalAlignment="Center" Margin="18,0,6,0"/>
+                <TextBox x:Name="textBox_MinLight" Style="{StaticResource Style_Filter}" TextChanged="textBox_Filter_TextChanged" ToolTip="The smallest light transmittance (0-1)."/>
+                <Button x:Name="button_LoadMore" Content="Load more glazing…" Height="24" Padding="10,0" Margin="24,0,0,0" Click="button_LoadMore_Click"
+                        ToolTip="Add glazing systems from a Tas construction database (.tcd) or a SAM aperture construction file (.json). They are only used in this window until you apply one."/>
+            </WrapPanel>
+            <TextBlock x:Name="textBlock_Load" Style="{StaticResource PartO.Caption}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+            <ItemsControl x:Name="itemsControl_Notes" Focusable="False">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                            <TextBlock Text="&#x24D8;" Style="{StaticResource PartO.StatusGlyph}"/>
+                            <TextBlock Text="{Binding}" TextWrapping="Wrap" MaxWidth="900" Foreground="{StaticResource PartO.Brush.Text}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <!-- COMPARISON TABLE: complete glazing systems, never single panes. -->
+        <Border Grid.Row="2" Margin="0,10,0,0" Background="{StaticResource PartO.Brush.Surface}" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="8,6">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <TextBlock x:Name="textBlock_StatusGlyph" Style="{StaticResource PartO.StatusGlyph}" FontSize="14" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="textBlock_Status" TextWrapping="Wrap" MaxWidth="880" Foreground="{StaticResource PartO.Brush.Text}"/>
+                </StackPanel>
+
+                <DataGrid x:Name="dataGrid_Candidates" Grid.Row="1" Margin="0,6,0,0" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column"
+                          CanUserAddRows="False" CanUserDeleteRows="False" CanUserSortColumns="False" SelectionMode="Single" SelectionUnit="FullRow"
+                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{StaticResource PartO.Brush.Border}" MinHeight="150"
+                          SelectionChanged="dataGrid_Candidates_SelectionChanged" AutomationProperties.Name="Glazing systems">
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Setter Property="ToolTip" Value="{Binding Tooltip}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="Background" Value="{StaticResource PartO.Brush.AccentSurface}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="System" Binding="{Binding NameText}" Width="170"/>
+                        <DataGridTextColumn Header="Source" Binding="{Binding SourceLabel}" Width="100"/>
+                        <DataGridTextColumn Header="Pane" Binding="{Binding PaneBuildUp}" Width="*"/>
+                        <DataGridTextColumn Header="Frame" Binding="{Binding FrameText}" Width="110"/>
+                        <DataGridTextColumn Header="Ug" Binding="{Binding UgText}" Width="46" ElementStyle="{StaticResource Style_RightCell}"/>
+                        <DataGridTextColumn Header="Uf" Binding="{Binding UfText}" Width="46" ElementStyle="{StaticResource Style_RightCell}"/>
+                        <DataGridTextColumn Header="g" Binding="{Binding GText}" Width="44" ElementStyle="{StaticResource Style_RightCell}"/>
+                        <DataGridTextColumn Header="Light" Binding="{Binding LightTransmittanceText}" Width="50" ElementStyle="{StaticResource Style_RightCell}"/>
+                        <DataGridTextColumn Header="Uw" Binding="{Binding UwText}" Width="54" ElementStyle="{StaticResource Style_RightCell}"/>
+                        <DataGridTextColumn Header="Margin" Binding="{Binding MarginText}" Width="56" ElementStyle="{StaticResource Style_RightCell}"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="110"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <TextBlock x:Name="textBlock_Count" Grid.Row="2" Style="{StaticResource PartO.Caption}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+            </Grid>
+        </Border>
+
+        <!-- CURRENT | PROPOSED | TARGET | MARGIN | STATUS -->
+        <Border Grid.Row="3" Margin="0,10,0,0" Background="{StaticResource PartO.Brush.Surface}" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="10,8">
+            <StackPanel>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Current Uw" Style="{StaticResource Style_TableHeader}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="Proposed Uw" Style="{StaticResource Style_TableHeader}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Target" Style="{StaticResource Style_TableHeader}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="3" Text="Margin" Style="{StaticResource Style_TableHeader}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="4" Text="Status" Style="{StaticResource Style_TableHeader}"/>
+                    <TextBlock x:Name="textBlock_Current" Grid.Row="1" Grid.Column="0" Style="{StaticResource Style_TableValue}"/>
+                    <TextBlock x:Name="textBlock_Proposed" Grid.Row="1" Grid.Column="1" Style="{StaticResource Style_TableValue}"/>
+                    <TextBlock x:Name="textBlock_TargetValue" Grid.Row="1" Grid.Column="2" Style="{StaticResource Style_TableValue}"/>
+                    <TextBlock x:Name="textBlock_Margin" Grid.Row="1" Grid.Column="3" Style="{StaticResource Style_TableValue}"/>
+                    <TextBlock x:Name="textBlock_RowStatus" Grid.Row="1" Grid.Column="4" Style="{StaticResource Style_TableValue}"/>
+                </Grid>
+                <TextBlock x:Name="textBlock_Change" Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- THE APPLY SCOPE, inline, before Apply: which apertures, what is added, and the warnings. -->
+        <Border Grid.Row="4" Margin="0,10,0,0" Background="{StaticResource PartO.Brush.AccentSurface}" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="10,6">
+            <StackPanel>
+                <TextBlock x:Name="textBlock_Scope" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}"/>
+                <TextBlock x:Name="textBlock_Result" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}" Margin="0,2,0,0"/>
+                <ItemsControl x:Name="itemsControl_Warnings" Focusable="False" Margin="0,4,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
+                                <TextBlock Text="&#x26A0;" Style="{StaticResource PartO.StatusGlyph}" Foreground="{StaticResource PartO.Brush.Danger}"/>
+                                <TextBlock Text="{Binding}" TextWrapping="Wrap" MaxWidth="900" Foreground="{StaticResource PartO.Brush.Text}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock x:Name="textBlock_Block" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Danger}" Margin="0,4,0,0" Visibility="Collapsed"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ADVANCED: every automatic choice can be overridden here, and only here. -->
+        <Expander x:Name="expander_Advanced" Grid.Row="5" Header="Advanced" Margin="0,8,0,0" IsExpanded="False">
+            <Grid Margin="18,6,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Assign to" VerticalAlignment="Center" Margin="0,2,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal" Margin="0,2">
+                    <RadioButton x:Name="radioButton_AllApertures" GroupName="Scope" Content="All apertures using it" IsChecked="True" Margin="0,0,16,0" Checked="radioButton_Scope_Checked"/>
+                    <RadioButton x:Name="radioButton_SelectedApertures" GroupName="Scope" Content="Selected apertures only" Margin="0,0,16,0" Checked="radioButton_Scope_Checked"/>
+                    <RadioButton x:Name="radioButton_DontAssign" GroupName="Scope" Content="Don't assign" Checked="radioButton_Scope_Checked"/>
+                </StackPanel>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Candidates from" VerticalAlignment="Center" Margin="0,2,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,2">
+                    <CheckBox x:Name="checkBox_IncludeLibrary" Content="Default library" IsChecked="True" Margin="0,0,16,0" Checked="checkBox_Include_Changed" Unchecked="checkBox_Include_Changed"/>
+                    <CheckBox x:Name="checkBox_IncludeLoaded" Content="Loaded files" IsChecked="True" Checked="checkBox_Include_Changed" Unchecked="checkBox_Include_Changed"/>
+                </StackPanel>
+            </Grid>
+        </Expander>
+
+        <!-- AFTER APPLY: the scoped check (one line, the log one click away) and the report. -->
+        <Border x:Name="border_Applied" Grid.Row="6" Margin="0,10,0,0" Visibility="Collapsed" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="4,1,1,1" CornerRadius="3" Padding="10,6">
+            <StackPanel>
+                <TextBlock x:Name="textBlock_Applied" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}"/>
+                <Grid Margin="0,4,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="textBlock_CheckGlyph" Style="{StaticResource PartO.StatusGlyph}"/>
+                        <TextBlock x:Name="textBlock_Check" TextWrapping="Wrap" MaxWidth="780" Foreground="{StaticResource PartO.Brush.Text}"/>
+                    </StackPanel>
+                    <Button x:Name="button_Details" Grid.Column="1" Content="Details" Width="70" Height="24" Click="button_Details_Click"
+                            ToolTip="Open the check's records in the log window."/>
+                </Grid>
+                <TextBlock x:Name="textBlock_Report" Style="{StaticResource PartO.Caption}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="7" Margin="0,12,0,0">
+            <Button x:Name="button_CopyAll" HorizontalAlignment="Left" Width="80" Height="28" Visibility="Collapsed" Click="button_CopyAll_Click"
+                    ToolTip="Copy the GLAZING CHANGE report.">Copy All</Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="button_Apply" Style="{StaticResource PartO.PrimaryButton}" IsDefault="True" Width="90" Height="28" IsEnabled="False" Click="button_Apply_Click"
+                        ToolTip="Apply the chosen glazing. One Apply is one Undo step.">Apply</Button>
+                <Button x:Name="button_Cancel" IsCancel="True" Width="80" Height="28" Margin="8,0,0,0" Click="button_Cancel_Click">Cancel</Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

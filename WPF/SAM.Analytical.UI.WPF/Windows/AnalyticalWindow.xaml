@@ -539,7 +539,12 @@
                                        ToolTip="Set a construction's U-value in one window. The arrow keeps the classic calculator.">
                         <RibbonMenuItem x:Name="RibbonMenuItem_ThermalTransmittanceCalculator_Classic" Header="U Value Calculator (classic)" />
                     </RibbonSplitButton>
-                    <RibbonButton x:Name="RibbonButton_GlazingCalculator" Label="Glazing Calculator" />
+                    <!-- U-value plan PR3: the button opens the one-window "Set glazing" selection flow; the legacy multi-window
+                         Glazing Calculator stays one click away as "(classic)". -->
+                    <RibbonSplitButton x:Name="RibbonButton_GlazingCalculator" Label="Glazing Calculator"
+                                       ToolTip="Choose a glazing system for apertures in one window. The arrow keeps the classic calculator.">
+                        <RibbonMenuItem x:Name="RibbonMenuItem_GlazingCalculator_Classic" Header="Glazing Calculator (classic)" />
+                    </RibbonSplitButton>
 
                     <RibbonMenuButton x:Name="RibbonMenuButton_PartL" Label="PartL" >
                         <RibbonButton x:Name="RibbonButton_OpenPartL" Label="Open PartL" />
