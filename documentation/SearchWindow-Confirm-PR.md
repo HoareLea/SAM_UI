@@ -1,8 +1,8 @@
 # SearchWindow can be confirmed - OK / double-click / Enter (PR record)
 
-Branch `fix/searchwindow-ok-confirm-2026-10-01`, from `sow/2026-Q3` `7c17eab2`. **Not merged.**
+Branch `fix/searchwindow-ok-confirm-2026-10-01`, from `sow/2026-Q3` `cdaf1b2d`. **Not merged.**
 `PROJECT_PROGRESS.md` is not touched on this branch (closeout after merge, per `AGENTS.md`).
-Independent of the open U-value PR1b (SAM_UI#160); it was found while accepting that work.
+Independent of the U-value PR1b (SAM_UI#160, since merged); it was found while accepting that work.
 
 ## Status
 
