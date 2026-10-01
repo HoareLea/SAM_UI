@@ -728,6 +728,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             RibbonButton_GlazingCalculator.LargeImageSource = SAM.Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
             RibbonButton_GlazingCalculator.Click += RibbonButton_GlazingCalculator_Click;
+            RibbonMenuItem_GlazingCalculator_Classic.Click += RibbonMenuItem_GlazingCalculator_Classic_Click;
 
             RibbonButton_CreateCases.LargeImageSource = SAM.Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_CreateCases);
             RibbonButton_CreateCases.Click += RibbonButton_CreateCases_Click;
@@ -1066,6 +1067,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Modify.AssignPanelConstructionByThermalTransmittance(uIAnalyticalModel, panels);
+        }
+
+        private void MenuItem_SetGlazing_Click(object sender, RoutedEventArgs e)
+        {
+            List<Aperture> apertures = ((sender as MenuItem)?.Tag as IEnumerable)?.OfType<Aperture>().ToList();
+            if (apertures == null || apertures.Count == 0)
+            {
+                return;
+            }
+
+            Modify.OpenSetGlazingWindow(uIAnalyticalModel, apertures, this);
         }
 
         private void MenuItem_SetUValue_Click(object sender, RoutedEventArgs e)
@@ -2271,6 +2283,18 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_GlazingCalculator_Click(object sender, RoutedEventArgs e)
         {
+            // The split button's menu item click bubbles to here too; that one opens the classic flow.
+            if (e.OriginalSource is System.Windows.Controls.Ribbon.RibbonMenuItem)
+            {
+                return;
+            }
+
+            Modify.OpenSetGlazingWindow(uIAnalyticalModel, (Guid?)null, null, this);
+        }
+
+        private void RibbonMenuItem_GlazingCalculator_Classic_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
             Modify.CalculateGlazing(uIAnalyticalModel);
         }
 
@@ -4149,6 +4173,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Name = "MenuItem_AssignApertureConstructionByThermalTransmittance";
                     menuItem.Header = "Assign Aperture Construction By gValue";
                     menuItem.Click += MenuItem_AssignApertureConstructionByThermalTransmittance_Click; ;
+                    menuItem.Tag = apertures;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_SetGlazing";
+                    menuItem.Header = "Set glazing...";
+                    menuItem.Click += MenuItem_SetGlazing_Click;
                     menuItem.Tag = apertures;
                     contextMenu.Items.Add(menuItem);
 

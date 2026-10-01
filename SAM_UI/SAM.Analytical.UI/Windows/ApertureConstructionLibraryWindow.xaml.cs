@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-or-later
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Core;
@@ -23,6 +23,27 @@ namespace SAM.Analytical.UI
     {
         public event EventHandler<ConstructionManagerExportingEventArgs> ConstructionManagerExporting;
         public event EventHandler<ConstructionManagerImportingEventArgs> ConstructionManagerImporting;
+
+        /// <summary>
+        /// Raised by the "Set glazing..." button (shown only while a handler is attached) with the one selected
+        /// aperture construction. The handler hands over to the "Set glazing" window and closes this one.
+        /// </summary>
+        public event EventHandler<SetGlazingRequestedEventArgs> SetGlazingRequested
+        {
+            add
+            {
+                setGlazingRequested += value;
+                Button_SetGlazing.Visibility = setGlazingRequested == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            remove
+            {
+                setGlazingRequested -= value;
+                Button_SetGlazing.Visibility = setGlazingRequested == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        private EventHandler<SetGlazingRequestedEventArgs> setGlazingRequested;
 
         private MaterialLibrary materialLibrary;
         private ApertureConstructionLibrary apertureConstructionLibrary;
@@ -339,6 +360,22 @@ namespace SAM.Analytical.UI
 
             apertureConstructionLibrary?.Add(apertureConstruction);
             Add(apertureConstruction);
+        }
+
+        private void DataGrid_Constructions_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            Button_SetGlazing.IsEnabled = DataGrid_Constructions.SelectedItems.Count == 1;
+        }
+
+        private void Button_SetGlazing_Click(object sender, RoutedEventArgs e)
+        {
+            ApertureConstruction apertureConstruction = GetApertureConstructions(true)?.FirstOrDefault();
+            if (apertureConstruction == null || DataGrid_Constructions.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            setGlazingRequested?.Invoke(this, new SetGlazingRequestedEventArgs(apertureConstruction));
         }
 
         private void DataGrid_Constructions_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
