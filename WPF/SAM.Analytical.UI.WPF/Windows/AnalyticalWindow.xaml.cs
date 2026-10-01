@@ -724,6 +724,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             RibbonButton_ThermalTransmittanceCalculator.LargeImageSource = SAM.Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
             RibbonButton_ThermalTransmittanceCalculator.Click += RibbonButton_ThermalTransmittanceCalculator_Click;
+            RibbonMenuItem_ThermalTransmittanceCalculator_Classic.Click += RibbonMenuItem_ThermalTransmittanceCalculator_Classic_Click;
 
             RibbonButton_GlazingCalculator.LargeImageSource = SAM.Core.UI.WPF.Convert.ToBitmapSource(Properties.Resources.SAM_T3D);
             RibbonButton_GlazingCalculator.Click += RibbonButton_GlazingCalculator_Click;
@@ -1065,6 +1066,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             Modify.AssignPanelConstructionByThermalTransmittance(uIAnalyticalModel, panels);
+        }
+
+        private void MenuItem_SetUValue_Click(object sender, RoutedEventArgs e)
+        {
+            List<Panel> panels = ((sender as MenuItem)?.Tag as IEnumerable)?.OfType<Panel>().ToList();
+            if (panels == null || panels.Count == 0)
+            {
+                return;
+            }
+
+            Modify.OpenSetUValueWindow(uIAnalyticalModel, panels, this);
         }
 
         private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
@@ -2658,6 +2670,18 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void RibbonButton_ThermalTransmittanceCalculator_Click(object sender, RoutedEventArgs e)
         {
+            // The split button's menu item click bubbles to here too; that one opens the classic flow.
+            if (e.OriginalSource is System.Windows.Controls.Ribbon.RibbonMenuItem)
+            {
+                return;
+            }
+
+            Modify.OpenSetUValueWindow(uIAnalyticalModel, (Guid?)null, null, this);
+        }
+
+        private void RibbonMenuItem_ThermalTransmittanceCalculator_Classic_Click(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
             Modify.ThermalTransmittanceCalculator_SingleConstruction(uIAnalyticalModel);
         }
 
@@ -4162,6 +4186,13 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Name = "MenuItem_AssignConstructionByThermalTransmittance";
                     menuItem.Header = "Assign Construction By UValue";
                     menuItem.Click += MenuItem_AssignConstructionByThermalTransmittance_Click;
+                    menuItem.Tag = panels;
+                    contextMenu.Items.Add(menuItem);
+
+                    menuItem = new MenuItem();
+                    menuItem.Name = "MenuItem_SetUValue";
+                    menuItem.Header = "Set U-value...";
+                    menuItem.Click += MenuItem_SetUValue_Click;
                     menuItem.Tag = panels;
                     contextMenu.Items.Add(menuItem);
 

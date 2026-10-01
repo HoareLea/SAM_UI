@@ -1,0 +1,16 @@
+﻿param([string]$Out, [string]$Radio, [string]$Target, [string]$Name)
+# One Advanced-mode run from the selected 3D panel: open Set U-value, choose the mode, type, Apply, capture, Close.
+$S = $PSScriptRoot
+& "$S\tab.ps1" -Out $Out -Name '3D View' | Out-Null
+& "$S\mouse.ps1" -Out $Out -X 1100 -Y 700 -Wait 1 | Out-Null
+& "$S\mouse.ps1" -Out $Out -X 1100 -Y 700 -Right -Wait 1 | Out-Null
+& "$S\rawclick.ps1" -X 1172 -Y 664 | Out-Null
+& "$S\waitwin.ps1" -Out $Out -Like 'Set U-value' -Settle 1500
+& "$S\adv.ps1" -Out $Out -Expand -Radio $Radio
+& "$S\clickel.ps1" -Out $Out -Like 'Set U-value' -ById 'textBox_Target' -Wait 0 | Out-Null
+& "$S\keys.ps1" -Out $Out -Keys "^a$Target" -Wait 1500 -Shot "$Name-preview"
+& "$S\texts.ps1" -Out $Out -Ids @('textBlock_Status','textBlock_Scope','textBlock_Result','textBlock_Block','button_Apply')
+& "$S\clickel.ps1" -Out $Out -Like 'Set U-value' -ById 'button_Apply' -Wait 2 | Out-Null
+& "$S\waitwin.ps1" -Out $Out -Like 'Set U-value' -Settle 300 -Shot "$Name-applied"
+& "$S\texts.ps1" -Out $Out -Ids @('textBlock_Applied','textBlock_Check','textBlock_Report')
+& "$S\clickel.ps1" -Out $Out -Like 'Set U-value' -ById 'button_Cancel' -Wait 1 | Out-Null

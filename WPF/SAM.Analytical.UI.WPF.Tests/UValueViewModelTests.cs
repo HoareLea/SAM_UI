@@ -121,6 +121,10 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(UValueFixture.U(1.0), viewModel.BestAchievableThermalTransmittance, 6);
             Assert.Contains("not reachable", viewModel.StatusMessage);
             Assert.Contains("Best achievable: U 0.025 W/m²K at 1000 mm.", viewModel.StatusMessage);
+
+            // No text names a construction for a U-value that cannot be applied (found in the PR2b acceptance).
+            Assert.Null(viewModel.NewConstructionName);
+            Assert.Equal("Creates a new construction; SIM_EXT_SLD stays unchanged.", viewModel.ResultText);
         }
 
         [Fact]

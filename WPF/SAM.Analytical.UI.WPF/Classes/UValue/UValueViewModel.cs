@@ -285,15 +285,13 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>The scope Apply uses (<see cref="UValueApplyScope.AllPanels"/> when modifying in place).</summary>
         public UValueApplyScope EffectiveScope => applyMode == UValueApplyMode.ModifyInPlace ? UValueApplyScope.AllPanels : applyScope;
 
-        /// <summary>The name a new construction gets (e.g. "SIM_EXT_SLD U0.50").</summary>
-        public string NewConstructionName
-        {
-            get
-            {
-                double u = evaluation != null && evaluation.Reached ? evaluation.CalculatedThermalTransmittance : targetThermalTransmittance;
-                return Query.UValueConstructionName(construction.Name, u, constructionNames);
-            }
-        }
+        /// <summary>
+        /// The name a new construction gets (e.g. "SIM_EXT_SLD U0.50"), from the achieved U; null until a reached result
+        /// is shown, so no text names a construction for a U-value that cannot be applied.
+        /// </summary>
+        public string NewConstructionName => evaluation != null && evaluation.Reached
+            ? Query.UValueConstructionName(construction.Name, evaluation.CalculatedThermalTransmittance, constructionNames)
+            : null;
 
         /// <summary>The inline apply scope, e.g. "Applies to 40 panels using SIM_EXT_SLD (3 selected)."</summary>
         public string ScopeText
@@ -317,7 +315,7 @@ namespace SAM.Analytical.UI.WPF
                         return string.Format(CultureInfo.CurrentCulture, "Applies to {0} selected {1} of the {2} using {3}.", SelectedPanelsCount, Panels(SelectedPanelsCount), count, name);
 
                     case UValueApplyScope.DontAssign:
-                        return string.Format(CultureInfo.CurrentCulture, "Creates {0} without assigning it to any panel.", NewConstructionName);
+                        return string.Format(CultureInfo.CurrentCulture, "Creates {0} without assigning it to any panel.", NewConstructionName ?? "a new construction");
 
                     default:
                         return count == 0
@@ -330,7 +328,7 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>What happens to the constructions, e.g. "Creates SIM_EXT_SLD U0.50; SIM_EXT_SLD stays unchanged."</summary>
         public string ResultText => applyMode == UValueApplyMode.ModifyInPlace
             ? string.Format(CultureInfo.CurrentCulture, "Modifies {0}; every panel using it changes.", construction.Name)
-            : string.Format(CultureInfo.CurrentCulture, "Creates {0}; {1} stays unchanged.", NewConstructionName, construction.Name);
+            : string.Format(CultureInfo.CurrentCulture, "Creates {0}; {1} stays unchanged.", NewConstructionName ?? "a new construction", construction.Name);
 
         /// <summary>Warning lines: mixed panel groups, other constructions sharing the name.</summary>
         public IReadOnlyList<string> Warnings

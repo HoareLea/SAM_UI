@@ -1,0 +1,11 @@
+param([string]$Out = 'C:\TasOut\uvalue\pr2b\a\ev', [string]$Like = 'Set U-value', [int]$Timeout = 60, [string]$Shot = '', [int]$Settle = 800)
+# Waits until a window titled $Like is visible, logs how long that took, then captures it (PNG + UIA dump).
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$sw = [Diagnostics.Stopwatch]::StartNew()
+$w = $null
+while (-not $w -and $sw.Elapsed.TotalSeconds -lt $Timeout) { Start-Sleep -Milliseconds 100; $w = Top $Like }
+if (-not $w) { Say "TIMEOUT waiting for '$Like'"; ListWindows; exit 1 }
+Say ("window '{0}' after {1:N1}s" -f $w.Title, $sw.Elapsed.TotalSeconds)
+Start-Sleep -Milliseconds $Settle
+[void][A.N]::SetForegroundWindow($w.Handle); Start-Sleep -Milliseconds 300
+if ($Shot) { Shot $w $Shot }

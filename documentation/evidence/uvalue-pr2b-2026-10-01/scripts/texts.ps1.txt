@@ -1,0 +1,12 @@
+param([string]$Out = 'C:\TasOut\uvalue\pr2b\a\ev', [string]$Like = 'Set U-value', [string[]]$Ids = @())
+# Logs the Name (text) of TextBlocks, the value of edit boxes and the enabled state of buttons in a window.
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$w = Top $Like; if (-not $w) { Say "FAIL window '$Like'"; exit 1 }
+$root = $AE::FromHandle($w.Handle)
+foreach ($id in $Ids) {
+    $e = Find-ById $root $id
+    if (-not $e) { Say ("  {0}: <absent>" -f $id); continue }
+    $p = $null
+    if ($e.TryGetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern, [ref]$p)) { Say ("  {0} = '{1}'" -f $id, $p.Current.Value) }
+    else { Say ("  {0}: '{1}' enabled={2} offscreen={3}" -f $id, $e.Current.Name, $e.Current.IsEnabled, $e.Current.IsOffscreen) }
+}
