@@ -109,8 +109,46 @@
             </StackPanel>
         </Expander>
 
+        <StackPanel Grid.Row="3">
+        <!-- SYSTEMS IN THIS ASSESSMENT: SAM's answer, displayed - which ventilation systems the selected design assesses,
+             which stay on the design without being assessed, or why it is refused. Nothing here decides, edits or removes. The
+             lists are virtualised and bounded, so a model with hundreds of systems is two scroll regions, never a control per system. -->
+        <Expander x:Name="expander_Systems" Margin="0,8,0,0">
+            <Expander.Header>
+                <TextBlock TextTrimming="CharacterEllipsis">
+                    <Run Text="Systems in this assessment" FontWeight="SemiBold"/>
+                    <Run x:Name="run_SystemsSummary" Foreground="#666666"/>
+                </TextBlock>
+            </Expander.Header>
+            <StackPanel Margin="18,6,0,0">
+                <TextBlock x:Name="textBlock_SystemsRefusal" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Danger}" Visibility="Collapsed" Margin="0,0,0,6"/>
+                <Grid x:Name="grid_Systems">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="12"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock x:Name="textBlock_SystemsIncludedHeader" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="textBlock_SystemsIncludedNone" Text="None" Style="{StaticResource PartO.Caption}" Margin="0,2,0,0"/>
+                        <ListBox x:Name="listBox_SystemsIncluded" MaxHeight="112" Margin="0,2,0,0" BorderThickness="1" BorderBrush="{StaticResource PartO.Brush.Border}"
+                                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
+                                 AutomationProperties.Name="Systems included in this assessment"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2">
+                        <TextBlock x:Name="textBlock_SystemsRetainedHeader" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="textBlock_SystemsRetainedNone" Text="None" Style="{StaticResource PartO.Caption}" Margin="0,2,0,0"/>
+                        <ListBox x:Name="listBox_SystemsRetained" MaxHeight="112" Margin="0,2,0,0" BorderThickness="1" BorderBrush="{StaticResource PartO.Brush.Border}"
+                                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
+                                 AutomationProperties.Name="Systems retained on the design and not assessed"/>
+                    </StackPanel>
+                </Grid>
+                <TextBlock x:Name="textBlock_SystemsNote" Style="{StaticResource PartO.Caption}" Margin="0,4,0,0"/>
+            </StackPanel>
+        </Expander>
+
         <!-- SIMULATION CASE: the three inputs of the full-year TAS run a person owns, as in Prepare & Run. -->
-        <Expander Grid.Row="3" x:Name="expander_SimulationCase" Margin="0,4,0,0">
+        <Expander x:Name="expander_SimulationCase" Margin="0,4,0,0">
             <Expander.Header>
                 <TextBlock TextTrimming="CharacterEllipsis">
                     <Run Text="Simulation case"/>
@@ -144,6 +182,7 @@
                            Text="The rest of the case is fixed for Part O: a full-year simulation over days 1 to 365, no sizing, no exports. Each run writes its own results (the mixed run as &lt;model&gt;_Mixed, each screening strategy as &lt;model&gt;_Screen_&lt;strategy&gt;), so none overwrites another."/>
             </Grid>
         </Expander>
+        </StackPanel>
 
         <!-- THE MATRIX: one row per dwelling. Search, filter and group narrow it; nothing below the grid scrolls with it. -->
         <Grid Grid.Row="4" Margin="0,8,0,0">

@@ -57,6 +57,7 @@ namespace SAM.Analytical.UI.WPF
         private bool loaded;
         private bool writing;
         private bool simulationCase_Stated;
+        private string? systemsState;
 
         public PartOMixedDesignWindow()
         {
@@ -451,8 +452,96 @@ namespace SAM.Analytical.UI.WPF
 
             textBlock_Next.Text = Next(partOMixedReadiness);
 
+            RefreshSystems();
+
             RefreshActions();
         }
+
+        /// <summary>
+        /// Shows the session's systems answer - SAM's, never decided here. Four states, each a different sentence: not asked
+        /// yet, out of date, refused, and answered (included and retained, possibly either empty).
+        /// </summary>
+        private void RefreshSystems()
+        {
+            if (session is null)
+            {
+                return;
+            }
+
+            PartOSystemsInAssessment? partOSystemsInAssessment = session.SystemsInAssessment;
+            string? stale = session.SystemsInAssessmentStale;
+
+            if (partOSystemsInAssessment is null)
+            {
+                run_SystemsSummary.Text = stale is null ? " — not checked yet" : " — out of date";
+                textBlock_SystemsNote.Text = stale ?? "Check design asks SAM which of the model's ventilation systems the selected design assesses, and which stay on the design without being assessed. Build & Run reports the same answer. Check does not simulate anything.";
+                textBlock_SystemsRefusal.Visibility = Visibility.Collapsed;
+                grid_Systems.Visibility = Visibility.Collapsed;
+                SystemsState(stale is null ? "none" : "stale");
+
+                return;
+            }
+
+            run_SystemsSummary.Text = " — " + partOSystemsInAssessment.Summary;
+            textBlock_SystemsNote.Text = partOSystemsInAssessment.Note;
+
+            //SAM's refusals, in its words: a bounded few, the rest counted - a large model can refuse in hundreds of places.
+            const int count_Shown = 4;
+            textBlock_SystemsRefusal.Text = string.Join("\n", partOSystemsInAssessment.Refusals.Take(count_Shown).Select(x => "• " + x))
+                + (partOSystemsInAssessment.Refusals.Count > count_Shown ? string.Format("\n…and {0} more.", partOSystemsInAssessment.Refusals.Count - count_Shown) : string.Empty);
+            textBlock_SystemsRefusal.Visibility = partOSystemsInAssessment.IsRefused ? Visibility.Visible : Visibility.Collapsed;
+
+            bool lists = !partOSystemsInAssessment.IsEmpty && (partOSystemsInAssessment.Included.Count != 0 || partOSystemsInAssessment.Retained.Count != 0);
+            grid_Systems.Visibility = lists ? Visibility.Visible : Visibility.Collapsed;
+
+            listBox_SystemsIncluded.ItemsSource = partOSystemsInAssessment.Included.Select(x => x.Text).ToList();
+            listBox_SystemsRetained.ItemsSource = partOSystemsInAssessment.Retained.Select(x => x.Text).ToList();
+
+            textBlock_SystemsIncludedHeader.Text = string.Format("Included in this assessment · {0}", partOSystemsInAssessment.Included.Count);
+            textBlock_SystemsRetainedHeader.Text = partOSystemsInAssessment.ScopeApplied
+                ? string.Format("Retained on the design, not assessed · {0}", partOSystemsInAssessment.Retained.Count)
+                : "Retained on the design, not assessed";
+
+            textBlock_SystemsIncludedNone.Visibility = partOSystemsInAssessment.Included.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            listBox_SystemsIncluded.Visibility = partOSystemsInAssessment.Included.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+            textBlock_SystemsRetainedNone.Text = partOSystemsInAssessment.ScopeApplied ? "None" : "Not applicable on this route";
+            textBlock_SystemsRetainedNone.Visibility = partOSystemsInAssessment.Retained.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            listBox_SystemsRetained.Visibility = partOSystemsInAssessment.Retained.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+
+            SystemsState("answered");
+        }
+
+        /// <summary>
+        /// The section opens when its state changes to one a person should read (answered, or out of date) and is left
+        /// alone otherwise - every edit refreshes the window, and an engineer's own collapse must not be undone by it.
+        /// </summary>
+        private void SystemsState(string state)
+        {
+            if (string.Equals(systemsState, state, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            systemsState = state;
+            expander_Systems.IsExpanded = state != "none";
+        }
+
+        /// <summary>The section's displayed text, for the tests: the header summary, the note, SAM's refusals, and the two lists.</summary>
+        internal string SystemsSummaryText => run_SystemsSummary.Text;
+
+        internal string SystemsNoteText => textBlock_SystemsNote.Text;
+
+        internal string? SystemsRefusalText => textBlock_SystemsRefusal.Visibility == Visibility.Visible ? textBlock_SystemsRefusal.Text : null;
+
+        internal IReadOnlyList<string> SystemsIncludedItems => [.. listBox_SystemsIncluded.ItemsSource?.Cast<string>() ?? []];
+
+        internal IReadOnlyList<string> SystemsRetainedItems => [.. listBox_SystemsRetained.ItemsSource?.Cast<string>() ?? []];
+
+        internal bool SystemsListsVisible => grid_Systems.Visibility == Visibility.Visible;
+
+        internal System.Windows.Controls.ListBox ListBox_SystemsRetained => listBox_SystemsRetained;
+
+        internal bool SystemsExpanded => expander_Systems.IsExpanded;
 
         private string Next(PartOMixedReadiness partOMixedReadiness)
         {

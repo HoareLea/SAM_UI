@@ -47,7 +47,11 @@ namespace SAM.Analytical.UI.WPF
 
             PartOProgressHost.Current?.Detail("Materialising the ventilation systems");
 
-            MechanicalVentilationMaterialisation? mechanicalVentilationMaterialisation = PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates, partOIteration3Pipeline, out string? refusal_Systems, out List<string> notes_Systems);
+            MechanicalVentilationMaterialisation? mechanicalVentilationMaterialisation = PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates, partOIteration3Pipeline, out string? refusal_Systems, out List<string> notes_Systems, out PartOSystemsInAssessment systemsInAssessment);
+
+            //The same object Check design reports for this design - set before any refusal returns.
+            result.SystemsInAssessment = systemsInAssessment;
+
             if (mechanicalVentilationMaterialisation is null)
             {
                 result.Refusal = refusal_Systems;
@@ -214,19 +218,36 @@ namespace SAM.Analytical.UI.WPF
         /// <param name="notes">What the scope left out, and why - part of the run's evidence.</param>
         internal static MechanicalVentilationMaterialisation? PartOMixedSystemsMaterialisation(PartOMaterialisation partOMaterialisation, IEnumerable<VentilationUnitTemplate>? ventilationUnitTemplates, PartOIteration3Pipeline partOIteration3Pipeline, out string? refusal, out List<string> notes)
         {
+            return PartOMixedSystemsMaterialisation(partOMaterialisation, ventilationUnitTemplates, partOIteration3Pipeline, out refusal, out notes, out PartOSystemsInAssessment _);
+        }
+
+        /// <summary>
+        /// The ONE preflight, also saying <b>which systems it took</b> (PR-6): <paramref name="systemsInAssessment"/> is built
+        /// from the very scope this function hands SAM_Systems, so what Check design and Build &amp; Run show for the systems
+        /// in the assessment is one answer, whichever of them asked. It is set whatever the outcome - a refusal included.
+        /// </summary>
+        /// <param name="systemsInAssessment">SAM's scope in the engineer's words; never null.</param>
+        internal static MechanicalVentilationMaterialisation? PartOMixedSystemsMaterialisation(PartOMaterialisation partOMaterialisation, IEnumerable<VentilationUnitTemplate>? ventilationUnitTemplates, PartOIteration3Pipeline partOIteration3Pipeline, out string? refusal, out List<string> notes, out PartOSystemsInAssessment systemsInAssessment)
+        {
             refusal = null;
             notes = [];
+
+            //Nothing is decided here: the display is built from SAM's scope and the refusal text this function reports.
+            //Set at once, so every return below - a refusal included - hands back an answer.
+            systemsInAssessment = Query.PartOSystemsInAssessment(partOMaterialisation!, null);
 
             PartOMixedSystemsCall partOMixedSystemsCall = Query.PartOMixedSystemsCall(partOMaterialisation, ventilationUnitTemplates);
             if (!partOMixedSystemsCall.IsValid)
             {
                 refusal = Join("The TAS Systems ventilation of the mixed model could not be composed.", partOMixedSystemsCall.Refusals);
+                systemsInAssessment = Query.PartOSystemsInAssessment(partOMaterialisation!, null, refusal);
                 return null;
             }
 
             //Never the whole cluster: SAM_Systems requires every ventilation system it is handed to name a unit, and the
             //model's natural and uncontrolled systems never do.
             PartOSystemsMaterialisationScope partOSystemsMaterialisationScope = Query.PartOMixedSystemsScope(partOMaterialisation);
+            systemsInAssessment = Query.PartOSystemsInAssessment(partOMaterialisation!, partOSystemsMaterialisationScope);
             if (!partOSystemsMaterialisationScope.IsScoped)
             {
                 refusal = Join("The TAS Systems ventilation of the mixed model could not be limited to the systems Part O built.", partOSystemsMaterialisationScope.Refusals.ConvertAll(x => x.Message));
@@ -240,6 +261,7 @@ namespace SAM.Analytical.UI.WPF
             if (mechanicalVentilationMaterialisation is null || !mechanicalVentilationMaterialisation.IsMaterialised)
             {
                 refusal = Join("SAM_Systems could not materialise the mixed ventilation.", mechanicalVentilationMaterialisation?.Refusals);
+                systemsInAssessment = Query.PartOSystemsInAssessment(partOMaterialisation!, partOSystemsMaterialisationScope, refusal);
                 return null;
             }
 
@@ -268,6 +290,7 @@ namespace SAM.Analytical.UI.WPF
             if (refusals.Count != 0)
             {
                 refusal = Join("The mixed TAS Systems ventilation does not match SAM's cooled dwellings.", refusals);
+                systemsInAssessment = Query.PartOSystemsInAssessment(partOMaterialisation!, partOSystemsMaterialisationScope, refusal);
                 return null;
             }
 

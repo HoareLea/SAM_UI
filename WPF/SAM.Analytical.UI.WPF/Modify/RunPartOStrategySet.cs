@@ -49,6 +49,12 @@ namespace SAM.Analytical.UI.WPF
         /// design reports. Evidence, not warnings, so kept apart from <see cref="Notes"/>. Systems route only.
         /// </summary>
         public List<string> Notes_SystemsScope { get; } = [];
+
+        /// <summary>
+        /// The systems this run assessed and the ones it left out, from the same SAM scope Check design reports (PR-6).
+        /// Null where the run stopped before the preflight (cancelled) or a test simulator stood in for it.
+        /// </summary>
+        public PartOSystemsInAssessment? SystemsInAssessment { get; set; }
     }
 
     /// <summary>
@@ -148,6 +154,12 @@ namespace SAM.Analytical.UI.WPF
             result.Simulation = partOMaterialisation.Route == PartOSimulationRoute.Systems
                 ? (partOStrategySetSystemsSimulator ?? SimulatePartOMaterialisationSystems)(partOMaterialisation, ventilationUnitTemplates_Temp, partOSimulationContext, cancellationToken)
                 : (partOStrategySetSimulator ?? SimulatePartOMaterialisation)(partOMaterialisation.AnalyticalModel, [.. partOMaterialisation.OverheatingScenarios], partOSimulationContext, cancellationToken);
+
+            //No Systems preflight on the IZAM route: the systems Part O built are all there is to say, from SAM's record.
+            if (partOMaterialisation.Route != PartOSimulationRoute.Systems && result.Simulation is not null && !result.Simulation.Cancelled)
+            {
+                result.Simulation.SystemsInAssessment = Query.PartOSystemsInAssessment(partOMaterialisation, null);
+            }
 
             //The TPD, route and bridge timing CSVs SAM_Tas wrote beside the run's TAS files go to diagnostics.
             PartOOutputPaths.FileDiagnostics(partOSimulationContext.OutputDirectory);
