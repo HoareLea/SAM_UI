@@ -420,6 +420,9 @@
                     <RibbonButton x:Name="RibbonButton_SelectByFilter" Label="Select by Filter" />
                     <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
                 </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_View_Panels" Header="Panels">
+                    <RibbonToggleButton x:Name="RibbonToggleButton_ThermalPerformance" Label="Thermal Performance" ToolTip="Show or hide the Thermal Performance side panel (B0 spike, read-only)." />
+                </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Visibility" Header="Visiblity">
                     <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Unhide All" />
                     <RibbonButton x:Name="RibbonButton_ViewRange" Label="View Range" />
@@ -589,6 +592,8 @@
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="461*" />
                 <ColumnDefinition Width="86*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition x:Name="ColumnDefinition_ThermalPanel" Width="0" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -601,6 +606,10 @@
             </TabControl>
 
             <local:AnalyticalModelControl x:Name="AnalyticalModelControl"  Grid.Column="0" Grid.Row="0" />
+
+            <!-- B0 docking spike: the Thermal Performance side panel, hidden until the View > Thermal Performance toggle is on. -->
+            <GridSplitter x:Name="GridSplitter_ThermalPanel" Grid.Column="4" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" ResizeDirection="Columns" Visibility="Collapsed" />
+            <local:ThermalPerformanceSpikeControl x:Name="ThermalPerformanceControl" Grid.Column="5" Grid.Row="0" Visibility="Collapsed" />
         </Grid>
     </DockPanel>
 </Window>
