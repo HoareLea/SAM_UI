@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,10,9.6,10" Width="70" HorizontalAlignment="Right" Grid.Column="1"></Button>
-        <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="0,10,84.6,10" HorizontalAlignment="Right" Width="70" Grid.Column="1"/>
+        <Button x:Name="button_OK" IsDefault="True" IsEnabled="False" Click="button_OK_Click" Content="OK" Grid.Row="1" Margin="0,10,84.6,10" HorizontalAlignment="Right" Width="70" Grid.Column="1"/>
         <local:SearchControl x:Name="SearchControl_Main" Grid.Row="0" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch"/>
     </Grid>
 </Window>
