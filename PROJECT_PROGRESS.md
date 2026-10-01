@@ -3,6 +3,35 @@
 **Convention (owner, 28 Sep 2026):** code + tests + evidence → final PR CI → merge → update `PROJECT_PROGRESS.md`
 afterwards as a direct docs-only closeout commit on the base branch (not pushed to the PR branch).
 
+## Current (U-value workflow stream): PR2a - "Set U-value" engine, no window - MERGED as SAM_UI#162 (`9ef5bd5`) (1 Oct 2026)
+
+**Status.** [SAM_UI#162](https://github.com/SAM-BIM/SAM_UI/pull/162) merged into `sow/2026-Q3` with a merge commit (`9ef5bd5`; PR head `2e4c01c`), owner-approved. `build` and `spdx` green on that
+head, CLEAN, no reviews or comments. Record: `documentation/UValue-SetUValue-PR2A.md`; brief: `documentation/plans/UValue-PR2-PROMPT.md`; evidence: `documentation/evidence/uvalue-pr2a-2026-10-01/`
+(timing spike + real-Tas headless engine probe). No window, entry point or legacy change yet: that is PR2b.
+
+**Work.** `IUValueEvaluator` + `TasUValueEvaluator` (existing `ThermalTransmittanceCalculator` on one STA single-flight worker: 300 ms debounce, superseded/stale results cancelled; U at both range
+ends first, cached, so unreachable targets are answered without the bisection and name the best achievable U); `UValueViewModel` (no WPF types: current U, pre-filled target, auto layer + sentence,
+preview rows, inline scope text, mixed-group / shared-name warnings, Apply only for a reached result of the current inputs, Advanced: layer, range, heat-flow direction, new/in place,
+all/selected/don't assign); `Modify.SetUValue` (one clone, exactly one `SetJSAMObject`, adds the adjusted material `<material>_<t>m` to the Material Library, unique name `<source> U0.30`, legacy
+post-steps kept with a manager holding only the changed construction). PR1 classifier gained an enum core `Query.UValueCalculationFailure` (messages unchanged).
+
+**Decisions.** Spike: reachable evaluation median 246 ms (50 runs) -> live preview, no Calculate button; unreachable bisection ~2.7 s -> range-end pre-check (plan's reachability rule done first).
+Modify in place is refused when another construction shares the name (`UpdateConstructions` matches by name). In place ignores scope (all panels). A construction is stored as an object only when no
+panel carries it or it was stored already (`GetConstructions` does not merge duplicates); the unused source is kept (no silent deletes). Thickness rounded to 1 mm on apply, as legacy.
+
+**Files.** `WPF/SAM.Analytical.UI.WPF/Classes/UValue/*` (9), `Enums/UValue{ApplyMode,ApplyScope,CalculationFailure,PreviewStatus}.cs`, `Interfaces/IUValueEvaluator.cs`, `Modify/SetUValue.cs`,
+`Query/UValue{ConstructionName,HeatFlowBasis}.cs`, `Query/UValueCalculationMessage.cs`; tests `Helpers/UValueFixture.cs`, `UValue{Evaluator,ViewModel}Tests.cs`, `SetUValueTests.cs` (54 new);
+test csproj + `SAM.Architectural` reference; record, brief, evidence.
+
+**Validation.** Full WPF suite 1680/1680. Real-Tas engine probe on a fresh model copy: U=0.3 reached (wool 80 -> 67 mm, ~240 ms); 0.01 / 5 unreachable in 0 ms with best U; Apply = 1 Modified + 1
+HistoryChanged; ModelCheck 0 errors after Apply (legacy: missing-material Error); one Undo restores all 12 panels, no leftover construction or material; Redo reapplies. Build order SAM (`dfec2a4c`)
+-> SAM_Tas (`1761624f`) -> SAM_UI.sln, sibling DLL md5s match.
+
+**Unresolved / risks.** Mixed wall/roof panels on one construction get one (majority) basis, with a warning. Timings are from this VM. No real-app (window) acceptance yet - PR2b.
+
+**Next step.** PR2b on `feature/uvalue-pr2b-window-2026-10-01`: the window (pattern B, `PartOStyles.xaml`), three entry points, scoped check + `U-VALUE CHANGE` report, real-app UIA acceptance.
+**Owner decision (1 Oct 2026):** Tools > U Value Calculator opens the NEW window by default; the legacy flow stays reachable as "U Value Calculator (classic)".
+
 ## Current (UI stream): SearchWindow can be confirmed (OK / double-click / Enter) - MERGED as SAM_UI#161 (`f44b6f7`) (1 Oct 2026)
 
 **Status.** [SAM_UI#161](https://github.com/SAM-BIM/SAM_UI/pull/161) merged into `sow/2026-Q3` with a merge commit (`f44b6f7`; PR head `af21c6e`). `build` and `spdx` green on that head, MERGEABLE, no reviews
@@ -50,7 +79,7 @@ default selection, unreachable / heat-flow-undefined / glass-only each show thei
 **Unresolved / risks.**
 1. `SearchWindow` (Select Construction for Assign Construction) OK button has no handler - Assign Construction cannot be confirmed; "every panel changed" was NOT confirmed through the UI.
    A separate fix session was started (task "Fix dead OK button in SearchWindow"); check `git log origin/sow/2026-Q3` for it.
-2. Edit > ModelCheck after the legacy apply: Error "Material Library does not contain Material ..._0.034m" - PR2's `Modify.SetUValue` must add the adjusted material in the same single Undo step.
+2. Edit > ModelCheck after the legacy apply: Error "Material Library does not contain Material ..._0.034m". Resolved for the new flow by SAM_UI#162 (`Modify.SetUValue` adds it; ModelCheck 0 errors); the legacy apply is unchanged.
 3. The calculator pre-check shows the first log record, not the error record (left; PR2 replaces the flow).
 4. Evidence uses folder copies, not an installer: installed-app acceptance needs an installer containing the new SAM_Tas DLL.
 
