@@ -1,0 +1,32 @@
+import json, sys, zipfile, collections
+def load(path):
+    z = zipfile.ZipFile(path)
+    out = []
+    for n in z.namelist():
+        out.append((n, json.loads(z.read(n).decode('utf-8-sig'))))
+    return out
+def walk(o, f):
+    if isinstance(o, dict):
+        f(o)
+        for v in o.values(): walk(v, f)
+    elif isinstance(o, list):
+        for v in o: walk(v, f)
+def summarize(path):
+    panels = {}; cons = {}
+    def f(o):
+        t = o.get('_type', '').split(',')[0]
+        if t == 'SAM.Analytical.Panel' and 'Guid' in o: panels[o['Guid']] = o
+        if t == 'SAM.Analytical.Construction' and 'Guid' in o: cons[o['Guid']] = o
+    for n, d in load(path): walk(d, f)
+    return panels, cons
+if __name__ == '__main__':
+    p, c = summarize(sys.argv[1])
+    print(sys.argv[1], 'panels', len(p), 'constructions', len(c))
+    cnt = collections.Counter()
+    for g, o in p.items():
+        con = o.get('Type') or {}
+        cnt[(con.get('Name'), o.get('PanelType'))] += 1
+    for k, v in sorted(cnt.items(), key=str): print('  panel construction', k, v)
+    for g, o in c.items():
+        layers = [(l.get('Name'), l.get('Thickness')) for l in o.get('ConstructionLayers', [])]
+        print('  construction', o.get('Name'), round(sum(t for _, t in layers), 4), [t for _, t in layers])

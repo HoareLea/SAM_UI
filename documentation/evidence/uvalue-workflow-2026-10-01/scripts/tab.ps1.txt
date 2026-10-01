@@ -1,0 +1,6 @@
+param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Name = '3D View', [string]$Shot = '')
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$m = Main; $el = $AE::FromHandle($m.Handle)
+$t = $el.FindFirst($TS::Descendants, (New-Object System.Windows.Automation.AndCondition((New-Object System.Windows.Automation.PropertyCondition($AE::NameProperty, $Name)), (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::TabItem)))))
+$p = $null; if ($t.TryGetCurrentPattern([System.Windows.Automation.SelectionItemPattern]::Pattern, [ref]$p)) { $p.Select(); Say "tab $Name selected" }
+Start-Sleep -Seconds 3; if ($Shot) { ScreenShot $Shot }

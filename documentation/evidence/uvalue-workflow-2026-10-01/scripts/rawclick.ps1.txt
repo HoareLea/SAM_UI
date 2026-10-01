@@ -1,0 +1,5 @@
+param([int]$X, [int]$Y, [switch]$Right, [switch]$Double)
+$Out='C:\TasOut\uvalue\before-ev'
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+[A.N]::Click($X, $Y, [bool]$Right); if ($Double) { Start-Sleep -Milliseconds 80; [A.N]::Click($X, $Y, [bool]$Right) }
+Say ("rawclick {0},{1}" -f $X, $Y)

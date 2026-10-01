@@ -1,0 +1,12 @@
+param([string]$Exe, [string]$Model, [string]$Out)
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+Say ("launch {0} model {1}" -f $Exe, $Model)
+$proc = Start-Process -FilePath $Exe -ArgumentList "/Path=$Model" -PassThru
+$script:ProcessId = $proc.Id; Set-Content -Path $pidFile -Value $proc.Id
+$t0 = Get-Date
+$m = $null; $dl = (Get-Date).AddSeconds(180)
+do { Start-Sleep -Seconds 2; $m = Main } while (-not $m -and (Get-Date) -lt $dl)
+if (-not $m) { Say 'FAIL main window did not open'; exit 1 }
+$el = $AE::FromHandle($m.Handle)
+$tab = $null; $dl = (Get-Date).AddSeconds(120); do { Start-Sleep -Seconds 2; $tab = Find-ById $el 'RibbonTab_Simulate' } while (-not $tab -and (Get-Date) -lt $dl)
+Say ("main window '{0}' pid {1} after {2:N0}s" -f $m.Title, $proc.Id, ((Get-Date) - $t0).TotalSeconds)

@@ -1,0 +1,23 @@
+construction SIM_EXT_SLD: F00_WhitePaint_0.1kg/m3_0.2W/mK 0.0002 / C01_Plasterboard_700kg/m3_0.21W/mK 0.0125 / Ar90Up_Air__50mm_1.25W/m2K 0.05 / C00_Cement particleboard_1200kg/m3_0.23W/mK 0.012 / I01_Mineral Wool_20kg/m3_0.025W/mK 0.08 / Ar90Up_Air__50mm_1.25W/m2K 0.05 / C00_Rainscreen_7800kg/m3_50W/mK 0.003
+   F00_WhitePaint_0.1kg/m3_0.2W/mK -> OpaqueMaterial Opaque k=0.2
+   C01_Plasterboard_700kg/m3_0.21W/mK -> OpaqueMaterial Opaque k=0.21
+   Ar90Up_Air__50mm_1.25W/m2K -> GasMaterial Gas k=0.024
+   C00_Cement particleboard_1200kg/m3_0.23W/mK -> OpaqueMaterial Opaque k=0.23
+   I01_Mineral Wool_20kg/m3_0.025W/mK -> OpaqueMaterial Opaque k=0.025
+   Ar90Up_Air__50mm_1.25W/m2K -> GasMaterial Gas k=0.024
+   C00_Rainscreen_7800kg/m3_50W/mK -> OpaqueMaterial Opaque k=50
+default U=0.5: layerIdx(in)=4 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=4 thickness=0.0338040771484375 initialU=0.26 calcU=0.5 targetU=0.5 | 243 ms
+default U=0.2: layerIdx(in)=4 U=0.2 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=4 thickness=0.10880224609374999 initialU=0.26 calcU=0.2 targetU=0.2 | 213 ms
+default U=0.05: layerIdx(in)=4 U=0.05 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=4 thickness=0.46928125 initialU=0.26 calcU=0.051 targetU=0.05 | 234 ms
+default U=0.05 range 0.001-0.5: layerIdx(in)=4 U=0.05 dir=Horizontal ext=True range=0.001-0.5 | result: layerIdx=4 thickness=0.48440625 initialU=0.26 calcU=0.05 targetU=0.05 | 218 ms
+default U=0.9 (above initial 0.26.. within range?): layerIdx(in)=4 U=0.9 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=4 thickness=0.011548522949218749 initialU=0.26 calcU=0.9 targetU=0.9 | 232 ms
+default U=5 (too high): layerIdx(in)=4 U=5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=4 thickness=NaN initialU=0.26 calcU=NaN targetU=5 | 1488 ms
+heat flow Undefined: layerIdx(in)=4 U=0.5 dir=Undefined ext=True range=0.001-1 | result: layerIdx=4 thickness=NaN initialU=NaN calcU=NaN targetU=0.5 | 631 ms
+layerIndex -1 forced (fallback): layerIdx(in)=-1 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=4 thickness=0.0338040771484375 initialU=0.26 calcU=0.5 targetU=0.5 | 237 ms
+explicit layer 0: layerIdx(in)=0 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=0 thickness=NaN initialU=0.26 calcU=NaN targetU=0.5 | 1500 ms
+explicit layer 1: layerIdx(in)=1 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=1 thickness=NaN initialU=0.26 calcU=NaN targetU=0.5 | 1474 ms
+explicit layer 2: layerIdx(in)=2 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=2 thickness=NaN initialU=0.26 calcU=NaN targetU=0.5 | 1451 ms
+explicit layer 3: layerIdx(in)=3 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=3 thickness=NaN initialU=0.26 calcU=NaN targetU=0.5 | 1437 ms
+explicit layer 4: layerIdx(in)=4 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=4 thickness=0.0338040771484375 initialU=0.26 calcU=0.5 targetU=0.5 | 217 ms
+explicit layer 5: layerIdx(in)=5 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=5 thickness=NaN initialU=0.26 calcU=NaN targetU=0.5 | 1448 ms
+explicit layer 6: layerIdx(in)=6 U=0.5 dir=Horizontal ext=True range=0.001-1 | result: layerIdx=6 thickness=NaN initialU=0.26 calcU=NaN targetU=0.5 | 1467 ms

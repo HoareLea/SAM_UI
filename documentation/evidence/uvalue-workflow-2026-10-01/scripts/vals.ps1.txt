@@ -1,0 +1,7 @@
+param([string]$Out = 'C:\TasOut\uvalue\before-ev', [string]$Like = '*Result*')
+. (Join-Path $PSScriptRoot 'ulib.ps1')
+$w = Top $Like; $root = $AE::FromHandle($w.Handle)
+foreach ($e in $root.FindAll($TS::Descendants, (New-Object System.Windows.Automation.PropertyCondition($AE::ControlTypeProperty, $CT::Edit)))) {
+    $p = $null; $v = if ($e.TryGetCurrentPattern([System.Windows.Automation.ValuePattern]::Pattern, [ref]$p)) { $p.Current.Value } else { '?' }
+    Say ("  {0} = '{1}'" -f $e.Current.AutomationId, $v)
+}
