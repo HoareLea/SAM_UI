@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
+using SAM.Analytical.Enums;
 using SAM.Analytical.Tas;
 using SAM.Core;
 using SAM.Core.Tas;
@@ -388,6 +389,20 @@ namespace SAM.Analytical.UI.WPF
             {
                 Name = projectName,
             };
+
+            //PR-5: a Part O case says what it was derived from. The open model is the DESIGN (PR-4 keeps the window on it, and a
+            //result opened by hand is refused before a case starts), and by now any input the engineer confirmed has been
+            //written to it, so its state here is the state this case is derived from. Stamped on the working copy
+            //only - never on the design, which is what marks a model as a result - and before RunPartOSimulation
+            //takes the provenance record, which fingerprints it.
+            if (simulateInputs.PartOOutputCase is PartOOutputCase partOOutputCase_Derived
+                && UI.Query.PartODerivedCaseOf(partOOutputCase_Derived) is PartODerivedCase partODerivedCase
+                && uIAnalyticalModel.JSAMObject is AnalyticalModel analyticalModel_Design
+                && !analyticalModel_Design.HasValue(Analytical.AnalyticalModelParameter.PartOBaselineReference)
+                && !analyticalModel_Design.HasValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance))
+            {
+                analyticalModel.StampPartOBaselineReference(Analytical.Create.PartOBaselineReferenceFromDesign(partODerivedCase, analyticalModel_Design, uIAnalyticalModel.Path, outputDirectory));
+            }
 
             // Whether `analyticalModel` is a working copy this method may mutate freely. False while it is
             // the shallow copy taken above, which still shares its spaces, panels and apertures with the

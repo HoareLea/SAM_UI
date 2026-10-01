@@ -69,7 +69,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// A completed, eligible Iteration 1a run over the fixture design - built through the production
         /// transitions, in the order production performs them.
         /// </summary>
-        private PartORun Run()
+        private PartORun Run(PartOBaselineReference? partOBaselineReference = null)
         {
             adjacencyCluster = PartOIteration3Fixture.Design(out guids_VentilationSystem, out zones);
 
@@ -103,6 +103,13 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel analyticalModel_Workflow = PartOIteration3Fixture.Model(new AdjacencyCluster(adjacencyCluster), "Flat");
 
             analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.OverheatingScenarios, new Core.SAMCollection<OverheatingScenario>(result.OverheatingScenarios));
+
+            //PR-5: a Reference A that says what it was derived from (stamped before its own provenance, as a run does).
+            if (partOBaselineReference is not null)
+            {
+                Assert.True(analyticalModel_Workflow.StampPartOBaselineReference(partOBaselineReference));
+            }
+
             analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, new SimulationResultProvenance(analyticalModel_Workflow, path_TSD_ReferenceA));
 
             Assert.True(result.Complete(analyticalModel_Workflow, path_TSD_ReferenceA, PartOIteration3Fixture.SimulationContext(directory), out string refusal));
@@ -389,6 +396,60 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.NotNull(partOIteration3PipelineFake.VentilationSystemGuids_Materialised);
             Assert.Equal(guids_Prepared, partOIteration3PipelineFake.VentilationSystemGuids_Materialised);
             Assert.Equal(guids_Prepared, partOIteration3PipelineFake.AdjacencyCluster_Materialised.GetObjects<VentilationSystem>().ConvertAll(x => x.Guid).OrderBy(x => x));
+        }
+
+        /// <summary>
+        /// PR-5: Candidate B's saved model says it is Iteration 3, names the Reference A result it was paired with (by that result's own
+        /// state fingerprint, with its saved model as a locator) and the design behind Reference A - and stamping it leaves Reference A
+        /// as it was.
+        /// </summary>
+        [Fact]
+        public void Candidate_B_model_states_its_source_result_and_the_design_behind_it()
+        {
+            AnalyticalModel analyticalModel_Design = PartOIteration3Fixture.Model(new AdjacencyCluster(PartOIteration3Fixture.Design(out _, out _)), "Design");
+            string path_Design = Path.Combine(directory, "model", "Design.sam");
+            Directory.CreateDirectory(Path.GetDirectoryName(path_Design)!);
+            Assert.True(Core.Convert.ToFile(analyticalModel_Design, path_Design, Core.SAMFileType.SAM));
+
+            //Reference A's saved model sits in the run folder; its reference locates the design relative to that folder.
+            PartOBaselineReference partOBaselineReference_A = Analytical.Create.PartOBaselineReferenceFromDesign(PartODerivedCase.Iteration1a, analyticalModel_Design, path_Design, directory)!;
+
+            PartORun partORun = Run(partOBaselineReference_A);
+            AnalyticalModel analyticalModel_ReferenceA = partORun.AnalyticalModel_Assessment;
+            string json_ReferenceA = analyticalModel_ReferenceA.ToJsonObject().ToJsonString();
+
+            PartOIteration3PipelineFake partOIteration3PipelineFake = Pipeline_Complete(out List<Guid> _);
+            partOIteration3PipelineFake.Persist_ForReal = true;
+
+            PartOIteration3Result partOIteration3Result = Modify.RunPartOIteration3(partORun, partOIteration3PipelineFake);
+            Assert.True(partOIteration3Result.IsComplete, string.Join(" | ", partOIteration3Result.Ledger.Reasons));
+
+            string path_CandidateB = partOIteration3Result.Record.File(PartOIteration3Roles.CandidateB_Model)!.Path;
+            AnalyticalModel analyticalModel_CandidateB = Core.Convert.ToSAM<AnalyticalModel>(path_CandidateB).OfType<AnalyticalModel>().Single();
+
+            Assert.True(analyticalModel_CandidateB.TryGetValue(Analytical.AnalyticalModelParameter.PartOBaselineReference, out PartOBaselineReference partOBaselineReference));
+            Assert.True(partOBaselineReference.IsValid);
+            Assert.Equal(PartODerivedCase.Iteration3, partOBaselineReference.Case);
+
+            Assert.Equal(PartOModelReferenceKind.Result, partOBaselineReference.Source.Kind);
+            Assert.Equal(analyticalModel_ReferenceA.GetValue<SimulationResultProvenance>(Analytical.AnalyticalModelParameter.SimulationResultProvenance).Fingerprint_Model, partOBaselineReference.Source.Fingerprint);
+            Assert.False(Path.IsPathRooted(partOBaselineReference.Source.Path_Relative));
+            Assert.Equal(Analytical.Query.PartOBaselineRelativePath(Path.GetDirectoryName(path_CandidateB)!, partOIteration3Result.Record.Path_Model_ReferenceA), partOBaselineReference.Source.Path_Relative);
+
+            //Through Reference A, the design it was derived from - the same guid, state and file.
+            Assert.Equal(PartOModelReferenceKind.Design, partOBaselineReference.Design.Kind);
+            Assert.Equal(partOBaselineReference_A.Design.Guid, partOBaselineReference.Design.Guid);
+            Assert.Equal(partOBaselineReference_A.Design.Fingerprint, partOBaselineReference.Design.Fingerprint);
+            Assert.Equal(Analytical.Query.PartOBaselineRelativePath(Path.GetDirectoryName(path_CandidateB)!, path_Design), partOBaselineReference.Design.Path_Relative);
+            Assert.Equal(PartOBaselineResolutionStatus.Resolved, Analytical.Query.PartOModelResolution(partOBaselineReference.Design, path_CandidateB).Status);
+            Assert.DoesNotContain("Path_Absolute", partOBaselineReference.ToJsonObject().ToJsonString());
+
+            //Stamped before its own provenance record, so the saved Candidate B still matches it.
+            Assert.Equal(analyticalModel_CandidateB.GetValue<SimulationResultProvenance>(Analytical.AnalyticalModelParameter.SimulationResultProvenance).Fingerprint_Model, SimulationResultProvenance.Fingerprint(analyticalModel_CandidateB));
+
+            //Reference A is what it was: still the 1a result, derived from the design.
+            Assert.Equal(json_ReferenceA, partORun.AnalyticalModel_Assessment.ToJsonObject().ToJsonString());
+            Assert.Equal(PartODerivedCase.Iteration1a, partORun.BaselineReference!.Case);
         }
 
         //-------------------------------------------------------------------------------------------------

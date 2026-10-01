@@ -578,6 +578,262 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.False(new PartOMixedDesignSession(analyticalModel_Simulated, null, [], null).IsPartOResult);
         }
 
+        // ---- PR-5: every result says what it was derived from ---------------------------------------------------
+
+        /// <summary>
+        /// 1a, 1b, 2 and 2B, through the production commands: each saved result carries a <c>PartOBaselineReference</c> that names its
+        /// case and - by guid, state fingerprint and locators - the design it was derived from (2B also names the Iteration 2 result).
+        /// The design is not marked or changed, and opening a result never makes it the design.
+        /// </summary>
+        [WpfFact]
+        public void Each_result_saves_a_reference_to_what_it_was_derived_from_and_reopening_it_never_makes_it_the_design()
+        {
+            Journey journey = Open();
+
+            AnalyticalModel analyticalModel_Design = journey.UIAnalyticalModel.JSAMObject;
+            string snapshot_Design = Snapshot(journey.UIAnalyticalModel);
+            string fingerprint_Design = SimulationResultProvenance.Fingerprint(analyticalModel_Design);
+
+            // ---- 1a ---------------------------------------------------------------------------------------------
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration1a));
+            string path_TSD_1a = Simulate(journey);
+            string path_Result_1a = Query.Path_PartORunModel(path_TSD_1a);
+            AnalyticalModel analyticalModel_Result_1a = Read(path_Result_1a);
+
+            PartOBaselineReference partOBaselineReference_1a = AssertDesignReference(analyticalModel_Result_1a, path_Result_1a, PartODerivedCase.Iteration1a, analyticalModel_Design, fingerprint_Design);
+            Assert.Equal(PartOBaselineResolutionStatus.Resolved, Analytical.Query.PartOModelResolution(partOBaselineReference_1a.Design, path_Result_1a).Status);
+
+            //The live run says the same as the saved file, and the design model carries no reference.
+            Assert.Equal(PartODerivedCase.Iteration1a, journey.PartORun.BaselineReference!.Case);
+            AssertDesign(journey, snapshot_Design, "1a result");
+            Assert.False(journey.UIAnalyticalModel.JSAMObject.HasValue(Analytical.AnalyticalModelParameter.PartOBaselineReference));
+
+            // ---- 1b: derived from the design, not from 1a's result ----------------------------------------------
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration1b));
+            string path_Result_1b = Query.Path_PartORunModel(Simulate(journey));
+            PartOBaselineReference partOBaselineReference_1b = AssertDesignReference(Read(path_Result_1b), path_Result_1b, PartODerivedCase.Iteration1b, analyticalModel_Design, fingerprint_Design);
+            Assert.Null(partOBaselineReference_1b.Source);
+
+            // ---- 2: the design as it stands after the engineer's confirmed inputs ---------------------------------
+            PartOProjectTestVentilationUnit partOProjectTestVentilationUnit = new("PR-5 test unit", 60, 60);
+            PartOEquipmentSelection partOEquipmentSelection = new(PartOEquipmentSelectionMode.AutomaticSelectedPool, [partOProjectTestVentilationUnit.VentilationUnitReference]);
+
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, partOEquipmentSelection, partOProjectTestVentilationUnit));
+
+            AnalyticalModel analyticalModel_Design2 = journey.UIAnalyticalModel.JSAMObject;
+            string fingerprint_Design2 = SimulationResultProvenance.Fingerprint(analyticalModel_Design2);
+            Assert.NotEqual(fingerprint_Design, fingerprint_Design2);
+
+            string path_TSD_2 = Simulate(journey);
+            string path_Result_2 = Query.Path_PartORunModel(path_TSD_2);
+            AnalyticalModel analyticalModel_Result_2 = Read(path_Result_2);
+
+            PartOBaselineReference partOBaselineReference_2 = AssertDesignReference(analyticalModel_Result_2, path_Result_2, PartODerivedCase.Iteration2, analyticalModel_Design2, fingerprint_Design2);
+
+            //The design file on disk is still the state before the confirmed inputs, so the result says the design has moved on;
+            //once the engineer saves the design, it is the design the result was derived from.
+            Assert.Equal(PartOBaselineResolutionStatus.Changed, Analytical.Query.PartOModelResolution(partOBaselineReference_2.Design, path_Result_2).Status);
+            Assert.True(journey.UIAnalyticalModel.Save());
+            Assert.Equal(PartOBaselineResolutionStatus.Resolved, Analytical.Query.PartOModelResolution(partOBaselineReference_2.Design, path_Result_2).Status);
+
+            // ---- 2B: one round, stamped exactly as the optimiser stamps it ---------------------------------------
+            AnalyticalModel analyticalModel_Parent = journey.PartORun.AnalyticalModel_Assessment;
+            PartOBaselineReference partOBaselineReference_Run = Analytical.Create.PartOBaselineReferenceFromResult(PartODerivedCase.Iteration2B, analyticalModel_Parent, path_Result_2, Path.Combine(directory_Root, "Iteration2B", "tas"))!;
+
+            PartOOptimisationRun partOOptimisationRun = OneRound(journey.PartORun, new PartOOptimisationSettings(), analyticalModel_Parent, partOBaselineReference_Run);
+            string path_Result_2B = Query.Path_PartORunModel(partOOptimisationRun.Path_TSD_LastValid!);
+            AnalyticalModel analyticalModel_Result_2B = Read(path_Result_2B);
+
+            Assert.True(analyticalModel_Result_2B.TryGetValue(Analytical.AnalyticalModelParameter.PartOBaselineReference, out PartOBaselineReference partOBaselineReference_2B));
+            Assert.True(partOBaselineReference_2B.IsValid);
+            Assert.Equal(PartODerivedCase.Iteration2B, partOBaselineReference_2B.Case);
+
+            //It names the Iteration 2 RESULT it derives from - by the result's own state - and, through it, the same design.
+            Assert.Equal(PartOModelReferenceKind.Result, partOBaselineReference_2B.Source.Kind);
+            Assert.Equal(analyticalModel_Parent.GetValue<SimulationResultProvenance>(Analytical.AnalyticalModelParameter.SimulationResultProvenance).Fingerprint_Model, partOBaselineReference_2B.Source.Fingerprint);
+            Assert.Equal(PartOBaselineResolutionStatus.Resolved, Analytical.Query.PartOModelResolution(partOBaselineReference_2B.Source, path_Result_2B).Status);
+            Assert.Equal(Path.GetFullPath(path_Result_2), Analytical.Query.PartOModelResolution(partOBaselineReference_2B.Source, path_Result_2B).Path);
+            Assert.Equal(analyticalModel_Design2.Guid, partOBaselineReference_2B.Design.Guid);
+            Assert.Equal(fingerprint_Design2, partOBaselineReference_2B.Design.Fingerprint);
+
+            //The optimiser's own stamp leaves the run's prepared model alone: it is the copy that says 2B.
+            Assert.False(journey.PartORun.AnalyticalModel_Prepared.HasValue(Analytical.AnalyticalModelParameter.PartOBaselineReference) && journey.PartORun.AnalyticalModel_Prepared.GetValue<PartOBaselineReference>(Analytical.AnalyticalModelParameter.PartOBaselineReference).Case == PartODerivedCase.Iteration2B);
+
+            // ---- reopening a result: it is reviewed, it says where it came from, and it never becomes the design ------
+            foreach ((string path, PartODerivedCase partODerivedCase) in new[] { (path_Result_1a, PartODerivedCase.Iteration1a), (path_Result_2, PartODerivedCase.Iteration2), (path_Result_2B, PartODerivedCase.Iteration2B) })
+            {
+                AnalyticalModel analyticalModel_Result = Read(path);
+
+                PartORun partORun = new();
+                Assert.True(partORun.Restore(analyticalModel_Result, path, out string refusal_Restore), refusal_Restore);
+                Assert.Equal(partODerivedCase, partORun.BaselineReference!.Case);
+
+                string? refusal = UI.Query.PartODesignModelRefusal(analyticalModel_Result, path);
+                Assert.NotNull(refusal);
+                Assert.StartsWith(UI.Query.PartODesignModelRefusal_Lead, refusal);
+                Assert.Contains(Analytical.Query.PartOBaselineFindings(analyticalModel_Result), x => x.Message.Contains("baseline reference"));
+                Assert.Contains("'" + analyticalModel_Design2.Name + "'", refusal);
+                Assert.Contains(Path.GetFileName(path_Design), refusal);
+
+                //A result is never a baseline or a design, however it was opened.
+                Assert.False(new PartOMixedDesignSession(analyticalModel_Result, path, [], null).IsCleanBaseline);
+            }
+
+            //And none of that touched the design model on disk or in memory.
+            Assert.Equal(Snapshot(analyticalModel_Design2), Snapshot(Read(path_Design)));
+            Assert.Null(UI.Query.PartODesignModelRefusal(journey.UIAnalyticalModel.JSAMObject, path_Design));
+        }
+
+        /// <summary>
+        /// Iteration 3 derives from the Iteration 1a or Iteration 2 result and from nothing else. After a 2B run the session's run holds the
+        /// last 2B round - the same preparation context, a full-year result - so before this guard Iteration 3 was offered over an optimisation
+        /// round and would have taken it as Reference A. It is refused now, whether the round says it is 2B itself (its reference) or only
+        /// the folder it lives in does (a round written before the reference existed).
+        /// </summary>
+        [WpfFact]
+        public void Iteration_3_is_offered_from_the_Iteration_2_result_but_never_from_an_Iteration_2B_round()
+        {
+            Journey journey = Open();
+
+            PartOProjectTestVentilationUnit partOProjectTestVentilationUnit = new("PR-5 test unit", 60, 60);
+            PartOEquipmentSelection partOEquipmentSelection = new(PartOEquipmentSelectionMode.AutomaticSelectedPool, [partOProjectTestVentilationUnit.VentilationUnitReference]);
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration2, partOEquipmentSelection, partOProjectTestVentilationUnit));
+
+            string path_TSD_2 = Simulate(journey);
+
+            //The Iteration 2 result is a legitimate source.
+            PartOIteration3Eligibility partOIteration3Eligibility_2 = Query.PartOIteration3Eligibility(journey.PartORun, journey.PartORun.IsAssessable(out string refusal_Assessable_2), refusal_Assessable_2);
+            Assert.True(partOIteration3Eligibility_2.CanRun, partOIteration3Eligibility_2.Refusal_Run);
+
+            //One 2B round, stamped as the optimiser stamps it.
+            AnalyticalModel analyticalModel_Parent = journey.PartORun.AnalyticalModel_Assessment;
+            PartOBaselineReference partOBaselineReference_Run = Analytical.Create.PartOBaselineReferenceFromResult(PartODerivedCase.Iteration2B, analyticalModel_Parent, Query.Path_PartORunModel(path_TSD_2), Path.Combine(directory_Root, "Iteration2B", "tas"))!;
+            OneRound(journey.PartORun, new PartOOptimisationSettings(), analyticalModel_Parent, partOBaselineReference_Run);
+
+            Assert.Equal(PartORunState.WorkflowCompleted, journey.PartORun.State);
+            Assert.Equal(PartODerivedCase.Iteration2B, journey.PartORun.BaselineReference!.Case);
+
+            PartOIteration3Eligibility partOIteration3Eligibility_2B = Query.PartOIteration3Eligibility(journey.PartORun, journey.PartORun.IsAssessable(out string refusal_Assessable_2B), refusal_Assessable_2B);
+            Assert.False(partOIteration3Eligibility_2B.CanRun);
+            Assert.Contains("Iteration 2B", partOIteration3Eligibility_2B.Refusal_Run);
+            Assert.Contains("Iteration 2", partOIteration3Eligibility_2B.Refusal_Run.Replace("Iteration 2B", string.Empty));
+
+            //The same run through the production command refuses before it touches anything.
+            PartOIteration3Result partOIteration3Result = Modify.RunPartOIteration3(journey.PartORun, new PartOIteration3PipelineFake());
+            Assert.False(partOIteration3Result.IsComplete);
+        }
+
+        /// <summary>
+        /// A round that does not say it is 2B itself - one written before the reference existed carries its Iteration 2 parent's - is still
+        /// recognised by the case folder SAM wrote it into.
+        /// </summary>
+        [WpfFact]
+        public void An_Iteration_2B_round_without_its_own_reference_is_recognised_by_its_case_folder()
+        {
+            Journey journey_Marker = Open();
+
+            PartOProjectTestVentilationUnit partOProjectTestVentilationUnit = new("PR-5 test unit", 60, 60);
+            PartOEquipmentSelection partOEquipmentSelection = new(PartOEquipmentSelectionMode.AutomaticSelectedPool, [partOProjectTestVentilationUnit.VentilationUnitReference]);
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey_Marker, PartOWorkflowScenario.Text_Iteration2, partOEquipmentSelection, partOProjectTestVentilationUnit));
+            Simulate(journey_Marker);
+            OneRound(journey_Marker.PartORun, new PartOOptimisationSettings(), journey_Marker.PartORun.AnalyticalModel_Assessment, null);
+
+            Assert.Equal(PartODerivedCase.Iteration2, journey_Marker.PartORun.BaselineReference!.Case);
+
+            PartOIteration3Eligibility partOIteration3Eligibility_Marker = Query.PartOIteration3Eligibility(journey_Marker.PartORun, journey_Marker.PartORun.IsAssessable(out string refusal_Assessable_Marker), refusal_Assessable_Marker);
+            Assert.False(partOIteration3Eligibility_Marker.CanRun);
+            Assert.Contains("Iteration 2B", partOIteration3Eligibility_Marker.Refusal_Run);
+        }
+
+        /// <summary>
+        /// A result that predates the reference is refused exactly as before, with no claim about its design; and a whole case tree that
+        /// is copied elsewhere still finds the design that was copied with it - through the relative locator, not the file name.
+        /// </summary>
+        [WpfFact]
+        public void A_legacy_result_is_refused_as_before_and_a_copied_tree_finds_its_design()
+        {
+            Journey journey = Open();
+            Assert.Equal(PartOPreparationResult.Adopted, Accept(journey, PartOWorkflowScenario.Text_Iteration1a));
+            string path_Result = Query.Path_PartORunModel(Simulate(journey));
+
+            //Legacy: the same result with no reference on it.
+            AnalyticalModel analyticalModel_Legacy = Read(path_Result);
+            analyticalModel_Legacy.RemoveValue(Analytical.AnalyticalModelParameter.PartOBaselineReference);
+
+            Assert.Null(UI.Query.PartODerivedFromSentence(analyticalModel_Legacy, path_Result));
+            Assert.Equal(UI.Query.PartODesignModelRefusal(analyticalModel_Legacy), UI.Query.PartODesignModelRefusal(analyticalModel_Legacy, path_Result));
+            Assert.Null(new PartORun().BaselineReference);
+
+            //The whole tree, copied: the original is gone, and the result still names and resolves its design.
+            string directory_Copy = Path.Combine(Path.GetTempPath(), "SAM_PartOBaselineCopy_" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                CopyTree(directory, directory_Copy);
+
+                string path_Result_Copy = Path.Combine(directory_Copy, Path.GetRelativePath(directory, path_Result));
+                string path_Design_Copy = Path.Combine(directory_Copy, Path.GetRelativePath(directory, path_Design));
+                AnalyticalModel analyticalModel_Result_Copy = Read(path_Result_Copy);
+
+                PartOBaselineReference partOBaselineReference = analyticalModel_Result_Copy.GetValue<PartOBaselineReference>(Analytical.AnalyticalModelParameter.PartOBaselineReference);
+                Assert.NotNull(partOBaselineReference);
+
+                Directory.Delete(Path.Combine(directory, "model"), true);
+                Assert.False(Path.IsPathRooted(partOBaselineReference.Design.Path_Relative));
+
+                PartOBaselineResolution partOBaselineResolution = Analytical.Query.PartOModelResolution(partOBaselineReference.Design, path_Result_Copy);
+                Assert.Equal(PartOBaselineResolutionStatus.Resolved, partOBaselineResolution.Status);
+                Assert.Equal(Path.GetFullPath(path_Design_Copy), partOBaselineResolution.Path);
+            }
+            finally
+            {
+                try
+                {
+                    Directory.Delete(directory_Copy, true);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private PartOBaselineReference AssertDesignReference(AnalyticalModel analyticalModel_Result, string path_Result, PartODerivedCase partODerivedCase, AnalyticalModel analyticalModel_Design, string fingerprint_Design)
+        {
+            Assert.True(analyticalModel_Result.TryGetValue(Analytical.AnalyticalModelParameter.PartOBaselineReference, out PartOBaselineReference partOBaselineReference));
+            Assert.True(partOBaselineReference.IsValid);
+            Assert.Equal(partODerivedCase, partOBaselineReference.Case);
+            Assert.Null(partOBaselineReference.Source);
+            Assert.Equal(PartOModelReferenceKind.Design, partOBaselineReference.Design.Kind);
+            Assert.Equal(analyticalModel_Design.Guid, partOBaselineReference.Design.Guid);
+            Assert.Equal(analyticalModel_Design.Name, partOBaselineReference.Design.Name);
+            Assert.Equal(fingerprint_Design, partOBaselineReference.Design.Fingerprint);
+
+            //The locator: where the design is, from the folder the result is written to - and no absolute path anywhere in the reference.
+            Assert.NotNull(partOBaselineReference.Design.Path_Relative);
+            Assert.False(Path.IsPathRooted(partOBaselineReference.Design.Path_Relative));
+            Assert.Equal(Path.GetFullPath(path_Design), Path.GetFullPath(Path.Combine(Path.GetDirectoryName(path_Result)!, partOBaselineReference.Design.Path_Relative!)));
+            Assert.DoesNotContain("Path_Absolute", partOBaselineReference.ToJsonObject().ToJsonString());
+            Assert.DoesNotContain(directory, partOBaselineReference.ToJsonObject().ToJsonString(), StringComparison.OrdinalIgnoreCase);
+
+            //Stamped before the provenance record was taken, so the saved result still matches its own record.
+            Assert.Equal(analyticalModel_Result.GetValue<SimulationResultProvenance>(Analytical.AnalyticalModelParameter.SimulationResultProvenance).Fingerprint_Model, SimulationResultProvenance.Fingerprint(analyticalModel_Result));
+
+            return partOBaselineReference;
+        }
+
+        private static void CopyTree(string from, string to)
+        {
+            Directory.CreateDirectory(to);
+            foreach (string file in Directory.GetFiles(from))
+            {
+                File.Copy(file, Path.Combine(to, Path.GetFileName(file)));
+            }
+
+            foreach (string directory_Child in Directory.GetDirectories(from))
+            {
+                CopyTree(directory_Child, Path.Combine(to, Path.GetFileName(directory_Child)));
+            }
+        }
+
         // -----------------------------------------------------------------------------------------------------------
 
         private sealed class Journey
@@ -831,7 +1087,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// Iteration 2 result, simulated under its own <c>-Opt01</c> name in Iteration 2B's folder, and completed
         /// into the run.
         /// </summary>
-        private static PartOOptimisationRun OneRound(PartORun partORun, PartOOptimisationSettings partOOptimisationSettings, AnalyticalModel analyticalModel_Parent)
+        private static PartOOptimisationRun OneRound(PartORun partORun, PartOOptimisationSettings partOOptimisationSettings, AnalyticalModel analyticalModel_Parent, PartOBaselineReference? partOBaselineReference = null)
         {
             Assert.Same(analyticalModel_Parent, partORun.AnalyticalModel_Assessment);
 
@@ -847,7 +1103,10 @@ namespace SAM.Analytical.UI.WPF.Tests
             PartOIterationPreparation partOIterationPreparation = Analytical.Modify.PreparePartOIteration(analyticalModel_Round, partOPreparationContext.PartOIteration, partOPreparationContext.Zones, partOPreparationContext.VentilationStrategies, null);
             Assert.True(partORun.Prepare(partOIterationPreparation, partOPreparationContext), partORun.InvalidationReason);
 
-            AnalyticalModel analyticalModel_Workflow = Modify.RunPartOSimulation(partOIterationPreparation.AnalyticalModel, partOSimulationContext, partOSimulationContext.ProjectName_Iteration(1), partORun, CancellationToken.None, out _, out string path_TSD, out bool cancelled, out bool _, out _, out string refusal, null, Runner);
+            //As the optimiser does: the round that is simulated is a stamped COPY of the prepared model, which is the run's own.
+            AnalyticalModel analyticalModel_Simulated = Modify.StampedPartOIteration2B(partOIterationPreparation.AnalyticalModel, partOBaselineReference)!;
+
+            AnalyticalModel analyticalModel_Workflow = Modify.RunPartOSimulation(analyticalModel_Simulated, partOSimulationContext, partOSimulationContext.ProjectName_Iteration(1), partORun, CancellationToken.None, out _, out string path_TSD, out bool cancelled, out bool _, out _, out string refusal, null, Runner);
             Assert.True(refusal is null, refusal);
             Assert.False(cancelled);
 

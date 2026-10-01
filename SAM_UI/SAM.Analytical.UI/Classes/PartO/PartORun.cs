@@ -165,6 +165,21 @@ namespace SAM.Analytical.UI
         /// </summary>
         public AnalyticalModel AnalyticalModel_Assessment => State == PartORunState.WorkflowCompleted ? analyticalModel_Workflow : null;
 
+        /// <summary>
+        /// What the assessed result was derived from (PR-5): the reference its model carries, for a live run and for a result opened
+        /// with File > Open alike, or null where there is no completed run or the result predates the reference. It is information
+        /// only - nothing here makes that design, or this result, the open model.
+        /// </summary>
+        public PartOBaselineReference BaselineReference
+        {
+            get
+            {
+                AnalyticalModel analyticalModel = AnalyticalModel_Assessment;
+
+                return analyticalModel is not null && analyticalModel.TryGetValue(Analytical.AnalyticalModelParameter.PartOBaselineReference, out PartOBaselineReference partOBaselineReference) && partOBaselineReference is not null && partOBaselineReference.IsValid ? partOBaselineReference : null;
+            }
+        }
+
         /// <summary>The TSD the completed workflow wrote. Null outside <see cref="PartORunState.WorkflowCompleted"/>.</summary>
         public string Path_TSD => State == PartORunState.WorkflowCompleted ? path_TSD : null;
 

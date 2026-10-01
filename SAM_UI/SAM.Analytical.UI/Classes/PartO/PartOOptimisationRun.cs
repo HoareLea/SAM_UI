@@ -150,6 +150,13 @@ namespace SAM.Analytical.UI
         public string CapacityEnvelopeDescription { get; set; }
 
         /// <summary>
+        /// What every round, and the capacity envelope, of this optimisation is derived from (PR-5): Iteration 2B, sourced from the
+        /// Iteration 2 result the optimisation started from (run 0), and the design that result was derived from. Null where
+        /// that result is not a proven one. Stamped on each round's model before it is simulated.
+        /// </summary>
+        public PartOBaselineReference PartOBaselineReference { get; set; }
+
+        /// <summary>
         /// The <b>diagnostic</b> model the capacity envelope produced, simulated over the same full year
         /// and assessed with production TM59 - kept here and <b>nowhere near</b>
         /// <see cref="AnalyticalModel_LastValid"/>.

@@ -25,10 +25,11 @@ namespace SAM.Analytical.UI.WPF
         /// once per keystroke.</item>
         /// <item><b>The full annual case.</b> Approved Document O's criteria are defined over days 1 to
         /// 365 and Candidate B has to be the same case; a partial year cannot be compared with one.</item>
-        /// <item><b>Iteration 1a.</b> The frozen architecture pairs Candidate B against the Iteration 1a
-        /// reference and against nothing else. Iteration 1b has no mechanical system to materialise at
-        /// all, and Iteration 2 introduces manufacturer behaviour that PR5 owns; extending this
-        /// foundation to either of them is a separate decision, not a side effect of this button.</item>
+        /// <item><b>An Iteration 1a or Iteration 2 result, never an Iteration 2B round.</b> The frozen architecture derives Iteration 3 from the
+        /// 1a or 2 result. The gate has always been the base MVHR provision (<c>BasePassive</c>), which both 1a and 2 are prepared over; it does
+        /// not tell them apart and does not need to. It did not tell a 2B round apart either: after a 2B run the session's run holds the last
+        /// round, so Iteration 3 was offered over it and would have taken it as Reference A. That is refused here. Iteration 1b has no mechanical
+        /// system to materialise at all.</item>
         /// <item><b>Captured system identities.</b> See <c>PartORun.Guids_VentilationSystem_Prepared</c>
         /// and SAM #114 - without them there is no identity-based answer to which authored system is the
         /// design under assessment, and every other answer is a guess.</item>
@@ -148,6 +149,10 @@ namespace SAM.Analytical.UI.WPF
             {
                 refusal_Run = "This Part O run does not record how it was prepared, so the Iteration 3 pairing cannot state which iteration it is comparing. Prepare and run the iteration again.";
             }
+            else if (IsIteration2BRound(partORun))
+            {
+                refusal_Run = "Iteration 3 pairs Candidate B with the Iteration 1a or Iteration 2 result, and this run is an Iteration 2B optimisation round. Run Iteration 3 from the Iteration 2 result: reopen it, or prepare and run Iteration 2 again.";
+            }
             else if (partORun.PreparationContext.PartOIteration != PartOIteration.BasePassive)
             {
                 refusal_Run = string.Format(
@@ -164,6 +169,22 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return new PartOIteration3Eligibility(refusal_Run is null, refusal_Run, canReview, refusal_Review, path_Record, partOIteration3PairingStatuses);
+        }
+
+        /// <summary>
+        /// Whether the run holds an Iteration 2B optimisation round rather than the Iteration 1a or Iteration 2 result Iteration 3 derives from.
+        /// After a 2B run the session's run holds the last valid round - the same preparation context and a full-year result - so nothing else
+        /// tells it apart. Said by the round itself where it can (its <c>PartOBaselineReference</c>), and otherwise by the case folder SAM wrote it
+        /// into (SAM's own marker, never a name), which also covers a round written before the reference existed.
+        /// </summary>
+        private static bool IsIteration2BRound(PartORun partORun)
+        {
+            if (partORun.BaselineReference?.Case == Analytical.Enums.PartODerivedCase.Iteration2B)
+            {
+                return true;
+            }
+
+            return !string.IsNullOrWhiteSpace(partORun.Path_TSD) && PartOOutputPaths.FindForFile(partORun.Path_TSD)?.Case == PartOOutputCase.Iteration2B;
         }
 
         /// <summary>

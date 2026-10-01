@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
+using SAM.Analytical.Enums;
 using SAM.Analytical.Systems;
 using SAM.Analytical.Tas.TPD;
 using SAM.Core;
@@ -1181,6 +1182,13 @@ namespace SAM.Analytical.UI.WPF
             //scenarios Reference A was assessed under, which is what makes a reopened Candidate B
             //reviewable against the same criteria.
             analyticalModel_CandidateB.SetValue(Analytical.AnalyticalModelParameter.OverheatingScenarios, new SAMCollection<OverheatingScenario>(overheatingScenarios));
+
+            //PR-5: and what this pairing was derived from - Reference A's saved result and, through it, the design - with relative locators
+            //from the folder Candidate B is written to, stamped BEFORE the record below, which fingerprints every model parameter it does
+            //not exclude. Reference A is the one authoritative source: Candidate B is built from A's own prepared model and compared with A's
+            //own results, and both are bound to A (the live run, or its saved resume sidecar), so no second source is needed.
+            analyticalModel_CandidateB.StampPartOBaselineReference(Analytical.Create.PartOBaselineReferenceFromResult(PartODerivedCase.Iteration3, analyticalModel_ReferenceA, partOIteration3Record.Path_Model_ReferenceA, System.IO.Path.GetDirectoryName(partOIteration3Paths.Path_TSD_Bridge)));
+
             analyticalModel_CandidateB.SetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, new SimulationResultProvenance(analyticalModel_CandidateB, partOIteration3Paths.Path_TSD_Bridge));
 
             if (!iPartOIteration3Pipeline.Persist(analyticalModel_CandidateB, partOIteration3Paths.Path_TSD_Bridge, partOIteration3Paths.Path_TBD_ThermalSource, out string note_Persist))

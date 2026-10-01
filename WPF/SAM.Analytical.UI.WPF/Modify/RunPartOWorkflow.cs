@@ -96,7 +96,7 @@ namespace SAM.Analytical.UI.WPF
 
             while (true)
             {
-                PartOWorkflowCapabilities partOWorkflowCapabilities = Capabilities(partORun, uIAnalyticalModel.JSAMObject, out PartOIteration3Eligibility? partOIteration3Eligibility);
+                PartOWorkflowCapabilities partOWorkflowCapabilities = Capabilities(partORun, uIAnalyticalModel.JSAMObject, uIAnalyticalModel.Path, out PartOIteration3Eligibility? partOIteration3Eligibility);
 
                 if (partOSimulationCase is null)
                 {
@@ -490,6 +490,19 @@ namespace SAM.Analytical.UI.WPF
             PartOWorkflowCapabilities result = Capabilities(partORun, out partOIteration3Eligibility);
 
             result.DesignModelRefusal = UI.Query.PartODesignModelRefusal(analyticalModel);
+
+            return result;
+        }
+
+        /// <summary>
+        /// <see cref="Capabilities(PartORun, AnalyticalModel, out PartOIteration3Eligibility)"/> with the open model's file, so the refusal of a Part O
+        /// result can also name the design model it was derived from (PR-5).
+        /// </summary>
+        internal static PartOWorkflowCapabilities Capabilities(PartORun? partORun, AnalyticalModel? analyticalModel, string? path_Model, out PartOIteration3Eligibility? partOIteration3Eligibility)
+        {
+            PartOWorkflowCapabilities result = Capabilities(partORun, out partOIteration3Eligibility);
+
+            result.DesignModelRefusal = UI.Query.PartODesignModelRefusal(analyticalModel, path_Model);
 
             return result;
         }

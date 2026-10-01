@@ -205,6 +205,24 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
+        /// A copy of a round's prepared model that says it is Iteration 2B derived from the Iteration 2 result (PR-5). A copy, because the
+        /// prepared model itself is the run's and is not a result; the copy is what is simulated. Where there is no
+        /// reference to state (the source is not a proven result) the prepared model is simulated as it is.
+        /// </summary>
+        internal static AnalyticalModel StampedPartOIteration2B(AnalyticalModel analyticalModel_Prepared, PartOBaselineReference partOBaselineReference)
+        {
+            if (analyticalModel_Prepared is null || partOBaselineReference is null)
+            {
+                return analyticalModel_Prepared;
+            }
+
+            AnalyticalModel result = new(analyticalModel_Prepared);
+            result.StampPartOBaselineReference(partOBaselineReference);
+
+            return result;
+        }
+
+        /// <summary>
         /// The ordinary optimisation, unchanged: rounds at the whole configured step until something
         /// explicit stops it, and the last design that was actually valid.
         /// <para>
@@ -223,6 +241,11 @@ namespace SAM.Analytical.UI.WPF
             AnalyticalModel? analyticalModel_LastValid = partORun.AnalyticalModel_Assessment;
             string? path_TSD_LastValid = partORun.Path_TSD;
             List<OverheatingScenario> overheatingScenarios_LastValid = partORun.OverheatingScenarios;
+
+            //PR-5: every round is Iteration 2B derived from THIS result - the Iteration 2 result run 0 stands for, not the
+            //previous round - and carries the design that result was derived from. Captured once, here, before
+            //analyticalModel_LastValid moves on.
+            result.PartOBaselineReference = Analytical.Create.PartOBaselineReferenceFromResult(PartODerivedCase.Iteration2B, analyticalModel_LastValid, Query.Path_PartORunModel(path_TSD_LastValid), partOSimulationContext.OutputDirectory);
 
             //Reported, where the command shows the Part O progress window; nothing below depends on it.
             PartOProgressHost.Current?.Start(PartOOptimisationPhase_Starting);
@@ -410,7 +433,9 @@ namespace SAM.Analytical.UI.WPF
                 //warm-started run re-applies, and including it would turn the warm start off every round.
                 PartOCanonicalTBD partOCanonicalTBD_Round = WarmStart(partOCanonicalTBD, analyticalModel_LastValid, partOSimulationContext, partOOptimisationStep);
 
-                AnalyticalModel analyticalModel_Workflow = RunPartOSimulation(partOIterationPreparation.AnalyticalModel, partOSimulationContext, partOOptimisationStep.ProjectName, partORun, cancellationTokenSource.Token, out string _, out string path_TSD, out bool cancelled, out bool fullYear, out List<string> notes_Simulation, out string refusal_Simulation, partOCanonicalTBD_Round);
+                AnalyticalModel analyticalModel_Simulated = StampedPartOIteration2B(partOIterationPreparation.AnalyticalModel, result.PartOBaselineReference);
+
+                AnalyticalModel analyticalModel_Workflow = RunPartOSimulation(analyticalModel_Simulated, partOSimulationContext, partOOptimisationStep.ProjectName, partORun, cancellationTokenSource.Token, out string _, out string path_TSD, out bool cancelled, out bool fullYear, out List<string> notes_Simulation, out string refusal_Simulation, partOCanonicalTBD_Round);
 
                 partOOptimisationStep.Notes.AddRange(notes_Simulation);
                 partOOptimisationStep.Path_TSD = path_TSD;
@@ -1238,7 +1263,9 @@ namespace SAM.Analytical.UI.WPF
             //unstarted rather than shown as run.
             PartOProgressHost.Current?.Start(PartOOptimisationPhase_CapacityEnvelope);
 
-            AnalyticalModel analyticalModel_Workflow = RunPartOSimulation(partOIterationPreparation.AnalyticalModel, partOSimulationContext, partOOptimisationStep.ProjectName, partORun_Envelope, cancellationTokenSource.Token, out string _, out string path_TSD, out bool cancelled, out bool fullYear, out List<string> notes_Simulation, out string refusal_Simulation, partOCanonicalTBD_Envelope);
+            AnalyticalModel analyticalModel_Simulated = StampedPartOIteration2B(partOIterationPreparation.AnalyticalModel, partOOptimisationRun.PartOBaselineReference);
+
+            AnalyticalModel analyticalModel_Workflow = RunPartOSimulation(analyticalModel_Simulated, partOSimulationContext, partOOptimisationStep.ProjectName, partORun_Envelope, cancellationTokenSource.Token, out string _, out string path_TSD, out bool cancelled, out bool fullYear, out List<string> notes_Simulation, out string refusal_Simulation, partOCanonicalTBD_Envelope);
 
             partOOptimisationStep.Notes.AddRange(notes_Simulation);
             partOOptimisationStep.Path_TSD = path_TSD;
