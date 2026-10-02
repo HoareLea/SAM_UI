@@ -80,6 +80,9 @@ namespace SAM.Analytical.UI.WPF
 
         internal ConstructionCandidate Candidate { get; }
 
+        /// <summary>True when the construction was made for another panel group than the panels it would be given to (ordered after those that were not).</summary>
+        public bool MadeForOtherGroup { get; internal set; }
+
         public bool CanApply => BlockReason == null && !double.IsNaN(ThermalTransmittance);
 
         /// <summary>Target minus U [W/m²K]: positive is better than the target.</summary>

@@ -105,6 +105,30 @@
                     </ComboBox.ItemContainerStyle>
                 </ComboBox>
             </StackPanel>
+            <!-- SOURCES: where candidates come from beyond the model and the default library. Adding one only fills the pool; nothing reaches the model until Apply. -->
+            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6" AutomationProperties.AutomationId="stackPanel_Sources">
+                <DockPanel>
+                    <Button x:Name="button_AddSource" DockPanel.Dock="Right" Content="Add source…" Padding="8,1" Click="button_AddSource_Click" AutomationProperties.AutomationId="button_AddSource"
+                            ToolTip="Add a Tas construction database (.tcd) or a JSON file of constructions as a source of candidates for walls, roofs, floors and glazing. It is remembered. Nothing is written to the model until you apply a choice."/>
+                    <TextBlock Text="Sources" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </DockPanel>
+                <TextBlock x:Name="textBlock_SourcesHint" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,2,0,0" AutomationProperties.AutomationId="textBlock_SourcesHint"/>
+                <ItemsControl x:Name="itemsControl_Sources" Focusable="False" AutomationProperties.AutomationId="itemsControl_Sources">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Margin="0,3,0,0" ToolTip="{Binding ToolTip}">
+                                <Button DockPanel.Dock="Right" Content="✕" Style="{StaticResource Style_Link}" Click="button_ForgetSource_Click" Tag="{Binding}" VerticalAlignment="Top"
+                                        AutomationProperties.AutomationId="button_ForgetSource" AutomationProperties.Name="{Binding Label, StringFormat=Forget {0}}"
+                                        ToolTip="Forget this source: it is no longer offered or remembered. The file and the model are not touched."/>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Label}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" AutomationProperties.AutomationId="textBlock_SourceLabel"/>
+                                    <TextBlock Text="{Binding StatusText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" AutomationProperties.AutomationId="textBlock_SourceStatus"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
             <TextBlock x:Name="textBlock_Summary" DockPanel.Dock="Top" Style="{StaticResource PartO.Caption}" Margin="0,0,0,8"/>
 
             <!-- Apply bar: the check before Apply, the summary, Discard and Apply; afterwards the one-line result. -->

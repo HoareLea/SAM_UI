@@ -46,6 +46,7 @@ namespace SAM.Analytical.UI.WPF
         private UValueViewModel uValue;
         private ConstructionAlternatives alternatives;
         private GlazingViewModel glazing;
+        private readonly HashSet<GlazingSource> glazingSources = new HashSet<GlazingSource>();
         private string minThicknessText = (UValueViewModel.DefaultMinThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
         private string maxThicknessText = (UValueViewModel.DefaultMaxThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
         private bool changeOpen;
@@ -413,6 +414,35 @@ namespace SAM.Analytical.UI.WPF
             ChangeOpen = true;
             session.EditorChanged(this);
             _ = glazing.InitializeAsync();
+
+            // The sources the user added join the pool: those already read now, the others as they arrive (read when first needed).
+            glazingSources.Clear();
+            ThermalSourceCatalog catalog = session.Services.Sources;
+            catalog.SourcesChanged += Catalog_SourcesChanged;
+            AddReadySources();
+            _ = catalog.EnsureLoadedAsync();
+        }
+
+        // Adds the sources that are ready and not in the glazing pool yet (a source is added once; the first of a Guid wins in the pool).
+        private void AddReadySources()
+        {
+            if (glazing == null)
+            {
+                return;
+            }
+
+            foreach (GlazingSource source in session.Services.Sources.ReadySources)
+            {
+                if (glazingSources.Add(source))
+                {
+                    _ = glazing.AddSourceAsync(source);
+                }
+            }
+        }
+
+        private void Catalog_SourcesChanged(object sender, EventArgs e)
+        {
+            AddReadySources();
         }
 
         /// <summary>Closes the list and drops the choice: the row is not edited any more.</summary>
@@ -579,7 +609,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 if (alternatives == null && CanEdit && !double.IsNaN(uValue.TargetThermalTransmittance))
                 {
-                    alternatives = new ConstructionAlternatives(analyticalModel, uValue, session.Services.ConstructionEvaluator, session.Services.ConstructionCache, session.Services.ConstructionLibrary);
+                    alternatives = new ConstructionAlternatives(analyticalModel, uValue, session.Services.ConstructionEvaluator, session.Services.ConstructionCache, session.Services.ConstructionLibrary, session.Services.Sources);
                     alternatives.PropertyChanged += Alternatives_PropertyChanged;
                 }
 
@@ -637,6 +667,8 @@ namespace SAM.Analytical.UI.WPF
 
             if (glazing != null)
             {
+                session.Services.Sources.SourcesChanged -= Catalog_SourcesChanged;
+                glazingSources.Clear();
                 glazing.PropertyChanged -= ViewModel_PropertyChanged;
                 glazing.Dispose();
                 glazing = null;

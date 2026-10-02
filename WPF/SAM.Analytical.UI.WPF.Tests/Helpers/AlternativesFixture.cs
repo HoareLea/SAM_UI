@@ -133,7 +133,7 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
 
         public static ThermalEditServices Services(FakeConstructionUValueEvaluator evaluator = null, Func<GlazingSource> library = null)
         {
-            return new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => evaluator ?? new FakeConstructionUValueEvaluator(), library ?? (() => Library()));
+            return new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => evaluator ?? new FakeConstructionUValueEvaluator(), library ?? (() => Library()), () => new ThermalSourceCatalog(new InMemoryThermalSourceStore()));
         }
     }
 }
