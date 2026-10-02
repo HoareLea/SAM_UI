@@ -592,6 +592,178 @@ namespace SAM.Analytical.UI.WPF
 
         public string CandidateCountText => glazing?.CandidateCountText ?? string.Empty;
 
+        // ---- Glazing: the filters and the order of the list (behind "Filters" in the open list; the shared view-model does the work) ----
+
+        /// <summary>The smallest g-value wanted (0-1); empty for none.</summary>
+        public string GlazingMinGText
+        {
+            get => glazing?.MinGText ?? string.Empty;
+            set
+            {
+                if (glazing != null)
+                {
+                    glazing.MinGText = value;
+                }
+            }
+        }
+
+        /// <summary>The largest g-value wanted (0-1); empty for none.</summary>
+        public string GlazingMaxGText
+        {
+            get => glazing?.MaxGText ?? string.Empty;
+            set
+            {
+                if (glazing != null)
+                {
+                    glazing.MaxGText = value;
+                }
+            }
+        }
+
+        /// <summary>The smallest light transmittance wanted (0-1); empty for none.</summary>
+        public string GlazingMinLightText
+        {
+            get => glazing?.MinLightText ?? string.Empty;
+            set
+            {
+                if (glazing != null)
+                {
+                    glazing.MinLightText = value;
+                }
+            }
+        }
+
+        /// <summary>List the default library's systems (on by default).</summary>
+        public bool GlazingIncludeLibrary
+        {
+            get => glazing?.IncludeLibrary ?? true;
+            set
+            {
+                if (glazing != null)
+                {
+                    glazing.IncludeLibrary = value;
+                }
+            }
+        }
+
+        /// <summary>List the systems of the sources added with "Add source…" (on by default).</summary>
+        public bool GlazingIncludeAdded
+        {
+            get => glazing?.IncludeLoaded ?? true;
+            set
+            {
+                if (glazing != null)
+                {
+                    glazing.IncludeLoaded = value;
+                }
+            }
+        }
+
+        /// <summary>The orders the list can be shown in.</summary>
+        public IReadOnlyList<ThermalOption> GlazingSortOptions { get; } = new List<ThermalOption>()
+        {
+            new ThermalOption(GlazingSortOrder.OverallU, "Uw, best first"),
+            new ThermalOption(GlazingSortOrder.GLowest, "g, lowest first"),
+            new ThermalOption(GlazingSortOrder.GHighest, "g, highest first"),
+            new ThermalOption(GlazingSortOrder.LightHighest, "Light, highest first"),
+            new ThermalOption(GlazingSortOrder.Name, "Name"),
+        };
+
+        public ThermalOption GlazingSelectedSort
+        {
+            get => GlazingSortOptions.FirstOrDefault(x => Equals(x.Value, glazing?.SortOrder ?? GlazingSortOrder.OverallU));
+            set
+            {
+                if (glazing != null && value?.Value is GlazingSortOrder order)
+                {
+                    glazing.SortOrder = order;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The filters in force besides the target, in one line, e.g. "Filtered: g 0.30 - 0.50 · light ≥ 0.70 · without the default library"; empty
+        /// when none. Shown under the count whether the filters are open or not, so a short list is never a mystery.
+        /// </summary>
+        public string GlazingFiltersText
+        {
+            get
+            {
+                if (glazing == null)
+                {
+                    return string.Empty;
+                }
+
+                List<string> parts = new List<string>();
+                string minG = Number(glazing.MinGText);
+                string maxG = Number(glazing.MaxGText);
+                if (minG != null && maxG != null)
+                {
+                    parts.Add(string.Format(CultureInfo.CurrentCulture, "g {0} – {1}", minG, maxG));
+                }
+                else if (minG != null)
+                {
+                    parts.Add("g ≥ " + minG);
+                }
+                else if (maxG != null)
+                {
+                    parts.Add("g ≤ " + maxG);
+                }
+
+                string minLight = Number(glazing.MinLightText);
+                if (minLight != null)
+                {
+                    parts.Add("light ≥ " + minLight);
+                }
+
+                if (!glazing.IncludeLibrary)
+                {
+                    parts.Add("without the default library");
+                }
+
+                if (!glazing.IncludeLoaded)
+                {
+                    parts.Add("without the added sources");
+                }
+
+                return parts.Count == 0 ? string.Empty : "Filtered: " + string.Join(" · ", parts);
+            }
+        }
+
+        public bool HasGlazingFilters => !string.IsNullOrEmpty(GlazingFiltersText);
+
+        /// <summary>The chosen system against the target Uw, e.g. "Target Uw ≤ 1.20: ✓ Meets target (margin +0.10)"; empty without a target or a choice.</summary>
+        public string GlazingComparisonText
+        {
+            get
+            {
+                GlazingCandidateRow proposed = glazing?.ProposedRow;
+                if (proposed == null || double.IsNaN(glazing.Target))
+                {
+                    return string.Empty;
+                }
+
+                string text = string.Format(CultureInfo.CurrentCulture, "Target Uw ≤ {0:0.00}: {1}", glazing.Target, glazing.ComparisonStatus);
+                return double.IsNaN(proposed.Margin) ? text : text + string.Format(CultureInfo.CurrentCulture, " (margin {0})", proposed.MarginText);
+            }
+        }
+
+        // A filter box counts only when it holds a number the view-model uses (the same rule: a non-negative number).
+        private static string Number(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return null;
+            }
+
+            if (!double.TryParse(text.Trim(), NumberStyles.Float, CultureInfo.CurrentCulture, out double value) && !double.TryParse(text.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out value))
+            {
+                return null;
+            }
+
+            return value >= 0 && !double.IsInfinity(value) ? value.ToString("0.00", CultureInfo.CurrentCulture) : null;
+        }
+
         // ---- Commands ----------------------------------------------------------------------------------------------
 
         /// <summary>Adds this row's change to <paramref name="changeSet"/> when it has one; returns whether it did.</summary>

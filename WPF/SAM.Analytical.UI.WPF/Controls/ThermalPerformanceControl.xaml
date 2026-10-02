@@ -276,11 +276,53 @@
                                                                             ToolTip="Build a new glazing system from panes and gas gaps, starting from the chosen system. It is saved in My glazing systems; the model is not changed."/>
                                                                     <TextBlock Text="Choose a complete system" FontWeight="SemiBold"/>
                                                                 </DockPanel>
-                                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                                                    <TextBlock Text="Target Uw ≤" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                                    <TextBox Width="60" Text="{Binding GlazingTargetText, UpdateSourceTrigger=PropertyChanged}" ToolTip="Show only the systems with this overall U-value or better."/>
-                                                                </StackPanel>
-                                                                <TextBlock Text="{Binding CandidateCountText}" Style="{StaticResource PartO.Caption}" Margin="0,2,0,2"/>
+                                                                <DockPanel Margin="0,4,0,0">
+                                                                    <ToggleButton x:Name="toggleButton_GlazingFilters" DockPanel.Dock="Right" Content="⋯ Filters" Style="{StaticResource Style_LinkToggle}" VerticalAlignment="Center"
+                                                                                  AutomationProperties.AutomationId="toggleButton_GlazingFilters" ToolTip="Filter the systems by g-value and light transmittance, choose the order, and which sources are listed."/>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <TextBlock Text="Target Uw ≤" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                                        <TextBox Width="60" Text="{Binding GlazingTargetText, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.AutomationId="textBox_GlazingTarget"
+                                                                                 AutomationProperties.Name="Target Uw" ToolTip="Show only the systems with this overall U-value or better."/>
+                                                                    </StackPanel>
+                                                                </DockPanel>
+                                                                <!-- FILTERS (Stage F): the g / light filters, the order and the source toggles of the shared glazing view-model. -->
+                                                                <Grid Margin="0,4,0,0" Visibility="{Binding IsChecked, ElementName=toggleButton_GlazingFilters, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="grid_GlazingFilters">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="Auto"/>
+                                                                        <RowDefinition Height="Auto"/>
+                                                                        <RowDefinition Height="Auto"/>
+                                                                        <RowDefinition Height="Auto"/>
+                                                                    </Grid.RowDefinitions>
+                                                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="g from" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal">
+                                                                        <TextBox Width="48" Text="{Binding GlazingMinGText, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.AutomationId="textBox_GlazingMinG" AutomationProperties.Name="g from"
+                                                                                 ToolTip="The smallest total solar energy transmittance (0-1)."/>
+                                                                        <TextBlock Text="to" VerticalAlignment="Center" Margin="6,0"/>
+                                                                        <TextBox Width="48" Text="{Binding GlazingMaxGText, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.AutomationId="textBox_GlazingMaxG" AutomationProperties.Name="g to"
+                                                                                 ToolTip="The largest total solar energy transmittance (0-1)."/>
+                                                                    </StackPanel>
+                                                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="Light at least" VerticalAlignment="Center" Margin="0,4,6,0"/>
+                                                                    <TextBox Grid.Row="1" Grid.Column="1" Width="48" HorizontalAlignment="Left" Margin="0,4,0,0" Text="{Binding GlazingMinLightText, UpdateSourceTrigger=PropertyChanged}"
+                                                                             AutomationProperties.AutomationId="textBox_GlazingMinLight" AutomationProperties.Name="Light at least" ToolTip="The smallest light transmittance (0-1)."/>
+                                                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Sort by" VerticalAlignment="Center" Margin="0,4,6,0"/>
+                                                                    <ComboBox Grid.Row="2" Grid.Column="1" Margin="0,4,0,0" HorizontalAlignment="Left" MinWidth="150" ItemsSource="{Binding GlazingSortOptions}" SelectedItem="{Binding GlazingSelectedSort, Mode=TwoWay}"
+                                                                              AutomationProperties.AutomationId="comboBox_GlazingSort" AutomationProperties.Name="Sort by" ToolTip="The order of the list. The automatic choice against a target is always the best Uw that meets it."/>
+                                                                    <TextBlock Grid.Row="3" Grid.Column="0" Text="Show" VerticalAlignment="Top" Margin="0,5,6,0"/>
+                                                                    <WrapPanel Grid.Row="3" Grid.Column="1" Margin="0,5,0,0">
+                                                                        <CheckBox Content="Default library" IsChecked="{Binding GlazingIncludeLibrary, Mode=TwoWay}" Margin="0,0,10,0" AutomationProperties.AutomationId="checkBox_GlazingIncludeLibrary"
+                                                                                  ToolTip="List the systems of the SAM default library."/>
+                                                                        <CheckBox Content="Added sources" IsChecked="{Binding GlazingIncludeAdded, Mode=TwoWay}" AutomationProperties.AutomationId="checkBox_GlazingIncludeAdded"
+                                                                                  ToolTip="List the systems of the sources added with Add source…. The model's systems and My glazing systems are always listed."/>
+                                                                    </WrapPanel>
+                                                                </Grid>
+                                                                <TextBlock Text="{Binding CandidateCountText}" Style="{StaticResource PartO.Caption}" Margin="0,2,0,0" AutomationProperties.AutomationId="textBlock_CandidateCount"/>
+                                                                <TextBlock Text="{Binding GlazingFiltersText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" MaxWidth="260" HorizontalAlignment="Left"
+                                                                           Visibility="{Binding HasGlazingFilters, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="textBlock_GlazingFilters"/>
+                                                                <Border Height="2"/>
                                                                 <TextBlock Text="{Binding GlazingNotesText}" Style="{StaticResource Style_Warning}" TextWrapping="Wrap" MaxWidth="260" Margin="0,0,0,2"
                                                                            Visibility="{Binding HasGlazingNotes, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="textBlock_GlazingNotes"/>
                                                                 <ListBox ItemsSource="{Binding Candidates}" SelectedItem="{Binding SelectedCandidate, Mode=TwoWay}" MaxHeight="230" HorizontalContentAlignment="Stretch"
@@ -304,6 +346,8 @@
                                                                     <TextBlock Text="{Binding PreviewGlyph}" Style="{StaticResource PartO.StatusGlyph}"/>
                                                                     <TextBlock Text="{Binding PreviewText}" TextWrapping="Wrap" MaxWidth="260" AutomationProperties.AutomationId="textBlock_Preview"/>
                                                                 </StackPanel>
+                                                                <TextBlock Text="{Binding GlazingComparisonText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" MaxWidth="260" HorizontalAlignment="Left" Margin="0,2,0,0"
+                                                                           AutomationProperties.AutomationId="textBlock_GlazingComparison"/>
                                                                 <TextBlock Text="{Binding ResultText}" Style="{StaticResource PartO.Caption}" Margin="0,2,0,0"/>
                                                                 <TextBlock Text="{Binding BlockReason}" Style="{StaticResource Style_Danger}" Margin="0,2,0,0"/>
                                                                 <ItemsControl ItemsSource="{Binding Warnings}" Focusable="False">
