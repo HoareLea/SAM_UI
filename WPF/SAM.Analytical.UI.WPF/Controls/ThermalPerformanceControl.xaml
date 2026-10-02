@@ -39,9 +39,14 @@
 
     <!-- THE THERMAL PERFORMANCE PANEL (Stage B, read-only): follows the selection, or lists the whole external envelope; the stored
          performance and the counts per construction; a click on a row highlights its elements in the view. It never edits. -->
-    <Border Background="White" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1,0,0,0" Padding="10,8">
+    <Border x:Name="border_Host" Background="White" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1,0,0,0" Padding="10,8">
         <DockPanel>
-            <TextBlock DockPanel.Dock="Top" Text="Thermal performance" Style="{StaticResource PartO.SectionHeading}" FontSize="14"/>
+            <!-- The host (docked column or floating window) is not the control's business: the button only asks for the other one. -->
+            <Grid DockPanel.Dock="Top">
+                <TextBlock Text="Thermal performance" Style="{StaticResource PartO.SectionHeading}" FontSize="14" VerticalAlignment="Center"/>
+                <Button x:Name="button_Host" HorizontalAlignment="Right" Content="Undock" Padding="8,1" Click="button_Host_Click" AutomationProperties.AutomationId="button_ThermalHost"
+                        ToolTip="Move the panel into its own window, for example onto a second monitor."/>
+            </Grid>
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
                 <RadioButton x:Name="radioButton_Selection" GroupName="ThermalMode" Content="Selection" IsChecked="True" Margin="0,0,16,0" Checked="radioButton_Mode_Checked"/>
                 <RadioButton x:Name="radioButton_WholeEnvelope" GroupName="ThermalMode" Content="Whole envelope" Checked="radioButton_Mode_Checked"/>
