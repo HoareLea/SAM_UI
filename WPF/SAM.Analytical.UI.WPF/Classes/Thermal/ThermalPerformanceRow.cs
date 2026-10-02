@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public sealed class ThermalPerformanceRow
     {
-        internal ThermalPerformanceRow(bool aperture, string type, Guid constructionGuid, string constructionName, string performanceText, int selectedCount, int usedByCount, int elementCount, double area, IReadOnlyList<Guid> highlightGuids, ThermalPerformanceMode mode, IReadOnlyList<Guid> elementGuids = null, ThermalStoredState storedState = ThermalStoredState.Stored, double storedThermalTransmittance = double.NaN)
+        internal ThermalPerformanceRow(bool aperture, string type, Guid constructionGuid, string constructionName, string performanceText, int selectedCount, int usedByCount, int elementCount, double area, IReadOnlyList<Guid> highlightGuids, ThermalPerformanceMode mode, IReadOnlyList<Guid> elementGuids = null, ThermalStoredState storedState = ThermalStoredState.Stored, double storedThermalTransmittance = double.NaN, IReadOnlyList<Guid> selectedGuids = null)
         {
             IsAperture = aperture;
             Type = type;
@@ -29,6 +29,7 @@ namespace SAM.Analytical.UI.WPF
             ElementGuids = elementGuids ?? new List<Guid>();
             StoredState = storedState;
             StoredThermalTransmittance = storedThermalTransmittance;
+            SelectedGuids = selectedGuids ?? new List<Guid>();
         }
 
         /// <summary>True for an aperture construction (windows, doors), false for a panel construction.</summary>
@@ -44,8 +45,14 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>The stored performance, e.g. "U 0.260" or "U 1.243 · g 0.40 · LT 0.80"; "not calculated" or "varies" where the model says so.</summary>
         public string PerformanceText { get; }
 
-        /// <summary>Selected elements in the row (<see cref="ThermalPerformanceMode.Selection"/>); 0 in the whole-envelope mode.</summary>
+        /// <summary>
+        /// Selected elements of the row's heading and construction, in both modes: they are what "Only the M selected" limits a
+        /// change to. In the whole-envelope mode the selection does not decide which rows are shown, only this number.
+        /// </summary>
         public int SelectedCount { get; }
+
+        /// <summary>The selected elements counted by <see cref="SelectedCount"/>.</summary>
+        public IReadOnlyList<Guid> SelectedGuids { get; }
 
         /// <summary>Every element of this kind that uses the construction in the model (the number Set U-value / Set glazing show).</summary>
         public int UsedByCount { get; }
@@ -89,7 +96,8 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 string elements = string.Format(CultureInfo.CurrentCulture, "{0} {1}", ElementCount, ElementCount == 1 ? "element" : "elements");
-                return double.IsNaN(Area) ? elements : string.Format(CultureInfo.CurrentCulture, "{0} · {1:0.0} m²", elements, Area);
+                string detail = double.IsNaN(Area) ? elements : string.Format(CultureInfo.CurrentCulture, "{0} · {1:0.0} m²", elements, Area);
+                return SelectedCount == 0 ? detail : string.Format(CultureInfo.CurrentCulture, "{0} · {1} selected", detail, SelectedCount);
             }
         }
     }
