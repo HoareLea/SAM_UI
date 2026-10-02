@@ -892,6 +892,8 @@ namespace SAM.Analytical.UI.WPF.Windows
             viewportControl.ObjectHoovered += ViewportControl_ObjectHoovered;
             viewportControl.ObjectDoubleClicked += ViewportControl_ObjectDoubleClicked;
             viewportControl.ObjectContextMenuOpening += ViewControl_ObjectContextMenuOpening;
+            viewportControl.ObjectSelectionChanged += ViewportControl_ObjectSelectionChanged;
+            InitializeThermalPerformance();
             viewportControl.Focus();
 
             uIAnalyticalModel = new UIAnalyticalModel();
@@ -3355,6 +3357,8 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            RefreshThermalPerformance();
+
             Guid guid = GetActiveGuid();
             if (guid == Guid.Empty)
             {
@@ -3593,6 +3597,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             Reload(e);
             RefreshHistoryButtons();
+            RefreshThermalPerformance();
         }
 
         private void UIAnalyticalModel_Opened(object sender, OpenedEventArgs e)
@@ -4353,7 +4358,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
         private void ViewportControl_ObjectSelectionChanged(object sender, ObjectSelectionChangedEventArgs e)
         {
-            
+            RefreshThermalPerformance();
         }
         
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
