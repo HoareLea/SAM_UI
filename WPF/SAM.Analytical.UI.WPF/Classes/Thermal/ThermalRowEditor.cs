@@ -496,10 +496,11 @@ namespace SAM.Analytical.UI.WPF
 
         // ---- Helpers ---------------------------------------------------------------------------------------------
 
-        // The scope is pinned when the edit starts: the elements of the row (selected ones in Selection mode, none in Whole envelope).
+        // The scope is pinned when the edit starts: the selected elements of the row, in either mode (in Whole envelope the
+        // selection does not decide which rows are shown, but "Only the M selected" is still available for the selected ones).
         private IReadOnlyList<Guid> SelectedForScope()
         {
-            return Row.Mode == ThermalPerformanceMode.Selection ? Row.ElementGuids : new List<Guid>();
+            return Row.SelectedGuids;
         }
 
         private void EnsureUValue()

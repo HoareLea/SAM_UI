@@ -20,6 +20,8 @@ namespace SAM.Analytical.UI.WPF
         /// <see cref="ThermalPerformanceMode.Selection"/>: the selected panels and apertures (looked up in the model by Guid;
         /// other objects are ignored). <see cref="ThermalPerformanceMode.WholeEnvelope"/>: every external panel (not shades or
         /// solar panels) and the apertures they carry. "Used by" always counts every element using the construction in the model.
+        /// The selection never changes which rows are shown in the whole-envelope mode, but each row still reports the selected
+        /// elements of its own heading and construction (<see cref="ThermalPerformanceRow.SelectedGuids"/>), so a change can be limited to them.
         /// </para>
         /// </summary>
         public static List<ThermalPerformanceGroup> ThermalPerformanceGroups(AnalyticalModel analyticalModel, IEnumerable<SAMObject> selected, ThermalPerformanceMode mode)
@@ -30,7 +32,24 @@ namespace SAM.Analytical.UI.WPF
                 return new List<ThermalPerformanceGroup>();
             }
 
-            // The elements the panel is about, as the model's own objects.
+            // The selection, as the model's own objects. It is resolved in both modes: the mode decides which rows are shown, the
+            // selection decides which of the elements a row's change can be limited to ("Only the M selected").
+            List<Panel> panels_Selected = new List<Panel>();
+            List<Aperture> apertures_Selected = new List<Aperture>();
+            HashSet<Guid> guids = new HashSet<Guid>();
+            foreach (SAMObject sAMObject in selected ?? Enumerable.Empty<SAMObject>())
+            {
+                if (sAMObject is Panel panel && guids.Add(panel.Guid))
+                {
+                    panels_Selected.Add(adjacencyCluster.GetObject<Panel>(panel.Guid) ?? panel);
+                }
+                else if (sAMObject is Aperture aperture && guids.Add(aperture.Guid))
+                {
+                    apertures_Selected.Add(adjacencyCluster.GetAperture(aperture.Guid) ?? aperture);
+                }
+            }
+
+            // The elements the panel shows.
             List<Panel> panels = new List<Panel>();
             List<Aperture> apertures = new List<Aperture>();
             if (mode == ThermalPerformanceMode.WholeEnvelope)
@@ -48,18 +67,8 @@ namespace SAM.Analytical.UI.WPF
             }
             else
             {
-                HashSet<Guid> guids = new HashSet<Guid>();
-                foreach (SAMObject sAMObject in selected ?? Enumerable.Empty<SAMObject>())
-                {
-                    if (sAMObject is Panel panel && guids.Add(panel.Guid))
-                    {
-                        panels.Add(adjacencyCluster.GetObject<Panel>(panel.Guid) ?? panel);
-                    }
-                    else if (sAMObject is Aperture aperture && guids.Add(aperture.Guid))
-                    {
-                        apertures.Add(adjacencyCluster.GetAperture(aperture.Guid) ?? aperture);
-                    }
-                }
+                panels = panels_Selected;
+                apertures = apertures_Selected;
             }
 
             Dictionary<string, List<ThermalPerformanceRow>> rows = new Dictionary<string, List<ThermalPerformanceRow>>();
@@ -72,7 +81,10 @@ namespace SAM.Analytical.UI.WPF
                 double area = grouping.Select(x => x.GetArea()).Where(x => !double.IsNaN(x)).DefaultIfEmpty(double.NaN).Sum();
                 List<Guid> highlight = (mode == ThermalPerformanceMode.Selection ? panels_Using : grouping.ToList()).Select(x => x.Guid).Distinct().ToList();
 
-                Add(rows, grouping.Key.Title, new ThermalPerformanceRow(false, string.Join(", ", grouping.Select(x => x.PanelType.ToString()).Distinct().OrderBy(x => x)), construction.Guid, construction.Name, PanelPerformanceText(grouping, out ThermalStoredState state_Panel, out double u_Panel), mode == ThermalPerformanceMode.Selection ? grouping.Count() : 0, panels_Using.Count, grouping.Count(), area, highlight, mode, grouping.Select(x => x.Guid).ToList(), state_Panel, u_Panel));
+                // The selected panels of this row: the same heading and construction (a selected roof is not a selected wall).
+                List<Guid> selected_Row = panels_Selected.Where(x => x.Construction != null && x.Construction.Guid == grouping.Key.Guid && PanelGroupTitle(x.PanelType) == grouping.Key.Title).Select(x => x.Guid).ToList();
+
+                Add(rows, grouping.Key.Title, new ThermalPerformanceRow(false, string.Join(", ", grouping.Select(x => x.PanelType.ToString()).Distinct().OrderBy(x => x)), construction.Guid, construction.Name, PanelPerformanceText(grouping, out ThermalStoredState state_Panel, out double u_Panel), selected_Row.Count, panels_Using.Count, grouping.Count(), area, highlight, mode, grouping.Select(x => x.Guid).ToList(), state_Panel, u_Panel, selected_Row));
             }
 
             foreach (IGrouping<(string Title, Guid Guid), Aperture> grouping in apertures.Where(x => x.ApertureConstruction != null).GroupBy(x => (ApertureTypeTitle(x.ApertureType), x.ApertureConstruction.Guid)))
@@ -83,7 +95,9 @@ namespace SAM.Analytical.UI.WPF
                 double area = grouping.Select(x => x.GetArea()).Where(x => !double.IsNaN(x)).DefaultIfEmpty(double.NaN).Sum();
                 List<Guid> highlight = (mode == ThermalPerformanceMode.Selection ? apertures_Using : grouping.ToList()).Select(x => x.Guid).Distinct().ToList();
 
-                Add(rows, grouping.Key.Title, new ThermalPerformanceRow(true, string.Join(", ", grouping.Select(x => x.ApertureType.ToString()).Distinct().OrderBy(x => x)), apertureConstruction.Guid, apertureConstruction.Name, AperturePerformanceText(grouping, out ThermalStoredState state_Aperture), mode == ThermalPerformanceMode.Selection ? grouping.Count() : 0, apertures_Using.Count, grouping.Count(), area, highlight, mode, grouping.Select(x => x.Guid).ToList(), state_Aperture));
+                List<Guid> selected_Row = apertures_Selected.Where(x => x.ApertureConstruction != null && x.ApertureConstruction.Guid == grouping.Key.Guid && ApertureTypeTitle(x.ApertureType) == grouping.Key.Title).Select(x => x.Guid).ToList();
+
+                Add(rows, grouping.Key.Title, new ThermalPerformanceRow(true, string.Join(", ", grouping.Select(x => x.ApertureType.ToString()).Distinct().OrderBy(x => x)), apertureConstruction.Guid, apertureConstruction.Name, AperturePerformanceText(grouping, out ThermalStoredState state_Aperture), selected_Row.Count, apertures_Using.Count, grouping.Count(), area, highlight, mode, grouping.Select(x => x.Guid).ToList(), state_Aperture, double.NaN, selected_Row));
             }
 
             return thermalPerformanceGroupOrder
