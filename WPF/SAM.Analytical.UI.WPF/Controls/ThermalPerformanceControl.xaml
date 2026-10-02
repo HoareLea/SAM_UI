@@ -271,6 +271,9 @@
                                                             <StackPanel Visibility="{Binding ChangeOpen, Converter={StaticResource BoolToVisibility}}">
                                                                 <DockPanel>
                                                                     <Button DockPanel.Dock="Right" Content="Cancel" Style="{StaticResource Style_Link}" Click="button_CloseChange_Click" ToolTip="Close the list and drop the choice."/>
+                                                                    <Button DockPanel.Dock="Right" Content="Create new…" Style="{StaticResource Style_Link}" Click="button_CreateNew_Click" AutomationProperties.AutomationId="button_CreateNew"
+                                                                            AutomationProperties.Name="Create a new glazing system" Visibility="{Binding CanCreateNew, Converter={StaticResource BoolToVisibility}}"
+                                                                            ToolTip="Build a new glazing system from panes and gas gaps, starting from the chosen system. It is saved in My glazing systems; the model is not changed."/>
                                                                     <TextBlock Text="Choose a complete system" FontWeight="SemiBold"/>
                                                                 </DockPanel>
                                                                 <StackPanel Orientation="Horizontal" Margin="0,4,0,0">

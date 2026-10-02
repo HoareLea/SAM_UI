@@ -335,6 +335,36 @@ namespace SAM.Analytical.UI.WPF
             Editor(sender)?.CloseChange();
         }
 
+        /// <summary>
+        /// Shows the Glazing System Builder over its view-model and returns when it is closed. A modal window owned by this panel's window by default
+        /// (the model cannot change while it is open); a test supplies its own. The panel disposes the view-model afterwards.
+        /// </summary>
+        public Func<GlazingBuilderViewModel, bool?> ShowBuilder { get; set; }
+
+        private bool? ShowBuilderWithWindow(GlazingBuilderViewModel builder)
+        {
+            return GlazingSystemBuilderWindow.ShowModal(builder, System.Windows.Window.GetWindow(this));
+        }
+
+        // Create new…: the Builder edits a draft and saves to My glazing systems; the open list refreshes and chooses the new system by itself.
+        private void button_CreateNew_Click(object sender, RoutedEventArgs e)
+        {
+            GlazingBuilderViewModel builder = Editor(sender)?.CreateBuilder();
+            if (builder == null)
+            {
+                return;
+            }
+
+            try
+            {
+                (ShowBuilder ?? ShowBuilderWithWindow)(builder);
+            }
+            finally
+            {
+                builder.Dispose();
+            }
+        }
+
         private void button_Recalculate_Click(object sender, RoutedEventArgs e)
         {
             if (Applier == null)
