@@ -34,10 +34,24 @@ namespace SAM.Analytical.UI
 
         public string Title { get; }
 
+        /// <summary>
+        /// A request for the parameter an enum member of the element type stands for (e.g. <see cref="ApertureParameter.TotalSolarEnergyTransmittance"/>):
+        /// the parameter name is the one the enum declares, so it is never typed twice.
+        /// </summary>
+        public static ParameterColouring For(Type elementType, Enum parameter, PaletteDefinition palette, string title = null)
+        {
+            if (parameter == null)
+            {
+                throw new ArgumentNullException(nameof(parameter));
+            }
+
+            return new ParameterColouring(elementType, Core.Query.Name(parameter), palette, title);
+        }
+
         /// <summary>The stored U-value of the panels (<see cref="PanelParameter.ThermalTransmittance"/>, parameter name "UValue") on the cool-to-warm palette.</summary>
         public static ParameterColouring PanelThermalTransmittance()
         {
-            return new ParameterColouring(typeof(Panel), "UValue", PaletteDefinitions.SamThermal, "U-value [W/m²K]");
+            return For(typeof(Panel), PanelParameter.ThermalTransmittance, PaletteDefinitions.SamThermal, "U-value [W/m²K]");
         }
 
         public override bool Equals(object obj)

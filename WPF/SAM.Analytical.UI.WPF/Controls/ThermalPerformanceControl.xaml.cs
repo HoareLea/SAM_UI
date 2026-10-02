@@ -6,6 +6,7 @@ using SAM.Core.UI.WPF;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -47,28 +48,33 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Raised when the user asks for the other host: a window of its own (<see cref="ThermalPerformanceHost.Floating"/>) or docked again.</summary>
         public event EventHandler<ThermalHostRequestedEventArgs> HostRequested;
 
-        /// <summary>Raised when the user turns "Colour by U-value" on or off: the host colours (or restores) the active 3D view.</summary>
+        /// <summary>Raised when the user chooses what the active 3D view is coloured by (or Off): the host colours (or restores) it.</summary>
         public event EventHandler<ThermalColourRequestedEventArgs> ColourRequested;
 
         public ThermalPerformanceViewModel ViewModel => viewModel;
 
         /// <summary>
-        /// Shows whether the active view is coloured by U-value. <paramref name="available"/> is false where it cannot be (no 3D view
-        /// active, or it does not show panels); <paramref name="reason"/> then says why. Setting it never raises <see cref="ColourRequested"/>.
+        /// Shows what the active view is coloured by. <paramref name="available"/> is false where it cannot be (no 3D view active);
+        /// <paramref name="reason"/> then says why. <paramref name="isAvailable"/> says, per option, whether the view shows what the option
+        /// colours (an option that is not available is listed but cannot be chosen). Setting it never raises <see cref="ColourRequested"/>.
         /// </summary>
-        public void SetColourState(bool available, bool coloured, string reason = null)
+        public void SetColourState(bool available, ThermalColourOption selected, Func<ThermalColourOption, bool> isAvailable = null, string reason = null)
         {
+            selected ??= ThermalColourOption.Off;
+
             settingColourState = true;
             try
             {
-                toggleButton_ColourByU.IsEnabled = available;
-                toggleButton_ColourByU.IsChecked = available && coloured;
+                List<ColourChoice> choices = ThermalColourOption.All.Select(x => new ColourChoice(x, available && (isAvailable == null || isAvailable(x)))).ToList();
+                comboBox_ColourBy.ItemsSource = choices;
+                comboBox_ColourBy.SelectedItem = available ? choices.Find(x => x.Option == selected) ?? choices[0] : choices[0];
+                comboBox_ColourBy.IsEnabled = available;
             }
             finally
             {
                 settingColourState = false;
             }
-            toggleButton_ColourByU.ToolTip = available || string.IsNullOrEmpty(reason) ? "Colour the panels of the 3D view by their U-value, with a legend. The model is not changed." : reason;
+            comboBox_ColourBy.ToolTip = available || string.IsNullOrEmpty(reason) ? "Colour the 3D view by a stored thermal property, with a legend. The model is not changed." : reason;
         }
 
         /// <summary>
@@ -205,15 +211,37 @@ namespace SAM.Analytical.UI.WPF
             viewModel.Mode = radioButton_WholeEnvelope.IsChecked == true ? ThermalPerformanceMode.WholeEnvelope : ThermalPerformanceMode.Selection;
         }
 
-        // Checked / Unchecked rather than Click, so the request comes from the mouse, the keyboard and UI Automation alike.
-        private void toggleButton_ColourByU_Changed(object sender, RoutedEventArgs e)
+        private void comboBox_ColourBy_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (settingColourState)
+            if (settingColourState || comboBox_ColourBy.SelectedItem is not ColourChoice choice)
             {
                 return;
             }
 
-            ColourRequested?.Invoke(this, new ThermalColourRequestedEventArgs(toggleButton_ColourByU.IsChecked == true));
+            ColourRequested?.Invoke(this, new ThermalColourRequestedEventArgs(choice.Option));
+        }
+
+        // One line of the selector: the option, and whether the active view shows what it colours.
+        internal sealed class ColourChoice
+        {
+            public ColourChoice(ThermalColourOption option, bool isAvailable)
+            {
+                Option = option;
+                IsAvailable = isAvailable || option == ThermalColourOption.Off;
+            }
+
+            public ThermalColourOption Option { get; }
+
+            public bool IsAvailable { get; }
+
+            public string Label => Option.Label;
+
+            public string ToolTip => IsAvailable ? Option.ToolTip : "This view does not show these elements.";
+
+            public override string ToString()
+            {
+                return Option.Label;
+            }
         }
 
         private void button_Host_Click(object sender, RoutedEventArgs e)
@@ -319,15 +347,15 @@ namespace SAM.Analytical.UI.WPF
         public ThermalPerformanceHost Host { get; }
     }
 
-    /// <summary>The user turned "Colour by U-value" on or off.</summary>
+    /// <summary>The user chose what the active 3D view is coloured by; <see cref="ThermalColourOption.Off"/> shows it as saved.</summary>
     public sealed class ThermalColourRequestedEventArgs : EventArgs
     {
-        internal ThermalColourRequestedEventArgs(bool on)
+        internal ThermalColourRequestedEventArgs(ThermalColourOption option)
         {
-            On = on;
+            Option = option ?? ThermalColourOption.Off;
         }
 
-        public bool On { get; }
+        public ThermalColourOption Option { get; }
     }
 
     /// <summary>A click on a Thermal Performance row: the elements to highlight.</summary>
