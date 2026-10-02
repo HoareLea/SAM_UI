@@ -223,14 +223,14 @@ namespace SAM.Analytical.UI.WPF.Windows
             RefreshThermalColourState();
         }
 
-        // "Colour by U-value": colours the active 3D view's panels by their stored U-value. View state only (see AnalyticalWindow.ParameterColouring.cs):
-        // no model write, no Undo entry. The state belongs to a view, so the toggle follows the active tab.
+        // "Colour by": colours the active 3D view by a stored thermal property (ThermalColourOption). View state only (see
+        // AnalyticalWindow.ParameterColouring.cs): no model write, no Undo entry. The state belongs to a view, so the selector follows the active tab.
         private void ThermalPerformancePanel_ColourRequested(object sender, ThermalColourRequestedEventArgs e)
         {
-            Guid viewGuid = ActiveThreeDimensionalViewGuid(out bool showsPanels);
-            if (viewGuid != Guid.Empty && showsPanels)
+            Guid viewGuid = ActiveThreeDimensionalViewGuid(out Func<Type, bool> viewShows);
+            if (viewGuid != Guid.Empty && e.Option.IsAvailableIn(viewShows))
             {
-                SetParameterColouring(viewGuid, e.On ? ParameterColouring.PanelThermalTransmittance() : null);
+                SetParameterColouring(viewGuid, e.Option.Colouring);
             }
 
             RefreshThermalColourState();
@@ -243,10 +243,9 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            Guid viewGuid = ActiveThreeDimensionalViewGuid(out bool showsPanels);
-            bool available = viewGuid != Guid.Empty && showsPanels;
-            string reason = viewGuid == Guid.Empty ? "Colouring by U-value is available in a 3D view." : !showsPanels ? "This view does not show panels." : null;
-            ThermalPerformancePanel.SetColourState(available, available && ParameterColouringOf(viewGuid) != null, reason);
+            Guid viewGuid = ActiveThreeDimensionalViewGuid(out Func<Type, bool> viewShows);
+            bool available = viewGuid != Guid.Empty;
+            ThermalPerformancePanel.SetColourState(available, available ? ThermalColourOption.Of(ParameterColouringOf(viewGuid)) : null, x => x.IsAvailableIn(viewShows), available ? null : "Colouring is available in a 3D view.");
         }
 
         // A click on a row: select its elements in the active view (the normal selection, so the panel then follows it).

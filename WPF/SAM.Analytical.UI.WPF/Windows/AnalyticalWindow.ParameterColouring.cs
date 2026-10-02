@@ -10,7 +10,7 @@ using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF.Windows
 {
-    // Colouring a 3D view by a parameter (Thermal Performance "Colour by U-value" is the first caller).
+    // Colouring a 3D view by a parameter (the Thermal Performance "Colour by" selector is the first caller).
     //
     // It is VIEW state only. View Settings and the Legend window store their result in the model (UIGeometrySettings, with an Undo entry); this
     // does not: the colouring is a temporary override held by this window, per view, and applied only where the view is rendered
@@ -31,10 +31,13 @@ namespace SAM.Analytical.UI.WPF.Windows
             return parameterColourings.TryGetValue(viewGuid, out ParameterColouring parameterColouring) ? parameterColouring : null;
         }
 
-        /// <summary>The Guid of the active view when it is a 3D view, else <see cref="Guid.Empty"/>.</summary>
-        internal Guid ActiveThreeDimensionalViewGuid(out bool showsPanels)
+        /// <summary>
+        /// The Guid of the active view when it is a 3D view, else <see cref="Guid.Empty"/>; <paramref name="shows"/> tells whether that
+        /// view shows the elements of a type (what a colouring of that type needs).
+        /// </summary>
+        internal Guid ActiveThreeDimensionalViewGuid(out Func<Type, bool> shows)
         {
-            showsPanels = false;
+            shows = x => false;
 
             ViewportControl viewportControl = GetActiveViewportControl();
             if (viewportControl == null || GetActiveViewSettings() is not ThreeDimensionalViewSettings threeDimensionalViewSettings)
@@ -42,7 +45,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return Guid.Empty;
             }
 
-            showsPanels = threeDimensionalViewSettings.ContainsType(typeof(Panel));
+            shows = threeDimensionalViewSettings.ContainsType;
             return viewportControl.Guid;
         }
 

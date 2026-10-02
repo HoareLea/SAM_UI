@@ -92,9 +92,19 @@
                 <RadioButton x:Name="radioButton_Selection" GroupName="ThermalMode" Content="Selection" IsChecked="True" Margin="0,0,16,0" Checked="radioButton_Mode_Checked"/>
                 <RadioButton x:Name="radioButton_WholeEnvelope" GroupName="ThermalMode" Content="Whole envelope" Checked="radioButton_Mode_Checked"/>
             </StackPanel>
-            <!-- The 3D view shown by U-value (view state only: the model, its history and the saved view settings are not touched). -->
-            <ToggleButton x:Name="toggleButton_ColourByU" DockPanel.Dock="Top" HorizontalAlignment="Left" Content="Colour by U-value" Padding="8,1" Margin="0,0,0,6" Checked="toggleButton_ColourByU_Changed" Unchecked="toggleButton_ColourByU_Changed"
-                          AutomationProperties.AutomationId="toggleButton_ColourByU" ToolTip="Colour the panels of the 3D view by their U-value, with a legend. The model is not changed."/>
+            <!-- The 3D view coloured by a stored thermal property (view state only: the model, its history and the saved view settings are not touched). -->
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,6">
+                <TextBlock Text="Colour by:" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <ComboBox x:Name="comboBox_ColourBy" MinWidth="200" DisplayMemberPath="Label" SelectionChanged="comboBox_ColourBy_SelectionChanged"
+                          AutomationProperties.AutomationId="comboBox_ColourBy" AutomationProperties.Name="Colour by" ToolTip="Colour the 3D view by a stored thermal property, with a legend. The model is not changed.">
+                    <ComboBox.ItemContainerStyle>
+                        <Style TargetType="ComboBoxItem">
+                            <Setter Property="IsEnabled" Value="{Binding IsAvailable}"/>
+                            <Setter Property="ToolTip" Value="{Binding ToolTip}"/>
+                        </Style>
+                    </ComboBox.ItemContainerStyle>
+                </ComboBox>
+            </StackPanel>
             <TextBlock x:Name="textBlock_Summary" DockPanel.Dock="Top" Style="{StaticResource PartO.Caption}" Margin="0,0,0,8"/>
 
             <!-- Apply bar: the check before Apply, the summary, Discard and Apply; afterwards the one-line result. -->

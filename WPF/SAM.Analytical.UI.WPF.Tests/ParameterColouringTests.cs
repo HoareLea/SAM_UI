@@ -9,9 +9,6 @@ using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using Xunit;
 
 namespace SAM.Analytical.UI.WPF.Tests
@@ -19,7 +16,7 @@ namespace SAM.Analytical.UI.WPF.Tests
     /// <summary>
     /// Colouring a 3D view by a parameter is VIEW state: <c>Create.ParameterColouredViewSettings</c> builds a coloured COPY of the
     /// view's settings with a palette legend, through the existing value query / legend / palette code, and touches neither the
-    /// original settings nor the model. The Thermal Performance panel's "Colour by U-value" toggle only asks the host for it.
+    /// original settings nor the model. The Thermal Performance panel's "Colour by" selector (ThermalColourOptionTests) only asks the host for it.
     /// </summary>
     [Collection(WpfCollection.Name)]
     public class ParameterColouringTests
@@ -165,59 +162,6 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Null(parts.Model.ParameterColouredViewSettings(view, new ParameterColouring(typeof(Zone), "Name", PaletteDefinitions.SamThermal)));
             Assert.Null(parts.Model.ParameterColouredViewSettings(null, ParameterColouring.PanelThermalTransmittance()));
             Assert.Null(parts.Model.ParameterColouredViewSettings(view, null));
-        }
-
-        // ---- The Thermal Performance toggle --------------------------------------------------------------------------
-
-        private static ToggleButton Toggle(ThermalPerformanceControl control)
-        {
-            return (ToggleButton)control.FindName("toggleButton_ColourByU");
-        }
-
-        // What a mouse click does: toggle, then raise Click.
-        private static void Click(ToggleButton button)
-        {
-            typeof(System.Windows.Controls.Primitives.ButtonBase).GetMethod("OnClick", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(button, null);
-        }
-
-        [WpfFact]
-        public void The_toggle_asks_the_host_to_colour_and_to_restore_but_setting_its_state_asks_nothing()
-        {
-            using (ThermalPerformanceControl control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library())))
-            {
-                System.Windows.Window window = new System.Windows.Window { Content = control, Width = 380, Height = 600, ShowActivated = false };
-                window.Show();
-                try
-                {
-                    List<bool> requests = new List<bool>();
-                    control.ColourRequested += (sender, e) => requests.Add(e.On);
-                    ToggleButton toggle = Toggle(control);
-                    Assert.NotNull(toggle);
-
-                    control.SetColourState(true, false);
-                    Assert.True(toggle.IsEnabled);
-                    Assert.False(toggle.IsChecked);
-
-                    control.SetColourState(true, true);
-                    Assert.True(toggle.IsChecked);
-                    Assert.Empty(requests);
-
-                    // The user turns it off, then on.
-                    Click(toggle);
-                    Click(toggle);
-                    Assert.Equal(new[] { false, true }, requests);
-
-                    // No 3D view that shows panels: disabled, unchecked, with the reason.
-                    control.SetColourState(false, true, "This view does not show panels.");
-                    Assert.False(toggle.IsEnabled);
-                    Assert.False(toggle.IsChecked);
-                    Assert.Equal("This view does not show panels.", toggle.ToolTip);
-                }
-                finally
-                {
-                    window.Close();
-                }
-            }
         }
     }
 }
