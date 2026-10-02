@@ -363,6 +363,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             //SetActiveGuid();
+            ClearParameterColouring(guid);
             Modify.EditLegend(uIAnalyticalModel, guid);
         }
 
@@ -402,6 +403,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             //SetActiveGuid();
+            ClearParameterColouring(viewportControl.Guid);
             SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
             Modify.EditViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
@@ -1550,7 +1552,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                 return;
             }
 
-            if (GetActiveViewSettings() is not ViewSettings viewSettings)
+            // The colours the user sees: of a coloured view, the legend it is coloured with.
+            if (RenderedActiveViewSettings() is not ViewSettings viewSettings)
             {
                 return;
             }
@@ -1893,6 +1896,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             }
 
             //SetActiveGuid();
+            parameterColourings.Remove(viewportControl.Guid);
             SetUIGeometrySettings(tabControl, uIAnalyticalModel.JSAMObject);
             Modify.RemoveViewSettings(uIAnalyticalModel, viewportControl.Guid);
         }
@@ -3292,6 +3296,9 @@ namespace SAM.Analytical.UI.WPF.Windows
             // a spurious history entry and clears redo.
             uIAnalyticalModel.SetJSAMObject(analyticalModel, new ViewSettingsModification(uIGeometrySettings.GetViewSettings<IViewSettings>()), false);
             uIAnalyticalModel.Modified += UIAnalyticalModel_Modified;
+
+            // A view may just have been added or removed: the Thermal Performance colour toggle follows the active view.
+            RefreshThermalColourState();
         }
 
         private void ShowProperties()
@@ -3571,6 +3578,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             //Cleared rather than invalidated: the run did not go stale, it stopped applying. Nothing to
             //explain, so no reason is retained.
             partORun.Reset();
+            parameterColourings.Clear();
 
             Reload(e);
             RefreshHistoryButtons();
@@ -3604,6 +3612,7 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             //A different model. Whatever was pending belonged to the previous one.
             partORun.Reset();
+            parameterColourings.Clear();
 
             SetDefaultViewSettings();
             Reload(e);
@@ -3751,6 +3760,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                     // InternalCondition), the view only needs new space fill colors and a refreshed legend.
                     // Update those in place instead of regenerating sections, labels and the scene.
                     if (guids != null && guids.Count != 0
+                        && !parameterColourings.ContainsKey(viewSettings.Guid)
                         && analyticalModelModifications.TrueForAll(x => x is AttributeModification)
                         && TryRefreshSpaceAppearances(viewportControl, analyticalModel, viewSettings, name))
                     {
@@ -3784,7 +3794,7 @@ namespace SAM.Analytical.UI.WPF.Windows
                 GeometryObjectModel geometryObjectModel;
                 using (Core.UI.PerformanceLog.Measure("AnalyticalWindow.ViewRegeneration.GeometryObjectModel", string.Format("{0} [{1}]", name, viewSettings.GetType().Name)))
                 {
-                    geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(viewSettings);
+                    geometryObjectModel = analyticalModel.ToSAM_GeometryObjectModel(RenderViewSettings(analyticalModel, viewSettings));
                 }
 
                 //Kept for the Part F annotation below, which reads the text this geometry carries so it can
@@ -3946,6 +3956,10 @@ namespace SAM.Analytical.UI.WPF.Windows
                 {
                     continue;
                 }
+
+                // A coloured view was rendered from a temporary copy of its settings: the saved settings, not that copy, are what the
+                // model keeps (see AnalyticalWindow.ParameterColouring.cs).
+                viewSettings = StoredViewSettings(result, viewSettings);
 
                 if (viewSettings is ViewSettings)
                 {
