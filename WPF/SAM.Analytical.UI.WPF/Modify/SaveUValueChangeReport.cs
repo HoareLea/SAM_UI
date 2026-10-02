@@ -28,6 +28,16 @@ namespace SAM.Analytical.UI.WPF
             return SaveChangeReport(Query.Path_GlazingChangeReport(path_Model, appliedAt), text, out path_Report, out refusal);
         }
 
+        /// <summary>
+        /// Saves the report of an existing construction assigned in the Thermal Performance panel next to the model
+        /// (<see cref="Query.Path_ConstructionChangeReport"/>), with the same rules as <see cref="SaveUValueChangeReport"/>: best effort,
+        /// never overwrites, never writes to the model.
+        /// </summary>
+        public static bool SaveConstructionChangeReport(string path_Model, DateTime appliedAt, string text, out string path_Report, out string refusal)
+        {
+            return SaveChangeReport(Query.Path_ConstructionChangeReport(path_Model, appliedAt), text, out path_Report, out refusal);
+        }
+
         private static bool SaveChangeReport(string path_Planned, string text, out string path_Report, out string refusal)
         {
             refusal = null;

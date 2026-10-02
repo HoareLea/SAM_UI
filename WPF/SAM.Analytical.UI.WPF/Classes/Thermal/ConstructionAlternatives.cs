@@ -285,6 +285,7 @@ namespace SAM.Analytical.UI.WPF
                 HeatFlowDirection = uValue.HeatFlowDirection,
                 SourceLabel = candidate.Source.Label,
                 SourceKind = candidate.Kind,
+                Notes = row.Warnings.ToList(),
             };
         }
 

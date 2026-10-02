@@ -43,6 +43,9 @@ namespace SAM.Analytical.UI.WPF
         public string SourceLabel { get; set; }
 
         public GlazingSourceKind SourceKind { get; set; }
+
+        /// <summary>The notes shown before Apply (another panel group, a numbered name, materials to add), kept for the report.</summary>
+        public IEnumerable<string> Notes { get; set; }
     }
 
     /// <summary>What <c>Modify.SetConstruction</c> did, for the result line and the check before Apply.</summary>
@@ -53,6 +56,7 @@ namespace SAM.Analytical.UI.WPF
             Error = error;
             PanelGuids = new List<Guid>();
             MaterialNamesAdded = new List<string>();
+            Notes = new List<string>();
         }
 
         internal SetConstructionResult(SetConstructionRequest request, Construction sourceConstruction, Construction construction, bool constructionAdded, IReadOnlyList<string> materialNamesAdded, IReadOnlyList<Guid> panelGuids)
@@ -69,6 +73,7 @@ namespace SAM.Analytical.UI.WPF
             HeatFlowDirection = request.HeatFlowDirection;
             SourceLabel = request.SourceLabel;
             SourceKind = request.SourceKind;
+            Notes = (request.Notes ?? new List<string>()).ToList();
             AppliedAt = DateTime.Now;
         }
 
@@ -108,6 +113,9 @@ namespace SAM.Analytical.UI.WPF
         public string SourceLabel { get; }
 
         public GlazingSourceKind SourceKind { get; }
+
+        /// <summary>The notes that were shown before Apply, for the report.</summary>
+        public IReadOnlyList<string> Notes { get; }
 
         public DateTime AppliedAt { get; }
     }

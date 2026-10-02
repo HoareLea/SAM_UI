@@ -25,15 +25,23 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>
         /// <see cref="ApplyThermalChange(UIAnalyticalModel, ThermalChangeSet)"/>, then the existing per-Apply reports (reports stay
-        /// per Apply for now): for each opaque change the U-VALUE CHANGE report and for each glazing change the glazing report,
+        /// per Apply for now): for each opaque change the U-VALUE CHANGE report, for each existing construction assigned the CONSTRUCTION CHANGE
+        /// report and for each glazing change the glazing report,
         /// with the scoped check of the changed model, saved next to the model. The reports read the model and write only files.
         /// </summary>
         public static ThermalChangeResult ApplyThermalChangeWithReports(this UIAnalyticalModel uIAnalyticalModel, ThermalChangeSet changeSet)
         {
             ThermalChangeResult result = ApplyThermalChange(uIAnalyticalModel, changeSet);
-            if (!result.Succeeded)
+            WriteReports(uIAnalyticalModel, result);
+            return result;
+        }
+
+        // The per-Apply reports of an applied change (a failed one has none); the Tas-free half of ApplyThermalChangeWithReports, so tests can reach it.
+        internal static void WriteReports(UIAnalyticalModel uIAnalyticalModel, ThermalChangeResult result)
+        {
+            if (result == null || !result.Succeeded)
             {
-                return result;
+                return;
             }
 
             AnalyticalModel analyticalModel = uIAnalyticalModel.JSAMObject;
@@ -45,6 +53,12 @@ namespace SAM.Analytical.UI.WPF
                 lines.Add(SaveUValueChangeReport(uIAnalyticalModel.Path, uValueResult.AppliedAt, text, out string path, out string refusal) ? "Report saved: " + path : refusal);
             }
 
+            foreach (SetConstructionResult constructionResult in result.ConstructionResults)
+            {
+                string text = Query.ConstructionChangeReportText(constructionResult, Query.ConstructionCheckSummary(analyticalModel, constructionResult), uIAnalyticalModel.Path);
+                lines.Add(SaveConstructionChangeReport(uIAnalyticalModel.Path, constructionResult.AppliedAt, text, out string path, out string refusal) ? "Report saved: " + path : refusal);
+            }
+
             foreach (SetGlazingResult glazingResult in result.GlazingResults)
             {
                 string text = Query.GlazingChangeReportText(glazingResult, Query.GlazingCheckSummary(analyticalModel, glazingResult), uIAnalyticalModel.Path);
@@ -52,7 +66,6 @@ namespace SAM.Analytical.UI.WPF
             }
 
             result.ReportLines = lines;
-            return result;
         }
 
         /// <param name="updateThermalParameters">The Tas thermal-parameter refresh (a whole-model TCD run). Tests pass a stand-in so they need no Tas.</param>

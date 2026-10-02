@@ -49,6 +49,14 @@ the generated variant as the row's change (preview "U 0.260 → 0.181 W/m²K · 
 * Existing tests: `ThermalEditServices` call sites pass a fake batch evaluator; one control test selects the glazing list by AutomationId.
 * Full WPF suite **1968/1968** (1938 + 30).
 
+## Per-Apply report (parity with the U-value path)
+
+`Modify.ApplyThermalChangeWithReports` now also writes a **CONSTRUCTION CHANGE** report for each existing construction assigned, through the existing path: same folder and naming
+(`<model>_ConstructionChange_<yyyyMMdd-HHmmss>.txt`, never overwrites), same `SaveChangeReport`, same scoped check (`UValueCheckSummary` over the assigned construction and its panels), same
+text layout. It records the construction chosen and its Guid, the construction it replaced, the **source / provenance** (name and kind: existing model / default library / added source), the
+build-up, **U before -> after** on the heat-flow basis with the target, scope and count, the materials added, the **notes shown before Apply** (panel group, numbered name, materials) and the **check
+result**; the result line shows "Report saved: ...". No new framework: `Query/ConstructionChangeReport.cs` mirrors `UValueChangeReport.cs`; the report step was split out (`WriteReports`) so it is testable without Tas.
+
 ## Real-app acceptance (real Tas, real default library; model: 12 walls SIM_EXT_SLD U 0.26, 9 roofs, 9 floors, 20 partitions, 20 windows)
 
 Evidence (local): `C:\TasOut\uvalue\d1\run1`, `run2`, `run3` (driver `C:\TasOut\uvalue\alite\drive\d1_alt.ps1`).
@@ -62,7 +70,6 @@ Evidence (local): `C:\TasOut\uvalue\d1\run1`, `run2`, `run3` (driver `C:\TasOut\
 
 ## Limitations / next
 
-* The per-Apply text reports (U-VALUE CHANGE / glazing) are not written for an existing-construction change yet (no report type for it); the one-line result and the check before Apply are shown.
 * Library = the default construction library; loaded / remembered sources are D2. Candidates are a flat list (no search/filter box), capped at 30.
 * The cold evaluation of a very large pool is chunked (40 per Tas run) but not measured beyond 21 library constructions; progress is a count, not a bar.
 * An alternative whose Default Panel Type differs from the panels is only marked (see above).
