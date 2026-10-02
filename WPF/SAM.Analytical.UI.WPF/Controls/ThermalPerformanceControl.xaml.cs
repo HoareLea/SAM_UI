@@ -25,6 +25,7 @@ namespace SAM.Analytical.UI.WPF
         private readonly ThermalPerformanceViewModel viewModel;
         private bool updating;
         private bool isFloating;
+        private bool settingColourState;
 
         public ThermalPerformanceControl()
             : this(null)
@@ -46,7 +47,29 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Raised when the user asks for the other host: a window of its own (<see cref="ThermalPerformanceHost.Floating"/>) or docked again.</summary>
         public event EventHandler<ThermalHostRequestedEventArgs> HostRequested;
 
+        /// <summary>Raised when the user turns "Colour by U-value" on or off: the host colours (or restores) the active 3D view.</summary>
+        public event EventHandler<ThermalColourRequestedEventArgs> ColourRequested;
+
         public ThermalPerformanceViewModel ViewModel => viewModel;
+
+        /// <summary>
+        /// Shows whether the active view is coloured by U-value. <paramref name="available"/> is false where it cannot be (no 3D view
+        /// active, or it does not show panels); <paramref name="reason"/> then says why. Setting it never raises <see cref="ColourRequested"/>.
+        /// </summary>
+        public void SetColourState(bool available, bool coloured, string reason = null)
+        {
+            settingColourState = true;
+            try
+            {
+                toggleButton_ColourByU.IsEnabled = available;
+                toggleButton_ColourByU.IsChecked = available && coloured;
+            }
+            finally
+            {
+                settingColourState = false;
+            }
+            toggleButton_ColourByU.ToolTip = available || string.IsNullOrEmpty(reason) ? "Colour the panels of the 3D view by their U-value, with a legend. The model is not changed." : reason;
+        }
 
         /// <summary>
         /// Commits a change set to the model as ONE change (one Undo) and returns its result; the host supplies it
@@ -182,6 +205,17 @@ namespace SAM.Analytical.UI.WPF
             viewModel.Mode = radioButton_WholeEnvelope.IsChecked == true ? ThermalPerformanceMode.WholeEnvelope : ThermalPerformanceMode.Selection;
         }
 
+        // Checked / Unchecked rather than Click, so the request comes from the mouse, the keyboard and UI Automation alike.
+        private void toggleButton_ColourByU_Changed(object sender, RoutedEventArgs e)
+        {
+            if (settingColourState)
+            {
+                return;
+            }
+
+            ColourRequested?.Invoke(this, new ThermalColourRequestedEventArgs(toggleButton_ColourByU.IsChecked == true));
+        }
+
         private void button_Host_Click(object sender, RoutedEventArgs e)
         {
             HostRequested?.Invoke(this, new ThermalHostRequestedEventArgs(isFloating ? ThermalPerformanceHost.Docked : ThermalPerformanceHost.Floating));
@@ -283,6 +317,17 @@ namespace SAM.Analytical.UI.WPF
         }
 
         public ThermalPerformanceHost Host { get; }
+    }
+
+    /// <summary>The user turned "Colour by U-value" on or off.</summary>
+    public sealed class ThermalColourRequestedEventArgs : EventArgs
+    {
+        internal ThermalColourRequestedEventArgs(bool on)
+        {
+            On = on;
+        }
+
+        public bool On { get; }
     }
 
     /// <summary>A click on a Thermal Performance row: the elements to highlight.</summary>
