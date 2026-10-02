@@ -278,6 +278,8 @@
                                                                     <TextBox Width="60" Text="{Binding GlazingTargetText, UpdateSourceTrigger=PropertyChanged}" ToolTip="Show only the systems with this overall U-value or better."/>
                                                                 </StackPanel>
                                                                 <TextBlock Text="{Binding CandidateCountText}" Style="{StaticResource PartO.Caption}" Margin="0,2,0,2"/>
+                                                                <TextBlock Text="{Binding GlazingNotesText}" Style="{StaticResource Style_Warning}" TextWrapping="Wrap" MaxWidth="260" Margin="0,0,0,2"
+                                                                           Visibility="{Binding HasGlazingNotes, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="textBlock_GlazingNotes"/>
                                                                 <ListBox ItemsSource="{Binding Candidates}" SelectedItem="{Binding SelectedCandidate, Mode=TwoWay}" MaxHeight="230" HorizontalContentAlignment="Stretch"
                                                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" AutomationProperties.AutomationId="listBox_Candidates">
                                                                     <ListBox.ItemTemplate>

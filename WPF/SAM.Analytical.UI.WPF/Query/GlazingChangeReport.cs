@@ -3,6 +3,7 @@
 
 using SAM.Core;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -75,6 +76,9 @@ namespace SAM.Analytical.UI.WPF
             Line_Glazing(stringBuilder, "Glazing", result.ApertureConstructionAdded
                 ? string.Format(CultureInfo.InvariantCulture, "{0} -> {1} (added to the model; {0} unchanged)", source?.Name, chosen?.Name)
                 : string.Format(CultureInfo.InvariantCulture, "{0} -> {1} (already in the model)", source?.Name, chosen?.Name));
+            Line_Glazing(stringBuilder, "Guid", chosen == null ? "?" : chosen.Guid.ToString());
+            Line_Glazing(stringBuilder, "Source", string.Format(CultureInfo.InvariantCulture, "{0} ({1})", FileName_Glazing(result.SourceLabel) ?? "?", Kind_Glazing(result.SourceKind)));
+            BuiltFrom_Glazing(stringBuilder, result.BuilderProvenance);
             Line_Glazing(stringBuilder, "Pane", string.Format(CultureInfo.InvariantCulture, "{0} -> {1}", BuildUp_Report(source?.PaneConstructionLayers), BuildUp_Report(chosen?.PaneConstructionLayers)));
             Line_Glazing(stringBuilder, "Frame", string.Format(CultureInfo.InvariantCulture, "{0} -> {1}", BuildUp_Report(source?.FrameConstructionLayers), BuildUp_Report(chosen?.FrameConstructionLayers)));
 
@@ -107,6 +111,85 @@ namespace SAM.Analytical.UI.WPF
         private static void Line_Glazing(StringBuilder stringBuilder, string label, string value)
         {
             stringBuilder.AppendLine(string.Format(CultureInfo.InvariantCulture, "{0,-13} {1}", label + ":", value));
+        }
+
+        // A further line of the value above, aligned with it.
+        private static void Continue_Glazing(StringBuilder stringBuilder, string value)
+        {
+            stringBuilder.AppendLine(new string(' ', 14) + value);
+        }
+
+        private static string Kind_Glazing(GlazingSourceKind kind)
+        {
+            switch (kind)
+            {
+                case GlazingSourceKind.Model:
+                    return "existing model system";
+
+                case GlazingSourceKind.Library:
+                    return "SAM default library";
+
+                case GlazingSourceKind.User:
+                    return "user glazing library";
+
+                default:
+                    return "added source";
+            }
+        }
+
+        // How a system made with the Glazing System Builder was built, from the provenance it carries (labels and file names only, never a
+        // folder: a source label given as a path is cut to its file name here too). A system without it says so.
+        private static void BuiltFrom_Glazing(StringBuilder stringBuilder, GlazingBuilderProvenance provenance)
+        {
+            if (provenance == null)
+            {
+                Line_Glazing(stringBuilder, "Built from", "not made with the Glazing System Builder (no Builder provenance)");
+                return;
+            }
+
+            string created = provenance.CreatedUtc == default ? "date unknown" : provenance.CreatedUtc.ToString("yyyy-MM-dd HH:mm 'UTC'", CultureInfo.InvariantCulture);
+            string basedOn = string.IsNullOrWhiteSpace(provenance.BasedOnName)
+                ? "not based on another system"
+                : provenance.BasedOnGuid.HasValue ? string.Format(CultureInfo.InvariantCulture, "based on {0} ({1})", provenance.BasedOnName, provenance.BasedOnGuid.Value) : "based on " + provenance.BasedOnName;
+            string intended = provenance.IntendedPanelType == PanelType.Undefined ? string.Empty : "; intended for " + provenance.IntendedPanelType;
+            Line_Glazing(stringBuilder, "Built from", string.Format(CultureInfo.InvariantCulture, "SAM Glazing System Builder, saved {0}; {1}{2}", created, basedOn, intended));
+
+            List<string> panes = (provenance.Panes ?? new List<GlazingBuilderPaneRecord>()).OrderBy(x => x.Position).Select(x =>
+            {
+                string name = !string.IsNullOrWhiteSpace(x.OriginalName) ? x.OriginalName : x.Material;
+                string from = FileName_Glazing(!string.IsNullOrWhiteSpace(x.SourceLabel) ? x.SourceLabel : x.SourceFile);
+                string savedAs = !string.IsNullOrWhiteSpace(x.Material) && x.Material != name && x.Material != name + " Reversed" ? string.Format(CultureInfo.InvariantCulture, ", saved as {0}", x.Material) : string.Empty;
+                return string.Format(CultureInfo.InvariantCulture, "{0}. {1}{2} [{3:0.#} mm, from {4}{5}]", x.Position, name, x.Reversed ? " (reversed)" : string.Empty, x.Thickness * 1000, from ?? "?", savedAs);
+            }).ToList();
+            Continue_Glazing(stringBuilder, "Panes (outside -> inside): " + (panes.Count == 0 ? "none recorded" : string.Join(" | ", panes)));
+
+            List<string> gaps = (provenance.Gaps ?? new List<GlazingBuilderGapRecord>()).OrderBy(x => x.Position).Select(x => string.Format(
+                CultureInfo.InvariantCulture,
+                "{0}. {1} {2:0.#} mm (HTC {3} W/m2K at {4} deg)",
+                x.Position,
+                x.Gas,
+                x.Thickness * 1000,
+                U_Glazing(x.HeatTransferCoefficient),
+                double.IsNaN(x.TiltDegrees) ? "?" : x.TiltDegrees.ToString("0", CultureInfo.InvariantCulture))).ToList();
+            Continue_Glazing(stringBuilder, "Gaps (outside -> inside): " + (gaps.Count == 0 ? "none" : string.Join(" | ", gaps)));
+
+            string width = double.IsNaN(provenance.FrameWidth) ? "no width entered" : string.Format(CultureInfo.InvariantCulture, "width {0:0.#} mm", provenance.FrameWidth * 1000);
+            Continue_Glazing(stringBuilder, string.Equals(provenance.Frame, "Copied", StringComparison.OrdinalIgnoreCase)
+                ? string.Format(CultureInfo.InvariantCulture, "Frame: copied from {0}, {1}", string.IsNullOrWhiteSpace(provenance.FrameCopiedFromName) ? "?" : provenance.FrameCopiedFromName, width)
+                : "Frame: none");
+        }
+
+        // The file name of a label that may have been given as a path; null for none.
+        private static string FileName_Glazing(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            string trimmed = value.Trim();
+            int index = trimmed.LastIndexOfAny(new[] { '\\', '/' });
+            return index < 0 ? trimmed : trimmed.Substring(index + 1);
         }
 
         private static string Scope_Glazing(SetGlazingResult result, string sourceName)

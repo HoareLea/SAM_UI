@@ -32,8 +32,19 @@ namespace SAM.Analytical.UI.WPF
             NewUw = request.NewUw;
             UwBasis = request.UwBasis;
             TargetUw = request.TargetUw;
+            SourceLabel = request.Source?.Label;
+            SourceKind = request.Source?.Kind ?? GlazingSourceKind.Model;
+            BuilderProvenance = GlazingBuilderProvenance.FromApertureConstruction(request.ApertureConstruction);
             AppliedAt = DateTime.Now;
         }
+
+        /// <summary>Where the chosen system came from, as the list showed it ("Model", "Default library", "My glazing systems", a file name).</summary>
+        public string SourceLabel { get; }
+
+        public GlazingSourceKind SourceKind { get; }
+
+        /// <summary>How the chosen system was built, when the Glazing System Builder made it (its saved provenance); null for any other system.</summary>
+        public GlazingBuilderProvenance BuilderProvenance { get; }
 
         /// <summary>True when the change was applied (one Undo step).</summary>
         public bool Succeeded => Error == null;

@@ -9,7 +9,7 @@ using System.Linq;
 namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
-    /// One place glazing systems come from: the model, the default library, or a file loaded for this window. It holds the
+    /// One place glazing systems come from: the model, the default library, "My glazing systems", or a file loaded for this window. It holds the
     /// systems (aperture constructions) together with the materials they name, as a <see cref="ConstructionManager"/>,
     /// which is also what Tas needs to calculate them. The model is never touched by creating one.
     /// <para>
@@ -138,6 +138,61 @@ namespace SAM.Analytical.UI.WPF
             MaterialLibrary materialLibrary = Analytical.Query.DefaultMaterialLibrary();
 
             return new GlazingSource(GlazingSourceKind.Library, "Default library", new ConstructionManager(apertureConstructionLibrary?.GetApertureConstructions(), null, materialLibrary));
+        }
+
+        /// <summary>
+        /// "My glazing systems" as it is on disk now: its complete systems with the materials they use. Read only - nothing is copied anywhere. A
+        /// missing file is an empty source (the normal state before the first Save); a file that cannot be read is an empty source whose
+        /// <see cref="Note"/> says why (the file is left as it is, and the other sources keep working).
+        /// </summary>
+        public static GlazingSource FromUserLibrary(UserGlazingLibrary userGlazingLibrary)
+        {
+            UserGlazingLibraryContent content;
+            try
+            {
+                content = userGlazingLibrary?.Read();
+            }
+            catch (Exception exception)
+            {
+                return new GlazingSource(GlazingSourceKind.User, UserGlazingLibrary.LibraryName, new ConstructionManager()) { Note = UserNote(exception.Message) };
+            }
+
+            if (content == null)
+            {
+                return new GlazingSource(GlazingSourceKind.User, UserGlazingLibrary.LibraryName, new ConstructionManager());
+            }
+
+            return new GlazingSource(GlazingSourceKind.User, UserGlazingLibrary.LibraryName, content.ConstructionManager)
+            {
+                Note = content.State == UserGlazingLibraryState.Unreadable ? UserNote(content.Error) : null,
+            };
+        }
+
+        /// <summary>
+        /// Where a source stands in the pool: the model, then the default library, then "My glazing systems", then the loaded sources (in the order
+        /// they were added). The first source of a Guid wins.
+        /// </summary>
+        public static int Rank(GlazingSourceKind kind)
+        {
+            switch (kind)
+            {
+                case GlazingSourceKind.Model:
+                    return 0;
+
+                case GlazingSourceKind.Library:
+                    return 1;
+
+                case GlazingSourceKind.User:
+                    return 2;
+
+                default:
+                    return 3;
+            }
+        }
+
+        private static string UserNote(string error)
+        {
+            return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} could not be used: {1} The other sources still work.", UserGlazingLibrary.LibraryName, string.IsNullOrWhiteSpace(error) ? "the file could not be read." : error.TrimEnd('.') + ".");
         }
     }
 }

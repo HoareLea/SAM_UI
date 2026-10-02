@@ -14,5 +14,11 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>Loaded for this window only ("Load more glazing..."); never written to the model until Apply.</summary>
         Loaded,
+
+        /// <summary>
+        /// "My glazing systems": the user's own predefined systems (<see cref="UserGlazingLibrary"/>), never written to the model until Apply. In the
+        /// pool it comes after the model and the default library and before the loaded sources (<see cref="GlazingSource.Rank"/>).
+        /// </summary>
+        User,
     }
 }

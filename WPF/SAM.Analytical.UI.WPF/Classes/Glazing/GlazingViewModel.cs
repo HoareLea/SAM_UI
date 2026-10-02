@@ -60,6 +60,8 @@ namespace SAM.Analytical.UI.WPF
         private bool includeLoaded = true;
         private Guid? selectedGuid;
         private bool selectedByUser;
+        private Guid? requestedGuid;
+        private Guid? pinnedGuid;
 
         private GlazingPreviewStatus status = GlazingPreviewStatus.Calculating;
         private string statusMessage;
@@ -74,7 +76,8 @@ namespace SAM.Analytical.UI.WPF
         /// <param name="selectedApertureGuids">The selected apertures; only those using the construction count.</param>
         /// <param name="evaluator">The glazing calculation (real or fake).</param>
         /// <param name="library">The default library as a source; null for none.</param>
-        public GlazingViewModel(AnalyticalModel analyticalModel, Guid apertureConstructionGuid, IEnumerable<Guid> selectedApertureGuids, IGlazingEvaluator evaluator, GlazingSource library)
+        /// <param name="userSource">"My glazing systems" as a source (<see cref="GlazingSource.FromUserLibrary"/>); null for none.</param>
+        public GlazingViewModel(AnalyticalModel analyticalModel, Guid apertureConstructionGuid, IEnumerable<Guid> selectedApertureGuids, IGlazingEvaluator evaluator, GlazingSource library, GlazingSource userSource = null)
         {
             this.evaluator = evaluator ?? throw new ArgumentNullException(nameof(evaluator));
             this.analyticalModel = analyticalModel ?? throw new ArgumentNullException(nameof(analyticalModel));
@@ -118,6 +121,11 @@ namespace SAM.Analytical.UI.WPF
                 sources.Add(library);
             }
 
+            if (userSource != null)
+            {
+                Place(userSource);
+            }
+
             Rebuild();
         }
 
@@ -142,7 +150,7 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>The shared scope: the pinned apertures, the choice and the labels (the window's "Changes" radios read it).</summary>
         public ThermalScope Scope => scope;
 
-        /// <summary>The sources in the pool (model first), for the "N systems from ..." caption.</summary>
+        /// <summary>The sources in the pool (model, default library, "My glazing systems", then the loaded ones), for the "N systems from ..." caption.</summary>
         public IReadOnlyList<GlazingSource> Sources => sources;
 
         // ---- Filters (Target) -----------------------------------------------------------------------------
@@ -244,10 +252,42 @@ namespace SAM.Analytical.UI.WPF
                     return;
                 }
 
+                // Another choice ends a pending or pinned "choose this system" (SelectWhenAvailable): the filters apply to every row again.
+                requestedGuid = null;
+                bool unpinned = pinnedGuid != null && pinnedGuid != value;
+                if (unpinned)
+                {
+                    pinnedGuid = null;
+                }
+
                 selectedGuid = value;
                 selectedByUser = value != null;
+                if (unpinned)
+                {
+                    Refresh();
+                    return;
+                }
+
                 OnDerivedPropertiesChanged();
             }
+        }
+
+        /// <summary>
+        /// The system <see cref="SelectWhenAvailable"/> keeps in the table although the filters would hide it; null when none. It stays only
+        /// while it is the choice.
+        /// </summary>
+        public Guid? PinnedGuid => pinnedGuid;
+
+        /// <summary>
+        /// Chooses the system <paramref name="guid"/>: now if it is in the pool, otherwise as soon as a source brings it (e.g. a system just saved
+        /// to "My glazing systems", which arrives with <see cref="SetUserSourceAsync"/>). The chosen system is shown even when the target or the
+        /// g / light filters would hide it, but only while it stays the choice: choosing another system (or none) ends that, and the filters apply
+        /// to it again. Nothing else in the list changes; nothing is calculated or written.
+        /// </summary>
+        public void SelectWhenAvailable(Guid guid)
+        {
+            requestedGuid = guid;
+            Refresh();
         }
 
         // ---- Comparison: Current | Proposed | Target | Margin | Status -------------------------------------
@@ -464,8 +504,38 @@ namespace SAM.Analytical.UI.WPF
                 return Task.CompletedTask;
             }
 
-            sources.Add(source);
+            Place(source);
             Rebuild();
+            OnDerivedPropertiesChanged();
+
+            LastEvaluationTask = EvaluateAsync();
+            return LastEvaluationTask;
+        }
+
+        /// <summary>
+        /// Puts "My glazing systems" in the pool, or replaces the copy read earlier with <paramref name="source"/> (the library read again after it
+        /// changed): after the default library, before the loaded sources. A system already listed from the library stays one row and keeps its
+        /// values (saved systems are immutable and identified by Guid); a new one is added and calculated; one no longer in the library leaves the
+        /// list. The model is not touched.
+        /// </summary>
+        public Task SetUserSourceAsync(GlazingSource source)
+        {
+            if (source == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            GlazingSource previous = sources.Find(x => x.Kind == GlazingSourceKind.User);
+            if (previous != null)
+            {
+                sources[sources.IndexOf(previous)] = source;
+            }
+            else
+            {
+                Place(source);
+            }
+
+            Rebuild(previous, source);
             OnDerivedPropertiesChanged();
 
             LastEvaluationTask = EvaluateAsync();
@@ -607,20 +677,41 @@ namespace SAM.Analytical.UI.WPF
 
         // ---- Table ----------------------------------------------------------------------------------------
 
-        // Rebuilds the pool's candidates from the sources (new Guids only; the first source of a Guid wins).
-        private void Rebuild()
+        // A source joins the pool at its rank (model, default library, "My glazing systems", loaded), after the sources of the same rank.
+        private void Place(GlazingSource source)
+        {
+            int rank = GlazingSource.Rank(source.Kind);
+            sources.Insert(sources.FindLastIndex(x => GlazingSource.Rank(x.Kind) <= rank) + 1, source);
+        }
+
+        // Rebuilds the pool's candidates from the sources: every Guid belongs to the first source (in pool order) that offers it. A candidate
+        // already built for its source is kept with its values; one now offered by an earlier source is built afresh and calculated again.
+        // replaced -> replacement: one source read again (the same immutable systems): its candidates are rebuilt on the new copy, values kept.
+        private void Rebuild(GlazingSource replaced = null, GlazingSource replacement = null)
         {
             // Glass is replaced by glass and a solid door by a solid door: a system of the other kind is not a candidate
             // (one whose material cannot be resolved stays, shown as unusable, so the reason is visible).
             bool transparent_Current = current.Transparent(sources[0].ConstructionManager?.MaterialLibrary);
 
-            HashSet<Guid> guids = new HashSet<Guid>(candidates.Select(x => x.Guid));
+            Dictionary<Guid, GlazingCandidate> existing = candidates.ToDictionary(x => x.Guid);
+            List<GlazingCandidate> rebuilt = new List<GlazingCandidate>();
+            HashSet<Guid> guids = new HashSet<Guid>();
+            HashSet<Guid> kept = new HashSet<Guid>();
             foreach (GlazingSource source in sources)
             {
                 foreach (ApertureConstruction apertureConstruction in source.GetApertureConstructions(current.ApertureType))
                 {
                     if (guids.Contains(apertureConstruction.Guid))
                     {
+                        continue;
+                    }
+
+                    existing.TryGetValue(apertureConstruction.Guid, out GlazingCandidate candidate_Existing);
+                    if (candidate_Existing != null && candidate_Existing.Source == source)
+                    {
+                        guids.Add(apertureConstruction.Guid);
+                        kept.Add(apertureConstruction.Guid);
+                        rebuilt.Add(candidate_Existing);
                         continue;
                     }
 
@@ -631,15 +722,35 @@ namespace SAM.Analytical.UI.WPF
                     }
 
                     guids.Add(apertureConstruction.Guid);
-                    candidates.Add(candidate);
+                    rebuilt.Add(candidate);
+                    if (candidate_Existing != null && replaced != null && candidate_Existing.Source == replaced && source == replacement)
+                    {
+                        kept.Add(apertureConstruction.Guid);
+                    }
                 }
             }
 
             // The current system must be in the pool even if the model-source listing lost it.
-            if (!candidates.Any(x => x.Guid == current.Guid))
+            if (!guids.Contains(current.Guid))
             {
-                candidates.Insert(0, new GlazingCandidate(current, sources[0], modelMaterials));
+                bool reuse = existing.TryGetValue(current.Guid, out GlazingCandidate candidate_Current) && candidate_Current.Source == sources[0];
+                rebuilt.Insert(0, reuse ? candidate_Current : new GlazingCandidate(current, sources[0], modelMaterials));
+                if (reuse)
+                {
+                    kept.Add(current.Guid);
+                }
             }
+
+            // A system that left the pool or now comes from another source is calculated again if it is listed.
+            foreach (Guid guid in existing.Keys.Where(x => !kept.Contains(x)))
+            {
+                evaluated.Remove(guid);
+                values.Remove(guid);
+                uwCache.Remove(guid);
+            }
+
+            candidates.Clear();
+            candidates.AddRange(rebuilt);
 
             Refresh();
         }
@@ -726,7 +837,7 @@ namespace SAM.Analytical.UI.WPF
                     passes = true;
                 }
 
-                if (passes || isCurrent)
+                if (passes || isCurrent || candidate.Guid == pinnedGuid || candidate.Guid == requestedGuid)
                 {
                     rows_New.Add(new GlazingCandidateRow(candidate, glazingValues, transparent, uw, basis, isCurrent, passes, target, RowWarnings(candidate, isCurrent, apertures_Basis)));
                 }
@@ -735,11 +846,25 @@ namespace SAM.Analytical.UI.WPF
             rows_New.Sort(Compare);
             rows = rows_New;
 
+            // A system asked for by Guid (SelectWhenAvailable) is chosen as soon as it is in the pool, and pinned: shown while it is the choice.
+            if (requestedGuid != null && rows.Any(x => x.Guid == requestedGuid.Value))
+            {
+                selectedGuid = requestedGuid;
+                selectedByUser = true;
+                pinnedGuid = requestedGuid;
+                requestedGuid = null;
+            }
+
             // Keep the user's choice while it is shown; otherwise choose automatically, but only against a target.
-            if (selectedGuid != null && !rows.Any(x => x.Guid == selectedGuid.Value && x.Passes))
+            if (selectedGuid != null && !rows.Any(x => x.Guid == selectedGuid.Value && (x.Passes || x.Guid == pinnedGuid)))
             {
                 selectedGuid = null;
                 selectedByUser = false;
+            }
+
+            if (pinnedGuid != null && pinnedGuid != selectedGuid)
+            {
+                pinnedGuid = null;
             }
 
             // Choose automatically only against a target the current system does not meet already (then there is

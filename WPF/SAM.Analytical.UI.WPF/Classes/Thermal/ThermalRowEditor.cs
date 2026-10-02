@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -47,6 +49,8 @@ namespace SAM.Analytical.UI.WPF
         private ConstructionAlternatives alternatives;
         private GlazingViewModel glazing;
         private readonly HashSet<GlazingSource> glazingSources = new HashSet<GlazingSource>();
+        private UserGlazingLibrary userGlazing;
+        private SynchronizationContext glazingContext;
         private string minThicknessText = (UValueViewModel.DefaultMinThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
         private string maxThicknessText = (UValueViewModel.DefaultMaxThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
         private bool changeOpen;
@@ -409,7 +413,16 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            glazing = new GlazingViewModel(analyticalModel, Row.ConstructionGuid, SelectedForScope(), session.Services.GlazingEvaluator, session.Services.GlazingLibrary());
+            // "My glazing systems" is read now (a small file; missing = empty, unreadable = a note) and joins the pool after the default library;
+            // it is read again whenever the library says it changed, until the list closes.
+            glazingContext = SynchronizationContext.Current;
+            userGlazing = UserGlazingOrNull();
+            if (userGlazing != null)
+            {
+                userGlazing.Changed += UserGlazing_Changed;
+            }
+
+            glazing = new GlazingViewModel(analyticalModel, Row.ConstructionGuid, SelectedForScope(), session.Services.GlazingEvaluator, session.Services.GlazingLibrary(), GlazingSource.FromUserLibrary(userGlazing));
             glazing.PropertyChanged += ViewModel_PropertyChanged;
             ChangeOpen = true;
             session.EditorChanged(this);
@@ -444,6 +457,64 @@ namespace SAM.Analytical.UI.WPF
         {
             AddReadySources();
         }
+
+        /// <summary>
+        /// Reads "My glazing systems" again into the open list (what <see cref="UserGlazingLibrary.Changed"/> does): a new system becomes a
+        /// candidate, one already listed stays one row. With <paramref name="select"/>, that system is chosen as soon as it is in the list and shown
+        /// even if the target would hide it (<see cref="GlazingViewModel.SelectWhenAvailable"/>). Reads only; no model is touched. Nothing happens
+        /// while no list is open.
+        /// </summary>
+        public Task RefreshUserGlazingAsync(Guid? select = null)
+        {
+            if (glazing == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            if (select != null)
+            {
+                glazing.SelectWhenAvailable(select.Value);
+            }
+
+            return glazing.SetUserSourceAsync(GlazingSource.FromUserLibrary(userGlazing));
+        }
+
+        /// <summary>Chooses the system <paramref name="guid"/> in the open list, now or once a source brings it (<see cref="GlazingViewModel.SelectWhenAvailable"/>).</summary>
+        public void SelectGlazing(Guid guid)
+        {
+            glazing?.SelectWhenAvailable(guid);
+        }
+
+        // A Save may come from another thread (the Builder saving off the UI thread): the list is refreshed on the thread it was opened on.
+        private void UserGlazing_Changed(object sender, EventArgs e)
+        {
+            SynchronizationContext context = glazingContext;
+            if (context == null || context == SynchronizationContext.Current)
+            {
+                _ = RefreshUserGlazingAsync();
+                return;
+            }
+
+            context.Post(_ => RefreshUserGlazingAsync(), null);
+        }
+
+        // The services' user library; a host where it cannot be created simply has no "My glazing systems".
+        private UserGlazingLibrary UserGlazingOrNull()
+        {
+            try
+            {
+                return session.Services.UserGlazing;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>Notes about the sources of the open list, e.g. why "My glazing systems" could not be used; empty when there are none.</summary>
+        public string GlazingNotesText => glazing == null ? string.Empty : string.Join(Environment.NewLine, glazing.Notes);
+
+        public bool HasGlazingNotes => !string.IsNullOrEmpty(GlazingNotesText);
 
         /// <summary>Closes the list and drops the choice: the row is not edited any more.</summary>
         public void CloseChange()
@@ -664,6 +735,14 @@ namespace SAM.Analytical.UI.WPF
                 uValue.Dispose();
                 uValue = null;
             }
+
+            if (userGlazing != null)
+            {
+                userGlazing.Changed -= UserGlazing_Changed;
+                userGlazing = null;
+            }
+
+            glazingContext = null;
 
             if (glazing != null)
             {

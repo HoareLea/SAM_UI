@@ -85,6 +85,8 @@ namespace SAM.Analytical.UI.WPF
 
         public static readonly TimeSpan DefaultLockTimeout = TimeSpan.FromSeconds(10);
 
+        private static UserGlazingLibrary shared;
+
         private readonly GlazingComposeOptions composeOptions;
         private readonly TimeSpan lockTimeout;
 
@@ -99,6 +101,22 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary><c>Documents\SAM\User Libraries\Glazing Systems.json</c>.</summary>
         public static string DefaultPath => System.IO.Path.Combine(Core.Query.UserSAMDirectory(), "User Libraries", "Glazing Systems.json");
+
+        /// <summary>
+        /// The library of this SAM process (<see cref="DefaultPath"/>), created on first use: every Thermal Performance panel and the Builder share
+        /// it, so a Save through it reaches every open candidate list (<see cref="Changed"/>). Tests replace it so they never read the user's file.
+        /// </summary>
+        public static UserGlazingLibrary Shared
+        {
+            get => LazyInitializer.EnsureInitialized(ref shared, () => new UserGlazingLibrary());
+            internal set => shared = value;
+        }
+
+        /// <summary>
+        /// Raised after a Save wrote a new system (on the thread that saved, after the lock is released), so open candidate lists can read the
+        /// library again. Not raised for a failed Save, and not for changes made by another process (nothing watches the file).
+        /// </summary>
+        public event EventHandler Changed;
 
         public string Path { get; }
 
@@ -134,9 +152,36 @@ namespace SAM.Analytical.UI.WPF
         /// Saves <paramref name="draft"/> as a NEW predefined system: composed with a new Guid; checked (with the library's current names);
         /// its materials embedded (an identical one reused; a different one of the same name saved as "name (source)" / "name 2" with the
         /// system's layer renamed with it); the Builder provenance attached (with <paramref name="performance"/>, the values Tas gave the draft,
-        /// when known). Nothing is written unless everything succeeds.
+        /// when known). Nothing is written unless everything succeeds. A successful Save raises <see cref="Changed"/> once the lock is released.
         /// </summary>
         public UserGlazingSaveResult Save(GlazingSystemDraft draft, GlazingValues performance = null, DateTime? createdUtc = null)
+        {
+            UserGlazingSaveResult result = SaveLocked(draft, performance, createdUtc);
+            if (result.Succeeded)
+            {
+                OnChanged();
+            }
+
+            return result;
+        }
+
+        // The system is written whatever a listener does with the news: one list that fails to refresh neither stops the others nor turns a
+        // successful Save into a failure.
+        private void OnChanged()
+        {
+            foreach (EventHandler handler in Changed?.GetInvocationList().Cast<EventHandler>() ?? Enumerable.Empty<EventHandler>())
+            {
+                try
+                {
+                    handler(this, EventArgs.Empty);
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
+        private UserGlazingSaveResult SaveLocked(GlazingSystemDraft draft, GlazingValues performance, DateTime? createdUtc)
         {
             if (draft == null)
             {
