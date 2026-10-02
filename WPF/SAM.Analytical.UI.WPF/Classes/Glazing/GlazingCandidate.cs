@@ -44,7 +44,7 @@ namespace SAM.Analytical.UI.WPF
 
                 if (modelMaterials != null && modelMaterials.TryGetValue(name, out IMaterial material_Model))
                 {
-                    if (!Same(material, material_Model))
+                    if (!MaterialIdentity.Same(material, material_Model))
                     {
                         MaterialIssue = string.Format(CultureInfo.CurrentCulture, "Its material '{0}' differs from the model's material of the same name.", name);
                         MaterialDiffers = true;
@@ -106,32 +106,6 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return string.Join(" / ", constructionLayers.Where(x => x != null).Select(x => string.Format(CultureInfo.CurrentCulture, "{0:0.#} {1}", x.Thickness * 1000, x.Name)));
-        }
-
-        // Same definition = same JSON once the object's own Guid and the parameters without a value are left out (a material
-        // copied between libraries keeps its properties but may get a new Guid, and a NaN parameter is not written to a file,
-        // so a material read from a file would otherwise differ from the same one still in memory).
-        private static bool Same(IMaterial material_1, IMaterial material_2)
-        {
-            if (ReferenceEquals(material_1, material_2))
-            {
-                return true;
-            }
-
-            if (material_1 == null || material_2 == null || material_1.GetType() != material_2.GetType())
-            {
-                return false;
-            }
-
-            return Json(material_1) == Json(material_2);
-        }
-
-        private static string Json(IMaterial material)
-        {
-            string json = material.ToJsonObject()?.ToJsonString() ?? string.Empty;
-            json = System.Text.RegularExpressions.Regex.Replace(json, "\"Guid\":\"[0-9a-fA-F-]{36}\",?", string.Empty);
-            json = System.Text.RegularExpressions.Regex.Replace(json, @",\{""Name"":""[^""]*""\}", string.Empty);
-            return System.Text.RegularExpressions.Regex.Replace(json, @"\{""Name"":""[^""]*""\},?", string.Empty);
         }
     }
 }

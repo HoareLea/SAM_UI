@@ -41,14 +41,14 @@ namespace SAM.Analytical.UI.WPF.Tests
             public List<Guid> Selected = new List<Guid>();
         }
 
-        private static Host Open(IEnumerable<int> wallIndexes, IEnumerable<int> windowIndexes)
+        private static Host Open(IEnumerable<int> wallIndexes, IEnumerable<int> windowIndexes, Func<GlazingSource> constructionLibrary = null)
         {
             Host host = new Host() { Parts = ThermalFixture.Build() };
             host.Ui = new UIAnalyticalModel(host.Parts.Model);
             host.Ui.Modified += (sender, e) => host.Modified++;
             host.Ui.HistoryChanged += (sender, e) => host.HistoryChanged++;
 
-            host.Control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library()));
+            host.Control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), constructionLibrary ?? (() => null)));
             host.Control.Applier = set => Modify.ApplyThermalChange(host.Ui, set, x => { }, Tas);
 
             // The way the analytical window drives it: the model it has now, the selection of the view, and Modified -> Update.
@@ -243,8 +243,8 @@ namespace SAM.Analytical.UI.WPF.Tests
                 windows.Glazing.LastEvaluationTask.Wait(TimeSpan.FromSeconds(10));
                 Flush();
 
-                // Every row carries a (collapsed) list; the one of the window row is the one whose editor it is.
-                ListBox list = Descendants<ListBox>(host.Control).First(x => ReferenceEquals(x.DataContext, windows));
+                // Every row carries a (collapsed) list of systems; the one of the window row is the one whose editor it is.
+                ListBox list = Descendants<ListBox>(host.Control).First(x => ReferenceEquals(x.DataContext, windows) && System.Windows.Automation.AutomationProperties.GetAutomationId(x) == "listBox_Candidates");
                 Assert.True(list.IsVisible);
                 Assert.Equal(windows.Candidates.Count, list.Items.Count);
                 Assert.Contains(windows.Candidates, x => x.Guid == GlazingFixture.BetterGuid);
@@ -260,6 +260,50 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal(1, host.HistoryChanged);
                 Assert.All(host.Ui.JSAMObject.AdjacencyCluster.GetApertures(), x => Assert.Equal(GlazingFixture.BetterGuid, x.TypeGuid));
                 Assert.Contains("apertures now", Text(host, "textBlock_Result"));
+            }
+            finally
+            {
+                host.Window.Close();
+            }
+        }
+
+        [WpfFact]
+        public void Typing_a_target_lists_the_existing_constructions_beside_the_generated_variant_and_choosing_one_applies_it_as_one_commit()
+        {
+            Host host = Open(new[] { 0, 1, 2 }, Array.Empty<int>(), () => AlternativesFixture.Library());
+            try
+            {
+                ThermalRowEditor editor = host.Control.ViewModel.Groups.SelectMany(x => x.Rows).First(x => x.ConstructionGuid == host.Parts.Wall.Guid).Editor;
+                Assert.Null(editor.Alternatives);
+
+                Type(host, "0.18");
+                editor.Alternatives.Idle().Wait(TimeSpan.FromSeconds(10));
+                Flush();
+
+                // The list is under the target, with the generated variant first and a count line; nothing is chosen for the user.
+                ListBox list = ById<ListBox>(host.Control, "listBox_Alternatives");
+                Assert.NotNull(list);
+                Assert.True(list.IsVisible);
+                Assert.Equal(editor.AlternativeRows.Count, list.Items.Count);
+                Assert.True(((ConstructionAlternativeRow)list.Items[0]).IsGenerated);
+                Assert.Same(list.Items[0], list.SelectedItem);
+                Assert.Contains("existing constructions meet U 0.18", Text(host, "textBlock_AlternativesCount"));
+                Assert.Contains("→", Text(host, "textBlock_Preview"));
+                Assert.Equal("1 change · 12 elements", Text(host, "textBlock_ChangeSummary"));
+
+                // Choosing an existing one makes it the row's change: the preview names it and Apply assigns it.
+                list.SelectedItem = editor.AlternativeRows.Single(x => x.Guid == AlternativesFixture.LibraryThickGuid);
+                Flush();
+                Assert.Contains("LIB_THICK (Library)", Text(host, "textBlock_Preview"));
+                Assert.Equal("1 change · 12 elements", Text(host, "textBlock_ChangeSummary"));
+                Assert.StartsWith("Before apply:", Text(host, "textBlock_Check"));
+
+                Press(ById<Button>(host.Control, "button_Apply"));
+
+                Assert.Equal(1, host.Modified);
+                Assert.Equal(1, host.HistoryChanged);
+                Assert.Equal(12, host.Ui.JSAMObject.AdjacencyCluster.GetPanels().Count(x => x.TypeGuid == AlternativesFixture.LibraryThickGuid));
+                Assert.Contains("12 panels now LIB_THICK", Text(host, "textBlock_Result"));
             }
             finally
             {

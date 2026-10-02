@@ -120,6 +120,12 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>U-value of the construction as it is [W/m²K] on the current heat-flow basis; NaN until calculated.</summary>
         public double CurrentThermalTransmittance => currentThermalTransmittance;
 
+        /// <summary>The construction to change, as it is in the model (the alternatives list excludes it and compares against it).</summary>
+        internal Construction SourceConstruction => construction;
+
+        /// <summary>The panels the change reaches under the current scope (the heat-flow basis and the panel-group check read them).</summary>
+        internal IReadOnlyList<Panel> ScopePanels => BasisPanels().ToList();
+
         /// <summary>How many panels use the construction (by Guid).</summary>
         public int PanelsUsingCount => panels_Using.Count;
 

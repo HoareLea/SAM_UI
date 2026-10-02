@@ -44,6 +44,7 @@ namespace SAM.Analytical.UI.WPF
         private readonly IReadOnlyList<Guid> selectedGuids;
 
         private UValueViewModel uValue;
+        private ConstructionAlternatives alternatives;
         private GlazingViewModel glazing;
         private string minThicknessText = (UValueViewModel.DefaultMinThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
         private string maxThicknessText = (UValueViewModel.DefaultMaxThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
@@ -67,14 +68,20 @@ namespace SAM.Analytical.UI.WPF
 
         public GlazingViewModel Glazing => glazing;
 
+        /// <summary>The existing constructions next to the generated variant (opaque rows, once a target is typed); null before.</summary>
+        public ConstructionAlternatives Alternatives => alternatives;
+
         /// <summary>True once the user started an edit of this row: its scope is then pinned and the panel does not rebuild under it.</summary>
         public bool IsEdited => uValue != null || glazing != null;
 
         /// <summary>True while a calculation for the current inputs is running.</summary>
-        public bool IsBusy => (uValue?.IsBusy ?? false) || (glazing?.IsBusy ?? false);
+        public bool IsBusy => (uValue?.IsBusy ?? false) || (glazing?.IsBusy ?? false) || (AlternativeChosen && alternatives.IsBusy);
 
         /// <summary>True when the row can contribute a change to Apply: a reached target / a chosen, usable system.</summary>
-        public bool HasRequest => (uValue?.ApplyEnabled ?? false) || (glazing?.ApplyEnabled ?? false);
+        public bool HasRequest => AlternativeChosen ? alternatives.ApplyEnabled : (uValue?.ApplyEnabled ?? false) || (glazing?.ApplyEnabled ?? false);
+
+        /// <summary>True while an existing construction is chosen instead of the generated variant: it is the row's change.</summary>
+        public bool AlternativeChosen => alternatives != null && alternatives.ExistingChosen;
 
         /// <summary>Editing is possible only where the model is known; a row of a model that was replaced is read-only.</summary>
         public bool CanEdit => analyticalModel != null;
@@ -147,6 +154,11 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
+                if (AlternativeChosen)
+                {
+                    return alternatives.ApplyBlockReason == null ? "✓" : "✕";
+                }
+
                 if (uValue != null)
                 {
                     switch (uValue.Status)
@@ -192,6 +204,11 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
+                if (AlternativeChosen)
+                {
+                    return alternatives.PreviewText;
+                }
+
                 if (uValue != null)
                 {
                     switch (uValue.Status)
@@ -228,12 +245,12 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>What happens to the constructions, e.g. "Creates SIM_EXT_SLD U0.18; SIM_EXT_SLD stays unchanged." (opaque, reached).</summary>
-        public string ResultText => uValue != null && uValue.Status == UValuePreviewStatus.Reached ? uValue.ResultText : glazing != null && glazing.ProposedRow != null ? glazing.ResultText : string.Empty;
+        public string ResultText => AlternativeChosen ? alternatives.ResultText : uValue != null && uValue.Status == UValuePreviewStatus.Reached ? uValue.ResultText : glazing != null && glazing.ProposedRow != null ? glazing.ResultText : string.Empty;
 
         /// <summary>The reason a reached / chosen change still cannot be applied; null when nothing blocks it.</summary>
-        public string BlockReason => uValue != null ? (uValue.Status == UValuePreviewStatus.Reached ? uValue.ApplyBlockReason : null) : glazing?.ApplyBlockReason;
+        public string BlockReason => AlternativeChosen ? alternatives.ApplyBlockReason : uValue != null ? (uValue.Status == UValuePreviewStatus.Reached ? uValue.ApplyBlockReason : null) : glazing?.ApplyBlockReason;
 
-        public IReadOnlyList<string> Warnings => uValue?.Warnings ?? glazing?.Warnings ?? new List<string>();
+        public IReadOnlyList<string> Warnings => AlternativeChosen ? alternatives.Warnings.Concat(uValue.Warnings).ToList() : uValue?.Warnings ?? glazing?.Warnings ?? new List<string>();
 
         // ---- Scope (pinned) ---------------------------------------------------------------------------------------
 
@@ -438,6 +455,18 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Adds this row's change to <paramref name="changeSet"/> when it has one; returns whether it did.</summary>
         internal bool AddTo(ThermalChangeSet changeSet)
         {
+            if (AlternativeChosen)
+            {
+                SetConstructionRequest request_Construction = alternatives.CreateRequest();
+                if (request_Construction != null)
+                {
+                    changeSet.Add(request_Construction);
+                    return true;
+                }
+
+                return false;
+            }
+
             if (uValue != null)
             {
                 SetUValueRequest request = uValue.CreateRequest();
@@ -466,6 +495,11 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
+                if (AlternativeChosen)
+                {
+                    return alternatives.ApplyEnabled ? uValue.Scope.BasisGuids(uValue.ApplyScope).Count : 0;
+                }
+
                 if (uValue != null && uValue.ApplyEnabled)
                 {
                     return uValue.EffectiveScope == ThermalApplyScope.DontAssign ? 0 : uValue.Scope.BasisGuids(uValue.EffectiveScope).Count;
@@ -538,12 +572,62 @@ namespace SAM.Analytical.UI.WPF
 
         private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            // An opaque row with a target: the existing constructions are compared against it (created on the first valid target, so a row
+            // that is only looked at, or whose target is not a number, asks nothing). The view-model announces every derived property after
+            // each change of state, so the list follows one notification of that burst (Status is in every one), not each of them.
+            if (sender == uValue && uValue != null && e.PropertyName == nameof(UValueViewModel.Status))
+            {
+                if (alternatives == null && CanEdit && !double.IsNaN(uValue.TargetThermalTransmittance))
+                {
+                    alternatives = new ConstructionAlternatives(analyticalModel, uValue, session.Services.ConstructionEvaluator, session.Services.ConstructionCache, session.Services.ConstructionLibrary);
+                    alternatives.PropertyChanged += Alternatives_PropertyChanged;
+                }
+
+                alternatives?.Refresh();
+            }
+
             Raise();
             session.EditorChanged(this);
         }
 
+        private void Alternatives_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            Raise();
+            session.EditorChanged(this);
+        }
+
+        // ---- Opaque: the existing constructions next to the generated variant -----------------------------------------
+
+        /// <summary>The list under the target: the generated variant, then the existing constructions that meet it or come close.</summary>
+        public IReadOnlyList<ConstructionAlternativeRow> AlternativeRows => alternatives?.Rows ?? new List<ConstructionAlternativeRow>();
+
+        /// <summary>True once a target is typed and the list has something to show beside the generated variant, or is working on it.</summary>
+        public bool HasAlternatives => alternatives != null && alternatives.Status != ConstructionAlternativesStatus.Idle;
+
+        public string AlternativesCountText => alternatives?.CountText ?? string.Empty;
+
+        /// <summary>The chosen line; the generated variant (the default) until the user chooses an existing construction.</summary>
+        public ConstructionAlternativeRow SelectedAlternative
+        {
+            get => alternatives?.SelectedRow;
+            set
+            {
+                if (alternatives != null && value != null)
+                {
+                    alternatives.SelectedRow = value;
+                }
+            }
+        }
+
         private void DisposeViewModels()
         {
+            if (alternatives != null)
+            {
+                alternatives.PropertyChanged -= Alternatives_PropertyChanged;
+                alternatives.Dispose();
+                alternatives = null;
+            }
+
             if (uValue != null)
             {
                 uValue.PropertyChanged -= ViewModel_PropertyChanged;

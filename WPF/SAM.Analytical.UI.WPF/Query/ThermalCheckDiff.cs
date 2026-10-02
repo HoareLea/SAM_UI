@@ -94,6 +94,19 @@ namespace SAM.Analytical.UI.WPF
                 Add(log, seen, UValueCheckSummary(current, before), UValueCheckSummary(proposed, after), after.Construction?.Name, after.Construction?.Guid, after.SourceConstruction?.Name, after.SourceConstruction?.Guid);
             }
 
+            // An existing construction assigned to panels: the same scoped panel rules, read through the panel result they describe.
+            for (int i = 0; i < result.ConstructionResults.Count; i++)
+            {
+                SetConstructionResult after = result.ConstructionResults[i];
+                SetConstructionRequest request = result.ChangeSet.ConstructionRequests[i];
+
+                SetUValueRequest asUValue = new SetUValueRequest() { ConstructionGuid = request.SourceConstructionGuid, Scope = after.Scope };
+                SetUValueResult before = new SetUValueResult(asUValue, after.SourceConstruction, after.SourceConstruction, null, null, false, double.NaN, double.NaN, after.PanelGuids);
+                SetUValueResult after_Panels = new SetUValueResult(asUValue, after.SourceConstruction, after.Construction, null, null, false, double.NaN, double.NaN, after.PanelGuids);
+
+                Add(log, seen, UValueCheckSummary(current, before), UValueCheckSummary(proposed, after_Panels), after.Construction?.Name, after.Construction?.Guid, after.SourceConstruction?.Name, after.SourceConstruction?.Guid);
+            }
+
             for (int i = 0; i < result.GlazingResults.Count; i++)
             {
                 SetGlazingResult after = result.GlazingResults[i];
