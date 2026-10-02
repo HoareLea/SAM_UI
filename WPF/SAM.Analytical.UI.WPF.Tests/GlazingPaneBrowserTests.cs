@@ -32,7 +32,9 @@ namespace SAM.Analytical.UI.WPF.Tests
         private static GlazingPaneBrowser Browser(ThermalSourceCatalog catalog = null, params GlazingSource[] fixedSources)
         {
             GlazingPaneBrowser result = new GlazingPaneBrowser(fixedSources.Length == 0 ? new[] { BuilderUiFixture.PaneSource(kind: GlazingSourceKind.Model) } : fixedSources, catalog, null, TimeSpan.Zero);
-            WaitUntil(() => result.Sources.Count != 0 && result.Sources.Where(x => !x.IsFile).All(x => x.IsReady), "the fixed sources to be read");
+            // Without a UI dispatcher the projection's continuation runs on the worker: a source is ready (its panes set) a moment before the list
+            // is filtered, so wait for the projection's own task as well.
+            WaitUntil(() => result.Sources.Count != 0 && result.Sources.Where(x => !x.IsFile).All(x => x.IsReady) && result.LastWork.IsCompleted, "the fixed sources to be read");
             return result;
         }
 

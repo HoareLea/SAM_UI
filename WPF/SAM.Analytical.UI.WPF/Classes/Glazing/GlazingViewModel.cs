@@ -58,6 +58,7 @@ namespace SAM.Analytical.UI.WPF
         private string minLightText = string.Empty;
         private bool includeLibrary = true;
         private bool includeLoaded = true;
+        private GlazingSortOrder sortOrder = GlazingSortOrder.OverallU;
         private Guid? selectedGuid;
         private bool selectedByUser;
         private Guid? requestedGuid;
@@ -199,6 +200,23 @@ namespace SAM.Analytical.UI.WPF
         {
             get => includeLoaded;
             set => Set(ref includeLoaded, value);
+        }
+
+        /// <summary>The order of <see cref="Rows"/>; best overall U-value first by default. It changes nothing but the order.</summary>
+        public GlazingSortOrder SortOrder
+        {
+            get => sortOrder;
+            set
+            {
+                if (sortOrder == value)
+                {
+                    return;
+                }
+
+                sortOrder = value;
+                OnPropertyChanged(nameof(SortOrder));
+                Refresh();
+            }
         }
 
         /// <summary>Which apertures get the system.</summary>
@@ -843,7 +861,8 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            rows_New.Sort(Compare);
+            GlazingSortOrder order = sortOrder;
+            rows_New.Sort((x, y) => Compare(x, y, order));
             rows = rows_New;
 
             // A system asked for by Guid (SelectWhenAvailable) is chosen as soon as it is in the pool, and pinned: shown while it is the choice.
@@ -868,21 +887,52 @@ namespace SAM.Analytical.UI.WPF
             }
 
             // Choose automatically only against a target the current system does not meet already (then there is
-            // nothing to fix and no choice is made for the user).
+            // nothing to fix and no choice is made for the user). The choice is the best Uw that meets it, whatever order is shown.
             GlazingCandidateRow row_Current = rows.FirstOrDefault(x => x.IsCurrent);
             bool currentMeets = row_Current != null && !double.IsNaN(row_Current.Margin) && row_Current.Margin >= 0;
             if (!selectedByUser)
             {
-                selectedGuid = double.IsNaN(target) || currentMeets ? null : rows.Where(x => !x.IsCurrent && x.Passes && x.CanApply && x.Values != null && !double.IsNaN(x.Uw) && x.Margin >= 0).Select(x => (Guid?)x.Guid).FirstOrDefault();
+                List<GlazingCandidateRow> meeting = rows.Where(x => !x.IsCurrent && x.Passes && x.CanApply && x.Values != null && !double.IsNaN(x.Uw) && x.Margin >= 0).ToList();
+                meeting.Sort((x, y) => Compare(x, y, GlazingSortOrder.OverallU));
+                selectedGuid = double.IsNaN(target) || currentMeets ? null : meeting.Select(x => (Guid?)x.Guid).FirstOrDefault();
             }
 
             OnDerivedPropertiesChanged();
         }
 
-        // Best overall U-value first; not calculated last; the current system among its equals first.
-        private static int Compare(GlazingCandidateRow x, GlazingCandidateRow y)
+        // In the chosen order (a value not calculated last), then best overall U-value first; the current system among its equals first.
+        private static int Compare(GlazingCandidateRow x, GlazingCandidateRow y, GlazingSortOrder order)
         {
-            int result = Key(x.Uw).CompareTo(Key(y.Uw));
+            int result;
+            switch (order)
+            {
+                case GlazingSortOrder.GLowest:
+                    result = Key(x.G).CompareTo(Key(y.G));
+                    break;
+
+                case GlazingSortOrder.GHighest:
+                    result = KeyDescending(x.G).CompareTo(KeyDescending(y.G));
+                    break;
+
+                case GlazingSortOrder.LightHighest:
+                    result = KeyDescending(x.LightTransmittance).CompareTo(KeyDescending(y.LightTransmittance));
+                    break;
+
+                case GlazingSortOrder.Name:
+                    result = string.Compare(x.Name, y.Name, StringComparison.CurrentCultureIgnoreCase);
+                    break;
+
+                default:
+                    result = 0;
+                    break;
+            }
+
+            if (result != 0)
+            {
+                return result;
+            }
+
+            result = Key(x.Uw).CompareTo(Key(y.Uw));
             if (result != 0)
             {
                 return result;
@@ -901,6 +951,11 @@ namespace SAM.Analytical.UI.WPF
         private static double Key(double value)
         {
             return double.IsNaN(value) ? double.MaxValue : value;
+        }
+
+        private static double KeyDescending(double value)
+        {
+            return double.IsNaN(value) ? double.MaxValue : -value;
         }
 
         // The apertures Uw is weighed over: the selected ones when the scope is "selected only", else every one using the construction.
