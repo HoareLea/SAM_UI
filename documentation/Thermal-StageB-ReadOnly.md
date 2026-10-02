@@ -37,8 +37,8 @@ refresh hooks + the first 3D view now also raises the selection event). The B0 s
 `ThermalPerformanceTests` (13): grouping and heading order, counts, stored U read from the panels, "not calculated" / "varies",
 apertures (U / g / LT, doors), other objects / duplicates / missing model ignored, Whole envelope (external only, not
 partitions, counts, areas, independent of the selection), highlight objects in both modes, summaries, mode / model changes, and
-that no query writes the model (JSON unchanged). Full `SAM.Analytical.UI.WPF.Tests`: **1827/1827** (1814 + 13; this branch
-does not contain the A-lite PR, whose 40 tests are separate).
+that no query writes the model (JSON unchanged). Full `SAM.Analytical.UI.WPF.Tests`: **1867/1867** on the branch rebased onto the
+merged base (1854 incl. the A-lite PR + 13).
 
 ## Real-app acceptance (UI Automation, real model, evidence local `C:\TasOut\uvalue\alite\run3`)
 
@@ -49,6 +49,7 @@ does not contain the A-lite PR, whose 40 tests are separate).
 | Whole envelope | "External envelope · 4 constructions · 50 elements": Walls `SIM_EXT_SLD` U 0.260, 12 elements, 616.0 m²; Roofs `SIM_EXT_SLD_Roof` U 0.164, 9, 886.0 m²; Floors `SIM_EXT_GRD_FLR FLR01` U 0.145, 9, 886.0 m²; Windows `SIM_EXT_GLZ` U 1.243 · g 0.40 · LT 0.80, 20, 64.8 m² |
 | Click a row (Roofs) | the 9 roof panels are selected and drawn highlighted in 3D; back in Selection mode the panel says "9 elements selected · 1 construction / 9 use it (9 selected)" |
 | A model change from elsewhere | Set U-value 0.18 on `SIM_EXT_SLD`: the Walls card becomes `SIM_EXT_SLD U0.18`, **U 0.180**; one Undo: back to `SIM_EXT_SLD`, U 0.260 |
+| Click a row (Windows), final run on the rebased branch (evidence local `C:\TasOut\uvalue\stageb-final`) | in the **3D** tab all 20 apertures are selected and drawn highlighted; Selection mode says "20 elements selected · 1 construction / 20 use it (20 selected)" |
 | Splitter / hide / show (B0) | drag 320 → 618 px, width restored on show (B0 run) |
 
 ## Findings
@@ -58,9 +59,9 @@ does not contain the A-lite PR, whose 40 tests are separate).
 2. **Stored values can be stale or shift.** After the Set U-value Apply the whole-model `UpdateThermalParameters` recalculated
    the *floor* constructions too: Floors U 0.145 → 0.161, then back to 0.145 after Undo. The panel reports what the model stores,
    so "Recalculate" (Stage C) and a visible source / date for a stored value matter (review risk 3).
-3. **Aperture selection by Guid** in the 3D view did not select an aperture that is not visible from the default camera (B0
-   run); the highlight of aperture rows (Windows) is implemented and unit-tested but its real-app effect was **not** exercised
-   here. Decide in Stage C whether aperture rows highlight through their host panels.
+3. **Aperture-row highlight works in the real app** (final run): the Windows row selects its 20 apertures in the 3D view.
+   B0's miss was a single-Guid "Select by Guid" test. Limit: the highlight is the active view's selection, so with a 2D plan
+   tab active (the model opens on one) elements not drawn there are not selected; use the 3D tab.
 4. Keyboard focus order into the panel, a minimum viewport width, and the cost of the refresh on a very large model were not
    exercised.
 
