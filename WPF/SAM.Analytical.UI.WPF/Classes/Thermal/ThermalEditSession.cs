@@ -11,8 +11,9 @@ using System.Linq;
 namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
-    /// What the editing rows need from outside: the two calculations (real Tas by default, created on first use and owned here;
-    /// tests pass stand-ins) and the default glazing library. Nothing is created until a row is edited, so a panel that is only
+    /// What the editing rows need from outside: the calculations (real Tas by default, created on first use and owned here;
+    /// tests pass stand-ins), the default glazing library, the batch U-value calculation of the existing constructions and the default
+    /// construction library behind the opaque alternatives, and the session's U-value cache. Nothing is created until a row is edited, so a panel that is only
     /// looked at starts no Tas worker.
     /// </summary>
     public sealed class ThermalEditServices : IDisposable
@@ -20,29 +21,56 @@ namespace SAM.Analytical.UI.WPF
         private readonly Func<IUValueEvaluator> createUValueEvaluator;
         private readonly Func<IGlazingEvaluator> createGlazingEvaluator;
         private readonly Func<GlazingSource> createLibrary;
+        private readonly Func<IConstructionUValueEvaluator> createConstructionEvaluator;
+        private readonly Func<GlazingSource> createConstructionLibrary;
         private IUValueEvaluator uValueEvaluator;
         private IGlazingEvaluator glazingEvaluator;
+        private IConstructionUValueEvaluator constructionEvaluator;
 
-        public ThermalEditServices(Func<IUValueEvaluator> uValueEvaluator = null, Func<IGlazingEvaluator> glazingEvaluator = null, Func<GlazingSource> library = null)
+        public ThermalEditServices(Func<IUValueEvaluator> uValueEvaluator = null, Func<IGlazingEvaluator> glazingEvaluator = null, Func<GlazingSource> library = null, Func<IConstructionUValueEvaluator> constructionEvaluator = null, Func<GlazingSource> constructionLibrary = null)
         {
             createUValueEvaluator = uValueEvaluator ?? (() => new TasUValueEvaluator());
             createGlazingEvaluator = glazingEvaluator ?? (() => new TasGlazingEvaluator());
             createLibrary = library ?? DefaultLibrary;
+            createConstructionEvaluator = constructionEvaluator ?? (() => new TasConstructionUValueEvaluator());
+            createConstructionLibrary = constructionLibrary ?? DefaultConstructionLibrary;
         }
 
         public IUValueEvaluator UValueEvaluator => uValueEvaluator ?? (uValueEvaluator = createUValueEvaluator());
 
         public IGlazingEvaluator GlazingEvaluator => glazingEvaluator ?? (glazingEvaluator = createGlazingEvaluator());
 
+        public IConstructionUValueEvaluator ConstructionEvaluator => constructionEvaluator ?? (constructionEvaluator = createConstructionEvaluator());
+
+        /// <summary>The U-values of constructions already calculated this session (never asked of Tas twice).</summary>
+        public ConstructionUValueCache ConstructionCache { get; } = new ConstructionUValueCache();
+
         /// <summary>The default glazing library as a source; null when it cannot be read (the model's own systems are still offered).</summary>
         public Func<GlazingSource> GlazingLibrary => createLibrary;
+
+        /// <summary>The default construction library as a source for the opaque alternatives; null when it cannot be read (the model's own constructions are still offered).</summary>
+        public Func<GlazingSource> ConstructionLibrary => createConstructionLibrary;
 
         public void Dispose()
         {
             (uValueEvaluator as IDisposable)?.Dispose();
             (glazingEvaluator as IDisposable)?.Dispose();
+            (constructionEvaluator as IDisposable)?.Dispose();
             uValueEvaluator = null;
             glazingEvaluator = null;
+            constructionEvaluator = null;
+        }
+
+        private static GlazingSource DefaultConstructionLibrary()
+        {
+            try
+            {
+                return GlazingSource.ConstructionsFromDefaultLibrary();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         private static GlazingSource DefaultLibrary()

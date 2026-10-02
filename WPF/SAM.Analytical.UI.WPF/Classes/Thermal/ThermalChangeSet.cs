@@ -9,7 +9,8 @@ namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
     /// One or more thermal changes that are applied together as ONE model change and therefore ONE Undo step: any number of
-    /// opaque changes (<see cref="SetUValueRequest"/>, one per construction) and glazing changes
+    /// opaque changes (<see cref="SetUValueRequest"/>, one per construction), opaque alternatives that assign an existing construction
+    /// (<see cref="SetConstructionRequest"/>, one per construction) and glazing changes
     /// (<see cref="SetGlazingRequest"/>, one per aperture construction), each with its own explicit scope (the Guids of the
     /// elements it reaches, pinned in the request when the row was edited). It holds requests only: the U-value and glazing
     /// calculations stay in <c>Modify.SetUValue</c> / <c>Modify.SetGlazing</c>, which <c>Modify.ProposeThermalChange</c> composes.
@@ -17,10 +18,14 @@ namespace SAM.Analytical.UI.WPF
     public sealed class ThermalChangeSet
     {
         private readonly List<SetUValueRequest> uValueRequests = new List<SetUValueRequest>();
+        private readonly List<SetConstructionRequest> constructionRequests = new List<SetConstructionRequest>();
         private readonly List<SetGlazingRequest> glazingRequests = new List<SetGlazingRequest>();
 
         /// <summary>The opaque changes, applied first, in the order they were added.</summary>
         public IReadOnlyList<SetUValueRequest> UValueRequests => uValueRequests;
+
+        /// <summary>The opaque changes that assign an existing construction, applied after the generated ones and before glazing.</summary>
+        public IReadOnlyList<SetConstructionRequest> ConstructionRequests => constructionRequests;
 
         /// <summary>The glazing changes, applied after the opaque ones, in the order they were added.</summary>
         public IReadOnlyList<SetGlazingRequest> GlazingRequests => glazingRequests;
@@ -31,7 +36,7 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public bool RecalculateStoredValues { get; set; }
 
-        public int Count => uValueRequests.Count + glazingRequests.Count;
+        public int Count => uValueRequests.Count + constructionRequests.Count + glazingRequests.Count;
 
         /// <summary>True when applying it would change nothing.</summary>
         public bool IsEmpty => Count == 0 && !RecalculateStoredValues;
@@ -41,6 +46,16 @@ namespace SAM.Analytical.UI.WPF
             if (request != null)
             {
                 uValueRequests.Add(request);
+            }
+
+            return this;
+        }
+
+        public ThermalChangeSet Add(SetConstructionRequest request)
+        {
+            if (request != null)
+            {
+                constructionRequests.Add(request);
             }
 
             return this;
@@ -67,6 +82,11 @@ namespace SAM.Analytical.UI.WPF
                 return "Two opaque changes are for the same construction.";
             }
 
+            if (constructionRequests.GroupBy(x => x.SourceConstructionGuid).Any(x => x.Count() > 1) || constructionRequests.Any(x => uValueRequests.Any(y => y.ConstructionGuid == x.SourceConstructionGuid)))
+            {
+                return "Two opaque changes are for the same construction.";
+            }
+
             if (glazingRequests.GroupBy(x => x.SourceApertureConstructionGuid).Any(x => x.Count() > 1))
             {
                 return "Two glazing changes are for the same aperture construction.";
@@ -83,12 +103,14 @@ namespace SAM.Analytical.UI.WPF
         {
             Error = error;
             UValueResults = new List<SetUValueResult>();
+            ConstructionResults = new List<SetConstructionResult>();
             GlazingResults = new List<SetGlazingResult>();
         }
 
-        internal ThermalChangeResult(ThermalChangeSet changeSet, IReadOnlyList<SetUValueResult> uValueResults, IReadOnlyList<SetGlazingResult> glazingResults)
+        internal ThermalChangeResult(ThermalChangeSet changeSet, IReadOnlyList<SetUValueResult> uValueResults, IReadOnlyList<SetGlazingResult> glazingResults, IReadOnlyList<SetConstructionResult> constructionResults = null)
         {
             ChangeSet = changeSet;
+            ConstructionResults = constructionResults ?? new List<SetConstructionResult>();
             UValueResults = uValueResults ?? new List<SetUValueResult>();
             GlazingResults = glazingResults ?? new List<SetGlazingResult>();
             AppliedAt = DateTime.Now;
@@ -103,6 +125,9 @@ namespace SAM.Analytical.UI.WPF
 
         public IReadOnlyList<SetUValueResult> UValueResults { get; }
 
+        /// <summary>The results of the existing-construction alternatives, lined up with <see cref="ThermalChangeSet.ConstructionRequests"/>.</summary>
+        public IReadOnlyList<SetConstructionResult> ConstructionResults { get; }
+
         public IReadOnlyList<SetGlazingResult> GlazingResults { get; }
 
         public DateTime AppliedAt { get; }
@@ -113,7 +138,7 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Where each per-Apply report was saved ("Report saved: ..."), or why it was not; empty when none was written.</summary>
         public IReadOnlyList<string> ReportLines { get; internal set; } = new List<string>();
 
-        public int PanelCount => UValueResults.Sum(x => x.PanelCount);
+        public int PanelCount => UValueResults.Sum(x => x.PanelCount) + ConstructionResults.Sum(x => x.PanelCount);
 
         public int ApertureCount => GlazingResults.Sum(x => x.ApertureCount);
 
@@ -133,6 +158,11 @@ namespace SAM.Analytical.UI.WPF
                     parts.Add(result.Scope == ThermalApplyScope.DontAssign
                         ? string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} created, not assigned", result.Construction.Name)
                         : string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} {1} now {2}", result.PanelCount, result.PanelCount == 1 ? "panel" : "panels", result.Construction.Name));
+                }
+
+                foreach (SetConstructionResult result in ConstructionResults)
+                {
+                    parts.Add(string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} {1} now {2}", result.PanelCount, result.PanelCount == 1 ? "panel" : "panels", result.Construction.Name));
                 }
 
                 foreach (SetGlazingResult result in GlazingResults)

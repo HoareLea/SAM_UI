@@ -21,7 +21,7 @@ namespace SAM.Analytical.UI.WPF.Tests
     {
         private static ThermalEditServices Services()
         {
-            return new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library());
+            return new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), () => null);
         }
 
         private static ThermalTransmittanceCalculationResult Tas(SetGlazingRequest request)
@@ -155,7 +155,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             ThermalParts parts = ThermalFixture.Build();
             ImmediateUValueEvaluator evaluator = new ImmediateUValueEvaluator();
-            using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(new ThermalEditServices(() => evaluator, () => new FakeGlazingEvaluator(), () => GlazingFixture.Library())))
+            using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(new ThermalEditServices(() => evaluator, () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), () => null)))
             {
                 viewModel.Update(parts.Model, Select(parts.Model, parts.WallPanels.Take(3)));
 
@@ -403,7 +403,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             ThermalParts parts = ThermalFixture.Build();
             Guid roofGuid = new Guid("a0000000-0000-4000-8000-0000000000a1");
-            ThermalEditServices services = new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(GlazingFixture.RoofSystem(roofGuid)));
+            ThermalEditServices services = new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(GlazingFixture.RoofSystem(roofGuid)), () => new FakeConstructionUValueEvaluator(), () => null);
 
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(services))
             {
