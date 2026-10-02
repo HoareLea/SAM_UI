@@ -3597,7 +3597,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             Reload(e);
             RefreshHistoryButtons();
-            RefreshThermalPerformance();
+            RefreshThermalPerformance(UI.Query.IsModelChange(e?.Modifications));
         }
 
         private void UIAnalyticalModel_Opened(object sender, OpenedEventArgs e)
@@ -3619,6 +3619,7 @@ namespace SAM.Analytical.UI.WPF.Windows
             // A freshly opened model starts with empty history - drop any entry created by the
             // open-time view-settings setup above.
             uIAnalyticalModel?.ClearHistory();
+            RefreshThermalPerformance(true);
             RefreshHistoryButtons();
 
             Title = titlePrefix;

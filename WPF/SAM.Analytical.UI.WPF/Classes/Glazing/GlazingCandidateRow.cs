@@ -39,6 +39,9 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>The name with the current marker, as shown in the table.</summary>
         public string NameText => IsCurrent ? Candidate.Name + "  (current)" : Candidate.Name;
 
+        /// <summary>The text a screen reader and type-ahead use for the row.</summary>
+        public override string ToString() => NameText;
+
         public string Description => Candidate.Description;
 
         /// <summary>What the system is marked for before it is chosen (panel group, no frame, material); empty for the current system.</summary>

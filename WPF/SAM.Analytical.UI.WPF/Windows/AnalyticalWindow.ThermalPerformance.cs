@@ -38,7 +38,12 @@ namespace SAM.Analytical.UI.WPF.Windows
             RibbonToggleButton_ThermalPerformance.Unchecked += RibbonToggleButton_ThermalPerformance_Changed;
             ThermalPerformancePanel.HighlightRequested += ThermalPerformancePanel_HighlightRequested;
             ThermalPerformancePanel.HostRequested += ThermalPerformancePanel_HostRequested;
-            Closed += (sender, e) => thermalPerformanceOwnerClosed = true;
+            ThermalPerformancePanel.Applier = x => uIAnalyticalModel?.ApplyThermalChangeWithReports(x);
+            Closed += (sender, e) =>
+            {
+                thermalPerformanceOwnerClosed = true;
+                ThermalPerformancePanel.Dispose();
+            };
         }
 
         /// <summary>True while the panel is shown, docked or floating.</summary>
@@ -202,7 +207,9 @@ namespace SAM.Analytical.UI.WPF.Windows
         }
 
         // Follows the selection of the active view (3D or 2D) and the model; a no-op while the panel is hidden.
-        private void RefreshThermalPerformance()
+        // modelChanged: the model was replaced by something that may have changed it (not just a selection, tab or view setting); a
+        // pending edit in the panel is then discarded, unless the change is the panel's own Apply.
+        private void RefreshThermalPerformance(bool modelChanged = false)
         {
             if (!ThermalPerformanceVisible)
             {
@@ -211,7 +218,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
             List<SAMObject> selected = analyticalModel == null ? null : GetActiveViewportControl()?.SelectedSAMObjects<SAMObject>();
-            ThermalPerformancePanel.Update(analyticalModel, selected);
+            ThermalPerformancePanel.Update(analyticalModel, selected, modelChanged);
         }
 
         // A click on a row: select its elements in the active view (the normal selection, so the panel then follows it).

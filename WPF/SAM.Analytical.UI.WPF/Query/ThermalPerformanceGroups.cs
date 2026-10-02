@@ -72,7 +72,7 @@ namespace SAM.Analytical.UI.WPF
                 double area = grouping.Select(x => x.GetArea()).Where(x => !double.IsNaN(x)).DefaultIfEmpty(double.NaN).Sum();
                 List<Guid> highlight = (mode == ThermalPerformanceMode.Selection ? panels_Using : grouping.ToList()).Select(x => x.Guid).Distinct().ToList();
 
-                Add(rows, grouping.Key.Title, new ThermalPerformanceRow(false, string.Join(", ", grouping.Select(x => x.PanelType.ToString()).Distinct().OrderBy(x => x)), construction.Guid, construction.Name, PanelPerformanceText(grouping), mode == ThermalPerformanceMode.Selection ? grouping.Count() : 0, panels_Using.Count, grouping.Count(), area, highlight, mode));
+                Add(rows, grouping.Key.Title, new ThermalPerformanceRow(false, string.Join(", ", grouping.Select(x => x.PanelType.ToString()).Distinct().OrderBy(x => x)), construction.Guid, construction.Name, PanelPerformanceText(grouping, out ThermalStoredState state_Panel, out double u_Panel), mode == ThermalPerformanceMode.Selection ? grouping.Count() : 0, panels_Using.Count, grouping.Count(), area, highlight, mode, grouping.Select(x => x.Guid).ToList(), state_Panel, u_Panel));
             }
 
             foreach (IGrouping<(string Title, Guid Guid), Aperture> grouping in apertures.Where(x => x.ApertureConstruction != null).GroupBy(x => (ApertureTypeTitle(x.ApertureType), x.ApertureConstruction.Guid)))
@@ -83,7 +83,7 @@ namespace SAM.Analytical.UI.WPF
                 double area = grouping.Select(x => x.GetArea()).Where(x => !double.IsNaN(x)).DefaultIfEmpty(double.NaN).Sum();
                 List<Guid> highlight = (mode == ThermalPerformanceMode.Selection ? apertures_Using : grouping.ToList()).Select(x => x.Guid).Distinct().ToList();
 
-                Add(rows, grouping.Key.Title, new ThermalPerformanceRow(true, string.Join(", ", grouping.Select(x => x.ApertureType.ToString()).Distinct().OrderBy(x => x)), apertureConstruction.Guid, apertureConstruction.Name, AperturePerformanceText(grouping), mode == ThermalPerformanceMode.Selection ? grouping.Count() : 0, apertures_Using.Count, grouping.Count(), area, highlight, mode));
+                Add(rows, grouping.Key.Title, new ThermalPerformanceRow(true, string.Join(", ", grouping.Select(x => x.ApertureType.ToString()).Distinct().OrderBy(x => x)), apertureConstruction.Guid, apertureConstruction.Name, AperturePerformanceText(grouping, out ThermalStoredState state_Aperture), mode == ThermalPerformanceMode.Selection ? grouping.Count() : 0, apertures_Using.Count, grouping.Count(), area, highlight, mode, grouping.Select(x => x.Guid).ToList(), state_Aperture));
             }
 
             return thermalPerformanceGroupOrder
@@ -143,21 +143,34 @@ namespace SAM.Analytical.UI.WPF
 
         // The U-value stored on the panels (Tas.Modify.UpdateThermalParameters writes PanelParameter.ThermalTransmittance on each
         // panel, not on the construction): one value when they agree, "varies" when they do not, "not calculated" when none has it.
-        private static string PanelPerformanceText(IEnumerable<Panel> panels)
+        private static string PanelPerformanceText(IEnumerable<Panel> panels, out ThermalStoredState state, out double storedThermalTransmittance)
         {
-            string u = StoredValue(panels.ToList(), x => x.TryGetValue(PanelParameter.ThermalTransmittance, out double value) ? value : double.NaN, "0.000");
+            List<Panel> list = panels.ToList();
+            Func<Panel, double> read = x => x.TryGetValue(PanelParameter.ThermalTransmittance, out double value) ? value : double.NaN;
+
+            string u = StoredValue(list, read, "0.000");
+            state = StateOf(u);
+            storedThermalTransmittance = state == ThermalStoredState.Stored ? list.Select(read).First(x => !double.IsNaN(x)) : double.NaN;
             return "U " + (u ?? "not calculated");
+        }
+
+        private static ThermalStoredState StateOf(string value)
+        {
+            return value == null ? ThermalStoredState.NotCalculated : value == "varies" ? ThermalStoredState.Varies : ThermalStoredState.Stored;
         }
 
         // U, g and light transmittance as stored on the apertures: one value when they agree, "varies" when they do not,
         // "not calculated" when the model has none. g and light transmittance are left out where no aperture has them (doors).
-        private static string AperturePerformanceText(IEnumerable<Aperture> apertures)
+        private static string AperturePerformanceText(IEnumerable<Aperture> apertures, out ThermalStoredState state)
         {
             List<Aperture> list = apertures.ToList();
 
             string u = StoredValue(list, x => Read(x, ApertureParameter.ThermalTransmittance), "0.000");
             string g = StoredValue(list, x => Read(x, ApertureParameter.TotalSolarEnergyTransmittance), "0.00");
             string lt = StoredValue(list, x => Read(x, ApertureParameter.LightTransmittance), "0.00");
+
+            // One missing or differing value among the three makes the row "varies" / "not calculated" as a whole.
+            state = u == null ? ThermalStoredState.NotCalculated : (u == "varies" || g == "varies" || lt == "varies") ? ThermalStoredState.Varies : ThermalStoredState.Stored;
 
             if (u == null && g == null && lt == null)
             {
