@@ -50,6 +50,12 @@
                 <Setter Property="FontSize" Value="11"/>
             </Style>
 
+            <Style x:Key="Style_LinkToggle" TargetType="ToggleButton">
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Padding" Value="6,0"/>
+                <Setter Property="FontSize" Value="11"/>
+            </Style>
+
             <!-- Shown for opaque rows only / for apertures only (the row's editor says which). -->
             <Style x:Key="Style_OpaqueOnly" TargetType="StackPanel">
                 <Style.Triggers>
@@ -110,12 +116,12 @@
             </Border>
 
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="itemsControl_Groups" Focusable="False">
+                <ItemsControl x:Name="itemsControl_Groups" Focusable="False" KeyboardNavigation.TabNavigation="Continue" KeyboardNavigation.DirectionalNavigation="Continue">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="0,0,0,6">
                                 <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Margin="0,2,0,4" Foreground="{StaticResource PartO.Brush.Text}"/>
-                                <ItemsControl ItemsSource="{Binding Rows}" Focusable="False">
+                                <ItemsControl ItemsSource="{Binding Rows}" Focusable="False" KeyboardNavigation.TabNavigation="Continue" KeyboardNavigation.DirectionalNavigation="Continue">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Margin="0,0,0,6">
@@ -172,8 +178,9 @@
                                                                     <RadioButton Content="{Binding ScopeSelectedLabel}" IsChecked="{Binding ScopeSelected, Mode=TwoWay}" IsEnabled="{Binding ScopeSelectedEnabled}" ToolTip="{Binding ScopeReason}" Margin="0,2,0,0"/>
                                                                 </StackPanel>
                                                                 <TextBlock Text="{Binding ScopeText}" Style="{StaticResource PartO.Caption}" Margin="0,2,0,0"/>
-                                                                <Expander Header="⋯ More" Margin="0,6,0,0" FontSize="11">
-                                                                    <StackPanel Margin="0,4,0,0">
+                                                                <ToggleButton x:Name="toggleButton_More" Content="⋯ More" HorizontalAlignment="Left" Style="{StaticResource Style_LinkToggle}" Margin="0,6,0,0" ToolTip="Keep name, the layer to adjust, the thickness range and the heat flow."
+                                                                    AutomationProperties.AutomationId="toggleButton_More"/>
+                                                                    <StackPanel Margin="0,4,0,0" Visibility="{Binding IsChecked, ElementName=toggleButton_More, Converter={StaticResource BoolToVisibility}}">
                                                                         <CheckBox Content="Keep name" IsChecked="{Binding KeepName, Mode=TwoWay}" IsEnabled="{Binding KeepNameEnabled}" ToolTip="Change the construction itself instead of creating a new one."/>
                                                                         <TextBlock Text="{Binding KeepNameReason}" Style="{StaticResource PartO.Caption}"/>
                                                                         <TextBlock Text="Layer to adjust" Margin="0,6,0,2"/>
@@ -187,7 +194,6 @@
                                                                         <TextBlock Text="Heat flow" Margin="0,6,0,2"/>
                                                                         <ComboBox ItemsSource="{Binding HeatFlowOptions}" SelectedItem="{Binding SelectedHeatFlow, Mode=TwoWay}"/>
                                                                     </StackPanel>
-                                                                </Expander>
                                                             </StackPanel>
                                                         </StackPanel>
 

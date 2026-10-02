@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-or-later
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Core;
@@ -152,12 +152,12 @@ namespace SAM.Analytical.UI.WPF
             ThermalCheckDiff diff = session.Diff;
             if (session.ProposalError != null)
             {
-                textBlock_Check.Text = "✕ " + session.ProposalError;
+                textBlock_Check.Text = "âœ• " + session.ProposalError;
                 textBlock_Check.Foreground = (Brush)FindResource("PartO.Brush.Danger");
             }
             else if (diff == null)
             {
-                textBlock_Check.Text = session.IsBusy ? "Before apply: calculating…" : "Before apply: nothing to check yet.";
+                textBlock_Check.Text = session.IsBusy ? "Before apply: calculatingâ€¦" : "Before apply: nothing to check yet.";
                 textBlock_Check.Foreground = (Brush)FindResource("PartO.Brush.Muted");
             }
             else
