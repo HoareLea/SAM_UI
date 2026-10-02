@@ -10,11 +10,12 @@ using Xunit;
 namespace SAM.Analytical.UI.WPF.Tests
 {
     /// <summary>
-    /// Stage E1 (consolidation / legacy parity, <c>documentation/Thermal-StageE1.md</c>): nothing was proven redundant, so nothing was retired. These tests protect the
-    /// user-visible CAPABILITIES behind that decision - the commands a user can reach and the abilities the Thermal Performance panel does not yet have - and deliberately avoid
-    /// pinning private handlers, fields or layout, so an intentional refactoring stays possible. Retiring a capability must be a deliberate change that updates the parity matrix
-    /// and these tests in the same commit.
+    /// Stage E1 (consolidation / legacy parity, <c>documentation/Thermal-StageE1.md</c>) and Stage F (final convergence, <c>documentation/Thermal-StageF-Final-Convergence.md</c>):
+    /// these tests protect the user-visible CAPABILITIES and who owns them - the commands a user can reach, the specialist tools that are kept on purpose, and the
+    /// candidate-selection abilities that moved into the Thermal Performance panel in F1 - and deliberately avoid pinning private handlers, fields or layout, so an
+    /// intentional refactoring stays possible. Changing who owns a capability must be a deliberate change that updates the ownership matrix and these tests in the same commit.
     /// </summary>
+    [Collection(WpfCollection.Name)]
     public class ThermalConsolidationParityTests
     {
         private const BindingFlags Members = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -34,7 +35,8 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.NotNull(typeof(AnalyticalWindow).GetField(command, Members));
         }
 
-        // The classic workflows, by their public entry points: calculators by criteria, the *Assign ... By* tools and the library editors.
+        // The retained specialist workflows, by their public entry points: calculators by criteria, the *Assign ... By* tools, the library editors and the
+        // construction-level Set windows (Tools ribbon, library hand-overs: no element selected, "don't assign").
         [Theory]
         [InlineData("CalculateGlazing")]
         [InlineData("ThermalTransmittanceCalculator_SingleConstruction")]
@@ -49,16 +51,32 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Contains(typeof(Modify).GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic), x => x.Name == workflow);
         }
 
-        // What the Thermal Performance panel cannot do yet (so the Set windows are not redundant), as capabilities of the shared view-models and the scope model.
+        // F1: the g / light filters, the order, the source toggles and the target comparison are the panel's (its glazing Change... list), on the same shared
+        // view-model the construction-level Set glazing window keeps using. Behaviour: ThermalCandidateFilterTests.
         [Fact]
-        public void The_glazing_capabilities_the_panel_lacks_still_exist_in_the_shared_glazing_view_model()
+        public void The_glazing_candidate_filters_are_offered_by_the_panel_and_still_by_the_shared_glazing_view_model()
         {
-            foreach (string capability in new[] { "MinGText", "MaxGText", "MinLightText", "IncludeLibrary", "IncludeLoaded" })
+            foreach (string capability in new[] { "GlazingMinGText", "GlazingMaxGText", "GlazingMinLightText", "GlazingIncludeLibrary", "GlazingIncludeAdded", "GlazingSelectedSort", "GlazingComparisonText" })
+            {
+                Assert.NotNull(typeof(ThermalRowEditor).GetProperty(capability));
+            }
+
+            foreach (string capability in new[] { "MinGText", "MaxGText", "MinLightText", "IncludeLibrary", "IncludeLoaded", "SortOrder" })
             {
                 Assert.NotNull(typeof(GlazingViewModel).GetProperty(capability));
             }
         }
 
+        // F2: the element-assignment entry points (3D right-click Set U-value... / Set glazing...) lead to the panel. Behaviour: ThermalRedirectTests.
+        [WpfFact]
+        public void The_right_click_Set_commands_lead_to_the_panel()
+        {
+            Assert.Contains("Thermal Performance", (string)Create.MenuItem_ThermalPerformance(null, false, null).ToolTip);
+            Assert.Contains("Thermal Performance", (string)Create.MenuItem_ThermalPerformance(null, true, null).ToolTip);
+            Assert.NotNull(typeof(ThermalPerformanceControl).GetMethod("BeginEdit"));
+        }
+
+        // Kept on purpose in the construction-level Set windows (the panel has no "don't assign"; for glazing, Save as predefined keeps a system without changing the model).
         [Fact]
         public void Adding_a_system_to_the_model_without_assigning_it_is_still_a_choice()
         {

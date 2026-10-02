@@ -129,6 +129,76 @@ namespace SAM.Analytical.UI.WPF
             viewModel.Update(analyticalModel, selected, modelChanged);
         }
 
+        /// <summary>
+        /// Starts editing the row of <paramref name="elementGuids"/> (Stage F: the route of the 3D right-click "Set U-value..." / "Set glazing..."): the
+        /// panel shows the selection (<see cref="ThermalPerformanceMode.Selection"/>, unless an edit is pending - then its pinned rows stay), and when the
+        /// elements belong to ONE row of it, an aperture row opens <c>Change…</c> and an opaque row puts the cursor in its target U. Elements of several
+        /// constructions start nothing: the person chooses the row. Nothing is calculated for the model and nothing is written. Returns the row's editor, or null.
+        /// </summary>
+        public ThermalRowEditor BeginEdit(IEnumerable<Guid> elementGuids)
+        {
+            HashSet<Guid> guids = new HashSet<Guid>(elementGuids ?? Enumerable.Empty<Guid>());
+            if (guids.Count == 0)
+            {
+                return null;
+            }
+
+            if (!viewModel.Session.IsPending)
+            {
+                viewModel.Mode = ThermalPerformanceMode.Selection;
+            }
+
+            List<ThermalPerformanceRow> rows = viewModel.Groups.SelectMany(x => x.Rows).Where(x => x.SelectedGuids.Any(guids.Contains)).ToList();
+            if (rows.Count != 1)
+            {
+                return null;
+            }
+
+            ThermalRowEditor editor = rows[0].Editor;
+            if (editor == null || !editor.CanEdit)
+            {
+                return null;
+            }
+
+            if (editor.IsAperture)
+            {
+                editor.OpenChange();
+            }
+
+            // Once the row is laid out: bring it into view, and for an opaque row put the cursor in its target U.
+            Dispatcher.BeginInvoke(new Action(() => FocusRow(editor)), System.Windows.Threading.DispatcherPriority.Loaded);
+            return editor;
+        }
+
+        private void FocusRow(ThermalRowEditor editor)
+        {
+            string id = editor.IsAperture ? "listBox_Candidates" : "textBox_Target";
+            FrameworkElement element = Descendants(itemsControl_Groups).OfType<FrameworkElement>().FirstOrDefault(x => ReferenceEquals(x.DataContext, editor) && System.Windows.Automation.AutomationProperties.GetAutomationId(x) == id);
+            if (element == null)
+            {
+                return;
+            }
+
+            element.BringIntoView();
+            if (!editor.IsAperture)
+            {
+                element.Focus();
+            }
+        }
+
+        private static IEnumerable<DependencyObject> Descendants(DependencyObject root)
+        {
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(root, i);
+                yield return child;
+                foreach (DependencyObject descendant in Descendants(child))
+                {
+                    yield return descendant;
+                }
+            }
+        }
+
         /// <summary>Ends the Tas workers the editing rows started.</summary>
         public void Dispose()
         {

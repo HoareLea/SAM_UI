@@ -207,6 +207,17 @@ namespace SAM.Analytical.UI.WPF.Windows
             SetThermalPerformanceHost(e.Host);
         }
 
+        // Stage F (Thermal-StageF-Final-Convergence.md): the 3D right-click "Set U-value..." / "Set glazing..." open the panel for the selected elements
+        // instead of the Set windows (those stay on the Tools ribbon for a construction with no element selected). The panel is shown in its last host,
+        // follows the view's selection as always, and the row of the elements starts editing (target U / Change…). Nothing is written.
+        private void OpenThermalPerformanceFor(List<SAMObject> elements)
+        {
+            SetThermalPerformanceVisible(true);
+            RefreshThermalPerformance();
+            thermalPerformanceWindow?.Activate();
+            ThermalPerformancePanel.BeginEdit(elements.Select(x => x.Guid));
+        }
+
         // Follows the selection of the active view (3D or 2D) and the model; a no-op while the panel is hidden.
         // modelChanged: the model was replaced by something that may have changed it (not just a selection, tab or view setting); a
         // pending edit in the panel is then discarded, unless the change is the panel's own Apply.
