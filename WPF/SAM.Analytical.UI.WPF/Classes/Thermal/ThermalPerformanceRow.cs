@@ -13,7 +13,7 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public sealed class ThermalPerformanceRow
     {
-        internal ThermalPerformanceRow(bool aperture, string type, Guid constructionGuid, string constructionName, string performanceText, int selectedCount, int usedByCount, int elementCount, double area, IReadOnlyList<Guid> highlightGuids, ThermalPerformanceMode mode)
+        internal ThermalPerformanceRow(bool aperture, string type, Guid constructionGuid, string constructionName, string performanceText, int selectedCount, int usedByCount, int elementCount, double area, IReadOnlyList<Guid> highlightGuids, ThermalPerformanceMode mode, IReadOnlyList<Guid> elementGuids = null, ThermalStoredState storedState = ThermalStoredState.Stored, double storedThermalTransmittance = double.NaN)
         {
             IsAperture = aperture;
             Type = type;
@@ -26,6 +26,9 @@ namespace SAM.Analytical.UI.WPF
             Area = area;
             HighlightGuids = highlightGuids ?? new List<Guid>();
             Mode = mode;
+            ElementGuids = elementGuids ?? new List<Guid>();
+            StoredState = storedState;
+            StoredThermalTransmittance = storedThermalTransmittance;
         }
 
         /// <summary>True for an aperture construction (windows, doors), false for a panel construction.</summary>
@@ -60,6 +63,18 @@ namespace SAM.Analytical.UI.WPF
         public IReadOnlyList<Guid> HighlightGuids { get; }
 
         public ThermalPerformanceMode Mode { get; }
+
+        /// <summary>The elements of this row (the selected ones in Selection mode, the envelope ones in Whole envelope mode); an edit of the row pins its scope from these.</summary>
+        public IReadOnlyList<Guid> ElementGuids { get; }
+
+        /// <summary>Whether the model stores one value for the row, several, or none (so "Recalculate" matters).</summary>
+        public ThermalStoredState StoredState { get; }
+
+        /// <summary>The U-value the panels of an opaque row store, when they all store the same one; NaN otherwise (and for apertures).</summary>
+        public double StoredThermalTransmittance { get; }
+
+        /// <summary>The editing state of the row (Stage C); null while the row is shown read-only.</summary>
+        public ThermalRowEditor Editor { get; internal set; }
 
         public string Title => string.Format(CultureInfo.CurrentCulture, "{0} ({1})", IsAperture ? "Aperture" : "Panel", Type);
 
