@@ -1,5 +1,9 @@
 # Thermal Stage E1 - consolidation / legacy parity review (2 Oct 2026)
 
+> **Superseded in part by Stage F** (`documentation/Thermal-StageF-Final-Convergence.md`): F1 moved the g / light filters, an order, the source toggles and a
+> target comparison into the panel's glazing `Change…`; F2 redirected the 3D right-click `Set U-value...` / `Set glazing...` to Thermal Performance. The
+> construction-level Set windows, the classic calculators and the library editors are retained as specialist tools. This record is kept as it was decided.
+
 Base: `sow/2026-Q3` @ `a622d8fc` (Stage E0 complete: E0-1 #175, E0-2 #176, E0-3 #177 merged). Rule applied: **retire only capabilities proven redundant; do not remove a classic tool
 merely because one of its workflows moved to Thermal Performance; if a decision is ambiguous, keep and document.**
 
