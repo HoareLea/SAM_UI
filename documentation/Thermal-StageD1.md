@@ -15,7 +15,7 @@ Typing a target U in an opaque row now shows, under the preview line, an **Alter
 Each line shows the construction name, its **U-value on the row's heat-flow basis**, "meets the target by 0.019" / "0.003 above the target", where it comes from
 and compatibility notes (made for another panel group, a name the model already has - it is added under a numbered name -, "Adds 4 materials to the model: ...",
 a material that differs from the model's - which blocks it). The list contains the constructions that **meet the target or are within 10 % above it**, ordered
-meeting-first by closeness (the least over-insulated first), then near misses, the model's own before a library's; at most 30. **Nothing is chosen for the
+meeting-first, those made for the panels' own group before the others, then by closeness (the least over-insulated first), then near misses the same way, the model's own before a library's; at most 30. **Nothing is chosen for the
 user**, however close a construction is: the generated variant stays selected until the user picks another line. Choosing an existing construction replaces
 the generated variant as the row's change (preview "U 0.260 → 0.181 W/m²K · SIM_EXT_SLD_FLR Exposed (Library)", the scope, the check before Apply) and
 **Apply = one commit = one Undo**, composing with the other rows (glazing, other walls) in the same change set.

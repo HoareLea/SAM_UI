@@ -59,6 +59,7 @@ namespace SAM.Analytical.UI.WPF
         private readonly IConstructionUValueEvaluator evaluator;
         private readonly ConstructionUValueCache cache;
         private readonly Func<GlazingSource> createLibrary;
+        private readonly ThermalSourceCatalog catalog;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         private readonly Dictionary<(Guid, HeatFlowDirection, bool), string> keys = new Dictionary<(Guid, HeatFlowDirection, bool), string>();
@@ -75,19 +76,27 @@ namespace SAM.Analytical.UI.WPF
         private Guid? selectedGuid;
         private int notCalculated;
         private int disposed;
+        private bool sourcesRequested;
 
         /// <param name="analyticalModel">The model (read only).</param>
         /// <param name="uValue">The row's U-value view-model: the target, the heat-flow basis, the scope and the generated variant.</param>
         /// <param name="evaluator">The batch U-value calculation (real or fake).</param>
         /// <param name="cache">The session's U-values of constructions as they are.</param>
         /// <param name="library">The default library as a source (created on first use); null for the model's constructions only.</param>
-        public ConstructionAlternatives(AnalyticalModel analyticalModel, UValueViewModel uValue, IConstructionUValueEvaluator evaluator, ConstructionUValueCache cache, Func<GlazingSource> library)
+        /// <param name="catalog">The sources the user added, beyond the model and the default library; null for none. They are read when needed and the list follows them as they arrive.</param>
+        public ConstructionAlternatives(AnalyticalModel analyticalModel, UValueViewModel uValue, IConstructionUValueEvaluator evaluator, ConstructionUValueCache cache, Func<GlazingSource> library, ThermalSourceCatalog catalog = null)
         {
             this.analyticalModel = analyticalModel ?? throw new ArgumentNullException(nameof(analyticalModel));
             this.uValue = uValue ?? throw new ArgumentNullException(nameof(uValue));
             this.evaluator = evaluator ?? throw new ArgumentNullException(nameof(evaluator));
             this.cache = cache ?? new ConstructionUValueCache();
             createLibrary = library;
+            this.catalog = catalog;
+
+            if (catalog != null)
+            {
+                catalog.SourcesChanged += Catalog_SourcesChanged;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -118,7 +127,9 @@ namespace SAM.Analytical.UI.WPF
                         return string.Empty;
 
                     case ConstructionAlternativesStatus.Calculating:
-                        return string.Format(CultureInfo.CurrentCulture, "Calculating the U-values of {0} existing constructions…", Math.Max(inFlight.Count, 1));
+                        return catalog != null && catalog.IsLoading && inFlight.Count == 0
+                            ? "Reading the added sources…"
+                            : string.Format(CultureInfo.CurrentCulture, "Calculating the U-values of {0} existing constructions…", Math.Max(inFlight.Count, 1));
 
                     case ConstructionAlternativesStatus.Failed:
                         return statusMessage ?? "The existing constructions could not be calculated.";
@@ -313,8 +324,20 @@ namespace SAM.Analytical.UI.WPF
             }
 
             EnsureCandidates();
+            if (catalog != null && !sourcesRequested)
+            {
+                // The remembered sources are read the first time a row needs candidates (not when the model opens); the list is rebuilt as each arrives.
+                sourcesRequested = true;
+                lock (tasks)
+                {
+                    tasks.Add(catalog.EnsureLoadedAsync());
+                }
+            }
+
             HeatFlowDirection direction = uValue.HeatFlowDirection;
             bool external = uValue.External;
+
+            Dictionary<PanelGroup, int> groups = PanelGroups(uValue.ScopePanels);
 
             foreach (IGrouping<GlazingSource, ConstructionCandidate> group in candidates.GroupBy(x => x.Source))
             {
@@ -328,9 +351,12 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
-                if (missing.Count != 0)
+                // A big source (hundreds of constructions) is asked for in chunks, the ones made for the panels' own group first, so the list fills in
+                // as each chunk is calculated instead of waiting for the last: still one Tas run per chunk, in order, and every U-value cached.
+                List<ConstructionCandidate> ordered = missing.OrderBy(x => Mismatched(x, groups, out _) == 0 ? 0 : 1).ToList();
+                for (int index = 0; index < ordered.Count; index += TasConstructionUValueEvaluator.ChunkSize)
                 {
-                    Start(group.Key, missing, direction, external);
+                    Start(group.Key, ordered.GetRange(index, Math.Min(TasConstructionUValueEvaluator.ChunkSize, ordered.Count - index)), direction, external);
                 }
             }
 
@@ -350,6 +376,11 @@ namespace SAM.Analytical.UI.WPF
         {
             if (Interlocked.Exchange(ref disposed, 1) == 0)
             {
+                if (catalog != null)
+                {
+                    catalog.SourcesChanged -= Catalog_SourcesChanged;
+                }
+
                 cancellationTokenSource.Cancel();
                 cancellationTokenSource.Dispose();
             }
@@ -475,6 +506,31 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
             }
+
+            // The sources the user added, in the order added: the first of a Guid wins (a construction in the model, the library or an earlier
+            // source is not offered a second time).
+            foreach (GlazingSource source in catalog?.ReadySources ?? new List<GlazingSource>())
+            {
+                foreach (Construction construction in source.GetConstructions())
+                {
+                    if (guids.Add(construction.Guid))
+                    {
+                        candidates.Add(new ConstructionCandidate(construction, source, materials_Model));
+                    }
+                }
+            }
+        }
+
+        // A source arrived (or was removed): the candidates are rebuilt from the sources there are now.
+        private void Catalog_SourcesChanged(object sender, EventArgs e)
+        {
+            if (Volatile.Read(ref disposed) != 0 || candidates == null)
+            {
+                return;
+            }
+
+            candidates = null;
+            Refresh();
         }
 
         private string Key(ConstructionCandidate candidate, HeatFlowDirection direction, bool external)
@@ -499,7 +555,8 @@ namespace SAM.Analytical.UI.WPF
 
             HeatFlowDirection direction = uValue.HeatFlowDirection;
             bool external = uValue.External;
-            List<Panel> panels = uValue.ScopePanels.ToList();
+            Dictionary<PanelGroup, int> groups = PanelGroups(uValue.ScopePanels);
+            int panelCount = uValue.ScopePanels.Count;
 
             List<ConstructionAlternativeRow> list = new List<ConstructionAlternativeRow>();
 
@@ -556,16 +613,21 @@ namespace SAM.Analytical.UI.WPF
                     candidate.ShortId,
                     candidate.BuildUp,
                     usedBy.TryGetValue(candidate.Guid, out int used) ? used : 0,
-                    CandidateWarnings(candidate, panels),
+                    CandidateWarnings(candidate, groups, panelCount),
                     candidate.MaterialIssue,
                     null,
-                    candidate));
+                    candidate)
+                {
+                    MadeForOtherGroup = Mismatched(candidate, groups, out _) != 0,
+                });
             }
 
-            // Simple and predictable: the ones that meet the target first, the closest to it first (the least over-insulated), then the near
-            // misses by how far above they are; the model's own before a library's among equals. Nothing is chosen for the user.
+            // Simple and predictable: the ones that meet the target first, those made for the panels' own group before the others, the closest to
+            // the target first (the least over-insulated), then the near misses the same way; the model's own before a library's among equals.
+            // Nothing is chosen for the user.
             list.AddRange(existing
                 .OrderBy(x => x.Meets ? 0 : 1)
+                .ThenBy(x => x.MadeForOtherGroup ? 1 : 0)
                 .ThenBy(x => Math.Abs(x.Margin))
                 .ThenBy(x => x.Kind == ConstructionAlternativeKind.Model ? 0 : 1)
                 .ThenBy(x => x.Name, StringComparer.CurrentCultureIgnoreCase)
@@ -579,7 +641,7 @@ namespace SAM.Analytical.UI.WPF
                 selectedGuid = null;
             }
 
-            if (calculating > 0 || inFlight.Count > 0)
+            if (calculating > 0 || inFlight.Count > 0 || (catalog != null && catalog.IsLoading))
             {
                 status = ConstructionAlternativesStatus.Calculating;
                 statusMessage = null;
@@ -598,44 +660,66 @@ namespace SAM.Analytical.UI.WPF
             Raise();
         }
 
+        // The panels in scope by panel group (those with no group at all are not counted: they cannot disagree with a construction).
+        private static Dictionary<PanelGroup, int> PanelGroups(IEnumerable<Panel> panels)
+        {
+            Dictionary<PanelGroup, int> result = new Dictionary<PanelGroup, int>();
+            foreach (Panel panel in panels)
+            {
+                PanelGroup panelGroup = panel.PanelType.PanelGroup();
+                if (panelGroup != PanelGroup.Undefined)
+                {
+                    result[panelGroup] = result.TryGetValue(panelGroup, out int count) ? count + 1 : 1;
+                }
+            }
+
+            return result;
+        }
+
+        // How many of the panels sit in another group than the one the candidate was made for (0 when it names none).
+        private static int Mismatched(ConstructionCandidate candidate, Dictionary<PanelGroup, int> groups, out List<PanelGroup> groups_Other)
+        {
+            groups_Other = new List<PanelGroup>();
+
+            PanelGroup panelGroup_Candidate = candidate.PanelType.PanelGroup();
+            if (panelGroup_Candidate == PanelGroup.Undefined)
+            {
+                return 0;
+            }
+
+            int mismatched = 0;
+            foreach (KeyValuePair<PanelGroup, int> pair in groups)
+            {
+                if (pair.Key != panelGroup_Candidate)
+                {
+                    mismatched += pair.Value;
+                    groups_Other.Add(pair.Key);
+                }
+            }
+
+            return mismatched;
+        }
+
         // What a candidate is marked for before it is chosen: a Default Panel Type of another panel group than the panels in scope, a
         // name the model already has (it is added under a suffix), and the materials Apply adds.
-        private List<string> CandidateWarnings(ConstructionCandidate candidate, List<Panel> panels)
+        private List<string> CandidateWarnings(ConstructionCandidate candidate, Dictionary<PanelGroup, int> groups, int panelCount)
         {
             List<string> result = new List<string>();
 
-            PanelType panelType_Candidate = candidate.PanelType;
-            PanelGroup panelGroup_Candidate = panelType_Candidate.PanelGroup();
-            if (panelGroup_Candidate != PanelGroup.Undefined)
+            int mismatched = Mismatched(candidate, groups, out List<PanelGroup> groups_Other);
+            if (mismatched > 0)
             {
-                List<PanelGroup> groups_Other = new List<PanelGroup>();
-                int mismatched = 0;
-                foreach (Panel panel in panels)
-                {
-                    PanelGroup panelGroup_Host = panel.PanelType.PanelGroup();
-                    if (panelGroup_Host != PanelGroup.Undefined && panelGroup_Host != panelGroup_Candidate)
-                    {
-                        mismatched++;
-                        if (!groups_Other.Contains(panelGroup_Host))
-                        {
-                            groups_Other.Add(panelGroup_Host);
-                        }
-                    }
-                }
-
-                if (mismatched > 0)
-                {
-                    result.Add(string.Format(
-                        CultureInfo.CurrentCulture,
-                        "{0} is made for {1} (Default Panel Type {2}), but {3} of the {4} {5} sit in {6}: it is not what the construction was made for.",
-                        candidate.Name,
-                        GroupName(panelGroup_Candidate),
-                        panelType_Candidate,
-                        mismatched,
-                        panels.Count,
-                        panels.Count == 1 ? "panel" : "panels",
-                        string.Join(" and ", groups_Other.Select(GroupName))));
-                }
+                PanelType panelType_Candidate = candidate.PanelType;
+                result.Add(string.Format(
+                    CultureInfo.CurrentCulture,
+                    "{0} is made for {1} (Default Panel Type {2}), but {3} of the {4} {5} sit in {6}: it is not what the construction was made for.",
+                    candidate.Name,
+                    GroupName(panelType_Candidate.PanelGroup()),
+                    panelType_Candidate,
+                    mismatched,
+                    panelCount,
+                    panelCount == 1 ? "panel" : "panels",
+                    string.Join(" and ", groups_Other.Select(GroupName))));
             }
 
             if (candidate.Kind != GlazingSourceKind.Model)

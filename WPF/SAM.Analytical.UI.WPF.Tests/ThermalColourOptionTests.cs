@@ -267,7 +267,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         [WpfFact]
         public void The_selector_asks_the_host_for_the_chosen_option_but_setting_its_state_asks_nothing()
         {
-            using (ThermalPerformanceControl control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), () => null)))
+            using (ThermalPerformanceControl control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), () => null, () => new ThermalSourceCatalog(new InMemoryThermalSourceStore()))))
             {
                 System.Windows.Window window = new System.Windows.Window { Content = control, Width = 380, Height = 600, ShowActivated = false };
                 window.Show();
@@ -303,7 +303,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         [WpfFact]
         public void The_selector_is_disabled_with_a_reason_in_a_view_that_is_not_3D_and_lists_unavailable_options_as_disabled()
         {
-            using (ThermalPerformanceControl control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), () => null)))
+            using (ThermalPerformanceControl control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), () => null, () => new ThermalSourceCatalog(new InMemoryThermalSourceStore()))))
             {
                 System.Windows.Window window = new System.Windows.Window { Content = control, Width = 380, Height = 600, ShowActivated = false };
                 window.Show();

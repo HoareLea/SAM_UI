@@ -48,7 +48,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             host.Ui.Modified += (sender, e) => host.Modified++;
             host.Ui.HistoryChanged += (sender, e) => host.HistoryChanged++;
 
-            host.Control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), constructionLibrary ?? (() => null)));
+            host.Control = new ThermalPerformanceControl(new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), constructionLibrary ?? (() => null), () => new ThermalSourceCatalog(new InMemoryThermalSourceStore())));
             host.Control.Applier = set => Modify.ApplyThermalChange(host.Ui, set, x => { }, Tas);
 
             // The way the analytical window drives it: the model it has now, the selection of the view, and Modified -> Update.

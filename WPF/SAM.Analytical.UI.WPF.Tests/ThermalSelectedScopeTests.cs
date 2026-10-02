@@ -21,7 +21,7 @@ namespace SAM.Analytical.UI.WPF.Tests
     {
         private static ThermalEditServices Services()
         {
-            return new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), () => null);
+            return new ThermalEditServices(() => new ImmediateUValueEvaluator(), () => new FakeGlazingEvaluator(), () => GlazingFixture.Library(), () => new FakeConstructionUValueEvaluator(), () => null, () => new ThermalSourceCatalog(new InMemoryThermalSourceStore()));
         }
 
         private static List<SAMObject> Select(AnalyticalModel model, IEnumerable<Guid> panels, IEnumerable<Guid> apertures = null)

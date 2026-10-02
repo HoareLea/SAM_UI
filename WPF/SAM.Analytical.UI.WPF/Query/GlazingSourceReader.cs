@@ -86,7 +86,9 @@ namespace SAM.Analytical.UI.WPF
             return completion.Task;
         }
 
-        private static GlazingSource ReadGlazingSource_TCD(string path, string label, ApertureType apertureType, IProgress<string> progress)
+        // A .tcd as the SAM_Tas importer converts it, from the JSON cache when this file was converted before (shared by the glazing window and
+        // the Thermal Performance sources: the same cache, so a database converted by one is instant in the other). Null when it cannot be read.
+        internal static ConstructionManager ReadTcdConstructionManager(string path, string label, IProgress<string> progress)
         {
             ConstructionManager constructionManager = GlazingSourceCache.Read(path);
             if (constructionManager != null)
@@ -100,16 +102,15 @@ namespace SAM.Analytical.UI.WPF
                 GlazingSourceCache.Write(path, constructionManager);
             }
 
-            if (constructionManager == null)
-            {
-                return Empty(label, string.Format(CultureInfo.CurrentCulture, "{0} could not be read as a Tas construction database.", label));
-            }
+            return constructionManager;
+        }
 
-            MaterialLibrary materialLibrary = constructionManager.MaterialLibrary;
-            List<Construction> constructions = constructionManager.Constructions ?? new List<Construction>();
-
+        // The constructions of a database as aperture constructions of one type (shared with the Thermal Performance sources): windows take the
+        // constructions with a transparent layer, doors the others; pane layers only, description and additional heat transfer carried over.
+        internal static List<ApertureConstruction> ApertureConstructionsOf(IEnumerable<Construction> constructions, MaterialLibrary materialLibrary, ApertureType apertureType)
+        {
             List<ApertureConstruction> apertureConstructions = new List<ApertureConstruction>();
-            foreach (Construction construction in constructions)
+            foreach (Construction construction in constructions ?? new List<Construction>())
             {
                 if (construction?.ConstructionLayers == null || construction.ConstructionLayers.Count == 0)
                 {
@@ -137,6 +138,23 @@ namespace SAM.Analytical.UI.WPF
 
                 apertureConstructions.Add(apertureConstruction);
             }
+
+            return apertureConstructions;
+        }
+
+        private static GlazingSource ReadGlazingSource_TCD(string path, string label, ApertureType apertureType, IProgress<string> progress)
+        {
+            ConstructionManager constructionManager = ReadTcdConstructionManager(path, label, progress);
+
+            if (constructionManager == null)
+            {
+                return Empty(label, string.Format(CultureInfo.CurrentCulture, "{0} could not be read as a Tas construction database.", label));
+            }
+
+            MaterialLibrary materialLibrary = constructionManager.MaterialLibrary;
+            List<Construction> constructions = constructionManager.Constructions ?? new List<Construction>();
+
+            List<ApertureConstruction> apertureConstructions = ApertureConstructionsOf(constructions, materialLibrary, apertureType);
 
             GlazingSource source = new GlazingSource(GlazingSourceKind.Loaded, label, new ConstructionManager(apertureConstructions, null, materialLibrary));
             if (apertureConstructions.Count == 0)

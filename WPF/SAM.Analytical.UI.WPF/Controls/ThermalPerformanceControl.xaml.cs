@@ -39,7 +39,27 @@ namespace SAM.Analytical.UI.WPF
             InitializeComponent();
             viewModel = new ThermalPerformanceViewModel(services);
             viewModel.Changed += ViewModel_Changed;
+            viewModel.Session.Services.Sources.PropertyChanged += Sources_PropertyChanged;
+            RenderSources();
             Render();
+        }
+
+        /// <summary>
+        /// Asks the user for the file of a new source (the path, or null when cancelled). The open-file dialog by default; a host or a test
+        /// can supply its own.
+        /// </summary>
+        public Func<string> PickSourceFile { get; set; } = PickSourceFileWithDialog;
+
+        private static string PickSourceFileWithDialog()
+        {
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                Title = "Add a source of constructions and glazing systems",
+                Filter = "Construction databases (*.tcd;*.json)|*.tcd;*.json|All files (*.*)|*.*",
+                CheckFileExists = true,
+            };
+
+            return openFileDialog.ShowDialog() == true ? openFileDialog.FileName : null;
         }
 
         /// <summary>Raised when a row is clicked: the host highlights <see cref="ThermalHighlightRequestedEventArgs.Objects"/> in the active view.</summary>
@@ -112,6 +132,7 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Ends the Tas workers the editing rows started.</summary>
         public void Dispose()
         {
+            viewModel.Session.Services.Sources.PropertyChanged -= Sources_PropertyChanged;
             viewModel.Dispose();
         }
 
@@ -209,6 +230,49 @@ namespace SAM.Analytical.UI.WPF
             }
 
             viewModel.Mode = radioButton_WholeEnvelope.IsChecked == true ? ThermalPerformanceMode.WholeEnvelope : ThermalPerformanceMode.Selection;
+        }
+
+        // ---- Sources ----------------------------------------------------------------------------------------------------
+
+        // The catalog tells when a source is added, read, fails or is forgotten (it may be on the thread that read the file).
+        private void Sources_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (Dispatcher.CheckAccess())
+            {
+                RenderSources();
+            }
+            else
+            {
+                Dispatcher.BeginInvoke(new Action(RenderSources));
+            }
+        }
+
+        private void RenderSources()
+        {
+            ThermalSourceCatalog sources = viewModel.Session.Services.Sources;
+            IReadOnlyList<ThermalSourceEntry> entries = sources.Entries;
+            itemsControl_Sources.ItemsSource = null;
+            itemsControl_Sources.ItemsSource = entries;
+            textBlock_SourcesHint.Text = entries.Count == 0
+                ? "Candidates come from the model and the default library."
+                : "Candidates come from the model, the default library and:";
+        }
+
+        private void button_AddSource_Click(object sender, RoutedEventArgs e)
+        {
+            string path = PickSourceFile?.Invoke();
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                _ = viewModel.Session.Services.Sources.AddAsync(path);
+            }
+        }
+
+        private void button_ForgetSource_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement { Tag: ThermalSourceEntry entry })
+            {
+                viewModel.Session.Services.Sources.Remove(entry);
+            }
         }
 
         private void comboBox_ColourBy_SelectionChanged(object sender, SelectionChangedEventArgs e)

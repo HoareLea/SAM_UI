@@ -23,12 +23,15 @@ namespace SAM.Analytical.UI.WPF
         private readonly Func<GlazingSource> createLibrary;
         private readonly Func<IConstructionUValueEvaluator> createConstructionEvaluator;
         private readonly Func<GlazingSource> createConstructionLibrary;
+        private readonly Func<ThermalSourceCatalog> createSources;
         private IUValueEvaluator uValueEvaluator;
         private IGlazingEvaluator glazingEvaluator;
         private IConstructionUValueEvaluator constructionEvaluator;
+        private ThermalSourceCatalog sources;
 
-        public ThermalEditServices(Func<IUValueEvaluator> uValueEvaluator = null, Func<IGlazingEvaluator> glazingEvaluator = null, Func<GlazingSource> library = null, Func<IConstructionUValueEvaluator> constructionEvaluator = null, Func<GlazingSource> constructionLibrary = null)
+        public ThermalEditServices(Func<IUValueEvaluator> uValueEvaluator = null, Func<IGlazingEvaluator> glazingEvaluator = null, Func<GlazingSource> library = null, Func<IConstructionUValueEvaluator> constructionEvaluator = null, Func<GlazingSource> constructionLibrary = null, Func<ThermalSourceCatalog> sources = null)
         {
+            createSources = sources ?? (() => new ThermalSourceCatalog());
             createUValueEvaluator = uValueEvaluator ?? (() => new TasUValueEvaluator());
             createGlazingEvaluator = glazingEvaluator ?? (() => new TasGlazingEvaluator());
             createLibrary = library ?? DefaultLibrary;
@@ -41,6 +44,12 @@ namespace SAM.Analytical.UI.WPF
         public IGlazingEvaluator GlazingEvaluator => glazingEvaluator ?? (glazingEvaluator = createGlazingEvaluator());
 
         public IConstructionUValueEvaluator ConstructionEvaluator => constructionEvaluator ?? (constructionEvaluator = createConstructionEvaluator());
+
+        /// <summary>
+        /// The sources the user added ("Add source..."), remembered between sessions: one list for opaque constructions and glazing systems. Created
+        /// on first use (it reads SAM's user settings), so a panel that is only looked at in a test or a host without it reads nothing.
+        /// </summary>
+        public ThermalSourceCatalog Sources => this.sources ?? (this.sources = createSources());
 
         /// <summary>The U-values of constructions already calculated this session (never asked of Tas twice).</summary>
         public ConstructionUValueCache ConstructionCache { get; } = new ConstructionUValueCache();

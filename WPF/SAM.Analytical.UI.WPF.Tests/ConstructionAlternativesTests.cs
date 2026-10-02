@@ -84,8 +84,8 @@ namespace SAM.Analytical.UI.WPF.Tests
                 {
                     "MODEL_THICK|Library",       // meets, margin 0.003: the closest to the target from below
                     "LIB_THICK|Library",         // meets, margin 0.009
-                    "LIB_ROOF|Library",          // meets, margin 0.015
                     "LIB_AEROGEL|Library",       // meets, margin 0.020
+                    "LIB_ROOF|Library",          // meets, margin 0.015 - but made for roofs, so after the constructions made for walls
                     "MODEL_THICK|Existing model" // does not meet (0.1835) but is within 10 %
                 }, existing);
 
@@ -187,6 +187,42 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal(new[] { 3, 4 }, setup.Evaluator.Requests.Select(x => x.Constructions.Count).OrderBy(x => x).ToArray());
                 Assert.DoesNotContain(setup.Evaluator.Requests.SelectMany(x => x.Constructions), x => x.Guid == setup.Current.Guid);
                 Assert.Equal(2, setup.Evaluator.FakeTas.ThermalTransmittanceCalls);
+            }
+        }
+
+        [Fact]
+        public void A_big_pool_is_asked_in_chunks_with_the_constructions_made_for_the_panels_group_first_so_the_list_fills_in_as_it_goes()
+        {
+            // 85 wall constructions and 5 made for roofs, all different (so none is a cache hit): chunks of 40, the roof ones last.
+            List<Construction> constructions = new List<Construction>();
+            for (int i = 0; i < 5; i++)
+            {
+                constructions.Add(AlternativesFixture.Wall("ROOF_" + i, 0.150 + i * 0.001, "Roof"));
+            }
+
+            for (int i = 0; i < 85; i++)
+            {
+                constructions.Add(AlternativesFixture.Wall("WALL_" + i, 0.200 + i * 0.001, "Wall"));
+            }
+
+            GlazingSource big = new GlazingSource(GlazingSourceKind.Library, "Big source", new ConstructionManager(null, constructions, UValueFixture.Materials()));
+
+            using (Setup setup = Create(library: big))
+            {
+                List<ConstructionUValueRequest> library = setup.Evaluator.Requests.Where(x => x.Constructions.Count != 3).ToList();
+
+                // 90 constructions = 40 + 40 + 10 (the model's 3 are one more, small, request).
+                Assert.Equal(new[] { 40, 40, 10 }, library.Select(x => x.Constructions.Count).ToArray());
+                Assert.Equal(4, setup.Evaluator.Requests.Count);
+
+                // The ones made for roofs come after all that were made for walls: none is in the first two chunks.
+                string[] first = library[0].Constructions.Concat(library[1].Constructions).Select(x => x.Name).ToArray();
+                Assert.DoesNotContain(first, x => x.StartsWith("ROOF_"));
+                Assert.Equal(5, library[2].Constructions.Count(x => x.Name.StartsWith("ROOF_")));
+
+                // Every chunk arrived (the 3 model constructions and the 90 of the source, each calculated once) and the list is complete.
+                Assert.Equal(ConstructionAlternativesStatus.Ready, setup.Alternatives.Status);
+                Assert.Equal(93, setup.Cache.Count);
             }
         }
 
