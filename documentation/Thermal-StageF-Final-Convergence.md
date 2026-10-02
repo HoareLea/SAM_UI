@@ -5,11 +5,11 @@ Base: `sow/2026-Q3` @ `33e148b9` (Stage E complete: E0-1 #175, E0-2 #176, E0-3 #
 authoring; retire / redirect a duplicate assignment entry point only when its user journey is genuinely covered.** Stage F closes by a clear end state, not by
 maximum deletion.
 
-Two PRs along the real dependency boundary:
+**Stage F closes the Thermal Performance redesign (section 8).** Two PRs along the real dependency boundary:
 
 * **F1 - parity additions** (this document's sections 3 and 7.1): the candidate-selection abilities only the classic Set glazing window had, inside the panel's
   glazing `Change…` list. No entry point changed.
-* **F2 - redirects + closeout** (sections 4 and 7.2): only after F1 passed real-app acceptance.
+* **F2 - redirects + closeout** (sections 4, 7.2 and 8): only after F1 passed real-app acceptance; F1 merged as `99a75168` (#179).
 
 ## 1. Final user journey
 
@@ -78,7 +78,33 @@ SAM / SAM_Tas change; no classic window changed.
 
 ## 4. What was retired / redirected (F2)
 
-*Filled in by F2.*
+**Redirected:** the 3D right-click **`Set U-value...`** (panels) and **`Set glazing...`** (apertures). Same names, same headers, same place in the menu; their
+tooltips now say they open Thermal Performance. The click shows the panel in its last host (docked or floating, brought to the front), the panel follows the
+view's selection as always, and `ThermalPerformanceControl.BeginEdit(elements)` starts editing the row of those elements:
+
+* apertures → that row's `Change…` list opens (with the F1 filters available);
+* panels → the cursor is put in that row's **Target U** (nothing is calculated until a target is typed);
+* elements of **several constructions** → all their rows are shown and nothing is started (the person chooses the row);
+* from **Whole envelope** the panel returns to **Selection**; while an edit is **pending** its pinned rows stay - a pinned row can still be opened, other
+  elements start nothing.
+
+Nothing is calculated for the model or written by the route; the model changes only on Apply (one `SetJSAMObject`, one Undo).
+
+**Why this was safe to retire:** the right-click journey always has selected elements, so the Set windows' two remaining unique abilities - a construction
+with no selected element, and "don't assign" - were never part of it; every other ability is in the panel after F1 (matrix, section 2).
+
+**Removed code:** `Modify.OpenSetUValueWindow(IEnumerable<Panel>, …)` and `Modify.OpenSetGlazingWindow(IEnumerable<Aperture>, …)` - the element-list
+overloads documented as "the 3D right-click entry"; after the redirect no caller is left anywhere in the SAM-BIM tree. The construction-level overloads
+(`Guid?`) stay: the Tools ribbon buttons and the Constructions / Aperture Constructions hand-overs use them.
+
+**Clarified, not removed:** the ribbon tooltips - `Thermal Performance` no longer says "Read-only" (it has edited since Stage C); `U Value Calculator` /
+`Glazing Calculator` say they work on a construction with no element selected (and can add without assigning) and point to Thermal Performance for selected
+elements.
+
+Files: `Create/MenuItem_ThermalPerformance.cs` (new), `Controls/ThermalPerformanceControl.xaml.cs` (`BeginEdit`), `Windows/AnalyticalWindow.xaml.cs` (menu
+items, one handler), `Windows/AnalyticalWindow.ThermalPerformance.cs` (`OpenThermalPerformanceFor`), `Windows/AnalyticalWindow.xaml` (tooltips),
+`Modify/OpenSetUValueWindow.cs`, `Modify/OpenSetGlazingWindow.cs` (overloads removed); tests `ThermalRedirectTests.cs` (new),
+`ThermalConsolidationParityTests.cs` (ownership updated).
 
 ## 5. What remains intentionally specialist, and why
 
@@ -94,7 +120,8 @@ SAM / SAM_Tas change; no classic window changed.
 
 ## 6. Final Thermal Performance architecture
 
-Unchanged from Stage E, extended only inside the glazing `Change…` list: `ThermalPerformanceControl` (docked or floating, one control) → `ThermalPerformanceViewModel`
+Unchanged from Stage E, extended inside the glazing `Change…` list (F1) and by one entry route (F2: the 3D right-click `Set U-value...` / `Set glazing...`
+→ `AnalyticalWindow.OpenThermalPerformanceFor` → the panel shown + `ThermalPerformanceControl.BeginEdit`): `ThermalPerformanceControl` (docked or floating, one control) → `ThermalPerformanceViewModel`
 (rows by construction for the selection / the envelope) → `ThermalEditSession` (pending edits, pinned scope, check, Apply, Discard) → per row `ThermalRowEditor`
 over the shared view-models (`UValueViewModel` + `ConstructionAlternatives` for opaque; `GlazingViewModel` for glazing, now with its filters, order and source
 toggles exposed) → `ThermalChangeSet` → `Modify.ApplyThermalChange` (one model clone, one `SetJSAMObject`, one Undo, the same report writers). Candidates:
@@ -128,4 +155,43 @@ driven through UI Automation; evidence and driver kept locally, not committed):
 
 ### 7.2 F2
 
-*Filled in by F2.*
+**Tests:** `ThermalRedirectTests` (6, new): the menu items keep names / headers, carry only their kind of element (deduplicated), say they open Thermal
+Performance, raise their click, are disabled without elements; in the real panel XAML over the fakes - `Set glazing` on two selected windows opens `Change…`
+on their row (summary "2 elements selected · 1 construction", no U-value calculation, model untouched), then the ordinary journey applies to the 2 selected
+only as one change; `Set U-value` on three walls (a window also selected) gives focus to the wall row's Target U, starts no edit and no calculation and
+leaves the window row closed; elements of two constructions start nothing; Whole envelope → Selection; a pending edit keeps its pinned rows (its window row
+can still open, other elements start nothing). `ThermalConsolidationParityTests` (now 19): the F1 filters are the panel's (and still the shared
+view-model's), the right-click commands lead to the panel, "don't assign" is still a choice (Set windows), the ribbon commands and specialist workflows are
+still reachable. Focused Stage F + parity **40/40**; **full WPF suite 2218/2218** (2211 + 7).
+
+**Final real-app acceptance** (Release build of the F2 tree - identical to F1 merge + F2 commit -, the representative model, real Tas, the remembered NCM
+source; UI Automation; the saved model's JSON hash compared at every step; baseline `EA79562E984F`; evidence and drivers kept locally, not committed):
+
+| Check | Result |
+|---|---|
+| **Opaque via the redirect**: panel hidden → one wall selected → right-click (menu: … Assign Construction · Assign Construction By UValue · **Set U-value...**) → `Set U-value...` | Panel shown, **no Set U-value window**, the wall row's Target U has keyboard focus, "1 element selected · 1 construction" |
+| … target 0.18 | Preview "U 0.260 → 0.180 W/m²K · I01_Mineral Wool… 80 → 123 mm"; alternatives (generated first, then existing / library / NCM ones that meet it); "✓ No new warnings"; "1 change · 12 elements"; **Undo disabled, hash = baseline** |
+| … Apply → one Undo | 4.4 s, "12 panels now SIM_EXT_SLD U0.18", U-VALUE CHANGE report; colour by U (panels) 0.161 · 0.164 · 0.18 · 1.775 → after Undo 0.145 · 0.164 · 0.26 · 1.775; Undo disabled; **hash = baseline** |
+| **Existing glazing via the redirect**: one window → right-click (… Assign Aperture Construction · Assign Aperture Construction By gValue · **Set glazing...** · Opening Properties) → `Set glazing...` | Panel shown, **no Set glazing window**, `Change…` already open: "Showing 110 of 110 systems" in 7.0 s |
+| … Filters g ≥ 0.35, light ≥ 0.70, sort light highest, target Uw ≤ 1.30 | 45 of 110 → 11 of 110; best Uw chosen automatically; "Target Uw ≤ 1.30: ✓ Meets target (margin +0.84)"; only the 1 selected; "1 change · 1 element"; **Undo disabled, hash = baseline** |
+| … Apply → one Undo | 8.2 s, "1 aperture now 4-12-4 low-e, air filled", GLAZING CHANGE report (Guid, Source = the NCM file name); colour by light 0.749 · 0.804 → after Undo 0.804; **hash = baseline** |
+| **Builder system via the redirect**: `Set glazing...` → `Create new…` → seeded "SIM_EXT_GLZ (copy)" Ug 1.24 → gap Argon 16 mm, frame 50 mm, "F2 Argon double" (Tas Ug 1.09 / g 0.40 / LT 0.80 / Uf 2.20, Uw example 1.25) → `Save as predefined` | Builder closed in 0.4 s; library file written; list 109 → 110 with the new system chosen (preview "Ug 1.24 → 1.09 · … · Uw 1.35 → 1.22"); **Undo disabled, hash = baseline** |
+| … only the selected → Apply → one Undo | 3.4 s, "1 aperture now F2 Argon double"; report Source "My glazing systems", Built from "SAM Glazing System Builder … based on SIM_EXT_GLZ"; colour by g 0.399 · 0.4 → after Undo 0.4; **hash = baseline** |
+| **Retained specialist tools**: Tools > `Glazing Calculator` (Set glazing: construction picker, g / light filters, Load more glazing…), Tools > `U Value Calculator` (Set U-value: construction picker), Edit > Aperture Constructions (`Set glazing...`, Import / Export), Edit > Constructions (`Set U-value...`, Import / Export), Edit > Materials | Each opened with its content and closed (Cancel); no Tas process left; Undo disabled; **hash = baseline** |
+| Classic right-click items | `Assign Construction`, `Assign Construction By UValue`, `Assign Aperture Construction`, `Assign Aperture Construction By gValue`, `Opening Properties` still in the menus |
+
+Not driven (as in E1): the ribbon `(classic)` arrows - they open Tas COM dialogs; their commands and public entry points are asserted by the parity tests.
+Driver notes: Select By Guid needs the View ribbon tab after a File > Save and an active 3D view tab (a first pass on a 2D airflow tab could not select the
+window); a choice the target then hides is dropped by design (a first pass typed the target after choosing a single pane); a modal Set window is closed by its
+Cancel button, not WindowPattern.Close. The acceptance's user library file was removed afterwards (a copy kept with the evidence).
+
+Seen, not fixed (pre-existing, outside Stage F): (1) the opaque Alternatives list the default library's glazing "constructions" `SIM_EXT_GLZ` / `SIM_INT_GLZ`
+as "U 0.000 · meets the target by 0.180" - a calculation that returns 0 is presented as a value; (2) remembered-NCM window systems with implausibly low Ug / Uw
+(0.24 / 0.46) - the report of one shows its gap as "Air, 12 mm (duplicate)", which suggests how its gas layer reaches Tas.
+
+## 8. Stage F closes the Thermal Performance redesign
+
+After F1 + F2 there is one element-editing journey - select → Thermal Performance → inspect / compare / create / choose → scope → check → Apply → one Undo -
+and every entry point that edits selected elements leads to it. What is left outside the panel is specialist by intent (section 5), not a duplicate journey.
+Nothing further is required for the redesign. What remains - the two "seen, not fixed" items above, a user construction library for an opaque "keep for
+later", in-place edit / remove of saved glazing systems, frame authoring in the Builder - is ordinary future enhancement, not another redesign stage.

@@ -421,7 +421,7 @@
                     <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Panels" Header="Panels">
-                    <RibbonToggleButton x:Name="RibbonToggleButton_ThermalPerformance" Label="Thermal Performance" ToolTip="Show or hide the Thermal Performance panel: the stored performance of the selected panels and apertures, or of the whole external envelope. Read-only." />
+                    <RibbonToggleButton x:Name="RibbonToggleButton_ThermalPerformance" Label="Thermal Performance" ToolTip="Show or hide the Thermal Performance panel: the stored performance of the selected panels and apertures (or of the whole external envelope), and where you change it - target U, glazing systems, scope, check before Apply, one Undo." />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Visibility" Header="Visiblity">
                     <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Unhide All" />
@@ -537,15 +537,16 @@
                     <RibbonButton x:Name="RibbonButton_OpenTSD" Label="Open TSD" />
                     <RibbonButton x:Name="RibbonButton_OpenTPD" Label="Open TPD" />
                     <!-- U-value plan PR2b (owner decision 1 Oct 2026): the button opens the one-window "Set U-value" flow;
-                         the legacy multi-window calculator stays one click away as "(classic)". -->
+                         the legacy multi-window calculator stays one click away as "(classic)". Stage F: this is the construction-level
+                         tool (no element selected, or "don't assign"); selected elements are edited in Thermal Performance. -->
                     <RibbonSplitButton x:Name="RibbonButton_ThermalTransmittanceCalculator" Label="U Value Calculator"
-                                       ToolTip="Set a construction's U-value in one window. The arrow keeps the classic calculator.">
+                                       ToolTip="Set a construction's U-value in one window - no element needs to be selected, and the result can be added without assigning it. For selected panels use Thermal Performance. The arrow keeps the classic calculator.">
                         <RibbonMenuItem x:Name="RibbonMenuItem_ThermalTransmittanceCalculator_Classic" Header="U Value Calculator (classic)" />
                     </RibbonSplitButton>
                     <!-- U-value plan PR3: the button opens the one-window "Set glazing" selection flow; the legacy multi-window
-                         Glazing Calculator stays one click away as "(classic)". -->
+                         Glazing Calculator stays one click away as "(classic)". Stage F: the construction-level tool (see above). -->
                     <RibbonSplitButton x:Name="RibbonButton_GlazingCalculator" Label="Glazing Calculator"
-                                       ToolTip="Choose a glazing system for apertures in one window. The arrow keeps the classic calculator.">
+                                       ToolTip="Choose a glazing system for an aperture construction in one window - no aperture needs to be selected, and the system can be added without assigning it. For selected apertures use Thermal Performance. The arrow keeps the classic calculator.">
                         <RibbonMenuItem x:Name="RibbonMenuItem_GlazingCalculator_Classic" Header="Glazing Calculator (classic)" />
                     </RibbonSplitButton>
 

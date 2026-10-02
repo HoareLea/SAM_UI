@@ -1073,26 +1073,15 @@ namespace SAM.Analytical.UI.WPF.Windows
             Modify.AssignPanelConstructionByThermalTransmittance(uIAnalyticalModel, panels);
         }
 
-        private void MenuItem_SetGlazing_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_ThermalPerformance_Click(object sender, RoutedEventArgs e)
         {
-            List<Aperture> apertures = ((sender as MenuItem)?.Tag as IEnumerable)?.OfType<Aperture>().ToList();
-            if (apertures == null || apertures.Count == 0)
+            List<SAMObject> elements = ((sender as MenuItem)?.Tag as IEnumerable)?.OfType<SAMObject>().ToList();
+            if (elements == null || elements.Count == 0)
             {
                 return;
             }
 
-            Modify.OpenSetGlazingWindow(uIAnalyticalModel, apertures, this);
-        }
-
-        private void MenuItem_SetUValue_Click(object sender, RoutedEventArgs e)
-        {
-            List<Panel> panels = ((sender as MenuItem)?.Tag as IEnumerable)?.OfType<Panel>().ToList();
-            if (panels == null || panels.Count == 0)
-            {
-                return;
-            }
-
-            Modify.OpenSetUValueWindow(uIAnalyticalModel, panels, this);
+            OpenThermalPerformanceFor(elements);
         }
 
         private void MenuItem_AssignInternalCondition_Click(object sender, RoutedEventArgs e)
@@ -4196,12 +4185,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Tag = apertures;
                     contextMenu.Items.Add(menuItem);
 
-                    menuItem = new MenuItem();
-                    menuItem.Name = "MenuItem_SetGlazing";
-                    menuItem.Header = "Set glazing...";
-                    menuItem.Click += MenuItem_SetGlazing_Click;
-                    menuItem.Tag = apertures;
-                    contextMenu.Items.Add(menuItem);
+                    // Stage F: opens the Thermal Performance panel for the selected apertures (Change… of their row).
+                    contextMenu.Items.Add(Create.MenuItem_ThermalPerformance(apertures, true, MenuItem_ThermalPerformance_Click));
 
                     menuItem = new MenuItem();
                     menuItem.Name = "MenuItem_EditOpeningProperties";
@@ -4240,12 +4225,8 @@ namespace SAM.Analytical.UI.WPF.Windows
                     menuItem.Tag = panels;
                     contextMenu.Items.Add(menuItem);
 
-                    menuItem = new MenuItem();
-                    menuItem.Name = "MenuItem_SetUValue";
-                    menuItem.Header = "Set U-value...";
-                    menuItem.Click += MenuItem_SetUValue_Click;
-                    menuItem.Tag = panels;
-                    contextMenu.Items.Add(menuItem);
+                    // Stage F: opens the Thermal Performance panel for the selected panels (the target U of their row).
+                    contextMenu.Items.Add(Create.MenuItem_ThermalPerformance(panels, false, MenuItem_ThermalPerformance_Click));
 
                     MenuItem menuItem_SelectByPanelType = new MenuItem();
                     menuItem_SelectByPanelType.Name = "MenuItem_SelectByPanelType";
