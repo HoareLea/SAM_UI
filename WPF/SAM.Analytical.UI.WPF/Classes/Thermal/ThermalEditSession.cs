@@ -25,6 +25,7 @@ namespace SAM.Analytical.UI.WPF
         private readonly Func<GlazingSource> createConstructionLibrary;
         private readonly Func<ThermalSourceCatalog> createSources;
         private readonly Func<UserGlazingLibrary> createUserGlazing;
+        private readonly Func<DraftGlazingEvaluator> createBuilderEvaluator;
         private IUValueEvaluator uValueEvaluator;
         private IGlazingEvaluator glazingEvaluator;
         private IConstructionUValueEvaluator constructionEvaluator;
@@ -32,8 +33,12 @@ namespace SAM.Analytical.UI.WPF
         private UserGlazingLibrary userGlazing;
 
         /// <param name="userGlazing">"My glazing systems" (the process's shared library by default; tests pass one on a temporary file).</param>
-        public ThermalEditServices(Func<IUValueEvaluator> uValueEvaluator = null, Func<IGlazingEvaluator> glazingEvaluator = null, Func<GlazingSource> library = null, Func<IConstructionUValueEvaluator> constructionEvaluator = null, Func<GlazingSource> constructionLibrary = null, Func<ThermalSourceCatalog> sources = null, Func<UserGlazingLibrary> userGlazing = null)
+        /// <param name="builderEvaluator">Makes the performance calculation of a Glazing System Builder (the Builder owns and disposes it); real Tas by default, tests pass stand-ins.</param>
+        /// <param name="builderComposeOptions">How the Builder composes drafts for its checks; null for SAM's default gas definitions (tests pass their own).</param>
+        public ThermalEditServices(Func<IUValueEvaluator> uValueEvaluator = null, Func<IGlazingEvaluator> glazingEvaluator = null, Func<GlazingSource> library = null, Func<IConstructionUValueEvaluator> constructionEvaluator = null, Func<GlazingSource> constructionLibrary = null, Func<ThermalSourceCatalog> sources = null, Func<UserGlazingLibrary> userGlazing = null, Func<DraftGlazingEvaluator> builderEvaluator = null, GlazingComposeOptions builderComposeOptions = null)
         {
+            BuilderComposeOptions = builderComposeOptions;
+            createBuilderEvaluator = builderEvaluator ?? (() => new DraftGlazingEvaluator(null, null, null, builderComposeOptions));
             createSources = sources ?? (() => new ThermalSourceCatalog());
             createUserGlazing = userGlazing ?? (() => UserGlazingLibrary.Shared);
             createUValueEvaluator = uValueEvaluator ?? (() => new TasUValueEvaluator());
@@ -60,6 +65,12 @@ namespace SAM.Analytical.UI.WPF
         /// when a list opens and again when the library says it changed. Created on first use; reading it never writes it or any model.
         /// </summary>
         public UserGlazingLibrary UserGlazing => userGlazing ?? (userGlazing = createUserGlazing());
+
+        /// <summary>A NEW performance calculation for one Glazing System Builder (the Builder owns it and disposes it with the window): its own Tas worker, so it never queues behind the candidate list.</summary>
+        public DraftGlazingEvaluator CreateBuilderEvaluator() => createBuilderEvaluator();
+
+        /// <summary>How the Builder composes drafts for its checks; null for SAM's default gas definitions.</summary>
+        public GlazingComposeOptions BuilderComposeOptions { get; }
 
         /// <summary>The U-values of constructions already calculated this session (never asked of Tas twice).</summary>
         public ConstructionUValueCache ConstructionCache { get; } = new ConstructionUValueCache();

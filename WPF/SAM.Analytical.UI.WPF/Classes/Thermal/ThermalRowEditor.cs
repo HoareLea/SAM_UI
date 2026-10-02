@@ -511,6 +511,47 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        /// <summary>True while the list is open and "My glazing systems" is available: <c>Create new…</c> is offered (a system built there is saved to it).</summary>
+        public bool CanCreateNew => glazing != null && changeOpen && userGlazing != null;
+
+        /// <summary>
+        /// Prepares the Glazing System Builder for <c>Create new…</c>: seeded from the chosen candidate, else the current system, with snapshots of
+        /// the model's / default / user systems and materials as panes and frames, the panel's source catalogue, "My glazing systems" to save to and
+        /// its own Tas calculation. The Builder holds NO model: it cannot read or change the analytical model, and opening, editing, previewing,
+        /// saving or cancelling it adds no Undo step. When it saves, the library's <see cref="UserGlazingLibrary.Changed"/> event refreshes this
+        /// open list and the new system is chosen (<see cref="SelectGlazing"/>) - nothing is added to the list by hand. The caller shows the
+        /// window and disposes the view-model; null when no list is open.
+        /// </summary>
+        public GlazingBuilderViewModel CreateBuilder()
+        {
+            if (!CanCreateNew)
+            {
+                return null;
+            }
+
+            GlazingCandidate seed = (glazing.ProposedRow ?? glazing.CurrentRow)?.Candidate;
+            GlazingBuilderViewModel result = new GlazingBuilderViewModel(new GlazingBuilderOptions()
+            {
+                Seed = seed?.ApertureConstruction,
+                SeedSource = seed?.Source,
+                Sources = glazing.Sources.Where(x => x.Kind == GlazingSourceKind.Model || x.Kind == GlazingSourceKind.Library || x.Kind == GlazingSourceKind.User).ToList(),
+                Catalog = session.Services.Sources,
+                Library = userGlazing,
+                Evaluator = session.Services.CreateBuilderEvaluator(),
+                ComposeOptions = session.Services.BuilderComposeOptions,
+            });
+
+            result.Saved += (sender, e) =>
+            {
+                if (result.SavedSystem != null)
+                {
+                    SelectGlazing(result.SavedSystem.Guid);
+                }
+            };
+
+            return result;
+        }
+
         /// <summary>Notes about the sources of the open list, e.g. why "My glazing systems" could not be used; empty when there are none.</summary>
         public string GlazingNotesText => glazing == null ? string.Empty : string.Join(Environment.NewLine, glazing.Notes);
 

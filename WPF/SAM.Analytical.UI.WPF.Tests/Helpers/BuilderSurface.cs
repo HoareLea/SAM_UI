@@ -31,6 +31,10 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
                 nameof(GlazingComposition), "GlazingMaterialMerge", nameof(GlazingValuesCache), nameof(GlazingBuilderProvenance), nameof(GlazingBuilderPaneRecord),
                 nameof(GlazingBuilderGapRecord), nameof(GlazingDraftIssue), nameof(GlazingDraftIssueCodes), nameof(GlazingDraftValidation), nameof(DraftGlazingEvaluator),
                 nameof(DraftGlazingEvaluation), nameof(UserGlazingLibrary), nameof(UserGlazingLibraryContent), nameof(UserGlazingSaveResult), "GlazingGapOrientation",
+
+                // Stage E0-3: the Builder's view-model, its rows, the pane browser and the options it is given.
+                nameof(GlazingBuilderViewModel), nameof(GlazingBuilderLayerRow), nameof(GlazingBuilderIssueRow), nameof(GlazingBuilderOptions), nameof(GlazingFrameChoice),
+                nameof(GlazingIntendedUse), nameof(GlazingGasOption), nameof(GlazingReferenceWindow), nameof(GlazingPaneBrowser), nameof(GlazingPaneSource), nameof(GlazingPaneEntry),
             };
 
             return names.Select(x => assembly.GetType("SAM.Analytical.UI.WPF." + x, true));
