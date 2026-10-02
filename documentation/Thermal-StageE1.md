@@ -65,9 +65,8 @@ Release build of the merged tree, driven through UI Automation; the saved model 
 | **D** Retained classic editors open and close without touching the model: `Glazing Calculator` main button → "Set glazing"; `U Value Calculator` → "Set U-value"; Edit > Aperture Constructions; Edit > Constructions | all four opened and closed; Undo stays disabled; **model hash = baseline** |
 
 Driver notes: step B was run on its own as well (a driver quirk, not a product defect: right after an Undo the persisted selection makes the first *Select By Guid* a no-op, so a sequence
-A → B needs a second select); the classic split-button arrows (4, 5) were not driven (they open Tas COM dialogs) - their handlers and implementations are asserted present by the parity tests.
+A → B needs a second select); the classic split-button arrows (4, 5) were not driven (they open Tas COM dialogs) - their ribbon commands and public workflow entry points are asserted present by the parity tests.
 
 ## Tests
 
-`ThermalConsolidationParityTests` (new, 4 test methods / 16 cases): the ribbon entry points, the context-menu / classic handlers, the classic implementations and windows, and the capabilities the
-panel lacks (g / light filters, don't-assign, load-more) are all still present. Full WPF suite **2194/2194** (E0-3 base 2178 + 16).
+`ThermalConsolidationParityTests` (new, 18 cases) are capability-focused: the ribbon commands of the classic tools and the panel, the public classic workflow entry points (calculators by criteria, *Assign ... By*, library editors, the Set-window openers), and the capabilities the panel lacks (g / light filters, include library / loaded files, "don't assign"). They deliberately do not pin private handlers, fields or layout, so an intentional refactoring stays possible. Full WPF suite **2196/2196** (E0-3 base 2178 + 18).
