@@ -115,10 +115,10 @@ namespace SAM.Analytical.UI.WPF
             string apertures = count == 1 ? "aperture" : "apertures";
             switch (result.Scope)
             {
-                case GlazingApplyScope.SelectedApertures:
+                case ThermalApplyScope.SelectedOnly:
                     return string.Format(CultureInfo.InvariantCulture, "{0} selected {1} that used {2}", count, apertures, sourceName);
 
-                case GlazingApplyScope.DontAssign:
+                case ThermalApplyScope.DontAssign:
                     return "not assigned to any aperture";
 
                 default:

@@ -363,12 +363,12 @@ namespace SAM.Analytical.UI.WPF.Tests
 
                 Control<RadioButton>(window, "radioButton_SelectedApertures").IsChecked = true;
                 Flush();
-                Assert.Equal(GlazingApplyScope.SelectedApertures, window.ViewModel.ApplyScope);
+                Assert.Equal(ThermalApplyScope.SelectedOnly, window.ViewModel.ApplyScope);
                 Assert.Equal("Applies to 2 selected apertures of the 20 using GLZ.", Text(window, "textBlock_Scope"));
 
-                Control<RadioButton>(window, "radioButton_DontAssign").IsChecked = true;
+                Control<CheckBox>(window, "checkBox_DontAssign").IsChecked = true;
                 Flush();
-                Assert.Equal(GlazingApplyScope.DontAssign, window.ViewModel.ApplyScope);
+                Assert.Equal(ThermalApplyScope.DontAssign, window.ViewModel.ApplyScope);
 
                 Control<CheckBox>(window, "checkBox_IncludeLibrary").IsChecked = false;
                 Flush();

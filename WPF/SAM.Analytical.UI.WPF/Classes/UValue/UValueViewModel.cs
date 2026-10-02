@@ -45,14 +45,15 @@ namespace SAM.Analytical.UI.WPF
             nameof(BestAchievableThermalTransmittance), nameof(MinThicknessThermalTransmittance), nameof(MaxThicknessThermalTransmittance),
             nameof(LastEvaluationMilliseconds), nameof(LayerIndex), nameof(LayerSentence), nameof(PreviewRows), nameof(HeatFlowBasis),
             nameof(HeatFlowDirection), nameof(External), nameof(ScopeText), nameof(ResultText), nameof(NewConstructionName),
-            nameof(Warnings), nameof(ApplyBlockReason), nameof(ApplyEnabled),
+            nameof(Warnings), nameof(ApplyBlockReason), nameof(ApplyEnabled), nameof(KeepName), nameof(KeepNameUnavailableReason),
+            nameof(ScopeUnavailableReason), nameof(DontAssignUnavailableReason),
         };
 
         private readonly IUValueEvaluator evaluator;
         private readonly Construction construction;
         private readonly MaterialLibrary materialLibrary;
         private readonly List<Panel> panels_Using;
-        private readonly List<Guid> selectedPanelGuids;
+        private readonly ThermalScope scope;
         private readonly List<string> constructionNames;
         private readonly int sameNameCount;
         private readonly int automaticLayerIndex;
@@ -66,7 +67,6 @@ namespace SAM.Analytical.UI.WPF
         private double maxThickness = DefaultMaxThickness;
         private HeatFlowDirection? heatFlowDirectionOverride;
         private UValueApplyMode applyMode = UValueApplyMode.NewConstruction;
-        private UValueApplyScope applyScope = UValueApplyScope.AllPanels;
         private UValueHeatFlowBasis heatFlowBasis;
 
         private UValueEvaluation evaluation;
@@ -97,8 +97,7 @@ namespace SAM.Analytical.UI.WPF
             materialLibrary = analyticalModel.MaterialLibrary ?? new MaterialLibrary("Default MaterialLibrary");
             panels_Using = adjacencyCluster.GetPanels(construction) ?? new List<Panel>();
 
-            HashSet<Guid> using_Guids = new HashSet<Guid>(panels_Using.Select(x => x.Guid));
-            this.selectedPanelGuids = (selectedPanelGuids ?? Enumerable.Empty<Guid>()).Distinct().Where(using_Guids.Contains).ToList();
+            scope = new ThermalScope(construction.Name, "panel", "panels", panels_Using.Select(x => x.Guid), selectedPanelGuids);
 
             constructionNames = constructions.Where(x => x != null).Select(x => x.Name).ToList();
             sameNameCount = constructions.Count(x => x != null && x.Guid != construction.Guid && x.Name == construction.Name);
@@ -125,9 +124,12 @@ namespace SAM.Analytical.UI.WPF
         public int PanelsUsingCount => panels_Using.Count;
 
         /// <summary>How many of the selected panels use the construction.</summary>
-        public int SelectedPanelsCount => selectedPanelGuids.Count;
+        public int SelectedPanelsCount => scope.SelectedCount;
 
-        public IReadOnlyList<Guid> SelectedPanelGuids => selectedPanelGuids;
+        public IReadOnlyList<Guid> SelectedPanelGuids => scope.SelectedGuids;
+
+        /// <summary>The shared scope: the pinned panels, the choice and the labels (the window's "Changes" radios read it).</summary>
+        public ThermalScope Scope => scope;
 
         // ---- Target ---------------------------------------------------------------------------------------
 
@@ -246,7 +248,7 @@ namespace SAM.Analytical.UI.WPF
 
         // ---- Apply options --------------------------------------------------------------------------------
 
-        /// <summary>Advanced: new construction (default) or modify in place.</summary>
+        /// <summary>New construction (default) or <see cref="UValueApplyMode.ModifyInPlace"/>, which the user knows as "Keep name".</summary>
         public UValueApplyMode ApplyMode
         {
             get => applyMode;
@@ -264,26 +266,78 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        /// <summary>Advanced: which panels get the new construction. Ignored when modifying in place.</summary>
-        public UValueApplyScope ApplyScope
+        /// <summary>
+        /// Keep name: the construction itself changes and keeps its name, so every panel using it changes. The same as
+        /// <see cref="ApplyMode"/> being <see cref="UValueApplyMode.ModifyInPlace"/>; check <see cref="KeepNameUnavailableReason"/> first.
+        /// </summary>
+        public bool KeepName
         {
-            get => applyScope;
+            get => applyMode == UValueApplyMode.ModifyInPlace;
+            set => ApplyMode = value ? UValueApplyMode.ModifyInPlace : UValueApplyMode.NewConstruction;
+        }
+
+        /// <summary>
+        /// Why "Keep name" cannot be chosen now (null while it can): another construction shares the name and would change
+        /// too, or the scope is not "all the panels using it" (a name cannot be kept for only some of the panels).
+        /// </summary>
+        public string KeepNameUnavailableReason
+        {
+            get
+            {
+                if (sameNameCount > 0)
+                {
+                    return string.Format(CultureInfo.CurrentCulture, "Keep name is unavailable: {0} other {1} also named {2} and would change too.", sameNameCount, sameNameCount == 1 ? "construction is" : "constructions are", construction.Name);
+                }
+
+                if (applyMode == UValueApplyMode.ModifyInPlace)
+                {
+                    return null;
+                }
+
+                switch (scope.Scope)
+                {
+                    case ThermalApplyScope.SelectedOnly:
+                        return string.Format(CultureInfo.CurrentCulture, "Keep name changes every panel using {0}, so it cannot be combined with only the selected panels.", construction.Name);
+
+                    case ThermalApplyScope.DontAssign:
+                        return string.Format(CultureInfo.CurrentCulture, "Keep name changes {0} itself, so it cannot be combined with Don't assign.", construction.Name);
+
+                    default:
+                        return null;
+                }
+            }
+        }
+
+        /// <summary>Why "only the selected panels" cannot be chosen now (Keep name is on, or none is selected); null while it can.</summary>
+        public string ScopeUnavailableReason => applyMode == UValueApplyMode.ModifyInPlace
+            ? string.Format(CultureInfo.CurrentCulture, "Keep name changes every panel using {0}; turn it off to change only the selected panels.", construction.Name)
+            : scope.SelectedUnavailableReason;
+
+        /// <summary>Why "Don't assign" cannot be chosen now (Keep name is on); null while it can.</summary>
+        public string DontAssignUnavailableReason => applyMode == UValueApplyMode.ModifyInPlace
+            ? string.Format(CultureInfo.CurrentCulture, "Keep name changes {0} itself; turn it off to create a construction without assigning it.", construction.Name)
+            : null;
+
+        /// <summary>Which panels get the new construction. Ignored while Keep name is on (it always changes every panel using the construction).</summary>
+        public ThermalApplyScope ApplyScope
+        {
+            get => scope.Scope;
             set
             {
-                if (applyScope == value)
+                if (scope.Scope == value)
                 {
                     return;
                 }
 
-                applyScope = value;
+                scope.Scope = value;
                 OnPropertyChanged(nameof(ApplyScope));
                 OnPropertyChanged(nameof(EffectiveScope));
                 UpdateBasis();
             }
         }
 
-        /// <summary>The scope Apply uses (<see cref="UValueApplyScope.AllPanels"/> when modifying in place).</summary>
-        public UValueApplyScope EffectiveScope => applyMode == UValueApplyMode.ModifyInPlace ? UValueApplyScope.AllPanels : applyScope;
+        /// <summary>The scope Apply uses (<see cref="ThermalApplyScope.AllUsing"/> while Keep name is on).</summary>
+        public ThermalApplyScope EffectiveScope => applyMode == UValueApplyMode.ModifyInPlace ? ThermalApplyScope.AllUsing : scope.Scope;
 
         /// <summary>
         /// The name a new construction gets (e.g. "SIM_EXT_SLD U0.50"), from the achieved U; null until a reached result
@@ -300,34 +354,25 @@ namespace SAM.Analytical.UI.WPF
             {
                 string name = construction.Name;
                 int count = PanelsUsingCount;
-                string selected = SelectedPanelsCount > 0 ? string.Format(CultureInfo.CurrentCulture, " ({0} selected)", SelectedPanelsCount) : string.Empty;
 
                 if (applyMode == UValueApplyMode.ModifyInPlace)
                 {
+                    string selected = SelectedPanelsCount > 0 ? string.Format(CultureInfo.CurrentCulture, " ({0} selected)", SelectedPanelsCount) : string.Empty;
                     return count == 0
-                        ? string.Format(CultureInfo.CurrentCulture, "Changes {0} in place; no panel uses it.", name)
-                        : string.Format(CultureInfo.CurrentCulture, "Applies to all {0} {1} using {2}{3}, changed in place.", count, Panels(count), name, selected);
+                        ? string.Format(CultureInfo.CurrentCulture, "Keeps the name {0}; no panel uses it.", name)
+                        : string.Format(CultureInfo.CurrentCulture, "Applies to all {0} {1} using {2}{3}, keeping the name.", count, Panels(count), name, selected);
                 }
 
-                switch (applyScope)
-                {
-                    case UValueApplyScope.SelectedPanels:
-                        return string.Format(CultureInfo.CurrentCulture, "Applies to {0} selected {1} of the {2} using {3}.", SelectedPanelsCount, Panels(SelectedPanelsCount), count, name);
-
-                    case UValueApplyScope.DontAssign:
-                        return string.Format(CultureInfo.CurrentCulture, "Creates {0} without assigning it to any panel.", NewConstructionName ?? "a new construction");
-
-                    default:
-                        return count == 0
-                            ? string.Format(CultureInfo.CurrentCulture, "No panel uses {0}; only the new construction is created.", name)
-                            : string.Format(CultureInfo.CurrentCulture, "Applies to {0} {1} using {2}{3}.", count, Panels(count), name, selected);
-                }
+                return scope.Text(
+                    scope.Scope,
+                    string.Format(CultureInfo.CurrentCulture, "Creates {0} without assigning it to any panel.", NewConstructionName ?? "a new construction"),
+                    string.Format(CultureInfo.CurrentCulture, "No panel uses {0}; only the new construction is created.", name));
             }
         }
 
         /// <summary>What happens to the constructions, e.g. "Creates SIM_EXT_SLD U0.50; SIM_EXT_SLD stays unchanged."</summary>
         public string ResultText => applyMode == UValueApplyMode.ModifyInPlace
-            ? string.Format(CultureInfo.CurrentCulture, "Modifies {0}; every panel using it changes.", construction.Name)
+            ? string.Format(CultureInfo.CurrentCulture, "Keeps the name {0}: the construction itself changes, so every panel using it changes.", construction.Name)
             : string.Format(CultureInfo.CurrentCulture, "Creates {0}; {1} stays unchanged.", NewConstructionName ?? "a new construction", construction.Name);
 
         /// <summary>Warning lines: mixed panel groups, other constructions sharing the name.</summary>
@@ -410,12 +455,12 @@ namespace SAM.Analytical.UI.WPF
             {
                 if (applyMode == UValueApplyMode.ModifyInPlace && sameNameCount > 0)
                 {
-                    return string.Format(CultureInfo.CurrentCulture, "Modify in place is unavailable: other constructions are also named {0} and would change too. Create a new construction instead.", construction.Name);
+                    return string.Format(CultureInfo.CurrentCulture, "Keep name is unavailable: other constructions are also named {0} and would change too. Create a new construction instead.", construction.Name);
                 }
 
-                if (EffectiveScope == UValueApplyScope.SelectedPanels && SelectedPanelsCount == 0)
+                if (EffectiveScope == ThermalApplyScope.SelectedOnly && !scope.SelectedAvailable)
                 {
-                    return string.Format(CultureInfo.CurrentCulture, "No selected panel uses {0}.", construction.Name);
+                    return scope.SelectedUnavailableReason;
                 }
 
                 return null;
@@ -456,7 +501,7 @@ namespace SAM.Analytical.UI.WPF
                 HeatFlowDirection = evaluation.Request.HeatFlowDirection,
                 Mode = applyMode,
                 Scope = EffectiveScope,
-                SelectedPanelGuids = selectedPanelGuids.ToList(),
+                SelectedPanelGuids = scope.SelectedGuids.ToList(),
                 NewConstructionName = applyMode == UValueApplyMode.NewConstruction ? NewConstructionName : null,
             };
         }
@@ -639,13 +684,8 @@ namespace SAM.Analytical.UI.WPF
 
         private IEnumerable<Panel> BasisPanels()
         {
-            if (EffectiveScope == UValueApplyScope.SelectedPanels && selectedPanelGuids.Count != 0)
-            {
-                HashSet<Guid> selected = new HashSet<Guid>(selectedPanelGuids);
-                return panels_Using.Where(x => selected.Contains(x.Guid));
-            }
-
-            return panels_Using;
+            HashSet<Guid> basis = new HashSet<Guid>(scope.BasisGuids(EffectiveScope));
+            return panels_Using.Where(x => basis.Contains(x.Guid));
         }
 
         private ConstructionLayer Layer(int index)

@@ -9,7 +9,7 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Default: a new construction (e.g. "SIM_EXT_SLD U0.50") with the adjusted layer; the source stays unchanged.</summary>
         NewConstruction,
 
-        /// <summary>The source construction itself is changed, so every panel using it changes.</summary>
+        /// <summary>"Keep name" in the UI: the source construction itself is changed and keeps its name, so every panel using it changes.</summary>
         ModifyInPlace,
     }
 }

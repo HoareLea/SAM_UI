@@ -47,6 +47,7 @@ namespace SAM.Analytical.UI.WPF
                     if (!Same(material, material_Model))
                     {
                         MaterialIssue = string.Format(CultureInfo.CurrentCulture, "Its material '{0}' differs from the model's material of the same name.", name);
+                        MaterialDiffers = true;
                         break;
                     }
 
@@ -93,6 +94,9 @@ namespace SAM.Analytical.UI.WPF
         /// material of the same name but another definition is already in the model); null when nothing blocks it.
         /// </summary>
         public string MaterialIssue { get; }
+
+        /// <summary>True when <see cref="MaterialIssue"/> is a material that differs from the model's material of the same name (rather than one missing from the source).</summary>
+        public bool MaterialDiffers { get; }
 
         private static string BuildUp(List<ConstructionLayer> constructionLayers)
         {

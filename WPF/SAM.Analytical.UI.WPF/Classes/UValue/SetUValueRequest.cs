@@ -36,9 +36,9 @@ namespace SAM.Analytical.UI.WPF
         public UValueApplyMode Mode { get; set; } = UValueApplyMode.NewConstruction;
 
         /// <summary>Ignored for <see cref="UValueApplyMode.ModifyInPlace"/>, which always affects every panel using the construction.</summary>
-        public UValueApplyScope Scope { get; set; } = UValueApplyScope.AllPanels;
+        public ThermalApplyScope Scope { get; set; } = ThermalApplyScope.AllUsing;
 
-        /// <summary>The selected panels; used by <see cref="UValueApplyScope.SelectedPanels"/>.</summary>
+        /// <summary>The selected panels; used by <see cref="ThermalApplyScope.SelectedOnly"/>.</summary>
         public IEnumerable<Guid> SelectedPanelGuids { get; set; }
 
         /// <summary>Name for <see cref="UValueApplyMode.NewConstruction"/>; when empty or taken, <c>Query.UValueConstructionName</c> is used.</summary>

@@ -189,7 +189,7 @@ namespace SAM.Analytical.UI.WPF
                 textBox_MaxG.Text = string.Empty;
                 textBox_MinLight.Text = string.Empty;
                 radioButton_AllApertures.IsChecked = true;
-                radioButton_SelectedApertures.IsEnabled = viewModel != null && viewModel.SelectedAperturesCount > 0;
+                checkBox_DontAssign.IsChecked = false;
                 checkBox_IncludeLibrary.IsChecked = true;
                 checkBox_IncludeLoaded.IsChecked = true;
             }
@@ -250,6 +250,9 @@ namespace SAM.Analytical.UI.WPF
                 textBlock_Result.Text = string.Empty;
                 itemsControl_Warnings.ItemsSource = null;
                 textBlock_Block.Visibility = Visibility.Collapsed;
+                textBlock_ScopeReason.Visibility = Visibility.Collapsed;
+                radioButton_AllApertures.IsEnabled = false;
+                radioButton_SelectedApertures.IsEnabled = false;
                 button_Apply.IsEnabled = false;
                 return;
             }
@@ -315,6 +318,8 @@ namespace SAM.Analytical.UI.WPF
             SetSummary(current, vm.ProposedRow, vm.Target, vm.Margin, vm.ComparisonStatus);
             textBlock_Change.Text = vm.ChangeText ?? string.Empty;
 
+            SyncScope(vm, applied);
+
             textBlock_Scope.Text = vm.ScopeText;
             textBlock_Result.Text = vm.ResultText;
             itemsControl_Warnings.ItemsSource = vm.Warnings;
@@ -324,6 +329,26 @@ namespace SAM.Analytical.UI.WPF
             textBlock_Block.Visibility = block == null ? Visibility.Collapsed : Visibility.Visible;
 
             button_Apply.IsEnabled = !applied && vm.ApplyEnabled;
+        }
+
+        // The scope radios (main area) from the view-model: the labels carry the counts, and "only the selected" is disabled
+        // with the reason beside it when no selected aperture uses the system (or "Don't assign" makes the scope moot).
+        private void SyncScope(GlazingViewModel vm, bool applied)
+        {
+            bool dontAssign = checkBox_DontAssign.IsChecked == true;
+
+            radioButton_AllApertures.Content = vm.Scope.AllLabel;
+            radioButton_SelectedApertures.Content = vm.Scope.SelectedLabel;
+            radioButton_AllApertures.IsEnabled = !applied && !dontAssign;
+
+            string reason = vm.Scope.SelectedUnavailableReason;
+            radioButton_SelectedApertures.IsEnabled = !applied && !dontAssign && reason == null;
+            radioButton_SelectedApertures.ToolTip = reason;
+
+            // Say why only when there is something to explain: apertures are selected but none uses the system.
+            bool explain = reason != null && !dontAssign && selectedApertureGuids.Count > 0;
+            textBlock_ScopeReason.Text = explain ? reason : string.Empty;
+            textBlock_ScopeReason.Visibility = explain ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void SetSummary(GlazingCandidateRow current, GlazingCandidateRow proposed, double target, double margin, string status)
@@ -418,7 +443,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            viewModel.ApplyScope = radioButton_SelectedApertures.IsChecked == true ? GlazingApplyScope.SelectedApertures : radioButton_DontAssign.IsChecked == true ? GlazingApplyScope.DontAssign : GlazingApplyScope.AllApertures;
+            viewModel.ApplyScope = checkBox_DontAssign.IsChecked == true ? ThermalApplyScope.DontAssign : radioButton_SelectedApertures.IsChecked == true ? ThermalApplyScope.SelectedOnly : ThermalApplyScope.AllUsing;
+            Render();
         }
 
         private void checkBox_Include_Changed(object sender, RoutedEventArgs e)
@@ -569,11 +595,11 @@ namespace SAM.Analytical.UI.WPF
                 CultureInfo.CurrentCulture,
                 "Applied: {0} {1}. One Undo reverts it.",
                 result.ApertureConstruction.Name,
-                result.Scope == GlazingApplyScope.DontAssign
+                result.Scope == ThermalApplyScope.DontAssign
                     ? "is in the model, not assigned to any aperture"
                     : string.Format(CultureInfo.CurrentCulture, "now glazes {0} {1}", result.ApertureCount, result.ApertureCount == 1 ? "aperture" : "apertures"));
 
-            Brush brush = (Brush)FindResource(CheckSummary.Errors > 0 || CheckSummary.Warnings > 0 ? "PartO.Brush.Danger" : "PartO.Brush.Success");
+            Brush brush = (Brush)FindResource(CheckSummary.Errors > 0 ? "PartO.Brush.Danger" : CheckSummary.Warnings > 0 ? "PartO.Brush.Warning" : "PartO.Brush.Success");
             border_Applied.BorderBrush = brush;
             textBlock_CheckGlyph.Text = CheckSummary.Glyph;
             textBlock_CheckGlyph.Foreground = brush;

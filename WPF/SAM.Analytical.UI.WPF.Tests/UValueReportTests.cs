@@ -36,7 +36,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             }
         }
 
-        private static SetUValueRequest Request(Construction construction, UValueApplyMode mode = UValueApplyMode.NewConstruction, UValueApplyScope scope = UValueApplyScope.AllPanels)
+        private static SetUValueRequest Request(Construction construction, UValueApplyMode mode = UValueApplyMode.NewConstruction, ThermalApplyScope scope = ThermalApplyScope.AllUsing)
         {
             return new SetUValueRequest()
             {
@@ -52,7 +52,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             };
         }
 
-        private static AnalyticalModel Applied(out SetUValueResult result, UValueApplyMode mode = UValueApplyMode.NewConstruction, UValueApplyScope scope = UValueApplyScope.AllPanels)
+        private static AnalyticalModel Applied(out SetUValueResult result, UValueApplyMode mode = UValueApplyMode.NewConstruction, ThermalApplyScope scope = ThermalApplyScope.AllUsing)
         {
             AnalyticalModel analyticalModel = UValueFixture.Model(out Construction source);
             AnalyticalModel changed = Modify.SetUValue(analyticalModel, Request(source, mode, scope), out result);
@@ -113,7 +113,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         [Fact]
         public void Check_DontAssign_NamesTheUnassignedConstruction()
         {
-            AnalyticalModel changed = Applied(out SetUValueResult result, scope: UValueApplyScope.DontAssign);
+            AnalyticalModel changed = Applied(out SetUValueResult result, scope: ThermalApplyScope.DontAssign);
 
             UValueCheckSummary summary = Query.UValueCheckSummary(changed, result);
 
@@ -163,10 +163,10 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void ReportText_InPlaceAndSelectedScopes_AreWorded()
         {
             Applied(out SetUValueResult inPlace, UValueApplyMode.ModifyInPlace);
-            Assert.Contains("Construction: SIM_EXT_SLD (modified in place)", Query.UValueChangeReportText(inPlace, null, null));
+            Assert.Contains("Construction: SIM_EXT_SLD (name kept, construction modified)", Query.UValueChangeReportText(inPlace, null, null));
             Assert.Contains("Model:        (not saved)", Query.UValueChangeReportText(inPlace, null, null));
 
-            Applied(out SetUValueResult dontAssign, scope: UValueApplyScope.DontAssign);
+            Applied(out SetUValueResult dontAssign, scope: ThermalApplyScope.DontAssign);
             Assert.Contains("Scope:        not assigned to any panel", Query.UValueChangeReportText(dontAssign, null, null));
         }
 

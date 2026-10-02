@@ -92,13 +92,13 @@ namespace SAM.Analytical.UI.WPF
             }
 
             UValueApplyMode mode = request.Mode;
-            UValueApplyScope scope = mode == UValueApplyMode.ModifyInPlace ? UValueApplyScope.AllPanels : request.Scope;
+            ThermalApplyScope scope = mode == UValueApplyMode.ModifyInPlace ? ThermalApplyScope.AllUsing : request.Scope;
 
-            // UpdateConstructions (a legacy post-step) matches by NAME: modifying in place would also rewrite
+            // UpdateConstructions (a legacy post-step) matches by NAME: keeping the name (modifying in place) would also rewrite
             // other constructions that share the name, so that combination is refused.
             if (mode == UValueApplyMode.ModifyInPlace && constructions.Any(x => x != null && x.Guid != source.Guid && x.Name == source.Name))
             {
-                result = new SetUValueResult(string.Format("Other constructions are also named {0}; modifying in place would change them too. Create a new construction instead.", source.Name));
+                result = new SetUValueResult(string.Format("Other constructions are also named {0}; keeping the name would change them too. Create a new construction instead.", source.Name));
                 return null;
             }
 
@@ -106,11 +106,11 @@ namespace SAM.Analytical.UI.WPF
             List<Panel> panels = null;
             switch (scope)
             {
-                case UValueApplyScope.AllPanels:
+                case ThermalApplyScope.AllUsing:
                     panels = panels_Using;
                     break;
 
-                case UValueApplyScope.SelectedPanels:
+                case ThermalApplyScope.SelectedOnly:
                     HashSet<Guid> selected = new HashSet<Guid>(request.SelectedPanelGuids ?? Enumerable.Empty<Guid>());
                     panels = panels_Using.FindAll(x => selected.Contains(x.Guid));
                     if (panels.Count == 0)

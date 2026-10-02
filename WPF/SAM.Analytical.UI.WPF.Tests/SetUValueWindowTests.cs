@@ -250,13 +250,23 @@ namespace SAM.Analytical.UI.WPF.Tests
 
                 Control<RadioButton>(window, "radioButton_SelectedPanels").IsChecked = true;
                 Flush();
-                Assert.Equal(UValueApplyScope.SelectedPanels, window.ViewModel.ApplyScope);
+                Assert.Equal(ThermalApplyScope.SelectedOnly, window.ViewModel.ApplyScope);
                 Assert.Equal("Applies to 2 selected panels of the 12 using SIM_EXT_SLD.", Control<TextBlock>(window, "textBlock_Scope").Text);
 
-                Control<RadioButton>(window, "radioButton_ModifyInPlace").IsChecked = true;
+                // "Only the selected" and Keep name exclude each other: while one is chosen the other is disabled, with the reason beside it.
+                Assert.False(Control<CheckBox>(window, "checkBox_KeepName").IsEnabled);
+                Assert.Contains("cannot be combined with only the selected panels", Control<TextBlock>(window, "textBlock_KeepNameReason").Text);
+
+                Control<RadioButton>(window, "radioButton_AllPanels").IsChecked = true;
+                Flush();
+                Assert.True(Control<CheckBox>(window, "checkBox_KeepName").IsEnabled);
+
+                Control<CheckBox>(window, "checkBox_KeepName").IsChecked = true;
                 Flush();
                 Assert.Equal(UValueApplyMode.ModifyInPlace, window.ViewModel.ApplyMode);
-                Assert.False(Control<RadioButton>(window, "radioButton_DontAssign").IsEnabled);
+                Assert.False(Control<RadioButton>(window, "radioButton_SelectedPanels").IsEnabled);
+                Assert.False(Control<CheckBox>(window, "checkBox_DontAssign").IsEnabled);
+                Assert.Contains("turn it off to change only the selected panels", Control<TextBlock>(window, "textBlock_ScopeReason").Text);
 
                 Control<TextBox>(window, "textBox_MaxThickness").Text = "100";
                 window.ViewModel.LastEvaluationTask.Wait(TimeSpan.FromSeconds(10));

@@ -44,7 +44,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             return new ThermalTransmittanceCalculationResult(request.ApertureConstruction.Guid, "Fake", 0.70, 0.20, 0.45, 0.25, 0.30, 0.50, 0.60, 0.30, new ThermalTransmittances(2, 2, 2, 2, 2, 2, 1.10));
         }
 
-        private static async Task<(AnalyticalModel model, SetGlazingResult result)> Applied(GlazingApplyScope scope = GlazingApplyScope.AllApertures, Guid? system = null, double target = double.NaN)
+        private static async Task<(AnalyticalModel model, SetGlazingResult result)> Applied(ThermalApplyScope scope = ThermalApplyScope.AllUsing, Guid? system = null, double target = double.NaN)
         {
             AnalyticalModel analyticalModel = GlazingFixture.Model(5);
             GlazingViewModel viewModel = GlazingFixture.ViewModel(analyticalModel);
@@ -86,7 +86,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         [Fact]
         public async Task TheCheck_ForDontAssign_NamesTheSystemAlone()
         {
-            (AnalyticalModel changed, SetGlazingResult result) = await Applied(GlazingApplyScope.DontAssign);
+            (AnalyticalModel changed, SetGlazingResult result) = await Applied(ThermalApplyScope.DontAssign);
 
             UValueCheckSummary summary = Query.GlazingCheckSummary(changed, result);
 
@@ -218,7 +218,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         [Fact]
         public async Task TheReport_OfDontAssign_SaysNoApertureChanged()
         {
-            (AnalyticalModel changed, SetGlazingResult result) = await Applied(GlazingApplyScope.DontAssign);
+            (AnalyticalModel changed, SetGlazingResult result) = await Applied(ThermalApplyScope.DontAssign);
 
             string text = Query.GlazingChangeReportText(result, Query.GlazingCheckSummary(changed, result), null);
 
@@ -230,7 +230,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         public async Task TheReport_OfAnApproximateUw_IsLabelledApproximate()
         {
             (AnalyticalModel changed, SetGlazingResult result) = await Applied();
-            SetGlazingRequest request = new SetGlazingRequest() { UwBasis = GlazingUwBasis.Approximate, OldUw = 1.5, NewUw = 1.2, Scope = GlazingApplyScope.AllApertures, Values = result.Values, OldValues = result.OldValues };
+            SetGlazingRequest request = new SetGlazingRequest() { UwBasis = GlazingUwBasis.Approximate, OldUw = 1.5, NewUw = 1.2, Scope = ThermalApplyScope.AllUsing, Values = result.Values, OldValues = result.OldValues };
             SetGlazingResult approximate = new SetGlazingResult(request, result.SourceApertureConstruction, result.ApertureConstruction, true, new string[0], result.ApertureGuids, result.PanelGuids);
 
             string text = Query.GlazingChangeReportText(approximate, null, null);

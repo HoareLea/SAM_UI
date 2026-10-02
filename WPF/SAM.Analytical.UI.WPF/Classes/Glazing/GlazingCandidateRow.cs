@@ -2,6 +2,7 @@
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -10,8 +11,9 @@ namespace SAM.Analytical.UI.WPF
     /// <summary>One line of the comparison table: a glazing system with its calculated values for the current scope.</summary>
     public sealed class GlazingCandidateRow
     {
-        internal GlazingCandidateRow(GlazingCandidate candidate, GlazingValues values, bool transparent, double uw, GlazingUwBasis uwBasis, bool isCurrent, bool passes, double target)
+        internal GlazingCandidateRow(GlazingCandidate candidate, GlazingValues values, bool transparent, double uw, GlazingUwBasis uwBasis, bool isCurrent, bool passes, double target, IReadOnlyList<GlazingRowWarning> warnings = null)
         {
+            Warnings = warnings ?? new List<GlazingRowWarning>();
             Candidate = candidate;
             Values = values;
             Transparent = transparent;
@@ -39,6 +41,14 @@ namespace SAM.Analytical.UI.WPF
 
         public string Description => Candidate.Description;
 
+        /// <summary>What the system is marked for before it is chosen (panel group, no frame, material); empty for the current system.</summary>
+        public IReadOnlyList<GlazingRowWarning> Warnings { get; }
+
+        public bool HasWarnings => Warnings.Count != 0;
+
+        /// <summary>The markers as shown in the table's Check column, e.g. "⚠ made for roofs · ⚠ no frame"; empty when there are none.</summary>
+        public string WarningText => string.Join(" · ", Warnings.Select(x => "⚠ " + x.ShortText));
+
         /// <summary>A tooltip that tells same-named systems apart: id, source, description, pane and frame.</summary>
         public string Tooltip => string.Join(Environment.NewLine, new[]
         {
@@ -47,7 +57,7 @@ namespace SAM.Analytical.UI.WPF
             "Pane: " + (string.IsNullOrEmpty(PaneBuildUp) ? "–" : PaneBuildUp),
             "Frame: " + (Candidate.HasFrame ? Candidate.FrameBuildUp : "none"),
             Candidate.MaterialIssue,
-        }.Where(x => x != null));
+        }.Concat(Warnings.Where(x => !x.Blocks).Select(x => x.Text)).Where(x => x != null));
 
         public string SourceLabel => Candidate.Source.Label;
 

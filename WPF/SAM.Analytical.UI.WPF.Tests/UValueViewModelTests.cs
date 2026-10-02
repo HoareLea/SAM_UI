@@ -189,16 +189,16 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal("Applies to 12 panels using SIM_EXT_SLD (3 selected).", viewModel.ScopeText);
             Assert.Equal("Creates SIM_EXT_SLD U0.30; SIM_EXT_SLD stays unchanged.", viewModel.ResultText);
 
-            viewModel.ApplyScope = UValueApplyScope.SelectedPanels;
+            viewModel.ApplyScope = ThermalApplyScope.SelectedOnly;
             Assert.Equal("Applies to 3 selected panels of the 12 using SIM_EXT_SLD.", viewModel.ScopeText);
 
-            viewModel.ApplyScope = UValueApplyScope.DontAssign;
+            viewModel.ApplyScope = ThermalApplyScope.DontAssign;
             Assert.Equal("Creates SIM_EXT_SLD U0.30 without assigning it to any panel.", viewModel.ScopeText);
 
             viewModel.ApplyMode = UValueApplyMode.ModifyInPlace;
-            Assert.Equal(UValueApplyScope.AllPanels, viewModel.EffectiveScope);
-            Assert.Equal("Applies to all 12 panels using SIM_EXT_SLD (3 selected), changed in place.", viewModel.ScopeText);
-            Assert.Equal("Modifies SIM_EXT_SLD; every panel using it changes.", viewModel.ResultText);
+            Assert.Equal(ThermalApplyScope.AllUsing, viewModel.EffectiveScope);
+            Assert.Equal("Applies to all 12 panels using SIM_EXT_SLD (3 selected), keeping the name.", viewModel.ScopeText);
+            Assert.Equal("Keeps the name SIM_EXT_SLD: the construction itself changes, so every panel using it changes.", viewModel.ResultText);
             Assert.True(viewModel.ApplyEnabled);
         }
 
@@ -212,7 +212,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(0, viewModel.SelectedPanelsCount);
             Assert.Equal("Applies to 12 panels using SIM_EXT_SLD.", viewModel.ScopeText);
 
-            viewModel.ApplyScope = UValueApplyScope.SelectedPanels;
+            viewModel.ApplyScope = ThermalApplyScope.SelectedOnly;
 
             Assert.Equal(UValuePreviewStatus.Reached, viewModel.Status);
             Assert.False(viewModel.ApplyEnabled);
@@ -226,7 +226,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             List<Guid> selected = UValueFixture.PanelGuids(analyticalModel, construction).Take(2).ToList();
             UValueViewModel viewModel = await Open(analyticalModel, construction, selected);
             await Type(viewModel, "0.3");
-            viewModel.ApplyScope = UValueApplyScope.SelectedPanels;
+            viewModel.ApplyScope = ThermalApplyScope.SelectedOnly;
 
             SetUValueRequest request = viewModel.CreateRequest();
 
@@ -235,7 +235,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(UValueFixture.Thickness(0.3), request.Thickness, 6);
             Assert.Equal(0.3, request.TargetThermalTransmittance);
             Assert.Equal(UValueApplyMode.NewConstruction, request.Mode);
-            Assert.Equal(UValueApplyScope.SelectedPanels, request.Scope);
+            Assert.Equal(ThermalApplyScope.SelectedOnly, request.Scope);
             Assert.Equal(selected, request.SelectedPanelGuids);
             Assert.Equal("SIM_EXT_SLD U0.30", request.NewConstructionName);
             Assert.Equal(HeatFlowDirection.Horizontal, request.HeatFlowDirection);
@@ -297,7 +297,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             UValueViewModel viewModel = await Open(analyticalModel, construction, roofs, evaluator);
             await Type(viewModel, "0.3");
 
-            viewModel.ApplyScope = UValueApplyScope.SelectedPanels;
+            viewModel.ApplyScope = ThermalApplyScope.SelectedOnly;
             await viewModel.LastEvaluationTask;
 
             Assert.Equal(HeatFlowDirection.Up, viewModel.HeatFlowDirection);
@@ -342,7 +342,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             viewModel.ApplyMode = UValueApplyMode.ModifyInPlace;
 
             Assert.False(viewModel.ApplyEnabled);
-            Assert.StartsWith("Modify in place is unavailable", viewModel.ApplyBlockReason);
+            Assert.StartsWith("Keep name is unavailable", viewModel.ApplyBlockReason);
         }
 
         // -------------------------------------------------------------------------------------------------

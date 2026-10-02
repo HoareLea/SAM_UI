@@ -40,7 +40,8 @@ namespace SAM.Analytical.UI.WPF
         private readonly AnalyticalModel analyticalModel;
         private readonly ApertureConstruction current;
         private readonly List<Aperture> apertures_Using;
-        private readonly List<Guid> selectedApertureGuids;
+        private readonly ThermalScope scope;
+        private readonly Dictionary<Guid, PanelType> hostPanelTypes = new Dictionary<Guid, PanelType>();
         private readonly List<string> apertureConstructionNames;
         private readonly int sameNameCount;
         private readonly IReadOnlyDictionary<string, IMaterial> modelMaterials;
@@ -57,7 +58,6 @@ namespace SAM.Analytical.UI.WPF
         private string minLightText = string.Empty;
         private bool includeLibrary = true;
         private bool includeLoaded = true;
-        private GlazingApplyScope applyScope = GlazingApplyScope.AllApertures;
         private Guid? selectedGuid;
         private bool selectedByUser;
 
@@ -87,7 +87,20 @@ namespace SAM.Analytical.UI.WPF
 
             HashSet<Guid> using_Guids = new HashSet<Guid>(apertures_Using.Select(x => x.Guid));
             List<Guid> selected_All = (selectedApertureGuids ?? Enumerable.Empty<Guid>()).Distinct().ToList();
-            this.selectedApertureGuids = selected_All.Where(using_Guids.Contains).ToList();
+            scope = new ThermalScope(current.Name, "aperture", "apertures", apertures_Using.Select(x => x.Guid), selected_All);
+
+            // The panel type of the panel carrying each affected aperture, read once: the pre-Apply panel-group warning
+            // compares it with the candidate's Default Panel Type (the rule Edit > ModelCheck runs after the change).
+            foreach (Panel panel in adjacencyCluster.GetPanels() ?? new List<Panel>())
+            {
+                foreach (Aperture aperture in panel?.Apertures ?? new List<Aperture>())
+                {
+                    if (aperture != null && using_Guids.Contains(aperture.Guid))
+                    {
+                        hostPanelTypes[aperture.Guid] = panel.PanelType;
+                    }
+                }
+            }
 
             List<Aperture> apertures_Other = (adjacencyCluster.GetApertures() ?? new List<Aperture>()).Where(x => selected_All.Contains(x.Guid) && !using_Guids.Contains(x.Guid)).ToList();
             OtherSelectedCount = apertures_Other.Count;
@@ -122,9 +135,12 @@ namespace SAM.Analytical.UI.WPF
         public int AperturesUsingCount => apertures_Using.Count;
 
         /// <summary>How many of the selected apertures use the current construction.</summary>
-        public int SelectedAperturesCount => selectedApertureGuids.Count;
+        public int SelectedAperturesCount => scope.SelectedCount;
 
-        public IReadOnlyList<Guid> SelectedApertureGuids => selectedApertureGuids;
+        public IReadOnlyList<Guid> SelectedApertureGuids => scope.SelectedGuids;
+
+        /// <summary>The shared scope: the pinned apertures, the choice and the labels (the window's "Changes" radios read it).</summary>
+        public ThermalScope Scope => scope;
 
         /// <summary>The sources in the pool (model first), for the "N systems from ..." caption.</summary>
         public IReadOnlyList<GlazingSource> Sources => sources;
@@ -177,18 +193,18 @@ namespace SAM.Analytical.UI.WPF
             set => Set(ref includeLoaded, value);
         }
 
-        /// <summary>Advanced: which apertures get the system.</summary>
-        public GlazingApplyScope ApplyScope
+        /// <summary>Which apertures get the system.</summary>
+        public ThermalApplyScope ApplyScope
         {
-            get => applyScope;
+            get => scope.Scope;
             set
             {
-                if (applyScope == value)
+                if (scope.Scope == value)
                 {
                     return;
                 }
 
-                applyScope = value;
+                scope.Scope = value;
                 uwCache.Clear();
                 OnPropertyChanged(nameof(ApplyScope));
                 Refresh();
@@ -295,27 +311,7 @@ namespace SAM.Analytical.UI.WPF
         // ---- Apply scope ----------------------------------------------------------------------------------
 
         /// <summary>The inline apply scope, e.g. "Applies to 20 apertures using SIM_EXT_GLZ (3 selected)."</summary>
-        public string ScopeText
-        {
-            get
-            {
-                string name = current.Name;
-                int count = AperturesUsingCount;
-                string selected = SelectedAperturesCount > 0 ? string.Format(CultureInfo.CurrentCulture, " ({0} selected)", SelectedAperturesCount) : string.Empty;
-
-                switch (applyScope)
-                {
-                    case GlazingApplyScope.SelectedApertures:
-                        return string.Format(CultureInfo.CurrentCulture, "Applies to {0} selected {1} of the {2} using {3}.", SelectedAperturesCount, Apertures(SelectedAperturesCount), count, name);
-
-                    case GlazingApplyScope.DontAssign:
-                        return "Adds the chosen system to the model without assigning it to any aperture.";
-
-                    default:
-                        return string.Format(CultureInfo.CurrentCulture, "Applies to {0} {1} using {2}{3}.", count, Apertures(count), name, selected);
-                }
-            }
-        }
+        public string ScopeText => scope.Text(scope.Scope, "Adds the chosen system to the model without assigning it to any aperture.");
 
         /// <summary>What happens to the model, e.g. "Adds SIM_EXT_GLZ 2 and 2 materials to the model; SIM_EXT_GLZ stays unchanged."</summary>
         public string ResultText
@@ -366,10 +362,12 @@ namespace SAM.Analytical.UI.WPF
                     result.Add(string.Format(CultureInfo.CurrentCulture, "{0} of them {1} of another type than {2}: only {3} systems are offered.", MixedApertureTypeCount, MixedApertureTypeCount == 1 ? "is" : "are", current.Name, current.ApertureType));
                 }
 
+                // The chosen system's own warnings (frameless, made for another panel group), the same markers its row
+                // carries in the table; one that blocks Apply is shown as the block reason instead.
                 GlazingCandidateRow proposed = ProposedRow;
-                if (proposed != null && !proposed.HasFrame && current.HasFrameConstructionLayers())
+                if (proposed != null)
                 {
-                    result.Add("The chosen system has no frame layers: the apertures lose their frame, so Uw equals Ug.");
+                    result.AddRange(proposed.Warnings.Where(x => !x.Blocks).Select(x => x.Text));
                 }
 
                 if (proposed != null && proposed.UwBasis == GlazingUwBasis.Approximate)
@@ -429,12 +427,12 @@ namespace SAM.Analytical.UI.WPF
                     return "Tas could not calculate this system.";
                 }
 
-                if (applyScope == GlazingApplyScope.SelectedApertures && SelectedAperturesCount == 0)
+                if (scope.Scope == ThermalApplyScope.SelectedOnly && !scope.SelectedAvailable)
                 {
-                    return string.Format(CultureInfo.CurrentCulture, "No selected aperture uses {0}.", current.Name);
+                    return scope.SelectedUnavailableReason;
                 }
 
-                if (applyScope == GlazingApplyScope.AllApertures && AperturesUsingCount == 0)
+                if (scope.Scope == ThermalApplyScope.AllUsing && AperturesUsingCount == 0)
                 {
                     return string.Format(CultureInfo.CurrentCulture, "No aperture uses {0}.", current.Name);
                 }
@@ -490,8 +488,8 @@ namespace SAM.Analytical.UI.WPF
                 SourceApertureConstructionGuid = current.Guid,
                 ApertureConstruction = proposed.Candidate.ApertureConstruction,
                 MaterialsToAdd = proposed.Candidate.MaterialsToAdd.ToList(),
-                Scope = applyScope,
-                SelectedApertureGuids = selectedApertureGuids.ToList(),
+                Scope = scope.Scope,
+                SelectedApertureGuids = scope.SelectedGuids.ToList(),
                 Values = proposed.Values,
                 OldValues = before?.Values,
                 OldUw = before?.Uw ?? double.NaN,
@@ -730,7 +728,7 @@ namespace SAM.Analytical.UI.WPF
 
                 if (passes || isCurrent)
                 {
-                    rows_New.Add(new GlazingCandidateRow(candidate, glazingValues, transparent, uw, basis, isCurrent, passes, target));
+                    rows_New.Add(new GlazingCandidateRow(candidate, glazingValues, transparent, uw, basis, isCurrent, passes, target, RowWarnings(candidate, isCurrent, apertures_Basis)));
                 }
             }
 
@@ -783,13 +781,92 @@ namespace SAM.Analytical.UI.WPF
         // The apertures Uw is weighed over: the selected ones when the scope is "selected only", else every one using the construction.
         private List<Aperture> BasisApertures()
         {
-            if (applyScope == GlazingApplyScope.SelectedApertures && selectedApertureGuids.Count != 0)
+            HashSet<Guid> basis = new HashSet<Guid>(scope.BasisGuids(scope.Scope));
+            return apertures_Using.Where(x => basis.Contains(x.Guid)).ToList();
+        }
+
+        // What a candidate is marked for before it is chosen: a material that cannot be applied, no frame where the current
+        // system has one, and a Default Panel Type of another panel group than the panels carrying the apertures in scope.
+        // The current system is the reference and carries none.
+        private List<GlazingRowWarning> RowWarnings(GlazingCandidate candidate, bool isCurrent, List<Aperture> apertures_Basis)
+        {
+            List<GlazingRowWarning> result = new List<GlazingRowWarning>();
+            if (isCurrent)
             {
-                HashSet<Guid> selected = new HashSet<Guid>(selectedApertureGuids);
-                return apertures_Using.Where(x => selected.Contains(x.Guid)).ToList();
+                return result;
             }
 
-            return apertures_Using;
+            if (candidate.MaterialIssue != null)
+            {
+                result.Add(new GlazingRowWarning(GlazingWarningKind.Material, candidate.MaterialDiffers ? "material differs from model" : "material missing", candidate.MaterialIssue, true));
+            }
+
+            if (!candidate.HasFrame && current.HasFrameConstructionLayers())
+            {
+                result.Add(new GlazingRowWarning(GlazingWarningKind.Frameless, "no frame", "The chosen system has no frame layers: the apertures lose their frame, so Uw equals Ug.", false));
+            }
+
+            PanelType panelType_Candidate = candidate.ApertureConstruction.PanelType();
+            PanelGroup panelGroup_Candidate = panelType_Candidate.PanelGroup();
+            if (panelGroup_Candidate != PanelGroup.Undefined)
+            {
+                List<PanelGroup> groups_Other = new List<PanelGroup>();
+                int mismatched = 0;
+                foreach (Aperture aperture in apertures_Basis)
+                {
+                    if (!hostPanelTypes.TryGetValue(aperture.Guid, out PanelType panelType_Host))
+                    {
+                        continue;
+                    }
+
+                    PanelGroup panelGroup_Host = panelType_Host.PanelGroup();
+                    if (panelGroup_Host != PanelGroup.Undefined && panelGroup_Host != panelGroup_Candidate)
+                    {
+                        mismatched++;
+                        if (!groups_Other.Contains(panelGroup_Host))
+                        {
+                            groups_Other.Add(panelGroup_Host);
+                        }
+                    }
+                }
+
+                if (mismatched > 0)
+                {
+                    string text = string.Format(
+                        CultureInfo.CurrentCulture,
+                        "{0} is made for {1} (Default Panel Type {2}), but {3} of the {4} {5} sit in {6}: Edit > ModelCheck will warn about {7}.",
+                        candidate.Name,
+                        GroupName(panelGroup_Candidate),
+                        panelType_Candidate,
+                        mismatched,
+                        apertures_Basis.Count,
+                        Apertures(apertures_Basis.Count),
+                        string.Join(" and ", groups_Other.Select(GroupName)),
+                        mismatched == 1 ? "it" : "them");
+
+                    result.Add(new GlazingRowWarning(GlazingWarningKind.PanelGroup, "made for " + GroupName(panelGroup_Candidate), text, false));
+                }
+            }
+
+            return result;
+        }
+
+        private static string GroupName(PanelGroup panelGroup)
+        {
+            switch (panelGroup)
+            {
+                case PanelGroup.Floor:
+                    return "floors";
+
+                case PanelGroup.Roof:
+                    return "roofs";
+
+                case PanelGroup.Wall:
+                    return "walls";
+
+                default:
+                    return "other panels";
+            }
         }
 
         // ---- Helpers --------------------------------------------------------------------------------------

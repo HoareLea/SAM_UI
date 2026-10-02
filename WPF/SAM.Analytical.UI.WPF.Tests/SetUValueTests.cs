@@ -19,7 +19,7 @@ namespace SAM.Analytical.UI.WPF.Tests
     {
         private const double Thickness_U030 = 0.06708333333;
 
-        private static SetUValueRequest Request(Construction construction, UValueApplyMode mode = UValueApplyMode.NewConstruction, UValueApplyScope scope = UValueApplyScope.AllPanels, IEnumerable<Guid> selected = null)
+        private static SetUValueRequest Request(Construction construction, UValueApplyMode mode = UValueApplyMode.NewConstruction, ThermalApplyScope scope = ThermalApplyScope.AllUsing, IEnumerable<Guid> selected = null)
         {
             return new SetUValueRequest()
             {
@@ -143,10 +143,10 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void ExistingAdjustedMaterial_IsReused_NotDuplicated()
         {
             AnalyticalModel analyticalModel = UValueFixture.Model(out Construction source);
-            AnalyticalModel once = Apply(analyticalModel, Request(source, scope: UValueApplyScope.DontAssign), out SetUValueResult first);
+            AnalyticalModel once = Apply(analyticalModel, Request(source, scope: ThermalApplyScope.DontAssign), out SetUValueResult first);
             int count = once.MaterialLibrary.GetMaterials().Count;
 
-            Apply(once, Request(source, scope: UValueApplyScope.DontAssign), out SetUValueResult second);
+            Apply(once, Request(source, scope: ThermalApplyScope.DontAssign), out SetUValueResult second);
 
             Assert.True(first.MaterialAdded);
             Assert.False(second.MaterialAdded);
@@ -177,9 +177,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             List<Guid> selected = panels.Take(3).ToList();
             selected.Add(Guid.NewGuid());
 
-            AnalyticalModel changed = Apply(analyticalModel, Request(source, scope: UValueApplyScope.SelectedPanels, selected: selected), out SetUValueResult result);
+            AnalyticalModel changed = Apply(analyticalModel, Request(source, scope: ThermalApplyScope.SelectedOnly, selected: selected), out SetUValueResult result);
 
-            Assert.Equal(UValueApplyScope.SelectedPanels, result.Scope);
+            Assert.Equal(ThermalApplyScope.SelectedOnly, result.Scope);
             Assert.Equal(panels.Take(3).OrderBy(x => x), changed.AdjacencyCluster.GetPanels(result.Construction).Select(x => x.Guid).OrderBy(x => x));
             Assert.Equal(9, changed.AdjacencyCluster.GetPanels(source).Count);
             Assert.Equal(3, result.PanelCount);
@@ -190,7 +190,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel analyticalModel = UValueFixture.Model(out Construction source);
 
-            AnalyticalModel changed = Modify.SetUValue(analyticalModel, Request(source, scope: UValueApplyScope.SelectedPanels, selected: new[] { Guid.NewGuid() }), out SetUValueResult result);
+            AnalyticalModel changed = Modify.SetUValue(analyticalModel, Request(source, scope: ThermalApplyScope.SelectedOnly, selected: new[] { Guid.NewGuid() }), out SetUValueResult result);
 
             Assert.Null(changed);
             Assert.False(result.Succeeded);
@@ -202,7 +202,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         {
             AnalyticalModel analyticalModel = UValueFixture.Model(out Construction source);
 
-            AnalyticalModel changed = Apply(analyticalModel, Request(source, scope: UValueApplyScope.DontAssign), out SetUValueResult result);
+            AnalyticalModel changed = Apply(analyticalModel, Request(source, scope: ThermalApplyScope.DontAssign), out SetUValueResult result);
 
             Assert.Equal(0, result.PanelCount);
             Assert.Equal(12, changed.AdjacencyCluster.GetPanels(source).Count);
@@ -223,9 +223,9 @@ namespace SAM.Analytical.UI.WPF.Tests
             AnalyticalModel analyticalModel = UValueFixture.Model(out Construction source);
             List<Guid> selected = UValueFixture.PanelGuids(analyticalModel, source).Take(1).ToList();
 
-            AnalyticalModel changed = Apply(analyticalModel, Request(source, UValueApplyMode.ModifyInPlace, UValueApplyScope.SelectedPanels, selected), out SetUValueResult result);
+            AnalyticalModel changed = Apply(analyticalModel, Request(source, UValueApplyMode.ModifyInPlace, ThermalApplyScope.SelectedOnly, selected), out SetUValueResult result);
 
-            Assert.Equal(UValueApplyScope.AllPanels, result.Scope);
+            Assert.Equal(ThermalApplyScope.AllUsing, result.Scope);
             Assert.Equal(source.Guid, result.Construction.Guid);
             Assert.Equal("SIM_EXT_SLD", result.Construction.Name);
             List<Panel> panels = changed.AdjacencyCluster.GetPanels(source);

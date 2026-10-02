@@ -72,7 +72,7 @@ namespace SAM.Analytical.UI.WPF
             string sourceName = result.SourceConstruction?.Name;
             string name = result.Construction?.Name;
             Line(stringBuilder, "Construction", result.Mode == UValueApplyMode.ModifyInPlace
-                ? string.Format(CultureInfo.InvariantCulture, "{0} (modified in place)", name)
+                ? string.Format(CultureInfo.InvariantCulture, "{0} (name kept, construction modified)", name)
                 : string.Format(CultureInfo.InvariantCulture, "{0} -> {1} (new construction; {0} unchanged)", sourceName, name));
 
             Line(stringBuilder, "Layer", string.Format(CultureInfo.InvariantCulture, "{0}: {1} -> {2}", result.LayerIndex + 1, result.SourceMaterialName, result.MaterialName));
@@ -108,10 +108,10 @@ namespace SAM.Analytical.UI.WPF
             string panels = count == 1 ? "panel" : "panels";
             switch (result.Scope)
             {
-                case UValueApplyScope.SelectedPanels:
+                case ThermalApplyScope.SelectedOnly:
                     return string.Format(CultureInfo.InvariantCulture, "{0} selected {1} that used {2}", count, panels, sourceName);
 
-                case UValueApplyScope.DontAssign:
+                case ThermalApplyScope.DontAssign:
                     return "not assigned to any panel";
 
                 default:

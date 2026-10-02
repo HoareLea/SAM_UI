@@ -121,16 +121,24 @@
             </Grid>
         </Border>
 
-        <!-- THE APPLY SCOPE, inline, before Apply: which panels, which construction, and the warnings. -->
+        <!-- THE APPLY SCOPE, inline and in the main area (not under Advanced), before Apply: which panels (all N using the
+             construction, or only the M selected), which construction, and the warnings. The labels carry the counts and are
+             set from UValueViewModel.Scope. -->
         <Border Grid.Row="3" Margin="0,10,0,0" Background="{StaticResource PartO.Brush.AccentSurface}" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="10,6">
             <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                    <TextBlock Text="Changes" VerticalAlignment="Center" Margin="0,0,12,0" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                    <RadioButton x:Name="radioButton_AllPanels" GroupName="Scope" IsChecked="True" Content="All panels using it" Margin="0,0,16,0" Checked="radioButton_Scope_Checked"/>
+                    <RadioButton x:Name="radioButton_SelectedPanels" GroupName="Scope" Content="Only the selected" Checked="radioButton_Scope_Checked"/>
+                </StackPanel>
+                <TextBlock x:Name="textBlock_ScopeReason" Style="{StaticResource PartO.Caption}" Margin="0,0,0,4" Visibility="Collapsed"/>
                 <TextBlock x:Name="textBlock_Scope" FontWeight="SemiBold" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}"/>
                 <TextBlock x:Name="textBlock_Result" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}" Margin="0,2,0,0"/>
                 <ItemsControl x:Name="itemsControl_Warnings" Focusable="False" Margin="0,4,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
-                                <TextBlock Text="&#x26A0;" Style="{StaticResource PartO.StatusGlyph}" Foreground="{StaticResource PartO.Brush.Danger}"/>
+                                <TextBlock Text="&#x26A0;" Style="{StaticResource PartO.StatusGlyph}" Foreground="{StaticResource PartO.Brush.Warning}"/>
                                 <TextBlock Text="{Binding}" TextWrapping="Wrap" MaxWidth="520" Foreground="{StaticResource PartO.Brush.Text}"/>
                             </StackPanel>
                         </DataTemplate>
@@ -169,17 +177,18 @@
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="Heat flow" VerticalAlignment="Center" Margin="0,2,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
                 <ComboBox x:Name="comboBox_HeatFlow" Grid.Row="2" Grid.Column="1" Margin="0,2" DisplayMemberPath="Display" SelectionChanged="comboBox_HeatFlow_SelectionChanged"/>
 
-                <TextBlock Grid.Row="3" Grid.Column="0" Text="Apply as" VerticalAlignment="Center" Margin="0,2,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
-                <StackPanel Grid.Row="3" Grid.Column="1" Orientation="Horizontal" Margin="0,2">
-                    <RadioButton x:Name="radioButton_NewConstruction" GroupName="Mode" Content="New construction" IsChecked="True" Margin="0,0,16,0" Checked="radioButton_Options_Checked"/>
-                    <RadioButton x:Name="radioButton_ModifyInPlace" GroupName="Mode" Content="Modify in place" Checked="radioButton_Options_Checked"/>
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Name" VerticalAlignment="Top" Margin="0,4,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                <StackPanel Grid.Row="3" Grid.Column="1" Margin="0,2">
+                    <CheckBox x:Name="checkBox_KeepName" Content="Keep name" Checked="checkBox_Options_Changed" Unchecked="checkBox_Options_Changed"
+                              ToolTip="Change the construction itself and keep its name, so every panel using it changes. Otherwise a new construction is created and the source stays unchanged."/>
+                    <TextBlock x:Name="textBlock_KeepNameReason" Style="{StaticResource PartO.Caption}" Margin="18,2,0,0" Visibility="Collapsed"/>
                 </StackPanel>
 
-                <TextBlock Grid.Row="4" Grid.Column="0" Text="Assign to" VerticalAlignment="Center" Margin="0,2,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
-                <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="0,2">
-                    <RadioButton x:Name="radioButton_AllPanels" GroupName="Scope" Content="All panels using it" IsChecked="True" Margin="0,0,16,0" Checked="radioButton_Options_Checked"/>
-                    <RadioButton x:Name="radioButton_SelectedPanels" GroupName="Scope" Content="Selected panels only" Margin="0,0,16,0" Checked="radioButton_Options_Checked"/>
-                    <RadioButton x:Name="radioButton_DontAssign" GroupName="Scope" Content="Don't assign" Checked="radioButton_Options_Checked"/>
+                <TextBlock Grid.Row="4" Grid.Column="0" Text="Assign" VerticalAlignment="Top" Margin="0,4,12,2" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                <StackPanel Grid.Row="4" Grid.Column="1" Margin="0,2">
+                    <CheckBox x:Name="checkBox_DontAssign" Content="Don't assign to any panel" Checked="checkBox_Options_Changed" Unchecked="checkBox_Options_Changed"
+                              ToolTip="Create the new construction without assigning it to any panel."/>
+                    <TextBlock x:Name="textBlock_DontAssignReason" Style="{StaticResource PartO.Caption}" Margin="18,2,0,0" Visibility="Collapsed"/>
                 </StackPanel>
             </Grid>
         </Expander>

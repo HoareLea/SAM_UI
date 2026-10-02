@@ -177,9 +177,9 @@ namespace SAM.Analytical.UI.WPF
                 comboBox_HeatFlow.SelectedIndex = 0;
                 textBox_MinThickness.Text = (UValueViewModel.DefaultMinThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
                 textBox_MaxThickness.Text = (UValueViewModel.DefaultMaxThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
-                radioButton_NewConstruction.IsChecked = true;
+                checkBox_KeepName.IsChecked = false;
+                checkBox_DontAssign.IsChecked = false;
                 radioButton_AllPanels.IsChecked = true;
-                radioButton_SelectedPanels.IsEnabled = viewModel != null && viewModel.SelectedPanelsCount > 0;
             }
             finally
             {
@@ -223,6 +223,9 @@ namespace SAM.Analytical.UI.WPF
                 textBlock_Result.Text = string.Empty;
                 itemsControl_Warnings.ItemsSource = null;
                 textBlock_Block.Visibility = Visibility.Collapsed;
+                textBlock_ScopeReason.Visibility = Visibility.Collapsed;
+                radioButton_AllPanels.IsEnabled = false;
+                radioButton_SelectedPanels.IsEnabled = false;
                 button_Apply.IsEnabled = false;
                 return;
             }
@@ -291,6 +294,8 @@ namespace SAM.Analytical.UI.WPF
                     ? "Answered from the reachable range already calculated (no new Tas calculation)."
                     : string.Format(CultureInfo.CurrentCulture, "Last calculation {0} ms (Tas TCD).", vm.LastEvaluationMilliseconds);
 
+            SyncOptions(vm, applied);
+
             textBlock_Scope.Text = vm.ScopeText;
             textBlock_Result.Text = vm.ResultText;
             itemsControl_Warnings.ItemsSource = vm.Warnings;
@@ -300,6 +305,47 @@ namespace SAM.Analytical.UI.WPF
             textBlock_Block.Visibility = block == null ? Visibility.Collapsed : Visibility.Visible;
 
             button_Apply.IsEnabled = !applied && vm.ApplyEnabled;
+        }
+
+        // The scope radios (main area) and the Keep name / Don't assign check boxes (Advanced) from the view-model: the labels
+        // carry the counts, and a choice that cannot be made is disabled with the reason beside it, not hidden.
+        private void SyncOptions(UValueViewModel vm, bool applied)
+        {
+            bool updating_Before = updating;
+            updating = true;
+            try
+            {
+                bool keepName = vm.KeepName;
+                bool dontAssign = checkBox_DontAssign.IsChecked == true;
+
+                radioButton_AllPanels.Content = vm.Scope.AllLabel;
+                radioButton_SelectedPanels.Content = vm.Scope.SelectedLabel;
+                radioButton_AllPanels.IsEnabled = !applied && !dontAssign;
+
+                string reason_Selected = vm.ScopeUnavailableReason;
+                radioButton_SelectedPanels.IsEnabled = !applied && !dontAssign && reason_Selected == null;
+                radioButton_SelectedPanels.ToolTip = reason_Selected;
+
+                // Say why only when there is something to explain: Keep name is on, or panels are selected but none uses the construction.
+                bool explain = reason_Selected != null && !dontAssign && (keepName || selectedPanelGuids.Count > 0);
+                textBlock_ScopeReason.Text = explain ? reason_Selected : string.Empty;
+                textBlock_ScopeReason.Visibility = explain ? Visibility.Visible : Visibility.Collapsed;
+
+                checkBox_KeepName.IsChecked = keepName;
+                string reason_KeepName = vm.KeepNameUnavailableReason;
+                checkBox_KeepName.IsEnabled = !applied && reason_KeepName == null;
+                textBlock_KeepNameReason.Text = reason_KeepName ?? string.Empty;
+                textBlock_KeepNameReason.Visibility = reason_KeepName == null ? Visibility.Collapsed : Visibility.Visible;
+
+                string reason_DontAssign = vm.DontAssignUnavailableReason;
+                checkBox_DontAssign.IsEnabled = !applied && reason_DontAssign == null;
+                textBlock_DontAssignReason.Text = reason_DontAssign ?? string.Empty;
+                textBlock_DontAssignReason.Visibility = reason_DontAssign == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+            finally
+            {
+                updating = updating_Before;
+            }
         }
 
         private Brush Brushes_Muted()
@@ -410,21 +456,27 @@ namespace SAM.Analytical.UI.WPF
             return (double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value) || double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out value)) && value > 0;
         }
 
-        private void radioButton_Options_Checked(object sender, RoutedEventArgs e)
+        private void radioButton_Scope_Checked(object sender, RoutedEventArgs e)
+        {
+            Options_Changed();
+        }
+
+        private void checkBox_Options_Changed(object sender, RoutedEventArgs e)
+        {
+            Options_Changed();
+        }
+
+        // The window holds the choice (which radio, which check boxes); the view-model gets it as one mode and one scope.
+        // Keep name is switched first: it is only available while the scope is "all", and it hides the other choices while on.
+        private void Options_Changed()
         {
             if (updating || viewModel == null)
             {
                 return;
             }
 
-            viewModel.ApplyMode = radioButton_ModifyInPlace.IsChecked == true ? UValueApplyMode.ModifyInPlace : UValueApplyMode.NewConstruction;
-            viewModel.ApplyScope = radioButton_SelectedPanels.IsChecked == true ? UValueApplyScope.SelectedPanels : radioButton_DontAssign.IsChecked == true ? UValueApplyScope.DontAssign : UValueApplyScope.AllPanels;
-
-            // Modifying in place always affects every panel using the construction.
-            bool inPlace = viewModel.ApplyMode == UValueApplyMode.ModifyInPlace;
-            radioButton_AllPanels.IsEnabled = !inPlace;
-            radioButton_SelectedPanels.IsEnabled = !inPlace && viewModel.SelectedPanelsCount > 0;
-            radioButton_DontAssign.IsEnabled = !inPlace;
+            viewModel.KeepName = checkBox_KeepName.IsChecked == true;
+            viewModel.ApplyScope = checkBox_DontAssign.IsChecked == true ? ThermalApplyScope.DontAssign : radioButton_SelectedPanels.IsChecked == true ? ThermalApplyScope.SelectedOnly : ThermalApplyScope.AllUsing;
             Render();
         }
 
@@ -484,11 +536,11 @@ namespace SAM.Analytical.UI.WPF
                 "Applied: {0} now has U {1} W/m²K ({2}). One Undo reverts it.",
                 result.Construction.Name,
                 U(result.NewThermalTransmittance),
-                result.Scope == UValueApplyScope.DontAssign
+                result.Scope == ThermalApplyScope.DontAssign
                     ? "not assigned to any panel"
                     : string.Format(CultureInfo.CurrentCulture, "{0} {1}", result.PanelCount, result.PanelCount == 1 ? "panel" : "panels"));
 
-            Brush brush = (Brush)FindResource(CheckSummary.Errors > 0 ? "PartO.Brush.Danger" : CheckSummary.Warnings > 0 ? "PartO.Brush.Danger" : "PartO.Brush.Success");
+            Brush brush = (Brush)FindResource(CheckSummary.Errors > 0 ? "PartO.Brush.Danger" : CheckSummary.Warnings > 0 ? "PartO.Brush.Warning" : "PartO.Brush.Success");
             border_Applied.BorderBrush = brush;
             textBlock_CheckGlyph.Text = CheckSummary.Glyph;
             textBlock_CheckGlyph.Foreground = brush;
