@@ -24,14 +24,18 @@ namespace SAM.Analytical.UI.WPF
         private readonly Func<IConstructionUValueEvaluator> createConstructionEvaluator;
         private readonly Func<GlazingSource> createConstructionLibrary;
         private readonly Func<ThermalSourceCatalog> createSources;
+        private readonly Func<UserGlazingLibrary> createUserGlazing;
         private IUValueEvaluator uValueEvaluator;
         private IGlazingEvaluator glazingEvaluator;
         private IConstructionUValueEvaluator constructionEvaluator;
         private ThermalSourceCatalog sources;
+        private UserGlazingLibrary userGlazing;
 
-        public ThermalEditServices(Func<IUValueEvaluator> uValueEvaluator = null, Func<IGlazingEvaluator> glazingEvaluator = null, Func<GlazingSource> library = null, Func<IConstructionUValueEvaluator> constructionEvaluator = null, Func<GlazingSource> constructionLibrary = null, Func<ThermalSourceCatalog> sources = null)
+        /// <param name="userGlazing">"My glazing systems" (the process's shared library by default; tests pass one on a temporary file).</param>
+        public ThermalEditServices(Func<IUValueEvaluator> uValueEvaluator = null, Func<IGlazingEvaluator> glazingEvaluator = null, Func<GlazingSource> library = null, Func<IConstructionUValueEvaluator> constructionEvaluator = null, Func<GlazingSource> constructionLibrary = null, Func<ThermalSourceCatalog> sources = null, Func<UserGlazingLibrary> userGlazing = null)
         {
             createSources = sources ?? (() => new ThermalSourceCatalog());
+            createUserGlazing = userGlazing ?? (() => UserGlazingLibrary.Shared);
             createUValueEvaluator = uValueEvaluator ?? (() => new TasUValueEvaluator());
             createGlazingEvaluator = glazingEvaluator ?? (() => new TasGlazingEvaluator());
             createLibrary = library ?? DefaultLibrary;
@@ -50,6 +54,12 @@ namespace SAM.Analytical.UI.WPF
         /// on first use (it reads SAM's user settings), so a panel that is only looked at in a test or a host without it reads nothing.
         /// </summary>
         public ThermalSourceCatalog Sources => this.sources ?? (this.sources = createSources());
+
+        /// <summary>
+        /// "My glazing systems" (<see cref="UserGlazingLibrary"/>): its complete systems are candidates of every glazing <c>Change…</c> list, read
+        /// when a list opens and again when the library says it changed. Created on first use; reading it never writes it or any model.
+        /// </summary>
+        public UserGlazingLibrary UserGlazing => userGlazing ?? (userGlazing = createUserGlazing());
 
         /// <summary>The U-values of constructions already calculated this session (never asked of Tas twice).</summary>
         public ConstructionUValueCache ConstructionCache { get; } = new ConstructionUValueCache();
