@@ -195,3 +195,23 @@ After F1 + F2 there is one element-editing journey - select → Thermal Performa
 and every entry point that edits selected elements leads to it. What is left outside the panel is specialist by intent (section 5), not a duplicate journey.
 Nothing further is required for the redesign. What remains - the two "seen, not fixed" items above, a user construction library for an opaque "keep for
 later", in-place edit / remove of saved glazing systems, frame authoring in the Builder - is ordinary future enhancement, not another redesign stage.
+
+## 9. The two final acceptance defects (ordinary fixes after Stage F, not a new stage)
+
+### 9.1 Opaque alternatives offered glazing as "U 0.000 · meets the target"
+
+- **Cause (proven with a headless probe on real Tas against the default library):** the default library stores three glazing systems as plain
+  constructions - `SIM_EXT_GLZ` (Default Panel Type CurtainWall), `SIM_EXT_GLZ_Roof` (Roof), `SIM_INT_GLZ` (WallInternal): transparent pane / gas /
+  transparent pane, no opaque layer. The alternatives offered every construction of every pool. `ThermalTransmittanceCalculator.Calculate` returns
+  Tas's U-value array; for a transparent construction Tas fills only the transparent slot (2.090 / 1.690 W/m²K) and **0 in every opaque slot**
+  (horizontal / up / down), which the evaluator read. Only NaN was treated as "not calculated", so 0 became a U-value, the margin equalled the target
+  and the line read "meets the target by 0.180". Every opaque construction of the library returned its real U-value (0.16 - 5.9).
+- **Fix (SAM_UI only):** (1) a construction with no opaque layer (SAM's `MaterialType` of its layers is Transparent or Gas - the same
+  classification Tas's own glazing path uses) is not an opaque alternative: not listed, not sent to Tas, not counted as "could not be calculated";
+  a construction whose material cannot be found keeps its existing "not calculated" path. (2) A U-value is valid only when finite and above zero
+  (`ConstructionUValue.Valid`): the evaluator reports anything else as not calculated with the reason, the cache never keeps it, the list never
+  builds a line from it, and a line without a valid U-value never meets a target, cannot be chosen or applied, and shows "U –" / "not calculated".
+  No positive threshold is introduced.
+- **Tests:** `ConstructionAlternativesTests` +14 cases (glazing and gas-only constructions excluded while the opaque ones are listed unchanged;
+  0 / negative / NaN / ±infinity through the real evaluator and through another evaluator: not listed, counted as not calculated, never chosen, not
+  cached; a line without a valid U-value; the evaluator and cache contracts).

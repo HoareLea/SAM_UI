@@ -170,7 +170,19 @@ namespace SAM.Analytical.UI.WPF
                 {
                     ThermalTransmittanceCalculationResult result = calculated?.Find(x => x?.Reference == construction.Guid.ToString());
                     double u = result?.GetThermalTransmittance(request.HeatFlowDirection, request.External) ?? double.NaN;
-                    results.Add(new ConstructionUValue(construction.Guid, u, double.IsNaN(u) ? (failure ?? "Tas did not return a U-value for it.") : null, 0));
+                    string message = null;
+                    if (double.IsNaN(u))
+                    {
+                        message = failure ?? "Tas did not return a U-value for it.";
+                    }
+                    else if (!ConstructionUValue.Valid(u))
+                    {
+                        // Zero, negative or infinite is not a U-value (a glazing construction has 0 in the opaque slots): reported, never passed on.
+                        message = string.Format(CultureInfo.CurrentCulture, "Tas returned no valid U-value for it ({0}).", u);
+                        u = double.NaN;
+                    }
+
+                    results.Add(new ConstructionUValue(construction.Guid, u, message, 0));
                 }
             }
 

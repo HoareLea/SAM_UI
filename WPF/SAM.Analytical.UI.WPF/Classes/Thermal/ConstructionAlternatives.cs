@@ -477,7 +477,7 @@ namespace SAM.Analytical.UI.WPF
 
             foreach (Construction construction in constructions_Model)
             {
-                if (construction.Guid == uValue.ConstructionGuid)
+                if (construction.Guid == uValue.ConstructionGuid || !Opaque(construction, source_Model))
                 {
                     continue;
                 }
@@ -500,7 +500,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 foreach (Construction construction in source_Library.GetConstructions())
                 {
-                    if (guids.Add(construction.Guid))
+                    if (Opaque(construction, source_Library) && guids.Add(construction.Guid))
                     {
                         candidates.Add(new ConstructionCandidate(construction, source_Library, materials_Model));
                     }
@@ -513,12 +513,22 @@ namespace SAM.Analytical.UI.WPF
             {
                 foreach (Construction construction in source.GetConstructions())
                 {
-                    if (guids.Add(construction.Guid))
+                    if (Opaque(construction, source) && guids.Add(construction.Guid))
                     {
                         candidates.Add(new ConstructionCandidate(construction, source, materials_Model));
                     }
                 }
             }
+        }
+
+        // Only an opaque construction is an alternative for an opaque row. A glazing system stored as a construction - transparent panes and gas,
+        // no opaque layer, e.g. the default library's SIM_EXT_GLZ / SIM_INT_GLZ for curtain walls - has no opaque U-value (Tas answers 0 in the
+        // opaque slots and gives its U-value as glazing), so it is never offered. A construction whose materials cannot all be found is not
+        // excluded here: it is listed as not calculated, as before.
+        private static bool Opaque(Construction construction, GlazingSource source)
+        {
+            MaterialType materialType = Analytical.Query.MaterialType(construction?.ConstructionLayers, source?.ConstructionManager?.MaterialLibrary);
+            return materialType != Core.MaterialType.Transparent && materialType != Core.MaterialType.Gas;
         }
 
         // A source arrived (or was removed): the candidates are rebuilt from the sources there are now.
@@ -584,7 +594,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 string key = Key(candidate, direction, external);
                 double u = double.NaN;
-                if (key == null || !cache.TryGet(key, out u))
+                if (key == null || !cache.TryGet(key, out u) || !ConstructionUValue.Valid(u))
                 {
                     if (key != null && inFlight.Contains(key))
                     {

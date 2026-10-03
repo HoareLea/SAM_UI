@@ -59,6 +59,9 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>U-value [W/m²K] on the row's heat-flow basis; NaN when not calculated.</summary>
         public double ThermalTransmittance { get; }
 
+        /// <summary>True only when <see cref="ThermalTransmittance"/> is a real U-value (finite, above zero); otherwise the line is "not calculated".</summary>
+        public bool Calculated => ConstructionUValue.Valid(ThermalTransmittance);
+
         public double Target { get; }
 
         public string SourceLabel { get; }
@@ -83,12 +86,12 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>True when the construction was made for another panel group than the panels it would be given to (ordered after those that were not).</summary>
         public bool MadeForOtherGroup { get; internal set; }
 
-        public bool CanApply => BlockReason == null && !double.IsNaN(ThermalTransmittance);
+        public bool CanApply => BlockReason == null && Calculated;
 
         /// <summary>Target minus U [W/m²K]: positive is better than the target.</summary>
         public double Margin => Target - ThermalTransmittance;
 
-        public bool Meets => !double.IsNaN(ThermalTransmittance) && Margin >= -0.0005;
+        public bool Meets => Calculated && Margin >= -0.0005;
 
         /// <summary>"Generated" / "Existing model" / "Library".</summary>
         public string KindText
@@ -114,7 +117,7 @@ namespace SAM.Analytical.UI.WPF
 
         public string NameText => Name;
 
-        public string UText => double.IsNaN(ThermalTransmittance) ? "U –" : string.Format(CultureInfo.CurrentCulture, "U {0:0.000}", ThermalTransmittance);
+        public string UText => !Calculated ? "U –" : string.Format(CultureInfo.CurrentCulture, "U {0:0.000}", ThermalTransmittance);
 
         /// <summary>"Meets the target by 0.030", "0.020 above the target", or the reason it has no U-value.</summary>
         public string StatusText
@@ -126,7 +129,7 @@ namespace SAM.Analytical.UI.WPF
                     return StatusOverride;
                 }
 
-                if (double.IsNaN(ThermalTransmittance) || double.IsNaN(Target))
+                if (!Calculated || double.IsNaN(Target))
                 {
                     return "not calculated";
                 }
