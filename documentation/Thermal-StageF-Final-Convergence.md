@@ -238,3 +238,25 @@ later", in-place edit / remove of saved glazing systems, frame authoring in the 
   correcting on import would make SAM disagree with Tas for the same file. Every other surveyed database (NCM v3.5 / v4.1 / v5.2.7, ASHRAE, ASHRAE 90.1
   2016, Constructions, IGDB v76) has no gap below still-gas conduction. Builder gaps are unaffected (they carry SAM's EN 673 HTC). The data should be
   reported to the database's publisher; until then, NCM v6.1e window systems with air / argon gaps should not be used for Ug.
+
+### 9.3 The intermittent Builder test failures - test threading, and the pane browser's "work done" signal
+
+- **Symptom:** a full WPF suite run occasionally failed once in a Builder test (first seen as
+  `GlazingBuilderIntegrationTests.Two_systems_built_one_after_the_other…`: `AggregateException (Nullable object must have a value)`), then passed.
+- **Reproduced:** 12 full-suite runs on `c544e4bd` - 4 failed, always in two families: (a) a save with the list open -
+  `Applying_the_saved_system…` with the exact message, `Save_refreshes…` (`HasRequest` false); (b) a Builder test finding no pane -
+  `Layers_move…`, `Editing_previewing…` ("Sequence contains no matching element"). `Two_systems…` stressed 2 × 1000 times under load: 3 failures
+  (null reference in `ThermalRowEditor.ElementCount`, "Timed out waiting for system 1 to be chosen").
+- **Cause (a) - the tests did not run the way the app does.** xUnit runs tests under its own `SynchronizationContext`, which hands posted work to
+  worker threads. The row editor marshals a Save's library refresh "back to the thread the list was opened on" (that context) and `SaveAsync`
+  resumes there too, so the refresh (`SetUserSourceAsync` → `Rebuild`) and the Save's choice (`Saved` → `SelectGlazing` → `SelectWhenAvailable`)
+  ran on two workers at once while the test thread read and disposed the same view-models. The captured stack: `SaveAsync` → `SelectGlazing` →
+  `GlazingViewModel.Refresh` reading `requestedGuid.Value` while the other thread had just consumed it. In the app that context is the WPF
+  dispatcher - one thread - so the product has no race (the view-models are UI-affine by design). **Fix:** the integration tests run on an STA
+  thread with the WPF dispatcher (`[WpfFact]`, `WpfCollection`) and wait by pumping it instead of blocking; no assertion changed. New test:
+  everything a Save does to the open list happens on the thread the list was opened on (fails deterministically as a plain `[Fact]`).
+- **Cause (b) - a real defect in `GlazingPaneBrowser.LastWork`** (its "work done" signal for tests): a projection / filter / added source
+  counted as done when the worker finished, before the panes it read reached the browser's thread - whenever the browser has a context (the app,
+  or xUnit's), so `Settle` could return with an empty pane list. **Fix:** the posted step is part of the work (`Post` returns a task completed once
+  the action has run; `Project`, the debounced filter and `AddAndSelectAsync` include it). New test with a queued UI-thread stand-in: the work is
+  not done while its hand-over waits, and is done with the panes listed once it runs (fails on the old code).

@@ -261,7 +261,7 @@ namespace SAM.Analytical.UI.WPF
 
         public bool HasNotice => !string.IsNullOrEmpty(notice);
 
-        /// <summary>The task of the newest read / projection / filter, for tests.</summary>
+        /// <summary>The task of the newest read / projection / filter, for tests: it completes only once the work it posts back to the browser's thread has run.</summary>
         internal Task LastWork { get; private set; } = Task.CompletedTask;
 
         /// <summary>Sorts the list by a column; the same column again reverses it.</summary>
@@ -332,7 +332,7 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            Post(() =>
+            await Post(() =>
             {
                 Synchronise();
                 GlazingPaneSource added = all.Find(x => x.Entry != null && string.Equals(x.Entry.Path, full, StringComparison.OrdinalIgnoreCase));
@@ -345,11 +345,11 @@ namespace SAM.Analytical.UI.WPF
             });
 
             await read.ConfigureAwait(false);
-            Post(() =>
+            await Post(() =>
             {
                 Synchronise();
                 ChoosePendingWhenReady();
-            });
+            }).ConfigureAwait(false);
         }
 
         private GlazingPaneSource pendingSelection;
@@ -476,7 +476,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 paneSource.Projecting = false;
                 IReadOnlyList<GlazingPaneEntry> result = t.IsFaulted ? new List<GlazingPaneEntry>() : t.Result;
-                Post(() =>
+                return Post(() =>
                 {
                     paneSource.Panes = result;
                     RefreshSources();
@@ -491,7 +491,7 @@ namespace SAM.Analytical.UI.WPF
                         ApplyFilter();
                     }
                 });
-            }, TaskScheduler.Default);
+            }, TaskScheduler.Default).Unwrap();
 
             LastWork = task;
         }
@@ -526,11 +526,8 @@ namespace SAM.Analytical.UI.WPF
 
             LastWork = Task.Delay(searchDebounce).ContinueWith(_ =>
             {
-                if (version == Volatile.Read(ref filterVersion) && !disposed)
-                {
-                    Post(ApplyFilter);
-                }
-            }, TaskScheduler.Default);
+                return version == Volatile.Read(ref filterVersion) && !disposed ? Post(ApplyFilter) : Task.CompletedTask;
+            }, TaskScheduler.Default).Unwrap();
         }
 
         /// <summary>Filters and sorts the chosen source's panes now.</summary>
@@ -603,7 +600,8 @@ namespace SAM.Analytical.UI.WPF
         }
 
         // State changes run on the context the browser was made on (the UI thread); without one (a test) on whatever thread comes, serialised by the lock.
-        private void Post(Action action)
+        // The task completes once the action has run on the browser's thread (at once when already there), so LastWork covers it.
+        private Task Post(Action action)
         {
             if (context == null || SynchronizationContext.Current == context)
             {
@@ -612,16 +610,26 @@ namespace SAM.Analytical.UI.WPF
                     action();
                 }
 
-                return;
+                return Task.CompletedTask;
             }
 
+            TaskCompletionSource<bool> completion = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             context.Post(_ =>
             {
-                lock (gate)
+                try
                 {
-                    action();
+                    lock (gate)
+                    {
+                        action();
+                    }
+                }
+                finally
+                {
+                    completion.TrySetResult(true);
                 }
             }, null);
+
+            return completion.Task;
         }
 
         private void Raise(string name)
