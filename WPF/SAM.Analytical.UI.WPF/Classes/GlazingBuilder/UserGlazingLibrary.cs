@@ -32,7 +32,10 @@ namespace SAM.Analytical.UI.WPF
         public List<ApertureConstruction> Systems => ConstructionManager.ApertureConstructions ?? new List<ApertureConstruction>();
     }
 
-    /// <summary>What <see cref="UserGlazingLibrary.Save"/> did. On failure nothing was written.</summary>
+    /// <summary>
+    /// What <see cref="UserGlazingLibrary.Save"/> or <see cref="UserGlazingLibrary.SaveReplacing"/> did. On failure the library was not changed (after a
+    /// Save and replace whose library write failed, the replaced system may also be in the archive - it is still active in the library).
+    /// </summary>
     public sealed class UserGlazingSaveResult
     {
         internal UserGlazingSaveResult(ApertureConstruction saved, IEnumerable<string> addedMaterials, IReadOnlyDictionary<string, string> renamedMaterials, string error, GlazingDraftValidation validation, ApertureConstruction replaced = null)

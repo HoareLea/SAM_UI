@@ -542,7 +542,8 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>
         /// Saves the draft as a NEW system and moves the system being edited to the archive in one transaction (<see cref="UserGlazingLibrary.SaveReplacing"/>):
         /// the new system has a new Guid, its provenance says it supersedes the old one, and the old name may be reused. Only while <see cref="IsEditing"/>.
-        /// A failure writes nothing and leaves the edited system where it was; <see cref="SaveError"/> says why.
+        /// A failure leaves the library as it was - the edited system still active, the new one not saved (after a failed library write the edited system
+        /// may also be in the archive; a retry is idempotent); <see cref="SaveError"/> says why.
         /// </summary>
         public async Task<bool> SaveAndReplaceAsync()
         {

@@ -217,7 +217,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         // ---- The failure contract ------------------------------------------------------------------------------------------
 
         [Fact]
-        public void When_the_archive_cannot_be_written_both_files_are_untouched_and_the_old_system_stays()
+        public void When_the_archive_cannot_be_written_the_library_is_unchanged_and_the_old_system_stays()
         {
             ApertureConstruction old = Save(BuilderFixture.Double("Window A"));
             string hash = Hash(library.Path);
