@@ -108,6 +108,8 @@
             <!-- SOURCES: where candidates come from beyond the model and the default library. Adding one only fills the pool; nothing reaches the model until Apply. -->
             <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6" AutomationProperties.AutomationId="stackPanel_Sources">
                 <DockPanel>
+                    <Button x:Name="button_MyLibrary" DockPanel.Dock="Right" Content="My library…" Padding="8,1" Margin="6,0,0,0" Click="button_MyLibrary_Click" AutomationProperties.AutomationId="button_MyLibrary"
+                            ToolTip="Open My library: the glazing systems you saved with the Glazing System Builder. Rename or remove one, or open it in the Builder. Nothing is written to the model."/>
                     <Button x:Name="button_AddSource" DockPanel.Dock="Right" Content="Add source…" Padding="8,1" Click="button_AddSource_Click" AutomationProperties.AutomationId="button_AddSource"
                             ToolTip="Add a Tas construction database (.tcd) or a JSON file of constructions as a source of candidates for walls, roofs, floors and glazing. It is remembered. Nothing is written to the model until you apply a choice."/>
                     <TextBlock Text="Sources" FontWeight="SemiBold" VerticalAlignment="Center"/>
@@ -330,6 +332,16 @@
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
                                                                             <StackPanel ToolTip="{Binding Tooltip}" Margin="0,2">
+                                                                                <StackPanel.ContextMenu>
+                                                                                    <ContextMenu>
+                                                                                        <MenuItem Header="New system based on this…" Click="menuItem_NewBasedOn_Click" AutomationProperties.AutomationId="menuItem_NewBasedOn"
+                                                                                                  ToolTip="Open the Glazing System Builder starting from this system. Saving there adds a new system to My glazing systems; nothing else changes."/>
+                                                                                        <MenuItem Header="Rename…" Click="menuItem_RenameUser_Click" AutomationProperties.AutomationId="menuItem_RenameUser"
+                                                                                                  Visibility="{Binding IsUserSystem, Converter={StaticResource BoolToVisibility}}"/>
+                                                                                        <MenuItem Header="Remove…" Click="menuItem_RemoveUser_Click" AutomationProperties.AutomationId="menuItem_RemoveUser"
+                                                                                                  Visibility="{Binding IsUserSystem, Converter={StaticResource BoolToVisibility}}"/>
+                                                                                    </ContextMenu>
+                                                                                </StackPanel.ContextMenu>
                                                                                 <TextBlock Text="{Binding NameText}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                                                                                 <TextBlock Style="{StaticResource PartO.Caption}" TextTrimming="CharacterEllipsis">
                                                                                     <Run Text="Uw "/><Run Text="{Binding UwText, Mode=OneWay}"/><Run Text=" · Ug "/><Run Text="{Binding UgText, Mode=OneWay}"/><Run Text=" · Uf "/><Run Text="{Binding UfText, Mode=OneWay}"/><Run Text=" · g "/><Run Text="{Binding GText, Mode=OneWay}"/><Run Text=" · LT "/><Run Text="{Binding LightTransmittanceText, Mode=OneWay}"/>

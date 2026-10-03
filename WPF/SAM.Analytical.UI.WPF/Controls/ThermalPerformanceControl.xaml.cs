@@ -435,6 +435,163 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        // ---- My library ---------------------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Shows "My library" over its view-model and returns when it is closed. A modal window owned by this panel's window by default (a test
+        /// supplies its own). The panel has subscribed to <see cref="UserLibraryViewModel.OpenInBuilderRequested"/> before this is called and disposes the
+        /// view-model afterwards.
+        /// </summary>
+        public Func<UserLibraryViewModel, bool?> ShowLibrary { get; set; }
+
+        /// <summary>Asks the user to confirm removing a system from My library (given the text to show); a message box by default, a test supplies its own.</summary>
+        public Func<string, bool> ConfirmRemove { get; set; }
+
+        private System.Windows.Window libraryWindow;
+
+        private bool? ShowLibraryWithWindow(UserLibraryViewModel library)
+        {
+            UserLibraryWindow window = new UserLibraryWindow(library) { Owner = System.Windows.Window.GetWindow(this) };
+            window.Confirm = ConfirmRemove;
+            libraryWindow = window;
+            try
+            {
+                return window.ShowDialog();
+            }
+            finally
+            {
+                libraryWindow = null;
+            }
+        }
+
+        private bool ConfirmWithMessageBox(string text)
+        {
+            return MessageBox.Show(System.Windows.Window.GetWindow(this), text, "Remove from My library", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK;
+        }
+
+        // The Builder over a window of its own: the panel's, or "My library" while that is open (the Builder is modal on it).
+        private bool? ShowBuilderOver(GlazingBuilderViewModel builder, System.Windows.Window owner)
+        {
+            if (ShowBuilder != null)
+            {
+                return ShowBuilder(builder);
+            }
+
+            return GlazingSystemBuilderWindow.ShowModal(builder, owner ?? System.Windows.Window.GetWindow(this));
+        }
+
+        /// <summary>Opens My library (optionally with a system selected, and renaming it); false when the host has no user library.</summary>
+        public bool OpenLibrary(Guid? select = null, bool rename = false)
+        {
+            UserLibraryViewModel library = viewModel.CreateUserLibrary();
+            if (library == null)
+            {
+                return false;
+            }
+
+            library.OpenInBuilderRequested += (sender, row) =>
+            {
+                GlazingBuilderViewModel builder = viewModel.CreateBuilder(row.ApertureConstruction);
+                if (builder == null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    ShowBuilderOver(builder, libraryWindow);
+                }
+                finally
+                {
+                    builder.Dispose();
+                }
+            };
+
+            if (select != null)
+            {
+                library.SelectedRow = library.Rows.FirstOrDefault(x => x.Guid == select.Value);
+                if (rename)
+                {
+                    library.BeginRename();
+                }
+            }
+
+            try
+            {
+                (ShowLibrary ?? ShowLibraryWithWindow)(library);
+            }
+            finally
+            {
+                library.Dispose();
+            }
+
+            return true;
+        }
+
+        private void button_MyLibrary_Click(object sender, RoutedEventArgs e)
+        {
+            OpenLibrary();
+        }
+
+        // The candidate and the open list a context menu was opened on.
+        private bool TryContextTarget(object sender, out GlazingCandidateRow row, out ThermalRowEditor editor)
+        {
+            GlazingCandidateRow candidate = (sender as MenuItem)?.DataContext as GlazingCandidateRow;
+            row = candidate;
+            editor = candidate == null ? null : viewModel.Groups.SelectMany(x => x.Rows).Select(x => x.Editor).FirstOrDefault(x => x != null && x.Candidates.Contains(candidate));
+            return row != null && editor != null;
+        }
+
+        // New system based on this…: the Builder starts from the right-clicked candidate; choosing it for the row is not needed.
+        private void menuItem_NewBasedOn_Click(object sender, RoutedEventArgs e)
+        {
+            if (!TryContextTarget(sender, out GlazingCandidateRow row, out ThermalRowEditor editor))
+            {
+                return;
+            }
+
+            GlazingBuilderViewModel builder = editor.CreateBuilder(row.Candidate);
+            if (builder == null)
+            {
+                return;
+            }
+
+            try
+            {
+                ShowBuilderOver(builder, null);
+            }
+            finally
+            {
+                builder.Dispose();
+            }
+        }
+
+        private void menuItem_RenameUser_Click(object sender, RoutedEventArgs e)
+        {
+            if (TryContextTarget(sender, out GlazingCandidateRow row, out _) && row.IsUserSystem)
+            {
+                OpenLibrary(row.Guid, true);
+            }
+        }
+
+        private void menuItem_RemoveUser_Click(object sender, RoutedEventArgs e)
+        {
+            if (!TryContextTarget(sender, out GlazingCandidateRow row, out _) || !row.IsUserSystem)
+            {
+                return;
+            }
+
+            // Straight to the confirmation: no window is needed to remove one system. The open list follows the library's Changed event.
+            using (UserLibraryViewModel library = viewModel.CreateUserLibrary())
+            {
+                UserLibraryEntryRow entry = library?.Rows.FirstOrDefault(x => x.Guid == row.Guid);
+                if (entry != null)
+                {
+                    library.Remove(ConfirmRemove ?? ConfirmWithMessageBox, entry);
+                }
+            }
+        }
+
         private void button_Recalculate_Click(object sender, RoutedEventArgs e)
         {
             if (Applier == null)

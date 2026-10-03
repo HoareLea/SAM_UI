@@ -147,12 +147,32 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
+            List<string> lines = GlazingBuiltFrom(provenance);
+            Line_Glazing(stringBuilder, "Built from", lines[0]);
+            foreach (string line in lines.Skip(1))
+            {
+                Continue_Glazing(stringBuilder, line);
+            }
+        }
+
+        /// <summary>
+        /// How a Builder system was built, as the lines the GLAZING CHANGE report and "My library" both show: the first says when it was saved and what
+        /// it was based on, then the panes (outside -> inside), the gaps and the frame. Labels and file names only, never a folder. Empty for none.
+        /// </summary>
+        internal static List<string> GlazingBuiltFrom(GlazingBuilderProvenance provenance)
+        {
+            List<string> result = new List<string>();
+            if (provenance == null)
+            {
+                return result;
+            }
+
             string created = provenance.CreatedUtc == default ? "date unknown" : provenance.CreatedUtc.ToString("yyyy-MM-dd HH:mm 'UTC'", CultureInfo.InvariantCulture);
             string basedOn = string.IsNullOrWhiteSpace(provenance.BasedOnName)
                 ? "not based on another system"
                 : provenance.BasedOnGuid.HasValue ? string.Format(CultureInfo.InvariantCulture, "based on {0} ({1})", provenance.BasedOnName, provenance.BasedOnGuid.Value) : "based on " + provenance.BasedOnName;
             string intended = provenance.IntendedPanelType == PanelType.Undefined ? string.Empty : "; intended for " + provenance.IntendedPanelType;
-            Line_Glazing(stringBuilder, "Built from", string.Format(CultureInfo.InvariantCulture, "SAM Glazing System Builder, saved {0}; {1}{2}", created, basedOn, intended));
+            result.Add(string.Format(CultureInfo.InvariantCulture, "SAM Glazing System Builder, saved {0}; {1}{2}", created, basedOn, intended));
 
             List<string> panes = (provenance.Panes ?? new List<GlazingBuilderPaneRecord>()).OrderBy(x => x.Position).Select(x =>
             {
@@ -161,7 +181,7 @@ namespace SAM.Analytical.UI.WPF
                 string savedAs = !string.IsNullOrWhiteSpace(x.Material) && x.Material != name && x.Material != name + " Reversed" ? string.Format(CultureInfo.InvariantCulture, ", saved as {0}", x.Material) : string.Empty;
                 return string.Format(CultureInfo.InvariantCulture, "{0}. {1}{2} [{3:0.#} mm, from {4}{5}]", x.Position, name, x.Reversed ? " (reversed)" : string.Empty, x.Thickness * 1000, from ?? "?", savedAs);
             }).ToList();
-            Continue_Glazing(stringBuilder, "Panes (outside -> inside): " + (panes.Count == 0 ? "none recorded" : string.Join(" | ", panes)));
+            result.Add("Panes (outside -> inside): " + (panes.Count == 0 ? "none recorded" : string.Join(" | ", panes)));
 
             List<string> gaps = (provenance.Gaps ?? new List<GlazingBuilderGapRecord>()).OrderBy(x => x.Position).Select(x => string.Format(
                 CultureInfo.InvariantCulture,
@@ -171,12 +191,13 @@ namespace SAM.Analytical.UI.WPF
                 x.Thickness * 1000,
                 U_Glazing(x.HeatTransferCoefficient),
                 double.IsNaN(x.TiltDegrees) ? "?" : x.TiltDegrees.ToString("0", CultureInfo.InvariantCulture))).ToList();
-            Continue_Glazing(stringBuilder, "Gaps (outside -> inside): " + (gaps.Count == 0 ? "none" : string.Join(" | ", gaps)));
+            result.Add("Gaps (outside -> inside): " + (gaps.Count == 0 ? "none" : string.Join(" | ", gaps)));
 
             string width = double.IsNaN(provenance.FrameWidth) ? "no width entered" : string.Format(CultureInfo.InvariantCulture, "width {0:0.#} mm", provenance.FrameWidth * 1000);
-            Continue_Glazing(stringBuilder, string.Equals(provenance.Frame, "Copied", StringComparison.OrdinalIgnoreCase)
+            result.Add(string.Equals(provenance.Frame, "Copied", StringComparison.OrdinalIgnoreCase)
                 ? string.Format(CultureInfo.InvariantCulture, "Frame: copied from {0}, {1}", string.IsNullOrWhiteSpace(provenance.FrameCopiedFromName) ? "?" : provenance.FrameCopiedFromName, width)
                 : "Frame: none");
+            return result;
         }
 
         // The file name of a label that may have been given as a path; null for none.

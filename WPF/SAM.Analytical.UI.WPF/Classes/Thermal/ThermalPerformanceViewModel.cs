@@ -47,6 +47,64 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>The editing of the rows (Stage C): pending edits with their pinned scope, the check before Apply, Apply and Discard.</summary>
         public ThermalEditSession Session { get; }
 
+        /// <summary>
+        /// The view-model of "My library" (the saved glazing systems: rename, remove, open in the Builder) over the services' user library; null when
+        /// the host has none. It is model-free: nothing it does touches the analytical model or its history.
+        /// </summary>
+        public UserLibraryViewModel CreateUserLibrary()
+        {
+            UserGlazingLibrary library = UserGlazingOrNull();
+            return library == null ? null : new UserLibraryViewModel(library);
+        }
+
+        /// <summary>
+        /// Prepares the Glazing System Builder seeded from a saved system of "My library" (no open Change… list needed): the model's, the default
+        /// library's and the user's systems as panes and frames, the panel's source catalogue, the user library to save to and the Builder's own Tas
+        /// calculation. Saving adds a NEW system; the seed is not changed. The Builder holds NO model. The caller shows the window and disposes the
+        /// view-model; null when there is no user library.
+        /// </summary>
+        public GlazingBuilderViewModel CreateBuilder(ApertureConstruction seed)
+        {
+            UserGlazingLibrary library = UserGlazingOrNull();
+            if (library == null || seed == null)
+            {
+                return null;
+            }
+
+            GlazingSource source_User = GlazingSource.FromUserLibrary(library);
+            List<GlazingSource> sources = new List<GlazingSource>();
+            if (analyticalModel != null)
+            {
+                sources.Add(GlazingSource.FromModel(analyticalModel));
+            }
+
+            sources.Add(Session.Services.GlazingLibrary());
+            sources.Add(source_User);
+
+            return new GlazingBuilderViewModel(new GlazingBuilderOptions()
+            {
+                Seed = seed,
+                SeedSource = source_User,
+                Sources = sources,
+                Catalog = Session.Services.Sources,
+                Library = library,
+                Evaluator = Session.Services.CreateBuilderEvaluator(),
+                ComposeOptions = Session.Services.BuilderComposeOptions,
+            });
+        }
+
+        private UserGlazingLibrary UserGlazingOrNull()
+        {
+            try
+            {
+                return Session.Services.UserGlazing;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public ThermalPerformanceMode Mode
         {
             get => mode;

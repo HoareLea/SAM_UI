@@ -34,6 +34,9 @@ namespace SAM.Analytical.UI.WPF
 
         public Guid Guid => Candidate.Guid;
 
+        /// <summary>True for a system of "My glazing systems": it can be renamed or removed from the list.</summary>
+        public bool IsUserSystem => Candidate.Kind == GlazingSourceKind.User;
+
         public string Name => Candidate.Name;
 
         /// <summary>The name with the current marker, as shown in the table.</summary>
