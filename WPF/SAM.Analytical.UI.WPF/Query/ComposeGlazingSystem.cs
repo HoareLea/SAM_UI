@@ -221,6 +221,29 @@ namespace SAM.Analytical.UI.WPF
             return result;
         }
 
+        /// <summary>
+        /// The pane <paramref name="reversed"/> was made from by <see cref="Reverse"/> (its name without " Reversed", the faces swapped back), or null
+        /// when it is not one: the result must give <paramref name="reversed"/> again when reversed, so only a pane the Builder itself reversed is undone.
+        /// </summary>
+        internal static TransparentMaterial Unreverse(TransparentMaterial reversed)
+        {
+            const string suffix = " Reversed";
+            if (reversed?.Name == null || !reversed.Name.EndsWith(suffix, StringComparison.Ordinal) || reversed.Name.Length == suffix.Length)
+            {
+                return null;
+            }
+
+            string name = reversed.Name.Substring(0, reversed.Name.Length - suffix.Length);
+            string displayName = !string.IsNullOrWhiteSpace(reversed.DisplayName) && reversed.DisplayName.EndsWith(suffix, StringComparison.Ordinal) ? reversed.DisplayName.Substring(0, reversed.DisplayName.Length - suffix.Length) : reversed.DisplayName;
+            TransparentMaterial result = new TransparentMaterial(name, Guid.NewGuid(), reversed, displayName, reversed.Description);
+
+            Swap(reversed, result, TransparentMaterialParameter.ExternalSolarReflectance, TransparentMaterialParameter.InternalSolarReflectance);
+            Swap(reversed, result, TransparentMaterialParameter.ExternalLightReflectance, TransparentMaterialParameter.InternalLightReflectance);
+            Swap(reversed, result, TransparentMaterialParameter.ExternalEmissivity, TransparentMaterialParameter.InternalEmissivity);
+
+            return MaterialIdentity.Same(Reverse(result), reversed) ? result : null;
+        }
+
         private static void Swap(TransparentMaterial source, TransparentMaterial result, TransparentMaterialParameter external, TransparentMaterialParameter @internal)
         {
             bool hasExternal = source.TryGetValue(external, out double value_External);

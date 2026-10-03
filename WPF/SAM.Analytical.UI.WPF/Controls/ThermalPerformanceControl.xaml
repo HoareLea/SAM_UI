@@ -336,6 +336,9 @@
                                                                                     <ContextMenu>
                                                                                         <MenuItem Header="New system based on this…" Click="menuItem_NewBasedOn_Click" AutomationProperties.AutomationId="menuItem_NewBasedOn"
                                                                                                   ToolTip="Open the Glazing System Builder starting from this system. Saving there adds a new system to My glazing systems; nothing else changes."/>
+                                                                                        <MenuItem Header="Open in Builder…" Click="menuItem_OpenInBuilder_Click" AutomationProperties.AutomationId="menuItem_OpenInBuilder"
+                                                                                                  Visibility="{Binding IsUserSystem, Converter={StaticResource BoolToVisibility}}"
+                                                                                                  ToolTip="Edit this system in the Glazing System Builder: save the result as a new system, or save and replace this one (it is moved to the archive)."/>
                                                                                         <MenuItem Header="Rename…" Click="menuItem_RenameUser_Click" AutomationProperties.AutomationId="menuItem_RenameUser"
                                                                                                   Visibility="{Binding IsUserSystem, Converter={StaticResource BoolToVisibility}}"/>
                                                                                         <MenuItem Header="Remove…" Click="menuItem_RemoveUser_Click" AutomationProperties.AutomationId="menuItem_RemoveUser"

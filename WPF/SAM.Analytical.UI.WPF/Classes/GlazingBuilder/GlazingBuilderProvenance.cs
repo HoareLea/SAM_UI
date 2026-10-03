@@ -24,7 +24,11 @@ namespace SAM.Analytical.UI.WPF
 
         public static readonly Guid ParameterSetGuid = new Guid("5a3e0e01-6b1d-4c1e-9a52-7c0f1e2d3b40");
 
-        public const int CurrentSchemaVersion = 1;
+        /// <summary>
+        /// 1 = the first schema; 2 adds <see cref="SupersedesGuid"/> / <see cref="SupersedesName"/> (a system saved with "Save and replace"). Every new save
+        /// writes 2; a reader takes a missing key as "none", so a version-1 system reads exactly as it did.
+        /// </summary>
+        public const int CurrentSchemaVersion = 2;
 
         // A value that may be NaN (no coefficient) is written as "NaN": plain JSON has no NaN.
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions() { NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals };
@@ -36,6 +40,12 @@ namespace SAM.Analytical.UI.WPF
         public string BasedOnName { get; set; }
 
         public Guid? BasedOnGuid { get; set; }
+
+        /// <summary>The Guid of the system this one REPLACED (saved with "Save and replace"; that system is in the archive); null for any other save.</summary>
+        public Guid? SupersedesGuid { get; set; }
+
+        /// <summary>The name the replaced system had.</summary>
+        public string SupersedesName { get; set; }
 
         public PanelType IntendedPanelType { get; set; } = PanelType.Undefined;
 
@@ -81,6 +91,16 @@ namespace SAM.Analytical.UI.WPF
             if (BasedOnGuid.HasValue)
             {
                 result.Add("Based On Guid", BasedOnGuid.Value.ToString());
+            }
+
+            if (!string.IsNullOrWhiteSpace(SupersedesName))
+            {
+                result.Add("Supersedes Name", SupersedesName);
+            }
+
+            if (SupersedesGuid.HasValue)
+            {
+                result.Add("Supersedes Guid", SupersedesGuid.Value.ToString());
             }
 
             result.Add("Intended Panel Type", IntendedPanelType.ToString());
@@ -145,6 +165,8 @@ namespace SAM.Analytical.UI.WPF
                 SchemaVersion = parameterSet.Contains("Schema Version") ? parameterSet.ToInt("Schema Version") : 0,
                 BasedOnName = parameterSet.ToString("Based On Name"),
                 BasedOnGuid = ParseGuid(parameterSet.ToString("Based On Guid")),
+                SupersedesName = parameterSet.ToString("Supersedes Name"),
+                SupersedesGuid = ParseGuid(parameterSet.ToString("Supersedes Guid")),
                 IntendedPanelType = Analytical.Query.PanelType(parameterSet.ToString("Intended Panel Type")),
                 GapEvaluationTiltDegrees = Number(parameterSet, "Gap Evaluation Tilt [deg]"),
                 GapHeatTransferBasis = parameterSet.ToString("Gap Heat Transfer Basis"),

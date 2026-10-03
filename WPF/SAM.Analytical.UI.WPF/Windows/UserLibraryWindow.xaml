@@ -120,7 +120,7 @@
                 <Button x:Name="button_Remove" Content="Remove…" DockPanel.Dock="Left" Style="{StaticResource Style_Command}" IsEnabled="{Binding CanRemove}" Click="button_Remove_Click"
                         AutomationProperties.AutomationId="button_Remove" ToolTip="Take the selected system out of My glazing systems. It is moved to the archive, not deleted, and models that use it keep their copy."/>
                 <Button x:Name="button_OpenInBuilder" Content="Open in Builder…" DockPanel.Dock="Left" Style="{StaticResource Style_Command}" IsEnabled="{Binding CanOpenInBuilder}" Click="button_OpenInBuilder_Click"
-                        AutomationProperties.AutomationId="button_OpenInBuilder" ToolTip="Start the Glazing System Builder from the selected system. Saving there adds a new system; the selected one is not changed."/>
+                        AutomationProperties.AutomationId="button_OpenInBuilder" ToolTip="Edit the selected system in the Glazing System Builder. Save as new keeps it as it is; Save and replace saves the result as a new system and moves the selected one to the archive."/>
             </DockPanel>
         </StackPanel>
     </Grid>

@@ -310,11 +310,17 @@
 
         <!-- SAVE / CANCEL -->
         <DockPanel Grid.Row="3" Margin="0,10,0,0">
-            <Button x:Name="button_Save" DockPanel.Dock="Right" Content="Save as predefined" Style="{StaticResource PartO.PrimaryButton}" MinWidth="150" Height="28" Click="button_Save_Click"
+            <Button x:Name="button_SaveReplace" DockPanel.Dock="Right" Content="{Binding SaveAndReplaceText}" Style="{StaticResource PartO.PrimaryButton}" MinWidth="150" Height="28" Margin="8,0,0,0" Click="button_SaveReplace_Click"
+                    IsEnabled="{Binding CanSaveAndReplace}" Visibility="{Binding IsEditing, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="button_SaveReplace"
+                    ToolTip="Save this system as a new one (new Guid) and move the system you opened to the archive. The name may stay the same. Models that use the old one keep their copy."/>
+            <Button x:Name="button_Save" DockPanel.Dock="Right" Content="{Binding SaveButtonText}" Style="{StaticResource PartO.PrimaryButton}" MinWidth="150" Height="28" Click="button_Save_Click"
                     IsEnabled="{Binding CanSave}" AutomationProperties.AutomationId="button_Save" ToolTip="Save this system in My glazing systems. The model is not changed."/>
             <Button x:Name="button_Cancel" DockPanel.Dock="Right" Content="Cancel" Margin="0,0,8,0" Padding="14,0" Height="28" IsCancel="True" Click="button_Cancel_Click" AutomationProperties.AutomationId="button_Cancel"
                     ToolTip="Close without saving. Nothing is changed."/>
-            <TextBlock x:Name="textBlock_SaveError" Text="{Binding SaveError}" Style="{StaticResource Style_Danger}" VerticalAlignment="Center" Margin="0,0,12,0" AutomationProperties.AutomationId="textBlock_SaveError"/>
+            <StackPanel VerticalAlignment="Center" Margin="0,0,12,0">
+                <TextBlock x:Name="textBlock_SaveError" Text="{Binding SaveError}" Style="{StaticResource Style_Danger}" AutomationProperties.AutomationId="textBlock_SaveError"/>
+                <TextBlock x:Name="textBlock_SaveHint" Text="{Binding SaveAsNewHint}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" AutomationProperties.AutomationId="textBlock_SaveHint"/>
+            </StackPanel>
         </DockPanel>
     </Grid>
 </Window>

@@ -433,7 +433,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         [WpfFact]
-        public void Open_in_Builder_from_the_manager_seeds_the_Builder_from_that_system_and_saving_adds_a_new_one()
+        public void Open_in_Builder_from_the_manager_opens_that_system_for_editing_and_opening_it_saves_nothing()
         {
             ApertureConstruction saved = Save(BuilderFixture.Double("Mine"));
             using (Panel panel = OpenPanel(openList: false))
@@ -442,10 +442,11 @@ namespace SAM.Analytical.UI.WPF.Tests
                 panel.Control.ShowBuilder = viewModel =>
                 {
                     builder = viewModel;
-                    Assert.Equal("Mine (copy)", viewModel.Name);
+                    Assert.True(viewModel.IsEditing);
+                    Assert.Equal("Mine", viewModel.Name);
+                    Assert.Equal("Editing a copy of Mine · saving creates a new system", viewModel.StatusText);
                     Assert.Equal(saved.Guid, viewModel.Draft.BasedOnGuid);
                     Assert.Equal("P,G,P", string.Join(",", viewModel.Layers.Select(x => x.IsPane ? "P" : "G")));
-                    Assert.Contains("Mine", viewModel.StatusText);
                     return null;
                 };
                 panel.Control.ShowLibrary = viewModel =>
@@ -535,6 +536,38 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal(Visibility.Collapsed, Item(menu, "menuItem_RenameUser").Visibility);
                 Assert.Equal(Visibility.Collapsed, Item(menu, "menuItem_RemoveUser").Visibility);
                 menu.IsOpen = false;
+                AssertModelUntouched(panel);
+            }
+        }
+
+        [WpfFact]
+        public void The_context_menu_Open_in_Builder_edits_a_user_system_while_New_system_based_on_this_makes_a_plain_copy_of_it()
+        {
+            ApertureConstruction saved = Save(BuilderFixture.Double("Mine"));
+            using (Panel panel = OpenPanel())
+            {
+                List<GlazingBuilderViewModel> shown = new List<GlazingBuilderViewModel>();
+                List<(bool Editing, string Name)> seen = new List<(bool, string)>();
+                panel.Control.ShowBuilder = builder =>
+                {
+                    seen.Add((builder.IsEditing, builder.Name));
+                    return null;
+                };
+
+                ContextMenu menu = OpenMenu(panel, saved.Guid);
+                Assert.Equal(Visibility.Visible, Item(menu, "menuItem_OpenInBuilder").Visibility);
+                Click(Item(menu, "menuItem_OpenInBuilder"));
+                Click(Item(menu, "menuItem_NewBasedOn"));
+                menu.IsOpen = false;
+
+                Assert.Equal(new[] { (true, "Mine"), (false, "Mine (copy)") }, seen);
+                Assert.Null(panel.Editor.SelectedCandidate);
+
+                // Not for the default library's systems.
+                ContextMenu other = OpenMenu(panel, GlazingFixture.BetterGuid);
+                Assert.Equal(Visibility.Collapsed, Item(other, "menuItem_OpenInBuilder").Visibility);
+                other.IsOpen = false;
+                Assert.Equal(1, library.Read().Systems.Count);
                 AssertModelUntouched(panel);
             }
         }

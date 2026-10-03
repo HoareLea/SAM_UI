@@ -530,8 +530,10 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>
         /// The same, seeded from <paramref name="seed"/> (a candidate of the open list, e.g. the one right-clicked) instead of the chosen / current
         /// system: seeding does not choose the candidate, so the row's pending change is untouched. Null seed: as <see cref="CreateBuilder()"/> with no seed.
+        /// With <paramref name="edit"/> and a system of "My glazing systems" the Builder opens in EDIT mode (<see cref="GlazingBuilderOptions.EditSeed"/>):
+        /// Save and replace is offered besides Save as new.
         /// </summary>
-        public GlazingBuilderViewModel CreateBuilder(GlazingCandidate seed)
+        public GlazingBuilderViewModel CreateBuilder(GlazingCandidate seed, bool edit = false)
         {
             if (!CanCreateNew)
             {
@@ -542,6 +544,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 Seed = seed?.ApertureConstruction,
                 SeedSource = seed?.Source,
+                EditSeed = edit && seed?.Kind == GlazingSourceKind.User,
                 Sources = glazing.Sources.Where(x => x.Kind == GlazingSourceKind.Model || x.Kind == GlazingSourceKind.Library || x.Kind == GlazingSourceKind.User).ToList(),
                 Catalog = session.Services.Sources,
                 Library = userGlazing,

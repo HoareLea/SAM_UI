@@ -573,6 +573,30 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        // Open in Builder…: a system of My glazing systems is edited (Save as new / Save and replace); the row's choice is not touched.
+        private void menuItem_OpenInBuilder_Click(object sender, RoutedEventArgs e)
+        {
+            if (!TryContextTarget(sender, out GlazingCandidateRow row, out ThermalRowEditor editor) || !row.IsUserSystem)
+            {
+                return;
+            }
+
+            GlazingBuilderViewModel builder = editor.CreateBuilder(row.Candidate, true);
+            if (builder == null)
+            {
+                return;
+            }
+
+            try
+            {
+                ShowBuilderOver(builder, null);
+            }
+            finally
+            {
+                builder.Dispose();
+            }
+        }
+
         private void menuItem_RenameUser_Click(object sender, RoutedEventArgs e)
         {
             if (TryContextTarget(sender, out GlazingCandidateRow row, out _) && row.IsUserSystem)

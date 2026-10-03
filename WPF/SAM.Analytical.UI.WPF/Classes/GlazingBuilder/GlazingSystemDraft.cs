@@ -222,6 +222,12 @@ namespace SAM.Analytical.UI.WPF
             return new DraftFrame(layers, frameMaterials, width, additionalHeatTransfer, system.Name, system.Guid, sourceLabel);
         }
 
+        /// <summary>The same frame (layers, materials, width, additional heat transfer) recorded as copied from another system - for a system the Builder saved, whose frame came from somewhere else.</summary>
+        internal DraftFrame WithOrigin(string copiedFromName, Guid? copiedFromGuid)
+        {
+            return IsNone ? this : new DraftFrame(Layers, Materials, Width, AdditionalHeatTransfer, copiedFromName, copiedFromGuid, SourceLabel);
+        }
+
         public bool IsNone => Layers.Count == 0;
 
         /// <summary>The copied frame layers (copies), in the source system's order.</summary>

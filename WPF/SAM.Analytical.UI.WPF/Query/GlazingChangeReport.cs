@@ -172,7 +172,12 @@ namespace SAM.Analytical.UI.WPF
                 ? "not based on another system"
                 : provenance.BasedOnGuid.HasValue ? string.Format(CultureInfo.InvariantCulture, "based on {0} ({1})", provenance.BasedOnName, provenance.BasedOnGuid.Value) : "based on " + provenance.BasedOnName;
             string intended = provenance.IntendedPanelType == PanelType.Undefined ? string.Empty : "; intended for " + provenance.IntendedPanelType;
-            result.Add(string.Format(CultureInfo.InvariantCulture, "SAM Glazing System Builder, saved {0}; {1}{2}", created, basedOn, intended));
+            string replaces = !provenance.SupersedesGuid.HasValue
+                ? string.Empty
+                : string.IsNullOrWhiteSpace(provenance.SupersedesName)
+                    ? string.Format(CultureInfo.InvariantCulture, "; replaces {0}", provenance.SupersedesGuid.Value)
+                    : string.Format(CultureInfo.InvariantCulture, "; replaces {0} ({1})", provenance.SupersedesName, provenance.SupersedesGuid.Value);
+            result.Add(string.Format(CultureInfo.InvariantCulture, "SAM Glazing System Builder, saved {0}; {1}{2}{3}", created, basedOn, replaces, intended));
 
             List<string> panes = (provenance.Panes ?? new List<GlazingBuilderPaneRecord>()).OrderBy(x => x.Position).Select(x =>
             {
