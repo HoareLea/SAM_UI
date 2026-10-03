@@ -11,6 +11,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using Xunit;
 
 namespace SAM.Analytical.UI.WPF.Tests
@@ -20,7 +22,14 @@ namespace SAM.Analytical.UI.WPF.Tests
     /// Builder's Save as predefined refreshing the open candidate list ONCE through the library's own <see cref="UserGlazingLibrary.Changed"/> and
     /// choosing the new system by Guid, and Apply afterwards being the existing glazing change (one model change, one Undo). Opening, editing,
     /// previewing, saving and cancelling the Builder never touch the model, its history or the Undo stack; each test has its own library file.
+    /// <para>
+    /// The panel's view-models belong to the thread the list was opened on - the UI thread in the app - and a Save, which writes off that thread,
+    /// comes back to it. These tests therefore run as the app does: on an STA thread with the WPF dispatcher (<c>[WpfFact]</c>), waiting by pumping
+    /// it, never by blocking it. (Under xUnit's own context, which is not one thread, the refresh a Save posts ran on a worker while the test and
+    /// the Save's continuation used the same view-models: an intermittent "Nullable object must have a value" / null reference / lost choice.)
+    /// </para>
     /// </summary>
+    [Collection(WpfCollection.Name)]
     public sealed class GlazingBuilderIntegrationTests : IDisposable
     {
         private readonly string directory = BuilderFixture.TempDirectory();
@@ -49,32 +58,46 @@ namespace SAM.Analytical.UI.WPF.Tests
                 () => new FakeSourceReader().Catalog(), user ?? (() => library), () => new DraftGlazingEvaluator(tas ?? new FakeDraftTas(), TimeSpan.Zero, null, BuilderFixture.Options()), BuilderFixture.Options());
         }
 
-        private static ThermalRowEditor OpenWindow(ThermalPerformanceViewModel viewModel, AnalyticalModel model, ThermalParts parts, bool open = true)
+        private static async Task<ThermalRowEditor> OpenWindow(ThermalPerformanceViewModel viewModel, AnalyticalModel model, ThermalParts parts, bool open = true)
         {
             viewModel.Update(model, new List<SAMObject>() { model.AdjacencyCluster.GetAperture(parts.Windows[0]) });
             ThermalRowEditor window = viewModel.Groups.SelectMany(x => x.Rows).First(x => x.IsAperture).Editor;
             if (open)
             {
                 window.OpenChange();
-                Wait(window);
+                await Wait(window);
             }
 
             return window;
         }
 
-        private static void Wait(ThermalRowEditor window)
+        private static async Task Wait(ThermalRowEditor window)
         {
-            Assert.True(window.Glazing.LastEvaluationTask.Wait(TimeSpan.FromSeconds(10)));
+            Task task = window.Glazing.LastEvaluationTask;
+            await Pump(() => task.IsCompleted, "the list's calculation", TimeSpan.FromSeconds(10));
+            await task;
         }
 
-        private static void WaitUntil(Func<bool> condition, string what)
+        // Waits on the UI thread as the app would: the dispatcher keeps running what is posted to it (a blocking wait would starve it).
+        private static async Task Pump(Func<bool> condition, string what, TimeSpan? timeout = null)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             while (!condition())
             {
-                Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(20), "Timed out waiting for " + what);
-                Thread.Sleep(10);
+                Assert.True(stopwatch.Elapsed < (timeout ?? TimeSpan.FromSeconds(20)), "Timed out waiting for " + what);
+                await Task.Delay(10);
+                Dispatcher.CurrentDispatcher.Invoke(() => { }, DispatcherPriority.Background);
             }
+        }
+
+        // BuilderUiFixture.Settle without blocking the dispatcher.
+        private static async Task Settle(GlazingBuilderViewModel builder)
+        {
+            Task evaluation = builder.LastEvaluationTask;
+            Task panes = builder.Panes.LastWork;
+            await Pump(() => evaluation.IsCompleted && panes.IsCompleted, "the Builder to settle", TimeSpan.FromSeconds(10));
+            await evaluation;
+            await panes;
         }
 
         private string Hash() => File.Exists(library.Path) ? System.Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(library.Path))) : "absent";
@@ -82,31 +105,31 @@ namespace SAM.Analytical.UI.WPF.Tests
         private static string Json(AnalyticalModel model) => model.ToJsonObject().ToJsonString();
 
         // A double-glazed build from the default library's low-e pane: what a user does in the Builder.
-        private static void Build(GlazingBuilderViewModel builder, string name)
+        private static async Task Build(GlazingBuilderViewModel builder, string name)
         {
-            WaitUntil(() => builder.Panes.Sources.Any(x => x.Label == "SAM default library" && x.IsReady), "the default library's panes");
+            await Pump(() => builder.Panes.Sources.Any(x => x.Label == "SAM default library" && x.IsReady), "the default library's panes");
             builder.Panes.SelectedSource = builder.Panes.Sources.Single(x => x.Label == "SAM default library");
             builder.Panes.SelectedEntry = builder.Panes.Entries.Single(x => x.Name == GlazingFixture.LowE);
             builder.SelectedLayer = builder.Layers[0];
             Assert.True(builder.ReplacePane());
             builder.Name = name;
-            BuilderUiFixture.Settle(builder);
+            await Settle(builder);
         }
 
         // ---- Create new… ---------------------------------------------------------------------------------------------
 
-        [Fact]
-        public void Create_new_is_offered_only_while_the_list_is_open_and_my_glazing_systems_is_available()
+        [WpfFact]
+        public async Task Create_new_is_offered_only_while_the_list_is_open_and_my_glazing_systems_is_available()
         {
             ThermalParts parts = ThermalFixture.Build();
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, parts.Model, parts, open: false);
+                ThermalRowEditor window = await OpenWindow(viewModel, parts.Model, parts, open: false);
                 Assert.False(window.CanCreateNew);
                 Assert.Null(window.CreateBuilder());
 
                 window.OpenChange();
-                Wait(window);
+                await Wait(window);
                 Assert.True(window.CanCreateNew);
 
                 window.CloseChange();
@@ -117,20 +140,20 @@ namespace SAM.Analytical.UI.WPF.Tests
             // A host that cannot create the library has no Create new… (the list itself still works).
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services(() => throw new IOException("no documents folder"))))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, parts.Model, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, parts.Model, parts);
                 Assert.False(window.CanCreateNew);
                 Assert.Null(window.CreateBuilder());
                 Assert.NotEmpty(window.Candidates);
             }
         }
 
-        [Fact]
-        public void The_Builder_is_seeded_from_the_chosen_candidate_else_from_the_current_system()
+        [WpfFact]
+        public async Task The_Builder_is_seeded_from_the_chosen_candidate_else_from_the_current_system()
         {
             ThermalParts parts = ThermalFixture.Build();
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, parts.Model, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, parts.Model, parts);
 
                 using (GlazingBuilderViewModel current = window.CreateBuilder())
                 {
@@ -159,8 +182,8 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         // ---- Save: the list refreshes once, the new system is chosen, the model is untouched -----------------------
 
-        [Fact]
-        public void Save_refreshes_the_open_list_once_chooses_the_new_system_and_leaves_the_model_and_its_history_alone()
+        [WpfFact]
+        public async Task Save_refreshes_the_open_list_once_chooses_the_new_system_and_leaves_the_model_and_its_history_alone()
         {
             ThermalParts parts = ThermalFixture.Build();
             UIAnalyticalModel ui = new UIAnalyticalModel(parts.Model);
@@ -172,12 +195,12 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, ui.JSAMObject, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, ui.JSAMObject, parts);
                 int rows = window.Candidates.Count;
                 int requestsBefore = candidates.Requests.Count;
 
                 GlazingBuilderViewModel builder = window.CreateBuilder();
-                Build(builder, "E0 Double");
+                await Build(builder, "E0 Double");
 
                 // Editing and previewing changed nothing anywhere.
                 Assert.Equal(before, Json(ui.JSAMObject));
@@ -185,10 +208,10 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal(rows, window.Candidates.Count);
                 Assert.Equal(requestsBefore, candidates.Requests.Count);
 
-                Assert.True(builder.SaveAsync().Result);
+                Assert.True(await builder.SaveAsync());
                 Guid saved = builder.SavedSystem.Guid;
-                WaitUntil(() => window.SelectedCandidate?.Guid == saved, "the new system to be chosen");
-                Wait(window);
+                await Pump(() => window.SelectedCandidate?.Guid == saved, "the new system to be chosen");
+                await Wait(window);
                 builder.Dispose();
 
                 // Exactly one new row, calculated once; the new system is the choice; no row was added by hand (it came from the library's refresh).
@@ -210,8 +233,49 @@ namespace SAM.Analytical.UI.WPF.Tests
             }
         }
 
-        [Fact]
-        public void Cancel_changes_neither_the_model_nor_my_glazing_systems_nor_the_list_and_creates_no_undo()
+        [WpfFact]
+        public async Task Everything_a_Save_does_to_the_open_list_happens_on_the_thread_the_list_was_opened_on()
+        {
+            ThermalParts parts = ThermalFixture.Build();
+            using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
+            {
+                ThermalRowEditor window = await OpenWindow(viewModel, parts.Model, parts);
+                int opened = Environment.CurrentManagedThreadId;
+                List<int> threads = new List<int>();
+                window.Glazing.PropertyChanged += (sender, e) =>
+                {
+                    lock (threads)
+                    {
+                        threads.Add(Environment.CurrentManagedThreadId);
+                    }
+                };
+
+                using (GlazingBuilderViewModel builder = window.CreateBuilder())
+                {
+                    await Build(builder, "E0 Double");
+                    lock (threads)
+                    {
+                        threads.Clear();
+                    }
+
+                    // The library is written off this thread and raises Changed there; the refresh and the choice still come back here.
+                    Assert.True(await builder.SaveAsync());
+                    Guid saved = builder.SavedSystem.Guid;
+                    await Pump(() => window.SelectedCandidate?.Guid == saved, "the new system to be chosen");
+                    await Wait(window);
+                    Assert.Equal(opened, Environment.CurrentManagedThreadId);
+                }
+
+                lock (threads)
+                {
+                    Assert.NotEmpty(threads);
+                    Assert.All(threads, x => Assert.Equal(opened, x));
+                }
+            }
+        }
+
+        [WpfFact]
+        public async Task Cancel_changes_neither_the_model_nor_my_glazing_systems_nor_the_list_and_creates_no_undo()
         {
             ThermalParts parts = ThermalFixture.Build();
             UIAnalyticalModel ui = new UIAnalyticalModel(parts.Model);
@@ -226,13 +290,13 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, ui.JSAMObject, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, ui.JSAMObject, parts);
                 List<Guid> rows = window.Candidates.Select(x => x.Guid).ToList();
                 int requestsBefore = candidates.Requests.Count;
 
                 using (GlazingBuilderViewModel builder = window.CreateBuilder())
                 {
-                    Build(builder, "Never saved");
+                    await Build(builder, "Never saved");
                     builder.AddGap();
                     builder.ToggleReverse();
                     builder.SelectedFrame = builder.FrameChoices[0];
@@ -253,8 +317,8 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(0, changed);
         }
 
-        [Fact]
-        public void A_Save_that_fails_leaves_the_list_and_everything_else_as_it_was()
+        [WpfFact]
+        public async Task A_Save_that_fails_leaves_the_list_and_everything_else_as_it_was()
         {
             Directory.CreateDirectory(Path.GetDirectoryName(library.Path));
             File.WriteAllText(library.Path, "{ not a library");
@@ -263,13 +327,13 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, parts.Model, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, parts.Model, parts);
                 int rows = window.Candidates.Count;
 
                 using (GlazingBuilderViewModel builder = window.CreateBuilder())
                 {
-                    Build(builder, "Doomed");
-                    Assert.False(builder.SaveAsync().Result);
+                    await Build(builder, "Doomed");
+                    Assert.False(await builder.SaveAsync());
                     Assert.False(string.IsNullOrWhiteSpace(builder.SaveError));
                 }
 
@@ -282,8 +346,8 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         // ---- Apply and Undo afterwards -----------------------------------------------------------------------------
 
-        [Fact]
-        public void Applying_the_saved_system_is_the_existing_glazing_change_one_model_change_one_undo()
+        [WpfFact]
+        public async Task Applying_the_saved_system_is_the_existing_glazing_change_one_model_change_one_undo()
         {
             ThermalParts parts = ThermalFixture.Build();
             UIAnalyticalModel ui = new UIAnalyticalModel(parts.Model);
@@ -300,15 +364,15 @@ namespace SAM.Analytical.UI.WPF.Tests
             ApertureConstruction saved;
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, ui.JSAMObject, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, ui.JSAMObject, parts);
 
                 GlazingBuilderViewModel builder = window.CreateBuilder();
-                Build(builder, "E0 Double");
-                Assert.True(builder.SaveAsync().Result);
+                await Build(builder, "E0 Double");
+                Assert.True(await builder.SaveAsync());
                 saved = builder.SavedSystem;
                 builder.Dispose();
-                WaitUntil(() => window.SelectedCandidate?.Guid == saved.Guid, "the new system to be chosen");
-                Wait(window);
+                await Pump(() => window.SelectedCandidate?.Guid == saved.Guid, "the new system to be chosen");
+                await Wait(window);
 
                 // Only the first window.
                 window.ScopeSelected = true;
@@ -345,10 +409,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             // One Undo restores the model exactly (no orphan system or material); the library keeps the saved system.
             Assert.True(ui.Undo());
-            for (int i = 0; i < 100 && ui.JSAMObject.AdjacencyCluster.GetApertures().Any(x => x.TypeGuid == saved.Guid); i++)
-            {
-                Thread.Sleep(50);
-            }
+            await Pump(() => !ui.JSAMObject.AdjacencyCluster.GetApertures().Any(x => x.TypeGuid == saved.Guid), "the Undo", TimeSpan.FromSeconds(5));
 
             Assert.Equal(before_Snapshot, Json(ui.JSAMObject));
             Assert.False(ui.CanUndo);
@@ -356,8 +417,8 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(saved.Guid, Assert.Single(library.Read().Systems).Guid);
         }
 
-        [Fact]
-        public void Two_systems_built_one_after_the_other_are_both_listed_and_only_the_chosen_one_is_applied()
+        [WpfFact]
+        public async Task Two_systems_built_one_after_the_other_are_both_listed_and_only_the_chosen_one_is_applied()
         {
             ThermalParts parts = ThermalFixture.Build();
             UIAnalyticalModel ui = new UIAnalyticalModel(parts.Model);
@@ -366,28 +427,28 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, ui.JSAMObject, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, ui.JSAMObject, parts);
 
                 Guid[] guids = new Guid[2];
                 for (int i = 0; i < 2; i++)
                 {
                     using (GlazingBuilderViewModel builder = window.CreateBuilder())
                     {
-                        Build(builder, i == 0 ? "E0 Double" : "E0 Triple");
+                        await Build(builder, i == 0 ? "E0 Double" : "E0 Triple");
                         if (i == 1)
                         {
                             builder.Panes.SelectedEntry = builder.Panes.Entries.Single(x => x.Name == GlazingFixture.Clear);
                             builder.AddPane();
                             Assert.Equal("P,G,P,G,P", string.Join(",", builder.Layers.Select(x => x.IsPane ? "P" : "G")));
-                            BuilderUiFixture.Settle(builder);
+                            await Settle(builder);
                         }
 
-                        Assert.True(builder.SaveAsync().Result);
+                        Assert.True(await builder.SaveAsync());
                         guids[i] = builder.SavedSystem.Guid;
                     }
 
-                    WaitUntil(() => window.SelectedCandidate?.Guid == guids[i], "system " + (i + 1) + " to be chosen");
-                    Wait(window);
+                    await Pump(() => window.SelectedCandidate?.Guid == guids[i], "system " + (i + 1) + " to be chosen");
+                    await Wait(window);
                 }
 
                 Assert.NotEqual(guids[0], guids[1]);
@@ -401,18 +462,18 @@ namespace SAM.Analytical.UI.WPF.Tests
             }
         }
 
-        [Fact]
-        public void A_fresh_panel_offers_what_was_saved_before_without_the_Builder()
+        [WpfFact]
+        public async Task A_fresh_panel_offers_what_was_saved_before_without_the_Builder()
         {
             ApertureConstruction saved;
             ThermalParts parts = ThermalFixture.Build();
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, parts.Model, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, parts.Model, parts);
                 using (GlazingBuilderViewModel builder = window.CreateBuilder())
                 {
-                    Build(builder, "E0 Double");
-                    Assert.True(builder.SaveAsync().Result);
+                    await Build(builder, "E0 Double");
+                    Assert.True(await builder.SaveAsync());
                     saved = builder.SavedSystem;
                 }
             }
@@ -420,7 +481,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             // "Restart": a new services object and a new panel read the file.
             using (ThermalPerformanceViewModel viewModel = new ThermalPerformanceViewModel(Services()))
             {
-                ThermalRowEditor window = OpenWindow(viewModel, parts.Model, parts);
+                ThermalRowEditor window = await OpenWindow(viewModel, parts.Model, parts);
                 GlazingCandidateRow row = Assert.Single(window.Candidates, x => x.Guid == saved.Guid);
                 Assert.Equal(GlazingSourceKind.User, row.Candidate.Kind);
                 Assert.Equal("E0 Double", row.Name);

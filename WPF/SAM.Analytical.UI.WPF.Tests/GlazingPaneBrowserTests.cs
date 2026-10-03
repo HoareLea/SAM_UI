@@ -332,5 +332,78 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(stopwatch.Elapsed < TimeSpan.FromSeconds(2), "sort took " + stopwatch.Elapsed);
             Assert.True(browser.Entries[0].SolarTransmittance <= browser.Entries[1].SolarTransmittance);
         }
+
+        /// <summary>A UI thread stand-in: what is posted to it waits until <see cref="Drain"/> runs it, as a busy dispatcher would.</summary>
+        private sealed class QueuedContext : SynchronizationContext
+        {
+            private readonly Queue<(SendOrPostCallback, object)> queue = new Queue<(SendOrPostCallback, object)>();
+
+            public int Pending
+            {
+                get
+                {
+                    lock (queue)
+                    {
+                        return queue.Count;
+                    }
+                }
+            }
+
+            public override void Post(SendOrPostCallback d, object state)
+            {
+                lock (queue)
+                {
+                    queue.Enqueue((d, state));
+                }
+            }
+
+            public void Drain()
+            {
+                while (true)
+                {
+                    (SendOrPostCallback, object) item;
+                    lock (queue)
+                    {
+                        if (queue.Count == 0)
+                        {
+                            return;
+                        }
+
+                        item = queue.Dequeue();
+                    }
+
+                    item.Item1(item.Item2);
+                }
+            }
+        }
+
+        [Fact]
+        public void The_last_work_is_done_only_once_the_panes_it_read_have_reached_the_browsers_thread()
+        {
+            // Made on a UI thread: the panes are read on a worker and handed back to that thread, which has not run the hand-over yet.
+            QueuedContext ui = new QueuedContext();
+            SynchronizationContext previous = SynchronizationContext.Current;
+            GlazingPaneBrowser browser;
+            SynchronizationContext.SetSynchronizationContext(ui);
+            try
+            {
+                browser = new GlazingPaneBrowser(new[] { BuilderUiFixture.PaneSource(kind: GlazingSourceKind.Model) }, null, null, TimeSpan.Zero);
+            }
+            finally
+            {
+                SynchronizationContext.SetSynchronizationContext(previous);
+            }
+
+            Assert.True(SpinWait.SpinUntil(() => ui.Pending > 0, TimeSpan.FromSeconds(10)), "the panes were not handed back");
+
+            // While the hand-over waits, the work is not done (a test that waits for it must not find an empty list).
+            Assert.False(SpinWait.SpinUntil(() => browser.LastWork.IsCompleted, TimeSpan.FromMilliseconds(500)), "the work counted as done before its panes reached the browser");
+            Assert.Empty(browser.Entries);
+
+            ui.Drain();
+            Assert.True(browser.LastWork.Wait(TimeSpan.FromSeconds(10)));
+            Assert.NotEmpty(browser.Entries);
+            Assert.True(browser.Sources.Single().IsReady);
+        }
     }
 }
