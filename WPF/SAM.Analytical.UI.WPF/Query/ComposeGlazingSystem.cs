@@ -72,7 +72,7 @@ namespace SAM.Analytical.UI.WPF
                             material = Reverse(transparentMaterial);
                         }
 
-                        name = GlazingMaterialMerge.Add(materialLibrary, material, pane.SourceLabel) ?? name;
+                        name = LibraryMaterialMerge.Add(materialLibrary, material, pane.SourceLabel) ?? name;
                         if (!string.IsNullOrWhiteSpace(pane.SourceLabel))
                         {
                             sourceLabels[name] = pane.SourceLabel;
@@ -118,7 +118,7 @@ namespace SAM.Analytical.UI.WPF
                         if (!double.IsNaN(heatTransferCoefficient))
                         {
                             GasMaterial gasMaterial = GapMaterial(definition, gap.GasType, thickness, heatTransferCoefficient, orientation.TiltDegrees);
-                            name = GlazingMaterialMerge.Add(materialLibrary, gasMaterial) ?? gasMaterial.Name;
+                            name = LibraryMaterialMerge.Add(materialLibrary, gasMaterial) ?? gasMaterial.Name;
                         }
                     }
 
@@ -144,7 +144,7 @@ namespace SAM.Analytical.UI.WPF
                 Dictionary<string, string> names = new Dictionary<string, string>();
                 foreach (IMaterial material in frame.Materials)
                 {
-                    string name = GlazingMaterialMerge.Add(materialLibrary, material, frame.SourceLabel);
+                    string name = LibraryMaterialMerge.Add(materialLibrary, material, frame.SourceLabel);
                     if (name != null)
                     {
                         names[material.Name] = name;

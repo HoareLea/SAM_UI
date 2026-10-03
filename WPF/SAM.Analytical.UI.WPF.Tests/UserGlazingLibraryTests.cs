@@ -430,12 +430,12 @@ namespace SAM.Analytical.UI.WPF.Tests
         public void Material_Merge_RenamesOnlyWhenTheDefinitionDiffers()
         {
             MaterialLibrary materialLibrary = new MaterialLibrary("t");
-            Assert.Equal(BuilderFixture.Clear, GlazingMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(), "a.tcd"));
-            Assert.Equal(BuilderFixture.Clear, GlazingMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(), "b.tcd"));
-            Assert.Equal(BuilderFixture.Clear + " (b.tcd)", GlazingMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(conductivity: 0.8), "b.tcd"));
-            Assert.Equal(BuilderFixture.Clear + " (b.tcd)", GlazingMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(conductivity: 0.8), "b.tcd"));
-            Assert.Equal(BuilderFixture.Clear + " 2", GlazingMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(conductivity: 0.7), "b.tcd"));
-            Assert.Equal(BuilderFixture.Clear + " 3", GlazingMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(conductivity: 0.6), null));
+            Assert.Equal(BuilderFixture.Clear, LibraryMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(), "a.tcd"));
+            Assert.Equal(BuilderFixture.Clear, LibraryMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(), "b.tcd"));
+            Assert.Equal(BuilderFixture.Clear + " (b.tcd)", LibraryMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(conductivity: 0.8), "b.tcd"));
+            Assert.Equal(BuilderFixture.Clear + " (b.tcd)", LibraryMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(conductivity: 0.8), "b.tcd"));
+            Assert.Equal(BuilderFixture.Clear + " 2", LibraryMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(conductivity: 0.7), "b.tcd"));
+            Assert.Equal(BuilderFixture.Clear + " 3", LibraryMaterialMerge.Add(materialLibrary, BuilderFixture.ClearPane(conductivity: 0.6), null));
             Assert.Equal(4, materialLibrary.GetMaterials().Count);
             Assert.True(Regex.IsMatch(string.Join(",", materialLibrary.GetMaterials().Select(x => x.Name)), "Clear4 2"));
         }
