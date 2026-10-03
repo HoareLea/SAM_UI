@@ -215,3 +215,26 @@ later", in-place edit / remove of saved glazing systems, frame authoring in the 
 - **Tests:** `ConstructionAlternativesTests` +14 cases (glazing and gas-only constructions excluded while the opaque ones are listed unchanged;
   0 / negative / NaN / ±infinity through the real evaluator and through another evaluator: not listed, counted as not calculated, never chosen, not
   cached; a line without a valid U-value; the evaluator and cache contracts).
+
+### 9.2 NCM v6.1e window systems with implausibly low Ug (0.24 / 0.46) - a defect in the database, not in SAM
+
+- **Symptom:** from `NCMConstructions_v6.1e (Part L 2021).tcd`, `4-12-4-12-4 triple glazing, low-e` and `4-6-4-6-4 low-e air-filled triple glazing`
+  showed Ug ≈ 0.24 W/m²K and `4-12-4 low-e, air filled` Ug ≈ 0.46 (applied and stored as U 0.462); its report named the gap `Air, 12 mm (duplicate)`.
+- **First faulty boundary: the shipped `.tcd` itself.** Read-only COM on a copy of the file: its glazing gas layers (type gas layer, 39 air + 12 argon)
+  store `convectionCoefficient` = **1.761E-05** (air) / **2.164E-05** (argon) - the EN 673 dynamic viscosity of the gas at 10 °C, in the field Tas uses as
+  the gap conductance (the Stage E0-1 gap rule) - with TCD defaults elsewhere (k 0.01, ρ 0, cp 0, μ 1E-05). **Tas's own `GetUValue` on the untouched
+  stored constructions returns 0.4625 / 0.2409 / 2.2389** (`4-12-4 low-e` / the low-e triples / `4-12-4 uncoated`): only radiation crosses the gaps. The
+  same systems in NCM v4.1 and v5.2.7 store normal conductances (1.25 - 4.16 W/m²K, k 0.0241, ρ 1.293, cp 1006) and give Ug 1.54 / 2.74. All the NCM
+  files carry the Tas installer's date; no SAM code writes these values.
+- **Every SAM boundary is faithful** (same Ug at each, to 4 decimals): SAM_Tas `ToSAM_ConstructionManager` (the gap stays a `GasMaterial`, HTC
+  1.761E-05 = the file's value) → the panel's JSON cache and `ReadThermalSource` → the window candidate → `ToTCD_Constructions` (read back: gas layer,
+  conv 1.761E-05) → `CalculateGlazing`. `Air, 12 mm (duplicate)` is a material name inside the `.tcd`; it is the only material of that name, a
+  `GasMaterial` with properties identical to `Air, 12 mm`, and the layer reference resolves - no SAM merge, rename or class change is involved.
+- **Control:** replacing only the gap HTC by SAM's EN 673 value for the named gas and width (12 mm air 2.08, 6 mm air 4.16, 12 mm argon 1.403) gives
+  Ug 1.764 (`4-12-4 low-e`), 1.042 (`4-12-4-12-4` low-e, air), 1.627 (`4-6-4-6-4` low-e), 0.810 (`4-12-4-12-4` low-e, argon), 2.854 (`4-12-4 uncoated`) -
+  the gap conductance is the sole cause.
+- **Decision (owner): record only.** No SAM, SAM_Tas or SAM_UI change: SAM reports exactly what Tas computes for that database. No threshold-free rule
+  separates this data from legitimate data (a still-gas floor λ/s also flags `ecobim glazing.tcd`'s rounded 1.5 W/m²K for 16 mm air against 1.56), and
+  correcting on import would make SAM disagree with Tas for the same file. Every other surveyed database (NCM v3.5 / v4.1 / v5.2.7, ASHRAE, ASHRAE 90.1
+  2016, Constructions, IGDB v76) has no gap below still-gas conduction. Builder gaps are unaffected (they carry SAM's EN 673 HTC). The data should be
+  reported to the database's publisher; until then, NCM v6.1e window systems with air / argon gaps should not be used for Ug.
