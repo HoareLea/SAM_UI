@@ -71,6 +71,15 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Wall-clock time of the whole batch this belongs to [ms] (the same for every construction of a batch).</summary>
         public long ElapsedMilliseconds { get; }
 
-        public bool Calculated => !double.IsNaN(ThermalTransmittance);
+        public bool Calculated => Valid(ThermalTransmittance);
+
+        /// <summary>
+        /// True only for a real U-value: finite and above zero. NaN, infinity, zero or a negative value is "not calculated", never a U-value
+        /// that meets a target (Tas answers 0 in the opaque slots for a construction it does not calculate as opaque).
+        /// </summary>
+        public static bool Valid(double thermalTransmittance)
+        {
+            return !double.IsNaN(thermalTransmittance) && !double.IsInfinity(thermalTransmittance) && thermalTransmittance > 0;
+        }
     }
 }

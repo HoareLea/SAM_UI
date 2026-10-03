@@ -83,10 +83,10 @@ namespace SAM.Analytical.UI.WPF
             return false;
         }
 
-        /// <summary>Keeps a calculated U-value (NaN is ignored).</summary>
+        /// <summary>Keeps a calculated U-value (NaN, infinity, zero or a negative value is not one, and is ignored).</summary>
         public void Set(string key, double thermalTransmittance)
         {
-            if (key != null && !double.IsNaN(thermalTransmittance))
+            if (key != null && ConstructionUValue.Valid(thermalTransmittance))
             {
                 values[key] = thermalTransmittance;
             }

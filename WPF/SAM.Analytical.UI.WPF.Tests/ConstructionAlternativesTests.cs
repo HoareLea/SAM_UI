@@ -38,7 +38,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             }
         }
 
-        private static Setup Create(string target = "0.18", GlazingSource library = null, int roofs = 0, FakeConstructionUValueEvaluator evaluator = null, ConstructionUValueCache cache = null, IEnumerable<int> selected = null)
+        private static Setup Create(string target = "0.18", GlazingSource library = null, int roofs = 0, FakeConstructionUValueEvaluator evaluator = null, ConstructionUValueCache cache = null, IEnumerable<int> selected = null, IConstructionUValueEvaluator scripted = null)
         {
             Setup setup = new Setup();
             setup.Model = AlternativesFixture.Model(out setup.Current, out setup.Thick, out setup.Medium, out setup.Thin, roofs: roofs);
@@ -52,7 +52,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             setup.UValue.LastEvaluationTask.Wait(TimeSpan.FromSeconds(10));
 
             GlazingSource source = library ?? AlternativesFixture.Library();
-            setup.Alternatives = new ConstructionAlternatives(setup.Model, setup.UValue, setup.Evaluator, setup.Cache, () => source);
+            setup.Alternatives = new ConstructionAlternatives(setup.Model, setup.UValue, scripted ?? setup.Evaluator, setup.Cache, () => source);
             setup.Alternatives.Refresh();
             setup.Alternatives.Idle().Wait(TimeSpan.FromSeconds(10));
             return setup;
@@ -518,6 +518,186 @@ namespace SAM.Analytical.UI.WPF.Tests
                 // The cancelled request never reached Tas; the others did, in the order asked.
                 Assert.Equal(new[] { 1, 3 }, order.ToArray());
             }
+        }
+
+        // ---- No U-value that is not one, no construction that is not opaque ----------------------------------------------
+        // Real-app acceptance found the default library's SIM_EXT_GLZ / SIM_INT_GLZ (glazing systems stored as constructions) listed for an
+        // opaque wall as "U 0.000 · meets the target by 0.180": Tas gives a transparent construction's U-value as glazing and 0 in the opaque slots.
+
+        private const string Pane = "Pane 6mm";
+
+        /// <summary>The batch run with a scripted U-value per construction: through the real evaluator (as Tas answers) or raw (any other evaluator).</summary>
+        private sealed class ScriptedEvaluator : IConstructionUValueEvaluator
+        {
+            private readonly Func<Construction, double> u;
+            private readonly bool raw;
+            private readonly TasConstructionUValueEvaluator inner;
+
+            public ScriptedEvaluator(Func<Construction, double> u, bool raw = false)
+            {
+                this.u = u;
+                this.raw = raw;
+                inner = new TasConstructionUValueEvaluator((manager, guids) => guids.Select(guid =>
+                {
+                    double value = u(manager.Constructions.Find(x => x.Guid == guid));
+                    return new ThermalTransmittanceCalculationResult(guid, "Scripted", 0, 0, 0, 0, 0, 0, 0, 0, new ThermalTransmittances(value, value, value, value, value, value, 0));
+                }).ToList());
+            }
+
+            public List<Guid> Asked { get; } = new List<Guid>();
+
+            public Task<IReadOnlyList<ConstructionUValue>> EvaluateAsync(ConstructionUValueRequest request, CancellationToken cancellationToken)
+            {
+                Asked.AddRange(request.Constructions.Select(x => x.Guid));
+                if (raw)
+                {
+                    return Task.FromResult<IReadOnlyList<ConstructionUValue>>(request.Constructions.Select(x => new ConstructionUValue(x.Guid, u(x), null, 0)).ToList());
+                }
+
+                return Task.FromResult(inner.Evaluate(request));
+            }
+        }
+
+        // The fixture physics for an opaque wall; 0 for anything with no opaque layer, as Tas answers in the opaque slots.
+        private static double TasLike(Construction construction, MaterialLibrary materials)
+        {
+            bool opaque = construction.ConstructionLayers.Any(x => materials.GetMaterial(x.Name) is OpaqueMaterial);
+            return opaque ? UValueFixture.U(construction.ConstructionLayers[UValueFixture.WoolIndex].Thickness) : 0;
+        }
+
+        /// <summary>The default fixture library plus a glazing system stored as a construction (pane / air / pane, made for curtain walls) and a gas-only one.</summary>
+        private static GlazingSource LibraryWithGlazing(out Construction glazing, out Construction gasOnly)
+        {
+            MaterialLibrary materials = AlternativesFixture.LibraryMaterials();
+            materials.Add(Analytical.Create.TransparentMaterial(Pane, string.Empty, Pane, "Clear float", 1, 0.006, 9999, 0.85, 0.90, 0.076, 0.076, 0.082, 0.082, 0.84, 0.84, false));
+
+            glazing = new Construction(Guid.NewGuid(), "LIB_GLZ", new List<ConstructionLayer>()
+            {
+                new ConstructionLayer(Pane, 0.006),
+                new ConstructionLayer(UValueFixture.Air, 0.012),
+                new ConstructionLayer(Pane, 0.006),
+            });
+            glazing.SetValue(ConstructionParameter.DefaultPanelType, "CurtainWall");
+
+            gasOnly = new Construction(Guid.NewGuid(), "LIB_GAS", new List<ConstructionLayer>() { new ConstructionLayer(UValueFixture.Air, 0.05) });
+
+            List<Construction> constructions = AlternativesFixture.Library().GetConstructions();
+            constructions.Add(glazing);
+            constructions.Add(gasOnly);
+            return new GlazingSource(GlazingSourceKind.Library, "Default library", new ConstructionManager(null, constructions, materials));
+        }
+
+        [Fact]
+        public void A_glazing_construction_is_never_offered_as_an_opaque_alternative_and_the_opaque_ones_still_are()
+        {
+            GlazingSource library = LibraryWithGlazing(out Construction glazing, out Construction gasOnly);
+            MaterialLibrary materials = library.ConstructionManager.MaterialLibrary;
+            ScriptedEvaluator evaluator = new ScriptedEvaluator(x => TasLike(x, materials));
+
+            using (Setup setup = Create(library: library, scripted: evaluator))
+            {
+                // Neither is listed nor even sent for an opaque U-value, so neither can meet the target or be chosen.
+                Assert.DoesNotContain(setup.Alternatives.Rows, x => x.Guid == glazing.Guid || x.Guid == gasOnly.Guid);
+                Assert.DoesNotContain(glazing.Guid, evaluator.Asked);
+                Assert.DoesNotContain(gasOnly.Guid, evaluator.Asked);
+                setup.Alternatives.SelectedGuid = glazing.Guid;
+                Assert.Null(setup.Alternatives.SelectedGuid);
+
+                // The opaque alternatives are exactly as without them, and they are not counted as "could not be calculated".
+                Assert.Equal(new[] { "MODEL_THICK|Library", "LIB_THICK|Library", "LIB_AEROGEL|Library", "LIB_ROOF|Library", "MODEL_THICK|Existing model" },
+                    setup.Alternatives.Rows.Skip(1).Select(x => x.Name + "|" + x.KindText).ToArray());
+                Assert.Equal("4 existing constructions meet U 0.18; 1 more is within 10 %; 1 could not be calculated.", setup.Alternatives.CountText);
+                Assert.All(setup.Alternatives.Rows.Skip(1), x => Assert.True(x.ThermalTransmittance > 0));
+            }
+        }
+
+        [Theory]
+        [InlineData(0.0, false)]
+        [InlineData(0.0, true)]
+        [InlineData(-0.12, false)]
+        [InlineData(-0.12, true)]
+        [InlineData(double.NaN, true)]
+        [InlineData(double.PositiveInfinity, false)]
+        [InlineData(double.PositiveInfinity, true)]
+        [InlineData(double.NegativeInfinity, true)]
+        public void An_invalid_U_value_is_not_calculated_never_meets_the_target_and_can_never_be_chosen(double invalid, bool raw)
+        {
+            // LIB_THICK (U 0.171, which meets 0.18) is answered with the invalid value - by Tas through the real evaluator, or by another evaluator.
+            ScriptedEvaluator evaluator = new ScriptedEvaluator(x => x.Guid == AlternativesFixture.LibraryThickGuid ? invalid : UValueFixture.U(x.ConstructionLayers[UValueFixture.WoolIndex].Thickness), raw);
+
+            using (Setup setup = Create(scripted: evaluator))
+            {
+                Assert.Contains(AlternativesFixture.LibraryThickGuid, evaluator.Asked);
+                Assert.DoesNotContain(setup.Alternatives.Rows, x => x.Guid == AlternativesFixture.LibraryThickGuid);
+                Assert.Equal("3 existing constructions meet U 0.18; 1 more is within 10 %; 2 could not be calculated.", setup.Alternatives.CountText);
+                Assert.Equal(ConstructionAlternativesStatus.Ready, setup.Alternatives.Status);
+
+                // Never chosen, automatically or otherwise, and nothing to apply.
+                Assert.True(setup.Alternatives.SelectedRow.IsGenerated);
+                setup.Alternatives.SelectedGuid = AlternativesFixture.LibraryThickGuid;
+                Assert.Null(setup.Alternatives.SelectedGuid);
+                Assert.False(setup.Alternatives.ExistingChosen);
+                Assert.Null(setup.Alternatives.CreateRequest());
+
+                // Not kept as a U-value (3 model + the 3 library constructions that have one), so it is asked again next time.
+                Assert.Equal(6, setup.Cache.Count);
+
+                // The valid alternatives still work as before.
+                setup.Alternatives.SelectedRow = setup.Alternatives.Rows.Single(x => x.Name == "LIB_AEROGEL");
+                Assert.True(setup.Alternatives.ApplyEnabled);
+                Assert.Equal(UValueFixture.U(0.14), setup.Alternatives.CreateRequest().NewThermalTransmittance, 6);
+            }
+        }
+
+        [Theory]
+        [InlineData(0.0)]
+        [InlineData(-0.12)]
+        [InlineData(double.NaN)]
+        [InlineData(double.PositiveInfinity)]
+        public void A_line_without_a_real_U_value_never_meets_the_target_and_cannot_be_applied(double invalid)
+        {
+            ConstructionAlternativeRow row = new ConstructionAlternativeRow(ConstructionAlternativeKind.Library, Guid.NewGuid(), "SIM_EXT_GLZ", invalid, 0.18, "Default library", null, null, 0, null, null, null, null);
+            Assert.False(row.Calculated);
+            Assert.False(row.Meets);
+            Assert.False(row.CanApply);
+            Assert.Equal("U –", row.UText);
+            Assert.Equal("not calculated", row.StatusText);
+
+            ConstructionAlternativeRow valid = new ConstructionAlternativeRow(ConstructionAlternativeKind.Library, Guid.NewGuid(), "LIB_THICK", 0.171, 0.18, "Default library", null, null, 0, null, null, null, null);
+            Assert.True(valid.Meets);
+            Assert.True(valid.CanApply);
+            Assert.Equal("meets the target by 0.009", valid.StatusText);
+        }
+
+        [Fact]
+        public void The_real_evaluator_reports_a_zero_negative_or_infinite_U_value_from_Tas_as_not_calculated_and_the_cache_never_keeps_one()
+        {
+            ConstructionUValueRequest request = Request(5);
+            double[] values = { 0.25, 0, -0.3, double.PositiveInfinity, double.NaN };
+            Dictionary<Guid, double> scripted = request.Constructions.Select((x, i) => new KeyValuePair<Guid, double>(x.Guid, values[i])).ToDictionary(x => x.Key, x => x.Value);
+
+            using (TasConstructionUValueEvaluator evaluator = new TasConstructionUValueEvaluator((manager, guids) => guids.Select(guid =>
+                new ThermalTransmittanceCalculationResult(guid, "Scripted", 0, 0, 0, 0, 0, 0, 0, 0, new ThermalTransmittances(scripted[guid], scripted[guid], scripted[guid], scripted[guid], scripted[guid], scripted[guid], 2.09))).ToList()))
+            {
+                IReadOnlyList<ConstructionUValue> results = evaluator.EvaluateAsync(request, CancellationToken.None).Result;
+
+                Assert.True(results[0].Calculated);
+                Assert.Equal(0.25, results[0].ThermalTransmittance, 9);
+                Assert.All(results.Skip(1), x => Assert.False(x.Calculated));
+                Assert.All(results.Skip(1), x => Assert.True(double.IsNaN(x.ThermalTransmittance)));
+                Assert.All(results.Skip(1), x => Assert.False(string.IsNullOrEmpty(x.Message)));
+                Assert.Contains("no valid U-value", results[1].Message);
+            }
+
+            ConstructionUValueCache cache = new ConstructionUValueCache();
+            foreach (double value in new[] { 0, -0.3, double.PositiveInfinity, double.NegativeInfinity, double.NaN })
+            {
+                cache.Set("invalid", value);
+            }
+
+            Assert.False(cache.Contains("invalid"));
+            cache.Set("valid", 0.25);
+            Assert.True(cache.Contains("valid"));
         }
     }
 }
