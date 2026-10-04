@@ -8,27 +8,53 @@ using System.Windows.Input;
 namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
-    /// "My library" (PR2): an owned, MODAL window over <see cref="UserLibraryViewModel"/> listing the saved glazing systems with Rename, Remove
-    /// (after a confirmation) and Open in Builder. It presents the view-model and holds no logic of its own; there is no analytical model behind it,
-    /// so nothing it does can change a model or add an Undo step. The window disposes the view-model when it closes.
+    /// "My library": an owned, MODAL window with two tabs. Glazing systems (PR2) over <see cref="UserLibraryViewModel"/> lists the saved glazing systems
+    /// with Rename, Remove (after a confirmation) and Open in Builder; Constructions (PR4) over <see cref="UserConstructionLibraryViewModel"/> lists the
+    /// saved opaque constructions with Rename, Remove and their details. It presents the view-models and holds no logic of its own; there is no analytical
+    /// model behind it, so nothing it does can change a model or add an Undo step. The window disposes the view-model (and with it the Constructions
+    /// tab's) when it closes.
     /// </summary>
     public partial class UserLibraryWindow : System.Windows.Window
     {
         private readonly UserLibraryViewModel viewModel;
+        private readonly UserConstructionLibraryViewModel constructions;
 
+        /// <param name="viewModel">The glazing systems tab (the window's data context); its <see cref="UserLibraryViewModel.Constructions"/> is the Constructions tab, which is left out when it is null (a host without My constructions).</param>
         public UserLibraryWindow(UserLibraryViewModel viewModel)
         {
             InitializeComponent();
             this.viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+            constructions = viewModel.Constructions;
             DataContext = viewModel;
+
+            if (constructions == null)
+            {
+                tabItem_Constructions.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                grid_Constructions.DataContext = constructions;
+            }
         }
 
         public UserLibraryViewModel ViewModel => viewModel;
+
+        /// <summary>The view-model of the Constructions tab; null when the window has none.</summary>
+        public UserConstructionLibraryViewModel ConstructionsViewModel => constructions;
 
         /// <summary>
         /// Asks the user to confirm a Remove (given the text to show); the default is a message box over this window. A test supplies its own.
         /// </summary>
         public Func<string, bool> Confirm { get; set; }
+
+        /// <summary>Shows the Constructions tab (the window opens on Glazing systems).</summary>
+        public void ShowConstructionsTab()
+        {
+            if (constructions != null)
+            {
+                tabControl_Library.SelectedItem = tabItem_Constructions;
+            }
+        }
 
         /// <summary>Opens "My library" as the owner's dialog.</summary>
         public static void ShowModal(UserLibraryViewModel viewModel, System.Windows.Window owner)
@@ -47,6 +73,8 @@ namespace SAM.Analytical.UI.WPF
         {
             return MessageBox.Show(this, text, "Remove from My library", MessageBoxButton.OKCancel, MessageBoxImage.Question, MessageBoxResult.Cancel) == MessageBoxResult.OK;
         }
+
+        // ---- Glazing systems ---------------------------------------------------------------------------------------------
 
         private void button_Rename_Click(object sender, RoutedEventArgs e)
         {
@@ -103,6 +131,72 @@ namespace SAM.Analytical.UI.WPF
             else if (e.Key == Key.Delete && viewModel.CanRemove)
             {
                 viewModel.Remove(Confirm ?? ConfirmWithMessageBox);
+                e.Handled = true;
+            }
+        }
+
+        // ---- Constructions -----------------------------------------------------------------------------------------------
+
+        private void button_ConstructionRename_Click(object sender, RoutedEventArgs e)
+        {
+            if (constructions != null && constructions.BeginRename())
+            {
+                textBox_ConstructionRename.Focus();
+                textBox_ConstructionRename.SelectAll();
+            }
+        }
+
+        private void button_ConstructionRenameOk_Click(object sender, RoutedEventArgs e)
+        {
+            constructions?.CommitRename();
+        }
+
+        private void button_ConstructionRenameCancel_Click(object sender, RoutedEventArgs e)
+        {
+            constructions?.CancelRename();
+        }
+
+        private void textBox_ConstructionRename_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (constructions == null)
+            {
+                return;
+            }
+
+            if (e.Key == Key.Enter)
+            {
+                constructions.CommitRename();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Escape)
+            {
+                constructions.CancelRename();
+                listView_Constructions.Focus();
+                e.Handled = true;
+            }
+        }
+
+        private void button_ConstructionRemove_Click(object sender, RoutedEventArgs e)
+        {
+            constructions?.Remove(Confirm ?? ConfirmWithMessageBox);
+        }
+
+        private void listView_Constructions_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (constructions == null)
+            {
+                return;
+            }
+
+            if (e.Key == Key.F2 && constructions.BeginRename())
+            {
+                textBox_ConstructionRename.Focus();
+                textBox_ConstructionRename.SelectAll();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Delete && constructions.CanRemove)
+            {
+                constructions.Remove(Confirm ?? ConfirmWithMessageBox);
                 e.Handled = true;
             }
         }

@@ -110,6 +110,9 @@ namespace SAM.Analytical.UI.WPF
                 case GlazingSourceKind.Library:
                     return "default library";
 
+                case GlazingSourceKind.User:
+                    return UserConstructionLibrary.LibraryName;
+
                 default:
                     return "added source";
             }

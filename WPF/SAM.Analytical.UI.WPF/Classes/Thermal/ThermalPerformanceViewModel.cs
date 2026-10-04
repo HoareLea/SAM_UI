@@ -54,7 +54,26 @@ namespace SAM.Analytical.UI.WPF
         public UserLibraryViewModel CreateUserLibrary()
         {
             UserGlazingLibrary library = UserGlazingOrNull();
-            return library == null ? null : new UserLibraryViewModel(library);
+            if (library == null)
+            {
+                return null;
+            }
+
+            // The Constructions tab: "My constructions", when the host has it.
+            UserConstructionLibrary constructions = UserConstructionsOrNull();
+            return new UserLibraryViewModel(library) { Constructions = constructions == null ? null : new UserConstructionLibraryViewModel(constructions) };
+        }
+
+        private UserConstructionLibrary UserConstructionsOrNull()
+        {
+            try
+            {
+                return Session.Services.UserConstructions;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>

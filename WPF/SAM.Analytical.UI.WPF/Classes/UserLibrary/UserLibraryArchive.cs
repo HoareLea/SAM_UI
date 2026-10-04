@@ -11,8 +11,8 @@ namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
     /// Where a user library's REMOVED entries go. Remove never deletes: it moves the entry to <c>&lt;name&gt;.removed.json</c> next to the library
-    /// (<c>Glazing Systems.removed.json</c>), a plain <see cref="ConstructionManager"/> in the same format, so it can be opened like any source
-    /// and an entry can be recovered by hand. The archive is a LOG, not a second library:
+    /// (<c>Glazing Systems.removed.json</c>, <c>Constructions.removed.json</c>), a plain <see cref="ConstructionManager"/> in the same format, so it
+    /// can be opened like any source and an entry can be recovered by hand. The archive is a LOG, not a second library:
     /// <list type="bullet">
     /// <item><description><b>It is only ever written while the library's own lock is held</b> (the caller's <see cref="UserLibraryFile.Transact"/>),
     /// so it needs no lock of its own and two removals never interleave.</description></item>
@@ -25,6 +25,8 @@ namespace SAM.Analytical.UI.WPF
     /// can be opened on its own. A different material of the same name already in the archive (a different removed entry's) is kept under a
     /// new name and the archived entry's layers follow it, exactly as when saving.</description></item>
     /// </list>
+    /// One implementation serves both kinds of entry (a glazing system and an opaque construction): they differ only in which list of the
+    /// <see cref="ConstructionManager"/> holds them and how their layers follow a renamed material.
     /// </summary>
     internal static class UserLibraryArchive
     {
@@ -50,6 +52,59 @@ namespace SAM.Analytical.UI.WPF
         /// </param>
         internal static string Archive(UserLibraryFile archiveFile, ApertureConstruction entry, MaterialLibrary sourceMaterials, string libraryName, string description, Func<ApertureConstruction, IReadOnlyDictionary<string, string>, ApertureConstruction> onMaterialsRenamed = null, string nothingDone = "Nothing was removed")
         {
+            return ArchiveCore(
+                archiveFile,
+                entry,
+                sourceMaterials,
+                libraryName,
+                description,
+                nothingDone,
+                x => x.Guid,
+                LibraryMaterialMerge.ReferencedNames,
+                (x, renamed) =>
+                {
+                    ApertureConstruction result = new ApertureConstruction(x, LibraryMaterialMerge.RenameLayers(x.PaneConstructionLayers, renamed), LibraryMaterialMerge.RenameLayers(x.FrameConstructionLayers, renamed));
+                    return onMaterialsRenamed?.Invoke(result, renamed) ?? result;
+                },
+                x => x.ApertureConstructions,
+                (archive, entries, materialLibrary) => new ConstructionManager(entries, archive.Constructions, materialLibrary));
+        }
+
+        /// <summary>The same for an opaque construction (<c>Constructions.json</c>): the archive keeps its aperture constructions as they are.</summary>
+        internal static string Archive(UserLibraryFile archiveFile, Construction entry, MaterialLibrary sourceMaterials, string libraryName, string description, Func<Construction, IReadOnlyDictionary<string, string>, Construction> onMaterialsRenamed = null, string nothingDone = "Nothing was removed")
+        {
+            return ArchiveCore(
+                archiveFile,
+                entry,
+                sourceMaterials,
+                libraryName,
+                description,
+                nothingDone,
+                x => x.Guid,
+                LibraryMaterialMerge.ReferencedNames,
+                (x, renamed) =>
+                {
+                    Construction result = new Construction(x, LibraryMaterialMerge.RenameLayers(x.ConstructionLayers, renamed));
+                    return onMaterialsRenamed?.Invoke(result, renamed) ?? result;
+                },
+                x => x.Constructions,
+                (archive, entries, materialLibrary) => new ConstructionManager(archive.ApertureConstructions, entries, materialLibrary));
+        }
+
+        private static string ArchiveCore<T>(
+            UserLibraryFile archiveFile,
+            T entry,
+            MaterialLibrary sourceMaterials,
+            string libraryName,
+            string description,
+            string nothingDone,
+            Func<T, Guid> guidOf,
+            Func<T, IEnumerable<string>> referencedNames,
+            Func<T, IReadOnlyDictionary<string, string>, T> followRenames,
+            Func<ConstructionManager, List<T>> entriesOf,
+            Func<ConstructionManager, List<T>, MaterialLibrary, ConstructionManager> build)
+            where T : class
+        {
             if (archiveFile == null || entry == null)
             {
                 return "There is nothing to archive.";
@@ -65,7 +120,7 @@ namespace SAM.Analytical.UI.WPF
             MaterialLibrary materialLibrary = archive.MaterialLibrary ?? new MaterialLibrary(libraryName);
 
             Dictionary<string, string> names = new Dictionary<string, string>();
-            foreach (string name in LibraryMaterialMerge.ReferencedNames(entry).Distinct())
+            foreach (string name in referencedNames(entry).Distinct())
             {
                 IMaterial material = sourceMaterials?.GetMaterial(name);
                 if (material == null)
@@ -82,22 +137,20 @@ namespace SAM.Analytical.UI.WPF
                 names[name] = archived;
             }
 
-            ApertureConstruction result = entry;
+            T result = entry;
             Dictionary<string, string> renamed = names.Where(x => x.Key != x.Value).ToDictionary(x => x.Key, x => x.Value);
             if (renamed.Count != 0)
             {
-                result = new ApertureConstruction(entry, LibraryMaterialMerge.RenameLayers(entry.PaneConstructionLayers, renamed), LibraryMaterialMerge.RenameLayers(entry.FrameConstructionLayers, renamed));
-                result = onMaterialsRenamed?.Invoke(result, renamed) ?? result;
+                result = followRenames(entry, renamed);
             }
 
-            List<ApertureConstruction> entries = (archive.ApertureConstructions ?? new List<ApertureConstruction>()).Where(x => x != null && x.Guid != entry.Guid).ToList();
+            Guid guid = guidOf(entry);
+            List<T> entries = (entriesOf(archive) ?? new List<T>()).Where(x => x != null && guidOf(x) != guid).ToList();
             entries.Add(result);
 
-            ConstructionManager updated = new ConstructionManager(entries, archive.Constructions, materialLibrary)
-            {
-                Name = archive.Name ?? libraryName + " (removed)",
-                Description = archive.Description ?? description,
-            };
+            ConstructionManager updated = build(archive, entries, materialLibrary);
+            updated.Name = archive.Name ?? libraryName + " (removed)";
+            updated.Description = archive.Description ?? description;
 
             try
             {

@@ -78,29 +78,18 @@ namespace SAM.Analytical.UI.WPF
                 return null;
             }
 
-            List<ConstructionLayer> constructionLayers = source.ConstructionLayers;
-            if (constructionLayers == null || request.LayerIndex < 0 || request.LayerIndex >= constructionLayers.Count || constructionLayers[request.LayerIndex] == null)
+            // The generated construction is made by the one pure query the Thermal Performance panel previews and saves from as well. Its input
+            // errors (layer, thickness, a shared name when keeping the name) come before the scope's, as they always did.
+            MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary ?? new MaterialLibrary("Default MaterialLibrary");
+            ProposedConstructionResult proposed = Query.ProposedConstruction(source, materialLibrary, request.LayerIndex, request.Thickness, request.Mode, request.NewConstructionName, request.CalculatedThermalTransmittance, constructions);
+            if (!proposed.Succeeded && proposed.ErrorKind == ProposedConstructionErrorKind.Input)
             {
-                result = new SetUValueResult(string.Format("{0} has no layer {1}.", source.Name, request.LayerIndex + 1));
-                return null;
-            }
-
-            if (double.IsNaN(request.Thickness) || request.Thickness <= 0)
-            {
-                result = new SetUValueResult("No layer thickness was calculated.");
+                result = new SetUValueResult(proposed.Error);
                 return null;
             }
 
             UValueApplyMode mode = request.Mode;
             ThermalApplyScope scope = mode == UValueApplyMode.ModifyInPlace ? ThermalApplyScope.AllUsing : request.Scope;
-
-            // UpdateConstructions (a legacy post-step) matches by NAME: keeping the name (modifying in place) would also rewrite
-            // other constructions that share the name, so that combination is refused.
-            if (mode == UValueApplyMode.ModifyInPlace && constructions.Any(x => x != null && x.Guid != source.Guid && x.Name == source.Name))
-            {
-                result = new SetUValueResult(string.Format("Other constructions are also named {0}; keeping the name would change them too. Create a new construction instead.", source.Name));
-                return null;
-            }
 
             List<Panel> panels_Using = adjacencyCluster.GetPanels(source) ?? new List<Panel>();
             List<Panel> panels = null;
@@ -126,65 +115,20 @@ namespace SAM.Analytical.UI.WPF
                     break;
             }
 
-            // The adjusted material: a copy of the source material at the new default thickness, named as the
-            // legacy flow names it, and ADDED to the model's Material Library (the legacy apply leaves it out,
-            // and ModelCheck then reports a missing material).
-            MaterialLibrary materialLibrary = analyticalModel.MaterialLibrary ?? new MaterialLibrary("Default MaterialLibrary");
-
-            ConstructionLayer constructionLayer = constructionLayers[request.LayerIndex];
-            double oldThickness = constructionLayer.Thickness;
-            double thickness = Core.Query.Round(request.Thickness, Tolerance.MacroDistance);
-            // Named as the legacy flow names it, "<material>_<thickness>m"; a layer already adjusted once
-            // ("<material>_0.067m") is renamed from its base material, so the suffixes do not stack.
-            string materialName_Base = constructionLayer.Name;
-            string materialName_Stripped = Regex.Replace(materialName_Base ?? string.Empty, @"_\d+(\.\d+)?m$", string.Empty, RegexOptions.CultureInvariant);
-            if (materialName_Stripped != materialName_Base && materialLibrary.GetMaterial(materialName_Stripped) != null)
+            // A material the layer needs that the Material Library lacks stops the change only after the scope was checked.
+            if (!proposed.Succeeded)
             {
-                materialName_Base = materialName_Stripped;
+                result = new SetUValueResult(proposed.Error);
+                return null;
             }
 
-            string materialName = string.Format(CultureInfo.InvariantCulture, "{0}_{1}m", materialName_Base, thickness);
-
-            bool materialAdded = false;
-            IMaterial material = materialLibrary.GetMaterial(materialName);
-            if (material == null)
+            // The adjusted material enters the model's Material Library (the legacy apply leaves it out, and ModelCheck then reports a missing material).
+            if (proposed.MaterialAdded)
             {
-                Material material_Source = materialLibrary.GetMaterial(constructionLayer.Name) as Material;
-                if (material_Source == null)
-                {
-                    result = new SetUValueResult(string.Format("Material {0} is not in the Material Library.", constructionLayer.Name));
-                    return null;
-                }
-
-                Material material_New = Core.Create.Material(material_Source, materialName, materialName, material_Source.Description);
-                material_New.SetValue(Core.MaterialParameter.DefaultThickness, thickness);
-                materialLibrary.Add(material_New);
-                material = material_New;
-                materialAdded = true;
+                materialLibrary.Add(proposed.Material);
             }
 
-            constructionLayers[request.LayerIndex] = new ConstructionLayer(material.Name, thickness);
-
-            Construction construction;
-            if (mode == UValueApplyMode.ModifyInPlace)
-            {
-                construction = new Construction(source, constructionLayers);
-            }
-            else
-            {
-                string name = request.NewConstructionName?.Trim();
-                if (string.IsNullOrWhiteSpace(name) || constructions.Any(x => x != null && string.Equals(x.Name?.Trim(), name, StringComparison.OrdinalIgnoreCase)))
-                {
-                    name = Query.UValueConstructionName(source.Name, request.CalculatedThermalTransmittance, constructions.Select(x => x?.Name));
-                }
-
-                construction = new Construction(new Construction(Guid.NewGuid(), source, name), constructionLayers);
-            }
-
-            if (construction.TryGetValue(ConstructionParameter.DefaultThickness, out double _))
-            {
-                construction.SetValue(ConstructionParameter.DefaultThickness, construction.GetThickness());
-            }
+            Construction construction = proposed.Construction;
 
             List<Guid> panelGuids = new List<Guid>();
             foreach (Panel panel in panels)
@@ -217,7 +161,7 @@ namespace SAM.Analytical.UI.WPF
             analyticalModel_New = Analytical.Query.UpdateConstructions(analyticalModel_New, constructionManager) ?? analyticalModel_New;
             analyticalModel_New = Analytical.Query.UpdateApertureConstructions(analyticalModel_New, constructionManager) ?? analyticalModel_New;
 
-            result = new SetUValueResult(request, source, construction, constructionLayer.Name, material.Name, materialAdded, oldThickness, thickness, panelGuids);
+            result = new SetUValueResult(request, source, construction, proposed.SourceMaterialName, proposed.Material.Name, proposed.MaterialAdded, proposed.OldThickness, proposed.NewThickness, panelGuids);
             return analyticalModel_New;
         }
 

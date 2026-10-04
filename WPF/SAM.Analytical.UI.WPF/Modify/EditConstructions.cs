@@ -71,6 +71,21 @@ namespace SAM.Analytical.UI.WPF
                 constructionLibraryWindow.DialogResult = save;
             };
 
+            // "Save to My constructions...": the selected construction is saved as a NEW one to My constructions. This window edits a copy and stays open;
+            // neither it nor the model is touched, so there is no Undo step.
+            string modelName = uIAnalyticalModel.JSAMObject?.Name;
+            constructionLibraryWindow.SaveToMyConstructionsRequested += (sender, e) =>
+            {
+                e.Handled = true;
+                SaveToMyConstructions(
+                    e.Construction,
+                    e.MaterialLibrary,
+                    modelName,
+                    UserConstructionLibrary.Shared,
+                    (subject, problem) => UserConstructionNameWindow.Prompt(constructionLibraryWindow, subject.Description, subject.SuggestedName, problem),
+                    text => System.Windows.MessageBox.Show(constructionLibraryWindow, text, "Save to My constructions"));
+            };
+
             if (constructionLibraryWindow.ShowDialog(owner) == true)
             {
                 constructionLibrary = constructionLibraryWindow.ConstructionLibrary;

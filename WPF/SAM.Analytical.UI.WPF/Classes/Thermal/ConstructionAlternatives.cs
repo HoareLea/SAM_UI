@@ -60,6 +60,8 @@ namespace SAM.Analytical.UI.WPF
         private readonly ConstructionUValueCache cache;
         private readonly Func<GlazingSource> createLibrary;
         private readonly ThermalSourceCatalog catalog;
+        private readonly UserConstructionLibrary userConstructions;
+        private readonly SynchronizationContext userContext;
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         private readonly Dictionary<(Guid, HeatFlowDirection, bool), string> keys = new Dictionary<(Guid, HeatFlowDirection, bool), string>();
@@ -75,6 +77,7 @@ namespace SAM.Analytical.UI.WPF
         private string statusMessage;
         private Guid? selectedGuid;
         private int notCalculated;
+        private List<string> notes = new List<string>();
         private int disposed;
         private bool sourcesRequested;
 
@@ -84,7 +87,11 @@ namespace SAM.Analytical.UI.WPF
         /// <param name="cache">The session's U-values of constructions as they are.</param>
         /// <param name="library">The default library as a source (created on first use); null for the model's constructions only.</param>
         /// <param name="catalog">The sources the user added, beyond the model and the default library; null for none. They are read when needed and the list follows them as they arrive.</param>
-        public ConstructionAlternatives(AnalyticalModel analyticalModel, UValueViewModel uValue, IConstructionUValueEvaluator evaluator, ConstructionUValueCache cache, Func<GlazingSource> library, ThermalSourceCatalog catalog = null)
+        /// <param name="userConstructions">
+        /// "My constructions": its saved constructions come after the default library and before the added sources, read when the list is built and
+        /// again whenever the library says it changed (on the thread this list was created on); null for none.
+        /// </param>
+        public ConstructionAlternatives(AnalyticalModel analyticalModel, UValueViewModel uValue, IConstructionUValueEvaluator evaluator, ConstructionUValueCache cache, Func<GlazingSource> library, ThermalSourceCatalog catalog = null, UserConstructionLibrary userConstructions = null)
         {
             this.analyticalModel = analyticalModel ?? throw new ArgumentNullException(nameof(analyticalModel));
             this.uValue = uValue ?? throw new ArgumentNullException(nameof(uValue));
@@ -96,6 +103,14 @@ namespace SAM.Analytical.UI.WPF
             if (catalog != null)
             {
                 catalog.SourcesChanged += Catalog_SourcesChanged;
+            }
+
+            // A Save / Rename / Remove may come from another thread: the list is refreshed on the thread it was created on (the panel's).
+            this.userConstructions = userConstructions;
+            if (userConstructions != null)
+            {
+                userContext = SynchronizationContext.Current;
+                userConstructions.Changed += UserConstructions_Changed;
             }
         }
 
@@ -112,6 +127,9 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>The list: the generated variant first, then the existing constructions that meet the target or are within 10 % of it.</summary>
         public IReadOnlyList<ConstructionAlternativeRow> Rows => rows;
+
+        /// <summary>Notes about the sources of the list, e.g. why "My constructions" could not be used; empty when there are none.</summary>
+        public IReadOnlyList<string> Notes => notes;
 
         /// <summary>The existing constructions in the list (not the generated variant).</summary>
         public int ExistingCount => rows.Count(x => !x.IsGenerated);
@@ -381,6 +399,11 @@ namespace SAM.Analytical.UI.WPF
                     catalog.SourcesChanged -= Catalog_SourcesChanged;
                 }
 
+                if (userConstructions != null)
+                {
+                    userConstructions.Changed -= UserConstructions_Changed;
+                }
+
                 cancellationTokenSource.Cancel();
                 cancellationTokenSource.Dispose();
             }
@@ -507,8 +530,28 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            // The sources the user added, in the order added: the first of a Guid wins (a construction in the model, the library or an earlier
-            // source is not offered a second time).
+            // "My constructions": after the default library, before the added sources. Read now (a small file; missing = empty, unreadable = a
+            // note and the other sources keep working); the first of a Guid still wins, so a saved construction that is in the model already is the model's.
+            notes = new List<string>();
+            if (userConstructions != null)
+            {
+                GlazingSource source_User = GlazingSource.FromUserConstructions(userConstructions);
+                if (!string.IsNullOrEmpty(source_User.Note))
+                {
+                    notes.Add(source_User.Note);
+                }
+
+                foreach (Construction construction in source_User.GetConstructions())
+                {
+                    if (Opaque(construction, source_User) && guids.Add(construction.Guid))
+                    {
+                        candidates.Add(new ConstructionCandidate(construction, source_User, materials_Model));
+                    }
+                }
+            }
+
+            // The sources the user added, in the order added: the first of a Guid wins (a construction in the model, the library, "My constructions"
+            // or an earlier source is not offered a second time).
             foreach (GlazingSource source in catalog?.ReadySources ?? new List<GlazingSource>())
             {
                 foreach (Construction construction in source.GetConstructions())
@@ -529,6 +572,32 @@ namespace SAM.Analytical.UI.WPF
         {
             MaterialType materialType = Analytical.Query.MaterialType(construction?.ConstructionLayers, source?.ConstructionManager?.MaterialLibrary);
             return materialType != Core.MaterialType.Transparent && materialType != Core.MaterialType.Gas;
+        }
+
+        // "My constructions" changed (a Save, Rename or Remove): the candidates are read again - on the thread the list was created on. The U-values
+        // already calculated are cached by content, so only a construction not seen before is asked of Tas; a chosen construction that is gone
+        // from the list drops back to the generated variant (Build).
+        private void UserConstructions_Changed(object sender, EventArgs e)
+        {
+            SynchronizationContext context = userContext;
+            if (context == null || context == SynchronizationContext.Current)
+            {
+                RefreshUserConstructions();
+                return;
+            }
+
+            context.Post(_ => RefreshUserConstructions(), null);
+        }
+
+        private void RefreshUserConstructions()
+        {
+            if (Volatile.Read(ref disposed) != 0 || candidates == null)
+            {
+                return;
+            }
+
+            candidates = null;
+            Refresh();
         }
 
         // A source arrived (or was removed): the candidates are rebuilt from the sources there are now.
@@ -614,7 +683,7 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 existing.Add(new ConstructionAlternativeRow(
-                    candidate.Kind == GlazingSourceKind.Model ? ConstructionAlternativeKind.Model : candidate.Kind == GlazingSourceKind.Library ? ConstructionAlternativeKind.Library : ConstructionAlternativeKind.Loaded,
+                    Kind(candidate.Kind),
                     candidate.Guid,
                     candidate.Name,
                     u,
@@ -668,6 +737,24 @@ namespace SAM.Analytical.UI.WPF
             }
 
             Raise();
+        }
+
+        private static ConstructionAlternativeKind Kind(GlazingSourceKind kind)
+        {
+            switch (kind)
+            {
+                case GlazingSourceKind.Model:
+                    return ConstructionAlternativeKind.Model;
+
+                case GlazingSourceKind.Library:
+                    return ConstructionAlternativeKind.Library;
+
+                case GlazingSourceKind.User:
+                    return ConstructionAlternativeKind.User;
+
+                default:
+                    return ConstructionAlternativeKind.Loaded;
+            }
         }
 
         // The panels in scope by panel group (those with no group at all are not counted: they cannot disagree with a construction).
