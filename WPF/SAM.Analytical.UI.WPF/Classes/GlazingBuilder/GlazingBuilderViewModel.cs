@@ -598,7 +598,7 @@ namespace SAM.Analytical.UI.WPF
                         validationReplace = result.Validation;
                     }
 
-                    issues = validation.Issues.Select(x => new GlazingBuilderIssueRow(x)).ToList();
+                    issues = Validation.Issues.Select(x => new GlazingBuilderIssueRow(x)).ToList();
                     Raise(nameof(Validation));
                     Raise(nameof(Issues));
                     Raise(nameof(ValidationSummary));

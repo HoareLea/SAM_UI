@@ -401,6 +401,28 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         [WpfFact]
+        public async Task A_replace_the_library_refuses_under_its_lock_lists_the_issues_of_the_check_that_is_shown()
+        {
+            ApertureConstruction saved = Save(Rich("Rich"));
+
+            using (GlazingBuilderViewModel builder = await Open(saved))
+            {
+                builder.Name = "Late";
+                await Settle(builder);
+                Assert.True(builder.CanSaveAndReplace);
+                Assert.True(BuilderFixture.Library(directory).Save(BuilderFixture.Double("Late")).Succeeded);   // another window takes the name meanwhile
+
+                Assert.False(await builder.SaveAndReplaceAsync());
+
+                Assert.Contains("is already in My glazing systems", builder.SaveError);
+                Assert.True(builder.Validation.Has(GlazingDraftIssueCodes.DuplicateName));
+                Assert.Equal(builder.Validation.Issues.Count(), builder.Issues.Count);                       // the list shows the check the summary shows ...
+                Assert.Contains("is already in My glazing systems", string.Join(" ", builder.Issues.Select(x => x.Text)));   // ... with the library's finding
+                Assert.Null(builder.SavedSystem);
+            }
+        }
+
+        [WpfFact]
         public async Task The_Builder_still_holds_no_model_and_the_saved_system_is_never_changed_by_opening_or_cancelling()
         {
             ApertureConstruction saved = Save(Rich("Rich"));

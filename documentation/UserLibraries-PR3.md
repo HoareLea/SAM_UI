@@ -26,7 +26,7 @@ That test found (and the fix removed) one real difference: the description / pro
 ## 3. Tests (new, all pass)
 
 * `UserGlazingLibraryReplaceTests` (11): happy path (new Guid, old in the archive byte-identical, Supersedes, one `Changed`), materials (archive gets all, library loses only what nobody uses), name reuse only when replacing, errors / no name write nothing, replaced system gone, **archive-write failure, library-write failure + retry (no duplicate), unreadable and read-only archive, lock held, unreadable library**, v1 provenance reads, every new save is schema 2.
-* `GlazingBuilderEditTests` (12, `[WpfFact]`): round-trip identity, un-reverse, `Unreverse` exactness, a plain copy still reverses back but offers no replace, edit-mode state / buttons / hint, another system's name blocks both, edit mode ignored when the library no longer holds the seed, Save and replace end to end (name kept, new Guid, archived old, `Saved` once, `Changed` once, provenance), replacing a system removed meanwhile (fails cleanly; Save as new still works), failed replace leaves the library as it was and the Builder retry-able, opening / cancelling never changes the seed, the real window's buttons (replace closes it; a plain copy has no replace button).
+* `GlazingBuilderEditTests` (13, `[WpfFact]`): round-trip identity, un-reverse, `Unreverse` exactness, a plain copy still reverses back but offers no replace, edit-mode state / buttons / hint, another system's name blocks both, edit mode ignored when the library no longer holds the seed, Save and replace end to end (name kept, new Guid, archived old, `Saved` once, `Changed` once, provenance), replacing a system removed meanwhile (fails cleanly; Save as new still works), failed replace leaves the library as it was and the Builder retry-able, a replace the library refuses under its lock (another window took the name) lists the issues of the check that is shown (fails without the fix: the list was rebuilt from the save-as-new check), opening / cancelling never changes the seed, the real window's buttons (replace closes it; a plain copy has no replace button).
 * `GlazingBuilderRealTasTests.EditedSystem_RoundTripAndReplace_ThroughTheBuilderRoute` (opt-in; no-op without the env var).
 * `UserLibraryWindowTests`: the manager's Open in Builder expects edit mode; new context-menu test (Open in Builder edits, New system based on this copies, hidden for non-user systems).
 
@@ -34,6 +34,8 @@ That test found (and the fix removed) one real difference: the description / pro
 
 * Full WPF suite, final run at the gate: **2339 / 2339** (2313 after PR2 + 26 new, incl. the opt-in real-Tas test, which is a no-op without its env var and passed with it).
 * The 267 library / manager / Builder / window tests repeated 8 x: all green.
+* After the restack onto PR2's right-click fix and the issue-list fix below: **2341 / 2341** (Release).
+* Issue-list fix (closeout review): after a failed save while editing, `SaveCoreAsync` rebuilt the issue list from the save-as-new check instead of the check the Builder shows (`Validation`), so the list and the summary could disagree (the save error itself was always right). It now uses `Validation`, as the refresh path already did.
 
 ## 5. Honest limits
 
