@@ -14,6 +14,7 @@ using System.Windows.Automation;
 using System.Windows.Automation.Peers;
 using System.Windows.Automation.Provider;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using Xunit;
@@ -458,6 +459,47 @@ namespace SAM.Analytical.UI.WPF.Tests
 
                 Assert.NotNull(builder);
                 Assert.Equal(1, library.Read().Systems.Count);   // opening it saved nothing
+                AssertModelUntouched(panel);
+            }
+        }
+
+        // A right mouse button press on a candidate as WPF's input manager delivers it: the tunnelling PreviewMouseDown, then the bubbling MouseDown with the
+        // same arguments (so a handled preview reaches the container handled).
+        private static void RightButtonDown(UIElement element)
+        {
+            MouseButtonEventArgs args = new MouseButtonEventArgs(Mouse.PrimaryDevice, Environment.TickCount, MouseButton.Right) { RoutedEvent = Mouse.PreviewMouseDownEvent, Source = element };
+            element.RaiseEvent(args);
+            args.RoutedEvent = Mouse.MouseDownEvent;
+            element.RaiseEvent(args);
+            Flush();
+        }
+
+        [WpfFact]
+        public void Right_clicking_a_candidate_to_open_its_context_menu_neither_selects_nor_chooses_it()
+        {
+            ApertureConstruction saved = Save(BuilderFixture.Double("Mine"));
+            using (Panel panel = OpenPanel())
+            {
+                ListBox list = Descendants<ListBox>(panel.Control).First(x => ReferenceEquals(x.DataContext, panel.Editor) && AutomationProperties.GetAutomationId(x) == "listBox_Candidates");
+                Assert.Null(list.SelectedItem);
+
+                foreach (Guid guid in new[] { saved.Guid, GlazingFixture.BetterGuid })
+                {
+                    ContextMenu menu = OpenMenu(panel, guid);
+                    menu.IsOpen = false;
+                    Flush();
+                    GlazingCandidateRow row = panel.Editor.Candidates.Single(x => x.Guid == guid);
+                    TextBlock text = Descendants<TextBlock>(panel.Control).First(x => ReferenceEquals(x.DataContext, row));
+                    Assert.NotNull(list.ItemContainerGenerator.ContainerFromItem(row));
+
+                    RightButtonDown(text);
+
+                    Assert.Null(list.SelectedItem);                      // the press that opens the menu does not select the candidate ...
+                    Assert.Null(panel.Editor.SelectedCandidate);         // ... so it is not the row's pending change
+                    Assert.False(panel.Editor.HasRequest);
+                    Assert.Equal(0, panel.Control.ViewModel.Session.ChangeCount);
+                }
+
                 AssertModelUntouched(panel);
             }
         }

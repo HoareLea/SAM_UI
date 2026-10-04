@@ -533,6 +533,13 @@ namespace SAM.Analytical.UI.WPF
             OpenLibrary();
         }
 
+        // A right-click on a candidate only opens its context menu. In this list selecting a candidate CHOOSES it (the row's pending change), and a
+        // ListBoxItem selects itself on the right button's press, so the press is handled here; the menu opens on the release, as before.
+        private void candidate_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
+
         // The candidate and the open list a context menu was opened on.
         private bool TryContextTarget(object sender, out GlazingCandidateRow row, out ThermalRowEditor editor)
         {

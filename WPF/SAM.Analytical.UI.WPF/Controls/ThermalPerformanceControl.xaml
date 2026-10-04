@@ -331,7 +331,7 @@
                                                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" AutomationProperties.AutomationId="listBox_Candidates">
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <StackPanel ToolTip="{Binding Tooltip}" Margin="0,2">
+                                                                            <StackPanel ToolTip="{Binding Tooltip}" Margin="0,2" PreviewMouseRightButtonDown="candidate_PreviewMouseRightButtonDown">
                                                                                 <StackPanel.ContextMenu>
                                                                                     <ContextMenu>
                                                                                         <MenuItem Header="New system based on this…" Click="menuItem_NewBasedOn_Click" AutomationProperties.AutomationId="menuItem_NewBasedOn"

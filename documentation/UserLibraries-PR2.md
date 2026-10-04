@@ -19,20 +19,21 @@ Decisions:
 * **"Open in Builder…" and "New system based on this…" both save as a NEW system in this PR** (both seed the Builder). PR3 gives Open in Builder its edit mode (round-trip fidelity, *Save and replace*); the button tooltip says "the selected one is not changed".
 * The window has one section ("Glazing systems"); the opaque *Constructions* tab arrives with the opaque library (PR4), not as an empty placeholder.
 * Modal-on-modal is used as the Builder already is (the manager is modal over the panel's window; the Builder is modal over the manager). Modeless is a PR6 question.
+* **A right-click on a candidate only opens its context menu** (added after the real-app acceptance of 3-4 Oct 2026): a `ListBoxItem` selects itself on the right button's press, and in the Change… list selecting a candidate CHOOSES it, so the right-click that opened the menu made the candidate the row's pending change (`1 change · N elements`, Apply enabled) although the menu actions themselves do not choose it. The candidate template now handles `PreviewMouseRightButtonDown`; the menu still opens on the release. The WPF tests had opened the menu with `IsOpen` and so never pressed the button.
 * The list's selection must survive a refresh: `ListView` clears its selection when it is given new rows and writes `null` back through the two-way binding. The view-model ignores a `null` while it is refreshing and puts the selection (by Guid) back - found by the window test, not by the view-model test.
 
-## 2. Tests (23 new, all pass)
+## 2. Tests (24 new, all pass)
 
 * `UserLibraryViewModelTests` (13, `[WpfFact]`): empty / missing, rows with provenance values, no-provenance system, unreadable library (nothing changeable, file untouched), Rename rule while typing + label-only result, cancel, a rename the library refuses under its lock (stale list), Remove asks first / only a yes removes / failure is a message and the system stays, Open in Builder is only a request, the list follows another thread's Save / Rename / Remove and stops when disposed, and the structural **"holds no analytical model"** scan over the view-model, row, window, library, engine and archive (with a non-vacuity check on `ThermalPerformanceViewModel`).
-* `UserLibraryWindowTests` (10, `[WpfFact]`): the real XAML (named controls, list, details, inline rename with the rule, Remove with the confirmation hook, empty / unreadable states, follows a save from another thread, Open in Builder request) and the real panel (**My library…** button, Open in Builder from the manager seeds the Builder from that system and saves nothing, context menu *New system based on this…* seeds from a non-chosen candidate **without choosing it**, *Rename…* / *Remove…* only on user rows, the open list follows). Every panel test asserts model JSON, `Modified`, history and `CanUndo` unchanged.
+* `UserLibraryWindowTests` (11, `[WpfFact]`): the real XAML (named controls, list, details, inline rename with the rule, Remove with the confirmation hook, empty / unreadable states, follows a save from another thread, Open in Builder request) and the real panel (**My library…** button, Open in Builder from the manager seeds the Builder from that system and saves nothing, context menu *New system based on this…* seeds from a non-chosen candidate **without choosing it**, *Rename…* / *Remove…* only on user rows, the open list follows, and a right mouse press on a user or library candidate - routed as the input manager routes it - neither selects nor chooses it; this test fails without the fix). Every panel test asserts model JSON, `Modified`, history and `CanUndo` unchanged.
 
 ## 3. Results
 
-* Full WPF suite, one run at the gate: **2313 / 2313** (2290 after PR1 + 23).
+* Full WPF suite, one run at the gate: **2313 / 2313** (2290 after PR1 + 23); after the right-click fix **2314 / 2314** (Release).
 * The 152 library / manager / Builder / integration tests repeated 8 x: all green.
 * Visual check: the window was rendered to an image with a throwaway test (not committed): list, details, inline rename, archive note and commands lay out as intended at the default size.
 
 ## 4. Not done / honest limits
 
-* **No real-app UIA acceptance** (the plan listed it): the licensed Tas app was not driven in this overnight run. The real XAML is exercised in the WPF tests above over a fake Tas; the manager and its context-menu entry points need a short manual pass in the app before relying on them (open My library…, rename, remove, open in Builder, right-click a user system).
+* Real-app UIA acceptance was done after the overnight run (on the PR3 stack); it found the right-click selection defect above. Evidence is kept locally, not committed.
 * No search / sort / filter in the manager (PR6, only if long lists appear); no Restore from the archive (D1).
