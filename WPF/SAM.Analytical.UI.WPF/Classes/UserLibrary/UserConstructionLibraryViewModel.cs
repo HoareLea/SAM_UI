@@ -13,54 +13,44 @@ using System.Threading;
 namespace SAM.Analytical.UI.WPF
 {
     /// <summary>
-    /// One saved glazing system as "My library" lists it: what it is made of, the values Tas gave it when it was saved, and how it was built
-    /// (from its Builder provenance: labels and file names only). Identity is the Guid.
+    /// One saved construction as "My library" lists it on the Constructions tab: what it is made of, the U-value it had when it was saved and on which
+    /// heat-flow basis, when it was saved and where it came from (from its provenance: labels and file names only). Identity is the Guid.
     /// </summary>
-    public sealed class UserLibraryEntryRow
+    public sealed class UserConstructionEntryRow
     {
-        internal UserLibraryEntryRow(ApertureConstruction apertureConstruction, GlazingSource source)
+        internal UserConstructionEntryRow(Construction construction)
         {
-            ApertureConstruction = apertureConstruction;
-            Candidate = new GlazingCandidate(apertureConstruction, source, null);
-            Provenance = GlazingBuilderProvenance.FromApertureConstruction(apertureConstruction);
+            Construction = construction;
+            Provenance = UserConstructionProvenance.FromConstruction(construction);
         }
 
-        public ApertureConstruction ApertureConstruction { get; }
+        public Construction Construction { get; }
 
-        internal GlazingCandidate Candidate { get; }
+        public UserConstructionProvenance Provenance { get; }
 
-        public GlazingBuilderProvenance Provenance { get; }
+        public Guid Guid => Construction.Guid;
 
-        public Guid Guid => ApertureConstruction.Guid;
+        public string Name => Construction.Name;
 
-        public string Name => ApertureConstruction.Name;
+        /// <summary>The last 6 characters of the Guid (tells same-named constructions apart).</summary>
+        public string ShortId => Construction.Guid.ToString().Substring(30);
 
-        /// <summary>The last 6 characters of the Guid (tells same-named systems apart).</summary>
-        public string ShortId => Candidate.ShortId;
+        /// <summary>The build-up in the stored layer order, e.g. "50 Air / 12 Board / 80 Mineral Wool" (thickness in mm, then the material).</summary>
+        public string BuildUp => string.Join(" / ", (Construction.ConstructionLayers ?? new List<ConstructionLayer>()).Where(x => x != null).Select(x => string.Format(CultureInfo.CurrentCulture, "{0:0.#} {1}", x.Thickness * 1000, x.Name)));
 
-        public string PaneBuildUp => Candidate.PaneBuildUp;
+        /// <summary>"U 0.180 W/m²K" as calculated when it was saved; "U not recorded" when there is none.</summary>
+        public string UValueText => Provenance == null || double.IsNaN(Provenance.ThermalTransmittance) ? "U not recorded" : string.Format(CultureInfo.CurrentCulture, "U {0:0.000} W/m²K", Provenance.ThermalTransmittance);
 
-        public string FrameText => Candidate.HasFrame ? Candidate.FrameBuildUp : "no frame";
+        /// <summary>The heat-flow basis the U-value is for, e.g. "Horizontal heat flow, external surfaces (WallExternal, from the panels)"; empty when none was recorded.</summary>
+        public string HeatFlowBasisText => string.IsNullOrWhiteSpace(Provenance?.HeatFlowBasis) ? string.Empty : Provenance.HeatFlowBasis;
 
-        /// <summary>"Ug 1.05 · g 0.52 · LT 0.75 · Uf 1.80" as calculated when it was saved; "not recorded" when it has no provenance.</summary>
-        public string ValuesText
-        {
-            get
-            {
-                GlazingValues values = Provenance?.Performance;
-                return values == null
-                    ? "values not recorded"
-                    : string.Format(CultureInfo.CurrentCulture, "Ug {0} · g {1} · LT {2} · Uf {3}", Format(values.Ug), Format(values.G), Format(values.LightTransmittance), Format(values.Uf));
-            }
-        }
-
-        /// <summary>When it was saved ("2026-10-02"); empty when unknown.</summary>
+        /// <summary>When it was saved ("2026-10-04"); empty when unknown.</summary>
         public string SavedText => Provenance == null || Provenance.CreatedUtc == default ? string.Empty : Provenance.CreatedUtc.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
 
-        /// <summary>What it was based on ("based on SIM_EXT_GLZ"), or "not based on another system"; empty without provenance.</summary>
-        public string BasedOnText => Provenance == null ? string.Empty : string.IsNullOrWhiteSpace(Provenance.BasedOnName) ? "not based on another system" : "based on " + Provenance.BasedOnName;
+        /// <summary>Where it was saved from ("generated variant", "model", "added source Constructions.tcd"…); "no provenance" when it has none.</summary>
+        public string SourceText => Provenance == null ? "no provenance" : Provenance.SavedFromText + (string.IsNullOrWhiteSpace(Provenance.BasedOnName) ? string.Empty : " · based on " + Provenance.BasedOnName);
 
-        /// <summary>Everything the details pane shows: build-up, frame, values at save and how it was built.</summary>
+        /// <summary>Everything the details pane shows: build-up, the U-value at save and how it was obtained, and where it was saved from.</summary>
         public string DetailsText
         {
             get
@@ -68,18 +58,21 @@ namespace SAM.Analytical.UI.WPF
                 List<string> lines = new List<string>()
                 {
                     string.Format(CultureInfo.CurrentCulture, "{0}  [{1}]", Name, ShortId),
-                    "Pane: " + (string.IsNullOrEmpty(PaneBuildUp) ? "–" : PaneBuildUp),
-                    "Frame: " + FrameText,
-                    "At save: " + ValuesText + (string.IsNullOrWhiteSpace(Provenance?.PerformanceEngine) ? string.Empty : " (" + Provenance.PerformanceEngine + ")"),
+                    "Build-up: " + (string.IsNullOrEmpty(BuildUp) ? "–" : BuildUp),
                 };
 
                 if (Provenance == null)
                 {
-                    lines.Add("Not made with the Glazing System Builder (no Builder provenance).");
+                    lines.Add("Not saved by SAM's My constructions (no provenance).");
                 }
                 else
                 {
-                    lines.AddRange(Query.GlazingBuiltFrom(Provenance));
+                    if (!string.IsNullOrEmpty(SavedText))
+                    {
+                        lines.Add("Saved: " + SavedText);
+                    }
+
+                    lines.AddRange(Provenance.Lines());
                 }
 
                 return string.Join(Environment.NewLine, lines);
@@ -87,23 +80,22 @@ namespace SAM.Analytical.UI.WPF
         }
 
         public override string ToString() => Name;
-
-        private static string Format(double value) => double.IsNaN(value) || double.IsInfinity(value) ? "–" : value.ToString("0.00", CultureInfo.CurrentCulture);
     }
 
     /// <summary>
-    /// The model-free view-model of "My library": the saved glazing systems of <see cref="UserGlazingLibrary"/> with Rename, Remove (after a
-    /// confirmation, to the archive) and a request to open one in the Glazing System Builder. It holds the library and nothing else: no analytical
-    /// model, no Undo, nothing is ever applied to a model from here. It follows <see cref="UserGlazingLibrary.Changed"/> (a Save, Rename or Remove from
-    /// anywhere in this process), marshalling the refresh to the thread it was created on, until it is disposed.
+    /// The model-free view-model of the Constructions tab of "My library": the saved constructions of <see cref="UserConstructionLibrary"/> with Rename
+    /// and Remove (after a confirmation, to the archive) and their details. It holds the library and nothing else: no analytical model, no Undo, nothing
+    /// is ever applied to a model from here, and there is no opaque edit (a construction is authored in the Constructions editor and saved as a new one).
+    /// It follows <see cref="UserConstructionLibrary.Changed"/> (a Save, Rename or Remove from anywhere in this process), marshalling the refresh to the
+    /// thread it was created on, until it is disposed.
     /// </summary>
-    public sealed class UserLibraryViewModel : INotifyPropertyChanged, IDisposable
+    public sealed class UserConstructionLibraryViewModel : INotifyPropertyChanged, IDisposable
     {
-        private readonly UserGlazingLibrary library;
+        private readonly UserConstructionLibrary library;
         private readonly SynchronizationContext context;
-        private List<UserLibraryEntryRow> rows = new List<UserLibraryEntryRow>();
-        private UserLibraryEntryRow selectedRow;
-        private UserGlazingLibraryState state = UserGlazingLibraryState.Missing;
+        private List<UserConstructionEntryRow> rows = new List<UserConstructionEntryRow>();
+        private UserConstructionEntryRow selectedRow;
+        private UserConstructionLibraryState state = UserConstructionLibraryState.Missing;
         private string note = string.Empty;
         private string message = string.Empty;
         private bool isRenaming;
@@ -111,7 +103,7 @@ namespace SAM.Analytical.UI.WPF
         private bool disposed;
         private bool refreshing;
 
-        public UserLibraryViewModel(UserGlazingLibrary library)
+        public UserConstructionLibraryViewModel(UserConstructionLibrary library)
         {
             this.library = library ?? throw new ArgumentNullException(nameof(library));
             context = SynchronizationContext.Current;
@@ -121,22 +113,13 @@ namespace SAM.Analytical.UI.WPF
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>Raised when the user asks to open <see cref="SelectedRow"/> (or a given row) in the Glazing System Builder; the host shows it.</summary>
-        public event EventHandler<UserLibraryEntryRow> OpenInBuilderRequested;
+        public UserConstructionLibrary Library => library;
 
-        public UserGlazingLibrary Library => library;
-
-        /// <summary>
-        /// The Constructions tab of "My library" (<see cref="UserConstructionLibraryViewModel"/>), when the host has "My constructions"; null leaves the
-        /// tab out. It belongs to this view-model: it is disposed with it.
-        /// </summary>
-        public UserConstructionLibraryViewModel Constructions { get; set; }
-
-        public IReadOnlyList<UserLibraryEntryRow> Rows => rows;
+        public IReadOnlyList<UserConstructionEntryRow> Rows => rows;
 
         public bool HasRows => rows.Count != 0;
 
-        public UserGlazingLibraryState State => state;
+        public UserConstructionLibraryState State => state;
 
         /// <summary>Why the library file cannot be used (it is left as it is and nothing can be changed); empty otherwise.</summary>
         public string Note => note;
@@ -144,18 +127,18 @@ namespace SAM.Analytical.UI.WPF
         public bool HasNote => !string.IsNullOrEmpty(note);
 
         /// <summary>Changes are possible only while the file is readable.</summary>
-        public bool CanChange => state != UserGlazingLibraryState.Unreadable;
+        public bool CanChange => state != UserConstructionLibraryState.Unreadable;
 
-        public string EmptyText => state == UserGlazingLibraryState.Unreadable
+        public string EmptyText => state == UserConstructionLibraryState.Unreadable
             ? string.Empty
-            : "No glazing systems saved yet. Open Create new… in a window's Change… list, build a system and choose Save as predefined.";
+            : "No constructions saved yet. Choose Save to My constructions… on an opaque row of the Thermal Performance panel, or in the Constructions editor.";
 
-        public bool ShowEmptyText => rows.Count == 0 && state != UserGlazingLibraryState.Unreadable;
+        public bool ShowEmptyText => rows.Count == 0 && state != UserConstructionLibraryState.Unreadable;
 
-        public string CountText => rows.Count == 1 ? "1 saved system" : rows.Count + " saved systems";
+        public string CountText => rows.Count == 1 ? "1 saved construction" : rows.Count + " saved constructions";
 
-        /// <summary>Where removed systems are kept (shown as a file name only).</summary>
-        public string ArchiveText => "Removed systems are not deleted: they are kept in " + System.IO.Path.GetFileName(library.ArchivePath) + " next to the library.";
+        /// <summary>Where removed constructions are kept (shown as a file name only).</summary>
+        public string ArchiveText => "Removed constructions are not deleted: they are kept in " + System.IO.Path.GetFileName(library.ArchivePath) + " next to the library.";
 
         /// <summary>The result of the last Rename / Remove (an error says why nothing changed); empty otherwise.</summary>
         public string Message
@@ -164,7 +147,7 @@ namespace SAM.Analytical.UI.WPF
             private set => Set(ref message, value ?? string.Empty);
         }
 
-        public UserLibraryEntryRow SelectedRow
+        public UserConstructionEntryRow SelectedRow
         {
             get => selectedRow;
             set
@@ -186,7 +169,6 @@ namespace SAM.Analytical.UI.WPF
                 Raise(nameof(HasSelection));
                 Raise(nameof(CanRename));
                 Raise(nameof(CanRemove));
-                Raise(nameof(CanOpenInBuilder));
             }
         }
 
@@ -197,8 +179,6 @@ namespace SAM.Analytical.UI.WPF
         public bool CanRename => selectedRow != null && CanChange;
 
         public bool CanRemove => selectedRow != null && CanChange;
-
-        public bool CanOpenInBuilder => selectedRow != null && CanChange;
 
         // ---- Rename -----------------------------------------------------------------------------------------------------
 
@@ -218,12 +198,12 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        /// <summary>Why the typed name cannot be used (the library's own rule: not empty, unique among the other systems, ignoring case and spaces at the ends); empty when it can.</summary>
+        /// <summary>Why the typed name cannot be used (the library's own rule: not empty, unique among the other constructions, ignoring case and spaces at the ends); empty when it can.</summary>
         public string RenameError => isRenaming ? ValidateName(selectedRow, renameText) ?? string.Empty : string.Empty;
 
         public bool CanCommitRename => isRenaming && string.IsNullOrEmpty(RenameError);
 
-        /// <summary>Starts renaming the selected system (its name is the starting text).</summary>
+        /// <summary>Starts renaming the selected construction (its name is the starting text).</summary>
         public bool BeginRename()
         {
             if (!CanRename)
@@ -254,21 +234,15 @@ namespace SAM.Analytical.UI.WPF
             Raise(nameof(CanCommitRename));
         }
 
-        /// <summary>Renames the selected system to <see cref="RenameText"/>: the label only - same Guid, layers, materials and provenance. False (with a <see cref="Message"/>) when nothing changed.</summary>
+        /// <summary>Renames the selected construction to <see cref="RenameText"/>: the label only - same Guid, layers, materials and provenance. False (with a <see cref="Message"/>) when nothing changed.</summary>
         public bool CommitRename()
         {
-            if (!isRenaming || selectedRow == null)
+            if (!isRenaming || selectedRow == null || !CanCommitRename)
             {
                 return false;
             }
 
-            if (!CanCommitRename)
-            {
-                return false;
-            }
-
-            Guid guid = selectedRow.Guid;
-            UserGlazingEditResult result = library.Rename(guid, renameText);
+            UserConstructionEditResult result = library.Rename(selectedRow.Guid, renameText);
             if (!result.Succeeded)
             {
                 Message = result.Error;
@@ -282,34 +256,23 @@ namespace SAM.Analytical.UI.WPF
             return true;
         }
 
-        /// <summary>The library's naming rule applied to the systems listed now (it checks again, under its lock, when it renames): null when the name can be used.</summary>
-        public string ValidateName(UserLibraryEntryRow row, string text)
+        /// <summary>The library's naming rule applied to the constructions listed now (it checks again, under its lock, when it renames): null when the name can be used.</summary>
+        public string ValidateName(UserConstructionEntryRow row, string text)
         {
-            string name = text?.Trim();
-            if (string.IsNullOrEmpty(name))
-            {
-                return "The system needs a name.";
-            }
-
-            if (rows.Any(x => (row == null || x.Guid != row.Guid) && string.Equals(x.Name?.Trim(), name, StringComparison.OrdinalIgnoreCase)))
-            {
-                return string.Format(CultureInfo.CurrentCulture, "A system named '{0}' is already in {1}.", name, UserGlazingLibrary.LibraryName);
-            }
-
-            return null;
+            return UserConstructionLibrary.NameProblem(text, rows.Where(x => row == null || x.Guid != row.Guid).Select(x => x.Name));
         }
 
         // ---- Remove -----------------------------------------------------------------------------------------------------
 
-        /// <summary>What the confirmation says: the system's name and short id, that models keep their own copy, and that it is archived, not deleted.</summary>
-        public string RemoveConfirmationText(UserLibraryEntryRow row)
+        /// <summary>What the confirmation says: the construction's name and short id, that models keep their own copy, and that it is archived, not deleted.</summary>
+        public string RemoveConfirmationText(UserConstructionEntryRow row)
         {
             return string.Format(
                 CultureInfo.CurrentCulture,
                 "Remove '{0}' [{1}] from {2}?{3}{3}Models that already use it keep their own copy. It is not deleted: it is moved to {4}, next to the library.",
                 row?.Name,
                 row?.ShortId,
-                UserGlazingLibrary.LibraryName,
+                UserConstructionLibrary.LibraryName,
                 Environment.NewLine,
                 System.IO.Path.GetFileName(library.ArchivePath));
         }
@@ -318,7 +281,7 @@ namespace SAM.Analytical.UI.WPF
         /// Removes <paramref name="row"/> (the selected one by default) to the archive, but only when <paramref name="confirm"/> - given the
         /// <see cref="RemoveConfirmationText"/> - says yes. False when it was not confirmed or the library refused (see <see cref="Message"/>).
         /// </summary>
-        public bool Remove(Func<string, bool> confirm, UserLibraryEntryRow row = null)
+        public bool Remove(Func<string, bool> confirm, UserConstructionEntryRow row = null)
         {
             row = row ?? selectedRow;
             if (row == null || !CanChange)
@@ -331,7 +294,7 @@ namespace SAM.Analytical.UI.WPF
                 return false;
             }
 
-            UserGlazingEditResult result = library.Remove(row.Guid);
+            UserConstructionEditResult result = library.Remove(row.Guid);
             if (!result.Succeeded)
             {
                 Message = result.Error;
@@ -343,24 +306,9 @@ namespace SAM.Analytical.UI.WPF
             return true;
         }
 
-        // ---- Open in Builder ----------------------------------------------------------------------------------------------
-
-        /// <summary>Asks the host to open <paramref name="row"/> (the selected one by default) in the Glazing System Builder. Nothing else happens here.</summary>
-        public bool RequestOpenInBuilder(UserLibraryEntryRow row = null)
-        {
-            row = row ?? selectedRow;
-            if (row == null || !CanChange || OpenInBuilderRequested == null)
-            {
-                return false;
-            }
-
-            OpenInBuilderRequested(this, row);
-            return true;
-        }
-
         // ---- Reading ----------------------------------------------------------------------------------------------------
 
-        /// <summary>Reads the library as it is on disk now and keeps the selection (by Guid) when the system is still there.</summary>
+        /// <summary>Reads the library as it is on disk now and keeps the selection (by Guid) when the construction is still there.</summary>
         public void Refresh()
         {
             if (disposed)
@@ -368,9 +316,8 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            UserGlazingLibraryContent content = library.Read();
-            GlazingSource source = new GlazingSource(GlazingSourceKind.User, UserGlazingLibrary.LibraryName, content.ConstructionManager);
-            List<UserLibraryEntryRow> rows_New = content.Systems.Where(x => x != null).OrderBy(x => x.Name, StringComparer.CurrentCultureIgnoreCase).ThenBy(x => x.Guid).Select(x => new UserLibraryEntryRow(x, source)).ToList();
+            UserConstructionLibraryContent content = library.Read();
+            List<UserConstructionEntryRow> rows_New = content.Constructions.Where(x => x != null).OrderBy(x => x.Name, StringComparer.CurrentCultureIgnoreCase).ThenBy(x => x.Guid).Select(x => new UserConstructionEntryRow(x)).ToList();
 
             Guid? selected = selectedRow?.Guid;
             refreshing = true;
@@ -384,11 +331,11 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private void RefreshCore(UserGlazingLibraryContent content, List<UserLibraryEntryRow> rows_New, Guid? selected)
+        private void RefreshCore(UserConstructionLibraryContent content, List<UserConstructionEntryRow> rows_New, Guid? selected)
         {
             rows = rows_New;
             state = content.State;
-            note = content.State == UserGlazingLibraryState.Unreadable ? GlazingSource.UserNote(content.Error) : string.Empty;
+            note = content.State == UserConstructionLibraryState.Unreadable ? GlazingSource.UserConstructionsNote(content.Error) : string.Empty;
 
             selectedRow = selected == null ? null : rows.FirstOrDefault(x => x.Guid == selected.Value);
             if (isRenaming && selectedRow == null)
@@ -410,13 +357,12 @@ namespace SAM.Analytical.UI.WPF
             Raise(nameof(HasSelection));
             Raise(nameof(CanRename));
             Raise(nameof(CanRemove));
-            Raise(nameof(CanOpenInBuilder));
             Raise(nameof(IsRenaming));
             Raise(nameof(RenameError));
             Raise(nameof(CanCommitRename));
         }
 
-        // A change may come from another thread (a Builder saving off the UI thread): the refresh happens on the thread this was created on.
+        // A change may come from another thread: the refresh happens on the thread this was created on.
         private void Library_Changed(object sender, EventArgs e)
         {
             if (disposed)
@@ -442,7 +388,6 @@ namespace SAM.Analytical.UI.WPF
 
             disposed = true;
             library.Changed -= Library_Changed;
-            Constructions?.Dispose();
         }
 
         private bool Set<T>(ref T field, T value, [CallerMemberName] string name = null)

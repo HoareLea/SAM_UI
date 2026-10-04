@@ -20,6 +20,7 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
         internal static void Initialize()
         {
             UserGlazingLibrary.Shared = new UserGlazingLibrary(Path.Combine(Path.GetTempPath(), "SAM-E0-2-tests", Guid.NewGuid().ToString("N"), "Glazing Systems.json"));
+            UserConstructionLibrary.Shared = new UserConstructionLibrary(Path.Combine(Path.GetTempPath(), "SAM-PR4-tests", Guid.NewGuid().ToString("N"), "Constructions.json"));
         }
     }
 }

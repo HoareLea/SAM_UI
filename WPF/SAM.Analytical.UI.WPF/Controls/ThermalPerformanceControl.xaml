@@ -204,11 +204,19 @@
                                                             <StackPanel Visibility="{Binding HasAlternatives, Converter={StaticResource BoolToVisibility}}" Margin="0,6,0,0" AutomationProperties.AutomationId="stackPanel_Alternatives">
                                                                 <TextBlock Text="Alternatives" FontWeight="SemiBold"/>
                                                                 <TextBlock Text="{Binding AlternativesCountText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,2,0,2" AutomationProperties.AutomationId="textBlock_AlternativesCount"/>
+                                                                <TextBlock Text="{Binding AlternativesNotesText}" Style="{StaticResource Style_Warning}" TextWrapping="Wrap" MaxWidth="260" Margin="0,0,0,2"
+                                                                           Visibility="{Binding HasAlternativesNotes, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="textBlock_AlternativesNotes"/>
                                                                 <ListBox ItemsSource="{Binding AlternativeRows}" SelectedItem="{Binding SelectedAlternative, Mode=TwoWay}" MaxHeight="230" HorizontalContentAlignment="Stretch"
                                                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" AutomationProperties.AutomationId="listBox_Alternatives">
                                                                     <ListBox.ItemTemplate>
                                                                         <DataTemplate>
-                                                                            <StackPanel ToolTip="{Binding Tooltip}" Margin="0,2">
+                                                                            <StackPanel ToolTip="{Binding Tooltip}" Margin="0,2" PreviewMouseRightButtonDown="candidate_PreviewMouseRightButtonDown">
+                                                                                <StackPanel.ContextMenu>
+                                                                                    <ContextMenu>
+                                                                                        <MenuItem Header="Save to My constructions…" Click="menuItem_SaveAlternative_Click" AutomationProperties.AutomationId="menuItem_SaveAlternative"
+                                                                                                  ToolTip="Save this construction to My constructions as a new construction. The model is not changed and nothing is chosen."/>
+                                                                                    </ContextMenu>
+                                                                                </StackPanel.ContextMenu>
                                                                                 <TextBlock Text="{Binding NameText}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                                                                                 <TextBlock Style="{StaticResource PartO.Caption}" TextTrimming="CharacterEllipsis">
                                                                                     <Run Text="{Binding UText, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding StatusText, Mode=OneWay}"/>
@@ -219,6 +227,14 @@
                                                                         </DataTemplate>
                                                                     </ListBox.ItemTemplate>
                                                                 </ListBox>
+                                                            </StackPanel>
+                                                            <!-- SAVE TO MY CONSTRUCTIONS: the chosen alternative, else the generated variant, else the current construction. Starts no edit and
+                                                                 changes no model: it is not a pending change. -->
+                                                            <StackPanel Margin="0,6,0,0" Visibility="{Binding CanSaveToMyConstructions, Converter={StaticResource BoolToVisibility}}">
+                                                                <Button Content="Save to My constructions…" HorizontalAlignment="Left" Padding="10,1" Click="button_SaveConstruction_Click" AutomationProperties.AutomationId="button_SaveConstruction"
+                                                                        AutomationProperties.Name="{Binding Row.ConstructionName, StringFormat=Save to My constructions {0}}" ToolTip="{Binding SaveToMyConstructionsText}"/>
+                                                                <TextBlock Text="{Binding UserConstructionMessage}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" MaxWidth="260" Margin="0,2,0,0"
+                                                                           Visibility="{Binding HasUserConstructionMessage, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="textBlock_UserConstructionMessage"/>
                                                             </StackPanel>
                                                             <StackPanel Visibility="{Binding IsEdited, Converter={StaticResource BoolToVisibility}}">
                                                                 <TextBlock Text="{Binding ResultText}" Style="{StaticResource PartO.Caption}" Margin="0,2,0,0"/>

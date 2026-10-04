@@ -169,8 +169,37 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
-        /// Where a source stands in the pool: the model, then the default library, then "My glazing systems", then the loaded sources (in the order
-        /// they were added). The first source of a Guid wins.
+        /// "My constructions" as it is on disk now: its saved opaque constructions with the materials they use. Read only - nothing is copied anywhere.
+        /// A missing file is an empty source (the normal state before the first Save); a file that cannot be read is an empty source whose
+        /// <see cref="Note"/> says why (the file is left as it is, and the other sources keep working). It takes the same place in the pool as "My
+        /// glazing systems" (<see cref="GlazingSourceKind.User"/>): after the model and the default library, before the added sources.
+        /// </summary>
+        public static GlazingSource FromUserConstructions(UserConstructionLibrary userConstructionLibrary)
+        {
+            UserConstructionLibraryContent content;
+            try
+            {
+                content = userConstructionLibrary?.Read();
+            }
+            catch (Exception exception)
+            {
+                return new GlazingSource(GlazingSourceKind.User, UserConstructionLibrary.LibraryName, new ConstructionManager()) { Note = UserConstructionsNote(exception.Message) };
+            }
+
+            if (content == null)
+            {
+                return new GlazingSource(GlazingSourceKind.User, UserConstructionLibrary.LibraryName, new ConstructionManager());
+            }
+
+            return new GlazingSource(GlazingSourceKind.User, UserConstructionLibrary.LibraryName, content.ConstructionManager)
+            {
+                Note = content.State == UserConstructionLibraryState.Unreadable ? UserConstructionsNote(content.Error) : null,
+            };
+        }
+
+        /// <summary>
+        /// Where a source stands in the pool: the model, then the default library, then "My glazing systems" / "My constructions", then the loaded
+        /// sources (in the order they were added). The first source of a Guid wins.
         /// </summary>
         public static int Rank(GlazingSourceKind kind)
         {
@@ -188,6 +217,11 @@ namespace SAM.Analytical.UI.WPF
                 default:
                     return 3;
             }
+        }
+
+        internal static string UserConstructionsNote(string error)
+        {
+            return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} could not be used: {1} The other sources still work.", UserConstructionLibrary.LibraryName, string.IsNullOrWhiteSpace(error) ? "the file could not be read." : error.TrimEnd('.') + ".");
         }
 
         internal static string UserNote(string error)

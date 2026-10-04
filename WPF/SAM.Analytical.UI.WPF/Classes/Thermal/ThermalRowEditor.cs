@@ -54,6 +54,7 @@ namespace SAM.Analytical.UI.WPF
         private string minThicknessText = (UValueViewModel.DefaultMinThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
         private string maxThicknessText = (UValueViewModel.DefaultMaxThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
         private bool changeOpen;
+        private string userConstructionMessage = string.Empty;
 
         internal ThermalRowEditor(ThermalEditSession session, ThermalPerformanceRow row, AnalyticalModel analyticalModel, IReadOnlyList<Guid> selectedGuids)
         {
@@ -904,7 +905,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 if (alternatives == null && CanEdit && !double.IsNaN(uValue.TargetThermalTransmittance))
                 {
-                    alternatives = new ConstructionAlternatives(analyticalModel, uValue, session.Services.ConstructionEvaluator, session.Services.ConstructionCache, session.Services.ConstructionLibrary, session.Services.Sources);
+                    alternatives = new ConstructionAlternatives(analyticalModel, uValue, session.Services.ConstructionEvaluator, session.Services.ConstructionCache, session.Services.ConstructionLibrary, session.Services.Sources, UserConstructionsOrNull());
                     alternatives.PropertyChanged += Alternatives_PropertyChanged;
                 }
 
@@ -942,6 +943,296 @@ namespace SAM.Analytical.UI.WPF
                     alternatives.SelectedRow = value;
                 }
             }
+        }
+
+        /// <summary>Notes about the sources of the alternatives list, e.g. why "My constructions" could not be used; empty when there are none.</summary>
+        public string AlternativesNotesText => alternatives == null ? string.Empty : string.Join(Environment.NewLine, alternatives.Notes);
+
+        public bool HasAlternativesNotes => !string.IsNullOrEmpty(AlternativesNotesText);
+
+        // ---- Opaque: Save to My constructions ----------------------------------------------------------------------------
+
+        // The services' user construction library; a host where it cannot be created simply has no "My constructions".
+        private UserConstructionLibrary UserConstructionsOrNull()
+        {
+            try
+            {
+                return session.Services.UserConstructions;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// True for an opaque row of a known model while "My constructions" is available: <c>Save to My constructionsâ€¦</c> is offered. Saving needs no
+        /// edit and starts none - it neither pins the row's scope nor becomes a pending change of the model.
+        /// </summary>
+        public bool CanSaveToMyConstructions => !IsAperture && CanEdit && UserConstructionsOrNull() != null;
+
+        /// <summary>Which construction the button saves, in words: the chosen alternative, the generated variant, or the current construction.</summary>
+        public string SaveToMyConstructionsText
+        {
+            get
+            {
+                ConstructionAlternativeRow row = alternatives?.SelectedRow;
+                if (row != null && !row.IsGenerated)
+                {
+                    return string.Format(CultureInfo.CurrentCulture, "Saves {0} ({1}) to My constructions, as a new construction. The model is not changed.", row.Name, row.KindText);
+                }
+
+                if (row != null && row.IsGenerated && uValue != null && uValue.Status == UValuePreviewStatus.Reached)
+                {
+                    return string.Format(CultureInfo.CurrentCulture, "Saves the generated variant {0} to My constructions, without applying it. The model is not changed.", row.Name);
+                }
+
+                return string.Format(CultureInfo.CurrentCulture, "Saves the current construction {0} to My constructions, as a new construction. The model is not changed.", Row.ConstructionName);
+            }
+        }
+
+        /// <summary>The result of the last save to My constructions (what was saved, or why not); empty before one.</summary>
+        public string UserConstructionMessage => userConstructionMessage;
+
+        public bool HasUserConstructionMessage => !string.IsNullOrEmpty(userConstructionMessage);
+
+        /// <summary>
+        /// What <c>Save to My constructionsâ€¦</c> would save, built from copies (the model is only read): <paramref name="row"/> when given (an alternative of
+        /// the list, right-clicked or chosen), otherwise the chosen alternative, else the generated variant once its target is reached, else the row's
+        /// CURRENT construction. Opening it starts no edit, calls no Tas and changes nothing; <see cref="UserConstructionSaveSubject.Error"/> says why
+        /// there is nothing to save.
+        /// </summary>
+        public UserConstructionSaveSubject CreateSaveSubject(ConstructionAlternativeRow row = null)
+        {
+            if (IsAperture || !CanEdit)
+            {
+                return new UserConstructionSaveSubject("Only an opaque construction can be saved to My constructions.");
+            }
+
+            ConstructionAlternativeRow target = row ?? alternatives?.SelectedRow;
+            if (target != null && !target.IsGenerated)
+            {
+                return ExistingSubject(target);
+            }
+
+            if (target != null && target.IsGenerated && uValue != null && uValue.Status == UValuePreviewStatus.Reached)
+            {
+                return GeneratedSubject();
+            }
+
+            if (row != null)
+            {
+                return new UserConstructionSaveSubject("The generated variant has no U-value yet: type a target U-value the construction can reach.");
+            }
+
+            return CurrentSubject();
+        }
+
+        /// <summary>
+        /// Saves <paramref name="subject"/> to "My constructions" under <paramref name="name"/> (a new Guid, the materials embedded, the provenance
+        /// attached) and says what happened (<see cref="UserConstructionMessage"/>). The analytical model and its history are NOT touched: the row's
+        /// pending change, if any, stays exactly as it was; the library's <c>Changed</c> event refreshes the open alternatives lists.
+        /// </summary>
+        public UserConstructionSaveResult SaveToMyConstructions(UserConstructionSaveSubject subject, string name)
+        {
+            UserConstructionSaveResult result = subject == null
+                ? new UserConstructionSaveResult(null, null, null, "There is nothing to save.")
+                : subject.Save(UserConstructionsOrNull(), name);
+
+            userConstructionMessage = result.Succeeded
+                ? string.Format(CultureInfo.CurrentCulture, "Saved '{0}' to My constructions.", result.Saved.Name)
+                : result.Error;
+
+            Raise();
+            return result;
+        }
+
+        /// <summary>The library's naming rule for a typed name (null when it can be used): not empty, not the name of another construction of My constructions.</summary>
+        public string MyConstructionsNameProblem(string name)
+        {
+            UserConstructionLibrary library = UserConstructionsOrNull();
+            if (library == null)
+            {
+                return "There is no My constructions library to save to.";
+            }
+
+            return UserConstructionLibrary.NameProblem(name, ExistingMyConstructionNames());
+        }
+
+        // The prompt's starting name: the construction's own name, made unique among the saved ones.
+        private string UniqueMyConstructionName(string name)
+        {
+            return UserConstructionSaveSubject.UniqueName(name, ExistingMyConstructionNames());
+        }
+
+        private List<string> ExistingMyConstructionNames()
+        {
+            try
+            {
+                return UserConstructionsOrNull()?.Read().Constructions.Select(x => x.Name).ToList() ?? new List<string>();
+            }
+            catch (Exception)
+            {
+                return new List<string>();
+            }
+        }
+
+        // An existing construction of the list (the model's, the default library's, My constructions', an added source's): saved as it is there.
+        private UserConstructionSaveSubject ExistingSubject(ConstructionAlternativeRow row)
+        {
+            ConstructionCandidate candidate = row.Candidate;
+            if (candidate == null)
+            {
+                return new UserConstructionSaveSubject("That alternative cannot be saved.");
+            }
+
+            UserConstructionOrigin origin;
+            switch (candidate.Kind)
+            {
+                case GlazingSourceKind.Model:
+                    origin = UserConstructionOrigin.Model;
+                    break;
+
+                case GlazingSourceKind.Library:
+                    origin = UserConstructionOrigin.DefaultLibrary;
+                    break;
+
+                case GlazingSourceKind.User:
+                    origin = UserConstructionOrigin.MyConstructions;
+                    break;
+
+                default:
+                    origin = UserConstructionOrigin.AddedSource;
+                    break;
+            }
+
+            UserConstructionProvenance provenance = new UserConstructionProvenance()
+            {
+                SavedFrom = origin,
+                SavedFromSource = origin == UserConstructionOrigin.AddedSource ? candidate.Source.Label : null,
+                BasedOnName = candidate.Name,
+                BasedOnGuid = candidate.Guid,
+                OriginModelName = analyticalModel?.Name,
+                ThermalTransmittance = row.ThermalTransmittance,
+                Route = "U-value of the construction as it is (Tas thermal transmittance)",
+                Engine = UserConstructionProvenance.TasEngine,
+            };
+
+            ApplyBasis(provenance);
+
+            return new UserConstructionSaveSubject(
+                candidate.Construction,
+                candidate.Source.ConstructionManager?.MaterialLibrary,
+                string.Format(CultureInfo.CurrentCulture, "the construction {0} ({1}, {2})", candidate.Name, row.KindText, row.UText),
+                UniqueMyConstructionName(candidate.Name),
+                provenance);
+        }
+
+        // The generated thickness variant, made by the same pure query Apply uses; it exists only as this copy until the user applies it.
+        private UserConstructionSaveSubject GeneratedSubject()
+        {
+            UValueEvaluation evaluation = uValue.Evaluation;
+            AdjacencyCluster adjacencyCluster = analyticalModel?.AdjacencyCluster;
+            if (evaluation == null || !evaluation.Reached || adjacencyCluster == null)
+            {
+                return new UserConstructionSaveSubject("The generated variant has no U-value yet: type a target U-value the construction can reach.");
+            }
+
+            MaterialLibrary materials = analyticalModel.MaterialLibrary ?? new MaterialLibrary("Default MaterialLibrary");
+            ProposedConstructionResult proposed = Query.ProposedConstruction(uValue.SourceConstruction, materials, evaluation.LayerIndex, evaluation.Thickness, UValueApplyMode.NewConstruction, uValue.NewConstructionName, evaluation.CalculatedThermalTransmittance, adjacencyCluster.GetConstructions());
+            if (!proposed.Succeeded)
+            {
+                return new UserConstructionSaveSubject(proposed.Error);
+            }
+
+            if (proposed.MaterialAdded)
+            {
+                materials.Add(proposed.Material);
+            }
+
+            UserConstructionProvenance provenance = new UserConstructionProvenance()
+            {
+                SavedFrom = UserConstructionOrigin.GeneratedVariant,
+                BasedOnName = uValue.SourceConstruction.Name,
+                BasedOnGuid = uValue.SourceConstruction.Guid,
+                OriginModelName = analyticalModel.Name,
+                ThermalTransmittance = evaluation.CalculatedThermalTransmittance,
+                TargetThermalTransmittance = uValue.TargetThermalTransmittance,
+                Route = string.Format(CultureInfo.CurrentCulture, "Thickness of layer {0} ({1}) solved for the target U-value (Tas layer thickness calculation)", evaluation.LayerIndex + 1, proposed.SourceMaterialName),
+                Engine = UserConstructionProvenance.TasEngine,
+            };
+
+            ApplyBasis(provenance);
+
+            return new UserConstructionSaveSubject(
+                proposed.Construction,
+                materials,
+                string.Format(CultureInfo.CurrentCulture, "the generated variant {0} (U {1} W/mÂ²K, made from {2})", proposed.Construction.Name, Format(evaluation.CalculatedThermalTransmittance), uValue.SourceConstruction.Name),
+                UniqueMyConstructionName(proposed.Construction.Name),
+                provenance);
+        }
+
+        // The row's construction as it is in the model now (a copy): no edit is needed, so its U-value is the calculated one when the row is being
+        // edited, else the one the panels store.
+        private UserConstructionSaveSubject CurrentSubject()
+        {
+            AdjacencyCluster adjacencyCluster = analyticalModel?.AdjacencyCluster;
+            Construction construction = adjacencyCluster?.GetConstructions()?.Find(x => x != null && x.Guid == Row.ConstructionGuid);
+            if (construction == null)
+            {
+                return new UserConstructionSaveSubject("The construction is no longer in the model.");
+            }
+
+            double u = uValue != null && !double.IsNaN(uValue.CurrentThermalTransmittance) ? uValue.CurrentThermalTransmittance : Row.StoredThermalTransmittance;
+
+            UserConstructionProvenance provenance = new UserConstructionProvenance()
+            {
+                SavedFrom = UserConstructionOrigin.Model,
+                BasedOnName = construction.Name,
+                BasedOnGuid = construction.Guid,
+                OriginModelName = analyticalModel.Name,
+                ThermalTransmittance = u,
+            };
+
+            if (!double.IsNaN(u))
+            {
+                bool calculated = uValue != null && !double.IsNaN(uValue.CurrentThermalTransmittance);
+                provenance.Route = calculated ? "U-value of the construction as it is (Tas thermal transmittance)" : "U-value stored on the model's panels (Tas)";
+                provenance.Engine = UserConstructionProvenance.TasEngine;
+            }
+
+            ApplyBasis(provenance, construction);
+
+            return new UserConstructionSaveSubject(
+                construction,
+                analyticalModel.MaterialLibrary,
+                string.Format(CultureInfo.CurrentCulture, "the current construction {0}{1}", construction.Name, double.IsNaN(u) ? string.Empty : string.Format(CultureInfo.CurrentCulture, " (U {0} W/mÂ²K)", Format(u))),
+                UniqueMyConstructionName(construction.Name),
+                provenance);
+        }
+
+        // The heat-flow basis of the U-value: the row's own while it is being edited, else the one the panels of the row give.
+        private void ApplyBasis(UserConstructionProvenance provenance, Construction construction = null)
+        {
+            if (uValue != null)
+            {
+                provenance.HeatFlowDirection = uValue.HeatFlowDirection.ToString();
+                provenance.HeatFlowBasis = UserConstructionSaveSubject.BasisText(uValue.HeatFlowBasis, uValue.HeatFlowDirection, uValue.External, uValue.HeatFlowDirectionOverride != null);
+                return;
+            }
+
+            AdjacencyCluster adjacencyCluster = analyticalModel?.AdjacencyCluster;
+            construction = construction ?? adjacencyCluster?.GetConstructions()?.Find(x => x != null && x.Guid == Row.ConstructionGuid);
+            if (construction == null || adjacencyCluster == null)
+            {
+                return;
+            }
+
+            HashSet<Guid> elements = new HashSet<Guid>(Row.ElementGuids);
+            List<Panel> panels = (adjacencyCluster.GetPanels(construction) ?? new List<Panel>()).Where(x => elements.Count == 0 || elements.Contains(x.Guid)).ToList();
+            UValueHeatFlowBasis basis = Query.UValueHeatFlowBasis(panels, construction);
+            provenance.HeatFlowDirection = basis.HeatFlowDirection.ToString();
+            provenance.HeatFlowBasis = UserConstructionSaveSubject.BasisText(basis, basis.HeatFlowDirection, basis.External, false);
         }
 
         private void DisposeViewModels()

@@ -17,7 +17,8 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>
         /// "My glazing systems": the user's own predefined systems (<see cref="UserGlazingLibrary"/>), never written to the model until Apply. In the
-        /// pool it comes after the model and the default library and before the loaded sources (<see cref="GlazingSource.Rank"/>).
+        /// pool it comes after the model and the default library and before the loaded sources (<see cref="GlazingSource.Rank"/>). Also the kind of
+        /// "My constructions" (<see cref="UserConstructionLibrary"/>), the opaque twin, which stands in the same place in the opaque pool.
         /// </summary>
         User,
     }

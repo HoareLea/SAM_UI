@@ -22,6 +22,9 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>A construction of a source loaded for the panel (outside the model until Apply).</summary>
         Loaded,
+
+        /// <summary>A construction the user saved to "My constructions" (outside the model until Apply). Listed after the default library and before the loaded sources.</summary>
+        User,
     }
 
     /// <summary>
@@ -93,7 +96,7 @@ namespace SAM.Analytical.UI.WPF
 
         public bool Meets => Calculated && Margin >= -0.0005;
 
-        /// <summary>"Generated" / "Existing model" / "Library".</summary>
+        /// <summary>"Generated" / "Existing model" / "Library" / "My constructions" / the added source's name.</summary>
         public string KindText
         {
             get
@@ -108,6 +111,9 @@ namespace SAM.Analytical.UI.WPF
 
                     case ConstructionAlternativeKind.Loaded:
                         return string.IsNullOrEmpty(SourceLabel) ? "Source" : SourceLabel;
+
+                    case ConstructionAlternativeKind.User:
+                        return UserConstructionLibrary.LibraryName;
 
                     default:
                         return "Library";

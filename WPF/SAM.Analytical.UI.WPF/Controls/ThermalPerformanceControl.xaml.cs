@@ -623,6 +623,57 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        // ---- My constructions ---------------------------------------------------------------------------------------------
+
+        /// <summary>
+        /// Asks the user for the name a construction is saved under in My constructions: given what is saved (<see cref="UserConstructionSaveSubject"/>
+        /// with its suggested name) and the library's naming rule (null when a name is fine), it returns the name, or null when cancelled. A small
+        /// window over this panel's window by default; a test supplies its own.
+        /// </summary>
+        public Func<UserConstructionSaveSubject, Func<string, string>, string> PromptConstructionName { get; set; }
+
+        private string PromptConstructionNameWithWindow(UserConstructionSaveSubject subject, Func<string, string> problem)
+        {
+            return UserConstructionNameWindow.Prompt(System.Windows.Window.GetWindow(this), subject.Description, subject.SuggestedName, problem);
+        }
+
+        // Save to My constructions…: the chosen alternative, else the generated variant, else the current construction. A name is asked for; nothing
+        // here edits the row or the model.
+        private void button_SaveConstruction_Click(object sender, RoutedEventArgs e)
+        {
+            ThermalRowEditor editor = Editor(sender);
+            SaveToMyConstructions(editor, editor?.CreateSaveSubject());
+        }
+
+        // The context menu of an alternative: save THAT construction, without choosing it.
+        private void menuItem_SaveAlternative_Click(object sender, RoutedEventArgs e)
+        {
+            ConstructionAlternativeRow row = (sender as MenuItem)?.DataContext as ConstructionAlternativeRow;
+            ThermalRowEditor editor = row == null ? null : viewModel.Groups.SelectMany(x => x.Rows).Select(x => x.Editor).FirstOrDefault(x => x != null && x.AlternativeRows.Contains(row));
+            SaveToMyConstructions(editor, editor?.CreateSaveSubject(row));
+        }
+
+        private void SaveToMyConstructions(ThermalRowEditor editor, UserConstructionSaveSubject subject)
+        {
+            if (editor == null || subject == null)
+            {
+                return;
+            }
+
+            // Something that cannot be saved says why in the row, before any name is asked for.
+            if (subject.Rejection != null)
+            {
+                editor.SaveToMyConstructions(subject, null);
+                return;
+            }
+
+            string name = (PromptConstructionName ?? PromptConstructionNameWithWindow)(subject, editor.MyConstructionsNameProblem);
+            if (name != null)
+            {
+                editor.SaveToMyConstructions(subject, name);
+            }
+        }
+
         private void button_Recalculate_Click(object sender, RoutedEventArgs e)
         {
             if (Applier == null)

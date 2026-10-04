@@ -46,6 +46,28 @@ namespace SAM.Analytical.UI
 
         private EventHandler<SetUValueRequestedEventArgs> setUValueRequested;
 
+        /// <summary>
+        /// Raised by the "Save to My constructions..." button (shown only while a handler is attached) with the one selected construction and the
+        /// window's material library. The handler asks for a name and saves a NEW construction to "My constructions"; this window stays open and
+        /// unchanged.
+        /// </summary>
+        public event EventHandler<SaveToMyConstructionsRequestedEventArgs> SaveToMyConstructionsRequested
+        {
+            add
+            {
+                saveToMyConstructionsRequested += value;
+                Button_SaveToMyConstructions.Visibility = saveToMyConstructionsRequested == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            remove
+            {
+                saveToMyConstructionsRequested -= value;
+                Button_SaveToMyConstructions.Visibility = saveToMyConstructionsRequested == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        private EventHandler<SaveToMyConstructionsRequestedEventArgs> saveToMyConstructionsRequested;
+
         private MaterialLibrary materialLibrary;
         private ConstructionLibrary constructionLibrary;
         private Construction construction_Selected;
@@ -577,6 +599,18 @@ namespace SAM.Analytical.UI
         private void DataGrid_Constructions_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             Button_SetUValue.IsEnabled = DataGrid_Constructions.SelectedItems.Count == 1;
+            Button_SaveToMyConstructions.IsEnabled = DataGrid_Constructions.SelectedItems.Count == 1;
+        }
+
+        private void Button_SaveToMyConstructions_Click(object sender, RoutedEventArgs e)
+        {
+            Construction construction = GetConstructions(true)?.FirstOrDefault();
+            if (construction == null || DataGrid_Constructions.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            saveToMyConstructionsRequested?.Invoke(this, new SaveToMyConstructionsRequestedEventArgs(construction, MaterialLibrary));
         }
 
         private void Button_SetUValue_Click(object sender, RoutedEventArgs e)
