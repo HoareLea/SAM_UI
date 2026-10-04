@@ -124,6 +124,9 @@ namespace SAM.Analytical.UI.WPF
             button_AcceptOptimised.Click += (s, e) => AcceptOptimised();
             button_CoolingOn.Click += (s, e) => Edit(x => session!.SetCooling(x, true));
             button_CoolingOff.Click += (s, e) => Edit(x => session!.SetCooling(x, false));
+            button_SetCoolingControlRoom.Click += (s, e) => Edit(x => x.Count == 1 && comboBox_CoolingControlRoom.SelectedItem is KeyValuePair<Guid, string> room
+                ? session!.SetCoolingControlRoom(x[0], room.Key)
+                : "Select one cooled dwelling and its control room first.");
             button_Clear.Click += (s, e) => Edit(x => { session!.Clear(x); return null; });
             button_ApplySuggestions.Click += (s, e) => ApplySuggestions();
 
@@ -603,6 +606,26 @@ namespace SAM.Analytical.UI.WPF
                 ? "The project does not allow active cooling."
                 : "Active cooling on for the selected MVHR / Optimised MVHR dwellings. Their cooling is the selected product's manufacturer guidance; SAM refuses it at Check design / Build where the product has none, or the design airflow is beyond the published cooling range or the unit's capacity.";
             button_CoolingOff.IsEnabled = any;
+            Guid selectedRoom = count == 1 ? SelectedRows[0].Selected?.CoolingStatSpaceGuid ?? Guid.Empty : Guid.Empty;
+            comboBox_CoolingControlRoom.Items.Clear();
+            if (count == 1 && SelectedRows[0].Cooled)
+            {
+                foreach (Space space in session.CoolingControlRooms(SelectedRows[0]))
+                {
+                    comboBox_CoolingControlRoom.Items.Add(new KeyValuePair<Guid, string>(space.Guid, string.IsNullOrWhiteSpace(space.Name) ? space.Guid.ToString() : space.Name));
+                }
+
+                foreach (object item in comboBox_CoolingControlRoom.Items)
+                {
+                    if (item is KeyValuePair<Guid, string> room && room.Key == selectedRoom)
+                    {
+                        comboBox_CoolingControlRoom.SelectedItem = item;
+                        break;
+                    }
+                }
+            }
+            comboBox_CoolingControlRoom.IsEnabled = count == 1 && SelectedRows[0].Cooled;
+            button_SetCoolingControlRoom.IsEnabled = comboBox_CoolingControlRoom.IsEnabled;
             button_Clear.IsEnabled = any;
             button_ApplySuggestions.IsEnabled = session.Rows.Any(x => x.SuggestionDiffers);
         }

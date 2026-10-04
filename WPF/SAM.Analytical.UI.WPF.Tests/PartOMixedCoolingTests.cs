@@ -59,6 +59,30 @@ namespace SAM.Analytical.UI.WPF.Tests
 
         private static PartODwellingStrategy Product(Zone zone) => new(zone.Guid, PartOVentilationMode.MVHR, Reference);
 
+        [Fact]
+        public void LegacyCooledSelection_IsVisibleAndBlockedUntilEngineerConfirmsRoom()
+        {
+            AnalyticalModel baseline = Representative();
+            Zone zone = PartOMixedDesignFixture.Zone(baseline, "Flat 03");
+            PartODwellingStrategySet set = baseline.GetValue<PartODwellingStrategySet>(Analytical.AnalyticalModelParameter.PartODwellingStrategies);
+            set.Set(new PartODwellingStrategy(set.Strategy(zone.Guid)) { CoolingStatSpaceGuid = Guid.Empty });
+            baseline.SetValue(Analytical.AnalyticalModelParameter.PartODwellingStrategies, set);
+
+            PartOMixedDesignSession session = Session(new AnalyticalModel(baseline.ToJsonObject()));
+            PartOMixedDwellingRow row = session.Rows.Single(x => x.ZoneGuid == zone.Guid);
+            Assert.Equal("Select room", row.CoolingControlRoomText);
+            Assert.False(session.Readiness().CanBuild);
+            Assert.Contains("Select and confirm", row.Attention);
+
+            Space chosen = session.CoolingControlRooms(row).Single(x => x.Name.EndsWith(" Bedroom", StringComparison.Ordinal));
+            Assert.Null(session.SetCoolingControlRoom(row, chosen.Guid));
+            Assert.Equal(chosen.Name, row.CoolingControlRoomText);
+            Assert.True(session.Readiness().CanBuild);
+
+            AnalyticalModel reopened = new(session.WithSelection().ToJsonObject());
+            Assert.Equal(chosen.Guid, reopened.GetValue<PartODwellingStrategySet>(Analytical.AnalyticalModelParameter.PartODwellingStrategies).Strategy(zone.Guid).CoolingStatSpaceGuid);
+        }
+
         /// <summary>The representative mixed case: Flat 01 Natural, Flat 02 MVHR uncooled, Flat 03 MVHR cooled, corridor free-running.</summary>
         private static AnalyticalModel Representative(AnalyticalModel? analyticalModel = null)
         {
@@ -249,6 +273,10 @@ namespace SAM.Analytical.UI.WPF.Tests
             //Only dwellings are rows, so "every row" cannot reach the corridor.
             Assert.DoesNotContain(session.Rows, x => x.Name == PartOMixedDesignFixture.Corridor);
             Assert.Null(session.SetCooling([.. session.Rows], true));
+            foreach (PartOMixedDwellingRow row in session.Rows)
+            {
+                Assert.Null(session.SetCoolingControlRoom(row, session.CoolingControlRooms(row).Single(x => x.Name.EndsWith(" Bedroom", StringComparison.Ordinal)).Guid));
+            }
             Zone corridor = PartOMixedDesignFixture.Zone(baseline, PartOMixedDesignFixture.Corridor);
             Assert.Null(session.Draft.Strategy(corridor.Guid));
 

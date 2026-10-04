@@ -123,6 +123,15 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(mvhr.Count + cooled.Count, readiness.Mvhr);
 
             AnalyticalModel baseline = session.WithSelection();
+            PartODwellingStrategySet selected = baseline.GetValue<PartODwellingStrategySet>(Analytical.AnalyticalModelParameter.PartODwellingStrategies);
+            foreach (PartOMixedDwellingRow row in cooled)
+            {
+                PartODwellingStrategy strategy = selected.Strategy(row.ZoneGuid);
+                strategy.CoolingStatSpaceGuid = session.CoolingControlRooms(row).Single(x => x.Name.EndsWith(" Bedroom", StringComparison.Ordinal)).Guid;
+                selected.Set(strategy);
+            }
+            baseline.SetValue(Analytical.AnalyticalModelParameter.PartODwellingStrategies, selected);
+            session.Rebase(baseline);
             int length_Saved = Length(baseline);
 
             // ---- SAM: ONE complete mixed model, on the Systems route, a truthful scenario per dwelling ----
