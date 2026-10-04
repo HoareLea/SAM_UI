@@ -1,15 +1,15 @@
-# SAM_UI Part O PR1 progress
+# SAM_UI Part O PR2 progress
 
-Base: `sow/2026-Q3`. PR1 merged as SAM-BIM/SAM_UI#188 at `bea1256e02b944e84882647f9c1955ce91c765bb` on 2026-10-04. Local base updated.
+Base: `sow/2026-Q3` at `a16ff93`. Working branch: `codex/part-o-pr2-diagnostics`.
 
 ## Completed
-Matrix shows cooling control room and allows one cooled dwelling's room to be explicitly confirmed. Legacy missing room appears as attention and blocks Build. Systems call copies selected room from SAM record into guidance settings.
+Iteration 3 record carries QA weather identity, coordinates and calculated dry-bulb peak from Reference A's provenanced result model. Selected cooling-stat room is recorded with existing guidance settings. Text report presents these facts, the operating-history file, and explicit UNAVAILABLE labels. Existing result/restore and Iteration 3 file validation remain the authority; no physics changed.
 
 ## Files changed
-PartOMixedDesignSession, PartOMixedDwellingRow, PartOMixedDesignWindow, PartOMixedSystemsCall, cooling/design fixture/large project tests; this progress file.
+PartOIteration3Record, PartOIteration3GuidanceEvidence, PartOIteration3WeatherEvidence, RunPartOIteration3, PartOIteration3GuidanceResolution, PartOIteration3ReportText, PartOIteration3RecordTests; this file.
 
 ## Validation
-Mixed design suite: 113 passed, including legacy confirmation and 5,000-space case; focused cooling tests: 18 passed; PR Windows build and SPDX passed.
+WPF project builds with VS MSBuild. Iteration 3/result reopen suite: 290 passed; final record/report tests: 13 passed. SAM SimulationResultProvenance tests: 23 passed, including changed weather. Existing missing, wrong, stale and moved TSD tests passed in the UI suite. Diff review found no physics edits.
 
 ## Next step
-No unresolved PR1 issues. Stop after PR1; do not start PR2 without a new request.
+Commit, open PR, wait for CI/review, merge, then update local `sow/2026-Q3`. Native TAS COM is not covered by deterministic tests.

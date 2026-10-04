@@ -66,6 +66,9 @@ namespace SAM.Analytical.UI
 
         public Guid Guid_AirHandlingUnit { get; }
 
+        /// <summary>The explicitly selected cooling-stat room; empty on older records.</summary>
+        public Guid Guid_CoolingStatSpace { get; set; }
+
         public string Name_AirHandlingUnit { get; }
 
         /// <summary>The selected product, as its catalogue reference.</summary>
@@ -113,6 +116,7 @@ namespace SAM.Analytical.UI
             return new JsonObject
             {
                 { "Guid_AirHandlingUnit", Guid_AirHandlingUnit.ToString() },
+                { "Guid_CoolingStatSpace", Guid_CoolingStatSpace.ToString() },
                 { "Name_AirHandlingUnit", Name_AirHandlingUnit },
                 { "Reference", Reference },
                 { "CoolingModuleModel", CoolingModuleModel },
@@ -156,7 +160,10 @@ namespace SAM.Analytical.UI
                 PartOIteration3Json.Text(jsonObject, "SupplyTemperatureRule"),
                 PartOIteration3Json.Number(jsonObject, "ExchangerExtractFraction"),
                 PartOIteration3Json.Number(jsonObject, "CoilNetTemperatureDrop_K"),
-                PartOIteration3Json.Number(jsonObject, "MinimumSupplyTemperature_C"));
+                PartOIteration3Json.Number(jsonObject, "MinimumSupplyTemperature_C"))
+            {
+                Guid_CoolingStatSpace = PartOIteration3Json.Guid(jsonObject, "Guid_CoolingStatSpace"),
+            };
         }
 
         public override string ToString()

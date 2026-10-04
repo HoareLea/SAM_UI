@@ -450,6 +450,28 @@ namespace SAM.Analytical.UI.WPF
             stringBuilder.AppendLine(string.Format("Provider identity values\t{0}", partOIteration3Record.Count_ProviderIdentityValues.ToString(cultureInfo)));
 
             stringBuilder.AppendLine(string.Format("Thermal case (weather, solar, period, options)\t{0}", partOIteration3Record.Fingerprint_Scenario ?? "<none>"));
+            stringBuilder.AppendLine(string.Format("Weather used (QA)\t{0}; {1}; latitude {2}; longitude {3}; elevation {4} m",
+                partOIteration3Record.WeatherName ?? "UNAVAILABLE",
+                partOIteration3Record.WeatherDescription ?? "UNAVAILABLE",
+                Number(partOIteration3Record.WeatherLatitude, cultureInfo),
+                Number(partOIteration3Record.WeatherLongitude, cultureInfo),
+                Number(partOIteration3Record.WeatherElevation, cultureInfo)));
+            stringBuilder.AppendLine(string.Format("Weather dry-bulb peak (QA)\t{0} C at zero-based hour {1}",
+                partOIteration3Record.WeatherPeakDryBulb_C.HasValue ? Number(partOIteration3Record.WeatherPeakDryBulb_C, cultureInfo) : "UNAVAILABLE",
+                partOIteration3Record.WeatherPeakHour?.ToString(cultureInfo) ?? "UNAVAILABLE"));
+
+            foreach (PartOIteration3GuidanceEvidence guidance in partOIteration3Record.Guidance)
+            {
+                stringBuilder.AppendLine(string.Format("Cooling control\t{0}: stat room {1}; activation setpoint {2} C",
+                    guidance.Name_AirHandlingUnit,
+                    guidance.Guid_CoolingStatSpace == Guid.Empty ? "UNAVAILABLE" : guidance.Guid_CoolingStatSpace.ToString(),
+                    Number(guidance.CoolingActivationTemperature_C, cultureInfo)));
+            }
+            PartOIteration3FileRecord operation = partOIteration3Record.File(PartOIteration3Roles.GuidanceOperation);
+            stringBuilder.AppendLine(string.Format("Operating read-back\t{0}", operation?.Path ?? "UNAVAILABLE"));
+            stringBuilder.AppendLine(operation is null
+                ? "Operating read-back series: UNAVAILABLE."
+                : "Operating read-back series: stat-room, intake, extract, exchanger leaving, supply temperature, supply/extract airflow, DX duty; NORMAL/COOLING and BYPASS/RECOVERY are UNAVAILABLE where hourly evidence is insufficient.");
 
             stringBuilder.AppendLine(string.Format("No-IZAM source: IZAMs removed\t{0}", partOIteration3Record.RemovedIZAMs));
             stringBuilder.AppendLine(string.Format("No-IZAM source: mechanical ventilation gains removed\t{0}", partOIteration3Record.RemovedMechanicalVentilationGains));
