@@ -28,7 +28,7 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
             string[] names =
             {
                 nameof(GlazingSystemDraft), nameof(DraftLayer), nameof(DraftPane), nameof(DraftGap), nameof(DraftFrame), "GlazingLayerOrder", nameof(GlazingComposeOptions),
-                nameof(GlazingComposition), "GlazingMaterialMerge", nameof(GlazingValuesCache), nameof(GlazingBuilderProvenance), nameof(GlazingBuilderPaneRecord),
+                nameof(GlazingComposition), "LibraryMaterialMerge", "UserLibraryFile", "UserLibraryFileContent", "UserLibraryEdit", "UserLibraryArchive", nameof(UserGlazingEditResult), nameof(GlazingValuesCache), nameof(GlazingBuilderProvenance), nameof(GlazingBuilderPaneRecord),
                 nameof(GlazingBuilderGapRecord), nameof(GlazingDraftIssue), nameof(GlazingDraftIssueCodes), nameof(GlazingDraftValidation), nameof(DraftGlazingEvaluator),
                 nameof(DraftGlazingEvaluation), nameof(UserGlazingLibrary), nameof(UserGlazingLibraryContent), nameof(UserGlazingSaveResult), "GlazingGapOrientation",
 
