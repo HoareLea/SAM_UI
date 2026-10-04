@@ -137,6 +137,15 @@ namespace SAM.Analytical.UI
         /// </summary>
         public string Fingerprint_Scenario { get; set; }
 
+        /// <summary>QA facts from the weather object used by this run; never simulation controls.</summary>
+        public string WeatherName { get; set; }
+        public string WeatherDescription { get; set; }
+        public double? WeatherLatitude { get; set; }
+        public double? WeatherLongitude { get; set; }
+        public double? WeatherElevation { get; set; }
+        public double? WeatherPeakDryBulb_C { get; set; }
+        public int? WeatherPeakHour { get; set; }
+
         /// <summary>Reference A's project name.</summary>
         public string ProjectName_ReferenceA { get; set; }
 
@@ -440,6 +449,13 @@ namespace SAM.Analytical.UI
                 { "Fingerprint_Model_ReferenceA", Fingerprint_Model_ReferenceA },
                 { "Fingerprint_Scenarios_ReferenceA", Fingerprint_Scenarios_ReferenceA },
                 { "Fingerprint_Scenario", Fingerprint_Scenario },
+                { "WeatherName", WeatherName },
+                { "WeatherDescription", WeatherDescription },
+                { "WeatherLatitude", JsonValue.Create(WeatherLatitude) },
+                { "WeatherLongitude", JsonValue.Create(WeatherLongitude) },
+                { "WeatherElevation", JsonValue.Create(WeatherElevation) },
+                { "WeatherPeakDryBulb_C", JsonValue.Create(WeatherPeakDryBulb_C) },
+                { "WeatherPeakHour", JsonValue.Create(WeatherPeakHour) },
                 { "ProjectName_ReferenceA", ProjectName_ReferenceA },
                 { "ProjectName_CandidateB", ProjectName_CandidateB },
                 { "BehaviourMode", BehaviourMode.ToString() },
@@ -513,6 +529,13 @@ namespace SAM.Analytical.UI
                 Fingerprint_Model_ReferenceA = PartOIteration3Json.Text(jsonObject, "Fingerprint_Model_ReferenceA"),
                 Fingerprint_Scenarios_ReferenceA = PartOIteration3Json.Text(jsonObject, "Fingerprint_Scenarios_ReferenceA"),
                 Fingerprint_Scenario = PartOIteration3Json.Text(jsonObject, "Fingerprint_Scenario"),
+                WeatherName = PartOIteration3Json.Text(jsonObject, "WeatherName"),
+                WeatherDescription = PartOIteration3Json.Text(jsonObject, "WeatherDescription"),
+                WeatherLatitude = jsonObject["WeatherLatitude"]?.GetValue<double>(),
+                WeatherLongitude = jsonObject["WeatherLongitude"]?.GetValue<double>(),
+                WeatherElevation = jsonObject["WeatherElevation"]?.GetValue<double>(),
+                WeatherPeakDryBulb_C = jsonObject["WeatherPeakDryBulb_C"]?.GetValue<double>(),
+                WeatherPeakHour = jsonObject["WeatherPeakHour"]?.GetValue<int>(),
                 ProjectName_ReferenceA = PartOIteration3Json.Text(jsonObject, "ProjectName_ReferenceA"),
                 ProjectName_CandidateB = PartOIteration3Json.Text(jsonObject, "ProjectName_CandidateB"),
                 Directory_VentilationUnitCatalogue = PartOIteration3Json.Text(jsonObject, "Directory_VentilationUnitCatalogue"),

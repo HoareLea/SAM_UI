@@ -268,6 +268,8 @@ namespace SAM.Analytical.UI.WPF
             partOIteration3Record.ProjectName_ReferenceA = partOIteration3Paths.ProjectName_ReferenceA;
             partOIteration3Record.ProjectName_CandidateB = partOIteration3Paths.ProjectName_CandidateB;
             partOIteration3Record.Fingerprint_Scenario = Query.PartOIteration3ScenarioFingerprint(partOSimulationContext);
+            analyticalModel_ReferenceA.TryGetValue(Analytical.AnalyticalModelParameter.WeatherData, out Weather.WeatherData weather_ReferenceA);
+            Query.PartOIteration3WeatherEvidence(partOIteration3Record, weather_ReferenceA);
             partOIteration3Record.AddPreparedSystems(partORun.Guids_VentilationSystem_Prepared);
 
             partOIteration3Ledger.Complete(

@@ -2,6 +2,7 @@
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Analytical.UI;
+using SAM.Weather;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +22,55 @@ namespace SAM.Analytical.UI.WPF.Tests
     /// </summary>
     public class PartOIteration3RecordTests
     {
+        [Fact]
+        public void Alternative_weather_records_its_own_identity_and_calculated_peak()
+        {
+            WeatherYear year = new(2026);
+            for (int day = 0; day < 365; day++)
+                for (int hour = 0; hour < 24; hour++)
+                    year.Add(day, hour, new Dictionary<string, double> { [WeatherDataType.DryBulbTemperature.ToString()] = 17 });
+            year.Add(4, 3, new Dictionary<string, double> { [WeatherDataType.DryBulbTemperature.ToString()] = 31.5 });
+            WeatherData weather = new("Modified alternative", "QA modification", 51.2, -0.3, 22, year);
+            PartOIteration3Record record = new();
+
+            Query.PartOIteration3WeatherEvidence(record, weather);
+            PartOIteration3Record reopened = PartOIteration3Record.FromJsonObject(record.ToJsonObject());
+
+            Assert.Equal("Modified alternative", reopened.WeatherName);
+            Assert.Equal("QA modification", reopened.WeatherDescription);
+            Assert.Equal(31.5, reopened.WeatherPeakDryBulb_C);
+            Assert.Equal(99, reopened.WeatherPeakHour);
+            Assert.Equal(51.2, reopened.WeatherLatitude);
+        }
+
+        [Fact]
+        public void Incomplete_weather_series_reports_peak_unavailable()
+        {
+            WeatherYear year = new(2026);
+            year.Add(0, 0, new Dictionary<string, double> { [WeatherDataType.DryBulbTemperature.ToString()] = 40 });
+            PartOIteration3Record record = new();
+
+            Query.PartOIteration3WeatherEvidence(record, new WeatherData("Partial", "", 0, 0, 0, year));
+
+            Assert.Equal("Partial", record.WeatherName);
+            Assert.Null(record.WeatherPeakDryBulb_C);
+            Assert.Null(record.WeatherPeakHour);
+        }
+
+        [Fact]
+        public void Guidance_record_preserves_explicit_stat_room_and_setpoint()
+        {
+            PartOIteration3GuidanceEvidence guidance = new(guid_AirHandlingUnit, "Unit", "Ref", null,
+                30, 30, 60, 60, 60, 60, 60, "Room air", 22, "Rule", 0.8, 8, 13)
+            {
+                Guid_CoolingStatSpace = guid_Space,
+            };
+
+            PartOIteration3GuidanceEvidence reopened = PartOIteration3GuidanceEvidence.FromJsonObject(guidance.ToJsonObject());
+
+            Assert.Equal(guid_Space, reopened.Guid_CoolingStatSpace);
+            Assert.Equal(22, reopened.CoolingActivationTemperature_C);
+        }
         private static readonly Guid guid_Space = new("aaaaaaaa-0000-0000-0000-000000000001");
 
         private static readonly Guid guid_Dwelling = new("11111111-1111-1111-1111-111111111111");

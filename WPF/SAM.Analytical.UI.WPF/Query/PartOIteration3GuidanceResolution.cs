@@ -150,7 +150,10 @@ namespace SAM.Analytical.UI.WPF
                     strategy.CoolingSupplyTemperatureRule?.ToString(),
                     strategy.CoolingSupplyTemperatureRule.ExchangerExtractFraction(elevated_Lps),
                     strategy.CoolingSupplyTemperatureRule.CoilNetTemperatureDrop_K(elevated_Lps),
-                    strategy.CoolingSupplyTemperatureRule.MinimumSupplyTemperature_C));
+                    strategy.CoolingSupplyTemperatureRule.MinimumSupplyTemperature_C)
+                {
+                    Guid_CoolingStatSpace = mechanicalVentilationGuidanceSettings.CoolingStatSpaceGuid,
+                });
             }
 
             return refusals;
