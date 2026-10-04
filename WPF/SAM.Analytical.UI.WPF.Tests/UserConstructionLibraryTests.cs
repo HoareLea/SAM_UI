@@ -508,5 +508,41 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(first.Guid, read.BasedOnGuid);
             Assert.NotEqual(first.Guid, second.Guid);
         }
+
+        [Fact]
+        public void Saving_a_construction_that_already_has_provenance_carries_no_value_over_from_the_old_set()
+        {
+            // The first save knew a target, an added source, a route and an engine; the second (the same construction saved again, e.g. as it sits in a
+            // model) knows none of them. SAM merges same-named sets with later values winning, so a key the new set does not write would survive.
+            UserConstructionProvenance rich = UserConstructionFixture.Provenance(UserConstructionOrigin.AddedSource);
+            rich.SavedFromSource = "Constructions.tcd";
+            rich.TargetThermalTransmittance = 0.15;
+            rich.SamTasVersion = "1.2.3";
+            Construction first = Save("First", provenance: rich);
+            Assert.Equal(0.15, UserConstructionProvenance.FromConstruction(first).TargetThermalTransmittance);
+
+            Construction second = Save("Second", first, UserConstructionFixture.Materials(), new UserConstructionProvenance() { SavedFrom = UserConstructionOrigin.Model });
+
+            UserConstructionProvenance read = UserConstructionProvenance.FromConstruction(second);
+            Assert.Equal(UserConstructionOrigin.Model, read.SavedFrom);
+            Assert.True(double.IsNaN(read.TargetThermalTransmittance));
+            Assert.True(double.IsNaN(read.ThermalTransmittance));
+            Assert.Null(read.SavedFromSource);
+            Assert.Null(read.BasedOnName);
+            Assert.Null(read.BasedOnGuid);
+            Assert.Null(read.OriginModelName);
+            Assert.Null(read.Route);
+            Assert.Null(read.Engine);
+            Assert.Null(read.SamTasVersion);
+            Assert.Null(read.HeatFlowBasis);
+
+            // The construction it was saved from keeps its own set.
+            Assert.Equal(0.15, UserConstructionProvenance.FromConstruction(first).TargetThermalTransmittance);
+
+            // And the same once it has been through the file.
+            UserConstructionProvenance stored = UserConstructionProvenance.FromConstruction(Main().Constructions.Find(x => x.Guid == second.Guid));
+            Assert.True(double.IsNaN(stored.TargetThermalTransmittance));
+            Assert.Null(stored.Route);
+        }
     }
 }

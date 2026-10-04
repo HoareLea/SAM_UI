@@ -966,7 +966,7 @@ namespace SAM.Analytical.UI.WPF
         }
 
         /// <summary>
-        /// True for an opaque row of a known model while "My constructions" is available: <c>Save to My constructionsâ€¦</c> is offered. Saving needs no
+        /// True for an opaque row of a known model while "My constructions" is available: <c>Save to My constructions…</c> is offered. Saving needs no
         /// edit and starts none - it neither pins the row's scope nor becomes a pending change of the model.
         /// </summary>
         public bool CanSaveToMyConstructions => !IsAperture && CanEdit && UserConstructionsOrNull() != null;
@@ -997,7 +997,7 @@ namespace SAM.Analytical.UI.WPF
         public bool HasUserConstructionMessage => !string.IsNullOrEmpty(userConstructionMessage);
 
         /// <summary>
-        /// What <c>Save to My constructionsâ€¦</c> would save, built from copies (the model is only read): <paramref name="row"/> when given (an alternative of
+        /// What <c>Save to My constructions…</c> would save, built from copies (the model is only read): <paramref name="row"/> when given (an alternative of
         /// the list, right-clicked or chosen), otherwise the chosen alternative, else the generated variant once its target is reached, else the row's
         /// CURRENT construction. Opening it starts no edit, calls no Tas and changes nothing; <see cref="UserConstructionSaveSubject.Error"/> says why
         /// there is nothing to save.
@@ -1167,7 +1167,7 @@ namespace SAM.Analytical.UI.WPF
             return new UserConstructionSaveSubject(
                 proposed.Construction,
                 materials,
-                string.Format(CultureInfo.CurrentCulture, "the generated variant {0} (U {1} W/mÂ²K, made from {2})", proposed.Construction.Name, Format(evaluation.CalculatedThermalTransmittance), uValue.SourceConstruction.Name),
+                string.Format(CultureInfo.CurrentCulture, "the generated variant {0} (U {1} W/m²K, made from {2})", proposed.Construction.Name, Format(evaluation.CalculatedThermalTransmittance), uValue.SourceConstruction.Name),
                 UniqueMyConstructionName(proposed.Construction.Name),
                 provenance);
         }
@@ -1206,7 +1206,7 @@ namespace SAM.Analytical.UI.WPF
             return new UserConstructionSaveSubject(
                 construction,
                 analyticalModel.MaterialLibrary,
-                string.Format(CultureInfo.CurrentCulture, "the current construction {0}{1}", construction.Name, double.IsNaN(u) ? string.Empty : string.Format(CultureInfo.CurrentCulture, " (U {0} W/mÂ²K)", Format(u))),
+                string.Format(CultureInfo.CurrentCulture, "the current construction {0}{1}", construction.Name, double.IsNaN(u) ? string.Empty : string.Format(CultureInfo.CurrentCulture, " (U {0} W/m²K)", Format(u))),
                 UniqueMyConstructionName(construction.Name),
                 provenance);
         }

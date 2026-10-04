@@ -412,6 +412,9 @@ namespace SAM.Analytical.UI.WPF
                     provenance_Saved.SamTasVersion = SamTasVersion();
                 }
 
+                // SAM merges a same-named set into the one already there (later values win), and a value the new set does not write (a target, an
+                // added source, a route) would survive from the set the source carries. `saved` is this Save's own copy, so the old set is emptied first.
+                saved.GetParameterSet(UserConstructionProvenance.ParameterSetName)?.Clear();
                 saved.Add(provenance_Saved.ToParameterSet());
 
                 List<string> added = (materialLibrary.GetMaterials() ?? new List<IMaterial>()).Select(x => x.Name).Where(x => !before.Contains(x)).ToList();

@@ -286,6 +286,8 @@ namespace SAM.Analytical.UI.WPF.Tests
 
                 UserConstructionSaveSubject subject = Assert.Single(host.Prompted);
                 Assert.Contains("the generated variant SIM_EXT_SLD U0.30", subject.Description);
+                Assert.Contains("W/m²K", subject.Description);   // a plain m², not a mis-decoded one
+                Assert.DoesNotContain("Â", subject.Description);
                 Assert.Equal("SIM_EXT_SLD U0.30", subject.SuggestedName);
 
                 // The saved construction is what the query makes for this evaluation (and what Apply will make).
@@ -334,6 +336,8 @@ namespace SAM.Analytical.UI.WPF.Tests
                 UserConstructionSaveSubject subject = host.Wall.CreateSaveSubject();
                 Assert.True(subject.IsAvailable);
                 Assert.Contains("the current construction", subject.Description);
+                Assert.Contains("W/m²K", subject.Description);
+                Assert.DoesNotContain("Â", subject.Description);
                 Assert.Equal(UserConstructionOrigin.Model, subject.Provenance.SavedFrom);
 
                 UserConstructionSaveSubject generated = host.Wall.CreateSaveSubject(host.Wall.AlternativeRows.Single(x => x.IsGenerated));
