@@ -12,4 +12,4 @@ PartOMixedDesignSession, PartOMixedDwellingRow, PartOMixedDesignWindow, PartOMix
 Focused PartOMixed suite: 113 passed, including legacy confirmation and 5,000-space case.
 
 ## Next step
-Review final diff, commit and open PR.
+PR opened: SAM-BIM/SAM_UI#188. Wait for CI/review on SAM-BIM/SAM_UI#188; merge after SAM#176 and SAM_Systems#35, then update local base.
