@@ -190,7 +190,7 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        private static string UserNote(string error)
+        internal static string UserNote(string error)
         {
             return string.Format(System.Globalization.CultureInfo.CurrentCulture, "{0} could not be used: {1} The other sources still work.", UserGlazingLibrary.LibraryName, string.IsNullOrWhiteSpace(error) ? "the file could not be read." : error.TrimEnd('.') + ".");
         }

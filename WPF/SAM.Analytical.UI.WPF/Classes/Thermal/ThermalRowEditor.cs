@@ -524,12 +524,20 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public GlazingBuilderViewModel CreateBuilder()
         {
+            return CreateBuilder((glazing?.ProposedRow ?? glazing?.CurrentRow)?.Candidate);
+        }
+
+        /// <summary>
+        /// The same, seeded from <paramref name="seed"/> (a candidate of the open list, e.g. the one right-clicked) instead of the chosen / current
+        /// system: seeding does not choose the candidate, so the row's pending change is untouched. Null seed: as <see cref="CreateBuilder()"/> with no seed.
+        /// </summary>
+        public GlazingBuilderViewModel CreateBuilder(GlazingCandidate seed)
+        {
             if (!CanCreateNew)
             {
                 return null;
             }
 
-            GlazingCandidate seed = (glazing.ProposedRow ?? glazing.CurrentRow)?.Candidate;
             GlazingBuilderViewModel result = new GlazingBuilderViewModel(new GlazingBuilderOptions()
             {
                 Seed = seed?.ApertureConstruction,
