@@ -58,7 +58,7 @@ namespace SAM.Analytical.UI.WPF
                 List<string> lines = new List<string>()
                 {
                     string.Format(CultureInfo.CurrentCulture, "{0}  [{1}]", Name, ShortId),
-                    "Build-up: " + (string.IsNullOrEmpty(BuildUp) ? "–" : BuildUp),
+                    "Build-up (thickness in mm): " + (string.IsNullOrEmpty(BuildUp) ? "–" : BuildUp),
                 };
 
                 if (Provenance == null)
@@ -98,6 +98,7 @@ namespace SAM.Analytical.UI.WPF
         private UserConstructionLibraryState state = UserConstructionLibraryState.Missing;
         private string note = string.Empty;
         private string message = string.Empty;
+        private bool messageIsError;
         private bool isRenaming;
         private string renameText = string.Empty;
         private bool disposed;
@@ -147,6 +148,21 @@ namespace SAM.Analytical.UI.WPF
             private set => Set(ref message, value ?? string.Empty);
         }
 
+        /// <summary>True when <see cref="Message"/> says why something did NOT happen (shown as an error, not as a confirmation).</summary>
+        public bool MessageIsError => messageIsError;
+
+        private void ShowMessage(string text, bool isError = false)
+        {
+            bool wasError = messageIsError;
+            messageIsError = isError && !string.IsNullOrEmpty(text);
+            if (wasError != messageIsError)
+            {
+                Raise(nameof(MessageIsError));
+            }
+
+            Message = text;
+        }
+
         public UserConstructionEntryRow SelectedRow
         {
             get => selectedRow;
@@ -164,8 +180,10 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 selectedRow = value;
+                ShowMessage(string.Empty);
                 Raise();
                 Raise(nameof(DetailsText));
+                Raise(nameof(ShowDetailsPlaceholder));
                 Raise(nameof(HasSelection));
                 Raise(nameof(CanRename));
                 Raise(nameof(CanRemove));
@@ -175,6 +193,11 @@ namespace SAM.Analytical.UI.WPF
         public bool HasSelection => selectedRow != null;
 
         public string DetailsText => selectedRow?.DetailsText ?? string.Empty;
+
+        /// <summary>What the details pane says while no construction is selected (instead of an empty pane).</summary>
+        public string DetailsPlaceholderText => rows.Count == 0 ? string.Empty : "Select a construction to see what it is made of and where it was saved from.";
+
+        public bool ShowDetailsPlaceholder => selectedRow == null && rows.Count != 0;
 
         public bool CanRename => selectedRow != null && CanChange;
 
@@ -212,7 +235,7 @@ namespace SAM.Analytical.UI.WPF
             }
 
             isRenaming = true;
-            Message = string.Empty;
+            ShowMessage(string.Empty);
             renameText = selectedRow.Name;
             Raise(nameof(IsRenaming));
             Raise(nameof(RenameText));
@@ -245,14 +268,14 @@ namespace SAM.Analytical.UI.WPF
             UserConstructionEditResult result = library.Rename(selectedRow.Guid, renameText);
             if (!result.Succeeded)
             {
-                Message = result.Error;
+                ShowMessage(result.Error, true);
                 return false;
             }
 
             isRenaming = false;
             Raise(nameof(IsRenaming));
             Refresh();
-            Message = result.Modified ? string.Format(CultureInfo.CurrentCulture, "Renamed to '{0}'.", result.Entry.Name) : string.Empty;
+            ShowMessage(result.Modified ? string.Format(CultureInfo.CurrentCulture, "Renamed to '{0}'.", result.Entry.Name) : string.Empty);
             return true;
         }
 
@@ -297,12 +320,12 @@ namespace SAM.Analytical.UI.WPF
             UserConstructionEditResult result = library.Remove(row.Guid);
             if (!result.Succeeded)
             {
-                Message = result.Error;
+                ShowMessage(result.Error, true);
                 return false;
             }
 
             Refresh();
-            Message = string.Format(CultureInfo.CurrentCulture, "Removed '{0}'; it is kept in the archive.", result.Entry.Name);
+            ShowMessage(string.Format(CultureInfo.CurrentCulture, "Removed '{0}'; it is kept in the archive.", result.Entry.Name));
             return true;
         }
 
@@ -354,6 +377,7 @@ namespace SAM.Analytical.UI.WPF
             Raise(nameof(CountText));
             Raise(nameof(SelectedRow));
             Raise(nameof(DetailsText));
+            Raise(nameof(ShowDetailsPlaceholder));
             Raise(nameof(HasSelection));
             Raise(nameof(CanRename));
             Raise(nameof(CanRemove));

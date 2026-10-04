@@ -55,6 +55,7 @@ namespace SAM.Analytical.UI.WPF
         private string maxThicknessText = (UValueViewModel.DefaultMaxThickness * 1000).ToString("0.#", CultureInfo.CurrentCulture);
         private bool changeOpen;
         private string userConstructionMessage = string.Empty;
+        private bool userConstructionMessageIsError;
 
         internal ThermalRowEditor(ThermalEditSession session, ThermalPerformanceRow row, AnalyticalModel analyticalModel, IReadOnlyList<Guid> selectedGuids)
         {
@@ -996,6 +997,9 @@ namespace SAM.Analytical.UI.WPF
 
         public bool HasUserConstructionMessage => !string.IsNullOrEmpty(userConstructionMessage);
 
+        /// <summary>True when <see cref="UserConstructionMessage"/> says why nothing was saved (shown as an error, not as a confirmation).</summary>
+        public bool UserConstructionMessageIsError => userConstructionMessageIsError;
+
         /// <summary>
         /// What <c>Save to My constructions…</c> would save, built from copies (the model is only read): <paramref name="row"/> when given (an alternative of
         /// the list, right-clicked or chosen), otherwise the chosen alternative, else the generated variant once its target is reached, else the row's
@@ -1039,6 +1043,7 @@ namespace SAM.Analytical.UI.WPF
                 ? new UserConstructionSaveResult(null, null, null, "There is nothing to save.")
                 : subject.Save(UserConstructionsOrNull(), name);
 
+            userConstructionMessageIsError = !result.Succeeded;
             userConstructionMessage = result.Succeeded
                 ? string.Format(CultureInfo.CurrentCulture, "Saved '{0}' to My constructions.", result.Saved.Name)
                 : result.Error;

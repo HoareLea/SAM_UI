@@ -22,6 +22,15 @@
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
 
+            <!-- The result of the last Rename / Remove: a caption, or an error (red) when it says why nothing changed. -->
+            <Style x:Key="Style_Result" TargetType="TextBlock" BasedOn="{StaticResource PartO.Caption}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding MessageIsError}" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Danger}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
             <Style x:Key="Style_Command" TargetType="Button">
                 <Setter Property="Padding" Value="10,2"/>
                 <Setter Property="Margin" Value="0,0,6,0"/>
@@ -95,7 +104,11 @@
                     <DockPanel Grid.Column="2">
                         <TextBlock DockPanel.Dock="Top" Text="Details" Style="{StaticResource PartO.SectionHeading}"/>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,4,0,0" Focusable="False">
-                            <TextBlock Text="{Binding DetailsText}" TextWrapping="Wrap" AutomationProperties.AutomationId="textBlock_Details" AutomationProperties.Name="Details of the selected system"/>
+                            <StackPanel>
+                                <TextBlock Text="{Binding DetailsText}" TextWrapping="Wrap" AutomationProperties.AutomationId="textBlock_Details" AutomationProperties.Name="Details of the selected system"/>
+                                <TextBlock Text="{Binding DetailsPlaceholderText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Visibility="{Binding ShowDetailsPlaceholder, Converter={StaticResource BoolToVisibility}}"
+                                           AutomationProperties.AutomationId="textBlock_DetailsPlaceholder"/>
+                            </StackPanel>
                         </ScrollViewer>
                     </DockPanel>
                 </Grid>
@@ -116,7 +129,7 @@
 
                 <!-- COMMANDS -->
                 <StackPanel Grid.Row="4" Margin="0,10,0,0">
-                    <TextBlock Text="{Binding Message}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,0,0,4" AutomationProperties.AutomationId="textBlock_Message"/>
+                    <TextBlock Text="{Binding Message}" Style="{StaticResource Style_Result}" TextWrapping="Wrap" Margin="0,0,0,4" AutomationProperties.AutomationId="textBlock_Message"/>
                     <TextBlock Text="{Binding ArchiveText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,0,0,6" AutomationProperties.AutomationId="textBlock_Archive"/>
                     <DockPanel LastChildFill="False">
                         <Button x:Name="button_Close" Content="Close" DockPanel.Dock="Right" Style="{StaticResource Style_Command}" Margin="0" IsCancel="True" Click="button_Close_Click" AutomationProperties.AutomationId="button_Close"/>
@@ -193,7 +206,11 @@
                     <DockPanel Grid.Column="2">
                         <TextBlock DockPanel.Dock="Top" Text="Details" Style="{StaticResource PartO.SectionHeading}"/>
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,4,0,0" Focusable="False">
-                            <TextBlock Text="{Binding DetailsText}" TextWrapping="Wrap" AutomationProperties.AutomationId="textBlock_ConstructionDetails" AutomationProperties.Name="Details of the selected construction"/>
+                            <StackPanel>
+                                <TextBlock Text="{Binding DetailsText}" TextWrapping="Wrap" AutomationProperties.AutomationId="textBlock_ConstructionDetails" AutomationProperties.Name="Details of the selected construction"/>
+                                <TextBlock Text="{Binding DetailsPlaceholderText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Visibility="{Binding ShowDetailsPlaceholder, Converter={StaticResource BoolToVisibility}}"
+                                           AutomationProperties.AutomationId="textBlock_ConstructionDetailsPlaceholder"/>
+                            </StackPanel>
                         </ScrollViewer>
                     </DockPanel>
                 </Grid>
@@ -214,7 +231,7 @@
 
                 <!-- COMMANDS: no edit - a construction is authored in the Constructions editor and saved as a new one -->
                 <StackPanel Grid.Row="4" Margin="0,10,0,0">
-                    <TextBlock Text="{Binding Message}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,0,0,4" AutomationProperties.AutomationId="textBlock_ConstructionsMessage"/>
+                    <TextBlock Text="{Binding Message}" Style="{StaticResource Style_Result}" TextWrapping="Wrap" Margin="0,0,0,4" AutomationProperties.AutomationId="textBlock_ConstructionsMessage"/>
                     <TextBlock Text="{Binding ArchiveText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,0,0,6" AutomationProperties.AutomationId="textBlock_ConstructionsArchive"/>
                     <DockPanel LastChildFill="False">
                         <Button x:Name="button_ConstructionsClose" Content="Close" DockPanel.Dock="Right" Style="{StaticResource Style_Command}" Margin="0" Click="button_Close_Click" AutomationProperties.AutomationId="button_ConstructionsClose"/>
