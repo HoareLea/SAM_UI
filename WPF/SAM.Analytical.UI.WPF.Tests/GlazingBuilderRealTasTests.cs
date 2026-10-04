@@ -79,6 +79,85 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(reversed.G < coatingOn3.G, "a low-e coating on surface 2 gives a lower g than on surface 3");
         }
 
+        /// <summary>
+        /// User-library PR3, through the product route and real Tas: a system saved with a REVERSED low-e pane, opened for editing (the pane reopens as the
+        /// original with Reverse on) and composed again gives the same Ug / g / light transmittance as the draft it was saved from; an edit (a narrower
+        /// gap) changes Ug; and the edited system saved with Save and replace, opened again, reproduces the edited values. Opt-in like Gate 0
+        /// (<c>SAM_E0_PILKINGTON_TCD</c>).
+        /// </summary>
+        [Fact]
+        [Trait("Category", "Tas")]
+        public async Task EditedSystem_RoundTripAndReplace_ThroughTheBuilderRoute()
+        {
+            string path = Environment.GetEnvironmentVariable("SAM_E0_PILKINGTON_TCD");
+            if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            {
+                return;
+            }
+
+            ConstructionManager panes = RunSta(() => Tas.Convert.ToSAM_ConstructionManager(path));
+            MaterialLibrary materials = panes.MaterialLibrary;
+            IMaterial Pane(string name) => materials.GetMaterial(name) ?? throw new InvalidOperationException(name + " is not in " + Path.GetFileName(path));
+            DraftPane P(string name, bool reversed = false) => new DraftPane(Pane(name), double.NaN, Path.GetFileName(path), Path.GetFileName(path)) { Reversed = reversed };
+
+            string directory = Path.Combine(Path.GetTempPath(), "SAM-UL-PR3-realtas", Guid.NewGuid().ToString("N"));
+            try
+            {
+                UserGlazingLibrary library = new UserGlazingLibrary(Path.Combine(directory, "Glazing Systems.json"));
+                using DraftGlazingEvaluator evaluator = new DraftGlazingEvaluator(null, TimeSpan.Zero);
+
+                async Task<GlazingValues> Values(GlazingSystemDraft draft, string label)
+                {
+                    DraftGlazingEvaluation evaluation = await evaluator.EvaluateAsync(draft);
+                    Assert.True(evaluation.State == DraftGlazingEvaluationState.Calculated, label + ": " + evaluation.Reason);
+                    output.WriteLine(string.Format(CultureInfo.InvariantCulture, "{0,-45} Ug {1:0.0000}  g {2:0.0000}  LT {3:0.0000}", label, evaluation.Values.Ug, evaluation.Values.G, evaluation.Values.LightTransmittance));
+                    return evaluation.Values;
+                }
+
+                GlazingSystemDraft original = new GlazingSystemDraft() { Name = "Edit round trip", IntendedPanelType = PanelType.WallExternal };
+                original.Add(P("OptithermS1Plus4mm.NSG", reversed: true), new DraftGap(DefaultGasType.Argon, 0.016), P("OptifloatClear4mm.NSG"));
+                GlazingValues values_Original = await Values(original, "S1Plus reversed | Ar16 | clear4");
+
+                UserGlazingSaveResult saved = library.Save(original, values_Original);
+                Assert.True(saved.Succeeded, saved.Error);
+
+                // Reopened for editing and composed again: the reversed pane is the original pane with Reverse on, and Tas gives the same answer.
+                GlazingSystemDraft reopened = GlazingBuilderViewModel.SeedDraft(saved.Saved, GlazingSource.FromUserLibrary(library));
+                Assert.True(((DraftPane)reopened.Layers[0]).Reversed);
+                Assert.Equal("OptithermS1Plus4mm.NSG", ((DraftPane)reopened.Layers[0]).OriginalName);
+                GlazingValues values_Reopened = await Values(reopened, "reopened for editing, unchanged");
+                Assert.Equal(values_Original.Ug, values_Reopened.Ug, 4);
+                Assert.Equal(values_Original.G, values_Reopened.G, 4);
+                Assert.Equal(values_Original.LightTransmittance, values_Reopened.LightTransmittance, 4);
+
+                // An edit: a 12 mm gap changes Ug; saved with Save and replace and opened again, it reproduces the edited values.
+                ((DraftGap)reopened.Layers[1]).Thickness = 0.012;
+                reopened.Name = "Edit round trip";                       // the old name, reused: allowed only when replacing
+                GlazingValues values_Edited = await Values(reopened, "edited: Ar 12 mm");
+                Assert.NotEqual(values_Original.Ug, values_Edited.Ug, 2);
+
+                UserGlazingSaveResult replaced = library.SaveReplacing(reopened, saved.Saved.Guid, values_Edited);
+                Assert.True(replaced.Succeeded, replaced.Error);
+                Assert.Equal(new[] { replaced.Saved.Guid }, library.Read().Systems.Select(x => x.Guid));
+
+                GlazingSystemDraft again = GlazingBuilderViewModel.SeedDraft(replaced.Saved, GlazingSource.FromUserLibrary(library));
+                GlazingValues values_Again = await Values(again, "replacement opened again");
+                Assert.Equal(values_Edited.Ug, values_Again.Ug, 4);
+                Assert.Equal(values_Edited.G, values_Again.G, 4);
+                Assert.Equal(values_Edited.LightTransmittance, values_Again.LightTransmittance, 4);
+            }
+            finally
+            {
+                try
+                {
+                    Directory.Delete(directory, true);
+                }
+                catch (Exception)
+                {
+                }
+            }
+        }
+
         private static T RunSta<T>(Func<T> func)
         {
             T result = default;

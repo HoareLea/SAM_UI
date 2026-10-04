@@ -18,6 +18,13 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>The system the draft starts from (the chosen candidate, else the current system); null for an empty draft.</summary>
         public ApertureConstruction Seed { get; set; }
 
+        /// <summary>
+        /// True when <see cref="Seed"/> is a system saved in <see cref="Library"/> that the user opened to EDIT (My library → Open in Builder): the Builder
+        /// then starts from a copy under the seed's own name, offers Save and replace (one transaction: the new system is saved and the seed is archived) as
+        /// well as Save as new, and says "Editing a copy of …". The seed itself is never changed. Ignored when the library no longer holds the seed.
+        /// </summary>
+        public bool EditSeed { get; set; }
+
         /// <summary>The pool that holds the seed's materials (and gives the provenance label); null when there is no seed.</summary>
         public GlazingSource SeedSource { get; set; }
 

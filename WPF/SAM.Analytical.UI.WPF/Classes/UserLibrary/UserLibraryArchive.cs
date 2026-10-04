@@ -43,11 +43,12 @@ namespace SAM.Analytical.UI.WPF
         /// from) into the archive, replacing an archived entry of the same Guid. Returns null when the archive was written, otherwise why not (the
         /// archive is then as it was). Call it under the library's lock, BEFORE the library itself is written.
         /// </summary>
+        /// <param name="nothingDone">What did not happen when this fails ("Nothing was removed", "Nothing was saved or replaced").</param>
         /// <param name="onMaterialsRenamed">
         /// Called with the archived entry and the renames (library material name → archive material name) when a material had to be kept under a
         /// new name; returns the entry to archive (e.g. with its provenance labels following). Null: only the layers follow.
         /// </param>
-        internal static string Archive(UserLibraryFile archiveFile, ApertureConstruction entry, MaterialLibrary sourceMaterials, string libraryName, string description, Func<ApertureConstruction, IReadOnlyDictionary<string, string>, ApertureConstruction> onMaterialsRenamed = null)
+        internal static string Archive(UserLibraryFile archiveFile, ApertureConstruction entry, MaterialLibrary sourceMaterials, string libraryName, string description, Func<ApertureConstruction, IReadOnlyDictionary<string, string>, ApertureConstruction> onMaterialsRenamed = null, string nothingDone = "Nothing was removed")
         {
             if (archiveFile == null || entry == null)
             {
@@ -57,7 +58,7 @@ namespace SAM.Analytical.UI.WPF
             UserLibraryFileContent content = archiveFile.Read();
             if (content.State == UserLibraryFileState.Unreadable)
             {
-                return string.Format(CultureInfo.CurrentCulture, "Nothing was removed, because the archive of removed entries cannot be used: {0}", content.Error);
+                return string.Format(CultureInfo.CurrentCulture, "{0}, because the archive of removed entries cannot be used: {1}", nothingDone, content.Error);
             }
 
             ConstructionManager archive = content.ConstructionManager;
@@ -75,7 +76,7 @@ namespace SAM.Analytical.UI.WPF
                 string archived = LibraryMaterialMerge.Add(materialLibrary, material);
                 if (archived == null)
                 {
-                    return string.Format(CultureInfo.CurrentCulture, "Nothing was removed, because the material '{0}' could not be added to the archive.", name);
+                    return string.Format(CultureInfo.CurrentCulture, "{0}, because the material '{1}' could not be added to the archive.", nothingDone, name);
                 }
 
                 names[name] = archived;
@@ -104,7 +105,7 @@ namespace SAM.Analytical.UI.WPF
             }
             catch (Exception exception)
             {
-                return string.Format(CultureInfo.CurrentCulture, "Nothing was removed, because the archive {0} could not be written: {1}", archiveFile.FileName, exception.Message);
+                return string.Format(CultureInfo.CurrentCulture, "{0}, because the archive {1} could not be written: {2}", nothingDone, archiveFile.FileName, exception.Message);
             }
 
             return null;

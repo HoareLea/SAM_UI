@@ -51,6 +51,7 @@ namespace SAM.Analytical.UI.WPF
         private readonly ObservableCollection<GlazingBuilderLayerRow> layers = new ObservableCollection<GlazingBuilderLayerRow>();
         private readonly List<GlazingFrameChoice> frameChoices = new List<GlazingFrameChoice>();
         private readonly List<string> savedNames = new List<string>();
+        private readonly List<KeyValuePair<Guid, string>> savedEntries = new List<KeyValuePair<Guid, string>>();
         private readonly SynchronizationContext context = SynchronizationContext.Current;
 
         private GlazingBuilderLayerRow selectedLayer;
@@ -62,6 +63,9 @@ namespace SAM.Analytical.UI.WPF
 
         private GlazingComposition composition;
         private GlazingDraftValidation validation = new GlazingDraftValidation(null);
+        private GlazingDraftValidation validationReplace = new GlazingDraftValidation(null);
+        private Guid? editedGuid;
+        private string editedName;
         private IReadOnlyList<GlazingBuilderIssueRow> issues = new List<GlazingBuilderIssueRow>();
 
         private long version;
@@ -86,7 +90,15 @@ namespace SAM.Analytical.UI.WPF
 
             ApertureConstruction seed = options.Seed;
             draft = seed != null && options.SeedSource != null ? SeedDraft(seed, options.SeedSource) : new GlazingSystemDraft() { IntendedPanelType = PanelType.Undefined };
-            draft.Name = UniqueName(seed == null ? "New glazing system" : seed.Name + " (copy)");
+
+            // Editing a saved system: only when the library still holds it (it is replaced by Guid, under the library's lock).
+            if (options.EditSeed && seed != null && library != null && savedEntries.Any(x => x.Key == seed.Guid))
+            {
+                editedGuid = seed.Guid;
+                editedName = savedEntries.First(x => x.Key == seed.Guid).Value;
+            }
+
+            draft.Name = editedGuid != null ? editedName : UniqueName(seed == null ? "New glazing system" : seed.Name + " (copy)");
 
             IntendedUses = GlazingIntendedUse.Options(draft.IntendedPanelType);
             selectedUse = IntendedUses.First(x => x.Value == draft.IntendedPanelType);
@@ -175,14 +187,27 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
-        /// <summary>"New · based on SIM_EXT_GLZ · not saved" / "Saved to My glazing systems".</summary>
+        /// <summary>True when the Builder was opened on a saved system to edit it (see <see cref="GlazingBuilderOptions.EditSeed"/>): Save and replace is offered.</summary>
+        public bool IsEditing => editedGuid != null;
+
+        /// <summary>The name of the saved system being edited; null when not editing.</summary>
+        public string EditedName => editedName;
+
+        /// <summary>"New · based on SIM_EXT_GLZ · not saved" / "Editing a copy of X · saving creates a new system" / "Saved to My glazing systems".</summary>
         public string StatusText
         {
             get
             {
                 if (savedSystem != null)
                 {
-                    return string.Format(CultureInfo.CurrentCulture, "Saved to My glazing systems as {0}.", savedSystem.Name);
+                    return SaveResult?.Replaced != null
+                        ? string.Format(CultureInfo.CurrentCulture, "Saved to My glazing systems as {0}, replacing {1} (kept in the archive).", savedSystem.Name, SaveResult.Replaced.Name)
+                        : string.Format(CultureInfo.CurrentCulture, "Saved to My glazing systems as {0}.", savedSystem.Name);
+                }
+
+                if (IsEditing)
+                {
+                    return string.Format(CultureInfo.CurrentCulture, "Editing a copy of {0} · saving creates a new system", editedName);
                 }
 
                 return draft.BasedOnName == null ? "New · not saved" : string.Format(CultureInfo.CurrentCulture, "New · based on {0} · not saved", draft.BasedOnName);
@@ -383,7 +408,8 @@ namespace SAM.Analytical.UI.WPF
 
         // ---- Validation ------------------------------------------------------------------------------------------
 
-        public GlazingDraftValidation Validation => validation;
+        /// <summary>The check as shown: while editing, the one Save and replace is held to (the edited system's own name is free); otherwise the check of a new system.</summary>
+        public GlazingDraftValidation Validation => IsEditing ? validationReplace : validation;
 
         public IReadOnlyList<GlazingBuilderIssueRow> Issues => issues;
 
@@ -392,8 +418,9 @@ namespace SAM.Analytical.UI.WPF
         {
             get
             {
-                int errors = validation.Errors.Count();
-                int warnings = validation.Warnings.Count();
+                GlazingDraftValidation shown = Validation;
+                int errors = shown.Errors.Count();
+                int warnings = shown.Warnings.Count();
                 if (errors != 0)
                 {
                     return string.Format(CultureInfo.CurrentCulture, "✕ {0} {1}{2}: it cannot be saved yet.", errors, errors == 1 ? "error" : "errors", warnings == 0 ? string.Empty : string.Format(CultureInfo.CurrentCulture, ", {0} {1}", warnings, warnings == 1 ? "warning" : "warnings"));
@@ -470,8 +497,25 @@ namespace SAM.Analytical.UI.WPF
 
         public bool IsSaving => isSaving;
 
-        /// <summary>Save is possible while the check has no errors (a name, a pane stack Tas can calculate, a gas for every gap, …).</summary>
+        /// <summary>
+        /// Save (as a NEW system) is possible while the check has no errors (a name, a pane stack Tas can calculate, a gas for every gap, …). While editing,
+        /// the name must differ from the edited system's (use Save and replace to keep it).
+        /// </summary>
         public bool CanSave => !isSaving && savedSystem == null && library != null && !validation.HasErrors;
+
+        /// <summary>The first button: "Save as predefined", or "Save as new" while editing a saved system.</summary>
+        public string SaveButtonText => IsEditing ? "Save as new" : "Save as predefined";
+
+        /// <summary>The second button, only while editing: "Save and replace X".</summary>
+        public string SaveAndReplaceText => IsEditing ? string.Format(CultureInfo.CurrentCulture, "Save and replace {0}", editedName) : string.Empty;
+
+        /// <summary>Save and replace: the check (held to the rule that the edited system's own name is free) has no errors and the edited system was in the library when this opened.</summary>
+        public bool CanSaveAndReplace => IsEditing && !isSaving && savedSystem == null && library != null && !validationReplace.HasErrors;
+
+        /// <summary>Why Save as new is not possible although Save and replace is (the name is the edited system's); empty otherwise.</summary>
+        public string SaveAsNewHint => IsEditing && savedSystem == null && !CanSave && CanSaveAndReplace
+            ? string.Format(CultureInfo.CurrentCulture, "To save as a new system, give it a name other than '{0}'. Save and replace keeps the name and moves {0} to the archive.", editedName)
+            : string.Empty;
 
         /// <summary>Why a Save failed (nothing was written); null otherwise.</summary>
         public string SaveError => saveError;
@@ -492,7 +536,23 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public async Task<bool> SaveAsync()
         {
-            if (!CanSave)
+            return await SaveCoreAsync(null).ConfigureAwait(true);
+        }
+
+        /// <summary>
+        /// Saves the draft as a NEW system and moves the system being edited to the archive in one transaction (<see cref="UserGlazingLibrary.SaveReplacing"/>):
+        /// the new system has a new Guid, its provenance says it supersedes the old one, and the old name may be reused. Only while <see cref="IsEditing"/>.
+        /// A failure leaves the library as it was - the edited system still active, the new one not saved (after a failed library write the edited system
+        /// may also be in the archive; a retry is idempotent); <see cref="SaveError"/> says why.
+        /// </summary>
+        public async Task<bool> SaveAndReplaceAsync()
+        {
+            return CanSaveAndReplace && await SaveCoreAsync(editedGuid).ConfigureAwait(true);
+        }
+
+        private async Task<bool> SaveCoreAsync(Guid? replacing)
+        {
+            if (replacing == null ? !CanSave : !CanSaveAndReplace)
             {
                 return false;
             }
@@ -505,7 +565,7 @@ namespace SAM.Analytical.UI.WPF
             UserGlazingSaveResult result;
             try
             {
-                result = await Task.Run(() => library.Save(draft, performance)).ConfigureAwait(true);
+                result = await Task.Run(() => replacing == null ? library.Save(draft, performance) : library.SaveReplacing(draft, replacing.Value, performance)).ConfigureAwait(true);
             }
             catch (Exception exception)
             {
@@ -529,8 +589,16 @@ namespace SAM.Analytical.UI.WPF
                 saveError = result.Error ?? "The system could not be saved.";
                 if (result.Validation != null)
                 {
-                    validation = result.Validation;
-                    issues = validation.Issues.Select(x => new GlazingBuilderIssueRow(x)).ToList();
+                    if (replacing == null)
+                    {
+                        validation = result.Validation;
+                    }
+                    else
+                    {
+                        validationReplace = result.Validation;
+                    }
+
+                    issues = Validation.Issues.Select(x => new GlazingBuilderIssueRow(x)).ToList();
                     Raise(nameof(Validation));
                     Raise(nameof(Issues));
                     Raise(nameof(ValidationSummary));
@@ -599,7 +667,13 @@ namespace SAM.Analytical.UI.WPF
                         GlazingBuilderPaneRecord record = provenance?.Panes?.FirstOrDefault(x => string.Equals(x.Material, constructionLayer.Name, StringComparison.Ordinal));
                         string paneLabel = string.IsNullOrWhiteSpace(record?.SourceLabel) ? source.Label : record.SourceLabel;
                         string paneFile = string.IsNullOrWhiteSpace(record?.SourceFile) ? fileName : record.SourceFile;
-                        result.Layers.Add(new DraftPane(material, constructionLayer.Thickness, paneLabel, paneFile));
+
+                        // A pane the Builder saved reversed ("<name> Reversed") reopens as the pane it was made from with Reverse on, so composing it again
+                        // gives the same material and a user can still undo the reversal. Only when that exactly reproduces the saved material.
+                        TransparentMaterial original = record != null && record.Reversed && material is TransparentMaterial reversed ? Query.Unreverse(reversed) : null;
+                        result.Layers.Add(original != null
+                            ? new DraftPane(original, constructionLayer.Thickness, paneLabel, paneFile) { Reversed = true }
+                            : new DraftPane(material, constructionLayer.Thickness, paneLabel, paneFile));
                     }
                 }
                 else
@@ -609,6 +683,14 @@ namespace SAM.Analytical.UI.WPF
             }
 
             result.Frame = DraftFrame.CopyFrom(system, source.ConstructionManager?.MaterialLibrary, source.Label);
+
+            // A system the Builder saved keeps where its frame really came from (its provenance), not the saved system itself: opening it and saving it
+            // again records, and describes, the same frame origin.
+            if (!result.Frame.IsNone && provenance != null && string.Equals(provenance.Frame, "Copied", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(provenance.FrameCopiedFromName))
+            {
+                result.Frame = result.Frame.WithOrigin(provenance.FrameCopiedFromName, provenance.FrameCopiedFromGuid);
+            }
+
             return result;
         }
 
@@ -677,12 +759,14 @@ namespace SAM.Analytical.UI.WPF
         private void ReadSavedNames()
         {
             savedNames.Clear();
+            savedEntries.Clear();
             try
             {
                 UserGlazingLibraryContent content = library?.Read();
                 if (content != null && content.State == UserGlazingLibraryState.Ready)
                 {
                     savedNames.AddRange(content.Systems.Where(x => x != null).Select(x => x.Name));
+                    savedEntries.AddRange(content.Systems.Where(x => x != null).Select(x => new KeyValuePair<Guid, string>(x.Guid, x.Name)));
                 }
             }
             catch (Exception)
@@ -753,7 +837,9 @@ namespace SAM.Analytical.UI.WPF
 
             composition = draft.ComposeGlazingSystem(composeOptions);
             validation = draft.CheckGlazingDraft(composition, savedNames);
-            issues = validation.Issues.Select(x => new GlazingBuilderIssueRow(x)).ToList();
+            validationReplace = IsEditing ? draft.CheckGlazingDraft(composition, savedEntries.Where(x => x.Key != editedGuid.Value).Select(x => x.Value)) : validation;
+            GlazingDraftValidation shown = Validation;
+            issues = shown.Issues.Select(x => new GlazingBuilderIssueRow(x)).ToList();
 
             int gap = 0;
             foreach (GlazingBuilderLayerRow row in layers)
@@ -766,7 +852,7 @@ namespace SAM.Analytical.UI.WPF
                     htc = record?.HeatTransferCoefficient ?? double.NaN;
                 }
 
-                row.Update(htc, validation.Issues.Where(x => x.LayerIndex == row.Index));
+                row.Update(htc, shown.Issues.Where(x => x.LayerIndex == row.Index));
             }
 
             Raise(nameof(Validation));
@@ -882,6 +968,8 @@ namespace SAM.Analytical.UI.WPF
         {
             Raise(nameof(IsSaving));
             Raise(nameof(CanSave));
+            Raise(nameof(CanSaveAndReplace));
+            Raise(nameof(SaveAsNewHint));
             Raise(nameof(SaveError));
             Raise(nameof(SavedSystem));
             RaiseCommands();

@@ -82,6 +82,14 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        private async void button_SaveReplace_Click(object sender, RoutedEventArgs e)
+        {
+            if (await viewModel.SaveAndReplaceAsync())
+            {
+                Finish(true);
+            }
+        }
+
         private void button_Cancel_Click(object sender, RoutedEventArgs e)
         {
             if (!viewModel.IsSaving)

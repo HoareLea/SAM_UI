@@ -60,8 +60,9 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>
         /// Prepares the Glazing System Builder seeded from a saved system of "My library" (no open Change… list needed): the model's, the default
         /// library's and the user's systems as panes and frames, the panel's source catalogue, the user library to save to and the Builder's own Tas
-        /// calculation. Saving adds a NEW system; the seed is not changed. The Builder holds NO model. The caller shows the window and disposes the
-        /// view-model; null when there is no user library.
+        /// calculation. The Builder opens in EDIT mode (<see cref="GlazingBuilderOptions.EditSeed"/>): a copy under the system's own name, Save as new or
+        /// Save and replace (the saved system is archived); the saved system itself is never changed. The Builder holds NO model. The caller shows the
+        /// window and disposes the view-model; null when there is no user library.
         /// </summary>
         public GlazingBuilderViewModel CreateBuilder(ApertureConstruction seed)
         {
@@ -85,6 +86,7 @@ namespace SAM.Analytical.UI.WPF
             {
                 Seed = seed,
                 SeedSource = source_User,
+                EditSeed = true,
                 Sources = sources,
                 Catalog = Session.Services.Sources,
                 Library = library,

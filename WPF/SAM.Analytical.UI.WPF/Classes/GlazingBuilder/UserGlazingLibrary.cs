@@ -32,12 +32,16 @@ namespace SAM.Analytical.UI.WPF
         public List<ApertureConstruction> Systems => ConstructionManager.ApertureConstructions ?? new List<ApertureConstruction>();
     }
 
-    /// <summary>What <see cref="UserGlazingLibrary.Save"/> did. On failure nothing was written.</summary>
+    /// <summary>
+    /// What <see cref="UserGlazingLibrary.Save"/> or <see cref="UserGlazingLibrary.SaveReplacing"/> did. On failure the library was not changed (after a
+    /// Save and replace whose library write failed, the replaced system may also be in the archive - it is still active in the library).
+    /// </summary>
     public sealed class UserGlazingSaveResult
     {
-        internal UserGlazingSaveResult(ApertureConstruction saved, IEnumerable<string> addedMaterials, IReadOnlyDictionary<string, string> renamedMaterials, string error, GlazingDraftValidation validation)
+        internal UserGlazingSaveResult(ApertureConstruction saved, IEnumerable<string> addedMaterials, IReadOnlyDictionary<string, string> renamedMaterials, string error, GlazingDraftValidation validation, ApertureConstruction replaced = null)
         {
             Saved = saved;
+            Replaced = replaced;
             AddedMaterials = (addedMaterials ?? Enumerable.Empty<string>()).ToList();
             RenamedMaterials = renamedMaterials ?? new Dictionary<string, string>();
             Error = error;
@@ -48,6 +52,9 @@ namespace SAM.Analytical.UI.WPF
 
         /// <summary>The system as saved (new Guid, final material names, provenance).</summary>
         public ApertureConstruction Saved { get; }
+
+        /// <summary>For <see cref="UserGlazingLibrary.SaveReplacing"/>: the system that was replaced (as it was; it is now in the archive); null for a plain Save.</summary>
+        public ApertureConstruction Replaced { get; }
 
         /// <summary>The materials the library did not have before this save.</summary>
         public IReadOnlyList<string> AddedMaterials { get; }
@@ -107,6 +114,8 @@ namespace SAM.Analytical.UI.WPF
     public sealed class UserGlazingLibrary
     {
         public const string LibraryName = "My glazing systems";
+
+        private const string ArchiveDescription = "Glazing systems removed from My glazing systems. Nothing here is used by SAM; it is kept so a removed system can be recovered.";
 
         private const string LibraryDescription = "Glazing systems saved by the SAM Glazing System Builder. Each system is immutable; a change is saved as a new system.";
 
@@ -187,7 +196,31 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public UserGlazingSaveResult Save(GlazingSystemDraft draft, GlazingValues performance = null, DateTime? createdUtc = null)
         {
-            UserGlazingSaveResult result = SaveLocked(draft, performance, createdUtc);
+            UserGlazingSaveResult result = SaveLocked(draft, performance, createdUtc, null);
+            if (result.Succeeded)
+            {
+                UserLibraryFile.Notify(Changed, this);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Saves <paramref name="draft"/> as a NEW system exactly as <see cref="Save"/> does AND moves the saved system <paramref name="replacing"/> to the
+        /// archive, in ONE locked transaction ("Save and replace"). The new system has a new Guid; its provenance says what it supersedes (Schema 2:
+        /// <c>Supersedes Guid</c> / <c>Supersedes Name</c>) and the replaced system's name may be reused (the name check ignores it). The replaced
+        /// system is never changed or deleted: it is archived with its materials; those no remaining system (nor the new one) uses leave the library.
+        /// <para>
+        /// Order and failure contract: the archive is written first, then the library (see <see cref="UserLibraryArchive"/>). Whatever fails, the
+        /// library is left exactly as it was and the replaced system is still in it: the new system is NOT saved unless the old one is archived. After a
+        /// failed library write the replaced system is also in the archive (harmless; a retry replaces it there by Guid). A replaced system that is no
+        /// longer in the library (removed or renamed away by another window) is an error and nothing is written - save the draft as a new system instead.
+        /// A success raises <see cref="Changed"/> once.
+        /// </para>
+        /// </summary>
+        public UserGlazingSaveResult SaveReplacing(GlazingSystemDraft draft, Guid replacing, GlazingValues performance = null, DateTime? createdUtc = null)
+        {
+            UserGlazingSaveResult result = SaveLocked(draft, performance, createdUtc, replacing);
             if (result.Succeeded)
             {
                 UserLibraryFile.Notify(Changed, this);
@@ -280,7 +313,7 @@ namespace SAM.Analytical.UI.WPF
                 MaterialLibrary materialLibrary = library.MaterialLibrary ?? new MaterialLibrary(LibraryName);
 
                 // 1. The archive first (a failure here changes nothing); 2. the library.
-                string archiveError = UserLibraryArchive.Archive(file.Companion(ArchivePath, LibraryName + " (removed)", "glazing library"), entry, materialLibrary, LibraryName, "Glazing systems removed from " + LibraryName + ". Nothing here is used by SAM; it is kept so a removed system can be recovered.", RenameInProvenance);
+                string archiveError = UserLibraryArchive.Archive(file.Companion(ArchivePath, LibraryName + " (removed)", "glazing library"), entry, materialLibrary, LibraryName, ArchiveDescription, RenameInProvenance);
                 if (archiveError != null)
                 {
                     return UserLibraryEdit.Fail(archiveError);
@@ -311,7 +344,7 @@ namespace SAM.Analytical.UI.WPF
             };
         }
 
-        private UserGlazingSaveResult SaveLocked(GlazingSystemDraft draft, GlazingValues performance, DateTime? createdUtc)
+        private UserGlazingSaveResult SaveLocked(GlazingSystemDraft draft, GlazingValues performance, DateTime? createdUtc, Guid? replacing)
         {
             if (draft == null)
             {
@@ -331,7 +364,18 @@ namespace SAM.Analytical.UI.WPF
                 ConstructionManager library = content.ConstructionManager;
                 List<ApertureConstruction> systems = library.ApertureConstructions ?? new List<ApertureConstruction>();
 
-                validation = draft.CheckGlazingDraft(composition, systems.Select(x => x?.Name));
+                // Replacing: the system must still be there, and its own name is free for the new one.
+                ApertureConstruction replaced = null;
+                if (replacing != null)
+                {
+                    replaced = systems.Find(x => x?.Guid == replacing.Value);
+                    if (replaced == null)
+                    {
+                        return UserLibraryEdit.Fail("The system to replace is no longer in " + LibraryName + " (it was removed or changed in another window); save this one as a new system instead.");
+                    }
+                }
+
+                validation = draft.CheckGlazingDraft(composition, systems.Where(x => replaced == null || x?.Guid != replaced.Guid).Select(x => x?.Name));
                 if (validation.HasErrors)
                 {
                     return UserLibraryEdit.Fail("The system cannot be saved: " + string.Join(" ", validation.Errors.Select(x => x.Message)));
@@ -365,6 +409,11 @@ namespace SAM.Analytical.UI.WPF
                 GlazingBuilderProvenance provenance = composition.Provenance;
                 provenance.CreatedUtc = (createdUtc ?? DateTime.UtcNow).ToUniversalTime();
                 RenameMaterials(provenance, names);
+                if (replaced != null)
+                {
+                    provenance.SupersedesGuid = replaced.Guid;
+                    provenance.SupersedesName = replaced.Name;
+                }
 
                 if (performance != null)
                 {
@@ -376,7 +425,26 @@ namespace SAM.Analytical.UI.WPF
                 saved.Add(provenance.ToParameterSet());
 
                 List<string> added = (materialLibrary.GetMaterials() ?? new List<IMaterial>()).Select(x => x.Name).Where(x => !before.Contains(x)).ToList();
-                result = new UserGlazingSaveResult(saved, added, renamed, null, validation);
+                result = new UserGlazingSaveResult(saved, added, renamed, null, validation, replaced);
+                List<ApertureConstruction> remaining = systems.Where(x => replaced == null || x?.Guid != replaced.Guid).ToList();
+
+                if (replaced != null)
+                {
+                    // 1. The replaced system to the archive first (a failure here changes nothing); 2. the library, without it and with the new one.
+                    string archiveError = UserLibraryArchive.Archive(file.Companion(ArchivePath, LibraryName + " (removed)", "glazing library"), replaced, materialLibrary, LibraryName, ArchiveDescription, RenameInProvenance, "Nothing was saved or replaced");
+                    if (archiveError != null)
+                    {
+                        result = null;
+                        return UserLibraryEdit.Fail(archiveError);
+                    }
+
+                    // What only the replaced system used leaves the library with it; what the new system or another one uses stays.
+                    remaining.Add(saved);
+                    IEnumerable<string> referenced = remaining.SelectMany(LibraryMaterialMerge.ReferencedNames).Concat((library.Constructions ?? new List<Construction>()).SelectMany(LibraryMaterialMerge.ReferencedNames));
+                    LibraryMaterialMerge.Prune(materialLibrary, LibraryMaterialMerge.ReferencedNames(replaced), referenced);
+                    return UserLibraryEdit.Write(Library(remaining, library.Constructions, materialLibrary));
+                }
+
                 return UserLibraryEdit.Write(Library(systems.Concat(new[] { saved }), library.Constructions, materialLibrary));
             });
 
