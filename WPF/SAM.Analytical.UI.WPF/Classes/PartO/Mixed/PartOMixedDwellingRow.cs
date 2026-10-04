@@ -80,6 +80,15 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public string CoolingText => Cooled ? "On" : selected?.VentilationMode == PartOVentilationMode.MVHR ? "Off" : "—";
 
+        /// <summary>Cooling control room shown in the dwelling matrix; legacy cooled selections stay visibly unconfirmed.</summary>
+        public string CoolingControlRoomText { get; internal set; } = "—";
+
+        internal void SetCoolingControlRoomText(string text)
+        {
+            CoolingControlRoomText = text;
+            Changed(nameof(CoolingControlRoomText));
+        }
+
         internal void SetSelected(PartODwellingStrategy? partODwellingStrategy)
         {
             selected = partODwellingStrategy is null ? null : new PartODwellingStrategy(partODwellingStrategy);

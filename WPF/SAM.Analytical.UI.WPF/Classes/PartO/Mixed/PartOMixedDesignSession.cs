@@ -495,7 +495,7 @@ namespace SAM.Analytical.UI.WPF
                 return string.Format("{0} is not in the project's permitted product pool, so it cannot be selected.", ventilationUnitReference);
             }
 
-            return Assign(rows_Selected, row => new PartODwellingStrategy(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference, Cooling(row)));
+            return Assign(rows_Selected, row => new PartODwellingStrategy(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference, Cooling(row)) { CoolingStatSpaceGuid = row.Selected?.CoolingStatSpaceGuid ?? Guid.Empty });
         }
 
         /// <summary>
@@ -538,6 +538,32 @@ namespace SAM.Analytical.UI.WPF
             }
 
             return Assign(rows_Temp, row => new PartODwellingStrategy(row.Selected!) { ActiveCooling = PartOActiveCooling.SupplyAirCooling });
+        }
+
+        /// <summary>Rooms belonging to one dwelling, for an explicit engineer choice.</summary>
+        public List<Space> CoolingControlRooms(PartOMixedDwellingRow row)
+        {
+            Zone? zone = row is null ? null : analyticalModel.AdjacencyCluster?.GetObject<Zone>(row.ZoneGuid);
+            List<Space> result = zone is null ? [] : analyticalModel.AdjacencyCluster?.GetRelatedObjects<Space>(zone) ?? [];
+            result.RemoveAll(x => x is null);
+            result.Sort((x, y) => { int compare = NaturalCompare(x.Name, y.Name); return compare != 0 ? compare : x.Guid.CompareTo(y.Guid); });
+            return result;
+        }
+
+        /// <summary>Confirm a particular room for one cooled dwelling; never infer one from airflow.</summary>
+        public string? SetCoolingControlRoom(PartOMixedDwellingRow row, Guid guid_Space)
+        {
+            if (row?.Selected?.ActiveCooling != PartOActiveCooling.SupplyAirCooling)
+            {
+                return "Select one dwelling with active cooling first.";
+            }
+
+            if (guid_Space == Guid.Empty || !CoolingControlRooms(row).Exists(x => x.Guid == guid_Space))
+            {
+                return "Select a room that belongs to this dwelling.";
+            }
+
+            return Assign([row], _ => new PartODwellingStrategy(row.Selected!) { CoolingStatSpaceGuid = guid_Space });
         }
 
         /// <summary>The row's active cooling where it stays MVHR - cooling is orthogonal to a change of product or airflow basis.</summary>
@@ -634,7 +660,10 @@ namespace SAM.Analytical.UI.WPF
 
             //A product already chosen for the dwelling is kept; otherwise the unit is selected from the project's pool.
             VentilationUnitReference? ventilationUnitReference = row.Selected?.VentilationMode == PartOVentilationMode.MVHR ? row.Selected.VentilationUnitReference : null;
-            PartODwellingStrategy partODwellingStrategy = new(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference, Cooling(row), PartODesignAirFlowBasis.RetainedDesign, partODwellingDesignAcceptance.DesignFingerprint);
+            PartODwellingStrategy partODwellingStrategy = new(row.ZoneGuid, PartOVentilationMode.MVHR, ventilationUnitReference, Cooling(row), PartODesignAirFlowBasis.RetainedDesign, partODwellingDesignAcceptance.DesignFingerprint)
+            {
+                CoolingStatSpaceGuid = row.Selected?.CoolingStatSpaceGuid ?? Guid.Empty,
+            };
 
             string? refusal = Constraints.Refusal(partODwellingStrategy);
             if (refusal is not null)
@@ -704,7 +733,7 @@ namespace SAM.Analytical.UI.WPF
             List<PartOMixedSelectionChange> changes_Temp = [.. changes ?? []];
             foreach (PartOMixedSelectionChange change in changes_Temp)
             {
-                change.Row.SetSelected(new PartODwellingStrategy(change.To) { ZoneGuid = change.Row.ZoneGuid });
+                change.Row.SetSelected(new PartODwellingStrategy(change.To) { ZoneGuid = change.Row.ZoneGuid, CoolingStatSpaceGuid = change.Row.Selected?.CoolingStatSpaceGuid ?? Guid.Empty });
             }
 
             Edited(changes_Temp.Select(x => x.Row));
@@ -1054,6 +1083,18 @@ namespace SAM.Analytical.UI.WPF
                 PartODwellingStrategy? partODwellingStrategy_Ran = partOMixedRunEvidence?.Strategies?.Strategy(row.ZoneGuid);
                 row.SetFinal(partODwellingResult, partODwellingResult is not null && finalStale is null, partODwellingResult is null ? null : UI.Query.PartODwellingStrategyText(partODwellingStrategy_Ran));
 
+                Space? room_Stat = row.Cooled ? CoolingControlRooms(row).Find(x => x.Guid == row.Selected!.CoolingStatSpaceGuid) : null;
+                if (!row.Cooled)
+                {
+                    row.SetCoolingControlRoomText("—");
+                }
+                else
+                {
+                    row.SetCoolingControlRoomText(room_Stat is null
+                        ? row.Selected!.CoolingStatSpaceGuid == Guid.Empty ? "Select room" : "Invalid room"
+                        : string.IsNullOrWhiteSpace(room_Stat.Name) ? room_Stat.Guid.ToString() : room_Stat.Name);
+                }
+
                 List<string> attention = [];
                 if (dictionary_Refusal.TryGetValue(row.ZoneGuid, out List<string>? messages_Row))
                 {
@@ -1064,6 +1105,15 @@ namespace SAM.Analytical.UI.WPF
                 if (refusal_Constraint is not null)
                 {
                     attention.Add(refusal_Constraint);
+                }
+
+                if (row.Cooled && row.Selected!.CoolingStatSpaceGuid == Guid.Empty)
+                {
+                    attention.Add("Select and confirm the cooling control room before building. Older saved strategies have no confirmed room.");
+                }
+                else if (row.Cooled && room_Stat is null)
+                {
+                    attention.Add("The selected cooling control room is not in this dwelling. Select one of its rooms.");
                 }
 
                 //A product chosen earlier that cannot be honoured now - products no longer offered, or the product no longer in

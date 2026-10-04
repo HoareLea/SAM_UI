@@ -143,6 +143,11 @@ namespace SAM.Analytical.UI.WPF.Tests
                 PartODwellingStrategy partODwellingStrategy = func(zone);
                 if (partODwellingStrategy is not null)
                 {
+                    if (partODwellingStrategy.ActiveCooling == PartOActiveCooling.SupplyAirCooling && partODwellingStrategy.VentilationMode == PartOVentilationMode.MVHR && partODwellingStrategy.CoolingStatSpaceGuid == Guid.Empty)
+                    {
+                        //Existing successful fixture designs explicitly choose their first dwelling room.
+                        partODwellingStrategy.CoolingStatSpaceGuid = analyticalModel.AdjacencyCluster.GetRelatedObjects<Space>(zone).Single(x => x.Name.EndsWith(" Bedroom", StringComparison.Ordinal)).Guid;
+                    }
                     partODwellingStrategySet.Set(partODwellingStrategy);
                 }
             }

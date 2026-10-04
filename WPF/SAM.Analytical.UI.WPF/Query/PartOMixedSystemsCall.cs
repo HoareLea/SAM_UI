@@ -106,6 +106,16 @@ namespace SAM.Analytical.UI.WPF
                     continue;
                 }
 
+                Zone? zone_Cooled = adjacencyCluster.GetObject<Zone>(partOCooledDwelling.ZoneGuid);
+                List<Space>? spaces_Cooled = zone_Cooled is null ? null : adjacencyCluster.GetRelatedObjects<Space>(zone_Cooled);
+                if (partOCooledDwelling.CoolingStatSpaceGuid == Guid.Empty || spaces_Cooled is null || !spaces_Cooled.Exists(x => x.Guid == partOCooledDwelling.CoolingStatSpaceGuid))
+                {
+                    result.Refusals.Add(string.Format("Cooled dwelling {0} has no valid selected cooling control room in its materialised spaces.", name));
+                    continue;
+                }
+
+                mechanicalVentilationGuidanceSettings.CoolingStatSpaceGuid = partOCooledDwelling.CoolingStatSpaceGuid;
+
                 result.GuidanceSettings[partOCooledDwelling.AirHandlingUnitGuid] = mechanicalVentilationGuidanceSettings;
             }
 

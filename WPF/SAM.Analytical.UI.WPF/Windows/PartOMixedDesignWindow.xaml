@@ -260,6 +260,7 @@
 
                     <!-- ACTIVE COOLING: orthogonal to the strategy, a word per row (On / Off / — where there is no MVHR supply). -->
                     <DataGridTextColumn x:Name="column_Cooling" Header="Active&#x0a;cooling" Binding="{Binding CoolingText, Mode=OneWay}" Width="62" ElementStyle="{StaticResource PartO.Mixed.Cell}"/>
+                    <DataGridTextColumn Header="Cooling control&#x0a;room" Binding="{Binding CoolingControlRoomText, Mode=OneWay}" Width="125" ElementStyle="{StaticResource PartO.Mixed.Cell}"/>
 
                     <!-- FINAL: the last mixed run, shown as current only while it is current. -->
                     <DataGridTemplateColumn Header="Final TM59" Width="82">
@@ -306,6 +307,8 @@
                     <Button x:Name="button_CoolingOn" Content="Cooling on" Height="24" Padding="8,0" Margin="8,0,0,0" ToolTipService.ShowOnDisabled="True"/>
                     <Button x:Name="button_CoolingOff" Content="Cooling off" Height="24" Padding="8,0" Margin="4,0,0,0"
                             ToolTip="Active cooling off for the selected dwellings. Their ventilation strategy is unchanged; the next Build &amp; Run rebuilds the whole design from the clean baseline."/>
+                    <ComboBox x:Name="comboBox_CoolingControlRoom" Width="180" Height="24" Margin="8,0,0,0" DisplayMemberPath="Value" ToolTip="Choose a room in the one selected cooled dwelling."/>
+                    <Button x:Name="button_SetCoolingControlRoom" Content="Confirm control room" Height="24" Padding="8,0" Margin="4,0,0,0"/>
                     <Button x:Name="button_Clear" Content="Clear" Height="24" Padding="8,0" Margin="8,0,0,0"/>
                     <Button x:Name="button_ApplySuggestions" Content="Apply suggestions…" Height="24" Padding="8,0" Margin="16,0,0,0"
                             ToolTip="Shows what applying the screening suggestions would change for the selected dwellings (or all shown dwellings), and changes nothing until you confirm."/>
