@@ -363,12 +363,13 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         [Fact]
-        public void The_frame_is_none_or_copied_with_an_explicit_width()
+        public void The_frame_is_none_own_or_copied_with_an_explicit_width()
         {
             using (GlazingBuilderViewModel viewModel = BuilderUiFixture.Builder(library))
             {
-                Assert.Equal(2, viewModel.FrameChoices.Count);
+                Assert.Equal(3, viewModel.FrameChoices.Count);
                 Assert.True(viewModel.FrameChoices[0].IsNone);
+                Assert.True(viewModel.FrameChoices[1].IsOwn);
                 Assert.Contains("SEED_GLZ", viewModel.SelectedFrame.Label);
 
                 viewModel.SelectedFrame = viewModel.FrameChoices[0];
@@ -378,7 +379,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal("no frame", viewModel.UfText);
                 Assert.Contains("No frame", viewModel.FrameNote);
 
-                viewModel.SelectedFrame = viewModel.FrameChoices[1];
+                viewModel.SelectedFrame = viewModel.FrameChoices[2];
                 Assert.True(viewModel.HasFrame);
                 Assert.False(viewModel.Draft.Frame.IsNone);
                 Assert.Equal("70", viewModel.FrameWidthText);

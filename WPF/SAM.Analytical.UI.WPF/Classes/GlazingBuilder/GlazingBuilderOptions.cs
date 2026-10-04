@@ -88,7 +88,10 @@ namespace SAM.Analytical.UI.WPF
         }
     }
 
-    /// <summary>One choice of frame: no frame, or the frame of an existing complete system (its layers and materials are copied; the Builder does not invent frames).</summary>
+    /// <summary>
+    /// One choice of frame: no frame, an OWN frame (its layers are built in the Builder from the materials of the sources), or the frame of an existing
+    /// complete system (its layers and materials are copied and may then be edited).
+    /// </summary>
     public sealed class GlazingFrameChoice
     {
         internal GlazingFrameChoice(string label, ApertureConstruction system, MaterialLibrary materials, string sourceLabel)
@@ -109,11 +112,16 @@ namespace SAM.Analytical.UI.WPF
 
         public string SourceLabel { get; }
 
-        public bool IsNone => System == null;
+        public bool IsNone => System == null && !IsOwn;
+
+        /// <summary>The frame built in the Builder: it starts with no layers, which are added from the materials of the sources.</summary>
+        public bool IsOwn { get; private set; }
 
         public override string ToString() => Label;
 
         internal static GlazingFrameChoice None() => new GlazingFrameChoice("None (glass only)", null, null, null);
+
+        internal static GlazingFrameChoice Own() => new GlazingFrameChoice("Own frame (add the layers below)", null, null, null) { IsOwn = true };
 
         internal static GlazingFrameChoice Of(ApertureConstruction system, GlazingSource source)
         {
@@ -137,6 +145,39 @@ namespace SAM.Analytical.UI.WPF
                 return layers + "#" + width.ToString("R", CultureInfo.InvariantCulture) + "#" + additional.ToString("R", CultureInfo.InvariantCulture);
             }
         }
+    }
+
+    /// <summary>One solid material a frame layer can be made of, with where it comes from (a source's label; the file name when the source is a file).</summary>
+    public sealed class GlazingFrameMaterialChoice
+    {
+        internal GlazingFrameMaterialChoice(IMaterial material, string sourceLabel, string sourceFileName)
+        {
+            Material = material;
+            SourceLabel = sourceLabel;
+            SourceFileName = sourceFileName;
+            Name = material.Name;
+            DisplayName = material is Material m && !string.IsNullOrWhiteSpace(m.DisplayName) ? m.DisplayName : material.Name;
+            double conductivity = material is Material solid ? solid.ThermalConductivity : double.NaN;
+            Detail = string.Format(CultureInfo.CurrentCulture, "{0}{1}", double.IsNaN(conductivity) ? string.Empty : string.Format(CultureInfo.CurrentCulture, "λ {0:0.###} W/mK", conductivity), string.IsNullOrWhiteSpace(sourceLabel) ? string.Empty : (double.IsNaN(conductivity) ? string.Empty : " · ") + sourceLabel);
+        }
+
+        public IMaterial Material { get; }
+
+        public string Name { get; }
+
+        public string DisplayName { get; }
+
+        public string SourceLabel { get; }
+
+        public string SourceFileName { get; }
+
+        /// <summary>"λ 0.13 W/mK · Model".</summary>
+        public string Detail { get; }
+
+        /// <summary>The line of the picker: the name and the detail.</summary>
+        public string Display => string.IsNullOrEmpty(Detail) ? DisplayName : DisplayName + " (" + Detail + ")";
+
+        public override string ToString() => Display;
     }
 
     /// <summary>

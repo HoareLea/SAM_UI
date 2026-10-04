@@ -30,7 +30,8 @@ namespace SAM.Analytical.UI.WPF
 
     /// <summary>
     /// The Glazing System Builder (Stage E0-3) without any WPF type: a TEMPORARY <see cref="GlazingSystemDraft"/> the user edits (panes, Air /
-    /// Argon / Krypton gaps, a frame copied from an existing system or none, an intended use), the pane browser, the draft's check and its
+    /// Argon / Krypton gaps, a frame - none, copied from an existing system, or built from the materials of the sources, its layers editable - and an
+    /// intended use), the pane browser, the draft's check and its
     /// performance, and Save as predefined into "My glazing systems".
     /// <list type="bullet">
     /// <item><b>No model.</b> It starts from snapshots (<see cref="GlazingBuilderOptions"/>) and has no analytical model, so opening it, editing, previewing,
@@ -50,12 +51,19 @@ namespace SAM.Analytical.UI.WPF
         private readonly GlazingComposeOptions composeOptions;
         private readonly ObservableCollection<GlazingBuilderLayerRow> layers = new ObservableCollection<GlazingBuilderLayerRow>();
         private readonly List<GlazingFrameChoice> frameChoices = new List<GlazingFrameChoice>();
+        private readonly ObservableCollection<GlazingBuilderFrameLayerRow> frameLayers = new ObservableCollection<GlazingBuilderFrameLayerRow>();
+        private readonly List<GlazingFrameMaterialChoice> allFrameMaterials = new List<GlazingFrameMaterialChoice>();
         private readonly List<string> savedNames = new List<string>();
         private readonly List<KeyValuePair<Guid, string>> savedEntries = new List<KeyValuePair<Guid, string>>();
         private readonly SynchronizationContext context = SynchronizationContext.Current;
 
         private GlazingBuilderLayerRow selectedLayer;
         private GlazingFrameChoice selectedFrame;
+        private GlazingBuilderFrameLayerRow selectedFrameLayer;
+        private GlazingFrameMaterialChoice selectedFrameMaterial;
+        private IReadOnlyList<GlazingFrameMaterialChoice> frameMaterials = new List<GlazingFrameMaterialChoice>();
+        private string frameMaterialSearch = string.Empty;
+        private bool ownFrame;
         private GlazingIntendedUse selectedUse;
         private string frameWidthText = string.Empty;
         private bool frameWidthInferred;
@@ -116,8 +124,10 @@ namespace SAM.Analytical.UI.WPF
             };
 
             BuildFrameChoices();
-            frameWidthInferred = draft.Frame.IsNone ? false : InferFrameWidth(draft.Frame);
+            BuildFrameMaterials();
+            frameWidthInferred = draft.Frame.IsNone || draft.Frame.IsAuthored ? false : InferFrameWidth(draft.Frame);
             frameWidthText = draft.Frame.IsNone || double.IsNaN(draft.Frame.Width) ? string.Empty : GlazingBuilderLayerRow.Millimetres(draft.Frame.Width);
+            RebuildFrameLayers(null);
 
             Rebuild(null);
             Update(true);
@@ -346,6 +356,7 @@ namespace SAM.Analytical.UI.WPF
 
         // ---- Frame ----------------------------------------------------------------------------------------------
 
+        /// <summary>No frame, an own frame (built here), and the frames of the sources' systems to copy. A copied frame's layers can be edited like an own one's.</summary>
         public IReadOnlyList<GlazingFrameChoice> FrameChoices => frameChoices;
 
         public GlazingFrameChoice SelectedFrame
@@ -359,9 +370,11 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 selectedFrame = value;
-                draft.Frame = value.IsNone ? DraftFrame.None() : DraftFrame.CopyFrom(value.System, value.Materials, value.SourceLabel);
+                ownFrame = value.IsOwn;
+                draft.Frame = value.IsNone || value.IsOwn ? DraftFrame.None() : DraftFrame.CopyFrom(value.System, value.Materials, value.SourceLabel);
                 frameWidthInferred = !draft.Frame.IsNone && InferFrameWidth(draft.Frame);
                 frameWidthText = draft.Frame.IsNone || double.IsNaN(draft.Frame.Width) ? string.Empty : GlazingBuilderLayerRow.Millimetres(draft.Frame.Width);
+                RebuildFrameLayers(null);
                 Raise(nameof(SelectedFrame));
                 RaiseFrame();
                 Update(true);
@@ -369,6 +382,161 @@ namespace SAM.Analytical.UI.WPF
         }
 
         public bool HasFrame => !draft.Frame.IsNone;
+
+        /// <summary>True while the frame's layers can be worked on: a frame has layers, or an own frame was chosen (and is waiting for its first).</summary>
+        public bool ShowFrameEditor => HasFrame || selectedFrame.IsOwn;
+
+        /// <summary>The frame's layers in the order SAM stores them; a change edits the draft and recalculates.</summary>
+        public ObservableCollection<GlazingBuilderFrameLayerRow> FrameLayers => frameLayers;
+
+        public GlazingBuilderFrameLayerRow SelectedFrameLayer
+        {
+            get => selectedFrameLayer;
+            set
+            {
+                if (!ReferenceEquals(selectedFrameLayer, value))
+                {
+                    selectedFrameLayer = value;
+                    Raise(nameof(SelectedFrameLayer));
+                    RaiseFrameCommands();
+                }
+            }
+        }
+
+        /// <summary>The solid materials a frame layer can be made of: those of the model, the libraries and the added sources, narrowed by <see cref="FrameMaterialSearchText"/>.</summary>
+        public IReadOnlyList<GlazingFrameMaterialChoice> FrameMaterials => frameMaterials;
+
+        public GlazingFrameMaterialChoice SelectedFrameMaterial
+        {
+            get => selectedFrameMaterial;
+            set
+            {
+                if (!ReferenceEquals(selectedFrameMaterial, value))
+                {
+                    selectedFrameMaterial = value;
+                    Raise(nameof(SelectedFrameMaterial));
+                    RaiseFrameCommands();
+                }
+            }
+        }
+
+        /// <summary>Words to find in a material's name or source; empty lists them all.</summary>
+        public string FrameMaterialSearchText
+        {
+            get => frameMaterialSearch;
+            set
+            {
+                value = value ?? string.Empty;
+                if (frameMaterialSearch == value)
+                {
+                    return;
+                }
+
+                frameMaterialSearch = value;
+                FilterFrameMaterials();
+                Raise(nameof(FrameMaterialSearchText));
+            }
+        }
+
+        public string FrameMaterialCountText => frameMaterials.Count == allFrameMaterials.Count
+            ? string.Format(CultureInfo.CurrentCulture, "{0} solid {1}", allFrameMaterials.Count, allFrameMaterials.Count == 1 ? "material" : "materials")
+            : string.Format(CultureInfo.CurrentCulture, "{0} of {1} solid materials", frameMaterials.Count, allFrameMaterials.Count);
+
+        public bool CanAddFrameLayer => !isSaving && selectedFrameMaterial != null;
+
+        public bool CanReplaceFrameMaterial => !isSaving && selectedFrameMaterial != null && selectedFrameLayer != null;
+
+        public bool CanRemoveFrameLayer => !isSaving && selectedFrameLayer != null;
+
+        public bool CanMoveFrameLayerUp => !isSaving && selectedFrameLayer != null && selectedFrameLayer.Index > 0;
+
+        public bool CanMoveFrameLayerDown => !isSaving && selectedFrameLayer != null && selectedFrameLayer.Index < frameLayers.Count - 1;
+
+        /// <summary>
+        /// Adds a layer of the chosen material (its default thickness, else 30 mm) after the selected frame layer, or at the end. On a frame with no layers
+        /// this starts an own frame. The new layer is selected. Edits the draft only.
+        /// </summary>
+        public bool AddFrameLayer(GlazingFrameMaterialChoice choice = null)
+        {
+            choice = choice ?? selectedFrameMaterial;
+            if (isSaving || choice == null)
+            {
+                return false;
+            }
+
+            if (draft.Frame.IsNone)
+            {
+                // The first layer of a frame that had none: the frame is an own one now.
+                ownFrame = true;
+                frameWidthInferred = false;
+                frameWidthText = string.Empty;
+                selectedFrame = frameChoices.First(x => x.IsOwn);
+                Raise(nameof(SelectedFrame));
+            }
+
+            double thickness = choice.Material.TryGetValue(Core.MaterialParameter.DefaultThickness, out double defaultThickness) && !double.IsNaN(defaultThickness) && defaultThickness > 0 ? defaultThickness : DefaultFrameLayerThickness;
+            DraftFrameLayer layer = draft.Frame.AddLayer(choice.Material, thickness, choice.SourceLabel, choice.SourceFileName, selectedFrameLayer == null ? (int?)null : selectedFrameLayer.Index + 1);
+            FrameChanged(layer);
+            return true;
+        }
+
+        /// <summary>Gives the selected frame layer the chosen material; its thickness stays.</summary>
+        public bool ReplaceFrameMaterial(GlazingFrameMaterialChoice choice = null)
+        {
+            choice = choice ?? selectedFrameMaterial;
+            if (isSaving || choice == null || selectedFrameLayer == null)
+            {
+                return false;
+            }
+
+            DraftFrameLayer layer = draft.Frame.ReplaceMaterial(selectedFrameLayer.Index, choice.Material, choice.SourceLabel, choice.SourceFileName);
+            FrameChanged(layer);
+            return layer != null;
+        }
+
+        /// <summary>Removes the selected frame layer. Removing the last one leaves no frame.</summary>
+        public bool RemoveFrameLayer()
+        {
+            if (!CanRemoveFrameLayer)
+            {
+                return false;
+            }
+
+            int index = selectedFrameLayer.Index;
+            draft.Frame.RemoveLayerAt(index);
+            DraftFrameLayer next = draft.Frame.EditableLayers.Count == 0 ? null : draft.Frame.EditableLayers[Math.Min(index, draft.Frame.EditableLayers.Count - 1)];
+            FrameChanged(next);
+            return true;
+        }
+
+        /// <summary>Moves the selected frame layer one place up (-1) or down (+1) the list.</summary>
+        public bool MoveFrameLayer(int delta)
+        {
+            if (isSaving || selectedFrameLayer == null || delta == 0)
+            {
+                return false;
+            }
+
+            int from = selectedFrameLayer.Index;
+            int to = from + Math.Sign(delta);
+            if (!draft.Frame.MoveLayer(from, to))
+            {
+                return false;
+            }
+
+            FrameChanged(draft.Frame.EditableLayers[to]);
+            return true;
+        }
+
+        /// <summary>Selects the frame layer a finding concerns.</summary>
+        public void SelectFrameIssue(GlazingBuilderIssueRow issue)
+        {
+            int? number = issue?.Issue.FrameLayerNumber;
+            if (number != null && number.Value >= 1 && number.Value <= frameLayers.Count)
+            {
+                SelectedFrameLayer = frameLayers[number.Value - 1];
+            }
+        }
 
         /// <summary>The frame's face width [mm] as typed (written as the system's Default Frame Width); empty when not entered.</summary>
         public string FrameWidthText
@@ -384,27 +552,96 @@ namespace SAM.Analytical.UI.WPF
 
                 frameWidthText = value;
                 frameWidthInferred = false;
-                draft.Frame.Width = GlazingBuilderLayerRow.TryMillimetres(value, out double metres) && metres > 0 ? metres : double.NaN;
+                bool valid = GlazingBuilderLayerRow.TryMillimetres(value, out double metres) && metres > 0;
+                draft.Frame.Width = valid ? metres : double.NaN;
+                draft.Frame.WidthInvalid = !valid && !string.IsNullOrWhiteSpace(value);
                 RaiseFrame();
                 Update(true);
             }
         }
 
-        /// <summary>Says where the shown width comes from when the copied frame had none.</summary>
+        /// <summary>Says what the frame is and where the shown width comes from.</summary>
         public string FrameNote
+        {
+            get
+            {
+                DraftFrame frame = draft.Frame;
+                if (frame.IsNone)
+                {
+                    return selectedFrame.IsOwn
+                        ? "Own frame: add its layers from the materials below. Without a frame the system is glass only (Uw = Ug)."
+                        : "No frame: the system is glass only (Uw = Ug).";
+                }
+
+                string width = frameWidthInferred
+                    ? string.Format(CultureInfo.CurrentCulture, "The frame stores no width; its depth ({0} mm) is proposed, which is what SAM uses when a system has none. Change it if the face is different.", GlazingBuilderLayerRow.Millimetres(inferredWidth))
+                    : "The width is the face width of the frame.";
+
+                if (frame.IsAuthored)
+                {
+                    return "An own frame: its layers are the ones listed. " + width;
+                }
+
+                return (frame.IsEdited ? "The layers of the frame copied from " + (frame.CopiedFromName ?? "another system") + " were edited. " : "The frame layers are copied as they are. ") + width;
+            }
+        }
+
+        /// <summary>The depth of the frame - the sum of its layers' thicknesses - read-only; empty without a frame.</summary>
+        public string FrameDepthText
         {
             get
             {
                 if (draft.Frame.IsNone)
                 {
-                    return "No frame: the system is glass only (Uw = Ug).";
+                    return string.Empty;
                 }
 
-                return frameWidthInferred
-                    ? string.Format(CultureInfo.CurrentCulture, "The copied frame stores no width; its depth ({0} mm) is proposed, which is what SAM uses when a system has none. Change it if the face is different.", GlazingBuilderLayerRow.Millimetres(inferredWidth))
-                    : "The frame layers are copied as they are; the width is the face width of the frame.";
+                double depth = draft.Frame.Depth;
+                return double.IsNaN(depth) ? "Depth: – (a layer has no thickness)" : string.Format(CultureInfo.CurrentCulture, "Depth (sum of the layers): {0} mm", GlazingBuilderLayerRow.Millimetres(depth));
             }
         }
+
+        /// <summary>
+        /// The frame's additional heat transfer, READ-ONLY: "20 %" when the copied frame carries one, "none" otherwise (an own frame never has one),
+        /// "no frame" without a frame. It is not an input: there is no way to type it here, and it makes no layers.
+        /// </summary>
+        public string FrameAdditionalHeatTransferText
+        {
+            get
+            {
+                DraftFrame frame = draft.Frame;
+                if (frame.IsNone)
+                {
+                    return "no frame";
+                }
+
+                return double.IsNaN(frame.AdditionalHeatTransfer) ? "none" : frame.AdditionalHeatTransfer.ToString("0.##", CultureInfo.CurrentCulture) + " %";
+            }
+        }
+
+        /// <summary>Where the additional heat transfer comes from and that it cannot be edited here.</summary>
+        public string FrameAdditionalHeatTransferNote
+        {
+            get
+            {
+                DraftFrame frame = draft.Frame;
+                if (frame.IsNone)
+                {
+                    return string.Empty;
+                }
+
+                if (double.IsNaN(frame.AdditionalHeatTransfer))
+                {
+                    return frame.IsAuthored
+                        ? "Read-only. An own frame has none: only its layers carry heat."
+                        : "Read-only. The copied frame carries none.";
+                }
+
+                return string.Format(CultureInfo.CurrentCulture, "Read-only. Carried with the frame copied from {0}; Tas applies it on top of the frame layers{1}.", frame.CopiedFromName ?? "another system", frame.IsEdited ? ", also after the layers were edited" : string.Empty);
+            }
+        }
+
+        private const double DefaultFrameLayerThickness = 0.03;
 
         // ---- Validation ------------------------------------------------------------------------------------------
 
@@ -685,10 +922,19 @@ namespace SAM.Analytical.UI.WPF
             result.Frame = DraftFrame.CopyFrom(system, source.ConstructionManager?.MaterialLibrary, source.Label);
 
             // A system the Builder saved keeps where its frame really came from (its provenance), not the saved system itself: opening it and saving it
-            // again records, and describes, the same frame origin.
-            if (!result.Frame.IsNone && provenance != null && string.Equals(provenance.Frame, "Copied", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(provenance.FrameCopiedFromName))
+            // again records, and describes, the same frame origin - a copy (edited or not), or a frame built here - and each layer's own source.
+            if (!result.Frame.IsNone && provenance != null)
             {
-                result.Frame = result.Frame.WithOrigin(provenance.FrameCopiedFromName, provenance.FrameCopiedFromGuid);
+                if (string.Equals(provenance.Frame, "Authored", StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Frame = result.Frame.AsAuthored();
+                }
+                else if ((string.Equals(provenance.Frame, "Copied", StringComparison.OrdinalIgnoreCase) || string.Equals(provenance.Frame, "CopiedEdited", StringComparison.OrdinalIgnoreCase)) && !string.IsNullOrWhiteSpace(provenance.FrameCopiedFromName))
+                {
+                    result.Frame = result.Frame.WithOrigin(provenance.FrameCopiedFromName, provenance.FrameCopiedFromGuid, string.Equals(provenance.Frame, "CopiedEdited", StringComparison.OrdinalIgnoreCase));
+                }
+
+                result.Frame = result.Frame.WithLayerSources(provenance.FrameLayers);
             }
 
             return result;
@@ -699,6 +945,7 @@ namespace SAM.Analytical.UI.WPF
         private void BuildFrameChoices()
         {
             frameChoices.Add(GlazingFrameChoice.None());
+            frameChoices.Add(GlazingFrameChoice.Own());
             HashSet<string> signatures = new HashSet<string>() { string.Empty };
 
             List<(ApertureConstruction, GlazingSource)> systems = new List<(ApertureConstruction, GlazingSource)>();
@@ -734,7 +981,144 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            selectedFrame = draft.Frame.IsNone ? frameChoices[0] : seedChoice ?? frameChoices[0];
+            selectedFrame = draft.Frame.IsNone ? frameChoices[0] : draft.Frame.IsAuthored ? frameChoices.First(x => x.IsOwn) : seedChoice ?? frameChoices[0];
+            ownFrame = selectedFrame.IsOwn;
+        }
+
+        // The solid materials of the model, the libraries and the added sources (and of the frame the draft starts with), once each by definition.
+        private void BuildFrameMaterials()
+        {
+            HashSet<string> definitions = new HashSet<string>();
+            List<GlazingFrameMaterialChoice> result = new List<GlazingFrameMaterialChoice>();
+
+            void Add(IMaterial material, string sourceLabel, string sourceFileName)
+            {
+                if (material == null || Core.Query.MaterialType(material) != MaterialType.Opaque || string.IsNullOrWhiteSpace(material.Name))
+                {
+                    return;
+                }
+
+                if (definitions.Add(MaterialIdentity.Json(material)))
+                {
+                    result.Add(new GlazingFrameMaterialChoice(material, sourceLabel, sourceFileName));
+                }
+            }
+
+            // The frame the draft starts with first (its materials may be in no source), then the sources in their order.
+            foreach (DraftFrameLayer layer in draft.Frame.EditableLayers)
+            {
+                Add(layer.Material, layer.SourceLabel, layer.SourceFileName);
+            }
+
+            foreach (GlazingSource source in options.Sources ?? new List<GlazingSource>())
+            {
+                string fileName = source?.Kind == GlazingSourceKind.Loaded ? source.Label : null;
+                foreach (IMaterial material in source?.GetMaterials().Values ?? Enumerable.Empty<IMaterial>())
+                {
+                    Add(material, source.Label, fileName);
+                }
+            }
+
+            allFrameMaterials.Clear();
+            allFrameMaterials.AddRange(result.OrderBy(x => x.DisplayName, StringComparer.CurrentCultureIgnoreCase));
+            FilterFrameMaterials();
+        }
+
+        private void FilterFrameMaterials()
+        {
+            string[] words = (frameMaterialSearch ?? string.Empty).Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            frameMaterials = words.Length == 0
+                ? allFrameMaterials.ToList()
+                : allFrameMaterials.Where(x => words.All(w => (x.DisplayName ?? string.Empty).IndexOf(w, StringComparison.CurrentCultureIgnoreCase) >= 0 || (x.Name ?? string.Empty).IndexOf(w, StringComparison.CurrentCultureIgnoreCase) >= 0 || (x.SourceLabel ?? string.Empty).IndexOf(w, StringComparison.CurrentCultureIgnoreCase) >= 0)).ToList();
+
+            if (selectedFrameMaterial != null && !frameMaterials.Contains(selectedFrameMaterial))
+            {
+                selectedFrameMaterial = null;
+                Raise(nameof(SelectedFrameMaterial));
+            }
+
+            Raise(nameof(FrameMaterials));
+            Raise(nameof(FrameMaterialCountText));
+            RaiseFrameCommands();
+        }
+
+        // The frame's layers were changed (added, replaced, removed, moved or a thickness typed): the choice follows the frame, the width proposed from the
+        // depth follows the layers, the list is rebuilt around the layer to keep selected, then the draft is checked and recalculated.
+        private void FrameChanged(DraftFrameLayer select)
+        {
+            if (draft.Frame.IsNone)
+            {
+                frameWidthInferred = false;
+                frameWidthText = string.Empty;
+                GlazingFrameChoice choice = ownFrame ? frameChoices.First(x => x.IsOwn) : frameChoices[0];
+                if (!ReferenceEquals(selectedFrame, choice))
+                {
+                    selectedFrame = choice;
+                    Raise(nameof(SelectedFrame));
+                }
+            }
+            else if (draft.Frame.IsAuthored)
+            {
+                ownFrame = true;
+            }
+
+            RefreshInferredWidth();
+            RebuildFrameLayers(select);
+            RaiseFrame();
+            Update(true);
+        }
+
+        // A thickness typed into a frame layer row.
+        private void FrameRow_Edited(GlazingBuilderFrameLayerRow row)
+        {
+            if (!changing && !isSaving)
+            {
+                RefreshInferredWidth();
+                RaiseFrame();
+                Update(true);
+            }
+        }
+
+        // While the shown width is the proposed one (the depth, for a frame that stores none), it follows the layers.
+        private void RefreshInferredWidth()
+        {
+            if (!frameWidthInferred || draft.Frame.IsNone)
+            {
+                return;
+            }
+
+            double depth = draft.Frame.Depth;
+            if (double.IsNaN(depth) || depth <= 0)
+            {
+                return;
+            }
+
+            inferredWidth = depth;
+            draft.Frame.Width = depth;
+            frameWidthText = GlazingBuilderLayerRow.Millimetres(depth);
+        }
+
+        private void RebuildFrameLayers(DraftFrameLayer select)
+        {
+            changing = true;
+            try
+            {
+                frameLayers.Clear();
+                IReadOnlyList<DraftFrameLayer> list = draft.Frame.EditableLayers;
+                for (int i = 0; i < list.Count; i++)
+                {
+                    frameLayers.Add(new GlazingBuilderFrameLayerRow(list[i], i, FrameRow_Edited));
+                }
+
+                selectedFrameLayer = select == null ? null : frameLayers.FirstOrDefault(x => ReferenceEquals(x.Layer, select));
+            }
+            finally
+            {
+                changing = false;
+            }
+
+            Raise(nameof(SelectedFrameLayer));
+            RaiseFrameCommands();
         }
 
         // The copied frame has no stored width: its depth is proposed (what SAM falls back to), and said so.
@@ -855,6 +1239,11 @@ namespace SAM.Analytical.UI.WPF
                 row.Update(htc, shown.Issues.Where(x => x.LayerIndex == row.Index));
             }
 
+            foreach (GlazingBuilderFrameLayerRow row in frameLayers)
+            {
+                row.Update(shown.Issues.Where(x => x.FrameLayerNumber == row.Index + 1));
+            }
+
             Raise(nameof(Validation));
             Raise(nameof(Issues));
             Raise(nameof(ValidationSummary));
@@ -973,13 +1362,28 @@ namespace SAM.Analytical.UI.WPF
             Raise(nameof(SaveError));
             Raise(nameof(SavedSystem));
             RaiseCommands();
+            RaiseFrameCommands();
         }
 
         private void RaiseFrame()
         {
             Raise(nameof(HasFrame));
+            Raise(nameof(ShowFrameEditor));
             Raise(nameof(FrameWidthText));
             Raise(nameof(FrameNote));
+            Raise(nameof(FrameDepthText));
+            Raise(nameof(FrameAdditionalHeatTransferText));
+            Raise(nameof(FrameAdditionalHeatTransferNote));
+            Raise(nameof(UfText));
+        }
+
+        private void RaiseFrameCommands()
+        {
+            Raise(nameof(CanAddFrameLayer));
+            Raise(nameof(CanReplaceFrameMaterial));
+            Raise(nameof(CanRemoveFrameLayer));
+            Raise(nameof(CanMoveFrameLayerUp));
+            Raise(nameof(CanMoveFrameLayerDown));
         }
 
         private void RaisePerformance()

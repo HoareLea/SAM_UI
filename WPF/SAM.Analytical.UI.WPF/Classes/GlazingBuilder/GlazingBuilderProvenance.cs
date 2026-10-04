@@ -25,10 +25,11 @@ namespace SAM.Analytical.UI.WPF
         public static readonly Guid ParameterSetGuid = new Guid("5a3e0e01-6b1d-4c1e-9a52-7c0f1e2d3b40");
 
         /// <summary>
-        /// 1 = the first schema; 2 adds <see cref="SupersedesGuid"/> / <see cref="SupersedesName"/> (a system saved with "Save and replace"). Every new save
-        /// writes 2; a reader takes a missing key as "none", so a version-1 system reads exactly as it did.
+        /// 1 = the first schema; 2 adds <see cref="SupersedesGuid"/> / <see cref="SupersedesName"/> (a system saved with "Save and replace"); 3 adds
+        /// <see cref="FrameLayers"/> and the frame kinds "Authored" / "CopiedEdited". Every new save writes 3; a reader takes a missing key as "none", so
+        /// a version-1 or -2 system reads exactly as it did.
         /// </summary>
-        public const int CurrentSchemaVersion = 2;
+        public const int CurrentSchemaVersion = 3;
 
         // A value that may be NaN (no coefficient) is written as "NaN": plain JSON has no NaN.
         private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions() { NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals };
@@ -61,7 +62,10 @@ namespace SAM.Analytical.UI.WPF
         /// <summary>Gaps, outermost first.</summary>
         public List<GlazingBuilderGapRecord> Gaps { get; set; } = new List<GlazingBuilderGapRecord>();
 
-        /// <summary>"None", or "Copied" (from <see cref="FrameCopiedFromName"/>).</summary>
+        /// <summary>
+        /// "None"; "Copied" (the layers of <see cref="FrameCopiedFromName"/>, as they are); "CopiedEdited" (copied from it, then its layers were changed);
+        /// "Authored" (the layers were built in the Builder; schema 3). A reader that does not know a kind shows it as it is.
+        /// </summary>
         public string Frame { get; set; } = "None";
 
         public string FrameCopiedFromName { get; set; }
@@ -69,6 +73,9 @@ namespace SAM.Analytical.UI.WPF
         public Guid? FrameCopiedFromGuid { get; set; }
 
         public double FrameWidth { get; set; } = double.NaN;
+
+        /// <summary>The frame's layers in the order the system stores them: the material each uses (after any rename on save) and where it came from (schema 3).</summary>
+        public List<GlazingBuilderFrameRecord> FrameLayers { get; set; } = new List<GlazingBuilderFrameRecord>();
 
         /// <summary>The values Tas gave the draft when it was saved; null when there were none.</summary>
         public GlazingValues Performance { get; set; }
@@ -124,6 +131,10 @@ namespace SAM.Analytical.UI.WPF
             }
 
             AddNumber(result, "Frame Width [m]", FrameWidth);
+            if (FrameLayers != null && FrameLayers.Count != 0)
+            {
+                result.Add("Frame Layers", (JsonArray)JsonSerializer.SerializeToNode(FrameLayers, JsonOptions));
+            }
 
             if (Performance != null)
             {
@@ -195,6 +206,12 @@ namespace SAM.Analytical.UI.WPF
                 result.Gaps = gaps.Deserialize<List<GlazingBuilderGapRecord>>(JsonOptions) ?? new List<GlazingBuilderGapRecord>();
             }
 
+            JsonArray frameLayers = parameterSet.ToJsonArray("Frame Layers");
+            if (frameLayers != null)
+            {
+                result.FrameLayers = frameLayers.Deserialize<List<GlazingBuilderFrameRecord>>(JsonOptions) ?? new List<GlazingBuilderFrameRecord>();
+            }
+
             double ug = Number(parameterSet, "Performance Ug [W/m2K]");
             if (!double.IsNaN(ug))
             {
@@ -245,6 +262,27 @@ namespace SAM.Analytical.UI.WPF
         public string SourceFile { get; set; }
 
         public bool Reversed { get; set; }
+
+        /// <summary>[m]</summary>
+        public double Thickness { get; set; }
+    }
+
+    /// <summary>One frame layer of <see cref="GlazingBuilderProvenance"/> (schema 3).</summary>
+    public sealed class GlazingBuilderFrameRecord
+    {
+        /// <summary>1 = the first layer in the order the system stores them.</summary>
+        public int Position { get; set; }
+
+        /// <summary>The material name the saved system's layer uses (after any rename on save).</summary>
+        public string Material { get; set; }
+
+        /// <summary>The material's name in its source.</summary>
+        public string OriginalName { get; set; }
+
+        public string SourceLabel { get; set; }
+
+        /// <summary>The source file's name only (no folder).</summary>
+        public string SourceFile { get; set; }
 
         /// <summary>[m]</summary>
         public double Thickness { get; set; }
