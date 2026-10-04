@@ -13,13 +13,22 @@ namespace SAM.Analytical.UI.WPF
     public sealed class GlazingDraftIssue
     {
         public GlazingDraftIssue(GlazingDraftIssueSeverity severity, string code, string message, int? layerIndex = null, bool fromSam = false)
+            : this(severity, code, message, layerIndex, fromSam, null)
+        {
+        }
+
+        public GlazingDraftIssue(GlazingDraftIssueSeverity severity, string code, string message, int? layerIndex, bool fromSam, int? frameLayerNumber)
         {
             Severity = severity;
             Code = code ?? string.Empty;
             Message = message ?? string.Empty;
             LayerIndex = layerIndex;
             FromSam = fromSam;
+            FrameLayerNumber = frameLayerNumber;
         }
+
+        /// <summary>1-based number of the frame layer (in the order SAM stores them) the issue belongs to; null for any other issue.</summary>
+        public int? FrameLayerNumber { get; }
 
         public GlazingDraftIssueSeverity Severity { get; }
 
@@ -64,6 +73,9 @@ namespace SAM.Analytical.UI.WPF
         public const string ManyPanes = "ManyPanes";
         public const string NoIntendedUse = "NoIntendedUse";
         public const string FrameWidthMissing = "FrameWidthMissing";
+        public const string FrameWidthInvalid = "FrameWidthInvalid";
+        public const string FrameLayerThickness = "FrameLayerThickness";
+        public const string FrameMaterialNotSolid = "FrameMaterialNotSolid";
         public const string Frameless = "Frameless";
         public const string NameRequired = "NameRequired";
         public const string DuplicateName = "DuplicateName";

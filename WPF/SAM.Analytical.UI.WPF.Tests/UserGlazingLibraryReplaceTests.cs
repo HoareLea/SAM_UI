@@ -114,7 +114,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             // The new system says what it replaced.
             GlazingBuilderProvenance provenance = GlazingBuilderProvenance.FromApertureConstruction(saved);
-            Assert.Equal(2, provenance.SchemaVersion);
+            Assert.Equal(3, provenance.SchemaVersion);
             Assert.Equal(old.Guid, provenance.SupersedesGuid);
             Assert.Equal("Window A", provenance.SupersedesName);
             Assert.Equal(old.Guid, provenance.BasedOnGuid);
@@ -367,14 +367,14 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         [Fact]
-        public void Every_new_save_is_schema_two_and_a_plain_save_supersedes_nothing()
+        public void Every_new_save_is_schema_three_and_a_plain_save_supersedes_nothing()
         {
             ApertureConstruction saved = Save(BuilderFixture.Double("Plain"));
 
             GlazingBuilderProvenance provenance = GlazingBuilderProvenance.FromApertureConstruction(library.Read().Systems.Single(x => x.Guid == saved.Guid));
 
             Assert.Equal(GlazingBuilderProvenance.CurrentSchemaVersion, provenance.SchemaVersion);
-            Assert.Equal(2, provenance.SchemaVersion);
+            Assert.Equal(3, provenance.SchemaVersion);
             Assert.Null(provenance.SupersedesGuid);
             Assert.False(library.Read().Systems.Single().GetParameterSet(GlazingBuilderProvenance.ParameterSetName).Contains("Supersedes Guid"));
         }

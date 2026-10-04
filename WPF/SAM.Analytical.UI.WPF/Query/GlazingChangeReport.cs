@@ -199,9 +199,34 @@ namespace SAM.Analytical.UI.WPF
             result.Add("Gaps (outside -> inside): " + (gaps.Count == 0 ? "none" : string.Join(" | ", gaps)));
 
             string width = double.IsNaN(provenance.FrameWidth) ? "no width entered" : string.Format(CultureInfo.InvariantCulture, "width {0:0.#} mm", provenance.FrameWidth * 1000);
-            result.Add(string.Equals(provenance.Frame, "Copied", StringComparison.OrdinalIgnoreCase)
-                ? string.Format(CultureInfo.InvariantCulture, "Frame: copied from {0}, {1}", string.IsNullOrWhiteSpace(provenance.FrameCopiedFromName) ? "?" : provenance.FrameCopiedFromName, width)
-                : "Frame: none");
+            string origin = string.IsNullOrWhiteSpace(provenance.FrameCopiedFromName) ? "?" : provenance.FrameCopiedFromName;
+            string layers = string.Join(" | ", (provenance.FrameLayers ?? new List<GlazingBuilderFrameRecord>()).OrderBy(x => x.Position).Select(x =>
+            {
+                string name = !string.IsNullOrWhiteSpace(x.OriginalName) ? x.OriginalName : x.Material;
+                string from = FileName_Glazing(!string.IsNullOrWhiteSpace(x.SourceLabel) ? x.SourceLabel : x.SourceFile);
+                string savedAs = !string.IsNullOrWhiteSpace(x.Material) && x.Material != name ? string.Format(CultureInfo.InvariantCulture, ", saved as {0}", x.Material) : string.Empty;
+                return string.Format(CultureInfo.InvariantCulture, "{0}. {1} [{2:0.#} mm, from {3}{4}]", x.Position, name, x.Thickness * 1000, from ?? "?", savedAs);
+            }));
+            string layersText = layers.Length == 0 ? string.Empty : "; layers: " + layers;
+
+            // "Copied" keeps the words it always had; a frame edited after the copy, or built in the Builder, says so and lists its layers (schema 3).
+            if (string.Equals(provenance.Frame, "Copied", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Add(string.Format(CultureInfo.InvariantCulture, "Frame: copied from {0}, {1}", origin, width));
+            }
+            else if (string.Equals(provenance.Frame, "CopiedEdited", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Add(string.Format(CultureInfo.InvariantCulture, "Frame: copied from {0} and edited, {1}{2}", origin, width, layersText));
+            }
+            else if (string.Equals(provenance.Frame, "Authored", StringComparison.OrdinalIgnoreCase))
+            {
+                result.Add(string.Format(CultureInfo.InvariantCulture, "Frame: built in the Builder, {0}{1}", width, layersText));
+            }
+            else
+            {
+                result.Add("Frame: none");
+            }
+
             return result;
         }
 

@@ -25,7 +25,8 @@ namespace SAM.Analytical.UI.WPF
         /// system (no pane layers, a layer without name, thickness ≤ 0, a material missing from the library, gas as the first / last pane layer,
         /// an unrecognised gas, pane material properties) and its records are listed with the draft layer they concern. The Builder adds what
         /// SAM does not check: a missing pane, a material that is not glass in the pane stack, gases not offered, two panes in contact, two
-        /// gaps in a row, gap widths outside 4-30 mm, more than four panes, no intended use, a frame without a width, no frame (information).
+        /// gaps in a row, gap widths outside 4-30 mm, more than four panes, no intended use, a frame without a width, no frame (information), and for a
+        /// frame's own layers: a material that is missing or a gas, a thickness that is missing or not positive, and a typed width that is not a positive number.
         /// With <paramref name="savedNames"/> (the names already in My glazing systems) it also checks what Save needs: a name, not taken.
         /// A failed Tas calculation is a status of the evaluation, never an issue here.
         /// </summary>
@@ -123,9 +124,40 @@ namespace SAM.Analytical.UI.WPF
             {
                 issues.Add(new GlazingDraftIssue(GlazingDraftIssueSeverity.Info, GlazingDraftIssueCodes.Frameless, "No frame: the system is glass only (Uw = Ug)."));
             }
-            else if (double.IsNaN(frame.Width) || frame.Width <= 0)
+            else
             {
-                issues.Add(Warning(GlazingDraftIssueCodes.FrameWidthMissing, null, "The frame has no width: SAM would use the frame layers' depth as the frame width."));
+                int frameNumber = 0;
+                foreach (DraftFrameLayer frameLayer in frame.EditableLayers)
+                {
+                    frameNumber++;
+                    // A layer whose material is missing is SAM's own record ("Frame: ... does not contain Material"), which the check lists once.
+                    if (frameLayer.Material is GasMaterial)
+                    {
+                        issues.Add(FrameLayerIssue(GlazingDraftIssueSeverity.Error, GlazingDraftIssueCodes.FrameMaterialNotSolid, frameNumber, "Frame layer {0}: '{1}' is a gas; a frame layer needs a solid material.", frameNumber, frameLayer.DisplayName));
+                    }
+                    else if (frameLayer.Material is TransparentMaterial)
+                    {
+                        issues.Add(FrameLayerIssue(GlazingDraftIssueSeverity.Warning, GlazingDraftIssueCodes.FrameMaterialNotSolid, frameNumber, "Frame layer {0}: '{1}' is a glass material; Tas will calculate the frame as glazing.", frameNumber, frameLayer.DisplayName));
+                    }
+
+                    if (double.IsNaN(frameLayer.Thickness))
+                    {
+                        issues.Add(FrameLayerIssue(GlazingDraftIssueSeverity.Error, GlazingDraftIssueCodes.FrameLayerThickness, frameNumber, "Frame layer {0}: it has no thickness.", frameNumber));
+                    }
+                    else if (frameLayer.Thickness <= 0)
+                    {
+                        issues.Add(FrameLayerIssue(GlazingDraftIssueSeverity.Error, GlazingDraftIssueCodes.FrameLayerThickness, frameNumber, "Frame layer {0}: its thickness must be more than 0.", frameNumber));
+                    }
+                }
+
+                if (frame.WidthInvalid)
+                {
+                    issues.Add(Error(GlazingDraftIssueCodes.FrameWidthInvalid, null, "The frame width is not a positive number of millimetres."));
+                }
+                else if (double.IsNaN(frame.Width) || frame.Width <= 0)
+                {
+                    issues.Add(Warning(GlazingDraftIssueCodes.FrameWidthMissing, null, "The frame has no width: SAM would use the frame layers' depth as the frame width."));
+                }
             }
 
             issues.AddRange(composition?.Issues ?? Enumerable.Empty<GlazingDraftIssue>());
@@ -188,8 +220,9 @@ namespace SAM.Analytical.UI.WPF
                         continue;
                     }
 
+                    // A frame layer's thickness is checked above, with the layer's number; SAM's record of the same problem would only repeat it.
                     GlazingDraftIssue issue = FromSam(logRecord, "Frame", null);
-                    if (issue != null)
+                    if (issue != null && issue.Code != GlazingDraftIssueCodes.Thickness)
                     {
                         yield return issue;
                     }
@@ -315,6 +348,11 @@ namespace SAM.Analytical.UI.WPF
         private static GlazingDraftIssue Error(string code, int? layerIndex, string format, params object[] values)
         {
             return new GlazingDraftIssue(GlazingDraftIssueSeverity.Error, code, string.Format(CultureInfo.CurrentCulture, format, values), layerIndex);
+        }
+
+        private static GlazingDraftIssue FrameLayerIssue(GlazingDraftIssueSeverity severity, string code, int frameLayerNumber, string format, params object[] values)
+        {
+            return new GlazingDraftIssue(severity, code, string.Format(CultureInfo.CurrentCulture, format, values), null, false, frameLayerNumber);
         }
 
         private static GlazingDraftIssue Warning(string code, int? layerIndex, string format, params object[] values)

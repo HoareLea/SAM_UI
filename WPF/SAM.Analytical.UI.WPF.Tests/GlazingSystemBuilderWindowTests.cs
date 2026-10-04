@@ -159,6 +159,48 @@ namespace SAM.Analytical.UI.WPF.Tests
             }
         }
 
+        // PR5: the frame's layers are worked on in the real window; the additional heat transfer is a label, never a box.
+        [WpfFact]
+        public async Task The_frame_layers_are_edited_with_named_controls_and_the_additional_heat_transfer_is_a_read_only_label()
+        {
+            using (Opened opened = await Open())
+            {
+                GlazingSystemBuilderWindow window = opened.Window;
+
+                foreach (string id in new[] { "listBox_FrameLayers", "button_AddFrameLayer", "button_ReplaceFrameMaterial", "button_RemoveFrameLayer", "button_FrameLayerUp", "button_FrameLayerDown", "textBox_FrameMaterialSearch", "comboBox_FrameMaterial", "textBlock_FrameDepth", "textBlock_FrameAdditionalHeatTransfer", "textBlock_FrameAdditionalHeatTransferNote" })
+                {
+                    Assert.True(ById<FrameworkElement>(window, id) != null, id + " is missing");
+                }
+
+                // The additional heat transfer is shown, labelled read-only, in a TextBlock - and no editor of it exists anywhere in the window.
+                TextBlock additional = ById<TextBlock>(window, "textBlock_FrameAdditionalHeatTransfer");
+                Assert.Equal("10 %", additional.Text);
+                Assert.Contains("read-only", AutomationProperties.GetName(additional));
+                Assert.DoesNotContain(Descendants<TextBox>(window), x => (AutomationProperties.GetAutomationId(x) ?? string.Empty).Contains("AdditionalHeatTransfer") || (AutomationProperties.GetName(x) ?? string.Empty).Contains("additional heat transfer", StringComparison.OrdinalIgnoreCase));
+
+                // The seed's frame (one 70 mm layer) is listed, with its thickness in a box; adding a layer from the chosen material shows a second row.
+                ListBox list = ById<ListBox>(window, "listBox_FrameLayers");
+                Assert.Single(list.Items);
+                opened.ViewModel.SelectedFrameMaterial = opened.ViewModel.FrameMaterials.First();
+                Flush();
+                Button add = ById<Button>(window, "button_AddFrameLayer");
+                Assert.True(add.IsEnabled);
+                Press(add);
+                await Pump(() => list.Items.Count == 2 && opened.ViewModel.PerformanceState != GlazingBuilderPerformanceState.Calculating, "the second frame layer");
+                Assert.True(opened.ViewModel.Draft.Frame.IsEdited);
+
+                TextBox thickness = Descendants<TextBox>(list).First(x => AutomationProperties.GetAutomationId(x) == "textBox_FrameLayerThickness");
+                thickness.Text = "55";
+                thickness.RaiseEvent(new RoutedEventArgs(UIElement.LostFocusEvent));
+                Flush();
+                Assert.Equal(0.055, opened.ViewModel.Draft.Frame.EditableLayers[0].Thickness, 9);
+
+                Press(ById<Button>(window, "button_RemoveFrameLayer"));
+                Assert.Equal(1, list.Items.Count);                                      // the layer just added was the selected one
+                Assert.Empty(opened.Library.Read().Systems);                           // nothing was saved
+            }
+        }
+
         [WpfFact]
         public async Task The_build_up_shows_each_layer_with_a_name_a_gap_has_its_own_boxes_and_the_status_is_in_words()
         {

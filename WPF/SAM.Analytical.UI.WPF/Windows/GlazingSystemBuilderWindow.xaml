@@ -1,7 +1,7 @@
 <Window x:Class="SAM.Analytical.UI.WPF.GlazingSystemBuilderWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Glazing System Builder" Height="780" Width="1180" MinWidth="940" MinHeight="620"
+        Title="Glazing System Builder" Height="860" Width="1180" MinWidth="940" MinHeight="620"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" FontFamily="Roboto Light"
         AutomationProperties.AutomationId="window_GlazingSystemBuilder" AutomationProperties.Name="Glazing System Builder">
     <Window.Resources>
@@ -170,21 +170,75 @@
                     </WrapPanel>
                 </StackPanel>
 
-                <!-- FRAME: copied from an existing system, or none; the width is explicit -->
-                <StackPanel Grid.Row="3" Margin="0,6,0,0">
+                <!-- FRAME: none, an own frame built from the materials of the sources, or the frame of an existing system; the layers of a frame can be edited, the width is explicit -->
+                <ScrollViewer Grid.Row="3" Margin="0,6,0,0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="340" Focusable="False">
+                <StackPanel Margin="0,0,6,0">
                     <TextBlock Text="Frame" Style="{StaticResource PartO.SectionHeading}"/>
                     <ComboBox x:Name="comboBox_Frame" ItemsSource="{Binding FrameChoices}" SelectedItem="{Binding SelectedFrame, Mode=TwoWay}" Margin="0,2,0,0"
                               AutomationProperties.AutomationId="comboBox_Frame" AutomationProperties.Name="Frame"
-                              ToolTip="Copy the frame layers of an existing system, or build glass only. The Builder does not author frames."/>
+                              ToolTip="No frame (glass only), an own frame whose layers you add below, or the frame of an existing system, copied. The layers of a frame can be edited."/>
+
+                    <StackPanel Visibility="{Binding ShowFrameEditor, Converter={StaticResource BoolToVisibility}}">
+                        <ListBox x:Name="listBox_FrameLayers" ItemsSource="{Binding FrameLayers}" SelectedItem="{Binding SelectedFrameLayer, Mode=TwoWay}" MaxHeight="130" Margin="0,4,0,0" HorizontalContentAlignment="Stretch"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" KeyboardNavigation.TabNavigation="Continue"
+                                 AutomationProperties.AutomationId="listBox_FrameLayers" AutomationProperties.Name="Frame layers"
+                                 ToolTip="The frame's layers in the order SAM stores them. Choose a layer to replace its material, move or remove it.">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="AutomationProperties.Name" Value="{Binding AutomationName}"/>
+                                    <Setter Property="AutomationProperties.AutomationId" Value="listBoxItem_FrameLayer"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Margin="2,3">
+                                        <DockPanel>
+                                            <TextBlock Text="mm" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="4,0,0,0" Style="{StaticResource PartO.Caption}"/>
+                                            <TextBox Text="{Binding ThicknessText, UpdateSourceTrigger=LostFocus}" DockPanel.Dock="Right" Width="52" VerticalContentAlignment="Center"
+                                                     AutomationProperties.AutomationId="textBox_FrameLayerThickness" AutomationProperties.Name="{Binding Title, StringFormat={}Frame {0} thickness in millimetres}"
+                                                     ToolTip="The layer's thickness in millimetres. Press Tab to apply."/>
+                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Width="58"/>
+                                            <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" Foreground="{StaticResource PartO.Brush.Text}"/>
+                                        </DockPanel>
+                                        <TextBlock Text="{Binding Detail}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="58,0,0,0"/>
+                                        <TextBlock Text="{Binding IssueText}" Style="{StaticResource Style_Warning}" Margin="58,2,0,0" Visibility="{Binding HasIssue, Converter={StaticResource BoolToVisibility}}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                        <WrapPanel Margin="0,4,0,0">
+                            <Button x:Name="button_AddFrameLayer" Content="Add layer" Style="{StaticResource Style_Command}" Click="button_AddFrameLayer_Click" IsEnabled="{Binding CanAddFrameLayer}"
+                                    AutomationProperties.AutomationId="button_AddFrameLayer" ToolTip="Add a layer of the material chosen below after the selected frame layer (at the end when none is selected)."/>
+                            <Button x:Name="button_ReplaceFrameMaterial" Content="Replace material" Style="{StaticResource Style_Command}" Click="button_ReplaceFrameMaterial_Click" IsEnabled="{Binding CanReplaceFrameMaterial}"
+                                    AutomationProperties.AutomationId="button_ReplaceFrameMaterial" ToolTip="Give the selected frame layer the material chosen below; its thickness stays."/>
+                            <Button x:Name="button_RemoveFrameLayer" Content="Remove layer" Style="{StaticResource Style_Command}" Click="button_RemoveFrameLayer_Click" IsEnabled="{Binding CanRemoveFrameLayer}"
+                                    AutomationProperties.AutomationId="button_RemoveFrameLayer" ToolTip="Remove the selected frame layer. Removing the last one leaves the system without a frame."/>
+                            <Button x:Name="button_FrameLayerUp" Content="↑ Up" Style="{StaticResource Style_Command}" Click="button_FrameLayerUp_Click" IsEnabled="{Binding CanMoveFrameLayerUp}"
+                                    AutomationProperties.AutomationId="button_FrameLayerUp" AutomationProperties.Name="Move the selected frame layer up" ToolTip="Move the selected frame layer one place up the list."/>
+                            <Button x:Name="button_FrameLayerDown" Content="↓ Down" Style="{StaticResource Style_Command}" Click="button_FrameLayerDown_Click" IsEnabled="{Binding CanMoveFrameLayerDown}"
+                                    AutomationProperties.AutomationId="button_FrameLayerDown" AutomationProperties.Name="Move the selected frame layer down" ToolTip="Move the selected frame layer one place down the list."/>
+                        </WrapPanel>
+                        <DockPanel Margin="0,0,0,2">
+                            <TextBox x:Name="textBox_FrameMaterialSearch" DockPanel.Dock="Left" Width="110" Text="{Binding FrameMaterialSearchText, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Height="24"
+                                     AutomationProperties.AutomationId="textBox_FrameMaterialSearch" AutomationProperties.Name="Search frame materials" ToolTip="Words to find in a material's name or source, e.g. timber."/>
+                            <ComboBox x:Name="comboBox_FrameMaterial" Margin="6,0,0,0" ItemsSource="{Binding FrameMaterials}" SelectedItem="{Binding SelectedFrameMaterial, Mode=TwoWay}" DisplayMemberPath="Display"
+                                      AutomationProperties.AutomationId="comboBox_FrameMaterial" AutomationProperties.Name="Material for a frame layer"
+                                      ToolTip="The solid materials of the model, the libraries and the added sources. Choose one, then Add layer or Replace material."/>
+                        </DockPanel>
+                        <TextBlock Text="{Binding FrameMaterialCountText}" Style="{StaticResource PartO.Caption}" AutomationProperties.AutomationId="textBlock_FrameMaterialCount"/>
+                    </StackPanel>
+
                     <StackPanel Orientation="Horizontal" Margin="0,4,0,0" Visibility="{Binding HasFrame, Converter={StaticResource BoolToVisibility}}">
                         <TextBlock Text="Frame width" VerticalAlignment="Center" Margin="0,0,6,0"/>
                         <TextBox x:Name="textBox_FrameWidth" Width="56" Text="{Binding FrameWidthText, UpdateSourceTrigger=LostFocus}" VerticalContentAlignment="Center"
                                  AutomationProperties.AutomationId="textBox_FrameWidth" AutomationProperties.Name="Frame width in millimetres"
                                  ToolTip="The face width of the frame in millimetres; saved as the system's Default Frame Width. Press Tab to apply."/>
-                        <TextBlock Text="mm" VerticalAlignment="Center" Margin="4,0,0,0" Style="{StaticResource PartO.Caption}"/>
+                        <TextBlock Text="mm" VerticalAlignment="Center" Margin="4,0,12,0" Style="{StaticResource PartO.Caption}"/>
+                        <TextBlock Text="{Binding FrameDepthText}" VerticalAlignment="Center" Style="{StaticResource PartO.Caption}" AutomationProperties.AutomationId="textBlock_FrameDepth"/>
                     </StackPanel>
                     <TextBlock Text="{Binding FrameNote}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,2,0,0" AutomationProperties.AutomationId="textBlock_FrameNote"/>
                 </StackPanel>
+                </ScrollViewer>
             </Grid>
 
             <GridSplitter Grid.Column="1" Width="12" HorizontalAlignment="Stretch" Background="Transparent" ShowsPreview="False" Focusable="False"/>
@@ -278,6 +332,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Ug — centre of pane, Tas" Style="{StaticResource Style_PerformanceLabel}"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding UgText}" Style="{StaticResource Style_PerformanceValue}" AutomationProperties.AutomationId="textBlock_Ug" AutomationProperties.Name="{Binding UgText, StringFormat=Ug - centre of pane - Tas: {0}}"/>
@@ -287,7 +342,11 @@
                             <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LightTransmittanceText}" Style="{StaticResource Style_PerformanceValue}" AutomationProperties.AutomationId="textBlock_LT" AutomationProperties.Name="{Binding LightTransmittanceText, StringFormat=Light transmittance: {0}}"/>
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="Uf — frame layers, 1-D, Tas" Style="{StaticResource Style_PerformanceLabel}"/>
                             <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding UfText}" Style="{StaticResource Style_PerformanceValue}" AutomationProperties.AutomationId="textBlock_Uf" AutomationProperties.Name="{Binding UfText, StringFormat=Uf - frame layers - 1-D - Tas: {0}}"/>
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Frame additional heat transfer" Style="{StaticResource Style_PerformanceLabel}"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding FrameAdditionalHeatTransferText}" Style="{StaticResource Style_PerformanceValue}" AutomationProperties.AutomationId="textBlock_FrameAdditionalHeatTransfer"
+                                       AutomationProperties.Name="{Binding FrameAdditionalHeatTransferText, StringFormat=Frame additional heat transfer - read-only: {0}}" ToolTip="{Binding FrameAdditionalHeatTransferNote}"/>
                         </Grid>
+                        <TextBlock Text="{Binding FrameAdditionalHeatTransferNote}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,2,0,0" AutomationProperties.AutomationId="textBlock_FrameAdditionalHeatTransferNote"/>
                         <TextBlock Text="{Binding ReferenceUwText}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" Margin="0,4,0,0" AutomationProperties.AutomationId="textBlock_ReferenceUw"
                                    ToolTip="An example for comparing builds, not the value the model will get: the model's overall U-value is calculated from each window's own areas when a system is applied."/>
                     </StackPanel>

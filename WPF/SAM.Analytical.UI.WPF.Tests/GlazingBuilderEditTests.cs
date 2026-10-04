@@ -338,7 +338,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 GlazingBuilderProvenance provenance = GlazingBuilderProvenance.FromApertureConstruction(main.Single(x => x.Guid == replacement.Guid));
                 Assert.Equal(saved.Guid, provenance.SupersedesGuid);
                 Assert.Equal(saved.Guid, provenance.BasedOnGuid);
-                Assert.Equal(2, provenance.SchemaVersion);
+                Assert.Equal(3, provenance.SchemaVersion);
                 Assert.Equal(0.02, provenance.Gaps.Single(x => x.Position == 1).Thickness, 9);
             }
 

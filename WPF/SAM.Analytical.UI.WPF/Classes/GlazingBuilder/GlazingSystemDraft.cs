@@ -171,26 +171,89 @@ namespace SAM.Analytical.UI.WPF
     }
 
     /// <summary>
-    /// The frame of a draft: none, or the frame layers (and their materials) copied from an existing complete system, with an explicit,
-    /// editable face width. The Builder never invents frame layers (no frame from a target Uf in E0). Frame layers are kept in the order the
-    /// source system stores them: they are not part of the pane stack and are not reordered.
+    /// One layer of a <see cref="DraftFrame"/>: a material (a copy) and a thickness. The material is kept with where it came from (a label and a
+    /// file NAME, never a path) so a saved system can say so; a layer whose material is not available is kept by name so the problem can be shown.
+    /// </summary>
+    public sealed class DraftFrameLayer
+    {
+        public DraftFrameLayer(IMaterial material, double thickness, string sourceLabel = null, string sourceFileName = null)
+        {
+            Material = material?.Clone();
+            Name = material?.Name;
+            Thickness = double.IsNaN(thickness) && material != null && material.TryGetValue(Core.MaterialParameter.DefaultThickness, out double defaultThickness) ? defaultThickness : thickness;
+            SourceLabel = DraftPane.FileNameOnly(sourceLabel);
+            SourceFileName = DraftPane.FileNameOnly(sourceFileName);
+        }
+
+        /// <summary>A layer whose material is not available: kept by name so the check can name it.</summary>
+        public static DraftFrameLayer Missing(string name, double thickness, string sourceLabel = null)
+        {
+            DraftFrameLayer result = new DraftFrameLayer(null, thickness, sourceLabel);
+            result.Name = name;
+            return result;
+        }
+
+        /// <summary>The material (a copy); null when missing.</summary>
+        public IMaterial Material { get; }
+
+        /// <summary>The material's name in its source.</summary>
+        public string Name { get; private set; }
+
+        /// <summary>[m]; NaN when none is entered (an error the check lists).</summary>
+        public double Thickness { get; set; }
+
+        /// <summary>Where the material came from, as shown to the user (the source's label or file name).</summary>
+        public string SourceLabel { get; }
+
+        /// <summary>The source file's NAME (no folder).</summary>
+        public string SourceFileName { get; }
+
+        public string DisplayName => Material is Material material && !string.IsNullOrWhiteSpace(material.DisplayName) ? material.DisplayName : Name;
+
+        internal DraftFrameLayer Copy() => WithSource(SourceLabel, SourceFileName);
+
+        internal DraftFrameLayer WithSource(string sourceLabel, string sourceFileName)
+        {
+            DraftFrameLayer result = new DraftFrameLayer(Material, Thickness, sourceLabel, sourceFileName);
+            result.Name = Name;
+            return result;
+        }
+
+        internal string Signature => (Material?.Guid.ToString() ?? Name ?? string.Empty) + "=" + Thickness.ToString("R", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// The frame of a draft: none, or its layers (a material and a thickness each, in the order SAM stores them) and an explicit face width. The layers
+    /// are either copied from an existing complete system (<see cref="CopyFrom"/>) and then free to be edited, or authored in the Builder by adding
+    /// layers to a frame that has none. The Builder does not invent frame layers from a declared Uf, and the frame's additional heat transfer is NOT
+    /// editable: it is carried with a copied frame (and shown read-only), and an authored frame has none.
     /// </summary>
     public sealed class DraftFrame
     {
-        private DraftFrame(IEnumerable<ConstructionLayer> layers, IEnumerable<IMaterial> materials, double width, double additionalHeatTransfer, string copiedFromName, Guid? copiedFromGuid, string sourceLabel)
+        private readonly List<DraftFrameLayer> layers;
+        private readonly string originalSignature;
+        private bool authored;
+        private bool editedMark;
+        private double additionalHeatTransfer;
+        private string copiedFromName;
+        private Guid? copiedFromGuid;
+
+        private DraftFrame(IEnumerable<DraftFrameLayer> layers, double width, double additionalHeatTransfer, string copiedFromName, Guid? copiedFromGuid, string sourceLabel, bool authored, bool edited)
         {
-            Layers = (layers ?? new ConstructionLayer[0]).Where(x => x != null).Select(x => new ConstructionLayer(x)).ToList();
-            Materials = (materials ?? new IMaterial[0]).Where(x => x != null).Select(x => x.Clone()).ToList();
+            this.layers = (layers ?? new DraftFrameLayer[0]).Where(x => x != null).Select(x => x.Copy()).ToList();
             Width = width;
-            AdditionalHeatTransfer = additionalHeatTransfer;
-            CopiedFromName = copiedFromName;
-            CopiedFromGuid = copiedFromGuid;
+            this.additionalHeatTransfer = additionalHeatTransfer;
+            this.copiedFromName = copiedFromName;
+            this.copiedFromGuid = copiedFromGuid;
             SourceLabel = DraftPane.FileNameOnly(sourceLabel);
+            this.authored = authored;
+            editedMark = edited;
+            originalSignature = Signature();
         }
 
         public static DraftFrame None()
         {
-            return new DraftFrame(null, null, double.NaN, double.NaN, null, null, null);
+            return new DraftFrame(null, double.NaN, double.NaN, null, null, null, false, false);
         }
 
         /// <summary>
@@ -205,47 +268,171 @@ namespace SAM.Analytical.UI.WPF
                 return None();
             }
 
-            List<ConstructionLayer> layers = system.FrameConstructionLayers;
-            List<IMaterial> frameMaterials = new List<IMaterial>();
-            foreach (string name in layers.Where(x => x?.Name != null).Select(x => x.Name).Distinct())
+            List<DraftFrameLayer> frameLayers = new List<DraftFrameLayer>();
+            foreach (ConstructionLayer layer in system.FrameConstructionLayers.Where(x => x != null))
             {
-                IMaterial material = materials?.GetMaterial(name);
-                if (material != null)
-                {
-                    frameMaterials.Add(material);
-                }
+                IMaterial material = layer.Name == null ? null : materials?.GetMaterial(layer.Name);
+                frameLayers.Add(material != null ? new DraftFrameLayer(material, layer.Thickness, sourceLabel) : DraftFrameLayer.Missing(layer.Name, layer.Thickness, sourceLabel));
             }
 
             double width = system.TryGetValue(ApertureConstructionParameter.DefaultFrameWidth, out double value) && !double.IsNaN(value) && value > 0 ? value : double.NaN;
             double additionalHeatTransfer = system.TryGetValue(ApertureConstructionParameter.FrameAdditionalHeatTransfer, out double additional) ? additional : double.NaN;
 
-            return new DraftFrame(layers, frameMaterials, width, additionalHeatTransfer, system.Name, system.Guid, sourceLabel);
+            return new DraftFrame(frameLayers, width, additionalHeatTransfer, system.Name, system.Guid, sourceLabel, false, false);
         }
 
         /// <summary>The same frame (layers, materials, width, additional heat transfer) recorded as copied from another system - for a system the Builder saved, whose frame came from somewhere else.</summary>
-        internal DraftFrame WithOrigin(string copiedFromName, Guid? copiedFromGuid)
+        /// <param name="edited">True when the saved system's frame was edited after the copy (its provenance says so).</param>
+        internal DraftFrame WithOrigin(string copiedFromName, Guid? copiedFromGuid, bool edited = false)
         {
-            return IsNone ? this : new DraftFrame(Layers, Materials, Width, AdditionalHeatTransfer, copiedFromName, copiedFromGuid, SourceLabel);
+            return IsNone ? this : new DraftFrame(layers, Width, AdditionalHeatTransfer, copiedFromName, copiedFromGuid, SourceLabel, false, edited || IsEdited);
         }
 
-        public bool IsNone => Layers.Count == 0;
+        /// <summary>The same frame recorded as authored in the Builder (it was never copied) - for a system the Builder saved with a frame of its own.</summary>
+        internal DraftFrame AsAuthored()
+        {
+            return IsNone ? this : new DraftFrame(layers, Width, double.NaN, null, null, SourceLabel, true, false);
+        }
 
-        /// <summary>The copied frame layers (copies), in the source system's order.</summary>
-        public IReadOnlyList<ConstructionLayer> Layers { get; }
+        /// <summary>The layers' own source labels / file names, as a saved system recorded them (by position); a layer without a record keeps its own.</summary>
+        internal DraftFrame WithLayerSources(IReadOnlyList<GlazingBuilderFrameRecord> records)
+        {
+            if (IsNone || records == null || records.Count == 0)
+            {
+                return this;
+            }
 
-        /// <summary>The materials of the frame layers (copies).</summary>
-        public IReadOnlyList<IMaterial> Materials { get; }
+            List<DraftFrameLayer> result = new List<DraftFrameLayer>();
+            for (int i = 0; i < layers.Count; i++)
+            {
+                GlazingBuilderFrameRecord record = records.FirstOrDefault(x => x.Position == i + 1);
+                DraftFrameLayer layer = layers[i];
+                if (record == null || string.IsNullOrWhiteSpace(record.SourceLabel) && string.IsNullOrWhiteSpace(record.SourceFile))
+                {
+                    result.Add(layer);
+                    continue;
+                }
+
+                result.Add(layer.WithSource(string.IsNullOrWhiteSpace(record.SourceLabel) ? layer.SourceLabel : record.SourceLabel, string.IsNullOrWhiteSpace(record.SourceFile) ? layer.SourceFileName : record.SourceFile));
+            }
+
+            return new DraftFrame(result, Width, AdditionalHeatTransfer, copiedFromName, copiedFromGuid, SourceLabel, authored, editedMark);
+        }
+
+        public bool IsNone => layers.Count == 0;
+
+        /// <summary>True for a frame built in the Builder: layers added to a frame that had none, not copied from a system.</summary>
+        public bool IsAuthored => !IsNone && authored;
+
+        /// <summary>True for a copied frame whose layers (materials or thicknesses) were changed after the copy, or that was saved so.</summary>
+        public bool IsEdited => !IsNone && !authored && (editedMark || Signature() != originalSignature);
+
+        /// <summary>The frame's layers, each with its material and thickness, in the order SAM stores them.</summary>
+        public IReadOnlyList<DraftFrameLayer> EditableLayers => layers;
+
+        /// <summary>The frame layers as SAM stores them (copies), in the same order.</summary>
+        public IReadOnlyList<ConstructionLayer> Layers => layers.Select(x => new ConstructionLayer(x.Name, x.Thickness)).ToList();
+
+        /// <summary>The materials of the frame layers (copies), one for each name.</summary>
+        public IReadOnlyList<IMaterial> Materials => layers.Where(x => x.Material != null).GroupBy(x => x.Name).Select(x => x.First().Material.Clone()).ToList();
+
+        /// <summary>The depth of the frame: the sum of its layers' thicknesses [m]; NaN while one has none.</summary>
+        public double Depth => layers.Count == 0 || layers.Any(x => double.IsNaN(x.Thickness)) ? double.NaN : layers.Sum(x => x.Thickness);
 
         /// <summary>Frame face width [m], written as the system's Default Frame Width; NaN when not entered.</summary>
         public double Width { get; set; }
 
-        /// <summary>Frame additional heat transfer [%] copied from the source system; NaN when it has none.</summary>
-        public double AdditionalHeatTransfer { get; }
+        /// <summary>True when a width was typed that is not a positive number (the check lists it as an error; <see cref="Width"/> is NaN then).</summary>
+        public bool WidthInvalid { get; set; }
 
-        public string CopiedFromName { get; }
+        /// <summary>
+        /// Frame additional heat transfer [%], READ-ONLY: carried with a copied frame (and applied by Tas on top of the frame layers); NaN when the
+        /// frame has none, which is always so for an authored frame.
+        /// </summary>
+        public double AdditionalHeatTransfer => additionalHeatTransfer;
 
-        public Guid? CopiedFromGuid { get; }
+        public string CopiedFromName => copiedFromName;
+
+        public Guid? CopiedFromGuid => copiedFromGuid;
 
         public string SourceLabel { get; }
+
+        /// <summary>Adds a layer of <paramref name="material"/> (its default thickness when <paramref name="thickness"/> is NaN) at <paramref name="index"/>, or at the end. A frame with no layers becomes an authored one.</summary>
+        public DraftFrameLayer AddLayer(IMaterial material, double thickness = double.NaN, string sourceLabel = null, string sourceFileName = null, int? index = null)
+        {
+            if (material == null)
+            {
+                return null;
+            }
+
+            if (layers.Count == 0)
+            {
+                // A frame with no layers starts a frame of its own.
+                authored = true;
+                editedMark = false;
+                additionalHeatTransfer = double.NaN;
+                copiedFromName = null;
+                copiedFromGuid = null;
+            }
+
+            DraftFrameLayer layer = new DraftFrameLayer(material, thickness, sourceLabel, sourceFileName);
+            layers.Insert(index.HasValue ? Math.Max(0, Math.Min(index.Value, layers.Count)) : layers.Count, layer);
+            return layer;
+        }
+
+        /// <summary>Gives the layer at <paramref name="index"/> another material (its thickness stays); returns the new layer.</summary>
+        public DraftFrameLayer ReplaceMaterial(int index, IMaterial material, string sourceLabel = null, string sourceFileName = null)
+        {
+            if (material == null || index < 0 || index >= layers.Count)
+            {
+                return null;
+            }
+
+            DraftFrameLayer layer = new DraftFrameLayer(material, layers[index].Thickness, sourceLabel, sourceFileName);
+            layers[index] = layer;
+            return layer;
+        }
+
+        /// <summary>Removes the layer at <paramref name="index"/>. Removing the last one leaves no frame, and the copy / additional heat transfer with it.</summary>
+        public bool RemoveLayerAt(int index)
+        {
+            if (index < 0 || index >= layers.Count)
+            {
+                return false;
+            }
+
+            layers.RemoveAt(index);
+            if (layers.Count == 0)
+            {
+                authored = false;
+                editedMark = false;
+                additionalHeatTransfer = double.NaN;
+                copiedFromName = null;
+                copiedFromGuid = null;
+                Width = double.NaN;
+                WidthInvalid = false;
+            }
+
+            return true;
+        }
+
+        /// <summary>Moves the layer at <paramref name="from"/> to <paramref name="to"/>.</summary>
+        public bool MoveLayer(int from, int to)
+        {
+            if (from < 0 || from >= layers.Count || to < 0 || to >= layers.Count || from == to)
+            {
+                return false;
+            }
+
+            DraftFrameLayer layer = layers[from];
+            layers.RemoveAt(from);
+            layers.Insert(to, layer);
+            return true;
+        }
+
+        private string Signature()
+        {
+            return string.Join("|", layers.Select(x => x.Signature));
+        }
     }
 }

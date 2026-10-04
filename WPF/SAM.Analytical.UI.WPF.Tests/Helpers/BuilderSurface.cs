@@ -27,13 +27,13 @@ namespace SAM.Analytical.UI.WPF.Tests.Helpers
             Assembly assembly = typeof(GlazingSystemDraft).Assembly;
             string[] names =
             {
-                nameof(GlazingSystemDraft), nameof(DraftLayer), nameof(DraftPane), nameof(DraftGap), nameof(DraftFrame), "GlazingLayerOrder", nameof(GlazingComposeOptions),
+                nameof(GlazingSystemDraft), nameof(DraftLayer), nameof(DraftPane), nameof(DraftGap), nameof(DraftFrame), nameof(DraftFrameLayer), nameof(GlazingBuilderFrameRecord), "GlazingLayerOrder", nameof(GlazingComposeOptions),
                 nameof(GlazingComposition), "LibraryMaterialMerge", "UserLibraryFile", "UserLibraryFileContent", "UserLibraryEdit", "UserLibraryArchive", nameof(UserGlazingEditResult), nameof(GlazingValuesCache), nameof(GlazingBuilderProvenance), nameof(GlazingBuilderPaneRecord),
                 nameof(GlazingBuilderGapRecord), nameof(GlazingDraftIssue), nameof(GlazingDraftIssueCodes), nameof(GlazingDraftValidation), nameof(DraftGlazingEvaluator),
                 nameof(DraftGlazingEvaluation), nameof(UserGlazingLibrary), nameof(UserGlazingLibraryContent), nameof(UserGlazingSaveResult), "GlazingGapOrientation",
 
                 // Stage E0-3: the Builder's view-model, its rows, the pane browser and the options it is given.
-                nameof(GlazingBuilderViewModel), nameof(GlazingBuilderLayerRow), nameof(GlazingBuilderIssueRow), nameof(GlazingBuilderOptions), nameof(GlazingFrameChoice),
+                nameof(GlazingBuilderViewModel), nameof(GlazingBuilderLayerRow), nameof(GlazingBuilderFrameLayerRow), nameof(GlazingFrameMaterialChoice), nameof(GlazingBuilderIssueRow), nameof(GlazingBuilderOptions), nameof(GlazingFrameChoice),
                 nameof(GlazingIntendedUse), nameof(GlazingGasOption), nameof(GlazingReferenceWindow), nameof(GlazingPaneBrowser), nameof(GlazingPaneSource), nameof(GlazingPaneEntry),
             };
 

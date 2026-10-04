@@ -463,6 +463,11 @@ namespace SAM.Analytical.UI.WPF
             {
                 gap.Material = gap.Material != null && names.TryGetValue(gap.Material, out string name) ? name : gap.Material;
             }
+
+            foreach (GlazingBuilderFrameRecord frameLayer in provenance.FrameLayers ?? new List<GlazingBuilderFrameRecord>())
+            {
+                frameLayer.Material = frameLayer.Material != null && names.TryGetValue(frameLayer.Material, out string name) ? name : frameLayer.Material;
+            }
         }
 
         // The archived system's provenance follows the materials the archive kept under another name (a different material of the same name was there).

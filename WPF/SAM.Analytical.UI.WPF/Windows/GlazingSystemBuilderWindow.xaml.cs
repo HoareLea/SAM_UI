@@ -134,6 +134,31 @@ namespace SAM.Analytical.UI.WPF
             viewModel.ToggleReverse();
         }
 
+        private void button_AddFrameLayer_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.AddFrameLayer();
+        }
+
+        private void button_ReplaceFrameMaterial_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ReplaceFrameMaterial();
+        }
+
+        private void button_RemoveFrameLayer_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.RemoveFrameLayer();
+        }
+
+        private void button_FrameLayerUp_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.MoveFrameLayer(-1);
+        }
+
+        private void button_FrameLayerDown_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.MoveFrameLayer(1);
+        }
+
         private void button_AddSource_Click(object sender, RoutedEventArgs e)
         {
             _ = viewModel.Panes.AddSourceAsync();
@@ -175,6 +200,7 @@ namespace SAM.Analytical.UI.WPF
             if (listBox_Issues.SelectedItem is GlazingBuilderIssueRow issue)
             {
                 viewModel.SelectIssue(issue);
+                viewModel.SelectFrameIssue(issue);
             }
         }
 

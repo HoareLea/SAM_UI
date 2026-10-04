@@ -21,7 +21,8 @@ namespace SAM.Analytical.UI.WPF
         /// <item>A gap is an ordinary layer naming a <see cref="GasMaterial"/> derived from the gas's default definition, with the heat transfer
         /// coefficient of its width at the evaluation orientation of the intended use (EN 673, SAM <c>Query.HeatTransferCoefficient</c>), its
         /// Default Gas Type set explicitly, and SAM's own name pattern ("Argon_16mm_1.16W/m2K_90deg") so identical gaps are one material.</item>
-        /// <item>The frame (copied layers + materials) is written as is, with Default Frame Width when entered.</item>
+        /// <item>The frame (its layers + materials, copied from a system and possibly edited, or built in the Builder) is written as is, with Default
+        /// Frame Width when entered; the Frame Additional Heat Transfer is only ever the one carried with a copied frame.</item>
         /// <item>Default Panel Type = the intended use (enum name, read back by <c>Analytical.Query.PanelType</c>); Description = the build-up;
         /// the construction's own U / g / LT parameters are NEVER written (Tas values belong to the apertures, on Apply).</item>
         /// </list>
@@ -136,27 +137,42 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            // Frame: copied layers (in the source system's order) and their materials.
+            // Frame: its layers (in the order SAM stores them) and their materials; a layer whose material is missing keeps its name (the check reports it).
             DraftFrame frame = draft.Frame ?? DraftFrame.None();
             List<ConstructionLayer> frameLayers = null;
+            List<string> frameDescription = new List<string>();
             if (!frame.IsNone)
             {
-                Dictionary<string, string> names = new Dictionary<string, string>();
-                foreach (IMaterial material in frame.Materials)
+                frameLayers = new List<ConstructionLayer>();
+                int frameNumber = 0;
+                foreach (DraftFrameLayer frameLayer in frame.EditableLayers)
                 {
-                    string name = LibraryMaterialMerge.Add(materialLibrary, material, frame.SourceLabel);
-                    if (name != null)
+                    frameNumber++;
+                    string name = frameLayer.Name ?? string.Empty;
+                    string label = string.IsNullOrWhiteSpace(frameLayer.SourceLabel) ? frame.SourceLabel : frameLayer.SourceLabel;
+                    if (frameLayer.Material != null)
                     {
-                        names[material.Name] = name;
-                        if (!string.IsNullOrWhiteSpace(frame.SourceLabel))
+                        name = LibraryMaterialMerge.Add(materialLibrary, frameLayer.Material, label) ?? name;
+                        if (!string.IsNullOrWhiteSpace(label))
                         {
-                            sourceLabels[name] = frame.SourceLabel;
+                            sourceLabels[name] = label;
                         }
                     }
+
+                    frameLayers.Add(new ConstructionLayer(name, frameLayer.Thickness));
+                    frameDescription.Add(string.Format(CultureInfo.InvariantCulture, "{0} {1} mm", frameLayer.DisplayName ?? name, Millimetres(frameLayer.Thickness)));
+                    provenance.FrameLayers.Add(new GlazingBuilderFrameRecord()
+                    {
+                        Position = frameNumber,
+                        Material = name,
+                        OriginalName = frameLayer.Name,
+                        SourceLabel = label,
+                        SourceFile = frameLayer.SourceFileName,
+                        Thickness = frameLayer.Thickness,
+                    });
                 }
 
-                frameLayers = frame.Layers.Select(x => new ConstructionLayer(x.Name != null && names.TryGetValue(x.Name, out string name) ? name : x.Name, x.Thickness)).ToList();
-                provenance.Frame = "Copied";
+                provenance.Frame = frame.IsAuthored ? "Authored" : frame.IsEdited ? "CopiedEdited" : "Copied";
                 provenance.FrameCopiedFromName = frame.CopiedFromName;
                 provenance.FrameCopiedFromGuid = frame.CopiedFromGuid;
                 provenance.FrameWidth = frame.Width > 0 ? frame.Width : double.NaN;
@@ -170,9 +186,14 @@ namespace SAM.Analytical.UI.WPF
                 apertureConstruction.SetValue(ApertureConstructionParameter.DefaultPanelType, draft.IntendedPanelType.ToString());
             }
 
+            string frameWidthText = frame.Width > 0 ? string.Format(CultureInfo.InvariantCulture, ", {0} mm wide", Millimetres(frame.Width)) : string.Empty;
             string frameText = frame.IsNone
                 ? "no frame"
-                : string.Format(CultureInfo.InvariantCulture, "frame copied from {0}{1}", frame.CopiedFromName ?? "another system", frame.Width > 0 ? string.Format(CultureInfo.InvariantCulture, ", {0} mm wide", Millimetres(frame.Width)) : string.Empty);
+                : frame.IsAuthored
+                    ? string.Format(CultureInfo.InvariantCulture, "frame built in the Builder ({0}){1}", string.Join(" + ", frameDescription), frameWidthText)
+                    : frame.IsEdited
+                        ? string.Format(CultureInfo.InvariantCulture, "frame copied from {0} and edited ({1}){2}", frame.CopiedFromName ?? "another system", string.Join(" + ", frameDescription), frameWidthText)
+                        : string.Format(CultureInfo.InvariantCulture, "frame copied from {0}{1}", frame.CopiedFromName ?? "another system", frameWidthText);
             apertureConstruction.SetValue(ApertureConstructionParameter.Description, string.Format(CultureInfo.InvariantCulture, "Glazing System Builder. Outside to inside: {0}; {1}.", description.Count == 0 ? "(no layers)" : string.Join(" | ", description), frameText));
 
             if (!frame.IsNone && frame.Width > 0)
