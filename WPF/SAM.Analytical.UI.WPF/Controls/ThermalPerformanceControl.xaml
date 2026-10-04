@@ -44,6 +44,15 @@
                 <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Danger}"/>
             </Style>
 
+            <!-- The result of the last Save to My constructions: a caption, or an error (red) when it says why nothing was saved. -->
+            <Style x:Key="Style_SaveResult" TargetType="TextBlock" BasedOn="{StaticResource PartO.Caption}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding UserConstructionMessageIsError}" Value="True">
+                        <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Danger}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
             <Style x:Key="Style_Link" TargetType="Button">
                 <Setter Property="Cursor" Value="Hand"/>
                 <Setter Property="Padding" Value="6,0"/>
@@ -109,7 +118,7 @@
             <StackPanel DockPanel.Dock="Top" Margin="0,0,0,6" AutomationProperties.AutomationId="stackPanel_Sources">
                 <DockPanel>
                     <Button x:Name="button_MyLibrary" DockPanel.Dock="Right" Content="My library…" Padding="8,1" Margin="6,0,0,0" Click="button_MyLibrary_Click" AutomationProperties.AutomationId="button_MyLibrary"
-                            ToolTip="Open My library: the glazing systems you saved with the Glazing System Builder. Rename or remove one, or open it in the Builder. Nothing is written to the model."/>
+                            ToolTip="Open My library: the glazing systems you saved with the Glazing System Builder and the constructions you saved to My constructions. Rename or remove one; a glazing system can also be opened in the Builder. Nothing is written to the model."/>
                     <Button x:Name="button_AddSource" DockPanel.Dock="Right" Content="Add source…" Padding="8,1" Click="button_AddSource_Click" AutomationProperties.AutomationId="button_AddSource"
                             ToolTip="Add a Tas construction database (.tcd) or a JSON file of constructions as a source of candidates for walls, roofs, floors and glazing. It is remembered. Nothing is written to the model until you apply a choice."/>
                     <TextBlock Text="Sources" FontWeight="SemiBold" VerticalAlignment="Center"/>
@@ -233,7 +242,7 @@
                                                             <StackPanel Margin="0,6,0,0" Visibility="{Binding CanSaveToMyConstructions, Converter={StaticResource BoolToVisibility}}">
                                                                 <Button Content="Save to My constructions…" HorizontalAlignment="Left" Padding="10,1" Click="button_SaveConstruction_Click" AutomationProperties.AutomationId="button_SaveConstruction"
                                                                         AutomationProperties.Name="{Binding Row.ConstructionName, StringFormat=Save to My constructions {0}}" ToolTip="{Binding SaveToMyConstructionsText}"/>
-                                                                <TextBlock Text="{Binding UserConstructionMessage}" Style="{StaticResource PartO.Caption}" TextWrapping="Wrap" MaxWidth="260" Margin="0,2,0,0"
+                                                                <TextBlock Text="{Binding UserConstructionMessage}" Style="{StaticResource Style_SaveResult}" TextWrapping="Wrap" MaxWidth="260" Margin="0,2,0,0"
                                                                            Visibility="{Binding HasUserConstructionMessage, Converter={StaticResource BoolToVisibility}}" AutomationProperties.AutomationId="textBlock_UserConstructionMessage"/>
                                                             </StackPanel>
                                                             <StackPanel Visibility="{Binding IsEdited, Converter={StaticResource BoolToVisibility}}">

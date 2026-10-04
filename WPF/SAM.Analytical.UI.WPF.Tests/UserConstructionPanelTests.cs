@@ -209,6 +209,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Equal(4, library.Read().ConstructionManager.MaterialLibrary.GetMaterials().Count);
 
                 Assert.Equal("Saved 'Current copy' to My constructions.", ById<TextBlock>(host.Control, "textBlock_UserConstructionMessage", host.Wall).Text);
+                Assert.False(host.Wall.UserConstructionMessageIsError);
 
                 // Not an edit and not a pending change.
                 Assert.False(host.Wall.IsEdited);
@@ -236,6 +237,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 Assert.Contains("is not in the material library", missing.Rejection);
                 host.Wall.SaveToMyConstructions(missing, "x");
                 Assert.Contains("is not in the material library", host.Wall.UserConstructionMessage);
+                Assert.True(host.Wall.UserConstructionMessageIsError);
                 Assert.Equal(0, prompts);
                 Assert.False(File.Exists(library.Path));
                 AssertModelUntouched(host);
@@ -264,6 +266,7 @@ namespace SAM.Analytical.UI.WPF.Tests
                 UserConstructionSaveResult refused = host.Wall.SaveToMyConstructions(subject, "taken");
                 Assert.False(refused.Succeeded);
                 Assert.Contains("already in My constructions", host.Wall.UserConstructionMessage);
+                Assert.True(host.Wall.UserConstructionMessageIsError);
                 Assert.Equal(2, library.Read().Constructions.Count);
                 AssertModelUntouched(host);
             }
