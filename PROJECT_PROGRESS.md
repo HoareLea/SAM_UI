@@ -106,3 +106,7 @@ PR #198 merged into `sow/2026-Q3` as `3d7758dd5234b9d84c9747c6d6a971763cc21a4a` 
 
 **Follow-up**
 - The layout-changing fast path for heterogeneous near-coincident piles is tracked in #199. Do not start it unless requested.
+
+## WPF collection convention fix (2026-10-05): COMPLETE
+
+PR #201 merged into `sow/2026-Q3` as `0f7b662220918367729ad1e34079ef566d92d276`. Added `[Collection(WpfCollection.Name)]` to `PartOIteration3RoomBindingTests`, which resolves the `WpfCollectionTests.EveryClassWithStaTests_IsInTheWpfCollection` failure noted in the #58 section above. Test-only; no production or physics change. Validation: VS MSBuild Release build succeeded; filtered `WpfCollectionTests` + `PartOIteration3RoomBindingTests` run 7 passed, 0 failed; PR build and SPDX checks passed. The full WPF suite was not rerun. Next: none for this task.
