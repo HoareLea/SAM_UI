@@ -122,20 +122,18 @@ A project can use different strategies for different dwellings. **Simulate → P
 | Dwelling | Supporting assessment | Mixed Design selection |
 | --- | --- | --- |
 | Flat 01 | Iteration 1b passes | **Natural ventilation** |
-| Flat 02 | Iteration 1a passes | MVHR at design duty |
-| Flat 03 | Iteration 2 passes | **MVHR** with the selected product; **Cooling off** |
-| Flat 04 | Product and cooling assessment passes | **MVHR** with the selected product; **Cooling on** and a confirmed control room |
+| Flat 02 | Iteration 2 passes | **MVHR** with the selected product; **Cooling off** |
+| Flat 03 | Product and cooling assessment passes | **MVHR** with the selected product; **Cooling on** and a confirmed control room |
 
 ```mermaid
 flowchart LR
     A[Flat 01: natural ventilation] --> E[Mixed Design]
-    B[Flat 02: MVHR design duty] --> E
-    C[Flat 03: selected product MVHR] --> E
-    D[Flat 04: product MVHR with cooling] --> E
+    B[Flat 02: selected product MVHR] --> E
+    C[Flat 03: product MVHR with cooling] --> E
     E --> F[One coordinated Part O assessment]
 ```
 
-Use **Screen strategies…** if you need optional screening evidence. It currently screens natural ventilation, MVHR baseline and selected-product MVHR; optimised and cooling strategies are not screening runs. Suggestions do not change the selected design until you apply them. Set the project constraints and product pool, select the intended strategy for each dwelling, and use **Save selection**; save the model to retain it.
+Use **Screen strategies…** if you need optional screening evidence. It currently screens natural ventilation, MVHR baseline and selected-product MVHR; optimised and cooling strategies are not screening runs. **Select MVHR products from the ventilation unit catalogue** applies to the whole Mixed Design run. If it is enabled for product or cooled dwellings, an Iteration 1a generic MVHR pass alone does not establish that another MVHR dwelling will pass the final product-based case; assess that dwelling with a product before selecting it. Suggestions do not change the selected design until you apply them. Set the project constraints and product pool, select the intended strategy for each dwelling, and use **Save selection**; save the model to retain it.
 
 ## 15. Run the coordinated project case
 
