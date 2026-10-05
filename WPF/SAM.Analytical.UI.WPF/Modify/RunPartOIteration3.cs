@@ -197,7 +197,8 @@ namespace SAM.Analytical.UI.WPF
             if (partOIteration3Paths is null || refusal_Output is not null)
             {
                 partOIteration3Ledger.Refuse(PartOIteration3Stage.Input, "The Iteration 3 output folder is unavailable.", [refusal_Output ?? "The Iteration 3 output folder could not be resolved."]);
-                return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, partOIteration3Paths, notes);
+                //Do not hand the occupied destination to Result: it persists refusals there.
+                return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, null, notes);
             }
 
             //Reuse of an earlier attempt's TAS work is decided once, here, by the one resolver - never per stage.

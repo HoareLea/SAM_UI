@@ -127,6 +127,21 @@ namespace SAM.Analytical.UI.WPF.Tests
             return new MechanicalVentilationMaterialisation(new Core.Systems.SystemEnergyCentre("Part O"), null, ["materialised"], null);
         }
 
+        [Fact]
+        public void ANewRunRefusesOccupiedIteration3BeforeReplacingItsRecord()
+        {
+            PartORun run = Run();
+            PartOIteration3Paths paths = PartOIteration3Paths.Create(run.SimulationContext, run.Path_TSD);
+            Assert.Null(paths.OutputPaths.TryClaimRun(Guid.NewGuid(), replaceExisting: true,
+                caseKey: Query.PartOSimulationCaseKey(run.SimulationContext)));
+            File.WriteAllText(paths.Path_Record, "earlier pairing");
+
+            PartOIteration3Result result = Modify.RunPartOIteration3(run, Pipeline_Complete(out List<Guid> _));
+
+            Assert.False(result.IsComplete);
+            Assert.Equal("earlier pairing", File.ReadAllText(paths.Path_Record));
+        }
+
         private static MechanicalVentilationMaterialisation Materialisation_Refused(string refusal)
         {
             return new MechanicalVentilationMaterialisation(null, [refusal], null, null);
