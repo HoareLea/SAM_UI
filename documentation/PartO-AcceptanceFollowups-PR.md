@@ -157,6 +157,5 @@ and kept in `C:\TasOut\parto-148-smoke-2026-09-30\scripts` (local).
 
 ## Next step
 
-Owner review of this PR, then merge into `sow/2026-Q3`. After merge, add the `PROJECT_PROGRESS.md` closeout (with
-the merge SHA) as a docs-only commit on `sow/2026-Q3`. Decide separately whether to push the acceptance evidence
+Decide separately whether to push the acceptance evidence
 branch `docs/parto-final-acceptance-2026-09-30`, and whether the optional C clean-up is wanted.

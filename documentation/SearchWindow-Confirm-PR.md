@@ -1,7 +1,6 @@
 # SearchWindow can be confirmed - OK / double-click / Enter (PR record)
 
 Branch `fix/searchwindow-ok-confirm-2026-10-01`, from `sow/2026-Q3` `cdaf1b2d`. **Not merged.**
-`PROJECT_PROGRESS.md` is not touched on this branch (closeout after merge, per `AGENTS.md`).
 Independent of the U-value PR1b (SAM_UI#160, since merged); it was found while accepting that work.
 
 ## Status
@@ -85,5 +84,5 @@ outside-double-click guards, which hold either way). With the fix: 8/8.
 
 ## Next step
 
-Review and merge into `sow/2026-Q3`; then the `PROJECT_PROGRESS.md` closeout commit on the base branch. Optionally
+Review and merge into `sow/2026-Q3`. Optionally
 re-run right-click > Assign Construction in the licensed app to close the end-to-end loop on the U-value acceptance.

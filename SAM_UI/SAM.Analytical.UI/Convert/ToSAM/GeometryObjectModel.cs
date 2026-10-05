@@ -65,7 +65,7 @@ namespace SAM.Analytical.UI
         // All of these caches are static and keyed per object guid, so a long-running session that opens many
         // large models (each with fresh guids) would otherwise grow without bound. Cap the entry count and clear
         // when a new key would exceed it - the caps are well above any single model's space / panel count, so the
-        // active model stays fully cached and only cross-model accumulation is bounded. (See PR #28 / Codex review.)
+        // active model stays fully cached and only cross-model accumulation is bounded.
         private const int maxCachedSpaces = 50000;
         private const int maxCachedPanels = 250000;
 

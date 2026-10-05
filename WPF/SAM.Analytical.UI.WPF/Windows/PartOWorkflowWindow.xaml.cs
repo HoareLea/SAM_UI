@@ -1078,7 +1078,7 @@ namespace SAM.Analytical.UI.WPF
                 : string.Format("✕ Prepare & Run is unavailable — resolve the {0} blocking items shown above.", count_Blocking);
 
             //Results that can be reviewed stay the next step whatever the current inputs say: Review reads the
-            //existing run and does not depend on them (Codex review on #111). A blocker is still stated beside
+            //existing run and does not depend on them. A blocker is still stated beside
             //it, because Prepare & Run is what it stops.
             if (partOWorkflowInspection.CanReviewResults)
             {

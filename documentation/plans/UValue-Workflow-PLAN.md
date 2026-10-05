@@ -1,8 +1,7 @@
 # U-value workflow: plan (gate-reviewed 2026-10-01)
 
 Status: **approved for implementation**, with the gate-review changes folded in. Base branch for SAM_UI and SAM_Tas
-PRs: `sow/2026-Q3`. Per `AGENTS.md`, each PR keeps its status/evidence in its own PR record doc and description, and
-`PROJECT_PROGRESS.md` gets a closeout entry only after merge, as a direct docs-only commit on the base branch.
+PRs: `sow/2026-Q3`.
 
 ## Goal
 

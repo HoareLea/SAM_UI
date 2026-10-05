@@ -115,4 +115,4 @@ the base-provision gate is unchanged (and its doc comment, which said "1a only" 
 
 ## Next step
 
-Owner review -> merge SAM#173 -> confirm SAM_UI#155 CI -> merge -> `PROJECT_PROGRESS.md` closeouts in both repos (after merge only). Then PR-6.
+Owner review -> merge SAM#173 -> confirm SAM_UI#155 CI -> merge. Then PR-6.

@@ -158,7 +158,3 @@ So a later session never reuses from disk. Where it finds a refused record that 
   and TM59 reports were backed up first to `C:\TasOut\parto-resume-2026-09-29\native-run3-backup-at-2102`), and
   replaced its `-It3BMG` TAS outputs with equivalent ones. No repository data was touched. The harness now refuses
   unless Reference A resolves inside the disposable folder.
-
-## Next step
-
-Review; on merge, the `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`.

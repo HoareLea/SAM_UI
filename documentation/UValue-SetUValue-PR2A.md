@@ -1,7 +1,6 @@
 # U-value workflow PR2a: "Set U-value" engine, no window (PR record)
 
 Branch `feature/uvalue-pr2a-engine-2026-10-01`, from `sow/2026-Q3` `ff68f3f9`. **Not merged.**
-`PROJECT_PROGRESS.md` is not touched on this branch (closeout after merge, per `AGENTS.md`).
 Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md)
 (committed here as instructed); PR1: [UValue-LayerPicker-PR1.md](UValue-LayerPicker-PR1.md) (SAM_UI#160 + SAM_Tas#78, merged).
 
@@ -168,5 +167,5 @@ Tools > U Value Calculator: **(a)** leave the ribbon button on the legacy flow a
 
 ## Next step
 
-Wait for green CI and explicit merge approval; then the `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`.
+Wait for green CI and explicit merge approval.
 Then PR2b on `feature/uvalue-pr2b-window-<date>` from the merged base, after the Tools-button decision above.

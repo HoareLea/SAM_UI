@@ -455,7 +455,7 @@ namespace SAM.Analytical.UI.WPF
 
             //No settings on the request means none were STATED - the Hub no longer asks for 2B settings (Pass 5:
             //they are confirmed when 2B starts). A preset the Prepare Iteration window recorded is then kept, not
-            //cleared: it is what pre-fills the Start Iteration 2B confirmation after this run (Codex P2 on #118).
+            //cleared: it is what pre-fills the Start Iteration 2B confirmation after this run.
             //The reuse condition is AdoptOptimisationSettings' own, unchanged: a prepared run with a context.
             PartOOptimisationSettings? partOOptimisationSettings = partOWorkflowRequest?.OptimisationSettings;
             if (partOOptimisationSettings is null)

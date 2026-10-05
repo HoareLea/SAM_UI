@@ -1,7 +1,7 @@
 # U-value workflow PR2b: "Set U-value" window, entry points, check and report (PR record)
 
 Branch `feature/uvalue-pr2b-window-2026-10-01`, from `sow/2026-Q3` `a023d9de` (PR2a merged as SAM_UI#162 `9ef5bd5`
-+ closeout). **Not merged.** `PROJECT_PROGRESS.md` is not touched on this branch (closeout after merge).
++ closeout). **Not merged.**
 Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md);
 engine: [UValue-SetUValue-PR2A.md](UValue-SetUValue-PR2A.md).
 
@@ -127,6 +127,6 @@ helper defaulted to the wrong model path (fixed; the final run's snapshots are t
 
 ## Next step
 
-Wait for green CI and explicit merge approval; then the `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`. Then PR3
+Wait for green CI and explicit merge approval. Then PR3
 (glazing selection) per the plan; PR4 (U-value / Used-by columns, restyling, and whether the classic calculator stays)
 remains optional.

@@ -1138,7 +1138,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// <summary>
         /// A review reassesses both results files through the production TM59 path, and that path writes
         /// each report beside its results. A review that fingerprinted the reports therefore made the NEXT
-        /// review of the same, unchanged pairing refuse as stale (Codex P1 on <c>bdc48ef</c>). The reports
+        /// review of the same, unchanged pairing refuse as stale. The reports
         /// are regenerated evidence; the comparison is defined by the simulation artifacts and the model.
         /// </summary>
         [Fact]

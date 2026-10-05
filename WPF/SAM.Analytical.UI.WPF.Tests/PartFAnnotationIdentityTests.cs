@@ -38,7 +38,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         // ------------------------------------------------------------------
 
         /// <summary>
-        /// The whole journey Michal asked for: calculate, move a transfer label, save and reopen the view,
+        /// The whole journey: calculate, move a transfer label, save and reopen the view,
         /// recalculate the assessment from the same model, and find the label still on the same route.
         /// <para>
         /// Run for BOTH kinds of transfer route - one through a modelled door, one across a partition the

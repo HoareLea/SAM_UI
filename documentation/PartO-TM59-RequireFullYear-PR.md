@@ -56,4 +56,4 @@ over a whole year, so this PR switches the check on for Part O only.
 
 ## Next step
 
-Merge after green CI; then the `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`.
+Merge after green CI.

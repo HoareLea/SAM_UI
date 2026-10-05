@@ -11,7 +11,7 @@ using Xunit;
 namespace SAM.Analytical.UI.WPF.Tests
 {
     /// <summary>
-    /// Regressions for the four Codex findings on SAM_UI#126 (c5f59bf): the catalogue setting, the run verdict over
+    /// Regressions for the four review findings on SAM_UI#126 (c5f59bf): the catalogue setting, the run verdict over
     /// automatically assessed common spaces, the project test unit as a product, and an unreadable sidecar result.
     /// Each failed on c5f59bf.
     /// </summary>

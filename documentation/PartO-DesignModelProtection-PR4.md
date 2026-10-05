@@ -192,5 +192,4 @@ authority.
 1. SAM-BIM/SAM#170 is merged (`f4c317e0`). This PR is ready for the owner to merge once its CI is green against that SAM.
 2. Optionally, a licensed native check: open a design model, Prepare & Run 1a, confirm the window is still the design,
    Review, Save, and confirm the saved `.sam` has no Part O results.
-3. Merge. Then add the `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`, and start **PR-1** (Part O system scope,
-   SAM + SAM_UI) in a fresh session.
+3. Merge. Next: **PR-1** (Part O system scope, SAM + SAM_UI).

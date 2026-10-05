@@ -1054,7 +1054,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// <b>C.</b> Pass 5 (Codex P2 on #118): a request that states NO 2B settings - every Hub request, since the
+        /// <b>C.</b> Pass 5: a request that states NO 2B settings - every Hub request, since the
         /// Hub no longer asks for them - keeps a preset the Prepare Iteration window recorded, rather than clearing
         /// it. The preset only pre-fills the Start Iteration 2B confirmation; nothing runs at it unconfirmed.
         /// </summary>

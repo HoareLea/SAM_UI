@@ -157,5 +157,5 @@ verdict, airflow or engineering calculation is changed.
 
 ## Next step
 
-Merge SAM#168, then this PR, then add the post-merge `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`.
+Merge SAM#168, then this PR.
 For the presentation, follow the order and output-folder notes above.

@@ -181,7 +181,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Codex review on #111: with reviewable results open, invalidating the preparation inputs blocks
+        /// With reviewable results open, invalidating the preparation inputs blocks
         /// Prepare &amp; Run but not Review, which reads the existing run. Review stays the next step; the
         /// blocker is stated beside it.
         /// </summary>
@@ -265,7 +265,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Codex review on #111. On a monitor shorter than the primary, a Hub taller than that monitor's
+        /// On a monitor shorter than the primary, a Hub taller than that monitor's
         /// working area could not be moved far enough, so the ceiling is capped to the monitor it is on. On
         /// a monitor shorter than the window's own minimum height, the minimum comes down too - WPF would
         /// otherwise hold the window at a height that does not fit.
@@ -298,7 +298,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Codex review on #111: placed near the bottom of its monitor, the Hub then grows with its content
+        /// Placed near the bottom of its monitor, the Hub then grows with its content
         /// (Show details). The growth must not take the action row below the working area.
         /// </summary>
         [WpfFact]

@@ -76,8 +76,8 @@ namespace SAM.Analytical.UI.WPF
         {
             partOOptimisationSettings_Confirmed = null;
 
-            //"Last used in this session" for every route - the Hub and the Results ribbon alike (Codex P2 on
-            //#118): the ribbon has no session state of its own to carry it in.
+            //"Last used in this session" for every route - the Hub and the Results ribbon alike:
+            //the ribbon has no session state of its own to carry it in.
             partOOptimisationSettings_Session ??= partOOptimisationSettings_LastConfirmed;
 
             if (uIAnalyticalModel is null || partORun is null)
@@ -164,8 +164,7 @@ namespace SAM.Analytical.UI.WPF
 
             //Whether the run survives adopting the kept design - the same condition the arming below uses. The
             //optimiser drops the run on a cancelled or failed round, and then 2B cannot be started again from
-            //the kept design; the result window's next step must say so rather than offer an unavailable action
-            //(Codex P2 on #118).
+            //the kept design; the result window's next step must say so rather than offer an unavailable action.
             bool canContinue = analyticalModel_LastValid is not null
                 && partORun.State == PartORunState.WorkflowCompleted
                 && ReferenceEquals(partORun.AnalyticalModel_Assessment, analyticalModel_LastValid);

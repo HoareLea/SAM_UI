@@ -118,5 +118,5 @@ SAM PR-1 (SAM-BIM/SAM#171, `Query.PartOSystemsMaterialisationScope`), which must
 ## Next step
 
 Owner review → merge SAM PR-1 → revalidate this branch against merged SAM `sow/2026-Q3` (rebuild SAM, full WPF suite)
-→ merge → SAM and SAM_UI `PROJECT_PROGRESS.md` closeouts on the base branch. Then PR-2 (SAM effective-duty
+→ merge. Then PR-2 (SAM effective-duty
 classification) and PR-3 (SAM_Systems D2 scope), then the licensed Mixed acceptance on `-Cleaned.sam`.

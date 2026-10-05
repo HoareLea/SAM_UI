@@ -2,12 +2,11 @@
 
 Branch `feature/reporting-hardening-m1-m2-2026-09-28`, from `sow/2026-Q3` (`fc6e0861`).
 
-**Status:** implemented, tested. PR open against `sow/2026-Q3`. `PROJECT_PROGRESS.md` is not changed here: it gets a
-closeout entry after merge (AGENTS.md).
+**Status:** implemented, tested. PR open against `sow/2026-Q3`.
 
 ## Scope
 
-A small, focused fix for two Kimi final-review findings (M1, M2) on `SpaceReportPdfBatch` /
+A small, focused fix for two final-review findings (M1, M2) on `SpaceReportPdfBatch` /
 `Analytical.Reporting.DocumentContext` (PR2F-2 batch Space report export). No architectural redesign, no change to
 report content or batch semantics. M3 and M4 are out of scope.
 
@@ -82,5 +81,4 @@ Two new tests, both passing alongside the existing 40 (batch) + window tests:
 
 ## Next step
 
-Open the PR against `sow/2026-Q3`, wait for CI, merge when CI and review are clean, then add the
-`PROJECT_PROGRESS.md` closeout entry as a direct docs-only commit on `sow/2026-Q3` (never on the PR branch).
+Open the PR against `sow/2026-Q3`, wait for CI, merge when CI and review are clean.

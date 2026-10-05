@@ -155,6 +155,5 @@ result, not the cluster's ventilation systems. So nothing downstream can reintro
 
 ## Exact next step
 
-Owner review → merge SAM_Systems PR-3 → re-run SAM_UI PR-3 CI → merge SAM_UI PR-3 → post-merge `PROJECT_PROGRESS.md`
-closeouts on `sow/2026-Q3` in SAM_Systems and SAM_UI. Then the licensed real-UI Mixed Design acceptance run on
+Owner review → merge SAM_Systems PR-3 → re-run SAM_UI PR-3 CI → merge SAM_UI PR-3. Then the licensed real-UI Mixed Design acceptance run on
 `-Cleaned.sam` with nothing deleted (architecture step 5).

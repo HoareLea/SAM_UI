@@ -104,7 +104,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Codex on #113: the Prepare Iteration ribbon command opens the same window and stops once the model
+        /// The Prepare Iteration ribbon command opens the same window and stops once the model
         /// is adopted, so "Accept &amp; Run TAS" promised a run that never came. Its review now says
         /// "Accept Preparation" and states that no simulation is started.
         /// </summary>

@@ -478,7 +478,7 @@ Evidence: screenshots, driver logs, timings, library file, reports, SHA table.
    materials; GLAZING CHANGE report includes Guid, source and build-up provenance; g/LT/U colouring refreshes; one Undo leaves no orphan
    system/material and keeps the user library.
 7. No changes to SAM core, SAM_Tas, `.sam` schema, default libraries or classic tools; full WPF suite green (≥ 1996 + new).
-8. Records: `documentation/Thermal-StageE0.md` with evidence table; PROJECT_PROGRESS updated.
+8. Records: `documentation/Thermal-StageE0.md` with evidence table.
 
 ## 21. Incidental defects found (out of scope; report separately, not fixed in E0)
 
@@ -491,5 +491,5 @@ Evidence: screenshots, driver logs, timings, library file, reports, SHA table.
 ## 22. After approval (housekeeping, no implementation)
 
 Copy this document to `SAM_UI/documentation/plans/Thermal-StageE0-GlazingBuilder-PLAN.md` (local/untracked or committed per owner
-choice) and add a Stage E0-planning entry to the local `PROJECT_PROGRESS.md` (untracked by owner decision). Start E0-1 only on explicit
-instruction; first step is the real-Tas orientation probe. Remind: commit/push before switching machines.
+choice). Start E0-1 only on explicit
+instruction; first step is the real-Tas orientation probe.

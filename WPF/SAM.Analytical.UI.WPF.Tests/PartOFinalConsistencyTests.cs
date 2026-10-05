@@ -60,7 +60,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// The 2B result window was the one Part O result with no height ceiling: opening Engineering detail
         /// (a fixed-height tab set) could push Copy All and Close below the taskbar. Its content now scrolls with
         /// the buttons outside the scroll, and its height is capped by the Hub's monitor-aware placement once the
-        /// window exists - not from the primary monitor in the constructor (Codex review on #122), which on a
+        /// window exists - not from the primary monitor in the constructor, which on a
         /// shorter secondary monitor left the buttons off screen.
         /// </summary>
         [WpfFact]
@@ -79,7 +79,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// The arithmetic the window relies on, for the case Codex named: a window with no ceiling of its own
+        /// The arithmetic the window relies on, for the reported case: a window with no ceiling of its own
         /// (+infinity, the WPF default) on a secondary monitor shorter than the primary and below it. The ceiling
         /// is 92% of THAT monitor, and the window is moved up inside it.
         /// </summary>

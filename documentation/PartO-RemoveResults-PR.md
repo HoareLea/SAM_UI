@@ -118,6 +118,6 @@ weather and the equipment selection.
 
 ## Next step
 
-Owner review. Merge SAM first, then re-run this PR's CI and merge it. Then do the `PROJECT_PROGRESS.md` closeouts.
+Owner review. Merge SAM first, then re-run this PR's CI and merge it.
 Optional follow-up: the 30 Sep acceptance's Mixed Design phase (Flat 1 NV, Flat 2 MVHR, Flat 3 MVHR + cooling) on the
 cleaned copy.

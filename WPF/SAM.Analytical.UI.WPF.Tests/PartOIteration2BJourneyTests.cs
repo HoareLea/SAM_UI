@@ -173,7 +173,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             PartOOptimisationStart partOOptimisationStart_Opt = PartOOptimisationStart.Create(partORun_Opt, null);
 
-            //Codex P2 on #118: only the result files continue the numbering - this run's rounds count from 1.
+            //Only the result files continue the numbering - this run's rounds count from 1.
             PartOOptimisationSummary.Fact fact_Opt = partOOptimisationStart_Opt.Facts.Single(x => x.Label == "Starting from");
             Assert.Contains("earlier Iteration 2B run, saved as round 3 (-Opt03)", fact_Opt.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("numbering continues", fact_Opt.Value, StringComparison.Ordinal);
@@ -338,7 +338,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Codex P2 on #118: the next step never directs the engineer to an action that is not available. The
+        /// The next step never directs the engineer to an action that is not available. The
         /// optimiser drops the run on a cancelled or failed round, so "2B again continues from the kept design"
         /// is said only where the caller found the run still holding it; otherwise the step says a new
         /// completed Iteration 2 run is needed first.
@@ -363,7 +363,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         }
 
         /// <summary>
-        /// Codex P2 on #118: settings confirmed on any route - the Results ribbon included, which carries no
+        /// Settings confirmed on any route - the Results ribbon included, which carries no
         /// session state of its own - pre-fill the next confirmation in the same application session.
         /// </summary>
         [Fact]

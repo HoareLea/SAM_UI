@@ -103,5 +103,5 @@ the tests above, not by a native click-through.
 
 ## Next step
 
-Review and merge this PR (SAM_UI only; nothing to merge first), then the `PROJECT_PROGRESS.md` closeout as a docs-only commit on `sow/2026-Q3`; then SAM_Deploy and the final
+Review and merge this PR (SAM_UI only; nothing to merge first); then SAM_Deploy and the final
 release/regression validation.

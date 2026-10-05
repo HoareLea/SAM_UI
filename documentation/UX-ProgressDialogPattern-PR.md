@@ -1,11 +1,10 @@
 # UX: one SAM progress-dialog pattern for reporting/export progress — PR record
 
 Branch `feature/progress-dialog-pattern-2026-09-28`, from `sow/2026-Q3` (`4da598b9`). Updated with
-`6b49c8c6` (AGENTS.md convention) and `52217c32` (SAM_UI#134 PR3C closeout); both merged without conflicts.
+`6b49c8c6` and `52217c32` (SAM_UI#134 PR3C closeout); both merged without conflicts.
 Sibling heads used: SAM `bc85ba61`, SAM_Systems `fbef48f`, SAM_Tas `5753ad2e`. SAM_Deploy is not touched.
 
 **Status:** implemented, tested, visually exercised in the dev build. PR open against `sow/2026-Q3`.
-`PROJECT_PROGRESS.md` is not changed here: it gets a closeout entry after merge (AGENTS.md).
 
 ## Scope
 
@@ -124,5 +123,4 @@ the Part O progress window.
 
 ## Next step
 
-Review → final CI → merge. After merge, add the `PROJECT_PROGRESS.md` closeout entry on `sow/2026-Q3` with the
-merge SHA. Deploying through SAM_Deploy is owner-led and separate.
+Review → final CI → merge. Deploying through SAM_Deploy is owner-led and separate.

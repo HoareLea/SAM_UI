@@ -239,7 +239,7 @@ the TAS-process watch, driver scripts and key screenshots.
 5. Ran **Iteration 3** again with the same method.
 6. Closed the app.
 
-**Phase B: new sessions.** A fresh session opened each per-run `.sam` (Iteration 2, then 1a). In each: Hub → Review
+**Phase B: new app sessions.** A fresh app session opened each per-run `.sam` (Iteration 2, then 1a). In each: Hub → Review
 Results → Open result. A watcher logged every TAS process.
 
 | # | Observation | Native UI | Licensed TAS | Result |
@@ -287,8 +287,3 @@ to the model folder if that root is deleted.
 
 Case selector, 2B UX, TPD performance, Iteration 3B, historical file migration, a SAM_Tas option to write timing
 CSVs to a given folder.
-
-## Next step
-
-Owner merge review of PR #147. Then CI green → merge → `PROJECT_PROGRESS.md` closeout on `sow/2026-Q3`,
-including the merge SHA.

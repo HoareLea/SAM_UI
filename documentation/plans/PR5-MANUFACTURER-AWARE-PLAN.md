@@ -3,7 +3,7 @@
 Status: frozen implementation companion for [SAM #111](https://github.com/SAM-BIM/SAM/issues/111).
 The complete planning record and its 16 resolved questions are the tracker comment headed
 `PR5 PLANNING — investigation complete (no code)`. This checked-in companion records the decisions
-that govern the code in this repository so another machine or agent does not need conversation history.
+that govern the code in this repository.
 
 ## Phase 0 supersession — current state (added 2026-09-12)
 

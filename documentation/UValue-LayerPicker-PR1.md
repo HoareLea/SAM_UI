@@ -1,7 +1,6 @@
 # U-value workflow PR1b - specific calculator messages (PR record)
 
 Branch `fix/uvalue-calculator-messages-2026-10-01`, from `sow/2026-Q3` `7c17eab2`. **Not merged.**
-`PROJECT_PROGRESS.md` is not touched on this branch (closeout after merge, per `AGENTS.md`).
 Plan: [plans/UValue-Workflow-PLAN.md](plans/UValue-Workflow-PLAN.md).
 
 **Depends on SAM_Tas PR1a: [SAM-BIM/SAM_Tas#78](https://github.com/SAM-BIM/SAM_Tas/pull/78)** (type-based layer
@@ -126,5 +125,4 @@ The "Tas unavailable" message could not be provoked in the real app (unit tests 
 
 ## Next step
 
-Wait for green CI and for explicit merge approval, then add the `PROJECT_PROGRESS.md` closeout commits in both
-repos on `sow/2026-Q3`. PR2 (new U-value window) follows the plan.
+Wait for green CI and for explicit merge approval. PR2 (new U-value window) follows the plan.

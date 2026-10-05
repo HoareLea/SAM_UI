@@ -763,7 +763,7 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// <summary>
         /// A report is recorded, and offered, only where THIS attempt wrote it. On <c>bdc48ef</c> a failed
         /// <c>SavePartOTM59Report</c> still handed back the path it would have written, and the run then
-        /// recorded whatever file an earlier assessment had left there as this pairing's report (Codex P2).
+        /// recorded whatever file an earlier assessment had left there as this pairing's report.
         /// The assessment below names exactly that: a path, and an old file at it, that nobody wrote now.
         /// </summary>
         [Fact]

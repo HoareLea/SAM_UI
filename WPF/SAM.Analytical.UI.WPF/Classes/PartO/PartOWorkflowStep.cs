@@ -136,8 +136,8 @@ namespace SAM.Analytical.UI.WPF
             PartOWorkflowStepState state_Review = PartOWorkflowStepState.Upcoming;
 
             //The one Current step: Review wherever there are results to review - even while the configuration
-            //blocks, because Review reads the existing run and does not depend on the current inputs (Codex
-            //review on #111). Otherwise the first step the primary action still has to perform, and none at
+            //blocks, because Review reads the existing run and does not depend on the current inputs.
+            //Otherwise the first step the primary action still has to perform, and none at
             //all while the configuration blocks.
             if (reviewable)
             {

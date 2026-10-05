@@ -179,7 +179,7 @@ dwelling MVHR + `RetainedDesign` + SAM's fingerprint (a product already chosen i
 rule in SAM_UI, other dwellings untouched, the whole design rebuilt from the baseline at the next build; screening and the
 final run go stale because the building changed. Bulk acceptance later = the same SAM call chained per dwelling.
 
-**Codex findings on c5f59bf (each with a regression that failed on c5f59bf):**
+**Review findings on c5f59bf (each with a regression that failed on c5f59bf):**
 1. P1 catalogue setting: `CatalogueOffered` is a build input - its setter re-asks SAM's record with the catalogue as the
    next build offers it (`DescriptorsOffered`); the stale reason says which way the setting moved.
 2. P1 run verdict: SAM's `OccupiedSpaceComplianceStatus` + `CorridorRiskStatus` + corridors persisted on the evidence (above).
@@ -198,13 +198,13 @@ per-row refresh; the close prompt names an accepted design. SAM side: a designer
 **Closeout:** the Accept file dialog starts in the simulation case's output folder (model folder when unset), with an empty
 file name, and the open baseline itself is answered plainly before SAM is asked - no new persisted state.
 
-**Codex on a2de99b (fixed):** the run verdict is not a pass where a covered (common) space went unassessed
+**Review findings on a2de99b (fixed):** the run verdict is not a pass where a covered (common) space went unassessed
 (`SpaceCount_Unassessed`, the TM59 window's partial rule); final and screening evidence record the simulation case they
 ran under (`Query.PartOSimulationCaseKey`: weather by content + solar method, from the run's own context) and a changed case
 makes them stale at once; a cancelled or incomplete rerun re-validates the previous result (its results file may have been
 rewritten); run notes (pre-simulation warnings, run-model persistence) are part of the build outcome.
 
-Codex on cf67983: screening run notes are shown with the screening outcome; unticking the catalogue flags any explicitly chosen product as needing attention (blocks Build, never rewritten). Codex on e212b57: an explicit product outside the permitted pool needs attention too; an MVHR suggestion comes only from the screening of the current equipment mode (Selected-product with the catalogue, MVHR baseline without).
+Review on cf67983: screening run notes are shown with the screening outcome; unticking the catalogue flags any explicitly chosen product as needing attention (blocks Build, never rewritten). Review on e212b57: an explicit product outside the permitted pool needs attention too; an MVHR suggestion comes only from the screening of the current equipment mode (Selected-product with the catalogue, MVHR baseline without).
 
 Tests: `PartOMixedDesignCorrectionTests` (16), `PartOMixedDesignAcceptTests` (7); the fake TAS now returns a real SAM
 `TM59AssessmentReport` (mechanical + corridor results) so the run verdict is SAM's in every test.
