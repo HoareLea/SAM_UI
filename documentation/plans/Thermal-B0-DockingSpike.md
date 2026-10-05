@@ -1,5 +1,8 @@
 # Thermal Performance - B0 docking feasibility spike (1 Oct 2026)
 
+> Historical note (5 Oct 2026): the spike files listed below were replaced by Stage B (`ea39b810`, #167) and no longer
+> exist; the hybrid docked/floating host followed in #168. This document is retained only as the B0 decision record.
+
 Question (from `Thermal-Performance-Review.md`, Stage B0): can `AnalyticalWindow` host the future Thermal Performance surface
 as a persistent side panel next to the view tabs, with the existing WPF shell, without disturbing the viewport, the tree or
 the ribbon?
