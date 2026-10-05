@@ -134,14 +134,14 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// tests load-bearing rather than incidental.
         /// </para>
         /// </summary>
-        internal static AdjacencyCluster Design(out List<Guid> guids_VentilationSystem, out List<Zone> zones)
+        internal static AdjacencyCluster Design(out List<Guid> guids_VentilationSystem, out List<Zone> zones, int dwellingCount = 2)
         {
             AdjacencyCluster result = new();
 
             guids_VentilationSystem = [];
             zones = [];
 
-            for (int i = 1; i <= 2; i++)
+            for (int i = 1; i <= dwellingCount; i++)
             {
                 VentilationSystem ventilationSystem = VentilationSystem(result, string.Format("MVHR-0{0}", i), "MVHR", out AirHandlingUnit _);
 

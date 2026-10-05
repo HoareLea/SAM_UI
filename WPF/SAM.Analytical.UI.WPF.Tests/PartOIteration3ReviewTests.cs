@@ -6,6 +6,7 @@ using SAM.Analytical.Systems;
 using SAM.Analytical.Tas.TPD;
 using SAM.Analytical.UI;
 using SAM.Core.Tas;
+using SAM.Weather;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -125,12 +126,12 @@ namespace SAM.Analytical.UI.WPF.Tests
         /// Where Reference A's results are - the test's flat folder by default, or a case's <c>tas</c> folder beneath
         /// it. Either way Iteration 3 writes into <see cref="directory_It3"/>: the flat folder is the root.
         /// </param>
-        private PartORun Run(out PartOIteration3Result partOIteration3Result, out List<Guid> guids_Bound, bool writeReports = false, int count_InformationOnly = 0, string directory_ReferenceA = null)
+        private PartORun Run(out PartOIteration3Result partOIteration3Result, out List<Guid> guids_Bound, bool writeReports = false, int count_InformationOnly = 0, string directory_ReferenceA = null, WeatherData weather = null, int dwellingCount = 2)
         {
             directory_ReferenceA ??= directory;
             Directory.CreateDirectory(directory_ReferenceA);
 
-            adjacencyCluster = PartOIteration3Fixture.Design(out guids_VentilationSystem, out zones);
+            adjacencyCluster = PartOIteration3Fixture.Design(out guids_VentilationSystem, out zones, dwellingCount);
 
             guids_Space_Dwelling = [];
             foreach (Zone zone in zones)
@@ -149,8 +150,14 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             PartORun partORun = new();
 
+            AnalyticalModel analyticalModel_Prepared = PartOIteration3Fixture.Model(adjacencyCluster);
+            if (weather is not null)
+            {
+                analyticalModel_Prepared.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weather);
+            }
+
             Assert.True(partORun.Prepare(
-                PartOIteration3Fixture.Model(adjacencyCluster),
+                analyticalModel_Prepared,
                 PartOIteration3Fixture.Scenarios(),
                 new PartOPreparationContext(PartOIteration.BasePassive, zones, null, null),
                 guids_VentilationSystem));
@@ -162,11 +169,18 @@ namespace SAM.Analytical.UI.WPF.Tests
             File.WriteAllText(path_TSD, "reference A results");
 
             AnalyticalModel analyticalModel_Workflow = PartOIteration3Fixture.Model(new AdjacencyCluster(adjacencyCluster), "Flat");
+            if (weather is not null)
+            {
+                analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.WeatherData, weather);
+            }
 
             analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.OverheatingScenarios, new Core.SAMCollection<OverheatingScenario>(partORun.OverheatingScenarios));
             analyticalModel_Workflow.SetValue(Analytical.AnalyticalModelParameter.SimulationResultProvenance, new SimulationResultProvenance(analyticalModel_Workflow, path_TSD));
 
-            Assert.True(partORun.Complete(analyticalModel_Workflow, path_TSD, PartOIteration3Fixture.SimulationContext(directory_ReferenceA), out string _));
+            PartOSimulationContext simulationContext = weather is null
+                ? PartOIteration3Fixture.SimulationContext(directory_ReferenceA)
+                : new PartOSimulationContext(directory_ReferenceA, "Flat", weather, SolarCalculationMethod.TAS, 1, 365);
+            Assert.True(partORun.Complete(analyticalModel_Workflow, path_TSD, simulationContext, out string _));
 
             //The fake TAS pipeline writes its fixtures before RunPartOIteration3 starts. Claim those
             //staged files as this run's evidence, as the production pipeline does at attempt start.
@@ -214,13 +228,19 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             foreach (KeyValuePair<(Guid, Guid), Analytical.Query.DesignTransferAirMovement> keyValuePair in adjacencyCluster.DesignTransferSpaceAirMovements())
             {
+                if (!dictionary_SystemSpace.TryGetValue(keyValuePair.Value.FromGuid, out Guid guid_From)
+                    || !dictionary_SystemSpace.TryGetValue(keyValuePair.Value.ToGuid, out Guid guid_To))
+                {
+                    continue;
+                }
+
                 connectionBindings.Add(new SystemVentilationConnectionBinding(
                     SystemVentilationConnectionType.Transfer,
                     keyValuePair.Value.SpaceAirMovement.Guid,
                     Guid.NewGuid(),
                     guid_AirSystem,
-                    dictionary_SystemSpace[keyValuePair.Value.FromGuid],
-                    dictionary_SystemSpace[keyValuePair.Value.ToGuid],
+                    guid_From,
+                    guid_To,
                     adjacencyCluster.DesignTransferFlowRate_Lps(keyValuePair.Value.FromGuid, keyValuePair.Value.ToGuid, out Guid _, out Guid _).Value,
                     "damper"));
             }
@@ -257,7 +277,7 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             partOIteration3Result = Modify.RunPartOIteration3(partORun, partOIteration3PipelineFake);
 
-            Assert.True(partOIteration3Result.IsComplete);
+            Assert.True(partOIteration3Result.IsComplete, PartOIteration3ReportText.Refusal(partOIteration3Result));
 
             return partORun;
         }
@@ -1310,6 +1330,48 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.Equal(
                 partOIteration3Record.Guid_Run,
                 PartOIteration3Record.FromJsonObject(jsonObject["Record"] as System.Text.Json.Nodes.JsonObject).Guid_Run);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(4)]
+        public void ChangedDwellingCountWithModifiedWeather_ReopensWithItsOwnReportAndProvenance(int dwellingCount)
+        {
+            WeatherYear year = new(2026);
+            for (int day = 0; day < 365; day++)
+            {
+                for (int hour = 0; hour < 24; hour++)
+                {
+                    year.Add(day, hour, new Dictionary<string, double> { [WeatherDataType.DryBulbTemperature.ToString()] = 16 });
+                }
+            }
+            year.Add(9, 6, new Dictionary<string, double> { [WeatherDataType.DryBulbTemperature.ToString()] = 34.25 });
+            WeatherData weather = new("Engineer modified DSY", "Alternative full-year case", 52.1, -0.8, 74, year);
+
+            PartORun run = Run(out PartOIteration3Result completed, out List<Guid> rooms, weather: weather, dwellingCount: dwellingCount);
+
+            Assert.True(completed.IsComplete);
+            Assert.Equal(3 * dwellingCount, rooms.Count);
+            Assert.Equal("Engineer modified DSY", completed.Record.WeatherName);
+            Assert.Equal(34.25, completed.Record.WeatherPeakDryBulb_C);
+            Assert.Equal(222, completed.Record.WeatherPeakHour);
+            Assert.Contains("Engineer modified DSY", completed.Record.Fingerprint_Scenario);
+            Assert.Contains("Engineer modified DSY", File.ReadAllText(completed.Path_Report));
+            JsonObject savedRecord = JsonNode.Parse(File.ReadAllText(completed.Path_Record)) as JsonObject;
+            Assert.Equal("../../Flat.tsd", savedRecord["Locator_TSD_ReferenceA"]?.GetValue<string>());
+
+            int assessments = 0;
+            PartOIteration3Result reopened = Modify.ReviewPartOIteration3(run, new PartOIteration3PipelineReviewOnly
+            {
+                Func_Assess = guids => Assessment(guids, ++assessments == 1 ? 20.0 : 21.0),
+            });
+
+            Assert.True(reopened.IsComplete);
+            Assert.Equal(2, assessments);
+            Assert.Equal(completed.Record.Guid_Run, reopened.Record.Guid_Run);
+            Assert.Equal(3 * dwellingCount, reopened.Comparison.Statistics.Count_Rooms);
+            Assert.Equal(34.25, reopened.Record.WeatherPeakDryBulb_C);
+            Assert.Contains("Engineer modified DSY", File.ReadAllText(reopened.Path_Report));
         }
 
         /// <summary>
