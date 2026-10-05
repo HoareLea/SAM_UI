@@ -115,6 +115,10 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(result.Complete(analyticalModel_Workflow, path_TSD_ReferenceA, PartOIteration3Fixture.SimulationContext(directory), out string refusal));
             Assert.Null(refusal);
 
+            //The fake pipeline stages TAS files before the orchestrator runs.
+            Assert.Null(PartOOutputPaths.Create(directory, PartOOutputCase.Iteration3)
+                .TryClaimRun(result.Guid_OutputRun, replaceExisting: true, caseKey: Query.PartOSimulationCaseKey(result.SimulationContext)));
+
             return result;
         }
 

@@ -33,9 +33,9 @@ namespace SAM.Analytical.UI.WPF
         /// <see cref="Query.PartOIteration3ResumePlan"/> proves it may, the TAS work of this session's earlier attempt
         /// that failed after it. See the overload with a plan for the whole contract.
         /// </summary>
-        public static PartOIteration3Result RunPartOIteration3(PartORun partORun, IPartOIteration3Pipeline iPartOIteration3Pipeline, CancellationToken cancellationToken = default, PartOIteration3BehaviourMode partOIteration3BehaviourMode = PartOIteration3BehaviourMode.Parity, Action<PartOIteration3Stage> stageStarting = null)
+        public static PartOIteration3Result RunPartOIteration3(PartORun partORun, IPartOIteration3Pipeline iPartOIteration3Pipeline, CancellationToken cancellationToken = default, PartOIteration3BehaviourMode partOIteration3BehaviourMode = PartOIteration3BehaviourMode.Parity, Action<PartOIteration3Stage> stageStarting = null, bool replaceExisting = false)
         {
-            return RunPartOIteration3(partORun, iPartOIteration3Pipeline, cancellationToken, partOIteration3BehaviourMode, stageStarting, null);
+            return RunPartOIteration3(partORun, iPartOIteration3Pipeline, cancellationToken, partOIteration3BehaviourMode, stageStarting, null, replaceExisting);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace SAM.Analytical.UI.WPF
         /// drops the method's earlier work first, because it is about to rewrite those files.
         /// </para>
         /// </param>
-        internal static PartOIteration3Result RunPartOIteration3(PartORun partORun, IPartOIteration3Pipeline iPartOIteration3Pipeline, CancellationToken cancellationToken, PartOIteration3BehaviourMode partOIteration3BehaviourMode, Action<PartOIteration3Stage> stageStarting, PartOIteration3ResumePlan partOIteration3ResumePlan)
+        internal static PartOIteration3Result RunPartOIteration3(PartORun partORun, IPartOIteration3Pipeline iPartOIteration3Pipeline, CancellationToken cancellationToken, PartOIteration3BehaviourMode partOIteration3BehaviourMode, Action<PartOIteration3Stage> stageStarting, PartOIteration3ResumePlan partOIteration3ResumePlan, bool replaceExisting = false)
         {
             PartOIteration3Ledger partOIteration3Ledger = new();
 
@@ -192,6 +192,13 @@ namespace SAM.Analytical.UI.WPF
             string path_TSD_ReferenceA = partORun.Path_TSD;
 
             PartOIteration3Paths partOIteration3Paths = PartOIteration3Paths.Create(partOSimulationContext, path_TSD_ReferenceA, partOIteration3BehaviourMode);
+
+            string refusal_Output = partOIteration3Paths?.OutputPaths.TryClaimRun(partORun.Guid_OutputRun, replaceExisting, Query.PartOSimulationCaseKey(partOSimulationContext));
+            if (partOIteration3Paths is null || refusal_Output is not null)
+            {
+                partOIteration3Ledger.Refuse(PartOIteration3Stage.Input, "The Iteration 3 output folder is unavailable.", [refusal_Output ?? "The Iteration 3 output folder could not be resolved."]);
+                return Result(partOIteration3Ledger, partOIteration3Record, null, null, null, partOIteration3Paths, notes);
+            }
 
             //Reuse of an earlier attempt's TAS work is decided once, here, by the one resolver - never per stage.
             partOIteration3ResumePlan ??= Query.PartOIteration3ResumePlan(partORun, partOIteration3BehaviourMode);

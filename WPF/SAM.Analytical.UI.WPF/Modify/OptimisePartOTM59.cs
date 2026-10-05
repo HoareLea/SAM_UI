@@ -185,7 +185,7 @@ namespace SAM.Analytical.UI.WPF
             PartOOutputPaths? partOOutputPaths = PartOOutputPaths.Create(PartOOutputPaths.Root(partOSimulationContext.OutputDirectory), PartOOutputCase.Iteration2B);
             if (partOOutputPaths is not null)
             {
-                refusal = partOOutputPaths.TryCreateDirectories();
+                refusal = partOOutputPaths.TryClaimRun(partORun.Guid_OutputRun, caseKey: Query.PartOSimulationCaseKey(partOSimulationContext));
                 if (refusal is not null)
                 {
                     return null;

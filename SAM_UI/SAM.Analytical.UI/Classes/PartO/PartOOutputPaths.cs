@@ -333,6 +333,58 @@ namespace SAM.Analytical.UI
         }
 
         /// <summary>
+        /// Claims this case folder for one prepared run before any result is written. An earlier case marker
+        /// without an owner is treated as occupied when it contains evidence. A retry by the same run is safe.
+        /// </summary>
+        public string TryClaimRun(Guid guid_Run, bool replaceExisting = false, string caseKey = null)
+        {
+            if (guid_Run == Guid.Empty)
+            {
+                return "The Part O run has no preparation identity, so no output was written.";
+            }
+
+            try
+            {
+                Guid guid_Owner = Guid.Empty;
+                string previousCaseKey = null;
+                if (File.Exists(Path_Marker))
+                {
+                    JsonObject marker = JsonNode.Parse(File.ReadAllText(Path_Marker)) as JsonObject;
+                    Guid.TryParse(marker?["Run"]?.GetValue<string>(), out guid_Owner);
+                    previousCaseKey = marker?["CaseKey"]?.GetValue<string>();
+                }
+
+                bool occupied = Directory.Exists(Directory_Case)
+                    && System.Linq.Enumerable.Any(Directory.EnumerateFiles(Directory_Case, "*", SearchOption.AllDirectories),
+                        path => !string.Equals(Path.GetFullPath(path), Path.GetFullPath(Path_Marker), StringComparison.OrdinalIgnoreCase));
+
+                if (occupied && (guid_Owner != guid_Run || (caseKey is not null && !string.Equals(caseKey, previousCaseKey, StringComparison.Ordinal))) && !replaceExisting)
+                {
+                    return string.Format("The Part O output folder '{0}' already contains run evidence. Choose a fresh output folder to preserve it.", Directory_Case);
+                }
+
+                CreateDirectories();
+                if (guid_Owner != guid_Run || (caseKey is not null && previousCaseKey != caseKey))
+                {
+                    JsonObject marker = new()
+                    {
+                        ["Schema"] = Schema_Marker,
+                        ["Case"] = Folder(Case),
+                        ["Run"] = guid_Run.ToString("D"),
+                        ["CaseKey"] = caseKey,
+                    };
+                    File.WriteAllText(Path_Marker, marker.ToJsonString());
+                }
+
+                return null;
+            }
+            catch (Exception exception)
+            {
+                return string.Format("The Part O output folder '{0}' could not be checked, so no output was written. ({1})", Directory_Case, exception.Message);
+            }
+        }
+
+        /// <summary>
         /// Creates the directory a file is about to be written into, where it is a folder of this layout that
         /// does not exist yet. A legacy folder is never created here - a run writing into one always wrote into
         /// a folder that already existed. Never throws: the write that follows reports the failure in its own

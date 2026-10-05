@@ -47,6 +47,60 @@ namespace SAM.Analytical.UI.WPF.Tests
             return partOOutputPaths;
         }
 
+        [Fact]
+        public void NewRun_ClaimsEmptyDestination_AndSameAttemptMayResume()
+        {
+            PartOOutputPaths paths = PartOOutputPaths.Create(directory_Temp, PartOOutputCase.Iteration2);
+            Guid run = Guid.NewGuid();
+
+            Assert.Null(paths.TryClaimRun(run));
+            File.WriteAllText(Path.Combine(paths.Directory_Tas, "result.tsd"), "evidence");
+            Assert.Null(paths.TryClaimRun(run));
+            Assert.Equal("evidence", File.ReadAllText(Path.Combine(paths.Directory_Tas, "result.tsd")));
+        }
+
+        [Fact]
+        public void NewRun_CannotOverwriteEarlierEvidence_UnlessReplacementIsExplicit()
+        {
+            PartOOutputPaths paths = PartOOutputPaths.Create(directory_Temp, PartOOutputCase.Iteration2);
+            Guid first = Guid.NewGuid();
+            Assert.Null(paths.TryClaimRun(first));
+            string evidence = Path.Combine(paths.Directory_Reports, "result.txt");
+            File.WriteAllText(evidence, "earlier evidence");
+
+            string refusal = paths.TryClaimRun(Guid.NewGuid());
+            Assert.Contains("already contains run evidence", refusal);
+            Assert.Equal("earlier evidence", File.ReadAllText(evidence));
+
+            Assert.Null(paths.TryClaimRun(Guid.NewGuid(), replaceExisting: true));
+            Assert.Equal("earlier evidence", File.ReadAllText(evidence));
+        }
+
+        [Fact]
+        public void LegacyCaseEvidence_AndChangedInputRun_AreProtected()
+        {
+            PartOOutputPaths paths = Created(directory_Temp, PartOOutputCase.Iteration3);
+            string evidence = Path.Combine(paths.Directory_Tas, "candidate.tsd");
+            File.WriteAllText(evidence, "old weather and model");
+
+            Assert.NotNull(paths.TryClaimRun(Guid.NewGuid()));
+            Assert.Equal("old weather and model", File.ReadAllText(evidence));
+            Assert.Equal(directory_Temp, PartOOutputPaths.Root(paths.Directory_Tas));
+        }
+
+        [Fact]
+        public void SameRun_WithChangedSimulationCase_CannotReuseEvidence()
+        {
+            PartOOutputPaths paths = PartOOutputPaths.Create(directory_Temp, PartOOutputCase.Iteration1a);
+            Guid run = Guid.NewGuid();
+            Assert.Null(paths.TryClaimRun(run, caseKey: "weather A"));
+            File.WriteAllText(Path.Combine(paths.Directory_Tas, "result.tsd"), "first case");
+
+            Assert.Null(paths.TryClaimRun(run, caseKey: "weather A"));
+            Assert.NotNull(paths.TryClaimRun(run, caseKey: "weather B"));
+            Assert.Equal("first case", File.ReadAllText(Path.Combine(paths.Directory_Tas, "result.tsd")));
+        }
+
         // ---- 1. Folder mapping ------------------------------------------------------------------------------------
 
         [Theory]

@@ -321,7 +321,13 @@ namespace SAM.Analytical.UI.WPF
                 PartOOutputPaths partOOutputPaths = PartOOutputPaths.Create(outputDirectory, partOOutputCase);
                 if (partOOutputPaths is not null)
                 {
-                    string refusal_Directories = partOOutputPaths.TryCreateDirectories();
+                    string refusal_Directories = partORun is null
+                        ? partOOutputPaths.TryCreateDirectories()
+                        : partOOutputPaths.TryClaimRun(partORun.Guid_OutputRun, caseKey: Query.PartOSimulationCaseKey(new PartOSimulationCase
+                        {
+                            WeatherData = simulateInputs.WeatherData,
+                            SolarCalculationMethod = simulateInputs.SolarCalculationMethod,
+                        }));
                     if (refusal_Directories is not null)
                     {
                         partOSimulationOutcome.Ran = true;
