@@ -14,7 +14,7 @@ flowchart TD
     C --> D[Set IsDwelling = true for each dwelling]
     D --> E[Map TM59 Internal Conditions]
     E --> F[Select weather and prepare the assessment]
-    F --> G[Try initial natural ventilation or MVHR design duty]
+    F --> G[Choose one initial strategy:<br/>Iteration 1a — MVHR design duty<br/>or Iteration 1b — Natural ventilation]
     G --> H{Dwelling passes TM59?}
     H -->|Yes| P[Record suitable passing strategy]
     H -->|No| I[Try selected product MVHR]
@@ -31,7 +31,7 @@ flowchart TD
     Q --> R[Review TM59 and retain evidence]
 ```
 
-**How to read this workflow:** Prepare the analytical model first. Keep a suitable passing strategy for each dwelling and progress only where needed. Mixed Design combines your dwelling selections into one final project assessment; its result is the design authority.
+**How to read this workflow:** Prepare the analytical model first. Keep a suitable passing strategy for each dwelling and progress only where needed. Mixed Design combines your dwelling selections into the final coordinated project assessment.
 
 # Part 1 — Prepare
 
@@ -57,7 +57,7 @@ Use **Edit → Analytical Model → Map IC (TM59)** after grouping the dwellings
 
 ## 6. Weather
 
-Part O simulations require weather data appropriate to the project assessment methodology. For UK projects this will normally be a **DSY weather file**; the selector also accepts supported weather data in other formats. Select the required dataset under **Simulation case → Weather** and check its location and scenario. SAM runs the Part O case over days 1–365.
+Part O simulations require weather data appropriate to the project assessment methodology. For UK projects this will normally be a **DSY weather file**; the selector also accepts supported weather data in other formats. Select the required dataset under **Simulation case → Weather** and check its location and scenario. SAM runs the Part O case as a full-year simulation.
 
 Before issuing results, verify that the intended weather was used and that the completed evidence corresponds to that case. The completed Iteration 3 evidence records the weather identity and calculated dry-bulb peak for checking and reproduction.
 
@@ -122,7 +122,7 @@ A project can use different strategies for different dwellings. **Simulate → P
 | Dwelling | Supporting assessment | Mixed Design selection |
 | --- | --- | --- |
 | Flat 01 | Iteration 1b passes | **Natural ventilation** |
-| Flat 02 | Iteration 1a passes | **MVHR** at design duty, generic unit where the product catalogue is not offered |
+| Flat 02 | Iteration 1a passes | MVHR at design duty |
 | Flat 03 | Iteration 2 passes | **MVHR** with the selected product; **Cooling off** |
 | Flat 04 | Product and cooling assessment passes | **MVHR** with the selected product; **Cooling on** and a confirmed control room |
 
@@ -139,7 +139,7 @@ Use **Screen strategies…** if you need optional screening evidence. It current
 
 ## 15. Run the coordinated project case
 
-Set the Mixed Design **Simulation case** and fresh output root. Use **Check design** to find refusals before simulation. For cooled dwellings, confirm the product supports cooling, its airflow is within the permitted range, and **Cooling control room** is populated. Click **Build & Run Mixed Design**. This builds one coordinated model from the clean baseline and runs the full-year assessment. It is the final design authority; individual screening or iteration passes do not replace its result.
+Set the Mixed Design **Simulation case** and fresh output root. Use **Check design** to find refusals before simulation. For cooled dwellings, confirm the product supports cooling, its airflow is within the permitted range, and **Cooling control room** is populated. Click **Build & Run Mixed Design**. This builds one coordinated model from the clean baseline and runs the full-year assessment. Review the final coordinated Part O result; individual screening or iteration passes do not replace it.
 
 ## 16. Review and retain the final result
 
