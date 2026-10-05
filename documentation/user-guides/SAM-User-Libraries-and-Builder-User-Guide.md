@@ -112,7 +112,22 @@ Saving never applies, and applying does not require saving — with one exceptio
 
 ## 4. Choose what you want to do
 
-Start from the **Thermal performance** panel.
+### Opening Thermal Performance
+
+Open your Analytical Model, select the panels or apertures you want to change in a view (or choose **Whole envelope** in the panel), then switch on **Thermal Performance** under the **View** ribbon tab, in the **Panels** group. You can also right-click a selection in the 3D view and choose **Set U-value...** (panels) or **Set glazing...** (apertures), which opens the panel at the right row. The panel lists one row per construction.
+
+### Key terms
+
+| Term | Meaning |
+|---|---|
+| **Analytical Model** | The project model you are editing. It changes only when a pending change is applied. |
+| **Candidate** | A glazing system or construction offered for selection on a row. |
+| **Pending change** | The candidate currently selected for a row but not yet written into the Analytical Model (**Apply** writes it, **Discard** drops it). |
+| **My library** | Reusable glazing systems and constructions saved in your user profile, for use across models and sessions. |
+| **Target U** | The U-value you type for an opaque row. SAM generates a variant to reach it and lists existing constructions that meet it or come within 10 %. (Glazing has its own **Target Uw ≤** filter.) |
+| **Added source** | A Tas database (`.tcd`) or JSON file you add with **Add source…** under **Sources** in the panel. It is remembered and offers extra candidates. |
+
+### Where do I start?
 
 | I want to… | Start here |
 |---|---|
@@ -130,7 +145,7 @@ Start from the **Thermal performance** panel.
 
 ## 5. First five minutes
 
-1. Open the **Thermal performance** panel.
+1. Open the **Thermal performance** panel ([section 4](#opening-thermal-performance)).
 2. Find the glazing row or opaque construction you want to change.
 3. Choose or create the alternative you need — glazing: **Change…**; opaque: type a **Target U**.
 4. Review its thermal performance.
@@ -163,7 +178,16 @@ Right-clicking a candidate opens its menu **without choosing it**, so it does no
 
 ### What the list shows
 
-The list combines your model's own systems, the SAM default library, **My glazing systems**, and any sources you added with **Add source…**. The model's systems and My glazing systems are always listed; **Default library** and **Added sources** can be switched off under **⋯ Filters**. Filters also set a minimum/maximum g-value and a minimum light transmittance and the sort order. **Target Uw ≤** limits the list to systems with that overall U-value or better. Each entry shows `Uw · Ug · Uf · g · LT`. The list is sorted best overall Uw first by default (change it under **Sort by**), and the current system is always shown even if a filter would exclude it.
+Candidates come from four sources:
+
+| Source | Use it when… |
+|---|---|
+| **Model** | You want to reuse something already in the current model. |
+| **Default library** | You want a standard SAM definition. |
+| **My library** (**My glazing systems** here, **My constructions** for opaque rows) | You want a definition you created and saved earlier. |
+| **Added sources** | You need definitions from a file you added with **Add source…**. |
+
+The model's systems and My glazing systems are always listed; **Default library** and **Added sources** can be switched off under **⋯ Filters**. Filters also set a minimum/maximum g-value and a minimum light transmittance and the sort order. **Target Uw ≤** limits the list to systems with that overall U-value or better. Each entry shows `Uw · Ug · Uf · g · LT`. The list is sorted best overall Uw first by default (change it under **Sort by**), and the current system is always shown even if a filter would exclude it.
 
 When you open the Builder from the **Change…** list (**Create new…**, **New system based on this…** or **Open in Builder…**), then save: after saving, the **Change…** list picks up the new system and chooses it as the pending change. The Analytical Model is still unchanged until **Apply**. (A Builder opened from **My library…** saves to the library but does not choose anything in the list.)
 
@@ -318,7 +342,7 @@ The list holds:
 - the **generated variant** first (see [section 10](#10-generate-a-target-u-variant)); it can be selected only when its target was reached;
 - then the **existing constructions that meet the target or are within 10 % above it**, up to 30. Each shows its U-value, how far it is from the target, where it comes from (**Existing model**, **Library**, **My constructions** or the added source's name) and any warning.
 
-Existing constructions come from your model, the SAM default library, **My constructions** and any added sources. Constructions that meet the target are listed first, then those that come close; within each group, constructions made for the panels' own type come first, then the closest to the target.
+Existing constructions come from the same four sources ([section 6](#what-the-list-shows)). Constructions that meet the target are listed first, then those that come close; within each group, constructions made for the panels' own type come first, then the closest to the target.
 
 Once you type a Target U, the generated variant becomes the pending change (when its target can be reached). To use an existing construction instead, select it; SAM never chooses an existing construction for you. Then continue with [section 12](#12-select-and-apply). To keep an alternative for later, right-click it → **Save to My constructions…** ([section 11](#11-save-to-my-constructions)).
 
