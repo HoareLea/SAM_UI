@@ -19,7 +19,7 @@ namespace SAM.Analytical.UI.WPF
         /// It asks exactly what <c>Modify.RunPartOIteration3</c> asks before its first TAS call - the
         /// eligibility authority, the system scope, and the same resolution query for the method
         /// (<see cref="PartOIteration3EquipmentResolution"/>, <see cref="PartOIteration3CoolingResolution"/>,
-        /// <see cref="PartOIteration3GuidanceResolution(AdjacencyCluster, VentilationUnitCatalogue, out Dictionary{Guid, MechanicalVentilationGuidanceSettings}, out List{string})"/>)
+        /// <see cref="PartOIteration3GuidanceResolution(AdjacencyCluster, IEnumerable{Zone}, PartODwellingStrategySet, VentilationUnitCatalogue, out Dictionary{Guid, MechanicalVentilationGuidanceSettings}, out List{string})"/>)
         /// over the same inputs. So a refusal shown here is the refusal the run would record at Equipment
         /// resolution, only minutes of TAS earlier; and a pre-flight that passes promises nothing about TAS
         /// itself, which is still ahead of it.
@@ -61,7 +61,9 @@ namespace SAM.Analytical.UI.WPF
                     break;
 
                 case PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance:
-                    refusals = PartOIteration3GuidanceResolution(adjacencyCluster, ventilationUnitCatalogue, out Dictionary<Guid, MechanicalVentilationGuidanceSettings> _, out List<string> _);
+                    refusals = PartOIteration3GuidanceResolution(adjacencyCluster, partORun.PreparationContext.Zones,
+                        partORun.AnalyticalModel_Prepared.GetValue<PartODwellingStrategySet>(Analytical.AnalyticalModelParameter.PartODwellingStrategies),
+                        ventilationUnitCatalogue, out Dictionary<Guid, MechanicalVentilationGuidanceSettings> _, out List<string> _);
                     break;
             }
 
@@ -209,7 +211,9 @@ namespace SAM.Analytical.UI.WPF
                 return [];
             }
 
-            List<string> refusals = PartOIteration3GuidanceResolution(adjacencyCluster, ventilationUnitCatalogue, out Dictionary<Guid, MechanicalVentilationGuidanceSettings> _, out List<string> _, out List<PartOIteration3GuidanceEvidence> evidence);
+            List<string> refusals = PartOIteration3GuidanceResolution(adjacencyCluster, partORun.PreparationContext.Zones,
+                partORun.AnalyticalModel_Prepared.GetValue<PartODwellingStrategySet>(Analytical.AnalyticalModelParameter.PartODwellingStrategies),
+                ventilationUnitCatalogue, out Dictionary<Guid, MechanicalVentilationGuidanceSettings> _, out List<string> _, out List<PartOIteration3GuidanceEvidence> evidence);
 
             if (refusals.Count != 0)
             {

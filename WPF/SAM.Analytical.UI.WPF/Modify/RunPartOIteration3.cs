@@ -416,6 +416,8 @@ namespace SAM.Analytical.UI.WPF
 
                 List<string> refusals_Guidance = Query.PartOIteration3GuidanceResolution(
                     partOIteration3SystemScope.AdjacencyCluster,
+                    partORun.PreparationContext.Zones,
+                    analyticalModel_Prepared.GetValue<PartODwellingStrategySet>(Analytical.AnalyticalModelParameter.PartODwellingStrategies),
                     ventilationUnitCatalogue,
                     out guidanceSettings,
                     out List<string> notes_Guidance,

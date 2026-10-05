@@ -23,11 +23,13 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public static List<string> PartOIteration3GuidanceResolution(
             AdjacencyCluster adjacencyCluster,
+            IEnumerable<Zone> zones_Dwelling,
+            PartODwellingStrategySet partODwellingStrategySet,
             VentilationUnitCatalogue ventilationUnitCatalogue,
             out Dictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings,
             out List<string> notes)
         {
-            return PartOIteration3GuidanceResolution(adjacencyCluster, ventilationUnitCatalogue, out guidanceSettings, out notes, out List<PartOIteration3GuidanceEvidence> _);
+            return PartOIteration3GuidanceResolution(adjacencyCluster, zones_Dwelling, partODwellingStrategySet, ventilationUnitCatalogue, out guidanceSettings, out notes, out List<PartOIteration3GuidanceEvidence> _);
         }
 
         /// <summary>
@@ -37,6 +39,8 @@ namespace SAM.Analytical.UI.WPF
         /// </summary>
         public static List<string> PartOIteration3GuidanceResolution(
             AdjacencyCluster adjacencyCluster,
+            IEnumerable<Zone> zones_Dwelling,
+            PartODwellingStrategySet partODwellingStrategySet,
             VentilationUnitCatalogue ventilationUnitCatalogue,
             out Dictionary<Guid, MechanicalVentilationGuidanceSettings> guidanceSettings,
             out List<string> notes,
@@ -65,6 +69,12 @@ namespace SAM.Analytical.UI.WPF
             if (airHandlingUnits.Count == 0)
             {
                 refusals.Add("The scoped design carries no air handling unit that a retained ventilation system names, so no manufacturer guidance could be resolved.");
+                return refusals;
+            }
+
+            if (partODwellingStrategySet is null || !partODwellingStrategySet.IsValid)
+            {
+                refusals.Add("The prepared design has no valid saved Part O dwelling strategy selections, so its cooling control rooms cannot be resolved.");
                 return refusals;
             }
 
@@ -107,6 +117,43 @@ namespace SAM.Analytical.UI.WPF
                     refusals.Add(string.Format("Air handling unit '{0}' selects '{1}', whose catalogue entry {2}", airHandlingUnit.Name, ventilationUnitReference_Selected, refusal_Guidance));
                     continue;
                 }
+
+                HashSet<Guid> guids_Served = [];
+                foreach (VentilationSystem ventilationSystem in adjacencyCluster.VentilationSystems(airHandlingUnit))
+                {
+                    foreach (Space space in adjacencyCluster.GetRelatedObjects<Space>(ventilationSystem) ?? [])
+                    {
+                        guids_Served.Add(space.Guid);
+                    }
+                }
+
+                List<Zone> zones_Served = [];
+                foreach (Zone zone_Dwelling in zones_Dwelling ?? [])
+                {
+                    Zone zone = zone_Dwelling is null ? null : adjacencyCluster.GetObject<Zone>(zone_Dwelling.Guid);
+                    if (zone is not null && (adjacencyCluster.GetRelatedObjects<Space>(zone) ?? []).Exists(x => guids_Served.Contains(x.Guid)))
+                    {
+                        zones_Served.Add(zone);
+                    }
+                }
+
+                if (zones_Served.Count != 1)
+                {
+                    refusals.Add(string.Format("Air handling unit '{0}' must serve exactly one prepared Part O dwelling to resolve its cooling control room; it serves {1}.", airHandlingUnit.Name, zones_Served.Count));
+                    continue;
+                }
+
+                Zone zone_Served = zones_Served[0];
+                PartODwellingStrategy strategy_Dwelling = partODwellingStrategySet.Strategy(zone_Served.Guid);
+                Guid guid_Stat = strategy_Dwelling?.CoolingStatSpaceGuid ?? Guid.Empty;
+                List<Space> spaces_Dwelling = adjacencyCluster.GetRelatedObjects<Space>(zone_Served) ?? [];
+                if (guid_Stat == Guid.Empty || !spaces_Dwelling.Exists(x => x.Guid == guid_Stat) || !guids_Served.Contains(guid_Stat))
+                {
+                    refusals.Add(string.Format("Air handling unit '{0}' serves dwelling '{1}', which has no valid selected cooling control room among the rooms it serves (selected room GUID: {2}).", airHandlingUnit.Name, zone_Served.Name, guid_Stat));
+                    continue;
+                }
+
+                mechanicalVentilationGuidanceSettings.CoolingStatSpaceGuid = guid_Stat;
 
                 guidanceSettings[airHandlingUnit.Guid] = mechanicalVentilationGuidanceSettings;
 
