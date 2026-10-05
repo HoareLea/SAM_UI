@@ -22,7 +22,7 @@ namespace SAM.Analytical.UI.WPF.Tests
             catch (IOException) { }
         }
 
-        private (PartORun Run, VentilationUnitCatalogue Catalogue, List<Zone> Zones, List<AirHandlingUnit> Units, List<Space> Stats) Prepared()
+        private (PartORun Run, VentilationUnitCatalogue Catalogue, List<Zone> Zones, List<AirHandlingUnit> Units, List<Space> Stats) Prepared(int dwellingCount = 3, bool alternateStatRooms = false)
         {
             VentilationUnitCatalogue catalogue = VentilationUnitCatalogue.Read();
             Assert.Equal(VentilationUnitCatalogueState.Selectable, catalogue.State);
@@ -35,25 +35,35 @@ namespace SAM.Analytical.UI.WPF.Tests
             List<Guid> systemGuids = [];
             PartODwellingStrategySet selections = new();
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < dwellingCount; i++)
             {
                 VentilationSystem system = PartOIteration3Fixture.VentilationSystem(cluster, $"Unit {i}", "MVHR", out AirHandlingUnit unit);
                 Space stat = PartOIteration3Fixture.Space(cluster, $"Control {i}");
                 Space extract = PartOIteration3Fixture.Space(cluster, $"Extract {i}");
                 PartOIteration3Fixture.Terminal(cluster, system, stat, FlowClassification.Supply, 30);
-                PartOIteration3Fixture.Terminal(cluster, system, extract, FlowClassification.Extract, 30);
+                Space alternateStat = alternateStatRooms && i % 2 == 1
+                    ? PartOIteration3Fixture.Space(cluster, $"Alternate control {i}") : null;
+                if (alternateStat is not null)
+                {
+                    PartOIteration3Fixture.Terminal(cluster, system, alternateStat, FlowClassification.Supply, 10);
+                    cluster.AddRelation(system, alternateStat);
+                }
+                PartOIteration3Fixture.Terminal(cluster, system, extract, FlowClassification.Extract, alternateStat is null ? 30 : 40);
                 cluster.AddRelation(system, stat);
                 cluster.AddRelation(system, extract);
-                Zone zone = PartOIteration3Fixture.Zone(cluster, $"Dwelling {i}", stat, extract);
+                Zone zone = alternateStat is null
+                    ? PartOIteration3Fixture.Zone(cluster, $"Dwelling {i}", stat, extract)
+                    : PartOIteration3Fixture.Zone(cluster, $"Dwelling {i}", stat, alternateStat, extract);
 
                 unit.SetValue(AirHandlingUnitParameter.VentilationUnitReference, template.VentilationUnitReference);
                 cluster.AddObject(unit);
+                Space selectedStat = alternateStat ?? stat;
                 selections.Set(new PartODwellingStrategy(zone.Guid, PartOVentilationMode.MVHR,
                     template.VentilationUnitReference, PartOActiveCooling.SupplyAirCooling)
-                { CoolingStatSpaceGuid = stat.Guid });
+                { CoolingStatSpaceGuid = selectedStat.Guid });
                 zones.Add(zone);
                 units.Add(unit);
-                stats.Add(stat);
+                stats.Add(selectedStat);
                 systemGuids.Add(system.Guid);
             }
 
@@ -100,6 +110,38 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(materialised.IsMaterialised, string.Join(" | ", materialised.Refusals));
             Assert.Equal(3, settings.Count);
             Assert.Equal(3, evidence.Count);
+        }
+
+        [WpfTheory]
+        [InlineData(1)]
+        [InlineData(4)]
+        public void ChangedDwellingCountAndStatRoomChoices_ReachGuidanceAndMaterialisation(int dwellingCount)
+        {
+            var test = Prepared(dwellingCount, alternateStatRooms: true);
+            PartOIteration3Eligibility eligibility = Query.PartOIteration3Eligibility(test.Run,
+                test.Run.IsAssessable(out string refusal), refusal);
+            PartOIteration3Preflight preflight = Query.PartOIteration3Preflight(test.Run, eligibility,
+                PartOIteration3BehaviourMode.SelectedProductManufacturerGuidance, test.Catalogue);
+            Assert.True(preflight.CanRun, string.Join(" | ", preflight.Refusals));
+
+            AdjacencyCluster scoped = Query.PartOIteration3ScopedCluster(test.Run, out List<string> scopeRefusals);
+            Assert.Empty(scopeRefusals);
+            PartODwellingStrategySet selections = test.Run.AnalyticalModel_Prepared.GetValue<PartODwellingStrategySet>(
+                Analytical.AnalyticalModelParameter.PartODwellingStrategies);
+            Assert.Empty(Query.PartOIteration3GuidanceResolution(scoped, test.Zones, selections, test.Catalogue,
+                out Dictionary<Guid, MechanicalVentilationGuidanceSettings> settings,
+                out List<string> _, out List<PartOIteration3GuidanceEvidence> evidence));
+
+            Assert.Equal(dwellingCount, evidence.Count);
+            for (int i = 0; i < dwellingCount; i++)
+            {
+                Assert.Equal(test.Stats[i].Guid, settings[test.Units[i].Guid].CoolingStatSpaceGuid);
+                Assert.Equal(test.Stats[i].Guid, evidence.Single(x => x.Guid_AirHandlingUnit == test.Units[i].Guid).Guid_CoolingStatSpace);
+            }
+
+            MechanicalVentilationMaterialisation materialised = new PartOIteration3Pipeline().Materialise(scoped,
+                test.Zones.SelectMany(x => PartOIteration3Fixture.Spaces(scoped, x)), null, null, settings);
+            Assert.True(materialised.IsMaterialised, string.Join(" | ", materialised.Refusals));
         }
 
         [WpfTheory]
