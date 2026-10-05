@@ -53,7 +53,7 @@ In the **Zone** editor, set **Dwelling** to **Yes** for each dwelling zone (the 
 
 ## 5. Map TM59 Internal Conditions
 
-Use **Edit → Analytical Model → Map IC (TM59)** after grouping the dwellings. Review the proposed room mapping in the **TM59 - Map Internal Conditions** window and assign it. Verify that the dwelling's living, sleeping and cooking rooms have suitable internal conditions and TM59 classification. Check occupancy and room naming before running: a space without internal conditions may be omitted from the assessment, while a misclassified room may receive the wrong criterion. Confirm the **Readiness** summary in Prepare & Run.
+Use **Edit → Analytical Model → Map IC (TM59)** after grouping the dwellings. Review the proposed room mapping in the **TM59 - Map Internal Conditions** window and assign it. Verify that the dwelling's living, sleeping and cooking rooms have suitable internal conditions and TM59 classification. Check occupancy and room naming before running: missing internal conditions can block the run or prevent a complete TM59 assessment, while a misclassified room may receive the wrong criterion. Resolve every in-scope room's assignment and confirm the **Readiness** summary in Prepare & Run.
 
 ## 6. Weather
 
