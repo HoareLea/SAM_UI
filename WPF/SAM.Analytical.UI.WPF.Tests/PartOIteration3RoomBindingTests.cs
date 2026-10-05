@@ -12,6 +12,7 @@ using Xunit;
 
 namespace SAM.Analytical.UI.WPF.Tests
 {
+    [Collection(WpfCollection.Name)]
     public class PartOIteration3RoomBindingTests : IDisposable
     {
         private readonly string directory = PartOIteration3Fixture.Directory_Temp();
