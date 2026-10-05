@@ -87,3 +87,22 @@ A second review comment identified misleading wording about missing TM59 interna
 ## Part O guide merge and Wiki publication (2026-10-05)
 
 PR #198 merged into `sow/2026-Q3` as `3d7758dd5234b9d84c9747c6d6a971763cc21a4a` with protected head `278791aae6b71076b2a401ce57f426989261f8a1`. Windows build and SPDX passed; both review threads were resolved. Local base fast-forwarded to the merge and matched origin; `codex/part-o-engineer-guide` was deleted locally and remotely. Ran `documentation/publish-part-o-wiki.ps1` from the merged base and committed the byte-identical Wiki page as `87cfd7c2f20785607dc73ae0fc4c2316421c48be`. Source and Wiki SHA-256 match (`9D4BF845E8D9ABD25119AA26658128E6AFAEBE98F6658C13CE97DA45C1DE343A`). The live Wiki shows both Mermaid diagrams rendered, the corrected Mixed Design catalogue guidance, the missing-internal-conditions guidance, and a working Home > User Guides link. No application code changed. Next: no follow-up for this task; make future guide edits in the repository source before republishing the Wiki.
+
+## Floor-plan label solver, clustered anchors (#58), 2026-10-05: COMPLETE
+
+**Merges and branches**
+- The root cause was in the shared SAM `Solver2D`. The fix merged as SAM-BIM/SAM#177 at `2eecf11ac6ae1a07384ab84d54ec8d90b2120841`, with the SAM closeout at `689f75d5`. It is exact: no label moves.
+- The end-to-end test `WPF/SAM.Analytical.UI.WPF.Tests/FloorPlanClusteredLabelTests.cs` merged as #200 at `6689063bd12275cdc6af9e0f9acb0af88626eea9` (head `58d4fab2`, which merged in the docs-only base `46ded6f7`).
+- No SAM_UI source changed. Local `sow/2026-Q3` matches origin, and both feature branches are deleted.
+
+**Evidence**
+- End-to-end, 400 clustered 20 m spaces: 143 solved / 257 over budget / 500 034 units / ~5.5 s before, and 400 solved / 0 / 78 887 units / ~0.3 s after.
+- Small project model smoke: label texts and positions are identical before and after.
+
+**Validation**
+- Focused WPF tests: 74 passed.
+- Full WPF suite: 2 445 passed, with one pre-existing failure. `WpfCollectionTests` flags `PartOIteration3RoomBindingTests` for a missing `[Collection(WpfCollection.Name)]`. This is a separate task and was not fixed here.
+- #200 CI: build and SPDX green.
+
+**Follow-up**
+- The layout-changing fast path for heterogeneous near-coincident piles is tracked in #199. Do not start it unless requested.
