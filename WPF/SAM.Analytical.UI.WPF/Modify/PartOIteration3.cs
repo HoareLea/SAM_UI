@@ -203,6 +203,27 @@ namespace SAM.Analytical.UI.WPF
 
             PartOIteration3PairingStatus partOIteration3PairingStatus = partOIteration3Eligibility.PairingStatus(partOIteration3BehaviourMode);
 
+            PartOIteration3Paths paths = PartOIteration3Paths.Create(partORun.SimulationContext, partORun.Path_TSD, partOIteration3BehaviourMode);
+            string refusal_Output = paths?.OutputPaths.TryClaimRun(partORun.Guid_OutputRun, caseKey: Query.PartOSimulationCaseKey(partORun.SimulationContext));
+            bool replaceExisting = false;
+            if (refusal_Output is not null)
+            {
+                if (!refusal_Output.Contains("already contains run evidence", StringComparison.Ordinal))
+                {
+                    MessageBox.Show(refusal_Output, "Part O — Iteration 3", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return null;
+                }
+
+                DialogResult replacement = MessageBox.Show(
+                    refusal_Output + "\n\nReplace the existing evidence intentionally?",
+                    "Part O — Iteration 3", MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (replacement != DialogResult.Yes)
+                {
+                    return null;
+                }
+                replaceExisting = true;
+            }
+
             if (partOIteration3PairingStatus.IsReviewable)
             {
                 DialogResult dialogResult = MessageBox.Show(
@@ -249,7 +270,8 @@ namespace SAM.Analytical.UI.WPF
                     partOProgressHost.Token,
                     partOIteration3BehaviourMode,
                     PartOIteration3StageAnnouncer(partOProgressHost, partOIteration3BehaviourMode, resumed),
-                    partOIteration3ResumePlan);
+                    partOIteration3ResumePlan,
+                    replaceExisting);
 
                 if (partOIteration3Result.IsComplete)
                 {

@@ -59,6 +59,9 @@ namespace SAM.Analytical.UI
     /// </summary>
     public class PartORun
     {
+        /// <summary>Session identity of this preparation and its attempts; a new preparation gets a new identity.</summary>
+        public System.Guid Guid_OutputRun { get; private set; }
+
         private AnalyticalModel analyticalModel_Prepared;
 
         private List<OverheatingScenario> overheatingScenarios = [];
@@ -621,6 +624,7 @@ namespace SAM.Analytical.UI
             }
 
             this.analyticalModel_Prepared = analyticalModel_Prepared;
+            Guid_OutputRun = System.Guid.NewGuid();
             this.overheatingScenarios = overheatingScenarios_Temp;
             this.partOPreparationContext = partOPreparationContext;
 
@@ -1086,6 +1090,7 @@ namespace SAM.Analytical.UI
         /// </summary>
         private void InvalidateCore(string reason)
         {
+            Guid_OutputRun = System.Guid.Empty;
             analyticalModel_Prepared = null;
             overheatingScenarios = [];
             analyticalModel_Workflow = null;

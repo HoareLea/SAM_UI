@@ -115,12 +115,31 @@ namespace SAM.Analytical.UI.WPF.Tests
             Assert.True(result.Complete(analyticalModel_Workflow, path_TSD_ReferenceA, PartOIteration3Fixture.SimulationContext(directory), out string refusal));
             Assert.Null(refusal);
 
+            //The fake pipeline stages TAS files before the orchestrator runs.
+            Assert.Null(PartOOutputPaths.Create(directory, PartOOutputCase.Iteration3)
+                .TryClaimRun(result.Guid_OutputRun, replaceExisting: true, caseKey: Query.PartOSimulationCaseKey(result.SimulationContext)));
+
             return result;
         }
 
         private static MechanicalVentilationMaterialisation Materialisation()
         {
             return new MechanicalVentilationMaterialisation(new Core.Systems.SystemEnergyCentre("Part O"), null, ["materialised"], null);
+        }
+
+        [Fact]
+        public void ANewRunRefusesOccupiedIteration3BeforeReplacingItsRecord()
+        {
+            PartORun run = Run();
+            PartOIteration3Paths paths = PartOIteration3Paths.Create(run.SimulationContext, run.Path_TSD);
+            Assert.Null(paths.OutputPaths.TryClaimRun(Guid.NewGuid(), replaceExisting: true,
+                caseKey: Query.PartOSimulationCaseKey(run.SimulationContext)));
+            File.WriteAllText(paths.Path_Record, "earlier pairing");
+
+            PartOIteration3Result result = Modify.RunPartOIteration3(run, Pipeline_Complete(out List<Guid> _));
+
+            Assert.False(result.IsComplete);
+            Assert.Equal("earlier pairing", File.ReadAllText(paths.Path_Record));
         }
 
         private static MechanicalVentilationMaterialisation Materialisation_Refused(string refusal)

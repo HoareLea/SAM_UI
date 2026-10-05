@@ -168,6 +168,11 @@ namespace SAM.Analytical.UI.WPF.Tests
 
             Assert.True(partORun.Complete(analyticalModel_Workflow, path_TSD, PartOIteration3Fixture.SimulationContext(directory_ReferenceA), out string _));
 
+            //The fake TAS pipeline writes its fixtures before RunPartOIteration3 starts. Claim those
+            //staged files as this run's evidence, as the production pipeline does at attempt start.
+            Assert.Null(PartOOutputPaths.Create(directory, PartOOutputCase.Iteration3)
+                .TryClaimRun(partORun.Guid_OutputRun, replaceExisting: true, caseKey: Query.PartOSimulationCaseKey(partORun.SimulationContext)));
+
             //Candidate B's name as the run derives it - qualified where Reference A is an Iteration 1a run.
             string name_CandidateB = "Flat" + PartOIteration3Paths.Qualifier_Reference(path_TSD) + PartOIteration3Paths.Suffix_CandidateB;
 
