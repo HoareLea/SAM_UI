@@ -14,6 +14,13 @@ namespace SAM.Core.UI.WPF
         public event GettingTextEventHandler GettingText;
         public event GettingCategoryEventHandler GettingCategory;
 
+        /// <summary>
+        /// Raised once per object while <see cref="SetObjects{T}"/> builds the tree, to ask whether that
+        /// object should start out ticked. With no handler attached nothing is ticked, which is how the
+        /// control behaved before this event existed.
+        /// </summary>
+        public event GettingCheckedEventHandler GettingChecked;
+
         public MultipleSelectionTreeViewControl()
         {
             InitializeComponent();
@@ -57,11 +64,82 @@ namespace SAM.Core.UI.WPF
 
                 itemCollection.Add(treeViewItem_New);
             }
+
+            RefreshSelection(TreeView_Main.Items);
+        }
+
+        /// <summary>
+        /// Recomputes every category node's tick from its children, bottom-up.
+        /// <para>
+        /// Only matters when <see cref="GettingChecked"/> pre-ticked some leaves. The per-item handler
+        /// that normally keeps a parent in step runs on a user click, when the item is already in the
+        /// tree; during <see cref="SetObjects{T}"/> an item has no Parent yet, so nothing propagates and
+        /// a category whose children are all ticked would otherwise still render unticked.
+        /// </para>
+        /// </summary>
+        private void RefreshSelection(ItemCollection itemCollection)
+        {
+            if(itemCollection == null)
+            {
+                return;
+            }
+
+            foreach(TreeViewItem treeViewItem in itemCollection)
+            {
+                if(treeViewItem == null)
+                {
+                    continue;
+                }
+
+                RefreshSelection(treeViewItem.Items);
+
+                if(treeViewItem.Items == null || treeViewItem.Items.Count == 0)
+                {
+                    continue;
+                }
+
+                CheckBox checkBox = treeViewItem.Header as CheckBox;
+                if(checkBox == null)
+                {
+                    continue;
+                }
+
+                HashSet<bool?> bools = new HashSet<bool?>();
+                foreach(TreeViewItem treeViewItem_Child in treeViewItem.Items)
+                {
+                    CheckBox checkBox_Child = treeViewItem_Child?.Header as CheckBox;
+                    if(checkBox_Child == null)
+                    {
+                        continue;
+                    }
+
+                    bools.Add(checkBox_Child.IsChecked);
+                }
+
+                if(bools.Count == 0)
+                {
+                    continue;
+                }
+
+                bool selected = !(bools.Contains(null) || bools.Contains(false));
+                if(checkBox.IsChecked == selected)
+                {
+                    continue;
+                }
+
+                checkBox.Checked -= CheckBox_Updated;
+                checkBox.Unchecked -= CheckBox_Updated;
+
+                checkBox.IsChecked = selected;
+
+                checkBox.Checked += CheckBox_Updated;
+                checkBox.Unchecked += CheckBox_Updated;
+            }
         }
 
         public List<T> GetObjects<T>(bool selected = true)
         {
-            return GetObjects<T>(TreeView_Main.Items);
+            return GetObjects<T>(TreeView_Main.Items, selected);
         }
 
         private List<T> GetObjects<T>(ItemCollection itemCollection, bool selected = true)
@@ -208,7 +286,22 @@ namespace SAM.Core.UI.WPF
                 text = UndefinedText;
             }
 
+            bool @checked = false;
+            if(GettingChecked != null)
+            {
+                GettingCheckedEventArgs gettingCheckedEventArgs = new GettingCheckedEventArgs(@object);
+                GettingChecked.Invoke(this, gettingCheckedEventArgs);
+                @checked = gettingCheckedEventArgs.Checked;
+            }
+
             CheckBox checkBox = new CheckBox() { Content = text };
+
+            // Set before the handlers are attached, not after. CheckBox_Updated exists to keep a parent
+            // node in step with its children, and it cannot do that here: this item has no Parent until
+            // SetObjects adds it to the tree, so the handler would walk up to nothing. Parent state is
+            // brought in line once, by RefreshSelection, after the whole tree is built.
+            checkBox.IsChecked = @checked;
+
             checkBox.Checked += CheckBox_Updated;
             checkBox.Unchecked += CheckBox_Updated;
 

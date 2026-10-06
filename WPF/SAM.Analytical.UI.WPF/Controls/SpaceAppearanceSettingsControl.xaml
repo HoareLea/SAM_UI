@@ -21,7 +21,8 @@
                 <RadioButton x:Name="radioButton_HeatingSystem" Content="Heating System" Height="22" Click="RadioButton_Click"/>
                 <RadioButton x:Name="radioButton_CoolingSystem" Content="Cooling System" Height="22" Click="RadioButton_Click"/>
                 <RadioButton x:Name="radioButton_NCMData" Content="NCM" Height="22" Click="RadioButton_Click"/>
-                <RadioButton x:Name="radioButton_ComplexRefernce" Content="Reference" Height="22" Click="RadioButton_Click"/>
+                <RadioButton x:Name="radioButton_ComplexRefernce" Content="Reference" Height="22" Click="RadioButton_Click" ToolTip="Select any data that is not predefined. Opens a reference selection window to browse available properties."/>
+                <RadioButton x:Name="radioButton_PartFSpaceData" Content="PartF Data" Height="22" Click="RadioButton_Click"/>
             </StackPanel>
         </GroupBox>
         <Label Grid.Column="1" x:Name="label_ParameterName" Content="Parameter Name:" HorizontalAlignment="Stretch" Margin="5,20,5,0" VerticalAlignment="Top"/>

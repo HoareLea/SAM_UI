@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:oxy="http://oxyplot.org/wpf"
+             xmlns:core="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF"
              mc:Ignorable="d" d:DesignHeight="520" d:DesignWidth="820">
     <Grid Margin="8">
         <Grid.RowDefinitions>
@@ -56,7 +57,8 @@
             <DataGrid x:Name="DataGrid_Values" Grid.Column="0" AutoGenerateColumns="False"
                       CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column"
                       SelectionMode="Extended" SelectionUnit="FullRow" GridLinesVisibility="All"
-                      CellEditEnding="DataGrid_Values_CellEditEnding">
+                      CellEditEnding="DataGrid_Values_CellEditEnding"
+                      core:DataGridBehavior.SelectAllOnEdit="True">
                 <DataGrid.Columns>
                     <DataGridTextColumn x:Name="Column_Index" Header="Index" Binding="{Binding Index}" IsReadOnly="True" Width="60"/>
                     <DataGridTextColumn x:Name="Column_Value" Header="Value" Binding="{Binding Value}" Width="*"/>

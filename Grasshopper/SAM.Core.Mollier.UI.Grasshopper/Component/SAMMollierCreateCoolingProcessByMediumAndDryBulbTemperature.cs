@@ -1,4 +1,7 @@
-﻿using Grasshopper.Kernel;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using Grasshopper.Kernel;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -37,7 +40,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
                 result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_returnTemperature", NickName = "_returnTemperature", Description = "Return Temperature [C]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_dryBulbTemperature", NickName = "_dryBulbTemperature", Description = "Dry Bulb Temparture [C]", Access = GH_ParamAccess.item };
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_dryBulbTemperature", NickName = "_dryBulbTemperature", Description = "Dry Bulb Temperature [C]", Access = GH_ParamAccess.item };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Colour param_Colour = null;

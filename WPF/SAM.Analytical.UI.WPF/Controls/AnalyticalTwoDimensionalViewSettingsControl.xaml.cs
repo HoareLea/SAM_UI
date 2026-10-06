@@ -1,9 +1,13 @@
-﻿using SAM.Architectural;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Architectural;
 using SAM.Geometry.Object;
 using SAM.Geometry.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace SAM.Analytical.UI.WPF
@@ -14,6 +18,38 @@ namespace SAM.Analytical.UI.WPF
     public partial class AnalyticalTwoDimensionalViewSettingsControl : UserControl
     {
         private TwoDimensionalViewSettings twoDimensionalViewSettings;
+
+        /// <summary>
+        /// The view's Part F airflow presentation, edited in its own dialog and stored back on the view.
+        /// <para>
+        /// Null means this view has never been told about Part F, which is not the same as being told to turn
+        /// it off: a null is left absent from the view rather than written as a disabled setting, so the
+        /// hundreds of views saved before the annotation existed stay exactly as they are.
+        /// </para>
+        /// </summary>
+        private PartFAirflowViewSettings partFAirflowViewSettings;
+
+        /// <summary>
+        /// The view's Ventilation Design presentation, edited in its own dialog and stored back on the
+        /// view - the DESIGN airflow overlay, separate from and orthogonal to <see cref="partFAirflowViewSettings"/>.
+        /// Null means this view has never been told about it, kept absent rather than written as disabled
+        /// for the same reason as the Part F settings.
+        /// </summary>
+        private DesignAirFlowViewSettings designAirFlowViewSettings;
+
+        private AdjacencyCluster adjacencyCluster_PartF;
+
+        /// <summary>
+        /// True while this panel is editing a view that does not exist yet.
+        /// <para>
+        /// The one thing that decides whether the Part F preset may be applied. This same panel edits a new
+        /// view and an existing one, and the difference matters: choosing the Part F colour scheme on a NEW
+        /// view should give the engineer a working Part F drawing, and doing the same on a view somebody has
+        /// already set up must not overwrite how they set it up. Set by whoever is creating the view; false by
+        /// default, which is the safe direction.
+        /// </para>
+        /// </summary>
+        public bool IsNewViewSettings { get; set; }
 
         public AnalyticalTwoDimensionalViewSettingsControl()
         {
@@ -45,7 +81,47 @@ namespace SAM.Analytical.UI.WPF
 
         private void SpaceAppearanceSettingsControl_ValueChanged(object sender, EventArgs e)
         {
+            ApplyPartFAirflowPreset();
+
             UpdateName();
+        }
+
+        /// <summary>
+        /// Gives a NEW view a usable Part F drawing the moment its colour scheme is set to Part F data,
+        /// instead of leaving the engineer to discover that nine more options are behind another dialog.
+        /// <para>
+        /// Deliberately narrow. It applies only while <see cref="IsNewViewSettings"/> is true - so no existing
+        /// view is ever touched - and only where the view has no Part F settings yet, so a person who has
+        /// already configured this view, or reopened its settings, or duplicated a Part F view, keeps exactly
+        /// what they had. Once applied it is theirs to edit; selecting the scheme again does not reset it.
+        /// </para>
+        /// <para>
+        /// It does not turn the annotation OFF again if the colour scheme is then changed to something else.
+        /// The two are independent - the fills say what each room is, the tags say what its air does - and a
+        /// person who wants the tags without the Part F colours is entitled to that combination.
+        /// </para>
+        /// </summary>
+        private void ApplyPartFAirflowPreset()
+        {
+            if (!IsNewViewSettings || partFAirflowViewSettings is not null || !IsPartFColorScheme())
+            {
+                return;
+            }
+
+            //Qualified: an unqualified Create here is SAM.Analytical.UI.WPF's own, which shadows it.
+            partFAirflowViewSettings = Analytical.UI.Create.PartFAirflowViewSettings(adjacencyCluster_PartF);
+
+            UpdatePartFAirflowButton();
+        }
+
+        /// <summary>
+        /// Whether the colour scheme currently chosen is the Part F one. Asked of the settings object rather
+        /// than of the radio button, so it is the same question the rest of the code asks and no control name
+        /// or caption is depended on.
+        /// </summary>
+        private bool IsPartFColorScheme()
+        {
+            return spaceAppearanceSettingsControl.SpaceAppearanceSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>() is PartFSpaceDataAppearanceSettings;
         }
 
         public TwoDimensionalViewSettings TwoDimensionalViewSettings
@@ -64,6 +140,9 @@ namespace SAM.Analytical.UI.WPF
         private void SetAnalyticalModel(AnalyticalModel analyticalModel)
         {
             AdjacencyCluster adjacencyCluster = analyticalModel?.AdjacencyCluster;
+
+            //Kept for the Part F airflow dialog, which lists the model's zone categories and dwelling zones.
+            adjacencyCluster_PartF = adjacencyCluster;
 
             spaceAppearanceSettingsControl.AdjacencyCluster = adjacencyCluster;
 
@@ -135,6 +214,98 @@ namespace SAM.Analytical.UI.WPF
             {
                 comboBox_Group.Text = group;
             }
+
+            partFAirflowViewSettings = twoDimensionalViewSettings.TryGetValue(AnalyticalViewSettingsParameter.PartFAirflow, out PartFAirflowViewSettings partFAirflowViewSettings_Temp)
+                ? partFAirflowViewSettings_Temp
+                : null;
+
+            UpdatePartFAirflowButton();
+
+            designAirFlowViewSettings = twoDimensionalViewSettings.TryGetValue(AnalyticalViewSettingsParameter.VentilationDesignAirflow, out DesignAirFlowViewSettings designAirFlowViewSettings_Temp)
+                ? designAirFlowViewSettings_Temp
+                : null;
+
+            UpdateVentilationDesignButton();
+        }
+
+        /// <summary>
+        /// Opens the Ventilation Design dialog for this view. A separate dialog from Part F Airflow's, on
+        /// the same footing: the two overlays read different authorities and are independently switched.
+        /// </summary>
+        private void button_VentilationDesign_Click(object sender, RoutedEventArgs e)
+        {
+            DesignAirFlowViewSettingsWindow designAirFlowViewSettingsWindow = new()
+            {
+                DesignAirFlowViewSettings = designAirFlowViewSettings,
+
+                //Fully qualified: an unqualified Window here is SAM.Analytical.Window, the architectural element.
+                Owner = System.Windows.Window.GetWindow(this),
+            };
+
+            if (designAirFlowViewSettingsWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            designAirFlowViewSettings = designAirFlowViewSettingsWindow.DesignAirFlowViewSettings;
+
+            UpdateVentilationDesignButton();
+        }
+
+        /// <summary>Says on the button whether this view carries the overlay, so it reads at a glance.</summary>
+        private void UpdateVentilationDesignButton()
+        {
+            button_VentilationDesign.Content = designAirFlowViewSettings is not null && designAirFlowViewSettings.Enabled
+                ? "Ventilation Design: on..."
+                : "Ventilation Design...";
+        }
+
+        /// <summary>
+        /// Opens the Part F airflow dialog for this view. Kept as a dialog rather than another group box on an
+        /// already crowded panel, and separate from the colour scheme on purpose: the two are independent and
+        /// are meant to be used together.
+        /// </summary>
+        private void button_PartFAirflow_Click(object sender, RoutedEventArgs e)
+        {
+            PartFAirflowViewSettingsWindow partFAirflowViewSettingsWindow = new()
+            {
+                AdjacencyCluster = adjacencyCluster_PartF,
+            };
+
+            //Assigned after the model, because the dwelling list has to exist before a saved dwelling can be
+            //selected in it.
+            partFAirflowViewSettingsWindow.PartFAirflowViewSettings = partFAirflowViewSettings;
+
+            //Fully qualified: an unqualified Window here is SAM.Analytical.Window, the architectural element.
+            partFAirflowViewSettingsWindow.Owner = System.Windows.Window.GetWindow(this);
+
+            if (partFAirflowViewSettingsWindow.ShowDialog() != true)
+            {
+                return;
+            }
+
+            partFAirflowViewSettings = partFAirflowViewSettingsWindow.PartFAirflowViewSettings;
+
+            UpdatePartFAirflowButton();
+        }
+
+        /// <summary>
+        /// Says on the button whether this view carries the annotation, so it reads at a glance.
+        /// <para>
+        /// The middle case is the one that matters, and it is asked BEFORE <c>Enabled</c>. Where the preset
+        /// could not tell what the drawing is about - several dwelling categories, or a zoned model with no
+        /// dwelling among them - the annotation is on and the scope is undecided, so nothing is assessed and
+        /// nothing is drawn. The switch alone would then read "on" over an empty plan; the button says what
+        /// is actually outstanding instead, which is the one action left.
+        /// </para>
+        /// </summary>
+        private void UpdatePartFAirflowButton()
+        {
+            button_PartFAirflow.Content =
+                partFAirflowViewSettings is null ? "Part F Airflow..."
+                : !partFAirflowViewSettings.HasDwellingScope ? "Part F Airflow: choose the dwellings..."
+                : partFAirflowViewSettings.Enabled ? "Part F Airflow: on..."
+                : "Part F Airflow...";
         }
 
         private TwoDimensionalViewSettings GetTwoDimensionalViewSettings()
@@ -185,6 +356,19 @@ namespace SAM.Analytical.UI.WPF
             }
 
             result.Plane = Geometry.Spatial.Create.Plane(elevationControl.Elevation);
+
+            //Written only where the view has one. Absent means "never told about Part F", and writing a
+            //disabled setting instead would change every view a person merely opened this dialog on.
+            if (partFAirflowViewSettings is not null)
+            {
+                result.SetValue(AnalyticalViewSettingsParameter.PartFAirflow, partFAirflowViewSettings);
+            }
+
+            //Same rule as Part F: absent means "never told about it", not "off".
+            if (designAirFlowViewSettings is not null)
+            {
+                result.SetValue(AnalyticalViewSettingsParameter.VentilationDesignAirflow, designAirFlowViewSettings);
+            }
 
             if (checkBox_UseDefaultName.IsChecked != null && checkBox_UseDefaultName.IsChecked.HasValue)
             {

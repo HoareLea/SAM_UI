@@ -22,7 +22,7 @@ ported: the SharpDX viewport only renders the **3D perspective/orthographic-3D**
 | Hit-testing | CPU ray-mesh walk over the tree (#16 hover) | Built-in **octree** picking |
 | Text | Meshed 3D text (`Text3DObject`, #15 cost) | Billboard text |
 | Big scenes | No instancing/culling | Instancing + per-node frustum culling |
-| Frameworks | net48 / net8.0-windows | net48 **and** net8.0-windows (matches repo dual-target) |
+| Frameworks | net8.0-windows | net8.0-windows (single target; the net48 build mode was retired) |
 
 Expected to attack `ToMedia3D` (fewer, GPU-resident geometry models), `HoverHitTest` (octree), and
 the #15 text tessellation cost in one move.
@@ -64,7 +64,7 @@ single static `EffectsManager`.
 - `Create/Material.cs`, `Convert/ToMedia3D/MeshGeometry3D.cs` — SharpDX equivalents (the #29
   `Freeze()` calls become no-ops / are dropped; SharpDX manages GPU resource sharing).
 - `.csproj` — add `HelixToolkit.Wpf.SharpDX` 3.1.x (+ `HelixToolkit.SharpDX.Core`) and verify the
-  native SharpDX dependencies copy for **both** net48 and net8.0-windows.
+  native SharpDX dependencies copy for net8.0-windows.
 
 Consumers in `AnalyticalWindow` (`ObjectHoovered` / `ObjectDoubleClicked` /
 `ObjectContextMenuOpening` / `ObjectSelectionChanged`, and the `GetVisual3D`/`ContainsAny`/
@@ -90,7 +90,7 @@ issues, clean tab open/close/dispose.
 > single process-wide `DefaultEffectsManager`, created lazily (timed as
 > `ViewportControl.SharpDX.CreateDevice`) and disposed on dispatcher shutdown — deliberately
 > **not** per control, because WPF unloads tab content on every tab switch. Still outstanding
-> (now testable with the real scene, below): net48 build, integrated GPU, RDP/VM.
+> (now testable with the real scene, below): integrated GPU, RDP/VM.
 > The spike file was replaced by the Phase B `Controls/SharpDXViewportControl.cs`.
 
 **Phase B — conversion + scene build.** Implement `Convert.ToElement3D(GeometryObjectModel)` /
@@ -207,8 +207,8 @@ escape hatch for one release, then remove the `HelixToolkit.Wpf` 3D code path an
   trade as #16 PR 2; UI doesn't expose it). Confirm no workflow relies on it.
 - **`Text3DObject` semantics.** Billboard text always faces the camera (size in screen space) vs.
   today's plane-anchored meshed text — confirm acceptable for 3D-view labels.
-- **Dual-target.** Confirm `HelixToolkit.Wpf.SharpDX` 3.1.x packages cleanly for net48 (the
-  installer target) as well as net8.0-windows.
+- **Packaging.** Confirm `HelixToolkit.Wpf.SharpDX` 3.1.x packages cleanly for net8.0-windows (the
+  installer target).
 
 ---
 

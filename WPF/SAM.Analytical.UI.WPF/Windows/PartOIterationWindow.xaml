@@ -1,0 +1,148 @@
+<Window x:Class="SAM.Analytical.UI.WPF.PartOIterationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Part O — Prepare iteration" MinHeight="480" MinWidth="600" Width="640"
+        SizeToContent="Height" ResizeMode="CanResizeWithGrip" FontFamily="Roboto Light">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- The whole content scrolls where it cannot fit (a small screen, an enlarged system font, the
+             2B options expanded); the OK / Cancel row sits OUTSIDE the scroll region and is always
+             reachable. The window sizes itself to the content on open, so enabling Iteration 2B grows the
+             dialog rather than cramping it, and MaxHeight (set in code from the work area) is the ceiling
+             the scroller takes over from. -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Content="Base provision" Padding="0,0,0,2"/>
+                <ComboBox x:Name="comboBox_BaseProvision" Grid.Row="1" Height="22" HorizontalAlignment="Stretch"
+                          ToolTip="Iteration 1a — MVHR design duty (no manufacturer unit)&#x0a;Iteration 1b — Natural ventilation (no mechanical system)&#x0a;Iteration 2 is Iteration 1a with a manufacturer unit selected, which is the tick below."/>
+
+                <!-- The route is not shown as an editable field. It is the canonical word the selected base
+                     provision is defined over, and it is the only vocabulary this window can produce. -->
+                <TextBlock x:Name="textBlock_VentilationStrategy" Grid.Row="2" Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#555555"/>
+
+                <Grid Grid.Row="3" Margin="0,10,0,0">
+                    <Label Content="Dwellings in scope" Padding="0,0,0,2" VerticalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button x:Name="button_SelectAll" Content="Select All" Width="70" Height="20" Margin="0,0,6,0"
+                                ToolTip="Select every dwelling the search below currently matches - all of them while the search is empty."/>
+                        <Button x:Name="button_SelectNone" Content="None" Width="50" Height="20"
+                                ToolTip="Clear every dwelling the search below currently matches - all of them while the search is empty."/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="4" Margin="0,2,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="Search" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                    <TextBox x:Name="textBox_Search" Grid.Column="1" Height="20" VerticalContentAlignment="Center"
+                             ToolTip="Narrow the list of dwellings by name. Selection is never lost by searching."/>
+                </Grid>
+
+                <!-- DWELLINGS, one row each - never one control per space. The rows are checkboxes over the
+                     selection model's lightweight records, the list virtualizes, and selection state lives
+                     on the record rather than the row container, so scrolling thousands of dwellings loses
+                     nothing. -->
+                <ListBox x:Name="listBox_Zones" Grid.Row="5" MinHeight="96" MaxHeight="220" Margin="0,4,0,0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Content="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <TextBlock x:Name="textBlock_Selection" Grid.Row="6" Margin="0,4,0,0" TextWrapping="Wrap" Foreground="#555555"/>
+
+                <TextBlock x:Name="textBlock_Scope" Grid.Row="7" Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#555555"/>
+
+                <!-- ISOLATION belongs here, with the dwelling scope, because it is a statement about which
+                     dwellings are SIMULATED - not about how they are assessed. The Part O criteria, the
+                     Approved Document F requirements and the TM59 classification of the selected dwellings
+                     are identical either way; only the thermal model around them changes. The wording says
+                     that explicitly, because "run in isolation" could otherwise be read as a different
+                     assessment.
+
+                     Offered rather than disabled when every dwelling is ticked: a large building is not
+                     only its dwellings. Selecting all of them still excludes corridors, cores, plant and
+                     commercial areas, which on a 5,000 space model is a substantial reduction - so
+                     disabling the tick would refuse a real saving on a false premise. The note below says
+                     when the reduction is likely to be small instead. -->
+                <StackPanel Grid.Row="8" Margin="0,10,0,0">
+                    <CheckBox x:Name="checkBox_Isolate" Content="Run selected dwellings in isolation (thermal model scope only)"/>
+                    <TextBlock x:Name="textBlock_Isolate" Margin="20,4,0,0" TextWrapping="Wrap" Foreground="#555555"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="9" Margin="0,10,0,0">
+                    <CheckBox x:Name="checkBox_SelectVentilationUnit" Content="Select a ventilation unit from the manufacturer catalogue (Iteration 2 — MVHR with manufacturer unit)"
+                              ToolTip="Iteration 2 selects a manufacturer product against the design duty this iteration realises.&#x0a;The product's maximum is a capability ceiling and never becomes a design airflow."/>
+
+                    <!-- HOW the product is chosen, which is a different question from WHETHER one is -
+                         hence nested under the tick and disabled without it.
+
+                         Prepare & Run hosts this SAME control over the SAME project-scoped configuration,
+                         so the two workflows cannot describe or apply equipment selection differently.
+                         See PartOEquipmentSelectionControl. -->
+                    <local:PartOEquipmentSelectionControl x:Name="control_EquipmentSelection" Margin="20,6,0,0"/>
+
+                    <!-- Iteration 2B is deliberately NOT an entry in the base-provision list above. It is not a base
+                         provision: it is an optimisation performed ON an Iteration 2 design, and it needs a selected
+                         ventilation unit to work within - which is why it is offered here, under the selection tick
+                         it depends on, and disabled without it. -->
+                    <CheckBox x:Name="checkBox_Optimise" Content="Pre-set Iteration 2B settings for this run (optional — confirmed when 2B starts)" Margin="0,10,0,0"
+                              ToolTip="TM59 optimisation of the Iteration 2 design.&#x0a;Selected equipment identity remains locked."/>
+
+                    <StackPanel Orientation="Horizontal" Margin="20,6,0,0">
+                        <TextBlock Text="Airflow step (l/s)" VerticalAlignment="Center" Width="120"/>
+                        <TextBox x:Name="textBox_AirFlowStep" Width="60" Height="20" VerticalContentAlignment="Center"/>
+                        <TextBlock Text="Round limit" VerticalAlignment="Center" Width="130" Margin="20,0,0,0"/>
+                        <TextBox x:Name="textBox_MaximumIterations" Width="60" Height="20" VerticalContentAlignment="Center"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="textBlock_Optimise" Margin="20,4,0,0" TextWrapping="Wrap" Foreground="#555555"/>
+
+                    <!-- The capacity envelope is a DIAGNOSTIC and not a further optimisation step, which is why it
+                         is a separate tick under 2B rather than another number beside the step and the limit. It
+                         costs one more full-year TAS run, and only on a run that stops short of a pass. -->
+                    <CheckBox x:Name="checkBox_CapacityEnvelope" Content="Also report what the selected unit could deliver at its capacity ceiling (diagnostic)" Margin="20,8,0,0"/>
+                    <TextBlock x:Name="textBlock_CapacityEnvelope" Margin="40,4,0,0" TextWrapping="Wrap" Foreground="#555555"/>
+
+                    <!-- A workflow optimisation, not an engineering choice - which is why it is worded as reusing the
+                         conversion rather than as anything about the simulation, and why the tick itself no longer
+                         claims "no change to results": the reuse is valid only while the converted geometry still
+                         matches the model. Offered as a tick because the full conversion has to stay available as
+                         the reference path. -->
+                    <CheckBox x:Name="checkBox_WarmStart" Content="Reuse the converted TAS geometry between rounds (faster)" Margin="20,8,0,0"
+                              ToolTip="Reuses the existing converted TAS geometry between optimisation rounds.&#x0a;Every round still runs its own full-year simulation. Untick this when the geometry is no longer valid for the current model."/>
+                    <TextBlock x:Name="textBlock_WarmStart" Margin="40,4,0,10" TextWrapping="Wrap" Foreground="#555555"/>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <Grid Grid.Row="1" Margin="0,8,0,0">
+            <Button x:Name="button_OK" Width="60" Height="22" Margin="0,0,70,0" HorizontalAlignment="Right" IsEnabled="False" Click="button_OK_Click">OK</Button>
+            <Button x:Name="button_Cancel" IsCancel="True" Width="60" Height="22" HorizontalAlignment="Right" Click="button_Cancel_Click">Cancel</Button>
+        </Grid>
+    </Grid>
+</Window>

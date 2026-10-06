@@ -130,10 +130,7 @@ namespace SAM.Analytical.UI
             };
             treeViewWindow.SetObjects(jSAMObjects);
 
-            if (owner != null)
-            {
-                treeViewWindow.Owner = owner;
-            }
+            SAM.Core.UI.WPF.Modify.SetOwner(treeViewWindow, owner);
 
             if (treeViewWindow.ShowDialog() != true)
             {

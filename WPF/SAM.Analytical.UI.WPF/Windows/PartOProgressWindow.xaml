@@ -1,0 +1,59 @@
+<Window x:Class="SAM.Analytical.UI.WPF.PartOProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Part O" Width="520" SizeToContent="Height" ResizeMode="NoResize" ShowInTaskbar="True"
+        FontFamily="Roboto Light" WindowStartupLocation="CenterScreen">
+    <!-- One window for the whole of a long Part O operation. It lives on its own UI thread, so it keeps
+         painting and its elapsed time keeps ticking while TAS holds the application's own thread for
+         minutes. It shows what is actually known - which stage is running, which finished and how long each
+         took. The bar is indeterminate unless the work reports a real count (PartOProgressState.Report);
+         TAS reports none, so no Part O operation shows a percentage today, and the note says so. -->
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Core.UI.WPF;component/Themes/ProgressStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <!-- The reference implementation of the SAM progress-dialog pattern (documentation/ProgressDialogPattern.md).
+         Its look is SAM.Core.UI.WPF Themes/ProgressStyles.xaml, extracted from this window unchanged. -->
+    <Grid Margin="14,12,14,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="textBlock_Heading" Grid.Row="0" Style="{StaticResource SAM.Progress.Heading}"/>
+        <TextBlock x:Name="textBlock_Subheading" Grid.Row="1" Style="{StaticResource SAM.Progress.Subheading}"/>
+
+        <!-- Rows are ProgressStageRow (Create.ProgressStageRows), drawn by SAM.Progress.StageRowTemplate. -->
+        <ItemsControl x:Name="itemsControl_Stages" Grid.Row="2" Style="{StaticResource SAM.Progress.Stages}"/>
+
+        <TextBlock x:Name="textBlock_Detail" Grid.Row="3" Style="{StaticResource SAM.Progress.Detail}"/>
+
+        <ProgressBar x:Name="progressBar" Grid.Row="4" Style="{StaticResource SAM.Progress.Bar}" IsIndeterminate="True"/>
+
+        <Grid Grid.Row="5" Margin="0,6,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="textBlock_Elapsed" Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource SAM.Progress.Status}"/>
+            <TextBlock x:Name="textBlock_Percent" Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource SAM.Progress.Status}" Visibility="Collapsed"/>
+        </Grid>
+
+        <Grid Grid.Row="6" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="textBlock_Note" Grid.Column="0" Style="{StaticResource SAM.Progress.Note}"/>
+            <Button x:Name="button_Cancel" Grid.Column="1" Style="{StaticResource SAM.Progress.CancelButton}" Click="button_Cancel_Click">Cancel</Button>
+        </Grid>
+    </Grid>
+</Window>

@@ -9,7 +9,12 @@
         <Label x:Name="label_ZoneType" Content="Zone Type:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="comboBox_ZoneCategory" HorizontalAlignment="Stretch" Margin="87,13,10,0" VerticalAlignment="Top" SelectionChanged="comboBox_ZoneCategory_SelectionChanged"/>
         <ListView x:Name="listView_Zones" HorizontalAlignment="Stretch" Margin="10,44,9.8,34.4" VerticalAlignment="Stretch" SelectionChanged="listView_Zones_SelectionChanged">
-            <ListViewItem>Zone 1</ListViewItem>
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="140"/>
+                    <GridViewColumn Header="Dwelling" DisplayMemberBinding="{Binding Dwelling}" Width="70"/>
+                </GridView>
+            </ListView.View>
         </ListView>
         <Button x:Name="button_Add" Content="Add" HorizontalAlignment="Left" Margin="11,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Add_Click"/>
         <Button x:Name="button_Remove" Content="Remove" HorizontalAlignment="Left" Margin="164,0,0,10.4" VerticalAlignment="Bottom" Width="70" Click="button_Remove_Click"/>

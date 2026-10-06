@@ -241,6 +241,24 @@ namespace SAM.Analytical.UI.WPF
                 }
                 type = typeof(NCMData);
             }
+            else if (radioButton_PartFSpaceData.IsChecked.HasValue && radioButton_PartFSpaceData.IsChecked.Value)
+            {
+                IEnumerable<Space> spaces = adjacencyCluster.GetSpaces();
+                if (spaces != null)
+                {
+                    foreach (Space space in spaces)
+                    {
+                        if (!space.TryGetValue(SpaceParameter.PartFSpaceData, out PartFSpaceData? partFSpaceData) || partFSpaceData == null)
+                        {
+                            continue;
+                        }
+
+                        objects.Add(partFSpaceData);
+                    }
+                }
+                type = typeof(PartFSpaceData);
+            }
+
 
             Core.UI.WPF.Modify.AddParameterNames(comboBox_ParameterName, objects, type, new string[] { "ToString", "Location", "InternalCondition", "ToJsonObject", "ParameterSets", "HashCode", "Type" });
         
@@ -318,6 +336,10 @@ namespace SAM.Analytical.UI.WPF
             {
                 return new SpaceAppearanceSettings(new ComplexReferenceAppearanceSettings() { ComplexReference = Button_ComplexReference.Tag as IComplexReference });
             }
+            else if (radioButton_PartFSpaceData.IsChecked.HasValue && radioButton_PartFSpaceData.IsChecked.Value)
+            {
+                return new SpaceAppearanceSettings(new PartFSpaceDataAppearanceSettings(comboBox_ParameterName?.SelectedItem?.ToString()));
+            }
 
             return null;
         }
@@ -373,6 +395,10 @@ namespace SAM.Analytical.UI.WPF
             else if (appearanceSettings is NCMDataAppearanceSettings)
             {
                 radioButton_NCMData.IsChecked = true;
+            }
+            else if (appearanceSettings is PartFSpaceDataAppearanceSettings)
+            {
+                radioButton_PartFSpaceData.IsChecked = true;
             }
             else if (appearanceSettings is ComplexReferenceAppearanceSettings)
             {

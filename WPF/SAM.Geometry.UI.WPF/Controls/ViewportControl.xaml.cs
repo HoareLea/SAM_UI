@@ -138,6 +138,26 @@ namespace SAM.Geometry.UI.WPF
             }
         }
 
+        /// <summary>
+        /// The 2D floor plan currently being drawn, or null where this view is not drawing one - it is in 3D,
+        /// or the legacy orthographic 2D path is in force (SAM_UI_FLOORPLAN_2D=0).
+        /// <para>
+        /// Exposed so that a layer above can annotate the plan through the control's own
+        /// <see cref="FloorPlan2DControl.Overlay"/>, in screen space, against
+        /// <see cref="FloorPlan2DControl.WorldToScreen"/> and its <see cref="FloorPlan2DControl.Plane"/>. The
+        /// Part F airflow annotation is the first caller. Deliberately read-only and deliberately null in
+        /// every other mode: an annotation layer that cannot see the plan it would draw on should draw
+        /// nothing rather than guess.
+        /// </para>
+        /// </summary>
+        public FloorPlan2DControl FloorPlan2D
+        {
+            get
+            {
+                return Active2D ? floorPlan2DControl : null;
+            }
+        }
+
         private bool ActiveSharpDX3D
         {
             get

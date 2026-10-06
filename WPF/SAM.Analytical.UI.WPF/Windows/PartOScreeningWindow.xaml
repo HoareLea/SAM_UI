@@ -1,0 +1,38 @@
+<Window x:Class="SAM.Analytical.UI.WPF.PartOScreeningWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Part O — Screen dwelling strategies" Width="620" SizeToContent="Height" ResizeMode="NoResize"
+        FontFamily="Roboto Light" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Analytical.UI.WPF;component/Themes/PartOStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <StackPanel Margin="14,12,14,12">
+        <TextBlock Text="Screen dwelling strategies" FontWeight="SemiBold" FontSize="14"/>
+        <TextBlock Margin="0,4,0,0" TextWrapping="Wrap"
+                   Text="Runs selected Part O strategies to determine which dwellings pass. Screening does not change your selected final design until you apply or edit the suggestions."/>
+        <TextBlock Margin="0,4,0,0" Style="{StaticResource PartO.Caption}"
+                   Text="Each strategy is one full-year TAS run of the whole building, with that strategy applied to every screened dwelling, built by SAM from the clean baseline. Screening results are evidence only: interactions in the final mixed building can differ, and the final mixed run always supersedes them."/>
+
+        <TextBlock Text="Screen" Style="{StaticResource PartO.SectionHeading}" Margin="0,12,0,4"/>
+        <StackPanel x:Name="stackPanel_Strategies"/>
+
+        <TextBlock Text="How much to run" Style="{StaticResource PartO.SectionHeading}" Margin="0,12,0,4"/>
+        <RadioButton x:Name="radioButton_Minimum" GroupName="Mode" Content="Minimum screening — find each dwelling's first permitted passing strategy"/>
+        <TextBlock Style="{StaticResource PartO.Caption}" Margin="20,0,0,4"
+                   Text="After each strategy, only dwellings with no passing, permitted strategy yet are screened by the next. A strategy the project does not permit is not run, and once every dwelling passes the rest are not run. Skipped cells read NOT RUN - no result is ever inferred."/>
+        <RadioButton x:Name="radioButton_Full" GroupName="Mode" Content="Full comparison — every chosen strategy for every dwelling"/>
+        <TextBlock Style="{StaticResource PartO.Caption}" Margin="20,0,0,0"
+                   Text="One run per chosen strategy, each assessing every dwelling, to populate the whole comparison matrix."/>
+
+        <TextBlock x:Name="textBlock_Estimate" Margin="0,12,0,0" TextWrapping="Wrap"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+            <Button x:Name="button_Screen" Content="Screen" Width="100" Height="26" Style="{StaticResource PartO.PrimaryButton}" IsDefault="True"/>
+            <Button Content="Cancel" Width="80" Height="26" Margin="8,0,0,0" IsCancel="True"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

@@ -1,0 +1,104 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+
+namespace SAM.Analytical.UI.WPF
+{
+    /// <summary>
+    /// One line of the Thermal Performance panel (read-only): the elements of one kind that share a construction, with the
+    /// performance stored on them and how many there are. Identity is the construction Guid; the name is only shown.
+    /// </summary>
+    public sealed class ThermalPerformanceRow
+    {
+        internal ThermalPerformanceRow(bool aperture, string type, Guid constructionGuid, string constructionName, string performanceText, int selectedCount, int usedByCount, int elementCount, double area, IReadOnlyList<Guid> highlightGuids, ThermalPerformanceMode mode, IReadOnlyList<Guid> elementGuids = null, ThermalStoredState storedState = ThermalStoredState.Stored, double storedThermalTransmittance = double.NaN, IReadOnlyList<Guid> selectedGuids = null)
+        {
+            IsAperture = aperture;
+            Type = type;
+            ConstructionGuid = constructionGuid;
+            ConstructionName = constructionName;
+            PerformanceText = performanceText;
+            SelectedCount = selectedCount;
+            UsedByCount = usedByCount;
+            ElementCount = elementCount;
+            Area = area;
+            HighlightGuids = highlightGuids ?? new List<Guid>();
+            Mode = mode;
+            ElementGuids = elementGuids ?? new List<Guid>();
+            StoredState = storedState;
+            StoredThermalTransmittance = storedThermalTransmittance;
+            SelectedGuids = selectedGuids ?? new List<Guid>();
+        }
+
+        /// <summary>True for an aperture construction (windows, doors), false for a panel construction.</summary>
+        public bool IsAperture { get; }
+
+        /// <summary>The panel type(s) / aperture type(s) of the elements in the row, e.g. "WallExternal".</summary>
+        public string Type { get; }
+
+        public Guid ConstructionGuid { get; }
+
+        public string ConstructionName { get; }
+
+        /// <summary>The stored performance, e.g. "U 0.260" or "U 1.243 · g 0.40 · LT 0.80"; "not calculated" or "varies" where the model says so.</summary>
+        public string PerformanceText { get; }
+
+        /// <summary>
+        /// Selected elements of the row's heading and construction, in both modes: they are what "Only the M selected" limits a
+        /// change to. In the whole-envelope mode the selection does not decide which rows are shown, only this number.
+        /// </summary>
+        public int SelectedCount { get; }
+
+        /// <summary>The selected elements counted by <see cref="SelectedCount"/>.</summary>
+        public IReadOnlyList<Guid> SelectedGuids { get; }
+
+        /// <summary>Every element of this kind that uses the construction in the model (the number Set U-value / Set glazing show).</summary>
+        public int UsedByCount { get; }
+
+        /// <summary>The elements in the row: the selected ones, or the envelope ones in the whole-envelope mode.</summary>
+        public int ElementCount { get; }
+
+        /// <summary>Gross area of the elements in the row [m²] (whole-envelope mode); NaN when it is not known.</summary>
+        public double Area { get; }
+
+        /// <summary>
+        /// The elements a click on the row highlights: every element using the construction in the Selection mode ("select all N"),
+        /// the envelope elements of the row in the whole-envelope mode.
+        /// </summary>
+        public IReadOnlyList<Guid> HighlightGuids { get; }
+
+        public ThermalPerformanceMode Mode { get; }
+
+        /// <summary>The elements of this row (the selected ones in Selection mode, the envelope ones in Whole envelope mode); an edit of the row pins its scope from these.</summary>
+        public IReadOnlyList<Guid> ElementGuids { get; }
+
+        /// <summary>Whether the model stores one value for the row, several, or none (so "Recalculate" matters).</summary>
+        public ThermalStoredState StoredState { get; }
+
+        /// <summary>The U-value the panels of an opaque row store, when they all store the same one; NaN otherwise (and for apertures).</summary>
+        public double StoredThermalTransmittance { get; }
+
+        /// <summary>The editing state of the row (Stage C); null while the row is shown read-only.</summary>
+        public ThermalRowEditor Editor { get; internal set; }
+
+        public string Title => string.Format(CultureInfo.CurrentCulture, "{0} ({1})", IsAperture ? "Aperture" : "Panel", Type);
+
+        /// <summary>"12 use it (3 selected)" in the Selection mode, "12 elements · 48.0 m²" in the whole-envelope mode.</summary>
+        public string Detail
+        {
+            get
+            {
+                if (Mode == ThermalPerformanceMode.Selection)
+                {
+                    return string.Format(CultureInfo.CurrentCulture, "{0} use it ({1} selected)", UsedByCount, SelectedCount);
+                }
+
+                string elements = string.Format(CultureInfo.CurrentCulture, "{0} {1}", ElementCount, ElementCount == 1 ? "element" : "elements");
+                string detail = double.IsNaN(Area) ? elements : string.Format(CultureInfo.CurrentCulture, "{0} · {1:0.0} m²", elements, Area);
+                return SelectedCount == 0 ? detail : string.Format(CultureInfo.CurrentCulture, "{0} · {1} selected", detail, SelectedCount);
+            }
+        }
+    }
+}

@@ -62,6 +62,12 @@ namespace SAM.Analytical.UI
 
         }
 
+        public SpaceAppearanceSettings(PartFSpaceDataAppearanceSettings partFSpaceDataAppearanceSettings)
+            : base(partFSpaceDataAppearanceSettings)
+        {
+
+        }
+
         public SpaceAppearanceSettings(JsonObject jObject)
             :base(jObject)
         {

@@ -12,7 +12,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-	  <Configurations>Debug;Release;net48-windows</Configurations>
+	  <Configurations>Debug;Release</Configurations>
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
@@ -58,8 +58,6 @@
     <Reference Include="SAM.Geometry.Grasshopper.Mollier">
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Geometry.Grasshopper.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grasshopper">

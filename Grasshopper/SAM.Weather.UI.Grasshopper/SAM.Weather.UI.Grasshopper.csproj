@@ -11,7 +11,7 @@
       <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
 	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-	  <Configurations>Debug;Release;net48-windows</Configurations>
+	  <Configurations>Debug;Release</Configurations>
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
@@ -30,8 +30,6 @@
     <Reference Include="SAM.Weather.Mollier">
       <HintPath>..\..\..\SAM_Mollier\build\SAM.Weather.Mollier.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grasshopper">

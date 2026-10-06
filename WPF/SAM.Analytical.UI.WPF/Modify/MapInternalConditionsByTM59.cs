@@ -1,5 +1,9 @@
-﻿using SAM.Core;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -23,6 +27,16 @@ namespace SAM.Analytical.UI.WPF
             TextMap textMap = Analytical.Query.DefaultInternalConditionTextMap_TM59();
 
             InternalConditionLibrary internalConditionLibrary = Analytical.Query.DefaultInternalConditionLibrary_TM59();
+
+            if (textMap == null || internalConditionLibrary == null)
+            {
+                MessageBox.Show(
+                    "The TM59 InternalCondition TextMap or InternalConditionLibrary resource could not be " +
+                    "loaded (SAM_InternalConditionTextMap_TM59.JSON / SAM_InternalConditionLibrary_TM59.JSON). " +
+                    "TM59 - Map Internal Conditions cannot run without them.",
+                    "TM59 - Map Internal Conditions");
+                return;
+            }
 
             List<Space> spaces_Temp = analyticalModel.GetSpaces();
             spaces_Temp?.Sort((x, y) => x.Name.CompareTo(y.Name));
@@ -64,15 +78,22 @@ namespace SAM.Analytical.UI.WPF
 
             List<SAMObject> sAMObjects = new List<SAMObject>();
 
-            TM59Manager tM59Manager = new TM59Manager(textMap);
-
             foreach (Space space in spaces_Temp)
             {
-                int occupancy = tM59Manager.Occupancy(space.InternalCondition);
-                if(occupancy > 0)
-                {
-                    space.SetValue(SpaceParameter.Occupancy, occupancy);
-                }
+                // TM59Occupancy(InternalCondition) is the documented people-per-condition table
+                // (Studio/1-bed=2, 2-bed=3, 3-bed=4, Double=2, Single=1, non-habitable=0) - not the
+                // fuzzy name-based TM59Manager.Occupancy, which reads bedroom-count digits out of the
+                // condition name and so returns e.g. 1 for every "1 Bed Apt. *" condition regardless
+                // of how many people actually occupy the flat.
+                //
+                // Always set it explicitly (including 0 for non-habitable) - a space remapped from a
+                // bedroom to a corridor/bathroom/stairs/cupboard must not retain its old positive
+                // Occupancy. UpdateAreaPerPerson then re-derives AreaPerPerson from that Occupancy;
+                // for Occupancy == 0 it writes AreaPerPerson == 0 rather than dividing by zero, and it
+                // never creates or modifies SpaceParameter.Area itself.
+                int occupancy = TM59Manager.TM59Occupancy(space.InternalCondition);
+                space.SetValue(SpaceParameter.Occupancy, occupancy);
+                space.UpdateAreaPerPerson();
 
                 adjacencyCluster.AddObject(space);
                 sAMObjects.Add(space);

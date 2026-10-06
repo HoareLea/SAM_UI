@@ -17,12 +17,12 @@ namespace SAM.Analytical.UI.WPF
                 return;
             }
 
-            AssignSpaceZone(uIAnalyticalModel, new Space[] { space }, zone);
+            AssignSpaceZone(uIAnalyticalModel, [space], zone);
         }
 
-        public static void AssignSpaceZone(this UIAnalyticalModel uIAnalyticalModel, IEnumerable<Space> spaces, Zone zone)
+        public static void AssignSpaceZone(this UIAnalyticalModel? uIAnalyticalModel, IEnumerable<Space> spaces, Zone zone)
         {
-            AnalyticalModel analyticalModel = uIAnalyticalModel?.JSAMObject;
+            AnalyticalModel? analyticalModel = uIAnalyticalModel?.JSAMObject;
             if (analyticalModel == null || spaces == null || spaces.Count() == 0)
             {
                 return;

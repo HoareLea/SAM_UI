@@ -1,0 +1,24 @@
+<UserControl x:Class="SAM.Analytical.UI.WPF.PartFVentilationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d"
+             d:DesignHeight="230" d:DesignWidth="420">
+    <Grid>
+        <Label x:Name="label_ZoneCategory" Content="Dwelling Zone Category:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+        <ComboBox x:Name="comboBox_ZoneCategory" Margin="10,36,10,0" VerticalAlignment="Top"
+                  ToolTip="Zone category holding the zones that represent individual flats or dwellings. Leave empty when the complete model is one house - no zone and no dwelling flag is needed for that, and it is not reported as a problem.&#x0a;&#x0a;When a category is chosen, only zones whose Is Dwelling parameter is explicitly true are sized. A zone explicitly false is never sized. A zone with no value, where others in the category have one, is excluded and reported. If no zone in the category carries the parameter at all, every zone is sized as before and a warning recommends marking the dwellings explicitly."/>
+
+        <TextBlock x:Name="textBlock_ZoneCategoryNote" Margin="12,63,10,0" VerticalAlignment="Top" TextWrapping="Wrap" FontSize="10" Foreground="#FF606060"
+                   Text="Empty = the whole model is one dwelling. Otherwise set Is Dwelling on each zone: true for a flat or house, false for a shared corridor, landlord area or commercial unit."/>
+
+        <Label x:Name="label_SetbackFlowRateFactor" Content="Setback Flow Rate Factor:" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="textBox_SetbackFlowRateFactor" Margin="10,126,10,0" Height="23" VerticalAlignment="Top" VerticalContentAlignment="Center"
+                 ToolTip="Optional setback operating-rate factor applied to the continuous design flow rates. Number, dimensionless. Default: 0.30, meaning the setback rate is 30% of continuous design. Valid range: greater than 0 and no greater than 1.&#x0a;&#x0a;Setback flow rate = continuous design flow rate x factor.&#x0a;&#x0a;The continuous design flow rate is the Approved Document F sizing condition and is never changed by this factor - every applicable minimum is established at the continuous design condition first. Setback rates are not checked against the Table 1.2 minimums.&#x0a;&#x0a;Zero, a negative value, a value above 1, or a value that is not a number is rejected and replaced by the default."/>
+
+        <TextBlock x:Name="textBlock_SetbackFlowRateFactorNote" Margin="12,153,10,0" VerticalAlignment="Top" TextWrapping="Wrap" FontSize="10" Foreground="#FF606060"
+                   Text="Greater than 0 and no greater than 1. Neither the 2021 nor the 2026 edition of Approved Document F specifies a reduced operating rate, so this is a SAM reduced-operation convention. It does not affect the continuous design sizing calculation."/>
+    </Grid>
+</UserControl>

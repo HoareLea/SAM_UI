@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework Condition=" '$(Configuration)' == 'net48-windows' ">net48-windows</TargetFramework>
-    <TargetFramework Condition=" '$(Configuration)' != 'net48-windows' ">net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
 	  <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <OutputType>Library</OutputType>
-    <Configurations>Debug;Release;net48-windows</Configurations>
+    <Configurations>Debug;Release</Configurations>
     <OutputPath>..\..\build\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
@@ -15,8 +14,6 @@
     <Reference Include="SAM.Weather">
       <HintPath>..\..\..\SAM\build\SAM.Weather.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SAM.Core.UI\SAM.Core.UI.csproj" />

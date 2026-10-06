@@ -42,17 +42,82 @@ namespace SAM.Analytical.UI.WPF
             constructionLibraryWindow.ConstructionManagerExporting += ConstructionLibraryWindow_ConstructionManagerExporting;
             constructionLibraryWindow.MultiSelect = true;
 
-            if (constructionLibraryWindow.ShowDialog(owner) != true)
+            // "Set U-value..." (U-value plan PR2b): hand over to the Set U-value window. This window edits a copy, so it
+            // closes first - an OK here after a U-value change would overwrite it - and unsaved edits are asked about.
+            Guid? guid_SetUValue = null;
+            string state = LibraryState(constructionLibraryWindow);
+            constructionLibraryWindow.SetUValueRequested += (sender, e) =>
+            {
+                bool save = false;
+                if (LibraryState(constructionLibraryWindow) != state)
+                {
+                    System.Windows.MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(
+                        constructionLibraryWindow,
+                        "Save your changes to the constructions before setting the U-value?\n\nYes saves them (one Undo step); No discards them.",
+                        "Set U-value",
+                        System.Windows.MessageBoxButton.YesNoCancel,
+                        System.Windows.MessageBoxImage.Question);
+
+                    if (messageBoxResult == System.Windows.MessageBoxResult.Cancel)
+                    {
+                        return;
+                    }
+
+                    save = messageBoxResult == System.Windows.MessageBoxResult.Yes;
+                }
+
+                e.Handled = true;
+                guid_SetUValue = e.Construction?.Guid;
+                constructionLibraryWindow.DialogResult = save;
+            };
+
+            // "Save to My constructions...": the selected construction is saved as a NEW one to My constructions. This window edits a copy and stays open;
+            // neither it nor the model is touched, so there is no Undo step.
+            string modelName = uIAnalyticalModel.JSAMObject?.Name;
+            constructionLibraryWindow.SaveToMyConstructionsRequested += (sender, e) =>
+            {
+                e.Handled = true;
+                SaveToMyConstructions(
+                    e.Construction,
+                    e.MaterialLibrary,
+                    modelName,
+                    UserConstructionLibrary.Shared,
+                    (subject, problem) => UserConstructionNameWindow.Prompt(constructionLibraryWindow, subject.Description, subject.SuggestedName, problem),
+                    text => System.Windows.MessageBox.Show(constructionLibraryWindow, text, "Save to My constructions"));
+            };
+
+            if (constructionLibraryWindow.ShowDialog(owner) == true)
+            {
+                constructionLibrary = constructionLibraryWindow.ConstructionLibrary;
+                materialLibrary = constructionLibraryWindow.MaterialLibrary;
+
+                adjacencyCluster.ReplaceConstructions(constructionLibrary);
+
+                uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
+            }
+
+            if (guid_SetUValue == null)
             {
                 return;
             }
 
-            constructionLibrary = constructionLibraryWindow.ConstructionLibrary;
-            materialLibrary = constructionLibraryWindow.MaterialLibrary;
+            if (uIAnalyticalModel.JSAMObject?.AdjacencyCluster?.GetConstructions()?.Find(x => x != null && x.Guid == guid_SetUValue.Value) == null)
+            {
+                System.Windows.MessageBox.Show("That construction is not in the model yet: save the constructions first, then set its U-value.", "Set U-value");
+                return;
+            }
 
-            adjacencyCluster.ReplaceConstructions(constructionLibrary);
+            System.Windows.Window window_Owner = System.Windows.Application.Current?.MainWindow;
+            uIAnalyticalModel.OpenSetUValueWindow(guid_SetUValue, null, window_Owner != null && window_Owner.IsVisible ? window_Owner : null);
+        }
 
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
+        // What the library window would commit, to tell whether it holds unsaved edits.
+        private static string LibraryState(ConstructionLibraryWindow constructionLibraryWindow)
+        {
+            return string.Concat(
+                constructionLibraryWindow.ConstructionLibrary?.ToJsonObject()?.ToJsonString(),
+                "|",
+                constructionLibraryWindow.MaterialLibrary?.ToJsonObject()?.ToJsonString());
         }
 
         private static void ConstructionLibraryWindow_ConstructionManagerExporting(object sender, ConstructionManagerExportingEventArgs e)
@@ -227,10 +292,7 @@ namespace SAM.Analytical.UI.WPF
                 treeViewWindow.GettingCategory += TreeViewWindow_GettingConstructionCategory;
                 treeViewWindow.GettingText += TreeViewWindow_GettingConstructionText;
                 treeViewWindow.SetObjects(constructionManager?.Constructions);
-                if (owner != null)
-                {
-                    treeViewWindow.Owner = owner;
-                }
+                SAM.Core.UI.WPF.Modify.SetOwner(treeViewWindow, owner);
 
                 if (treeViewWindow.ShowDialog() != true)
                 {

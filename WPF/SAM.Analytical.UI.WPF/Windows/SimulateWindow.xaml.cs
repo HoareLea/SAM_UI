@@ -285,6 +285,52 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        /// <summary>
+        /// The title the ordinary Energy Simulation command shows. Kept here so both are named once.
+        /// <para>
+        /// <b>It claims the conversion and nothing else.</b> On this route the Simulate box belongs to the
+        /// user, and <c>Modify.Simulate</c> supports leaving it unticked while SAP or the
+        /// domestic-overheating XML is selected - it returns early only when all three are off. So a
+        /// conversion and export with no simulation is a supported outcome, and a title promising a
+        /// simulation would be wrong for it.
+        /// </para>
+        /// </summary>
+        internal const string Title_Manual = "Convert to TAS";
+
+        /// <summary>
+        /// The title the guided Part O run shows. See <see cref="LockPartOSettings"/>.
+        /// <para>
+        /// Here "and simulate" is a fact rather than a promise: <c>Create.SimulateOptions_PartO</c> sets
+        /// <c>Simulate = true</c> and <see cref="LockPartOSettings"/> disables the box, because a Part O
+        /// run with no full-year simulation is refused by <c>Query.IsPartOFullYearSimulation</c> after the
+        /// TAS run has already been paid for.
+        /// </para>
+        /// </summary>
+        internal const string Title_PartO = "Part O — Convert to TAS and simulate";
+
+        /// <summary>
+        /// Locks the settings an Approved Document O run does not leave open - see
+        /// <see cref="SimulateControl.LockPartOSettings"/> for which, and why each one.
+        ///
+        /// <para><b>And says which dialog this is</b></para>
+        /// <para>
+        /// The guided Part O run and the ordinary Energy Simulation open the SAME window, and until this
+        /// title existed they were indistinguishable - so a locked project name on the Part O one read as
+        /// the ordinary dialog having broken, rather than as a different route with a derived identity. The
+        /// title is the cheapest honest answer to "why can I not type here?", and the box's own tooltip is
+        /// the full one.
+        /// </para>
+        /// <para>
+        /// <b>Call it after <see cref="SimulateOptions"/> has been set</b>, not before.
+        /// </para>
+        /// </summary>
+        public void LockPartOSettings()
+        {
+            Title = Title_PartO;
+
+            simulateControl.LockPartOSettings();
+        }
+
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
             if(string.IsNullOrWhiteSpace(SelectedZoneCategory) && CreateSAP)

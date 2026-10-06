@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
         mc:Ignorable="d"
-        Title="Zone" Height="200" Width="350" ResizeMode="NoResize" ShowInTaskbar="True">
+        Title="Zone" Height="235" Width="350" ResizeMode="NoResize" ShowInTaskbar="True">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="64*"></RowDefinition>

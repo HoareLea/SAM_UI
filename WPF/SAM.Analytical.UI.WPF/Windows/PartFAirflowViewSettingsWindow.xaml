@@ -1,0 +1,80 @@
+<Window x:Class="SAM.Analytical.UI.WPF.PartFAirflowViewSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Part F Airflow" Height="530" Width="430" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <CheckBox x:Name="CheckBox_Enabled" Grid.Row="0" Content="Show Part F airflow annotation on this view" FontWeight="Bold" Margin="0,0,0,10" Click="CheckBox_Enabled_Click"/>
+
+        <GroupBox x:Name="GroupBox_Scope" Grid.Row="1" Header="What is assessed and shown" Margin="0,0,0,10">
+            <Grid Margin="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="140"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Content="Dwellings assessed:"/>
+                <ComboBox x:Name="ComboBox_DwellingScope" Grid.Row="0" Grid.Column="1" Height="22" VerticalAlignment="Center" SelectionChanged="ComboBox_DwellingScope_SelectionChanged"/>
+
+                <Label Grid.Row="1" Grid.Column="0" Content="Dwellings drawn:"/>
+                <ComboBox x:Name="ComboBox_Dwelling" Grid.Row="1" Grid.Column="1" Height="22" VerticalAlignment="Center"/>
+
+                <Label Grid.Row="2" Grid.Column="0" Content="Operating mode:"/>
+                <ComboBox x:Name="ComboBox_Mode" Grid.Row="2" Grid.Column="1" Height="22" VerticalAlignment="Center"/>
+
+                <Label Grid.Row="3" Grid.Column="0" Content="Annotation scale  1 :"/>
+                <TextBox x:Name="TextBox_AnnotationScale" Grid.Row="3" Grid.Column="1" Height="22" Text="50" VerticalAlignment="Center" HorizontalAlignment="Left" Width="80"/>
+
+                <TextBlock x:Name="TextBlock_ScopeMessage" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap"
+                           Margin="0,8,0,0" Foreground="#A03000" Visibility="Collapsed"/>
+            </Grid>
+        </GroupBox>
+
+        <GroupBox x:Name="GroupBox_Show" Grid.Row="2" Header="Show">
+            <Grid Margin="6">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <CheckBox x:Name="CheckBox_Supply" Content="Supply tags (SUP)" Margin="0,4,0,4"/>
+                    <CheckBox x:Name="CheckBox_GeneralExtract" Content="Extract tags (EX)" Margin="0,4,0,4"/>
+                    <CheckBox x:Name="CheckBox_LocalKitchenExtract" Content="Kitchen extract tags (KEX)" Margin="0,4,0,4"/>
+                    <CheckBox x:Name="CheckBox_Transfer" Content="Transfer routes (TRA)" Margin="0,4,0,4"/>
+                    <CheckBox x:Name="CheckBox_Unresolved" Content="Unresolved routes" Margin="0,4,0,4"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <CheckBox x:Name="CheckBox_Values" Content="Flow rates" Margin="0,4,0,4"/>
+                    <CheckBox x:Name="CheckBox_Compliance" Content="Compliance status" Margin="0,4,0,4"/>
+                    <CheckBox x:Name="CheckBox_DoorData" Content="Door and route notes" Margin="0,4,0,4"/>
+                    <CheckBox x:Name="CheckBox_Context" Content="Fade the rest of the floor" Margin="0,4,0,4"/>
+                </StackPanel>
+            </Grid>
+        </GroupBox>
+
+        <TextBlock Grid.Row="3" TextWrapping="Wrap" Margin="0,10,0,10" Foreground="#606060"
+                   Text="A tag reads &quot;KEX 55.0 l/s ?&quot;. The number is the CALCULATED design rate; the ✓ or ? is the provision and compliance status, which stays a question until the design records how the extract is actually arranged. The colour scheme is set separately and works alongside this."/>
+
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="Button_OK" Content="OK" Width="80" Height="24" Margin="0,0,8,0" IsDefault="True" Click="Button_OK_Click"/>
+            <Button Content="Cancel" Width="80" Height="24" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

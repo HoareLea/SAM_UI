@@ -22,6 +22,7 @@ Welcome — and let’s keep the open-source journey going. 🤝
 
 ## Resources
 - 📘 **SAM Wiki:** https://github.com/SAM-BIM/SAM/wiki  
+- 📖 **Part O — Prepare & Run user guide:** [documentation/user-guides/Part-O-Prepare-and-Run.md](documentation/user-guides/Part-O-Prepare-and-Run.md)
 - 🧠 **SAM Core:** https://github.com/SAM-BIM/SAM  
 - 🧰 **Installers:** https://github.com/SAM-BIM/SAM_Deploy  
 

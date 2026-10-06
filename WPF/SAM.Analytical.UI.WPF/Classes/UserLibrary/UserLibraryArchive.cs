@@ -1,0 +1,167 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+
+namespace SAM.Analytical.UI.WPF
+{
+    /// <summary>
+    /// Where a user library's REMOVED entries go. Remove never deletes: it moves the entry to <c>&lt;name&gt;.removed.json</c> next to the library
+    /// (<c>Glazing Systems.removed.json</c>, <c>Constructions.removed.json</c>), a plain <see cref="ConstructionManager"/> in the same format, so it
+    /// can be opened like any source and an entry can be recovered by hand. The archive is a LOG, not a second library:
+    /// <list type="bullet">
+    /// <item><description><b>It is only ever written while the library's own lock is held</b> (the caller's <see cref="UserLibraryFile.Transact"/>),
+    /// so it needs no lock of its own and two removals never interleave.</description></item>
+    /// <item><description><b>Archive first, then the library.</b> The contract this order gives is: <i>Remove never loses an entry</i> - either it
+    /// fully succeeded (the entry is in the archive and gone from the library) or the entry is still in the library. If the archive write fails
+    /// nothing has changed. If the library write fails after the archive succeeded the entry is in BOTH files, which is harmless: a Guid still
+    /// in the library counts as not removed, and a retry is idempotent (the archive replaces the entry by Guid).</description></item>
+    /// <item><description>An archive that exists but cannot be read is never overwritten - Remove stops, nothing is written.</description></item>
+    /// <item><description>The archived entry carries EVERY material it references (not only the ones the library no longer needs), so the archive
+    /// can be opened on its own. A different material of the same name already in the archive (a different removed entry's) is kept under a
+    /// new name and the archived entry's layers follow it, exactly as when saving.</description></item>
+    /// </list>
+    /// One implementation serves both kinds of entry (a glazing system and an opaque construction): they differ only in which list of the
+    /// <see cref="ConstructionManager"/> holds them and how their layers follow a renamed material.
+    /// </summary>
+    internal static class UserLibraryArchive
+    {
+        internal const string Suffix = ".removed";
+
+        /// <summary><c>Glazing Systems.json</c> → <c>Glazing Systems.removed.json</c>.</summary>
+        internal static string PathFor(string libraryPath)
+        {
+            string extension = System.IO.Path.GetExtension(libraryPath);
+            string name = System.IO.Path.GetFileNameWithoutExtension(libraryPath) + Suffix + (string.IsNullOrEmpty(extension) ? ".json" : extension);
+            return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(libraryPath) ?? string.Empty, name);
+        }
+
+        /// <summary>
+        /// Writes <paramref name="entry"/> and the materials it references (taken from <paramref name="sourceMaterials"/>, the library it is removed
+        /// from) into the archive, replacing an archived entry of the same Guid. Returns null when the archive was written, otherwise why not (the
+        /// archive is then as it was). Call it under the library's lock, BEFORE the library itself is written.
+        /// </summary>
+        /// <param name="nothingDone">What did not happen when this fails ("Nothing was removed", "Nothing was saved or replaced").</param>
+        /// <param name="onMaterialsRenamed">
+        /// Called with the archived entry and the renames (library material name → archive material name) when a material had to be kept under a
+        /// new name; returns the entry to archive (e.g. with its provenance labels following). Null: only the layers follow.
+        /// </param>
+        internal static string Archive(UserLibraryFile archiveFile, ApertureConstruction entry, MaterialLibrary sourceMaterials, string libraryName, string description, Func<ApertureConstruction, IReadOnlyDictionary<string, string>, ApertureConstruction> onMaterialsRenamed = null, string nothingDone = "Nothing was removed")
+        {
+            return ArchiveCore(
+                archiveFile,
+                entry,
+                sourceMaterials,
+                libraryName,
+                description,
+                nothingDone,
+                x => x.Guid,
+                LibraryMaterialMerge.ReferencedNames,
+                (x, renamed) =>
+                {
+                    ApertureConstruction result = new ApertureConstruction(x, LibraryMaterialMerge.RenameLayers(x.PaneConstructionLayers, renamed), LibraryMaterialMerge.RenameLayers(x.FrameConstructionLayers, renamed));
+                    return onMaterialsRenamed?.Invoke(result, renamed) ?? result;
+                },
+                x => x.ApertureConstructions,
+                (archive, entries, materialLibrary) => new ConstructionManager(entries, archive.Constructions, materialLibrary));
+        }
+
+        /// <summary>The same for an opaque construction (<c>Constructions.json</c>): the archive keeps its aperture constructions as they are.</summary>
+        internal static string Archive(UserLibraryFile archiveFile, Construction entry, MaterialLibrary sourceMaterials, string libraryName, string description, Func<Construction, IReadOnlyDictionary<string, string>, Construction> onMaterialsRenamed = null, string nothingDone = "Nothing was removed")
+        {
+            return ArchiveCore(
+                archiveFile,
+                entry,
+                sourceMaterials,
+                libraryName,
+                description,
+                nothingDone,
+                x => x.Guid,
+                LibraryMaterialMerge.ReferencedNames,
+                (x, renamed) =>
+                {
+                    Construction result = new Construction(x, LibraryMaterialMerge.RenameLayers(x.ConstructionLayers, renamed));
+                    return onMaterialsRenamed?.Invoke(result, renamed) ?? result;
+                },
+                x => x.Constructions,
+                (archive, entries, materialLibrary) => new ConstructionManager(archive.ApertureConstructions, entries, materialLibrary));
+        }
+
+        private static string ArchiveCore<T>(
+            UserLibraryFile archiveFile,
+            T entry,
+            MaterialLibrary sourceMaterials,
+            string libraryName,
+            string description,
+            string nothingDone,
+            Func<T, Guid> guidOf,
+            Func<T, IEnumerable<string>> referencedNames,
+            Func<T, IReadOnlyDictionary<string, string>, T> followRenames,
+            Func<ConstructionManager, List<T>> entriesOf,
+            Func<ConstructionManager, List<T>, MaterialLibrary, ConstructionManager> build)
+            where T : class
+        {
+            if (archiveFile == null || entry == null)
+            {
+                return "There is nothing to archive.";
+            }
+
+            UserLibraryFileContent content = archiveFile.Read();
+            if (content.State == UserLibraryFileState.Unreadable)
+            {
+                return string.Format(CultureInfo.CurrentCulture, "{0}, because the archive of removed entries cannot be used: {1}", nothingDone, content.Error);
+            }
+
+            ConstructionManager archive = content.ConstructionManager;
+            MaterialLibrary materialLibrary = archive.MaterialLibrary ?? new MaterialLibrary(libraryName);
+
+            Dictionary<string, string> names = new Dictionary<string, string>();
+            foreach (string name in referencedNames(entry).Distinct())
+            {
+                IMaterial material = sourceMaterials?.GetMaterial(name);
+                if (material == null)
+                {
+                    continue;
+                }
+
+                string archived = LibraryMaterialMerge.Add(materialLibrary, material);
+                if (archived == null)
+                {
+                    return string.Format(CultureInfo.CurrentCulture, "{0}, because the material '{1}' could not be added to the archive.", nothingDone, name);
+                }
+
+                names[name] = archived;
+            }
+
+            T result = entry;
+            Dictionary<string, string> renamed = names.Where(x => x.Key != x.Value).ToDictionary(x => x.Key, x => x.Value);
+            if (renamed.Count != 0)
+            {
+                result = followRenames(entry, renamed);
+            }
+
+            Guid guid = guidOf(entry);
+            List<T> entries = (entriesOf(archive) ?? new List<T>()).Where(x => x != null && guidOf(x) != guid).ToList();
+            entries.Add(result);
+
+            ConstructionManager updated = build(archive, entries, materialLibrary);
+            updated.Name = archive.Name ?? libraryName + " (removed)";
+            updated.Description = archive.Description ?? description;
+
+            try
+            {
+                archiveFile.Write(updated);
+            }
+            catch (Exception exception)
+            {
+                return string.Format(CultureInfo.CurrentCulture, "{0}, because the archive {1} could not be written: {2}", nothingDone, archiveFile.FileName, exception.Message);
+            }
+
+            return null;
+        }
+    }
+}

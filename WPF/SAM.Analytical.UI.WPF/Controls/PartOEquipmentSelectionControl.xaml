@@ -1,0 +1,167 @@
+<UserControl x:Class="SAM.Analytical.UI.WPF.PartOEquipmentSelectionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+             mc:Ignorable="d"
+             d:DesignHeight="260" d:DesignWidth="600">
+    <UserControl.Resources>
+        <!-- Numeric cells right-aligned, so a column of airflows can be scanned by magnitude. -->
+        <Style x:Key="Style_Numeric" TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        <!-- THE COMPACT SUMMARY, shown on a route that selects no manufacturer unit - Iteration 1a and
+             Iteration 1b. The section skeleton stays (same place, same two concept names, same order as
+             Iteration 2) so the Part O family still reads the same way, but nothing here is actionable and
+             so nothing here takes the centre of the screen.
+
+             This replaces a screenful of DISABLED controls. Greying the full catalogue, the three modes and
+             the project-test panel said "not now" in the largest available typeface, on a route where the
+             honest statement is one sentence: the design duty is the answer and no product participates in
+             it. The catalogue is still readable, one disclosure away, because an engineer comparing routes
+             legitimately wants to know what products exist. -->
+        <Grid x:Name="grid_Compact" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Equipment selection" FontWeight="SemiBold" VerticalAlignment="Top"/>
+            <TextBlock x:Name="textBlock_CompactEquipment" Grid.Row="0" Grid.Column="1" TextWrapping="Wrap" Foreground="#555555"
+                       Text="Not used on this route; design duty is independent of manufacturer equipment."/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Project test product" FontWeight="SemiBold" Margin="0,6,0,0" VerticalAlignment="Top"/>
+            <TextBlock x:Name="textBlock_CompactProjectTest" Grid.Row="1" Grid.Column="1" Margin="0,6,0,0" TextWrapping="Wrap" Foreground="#555555"
+                       Text="Not used on this route."/>
+
+            <!-- THE CATALOGUE ITSELF, one disclosure away and collapsed by default. Reuses the same
+                 Expander pattern the Iteration 2B options use in both hosting windows.
+
+                 The PRODUCTS, and not merely a count of them. An engineer comparing routes legitimately
+                 wants to know what units exist and what they can move, and that is exactly what the
+                 disabled grid used to give them - so the same rows, the same columns and the same styling
+                 appear here, minus everything actionable.
+
+                 READ-ONLY BY CONSTRUCTION, not by being greyed: there is no "Use" column, so there is
+                 nothing to tick, no pool to edit and no way for this view to write to a row. It is bound
+                 to the SAME PartOCatalogueProductRow instances the Iteration 2 grid uses - one list, one
+                 notion of what the catalogue holds - and it neither selects, assigns, nor changes what
+                 applies. -->
+            <Expander x:Name="expander_CompactCatalogue" Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0"
+                      Header="Catalogue products (not used on this route)"
+                      ToolTip="Reference only. Max SUP and Max EXT are each product's capability ceiling and are never a design airflow.">
+                <StackPanel Margin="0,4,0,0">
+                    <TextBlock x:Name="textBlock_CompactCatalogue" TextWrapping="Wrap" Foreground="#555555"/>
+                    <DataGrid x:Name="dataGrid_CompactCatalogue" Margin="0,4,0,0" MinHeight="60" MaxHeight="150"
+                              AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False"
+                              HeadersVisibility="Column" GridLinesVisibility="Horizontal" SelectionMode="Single"
+                              EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Origin" Binding="{Binding Origin}" Width="86" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer}" Width="100" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Variant" Binding="{Binding Reference}" Width="105" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Max SUP (l/s)" Binding="{Binding MaximumSupply_Lps, StringFormat=N0}" Width="90" IsReadOnly="True"
+                                                ElementStyle="{StaticResource Style_Numeric}"/>
+                            <DataGridTextColumn Header="Max EXT (l/s)" Binding="{Binding MaximumExtract_Lps, StringFormat=N0}" Width="90" IsReadOnly="True"
+                                                ElementStyle="{StaticResource Style_Numeric}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Expander>
+        </Grid>
+
+        <!-- THE FULL CONTROLS, on Iteration 2 - unchanged, and the only route on which equipment selection
+             is actionable at all. -->
+        <StackPanel x:Name="stackPanel_Full">
+            <!-- HOW the product is chosen. Three modes and no fourth - see PartOEquipmentSelectionMode. -->
+            <StackPanel x:Name="stackPanel_Mode">
+                <RadioButton x:Name="radioButton_AutomaticAll" GroupName="PartOEquipmentSelectionMode" IsChecked="True"
+                             Content="Automatic - all catalogue products"
+                             ToolTip="Every selectable product is a candidate. Each dwelling is given the smallest one that can meet its design duty."/>
+                <RadioButton x:Name="radioButton_AutomaticPool" GroupName="PartOEquipmentSelectionMode" Margin="0,3,0,0"
+                             Content="Automatic - selected pool"
+                             ToolTip="Uses the smallest capable product, restricted to the products included in the selected pool.&#x0a;An insufficient or empty pool is not replaced by the full catalogue."/>
+                <RadioButton x:Name="radioButton_Manual" GroupName="PartOEquipmentSelectionMode" Margin="0,3,0,0"
+                             Content="Manual per dwelling"
+                             ToolTip="Products are assigned explicitly per dwelling.&#x0a;Manual assignments are authoritative; no automatic replacement is performed."/>
+            </StackPanel>
+
+            <!-- THE CATALOGUE ITSELF. Before this grid existed an engineer could see the product a dwelling had
+                 been given but not what products exist, what they can move, or what else could be assigned -
+                 that meant opening the catalogue JSON. One virtualised row per product, so a catalogue of
+                 hundreds costs a handful of realised rows.
+
+                 The Max columns are the products' CAPABILITY ceilings and are never any dwelling's design
+                 airflow, which is why they are headed "Max" and not "Design". -->
+            <Label x:Name="label_Catalogue" Content="Catalogue products — Max is a capability ceiling, never a design airflow" Margin="0,8,0,0" Padding="0,0,0,2"/>
+            <DataGrid x:Name="dataGrid_Catalogue" MinHeight="60" MaxHeight="150"
+                      AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal" SelectionMode="Single">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="Use" Width="34"
+                                            Binding="{Binding IsUsed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <!-- WHERE the figures came from. A capacity somebody typed to answer a what-if sits in the
+                         same grid as transcribed manufacturer data, and has to be unmistakable for it. -->
+                    <DataGridTextColumn Header="Origin" Binding="{Binding Origin}" Width="86" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Manufacturer" Binding="{Binding Manufacturer}" Width="100" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Model" Binding="{Binding Model}" Width="*" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Variant" Binding="{Binding Reference}" Width="105" IsReadOnly="True"/>
+                    <!-- Units in the header, once, rather than repeated in every cell value. -->
+                    <DataGridTextColumn Header="Max SUP (l/s)" Binding="{Binding MaximumSupply_Lps, StringFormat=N0}" Width="90" IsReadOnly="True"
+                                        ElementStyle="{StaticResource Style_Numeric}"/>
+                    <DataGridTextColumn Header="Max EXT (l/s)" Binding="{Binding MaximumExtract_Lps, StringFormat=N0}" Width="90" IsReadOnly="True"
+                                        ElementStyle="{StaticResource Style_Numeric}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <TextBlock x:Name="textBlock_Catalogue" Margin="0,4,0,0" TextWrapping="Wrap" Foreground="#555555"/>
+
+            <!-- THE PROJECT TEST PRODUCT. One made-up unit, this project only, so that "what would a 165 l/s
+                 box do here" can be answered without editing shipped manufacturer data or inventing a
+                 fictional Nuaire entry.
+
+                 Deliberately framed rather than merely labelled: everything else in this control is a
+                 transcription of somebody's published document, and this is not. It is deliberately NOT a
+                 catalogue editor - a name and two maximums, one product, no second row. -->
+            <Border x:Name="border_ProjectTest" Margin="0,10,0,0" Padding="6,3,6,6"
+                    BorderThickness="1" BorderBrush="#C08A00" Background="#FFFBF0D5">
+                <StackPanel>
+                    <TextBlock Text="Project test product (optional) — stated in this project, not manufacturer data"
+                               FontWeight="Bold" Foreground="#7A5600" TextWrapping="Wrap"/>
+                    <CheckBox x:Name="checkBox_ProjectTest" Margin="0,5,0,0"
+                              Content="Enable a project test product"
+                              ToolTip="Project-scoped what-if capacity, not manufacturer data.&#x0a;It can be used only where explicitly included in the selected pool or manually assigned."/>
+                    <Grid Margin="0,5,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="62"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="62"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Content="Name" Padding="0,3,6,0"/>
+                        <TextBox x:Name="textBox_ProjectTestName" Grid.Column="1" VerticalContentAlignment="Center"
+                                 ToolTip="The name IS the identity a dwelling assigned this product stores, so it cannot be changed while any dwelling carries it."/>
+                        <Label Grid.Column="2" Content="Max SUP (l/s)" Padding="10,3,6,0"/>
+                        <TextBox x:Name="textBox_ProjectTestMaximumSupply" Grid.Column="3" VerticalContentAlignment="Center"
+                                 ToolTip="The selected product's capability ceiling.&#x0a;It does not replace the design airflow."/>
+                        <Label Grid.Column="4" Content="Max EXT (l/s)" Padding="10,3,6,0"/>
+                        <TextBox x:Name="textBox_ProjectTestMaximumExtract" Grid.Column="5" VerticalContentAlignment="Center"
+                                 ToolTip="The selected product's capability ceiling.&#x0a;It does not replace the design airflow."/>
+                    </Grid>
+                    <TextBlock x:Name="textBlock_ProjectTest" Margin="0,5,0,0" TextWrapping="Wrap" Foreground="#6B4E00"/>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

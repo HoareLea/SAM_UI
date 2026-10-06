@@ -1,4 +1,4 @@
-<Window x:Class="SAM.Analytical.UI.ApertureConstructionLibraryWindow"
+﻿<Window x:Class="SAM.Analytical.UI.ApertureConstructionLibraryWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -28,6 +28,7 @@
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
                   HeadersVisibility="Column"
+                  SelectionChanged="DataGrid_Constructions_SelectionChanged"
                   MouseDoubleClick="DataGrid_Constructions_MouseDoubleClick">
             <DataGrid.ContextMenu>
                 <ContextMenu>
@@ -47,6 +48,8 @@
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
                 <Button x:Name="Button_Export" Content="Export" Width="75" Height="28" Margin="0,0,6,0" Click="Button_Export_Click"/>
                 <Button x:Name="Button_Import" Content="Import" Width="75" Height="28" Margin="0,0,6,0" Click="Button_Import_Click"/>
+                <Button x:Name="Button_SetGlazing" Content="Set glazing..." Width="95" Height="28" Margin="0,0,6,0" Visibility="Collapsed" IsEnabled="False" Click="Button_SetGlazing_Click"
+                        ToolTip="Choose a glazing system for the apertures using the selected aperture construction (closes this list)."/>
                 <Button x:Name="Button_Duplicate" Content="Duplicate" Width="75" Height="28" Margin="0,0,6,0" Click="Button_Duplicate_Click"/>
                 <Button x:Name="Button_Add" Content="Add" Width="75" Height="28" Margin="0,0,6,0" Click="Button_Add_Click"/>
                 <Button x:Name="Button_Remove" Content="Remove" Width="75" Height="28" Click="Button_Remove_Click"/>

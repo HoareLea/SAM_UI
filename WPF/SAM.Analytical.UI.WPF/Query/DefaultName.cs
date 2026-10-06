@@ -1,4 +1,6 @@
-﻿using SAM.Architectural;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using SAM.Architectural;
 using SAM.Core;
 using SAM.Core.UI;
 using SAM.Geometry.Spatial;
@@ -87,6 +89,10 @@ namespace SAM.Analytical.UI.WPF
                     else if (appearanceSettings is NCMDataAppearanceSettings)
                     {
                         values.Add("NCM");
+                    }
+                    else if (appearanceSettings is PartFSpaceDataAppearanceSettings)
+                    {
+                        values.Add("Part F");
                     }
 
                     appearanceSettings = spaceAppearanceSettings.GetValueAppearanceSettings<ValueAppearanceSettings>();

@@ -1,0 +1,36 @@
+<Window x:Class="SAM.Analytical.UI.WPF.DesignAirFlowViewSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="Ventilation Design" Width="460" MinWidth="440" MinHeight="260"
+        SizeToContent="Height" ResizeMode="CanResizeWithGrip" WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <CheckBox x:Name="CheckBox_Enabled" Grid.Row="0" Content="Show Ventilation Design overlay on this view" FontWeight="Bold" Margin="0,0,0,12" Click="CheckBox_Enabled_Click"/>
+
+        <GroupBox x:Name="GroupBox_Show" Grid.Row="1" Header="Show" Margin="0,0,0,12">
+            <StackPanel Margin="8">
+                <CheckBox x:Name="CheckBox_Supply" Content="Design supply airflow (SUP)" Margin="0,4,0,4"/>
+                <CheckBox x:Name="CheckBox_Extract" Content="Design extract airflow (EXT)" Margin="0,4,0,4"/>
+                <CheckBox x:Name="CheckBox_Transfer" Content="Design transfer airflow between rooms (TRA)" Margin="0,4,0,4"/>
+                <CheckBox x:Name="CheckBox_Net" Content="Net design airflow (NET = supply − extract)" Margin="0,4,0,4"/>
+            </StackPanel>
+        </GroupBox>
+
+        <TextBlock Grid.Row="2" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="#606060"
+                   Text="Every value is the CURRENT design airflow, read live from the model. A space with no terminal in a direction shows no mark, not &quot;0 l/s&quot;, and two rooms the design transfers nothing between show no transfer mark. This is separate from the Part F requirement, which is set independently and does not change with it - so the two overlays can show different transfer figures for the same door, and both be right."/>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="Button_OK" Content="OK" Width="84" Height="26" Margin="0,0,8,0" IsDefault="True" Click="Button_OK_Click"/>
+            <Button Content="Cancel" Width="84" Height="26" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

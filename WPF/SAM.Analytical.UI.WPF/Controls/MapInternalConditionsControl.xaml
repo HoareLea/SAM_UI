@@ -11,12 +11,13 @@
     <Grid Margin="0,0,-0.4,-0.4">
         <Label Content="Internal Condition Library:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.548,-1.736"/>
         <Label Content="Text Map:" HorizontalAlignment="Left" Margin="10,47,0,0" VerticalAlignment="Top"/>
-        <Button Content="Assign" HorizontalAlignment="Stretch" Margin="10,0,9.6,9.6" VerticalAlignment="Bottom" Click="Button_Assign_Click"/>
+        <Button x:Name="button_Assign" Content="Assign" HorizontalAlignment="Stretch" Margin="10,0,9.6,9.6" VerticalAlignment="Bottom" Click="Button_Assign_Click"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,78,10,82">
             <Grid x:Name="grid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition MinWidth="100"></ColumnDefinition>
                     <ColumnDefinition MinWidth="220"></ColumnDefinition>
+                    <ColumnDefinition MinWidth="130"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
             </Grid>
         </ScrollViewer>

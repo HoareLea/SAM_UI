@@ -1,0 +1,28 @@
+<Window x:Class="SAM.Core.UI.WPF.ReportWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Core.UI.WPF"
+        mc:Ignorable="d"
+        Title="Report" Height="650" Width="900" MinHeight="300" MinWidth="500"
+        WindowStartupLocation="CenterOwner" ShowInTaskbar="False">
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="34"/>
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="TextBox_Main" Grid.Row="0"
+                 IsReadOnly="True" IsReadOnlyCaretVisible="True"
+                 TextWrapping="NoWrap" AcceptsReturn="True" AcceptsTab="True"
+                 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                 FontFamily="Consolas" FontSize="12"
+                 Margin="0,0,0,8"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+            <Button x:Name="Button_CopyAll" Content="Copy All" Width="90" Height="28" Margin="0,0,8,0" Click="Button_CopyAll_Click"/>
+            <Button x:Name="Button_Close" Content="Close" Width="75" Height="28" IsDefault="True" IsCancel="True" Click="Button_Close_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

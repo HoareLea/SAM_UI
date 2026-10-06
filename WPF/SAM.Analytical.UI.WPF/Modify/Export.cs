@@ -1,4 +1,7 @@
-﻿using SAM.Core.UI.WPF;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using SAM.Core.UI.WPF;
 using System.Windows.Forms;
 
 namespace SAM.Analytical.UI.WPF
@@ -42,7 +45,7 @@ namespace SAM.Analytical.UI.WPF
                 {
                     result = Tas.Convert.ToTBD(analyticalModel, path);
                 }
-                else if (extension.ToLower().EndsWith("gbxml"))
+                else if (extension.ToLower().EndsWith("gbxml") || extension.ToLower().EndsWith("xml"))
                 {
                     gbXMLSerializer.gbXML gbXML = Analytical.gbXML.Convert.TogbXML(analyticalModel);
                     if (gbXML != null)

@@ -541,6 +541,15 @@ namespace SAM.Analytical.UI.WPF
                     }
                 }
 
+                if (checkBox_CoolingProfile.IsChecked.HasValue && checkBox_CoolingProfile.IsChecked.Value)
+                {
+                    if (!multipleValueTextBoxControl_CoolingProfile_Name.VarySet)
+                    {
+                        string value = multipleValueTextBoxControl_CoolingProfile_Name.Value;
+                        internalCondition?.SetValue(InternalConditionParameter.CoolingProfileName, value);
+                    }
+                }
+
                 if (checkBox_OccupancyProfile.IsChecked.HasValue && checkBox_OccupancyProfile.IsChecked.Value)
                 {
                     if (!multipleValueTextBoxControl_OccupancyProfile_Name.VarySet)

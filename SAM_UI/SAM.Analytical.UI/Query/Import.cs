@@ -405,10 +405,7 @@ namespace SAM.Analytical.UI
                 };
                 treeViewWindow.SetObjects(tuples_All);
 
-                if (owner != null)
-                {
-                    treeViewWindow.Owner = owner;
-                }
+                SAM.Core.UI.WPF.Modify.SetOwner(treeViewWindow, owner);
 
                 if (treeViewWindow.ShowDialog() != true)
                 {

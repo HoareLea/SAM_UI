@@ -1,4 +1,7 @@
-﻿using Grasshopper.Kernel;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+
+using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
@@ -41,7 +44,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
 
-                result.Add(new GH_SAMParam(new GooMollierChartObjectParam() { Name = "_mollierGeometryLines", NickName = "_mollierGeometryLines", Description = "MollierGeometry Lines, Base of your Chart - select lines you want to display on your chart,\n *output from .CreateMollierDiagram ", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new GooMollierChartObjectParam() { Name = "_mollierGeometryLines", NickName = "_mollierGeometryLines", Description = "MollierGeometry Lines, Base of your Chart - select lines you want to display on your chart,\n *output from .CreateDiagram ", Access = GH_ParamAccess.list, Optional = true }, ParamVisibility.Binding));
 
                 // global::Grasshopper.Kernel.Parameters.Param_Curve curves = null;
                 //curves = new global::Grasshopper.Kernel.Parameters.Param_Curve() { Name = "Mollier Chart", NickName = "Inspect Mollier Lines", Description = "Base of Chart - output from InspectMollierDiagram output ", Access = GH_ParamAccess.list, Optional = true };

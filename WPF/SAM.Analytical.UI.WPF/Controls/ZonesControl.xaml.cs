@@ -96,12 +96,22 @@ namespace SAM.Analytical.UI.WPF
                         continue;
                     }
 
-                    ListViewItem listViewItem = new ListViewItem() { Content = zone.Name, Tag = zone };
+                    //TryGetValue, not GetValue: a zone that has never had the parameter set must be
+                    //shown as Not Set, not as No, so it isn't mistaken for an explicit exclusion.
+                    string dwelling = zone.TryGetValue(ZoneParameter.IsDwelling, out bool isDwelling) ? (isDwelling ? "Yes" : "No") : "Not Set";
+
+                    ListViewItem listViewItem = new ListViewItem() { Content = new ZoneListItem { Name = zone.Name, Dwelling = dwelling }, Tag = zone };
 
                     listView_Zones.Items.Add(listViewItem);
                 }
             }
 
+        }
+
+        private class ZoneListItem
+        {
+            public string Name { get; set; }
+            public string Dwelling { get; set; }
         }
 
         private void LoadZoneCategories()

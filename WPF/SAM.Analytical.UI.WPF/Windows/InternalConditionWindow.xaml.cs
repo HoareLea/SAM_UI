@@ -55,6 +55,27 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        // internalConditionControl.AnalyticalModel is reassigned internally whenever the user edits a
+        // profile or picks from the internal-condition library (see InternalConditionControl's
+        // SetProfile / button_Select_Click), so these reflect any mid-edit change - not just what was
+        // passed into the constructor. Mirrors the WinForms InternalConditionForm's ProfileLibrary /
+        // AdjacencyCluster getters, which read the same way off its control.
+        public ProfileLibrary ProfileLibrary
+        {
+            get
+            {
+                return internalConditionControl.AnalyticalModel?.ProfileLibrary;
+            }
+        }
+
+        public AdjacencyCluster AdjacencyCluster
+        {
+            get
+            {
+                return internalConditionControl.AnalyticalModel?.AdjacencyCluster;
+            }
+        }
+
         private void button_OK_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;

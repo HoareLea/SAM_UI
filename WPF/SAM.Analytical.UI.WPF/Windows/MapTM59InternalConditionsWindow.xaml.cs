@@ -1,4 +1,5 @@
 ﻿using SAM.Core;
+using System;
 using System.Collections.Generic;
 
 namespace SAM.Analytical.UI.WPF
@@ -17,11 +18,38 @@ namespace SAM.Analytical.UI.WPF
         {
             InitializeComponent();
 
-            mapTM59InternalConditionsControl.AdjacencyCluster = adjacencyCluster;
+            // Subscribed before any of the assignments below, so status is kept live from that point
+            // on - a manual edit, Assign, or a later remap (Zone Type/TextMap/Library change) all fire
+            // MappingChanged, not just the initial row build.
+            mapTM59InternalConditionsControl.MappingChanged += MapTM59InternalConditionsControl_MappingChanged;
 
+            mapTM59InternalConditionsControl.AdjacencyCluster = adjacencyCluster;
             mapTM59InternalConditionsControl.TextMap = textMap;
             mapTM59InternalConditionsControl.InternalConditionLibrary = internalConditionLibrary;
+
+            // FinishInitialization must run BEFORE Spaces is assigned: it is what turns SetMapFunc's
+            // "not ready yet" placeholder into the real, resource-checked mapping function, and Spaces
+            // is what triggers the row build + AutoMapOnLoad preselection that needs that real function.
+            mapTM59InternalConditionsControl.FinishInitialization();
+
             mapTM59InternalConditionsControl.Spaces = spaces == null ? null : new List<Space>(spaces);
+
+            UpdateStatus();
+        }
+
+        private void MapTM59InternalConditionsControl_MappingChanged(object sender, EventArgs e)
+        {
+            UpdateStatus();
+        }
+
+        private void UpdateStatus()
+        {
+            List<Space> spaces = mapTM59InternalConditionsControl.GetSpaces();
+            int unassigned = spaces?.FindAll(x => x.InternalCondition == null).Count ?? 0;
+
+            textBlock_Status.Text = unassigned == 0
+                ? string.Empty
+                : $"{unassigned} space(s) need manual review - hover the blank rows for why.";
         }
 
         public List<Space> Spaces

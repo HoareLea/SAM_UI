@@ -16,6 +16,7 @@
             <RowDefinition Height="40"></RowDefinition>
         </Grid.RowDefinitions>
         <local:MapTM59InternalConditionsControl x:Name="mapTM59InternalConditionsControl" Grid.Row="0" Margin="0,0,-0.4,0" Grid.ColumnSpan="2"></local:MapTM59InternalConditionsControl>
+        <TextBlock x:Name="textBlock_Status" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="DarkRed" TextWrapping="Wrap" />
         <Button x:Name="button_Cancel" IsCancel="True" Content="Cancel" Grid.Row="1" Margin="0,10,9.6,10" Width="70" HorizontalAlignment="Right" Click="button_Cancel_Click" Grid.Column="1"></Button>
         <Button x:Name="button_OK" Content="OK" Grid.Row="1" Margin="0,10,84.6,10" Click="button_OK_Click" HorizontalAlignment="Right" Width="70" Grid.Column="1" />
     </Grid>

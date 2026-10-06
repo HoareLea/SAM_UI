@@ -21,7 +21,7 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class SpacesWindow : System.Windows.Window
     {
-        private readonly AnalyticalModel analyticalModel;
+        private AnalyticalModel analyticalModel;
         private readonly ObservableCollection<SpaceRow> rows = new ObservableCollection<SpaceRow>();
 
         public SpacesWindow()
@@ -65,6 +65,26 @@ namespace SAM.Analytical.UI.WPF
             }
         }
 
+        // Tracks the same AnalyticalModel reassignment InternalConditionWindow does internally, so a
+        // profile or internal-condition-library edit made while double-clicking into one space is not
+        // silently dropped when the grid re-reads ProfileLibrary for the next row's Update call, and
+        // is visible to a caller reading ProfileLibrary / AdjacencyCluster back after ShowDialog().
+        public ProfileLibrary ProfileLibrary
+        {
+            get
+            {
+                return analyticalModel?.ProfileLibrary;
+            }
+        }
+
+        public AdjacencyCluster AdjacencyCluster
+        {
+            get
+            {
+                return analyticalModel?.AdjacencyCluster;
+            }
+        }
+
         private void DataGrid_Main_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             SpaceRow row = DataGrid_Main.SelectedItem as SpaceRow;
@@ -79,6 +99,8 @@ namespace SAM.Analytical.UI.WPF
             {
                 return;
             }
+
+            analyticalModel = new AnalyticalModel(analyticalModel, internalConditionWindow.AdjacencyCluster, analyticalModel.MaterialLibrary, internalConditionWindow.ProfileLibrary);
 
             row.Update(internalConditionWindow.Space, analyticalModel?.ProfileLibrary);
         }

@@ -420,6 +420,9 @@
                     <RibbonButton x:Name="RibbonButton_SelectByFilter" Label="Select by Filter" />
                     <RibbonButton x:Name="RibbonButton_SelectByGuid" Label="Select by Guid" />
                 </RibbonGroup>
+                <RibbonGroup x:Name="RibbonGroup_View_Panels" Header="Panels">
+                    <RibbonToggleButton x:Name="RibbonToggleButton_ThermalPerformance" Label="Thermal Performance" ToolTip="Show or hide the Thermal Performance panel: the stored performance of the selected panels and apertures (or of the whole external envelope), and where you change it - target U, glazing systems, scope, check before Apply, one Undo." />
+                </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_View_Visibility" Header="Visiblity">
                     <RibbonButton x:Name="RibbonButton_RevealHidden" Label="Unhide All" />
                     <RibbonButton x:Name="RibbonButton_ViewRange" Label="View Range" />
@@ -461,12 +464,39 @@
                     <RibbonButton x:Name="RibbonButton_MapInternalConditions" Label="Map IC" />
                     <RibbonButton x:Name="RibbonButton_MapInternalConditionsByTM59" Label="Map IC (TM59)" />
                     <RibbonButton x:Name="RibbonButton_EditInternalConditions" Label="Modify IC" />
+                    <RibbonButton x:Name="RibbonButton_AddVentilationPartF" Label="AddVent PartF" />
                     <RibbonButton x:Name="RibbonButton_AssignMechanicalSystems" Label="Add Mechanical Systems" />
                     <RibbonButton x:Name="RibbonButton_RemoveAirMovementObjects" Label="Remove IZAMs" />
                     <RibbonButton x:Name="RibbonButton_SetDefaultLayers" Label="Set Default Layers" />
                 </RibbonGroup>
+                <!-- SAM Documentation Framework (Phase 1 Space Assumptions, Phase 2 Space Design Load Summary): one
+                     selected Space to a PDF built by SAM.Analytical.Reporting and SAM.Core.Reporting.Pdf, through one
+                     shared workflow (Modify.CreateSpaceReportPdf). Separate from the legacy Excel-based Print RDS
+                     above, which stays. -->
+                <RibbonGroup x:Name="RibbonGroup_Edit_Reports" Header="Reports">
+                    <RibbonButton x:Name="RibbonButton_SpaceAssumptionsPdf" Label="Space Assumptions PDF" ToolTip="Create the Space Assumptions PDF for the one selected Space" ToolTipService.ShowOnDisabled="True" />
+                    <RibbonButton x:Name="RibbonButton_SpaceDesignLoadSummaryPdf" Label="Space Design Load Summary PDF" ToolTip="Create the Space Design Load Summary PDF (simulated heating and cooling peaks) for the one selected Space" ToolTipService.ShowOnDisabled="True" />
+                    <!-- PR2F-2: many Spaces (the selection, or all Spaces in the model) into one folder. -->
+                    <RibbonButton x:Name="RibbonButton_SpaceReportPdfs" Label="Export Space Reports" ToolTip="Export Space report PDFs for the selected Spaces, or for all Spaces in the model, into a folder" ToolTipService.ShowOnDisabled="True" />
+                </RibbonGroup>
+                <!-- Part O is its own group rather than another button beside AddVent PartF: preparing an
+                     iteration is a different step from sizing to Approved Document F, and it must be followed
+                     by a simulation before the assessment on the Results tab becomes available. -->
+                <RibbonGroup x:Name="RibbonGroup_Edit_PartO" Header="Part O">
+                    <RibbonButton x:Name="RibbonButton_PreparePartOIteration" Label="Prepare Iteration" />
+                </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="RibbonTab_Simulate" Header="Simulate">
+                <!-- The high-level Part O entry point, on the Simulate tab because that is what it does:
+                     one command that prepares, checks, simulates and assesses. The individual expert
+                     commands stay exactly where they were - Edit > Part O > Prepare Iteration, and
+                     Results > Part O - and this one neither replaces nor hides them. -->
+                <RibbonGroup x:Name="RibbonGroup_Simulate_PartO" Header="Part O">
+                    <RibbonButton x:Name="RibbonButton_PartOWorkflow" Label="Prepare &amp; Run" ToolTipService.ShowOnDisabled="True" />
+                    <!-- Mixed dwelling strategies: an ADDITIONAL route beside Prepare & Run, which it neither replaces
+                         nor changes. One strategy per dwelling, built into one mixed model from the clean baseline. -->
+                    <RibbonButton x:Name="RibbonButton_PartOMixedDesign" Label="Mixed Design" ToolTipService.ShowOnDisabled="True" />
+                </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Simulate_Simulate" Header="Simulate">
                     <RibbonButton x:Name="RibbonButton_SolarSimulation" Label="Solar Simulation" />
                     <RibbonButton x:Name="RibbonButton_EnergySimulation" Label="Energy Simulation" />
@@ -475,6 +505,22 @@
             <RibbonTab x:Name="RibbonTab_Results" Header="Results">
                 <RibbonGroup x:Name="RibbonGroup_Results_General" Header="General">
                     <RibbonButton x:Name="RibbonButton_RemoveResults" Label="Remove" />
+                </RibbonGroup>
+                <!-- SAM's own TM59 assessment of a completed Part O run. Distinct from the simulation
+                     window's "Domestic Overheating" tick, which writes the TAS DomOv XML for TAS to assess. -->
+                <RibbonGroup x:Name="RibbonGroup_Results_PartO" Header="Part O">
+                    <!-- ShowOnDisabled because the tooltip is the only place the reason appears while the
+                         button is unavailable, and "unavailable with no reason given" is the state this
+                         command most needs to explain. -->
+                    <!-- A clean Part O baseline from a model that has been through Prepare & Run: SAM removes the run
+                         output and the Part O preparation from a COPY, saved as a new file, and the copy is judged by
+                         the Mixed Design baseline check. Beside, not instead of, General > Remove. -->
+                    <RibbonButton x:Name="RibbonButton_RemovePartOResults" Label="Remove Results..." ToolTipService.ShowOnDisabled="True" />
+                    <RibbonButton x:Name="RibbonButton_AssessPartOTM59" Label="Overheating (TM59)" ToolTipService.ShowOnDisabled="True" />
+                    <!-- Iteration 2B. Deliberately here rather than in the base-provision list: it is an
+                         optimisation performed ON an Iteration 2 design, needs a completed run to start
+                         from, and is enabled by exactly the same condition the assessment is. -->
+                    <RibbonButton x:Name="RibbonButton_OptimisePartOTM59" Label="Optimise (2B)" ToolTipService.ShowOnDisabled="True" />
                 </RibbonGroup>
                 <RibbonGroup x:Name="RibbonGroup_Results_Mollier" Header="Mollier Diagram">
                     <RibbonButton x:Name="RibbonButton_AirHandlingUnitDiagram" Label="AHU" />
@@ -490,8 +536,19 @@
                     <RibbonButton x:Name="RibbonButton_OpenTBD" Label="Open TBD" />
                     <RibbonButton x:Name="RibbonButton_OpenTSD" Label="Open TSD" />
                     <RibbonButton x:Name="RibbonButton_OpenTPD" Label="Open TPD" />
-                    <RibbonButton x:Name="RibbonButton_ThermalTransmittanceCalculator" Label="U Value Calculator" />
-                    <RibbonButton x:Name="RibbonButton_GlazingCalculator" Label="Glazing Calculator" />
+                    <!-- U-value plan PR2b (owner decision 1 Oct 2026): the button opens the one-window "Set U-value" flow;
+                         the legacy multi-window calculator stays one click away as "(classic)". Stage F: this is the construction-level
+                         tool (no element selected, or "don't assign"); selected elements are edited in Thermal Performance. -->
+                    <RibbonSplitButton x:Name="RibbonButton_ThermalTransmittanceCalculator" Label="U Value Calculator"
+                                       ToolTip="Set a construction's U-value in one window - no element needs to be selected, and the result can be added without assigning it. For selected panels use Thermal Performance. The arrow keeps the classic calculator.">
+                        <RibbonMenuItem x:Name="RibbonMenuItem_ThermalTransmittanceCalculator_Classic" Header="U Value Calculator (classic)" />
+                    </RibbonSplitButton>
+                    <!-- U-value plan PR3: the button opens the one-window "Set glazing" selection flow; the legacy multi-window
+                         Glazing Calculator stays one click away as "(classic)". Stage F: the construction-level tool (see above). -->
+                    <RibbonSplitButton x:Name="RibbonButton_GlazingCalculator" Label="Glazing Calculator"
+                                       ToolTip="Choose a glazing system for an aperture construction in one window - no aperture needs to be selected, and the system can be added without assigning it. For selected apertures use Thermal Performance. The arrow keeps the classic calculator.">
+                        <RibbonMenuItem x:Name="RibbonMenuItem_GlazingCalculator_Classic" Header="Glazing Calculator (classic)" />
+                    </RibbonSplitButton>
 
                     <RibbonMenuButton x:Name="RibbonMenuButton_PartL" Label="PartL" >
                         <RibbonButton x:Name="RibbonButton_OpenPartL" Label="Open PartL" />
@@ -534,20 +591,26 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250" />
                 <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="461*" />
-                <ColumnDefinition Width="86*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition x:Name="ColumnDefinition_ThermalPerformance" Width="0" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <GridSplitter Grid.Column="1" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" />
-            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" Grid.ColumnSpan="2" SelectionChanged="TabControl_SelectionChanged">
+            <TabControl x:Name ="tabControl" Grid.Column="2" Grid.Row="0" SelectionChanged="TabControl_SelectionChanged">
                 <TabItem Header="3D View">
                     <geometry:ViewportControl x:Name="viewportControl" />
                 </TabItem>
             </TabControl>
 
             <local:AnalyticalModelControl x:Name="AnalyticalModelControl"  Grid.Column="0" Grid.Row="0" />
+
+            <!-- The Thermal Performance panel (Stage B, read-only), docked beside the view tabs; hidden until the View > Panels >
+                 Thermal Performance toggle is on. Hidden = column width 0, so the layout is the one without it. -->
+            <GridSplitter x:Name="GridSplitter_ThermalPerformance" Grid.Column="3" Grid.Row="0" Width="3" HorizontalAlignment="Stretch" ResizeDirection="Columns" Visibility="Collapsed" />
+            <local:ThermalPerformanceControl x:Name="ThermalPerformancePanel" Grid.Column="4" Grid.Row="0" Visibility="Collapsed" />
         </Grid>
     </DockPanel>
 </Window>

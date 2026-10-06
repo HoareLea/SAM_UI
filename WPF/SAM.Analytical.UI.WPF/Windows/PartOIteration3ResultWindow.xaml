@@ -1,0 +1,306 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.PartOIteration3ResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Part O — Iteration 3 comparison"
+        Height="860" Width="1320" MinHeight="520" MinWidth="880"
+        WindowStartupLocation="CenterOwner" ResizeMode="CanResize" FontFamily="Roboto Light">
+    <!-- Height/Width are a preference, not a promise: the constructor clamps both to the work area, so
+         125% and 150% display scaling cannot put the action bar below the desktop.
+
+         SUMMARY FIRST. The verdicts and the headline statistics are tiles at the top; the room comparison is
+         the main area and opens as one collapsed group per dwelling, so a block of thousands of flats is a
+         list of its dwellings until someone filters or opens one. Everything a developer needs - the stage
+         record, the raw notes, the full pairing summary - is behind Technical details, and Copy All still
+         writes all of it.
+
+         The grid stays in a star row and is NOT inside a page-level scroller: that would hand it infinite
+         height and defeat the virtualisation. It groups WITH virtualisation on (IsVirtualizingWhenGrouping),
+         which WPF otherwise switches off for a grouped view. -->
+    <Window.Resources>
+        <Style x:Key="Tile" TargetType="Border">
+            <Setter Property="Background" Value="#F6F8FA"/>
+            <Setter Property="BorderBrush" Value="#D0D7DE"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+            <Setter Property="MinWidth" Value="150"/>
+        </Style>
+        <Style x:Key="TileLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#57606A"/>
+            <Setter Property="FontSize" Value="11"/>
+        </Style>
+        <Style x:Key="TileValue" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+        <Style x:Key="Chip" TargetType="CheckBox">
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border x:Name="border" Padding="10,3" CornerRadius="11" BorderThickness="1" BorderBrush="#D0D7DE" Background="White">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#DDF4FF"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#54AEFF"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="12,10,12,8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <!-- The refusal and the comparison are the two halves of the same space: exactly one is shown. -->
+            <RowDefinition x:Name="rowDefinition_Refusal" Height="0"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition x:Name="rowDefinition_Comparison" Height="3*" MinHeight="120"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER: what was compared, in the engineer's terms. -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,8">
+            <TextBlock x:Name="textBlock_Heading" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap"/>
+            <TextBlock x:Name="textBlock_Cases" Margin="0,3,0,0" Foreground="#444444" TextWrapping="Wrap"/>
+            <TextBlock x:Name="textBlock_Stages" Margin="0,4,0,0" Foreground="#57606A" FontSize="11" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- SUMMARY TILES, and the product / guidance card. Hidden on a refusal. -->
+        <StackPanel x:Name="stackPanel_Comparison" Grid.Row="1">
+            <WrapPanel x:Name="wrapPanel_Tiles" Orientation="Horizontal">
+                <Border Style="{StaticResource Tile}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TileLabel}" Text="Reference case — TM59"/>
+                        <TextBlock x:Name="textBlock_TileReference" Style="{StaticResource TileValue}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Tile}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TileLabel}" Text="System case — TM59"/>
+                        <TextBlock x:Name="textBlock_TileSystem" Style="{StaticResource TileValue}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Tile}" ToolTip="Mean of (system case − reference case) resultant temperature over every compared room and hour.">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TileLabel}" Text="Mean difference (system − reference)"/>
+                        <TextBlock x:Name="textBlock_TileBias" Style="{StaticResource TileValue}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Tile}" ToolTip="Root-mean-square difference of the hourly resultant temperatures.">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TileLabel}" Text="RMS difference"/>
+                        <TextBlock x:Name="textBlock_TileRmse" Style="{StaticResource TileValue}"/>
+                    </StackPanel>
+                </Border>
+                <Border x:Name="border_TileMax" Style="{StaticResource Tile}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TileLabel}" Text="Largest hourly difference"/>
+                        <TextBlock x:Name="textBlock_TileMax" Style="{StaticResource TileValue}"/>
+                    </StackPanel>
+                </Border>
+                <Border Style="{StaticResource Tile}" ToolTip="TM59 criterion outcomes (room × criterion) whose pass/fail differs between the two cases.">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource TileLabel}" Text="TM59 outcomes changed"/>
+                        <TextBlock x:Name="textBlock_TileChanged" Style="{StaticResource TileValue}"/>
+                    </StackPanel>
+                </Border>
+            </WrapPanel>
+
+            <!-- WHAT THE SYSTEM CASE RAN: the selected products and, for manufacturer operating guidance, the
+                 guidance itself as a table rather than a paragraph. -->
+            <Expander x:Name="expander_System" Margin="0,0,0,8" IsExpanded="True">
+                <Expander.Header>
+                    <TextBlock x:Name="textBlock_SystemHeader" FontWeight="SemiBold"/>
+                </Expander.Header>
+                <StackPanel Margin="18,4,0,0">
+                    <ItemsControl x:Name="itemsControl_SystemFacts">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="0,1,0,1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="190"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding Key}" Foreground="#57606A"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Value}" TextWrapping="Wrap"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock x:Name="textBlock_SystemSource" Margin="0,4,0,0" Foreground="#777777" FontSize="11" TextWrapping="Wrap"/>
+                    <Expander x:Name="expander_SystemUnits" Header="Per unit" Margin="0,4,0,0" FontSize="11">
+                        <DataGrid x:Name="dataGrid_SystemUnits" MaxHeight="180" Margin="0,4,0,0" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal" FontSize="11" EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Unit" Binding="{Binding Name_AirHandlingUnit}" Width="120"/>
+                                <DataGridTextColumn Header="Product" Binding="{Binding Reference}" Width="*"/>
+                                <DataGridTextColumn Header="Cooling module" Binding="{Binding CoolingModuleModel}" Width="140"/>
+                                <DataGridTextColumn Header="Design flow (l/s)" Binding="{Binding DesignSupplyFlowRate_Lps, StringFormat={}{0:0.#}}" Width="110"/>
+                                <DataGridTextColumn Header="Cooling flow (l/s)" Binding="{Binding ElevatedAirFlow_Lps, StringFormat={}{0:0.#}}" Width="110"/>
+                                <DataGridTextColumn Header="Setpoint (°C)" Binding="{Binding CoolingActivationTemperature_C, StringFormat={}{0:0.#}}" Width="90"/>
+                                <DataGridTextColumn Header="Coil drop (K)" Binding="{Binding CoilNetTemperatureDrop_K, StringFormat={}{0:0.##}}" Width="90"/>
+                                <DataGridTextColumn Header="Min supply (°C)" Binding="{Binding MinimumSupplyTemperature_C, StringFormat={}{0:0.#}}" Width="100"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Expander>
+                </StackPanel>
+            </Expander>
+        </StackPanel>
+
+        <!-- Shown only when the system case did not complete: what stopped it, in the authority's own words,
+             and nothing else - no system case numbers are presented for an incomplete run. -->
+        <Border x:Name="border_Refusal" Grid.Row="2" Visibility="Collapsed" BorderBrush="#F5C2C7" Background="#FFF5F5" BorderThickness="1" CornerRadius="4" Padding="10,8" Margin="0,0,0,8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="textBlock_RefusalHeading" Grid.Row="0" FontWeight="SemiBold" Foreground="Firebrick" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <TextBlock x:Name="textBlock_Refusal" TextWrapping="Wrap" Foreground="#6E1B1B"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <!-- FILTERS - composable chips, plus search. The default is every room, as collapsed dwellings. -->
+        <Grid x:Name="stackPanel_Filters" Grid.Row="3" Margin="0,2,0,6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Rooms" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <CheckBox x:Name="checkBox_Failures" Style="{StaticResource Chip}" Checked="Filter_Changed" Unchecked="Filter_Changed" ToolTip="Only criteria that fail in either case."/>
+                <CheckBox x:Name="checkBox_Changed" Style="{StaticResource Chip}" Checked="Filter_Changed" Unchecked="Filter_Changed" ToolTip="Only criteria whose TM59 outcome differs between the two cases."/>
+                <CheckBox x:Name="checkBox_Largest" Style="{StaticResource Chip}" Checked="Filter_Changed" Unchecked="Filter_Changed" ToolTip="A flat list, largest hourly difference first."/>
+                <Button x:Name="button_All" Content="All" MinWidth="44" Height="24" Margin="0,0,6,0" Click="button_All_Click" ToolTip="Clear the filters and the search."/>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                <TextBlock Text="Search" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox x:Name="textBox_Search" Width="220" Height="22" VerticalContentAlignment="Center" TextChanged="textBox_Search_TextChanged" ToolTip="Dwelling, room or criterion."/>
+                <Button x:Name="button_ExpandAll" Content="Expand all" Height="22" Padding="8,0" Margin="10,0,4,0" Click="button_ExpandAll_Click"/>
+                <Button x:Name="button_CollapseAll" Content="Collapse all" Height="22" Padding="8,0" Click="button_CollapseAll_Click"/>
+            </StackPanel>
+            <TextBlock x:Name="textBlock_RowCount" Grid.Column="2" VerticalAlignment="Center" Foreground="#555555"/>
+        </Grid>
+
+        <!-- THE ROOM COMPARISON. Virtualised and recycling, grouping included: a block of five thousand rooms
+             is fifteen thousand rows, and only the ones on screen are ever realised. Groups open collapsed,
+             except where a filter or a search has narrowed the list to something readable. -->
+        <DataGrid x:Name="dataGrid_Comparison" Grid.Row="5" AutoGenerateColumns="False" IsReadOnly="True" CanUserSortColumns="True" HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal" FontSize="11" Tag="{x:Null}"
+                  EnableRowVirtualization="True" EnableColumnVirtualization="True"
+                  VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Item"
+                  ScrollViewer.CanContentScroll="True">
+            <DataGrid.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type GroupItem}">
+                                        <Expander IsExpanded="{Binding Tag, RelativeSource={RelativeSource AncestorType=DataGrid}, Mode=OneWay}" BorderThickness="0" Margin="0,1,0,0">
+                                            <Expander.Header>
+                                                <TextBlock>
+                                                    <Run Text="{Binding Name, Mode=OneWay}" FontWeight="SemiBold"/>
+                                                    <Run Text="  ·  " Foreground="#999999"/>
+                                                    <Run Text="{Binding ItemCount, Mode=OneWay}" Foreground="#57606A"/>
+                                                    <Run Text=" row(s)" Foreground="#57606A"/>
+                                                </TextBlock>
+                                            </Expander.Header>
+                                            <ItemsPresenter/>
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </DataGrid.GroupStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Dwelling" Binding="{Binding Dwelling}" Width="100" MinWidth="100"/>
+                <DataGridTextColumn Header="Room" Binding="{Binding Space}" Width="130" MinWidth="130"/>
+                <DataGridTextColumn Header="TM59 criterion" Binding="{Binding Criterion}" Width="160" MinWidth="160"/>
+                <DataGridTextColumn Header="Reference" Binding="{Binding Text_A}" Width="80" MinWidth="80" ToolTipService.ToolTip="Reference case: actual / limit"/>
+                <DataGridTextColumn Header="Reference TM59" Binding="{Binding Status_A}" Width="95" MinWidth="95"/>
+                <DataGridTextColumn Header="System" Binding="{Binding Text_B}" Width="80" MinWidth="80"/>
+                <DataGridTextColumn Header="System TM59" Binding="{Binding Status_B}" Width="90" MinWidth="90"/>
+                <DataGridTextColumn Header="Changed" Binding="{Binding ChangedText}" Width="80" MinWidth="80"/>
+                <DataGridTextColumn Header="Δ hours" Binding="{Binding Delta_Actual, TargetNullValue=—}" Width="62" MinWidth="62"/>
+                <DataGridTextColumn Header="Mean diff. (K)" Binding="{Binding MeanBias, StringFormat={}{0:+0.00;-0.00;0.00}}" Width="90" MinWidth="90"/>
+                <DataGridTextColumn Header="RMS diff. (K)" Binding="{Binding RootMeanSquareError, StringFormat={}{0:0.00}}" Width="85" MinWidth="85"/>
+                <DataGridTextColumn Header="Largest diff. (K)" Binding="{Binding MaximumAbsoluteDifference, StringFormat={}{0:0.00}}" Width="100" MinWidth="100"/>
+                <DataGridTextColumn Header="at hour" Binding="{Binding Hour_MaximumAbsoluteDifference}" Width="60" MinWidth="60"/>
+                <DataGridTextColumn Header="Mean ref. (°C)" Binding="{Binding Mean_A, StringFormat={}{0:0.00}}" Width="90" MinWidth="90"/>
+                <DataGridTextColumn Header="Mean sys. (°C)" Binding="{Binding Mean_B, StringFormat={}{0:0.00}}" Width="90" MinWidth="90"/>
+                <DataGridTextColumn Header="Hours" Binding="{Binding Count}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <!-- TECHNICAL DETAILS: the full record, collapsed. The notes are written into the box only when it is
+             first opened - on a large project they are long, and nobody who does not open this pays for them. -->
+        <Expander x:Name="expander_Technical" Grid.Row="6" Header="Technical details" Margin="0,8,0,0" >
+            <Grid Margin="0,4,0,0" MaxHeight="300">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0">
+                    <TextBlock x:Name="textBlock_Outcome" TextWrapping="Wrap" FontWeight="SemiBold"/>
+                    <TextBlock x:Name="textBlock_Summary" TextWrapping="Wrap" Foreground="#555555" Margin="0,2,0,6"/>
+                </StackPanel>
+                <DataGrid x:Name="dataGrid_Stage" Grid.Row="1" MaxHeight="130" AutoGenerateColumns="False" IsReadOnly="True" CanUserSortColumns="False" HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal" FontSize="11" EnableRowVirtualization="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Stage" Binding="{Binding Name}" Width="160"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding StatusText}" Width="90"/>
+                        <DataGridTextColumn Header="Detail" Binding="{Binding Detail}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBox x:Name="textBox_Diagnostics" Grid.Row="2" Margin="0,6,0,0" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" FontFamily="Consolas" FontSize="11"/>
+            </Grid>
+        </Expander>
+
+        <!-- Always the last Auto row, and nothing above it is unbounded, so the action bar is on screen at
+             every window size MinHeight allows. -->
+        <Grid Grid.Row="7" Margin="0,8,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <WrapPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                <Button x:Name="button_ReportA" MinWidth="170" Height="24" Padding="8,0" Margin="0,0,8,0" Click="button_ReportA_Click" ToolTipService.ShowOnDisabled="True">TM59 report — reference</Button>
+                <Button x:Name="button_ReportB" MinWidth="160" Height="24" Padding="8,0" Margin="0,0,8,0" Click="button_ReportB_Click" ToolTipService.ShowOnDisabled="True">TM59 report — system</Button>
+                <Button x:Name="button_OpenReport" MinWidth="150" Height="24" Padding="8,0" Margin="0,0,8,0" Click="button_OpenReport_Click" ToolTipService.ShowOnDisabled="True">Comparison report</Button>
+                <Button x:Name="button_OpenFolder" MinWidth="100" Height="24" Padding="8,0" Margin="0,0,8,0" Click="button_OpenFolder_Click" ToolTipService.ShowOnDisabled="True">Open folder</Button>
+            </WrapPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <Button x:Name="button_CopyAll" MinWidth="80" Height="24" Padding="8,0" Margin="8,0,10,0" Click="button_CopyAll_Click">Copy All</Button>
+                <Button x:Name="button_Close" IsCancel="True" MinWidth="70" Height="24" Click="button_Close_Click">Close</Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

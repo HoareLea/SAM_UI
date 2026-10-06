@@ -1,0 +1,80 @@
+<UserControl x:Class="SAM.Analytical.UI.WPF.PartOWorkflowStepStripControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:SAM.Analytical.UI.WPF">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Analytical.UI.WPF;component/Themes/PartOStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!-- One step per item: a numbered circle, the name, and the state in words underneath - so where a
+         workflow stands is readable without colour. The connector before each step but the first is part
+         of the step, which keeps the strip a plain horizontal list. -->
+    <ItemsControl x:Name="itemsControl_Steps" Focusable="False">
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+            <DataTemplate DataType="{x:Type local:PartOWorkflowStep}">
+                <StackPanel Orientation="Horizontal" Background="Transparent" ToolTip="{Binding Detail}" ToolTipService.ShowDuration="30000"
+                            AutomationProperties.Name="{Binding AccessibleText}">
+                    <Rectangle x:Name="connector" Width="28" Height="1" Margin="6,0,6,0" VerticalAlignment="Top" Fill="{StaticResource PartO.Brush.Border}">
+                        <Rectangle.RenderTransform>
+                            <TranslateTransform Y="10"/>
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <Border x:Name="circle" Width="20" Height="20" CornerRadius="10" BorderThickness="1.5" VerticalAlignment="Top"
+                            BorderBrush="{StaticResource PartO.Brush.Border}" Background="White">
+                        <TextBlock x:Name="glyph" Text="{Binding Glyph}" FontSize="11" FontFamily="Segoe UI Symbol" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Foreground="{StaticResource PartO.Brush.Muted}"/>
+                    </Border>
+                    <StackPanel Margin="6,1,0,0" VerticalAlignment="Top">
+                        <TextBlock x:Name="name" Text="{Binding Name}" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                        <TextBlock x:Name="state" Text="{Binding StateText}" FontSize="10.5" Foreground="{StaticResource PartO.Brush.Subtle}"/>
+                    </StackPanel>
+                </StackPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding IsFirst}" Value="True">
+                        <Setter TargetName="connector" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding State}" Value="{x:Static local:PartOWorkflowStepState.Done}">
+                        <Setter TargetName="circle" Property="Background" Value="{StaticResource PartO.Brush.Success}"/>
+                        <Setter TargetName="circle" Property="BorderBrush" Value="{StaticResource PartO.Brush.Success}"/>
+                        <Setter TargetName="glyph" Property="Foreground" Value="White"/>
+                        <Setter TargetName="name" Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+                        <Setter TargetName="state" Property="Foreground" Value="{StaticResource PartO.Brush.Success}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding State}" Value="{x:Static local:PartOWorkflowStepState.Current}">
+                        <Setter TargetName="circle" Property="Background" Value="{StaticResource PartO.Brush.AccentSurface}"/>
+                        <Setter TargetName="circle" Property="BorderBrush" Value="{StaticResource PartO.Brush.Accent}"/>
+                        <Setter TargetName="glyph" Property="Foreground" Value="{StaticResource PartO.Brush.AccentDark}"/>
+                        <Setter TargetName="glyph" Property="FontWeight" Value="Bold"/>
+                        <Setter TargetName="name" Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+                        <Setter TargetName="name" Property="FontWeight" Value="SemiBold"/>
+                        <Setter TargetName="state" Property="Foreground" Value="{StaticResource PartO.Brush.AccentDark}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding State}" Value="{x:Static local:PartOWorkflowStepState.Available}">
+                        <Setter TargetName="circle" Property="BorderBrush" Value="{StaticResource PartO.Brush.Accent}"/>
+                        <Setter TargetName="glyph" Property="Foreground" Value="{StaticResource PartO.Brush.AccentDark}"/>
+                        <Setter TargetName="name" Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+                        <Setter TargetName="state" Property="Foreground" Value="{StaticResource PartO.Brush.AccentDark}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding State}" Value="{x:Static local:PartOWorkflowStepState.Blocked}">
+                        <Setter TargetName="circle" Property="Background" Value="#FFEBE9"/>
+                        <Setter TargetName="circle" Property="BorderBrush" Value="{StaticResource PartO.Brush.Danger}"/>
+                        <Setter TargetName="glyph" Property="Foreground" Value="{StaticResource PartO.Brush.Danger}"/>
+                        <Setter TargetName="glyph" Property="FontWeight" Value="Bold"/>
+                        <Setter TargetName="name" Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+                        <Setter TargetName="name" Property="FontWeight" Value="SemiBold"/>
+                        <Setter TargetName="state" Property="Foreground" Value="{StaticResource PartO.Brush.Danger}"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+</UserControl>

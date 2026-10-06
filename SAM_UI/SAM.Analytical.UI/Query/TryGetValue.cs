@@ -177,6 +177,28 @@ namespace SAM.Analytical.UI
                             return true;
                         }
                     }
+                    else if (appearanceSettings is PartFSpaceDataAppearanceSettings)
+                    {
+                        PartFSpaceData partFSpaceData = space.GetValue<PartFSpaceData>(SpaceParameter.PartFSpaceData);
+                        if (partFSpaceData == null)
+                        {
+                            return false;
+                        }
+
+                        if (Core.Query.TryGetValue(partFSpaceData, parameterName, out value))
+                        {
+                            if (parameterName == "Color")
+                            {
+                                text = partFSpaceData.Name;
+                            }
+                            else
+                            {
+                                text = value?.ToString();
+                            }
+
+                            return true;
+                        }
+                    }
                     else if (appearanceSettings is NCMDataAppearanceSettings)
                     {
                         InternalCondition internalCondition = space?.InternalCondition;

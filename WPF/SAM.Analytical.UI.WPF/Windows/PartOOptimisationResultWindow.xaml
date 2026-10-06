@@ -1,0 +1,159 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.PartOOptimisationResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Part O — Iteration 2B — TM59 optimisation" Width="1180" MinWidth="700" MinHeight="360"
+        SizeToContent="Height" ResizeMode="CanResizeWithGrip" FontFamily="Roboto Light">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Analytical.UI.WPF;component/Themes/PartOStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="Style_FactLabel" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Muted}"/>
+                <Setter Property="Margin" Value="0,1,12,1"/>
+            </Style>
+
+            <Style x:Key="Style_FactValue" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="Margin" Value="0,1,0,1"/>
+                <!-- Transparent, not absent, so the whole line is hit-testable and its tooltip appears. -->
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- LAYOUT, simple by default and detailed on demand: the OUTCOME (the kept design's TM59 verdict, glyph
+         and word, never colour alone) with WHY the optimisation stopped; the SUMMARY (rounds, starting and kept
+         design, what changed, the capacity envelope); WHAT NEXT; and then the ENGINEERING DETAIL - the airflow
+         and unit histories and every note, collapsed. Everything above the detail is PartOOptimisationSummary,
+         read off the run's own record; nothing is parsed out of its prose. -->
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- The content scrolls and Copy All / Close stay outside it, so opening the detail on a short display or
+             with large text scaling never pushes them off screen (PartOWindowPlacement caps the height to the monitor the window is on). -->
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- THE OUTCOME. The left rule and the glyph carry the colour; the words carry the meaning. -->
+        <Border x:Name="border_Verdict" Grid.Row="0" Background="{StaticResource PartO.Brush.Surface}" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="4,1,1,1" CornerRadius="3" Padding="12,8">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="textBlock_VerdictGlyph" FontFamily="Segoe UI Symbol" FontSize="20" FontWeight="SemiBold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="textBlock_Verdict" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource PartO.Brush.Text}" VerticalAlignment="Center"/>
+                    <TextBlock Text="kept design" Style="{StaticResource PartO.Caption}" FontSize="12" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock x:Name="textBlock_StopReason" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource PartO.Brush.Text}" Margin="0,6,0,0" TextWrapping="Wrap"/>
+                <TextBlock x:Name="textBlock_StopMeaning" Foreground="{StaticResource PartO.Brush.Text}" Margin="0,2,0,0" TextWrapping="Wrap"/>
+                <TextBlock x:Name="textBlock_CancelNote" Style="{StaticResource PartO.Caption}" Margin="0,4,0,0" Visibility="Collapsed"/>
+            </StackPanel>
+        </Border>
+
+        <!-- THE SUMMARY - the run's own record; the full statement of each line is its tooltip. -->
+        <Border Grid.Row="1" Margin="0,8,0,0" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="10,6">
+            <ItemsControl x:Name="itemsControl_Facts" Grid.IsSharedSizeScope="True" Focusable="False">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Label"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Label}" Style="{StaticResource Style_FactLabel}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Value}" ToolTip="{Binding Detail}" Style="{StaticResource Style_FactValue}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <!-- WHAT NEXT, for this stop. -->
+        <TextBlock Grid.Row="2" Margin="0,8,0,0" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}">
+            <Run Text="Next:" FontWeight="SemiBold"/>
+            <Run x:Name="run_NextStep"/>
+        </TextBlock>
+
+        <!-- THE ENGINEERING DETAIL, collapsed. Nothing is removed: the airflow history, the unit history and
+             every note, warning and refusal are here and in Copy All.
+
+             TARGETED, DERIVED and SCALED are never merged. TARGETED is an ordinary optimisation decision;
+             DERIVED is a balancing consequence of one; SCALED is a CAPACITY ENVELOPE row, where the whole last
+             valid design vector was grown proportionally towards the selected unit's ceiling and the
+             optimisation asked for none of those figures. Requirement is shown beside them all so a reader can
+             see the Approved Document F floor was never moved. The MAX rows are complete: one per space and
+             direction the selected units serve. Max is the selected product's rating, never a design airflow
+             and never a target. The grids virtualise, so a block-scale history stays one scrolling list. -->
+        <Expander x:Name="expander_Detail" Grid.Row="3" Margin="0,10,0,0" IsExpanded="False">
+            <Expander.Header>
+                <TextBlock>
+                    <Run Text="Engineering detail" FontWeight="SemiBold"/>
+                    <Run x:Name="run_DetailSummary" Foreground="{StaticResource PartO.Brush.Muted}"/>
+                </TextBlock>
+            </Expander.Header>
+            <TabControl x:Name="tabControl_Detail" Height="380" Margin="0,6,0,0">
+                <TabItem x:Name="tabItem_AirFlow" Header="Design airflow changes">
+                    <DataGrid x:Name="dataGrid_AirFlow" AutoGenerateColumns="False" IsReadOnly="True" CanUserSortColumns="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" FontSize="11"
+                              EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Run" Binding="{Binding Run}" Width="45"/>
+                            <DataGridTextColumn Header="Stage" Binding="{Binding Stage}" Width="125"/>
+                            <DataGridTextColumn Header="Space" Binding="{Binding Space}" Width="170"/>
+                            <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="90"/>
+                            <DataGridTextColumn Header="Direction" Binding="{Binding Direction}" Width="90"/>
+                            <DataGridTextColumn Header="Design before (l/s)" Binding="{Binding DesignBefore_Lps, StringFormat={}{0:0.###}}" Width="130"/>
+                            <DataGridTextColumn Header="Requested (l/s)" Binding="{Binding Requested_Lps, StringFormat={}{0:0.###}, TargetNullValue=—}" Width="115"/>
+                            <DataGridTextColumn Header="Achieved (l/s)" Binding="{Binding Achieved_Lps, StringFormat={}{0:0.###}}" Width="110"/>
+                            <DataGridTextColumn Header="Part F required (l/s)" Binding="{Binding Requirement_Lps, StringFormat={}{0:0.###}}" Width="135"/>
+                            <DataGridTextColumn Header="TM59" Binding="{Binding TM59Status}" Width="*"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                <TabItem x:Name="tabItem_Unit" Header="Ventilation unit duty by round">
+                    <DataGrid x:Name="dataGrid_Unit" AutoGenerateColumns="False" IsReadOnly="True" CanUserSortColumns="True" HeadersVisibility="Column" GridLinesVisibility="Horizontal" FontSize="11"
+                              EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Run" Binding="{Binding Run}" Width="45"/>
+                            <DataGridTextColumn Header="Stage" Binding="{Binding Stage}" Width="125"/>
+                            <DataGridTextColumn Header="AHU" Binding="{Binding AHU}" Width="110"/>
+                            <DataGridTextColumn Header="System" Binding="{Binding System}" Width="170"/>
+                            <DataGridTextColumn Header="Duty (l/s)" Binding="{Binding Duty}" Width="100"/>
+                            <DataGridTextColumn Header="Max (l/s)" Binding="{Binding Maximum}" Width="115"/>
+                            <DataGridTextColumn Header="Headroom (l/s)" Binding="{Binding Headroom}" Width="115"/>
+                            <DataGridTextColumn Header="Product" Binding="{Binding Product}" Width="*"/>
+                            <DataGridTextColumn Header="Equipment" Binding="{Binding Equipment}" Width="110"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+                <TabItem x:Name="tabItem_Diagnostics" Header="Notes, warnings and refusals">
+                    <DockPanel>
+                        <TextBlock x:Name="label_Diagnostics" DockPanel.Dock="Top" Style="{StaticResource PartO.Caption}" Margin="2,2,0,4"/>
+                        <TextBox x:Name="textBox_Diagnostics" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" FontFamily="Consolas" FontSize="11"/>
+                    </DockPanel>
+                </TabItem>
+            </TabControl>
+        </Expander>
+        </Grid>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button x:Name="button_CopyAll" Width="80" Height="28" Click="button_CopyAll_Click"
+                    ToolTip="Copy the summary, both histories and every note, warning and refusal.">Copy All</Button>
+            <Button x:Name="button_Close" IsCancel="True" IsDefault="True" Width="80" Height="28" Margin="8,0,0,0" Click="button_Close_Click">Close</Button>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -98,11 +98,16 @@ jobs:
           # Keep current repo LAST. Do not duplicate SAM_UI earlier in the list.
           $buildOrder = @(
             'SAM'
+            'SAM_Mollier'
             'SAM_Systems'
             'SAM_Windows'
-            'SAM_Mollier'
             'SAM_gbXML'
             'SAM_SolarCalculator'
+            # Must precede SAM_Tas: SAM_Tas\benchmark\SAM.Analytical.Tas.Benchmark references
+            # SAM_Validation\build\SAM.Analytical.Benchmark.dll by HintPath, and without it it fails
+            # CS0234. Same slot as BuildAlls_v4.csproj uses locally. Needs only SAM and SAM_Mollier,
+            # both already above.
+            'SAM_Validation'
             'SAM_Tas'
             'SAM_Excel'
             'SAM_GEM'
@@ -123,7 +128,18 @@ jobs:
             # Current sow branch: base_ref on PR events, ref_name on push events.
             $sowRef = if ($baseRef -match '^sow/') { $baseRef } elseif ($refName -match '^sow/') { $refName } else { '' }
             if ($sowRef -and $sowRef -ne $headRef) { $candidates += $sowRef }
-            $candidates += 'sow/2026-Q2'
+            # Canonical quarter branch (strip suffixes like -update-optimization): e.g. sow/2026-Q3.
+            # On push events base_ref is empty and ref_name may be a feature branch off a sow branch,
+            # so without this the dep clone falls back to master and misses in-quarter API changes.
+            $canonical = ''
+            foreach ($cref in @($headRef, $baseRef, $refName)) {
+              if ($cref -match 'sow/(\d{4})-Q(\d)') { $canonical = "sow/$($Matches[1])-Q$($Matches[2])"; break }
+            }
+            if ($canonical -and $candidates -notcontains $canonical) { $candidates += $canonical }
+            # Hard fallbacks to the active quarter branches (in priority order).
+            foreach ($fb in @('sow/2026-Q3', 'sow/2026-Q2')) {
+              if ($candidates -notcontains $fb) { $candidates += $fb }
+            }
             # Use the auth-token form so private deps (e.g. SAM_Solver) don't prompt
             $url = if ($token) { "https://$token@github.com/$org/$r.git" } else { "https://github.com/$org/$r.git" }
             $cloned = $false
@@ -170,11 +186,16 @@ jobs:
           # Keep current repo LAST. SAM_Solver must be built before SAM_UI.
           $buildOrder = @(
             'SAM'
+            'SAM_Mollier'
             'SAM_Systems'
             'SAM_Windows'
-            'SAM_Mollier'
             'SAM_gbXML'
             'SAM_SolarCalculator'
+            # Must precede SAM_Tas: SAM_Tas\benchmark\SAM.Analytical.Tas.Benchmark references
+            # SAM_Validation\build\SAM.Analytical.Benchmark.dll by HintPath, and without it it fails
+            # CS0234. Same slot as BuildAlls_v4.csproj uses locally. Needs only SAM and SAM_Mollier,
+            # both already above.
+            'SAM_Validation'
             'SAM_Tas'
             'SAM_Excel'
             'SAM_GEM'

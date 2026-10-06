@@ -48,6 +48,7 @@ namespace SAM.Geometry.UI.WPF
         private const double maxScale = 100000000;
 
         private readonly ContainerVisual containerVisual;
+        private readonly ContainerVisual overlayVisual;
 
         private readonly List<Item> items = new List<Item>();
         private readonly Dictionary<DrawingVisual, Item> dictionary_Visual = new Dictionary<DrawingVisual, Item>();
@@ -75,21 +76,76 @@ namespace SAM.Geometry.UI.WPF
             containerVisual = new ContainerVisual();
             AddVisualChild(containerVisual);
 
+            overlayVisual = new ContainerVisual();
+            AddVisualChild(overlayVisual);
+
             Focusable = true;
             ClipToBounds = true;
         }
+
+        /// <summary>
+        /// A drawing surface on top of the plan, for callers that need to annotate it - the Part F
+        /// airflow overlay is the first. Deliberately the ONLY hook this control offers them.
+        /// <para>
+        /// Contents are in <b>screen</b> coordinates, not world coordinates, and this control never
+        /// transforms them. Annotations carry text and arrowheads, which have to stay a readable size at
+        /// every zoom level; putting them under <see cref="worldToScreen"/> would scale them with the
+        /// building. Subscribe to <see cref="ViewChanged"/> and redraw against
+        /// <see cref="WorldToScreen"/> instead.
+        /// </para>
+        /// <para>
+        /// Excluded from this control's own hit testing, so an annotation drawn over a space never
+        /// swallows the click that selects it. A caller that wants its annotations clickable hit-tests
+        /// this visual itself.
+        /// </para>
+        /// </summary>
+        public ContainerVisual Overlay
+        {
+            get
+            {
+                return overlayVisual;
+            }
+        }
+
+        /// <summary>
+        /// The plane this floor plan is a section on, or null before anything is loaded. World
+        /// coordinates in <see cref="WorldToScreen"/> are this plane's 2D coordinates.
+        /// </summary>
+        public Spatial.Plane Plane
+        {
+            get
+            {
+                return plane;
+            }
+        }
+
+        /// <summary>The current world-to-screen transform. World Y points up, screen Y points down.</summary>
+        public System.Windows.Media.Matrix WorldToScreen
+        {
+            get
+            {
+                return worldToScreen;
+            }
+        }
+
+        /// <summary>
+        /// Raised whenever <see cref="WorldToScreen"/> changes - pan, zoom, camera restore, resize - so an
+        /// <see cref="Overlay"/> drawn in screen coordinates can be redrawn to match.
+        /// </summary>
+        public event EventHandler ViewChanged;
 
         protected override int VisualChildrenCount
         {
             get
             {
-                return 1;
+                return 2;
             }
         }
 
         protected override Visual GetVisualChild(int index)
         {
-            return containerVisual;
+            //Order matters: the overlay is returned second so it renders on top of the plan.
+            return index == 0 ? containerVisual : overlayVisual;
         }
 
         public void Load(GeometryObjectModel geometryObjectModel)
@@ -469,7 +525,13 @@ namespace SAM.Geometry.UI.WPF
             {
                 zoomExtentsPending = false;
                 ZoomExtents();
+                return;
             }
+
+            //A resize moves nothing in world space but changes where every world point lands on screen, so
+            //a screen-space overlay still has to be redrawn. ZoomExtents and SetCamera above reach
+            //ApplyTransform themselves.
+            ViewChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
@@ -660,13 +722,30 @@ namespace SAM.Geometry.UI.WPF
         private void ApplyTransform()
         {
             containerVisual.Transform = new MatrixTransform(worldToScreen);
+
+            //Every pan, zoom, camera restore and resize funnels through here, so this is the one place an
+            //overlay has to be told the view moved.
+            ViewChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private Item HitTestItem(System.Windows.Point point)
         {
-            HitTestResult hitTestResult = VisualTreeHelper.HitTest(this, point);
+            Visual visual_Hit = null;
 
-            DrawingVisual drawingVisual = hitTestResult?.VisualHit as DrawingVisual;
+            //The overlay subtree is skipped rather than searched. An annotation drawn over a space would
+            //otherwise be the topmost visual under the pointer, HitTestItem would fail to find it in
+            //dictionary_Visual, and the click would be lost instead of selecting the space underneath.
+            VisualTreeHelper.HitTest(
+                this,
+                x => x == overlayVisual ? HitTestFilterBehavior.ContinueSkipSelfAndChildren : HitTestFilterBehavior.Continue,
+                x =>
+                {
+                    visual_Hit = x?.VisualHit as Visual;
+                    return HitTestResultBehavior.Stop;
+                },
+                new PointHitTestParameters(point));
+
+            DrawingVisual drawingVisual = visual_Hit as DrawingVisual;
             if (drawingVisual == null)
             {
                 return null;

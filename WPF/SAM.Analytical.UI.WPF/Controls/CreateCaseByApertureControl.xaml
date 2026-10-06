@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
-             mc:Ignorable="d" 
+             xmlns:core="clr-namespace:SAM.Core.UI.WPF;assembly=SAM.Core.UI.WPF"
+             mc:Ignorable="d"
              d:DesignHeight="250" d:DesignWidth="600">
     <Grid>
         <Grid.RowDefinitions>
@@ -12,14 +13,14 @@
             <RowDefinition Height="40"/>
         </Grid.RowDefinitions>
 
-        <DataGrid Grid.Row="0" ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" HeadersVisibility="Column" MouseDoubleClick="DataGrid_MouseDoubleClick">
+        <DataGrid Grid.Row="0" ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserAddRows="True" CanUserDeleteRows="True" HeadersVisibility="Column" MouseDoubleClick="DataGrid_MouseDoubleClick" core:DataGridBehavior.SelectAllOnEdit="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Aperture&#10;height" Binding="{Binding ApertureHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
-                <DataGridTextColumn Header="Horizontal&#10;separation" Binding="{Binding HorizontalSeparation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
-                <DataGridTextColumn Header="Keep separation&#10;distance" Binding="{Binding KeepSeparationDistance, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
-                <DataGridTextColumn Header="Offset" Binding="{Binding Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
-                <DataGridTextColumn Header="Sill&#10;height" Binding="{Binding SillHeight, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
-                <DataGridTextColumn Header="Subdivide" Binding="{Binding Subdivide, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Aperture&#10;height" Binding="{Binding ApertureHeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Horizontal&#10;separation" Binding="{Binding HorizontalSeparation, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Keep separation&#10;distance" Binding="{Binding KeepSeparationDistance, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Offset" Binding="{Binding Offset, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Sill&#10;height" Binding="{Binding SillHeight, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" Width="*" />
+                <DataGridTextColumn Header="Subdivide" Binding="{Binding Subdivide, Mode=TwoWay, UpdateSourceTrigger=LostFocus, StringFormat=N2}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>
 

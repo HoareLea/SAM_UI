@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: LGPL-3.0-or-later
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Analytical.Tas;
@@ -37,17 +37,67 @@ namespace SAM.Analytical.UI.WPF
             apertureConstructionLibraryWindow.ConstructionManagerExporting += ApertureConstructionLibraryWindow_ConstructionManagerExporting;
             apertureConstructionLibraryWindow.MultiSelect = true;
 
-            if (apertureConstructionLibraryWindow.ShowDialog(owner) != true)
+            // "Set glazing..." (U-value plan PR3): hand over to the Set glazing window. This window edits a copy, so it
+            // closes first - an OK here after a glazing change would overwrite it - and unsaved edits are asked about.
+            Guid? guid_SetGlazing = null;
+            string state = LibraryState(apertureConstructionLibraryWindow);
+            apertureConstructionLibraryWindow.SetGlazingRequested += (sender, e) =>
+            {
+                bool save = false;
+                if (LibraryState(apertureConstructionLibraryWindow) != state)
+                {
+                    System.Windows.MessageBoxResult messageBoxResult = System.Windows.MessageBox.Show(
+                        apertureConstructionLibraryWindow,
+                        "Save your changes to the aperture constructions before setting the glazing?\n\nYes saves them (one Undo step); No discards them.",
+                        "Set glazing",
+                        System.Windows.MessageBoxButton.YesNoCancel,
+                        System.Windows.MessageBoxImage.Question);
+
+                    if (messageBoxResult == System.Windows.MessageBoxResult.Cancel)
+                    {
+                        return;
+                    }
+
+                    save = messageBoxResult == System.Windows.MessageBoxResult.Yes;
+                }
+
+                e.Handled = true;
+                guid_SetGlazing = e.ApertureConstruction?.Guid;
+                apertureConstructionLibraryWindow.DialogResult = save;
+            };
+
+            if (apertureConstructionLibraryWindow.ShowDialog(owner) == true)
+            {
+                apertureConstructionLibrary = apertureConstructionLibraryWindow.ApertureConstructionLibrary;
+                materialLibrary = apertureConstructionLibraryWindow.MaterialLibrary;
+
+                adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
+
+                uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
+            }
+
+            if (guid_SetGlazing == null)
             {
                 return;
             }
 
-            apertureConstructionLibrary = apertureConstructionLibraryWindow.ApertureConstructionLibrary;
-            materialLibrary = apertureConstructionLibraryWindow.MaterialLibrary;
+            if (uIAnalyticalModel.JSAMObject?.AdjacencyCluster?.GetApertureConstructions()?.Find(x => x != null && x.Guid == guid_SetGlazing.Value) == null)
+            {
+                System.Windows.MessageBox.Show("That aperture construction is not in the model yet: save the aperture constructions first, then set its glazing.", "Set glazing");
+                return;
+            }
 
-            adjacencyCluster.ReplaceApertureConstructions(apertureConstructionLibrary);
+            System.Windows.Window window_Owner = System.Windows.Application.Current?.MainWindow;
+            uIAnalyticalModel.OpenSetGlazingWindow(guid_SetGlazing, null, window_Owner != null && window_Owner.IsVisible ? window_Owner : null);
+        }
 
-            uIAnalyticalModel.JSAMObject = new AnalyticalModel(uIAnalyticalModel.JSAMObject, adjacencyCluster, materialLibrary, uIAnalyticalModel.JSAMObject.ProfileLibrary);
+        // What the library window would commit, to tell whether it holds unsaved edits.
+        private static string LibraryState(ApertureConstructionLibraryWindow apertureConstructionLibraryWindow)
+        {
+            return string.Concat(
+                apertureConstructionLibraryWindow.ApertureConstructionLibrary?.ToJsonObject()?.ToJsonString(),
+                "|",
+                apertureConstructionLibraryWindow.MaterialLibrary?.ToJsonObject()?.ToJsonString());
         }
 
         private static void ApertureConstructionLibraryWindow_ConstructionManagerExporting(object sender, ConstructionManagerExportingEventArgs e)
@@ -227,10 +277,7 @@ namespace SAM.Analytical.UI.WPF
                 treeViewWindow.GettingCategory += TreeViewWindow_GettingConstructionCategory;
                 treeViewWindow.GettingText += TreeViewWindow_GettingConstructionText;
                 treeViewWindow.SetObjects(constructionManager?.Constructions);
-                if (owner != null)
-                {
-                    treeViewWindow.Owner = owner;
-                }
+                SAM.Core.UI.WPF.Modify.SetOwner(treeViewWindow, owner);
 
                 if (treeViewWindow.ShowDialog() != true)
                 {

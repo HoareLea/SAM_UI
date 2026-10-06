@@ -491,6 +491,98 @@ namespace SAM.Analytical.UI.WPF
             EnableSimulate();
         }
 
+        /// <summary>
+        /// Locks the settings an Approved Document O run does not leave open, so what remains on screen is
+        /// only what a person actually decides.
+        ///
+        /// <para><b>Which ones, and why they are locked rather than merely preselected</b></para>
+        /// <para>
+        /// <b>Simulate</b> and <b>Full Year Simulation</b>: unticking either produces a workflow that returns
+        /// a model with no annual hourly series, which <c>Query.IsPartOFullYearSimulation</c> then correctly
+        /// refuses to complete the run from - after the TAS run has already been paid for. There is no such
+        /// thing as a Part O run over any other range, so offering the choice only offers the chance to waste
+        /// an hour of somebody's afternoon.
+        /// </para>
+        /// <para>
+        /// <b>Sizing</b>, <b>Unmet Hours</b>, <b>Use Widths</b> and <b>Update Construction Layers</b>: these
+        /// are the TAS case, and the case has to be identical for the baseline and every Iteration 2B round
+        /// that repeats it - <c>PartOCanonicalTBD</c> fingerprints all four. They are settled by
+        /// <c>Create.SimulateOptions_PartO</c>, which is also where the reasoning for each value is written
+        /// down.
+        /// </para>
+        /// <para>
+        /// <b>The five export boxes</b>: room data sheets, SAP, Part L, TPD and the TAS domestic-overheating
+        /// XML. None is a Part O deliverable - the overheating assessment Part O produces is
+        /// <c>Modify.AssessPartOTM59</c>, which reads the TSD directly.
+        /// </para>
+        /// <para>
+        /// <b>The project name</b>: it is the run's <i>identity</i>, not a label on it. Every artifact a Part O
+        /// run is judged by derives from it - <c>&lt;project&gt;.tbd</c>, <c>.tsd</c>, <c>.sam</c> and
+        /// <c>&lt;project&gt;-TM59.txt</c> - and on an isolated run it already carries the scope token
+        /// <c>Query.ProjectName_Isolated</c> put there so that run's evidence cannot land on a full run's or on
+        /// another selection's. <c>PartOSimulationContext.Iteration_ProjectName</c> also reads the optimisation
+        /// round back out of it, so an edited name can restart Iteration 2B's numbering at <c>-Opt01</c> and
+        /// overwrite a previous optimisation's evidence. A person typing over it can therefore destroy the
+        /// provenance of a run without anything refusing them, which is why it is derived and locked rather
+        /// than prepopulated. See <c>Create.SimulateOptions_PartO</c>.
+        /// </para>
+        ///
+        /// <para><b>What is deliberately left alone</b></para>
+        /// <para>
+        /// The output directory, the weather and the solar calculation method. <b>Where</b> the evidence is
+        /// written stays a person's to redirect, because moving a run's files changes nothing about what the
+        /// run is; the other two are engineering inputs, and Part O has no business choosing them silently.
+        /// </para>
+        ///
+        /// <para>
+        /// <b>Call this after <see cref="SimulateOptions"/> has been set</b>, never before: the
+        /// <see cref="Simulate"/> setter runs <c>EnableSimulate</c>, which re-enables the sizing and
+        /// full-year boxes as a group, and would undo this.
+        /// </para>
+        /// </summary>
+        public void LockPartOSettings()
+        {
+            checkBox_Simulate.IsEnabled = false;
+            checkBox_FullYearSimulation.IsEnabled = false;
+            checkBox_Sizing.IsEnabled = false;
+            checkBox_UnmetHours.IsEnabled = false;
+            checkBox_UseWidths.IsEnabled = false;
+            checkBox_UpdateConstructionLayersByPanelType.IsEnabled = false;
+
+            checkBox_RoomDataSheets.IsEnabled = false;
+            checkBox_CreateSAP.IsEnabled = false;
+            checkBox_CreatePartL.IsEnabled = false;
+            checkBox_CreateTPD.IsEnabled = false;
+            checkBox_CreateTM59.IsEnabled = false;
+
+            //The run's identity, derived from the prepared model. Read-only rather than merely disabled so the
+            //name is still selectable and copyable - somebody looking for this run's TBD needs to be able to
+            //take it - while remaining unchangeable. IsEnabled is set too, so "is it locked?" has one answer
+            //whichever property a caller or a test asks.
+            textBox_ProjectName.IsReadOnly = true;
+            textBox_ProjectName.IsEnabled = false;
+
+            //SAYS WHY, on the box itself. A locked field with no explanation reads as a defect - and this
+            //one is the same dialog the ordinary Energy Simulation command opens with the field editable,
+            //so an engineer has every reason to expect to be able to type in it. ShowOnDisabled, because
+            //the box is disabled and a tooltip on a disabled control is otherwise never shown.
+            System.Windows.Controls.ToolTipService.SetShowOnDisabled(textBox_ProjectName, true);
+
+            textBox_ProjectName.ToolTip = string.Concat(
+                "Locked on the Part O route: this is the run's identity, not a label on it.",
+                System.Environment.NewLine,
+                "Every artifact is named from it - .tbd, .tsd, .sam and the TM59 report - an isolated run carries its scope in it, and Iteration 2B reads its round number back out of it, so an edited name can overwrite a previous optimisation's evidence.",
+                System.Environment.NewLine,
+                "It is derived from the prepared model. Simulate - Energy Simulation opens this same dialog with the name editable.");
+
+            //The From/To boxes follow the full-year box, and its own rule already disables them while it is
+            //ticked. Asked again here rather than assumed, so this method states the whole locked state.
+            EnableFullYearSimulation();
+
+            //Both are driven by the SAP and domestic-overheating boxes, which are now off and locked.
+            EnableTextMap();
+        }
+
         private void button_OutputDirectory_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())

@@ -11,7 +11,7 @@
 	  <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <SelfContained>true</SelfContained>
     <PublishSingleFile>true</PublishSingleFile>
-    <Configurations>Debug;Release;net48-windows</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>SAM.ico</ApplicationIcon>
@@ -50,11 +50,9 @@
     <Reference Include="SAM.Core">
       <HintPath>..\..\..\SAM\build\SAM.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="SAM.Geometry">
       <HintPath>..\..\..\SAM\build\SAM.Geometry.dll</HintPath>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\SAM.png" />
@@ -153,7 +151,7 @@
     <PackageReference Include="HelixToolkit.Wpf">
       <Version>2.27.0</Version>
     </PackageReference>
-    <PackageReference Include="HoneybeeSchema" Version="1.5901.5" />
+    <PackageReference Include="HoneybeeSchema" Version="$(HoneybeeSchemaVersion)" />
     <PackageReference Include="NetOfficeFw.Excel">
       <Version>1.9.7</Version>
     </PackageReference>

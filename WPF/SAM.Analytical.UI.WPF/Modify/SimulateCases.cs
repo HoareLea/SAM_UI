@@ -2,9 +2,9 @@
 // Copyright (c) 2020-2026 Michal Dengusiak & Jakub Ziolkowski and contributors
 
 using SAM.Analytical.Tas;
-using SAM.Core.UI.WPF;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace SAM.Analytical.UI.WPF
 {
@@ -55,11 +55,14 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
-            using ProgressBarWindowManager progressBarWindowManager = new();
+            // RunWorkflow shows its own cancellable, determinate dialog. The marquee window that used to wrap
+            // this call stacked a second dialog on top of that one and reported nothing the inner one did not.
+            Modify.RunWorkflow(analyticalModels, workflowSettings, directory, CancellationToken.None, out bool cancelled, parallel, null, true);
 
-            progressBarWindowManager.Show("Running", "Running...");
-            Modify.RunWorkflow(analyticalModels, workflowSettings, directory, parallel, null, true);
-            progressBarWindowManager.Close();
+            if (cancelled)
+            {
+                System.Windows.MessageBox.Show("Simulation cancelled. Cases that had already finished were kept.");
+            }
         }
     }
 }

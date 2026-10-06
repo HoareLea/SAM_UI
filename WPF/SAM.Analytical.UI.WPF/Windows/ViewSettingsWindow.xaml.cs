@@ -13,7 +13,12 @@ namespace SAM.Analytical.UI.WPF.Windows
         {
             InitializeComponent();
         }
-        public ViewSettingsWindow(IViewSettings viewSettings, AnalyticalModel analyticalModel)
+        /// <param name="isNewViewSettings">
+        /// True where this dialog is creating a view rather than editing one that exists. It is what allows a
+        /// new view to be given a useful preset - the Part F airflow annotation, when the Part F colour scheme
+        /// is chosen - without ever changing how somebody has already set an existing view up.
+        /// </param>
+        public ViewSettingsWindow(IViewSettings viewSettings, AnalyticalModel analyticalModel, bool isNewViewSettings = false)
         {
             InitializeComponent();
 
@@ -21,7 +26,7 @@ namespace SAM.Analytical.UI.WPF.Windows
 
             if(viewSettings is TwoDimensionalViewSettings)
             {
-                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl((TwoDimensionalViewSettings)viewSettings, analyticalModel);
+                AnalyticalTwoDimensionalViewSettingsControl analyticalTwoDimensionalViewSettingsControl = new AnalyticalTwoDimensionalViewSettingsControl((TwoDimensionalViewSettings)viewSettings, analyticalModel) { IsNewViewSettings = isNewViewSettings };
                 userControl = analyticalTwoDimensionalViewSettingsControl;
             }
             else if (viewSettings is ThreeDimensionalViewSettings)

@@ -1,0 +1,94 @@
+<!-- The small set of presentation patterns the Part O windows share: a palette, a primary action, a muted
+     caption, a section heading and a status glyph. Merged by a window with
+     <ResourceDictionary Source="/SAM.Analytical.UI.WPF;component/Themes/PartOStyles.xaml"/>.
+     Deliberately small - it is a place for patterns that recur, not a UI framework. The colours are the
+     ones the Part O windows already used (PartOIteration3ResultWindow's tiles and chips, the Hub's outcome
+     line). -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <BooleanToVisibilityConverter x:Key="PartO.BooleanToVisibility"/>
+
+    <SolidColorBrush x:Key="PartO.Brush.Text" Color="#24292F"/>
+    <SolidColorBrush x:Key="PartO.Brush.Muted" Color="#57606A"/>
+    <SolidColorBrush x:Key="PartO.Brush.Subtle" Color="#8C959F"/>
+    <SolidColorBrush x:Key="PartO.Brush.Border" Color="#D0D7DE"/>
+    <SolidColorBrush x:Key="PartO.Brush.Surface" Color="#F6F8FA"/>
+    <SolidColorBrush x:Key="PartO.Brush.Accent" Color="#0969DA"/>
+    <SolidColorBrush x:Key="PartO.Brush.AccentDark" Color="#0550AE"/>
+    <SolidColorBrush x:Key="PartO.Brush.AccentSurface" Color="#DDF4FF"/>
+    <SolidColorBrush x:Key="PartO.Brush.Success" Color="#1A7F37"/>
+    <SolidColorBrush x:Key="PartO.Brush.Danger" Color="#CF222E"/>
+    <!-- Amber for a warning (something to look at, not a failure): the glyph and a row marker; the text stays in Text. -->
+    <SolidColorBrush x:Key="PartO.Brush.Warning" Color="#9A6700"/>
+
+    <!-- A heading over a section of a dialog: small, semibold, never louder than the content. -->
+    <Style x:Key="PartO.SectionHeading" TargetType="TextBlock">
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+        <Setter Property="Margin" Value="0,0,0,4"/>
+    </Style>
+
+    <!-- A secondary line: a summary under a control, a caption under a button. -->
+    <Style x:Key="PartO.Caption" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Muted}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <!-- The one action a dialog wants taken. Disabled, it falls back to the ordinary grey button look so it
+         cannot be mistaken for available. -->
+    <Style x:Key="PartO.PrimaryButton" TargetType="Button">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource PartO.Brush.Accent}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PartO.Brush.AccentDark}"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Padding" Value="12,0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="3" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="Background" Value="{StaticResource PartO.Brush.AccentDark}"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PartO.Brush.Text}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Background" Value="#F3F4F6"/>
+                            <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource PartO.Brush.Border}"/>
+                            <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Subtle}"/>
+                            <Setter Property="Cursor" Value="Arrow"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Tooltips wrap. The Part O tooltips carry the inspection's complete sentences, and unwrapped they
+         ran to well over a thousand pixels on one line. Implicit, so every tooltip in a window that merges
+         this dictionary gets it; a tooltip whose content is not a string keeps its own template. -->
+    <Style TargetType="ToolTip">
+        <Setter Property="MaxWidth" Value="480"/>
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- A status glyph beside its label - ✓ ✕ ○ – - so a state never depends on colour alone. -->
+    <Style x:Key="PartO.StatusGlyph" TargetType="TextBlock">
+        <Setter Property="Width" Value="14"/>
+        <Setter Property="FontFamily" Value="Segoe UI Symbol"/>
+        <Setter Property="TextAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0,0,4,0"/>
+    </Style>
+</ResourceDictionary>

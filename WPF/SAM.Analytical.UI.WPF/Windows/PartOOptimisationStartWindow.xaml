@@ -1,0 +1,132 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.PartOOptimisationStartWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Part O — Start Iteration 2B" Width="640" SizeToContent="Height" ResizeMode="CanResizeWithGrip" MinHeight="260"
+        WindowStartupLocation="CenterOwner" FontFamily="Roboto Light">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Analytical.UI.WPF;component/Themes/PartOStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="Style_FactLabel" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Muted}"/>
+                <Setter Property="Margin" Value="0,1,12,1"/>
+            </Style>
+
+            <Style x:Key="Style_FactValue" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="Margin" Value="0,1,0,1"/>
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+
+            <DataTemplate x:Key="Template_Bullet">
+                <TextBlock TextWrapping="Wrap" Margin="0,1,0,1" Foreground="{StaticResource PartO.Brush.Text}">
+                    <Run Text="•"/>
+                    <Run Text="{Binding Mode=OneWay}"/>
+                </TextBlock>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- LAYOUT, in the order an engineer asks: WHY run it (purpose), WHAT it starts from (the run's own
+         record), WHAT it may and may not change, and HOW (the settings, pre-filled). Nothing runs until Start.
+         Every fact is PartOOptimisationStart's; eligibility was already Modify.CanOptimise's answer. -->
+    <!-- The content scrolls and the actions sit outside it, so Start and Cancel stay on screen however small the
+         work area or large the text scaling; the height is capped to the work area in code, as the other Part O
+         dialogs are. -->
+    <Grid Margin="14,12,14,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+    <StackPanel>
+        <TextBlock Text="Optimise ventilation — Iteration 2B" FontSize="17" FontWeight="SemiBold" Foreground="{StaticResource PartO.Brush.Text}"/>
+        <TextBlock x:Name="textBlock_Purpose" Margin="0,4,0,0" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Text}"/>
+
+        <Border Margin="0,10,0,0" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="10,6">
+            <ItemsControl x:Name="itemsControl_Facts" Grid.IsSharedSizeScope="True" Focusable="False">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Label"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Label}" Style="{StaticResource Style_FactLabel}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Value}" ToolTip="{Binding Detail}" Style="{StaticResource Style_FactValue}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <Grid Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="14"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="May change" Style="{StaticResource PartO.SectionHeading}" Margin="0,0,0,2"/>
+                <ItemsControl x:Name="itemsControl_Changes" ItemTemplate="{StaticResource Template_Bullet}" Focusable="False"/>
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="Never changes" Style="{StaticResource PartO.SectionHeading}" Margin="0,0,0,2"/>
+                <ItemsControl x:Name="itemsControl_Keeps" ItemTemplate="{StaticResource Template_Bullet}" Focusable="False"/>
+            </StackPanel>
+        </Grid>
+
+        <TextBlock Text="Settings" Style="{StaticResource PartO.SectionHeading}" Margin="0,12,0,2"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="140"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Airflow step (l/s)" VerticalAlignment="Center"/>
+            <TextBox x:Name="textBox_AirFlowStep" Grid.Row="0" Grid.Column="1" Height="22" VerticalContentAlignment="Center"
+                     AutomationProperties.Name="Airflow step (l/s)"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="added to each targeted space's design airflow per round" Style="{StaticResource PartO.Caption}" Margin="8,0,0,0" VerticalAlignment="Center"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="Round limit" VerticalAlignment="Center" Margin="0,6,0,0"/>
+            <TextBox x:Name="textBox_MaximumIterations" Grid.Row="1" Grid.Column="1" Height="22" Margin="0,6,0,0" VerticalContentAlignment="Center"
+                     AutomationProperties.Name="Round limit"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" Text="the most rounds it may run; each round is a full-year TAS simulation" Style="{StaticResource PartO.Caption}" Margin="8,6,0,0" VerticalAlignment="Center"/>
+        </Grid>
+
+        <CheckBox x:Name="checkBox_CapacityEnvelope" Margin="0,8,0,0"
+                  ToolTip="Runs only when the optimisation stops at the unit capacity or the round limit with spaces still failing. Its design is never adopted.">
+            <TextBlock TextWrapping="Wrap" Text="If spaces still fail at the end, also show what the selected units could support at their capacity (diagnostic, one more simulation)"/>
+        </CheckBox>
+        <CheckBox x:Name="checkBox_WarmStart" Margin="0,6,0,0"
+                  Content="Reuse the converted TAS geometry between rounds (faster)"
+                  ToolTip="Reuses the existing converted TAS geometry between optimisation rounds.&#x0a;Every round still runs its own full-year simulation. Untick this when the geometry is no longer valid for the current model."/>
+
+        <TextBlock x:Name="textBlock_SettingsSource" Style="{StaticResource PartO.Caption}" Margin="0,6,0,0"/>
+        <TextBlock x:Name="textBlock_Refusal" Margin="0,6,0,0" TextWrapping="Wrap" Foreground="{StaticResource PartO.Brush.Danger}" Visibility="Collapsed"/>
+
+        <TextBlock Margin="0,10,0,0" Style="{StaticResource PartO.Caption}"
+                   Text="The design loaded into the model afterwards is the last one that was simulated and assessed in full. Cancel stops at the next point it can: a TAS step already running finishes first."/>
+
+    </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button x:Name="button_Start" MinWidth="150" Height="28" Padding="10,0" IsDefault="True" Click="button_Start_Click"
+                    Style="{StaticResource PartO.PrimaryButton}" ToolTipService.ShowOnDisabled="True">Start Iteration 2B</Button>
+            <Button x:Name="button_Cancel" IsCancel="True" Width="80" Height="28" Margin="8,0,0,0">Cancel</Button>
+        </StackPanel>
+    </Grid>
+</Window>

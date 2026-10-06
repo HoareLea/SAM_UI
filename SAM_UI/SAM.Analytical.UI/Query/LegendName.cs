@@ -1,4 +1,6 @@
-﻿using SAM.Core;
+﻿// SPDX-License-Identifier: LGPL-3.0-or-later
+// Copyright (c) 2020–2026 Michal Dengusiak & Jakub Ziolkowski and contributors
+using SAM.Core;
 using SAM.Core.UI;
 using SAM.Geometry.UI;
 using System.Linq;
@@ -81,11 +83,66 @@ namespace SAM.Analytical.UI
                         return parameterName;
                     }
                 }
+                else if (appearanceSettings is VentilationSystemAppearanceSettings)
+                {
+                    if (parameterName == "Color" || parameterName == "Name")
+                    {
+                        return "Ventilation Systems";
+                    }
+                    else
+                    {
+                        return parameterName;
+                    }
+                }
+                else if (appearanceSettings is HeatingSystemAppearanceSettings)
+                {
+                    if (parameterName == "Color" || parameterName == "Name")
+                    {
+                        return "Heating Systems";
+                    }
+                    else
+                    {
+                        return parameterName;
+                    }
+                }
+                else if (appearanceSettings is CoolingSystemAppearanceSettings)
+                {
+                    if (parameterName == "Color" || parameterName == "Name")
+                    {
+                        return "Cooling Systems";
+                    }
+                    else
+                    {
+                        return parameterName;
+                    }
+                }
+                else if (appearanceSettings is NCMDataAppearanceSettings)
+                {
+                    if (parameterName == "Color" || parameterName == "Name")
+                    {
+                        return "NCM Data";
+                    }
+                    else
+                    {
+                        return parameterName;
+                    }
+                }
+                else if (appearanceSettings is PartFSpaceDataAppearanceSettings)
+                {
+                    if (parameterName == "Color" || parameterName == "Name")
+                    {
+                        return "Part F Data";
+                    }
+                    else
+                    {
+                        return parameterName;
+                    }
+                }
             }
             else if (appearanceSettings is ComplexReferenceAppearanceSettings)
             {
                 IComplexReference complexReference = ((ComplexReferenceAppearanceSettings)appearanceSettings).ComplexReference;
-                return complexReference.Text();
+                return complexReference?.Text();
             }
 
             return null;

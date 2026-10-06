@@ -4,15 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
-             mc:Ignorable="d" 
-             d:DesignHeight="100" d:DesignWidth="300" Loaded="UserControl_Loaded">
+             mc:Ignorable="d"
+             d:DesignHeight="135" d:DesignWidth="300" Loaded="UserControl_Loaded">
     <Grid>
         <Label x:Name="label_ZoneType" Content="Zone Type:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <ComboBox x:Name="comboBox_ZoneType" HorizontalAlignment="Left" Margin="82,13,0,0" VerticalAlignment="Top" Width="86" SelectionChanged="comboBox_ZoneType_SelectionChanged"/>
         <Label x:Name="label_Name" Content="Name:" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>
         <Label x:Name="label_Color" Content="Color:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="label_Dwelling" Content="Dwelling:" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBox_Name" HorizontalAlignment="Left" Height="23" Margin="82,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="208"/>
         <Button x:Name="button_Color" Content="" HorizontalAlignment="Left" Margin="82,72,0,0" VerticalAlignment="Top" Width="208" Click="button_Color_Click"/>
+        <CheckBox x:Name="checkBox_Dwelling" IsThreeState="True" Content="Not set" HorizontalAlignment="Left" Margin="86,109,0,0" VerticalAlignment="Top" Click="checkBox_Dwelling_Click" ToolTip="Ticked marks this zone a dwelling (flat or house). Cleared explicitly excludes it (e.g. a shared corridor or landlord area). The third, filled state is Not set, which preserves the legacy category-only behaviour - it is not the same as No."/>
         <TextBox x:Name="textBox_ZoneType_Name" HorizontalAlignment="Left" Height="23" Margin="173,12,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="117"/>
     </Grid>
 </UserControl>

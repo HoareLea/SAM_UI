@@ -10,12 +10,17 @@ namespace SAM.Analytical.UI.WPF
     /// </summary>
     public partial class ZoneControl : UserControl
     {
+        //A three-state tick, NOT a plain checkbox: ticked is Yes, cleared is an explicit No, and the
+        //third (indeterminate) state is Not set, which removes ZoneParameter.IsDwelling and so preserves
+        //the legacy category-only behaviour. Not set and No drive different Part F outcomes, so they
+        //must not collapse into one boolean. TryGetValue, not GetValue, tells them apart on the way in.
         private AdjacencyCluster adjacencyCluster;
         private Zone zone;
 
         public ZoneControl()
         {
             InitializeComponent();
+            UpdateDwellingText();
         }
 
         public ZoneControl(Zone zone)
@@ -23,6 +28,24 @@ namespace SAM.Analytical.UI.WPF
             this.zone = zone;
 
             InitializeComponent();
+            UpdateDwellingText();
+        }
+
+        /// <summary>
+        /// Names the tick's current state next to it. The indeterminate state of a three-state tick is
+        /// not self-explanatory, and confusing Not set with No would silently change which zones Part F
+        /// sizes, so the state is always spelled out rather than left to the box's appearance alone.
+        /// </summary>
+        private void UpdateDwellingText()
+        {
+            bool? isDwelling = checkBox_Dwelling.IsChecked;
+
+            checkBox_Dwelling.Content = isDwelling.HasValue ? (isDwelling.Value ? "Yes" : "No") : "Not set";
+        }
+
+        private void checkBox_Dwelling_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateDwellingText();
         }
 
         public AdjacencyCluster AdjacencyCluster
@@ -76,6 +99,10 @@ namespace SAM.Analytical.UI.WPF
                 }
             }
 
+            //TryGetValue, not GetValue: a zone that has never had the parameter set must read back
+            //as Not set, not as No.
+            checkBox_Dwelling.IsChecked = zone.TryGetValue(ZoneParameter.IsDwelling, out bool isDwelling) ? isDwelling : (bool?)null;
+            UpdateDwellingText();
         }
 
         private void LoadZoneCategories()
@@ -145,6 +172,16 @@ namespace SAM.Analytical.UI.WPF
             {
                 Color color = solidColorBrush.Color;
                 result.SetValue(ZoneParameter.Color, new Core.SAMColor(Core.UI.Convert.ToDrawing(color)));
+            }
+
+            bool? isDwelling_Selected = checkBox_Dwelling?.IsChecked;
+            if (isDwelling_Selected.HasValue)
+            {
+                result.SetValue(ZoneParameter.IsDwelling, isDwelling_Selected.Value);
+            }
+            else
+            {
+                result.RemoveValue(ZoneParameter.IsDwelling);
             }
 
             return result;

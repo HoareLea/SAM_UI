@@ -1,0 +1,110 @@
+﻿<Window x:Class="SAM.Analytical.UI.WPF.PartOTM59ResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SAM.Analytical.UI.WPF"
+        mc:Ignorable="d"
+        Title="Part O — Overheating (TM59)" Height="760" Width="1000" MinWidth="640" MinHeight="420" FontFamily="Roboto Light">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Analytical.UI.WPF;component/Themes/PartOStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style x:Key="Style_FactLabel" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Muted}"/>
+                <Setter Property="Margin" Value="0,1,12,1"/>
+            </Style>
+
+            <Style x:Key="Style_FactValue" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource PartO.Brush.Text}"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="Margin" Value="0,1,0,1"/>
+                <!-- Transparent, not absent, so the whole line is hit-testable and its tooltip appears. -->
+                <Setter Property="Background" Value="Transparent"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <!-- LAYOUT, top to bottom, simple by default and detailed on demand: the VERDICT (glyph and word, never
+         colour alone) with the space counts; WHAT the result is of; why spaces were NOT ASSESSED, counted and
+         one switch away; then the DETAILED REPORT - the production TM59AssessmentReport text, verbatim. Every
+         word above the report is read off the same production objects that report is written from; nothing is
+         recomputed and nothing is parsed out of the report. See PartOTM59ResultSummary. -->
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- THE VERDICT. The left rule and the glyph carry the colour; the word carries the meaning. Drawn only once
+             a summary is given (ResultSummary): a report opened without one is shown as the report, never under an
+             empty verdict. -->
+        <Border x:Name="border_Verdict" Grid.Row="0" Visibility="Collapsed" Background="{StaticResource PartO.Brush.Surface}" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="4,1,1,1" CornerRadius="3" Padding="12,8">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock x:Name="textBlock_VerdictGlyph" FontFamily="Segoe UI Symbol" FontSize="20" FontWeight="SemiBold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="textBlock_Verdict" FontSize="20" FontWeight="SemiBold" Foreground="{StaticResource PartO.Brush.Text}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock x:Name="textBlock_Counts" FontSize="14" Foreground="{StaticResource PartO.Brush.Text}" Margin="0,4,0,0" TextWrapping="Wrap" Background="Transparent"/>
+                <TextBlock x:Name="textBlock_Reason" Foreground="{StaticResource PartO.Brush.Text}" Margin="0,6,0,0" TextWrapping="Wrap" Visibility="Collapsed"/>
+                <TextBlock x:Name="textBlock_Caveat" Style="{StaticResource PartO.Caption}" Margin="0,6,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- WHAT THE RESULT IS OF - the run's own record; a fact it does not hold is left out. -->
+        <Border x:Name="border_Facts" Grid.Row="1" Margin="0,8,0,0" Visibility="Collapsed" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="10,6">
+            <ItemsControl x:Name="itemsControl_Facts" Grid.IsSharedSizeScope="True" Focusable="False">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="Label"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Label}" Style="{StaticResource Style_FactLabel}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding Value}" ToolTip="{Binding Detail}" Style="{StaticResource Style_FactValue}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <!-- WHY SPACES WERE NOT ASSESSED - counted, and COLLAPSED behind the same Show details switch the Hub
+             and the Review window use. It opens by default only where it is the explanation: when there is no
+             verdict. Every line is in the box and in Copy All. -->
+        <Border Grid.Row="2" Margin="0,8,0,0" Background="{StaticResource PartO.Brush.Surface}" BorderBrush="{StaticResource PartO.Brush.Border}" BorderThickness="1" CornerRadius="3" Padding="8,4">
+            <Grid>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Not assessed" Style="{StaticResource PartO.SectionHeading}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="label_Diagnostics" VerticalAlignment="Center" Foreground="{StaticResource PartO.Brush.Text}"/>
+                </StackPanel>
+                <CheckBox x:Name="checkBox_ShowDiagnostics" Content="Show details" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="11"
+                          Checked="checkBox_ShowDiagnostics_Changed" Unchecked="checkBox_ShowDiagnostics_Changed"
+                          ToolTip="Show why each space produced no TM59 result: identities that did not resolve, and scenarios stating no strategy a criterion is known for. Copy All always copies them."/>
+            </Grid>
+        </Border>
+        <TextBox x:Name="textBox_Diagnostics" Grid.Row="3" Height="110" Margin="0,4,0,0" Visibility="Collapsed"
+                 IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" AcceptsReturn="True" FontFamily="Consolas" FontSize="11"/>
+
+        <!-- THE DETAILED REPORT: the production TM59AssessmentReport text, verbatim. No criterion, limit or
+             verdict is recomputed for display, and nothing on it is simplified away. -->
+        <StackPanel x:Name="stackPanel_ReportHeading" Grid.Row="4" Orientation="Horizontal" Margin="0,12,0,4">
+            <TextBlock Text="Detailed report" Style="{StaticResource PartO.SectionHeading}" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBlock Text="The production CIBSE TM59 report - every criterion, limit and margin" Style="{StaticResource PartO.Caption}" VerticalAlignment="Center"/>
+        </StackPanel>
+        <TextBox x:Name="textBox_Report" Grid.Row="5" IsReadOnly="True" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" AcceptsReturn="True" TextWrapping="NoWrap" FontFamily="Consolas" FontSize="11"/>
+
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button x:Name="button_CopyAll" Width="80" Height="28" Click="button_CopyAll_Click"
+                    ToolTip="Copy the summary, the detailed report and every not-assessed reason.">Copy All</Button>
+            <Button x:Name="button_Close" IsCancel="True" IsDefault="True" Width="80" Height="28" Margin="8,0,0,0" Click="button_Close_Click">Close</Button>
+        </StackPanel>
+    </Grid>
+</Window>

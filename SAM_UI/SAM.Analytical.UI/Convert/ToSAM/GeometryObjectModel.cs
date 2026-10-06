@@ -65,7 +65,7 @@ namespace SAM.Analytical.UI
         // All of these caches are static and keyed per object guid, so a long-running session that opens many
         // large models (each with fresh guids) would otherwise grow without bound. Cap the entry count and clear
         // when a new key would exceed it - the caps are well above any single model's space / panel count, so the
-        // active model stays fully cached and only cross-model accumulation is bounded. (See PR #28 / Codex review.)
+        // active model stays fully cached and only cross-model accumulation is bounded.
         private const int maxCachedSpaces = 50000;
         private const int maxCachedPanels = 250000;
 
@@ -380,6 +380,21 @@ namespace SAM.Analytical.UI
 
         // Returns the 2D floor-plan section faces for a space in the given plane, reusing cached geometry when
         // the space geometry AND the cut plane are unchanged. A hit avoids both the shell build and the section.
+        /// <summary>
+        /// The 2D outline of one space where it meets a floor plan's section plane, in that plane's own
+        /// coordinates, or null where the space does not reach the plane.
+        /// <para>
+        /// The public face of the cached section this converter already builds for every floor plan.
+        /// Exposed so an annotation layer - the Part F airflow overlay - can place its marks inside the
+        /// real room outline instead of inventing a layout, and so it shares the cache rather than paying
+        /// for the shell section a second time.
+        /// </para>
+        /// </summary>
+        public static List<Face2D> SpaceSectionFace2Ds(this AdjacencyCluster adjacencyCluster, Space space, Plane plane)
+        {
+            return GetSectionFace2Ds(adjacencyCluster, space, plane, out _);
+        }
+
         private static List<Face2D> GetSectionFace2Ds(AdjacencyCluster adjacencyCluster, Space space, Plane plane, out bool cacheHit)
         {
             cacheHit = false;
@@ -1273,10 +1288,17 @@ namespace SAM.Analytical.UI
                         // Diagnostic: how many labels the solver actually placed vs left at their anchor, and how
                         // many sections were flagged degenerate. Reveals which way a slow solve is failing (all
                         // placed but expensively, vs all unplaceable) so the bound can be targeted, not guessed.
+                        //
+                        // Counted from Solver2DResult.ResultType, not from "did it return geometry". A label the
+                        // solver dropped at its anchor once it ran out of work budget also returns geometry, so
+                        // counting non-null rectangles reported those as placed and hid the exact condition this
+                        // line exists to reveal - the one where the solve gave up early.
                         if (PerformanceLog.Enabled)
                         {
-                            int placedCount = solver2DResults == null ? 0 : solver2DResults.FindAll(x => x?.Closed2D<Rectangle2D>() != null).Count;
-                            PerformanceLog.Write("FloorPlan.LabelSolver.Placement", string.Format("{0} [{1} placed / {2} anchored of {3}] [{4} degenerate sections]", twoDimensionalViewSettings.Name, placedCount, solver2DDatas.Count - placedCount, solver2DDatas.Count, degenerateSectionCount), 0);
+                            int solvedCount = solver2DResults == null ? 0 : solver2DResults.FindAll(x => x?.ResultType == Solver2DResultType.Solved).Count;
+                            int fallbackCount = solver2DResults == null ? 0 : solver2DResults.FindAll(x => x?.ResultType == Solver2DResultType.Fallback).Count;
+                            int unplacedCount = solver2DResults == null ? solver2DDatas.Count : solver2DResults.FindAll(x => x?.ResultType == Solver2DResultType.Unplaced).Count;
+                            PerformanceLog.Write("FloorPlan.LabelSolver.Placement", string.Format("{0} [{1} solved / {2} over budget / {3} unplaced of {4}] [{5} degenerate sections] [{6} work units of {7}]", twoDimensionalViewSettings.Name, solvedCount, fallbackCount, unplacedCount, solver2DDatas.Count, degenerateSectionCount, solver2D.WorkUnits, solver2D.WorkBudget), 0);
                         }
 
                         labelPositions = new Dictionary<Guid, Tuple<Point2D, bool>>();

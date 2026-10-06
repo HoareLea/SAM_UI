@@ -36,24 +36,24 @@ namespace SAM.Core.Mollier.UI.Grasshopper
             get
             {
                 List<GH_SAMParam> result = new List<GH_SAMParam>();
-                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_dryBulbTemperature", NickName = "_dryBulbTemperature", Description = "Dry Bulb Tempearture [°C]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
+                result.Add(new GH_SAMParam(new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_dryBulbTemperature", NickName = "_dryBulbTemperature", Description = "Dry Bulb Temperature [°C]", Access = GH_ParamAccess.item }, ParamVisibility.Binding));
 
                 global::Grasshopper.Kernel.Parameters.Param_Number param_Number = null;
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_relativeHumidity_", NickName = "_relativeHumidity_", Description = "Relative Humidity [%]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_relativeHumidity_", NickName = "_relativeHumidity_", Description = "Relative Humidity [%]. Supply this OR humidity ratio OR wet-bulb temperature", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_humidityRatio_", NickName = "_humidityRatio_", Description = "Humidity Ratio [g_waterVapor/kg_dryAir]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_humidityRatio_", NickName = "_humidityRatio_", Description = "Humidity Ratio [g_waterVapor/kg_dryAir]. Supply this OR relative humidity OR wet-bulb temperature", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_wetBulbTemperature_", NickName = "_wetBulbTemperature_", Description = "Wet Bulb Temperature[°C]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number { Name = "_wetBulbTemperature_", NickName = "_wetBulbTemperature_", Description = "Wet Bulb Temperature[°C]. Supply this OR relative humidity OR humidity ratio", Access = GH_ParamAccess.item, Optional = true };
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
 
                 param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_pressure_", NickName = "_pressure_", Description = "Pressure [Pa]", Access = GH_ParamAccess.item, Optional = true };
                 param_Number.SetPersistentData(Standard.Pressure);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Binding));
 
-                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_elevation_", NickName = "_elevation_", Description = "Elevation [m]", Access = GH_ParamAccess.item, Optional = true };
+                param_Number = new global::Grasshopper.Kernel.Parameters.Param_Number() { Name = "_elevation_", NickName = "_elevation_", Description = "Elevation [m]. Overrides pressure if provided", Access = GH_ParamAccess.item, Optional = true };
                 param_Number.SetPersistentData(double.NaN);
                 result.Add(new GH_SAMParam(param_Number, ParamVisibility.Voluntary));
 
@@ -87,7 +87,7 @@ namespace SAM.Core.Mollier.UI.Grasshopper
         /// </summary>
         public SAMMollierCreateMollierPoint()
           : base("SAMMollier.CreateMollierPoint", "SAMMollier.CreateMollierPoint",
-              "Creates MollierPoint",
+              "Creates a Mollier point on the psychrometric chart from dry-bulb temperature and one additional property (relative humidity, humidity ratio, or wet-bulb temperature)",
               "SAM", "Mollier")
         {
         }

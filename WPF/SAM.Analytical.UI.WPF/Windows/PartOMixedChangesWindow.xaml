@@ -1,0 +1,39 @@
+<Window x:Class="SAM.Analytical.UI.WPF.PartOMixedChangesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Part O — Apply suggestions" Width="820" Height="480" MinWidth="560" MinHeight="300"
+        ResizeMode="CanResizeWithGrip" FontFamily="Roboto Light" WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SAM.Analytical.UI.WPF;component/Themes/PartOStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="12,10,12,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <TextBlock x:Name="textBlock_Heading" FontWeight="SemiBold" FontSize="14"/>
+            <TextBlock Style="{StaticResource PartO.Caption}" Margin="0,2,0,0"
+                       Text="These are the screening suggestions that differ from your selection. Nothing has changed yet. Applying them changes only the selection - which you can still edit - and nothing is built until you run the mixed design."/>
+        </StackPanel>
+        <DataGrid Grid.Row="1" x:Name="dataGrid_Changes" Margin="0,8,0,0" AutoGenerateColumns="False" IsReadOnly="True"
+                  HeadersVisibility="Column" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#EEEEEE"
+                  EnableRowVirtualization="True" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Dwelling" Binding="{Binding Dwelling, Mode=OneWay}" Width="150"/>
+                <DataGridTextColumn Header="Selected now" Binding="{Binding FromText, Mode=OneWay}" Width="190"/>
+                <DataGridTextColumn Header="Suggested" Binding="{Binding ToText, Mode=OneWay}" Width="190"/>
+                <DataGridTextColumn Header="Why" Binding="{Binding Reason, Mode=OneWay}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button x:Name="button_Apply" Height="26" Padding="12,0" Style="{StaticResource PartO.PrimaryButton}"/>
+            <Button Content="Cancel" Width="80" Height="26" Margin="8,0,0,0" IsCancel="True" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

@@ -6,8 +6,7 @@
     compatibility path renders through OxyPlot.WindowsForms.GraphicsRenderContext into a
     System.Drawing.Imaging.Metafile (see EmfBridge.cs) without pulling in WinForms.
 
-    Targets net8.0-windows only, matching the consuming EXE 'SAM Analytical Mollier'
-    (which is net8.0-windows regardless of the legacy 'net48-windows' configuration name).
+    Targets net8.0-windows only, matching the consuming EXE 'SAM Analytical Mollier'.
   -->
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -20,7 +19,7 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <OutputPath>..\..\build\</OutputPath>
-    <Configurations>Debug;Release;net48-windows</Configurations>
+    <Configurations>Debug;Release</Configurations>
   </PropertyGroup>
 
   <!-- Domain layer (untouched) + shared SAM libraries, consumed by the ported chart-builders. -->

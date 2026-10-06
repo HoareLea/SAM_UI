@@ -14,7 +14,8 @@
               GridLinesVisibility="All"
               SelectionMode="Single"
               SelectionUnit="Cell"
-              RowHeaderWidth="0">
+              RowHeaderWidth="0"
+              local:DataGridBehavior.SelectAllOnEdit="True">
         <DataGrid.Columns>
             <DataGridTextColumn Header="Parameter" Binding="{Binding Name, Mode=OneWay}" IsReadOnly="True" Width="*"/>
             <DataGridTemplateColumn Header="Value" Width="*">

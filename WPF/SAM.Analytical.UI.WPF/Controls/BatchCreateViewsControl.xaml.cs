@@ -164,6 +164,13 @@ namespace SAM.Analytical.UI.WPF
 
             string group = Query.DefaultGroup(spaceAppearanceSettingsControl.SpaceAppearanceSettings);
 
+            //Every view created here is new, so the Part F colour scheme initialises a usable Part F drawing on
+            //each of them - the same preset the single-view path applies, resolved once for the whole batch.
+            //Null for every other colour scheme, and then no Part F parameter is written at all.
+            PartFAirflowViewSettings partFAirflowViewSettings = spaceAppearanceSettingsControl.SpaceAppearanceSettings?.GetValueAppearanceSettings<ValueAppearanceSettings>() is PartFSpaceDataAppearanceSettings
+                ? Analytical.UI.Create.PartFAirflowViewSettings(spaceAppearanceSettingsControl.AdjacencyCluster)
+                : null;
+
             List<TwoDimensionalViewSettings> result = new List<TwoDimensionalViewSettings>();
             foreach (Level level in levels)
             {
@@ -186,6 +193,12 @@ namespace SAM.Analytical.UI.WPF
                 }
 
                 twoDimensionalViewSettings.TextAppearance = textAppearance;
+
+                if (partFAirflowViewSettings is not null)
+                {
+                    //A copy per view: they are separate drawings and each will collect its own moved labels.
+                    twoDimensionalViewSettings.SetValue(AnalyticalViewSettingsParameter.PartFAirflow, new PartFAirflowViewSettings(partFAirflowViewSettings));
+                }
 
                 result.Add(twoDimensionalViewSettings);
             }
